@@ -1,0 +1,136 @@
+---
+author: rescript-team
+date: "2024-07-08"
+previewImg: /static/blog/compiler_release_11_1.jpg
+title: ReScript Retreat Recap
+description: |
+  Unleashing ReScript from React
+---
+
+From the 23rd to the 26th of May, the ReScript team invited many contributors to hack on ReScript. In the end almost all of them responded to the invitation and thus, 15 people from all over the world traveled to Vienna, Austria to meet in person, to do talks, discussions and decisions about and contributions to the ReScript toolchain.
+
+# Day 1
+
+On the first day, we started with some in-depth talks about compiler development. The first talk was about the ReScript parser and formatter, the second one about the compiler itself.
+
+## Brief overview of parser development
+
+A talk by Maxim Valcke (@BinarySearch)
+
+Maxim started with a little bit of history why the parser was made: The existing parser we used with ReScript's predecessor BuckleScript, which is called ReasonML, was created with a parser generator which had the following drawbacks:
+
+- harder to propose changes
+- blows up bundle size
+- was a bit slower than it could be
+
+So the ReScript parser was made which is completely hand-rolled without the help of a parser generator and it's arguably easier to contribute to, smaller and faster as well. It also supports less of OCaml features, like OCaml's object system, which is probably not needed in a language that compiles to JavaScript only where we have our own object system.
+
+Then he continued to answer the question what we understand about syntax:
+
+- A parser: creates machine understandable text from arbitrary text
+- A printer: makes ugly code beautiful
+
+Maxim continued with a hands-on example where he implemented `var` in ReScript. This is of course just an educational example, since we don't really want to give up our clear scoping rules.
+
+Furthermore, the comments table was explained. As comments are not part of the AST (abstract syntax tree), those are stored in a separate comments table in the parser. This is why it sometimes happened that ReScript comments get swallowed after formatting. Luckily, this does not happen so often anymore.
+
+The full talk has been recorded and can be watched here: [TODO - Youtube Link].
+
+## Brief overview of compiler development
+
+A talk by Cristiano Calcagno (@ccrisccris)
+
+Almost seamlessly, Cristiano continued the hands-on example with a very simple example:
+
+```res
+let foo = x => x + 1
+```
+
+Then he showed how to print the parsetree for such a statement and where to go in the compiler repository to adapt the behavior. Furthermore, uncurried mode handling was explained thoroughly, as it is a really tricky feature. Then he jumped to the next layer which is the typed tree. This one can be shown in both curried and uncurried modes. Those modes make it necessary to keep two versions of the standard library in the compiler.
+
+The next layer is the raw lambda tree, which is the last layer before code generation and has some more wrappers in uncurried mode. The lambda representation is where all the optimization magic happens, like inlining or dead code elimination.
+
+The final layer is the JS dump, which is the actual JavaScript code generation.
+
+Again, the full talk has been recorded and can be watched here: [TODO - Youtube Link].
+
+## Beginning of group work
+
+After the talks and a small break, the contributors split up in multiple small groups of 2-4 people. Every group had a specific topic assigned:
+
+- New Build System (Codename rewatch)
+- rescript-lang.org Playground Output
+- ReScript Core and how to include it in the compiler
+- loops, foreach, iterators
+- Syntax, JSX
+
+The contributors worked until the lunch break on those topics, and continued that work until dinner.
+
+# Day 2
+
+First thing in the morning was to conclude the work from the first day, and there were already some interesting advancements.
+
+Group 1, New Build System (Codename rewatch):
+
+- CI build builds rewatch already
+
+Group 2, rescript-lang.org Playground Output
+
+- Console output works
+
+Group 3 ReScript Core
+
+- Removed bs send pipe / data-last apis in v12
+
+Group 4 for loops / iterators
+
+- created a prototype for iterator, just as a library for now where continue and break are modeled as exceptions
+
+Group 5 Syntax / JSX
+
+- comment disappearing in uncurried mode fixed
+- enabled uncurried mode in parser tests
+- import syntax revisite
+d
+
+Next up was a talk about how to contribute to editor tooling.
+
+## Talk about editor tooling
+
+A talk by Gabriel Nordeborn (@zth)
+
+Editor tooling is sometimes broken for some people but it is hard to report what exactly is broken and also hard to get reproductions.
+But, in theory, editor tooling with a sound type system should be really good.
+
+We are using the Language Server Protocol (LSP): which is just a node process that calls different analysis tools.
+
+Whenever you build something, the compiler creates one artifact per file that contains type information which the tooling uses.
+It receives parameters like the cursor position, what artifact to look up, unsaved contents of the file.
+
+Working on editor tooling is working with broken code a lot. So the main challenge is often to find the correct heuristics to e.g. autocomplete what the user probably wants in that case, on that cursor position, etc.
+
+The full talk has been recorded and can be watched here: [TODO - Youtube Link].
+
+## Discussion about ReScript's Governance
+
+Afterwards we had a group discussion about how to elevator pitch ReScript and about ReScript's roadmap.
+
+The full results of this discussions and the group work can be read at the ReScript forum: https://forum.rescript-lang.org/t/ann-rescript-retreat-roadmap-summary-2024/5275
+
+After the discussion group work continued until the evening. Some people already left after this day.
+
+## Day 3
+
+People continued group work and gathered together at a viennese winery in the evening.
+
+## Day 4
+
+The remaining people even continued work on sunday, with only a couple of hours of city sightseeing and an awesome final Viennese lunch.
+
+## Conclusion
+
+After the retreat, most participants stated that they want to do it again and overall it was a very productive but also fun event for all of us. So it is fairly safe to say that there will be a ReScript Retreat in 2025, at least as long as the ReScript Association is able to stem it financially.
+
+## Our Sponsors
+
+The ReScript Association paid for all the participants hotel rooms and some of the lunches and dinners. On the first three days we worked at a coworking space which was paid for by the Vienna-based company [cca.io](https://www.cca.io/), which also happens to employ two of our contributors.
