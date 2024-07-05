@@ -1,21 +1,28 @@
 ---
-author: rescript-team
+author: rescript-association
 date: "2024-07-08"
-previewImg: /static/blog/compiler_release_11_1.jpg
+previewImg: /static/blog/rescript_retreat_2024.jpg
+articleImg: /static/blog/rescript_retreat_2024.jpg
 title: ReScript Retreat Recap
 description: |
-  Unleashing ReScript from React
+  Accelerating ReScript development through meeting in-person.
 ---
 
 From the 23rd to the 26th of May, the ReScript team invited many contributors to hack on ReScript. In the end almost all of them responded to the invitation and thus, 15 people from all over the world traveled to Vienna, Austria to meet in person, to do talks, discussions and decisions about and contributions to the ReScript toolchain.
 
-# Day 1
+## Day 1
 
 On the first day, we started with some in-depth talks about compiler development. The first talk was about the ReScript parser and formatter, the second one about the compiler itself.
 
-## Brief overview of parser development
+### Brief overview of parser development
 
 A talk by Maxim Valcke (@BinarySearch)
+
+<Image
+  src="/static/blog/rescript_retreat_2024_talk_parser.jpg"
+  caption="Maxim Valcke giving an introduction about parser development"
+  withShadow="true"
+/>
 
 Maxim started with a little bit of history why the parser was made: The existing parser we used with ReScript's predecessor BuckleScript, which is called ReasonML, was created with a parser generator which had the following drawbacks:
 
@@ -36,7 +43,7 @@ Furthermore, the comments table was explained. As comments are not part of the A
 
 The full talk has been recorded and can be watched here: [TODO - Youtube Link].
 
-## Brief overview of compiler development
+### Brief overview of compiler development
 
 A talk by Cristiano Calcagno (@ccrisccris)
 
@@ -54,7 +61,13 @@ The final layer is the JS dump, which is the actual JavaScript code generation.
 
 Again, the full talk has been recorded and can be watched here: [TODO - Youtube Link].
 
-## Beginning of group work
+### Beginning of group work
+
+<Image
+  src="/static/blog/rescript_retreat_2024_group_work.jpg"
+  caption="Some core contributors thinking hard"
+  withShadow="true"
+/>
 
 After the talks and a small break, the contributors split up in multiple small groups of 2-4 people. Every group had a specific topic assigned:
 
@@ -66,36 +79,27 @@ After the talks and a small break, the contributors split up in multiple small g
 
 The contributors worked until the lunch break on those topics, and continued that work until dinner.
 
-# Day 2
+## Day 2
 
 First thing in the morning was to conclude the work from the first day, and there were already some interesting advancements.
 
-Group 1, New Build System (Codename rewatch):
-
-- CI build builds rewatch already
-
-Group 2, rescript-lang.org Playground Output
-
-- Console output works
-
-Group 3 ReScript Core
-
-- Removed bs send pipe / data-last apis in v12
-
-Group 4 for loops / iterators
-
-- created a prototype for iterator, just as a library for now where continue and break are modeled as exceptions
-
-Group 5 Syntax / JSX
-
-- comment disappearing in uncurried mode fixed
-- enabled uncurried mode in parser tests
-- import syntax revisite
-d
+- Group 1, New Build System (Codename rewatch):
+  - CI build builds rewatch already
+- Group 2, rescriptlang.org Playground Output:
+  - Console output works
+- Group 3, ReScript Core:
+  - Removed bs send pipe / datalast apis in v12
+- Group 4, for loops / iterators:
+  - created a prototype for iterator
+  - just as a library for now where continue and break are modeled as exceptions
+- Group 5, Syntax / JSX:
+  - comment disappearing in uncurried mode fixed
+  - enabled uncurried mode in parser tests
+  - import syntax revisited
 
 Next up was a talk about how to contribute to editor tooling.
 
-## Talk about editor tooling
+### Talk about editor tooling
 
 A talk by Gabriel Nordeborn (@zth)
 
@@ -111,7 +115,7 @@ Working on editor tooling is working with broken code a lot. So the main challen
 
 The full talk has been recorded and can be watched here: [TODO - Youtube Link].
 
-## Discussion about ReScript's Governance
+### Discussion about ReScript's Governance
 
 Afterwards we had a group discussion about how to elevator pitch ReScript and about ReScript's roadmap.
 
@@ -123,9 +127,15 @@ After the discussion group work continued until the evening. Some people already
 
 People continued group work and gathered together at a viennese winery in the evening.
 
+<Image
+  src="/static/blog/rescript_retreat_2024_winery.jpg"
+  caption="Contributors enjoying refreshing food and drinks after working hard"
+  withShadow="true"
+/>
+
 ## Day 4
 
-The remaining people even continued work on sunday, with only a couple of hours of city sightseeing and an awesome final Viennese lunch.
+The remaining participants even continued work on sunday, with only a couple of hours of city sightseeing and an awesome final Viennese lunch.
 
 ## Conclusion
 
@@ -133,4 +143,10 @@ After the retreat, most participants stated that they want to do it again and ov
 
 ## Our Sponsors
 
-The ReScript Association paid for all the participants hotel rooms and some of the lunches and dinners. On the first three days we worked at a coworking space which was paid for by the Vienna-based company [cca.io](https://www.cca.io/), which also happens to employ two of our contributors.
+<Image
+  src="/static/lp/cca-io.svg"
+  size="small"
+  caption="Thanks to cca.io for sponsoring our retreat venue"
+/>
+
+The [ReScript Association](https://rescript-association.org/) paid for all the participants hotel rooms and some of the lunches and dinners. On the first three days we worked at a coworking space which was paid for by the Vienna-based company [cca.io](https://www.cca.io/), which also happens to employ two of our contributors.

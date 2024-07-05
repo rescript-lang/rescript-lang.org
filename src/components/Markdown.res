@@ -474,20 +474,28 @@ module Strong = {
 
 module Image = {
   @react.component
-  let make = (~src: string, ~withShadow=false, ~caption: option<string>=?) => {
+  let make = (~src: string, ~size=#large, ~withShadow=false, ~caption: option<string>=?) => {
+    let width = switch size {
+    | #large => "w-full"
+    | #small => "w-1/4"
+    }
+
     let shadow = if withShadow {
       "shadow-md"
     } else {
       ""
     }
-    <div className="mt-8 mb-12 md:-mx-16">
+
+    <div className={`mt-8 mb-12 ${size === #large ? "md:-mx-16" : ""}`}>
       <a href=src rel="noopener noreferrer">
-        <img className={"w-full " ++ shadow} src />
+        <img className={width ++ " " ++ shadow} src />
       </a>
       {switch caption {
       | None => React.null
       | Some(caption) =>
-        <div className="mt-4 text-14 text-gray-60 md:ml-16"> {React.string(caption)} </div>
+        <div className={`mt-4 text-14 text-gray-60 ${size === #large ? "md:ml-16" : ""}`}>
+          {React.string(caption)}
+        </div>
       }}
     </div>
   }

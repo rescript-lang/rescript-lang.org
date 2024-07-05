@@ -155,7 +155,12 @@ module Strong: {
 
 module Image: {
   @react.component
-  let make: (~src: string, ~withShadow: bool=?, ~caption: string=?) => React.element
+  let make: (
+    ~src: string,
+    ~size: [#large | #small]=?,
+    ~withShadow: bool=?,
+    ~caption: string=?,
+  ) => React.element
 }
 
 module Video: {
