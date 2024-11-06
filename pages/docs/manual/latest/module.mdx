@@ -413,22 +413,22 @@ type state = int
 let render: string => string
 ```
 
-## Module Functions (functors)
+## Module Functions
 
 Modules can be passed to functions! It would be the equivalent of passing a file
 as a first-class item. However, modules are at a different "layer" of the
 language than other common concepts, so we can't pass them to *regular*
-functions. Instead, we pass them to special functions called "functors".
+functions. Instead, we pass them to special functions called module functions.
 
-The syntax for defining and using functors is very much like the syntax
+The syntax for defining and using module functions is very much like the syntax
 for defining and using regular functions. The primary differences are:
 
-- Functors use the `module` keyword instead of `let`.
-- Functors take modules as arguments and return a module.
-- Functors *require* annotating arguments.
-- Functors must start with a capital letter (just like modules/signatures).
+- Module functions use the `module` keyword instead of `let`.
+- Module functions take modules as arguments and return a module.
+- Module functions *require* annotating arguments.
+- Module functions must start with a capital letter (just like modules/signatures).
 
-Here's an example `MakeSet` functor, that takes in a module of the type
+Here's an example `MakeSet` module function, that takes in a module of the type
 `Comparable` and returns a new set that can contain such comparable items.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
@@ -482,7 +482,7 @@ function MakeSet(Item) {
 
 </CodeTab>
 
-Functors can be applied using function application syntax. In this case, we're
+Module functions can be applied using function application syntax. In this case, we're
 creating a set, whose items are pairs of integers.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
@@ -525,12 +525,12 @@ var SetOfIntPairs = {
 
 ### Module functions types
 
-Like with module types, functor types also act to constrain and hide what we may
-assume about functors. The syntax for functor types are consistent with those
+Like with module types, module function types also act to constrain and hide what we may
+assume about module functions. The syntax for module function types are consistent with those
 for function types, but with types capitalized to represent the signatures of
-modules the functor accepts as arguments and return values. In the
+modules the module functions accepts as arguments and return values. In the
 previous example, we're exposing the backing type of a set; by giving `MakeSet`
-a functor signature, we can hide the underlying data structure!
+a module function signature, we can hide the underlying data structure!
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -566,4 +566,4 @@ Please note that modules with an exotic filename will not be accessible from oth
 
 ## Tips & Tricks
 
-Modules and functors are at a different "layer" of language than the rest (functions, let bindings, data structures, etc.). For example, you can't easily pass them into a tuple or record. Use them judiciously, if ever! Lots of times, just a record or a function is enough.
+Modules and module functions are at a different "layer" of language than the rest (functions, let bindings, data structures, etc.). For example, you can't easily pass them into a tuple or record. Use them judiciously, if ever! Lots of times, just a record or a function is enough.

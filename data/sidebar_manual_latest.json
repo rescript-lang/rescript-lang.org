@@ -37,7 +37,8 @@
   ],
   "Advanced Features": [
     "extensible-variant",
-    "scoped-polymorphic-types"
+    "scoped-polymorphic-types",
+    "module-functions"
   ],
   "JavaScript Interop": [
     "interop-cheatsheet",
