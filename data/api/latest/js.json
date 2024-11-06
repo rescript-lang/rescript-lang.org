@@ -3,7 +3,7 @@
     "id": "Js",
     "name": "Js",
     "docstrings": [
-      "The Js module mostly contains ReScript bindings to _standard JavaScript APIs_\nlike [console.log](https://developer.mozilla.org/en-US/docs/Web/API/Console/log),\nor the JavaScript\n[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String),\n[Date](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date), and\n[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)\nclasses.\n\nIt is meant as a zero-abstraction interop layer and directly exposes JavaScript functions as they are. If you can find your API in this module, prefer this over an equivalent Belt helper. For example, prefer [Js.Array2](js/array2) over [Belt.Array](belt/array)\n\n## Argument Order\n\nFor historical reasons, some APIs in the Js namespace (e.g. [Js.String](js/string)) are\nusing the data-last argument order whereas others (e.g. [Js.Date](js/date)) are using data-first.\n\nFor more information about these argument orders and the trade-offs between them, see\n[this blog post](https://www.javierchavarri.com/data-first-and-data-last-a-comparison/).\n\n_Eventually, all modules in the Js namespace are going to be migrated to data-first though._\n\nIn the meantime, there are several options for dealing with the data-last APIs:\n\n## Examples\n\n```rescript\n/* Js.String (data-last API used with pipe last operator) */\nJs.log(\"2019-11-10\" |> Js.String.split(\"-\"))\nJs.log(\"ReScript\" |> Js.String.startsWith(\"Re\"))\n\n/* Js.String (data-last API used with pipe first operator) */\nJs.log(\"2019-11-10\"->Js.String.split(\"-\", _))\nJs.log(\"ReScript\"->Js.String.startsWith(\"Re\", _))\n\n/* Js.String (data-last API used without any piping) */\nJs.log(Js.String.split(\"-\", \"2019-11-10\"))\nJs.log(Js.String.startsWith(\"Re\", \"ReScript\"))\n```\n## Js.Xxx2 Modules\n\nPrefer `Js.Array2` over `Js.Array`, `Js.String2` over `Js.String`, etc. The latters are old modules."
+      "## ⚠️ Since v11, this module is superseded by [Core](core).\n\nThe Js module mostly contains ReScript bindings to _standard JavaScript APIs_\nlike [console.log](https://developer.mozilla.org/en-US/docs/Web/API/Console/log),\nor the JavaScript\n[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String),\n[Date](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date), and\n[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)\nclasses.\n\nIt is meant as a zero-abstraction interop layer and directly exposes JavaScript functions as they are. If you can find your API in this module, prefer this over an equivalent Belt helper. For example, prefer [Js.Array2](js/array2) over [Belt.Array](belt/array)\n\n## Argument Order\n\nFor historical reasons, some APIs in the Js namespace (e.g. [Js.String](js/string)) are\nusing the data-last argument order whereas others (e.g. [Js.Date](js/date)) are using data-first.\n\nFor more information about these argument orders and the trade-offs between them, see\n[this blog post](https://www.javierchavarri.com/data-first-and-data-last-a-comparison/).\n\n_Eventually, all modules in the Js namespace are going to be migrated to data-first though._\n\nIn the meantime, there are several options for dealing with the data-last APIs:\n\n## Examples\n\n```rescript\n/* Js.String (data-last API used with pipe last operator) */\nJs.log(\"2019-11-10\" |> Js.String.split(\"-\"))\nJs.log(\"ReScript\" |> Js.String.startsWith(\"Re\"))\n\n/* Js.String (data-last API used with pipe first operator) */\nJs.log(\"2019-11-10\"->Js.String.split(\"-\", _))\nJs.log(\"ReScript\"->Js.String.startsWith(\"Re\", _))\n\n/* Js.String (data-last API used without any piping) */\nJs.log(Js.String.split(\"-\", \"2019-11-10\"))\nJs.log(Js.String.startsWith(\"Re\", \"ReScript\"))\n```\n## Js.Xxx2 Modules\n\nPrefer `Js.Array2` over `Js.Array`, `Js.String2` over `Js.String`, etc. The latters are old modules."
     ],
     "items": [
       {
@@ -9057,8 +9057,7 @@
     "id": "Js.WeakMap",
     "name": "WeakMap",
     "docstrings": [
-      "Provides bindings for ES6 WeakMap",
-      "ES6 WeakMap API"
+      "## ⚠️ Since v11, this module is superseded by [Core.WeakMap](core/weakmap).\n\nES6 WeakMap API"
     ],
     "items": [
       {
@@ -9074,8 +9073,7 @@
     "id": "Js.Map",
     "name": "Map",
     "docstrings": [
-      "Provides bindings for ES6 Map",
-      "ES6 Map API"
+      "## ⚠️ Since v11, this module is superseded by [Core.Map](core/map).\n\nES6 Map API"
     ],
     "items": [
       {
@@ -9091,8 +9089,7 @@
     "id": "Js.WeakSet",
     "name": "WeakSet",
     "docstrings": [
-      "Provides bindings for ES6 WeakSet",
-      "ES6 WeakSet API"
+      "## ⚠️ Since v11, this module is superseded by [Core.WeakSet](core/weakset).\n\nES6 WeakSet API"
     ],
     "items": [
       {
@@ -9108,8 +9105,7 @@
     "id": "Js.Set",
     "name": "Set",
     "docstrings": [
-      "Provides bindings for ES6 Set",
-      "ES6 Set API"
+      "## ⚠️ Since v11, this module is superseded by [Core.Set](core/set).\n\nES6 Set API"
     ],
     "items": [
       {
@@ -9125,7 +9121,7 @@
     "id": "Js.Console",
     "name": "Console",
     "docstrings": [
-      "Provides bindings for console"
+      "## ⚠️ Since v11, this module is superseded by [Core.Console](core/console).\n\nProvides bindings for console"
     ],
     "items": [
       {
@@ -9465,7 +9461,7 @@
     "id": "Js.List",
     "name": "List",
     "docstrings": [
-      "Provide utilities for list"
+      "## ⚠️ Since v11, this module is superseded by [Core.List](core/list).\n\nProvide utilities for list"
     ],
     "items": [
       {
@@ -9632,7 +9628,7 @@
     "id": "Js.Result",
     "name": "Result",
     "docstrings": [
-      "Define the interface for result"
+      "## ⚠️ Since v11, this module is superseded by [Core.Result](core/result).\n\nDefine the interface for result"
     ],
     "items": [
       {
@@ -9640,8 +9636,7 @@
         "kind": "type",
         "name": "t",
         "docstrings": [],
-        "signature": "type t<'good, 'bad> = Ok('good) | Error('bad)",
-        "deprecated": "Please use `Belt.Result.t` instead"
+        "signature": "type t<'good, 'bad> = Ok('good) | Error('bad)"
       }
     ]
   },
@@ -9649,7 +9644,7 @@
     "id": "Js.Option",
     "name": "Option",
     "docstrings": [
-      "Provide utilities for option"
+      "## ⚠️ Since v11, this module is superseded by [Core.Option](core/option).\n\nProvide utilities for option"
     ],
     "items": [
       {
@@ -9785,7 +9780,7 @@
     "name": "BigInt",
     "docstrings": [
       "Provide utilities for bigint",
-      "JavaScript BigInt API"
+      "## ⚠️ Since v11, this module is superseded by [Core.BigInt](core/bigint).\n\nJavaScript BigInt API"
     ],
     "items": [
       {
@@ -9919,8 +9914,7 @@
     "id": "Js.Int",
     "name": "Int",
     "docstrings": [
-      "Provide utilities for int",
-      "Provide utilities for handling `int`."
+      "## ⚠️ Since v11, this module is superseded by [Core.Int](core/int).\n\nProvide utilities for handling `int`."
     ],
     "items": [
       {
@@ -10011,8 +10005,7 @@
     "id": "Js.Float",
     "name": "Float",
     "docstrings": [
-      "Provide utilities for JS float",
-      "Provide utilities for JS float."
+      "## ⚠️ Since v11, this module is superseded by [Core.Float](core/float).\n\nProvide utilities for JS float"
     ],
     "items": [
       {
@@ -10129,8 +10122,7 @@
     "id": "Js.Types",
     "name": "Types",
     "docstrings": [
-      "Provide utilities for manipulating JS types",
-      "Provide utilities for manipulating JS types."
+      "## ⚠️ Since v11, this module is superseded by [Core.Types](core/types).\n\nProvide utilities for manipulating JS types."
     ],
     "items": [
       {
@@ -10219,8 +10211,7 @@
     "id": "Js.TypedArray2",
     "name": "TypedArray2",
     "docstrings": [
-      "Provide bindings for JS typed array",
-      "JavaScript Typed Array API\n\n**see** [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray)"
+      "## ⚠️ Since v11, this module is superseded by [Core.TypedArray](core/typedarray).\n\nJavaScript Typed Array API\n\n**see** [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray)"
     ],
     "items": [
       {
@@ -10243,8 +10234,7 @@
     "id": "Js.Typed_array",
     "name": "Typed_array",
     "docstrings": [
-      "Provide bindings for JS typed array",
-      "JavaScript Typed Array API\n\n**see** [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray)"
+      "## ⚠️ Since v11, this module is superseded by [Core.TypedArray](core/typedarray).\n\nJavaScript Typed Array API\n\n**see** [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray)"
     ],
     "items": [
       {
@@ -10267,8 +10257,7 @@
     "id": "Js.Obj",
     "name": "Obj",
     "docstrings": [
-      "Provide utilities for `Js.t`",
-      "Provides functions for inspecting and manipulating native JavaScript objects"
+      "## ⚠️ Since v11, this module is superseded by [Core.Object](core/object).\n\nProvides functions for inspecting and manipulating native JavaScript objects"
     ],
     "items": [
       {
@@ -10304,8 +10293,7 @@
     "id": "Js.Math",
     "name": "Math",
     "docstrings": [
-      "Provide bindings for JS `Math` object",
-      "Provide utilities for JS Math. Note: The constants `_E`, `_LN10`, `_LN2`,\n`_LOG10E`, `_LOG2E`, `_PI`, `_SQRT1_2`, and `_SQRT2` begin with an underscore\nbecause ReScript variable names cannot begin with a capital letter. (Module\nnames begin with upper case.)"
+      "## ⚠️ Since v11, this module is superseded by [Core.Math](core/math).\n\nProvide utilities for JS Math. Note: The constants `_E`, `_LN10`, `_LN2`,\n`_LOG10E`, `_LOG2E`, `_PI`, `_SQRT1_2`, and `_SQRT2` begin with an underscore\nbecause ReScript variable names cannot begin with a capital letter. (Module\nnames begin with upper case.)"
     ],
     "items": [
       {
@@ -10887,8 +10875,7 @@
     "id": "Js.Json",
     "name": "Json",
     "docstrings": [
-      "Provide utilities for json",
-      "Efficient JSON encoding using JavaScript API\n\n**see** [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON)"
+      "## ⚠️ Since v11, this module is superseded by [Core.JSON](core/json).\n\nEfficient JSON encoding using JavaScript API\n\n**see** [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON)"
     ],
     "items": [
       {
@@ -11127,8 +11114,7 @@
     "id": "Js.Global",
     "name": "Global",
     "docstrings": [
-      "Provide bindings to JS global functions in global namespace",
-      "Contains functions available in the global scope (`window` in a browser context)"
+      "## ⚠️ Since v11, this module is superseded by [Core.Global](core/global).\n\nContains functions available in the global scope (`window` in a browser context)"
     ],
     "items": [
       {
@@ -11245,8 +11231,7 @@
     "id": "Js.Dict",
     "name": "Dict",
     "docstrings": [
-      "Provide utilities for JS dictionary object",
-      "Provide utilities for JS dictionary object.\n\n**Note:** This module's examples will assume this predeclared dictionary:\n\n## Examples\n\n```rescript\nlet ages = Js.Dict.fromList(list{(\"Maria\", 30), (\"Vinh\", 22), (\"Fred\", 49)})\n```"
+      "## ⚠️ Since v11, this module is superseded by [Core.Dict](core/dict).\n\nProvide utilities for JS dictionary object.\n\n**Note:** This module's examples will assume this predeclared dictionary:\n\n## Examples\n\n```rescript\nlet ages = Js.Dict.fromList(list{(\"Maria\", 30), (\"Vinh\", 22), (\"Fred\", 49)})\n```"
     ],
     "items": [
       {
@@ -11370,8 +11355,7 @@
     "id": "Js.Date",
     "name": "Date",
     "docstrings": [
-      "Provide bindings for JS Date",
-      "Provide bindings to JS date. (See\n[`Date`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date)\non MDN.) JavaScript stores dates as the number of milliseconds since the UNIX\n*epoch*, midnight 1 January 1970, UTC."
+      "## ⚠️ Since v11, this module is superseded by [Core.Date](core/date).\n\nProvide bindings to JS date. (See\n[`Date`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date)\non MDN.) JavaScript stores dates as the number of milliseconds since the UNIX\n*epoch*, midnight 1 January 1970, UTC."
     ],
     "items": [
       {
@@ -12120,7 +12104,7 @@
     "id": "Js.Promise2",
     "name": "Promise2",
     "docstrings": [
-      "Provide bindings to JS Promise"
+      "## ⚠️ Since v11, this module is superseded by [Core.Promise](core/promise).\n\nProvide bindings to JS Promise"
     ],
     "items": [
       {
@@ -12245,8 +12229,7 @@
     "id": "Js.Promise",
     "name": "Promise",
     "docstrings": [
-      "Provide bindings to JS Promise",
-      "Deprecation note: These bindings are pretty outdated and cannot be used properly\nwith the `->` operator.\n\nMore details on proper Promise usage can be found here:\nhttps://rescript-lang.org/docs/manual/latest/promise#promise-legacy"
+      "## ⚠️ Since v11, this module is superseded by [Core.Promise](core/promise).\n\n"
     ],
     "items": [
       {
@@ -12368,7 +12351,7 @@
     "name": "Re",
     "docstrings": [
       "Provide bindings to JS regex expression",
-      "Provide bindings to JS regular expressions (RegExp).\n\n**Note:** This is not an immutable API. A RegExp object with the `global` (\"g\")\nflag set will modify the [`lastIndex`]() property when the RegExp object is used,\nand subsequent uses will continue the search from the previous [`lastIndex`]()."
+      "## ⚠️ Since v11, this module is superseded by [Core.Re](core/re).\n\nProvide bindings to JS regular expressions (RegExp).\n\n**Note:** This is not an immutable API. A RegExp object with the `global` (\"g\")\nflag set will modify the [`lastIndex`]() property when the RegExp object is used,\nand subsequent uses will continue the search from the previous [`lastIndex`]()."
     ],
     "items": [
       {
@@ -12547,8 +12530,7 @@
     "id": "Js.String2",
     "name": "String2",
     "docstrings": [
-      "Provide bindings to JS string",
-      "Provide bindings to JS string. Optimized for pipe-first."
+      "## ⚠️ Since v11, this module is superseded by [Core.String](core/string).\n\nProvide bindings to JS string. Optimized for pipe-first."
     ],
     "items": [
       {
@@ -13032,8 +13014,7 @@
     "id": "Js.String",
     "name": "String",
     "docstrings": [
-      "Provide bindings to JS string",
-      "JavaScript String API"
+      "## ⚠️ Since v11, this module is superseded by [Core.String](core/string).\n\nJavaScript String API"
     ],
     "items": [
       {
@@ -13442,7 +13423,7 @@
     "name": "Array2",
     "docstrings": [
       "Provide bindings to JS array",
-      "Provides bindings to JavaScript’s `Array` functions. These bindings are optimized for pipe-first (`->`), where the array to be processed is the first parameter in the function.\n\nHere is an example to find the sum of squares of all even numbers in an array.\nWithout pipe first, we must call the functions in reverse order:\n\n## Examples\n\n```rescript\nlet isEven = x => mod(x, 2) == 0\nlet square = x => x * x\nlet result = {\n  open Js.Array2\n  reduce(map(filter([5, 2, 3, 4, 1], isEven), square), \"+\", 0)\n}\n```\n\nWith pipe first, we call the functions in the “natural” order:\n\n```rescript\nlet isEven = x => mod(x, 2) == 0\nlet square = x => x * x\nlet result = {\n  open Js.Array2\n  [5, 2, 3, 4, 1]->filter(isEven)->map(square)->reduce(\"+\", 0)\n}\n```"
+      "## ⚠️ Since v11, this module is superseded by [Core.Array](core/array).\n\nProvides bindings to JavaScript’s `Array` functions. These bindings are optimized for pipe-first (`->`), where the array to be processed is the first parameter in the function.\n\nHere is an example to find the sum of squares of all even numbers in an array.\nWithout pipe first, we must call the functions in reverse order:\n\n## Examples\n\n```rescript\nlet isEven = x => mod(x, 2) == 0\nlet square = x => x * x\nlet result = {\n  open Js.Array2\n  reduce(map(filter([5, 2, 3, 4, 1], isEven), square), \"+\", 0)\n}\n```\n\nWith pipe first, we call the functions in the “natural” order:\n\n```rescript\nlet isEven = x => mod(x, 2) == 0\nlet square = x => x * x\nlet result = {\n  open Js.Array2\n  [5, 2, 3, 4, 1]->filter(isEven)->map(square)->reduce(\"+\", 0)\n}\n```"
     ],
     "items": [
       {
@@ -13973,7 +13954,7 @@
     "name": "Array",
     "docstrings": [
       "Provide bindings to JS array",
-      "Provides bindings to JavaScript’s `Array` functions. These bindings are\noptimized for pipe-last (`|>`), where the array to be processed is the last\nparameter in the function.\n\nHere is an example to find the sum of squares of all even numbers in an array.\nWithout pipe last, we must call the functions in reverse order:\n\n## Examples\n\n```rescript\nlet isEven = x => mod(x, 2) == 0\nlet square = x => x * x\nlet result = {\n  open Js.Array\n  reduce(\\\"+\", 0, map(square, filter(isEven, [5, 2, 3, 4, 1])))\n}\n```\n\nWith pipe last, we call the functions in the “natural” order:\n\n```rescript\nlet isEven = x => mod(x, 2) == 0\nlet square = x => x * x\nlet result = {\n  open Js.Array\n  [5, 2, 3, 4, 1] |> filter(isEven) |> map(square) |> reduce(\"+\", 0)\n}\n```"
+      "## ⚠️ Since v11, this module is superseded by [Core.Array](core/array).\n\nProvides bindings to JavaScript’s `Array` functions. These bindings are\noptimized for pipe-last (`|>`), where the array to be processed is the last\nparameter in the function.\n\nHere is an example to find the sum of squares of all even numbers in an array.\nWithout pipe last, we must call the functions in reverse order:\n\n## Examples\n\n```rescript\nlet isEven = x => mod(x, 2) == 0\nlet square = x => x * x\nlet result = {\n  open Js.Array\n  reduce(\\\"+\", 0, map(square, filter(isEven, [5, 2, 3, 4, 1])))\n}\n```\n\nWith pipe last, we call the functions in the “natural” order:\n\n```rescript\nlet isEven = x => mod(x, 2) == 0\nlet square = x => x * x\nlet result = {\n  open Js.Array\n  [5, 2, 3, 4, 1] |> filter(isEven) |> map(square) |> reduce(\"+\", 0)\n}\n```"
     ],
     "items": [
       {
@@ -14417,8 +14398,7 @@
     "id": "Js.Exn",
     "name": "Exn",
     "docstrings": [
-      "Provide utilities for dealing with Js exceptions",
-      "Provide utilities for dealing with JS exceptions."
+      "## ⚠️ Since v11, this module is superseded by [Core.Exn](core/exn).\n\nProvide utilities for dealing with Js exceptions"
     ],
     "items": [
       {
@@ -14540,7 +14520,7 @@
     "id": "Js.Null_undefined",
     "name": "Null_undefined",
     "docstrings": [
-      "Contains functionality for dealing with values that can be both `null` and `undefined`"
+      "## ⚠️ Since v11, this module is superseded by [Core.Nullable](core/nullable).\n\nContains functionality for dealing with values that can be both `null` and `undefined`"
     ],
     "items": [
       {
@@ -14646,8 +14626,7 @@
     "id": "Js.Nullable",
     "name": "Nullable",
     "docstrings": [
-      "Provide utilities for `Js.null_undefined`",
-      "Contains functionality for dealing with values that can be both `null` and `undefined`"
+      "## ⚠️ Since v11, this module is superseded by [Core.Nullable](core/nullable).\n\nContains functionality for dealing with values that can be both `null` and `undefined`"
     ],
     "items": [
       {
@@ -14875,8 +14854,7 @@
     "id": "Js.Null",
     "name": "Null",
     "docstrings": [
-      "Provide utilities for `Js.null<'a>`",
-      "Provides functionality for dealing with the `Js.null<'a>` type"
+      "## ⚠️ Since v11, this module is superseded by [Core.Null](core/null).\n\nProvides functionality for dealing with the `Js.null<'a>` type"
     ],
     "items": [
       {
