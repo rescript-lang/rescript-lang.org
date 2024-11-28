@@ -59,6 +59,24 @@ var y = 30.5;
 
 </CodeTab>
 
+To get first or second member of a tuple, use `fst` or `snd` function:
+
+<CodeTab labels={["ReScript", "JS Output"]}
+```res example
+let tup = (1, "ReScript")
+let f = tup->fst 
+let s = tup->snd
+```
+```js
+var tup = [
+  1,
+  "ReScript"
+];
+var f = 1;
+var s = "ReScript";
+```
+</CodeTab>
+
 The `_` means you're ignoring the indicated members of the tuple.
 
 Tuples aren't meant to be updated mutatively. You'd create new ones by destructuring the old ones:
