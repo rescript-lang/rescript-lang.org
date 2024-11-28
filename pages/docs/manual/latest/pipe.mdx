@@ -150,6 +150,32 @@ asyncRequest().setWaitDuration(4000).send();
 
 </CodeTab>
 
+You could make it even more beautiful by [opening a module](https://rescript-lang.org/docs/manual/latest/module#opening-a-module):
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+open  Js.Array2
+let result = [1, 2, 3]
+  ->map(a => a + 1)
+  ->filter(a => mod(a, 2) == 0)
+
+asyncRequest()->setWaitDuration(4000)->send
+```
+```js
+var result = [1, 2, 3].map(function(a) {
+  return a + 1 | 0;
+}).filter(function(a) {
+  return a % 2 === 0;
+});
+
+asyncRequest().setWaitDuration(4000).send();
+```
+
+</CodeTab>
+
+But we won't dive into opening modules right now.
+
 ## Pipe Into Variants
 
 You can pipe into a variant's constructor as if it was a function:
