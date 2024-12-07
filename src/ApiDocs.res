@@ -164,7 +164,7 @@ module SidebarTree = {
       <div className="flex justify-between text-fire font-medium items-baseline">
         {React.string(node.name ++ " Module")}
         {switch url {
-        | Some({version}) =>
+        | Some(url) =>
           let onChange = evt => {
             open Url
             ReactEvent.Form.preventDefault(evt)
@@ -177,10 +177,7 @@ module SidebarTree = {
               ("/" ++ (version ++ ("/" ++ Array.join(url.pagepath, "/")))))
             router->Next.Router.push(targetUrl)
           }
-          let version = switch version {
-          | Latest | NoVersion => "latest"
-          | Version(version) => version
-          }
+          let version = url->Url.getVersionString
           let availableVersions = switch node.name {
           | "Core" => [("latest", "v11.0")]
           | _ => ApiLayout.allApiVersions
@@ -351,10 +348,7 @@ let default = (props: props) => {
   | _ => React.null
   }
 
-  let version = switch Url.parse(router.asPath).version {
-  | Latest | NoVersion => "latest"
-  | Version(v) => v
-  }
+  let version = Url.parse(router.asPath)->Url.getVersionString
 
   let sidebar = switch props {
   | Ok({toctree, module_: {items}}) =>

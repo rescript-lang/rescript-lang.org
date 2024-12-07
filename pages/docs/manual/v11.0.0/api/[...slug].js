@@ -1,6 +1,6 @@
 import {
   getStaticPathsByVersion,
-  getStaticPropsByVersion
+  getStaticPropsByVersion,
 } from "src/ApiDocs.mjs";
 
 import APIDocs from "src/ApiDocs.mjs";

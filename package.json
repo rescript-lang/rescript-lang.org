@@ -57,7 +57,7 @@
     "unified": "^8.4.0"
   },
   "scripts": {
-    "dev": "next",
+    "dev": "NODE_OPTIONS='--inspect' next dev",
     "build": "rescript && npm run update-index && next build",
     "test": "node scripts/test-examples.mjs && node scripts/test-hrefs.mjs",
     "reanalyze": "reanalyze -all-cmt .",

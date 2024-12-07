@@ -148,15 +148,10 @@ module DocsSection = {
     let router = Next.Router.useRouter()
     let url = router.route->Url.parse
 
-    let (version, setVersion) = React.useState(_ =>
-      switch url.version {
-      | Url.Latest => "latest"
-      | NoVersion => "latest"
-      | Version(version) => version
-      }
-    )
+    let (version, setVersion) = React.useState(_ => url->Url.getVersionString)
 
     let languageManual = Constants.languageManual(version)
+
     let documentation = [
       {
         imgSrc: "/static/ic_manual@2x.png",
@@ -334,9 +329,16 @@ module DocsSection = {
       <div className={"flex justify-center w-full py-2 border-b border-gray-10"}>
         <div className="px-4 w-full space-x-2 max-w-1280 ">
           <VersionSelect
-            availableVersions=Constants.allManualVersions onChange=onVersionChange version
+            availableVersions=Constants.allManualVersions
+            nextVersion=Constants.nextVersion
+            onChange=onVersionChange
+            version
           />
           {switch version {
+          | "next" =>
+            <span className="text-fire-50 text-12">
+              {React.string("This docs version is work in progress!")}
+            </span>
           | "latest" =>
             <span className="text-gray-40 text-12">
               {React.string("This is the latest docs version")}

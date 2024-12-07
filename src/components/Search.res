@@ -77,10 +77,7 @@ let make = () => {
   let (state, setState) = React.useState(_ => Inactive)
   let router = Next.Router.useRouter()
 
-  let version = switch Url.parse(router.route).version {
-  | Version(v) => v
-  | _ => "latest"
-  }
+  let version = Url.parse(router.route)->Url.getVersionString
 
   let handleCloseModal = () => {
     let () = switch ReactDOM.querySelector(".DocSearch-Modal") {

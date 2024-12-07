@@ -24,27 +24,12 @@ module Latest = {
   let make = (~frontmatter=?, ~components=MarkdownComponents.default, ~children) => {
     let router = Next.Router.useRouter()
     let route = router.route
-
     let url = route->Url.parse
-
-    let version = switch url.version {
-    | Version(version) => version
-    | NoVersion => "latest"
-    | Latest => "latest"
-    }
+    let version = url->Url.getVersionString
 
     let breadcrumbs = list{
-      {
-        open Url
-        {name: "Docs", href: "/docs/latest"}
-      },
-      {
-        open Url
-        {
-          name: "rescript-react",
-          href: "/docs/react/" ++ (version ++ "/introduction"),
-        }
-      },
+      {Url.name: "Docs", href: "/docs/latest"},
+      {name: "rescript-react", href: "/docs/react/" ++ (version ++ "/introduction")},
     }
 
     let title = "rescript-react"
@@ -69,27 +54,12 @@ module V0110 = {
   let make = (~frontmatter=?, ~components=MarkdownComponents.default, ~children) => {
     let router = Next.Router.useRouter()
     let route = router.route
-
     let url = route->Url.parse
-
-    let version = switch url.version {
-    | Version(version) => version
-    | NoVersion => "latest"
-    | Latest => "latest"
-    }
+    let version = url->Url.getVersionString
 
     let breadcrumbs = list{
-      {
-        open Url
-        {name: "Docs", href: "/docs/latest"}
-      },
-      {
-        open Url
-        {
-          name: "rescript-react",
-          href: "/docs/react/" ++ (version ++ "/introduction"),
-        }
-      },
+      {Url.name: "Docs", href: "/docs/latest"},
+      {name: "rescript-react", href: "/docs/react/" ++ (version ++ "/introduction")},
     }
 
     let title = "rescript-react"
@@ -113,27 +83,12 @@ module V0100 = {
   let make = (~frontmatter=?, ~components=MarkdownComponents.default, ~children) => {
     let router = Next.Router.useRouter()
     let route = router.route
-
     let url = route->Url.parse
-
-    let version = switch url.version {
-    | Version(version) => version
-    | NoVersion => "latest"
-    | Latest => "latest"
-    }
+    let version = url->Url.getVersionString
 
     let breadcrumbs = list{
-      {
-        open Url
-        {name: "Docs", href: "/docs/latest"}
-      },
-      {
-        open Url
-        {
-          name: "rescript-react",
-          href: "/docs/react/" ++ (version ++ "/introduction"),
-        }
-      },
+      {Url.name: "Docs", href: "/docs/latest"},
+      {name: "rescript-react", href: "/docs/react/" ++ (version ++ "/introduction")},
     }
 
     let title = "rescript-react"

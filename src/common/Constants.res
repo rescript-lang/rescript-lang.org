@@ -1,10 +1,24 @@
+type versionMapping = {
+  latest: string,
+  next: string,
+}
+
+type versions = {
+  @as("VERSION_NEXT") next: string,
+  @as("VERSION_LATEST") latest: string,
+}
+
+@scope("process") external versions: versions = "env"
+
 // This is used for the version dropdown in the manual layouts
 let allManualVersions = [
-  ("latest", "v11"),
+  ("latest", versions.latest),
   ("v10.0.0", "v9.1 - v10.1"),
   ("v9.0.0", "v8.2 - v9.0"),
   ("v8.0.0", "v6.0 - v8.2"),
 ]
+let nextVersion = ("next", versions.next)
+
 let allReactVersions = [("latest", "v0.12.0"), ("v0.11.0", "v0.11.0"), ("v0.10.0", "v0.10.0")]
 
 // Used for the DocsOverview and collapsible navigation
