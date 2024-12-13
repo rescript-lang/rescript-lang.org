@@ -707,14 +707,14 @@ let make = (~components=MarkdownComponents.default, ~children) => {
       <div className="text-gray-80 text-18 z">
         <Navigation isOverlayOpen setOverlayOpen />
         <div className="absolute w-full top-16">
-          // Delete this again, when ReScript 11.1 is out for some time.
-          <Banner>
-            {React.string("ReScript 11.1 is out! Read the ")}
-            <Next.Link href="/blog/release-11-1-0" className="underline">
-              {React.string("announcement blog post")}
-            </Next.Link>
-            {React.string(".")}
-          </Banner>
+          // Uncomment this when ReScript 12 is out.
+          // <Banner>
+          //   {React.string("ReScript 12 is out! Read the ")}
+          //   <Next.Link href="/blog/release-12-0-0" className="underline">
+          //     {React.string("announcement blog post")}
+          //   </Next.Link>
+          //   {React.string(".")}
+          // </Banner>
           <div className="relative overflow-hidden pb-32">
             <main className="mt-10 min-w-320 lg:align-center w-full">
               <MdxProvider components>

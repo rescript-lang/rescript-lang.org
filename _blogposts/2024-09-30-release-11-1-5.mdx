@@ -1,0 +1,64 @@
+---
+author: rescript-team
+date: "2024-09-30"
+title: ReScript 11.1.x
+badge: release
+description: |
+  ReScript 11.1 bugfix releases and deprecation warnings
+---
+
+Here's a short update from the ReScript team on what's going on right now, what's going on with the `11.x.x` versions, and what we're working on for version 12.
+
+In preparation for the next major release of ReScript, we decided to deprecate JSX V3 in ReScript 11.1.5, in order to remove it completely in ReScript 12. During the development of V12, we fixed some parser and formatter issues that got backported to V11 as well. Furthermore, some compiler bugfixes happened as well. And last but not least, we improved Windows support a bit.
+
+Please ensure to be on the latest patch release:
+
+```sh
+npm install rescript@11.1
+```
+
+All changes can be found in the changelog ([11.1.1](https://github.com/rescript-lang/rescript-compiler/blob/11.0_release/CHANGELOG.md#1111) - [11.1.5](https://github.com/rescript-lang/rescript-compiler/blob/11.0_release/CHANGELOG.md#1115)), but the most important ones are:
+
+## Deprecation of JSX 3
+
+JSX 3 has been officially deprecated. Moving forward, developers should only use JSX 4 so we can safely remove it from ReScript V12 and also to ensure binding libraries will use it as the blessed path. Read more on the [deprecation pull request](https://github.com/rescript-lang/rescript-compiler/pull/7042).
+
+## Some parser and formatter fixes
+
+On the way to remove the legacy `Pervasives` standard library out of the compiler, we adapted a lot of compiler tests and found and fixed some parser and formatter issues, for instance:
+
+- [Trailing Comma Issue Fixed in Partial Applications](https://github.com/rescript-lang/rescript-compiler/pull/6949)
+- [Unary Operator Function Format Fix](https://github.com/rescript-lang/rescript-compiler/pull/6953)
+- [Correct printing of module binding with signature](https://github.com/rescript-lang/rescript-compiler/pull/6963)
+- [Comment Retention in Function Signatures with `type`](https://github.com/rescript-lang/rescript-compiler/pull/6997)
+- [Parsing Error Fixed in Type Definitions](https://github.com/rescript-lang/rescript-compiler/pull/7001)
+
+## Compiler fixes
+
+The compiler also received some improvements, mostly around error reporting, (untagged) variant checks and producing more efficient code in uncurried mode. Furthermore, there were some Windows support improvements. Some notable changes are:
+
+- [Stricter Variant Spreading Rules](https://github.com/rescript-lang/rescript-compiler/pull/6980)
+- [Improved Error Reporting in Tag Functions](https://github.com/rescript-lang/rescript-compiler/pull/6816)
+- [Better Handling of `@uncurry` in Uncurried Mode](https://github.com/rescript-lang/rescript-compiler/pull/6869)
+- [Untagged Variant Fixes](https://github.com/rescript-lang/rescript-compiler/pull/6669)
+- [Deno Compatibility on Windows](https://github.com/rescript-lang/rescript-compiler/pull/6850)
+- [Windows 11 ARM Support](https://github.com/rescript-lang/rescript-compiler/pull/6813)
+
+## v12 outlook
+
+ReScript version 12 is well under way and we're working hard to streamline our platform and development process more. A sneak peak of some of the things we're working on:
+
+- Uncurried only, making sure the generated JS is as fast and clean as possible
+- A new significantly faster (up to 60% faster in some cases) and more robust build system in [`Rewatch`](https://github.com/rescript-lang/rewatch), with full monorepo support
+- [ReScript Core](https://github.com/rescript-association/rescript-core) moves into the compiler and becomes the standard library
+- Streamlined and improved TypeScript \<-> ReScript interop through a revamp of Gentype
+- First classing dictionaries (`dict<'t>`) in the compiler, including supporting pattern matching and actual syntax for creating dicts, all zero cost
+...and many more things. More blog posts on v12 to follow!
+
+We are deep in the process of removing a lot of legacy compiler internals as well as support for ml syntax. With v12, ReScript will be a language with just _one_ syntax, targeting _one_ platform and, ideally, _one_ standard library that ships with the compiler directly. We hope it will enable us to tailor ReScript even more to the JS platform.
+
+## Acknowledgements
+
+There is a good amount of recurring contributors who deliver some very good work now. So once again we have to thank you all, you are amazing! The most recent patch releases had contributions by:
+
+[@aspeddro](https://github.com/aspeddro), [@cknitt](https://github.com/cknitt), [@cristianoc](https://github.com/cristianoc), [@fhammerschmidt](https://github.com/fhammerschmidt), [@rlidwka](https://github.com/rlidwka), [@shulhi](https://github.com/shulhi), [@tsnobip](https://github.com/tsnobip), [@zth](https://github.com/zth)
