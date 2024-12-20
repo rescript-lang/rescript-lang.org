@@ -8,22 +8,6 @@ module FinalResult: {
     | Nothing
 }
 
-module Semver: {
-  type preRelease =
-    | Alpha(int)
-    | Beta(int)
-    | Dev(int)
-    | Rc(int)
-  type t = {
-    major: int,
-    minor: int,
-    patch: int,
-    preRelease: option<preRelease>,
-  }
-  let parse: string => option<t>
-  let toString: t => string
-}
-
 type selected = {
   id: Semver.t, // The id used for loading the compiler bundle (ideally should be the same as compilerVersion)
   apiVersion: Version.t, // The playground API version in use

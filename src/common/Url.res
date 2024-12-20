@@ -1,5 +1,6 @@
 type version =
   | Latest
+  | Next
   | NoVersion
   | Version(string)
 
@@ -57,14 +58,15 @@ let prettyString = (str: string) => {
 let parse = (route: string): t => {
   let fullpath = route->String.split("/")->Array.filter(s => s !== "")
   let foundVersionIndex = Array.findIndex(fullpath, chunk => {
-    Re.test(%re(`/latest|v\d+(\.\d+)?(\.\d+)?/`), chunk)
+    Re.test(%re(`/latest|next|v\d+(\.\d+)?(\.\d+)?/`), chunk)
   })
 
   let (version, base, pagepath) = if foundVersionIndex == -1 {
     (NoVersion, fullpath, [])
   } else {
     let version = switch fullpath[foundVersionIndex] {
-    | Some("latest") => Latest
+    | Some(version) if version === Constants.versions.next => Next
+    | Some(version) if version === Constants.versions.latest => Latest
     | Some(v) => Version(v)
     | None => NoVersion
     }
@@ -77,3 +79,10 @@ let parse = (route: string): t => {
 
   {fullpath, base, version, pagepath}
 }
+
+let getVersionString = url =>
+  switch url.version {
+  | Next => Constants.versions.next
+  | Latest | NoVersion => Constants.versions.latest
+  | Version(version) => version
+  }

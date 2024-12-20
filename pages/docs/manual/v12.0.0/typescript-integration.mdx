@@ -1,0 +1,283 @@
+---
+title: "TypeScript"
+description: "GenType - Interoperability between ReScript and TypeScript"
+canonical: "/docs/manual/v12.0.0/typescript-integration"
+---
+
+# ReScript & TypeScript
+
+The ReScript compiler includes a code generation tool that lets you export ReScript values and types to use in TypeScript, and import TypeScript values and types into ReScript. It is called "genType".
+
+The implementation of genType performs a type-directed transformation of ReScript programs after compilation. The transformed programs operate on data types idiomatic to TypeScript.
+
+For example, a ReScript variant (which is represented as custom objects with tags at runtime):
+
+```res
+@genType
+type t = | A(int) | B(string)
+```
+
+is exported to a TypeScript type:
+
+```ts
+type t = { TAG: "A"; _0: number } | { TAG: "B"; _0: string };
+```
+
+## A Quick Example
+
+Let's assume we are working on a TypeScript codebase and we want to integrate a single ReScript function.
+
+We want to be able to import the function like any other one in our existing TypeScript code, but we also want to preserve all the ReScript types in the TypeScript type system.
+
+**That's exactly what genType was made for!**
+
+First we'll set up a function:
+
+```res
+// src/Color.res
+
+@genType
+type color =
+  | Red
+  | Blue
+
+@genType
+let printColorMessage = (~color, ~message) => {
+  let prefix = switch color {
+  | Red => "\x1b[91m"
+  | Blue => "\x1b[94m"
+  }
+  let reset = "\x1b[0m"
+
+  Console.log(prefix ++ message ++ reset)
+}
+
+```
+
+On a successful compile, `genType` will convert `src/Color.res` to a TypeScript file called `src/Color.gen.tsx` which will look something like this:
+
+```ts
+// src/Color.gen.tsx
+
+/* TypeScript file generated from Color.res by genType. */
+
+/* eslint-disable */
+/* tslint:disable */
+
+import * as ColorJS from "./Color.res.js";
+
+export type color = "Red" | "Blue";
+
+export const printColorMessage: (
+  color: color
+) => void = ColorJS.printColorMessage as any;
+```
+
+genType automatically maps the `color` variant to TS via a string union type `"Red" | "Blue"`.
+
+Within our TypeScript application, we can now import and use the function in the following manner:
+
+```ts
+// src/app.ts
+
+import { printColorMessage } from "./Color.gen.tsx";
+
+printColorMessage("Red", "Hello, genType!");
+```
+
+## Exporting an entire module
+
+_Since ReScript `11.0.0`_ modules can be annotated with `@genType` as well. In that case, all types and values of the module will be converted to TS types. Example: 
+
+<CodeTab labels={["ReScript", "TypeScript Output"]}>
+
+```res example
+@genType
+module Size = {
+  type t =
+    | Small
+    | Medium
+    | Large
+
+  let getNum = (size: t) =>
+    switch size {
+    | Small => 1.
+    | Medium => 5.
+    | Large => 10.
+    }
+}
+```
+
+```ts
+import * as MyCompBS__Es6Import from './MyComp.res';
+const MyCompBS: any = MyCompBS__Es6Import;
+
+export type Size_t = "Small" | "Medium" | "Large";
+
+export const Size_getNum: (size:Size_t) => number = MyCompBS.Size.getNum;
+
+export const Size: { getNum: (size:Size_t) => number } = MyCompBS.Size
+```
+</CodeTab>
+
+
+## Setup
+
+Add a `gentypeconfig` section to your `rescript.json` (See [Configuration](/docs/manual/next/build-configuration#gentypeconfig) for details).
+
+Every `genType` powered project requires a configuration item `"gentypeconfig"` at top level in the project's `rescript.json`.
+
+The minimal configuration of genType is following:
+
+```json
+{
+  "gentypeconfig": {
+    "module": "esmodule",
+    "moduleResolution": "node",
+    "generatedFileExtension": ".gen.tsx"
+  }
+}
+```
+
+And don't forget to make sure `allowJs` is set to `true` in the project's `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "allowJs": true
+  }
+}
+```
+
+### TypeScript Module Resolutions
+
+Make sure to set the same `moduleResolution` value in both `rescript.json` and `tsconfig.json`, so that the output of genType is done with the preferred module resolution.
+
+For example if the TypeScript project uses JavaScript modules with `Node16` / `NodeNext` module resolution:
+
+```json
+// tsconfig.json
+{
+  "compilerOptions": {
+    "moduleResolution": "node16"
+  }
+}
+```
+
+Then `moduleResolution` in `gentypeconfig` should be same value:
+
+```json
+// rescript.json
+{
+  "gentypeconfig": {
+    "moduleResolution": "node16"
+  }
+}
+```
+
+In case of the TypeScript project using `Bundler` module resolution, `allowImportingTsExtensions` should also be `true`:
+
+```json
+// tsconfig.json
+{
+  "compilerOptions": {
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true
+  }
+}
+```
+
+```json
+// rescript.json
+{
+  "gentypeconfig": {
+    "moduleResolution": "bundler"
+  }
+}
+```
+
+## Testing the Whole Setup
+
+Open any relevant `*.res` file and add `@genType` annotations to any bindings / values / functions to be used from JavaScript. If an annotated value uses a type, the type must be annotated too. See e.g. [Hooks.res](https://github.com/rescript-lang/rescript-compiler/blob/master/jscomp/gentype_tests/typescript-react-example/src/Hooks.res).
+
+Save the file and rebuild the project via `npm run res:build` or similar. You should now see a `*.gen.tsx` file with the same name (e.g. `MyComponent.res` -> `MyComponent.gen.tsx`).
+
+Any values exported from `MyComponent.res` can then be imported from TypeScript. For example:
+
+```js
+import MyComponent from "./components/MyComponent.gen.tsx";
+```
+
+## Experimental features
+
+These features are for experimentation only. They could be changed/removed any time, and not be considered breaking changes.
+
+- Export object and record types as interfaces. To activate, add `"exportInterfaces": true` to the configuration. The types are also renamed from `name` to `Iname`.
+
+
+## Shims
+
+A shim is a TS file that provides user-provided definitions for library types.
+
+Required only if one needs to export certain basic ReScript data types to JS when one cannot modify the sources to add annotations (e.g. exporting ReScript lists), and if the types are not first-classed in genType.
+  - Example: `Array<string>` with format: `"RescriptModule=JavaScriptModule"`
+
+Configure your shim files within `"gentypeconfig"` in your [`rescript.json`]:
+
+```json
+{
+  "gentypeconfig": {
+    "shims": {
+      "Js": "Js",
+      "ReactEvent": "ReactEvent",
+      "RescriptPervasives": "RescriptPervasives",
+      "ReasonReact": "ReactShim"
+    },
+  },
+}
+```
+
+and add relevant `.shim.ts` files in a directory which is visible by ReScript e.g. 
+
+```
+├── rescript.json
+├── src
+│   ├── shims
+│   │   ├── Js.shim.ts
+│   │   ├── ReactEvent.shim.ts
+│   │   └── RescriptPervasives.shim.ts
+```
+
+Here are some examples:
+
+```ts
+// Excerpt from https://github.com/rescript-lang/rescript-compiler/blob/master/jscomp/gentype_tests/typescript-react-example/src/shims/Js.shim.ts
+export type Json_t = unknown;
+export type t = unknown;
+```
+
+```ts
+// Excerpt from https://github.com/rescript-lang/rescript-compiler/tree/master/jscomp/gentype_tests/typescript-react-example/src/shims
+export type inputFocusEvent = React.FocusEvent<HTMLInputElement>;
+```
+
+More complete example shims can be found [here](https://github.com/rescript-lang/rescript-compiler/blob/master/jscomp/gentype_tests/typescript-react-example/src/shims/).
+
+## Deprecated features
+
+Features related to generating runtimes were deprecated since v11 and should no longer be used.
+
+- **`@genType("alias")`** and **`@genType.as("alias")`**
+- **`@genType.opaque`**
+- **`@genType.import`**
+- TypeScript Shims
+
+genType does not generate anything runtime-related, and in the near future it generates definition files (`*.d.ts`) directly (See the [roadmap](https://github.com/rescript-lang/rescript-compiler/issues/6196)).
+
+If any runtime code is required for interoperability with JavaScript / TypeScript projects, it can be written by hand, or request a relevant features (e.g. `@deriving`) to the compiler.
+
+## Limitations
+
+- **in-source = true**. Currently only supports ReScript projects with [in-source generation](/docs/manual/next/build-configuration#package-specs) and file suffixes that end on `.js`, like `.res.js` or `.bs.js`.
+
+- **Limited namespace support**. Currently there's limited [namespace](/docs/manual/next/build-configuration#name-namespace) support, and only `namespace:true` is possible, not e.g. `namespace:"custom"`.

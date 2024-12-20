@@ -148,15 +148,10 @@ module DocsSection = {
     let router = Next.Router.useRouter()
     let url = router.route->Url.parse
 
-    let (version, setVersion) = React.useState(_ =>
-      switch url.version {
-      | Url.Latest => "latest"
-      | NoVersion => "latest"
-      | Version(version) => version
-      }
-    )
+    let (version, setVersion) = React.useState(_ => url->Url.getVersionString)
 
     let languageManual = Constants.languageManual(version)
+
     let documentation = [
       {
         imgSrc: "/static/ic_manual@2x.png",
@@ -186,7 +181,7 @@ module DocsSection = {
         imgSrc: "/static/ic_gentype@2x.png",
         title: "GenType",
         description: "Seamless TypeScript integration",
-        href: "/docs/manual/latest/typescript-integration",
+        href: `/docs/manual/${version}/typescript-integration`,
         isActive: url => {
           switch url.fullpath {
           | ["docs", "manual", _, "typescript-integration"] => true
@@ -334,14 +329,21 @@ module DocsSection = {
       <div className={"flex justify-center w-full py-2 border-b border-gray-10"}>
         <div className="px-4 w-full space-x-2 max-w-1280 ">
           <VersionSelect
-            availableVersions=Constants.allManualVersions onChange=onVersionChange version
+            availableVersions=Constants.allManualVersions
+            nextVersion=?Constants.nextVersion
+            onChange=onVersionChange
+            version
           />
-          {switch version {
-          | "latest" =>
+          {if version === Constants.versions.next {
+            <span className="text-fire-50 text-12">
+              {React.string("This docs version is work in progress!")}
+            </span>
+          } else if version === Constants.versions.latest {
             <span className="text-gray-40 text-12">
               {React.string("This is the latest docs version")}
             </span>
-          | _ => React.null
+          } else {
+            React.null
           }}
         </div>
       </div>
@@ -418,11 +420,13 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
   let minWidth = "20rem"
   let router = Next.Router.useRouter()
   let route = router.route
+  let url = router.route->Url.parse
+  let version = url->Url.getVersionString
 
   let (collapsibles, setCollapsibles) = React.useState(_ => [
     {
       title: "Docs",
-      href: "/docs/manual/latest/api",
+      href: `/docs/manual/${version}/api`,
       isActiveRoute: route => {
         let url = Url.parse(route)
         switch url {
@@ -533,7 +537,7 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
             className="flex ml-10 space-x-5 w-full max-w-320"
             style={ReactDOMStyle.make(~maxWidth="26rem", ())}>
             {collapsibleElements->React.array}
-            <Link href="/docs/manual/latest/api" className={linkOrActiveApiSubroute(~route)}>
+            <Link href={`/docs/manual/${version}/api`} className={linkOrActiveApiSubroute(~route)}>
               {React.string("API")}
             </Link>
             <Link

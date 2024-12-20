@@ -154,11 +154,8 @@ const extractApiIndex = version => {
   fs.writeFileSync(DOM_INDEX_FILE, JSON.stringify(domIndex), "utf8");
 };
 
-// extractApiIndex("latest");
+// For versions > 10, please use gendocs.res
 extractApiIndex("v10.0.0");
 extractApiIndex("v9.0.0");
 extractApiIndex("v8.0.0");
 
-
-
-// v8.0.0 api stuff

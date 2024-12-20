@@ -1,0 +1,798 @@
+---
+title: "Variant"
+description: "Variant data structures in ReScript"
+canonical: "/docs/manual/v12.0.0/variant"
+---
+
+# Variant
+
+So far, most of ReScript's data structures might look familiar to you. This section introduces an extremely important, and perhaps unfamiliar, data structure: variant.
+
+Most data structures in most languages are about "this **and** that". A variant allows us to express "this **or** that".
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+type myResponse =
+  | Yes
+  | No
+  | PrettyMuch
+
+let areYouCrushingIt = Yes
+```
+```js
+var areYouCrushingIt = "Yes";
+```
+
+</CodeTab>
+
+`myResponse` is a variant type with the cases `Yes`, `No` and `PrettyMuch`, which are called "variant constructors" (or "variant tag"). The `|` bar separates each constructor.
+
+**Note**: a variant's constructors need to be capitalized.
+
+## Variant Needs an Explicit Definition
+
+If the variant you're using is in a different file, bring it into scope like you'd do [for a record](record.md#record-needs-an-explicit-definition):
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+// Zoo.res
+type animal = Dog | Cat | Bird
+```
+```js
+// Empty output
+```
+
+</CodeTab>
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+// Example.res
+let pet: Zoo.animal = Dog // preferred
+// or
+let pet2 = Zoo.Dog
+```
+```js
+var pet = "Dog";
+var pet2 = "Dog";
+```
+
+</CodeTab>
+
+## Constructor Arguments
+
+A variant's constructors can hold extra data separated by comma.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res prelude
+type account =
+  | None
+  | Instagram(string)
+  | Facebook(string, int)
+```
+```js
+// Empty output
+```
+
+</CodeTab>
+
+Here, `Instagram` holds a `string`, and `Facebook` holds a `string` and an `int`. Usage:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+let myAccount = Facebook("Josh", 26)
+let friendAccount = Instagram("Jenny")
+```
+```js
+var myAccount = {
+  TAG: "Facebook",
+  _0: "Josh",
+  _1: 26
+};
+var friendAccount = {
+  TAG: "Instagram",
+  _0: "Jenny"
+};
+```
+
+</CodeTab>
+
+### Labeled Variant Payloads (Inline Record)
+
+If a variant payload has multiple fields, you can use a record-like syntax to label them for better readability:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+type user =
+  | Number(int)
+  | Id({name: string, password: string})
+
+let me = Id({name: "Joe", password: "123"})
+```
+```js
+var me = {
+  TAG: "Id",
+  name: "Joe",
+  password: "123"
+};
+```
+
+</CodeTab>
+
+This is technically called an "inline record", and only allowed within a variant constructor. You cannot inline a record type declaration anywhere else in ReScript.
+
+Of course, you can just put a regular record type in a variant too:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+type u = {name: string, password: string}
+type user =
+  | Number(int)
+  | Id(u)
+
+let me = Id({name: "Joe", password: "123"})
+```
+```js
+var me = {
+  TAG: "Id",
+  _0: {
+    name: "Joe",
+    password: "123"
+  }
+};
+```
+
+</CodeTab>
+
+The output is slightly uglier and less performant than the former.
+
+## Variant Type Spreads
+Just like [with records](record#record-type-spread), it's possible to use type spreads to create new variants from other variants:
+
+```rescript
+type a = One | Two | Three
+type b = | ...a | Four | Five
+```
+
+Type `b` is now:
+```rescript
+type b = One | Two | Three | Four | Five
+```
+
+Type spreads act as a 'copy-paste', meaning all constructors are copied as-is from `a` to `b`. Here are the rules for spreads to work:
+- You can't overwrite constructors, so the same constructor name can exist in only one place as you spread. This is true even if the constructors are identical.
+- All variants and constructors must share the same runtime configuration - `@unboxed`, `@tag`, `@as` and so on.
+- You can't spread types in recursive definitions.
+
+Note that you need a leading `|` if you want to use a spread in the first position of a variant definition.
+
+### Pattern Matching On Variant
+
+See the [Pattern Matching/Destructuring](pattern-matching-destructuring) section later.
+
+## JavaScript Output
+
+A variant value compiles to 3 possible JavaScript outputs depending on its type declaration:
+
+- If the variant value is a constructor with no payload, it compiles to a string of the constructor name. Example: `Yes` compiles to `"Yes"`.
+- If it's a constructor with a payload, it compiles to an object with the field `TAG` and the field `_0` for the first payload, `_1` for the second payload, etc. The value of `TAG` is the constructor name as string by default, but note that the name of the `TAG` field as well as the string value used for each constructor name [can be customized](#tagged-variants).
+- Labeled variant payloads (the inline record trick earlier) compile to an object with the label names instead of `_0`, `_1`, etc. The object will have the `TAG` field as per the previous rule.
+
+Check the output in these examples:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+type greeting = Hello | Goodbye
+let g1 = Hello
+let g2 = Goodbye
+
+type outcome = Good | Error(string)
+let o1 = Good
+let o2 = Error("oops!")
+
+type family = Child | Mom(int, string) | Dad (int)
+let f1 = Child
+let f2 = Mom(30, "Jane")
+let f3 = Dad(32)
+
+type person = Teacher | Student({gpa: float})
+let p1 = Teacher
+let p2 = Student({gpa: 99.5})
+
+type s = {score: float}
+type adventurer = Warrior(s) | Wizard(string)
+let a1 = Warrior({score: 10.5})
+let a2 = Wizard("Joe")
+```
+```js
+var g1 = "Hello";
+
+var g2 = "Goodbye";
+
+var o1 = "Good";
+
+var o2 = {
+  TAG: "Error",
+  _0: "oops!"
+};
+
+var f1 = "Child";
+
+var f2 = {
+  TAG: "Mom",
+  _0: 30,
+  _1: "Jane"
+};
+
+var f3 = {
+  TAG: "Dad",
+  _0: 32
+};
+
+var p1 = "Teacher";
+
+var p2 = {
+  TAG: "Student",
+  gpa: 99.5
+};
+
+var a1 = {
+  TAG: "Warrior",
+  _0: {
+    score: 10.5
+  }
+};
+
+var a2 = {
+  TAG: "Wizard",
+  _0: "Joe"
+};
+```
+
+</CodeTab>
+
+## Tagged variants
+
+- The `@tag` attribute lets you customize the discriminator (default: `TAG`).
+- `@as` attributes control what each variant case is discriminated on (default: the variant case name as string).
+
+### Example: Binding to TypeScript enums
+
+```typescript
+// direction.ts
+/** Direction of the action. */
+enum Direction {
+  /** The direction is up. */
+  Up = "UP",
+
+  /** The direction is down. */
+  Down = "DOWN",
+
+  /** The direction is left. */
+  Left = "LEFT",
+
+  /** The direction is right. */
+  Right = "RIGHT",
+}
+
+export const myDirection = Direction.Up;
+```
+
+You can bind to the above enums like so:
+
+```rescript
+/** Direction of the action. */
+type direction =
+  | /** The direction is up. */
+  @as("UP")
+  Up
+
+  | /** The direction is down. */
+  @as("DOWN")
+  Down
+
+  | /** The direction is left. */
+  @as("LEFT")
+  Left
+
+  | /** The direction is right. */
+  @as("RIGHT")
+  Right
+
+@module("./direction.js") external myDirection: direction = "myDirection"
+```
+
+Now, this maps 100% to the TypeScript code, including letting us bring over the documentation strings so we get a nice editor experience.
+
+### String literals
+
+The same logic is easily applied to string literals from TypeScript, only here the benefit is even larger, because string literals have the same limitations in TypeScript that polymorphic variants have in ReScript:
+
+```typescript
+// direction.ts
+type direction = "UP" | "DOWN" | "LEFT" | "RIGHT";
+```
+
+There's no way to attach documentation strings to string literals in TypeScript, and you only get the actual value to interact with.
+
+### Valid `@as` payloads
+Here's a list of everything you can put in the `@as` tag of a variant constructor:
+- A string literal: `@as("success")`
+- An int: `@as(5)`
+- A float: `@as(1.5)`
+- True/false: `@as(true)` and `@as(false)`
+- Null: `@as(null)`
+- Undefined: `@as(undefined)`
+
+## Untagged variants
+
+With _untagged variants_ it is possible to mix types together that normally can't be mixed in the ReScript type system, as long as there's a way to discriminate them at runtime. For example, with untagged variants you can represent a heterogenous array:
+
+```rescript
+@unboxed type listItemValue = String(string) | Boolean(bool) | Number(float)
+
+let myArray = [String("Hello"), Boolean(true), Boolean(false), Number(13.37)]
+```
+
+Here, each value will be _unboxed_ at runtime. That means that the variant payload will be all that's left, the variant case name wrapping the payload itself will be stripped out and the payload will be all that remains.
+
+It, therefore, compiles to this JS:
+
+```javascript
+var myArray = ["hello", true, false, 13.37];
+```
+
+In the above example, reaching back into the values is as simple as pattern matching on them.
+
+### Advanced: Unboxing rules
+#### No overlap in constructors
+A variant can be unboxed if no constructors have overlap in their runtime representation. 
+
+For example, you can't have `String1(string) | String2(string)` in the same unboxed variant, because there's no way for ReScript to know at runtime which of `String1` or `String2` that `string` belongs to, as it could belong to both.
+The same goes for two records - even if they have fully different shapes, they're still JavaScript `object` at runtime.
+
+Don't worry - the compiler will guide you and ensure there's no overlap.
+
+#### What you can unbox
+Here's a list of all possible things you can unbox:
+- `string`: `String(string)`
+- `float`: `Float(float)`. Note you can only have one of `float` or `int` because JavaScript only has `number` (not actually `int` and `float` like in ReScript) so we can't disambiguate between `float` and `int` at runtime.
+- `int`: `Int(int)`. See note above on `float`.
+- `bigint`: `BigInt(int)`. **Since 11.1** This is a distinct type from JavaScript's `number` type so you can use it beside either `float` or `int`.
+- `bool`: `Boolean(bool)`
+- `array<'value>`: `List(array<string>)`
+- `('a, 'b, 'c)`: `Tuple((string, int, bool))`. Any size of tuples works, but you can have only one case of array or tuple in a variant. 
+- `promise<'value>`: `Promise(promise<string>)`
+- `Dict.t`: `Object(Dict.t<string>)`
+- `Date.t`: `Date(Date.t)`. A JavaScript date.
+- `Blob.t`: `Blob(Blob.t)`. A JavaScript blob.
+- `File.t`: `File(File.t)`. A JavaScript file.
+- `RegExp.t`: `RegExp(RegExp.t)`. A JavaScript regexp instance.
+
+Again notice that the constructor names can be anything, what matters is what's in the payload.
+
+> **Under the hood**: Untagged variants uses a combination of JavaScript `typeof` and `instanceof` checks to discern between unboxed constructors at runtime. This means that we could add more things to the list above detailing what can be unboxed, if there are useful enough use cases.
+
+### Pattern matching on unboxed variants
+Pattern matching works the same on unboxed variants as it does on regular variants. In fact, in the perspective of ReScript's type system there's no difference between untagged and tagged variants. You can do virtually the same things with both. That's the beauty of untagged variants - they're just variants to you as a developer.
+
+Here's an example of pattern matching on an unboxed nullable value that illustrates the above:
+
+```rescript
+module Null = {
+  @unboxed type t<'a> = Present('a) | @as(null) Null
+}
+
+type userAge = {ageNum: Null.t<int>}
+
+type rec user = {
+  name: string,
+  age: Null.t<userAge>,
+  bestFriend: Null.t<user>,
+}
+
+let getBestFriendsAge = user =>
+  switch user.bestFriend {
+  | Present({age: Present({ageNum: Present(ageNum)})}) => Some(ageNum)
+  | _ => None
+  }
+```
+No difference to how you'd do with a regular variant. But, the runtime representation is different to a regular variant.
+
+> Notice how `@as` allows us to say that an untagged variant case should map to a specific underlying _primitive_. `Present` has a type variable, so it can hold any type. And since it's an unboxed type, only the payloads `'a` or `null` will be kept at runtime. That's where the magic comes from.
+
+### Decoding and encoding JSON idiomatically
+
+With untagged variants, we have everything we need to define a native JSON type:
+
+```rescript
+@unboxed
+type rec json =
+  | @as(null) Null
+  | Boolean(bool)
+  | String(string)
+  | Number(float)
+  | Object(Dict.t<json>)
+  | Array(array<json>)
+
+let myValidJsonValue = Array([String("Hi"), Number(123.)])
+```
+
+Here's an example of how you could write your own JSON decoders easily using the above, leveraging pattern matching:
+
+```rescript
+@unboxed
+type rec json =
+  | @as(null) Null
+  | Boolean(bool)
+  | String(string)
+  | Number(float)
+  | Object(Dict.t<json>)
+  | Array(array<json>)
+
+type rec user = {
+  name: string,
+  age: int,
+  bestFriend: option<user>,
+}
+
+let rec decodeUser = json =>
+  switch json {
+  | Object(userDict) =>
+    switch (
+      userDict->Dict.get("name"),
+      userDict->Dict.get("age"),
+      userDict->Dict.get("bestFriend"),
+    ) {
+    | (Some(String(name)), Some(Number(age)), Some(maybeBestFriend)) =>
+      Some({
+        name,
+        age: age->Float.toInt,
+        bestFriend: maybeBestFriend->decodeUser,
+      })
+    | _ => None
+    }
+  | _ => None
+  }
+
+let decodeUsers = json =>
+  switch json {
+  | Array(array) => array->Array.map(decodeUser)->Array.keepSome
+  | _ => []
+  }
+```
+
+Encoding that same structure back into JSON is also easy:
+
+```rescript
+let rec userToJson = user => Object(
+  Dict.fromArray([
+    ("name", String(user.name)),
+    ("age", Number(user.age->Int.toFloat)),
+    (
+      "bestFriend",
+      switch user.bestFriend {
+      | None => Null
+      | Some(friend) => userToJson(friend)
+      },
+    ),
+  ]),
+)
+
+let usersToJson = users => Array(users->Array.map(userToJson))
+```
+
+This can be extrapolated to many more cases.
+
+### Advanced: Catch-all Constructors
+With untagged variants comes a rather interesting capability - catch-all cases are now possible to encode directly into a variant. 
+
+Let's look at how it works. Imagine you're using a third party API that returns a list of available animals. You could of course model it as a regular `string`, but given that variants can be used as "typed strings", using a variant would give you much more benefit:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+```rescript
+type animal = Dog | Cat | Bird
+
+type apiResponse = {
+  animal: animal
+}
+
+let greetAnimal = (animal: animal) =>
+  switch animal {
+  | Dog => "Wof"
+  | Cat => "Meow"
+  | Bird => "Kashiiin"
+  }
+```
+```javascript
+```
+</CodeTab>
+
+
+This is all fine and good as long as the API returns `"Dog"`, `"Cat"` or `"Bird"` for `animal`. 
+However, what if the API changes before you have a chance to deploy new code, and can now return `"Turtle"` as well? Your code would break down because the variant `animal` doesn't cover `"Turtle"`.
+
+So, we'll need to go back to `string`, loosing all of the goodies of using a variant, and then do manual conversion into the `animal` variant from `string`, right?
+Well, this used to be the case before, but not anymore! We can leverage untagged variants to bake in handling of unknown values into the variant itself.
+
+Let's update our type definition first:
+```rescript
+@unboxed
+type animal = Dog | Cat | Bird | UnknownAnimal(string)
+```
+
+Notice we've added `@unboxed` and the constructor `UnknownAnimal(string)`. Remember how untagged variants work? You remove the constructors and just leave the payloads. This means that the variant above at runtime translates to this (made up) JavaScript type:
+```
+type animal = "Dog" | "Cat" | "Bird" | string
+```
+So, any string not mapping directly to one of the payloadless constructors will now map to the general `string` case.
+
+As soon as we've added this, the compiler complains that we now need to handle this additional case in our pattern match as well. Let's fix that:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+```rescript
+@unboxed
+type animal = Dog | Cat | Bird | UnknownAnimal(string)
+
+type apiResponse = {
+  animal: animal
+}
+
+let greetAnimal = (animal: animal) =>
+  switch animal {
+  | Dog => "Wof"
+  | Cat => "Meow"
+  | Bird => "Kashiiin"
+  | UnknownAnimal(otherAnimal) =>
+    `I don't know how to greet animal ${otherAnimal}`
+  }
+```
+```javascript
+function greetAnimal(animal) {
+  if (!(animal === "Cat" || animal === "Dog" || animal === "Bird")) {
+    return "I don't know how to greet animal " + animal;
+  }
+  switch (animal) {
+    case "Dog" :
+        return "Wof";
+    case "Cat" :
+        return "Meow";
+    case "Bird" :
+        return "Kashiiin";
+    
+  }
+}
+```
+</CodeTab>
+
+There! Now the external API can change as much as it wants, we'll be forced to write all code that interfaces with `animal` in a safe way that handles all possible cases. All of this baked into the variant definition itself, so no need for labor intensive manual conversion.
+
+This is useful in any scenario when you use something enum-style that's external and might change. Additionally, it's also useful when something external has a large number of possible values that are known, but where you only care about a subset of them. With a catch-all case you don't need to bind to all of them just because they can happen, you can safely just bind to the ones you care about and let the catch-all case handle the rest.
+
+## Coercion
+In certain situations, variants can be coerced to other variants, or to and from primitives. Coercion is always zero cost.
+
+### Coercing Variants to Other Variants
+You can coerce a variant to another variant if they're identical in runtime representation, and additionally if the variant you're coercing can be represented as the variant you're coercing to.
+
+Here's an example using [variant type spreads](#variant-type-spreads):
+```rescript
+type a = One | Two | Three
+type b = | ...a | Four | Five
+
+let one: a = One
+let four: b = Four
+
+// This works because type `b` can always represent type `a` since all of type `a`'s constructors are spread into type `b` 
+let oneAsTypeB = (one :> b)
+```
+
+### Coercing Variants to Primitives
+Variants that are guaranteed to always be represented by a single primitive at runtime can be coerced to that primitive.
+
+It works with strings, the default runtime representation of payloadless constructors:
+```rescript
+// Constructors without payloads are represented as `string` by default
+type a = One | Two | Three
+
+let one: a = One
+
+// All constructors are strings at runtime, so you can safely coerce it to a string
+let oneAsString = (one :> string)
+```
+
+If you were to configure all of your construtors to be represented as `int` or `float`, you could coerce to those too:
+```rescript
+type asInt = | @as(1) One | @as(2) Two | @as(3) Three
+
+let oneInt: asInt = One
+let toInt = (oneInt :> int)
+```
+
+### Advanced: Coercing `string` to Variant
+In certain situtations it's possible to coerce a `string` to a variant. This is an advanced technique that you're unlikely to need much, but when you do it's really useful.
+
+You can coerce a `string` to a variant when:
+- Your variant is `@unboxed`
+- Your variant has a "catch-all" `string` case
+
+Let's look at an example:
+```rescript
+@unboxed
+type myEnum = One | Two | Other(string)
+
+// Other("Other thing")
+let asMyEnum = ("Other thing" :> myEnum)
+
+// One
+let asMyEnum = ("One" :> myEnum)
+```
+
+This works because the variant is unboxed **and** has a catch-all case. So, if you throw a string at this variant that's not representable by the payloadless constructors, like `"One"` or `"Two"`, it'll _always_ end up in `Other(string)`, since that case can represent any `string`.
+
+## Tips & Tricks
+
+**Be careful** not to confuse a constructor carrying 2 arguments with a constructor carrying a single tuple argument:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+type account =
+  | Facebook(string, int) // 2 arguments
+type account2 =
+  | Instagram((string, int)) // 1 argument - happens to be a 2-tuple
+```
+```js
+// Empty output
+```
+
+</CodeTab>
+
+### Variants Must Have Constructors
+
+If you come from an untyped language, you might be tempted to try `type myType = int | string`. This isn't possible in ReScript; you'd have to give each branch a constructor: `type myType = Int(int) | String(string)`. The former looks nice, but causes lots of trouble down the line.
+
+### Interop with JavaScript
+
+_This section assumes knowledge about our JavaScript interop. Skip this if you haven't felt the itch to use variants for wrapping JS functions yet_.
+
+Quite a few JS libraries use functions that can accept many types of arguments. In these cases, it's very tempting to model them as variants. For example, suppose there's a `myLibrary.draw` JS function that takes in either a `number` or a `string`. You might be tempted to bind it like so:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+// reserved for internal usage
+@module("myLibrary") external draw : 'a => unit = "draw"
+
+type animal =
+  | MyFloat(float)
+  | MyString(string)
+
+let betterDraw = (animal) =>
+  switch animal {
+  | MyFloat(f) => draw(f)
+  | MyString(s) => draw(s)
+  }
+
+betterDraw(MyFloat(1.5))
+```
+```js
+var MyLibrary = require("myLibrary");
+
+function betterDraw(animal) {
+  MyLibrary.draw(animal._0);
+}
+
+betterDraw({
+      TAG: "MyFloat",
+      _0: 1.5
+    });
+```
+
+</CodeTab>
+
+**Try not to do that**, as this generates extra noisy output. Instead, use the `@unboxed` attribute to guide ReScript to generate more efficient code:
+
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+// reserved for internal usage
+@module("myLibrary") external draw : 'a => unit = "draw"
+
+@unboxed
+type animal =
+  | MyFloat(float)
+  | MyString(string)
+
+let betterDraw = (animal) =>
+  switch animal {
+  | MyFloat(f) => draw(f)
+  | MyString(s) => draw(s)
+  }
+
+betterDraw(MyFloat(1.5))
+```
+```js
+var MyLibrary = require("myLibrary");
+
+function betterDraw(animal) {
+  MyLibrary.draw(animal);
+}
+
+MyLibrary.draw(1.5);
+```
+
+</CodeTab>
+
+Alternatively, define two `external`s that both compile to the same JS call:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+@module("myLibrary") external drawFloat: float => unit = "draw"
+@module("myLibrary") external drawString: string => unit = "draw"
+```
+```js
+// Empty output
+```
+
+</CodeTab>
+
+ReScript also provides [a few other ways](bind-to-js-function.md#modeling-polymorphic-function) to do this.
+
+### Variant Types Are Found By Field Name
+
+Please refer to this [record section](record#tips--tricks). Variants are the same: a function can't accept an arbitrary constructor shared by two different variants. Again, such feature exists; it's called a polymorphic variant. We'll talk about this in the future =).
+
+## Design Decisions
+
+Variants, in their many forms (polymorphic variant, open variant, GADT, etc.), are likely _the_ feature of a type system such as ReScript's. The aforementioned `option` variant, for example, obliterates the need for nullable types, a major source of bugs in other languages. Philosophically speaking, a problem is composed of many possible branches/conditions. Mishandling these conditions is the majority of what we call bugs. **A type system doesn't magically eliminate bugs; it points out the unhandled conditions and asks you to cover them**\*. The ability to model "this or that" correctly is crucial.
+
+For example, some folks wonder how the type system can safely eliminate badly formatted JSON data from propagating into their program. They don't, not by themselves! But if the parser returns the `option` type `None | Some(actualData)`, then you'd have to handle the `None` case explicitly in later call sites. That's all there is.
+
+Performance-wise, a variant can potentially tremendously speed up your program's logic. Here's a piece of JavaScript:
+
+```js
+let data = 'dog'
+if (data === 'dog') {
+  ...
+} else if (data === 'cat') {
+  ...
+} else if (data === 'bird') {
+  ...
+}
+```
+
+There's a linear amount of branch checking here (`O(n)`). Compare this to using a ReScript variant:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+type animal = Dog | Cat | Bird
+let data = Dog
+switch data {
+| Dog => Console.log("Wof")
+| Cat => Console.log("Meow")
+| Bird => Console.log("Kashiiin")
+}
+```
+```js
+console.log("Wof");
+
+var data = "Dog";
+```
+
+</CodeTab>
+
+The compiler sees the variant, then
+
+1. conceptually turns them into `type animal = "Dog" | "Cat" | "Bird"`
+2. compiles `switch` to a constant-time jump table (`O(1)`).

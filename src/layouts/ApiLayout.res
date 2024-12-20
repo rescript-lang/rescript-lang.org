@@ -113,7 +113,9 @@ let make = (
             ("/" ++ (version ++ ("/" ++ Array.join(url.pagepath, "/")))))
           router->Next.Router.push(targetUrl)
         }
-        <VersionSelect onChange version availableVersions=allApiVersions />
+        <VersionSelect
+          onChange version availableVersions=allApiVersions nextVersion=?Constants.nextVersion
+        />
       | None => React.null
       }}
     </div>

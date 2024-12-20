@@ -918,11 +918,11 @@ module Settings = {
         <div className=titleClass> {React.string("ReScript Version")} </div>
         <DropdownSelect
           name="compilerVersions"
-          value={CompilerManagerHook.Semver.toString(readyState.selected.id)}
+          value={Semver.toString(readyState.selected.id)}
           onChange={evt => {
             ReactEvent.Form.preventDefault(evt)
             let id: string = (evt->ReactEvent.Form.target)["value"]
-            switch id->CompilerManagerHook.Semver.parse {
+            switch id->Semver.parse {
             | Some(v) => onCompilerSelect(v)
             | None => ()
             }
@@ -946,12 +946,7 @@ module Settings = {
               | [] => React.null
               | experimentalVersions =>
                 let versionByOrder = experimentalVersions->Belt.SortArray.stableSortBy((a, b) => {
-                  let cmp = ({
-                    CompilerManagerHook.Semver.major: major,
-                    minor,
-                    patch,
-                    preRelease,
-                  }) => {
+                  let cmp = ({Semver.major: major, minor, patch, preRelease}) => {
                     let preRelease = switch preRelease {
                     | Some(preRelease) =>
                       switch preRelease {
@@ -975,18 +970,18 @@ module Settings = {
                 })
                 <>
                   <option disabled=true className="py-4">
-                    {React.string("---Experimental---")}
+                    {React.string("--- Experimental ---")}
                   </option>
                   {versionByOrder
                   ->Array.map(version => {
-                    let version = CompilerManagerHook.Semver.toString(version)
+                    let version = Semver.toString(version)
                     <option className="py-4" key=version value=version>
                       {React.string(version)}
                     </option>
                   })
                   ->React.array}
                   <option disabled=true className="py-4">
-                    {React.string("---Official Releases---")}
+                    {React.string("--- Official Releases ---")}
                   </option>
                 </>
               }}
@@ -994,7 +989,7 @@ module Settings = {
               | [] => React.null
               | stableVersions =>
                 Array.map(stableVersions, version => {
-                  let version = CompilerManagerHook.Semver.toString(version)
+                  let version = Semver.toString(version)
                   <option className="py-4" key=version value=version>
                     {React.string(version)}
                   </option>
@@ -1405,9 +1400,9 @@ let make = (~versions: array<string>) => {
 
   let versions =
     versions
-    ->Array.filterMap(v => v->CompilerManagerHook.Semver.parse)
+    ->Array.filterMap(v => v->Semver.parse)
     ->Belt.SortArray.stableSortBy((a, b) => {
-      let cmp = ({CompilerManagerHook.Semver.major: major, minor, patch, _}) => {
+      let cmp = ({Semver.major: major, minor, patch, _}) => {
         [major, minor, patch]
         ->Array.map(v => v->Int.toString)
         ->Array.join("")
@@ -1420,7 +1415,7 @@ let make = (~versions: array<string>) => {
   let lastStableVersion = versions->Array.find(version => version.preRelease->Option.isNone)
 
   let initialVersion = switch Dict.get(router.query, "version") {
-  | Some(version) => version->CompilerManagerHook.Semver.parse
+  | Some(version) => version->Semver.parse
   | None => lastStableVersion
   }
 

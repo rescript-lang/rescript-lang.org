@@ -54,18 +54,18 @@ let make = (props: props): React.element => {
   // landing page
   | {base: [], pagepath: []} => <LandingPageLayout> content </LandingPageLayout>
   // docs routes
-  | {base: ["docs", "manual"], pagepath, version} =>
+  | {base: ["docs", "manual"], pagepath} =>
     // check if it's an api route
     <EnableCollapsibleNavbar>
       {switch pagepath[0] {
       | Some("api") =>
-        switch version {
-        | Latest =>
+        switch url->Url.getVersionString {
+        | ("v11.0.0" | "v12.0.0") as version =>
           switch (Array.length(pagepath), pagepath[1]) {
-          | (1, _) => <ApiOverviewLayout.Docs> content </ApiOverviewLayout.Docs>
+          | (1, _) => <ApiOverviewLayout.Docs version> content </ApiOverviewLayout.Docs>
           | _ => content
           }
-        | Version("v8.0.0") =>
+        | "v8.0.0" =>
           switch (Array.length(pagepath), pagepath[1]) {
           | (1, _) => <ApiOverviewLayout8_0_0.Docs> content </ApiOverviewLayout8_0_0.Docs>
           | (2, Some("js")) => <JsDocsLayout8_0_0.Prose> content </JsDocsLayout8_0_0.Prose>
@@ -75,7 +75,7 @@ let make = (props: props): React.element => {
           | (_, Some("dom")) => <DomDocsLayout8_0_0.Docs> content </DomDocsLayout8_0_0.Docs>
           | _ => React.null
           }
-        | Version("v9.0.0") =>
+        | "v9.0.0" =>
           switch (Array.length(pagepath), pagepath[1]) {
           | (1, _) => <ApiOverviewLayout9_0_0.Docs> content </ApiOverviewLayout9_0_0.Docs>
           | (2, Some("js")) => <JsDocsLayout9_0_0.Prose> content </JsDocsLayout9_0_0.Prose>
@@ -85,7 +85,7 @@ let make = (props: props): React.element => {
           | (_, Some("dom")) => <DomDocsLayout9_0_0.Docs> content </DomDocsLayout9_0_0.Docs>
           | _ => React.null
           }
-        | Version("v10.0.0") =>
+        | "v10.0.0" =>
           switch (Array.length(pagepath), pagepath[1]) {
           | (1, _) => <ApiOverviewLayout10_0_0.Docs> content </ApiOverviewLayout10_0_0.Docs>
           | (2, Some("js")) => <JsDocsLayout10_0_0.Prose> content </JsDocsLayout10_0_0.Prose>
@@ -98,23 +98,27 @@ let make = (props: props): React.element => {
         | _ => content
         }
       | _ =>
-        switch version {
-        | Latest =>
-          <ManualDocsLayout.Latest frontmatter={component->frontmatter}>
-            content
-          </ManualDocsLayout.Latest>
-        | Version("v8.0.0") =>
+        switch url->Url.getVersionString {
+        | "v8.0.0" =>
           <ManualDocsLayout.V800 frontmatter={component->frontmatter}>
             content
           </ManualDocsLayout.V800>
-        | Version("v9.0.0") =>
+        | "v9.0.0" =>
           <ManualDocsLayout.V900 frontmatter={component->frontmatter}>
             content
           </ManualDocsLayout.V900>
-        | Version("v10.0.0") =>
+        | "v10.0.0" =>
           <ManualDocsLayout.V1000 frontmatter={component->frontmatter}>
             content
           </ManualDocsLayout.V1000>
+        | "v11.0.0" =>
+          <ManualDocsLayout.V1100 frontmatter={component->frontmatter}>
+            content
+          </ManualDocsLayout.V1100>
+        | "v12.0.0" =>
+          <ManualDocsLayout.V1200 frontmatter={component->frontmatter}>
+            content
+          </ManualDocsLayout.V1200>
         | _ => React.null
         }
       }}

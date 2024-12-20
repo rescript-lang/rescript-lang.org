@@ -135,101 +135,18 @@ const createTOC = (result) => {
   }, {});
 };
 
-const createLatestManualToc = () => {
-  const MD_DIR = path.join(__dirname, "../pages/docs/manual/latest");
+const createManualToc = (version) => {
+  const versionNoDot = version.replaceAll(".", "");
+  const MD_DIR = path.join(__dirname, `../pages/docs/manual/${version}`);
+
   const SIDEBAR_JSON = path.join(
     __dirname,
-    "../data/sidebar_manual_latest.json"
+    `../data/sidebar_manual_${versionNoDot}.json`
   );
+
   const TARGET_FILE = path.join(
     __dirname,
-    "../index_data/manual_latest_toc.json"
-  );
-
-  const sidebarJson = JSON.parse(fs.readFileSync(SIDEBAR_JSON));
-
-  const FILE_ORDER = Object.values(sidebarJson).reduce((acc, items) => {
-    return acc.concat(items);
-  }, []);
-
-  const files = glob.sync(`${MD_DIR}/*.?(js|md?(x))`);
-  const ordered = orderFiles(files, FILE_ORDER);
-
-  const result = ordered.map((filepath) => processFile(filepath, sidebarJson));
-  const toc = createTOC(result);
-
-  fs.writeFileSync(TARGET_FILE, JSON.stringify(toc), "utf8");
-};
-
-const createV1000ManualToc = () => {
-  const MD_DIR = path.join(__dirname, "../pages/docs/manual/v10.0.0");
-  const SIDEBAR_JSON = path.join(
-    __dirname,
-    "../data/sidebar_manual_v1000.json"
-  );
-  const TARGET_FILE = path.join(
-    __dirname,
-    "../index_data/manual_v1000_toc.json"
-  );
-
-  const sidebarJson = JSON.parse(fs.readFileSync(SIDEBAR_JSON));
-
-  const FILE_ORDER = Object.values(sidebarJson).reduce((acc, items) => {
-    return acc.concat(items);
-  }, []);
-
-  const files = glob.sync(`${MD_DIR}/*.?(js|md?(x))`);
-  const ordered = orderFiles(files, FILE_ORDER);
-
-  const result = ordered.map((filepath) => processFile(filepath, sidebarJson));
-  const toc = createTOC(result);
-
-  fs.writeFileSync(TARGET_FILE, JSON.stringify(toc), "utf8");
-};
-
-const createReasonCompilerToc = () => {
-  const MD_DIR = path.join(__dirname, "../pages/docs/reason-compiler/latest");
-  const TARGET_FILE = path.join(
-    __dirname,
-    "../index_data/reason_compiler_toc.json"
-  );
-
-  const files = glob.sync(`${MD_DIR}/*.md?(x)`);
-  const result = files.map(processFile);
-  const toc = createTOC(result);
-
-  fs.writeFileSync(TARGET_FILE, JSON.stringify(toc), "utf8");
-};
-
-const createV900ManualToc = () => {
-  const MD_DIR = path.join(__dirname, "../pages/docs/manual/v9.0.0");
-  const SIDEBAR_JSON = path.join(__dirname, "../data/sidebar_manual_v900.json");
-  const TARGET_FILE = path.join(
-    __dirname,
-    "../index_data/manual_v900_toc.json"
-  );
-
-  const sidebarJson = JSON.parse(fs.readFileSync(SIDEBAR_JSON));
-
-  const FILE_ORDER = Object.values(sidebarJson).reduce((acc, items) => {
-    return acc.concat(items);
-  }, []);
-
-  const files = glob.sync(`${MD_DIR}/*.?(js|md?(x))`);
-  const ordered = orderFiles(files, FILE_ORDER);
-
-  const result = ordered.map((filepath) => processFile(filepath, sidebarJson));
-  const toc = createTOC(result);
-
-  fs.writeFileSync(TARGET_FILE, JSON.stringify(toc), "utf8");
-};
-
-const createV800ManualToc = () => {
-  const MD_DIR = path.join(__dirname, "../pages/docs/manual/v8.0.0");
-  const SIDEBAR_JSON = path.join(__dirname, "../data/sidebar_manual_v800.json");
-  const TARGET_FILE = path.join(
-    __dirname,
-    "../index_data/manual_v800_toc.json"
+    `../index_data/manual_${versionNoDot}_toc.json`
   );
 
   const sidebarJson = JSON.parse(fs.readFileSync(SIDEBAR_JSON));
@@ -294,11 +211,25 @@ const createCommunityToc = () => {
   fs.writeFileSync(TARGET_FILE, JSON.stringify(toc), "utf8");
 };
 
+const createReasonCompilerToc = () => {
+  const MD_DIR = path.join(__dirname, "../pages/docs/reason-compiler/latest");
+  const TARGET_FILE = path.join(
+    __dirname,
+    "../index_data/reason_compiler_toc.json"
+  );
+
+  const files = glob.sync(`${MD_DIR}/*.md?(x)`);
+  const result = files.map(processFile);
+  const toc = createTOC(result);
+
+  fs.writeFileSync(TARGET_FILE, JSON.stringify(toc), "utf8");
+};
+
 /*
 const debugToc = () => {
   const MD_DIR = path.join(__dirname, "../pages/docs/manual/latest");
 
-  const files = glob.sync(`${MD_DIR}/introduction.md?(x)`);
+  const files = glob.sync(`${MD_DIR}/introduction.md?(x)`); 
   const result = files.map(processFile);
   const toc = createTOC(result);
 
@@ -309,13 +240,10 @@ const debugToc = () => {
 debugToc();
 */
 
-// main
-createLatestManualToc();
-createV1000ManualToc();
-createV900ManualToc();
-createV800ManualToc();
-createReasonCompilerToc();
-createReactToc("latest");
-createReactToc("v0.10.0");
-createReactToc("v0.11.0");
+let manualVersions = ["v12.0.0", "v11.0.0", "v10.0.0", "v9.0.0", "v8.0.0"];
+let reactManualVersions = ["latest", "v0.10.0", "v0.11.0"];
+
+manualVersions.forEach(createManualToc);
+reactManualVersions.forEach(createReactToc);
 createCommunityToc();
+createReasonCompilerToc();

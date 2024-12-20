@@ -14,11 +14,8 @@ module Toc = SidebarLayout.Toc
 
 let interopNavs = [
   {
-    open NavItem
-    {
-      name: "Overview",
-      href: "/docs/reason-compiler/latest/interop-overview",
-    }
+    NavItem.name: "Overview",
+    href: "/docs/reason-compiler/latest/interop-overview",
   },
   {
     name: "Better Data Structures Printing (Debug Mode)",
@@ -30,11 +27,8 @@ let interopNavs = [
 
 let advancedNavs = [
   {
-    open NavItem
-    {
-      name: "Conditional Compilation",
-      href: "/docs/reason-compiler/latest/conditional-compilation",
-    }
+    NavItem.name: "Conditional Compilation",
+    href: "/docs/reason-compiler/latest/conditional-compilation",
   },
   {
     name: "Extended Compiler Options",
@@ -51,10 +45,7 @@ let advancedNavs = [
 ]
 
 let categories = [
-  {
-    open Category
-    {name: "Interop", items: interopNavs}
-  },
+  {Category.name: "Interop", items: interopNavs},
   {name: "Advanced", items: advancedNavs},
 ]
 
@@ -77,24 +68,11 @@ let make = (~components=MarkdownComponents.default, ~children) => {
 
   let url = route->Url.parse
 
-  let version = switch url.version {
-  | Version(version) => version
-  | NoVersion => "latest"
-  | Latest => "latest"
-  }
+  let version = url->Url.getVersionString
 
   let prefix = list{
-    {
-      open Url
-      {name: "Docs", href: "/docs/" ++ version}
-    },
-    {
-      open Url
-      {
-        name: "Old Docs",
-        href: "/docs/reason-compiler/" ++ (version ++ "/interop-overview"),
-      }
-    },
+    {Url.name: "Docs", href: "/docs/" ++ version},
+    {name: "Old Docs", href: "/docs/reason-compiler/" ++ (version ++ "/interop-overview")},
   }
 
   let breadcrumbs = List.concat(

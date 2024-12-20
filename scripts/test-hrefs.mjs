@@ -9,12 +9,18 @@
 import unified from "unified";
 import markdown from "remark-parse";
 import stringify from "remark-stringify";
+import {config} from "dotenv"
 import glob from "glob";
 import path from "path";
 import fs from "fs";
 import urlModule from "url";
 import { URL } from 'url';
 import {getAllPosts, blogPathToSlug} from '../src/common/BlogApi.mjs'
+
+config()
+
+let latestVersion = process.env.VERSION_LATEST
+let nextVersion = process.env.VERSION_NEXT
 
 const pathname = new URL('.', import.meta.url).pathname;
 const __dirname = process.platform !== 'win32' ? pathname : pathname.substring(1)
@@ -120,18 +126,27 @@ const createApiIndexModules = version => {
 
     return acc.concat(paths);
   }, []);
-  return ["latest/api", ...paths];
+  return [`${version}/api`, ...paths];
 };
 
-const apiIndexModules = createApiIndexModules("latest")
+const apiIndexModules = [...createApiIndexModules(latestVersion), ...createApiIndexModules(nextVersion)]
 
 const testFile = (pageMap, test) => {
   const filepath = test.filepath;
-
+  
   // Used for storing failed / ok hrefs
   const results = [];
 
   test.links.forEach(link => {
+    // Simulate the redirect of "latest" and "next" version aliases.
+    if (link.url.includes("/manual/latest/")) {
+      link.url = link.url.replace("/latest/", `/${latestVersion}/`);
+    }
+    
+    if (link.url.includes("/manual/next/")) {
+      link.url = link.url.replace("/next/", `/${nextVersion}/`);
+    }
+
     const parsed = urlModule.parse(link.url);
 
     // Drops .md / .mdx / .html file extension in pathname section, since UI ignores them
@@ -177,7 +192,12 @@ const testFile = (pageMap, test) => {
         }
       }
 
-      if (resolved.startsWith("/pages/docs/manual/latest/api")) {
+      
+
+      if (
+        resolved.startsWith(`/pages/docs/manual/${latestVersion}/api`) || 
+        resolved.startsWith(`/pages/docs/manual/${nextVersion}/api`)
+      ) {
         const pathToModule = resolved.replace("/pages/docs/manual/", "");
         const pathExists = apiIndexModules.includes(pathToModule);
 
@@ -259,9 +279,9 @@ const main = () => {
   const allFiles = pageMapFiles.concat(staticFiles);
 
   const pageMap = createPageIndex(allFiles);
-
+  
   const processedFiles = files.map(processFile);
-
+  
   const allTested = processedFiles.map(file => testFile(pageMap, file));
 
   const failed = allTested.reduce((acc, test) => {
