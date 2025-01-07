@@ -27,3 +27,5 @@ lib/
 
 src/**/*.mjs
 scripts/**/*.mjs
+public/llms/manual/**/*.txt
+public/llms/react/**/*.txt

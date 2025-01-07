@@ -20,10 +20,13 @@ module Process = {
 
 module Fs = {
   @module("fs") external readFileSync: string => string = "readFileSync"
+  @module("fs") external readFileSync2: (string, string) => string = "readFileSync"
   @module("fs") external readdirSync: string => array<string> = "readdirSync"
   @module("fs") external writeFileSync: (string, string) => unit = "writeFileSync"
+  @module("fs") external appendFileSync: (string, string, string) => unit = "appendFileSync"
   @module("fs") external existsSync: string => bool = "existsSync"
   @module("fs") external mkdirSync: string => unit = "mkdirSync"
+  @module("fs") external statSync: string => {.."isDirectory": unit => bool} = "statSync"
 }
 
 module Buffer = {
