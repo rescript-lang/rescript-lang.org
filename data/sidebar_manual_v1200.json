@@ -72,6 +72,7 @@
   "Extra": [
     "newcomer-examples",
     "project-structure",
-    "faq"
+    "faq",
+    "llms"
   ]
 }
