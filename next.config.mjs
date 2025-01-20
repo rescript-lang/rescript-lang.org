@@ -136,6 +136,11 @@ const config = {
         destination: `/docs/manual/${process.env.VERSION_NEXT}/:slug*`,
         permanent: false,
       },
+      {
+        source: "/llms/manual/latest/:file*",
+        destination: `/llms/manual/${process.env.VERSION_LATEST}/:file*`,
+        permanent: false,
+      },
     ];
   },
 };
