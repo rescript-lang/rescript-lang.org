@@ -1,0 +1,19 @@
+# ReScript Documentation for LLMs
+
+> ReScript is a robustly typed language that compiles to efficient and human-readable JavaScript. It comes with a lightning fast compiler toolchain that scales to any codebase size.
+
+## Documentation Sets
+
+- [Complete documentation](https://rescript-lang.org/llms/manual/<VERSION>/llm-full.txt): The complete ReScript documentation including all examples and additional content
+- [Abridged documentation](https://rescript-lang.org/llms/manual/<VERSION>/llm-small.txt): A minimal version of the ReScript documentation, with the essential content for quick reference
+
+## Individual Package Documentation
+
+- [ReScript React documentation](https://rescript-lang.org/llms/react/latest/llms.txt): This is the developer documentation for ReScript React.
+
+## Notes
+
+- The abridged documentation excludes the detailed examples, and supplementary information
+- The complete documentation includes all content from the official documentation
+- Package-specific documentation files contain only the content relevant to that package
+- The content is automatically generated from the same source as the official documentation for the specific version
