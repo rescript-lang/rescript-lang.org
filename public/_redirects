@@ -13,3 +13,4 @@
 /docs/manual/next/:slug*                              /docs/manual/v12.0.0/:slug*                            307
 
 /llms/manual/latest/:file*                            /llms/manual/v11.0.0/:file*                            307
+/llms/manual/next/:file*                              /llms/manual/v12.0.0/:file*                            307
