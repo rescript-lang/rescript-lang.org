@@ -29,33 +29,33 @@ let createDirectoryIfNotExists = (dirPath: string): unit => {
 }
 
 let removeCodeTabTags = (content: string): string => {
-  let regex = Js.Re.fromStringWithFlags("<CodeTab.*?>[\\s\\S]*?</CodeTab>", ~flags="g")
-  Js.String.replaceByRe(regex, "", content)
+  let regex = RegExp.fromStringWithFlags("<CodeTab.*?>[\\s\\S]*?</CodeTab>", ~flags="g")
+  String.replaceRegExp(content, regex, "")
 }
 
 let removeCodeBlocks = (content: string): string => {
-  let regex = Js.Re.fromStringWithFlags("```[a-zA-Z]+\\s*[\\s\\S]*?```", ~flags="g")
-  Js.String.replaceByRe(regex, "", content)
+  let regex = RegExp.fromStringWithFlags("```[a-zA-Z]+\\s*[\\s\\S]*?```", ~flags="g")
+  String.replaceRegExp(content, regex, "")
 }
 
 let removeFileTitle = (content: string): string => {
-  let regex = Js.Re.fromStringWithFlags("---\ntitle[\\s\\S]*?---", ~flags="g")
-  Js.String.replaceByRe(regex, "", content)
+  let regex = RegExp.fromStringWithFlags("---\ntitle[\\s\\S]*?---", ~flags="g")
+  String.replaceRegExp(content, regex, "")
 }
 
 let removeUnnecessaryBreaks = (content: string): string => {
-  let regex = Js.Re.fromStringWithFlags("^\n{2,}", ~flags="g")
-  Js.String.replaceByRe(regex, "", content)
+  let regex = RegExp.fromStringWithFlags("^\n{2,}", ~flags="g")
+  String.replaceRegExp(content, regex, "")
 }
 
 let removeToDos = (content: string): string => {
-  let regex = Js.Re.fromStringWithFlags("<!-- TODO[\\s\\S]*?-->", ~flags="g")
-  Js.String.replaceByRe(regex, "", content)
+  let regex = RegExp.fromStringWithFlags("<!-- TODO[\\s\\S]*?-->", ~flags="g")
+  String.replaceRegExp(content, regex, "")
 }
 
 let fillContentWithVersion = (content: string, version: string): string => {
-  let regex = Js.Re.fromStringWithFlags("<VERSION>", ~flags="g")
-  Js.String.replaceByRe(regex, version, content)
+  let regex = RegExp.fromStringWithFlags("<VERSION>", ~flags="g")
+  String.replaceRegExp(content, regex, version)
 }
 
 let createFullFile = (content: string, filePath: string): unit => {
@@ -113,7 +113,7 @@ let processVersions = (
     versionDir
     ->collectFiles
     ->Array.forEach(filePath => {
-      if Js.String.endsWith(".mdx", filePath) {
+      if String.endsWith(filePath, ".mdx") {
         let content = readMarkdownFile(filePath)
 
         content->createFullFile(fullFilePath)
