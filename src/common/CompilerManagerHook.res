@@ -40,6 +40,9 @@ module CdnMeta = {
 
   let getLibraryCmijUrl = (version, libraryName: string): string =>
     `https://cdn.rescript-lang.org/${Semver.toString(version)}/${libraryName}/cmij.js`
+
+  let getStdlibRuntimeUrl = (version, filename) =>
+    `https://cdn.rescript-lang.org/${Semver.toString(version)}/compiler-builtins/stdlib/${filename}`
 }
 
 module FinalResult = {
