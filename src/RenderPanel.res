@@ -10,14 +10,20 @@ let make = (~compilerState: CompilerManagerHook.state, ~clearLogs, ~runOutput) =
   React.useEffect(() => {
     if runOutput {
       switch compilerState {
-      | CompilerManagerHook.Ready({result: Comp(Success({js_code}))}) =>
+      | CompilerManagerHook.Ready({selected, result: Comp(Success({js_code}))}) =>
         clearLogs()
         open Babel
 
         let ast = Parser.parse(js_code, {sourceType: "module"})
-        let {entryPointExists, code} = PlaygroundValidator.validate(ast)
+        let {entryPointExists, code, imports} = PlaygroundValidator.validate(ast)
+        let imports = imports->Dict.mapValues(path => {
+          let filename = path->String.sliceToEnd(~start=9) // the part after "./stdlib/"
+          CompilerManagerHook.CdnMeta.getStdlibRuntimeUrl(selected.id, filename)
+        })
 
-        entryPointExists ? code->wrapReactApp->EvalIFrame.sendOutput : EvalIFrame.sendOutput(code)
+        entryPointExists
+          ? code->wrapReactApp->EvalIFrame.sendOutput(imports)
+          : EvalIFrame.sendOutput(code, imports)
         setValidReact(_ => entryPointExists)
       | _ => ()
       }

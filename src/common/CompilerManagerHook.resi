@@ -27,6 +27,10 @@ type ready = {
   result: FinalResult.t,
 }
 
+module CdnMeta: {
+  let getStdlibRuntimeUrl: (Semver.t, string) => string
+}
+
 type state =
   | Init
   | SetupFailed(string)

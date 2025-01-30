@@ -10,14 +10,48 @@ module Ast = {
   @tag("type")
   type expression = ObjectExpression({properties: array<objectProperties>})
 
-  type variableDeclarator = {
-    @as("type") type_: string,
-    id: lval,
-    init?: Null.t<expression>,
+  module VariableDeclarator = {
+    @tag("type")
+    type t = VariableDeclarator({id: lval, init?: Null.t<expression>})
   }
+  module Specifier = {
+    @tag("type")
+    type t =
+      | ImportSpecifier({local: lval})
+      | ImportDefaultSpecifier({local: lval})
+      | ImportNamespaceSpecifier({local: lval})
+  }
+
+  module StringLiteral = {
+    @tag("type")
+    type t = StringLiteral({value: string})
+  }
+
+  module VariableDeclaration = {
+    @tag("type")
+    type t = VariableDeclaration({kind: string, declarations: array<VariableDeclarator.t>})
+  }
+
+  module ImportDeclaration = {
+    @tag("type")
+    type t = ImportDeclaration({specifiers: array<Specifier.t>, source: StringLiteral.t})
+  }
+
+  module Identifier = {
+    @tag("type")
+    type t = Identifier({mutable name: string})
+  }
+
   @tag("type")
-  type node = VariableDeclaration({kind: string, declarations: array<variableDeclarator>})
-  type nodePath = {node: node}
+  type node =
+    | ...StringLiteral.t
+    | ...Specifier.t
+    | ...VariableDeclarator.t
+    | ...VariableDeclaration.t
+    | ...ImportDeclaration.t
+    | ...Identifier.t
+
+  type nodePath<'nodeType> = {node: 'nodeType}
 }
 
 module Parser = {
@@ -30,7 +64,7 @@ module Traverse = {
 }
 
 module Generator = {
-  @send external remove: Ast.nodePath => unit = "remove"
+  @send external remove: Ast.nodePath<'nodeType> => unit = "remove"
 
   type t = {code: string}
   @module("@babel/generator") external generator: Ast.t => t = "default"
@@ -40,26 +74,42 @@ module PlaygroundValidator = {
   type validator = {
     entryPointExists: bool,
     code: string,
+    imports: Dict.t<string>,
   }
 
   let validate = ast => {
     let entryPoint = ref(false)
+    let imports = Dict.make()
 
     let remove = nodePath => Generator.remove(nodePath)
     Traverse.traverse(
       ast,
       {
-        "ImportDeclaration": remove,
+        "ImportDeclaration": (
+          {
+            node: ImportDeclaration({specifiers, source: StringLiteral({value: source})}),
+          } as nodePath: Ast.nodePath<Ast.ImportDeclaration.t>,
+        ) => {
+          if source->String.startsWith("./stdlib") {
+            switch specifiers {
+            | [ImportNamespaceSpecifier({local: Identifier({name})})] =>
+              imports->Dict.set(name, source)
+            | _ => ()
+            }
+          }
+          remove(nodePath)
+        },
         "ExportNamedDeclaration": remove,
-        "VariableDeclaration": (nodePath: Ast.nodePath) => {
-          switch nodePath.node {
-          | VariableDeclaration({declarations}) if Array.length(declarations) > 0 =>
+        "VariableDeclaration": (
+          {node: VariableDeclaration({declarations})}: Ast.nodePath<Ast.VariableDeclaration.t>,
+        ) => {
+          if Array.length(declarations) > 0 {
             let firstDeclaration = Array.getUnsafe(declarations, 0)
 
-            switch (firstDeclaration.id, firstDeclaration.init) {
-            | (Identifier({name}), Some(init)) if name === "App" =>
-              switch init->Null.toOption {
-              | Some(ObjectExpression({properties})) =>
+            switch firstDeclaration {
+            | VariableDeclarator({id: Identifier({name}), init}) if name === "App" =>
+              switch init {
+              | Value(ObjectExpression({properties})) =>
                 let foundEntryPoint = properties->Array.find(property => {
                   switch property {
                   | ObjectProperty({
@@ -74,12 +124,10 @@ module PlaygroundValidator = {
               }
             | _ => ()
             }
-          | _ => ()
           }
         },
       },
     )
-
-    {entryPointExists: entryPoint.contents, code: Generator.generator(ast).code}
+    {entryPointExists: entryPoint.contents, imports, code: Generator.generator(ast).code}
   }
 }
