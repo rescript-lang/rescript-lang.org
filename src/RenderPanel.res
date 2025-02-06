@@ -4,6 +4,11 @@ let wrapReactApp = code =>
   window.reactRoot.render(React.createElement(App.make, {}));
 })();`
 
+let capitalizeFirstLetter = string => {
+  let firstLetter = string->String.charAt(0)->String.toUpperCase
+  `${firstLetter}${string->String.sliceToEnd(~start=1)}`
+}
+
 @react.component
 let make = (~compilerState: CompilerManagerHook.state, ~clearLogs, ~runOutput) => {
   let (validReact, setValidReact) = React.useState(() => false)
@@ -18,7 +23,34 @@ let make = (~compilerState: CompilerManagerHook.state, ~clearLogs, ~runOutput) =
         let {entryPointExists, code, imports} = PlaygroundValidator.validate(ast)
         let imports = imports->Dict.mapValues(path => {
           let filename = path->String.sliceToEnd(~start=9) // the part after "./stdlib/"
-          CompilerManagerHook.CdnMeta.getStdlibRuntimeUrl(selected.id, filename)
+          let filename = switch selected.id {
+          | {major: 12, minor: 0, patch: 0, preRelease: Some(Alpha(alpha))} if alpha < 8 =>
+            let filename = if filename->String.startsWith("core__") {
+              filename->String.sliceToEnd(~start=6)
+            } else {
+              filename
+            }
+            capitalizeFirstLetter(filename)
+          | {major} if major < 12 && filename->String.startsWith("core__") =>
+            capitalizeFirstLetter(filename)
+          | _ => filename
+          }
+          let compilerVersion = switch selected.id {
+          | {major: 12, minor: 0, patch: 0, preRelease: Some(Alpha(alpha))} if alpha < 8 => {
+              Semver.major: 12,
+              minor: 0,
+              patch: 0,
+              preRelease: Some(Alpha(8)),
+            }
+          | {major, minor} if (major === 11 && minor < 2) || major < 11 => {
+              major: 11,
+              minor: 2,
+              patch: 0,
+              preRelease: Some(Beta(1)),
+            }
+          | version => version
+          }
+          CompilerManagerHook.CdnMeta.getStdlibRuntimeUrl(compilerVersion, filename)
         })
 
         entryPointExists
