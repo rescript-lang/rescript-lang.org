@@ -1130,21 +1130,27 @@ module ControlPanel = {
     ~state: CompilerManagerHook.state,
     ~dispatch: CompilerManagerHook.action => unit,
     ~editorCode: React.ref<string>,
-    ~runOutput,
-    ~toggleRunOutput,
   ) => {
     let children = switch state {
     | Init => React.string("Initializing...")
     | SwitchingCompiler(_ready, _version) => React.string("Switching Compiler...")
-    | Compiling(_, _)
+    | Compiling(_)
+    | Executing(_)
     | Ready(_) =>
       let onFormatClick = evt => {
         ReactEvent.Mouse.preventDefault(evt)
         dispatch(Format(editorCode.current))
       }
 
+      let autoRun = switch state {
+      | CompilerManagerHook.Executing({state: {autoRun: true}})
+      | Compiling({autoRun: true})
+      | Ready({autoRun: true}) => true
+      | _ => false
+      }
+
       <div className="flex flex-row gap-x-2">
-        <ToggleButton checked=runOutput onChange={_ => toggleRunOutput()}>
+        <ToggleButton checked=autoRun onChange={_ => dispatch(ToggleAutoRun)}>
           {React.string("Auto-run")}
         </ToggleButton>
         <Button onClick=onFormatClick> {React.string("Format")} </Button>
@@ -1176,7 +1182,6 @@ module OutputPanel = {
     ~compilerState: CompilerManagerHook.state,
     ~editorCode: React.ref<string>,
     ~currentTab: tab,
-    ~runOutput,
   ) => {
     /*
        We need the prevState to understand different
@@ -1199,8 +1204,9 @@ module OutputPanel = {
         }
       | (_, Ready({result: Comp(Success(_)) as result})) =>
         ControlPanel.codeFromResult(result)->Some
-      | (Ready({result: Comp(Success(_)) as result}), Compiling(_, _)) =>
+      | (Ready({result: Comp(Success(_)) as result}), Compiling(_)) =>
         ControlPanel.codeFromResult(result)->Some
+      | (_, Executing({jsCode})) => Some(jsCode)
       | _ => None
       }
     | None =>
@@ -1213,8 +1219,9 @@ module OutputPanel = {
     prevState.current = Some(compilerState)
 
     let resultPane = switch compilerState {
-    | Compiling(ready, _)
-    | Ready(ready) =>
+    | Compiling(ready)
+    | Ready(ready)
+    | Executing({state: ready}) =>
       switch ready.result {
       | Comp(Success(_))
       | Conv(Success(_)) => React.null
@@ -1246,8 +1253,9 @@ module OutputPanel = {
       </div>
 
     let errorPane = switch compilerState {
-    | Compiling(ready, _)
+    | Compiling(ready)
     | Ready(ready)
+    | Executing({state: ready})
     | SwitchingCompiler(ready, _) =>
       <ResultPane
         targetLang=ready.targetLang
@@ -1260,7 +1268,8 @@ module OutputPanel = {
 
     let settingsPane = switch compilerState {
     | Ready(ready)
-    | Compiling(ready, _)
+    | Compiling(ready)
+    | Executing({state: ready})
     | SwitchingCompiler(ready, _) =>
       let config = ready.selected.config
       let setConfig = config => compilerDispatch(UpdateConfig(config))
@@ -1273,7 +1282,9 @@ module OutputPanel = {
     let prevSelected = React.useRef(0)
 
     let selected = switch compilerState {
-    | Compiling(_, _) => prevSelected.current
+    | Executing(_)
+    | Compiling(_) =>
+      prevSelected.current
     | Ready(ready) =>
       switch ready.result {
       | Comp(Success(_))
@@ -1285,10 +1296,10 @@ module OutputPanel = {
 
     prevSelected.current = selected
 
-    let (logs, setLogs) = React.useState(_ => [])
+    let appendLog = (level, content) => compilerDispatch(AppendLog({level, content}))
 
     let tabs = [
-      (Output, <OutputPanel runOutput compilerState logs setLogs />),
+      (Output, <OutputPanel compilerState appendLog />),
       (JavaScript, output),
       (Problems, errorPane),
       (Settings, settingsPane),
@@ -1483,7 +1494,7 @@ let make = (~versions: array<string>) => {
       }
 
     None
-  }, [compilerState])
+  }, (compilerState, compilerDispatch))
 
   let (layout, setLayout) = React.useState(_ =>
     Webapi.Window.innerWidth < breakingPoint ? Column : Row
@@ -1693,17 +1704,12 @@ let make = (~versions: array<string>) => {
     </button>
   })
 
-  let (runOutput, setRunOutput) = React.useState(() => false)
-  let toggleRunOutput = () => setRunOutput(prev => !prev)
-
   <main className={"flex flex-col bg-gray-100 overflow-hidden"}>
     <ControlPanel
       actionIndicatorKey={Int.toString(actionCount)}
       state=compilerState
       dispatch=compilerDispatch
       editorCode
-      runOutput
-      toggleRunOutput
     />
     <div
       className={`flex ${layout == Column ? "flex-col" : "flex-row"}`}
@@ -1758,7 +1764,7 @@ let make = (~versions: array<string>) => {
           {React.array(headers)}
         </div>
         <div ref={ReactDOM.Ref.domRef(subPanelRef)} className="overflow-auto">
-          <OutputPanel currentTab compilerDispatch compilerState editorCode runOutput />
+          <OutputPanel currentTab compilerDispatch compilerState editorCode />
         </div>
       </div>
     </div>

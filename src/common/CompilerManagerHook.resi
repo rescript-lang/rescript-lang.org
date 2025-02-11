@@ -25,6 +25,9 @@ type ready = {
   targetLang: Lang.t,
   errors: array<string>, // For major errors like bundle loading
   result: FinalResult.t,
+  autoRun: bool,
+  validReactCode: bool,
+  logs: array<ConsolePanel.log>,
 }
 
 module CdnMeta: {
@@ -36,7 +39,8 @@ type state =
   | SetupFailed(string)
   | SwitchingCompiler(ready, Semver.t) // (ready, targetId, libraries)
   | Ready(ready)
-  | Compiling(ready, (Lang.t, string))
+  | Compiling(ready)
+  | Executing({state: ready, jsCode: string})
 
 type action =
   | SwitchToCompiler(Semver.t) // id
@@ -44,6 +48,8 @@ type action =
   | Format(string)
   | CompileCode(Lang.t, string)
   | UpdateConfig(Config.t)
+  | AppendLog(ConsolePanel.log)
+  | ToggleAutoRun
 
 let useCompilerManager: (
   ~initialVersion: Semver.t=?,

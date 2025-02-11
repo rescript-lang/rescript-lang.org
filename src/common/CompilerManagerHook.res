@@ -136,6 +136,17 @@ let attachCompilerAndLibraries = async (~version, ~libraries: array<string>, ())
   }
 }
 
+let wrapReactApp = code =>
+  `(function () {
+  ${code}
+  window.reactRoot.render(React.createElement(App.make, {}));
+})();`
+
+let capitalizeFirstLetter = string => {
+  let firstLetter = string->String.charAt(0)->String.toUpperCase
+  `${firstLetter}${string->String.sliceToEnd(~start=1)}`
+}
+
 type error =
   | SetupError(string)
   | CompilerLoadingError(string)
@@ -157,6 +168,9 @@ type ready = {
   targetLang: Lang.t,
   errors: array<string>, // For major errors like bundle loading
   result: FinalResult.t,
+  autoRun: bool,
+  validReactCode: bool,
+  logs: array<ConsolePanel.log>,
 }
 
 type state =
@@ -164,7 +178,8 @@ type state =
   | SetupFailed(string)
   | SwitchingCompiler(ready, Semver.t) // (ready, targetId, libraries)
   | Ready(ready)
-  | Compiling(ready, (Lang.t, string))
+  | Compiling(ready)
+  | Executing({state: ready, jsCode: string})
 
 type action =
   | SwitchToCompiler(Semver.t) // id
@@ -172,6 +187,8 @@ type action =
   | Format(string)
   | CompileCode(Lang.t, string)
   | UpdateConfig(Config.t)
+  | AppendLog(ConsolePanel.log)
+  | ToggleAutoRun
 
 let createUrl = (pathName, ready) => {
   let params = switch ready.targetLang {
@@ -213,119 +230,128 @@ let useCompilerManager = (
   // Dispatch method for the public interface
   let dispatch = (action: action): unit => {
     Option.forEach(onAction, cb => cb(action))
-    switch action {
-    | SwitchToCompiler(id) =>
-      switch state {
-      | Ready(ready) =>
-        // TODO: Check if libraries have changed as well
-        if ready.selected.id !== id {
-          setState(_ => SwitchingCompiler(ready, id))
-        } else {
-          ()
+    setState(state =>
+      switch action {
+      | SwitchToCompiler(id) =>
+        switch state {
+        | Ready(ready) if ready.selected.id !== id =>
+          // TODO: Check if libraries have changed as well
+          SwitchingCompiler(ready, id)
+        | _ => state
         }
-      | _ => ()
-      }
-    | UpdateConfig(config) =>
-      switch state {
-      | Ready(ready) =>
-        ready.selected.instance->Compiler.setConfig(config)
-        setState(_ => {
+      | UpdateConfig(config) =>
+        switch state {
+        | Ready(ready) =>
+          ready.selected.instance->Compiler.setConfig(config)
           let selected = {...ready.selected, config}
-          Compiling({...ready, selected}, (ready.targetLang, ready.code))
-        })
-      | _ => ()
-      }
-    | CompileCode(lang, code) =>
-      switch state {
-      | Ready(ready) => setState(_ => Compiling({...ready, code}, (lang, code)))
-      | _ => ()
-      }
-    | SwitchLanguage({lang, code}) =>
-      switch state {
-      | Ready(ready) =>
-        let instance = ready.selected.instance
-        let availableTargetLangs = Version.availableLanguages(ready.selected.apiVersion)
+          Compiling({...ready, selected})
+        | _ => state
+        }
+      | CompileCode(lang, code) =>
+        switch state {
+        | Ready(ready) => Compiling({...ready, code, targetLang: lang})
+        | _ => state
+        }
+      | SwitchLanguage({lang, code}) =>
+        switch state {
+        | Ready(ready) =>
+          let instance = ready.selected.instance
+          let availableTargetLangs = Version.availableLanguages(ready.selected.apiVersion)
 
-        let currentLang = ready.targetLang
+          let currentLang = ready.targetLang
 
-        Array.find(availableTargetLangs, l => l === lang)->Option.forEach(lang => {
-          // Try to automatically transform code
-          let (result, targetLang) = switch ready.selected.apiVersion {
-          | V1 =>
-            let convResult = switch (currentLang, lang) {
-            | (Reason, Res) =>
-              instance->Compiler.convertSyntax(~fromLang=Reason, ~toLang=Res, ~code)->Some
-            | (Res, Reason) =>
-              instance->Compiler.convertSyntax(~fromLang=Res, ~toLang=Reason, ~code)->Some
-            | _ => None
-            }
+          Array.find(availableTargetLangs, l => l === lang)
+          ->Option.map(lang => {
+            // Try to automatically transform code
+            let (result, targetLang) = switch ready.selected.apiVersion {
+            | V1 =>
+              let convResult = switch (currentLang, lang) {
+              | (Reason, Res) =>
+                instance->Compiler.convertSyntax(~fromLang=Reason, ~toLang=Res, ~code)->Some
+              | (Res, Reason) =>
+                instance->Compiler.convertSyntax(~fromLang=Res, ~toLang=Reason, ~code)->Some
+              | _ => None
+              }
 
-            /*
+              /*
                     Syntax convertion works the following way:
                     If currentLang -> otherLang is not valid, try to pretty print the code
                     with the otherLang, in case we e.g. want to copy paste or otherLang code
                     in the editor and quickly switch to it
  */
-            switch convResult {
-            | Some(result) =>
-              switch result {
-              | ConversionResult.Fail(_)
-              | Unknown(_, _)
-              | UnexpectedError(_) =>
-                let secondTry =
-                  instance->Compiler.convertSyntax(~fromLang=lang, ~toLang=lang, ~code)
-                switch secondTry {
+              switch convResult {
+              | Some(result) =>
+                switch result {
                 | ConversionResult.Fail(_)
                 | Unknown(_, _)
-                | UnexpectedError(_) => (FinalResult.Conv(secondTry), lang)
-                | Success(_) => (Conv(secondTry), lang)
+                | UnexpectedError(_) =>
+                  let secondTry =
+                    instance->Compiler.convertSyntax(~fromLang=lang, ~toLang=lang, ~code)
+                  switch secondTry {
+                  | ConversionResult.Fail(_)
+                  | Unknown(_, _)
+                  | UnexpectedError(_) => (FinalResult.Conv(secondTry), lang)
+                  | Success(_) => (Conv(secondTry), lang)
+                  }
+                | ConversionResult.Success(_) => (Conv(result), lang)
                 }
-              | ConversionResult.Success(_) => (Conv(result), lang)
+              | None => (Nothing, lang)
               }
-            | None => (Nothing, lang)
+            | _ => (Nothing, lang)
             }
-          | _ => (Nothing, lang)
+
+            Ready({...ready, result, errors: [], targetLang})
+          })
+          ->Option.getOr(state)
+        | _ => state
+        }
+      | Format(code) =>
+        switch state {
+        | Ready(ready) =>
+          let instance = ready.selected.instance
+          let convResult = switch ready.targetLang {
+          | Res => instance->Compiler.resFormat(code)->Some
+          | Reason => instance->Compiler.reasonFormat(code)->Some
+          | _ => None
           }
 
-          setState(_ => Ready({...ready, result, errors: [], targetLang}))
-        })
-      | _ => ()
-      }
-    | Format(code) =>
-      switch state {
-      | Ready(ready) =>
-        let instance = ready.selected.instance
-        let convResult = switch ready.targetLang {
-        | Res => instance->Compiler.resFormat(code)->Some
-        | Reason => instance->Compiler.reasonFormat(code)->Some
-        | _ => None
-        }
-
-        let result = switch convResult {
-        | Some(result) =>
-          switch result {
-          | ConversionResult.Success(success) =>
-            // We will only change the result to a ConversionResult
-            // in case the reformatting has actually changed code
-            // otherwise we'd loose previous compilationResults, although
-            // the result should be the same anyways
-            if code !== success.code {
+          let result = switch convResult {
+          | Some(result) =>
+            switch result {
+            | ConversionResult.Success(success) =>
+              // We will only change the result to a ConversionResult
+              // in case the reformatting has actually changed code
+              // otherwise we'd loose previous compilationResults, although
+              // the result should be the same anyways
+              if code !== success.code {
+                FinalResult.Conv(result)
+              } else {
+                ready.result
+              }
+            | ConversionResult.Fail(_)
+            | Unknown(_, _)
+            | UnexpectedError(_) =>
               FinalResult.Conv(result)
-            } else {
-              ready.result
             }
-          | ConversionResult.Fail(_)
-          | Unknown(_, _)
-          | UnexpectedError(_) =>
-            FinalResult.Conv(result)
+          | None => ready.result
           }
-        | None => ready.result
-        }
 
-        setState(_ => Ready({...ready, result, errors: []}))
-      | _ => ()
+          Ready({...ready, result, errors: []})
+        | _ => state
+        }
+      | AppendLog(log) =>
+        switch state {
+        | Ready(ready) => Ready({...ready, logs: Array.concat(ready.logs, [log])})
+        | _ => state
+        }
+      | ToggleAutoRun =>
+        switch state {
+        | Ready({autoRun: true} as ready) => Ready({...ready, autoRun: false})
+        | Ready({autoRun: false} as ready) => Compiling({...ready, autoRun: true})
+        | _ => state
+        }
       }
-    }
+    )
   }
 
   let dispatchError = (err: error) =>
@@ -392,6 +418,9 @@ let useCompilerManager = (
                 versions,
                 errors: [],
                 result: FinalResult.Nothing,
+                logs: [],
+                autoRun: false,
+                validReactCode: false,
               }))
             | Error(errs) =>
               let msg = Array.join(errs, "; ")
@@ -442,13 +471,16 @@ let useCompilerManager = (
             versions: ready.versions,
             errors: [],
             result: FinalResult.Nothing,
+            autoRun: ready.autoRun,
+            validReactCode: ready.validReactCode,
+            logs: [],
           }))
         | Error(errs) =>
           let msg = Array.join(errs, "; ")
 
           dispatchError(CompilerLoadingError(msg))
         }
-      | Compiling(ready, (lang, code)) =>
+      | Compiling({targetLang: lang, code, autoRun} as ready) =>
         let apiVersion = ready.selected.apiVersion
         let instance = ready.selected.instance
 
@@ -478,8 +510,55 @@ let useCompilerManager = (
             `Can't handle result of compiler API version "${version}"`,
           )
         }
+        let ready = {...ready, result: FinalResult.Comp(compResult)}
+        setState(_ =>
+          switch (ready.result, autoRun) {
+          | (FinalResult.Comp(Success({js_code})), true) =>
+            Executing({state: ready, jsCode: js_code})
+          | _ => Ready(ready)
+          }
+        )
+      | Executing({state, jsCode}) =>
+        open Babel
 
-        setState(_ => Ready({...ready, result: FinalResult.Comp(compResult)}))
+        let ast = Parser.parse(jsCode, {sourceType: "module"})
+        let {entryPointExists, code, imports} = PlaygroundValidator.validate(ast)
+        let imports = imports->Dict.mapValues(path => {
+          let filename = path->String.sliceToEnd(~start=9) // the part after "./stdlib/"
+          let filename = switch state.selected.id {
+          | {major: 12, minor: 0, patch: 0, preRelease: Some(Alpha(alpha))} if alpha < 8 =>
+            let filename = if filename->String.startsWith("core__") {
+              filename->String.sliceToEnd(~start=6)
+            } else {
+              filename
+            }
+            capitalizeFirstLetter(filename)
+          | {major} if major < 12 && filename->String.startsWith("core__") =>
+            capitalizeFirstLetter(filename)
+          | _ => filename
+          }
+          let compilerVersion = switch state.selected.id {
+          | {major: 12, minor: 0, patch: 0, preRelease: Some(Alpha(alpha))} if alpha < 8 => {
+              Semver.major: 12,
+              minor: 0,
+              patch: 0,
+              preRelease: Some(Alpha(8)),
+            }
+          | {major, minor} if (major === 11 && minor < 2) || major < 11 => {
+              major: 11,
+              minor: 2,
+              patch: 0,
+              preRelease: Some(Beta(1)),
+            }
+          | version => version
+          }
+          CdnMeta.getStdlibRuntimeUrl(compilerVersion, filename)
+        })
+
+        entryPointExists
+          ? code->wrapReactApp->EvalIFrame.sendOutput(imports)
+          : EvalIFrame.sendOutput(code, imports)
+        setState(_ => Ready({...state, logs: [], validReactCode: entryPointExists}))
       | SetupFailed(_) => ()
       | Ready(ready) =>
         let url = createUrl(router.route, ready)
@@ -487,9 +566,17 @@ let useCompilerManager = (
       }
     }
 
-    updateState()->ignore
+    updateState()->Promise.done
     None
-  }, [state])
+  }, (
+    state,
+    dispatchError,
+    initialVersion,
+    initialModuleSystem,
+    initialLang,
+    versions,
+    router.route,
+  ))
 
   (state, dispatch)
 }

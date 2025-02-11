@@ -1,8 +1,21 @@
 @react.component
-let make = (~runOutput, ~compilerState, ~logs, ~setLogs) => {
+let make = (~compilerState, ~appendLog) => {
+  let validReact = switch compilerState {
+  | CompilerManagerHook.Executing({state: {validReactCode: true}})
+  | Compiling({validReactCode: true})
+  | Ready({validReactCode: true}) => true
+  | _ => false
+  }
+
+  let logs = switch compilerState {
+  | CompilerManagerHook.Executing({state: {logs}})
+  | Compiling({logs})
+  | Ready({logs}) => logs
+  | _ => []
+  }
   <div className="h-full flex flex-col overflow-y-hidden">
-    <RenderPanel runOutput compilerState clearLogs={() => setLogs(_ => [])} />
+    <RenderPanel validReact />
     <hr className="border-gray-60" />
-    <ConsolePanel logs setLogs />
+    <ConsolePanel logs appendLog />
   </div>
 }
