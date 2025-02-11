@@ -1116,6 +1116,7 @@ module ControlPanel = {
     ~state: CompilerManagerHook.state,
     ~dispatch: CompilerManagerHook.action => unit,
     ~editorCode: React.ref<string>,
+    ~setCurrentTab: (tab => tab) => unit,
   ) => {
     let children = switch state {
     | Init => React.string("Initializing...")
@@ -1135,12 +1136,17 @@ module ControlPanel = {
       | _ => false
       }
 
+      let runCode = () => {
+        setCurrentTab(_ => Output)
+        dispatch(RunCode)
+      }
+
       let onKeyDown = event => {
         switch (
           event->ReactEvent.Keyboard.metaKey || event->ReactEvent.Keyboard.ctrlKey,
           event->ReactEvent.Keyboard.key,
         ) {
-        | (true, "e") => dispatch(RunCode)
+        | (true, "e") => runCode()
         | _ => ()
         }
       }
@@ -1163,10 +1169,18 @@ module ControlPanel = {
       }
 
       <div className="flex flex-row gap-x-2">
-        <ToggleButton checked=autoRun onChange={_ => dispatch(ToggleAutoRun)}>
+        <ToggleButton
+          checked=autoRun
+          onChange={_ => {
+            switch state {
+            | Ready({autoRun: false}) => setCurrentTab(_ => Output)
+            | _ => ()
+            }
+            dispatch(ToggleAutoRun)
+          }}>
           {React.string("Auto-run")}
         </ToggleButton>
-        <Button onClick={_ => dispatch(RunCode)}> {React.string(runButtonText)} </Button>
+        <Button onClick={_ => runCode()}> {React.string(runButtonText)} </Button>
         <Button onClick=onFormatClick> {React.string("Format")} </Button>
         <ShareButton actionIndicatorKey />
       </div>
@@ -1671,6 +1685,7 @@ let make = (~versions: array<string>) => {
       state=compilerState
       dispatch=compilerDispatch
       editorCode
+      setCurrentTab
     />
     <div
       className={`flex ${layout == Column ? "flex-col" : "flex-row"}`}
