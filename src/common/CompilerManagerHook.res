@@ -189,6 +189,7 @@ type action =
   | UpdateConfig(Config.t)
   | AppendLog(ConsolePanel.log)
   | ToggleAutoRun
+  | RunCode
 
 let createUrl = (pathName, ready) => {
   let params = switch ready.targetLang {
@@ -348,6 +349,12 @@ let useCompilerManager = (
         switch state {
         | Ready({autoRun: true} as ready) => Ready({...ready, autoRun: false})
         | Ready({autoRun: false} as ready) => Compiling({...ready, autoRun: true})
+        | _ => state
+        }
+      | RunCode =>
+        switch state {
+        | Ready({result: Comp(Success({js_code}))} as ready) =>
+          Executing({state: {...ready, autoRun: false}, jsCode: js_code})
         | _ => state
         }
       }

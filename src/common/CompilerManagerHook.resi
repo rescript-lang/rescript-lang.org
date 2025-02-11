@@ -50,6 +50,7 @@ type action =
   | UpdateConfig(Config.t)
   | AppendLog(ConsolePanel.log)
   | ToggleAutoRun
+  | RunCode
 
 let useCompilerManager: (
   ~initialVersion: Semver.t=?,

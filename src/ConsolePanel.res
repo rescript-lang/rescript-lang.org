@@ -26,7 +26,7 @@ let make = (~logs, ~appendLog) => {
     {switch logs {
     | [] =>
       React.string(
-        "Add some 'Console.log' to your code and enable 'Auto-run' to see your logs here.",
+        "Add some 'Console.log' to your code and click 'Run' or enable 'Auto-run' to see your logs here.",
       )
     | logs =>
       let content =

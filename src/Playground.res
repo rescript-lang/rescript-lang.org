@@ -1153,6 +1153,7 @@ module ControlPanel = {
         <ToggleButton checked=autoRun onChange={_ => dispatch(ToggleAutoRun)}>
           {React.string("Auto-run")}
         </ToggleButton>
+        <Button onClick={_ => dispatch(RunCode)}> {React.string("Run")} </Button>
         <Button onClick=onFormatClick> {React.string("Format")} </Button>
         <ShareButton actionIndicatorKey />
       </div>

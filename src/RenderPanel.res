@@ -5,7 +5,7 @@ let make = (~validReact) => {
     {validReact
       ? React.null
       : React.string(
-          "Create a React component called 'App' if you want to render it here, then enable 'Auto-run'.",
+          "Create a React component called 'App' if you want to render it here, then click 'Run' or enable 'Auto-run'.",
         )}
     <div className={validReact ? "h-full" : "h-0"}>
       <EvalIFrame />
