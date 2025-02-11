@@ -1038,20 +1038,6 @@ module Settings = {
 }
 
 module ControlPanel = {
-  let codeFromResult = (result: FinalResult.t): string => {
-    open Api
-    switch result {
-    | FinalResult.Comp(comp) =>
-      switch comp {
-      | CompilationResult.Success({js_code}) => js_code
-      | UnexpectedError(_)
-      | Unknown(_, _)
-      | Fail(_) => "/* No JS code generated */"
-      }
-    | Nothing
-    | Conv(_) => "/* No JS code generated */"
-    }
-  }
   module Button = {
     @react.component
     let make = (~children, ~onClick=?) =>
@@ -1130,23 +1116,73 @@ module ControlPanel = {
     ~state: CompilerManagerHook.state,
     ~dispatch: CompilerManagerHook.action => unit,
     ~editorCode: React.ref<string>,
-    ~runOutput,
-    ~toggleRunOutput,
+    ~setCurrentTab: (tab => tab) => unit,
   ) => {
     let children = switch state {
     | Init => React.string("Initializing...")
     | SwitchingCompiler(_ready, _version) => React.string("Switching Compiler...")
-    | Compiling(_, _)
+    | Compiling(_)
+    | Executing(_)
     | Ready(_) =>
       let onFormatClick = evt => {
         ReactEvent.Mouse.preventDefault(evt)
         dispatch(Format(editorCode.current))
       }
 
+      let autoRun = switch state {
+      | CompilerManagerHook.Executing({state: {autoRun: true}})
+      | Compiling({state: {autoRun: true}})
+      | Ready({autoRun: true}) => true
+      | _ => false
+      }
+
+      let runCode = () => {
+        setCurrentTab(_ => Output)
+        dispatch(RunCode)
+      }
+
+      let onKeyDown = event => {
+        switch (
+          event->ReactEvent.Keyboard.metaKey || event->ReactEvent.Keyboard.ctrlKey,
+          event->ReactEvent.Keyboard.key,
+        ) {
+        | (true, "e") =>
+          event->ReactEvent.Keyboard.preventDefault
+          runCode()
+        | _ => ()
+        }
+      }
+
+      React.useEffect(() => {
+        Webapi.Window.addEventListener("keydown", onKeyDown)
+        Some(() => Webapi.Window.removeEventListener("keydown", onKeyDown))
+      }, [])
+
+      let runButtonText = {
+        let userAgent = Webapi.Window.Navigator.userAgent
+        let run = "Run"
+        if userAgent->String.includes("iPhone") || userAgent->String.includes("Android") {
+          run
+        } else if userAgent->String.includes("Mac") {
+          `${run} (⌘ + E)`
+        } else {
+          `${run} (Ctrl + E)`
+        }
+      }
+
       <div className="flex flex-row gap-x-2">
-        <ToggleButton checked=runOutput onChange={_ => toggleRunOutput()}>
+        <ToggleButton
+          checked=autoRun
+          onChange={_ => {
+            switch state {
+            | Ready({autoRun: false}) => setCurrentTab(_ => Output)
+            | _ => ()
+            }
+            dispatch(ToggleAutoRun)
+          }}>
           {React.string("Auto-run")}
         </ToggleButton>
+        <Button onClick={_ => runCode()}> {React.string(runButtonText)} </Button>
         <Button onClick=onFormatClick> {React.string("Format")} </Button>
         <ShareButton actionIndicatorKey />
       </div>
@@ -1176,78 +1212,27 @@ module OutputPanel = {
     ~compilerState: CompilerManagerHook.state,
     ~editorCode: React.ref<string>,
     ~currentTab: tab,
-    ~runOutput,
   ) => {
-    /*
-       We need the prevState to understand different
-       state transitions, and to be able to keep displaying
-       old results until those transitions are done.
-
-       Goal was to reduce the UI flickering during different
-       state transitions
- */
-    let prevState = React.useRef(None)
-
-    let cmCode = switch prevState.current {
-    | Some(prev) =>
-      switch (prev, compilerState) {
-      | (_, Ready({result: Nothing})) => None
-      | (Ready(prevReady), Ready(ready)) =>
-        switch (prevReady.result, ready.result) {
-        | (_, Comp(Success(_))) => ControlPanel.codeFromResult(ready.result)->Some
-        | _ => None
-        }
-      | (_, Ready({result: Comp(Success(_)) as result})) =>
-        ControlPanel.codeFromResult(result)->Some
-      | (Ready({result: Comp(Success(_)) as result}), Compiling(_, _)) =>
-        ControlPanel.codeFromResult(result)->Some
-      | _ => None
-      }
-    | None =>
-      switch compilerState {
-      | Ready(ready) => ControlPanel.codeFromResult(ready.result)->Some
-      | _ => None
-      }
-    }
-
-    prevState.current = Some(compilerState)
-
-    let resultPane = switch compilerState {
-    | Compiling(ready, _)
-    | Ready(ready) =>
-      switch ready.result {
-      | Comp(Success(_))
-      | Conv(Success(_)) => React.null
-      | _ =>
-        <ResultPane
-          targetLang=ready.targetLang
-          compilerVersion=ready.selected.compilerVersion
-          result=ready.result
-        />
-      }
-
-    | _ => React.null
-    }
-
-    let (code, showCm) = switch cmCode {
-    | None => ("", false)
-    | Some(code) => (code, true)
-    }
-
-    let codeElement =
-      <pre className={"whitespace-pre-wrap p-4 " ++ (showCm ? "block" : "hidden")}>
-        {HighlightJs.renderHLJS(~code, ~darkmode=true, ~lang="js", ())}
-      </pre>
-
     let output =
       <div className="text-gray-20">
-        resultPane
-        codeElement
+        {switch compilerState {
+        | Compiling({previousJsCode: Some(jsCode)})
+        | Executing({jsCode})
+        | Ready({result: Comp(Success({jsCode}))}) =>
+          <pre className={"whitespace-pre-wrap p-4 "}>
+            {HighlightJs.renderHLJS(~code=jsCode, ~darkmode=true, ~lang="js", ())}
+          </pre>
+        | Ready({result: Conv(Success(_))}) => React.null
+        | Ready({result, targetLang, selected}) =>
+          <ResultPane targetLang compilerVersion=selected.compilerVersion result />
+        | _ => React.null
+        }}
       </div>
 
     let errorPane = switch compilerState {
-    | Compiling(ready, _)
+    | Compiling({state: ready})
     | Ready(ready)
+    | Executing({state: ready})
     | SwitchingCompiler(ready, _) =>
       <ResultPane
         targetLang=ready.targetLang
@@ -1260,7 +1245,8 @@ module OutputPanel = {
 
     let settingsPane = switch compilerState {
     | Ready(ready)
-    | Compiling(ready, _)
+    | Compiling({state: ready})
+    | Executing({state: ready})
     | SwitchingCompiler(ready, _) =>
       let config = ready.selected.config
       let setConfig = config => compilerDispatch(UpdateConfig(config))
@@ -1273,7 +1259,9 @@ module OutputPanel = {
     let prevSelected = React.useRef(0)
 
     let selected = switch compilerState {
-    | Compiling(_, _) => prevSelected.current
+    | Executing(_)
+    | Compiling(_) =>
+      prevSelected.current
     | Ready(ready) =>
       switch ready.result {
       | Comp(Success(_))
@@ -1285,10 +1273,10 @@ module OutputPanel = {
 
     prevSelected.current = selected
 
-    let (logs, setLogs) = React.useState(_ => [])
+    let appendLog = (level, content) => compilerDispatch(AppendLog({level, content}))
 
     let tabs = [
-      (Output, <OutputPanel runOutput compilerState logs setLogs />),
+      (Output, <OutputPanel compilerState appendLog />),
       (JavaScript, output),
       (Problems, errorPane),
       (Settings, settingsPane),
@@ -1483,7 +1471,7 @@ let make = (~versions: array<string>) => {
       }
 
     None
-  }, [compilerState])
+  }, (compilerState, compilerDispatch))
 
   let (layout, setLayout) = React.useState(_ =>
     Webapi.Window.innerWidth < breakingPoint ? Column : Row
@@ -1632,8 +1620,8 @@ let make = (~versions: array<string>) => {
   }
 
   let cmHoverHints = switch compilerState {
-  | Ready({result: FinalResult.Comp(Success({type_hints}))}) =>
-    Array.map(type_hints, hint => {
+  | Ready({result: FinalResult.Comp(Success({typeHints}))}) =>
+    Array.map(typeHints, hint => {
       switch hint {
       | TypeDeclaration({start, end, hint})
       | Binding({start, end, hint})
@@ -1693,17 +1681,13 @@ let make = (~versions: array<string>) => {
     </button>
   })
 
-  let (runOutput, setRunOutput) = React.useState(() => false)
-  let toggleRunOutput = () => setRunOutput(prev => !prev)
-
   <main className={"flex flex-col bg-gray-100 overflow-hidden"}>
     <ControlPanel
       actionIndicatorKey={Int.toString(actionCount)}
       state=compilerState
       dispatch=compilerDispatch
       editorCode
-      runOutput
-      toggleRunOutput
+      setCurrentTab
     />
     <div
       className={`flex ${layout == Column ? "flex-col" : "flex-row"}`}
@@ -1758,7 +1742,7 @@ let make = (~versions: array<string>) => {
           {React.array(headers)}
         </div>
         <div ref={ReactDOM.Ref.domRef(subPanelRef)} className="overflow-auto">
-          <OutputPanel currentTab compilerDispatch compilerState editorCode runOutput />
+          <OutputPanel currentTab compilerDispatch compilerState editorCode />
         </div>
       </div>
     </div>

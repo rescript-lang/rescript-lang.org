@@ -104,9 +104,11 @@ module TypeHint: {
 
 module CompileSuccess: {
   type t = {
-    js_code: string,
+    @as("js_code")
+    jsCode: string,
     warnings: array<Warning.t>,
-    type_hints: array<TypeHint.t>, // Not supported in older versions <= 9.0.1 (will always be [])
+    @as("type_hints")
+    typeHints: array<TypeHint.t>, // Not supported in older versions <= 9.0.1 (will always be [])
     time: float, // total compilation time
   }
 

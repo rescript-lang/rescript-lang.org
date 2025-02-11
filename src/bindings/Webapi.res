@@ -62,6 +62,10 @@ module Window = {
   module Location = {
     @scope(("window", "location")) @val external href: string = "href"
   }
+
+  module Navigator = {
+    @scope(("window", "navigator")) @val external userAgent: string = "userAgent"
+  }
 }
 
 module Fetch = {
