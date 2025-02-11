@@ -1146,7 +1146,9 @@ module ControlPanel = {
           event->ReactEvent.Keyboard.metaKey || event->ReactEvent.Keyboard.ctrlKey,
           event->ReactEvent.Keyboard.key,
         ) {
-        | (true, "e") => runCode()
+        | (true, "e") =>
+          event->ReactEvent.Keyboard.preventDefault
+          runCode()
         | _ => ()
         }
       }
