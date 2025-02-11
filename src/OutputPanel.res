@@ -2,14 +2,14 @@
 let make = (~compilerState, ~appendLog) => {
   let validReact = switch compilerState {
   | CompilerManagerHook.Executing({state: {validReactCode: true}})
-  | Compiling({validReactCode: true})
+  | Compiling({state: {validReactCode: true}})
   | Ready({validReactCode: true}) => true
   | _ => false
   }
 
   let logs = switch compilerState {
   | CompilerManagerHook.Executing({state: {logs}})
-  | Compiling({logs})
+  | Compiling({state: {logs}})
   | Ready({logs}) => logs
   | _ => []
   }

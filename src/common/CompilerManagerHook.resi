@@ -39,7 +39,7 @@ type state =
   | SetupFailed(string)
   | SwitchingCompiler(ready, Semver.t) // (ready, targetId, libraries)
   | Ready(ready)
-  | Compiling(ready)
+  | Compiling({state: ready, previousJsCode: option<string>})
   | Executing({state: ready, jsCode: string})
 
 type action =

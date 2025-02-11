@@ -1038,20 +1038,6 @@ module Settings = {
 }
 
 module ControlPanel = {
-  let codeFromResult = (result: FinalResult.t): string => {
-    open Api
-    switch result {
-    | FinalResult.Comp(comp) =>
-      switch comp {
-      | CompilationResult.Success({js_code}) => js_code
-      | UnexpectedError(_)
-      | Unknown(_, _)
-      | Fail(_) => "/* No JS code generated */"
-      }
-    | Nothing
-    | Conv(_) => "/* No JS code generated */"
-    }
-  }
   module Button = {
     @react.component
     let make = (~children, ~onClick=?) =>
@@ -1144,7 +1130,7 @@ module ControlPanel = {
 
       let autoRun = switch state {
       | CompilerManagerHook.Executing({state: {autoRun: true}})
-      | Compiling({autoRun: true})
+      | Compiling({state: {autoRun: true}})
       | Ready({autoRun: true}) => true
       | _ => false
       }
@@ -1211,77 +1197,24 @@ module OutputPanel = {
     ~editorCode: React.ref<string>,
     ~currentTab: tab,
   ) => {
-    /*
-       We need the prevState to understand different
-       state transitions, and to be able to keep displaying
-       old results until those transitions are done.
-
-       Goal was to reduce the UI flickering during different
-       state transitions
- */
-    let prevState = React.useRef(None)
-
-    let cmCode = switch prevState.current {
-    | Some(prev) =>
-      switch (prev, compilerState) {
-      | (_, Ready({result: Nothing})) => None
-      | (Ready(prevReady), Ready(ready)) =>
-        switch (prevReady.result, ready.result) {
-        | (_, Comp(Success(_))) => ControlPanel.codeFromResult(ready.result)->Some
-        | _ => None
-        }
-      | (_, Ready({result: Comp(Success(_)) as result})) =>
-        ControlPanel.codeFromResult(result)->Some
-      | (Ready({result: Comp(Success(_)) as result}), Compiling(_)) =>
-        ControlPanel.codeFromResult(result)->Some
-      | (_, Executing({jsCode})) => Some(jsCode)
-      | _ => None
-      }
-    | None =>
-      switch compilerState {
-      | Ready(ready) => ControlPanel.codeFromResult(ready.result)->Some
-      | _ => None
-      }
-    }
-
-    prevState.current = Some(compilerState)
-
-    let resultPane = switch compilerState {
-    | Compiling(ready)
-    | Ready(ready)
-    | Executing({state: ready}) =>
-      switch ready.result {
-      | Comp(Success(_))
-      | Conv(Success(_)) => React.null
-      | _ =>
-        <ResultPane
-          targetLang=ready.targetLang
-          compilerVersion=ready.selected.compilerVersion
-          result=ready.result
-        />
-      }
-
-    | _ => React.null
-    }
-
-    let (code, showCm) = switch cmCode {
-    | None => ("", false)
-    | Some(code) => (code, true)
-    }
-
-    let codeElement =
-      <pre className={"whitespace-pre-wrap p-4 " ++ (showCm ? "block" : "hidden")}>
-        {HighlightJs.renderHLJS(~code, ~darkmode=true, ~lang="js", ())}
-      </pre>
-
     let output =
       <div className="text-gray-20">
-        resultPane
-        codeElement
+        {switch compilerState {
+        | Compiling({previousJsCode: Some(jsCode)})
+        | Executing({jsCode})
+        | Ready({result: Comp(Success({jsCode}))}) =>
+          <pre className={"whitespace-pre-wrap p-4 "}>
+            {HighlightJs.renderHLJS(~code=jsCode, ~darkmode=true, ~lang="js", ())}
+          </pre>
+        | Ready({result: Conv(Success(_))}) => React.null
+        | Ready({result, targetLang, selected}) =>
+          <ResultPane targetLang compilerVersion=selected.compilerVersion result />
+        | _ => React.null
+        }}
       </div>
 
     let errorPane = switch compilerState {
-    | Compiling(ready)
+    | Compiling({state: ready})
     | Ready(ready)
     | Executing({state: ready})
     | SwitchingCompiler(ready, _) =>
@@ -1296,7 +1229,7 @@ module OutputPanel = {
 
     let settingsPane = switch compilerState {
     | Ready(ready)
-    | Compiling(ready)
+    | Compiling({state: ready})
     | Executing({state: ready})
     | SwitchingCompiler(ready, _) =>
       let config = ready.selected.config
@@ -1671,8 +1604,8 @@ let make = (~versions: array<string>) => {
   }
 
   let cmHoverHints = switch compilerState {
-  | Ready({result: FinalResult.Comp(Success({type_hints}))}) =>
-    Array.map(type_hints, hint => {
+  | Ready({result: FinalResult.Comp(Success({typeHints}))}) =>
+    Array.map(typeHints, hint => {
       switch hint {
       | TypeDeclaration({start, end, hint})
       | Binding({start, end, hint})

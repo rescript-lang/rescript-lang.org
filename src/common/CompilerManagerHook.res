@@ -178,7 +178,7 @@ type state =
   | SetupFailed(string)
   | SwitchingCompiler(ready, Semver.t) // (ready, targetId, libraries)
   | Ready(ready)
-  | Compiling(ready)
+  | Compiling({state: ready, previousJsCode: option<string>})
   | Executing({state: ready, jsCode: string})
 
 type action =
@@ -245,12 +245,19 @@ let useCompilerManager = (
         | Ready(ready) =>
           ready.selected.instance->Compiler.setConfig(config)
           let selected = {...ready.selected, config}
-          Compiling({...ready, selected})
+          Compiling({state: {...ready, selected}, previousJsCode: None})
         | _ => state
         }
       | CompileCode(lang, code) =>
         switch state {
-        | Ready(ready) => Compiling({...ready, code, targetLang: lang})
+        | Ready(ready) =>
+          Compiling({
+            state: {...ready, code, targetLang: lang},
+            previousJsCode: switch ready.result {
+            | Comp(Success({jsCode})) => Some(jsCode)
+            | _ => None
+            },
+          })
         | _ => state
         }
       | SwitchLanguage({lang, code}) =>
@@ -348,13 +355,23 @@ let useCompilerManager = (
       | ToggleAutoRun =>
         switch state {
         | Ready({autoRun: true} as ready) => Ready({...ready, autoRun: false})
-        | Ready({autoRun: false} as ready) => Compiling({...ready, autoRun: true})
+        | Ready({autoRun: false} as ready) =>
+          Compiling({
+            state: {
+              ...ready,
+              autoRun: true,
+            },
+            previousJsCode: switch ready.result {
+            | Comp(Success({jsCode})) => Some(jsCode)
+            | _ => None
+            },
+          })
         | _ => state
         }
       | RunCode =>
         switch state {
-        | Ready({result: Comp(Success({js_code}))} as ready) =>
-          Executing({state: {...ready, autoRun: false}, jsCode: js_code})
+        | Ready({result: Comp(Success({jsCode}))} as ready) =>
+          Executing({state: {...ready, autoRun: false}, jsCode})
         | _ => state
         }
       }
@@ -487,7 +504,7 @@ let useCompilerManager = (
 
           dispatchError(CompilerLoadingError(msg))
         }
-      | Compiling({targetLang: lang, code, autoRun} as ready) =>
+      | Compiling({state: {targetLang: lang, code, autoRun} as ready}) =>
         let apiVersion = ready.selected.apiVersion
         let instance = ready.selected.instance
 
@@ -520,8 +537,7 @@ let useCompilerManager = (
         let ready = {...ready, result: FinalResult.Comp(compResult)}
         setState(_ =>
           switch (ready.result, autoRun) {
-          | (FinalResult.Comp(Success({js_code})), true) =>
-            Executing({state: ready, jsCode: js_code})
+          | (FinalResult.Comp(Success({jsCode})), true) => Executing({state: ready, jsCode})
           | _ => Ready(ready)
           }
         )
