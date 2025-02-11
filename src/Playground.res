@@ -1149,11 +1149,38 @@ module ControlPanel = {
       | _ => false
       }
 
+      let onKeyDown = event => {
+        switch (
+          event->ReactEvent.Keyboard.metaKey || event->ReactEvent.Keyboard.ctrlKey,
+          event->ReactEvent.Keyboard.key,
+        ) {
+        | (true, "e") => dispatch(RunCode)
+        | _ => ()
+        }
+      }
+
+      React.useEffect(() => {
+        Webapi.Window.addEventListener("keydown", onKeyDown)
+        Some(() => Webapi.Window.removeEventListener("keydown", onKeyDown))
+      }, [])
+
+      let runButtonText = {
+        let userAgent = Webapi.Window.Navigator.userAgent
+        let run = "Run"
+        if userAgent->String.includes("iPhone") || userAgent->String.includes("Android") {
+          run
+        } else if userAgent->String.includes("Mac") {
+          `${run} (⌘ + E)`
+        } else {
+          `${run} (Ctrl + E)`
+        }
+      }
+
       <div className="flex flex-row gap-x-2">
         <ToggleButton checked=autoRun onChange={_ => dispatch(ToggleAutoRun)}>
           {React.string("Auto-run")}
         </ToggleButton>
-        <Button onClick={_ => dispatch(RunCode)}> {React.string("Run")} </Button>
+        <Button onClick={_ => dispatch(RunCode)}> {React.string(runButtonText)} </Button>
         <Button onClick=onFormatClick> {React.string("Format")} </Button>
         <ShareButton actionIndicatorKey />
       </div>
