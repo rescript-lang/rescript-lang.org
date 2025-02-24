@@ -44,14 +44,14 @@ canonical: "/docs/manual/v11.0.0/overview"
 
 ### Boolean
 
-| JavaScript                                            | ReScript                                       |
-| ----------------------------------------------------- | ---------------------------------------------- |
-| `true`, `false`                                       | Same                                           |
-| `!true`                                               | Same                                           |
-| <code>&#124;&#124;</code>, `&&`, `<=`, `>=`, `<`, `>` | Same                                           |
-| `a === b`, `a !== b`                                  | Same                                           |
-| No deep equality (recursive compare)                  | `a == b`, `a != b`                             |
-| `a == b`                                              | No equality with implicit casting (thankfully) |
+| JavaScript                           | ReScript                                       |
+| ------------------------------------ | ---------------------------------------------- |
+| `true`, `false`                      | Same                                           |
+| `!true`                              | Same                                           |
+| `\|\|`, `&&`, `<=`, `>=`, `<`, `>`   | Same                                           |
+| `a === b`, `a !== b`                 | Same                                           |
+| No deep equality (recursive compare) | `a == b`, `a != b`                             |
+| `a == b`                             | No equality with implicit casting (thankfully) |
 
 ### Number
 
@@ -243,7 +243,7 @@ The last expression of a block delimited by `{}` implicitly returns (including f
 | Float Exponentiation            | `2.0 ** 3.0`                         | `Math.pow(2.0, 3.0)`                       |
 | String Concatenation            | `"Hello " ++ "World"`                | `"Hello " + "World"`                       |
 | Comparison                      | `>`, `<`, `>=`, `<=`                 | `>`, `<`, `>=`, `<=`                       |
-| Boolean operation               | `!`, `&&`, <code>&#124;&#124;</code> | `!`, `&&`, <code>&#124;&#124;</code>       |
+| Boolean operation               | `!`, `&&`, `\|\|`                    | `!`, `&&`, `\|\|`                          |
 | Shallow and deep Equality       | `===`, `==`                          | `===`, `==`                                |
 | List (disrecommended)           | `list{1, 2, 3}`                      | `{hd: 1, tl: {hd: 2, tl: {hd: 3, tl: 0}}}` |
 | List Prepend                    | `list{a1, a2, ...oldList}`           | `{hd: a1, tl: {hd: a2, tl: theRest}}`      |
