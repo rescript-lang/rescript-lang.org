@@ -1315,9 +1315,7 @@ module InitialContent = {
 }
 `
 
-  let since_10_1 = `@@jsxConfig({ version: 4, mode: "automatic" })
-
-module CounterMessage = {
+  let since_10_1 = `module CounterMessage = {
   @react.component
   let make = (~count, ~username=?) => {
     let times = switch count {
@@ -1347,9 +1345,10 @@ module App = {
       <input
         type_="text"
         value={username}
-        onChange={evt => {
-          evt->ReactEvent.Form.preventDefault
-          let username = (evt->ReactEvent.Form.target)["value"]
+        onChange={event => {
+          event->ReactEvent.Form.preventDefault
+          let eventTarget = event->ReactEvent.Form.target
+          let username = eventTarget["value"]
           setUsername(_prev => username)
         }}
       />

@@ -1,7 +1,7 @@
 let css = `body {
   background-color: inherit;
   color: CanvasText;
-  color-scheme: light dark;
+  color-scheme: dark;
 }`
 
 let reactVersion = "18.2.0"
