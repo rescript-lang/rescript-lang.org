@@ -1,7 +1,17 @@
-@react.component
-let make = (~onChange, ~version: string, ~availableVersions: array<(string, string)>) => {
-  // array<(version, label)>
+module SectionHeader = {
+  @react.component
+  let make = (~value) =>
+    <option disabled=true key=value className="py-4"> {React.string(value)} </option>
+}
 
+@react.component
+let make = (
+  ~onChange,
+  ~version: string,
+  ~nextVersion: option<(string, string)>=?,
+  ~availableVersions: array<(string, string)>,
+) => {
+  // array<(version, label)>
   let children = Array.map(availableVersions, ((ver, label)) => {
     <option className="py-4" key=ver value=ver> {React.string(label)} </option>
   })
@@ -10,6 +20,15 @@ let make = (~onChange, ~version: string, ~availableVersions: array<(string, stri
     name="versionSelection"
     value=version
     onChange>
+    {switch nextVersion {
+    | None => React.null
+    | Some((value, label)) =>
+      <>
+        <SectionHeader value=Constants.dropdownLabelNext />
+        <option className="py-4" key=value value> {React.string(label)} </option>
+        <SectionHeader value=Constants.dropdownLabelReleased />
+      </>
+    }}
     {React.array(children)}
   </select>
 }

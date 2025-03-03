@@ -8,22 +8,6 @@ module FinalResult: {
     | Nothing
 }
 
-module Semver: {
-  type preRelease =
-    | Alpha(int)
-    | Beta(int)
-    | Dev(int)
-    | Rc(int)
-  type t = {
-    major: int,
-    minor: int,
-    patch: int,
-    preRelease: option<preRelease>,
-  }
-  let parse: string => option<t>
-  let toString: t => string
-}
-
 type selected = {
   id: Semver.t, // The id used for loading the compiler bundle (ideally should be the same as compilerVersion)
   apiVersion: Version.t, // The playground API version in use
@@ -41,6 +25,13 @@ type ready = {
   targetLang: Lang.t,
   errors: array<string>, // For major errors like bundle loading
   result: FinalResult.t,
+  autoRun: bool,
+  validReactCode: bool,
+  logs: array<ConsolePanel.log>,
+}
+
+module CdnMeta: {
+  let getStdlibRuntimeUrl: (Semver.t, string) => string
 }
 
 type state =
@@ -48,7 +39,8 @@ type state =
   | SetupFailed(string)
   | SwitchingCompiler(ready, Semver.t) // (ready, targetId, libraries)
   | Ready(ready)
-  | Compiling(ready, (Lang.t, string))
+  | Compiling({state: ready, previousJsCode: option<string>})
+  | Executing({state: ready, jsCode: string})
 
 type action =
   | SwitchToCompiler(Semver.t) // id
@@ -56,6 +48,9 @@ type action =
   | Format(string)
   | CompileCode(Lang.t, string)
   | UpdateConfig(Config.t)
+  | AppendLog(ConsolePanel.log)
+  | ToggleAutoRun
+  | RunCode
 
 let useCompilerManager: (
   ~initialVersion: Semver.t=?,

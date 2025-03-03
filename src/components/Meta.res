@@ -74,7 +74,7 @@ let make = (
       name="docsearch:version"
       content={switch version {
       | Some(Version(v)) => v
-      | _ => "latest"
+      | _ => Constants.versions.latest
       }}
     />
   </Head>

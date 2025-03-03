@@ -1,5 +1,6 @@
 type version =
   | Latest
+  | Next
   | NoVersion
   | Version(string)
 
@@ -19,3 +20,5 @@ type breadcrumb = {
 let parse: string => t
 
 let prettyString: string => string
+
+let getVersionString: t => string

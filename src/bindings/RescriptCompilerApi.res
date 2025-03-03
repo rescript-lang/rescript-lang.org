@@ -237,18 +237,20 @@ module TypeHint = {
 
 module CompileSuccess = {
   type t = {
-    js_code: string,
+    @as("js_code")
+    jsCode: string,
     warnings: array<Warning.t>,
-    type_hints: array<TypeHint.t>,
+    @as("type_hints")
+    typeHints: array<TypeHint.t>,
     time: float, // total compilation time
   }
 
   let decode = (~time: float, json): t => {
     open Json.Decode
     {
-      js_code: field("js_code", string, json),
+      jsCode: field("js_code", string, json),
       warnings: field("warnings", array(Warning.decode, ...), json),
-      type_hints: withDefault([], field("type_hints", array(TypeHint.decode, ...), ...), json),
+      typeHints: withDefault([], field("type_hints", array(TypeHint.decode, ...), ...), json),
       time,
     }
   }

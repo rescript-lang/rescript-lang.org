@@ -20,23 +20,14 @@ let default = (~showVersionSelect=true) => {
   let router = Next.Router.useRouter()
   let url = router.route->Url.parse
 
-  let version = switch url.version {
-  | Url.Latest => "latest"
-  | NoVersion => "latest"
-  | Version(version) => version
-  }
+  let version = url->Url.getVersionString
 
-  let languageManual = [
-    ("Overview", `/docs/manual/${version}/introduction`),
-    ("Language Features", `/docs/manual/${version}/overview`),
-    ("JS Interop", `/docs/manual/${version}/embed-raw-javascript`),
-    ("Build System", `/docs/manual/${version}/build-overview`),
-  ]
+  let languageManual = Constants.languageManual(version)
 
   let ecosystem = [
     ("Package Index", "/packages"),
     ("rescript-react", "/docs/react/latest/introduction"),
-    ("GenType", "/docs/manual/latest/typescript-integration"),
+    ("GenType", `/docs/manual/${version}/typescript-integration`),
     ("Reanalyze", "https://github.com/rescript-lang/reanalyze"),
   ]
 
@@ -55,8 +46,14 @@ let default = (~showVersionSelect=true) => {
         ("/" ++ (version ++ ("/" ++ Array.join(url.pagepath, "/")))))
       router->Next.Router.push(targetUrl)
     }
+
     <div className="text-fire">
-      <VersionSelect availableVersions=Constants.allManualVersions onChange version />
+      <VersionSelect
+        availableVersions=Constants.allManualVersions
+        nextVersion=?Constants.nextVersion
+        onChange
+        version
+      />
     </div>
   } else {
     React.null

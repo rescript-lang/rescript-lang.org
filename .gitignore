@@ -27,3 +27,8 @@ lib/
 
 src/**/*.mjs
 scripts/**/*.mjs
+
+# Generated via generate-llms script
+public/llms/manual/**/llm*.txt
+public/llms/react/**/llm*.txt
+pages/docs/**/**/llms.mdx

@@ -27,6 +27,9 @@ module Element = {
   @send
   external postMessage: (contentWindow, string, ~targetOrigin: string=?) => unit = "postMessage"
 
+  @send
+  external postMessageAny: (contentWindow, 'a, ~targetOrigin: string=?) => unit = "postMessage"
+
   module Style = {
     @scope("style") @set external width: (Dom.element, string) => unit = "width"
     @scope("style") @set external height: (Dom.element, string) => unit = "height"
@@ -58,6 +61,10 @@ module Window = {
 
   module Location = {
     @scope(("window", "location")) @val external href: string = "href"
+  }
+
+  module Navigator = {
+    @scope(("window", "navigator")) @val external userAgent: string = "userAgent"
   }
 }
 

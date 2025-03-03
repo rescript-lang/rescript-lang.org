@@ -1,45 +1,34 @@
 module Sidebar = SidebarLayout.Sidebar
 
-let categories: array<Sidebar.Category.t> = [
+let makeCategories: string => array<Sidebar.Category.t> = version => [
   {
     name: "Introduction",
-    items: [{name: "Overview", href: "/docs/manual/latest/api"}],
+    items: [{name: "Overview", href: `/docs/manual/${version}/api`}],
   },
   {
     name: "Standard Library",
-    items: [{name: "Core", href: "/docs/manual/latest/api/core"}],
+    items: [{name: "Core", href: `/docs/manual/${version}/api/core`}],
   },
   {
     name: "Additional Libraries",
     items: [
-      {name: "Belt", href: "/docs/manual/latest/api/belt"},
-      {name: "Dom", href: "/docs/manual/latest/api/dom"},
+      {name: "Belt", href: `/docs/manual/${version}/api/belt`},
+      {name: "Dom", href: `/docs/manual/${version}/api/dom`},
     ],
   },
   {
     name: "Legacy Modules",
-    items: [{name: "Js", href: "/docs/manual/latest/api/js"}],
+    items: [{name: "Js", href: `/docs/manual/${version}/api/js`}],
   },
 ]
 
 /* Used for API docs (structured data) */
 module Docs = {
   @react.component
-  let make = (~components=ApiMarkdown.default, ~children) => {
+  let make = (~version, ~components=ApiMarkdown.default, ~children) => {
     let title = "API"
-    let version = "latest"
+    let categories = makeCategories(version)
 
     <ApiLayout title categories version components> children </ApiLayout>
   }
 }
-
-/*
- This layout is used for structured prose text with proper H2 headings.
- We cannot really use the same layout as with the Docs module, since they
- have different semantic styling and do things such as hiding the text
- of H2 nodes.
- */
-/* module Prose = { */
-/* @react.component */
-/* let make = (~children) => <Docs components=Markdown.default> children </Docs> */
-/* } */

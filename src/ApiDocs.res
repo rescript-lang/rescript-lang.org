@@ -91,10 +91,12 @@ module SidebarTree = {
   @react.component
   let make = (~isOpen: bool, ~toggle: unit => unit, ~node: node, ~items: array<item>) => {
     let router = Next.Router.useRouter()
+    let url = router.route->Url.parse
+    let version = url->Url.getVersionString
 
     let moduleRoute =
       Webapi.URL.make("file://" ++ router.asPath).pathname
-      ->String.replace("/docs/manual/latest/api/", "")
+      ->String.replace(`/docs/manual/${version}/api/`, "")
       ->String.split("/")
 
     let summaryClassName = "truncate py-1 md:h-auto tracking-tight text-gray-60 font-medium text-14 rounded-sm hover:bg-gray-20 hover:-ml-2 hover:py-1 hover:pl-2 "
@@ -164,7 +166,7 @@ module SidebarTree = {
       <div className="flex justify-between text-fire font-medium items-baseline">
         {React.string(node.name ++ " Module")}
         {switch url {
-        | Some({version}) =>
+        | Some(url) =>
           let onChange = evt => {
             open Url
             ReactEvent.Form.preventDefault(evt)
@@ -177,15 +179,12 @@ module SidebarTree = {
               ("/" ++ (version ++ ("/" ++ Array.join(url.pagepath, "/")))))
             router->Next.Router.push(targetUrl)
           }
-          let version = switch version {
-          | Latest | NoVersion => "latest"
-          | Version(version) => version
-          }
+          let version = url->Url.getVersionString
           let availableVersions = switch node.name {
-          | "Core" => [("latest", "v11.0")]
+          | "Core" => [("latest", "v11.0.0")]
           | _ => ApiLayout.allApiVersions
           }
-          <VersionSelect onChange version availableVersions />
+          <VersionSelect onChange version availableVersions nextVersion=?Constants.nextVersion />
         | None => React.null
         }}
       </div>
@@ -351,10 +350,7 @@ let default = (props: props) => {
   | _ => React.null
   }
 
-  let version = switch Url.parse(router.asPath).version {
-  | Latest | NoVersion => "latest"
-  | Version(v) => v
-  }
+  let version = Url.parse(router.asPath)->Url.getVersionString
 
   let sidebar = switch props {
   | Ok({toctree, module_: {items}}) =>

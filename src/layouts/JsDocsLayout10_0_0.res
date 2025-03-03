@@ -166,11 +166,7 @@ module Docs = {
 
     let url = route->Url.parse
 
-    let version = switch url.version {
-    | Version(version) => version
-    | NoVersion => "latest"
-    | Latest => "latest"
-    }
+    let version = url->Url.getVersionString
 
     let prefix = {
       open Url

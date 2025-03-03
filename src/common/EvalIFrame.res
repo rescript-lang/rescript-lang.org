@@ -1,7 +1,7 @@
 let css = `body {
   background-color: inherit;
   color: CanvasText;
-  color-scheme: light dark;
+  color-scheme: dark;
 }`
 
 let reactVersion = "18.2.0"
@@ -18,7 +18,6 @@ let srcDoc = `
         <script type="importmap">
           {
             "imports": {
-              "@jsxImportSource": "https://esm.sh/react@${reactVersion}",
               "react-dom/client": "https://esm.sh/react-dom@${reactVersion}/client",
               "react": "https://esm.sh/react@${reactVersion}",
               "react/jsx-runtime": "https://esm.sh/react@${reactVersion}/jsx-runtime"
@@ -36,11 +35,14 @@ let srcDoc = `
           window.JsxRuntime = JsxRuntime;
         </script>
         <script>
-          window.addEventListener("message", (event) => {
+          window.addEventListener("message", async (event) => {
             try {
               // https://rollupjs.org/troubleshooting/#avoiding-eval
-              const eval2 = eval;
-              eval2(event.data);
+              const imports = {};
+              for (const [key, path] of Object.entries(event.data.imports)) {
+                imports[key] = await import(path);
+              }
+              (Function(...Object.keys(imports), event.data.code))(...Object.values(imports));
             } catch (err) {
               console.error(err);
             }
@@ -67,7 +69,12 @@ let srcDoc = `
     </html>
   `
 
-let sendOutput = code => {
+type message = {
+  code: string,
+  imports: Dict.t<string>,
+}
+
+let sendOutput = (code, imports) => {
   open Webapi
 
   let frame = Document.document->Element.getElementById("iframe-eval")
@@ -75,7 +82,7 @@ let sendOutput = code => {
   switch frame {
   | Value(element) =>
     switch element->Element.contentWindow {
-    | Some(win) => win->Element.postMessage(code, ~targetOrigin="*")
+    | Some(win) => win->Element.postMessageAny({code, imports}, ~targetOrigin="*")
     | None => Console.error("contentWindow not found")
     }
   | Null | Undefined => Console.error("iframe not found")

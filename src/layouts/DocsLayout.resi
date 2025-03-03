@@ -9,6 +9,7 @@ let make: (
   ~frontmatter: JSON.t=?,
   ~version: string=?,
   ~availableVersions: array<(string, string)>=?,
+  ~nextVersion: (string, string)=?,
   ~activeToc: SidebarLayout.Toc.t=?,
   ~categories: array<SidebarLayout.Sidebar.Category.t>,
   ~components: MarkdownComponents.t=?,
@@ -31,6 +32,7 @@ module Make: (Content: StaticContent) =>
     ~frontmatter: JSON.t=?,
     ~version: string=?,
     ~availableVersions: array<(string, string)>=?,
+    ~nextVersion: (string, string)=?,
     /* ~activeToc: option<SidebarLayout.Toc.t>=?, */
     ~components: MarkdownComponents.t=?,
     ~theme: ColorTheme.t=?,

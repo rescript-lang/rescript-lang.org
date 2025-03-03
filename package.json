@@ -37,7 +37,7 @@
     "highlight.js": "^11.9.0",
     "highlightjs-rescript": "^0.2.2",
     "lz-string": "^1.4.4",
-    "next": "^14.2.2",
+    "next": "^14.2.21",
     "next-mdx-remote": "^4.4.1",
     "prettier": "^1.18.2",
     "react": "^18.2.0",
@@ -58,15 +58,18 @@
   },
   "scripts": {
     "dev": "next",
+    "res:watch": "rescript build -w",
     "build": "rescript && npm run update-index && next build",
     "test": "node scripts/test-examples.mjs && node scripts/test-hrefs.mjs",
     "reanalyze": "reanalyze -all-cmt .",
-    "update-index": "node scripts/extract-indices.mjs && node scripts/extract-tocs.mjs && node scripts/extract-syntax.mjs && node scripts/generate_feed.mjs > public/blog/feed.xml"
+    "update-index": "npm run generate-llms && node scripts/extract-indices.mjs && node scripts/extract-tocs.mjs && node scripts/extract-syntax.mjs && node scripts/generate_feed.mjs > public/blog/feed.xml",
+    "generate-llms": "node scripts/generate_llms.mjs"
   },
   "devDependencies": {
     "@mdx-js/react": "^2.3.0",
     "autoprefixer": "^10.4.14",
     "cssnano": "^6.0.1",
+    "dotenv": "^16.4.7",
     "esbuild-loader": "^2.20.0",
     "postcss": "^8.4.27",
     "postcss-cli": "^8.3.0",

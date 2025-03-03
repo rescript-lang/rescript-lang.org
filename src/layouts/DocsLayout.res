@@ -54,6 +54,7 @@ let make = (
   ~frontmatter=?,
   ~version: option<string>=?,
   ~availableVersions: option<array<(string, string)>>=?,
+  ~nextVersion: option<(string, string)>=?,
   ~activeToc: option<SidebarLayout.Toc.t>=?,
   ~categories: array<Category.t>,
   ~components=MarkdownComponents.default,
@@ -84,7 +85,7 @@ let make = (
   }, [])
 
   let preludeSection =
-    <div className="flex justify-between text-fire font-medium items-baseline">
+    <div className="flex flex-col justify-between text-fire font-medium items-baseline">
       {React.string(title)}
       {switch version {
       | Some(version) =>
@@ -102,7 +103,7 @@ let make = (
               ("/" ++ (version ++ ("/" ++ Array.join(url.pagepath, "/")))))
             router->Next.Router.push(targetUrl)
           }
-          <VersionSelect onChange version availableVersions />
+          <VersionSelect onChange version availableVersions ?nextVersion />
         | None => <span className="font-mono text-14"> {React.string(version)} </span>
         }
       | None => React.null
@@ -177,6 +178,7 @@ module Make = (Content: StaticContent) => {
     ~frontmatter=?,
     ~version: option<string>=?,
     ~availableVersions: option<array<(string, string)>>=?,
+    ~nextVersion: option<(string, string)>=?,
     /* ~activeToc: option<SidebarLayout.Toc.t>=?, */
     ~components: option<MarkdownComponents.t>=?,
     ~theme: option<ColorTheme.t>=?,
@@ -215,9 +217,7 @@ module Make = (Content: StaticContent) => {
             Array.push(arr, next)->ignore
             acc->Dict.set(category, arr)
           }
-        | None =>
-          Console.log2("has NO category", next)
-          ()
+        | None => Console.log2("has NO category", next)
         }
         acc
       })
@@ -240,6 +240,7 @@ module Make = (Content: StaticContent) => {
       ?frontmatter,
       ?version,
       ?availableVersions,
+      ?nextVersion,
       ?activeToc,
       categories,
       ?components,

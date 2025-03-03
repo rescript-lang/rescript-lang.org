@@ -1,3 +1,4 @@
+// @ts-check
 import fs from "fs";
 import webpack from "webpack";
 import rehypeSlug from "rehype-slug";
@@ -7,17 +8,19 @@ import remarkFrontmatter from "remark-frontmatter";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import { createLoader } from "simple-functional-loader";
 
-const bsconfig = JSON.parse(fs.readFileSync("./rescript.json"));
+const bsconfig = JSON.parse(fs.readFileSync("./rescript.json").toString());
 
 const { ProvidePlugin } = webpack;
 
 const transpileModules = ["rescript"].concat(bsconfig["bs-dependencies"]);
 
 const config = {
-  output: process.env.BUILD_STATIC === 'true' ? 'export' : undefined,
+  output: process.env.BUILD_STATIC === "true" ? "export" : undefined,
   pageExtensions: ["jsx", "js", "bs.js", "mdx", "mjs"],
   env: {
     ENV: process.env.NODE_ENV,
+    VERSION_LATEST: process.env.VERSION_LATEST,
+    VERSION_NEXT: process.env.VERSION_NEXT,
   },
   swcMinify: false,
   webpack: (config, options) => {
@@ -122,6 +125,26 @@ const config = {
         source: "/docs/gentype/latest/supported-types",
         destination: "/docs/manual/latest/typescript-integration",
         permanent: true,
+      },
+      {
+        source: "/docs/manual/latest/:slug*",
+        destination: `/docs/manual/${process.env.VERSION_LATEST}/:slug*`,
+        permanent: false,
+      },
+      {
+        source: "/docs/manual/next/:slug*",
+        destination: `/docs/manual/${process.env.VERSION_NEXT}/:slug*`,
+        permanent: false,
+      },
+      {
+        source: "/llms/manual/latest/:file*",
+        destination: `/llms/manual/${process.env.VERSION_LATEST}/:file*`,
+        permanent: false,
+      },
+      {
+        source: "/llms/manual/next/:file*",
+        destination: `/llms/manual/${process.env.VERSION_NEXT}/:file*`,
+        permanent: false,
       },
     ];
   },
