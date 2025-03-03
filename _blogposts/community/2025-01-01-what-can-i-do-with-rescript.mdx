@@ -22,6 +22,7 @@ Console.log("Hello")
 ```
 
 Just run `node index.res.js` and you'll see "Hello" logged to the console. You can import compiled ReScript into any project that could import JavaScript.
+If you can use `.js` or `.mjs` files, you can use ReScript. This does mean that languages with different file formats like Vue or Svelte require you to import the compiled JavaScript instead of writing it directly in the `.vue` or `.svelte` files.
 But real world projects aren't just JavaScript; they use libraries and frameworks. This is where [bindings](https://rescript-lang.org/docs/manual/latest/external) come into play.
 A binding is a way to tell ReScript the types and imports from external JavaScript. You can think of bindings in the same way that you need to create a `*.d.ts` file to add types to a JavaScript library that doesn't use TypeScript.
 
@@ -132,3 +133,10 @@ var formattedDate = DateFns.format("2021-09-01", "MMMM dd, yyyy", {
 </CodeTab>
 
 You can write new bindings and extend existing types as you need.
+
+## How can I get started?
+You can [follow this guide](https://rescript-lang.org/docs/manual/v11.0.0/converting-from-js) to add ReScript to an existing JavaScript project to get a feel for how the language works and interacts with JavaScript.
+The forum is also a great place to ask questions! Feel free to drop by and ask how to get started with a specific framework or project that you want to work on, 
+and you'll probably get great advice and information from users who have already used ReScript for something similar. 
+
+Happy coding!

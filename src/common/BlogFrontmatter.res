@@ -99,7 +99,8 @@ type t = {
   title: string,
   badge: Null.t<Badge.t>,
   description: Null.t<string>,
-  originalLink: Null.t<string>,
+  originalSrc: Null.t<string>,
+  originalSrcUrl: Null.t<string>,
 }
 
 let decodeBadge = (str: string): Badge.t =>
@@ -142,7 +143,8 @@ let decode = (json: JSON.t): result<t, string> => {
     articleImg: json->optional(field("articleImg", string, ...), _)->Null.fromOption,
     title: json->(field("title", string, _)),
     description: json->(nullable(field("description", string, ...), _)),
-    originalLink: json->optional(field("originalLink", string, ...), _)->Null.fromOption,
+    originalSrc: json->optional(field("originalSrc", string, ...), _)->Null.fromOption,
+    originalSrcUrl: json->optional(field("originalSrcUrl", string, ...), _)->Null.fromOption,
   } {
   | fm => Ok(fm)
   | exception DecodeError(str) => Error(str)

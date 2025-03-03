@@ -63,6 +63,7 @@ module BlogHeader = {
     ~category: option<string>=?,
     ~description: option<string>,
     ~articleImg: option<string>,
+    ~originalSrc: option<(string, string)>,
   ) => {
     let date = DateStr.toDate(date)
 
@@ -91,6 +92,17 @@ module BlogHeader = {
             </div>
           }
         )}
+        {switch originalSrc {
+        | None => React.null
+        | Some("", _) => React.null
+        | Some(_, "") => React.null
+        | Some(url, title) =>
+          <div className="mt-1 mb-8">
+            <a className="body-sm no-underline text-fire hover:underline" href=url>
+              {React.string(`Originally posted on ${title}`)}
+            </a>
+          </div>
+        }}
         <div className="flex flex-col md:flex-row mb-12">
           {Array.map(authors, author =>
             <div
@@ -150,7 +162,17 @@ let default = (props: props) => {
     : React.null
 
   let content = switch fm {
-  | Ok({date, author, co_authors, title, description, articleImg, previewImg}) =>
+  | Ok({
+      date,
+      author,
+      co_authors,
+      title,
+      description,
+      articleImg,
+      previewImg,
+      originalSrc,
+      originalSrcUrl,
+    }) =>
     <div className="w-full">
       <Meta
         siteName="ReScript Blog"
@@ -166,6 +188,10 @@ let default = (props: props) => {
           title
           description={description->Null.toOption}
           articleImg={articleImg->Null.toOption}
+          originalSrc={switch (originalSrcUrl->Null.toOption, originalSrc->Null.toOption) {
+          | (Some(url), Some(title)) => Some(url, title)
+          | _ => None
+          }}
         />
       </div>
       <div className="flex justify-center">
