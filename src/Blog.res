@@ -24,7 +24,7 @@ module Badge = {
   @react.component
   let make = (~badge: BlogFrontmatter.Badge.t) => {
     let bgColor = switch badge {
-    | Preview | Roadmap | Release => "bg-turtle"
+    | Preview | Roadmap | Release | Community => "bg-turtle"
     | Testing => "bg-orange"
     }
 
@@ -170,7 +170,10 @@ module FeatureCard = {
               <div>
                 <a
                   className="hover:text-gray-60"
-                  href={"https://x.com/" ++ author.xHandle}
+                  href={switch author.social {
+                  | X(handle) => "https://x.com/" ++ handle
+                  | Bluesky(handle) => "https://bsky.app/profile/" ++ handle
+                  }}
                   rel="noopener noreferrer">
                   {React.string(author.fullname)}
                 </a>
@@ -299,7 +302,7 @@ let getStaticProps_All: Next.GetStaticProps.t<props, params> = async _ctx => {
     posts: BlogApi.getLivePosts(),
     category: All,
   }
-
+  Console.log(props.posts->Array.at(0))
   {"props": props}
 }
 
