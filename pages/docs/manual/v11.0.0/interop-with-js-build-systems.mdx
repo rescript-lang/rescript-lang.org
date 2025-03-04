@@ -12,7 +12,7 @@ If you come from JS, chances are that you already have a build system in your ex
 
 ## Popular JS Build Systems
 
-The JS ecosystem uses a few build systems: [vite](https://vite.dev/), [browserify](http://browserify.org/), [rollup](https://github.com/rollup/rollup), [webpack](https://webpack.js.org/), etc. The latter's probably the most popular of the three (as of 2019 =P). These build systems do both the compilation and the linking (aka, bundling many files into one or few files).
+The JS ecosystem uses a few build systems: [vite](https://vite.dev/), [browserify](http://browserify.org/), [rollup](https://github.com/rollup/rollup), [webpack](https://webpack.js.org/), etc. The first one is probably the most popular of the four (as of 2025 =P). These build systems do both the compilation and the linking (aka, bundling many files into one or few files).
 
 `rescript` only takes care of the compilation step; it maps one `.res`/`.resi` file into one JS output file. As such, in theory, no build system integration is needed from our side. From e.g. the webpack watcher's perspective, the JS files ReScript generates are almost equivalent to your hand-written JS files. We also recommend **that you initially check in those ReScript-generated JS files**, as this workflow means:
 
