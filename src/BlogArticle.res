@@ -39,7 +39,10 @@ module AuthorBox = {
       <div className="w-10 h-10 bg-berry-40 block rounded-full mr-3"> authorImg </div>
       <div className="body-sm">
         <a
-          href={"https://x.com/" ++ author.xHandle}
+          href={switch author.social {
+          | X(handle) => "https://x.com/" ++ handle
+          | Bluesky(handle) => "https://bsky.app/profile/" ++ handle
+          }}
           className="hover:text-gray-80"
           rel="noopener noreferrer">
           {React.string(author.fullname)}
