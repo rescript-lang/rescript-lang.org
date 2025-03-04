@@ -302,7 +302,6 @@ let getStaticProps_All: Next.GetStaticProps.t<props, params> = async _ctx => {
     posts: BlogApi.getLivePosts(),
     category: All,
   }
-  Console.log(props.posts->Array.at(0))
   {"props": props}
 }
 
