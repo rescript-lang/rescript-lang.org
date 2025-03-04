@@ -39,9 +39,7 @@ type post = {
 }
 
 let blogPathToSlug = path => {
-  path
-  ->String.replaceRegExp(%re(`/^(archive\/)?\d\d\d\d-\d\d-\d\d-(.+)\.mdx$/`), "$2")
-  ->String.replaceRegExp(%re(`/^(community\/)?\d\d\d\d-\d\d-\d\d-(.+)\.mdx$/`), "$2")
+  path->String.replaceRegExp(%re(`/^(archive\/)?\d\d\d\d-\d\d-\d\d-(.+)\.mdx$/`), "$2")
 }
 
 let mdxFiles = dir => {
@@ -51,7 +49,6 @@ let mdxFiles = dir => {
 let getAllPosts = () => {
   let postsDirectory = Node.Path.join2(Node.Process.cwd(), "_blogposts")
   let archivedPostsDirectory = Node.Path.join2(postsDirectory, "archive")
-  let communityPostsDirectory = Node.Path.join2(postsDirectory, "community")
 
   let nonArchivedPosts = mdxFiles(postsDirectory)->Array.map(path => {
     let {GrayMatter.data: data} =
@@ -79,20 +76,7 @@ let getAllPosts = () => {
     }
   })
 
-  let communityPosts = mdxFiles(communityPostsDirectory)->Array.map(path => {
-    let {GrayMatter.data: data} =
-      Node.Path.join2(communityPostsDirectory, path)->Node.Fs.readFileSync->GrayMatter.matter
-    switch BlogFrontmatter.decode(data) {
-    | Error(msg) => Exn.raiseError(msg)
-    | Ok(d) => {
-        path: Node.Path.join2("community", path),
-        frontmatter: d,
-        archived: false,
-      }
-    }
-  })
-
-  Array.concatMany(nonArchivedPosts, [archivedPosts, communityPosts])->Array.toSorted((a, b) =>
+  Array.concat(nonArchivedPosts, archivedPosts)->Array.toSorted((a, b) =>
     String.compare(Node.Path.basename(b.path), Node.Path.basename(a.path))
   )
 }
@@ -118,24 +102,24 @@ let getLivePosts = () => {
   )
 }
 
-let getSpecialPosts = directory => {
+let getArchivedPosts = () => {
   let postsDirectory = Node.Path.join2(Node.Process.cwd(), "_blogposts")
-  let specialPostsDirectory = Node.Path.join2(postsDirectory, directory)
+  let archivedPostsDirectory = Node.Path.join2(postsDirectory, "archive")
 
-  let specialPosts = mdxFiles(specialPostsDirectory)->Array.map(path => {
+  let archivedPosts = mdxFiles(archivedPostsDirectory)->Array.map(path => {
     let {GrayMatter.data: data} =
-      Node.Path.join2(specialPostsDirectory, path)->Node.Fs.readFileSync->GrayMatter.matter
+      Node.Path.join2(archivedPostsDirectory, path)->Node.Fs.readFileSync->GrayMatter.matter
     switch BlogFrontmatter.decode(data) {
     | Error(msg) => Exn.raiseError(msg)
     | Ok(d) => {
-        path: Node.Path.join2(directory, path),
+        path: Node.Path.join2("archive", path),
         frontmatter: d,
-        archived: directory === "archive",
+        archived: true,
       }
     }
   })
 
-  specialPosts->Array.toSorted((a, b) =>
+  archivedPosts->Array.toSorted((a, b) =>
     String.compare(Node.Path.basename(b.path), Node.Path.basename(a.path))
   )
 }
