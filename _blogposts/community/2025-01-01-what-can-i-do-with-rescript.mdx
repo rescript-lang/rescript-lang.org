@@ -1,6 +1,6 @@
 ---
 author: josh-derocher-vlk
-date: "2025-01-01"
+date: "2025-03-03"
 previewImg: /static/blog/compiler_release_11_1.jpg
 title: What can I do with ReScript?
 description: |
@@ -60,7 +60,7 @@ You can also get help and guidance on how to write bindings for what you need. U
 You don't need to write bindings for an entire library, or even for all of a functions arguments. Just write what you need as you go.
 
 Let's take a look at the `format` function from [date-fns](https://date-fns.org/). We can see the [arguments in the docs](https://date-fns.org/v4.1.0/docs/format#arguments), and how it should be imported and used.
-```res
+```typescript
 // type signature
 function format(
   date: string | number | Date,
