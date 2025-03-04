@@ -6,7 +6,7 @@ type post = {
 
 let getAllPosts: unit => array<post>
 let getLivePosts: unit => array<post>
-let getArchivedPosts: unit => array<post>
+let getSpecialPosts: string => array<post>
 let blogPathToSlug: string => string
 
 module RssFeed: {

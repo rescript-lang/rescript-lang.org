@@ -41,13 +41,14 @@ module Badge = {
 }
 
 type category =
-  | /** Actually only unarchived */ All
+  | Official
+  | Community
   | Archived
 
 module CategorySelector = {
   @react.component
   let make = (~selected: category) => {
-    let tabs = [All, Archived]
+    let tabs = [Official, Community, Archived]
 
     <div className="text-16 w-full flex items-center justify-between text-gray-60">
       {tabs
@@ -56,7 +57,8 @@ module CategorySelector = {
         let isActive = selected == tab
         let text = (tab :> string)
         let href = switch tab {
-        | All => "/blog"
+        | Official => "/blog"
+        | Community => "/blog/community"
         | Archived => "/blog/archived"
         }
         let className =
@@ -170,7 +172,10 @@ module FeatureCard = {
               <div>
                 <a
                   className="hover:text-gray-60"
-                  href={"https://x.com/" ++ author.xHandle}
+                  href={switch author.social {
+                  | X(handle) => "https://x.com/" ++ handle
+                  | Bluesky(handle) => "https://bsky.app/profile/" ++ handle
+                  }}
                   rel="noopener noreferrer">
                   {React.string(author.fullname)}
                 </a>
@@ -297,7 +302,7 @@ let default = (props: props): React.element => {
 let getStaticProps_All: Next.GetStaticProps.t<props, params> = async _ctx => {
   let props = {
     posts: BlogApi.getLivePosts(),
-    category: All,
+    category: Official,
   }
 
   {"props": props}
@@ -305,8 +310,17 @@ let getStaticProps_All: Next.GetStaticProps.t<props, params> = async _ctx => {
 
 let getStaticProps_Archived: Next.GetStaticProps.t<props, params> = async _ctx => {
   let props = {
-    posts: BlogApi.getArchivedPosts(),
+    posts: BlogApi.getSpecialPosts("archive"),
     category: Archived,
+  }
+
+  {"props": props}
+}
+
+let getStaticProps_Community: Next.GetStaticProps.t<props, params> = async _ctx => {
+  let props = {
+    posts: BlogApi.getSpecialPosts("community"),
+    category: Community,
   }
 
   {"props": props}
