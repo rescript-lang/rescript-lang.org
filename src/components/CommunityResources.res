@@ -60,14 +60,15 @@ let simplifyUrl = url =>
 module LinkCard = {
   @react.component
   let make = (~link) => {
-    <div className="rounded-lg border-gray-90 hover:border-fire border-2 overflow-hidden">
+    <div
+      className="rounded-lg border-2 border-white hover:border-fire hover:border-2 overflow-hidden bg-gray-10">
       <a href=link.url className="flex flex-col h-full">
-        <img className="object-cover w-full lg:h-20 md:h-22 h-40" src=link.image alt="" />
+        <img className="object-cover w-full h-40" src=link.image alt="" />
         <div className="p-2 grow">
-          <h3 className="mb-2 font-semibold text-14 grow-0"> {React.string(link.title)} </h3>
-          <p className="mb-2 text-12 grow"> {React.string(link.description)} </p>
+          <h3 className="font-semibold text-14 grow-0"> {React.string(link.title)} </h3>
+          // <p className="mb-2 text-12 grow truncate"> {React.string(link.description)} </p>
         </div>
-        <p className="text-14 p-2 grow-0 text-gray-60">
+        <p className="text-14 p-2 grow-0 text-gray-70">
           {React.string(link.url->simplifyUrl->Option.getOr(""))}
         </p>
       </a>
@@ -78,7 +79,7 @@ module LinkCard = {
 module LinkCards = {
   @react.component
   let make = () =>
-    <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-4">
+    <div className="grid md:grid-cols-2 gap-6">
       {links
       ->Array.map(link =>
         switch link.image {
