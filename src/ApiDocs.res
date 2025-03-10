@@ -180,11 +180,13 @@ module SidebarTree = {
             router->Next.Router.push(targetUrl)
           }
           let version = url->Url.getVersionString
-          let availableVersions = switch node.name {
-          | "Core" => [("latest", "v11.0.0")]
-          | _ => ApiLayout.allApiVersions
-          }
-          <VersionSelect onChange version availableVersions nextVersion=?Constants.nextVersion />
+
+          <VersionSelect
+            onChange
+            version
+            availableVersions=Constants.coreVersions
+            nextVersion=?Constants.nextVersion
+          />
         | None => React.null
         }}
       </div>
