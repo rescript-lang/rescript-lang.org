@@ -2,6 +2,11 @@ module Document = {
   @val external document: Dom.element = "document"
   @scope("document") @val external createElement: string => Dom.element = "createElement"
   @scope("document") @val external createTextNode: string => Dom.element = "createTextNode"
+  @send
+  external querySelector: (Dom.document, string) => Nullable.t<Dom.element> = "querySelector"
+  @send
+  external querySelectorAll: (Dom.document, string) => Js.Array2.array_like<Dom.element> =
+    "querySelectorAll"
 }
 
 module ClassList = {
@@ -17,6 +22,7 @@ module Element = {
   @get external classList: Dom.element => ClassList.t = "classList"
   @send external getBoundingClientRect: Dom.element => {..} = "getBoundingClientRect"
   @send external addEventListener: (Dom.element, string, unit => unit) => unit = "addEventListener"
+  @send external getAttribute: (Dom.element, string) => Nullable.t<string> = "getAttribute"
 
   @send
   external getElementById: (Dom.element, string) => Nullable.t<Dom.element> = "getElementById"
