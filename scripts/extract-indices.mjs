@@ -9,15 +9,72 @@ import glob from "glob";
 import path from "path";
 import fs from "fs";
 import { URL } from 'url';
+import remarkRehype from "remark-rehype";
+import rehypeSlug from "rehype-slug";
 
 import { defaultProcessor } from "./markdown.js";
+
+const remarkCodeblocks = options => (tree, file) => {
+  const { children } = tree;
+  const codeblocks = {};
+
+  const formatter = value => {
+    // Strip newlines and weird spacing
+    return value
+      .replace(/\n/g, " ")
+      .replace(/\s+/g, " ")
+      .replace(/\(\s+/g, "(")
+      .replace(/\s+\)/g, ")");
+  };
+
+  children.forEach(child => {
+    if (child.type === "code" && child.value) {
+      const { meta, lang } = child;
+      if (meta === "sig" && lang === "re") {
+        if (codeblocks[lang] == null) {
+          codeblocks[lang] = [];
+        }
+        codeblocks[lang].push(formatter(child.value));
+      }
+    }
+  });
+
+  file.data = Object.assign({}, file.data, { codeblocks });
+};
+
+const rehypeHeaders = options => (tree, file) => {
+  const headers = [];
+  let mainHeader;
+  tree.children.forEach(child => {
+    if (child.type === "heading" && child.depth === 1) {
+      if (child.children.length > 0) {
+        mainHeader = child.children.map(element => element.value).join("");
+      }
+    }
+    if (child.type === "heading" && child.depth === 2) {
+      if (child.children.length > 0) {
+        const id = child.data.id || "";
+        const name = child.children.map(element => element.value).join("");
+        headers.push({ name, href: id });
+      }
+    }
+  });
+
+  file.data = Object.assign({}, file.data, { headers, mainHeader });
+};
+
+const processor = defaultProcessor
+  .use(remarkCodeblocks)
+  .use(remarkRehype)
+  .use(rehypeSlug)
+  .use(rehypeHeaders)
 
 const pathname = new URL('.', import.meta.url).pathname;
 const __dirname = process.platform !== 'win32' ? pathname : pathname.substring(1)
 
 const processFile = filepath => {
   const content = fs.readFileSync(filepath, "utf8");
-  const result = defaultProcessor.processSync(content);
+  const result = processor.processSync(content);
 
   const pagesPath = path.resolve("./pages");
   const relFilepath = path.relative(pagesPath, filepath);

@@ -1,10 +1,13 @@
 type t
 type plugin
-type ast<'a> = {..} as 'a
+type vfile<'a> = {..} as 'a
+
+external makePlugin: 'a => plugin = "%identity"
 
 %%private(
   @module("unified") external make: unit => t = "unified"
 
+  @module("remark-parse") external remarkParse: plugin = "default"
   @module("remark-gfm") external remarkGfm: plugin = "default"
   @module("remark-comment") external remarkComment: plugin = "default"
   @module("remark-frontmatter") external remarkFrontmatter: plugin = "default"
@@ -13,9 +16,10 @@ type ast<'a> = {..} as 'a
   @send external use: (t, plugin) => t = "use"
   @send external useOptions: (t, plugin, array<{..}>) => t = "use"
 
-  @send external parse: (t, string) => ast<'a> = "parse"
-  @send external runSync: (t, ast<'a>) => ast<'a> = "runSync"
-  @send external stringify: (t, ast<'a>) => string = "stringify"
+  @send external processSync: (t, string) => vfile<'a> = "processSync"
+  @send external toString: vfile<'a> => string = "toString"
+
+  @module("vfile-matter") external vfileMatter: vfile<'a> => unit = "matter"
 )
 
 type result = {
@@ -24,18 +28,22 @@ type result = {
 }
 
 %%private(
+  let vfileMatterPlugin = makePlugin(_options => (_tree, vfile) => vfileMatter(vfile))
+
   let parser =
     make()
+    ->use(remarkParse)
+    ->use(remarkStringify)
     ->use(remarkGfm)
     ->use(remarkComment)
     ->useOptions(remarkFrontmatter, [{"type": "yaml", "marker": "-"}])
-    ->use(remarkStringify)
+    ->use(vfileMatterPlugin)
 )
 
 let parseSync = content => {
-  let ast = parser->parse(content)
-  let ast = parser->runSync(ast)
-  let frontmatter = (ast["data"]["matter"] :> JSON.t)
-  let content = parser->stringify(ast)
+  let vfile = parser->processSync(content)
+  let frontmatter = (vfile["data"]["matter"] :> option<JSON.t>)
+  let frontmatter = frontmatter->Option.getOr(JSON.Object(Dict.make()))
+  let content = vfile->toString
   {frontmatter, content}
 }
