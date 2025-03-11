@@ -18,7 +18,7 @@ let simplifyUrl = url =>
 module LinkCard = {
   @react.component
   let make = (~link) => {
-    <div className="rounded-lg  hover:text-fire overflow-hidden bg-gray-10">
+    <div className="rounded-lg  hover:text-fire overflow-hidden bg-gray-10 border-2 border-gray-30">
       <a href=link.url className="flex flex-col h-full">
         <img className="object-cover w-full md:h-40 max-h-[345px]" src=link.image alt="" />
         <div className="p-2 grow">
