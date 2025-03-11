@@ -11,6 +11,7 @@ import fs from "fs";
 import { URL } from 'url';
 import remarkRehype from "remark-rehype";
 import rehypeSlug from "rehype-slug";
+import rehypeStringify from "rehype-stringify";
 
 import { defaultProcessor } from "./markdown.js";
 
@@ -68,6 +69,7 @@ const processor = defaultProcessor
   .use(remarkRehype)
   .use(rehypeSlug)
   .use(rehypeHeaders)
+  .use(rehypeStringify)
 
 const pathname = new URL('.', import.meta.url).pathname;
 const __dirname = process.platform !== 'win32' ? pathname : pathname.substring(1)

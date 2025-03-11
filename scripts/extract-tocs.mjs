@@ -2,7 +2,7 @@
  * This script is used for generating the table of contents for prose
  * text documents
  */
-import unified from "unified";
+import { unified } from "unified";
 import glob from "glob";
 import path from "path";
 import fs from "fs";
