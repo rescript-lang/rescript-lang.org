@@ -20,7 +20,7 @@ module LinkCard = {
   let make = (~link) => {
     <div className="rounded-lg  hover:text-fire overflow-hidden bg-gray-10 border-2 border-gray-30">
       <a href=link.url className="flex flex-col h-full">
-        <img className="object-cover w-full md:h-40 max-h-[345px]" src=link.image alt="" />
+        <img className="object-cover w-full lg:h-40 max-h-[345px]" src=link.image alt="" />
         <div className="p-3 md:p-5 grow">
           <h3 className="font-semibold text-16 grow-0 mb-2"> {React.string(link.title)} </h3>
           <p className="mb-2 text-14 grow text-gray-80"> {React.string(link.description)} </p>
@@ -36,7 +36,7 @@ module LinkCard = {
 module LinkCards = {
   @react.component
   let make = () => {
-    <div className="grid md:grid-cols-2 gap-6">
+    <div className="grid lg:grid-cols-2 gap-6">
       {resources
       ->Array.map(link =>
         switch link.image {
