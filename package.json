@@ -64,7 +64,7 @@
     "reanalyze": "reanalyze -all-cmt .",
     "update-index": "npm run generate-llms && node scripts/extract-indices.mjs && node scripts/extract-tocs.mjs && node scripts/extract-syntax.mjs && node scripts/generate_feed.mjs > public/blog/feed.xml",
     "generate-llms": "node scripts/generate_llms.mjs",
-    "generate_resources": "node scripts/generate_resources.mjs"
+    "generate-resources": "node scripts/generate_resources.mjs"
   },
   "devDependencies": {
     "@mdx-js/react": "^2.3.0",
