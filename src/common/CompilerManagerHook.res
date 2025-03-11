@@ -561,17 +561,17 @@ let useCompilerManager = (
           | _ => filename
           }
           let compilerVersion = switch state.selected.id {
-          | {major: 12, minor: 0, patch: 0, preRelease: Some(Alpha(alpha))} if alpha < 8 => {
+          | {major: 12, minor: 0, patch: 0, preRelease: Some(Alpha(alpha))} if alpha < 9 => {
               Semver.major: 12,
               minor: 0,
               patch: 0,
-              preRelease: Some(Alpha(8)),
+              preRelease: Some(Alpha(9)),
             }
           | {major, minor} if (major === 11 && minor < 2) || major < 11 => {
               major: 11,
               minor: 2,
               patch: 0,
-              preRelease: Some(Beta(1)),
+              preRelease: Some(Beta(2)),
             }
           | version => version
           }
