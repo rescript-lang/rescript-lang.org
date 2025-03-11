@@ -1,5 +1,6 @@
-/** this is the list of community resources we want to generate */
-let sites = [
+/** This is the list of community content we want to generate. */
+/** If you  have content you would like to add, please open up a PR adding the link to this list and then run `npm run generate_resources` */
+let urls = [
   // 2025
   "https://dev.to/dzakh/javascript-schema-library-from-the-future-5420",
   "https://www.youtube.com/watch?v=yKl2fSdnw7w",
@@ -28,7 +29,7 @@ let sites = [
 
 let generate = async () => {
   let filePath = "data/resources.json"
-  let metaData = await MetaTagsApi.getMetaTags(sites)
+  let metaData = await MetaTagsApi.getMetaTags(urls)
 
   let fileContent = `${metaData
     ->Array.map(i =>
