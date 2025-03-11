@@ -54,28 +54,6 @@ const collapseHeaderChildren = (children) => {
   }, "");
 };
 
-const headers = (options) => (tree, file) => {
-  const headers = [];
-  let mainHeader;
-  tree.children.forEach((child) => {
-    if (child.type === "heading" && child.depth === 1) {
-      if (child.children.length > 0) {
-        mainHeader = collapseHeaderChildren(child.children);
-      }
-    }
-    if (child.type === "heading" && child.depth === 2) {
-      if (child.children.length > 0) {
-        // Take the id generated from remark-slug
-        const headerValue = collapseHeaderChildren(child.children);
-        const id = child.data.id || "";
-        headers.push({ name: headerValue, href: id });
-      }
-    }
-  });
-
-  file.data = Object.assign({}, file.data, { headers, mainHeader });
-};
-
 // sidebarJson: { [category: string]: array<plain_filename_without_ext> }
 const processFile = (filepath, sidebarJson = {}) => {
   const content = fs.readFileSync(filepath, "utf8");
