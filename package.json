@@ -71,6 +71,7 @@
     "cssnano": "^6.0.1",
     "dotenv": "^16.4.7",
     "esbuild-loader": "^2.20.0",
+    "jsdom": "^26.0.0",
     "postcss": "^8.4.27",
     "postcss-cli": "^8.3.0",
     "postcss-nesting": "^12.1.1",
