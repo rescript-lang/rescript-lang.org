@@ -3,14 +3,12 @@
  * text documents
  */
 import unified from "unified";
-import markdown from "remark-parse";
-import matter from "gray-matter";
-import stringify from "remark-stringify";
-import slug from "remark-slug";
 import glob from "glob";
 import path from "path";
 import fs from "fs";
 import { URL } from "url";
+
+import { defaultProcessor } from "./markdown.js";
 
 const pathname = new URL(".", import.meta.url).pathname;
 const __dirname =
@@ -78,17 +76,11 @@ const headers = (options) => (tree, file) => {
   file.data = Object.assign({}, file.data, { headers, mainHeader });
 };
 
-const processor = unified()
-  .use(markdown, { gfm: true })
-  .use(slug)
-  .use(stringify)
-  .use(headers);
-
 // sidebarJson: { [category: string]: array<plain_filename_without_ext> }
 const processFile = (filepath, sidebarJson = {}) => {
-  const raw = fs.readFileSync(filepath, "utf8");
-  const { content, data } = matter(raw);
-  const result = processor.processSync(content);
+  const content = fs.readFileSync(filepath, "utf8");
+  const result = defaultProcessor.processSync(content);
+  const data = result.data.matter;
 
   const pagesPath = path.resolve("./pages");
   const relFilepath = path.relative(pagesPath, filepath);
