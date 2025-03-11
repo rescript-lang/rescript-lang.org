@@ -1,5 +1,5 @@
 /** This is the list of community content we want to generate. */
-/** If you  have content you would like to add, please open up a PR adding the link to this list and then run `npm run generate_resources` */
+/** If you  have content you would like to add, please open up a PR adding the link to this list and then run `npm run generate-resources` */
 let urls = [
   // 2025
   "https://dev.to/dzakh/javascript-schema-library-from-the-future-5420",
