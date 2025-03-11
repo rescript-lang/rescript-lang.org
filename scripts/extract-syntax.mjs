@@ -1,28 +1,29 @@
-import matter from "gray-matter";
 import glob from "glob";
 import path from "path";
 import fs from "fs";
 import { URL } from 'url';
 
+import { defaultProcessor } from "./markdown.js";
+
 const pathname = new URL('.', import.meta.url).pathname;
 const __dirname = process.platform !== 'win32' ? pathname : pathname.substring(1)
 
 const processFile = filepath => {
-  const raw = fs.readFileSync(filepath, "utf8");
-  const { data } = matter(raw);
+  const content = fs.readFileSync(filepath, "utf8");
+  const { data: { matter } } = defaultProcessor.processSync(content);
 
   const syntaxPath = path.resolve("./misc_docs/syntax");
   const relFilePath = path.relative(syntaxPath, filepath);
   const parsedPath = path.parse(relFilePath);
 
-  if (data.id && data.keywords && data.name && data.summary && data.category) {
+  if (matter.id && matter.keywords && matter.name && matter.summary && matter.category) {
     return {
       file: parsedPath.name,
-      id: data.id,
-      keywords: data.keywords,
-      name: data.name,
-      summary: data.summary,
-      category: data.category
+      id: matter.id,
+      keywords: matter.keywords,
+      name: matter.name,
+      summary: matter.summary,
+      category: matter.category
     }
   }
 

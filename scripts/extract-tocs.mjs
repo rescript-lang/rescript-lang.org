@@ -2,15 +2,13 @@
  * This script is used for generating the table of contents for prose
  * text documents
  */
-import unified from "unified";
-import markdown from "remark-parse";
-import matter from "gray-matter";
-import stringify from "remark-stringify";
-import slug from "remark-slug";
+import { unified } from "unified";
 import glob from "glob";
 import path from "path";
 import fs from "fs";
 import { URL } from "url";
+
+import { defaultProcessor } from "./markdown.js";
 
 const pathname = new URL(".", import.meta.url).pathname;
 const __dirname =
@@ -56,39 +54,11 @@ const collapseHeaderChildren = (children) => {
   }, "");
 };
 
-const headers = (options) => (tree, file) => {
-  const headers = [];
-  let mainHeader;
-  tree.children.forEach((child) => {
-    if (child.type === "heading" && child.depth === 1) {
-      if (child.children.length > 0) {
-        mainHeader = collapseHeaderChildren(child.children);
-      }
-    }
-    if (child.type === "heading" && child.depth === 2) {
-      if (child.children.length > 0) {
-        // Take the id generated from remark-slug
-        const headerValue = collapseHeaderChildren(child.children);
-        const id = child.data.id || "";
-        headers.push({ name: headerValue, href: id });
-      }
-    }
-  });
-
-  file.data = Object.assign({}, file.data, { headers, mainHeader });
-};
-
-const processor = unified()
-  .use(markdown, { gfm: true })
-  .use(slug)
-  .use(stringify)
-  .use(headers);
-
 // sidebarJson: { [category: string]: array<plain_filename_without_ext> }
 const processFile = (filepath, sidebarJson = {}) => {
-  const raw = fs.readFileSync(filepath, "utf8");
-  const { content, data } = matter(raw);
-  const result = processor.processSync(content);
+  const content = fs.readFileSync(filepath, "utf8");
+  const result = defaultProcessor.processSync(content);
+  const data = result.data.matter;
 
   const pagesPath = path.resolve("./pages");
   const relFilepath = path.relative(pagesPath, filepath);

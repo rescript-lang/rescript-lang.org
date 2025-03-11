@@ -23,15 +23,6 @@
     See `pages/blog.re` for more context on why we need this API.
  */
 
-module GrayMatter = {
-  type output = {
-    data: JSON.t,
-    content: string,
-  }
-
-  @module("gray-matter") external matter: string => output = "default"
-}
-
 type post = {
   path: string,
   archived: bool,
@@ -51,9 +42,9 @@ let getAllPosts = () => {
   let archivedPostsDirectory = Node.Path.join2(postsDirectory, "archive")
 
   let nonArchivedPosts = mdxFiles(postsDirectory)->Array.map(path => {
-    let {GrayMatter.data: data} =
-      Node.Path.join2(postsDirectory, path)->Node.Fs.readFileSync->GrayMatter.matter
-    switch BlogFrontmatter.decode(data) {
+    let {frontmatter} =
+      Node.Path.join2(postsDirectory, path)->Node.Fs.readFileSync->MarkdownParser.parseSync
+    switch BlogFrontmatter.decode(frontmatter) {
     | Error(msg) => Exn.raiseError(msg)
     | Ok(d) => {
         path,
@@ -64,9 +55,9 @@ let getAllPosts = () => {
   })
 
   let archivedPosts = mdxFiles(archivedPostsDirectory)->Array.map(path => {
-    let {GrayMatter.data: data} =
-      Node.Path.join2(archivedPostsDirectory, path)->Node.Fs.readFileSync->GrayMatter.matter
-    switch BlogFrontmatter.decode(data) {
+    let {frontmatter} =
+      Node.Path.join2(archivedPostsDirectory, path)->Node.Fs.readFileSync->MarkdownParser.parseSync
+    switch BlogFrontmatter.decode(frontmatter) {
     | Error(msg) => Exn.raiseError(msg)
     | Ok(d) => {
         path: Node.Path.join2("archive", path),
@@ -85,9 +76,9 @@ let getLivePosts = () => {
   let postsDirectory = Node.Path.join2(Node.Process.cwd(), "_blogposts")
 
   let livePosts = mdxFiles(postsDirectory)->Array.map(path => {
-    let {GrayMatter.data: data} =
-      Node.Path.join2(postsDirectory, path)->Node.Fs.readFileSync->GrayMatter.matter
-    switch BlogFrontmatter.decode(data) {
+    let {frontmatter} =
+      Node.Path.join2(postsDirectory, path)->Node.Fs.readFileSync->MarkdownParser.parseSync
+    switch BlogFrontmatter.decode(frontmatter) {
     | Error(msg) => Exn.raiseError(msg)
     | Ok(d) => {
         path,
@@ -107,9 +98,9 @@ let getArchivedPosts = () => {
   let archivedPostsDirectory = Node.Path.join2(postsDirectory, "archive")
 
   let archivedPosts = mdxFiles(archivedPostsDirectory)->Array.map(path => {
-    let {GrayMatter.data: data} =
-      Node.Path.join2(archivedPostsDirectory, path)->Node.Fs.readFileSync->GrayMatter.matter
-    switch BlogFrontmatter.decode(data) {
+    let {frontmatter} =
+      Node.Path.join2(archivedPostsDirectory, path)->Node.Fs.readFileSync->MarkdownParser.parseSync
+    switch BlogFrontmatter.decode(frontmatter) {
     | Error(msg) => Exn.raiseError(msg)
     | Ok(d) => {
         path: Node.Path.join2("archive", path),

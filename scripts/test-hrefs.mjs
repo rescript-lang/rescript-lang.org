@@ -6,16 +6,15 @@
  * the website.
  */
 
-import unified from "unified";
-import markdown from "remark-parse";
-import stringify from "remark-stringify";
-import {config} from "dotenv"
+import { config } from "dotenv"
 import glob from "glob";
 import path from "path";
 import fs from "fs";
 import urlModule from "url";
 import { URL } from 'url';
-import {getAllPosts, blogPathToSlug} from '../src/common/BlogApi.mjs'
+import { getAllPosts, blogPathToSlug } from '../src/common/BlogApi.mjs'
+
+import { defaultProcessor } from "./markdown.js";
 
 config()
 
@@ -30,7 +29,7 @@ const mapBlogFilePath = path => {
 
   if (match) {
     let relPath = match[1];
-    let data = getAllPosts().find(({path}) => path === relPath);
+    let data = getAllPosts().find(({ path }) => path === relPath);
     if (data != null) {
       return `./pages/blog/${blogPathToSlug(data.path)}`;
     }
@@ -54,10 +53,10 @@ const createPageIndex = files => {
     // We need to consider all the different file formats used in pages
     // Calculate the website url by stripping .re, .bs.js, .md(x), etc.
     let url;
-    if(path.startsWith("./_blogposts")) {
+    if (path.startsWith("./_blogposts")) {
       url = mapBlogFilePath(path)
     }
-    else if(path.startsWith("./public/static")) {
+    else if (path.startsWith("./public/static")) {
       url = mapStaticFilePath(path);
     }
     else {
@@ -95,10 +94,7 @@ const hrefs = options => (tree, file) => {
   file.data = Object.assign({}, file.data, { links });
 };
 
-const processor = unified()
-  .use(markdown, { gfm: true })
-  .use(stringify)
-  .use(hrefs);
+const processor = defaultProcessor.use(hrefs);
 
 const processFile = filepath => {
   const content = fs.readFileSync(filepath, "utf8");
@@ -133,7 +129,7 @@ const apiIndexModules = [...createApiIndexModules(latestVersion), ...createApiIn
 
 const testFile = (pageMap, test) => {
   const filepath = test.filepath;
-  
+
   // Used for storing failed / ok hrefs
   const results = [];
 
@@ -142,7 +138,7 @@ const testFile = (pageMap, test) => {
     if (link.url.includes("/manual/latest/")) {
       link.url = link.url.replace("/latest/", `/${latestVersion}/`);
     }
-    
+
     if (link.url.includes("/manual/next/")) {
       link.url = link.url.replace("/next/", `/${nextVersion}/`);
     }
@@ -182,7 +178,7 @@ const testFile = (pageMap, test) => {
         resolved = path.join("/", path.dirname(filepath), parsed.pathname);
       }
       else {
-        if(parsed.pathname.startsWith("/static")) {
+        if (parsed.pathname.startsWith("/static")) {
           console.log("Static");
           resolved = path.join(parsed.pathname);
         }
@@ -192,10 +188,10 @@ const testFile = (pageMap, test) => {
         }
       }
 
-      
+
 
       if (
-        resolved.startsWith(`/pages/docs/manual/${latestVersion}/api`) || 
+        resolved.startsWith(`/pages/docs/manual/${latestVersion}/api`) ||
         resolved.startsWith(`/pages/docs/manual/${nextVersion}/api`)
       ) {
         const pathToModule = resolved.replace("/pages/docs/manual/", "");
@@ -279,9 +275,9 @@ const main = () => {
   const allFiles = pageMapFiles.concat(staticFiles);
 
   const pageMap = createPageIndex(allFiles);
-  
+
   const processedFiles = files.map(processFile);
-  
+
   const allTested = processedFiles.map(file => testFile(pageMap, file));
 
   const failed = allTested.reduce((acc, test) => {
