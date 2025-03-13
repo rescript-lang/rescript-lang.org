@@ -24,6 +24,7 @@ export default {
   content: [
     "./src/**/*.{mjs,js,res}",
     "./pages/**/*.{mjs,js,mdx}",
+    "./_blogposts/**/*.mdx"
   ],
   theme: {
     extend: {
