@@ -132,8 +132,13 @@ module FeatureCard = {
     ~firstParagraph: string="",
     ~slug: string,
   ) => {
-    let authorImg = <img className="h-full w-full rounded-full" src=author.imgUrl />
-
+    let authorImg = switch author.imgUrl {
+    | "" => React.null
+    | imgUrl =>
+      <div className="inline-block w-4 h-4 mr-2">
+        <img className="h-full w-full rounded-full" src=imgUrl />
+      </div>
+    }
     <section
       className="flex sm:px-4 md:px-8 lg:px-0 flex-col justify-end lg:flex-row sm:items-center h-full">
       <div
@@ -166,7 +171,7 @@ module FeatureCard = {
           <h2 className="hl-1"> {React.string(title)} </h2>
           <div className="mb-6">
             <div className="flex items-center body-sm text-gray-40 mt-2 mb-5">
-              <div className="inline-block w-4 h-4 mr-2"> authorImg </div>
+              authorImg
               <div>
                 <a
                   className="hover:text-gray-60"
