@@ -95,8 +95,8 @@ module BlogCard = {
           {
             let className = "absolute top-0 h-full w-full object-cover"
             switch previewImg {
-            | Some(src) => <img className src />
-            | None => <img className src=defaultPreviewImg />
+            | Some(src) => <img className src loading={#"lazy"} />
+            | None => <img className src=defaultPreviewImg loading={#"lazy"} />
             }
           }
         </Link>
@@ -155,7 +155,7 @@ module FeatureCard = {
             let className = "absolute top-0 h-full w-full object-cover"
             switch previewImg {
             | Some(src) => <img className src />
-            | None => <img className src=defaultPreviewImg />
+            | None => <img className src=defaultPreviewImg loading={#eager} />
             }
           }
         </Link>
