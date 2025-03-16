@@ -22,7 +22,7 @@ Last year, from the 23rd to the 26th of May, the ReScript Association invited ma
   withShadow="true"
 />
 
-No everybody is on the same level of knowledge about the parser, compiler or other tools. Talks are a great way to get them on the same level before the real work gets started. In 2024 we had the following talks:
+Not everybody is on the same level of knowledge about the parser, compiler or other tools. Talks are a great way to get to a better collective understanding before the real work gets started. In 2024 we had the following talks:
 
 - Brief overview of parser development, by Maxim Valcke ([@\_binary_search](https://x.com/_binary_search))
 - Intro to compiler development, by Cristiano Calcagno ([@ccrisccris](https://x.com/ccrisccris))
@@ -49,12 +49,25 @@ Our contributors split up in multiple small groups of 2-4 people. Every group ha
 
 We also did group discussions about how to elevator pitch ReScript and about ReScript's roadmap.
 
-The full results of this discussions and the group work can be read at the ReScript forum: https://forum.rescript-lang.org/t/ann-rescript-retreat-roadmap-summary-2024/5275
+The full results of this discussions and the group work can be read at the ReScript forum: https://forum.rescript-lang.org/t/ann-rescript-retreat-roadmap-summary-2024/5275. But that is the past, have a look at the following section to see how far we have come:
+
+### Results
+
+Almost a year later, most of the things that got started at the retreat, got finished or at at least very far in development. 
+- We moved the new "Core" standard library into the compiler. Only needs some minor tweaks and documentation.
+- We are getting closer into having "rewatch" be our new main build system, it should now even work correctly in "dev" mode.
+- We merged first-class `RegExp` syntax.
+- We merged support for pattern-matching on `dict`s.
+- We removed curried mode.
+- We removed `.ml` compilation support.
+- Based on the above and other cleanups we were able to introduce a new abstract syntax tree which will allow for cleaner language design. Of course a compatibility layer is available. 
+
+And more. But that's material for another release blog post.
 
 ## Food, Drinks and Leisure
 
 After every hard working day, we finished the day with a nice dinner.
-For instance we gathered together at a viennese winery in the evening.
+For instance, one day we gathered together at a viennese winery in the evening.
 
 <Image
   src="/static/blog/rescript_retreat_2024_winery.jpg"
@@ -62,7 +75,7 @@ For instance we gathered together at a viennese winery in the evening.
   withShadow="true"
 />
 
-Of course we also did some city sightseeing and enjoyed a final Viennese lunch.
+At the last day we of course also did some city sightseeing and enjoyed a final Viennese lunch.
 
 ## Conclusion
 
