@@ -34,7 +34,7 @@ let make = (~logs, ~appendLog) => {
         ->Array.mapWithIndex(({level: logLevel, content: log}, i) => {
           let log = Array.join(log, " ")
           <pre
-            key={RescriptCore.Int.toString(i)}
+            key={Int.toString(i)}
             className={switch logLevel {
             | #log => ""
             | #warn => "text-orange"

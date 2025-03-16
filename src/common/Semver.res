@@ -30,7 +30,7 @@ let parse = (versionStr: string) => {
   }
 
   // Some version contain a suffix. Example: v11.0.0-alpha.5, v11.0.0-beta.1
-  let isPrerelease = versionStr->String.search(%re("/-/")) != -1
+  let isPrerelease = versionStr->String.search(/-/) != -1
 
   // Get the first part i.e vX.Y.Z
   let versionNumber = versionStr->String.split("-")->Array.get(0)->Option.getOr(versionStr)

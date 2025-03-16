@@ -6,7 +6,7 @@ external float: float => JSON.t = "%identity"
 external int: int => JSON.t = "%identity"
 external bool: bool => JSON.t = "%identity"
 
-let char = c => string(OCamlCompat.String.make(1, c))
+let char = c => string(String.make(c))
 
 let date = d => string(Date.toJSON(d)->Option.getUnsafe)
 

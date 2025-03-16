@@ -307,7 +307,7 @@ let default = (props: props) => {
       let valuesAndType = items->Array.map(item => {
         switch item {
         | Value({name, signature, docstrings, deprecated}) =>
-          let code = String.replaceRegExp(signature, %re("/\\n/g"), "\n")
+          let code = String.replaceRegExp(signature, /\\n/g, "\n")
           let slugPrefix = "value-" ++ name
           <>
             <H2 id=slugPrefix> {name->React.string} </H2>
@@ -316,7 +316,7 @@ let default = (props: props) => {
             <DocstringsStylize docstrings slugPrefix />
           </>
         | Type({name, signature, docstrings, deprecated}) =>
-          let code = String.replaceRegExp(signature, %re("/\\n/g"), "\n")
+          let code = String.replaceRegExp(signature, /\\n/g, "\n")
           let slugPrefix = "type-" ++ name
           <>
             <H2 id=slugPrefix> {name->React.string} </H2>
@@ -474,6 +474,7 @@ let processStaticProps = (~slug: array<string>, ~version: string) => {
               })
 
               Variant({items: items})->Null.make
+            | Signature(_) => Null.null
             }
           | None => Null.null
           }

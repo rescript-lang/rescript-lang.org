@@ -115,7 +115,9 @@ let docs = docsDecoded->Array.map(doc => {
   let rec getModules = (lst: list<Docgen.item>, moduleNames: list<module_>) =>
     switch lst {
     | list{
-        Module({id, items, name, docstrings}) | ModuleAlias({id, items, name, docstrings}),
+        Module({id, items, name, docstrings})
+        | ModuleAlias({id, items, name, docstrings})
+        | ModuleType({id, items, name, docstrings}),
         ...rest,
       } =>
       if Array.includes(hiddenModules, id) {
@@ -255,7 +257,10 @@ let () = {
   }
   let rec getModules = (lst: list<Docgen.item>, moduleNames, path) => {
     switch lst {
-    | list{Module({id, items, name}) | ModuleAlias({id, items, name}), ...rest} =>
+    | list{
+        Module({id, items, name}) | ModuleAlias({id, items, name}) | ModuleType({id, items, name}),
+        ...rest,
+      } =>
       if Array.includes(hiddenModules, id) {
         getModules(rest, moduleNames, path)
       } else {

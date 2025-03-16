@@ -66,46 +66,24 @@ module CM = {
   }
 
   @module("codemirror")
-  external onMouseOver: (
-    Dom.element,
-    @as("mouseover") _,
-    @uncurry ReactEvent.Mouse.t => unit,
-  ) => unit = "on"
+  external onMouseOver: (Dom.element, @as("mouseover") _, ReactEvent.Mouse.t => unit) => unit = "on"
 
   @module("codemirror")
-  external onMouseMove: (
-    Dom.element,
-    @as("mousemove") _,
-    @uncurry ReactEvent.Mouse.t => unit,
-  ) => unit = "on"
+  external onMouseMove: (Dom.element, @as("mousemove") _, ReactEvent.Mouse.t => unit) => unit = "on"
 
   @module("codemirror")
-  external offMouseOver: (
-    Dom.element,
-    @as("mouseover") _,
-    @uncurry ReactEvent.Mouse.t => unit,
-  ) => unit = "off"
+  external offMouseOver: (Dom.element, @as("mouseover") _, ReactEvent.Mouse.t => unit) => unit =
+    "off"
 
   @module("codemirror")
-  external offMouseOut: (
-    Dom.element,
-    @as("mouseout") _,
-    @uncurry ReactEvent.Mouse.t => unit,
-  ) => unit = "off"
+  external offMouseOut: (Dom.element, @as("mouseout") _, ReactEvent.Mouse.t => unit) => unit = "off"
 
   @module("codemirror")
-  external offMouseMove: (
-    Dom.element,
-    @as("mousemove") _,
-    @uncurry ReactEvent.Mouse.t => unit,
-  ) => unit = "off"
+  external offMouseMove: (Dom.element, @as("mousemove") _, ReactEvent.Mouse.t => unit) => unit =
+    "off"
 
   @module("codemirror")
-  external onMouseOut: (
-    Dom.element,
-    @as("mouseout") _,
-    @uncurry ReactEvent.Mouse.t => unit,
-  ) => unit = "on"
+  external onMouseOut: (Dom.element, @as("mouseout") _, ReactEvent.Mouse.t => unit) => unit = "on"
 
   @module("codemirror")
   external fromTextArea: (Dom.element, Options.t) => t = "fromTextArea"
@@ -122,7 +100,7 @@ module CM = {
   @send external refresh: t => unit = "refresh"
 
   @send
-  external onChange: (t, @as("change") _, @uncurry t => unit) => unit = "on"
+  external onChange: (t, @as("change") _, t => unit) => unit = "on"
 
   @send external toTextArea: t => unit = "toTextArea"
 
@@ -131,7 +109,7 @@ module CM = {
   @send external getValue: t => string = "getValue"
 
   @send
-  external operation: (t, @uncurry unit => unit) => unit = "operation"
+  external operation: (t, unit => unit) => unit = "operation"
 
   @send
   external setGutterMarker: (t, int, string, Dom.element) => unit = "setGutterMarker"
@@ -485,7 +463,7 @@ let extractRowColFromId = (id: string): option<(int, int)> =>
   | _ => None
   }
 
-module ErrorHash = Belt.Id.MakeHashableU({
+module ErrorHash = Belt.Id.MakeHashable({
   type t = int
   let hash = a => a
   let eq = (a, b) => a == b
@@ -536,7 +514,7 @@ let updateErrors = (~state: state, ~onMarkerFocus=?, ~onMarkerFocusLeave=?, ~cm:
           (),
         ),
       )
-      ->Array.push(state.marked, _)
+      ->(Array.push(state.marked, _))
       ->ignore
       ()
     }

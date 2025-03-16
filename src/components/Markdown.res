@@ -234,7 +234,7 @@ module Code = {
     String.split(metastring, " ")
     ->Array.find(s => String.startsWith(s, "{") && String.endsWith(s, "}"))
     ->Option.map(str => {
-      let nums = String.replaceRegExp(str, %re("/[\{\}]/g"), "")->parseNumericRange
+      let nums = String.replaceRegExp(str, /[\{\}]/g, "")->parseNumericRange
       nums
     })
     ->Option.getOr([])
@@ -248,9 +248,9 @@ module Code = {
 
       let highlightedLines = parseNumericRangeMeta(metastring)
 
-      if List.has(metaSplits, "example", \"=") {
+      if List.has(metaSplits, "example", String.equal) {
         <CodeExample code lang />
-      } else if List.has(metaSplits, "sig", \"=") {
+      } else if List.has(metaSplits, "sig", String.equal) {
         <CodeExample code lang showLabel=false />
       } else {
         <CodeExample highlightedLines code lang />
@@ -374,7 +374,7 @@ module A = {
       // Ideally one would check if this link is relative first,
       // but it's very unlikely we'd refer to an absolute URL ending
       // with .md
-      let regex = %re("/\.md(x)?|\.html$/")
+      let regex = /\.md(x)?|\.html$/
       let href = switch String.split(href, "#") {
       | [pathname, anchor] => String.replaceRegExp(pathname, regex, "") ++ ("#" ++ anchor)
       | [pathname] => String.replaceRegExp(pathname, regex, "")

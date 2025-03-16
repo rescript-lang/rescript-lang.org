@@ -6,5 +6,5 @@ let make: (
   ~kind: kind=?,
   ~size: size=?,
   ~children: React.element,
-  ~onClick: JsxEventU.Mouse.t => unit=?,
+  ~onClick: JsxEvent.Mouse.t => unit=?,
 ) => React.element

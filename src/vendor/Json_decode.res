@@ -41,7 +41,7 @@ let string = json =>
 let char = json => {
   let s = string(json)
   if String.length(s) == 1 {
-    OCamlCompat.String.get(s, 0)
+    String.getUnsafe(s, 0)->Obj.magic
   } else {
     \"@@"(raise, DecodeError("Expected single-character string, got " ++ JSON.stringify(json)))
   }

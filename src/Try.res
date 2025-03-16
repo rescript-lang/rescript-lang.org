@@ -37,11 +37,9 @@ let getStaticProps: Next.GetStaticProps.t<props, _> = async _ => {
       switch line->String.startsWith("<a href") {
       | true =>
         // Adapted from https://semver.org/
-        let semverRe = %re(
-          "/v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?/"
-        )
-        switch Re.exec(semverRe, line) {
-        | Some(result) => Re.Result.fullMatch(result)->Some
+        let semverRe = /v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?/
+        switch RegExp.exec(semverRe, line) {
+        | Some(result) => RegExp.Result.fullMatch(result)->Some
         | None => None
         }
       | false => None
