@@ -474,7 +474,13 @@ module Strong = {
 
 module Image = {
   @react.component
-  let make = (~src: string, ~size=#large, ~withShadow=false, ~caption: option<string>=?) => {
+  let make = (
+    ~src: string,
+    ~size=#large,
+    ~withShadow=false,
+    ~caption: option<string>=?,
+    ~externalLink: option<string>=?,
+  ) => {
     let width = switch size {
     | #large => "w-full"
     | #small => "w-1/4"
@@ -486,8 +492,10 @@ module Image = {
       ""
     }
 
+    let target = externalLink->Option.isSome ? Some("_blank") : None
+
     <div className={`mt-8 mb-12 ${size === #large ? "md:-mx-16" : ""}`}>
-      <a href=src rel="noopener noreferrer">
+      <a href={externalLink->Option.getOr(src)} rel="noopener noreferrer" ?target>
         <img className={width ++ " " ++ shadow} src />
       </a>
       {switch caption {

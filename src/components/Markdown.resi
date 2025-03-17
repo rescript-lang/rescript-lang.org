@@ -160,6 +160,7 @@ module Image: {
     ~size: [#large | #small]=?,
     ~withShadow: bool=?,
     ~caption: string=?,
+    ~externalLink: string=?,
   ) => React.element
 }
 

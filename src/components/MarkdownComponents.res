@@ -11,7 +11,10 @@ type t = {
   @as("Intro")
   intro?: React.componentLike<Intro.props<React.element>, React.element>,
   @as("Image")
-  image?: React.componentLike<Image.props<string, [#large | #small], bool, string>, React.element>,
+  image?: React.componentLike<
+    Image.props<string, [#large | #small], bool, string, string>,
+    React.element,
+  >,
   @as("Video")
   video?: React.componentLike<Video.props<string, string>, React.element>,
   @as("UrlBox")
