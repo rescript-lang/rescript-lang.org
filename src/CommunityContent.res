@@ -20,7 +20,7 @@ module LinkCard = {
   let make = (~link, ~index) => {
     let loading = switch index {
     | 0 => #eager
-    | _ => #"lazy"
+    | _ => #lazy
     }
     <div className="rounded-lg  hover:text-fire overflow-hidden bg-gray-10 border-2 border-gray-30">
       <a href=link.url className="flex flex-col h-full">

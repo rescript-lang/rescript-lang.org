@@ -5,14 +5,7 @@
     "version": 4
   },
   "bs-dependencies": [
-    "@rescript/react",
-    "@rescript/tools",
-    "@rescript/core"
-  ],
-  "uncurried": true,
-  "ppx-flags": [],
-  "bsc-flags": [
-    "-open RescriptCore"
+    "@rescript/react"
   ],
   "sources": [
     {

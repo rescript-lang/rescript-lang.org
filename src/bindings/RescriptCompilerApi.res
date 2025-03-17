@@ -97,12 +97,12 @@ module LocMsg = {
   let decode = (json): t => {
     open Json.Decode
     {
-      fullMsg: json->(field("fullMsg", string, _)),
-      shortMsg: json->(field("shortMsg", string, _)),
-      row: json->(field("row", int, _)),
-      column: json->(field("column", int, _)),
-      endRow: json->(field("endRow", int, _)),
-      endColumn: json->(field("endColumn", int, _)),
+      fullMsg: json->field("fullMsg", string, _),
+      shortMsg: json->field("shortMsg", string, _),
+      row: json->field("row", int, _),
+      column: json->field("column", int, _),
+      endRow: json->field("endRow", int, _),
+      endColumn: json->field("endColumn", int, _),
     }
   }
 

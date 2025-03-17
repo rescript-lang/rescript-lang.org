@@ -7,7 +7,7 @@ let make = (
   ~kind: kind=PrimaryRed,
   ~size: size=Large,
   ~children,
-  ~onClick: option<JsxEventU.Mouse.t => unit>=?,
+  ~onClick: option<JsxEvent.Mouse.t => unit>=?,
 ) => {
   let bgColor = switch kind {
   | PrimaryRed => "bg-fire hover:bg-fire-70 text-white"

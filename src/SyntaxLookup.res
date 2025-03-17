@@ -151,14 +151,14 @@ type params = {slug: string}
 
 let decode = (json: JSON.t) => {
   open Json.Decode
-  let id = json->(field("id", string, _))
-  let keywords = json->(field("keywords", array(string, ...), _))
-  let name = json->(field("name", string, _))
-  let summary = json->(field("summary", string, _))
-  let category = json->field("category", string, _)->Category.fromString
+  let id = json->field("id", string, _)
+  let keywords = json->field("keywords", array(string, ...), _)
+  let name = json->field("name", string, _)
+  let summary = json->field("summary", string, _)
+  let category = json->(field("category", string, _))->Category.fromString
   let status =
     json
-    ->optional(field("status", string, _), _)
+    ->(optional(field("status", string, _), _))
     ->Option.mapOr(Status.Active, Status.fromString)
 
   {

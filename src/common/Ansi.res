@@ -54,7 +54,7 @@ module Sgr = {
 
 let esc = `\u001B`
 
-let isAscii = (c: string) => Re.test(%re(`/[\x40-\x7F]/`), c)
+let isAscii = (c: string) => RegExp.test(/[\x40-\x7F]/, c)
 
 module Location = {
   type t = {
@@ -177,9 +177,9 @@ module Lexer = {
 
           let loc = {startPos, endPos: startPos + String.length(raw) - 1}
 
-          let token = switch Re.exec(%re(`/\[([0-9;]+)([\x40-\x7F])/`), raw) {
+          let token = switch RegExp.exec(/\[([0-9;]+)([\x40-\x7F])/, raw) {
           | Some(result) =>
-            let groups = Re.Result.matches(result)
+            let groups = RegExp.Result.matches(result)
             switch groups[1] {
             | Some(str) =>
               switch String.split(str, ";") {
@@ -318,7 +318,7 @@ module SgrString = {
   let toString = (e: t): string => {
     let content = {
       open String
-      replaceRegExp(e.content, %re("/\n/g"), "\\n")->replace(esc, "")
+      replaceRegExp(e.content, /\n/g, "\\n")->replace(esc, "")
     }
     let params = Array.map(e.params, Sgr.paramToString)->Array.join(", ")
 
@@ -334,7 +334,7 @@ module Printer = {
     | Text({content, loc: {startPos, endPos}}) =>
       let content = {
         open String
-        replaceRegExp(content, %re("/\n/g"), "\\n")->replace(esc, "")
+        replaceRegExp(content, /\n/g, "\\n")->replace(esc, "")
       }
       `Text "${content}" (${startPos->Int.toString} to ${endPos->Int.toString})`
     | Sgr({params, raw, loc: {startPos, endPos}}) =>

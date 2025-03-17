@@ -134,16 +134,16 @@ let authorDecoder = (~fieldName: string, ~authors) => {
 let decode = (json: JSON.t): result<t, string> => {
   open Json.Decode
   switch {
-    author: json->field("author", string, _)->decodeAuthor(~fieldName="author", ~authors),
+    author: json->(field("author", string, _))->decodeAuthor(~fieldName="author", ~authors),
     co_authors: json
-    ->optional(field("co-authors", authorDecoder(~fieldName="co-authors", ~authors), ...), _)
+    ->(optional(field("co-authors", authorDecoder(~fieldName="co-authors", ~authors), ...), _))
     ->Option.getOr([]),
-    date: json->field("date", string, _)->DateStr.fromString,
-    badge: json->optional(j => field("badge", string, j)->decodeBadge, _)->Null.fromOption,
-    previewImg: json->optional(field("previewImg", string, ...), _)->Null.fromOption,
-    articleImg: json->optional(field("articleImg", string, ...), _)->Null.fromOption,
-    title: json->(field("title", string, _)),
-    description: json->(nullable(field("description", string, ...), _)),
+    date: json->(field("date", string, _))->DateStr.fromString,
+    badge: json->(optional(j => field("badge", string, j)->decodeBadge, _))->Null.fromOption,
+    previewImg: json->(optional(field("previewImg", string, ...), _))->Null.fromOption,
+    articleImg: json->(optional(field("articleImg", string, ...), _))->Null.fromOption,
+    title: json->field("title", string, _),
+    description: json->nullable(field("description", string, ...), _),
   } {
   | fm => Ok(fm)
   | exception DecodeError(str) => Error(str)
