@@ -17,7 +17,8 @@ let make = (
   ~ogImage="/static/Art-3-rescript-launch.jpg",
   ~version: option<Url.version>=?,
 ) => {
-  let ogImage = "https://rescript-lang.org" ++ ogImage
+  let ogImage =
+    "https://rescript-langorg-git-vlk-og-images-rescript-association.vercel.app" ++ ogImage
 
   let title = switch title {
   | None
