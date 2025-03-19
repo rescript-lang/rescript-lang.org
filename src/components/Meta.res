@@ -14,9 +14,11 @@ let make = (
   ~ogSiteName=?,
   ~ogDescription=description,
   ~ogTitle=?,
-  ~ogImage=?,
+  ~ogImage="/static/Art-3-rescript-launch.jpg",
   ~version: option<Url.version>=?,
 ) => {
+  let ogImage = "https://rescript-lang.org" ++ ogImage
+
   let title = switch title {
   | None
   | Some("") => siteName
@@ -55,19 +57,15 @@ let make = (
     <meta key="og:locale" property="og:locale" content=ogLocale />
     <meta key="og:title" property="og:title" content=ogTitle />
     <meta key="og:description" property="og:description" content=ogDescription />
-    {switch ogImage {
-    | Some(ogImage) => <meta key="og:image" property="og:image" content=ogImage />
-    | None => React.null
-    }}
+    <meta key="og:image" property="og:image" content=ogImage />
+
     /* Twitter Meta */
     <meta key="twitter:title" name="twitter:title" content=title />
     <meta key="twitter:description" name="twitter:description" content=description />
     <meta key="twitter:site" name="twitter:site" content="@reasonml" />
+    <meta key="twitter:image" property="og:image" content=ogImage />
     <meta key="twitter:creator" name="twitter:creator" content="@ReasonAssoc" />
-    <meta property="og:image:type" content="image/jpeg" />
     <meta key="twitter:card" name="twitter:card" content="summary_large_image" />
-    /* TODO: Undo this later */
-    /* <meta key="twitter:image" property="twitter:image" content=ogImage /> */
     <link rel="alternate" type_="application/rss+xml" title="ReScript Blog" href="/blog/feed.xml" />
     // Docsearch meta tags
     <meta
