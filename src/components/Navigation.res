@@ -380,7 +380,6 @@ module MobileNav = {
             {React.string("Blog")}
           </Link>
         </li>
-        /*
          <li className=base>
            <Link href="/community"  className={linkOrActiveLink(~target="/community", ~route)}>
 
@@ -388,7 +387,6 @@ module MobileNav = {
 
            </Link>
          </li>
- */
         <li className=base>
           <a href=Constants.xHref rel="noopener noreferrer" className=extLink>
             {React.string("X")}
