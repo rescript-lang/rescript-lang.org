@@ -45,9 +45,9 @@ let companies = [
     path: "/static/lp/walnut.svg",
   }),
   Logo({
-    name: "BeOp",
-    url: "https://beop.io",
-    path: "/static/lp/beop.svg",
+    name: "Collective Audience",
+    url: "https://beop.collectiveaudience.co/",
+    path: "/static/lp/collectiveaudience.svg",
   }),
   Logo({
     name: "Arizon",
