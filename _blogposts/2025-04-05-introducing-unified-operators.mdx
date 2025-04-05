@@ -84,7 +84,7 @@ And this won't be compiled
 
 ```res
 let compareNumber = (a: int, b: float) => a < b
-//                                           ~~~
+//                                            ~
 // [E] Line 1, column 46:
 // This has type: float
 //   But it's being compared to something of type: int
@@ -172,15 +172,13 @@ In ReScript v12, most familiar JavaScript operators should work as-is — not ju
 - Bitwise operators (`~`, `^`, `|`, `&`) - [#7216](https://github.com/rescript-lang/rescript/pull/7216) (only XOR for now)
 - Shift operators (`<<`, `>>`, `>>>`) - [#7183](https://github.com/rescript-lang/rescript/pull/7183)
 
-### Better comparison operators
+### The future of comparison operators
 
-The comparison behavior described above has not changed.
-
-The comparability of records and tuples is a very useful property when dealing with data structures. However, relying on the runtime type information is not an ideal solution.
+The comparison behavior described above has not changed. The comparability of records and tuples is useful when dealing with data structures. However, relying on the runtime type information is not an ideal solution.
 
 Since record types are much broader than primitive types, we need a new approach beyond the unified operators.
 
-The compiler fully understands the structure of each record type so it can generate optimized code. Imagine Rust's `#[derive(Eq)]` but for ReScript.
+This won't be included in the v12 release, but we'd like to share an idea we're exploring. Imagine Rust's `#[derive(Eq)]` but for ReScript. As the compiler fully understands the structure of each record type, it can generate optimized code for each type.
 
 ```res
 @deriving([compare, equals])
@@ -203,15 +201,11 @@ function person$equals(a, b) {
 }
 ```
 
-The compiler can perform the same specialization used in unified operators and generate code where the comparison operation is used. So `(a :> person) < b` is expected to be `person$compare(a, b) < 0` or fully inlined as it is less complex than a certain threshold.
+Then, the compiler performs the same specialization used in unified operators and generates code where the comparison operation is used. So `(a :> person) < b` is expected to be `person$compare(a, b) < 0` or fully inlined as it is less complex than a certain threshold.
 
 The example is over-simplified, but it should work equally well with more complex, nested structures or sum types.
 
-### Efficient React memoization
-
-One possible use case for generated comparison operators is React apps.
-
-Using complex types in production apps can result in significant performance degradation, as ReScript ADTs are not compatible with React's memoization behavior.
+One possible use case for generated comparison operators is React apps. Using complex types in production apps can result in significant performance degradation, as ReScript ADTs are not compatible with React's memoization behavior.
 
 ```res
 module MyComponent = {
