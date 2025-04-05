@@ -9,7 +9,7 @@ description: |
 
 ## Introduction
 
-For upcoming ReScript v12, we're upgrading common arithmetic operators to be "Unified Operators"
+In the upcoming ReScript v12, we're upgrading common arithmetic operators to "'Unified Operators".
 
 This means that we can now use a single infix operator syntax for multiple numeric types, and even for string concatenation.
 
@@ -29,7 +29,7 @@ Until v12, the operator syntax had a few notable problems.
 
 ### Unwanted syntax gap
 
-Having different operators for each type is not familiar to JavaScript users, and not even allowing overloading can feel strange to most programmers.
+Using different operators for each type is unfamiliar to JavaScript users, and the lack of operator overloading can feel strange to most programmers.
 
 This is tricky in the real world. Because JavaScript's default number type is `float`, not `int`, ReScript users have to routinely deal with awkward syntax like `+.`, `-.`, `*.`, `%.`.
 
@@ -58,28 +58,34 @@ let add_bigint = {
 }
 ```
 
-Every time we introduce a new primitive type (who knows!), we face the same issue across all arithmetic operators.
+Every time we introduce a new primitive type (who knows?), we run into the same issue with all arithmetic operators.
 
 ### Hidden risk of polymorphism
 
 Then why do we not use the same pretty operators everywhere as JavaScript?
 
 ```res
-let compare_int = 1 < 2
-let compare_float = 1.0 < 2.0
+let compareInt = (a: int, b) => a < b
+
+let compareFloat = (a: float, b) => a < b
 ```
 
 ```js
-let compare_int = true
-let compare_float = true
+function compareInt(a, b) {
+  return a < b;
+}
+
+function compareFloat(a, b) {
+  return a < b;
+}
 ```
 
 And this won't be compiled
 
 ```res
-let invalid = 1 < 2.0
-//                ~~~
-// [E] Line 4, column 12:
+let compareNumber = (a: int, b: float) => a < b
+//                                           ~~~
+// [E] Line 1, column 46:
 // This has type: float
 //   But it's being compared to something of type: int
 // 
@@ -93,16 +99,16 @@ Because ReScript only intentionally supports monomorphic operations, `(int, int)
 
 While it's tempting to allow full operator overloading or polymorphism like JavaScript or TypeScript, we intentionally avoid it to preserve predictable type inference and runtime performance guarantees.
 
-However, comparisons are actually exceptional ones. Let's summon the polymorphism.
+However, comparisons are actually the exception. Time to summon polymorphism!
 
 ```res
-let compare_poly = (a, b) => a < b
+let comparePoly = (a, b) => a < b
 ```
 
 ```js
 import * as Primitive_object from "./stdlib/Primitive_object.js";
 
-let compare_poly = Primitive_object.lessthan;
+let comparePoly = Primitive_object.lessthan;
 ```
 
 As both operands `a` and `b` are inferred as "open type", it turned it into a "runtime primitive" that takes any type and performs a struct comparison at runtime.
@@ -139,7 +145,7 @@ let inv1 = (a: int, b: float) => a + b  // => (int, int) => int
 
 Then, in IR, it is translated to the corresponding compile-time primitive based on the unified type.
 
-This approach has been inspired by an awesome language [F#](https://learn.microsoft.com/en-us/dotnet/fsharp/language-reference/symbol-and-operator-reference/arithmetic-operators#operators-and-type-inference), which is also originated from OCaml.
+This approach is inspired by the awesome language [F#](https://learn.microsoft.com/en-us/dotnet/fsharp/language-reference/symbol-and-operator-reference/arithmetic-operators#operators-and-type-inference), which also originates from OCaml.
 
 > The use of an operator in an expression constrains type inference on that operator. Also, the use of operators prevents automatic generalization, because the use of operators implies an arithmetic type. In the absence of any other information, the F# compiler infers `int` as the type of arithmetic expressions.
 
@@ -159,7 +165,7 @@ By normalizing how primitive operators are added and managed, it also lowers mai
 
 We are working to support more unified operators to close the syntax gap with JavaScript.
 
-In the ReScript v12, most familiar JavaScript operators should work as is. Not only arithmetic operators, but also bitwise and shift operators.
+In ReScript v12, most familiar JavaScript operators should work as-is — not just arithmetic operators, but also bitwise and shift operators.
 
 - Remainder operator (`%`) - [#7152](https://github.com/rescript-lang/rescript/pull/7152)
 - Exponentiation operator (`**`) - [#7153](https://github.com/rescript-lang/rescript/pull/7153)
