@@ -1,6 +1,6 @@
 ---
 author: rescript-team
-date: "2025-04-05"
+date: "2025-04-11"
 title: "Rethinking Operators: How ReScript Simplifies Arithmetic and Beyond"
 badge: roadmap
 description: |
@@ -40,9 +40,9 @@ Some operators are available only as functions. Instead of `<<` and `>>`, we use
 ReScript has multiple "add operator" syntaxes for every primitive type.
 
 ```res
-let add_int = 1 + 2
-let add_float = 1.0 +. 2.0
-let concat_string = "Hello" ++ ", World!"
+let addInt = 1 + 2
+let addFloat = 1.0 +. 2.0
+let concatString = "Hello" ++ ", World!"
 ```
 
 We ran into the same issue again when we added `bigint` support.
@@ -52,7 +52,7 @@ What other operator syntax could we introduce to add two bigint values? There we
 It was inconvenient because we had to shadow the definition every time.
 
 ```res
-let add_bigint = {
+let addBigInt = {
   open BigInt!
   1n + 2n
 }
@@ -124,8 +124,8 @@ More specifically, the following rules are added to the primitive translation pr
 > Before handling a primitive, if the primitive operation matches the form of `lhs -> rhs -> result` or `lhs -> result`
 >
 > 1. If the `lhs` type is a primitive type, unify the `rhs` and the `result` type to the `lhs` type.
->   2. If the `lhs` type is not a primitive type but the `rhs` type is, unify `lhs` and the `result` type to the `rhs` type.
->   3. If both `lhs` type and `rhs` type is not a primitive type, unify the whole types to the `int`.
+> 2. If the `lhs` type is not a primitive type but the `rhs` type is, unify `lhs` and the `result` type to the `rhs` type.
+> 3. If both `lhs` type and `rhs` type is not a primitive type, unify the whole types to the `int`.
 
 It changes the type inference like
 
