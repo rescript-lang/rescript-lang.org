@@ -14,12 +14,12 @@ In the upcoming ReScript v12, we're upgrading common arithmetic operators to "Un
 This means that we can now use a single infix operator syntax for multiple numeric types, and even for string concatenation.
 
 ```res
-let add_int = 1 + 2
-let add_float = 1.0 + 2.0
-let concat_string = "Hello" + ", World!"
+let addInt = 1 + 2
+let addFloat = 1.0 + 2.0
+let concatString = "Hello" + ", World!"
 ```
 
-[Try in the playground](https://rescript-lang.org/try?version=v12.0.0-alpha.10&module=esmodule&code=DYUwLgBAhgJjD6BLAdpAvBAjBA1BATAFCiSwIBmwA9lOlgHQAMuBTx4EAxlcp7fAGcwAJxQBzCBgBEACRDBqUllIA0EAOpVhwGAEIphIA)— it just works since `v12.0.0-alpha.5`. We don't need `+.` and `++` anymore. 🥳
+[Try in the playground](https://rescript-lang.org/try?version=v12.0.0-alpha.5&module=esmodule&code=DYUwLgBAhgJjCSA7SBeCBGCBqCAmAUKJLDAGLAD2UqGAdAAzZ4OHgQDGFi71AymACcAlogDmENACIAEiGCVJTSQBoIAdQoDgMAIST8QA)— it just works since `v12.0.0-alpha.5`. We don't need `+.` and `++` anymore. 🥳
 
 This post covers both the reasoning behind the change and what’s next on the roadmap. If you're interested in the implementation details, you’ll find them in [the pull request](https://github.com/rescript-lang/rescript/pull/7057).
 
