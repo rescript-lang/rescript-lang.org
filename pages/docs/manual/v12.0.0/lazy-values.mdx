@@ -6,7 +6,7 @@ canonical: "/docs/manual/v12.0.0/lazy-values"
 
 # Lazy Value
 
-If you have some expensive computations you'd like to **defer and cache** subsequently, you can wrap it with `lazy`:
+If you have some expensive computations you'd like to **defer and cache** subsequently, you can turn them into *lazy* values:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -15,83 +15,50 @@ If you have some expensive computations you'd like to **defer and cache** subseq
 external readdirSync: string => array<string> = "readdirSync"
 
 // Read the directory, only once
-let expensiveFilesRead = lazy({
+let expensiveFilesRead = Lazy.make(() => {
   Console.log("Reading dir")
   readdirSync("./pages")
 })
 ```
 ```js
-var Fs = require("fs");
+import * as Lazy from "./stdlib/Lazy.js";
+import * as Nodefs from "node:fs";
 
-var expensiveFilesRead = {
-  LAZY_DONE: false,
-  VAL: (function () {
-    console.log("Reading dir");
-    return Fs.readdirSync("./pages");
-  })
-};
+let expensiveFilesRead = Lazy.make(() => {
+  console.log("Reading dir");
+  return Nodefs.readdirSync("./pages");
+});
+
 ```
 
 </CodeTab>
-
-Check the JS Output tab: that `expensiveFilesRead`'s code isn't executed yet, even though you declared it! You can carry it around without fearing that it'll run the directory read.
 
 **Note**: a lazy value is **not** a [shared data type](shared-data-types.md). Don't rely on its runtime representation in your JavaScript code.
 
 ## Execute The Lazy Computation
 
-To actually run the lazy value's computation, use `Lazy.force` from the globally available `Lazy` module:
+To actually run the lazy value's computation, use `Lazy.get` from the standard library `Lazy` module:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res example
 // First call. The computation happens
-Console.log(Lazy.force(expensiveFilesRead)) // logs "Reading dir" and the directory content
+Console.log(Lazy.get(expensiveFilesRead)) // logs "Reading dir" and the directory content
 
 // Second call. Will just return the already calculated result
-Console.log(Lazy.force(expensiveFilesRead)) // logs the directory content
+Console.log(Lazy.get(expensiveFilesRead)) // logs the directory content
 ```
 ```js
-console.log(CamlinternalLazy.force(expensiveFilesRead));
+console.log(Lazy.get(expensiveFilesRead));
 
-console.log(CamlinternalLazy.force(expensiveFilesRead));
+console.log(Lazy.get(expensiveFilesRead));
 ```
 
 </CodeTab>
 
-The first time `Lazy.force` is called, the expensive computation happens and the result is **cached**. The second time, the cached value is directly used.
+The first time `Lazy.get` is called, the expensive computation happens and the result is **cached**. The second time, the cached value is directly used.
 
-**You can't re-trigger the computation after the first `force` call**. Make sure you only use a lazy value with computations whose results don't change (e.g. an expensive server request whose response is always the same).
-
-Instead of using `Lazy.force`, you can also use [pattern matching](pattern-matching-destructuring.md) to trigger the computation:
-
-<CodeTab labels={["ReScript", "JS Output"]}>
-
-```res example
-switch expensiveFilesRead {
-| lazy(result) => Console.log(result)
-}
-```
-```js
-var result = CamlinternalLazy.force(expensiveFilesRead);
-```
-
-</CodeTab>
-
-Since pattern matching also works on a `let` binding, you can also do:
-
-<CodeTab labels={["ReScript", "JS Output"]}>
-
-```res example
-let lazy(result) = expensiveFilesRead
-Console.log(result)
-```
-```js
-var result = CamlinternalLazy.force(expensiveFilesRead);
-console.log(result);
-```
-
-</CodeTab>
+**You can't re-trigger the computation after the first `get` call**. Make sure you only use a lazy value with computations whose results don't change (e.g. an expensive server request whose response is always the same).
 
 ## Exception Handling
 
@@ -101,18 +68,18 @@ For completeness' sake, our files read example might raise an exception because 
 
 ```res example
 let result = try {
-  Lazy.force(expensiveFilesRead)
+  Lazy.get(expensiveFilesRead)
 } catch {
 | Not_found => [] // empty array of files
 }
 ```
 ```js
-var result;
+let result;
 
 try {
-  result = CamlinternalLazy.force(expensiveFilesRead);
+  result = Lazy.get(expensiveFilesRead);
 } catch (raw_exn) {
-  var exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
+  let exn = Primitive_exceptions.internalToException(raw_exn);
   if (exn.RE_EXN_ID === "Not_found") {
     result = [];
   } else {
