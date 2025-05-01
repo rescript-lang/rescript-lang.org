@@ -25,9 +25,11 @@ let make = (~logs, ~appendLog) => {
     <h2 className="font-bold text-gray-5/50 absolute right-2 top-2"> {React.string("Console")} </h2>
     {switch logs {
     | [] =>
-      React.string(
-        "Add some 'Console.log' to your code and click 'Run' or enable 'Auto-run' to see your logs here.",
-      )
+      <p className="p-4 max-w-prose">
+        {React.string(
+          "Add some 'Console.log' to your code and click 'Run' or enable 'Auto-run' to see your logs here.",
+        )}
+      </p>
     | logs =>
       let content =
         logs
