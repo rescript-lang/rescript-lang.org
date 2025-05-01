@@ -793,20 +793,12 @@ module WarningFlagsWidget = {
     | []
     | [{enabled: false, flag: "a"}] => React.null
     | _ =>
-      let onMouseDown = evt => {
-        ReactEvent.Mouse.preventDefault(evt)
+      let onClick = _evt => {
         onUpdate([{WarningFlagDescription.Parser.enabled: false, flag: "a"}])
       }
 
-      // For iOS12 compat
-      let onClick = _ => ()
-      let onFocus = evt => {
-        ReactEvent.Focus.preventDefault(evt)
-        ReactEvent.Focus.stopPropagation(evt)
-      }
-
       <button
-        onMouseDown
+        title="Clear all flags"
         onClick
         onFocus
         tabIndex=0
@@ -891,23 +883,11 @@ module Settings = {
 
     let warnFlagTokens = WarningFlagDescription.Parser.parse(warn_flags)->Result.getOr([])
 
-    let onResetClick = evt => {
-      ReactEvent.Mouse.preventDefault(evt)
-
-      let open_modules = switch readyState.selected.apiVersion {
-      | V1 | V2 | V3 | UnknownVersion(_) => None
-      | V4 | V5 =>
-        readyState.selected.libraries->Array.some(el => el === "@rescript/core")
-          ? Some(["RescriptCore"])
-          : None
-      }
-
-      let defaultConfig = {
-        Api.Config.module_system: "nodejs",
-        warn_flags: "+a-4-9-20-40-41-42-50-61-102-109",
-        ?open_modules,
-      }
-      setConfig(defaultConfig)
+    let onWarningFlagsResetClick = _evt => {
+      setConfig({
+        ...config,
+        warn_flags: "+a-4-9-20-40-41-50-61-102-109",
+      })
     }
 
     let onCompilerSelect = id => dispatch(SwitchToCompiler(id))
@@ -1028,7 +1008,8 @@ module Settings = {
       <div className="mt-8">
         <div className=titleClass>
           {React.string("Warning Flags")}
-          <button onMouseDown=onResetClick className={"ml-6 text-12 " ++ Text.Link.standalone}>
+          <button
+            onClick=onWarningFlagsResetClick className={"ml-6 text-12 " ++ Text.Link.standalone}>
             {React.string("[reset]")}
           </button>
         </div>
