@@ -41,6 +41,7 @@ let numeric = [
   (37, "Unused constructor."),
   (38, "Unused extension constructor."),
   (39, "Unused rec flag."),
+  (41, "Ambiguous constructor or label name."),
   (43, "Nonoptional label applied as optional."),
   (44, "Open statement shadows an already defined identifier."),
   (45, "Open statement shadows an already defined label or constructor."),
