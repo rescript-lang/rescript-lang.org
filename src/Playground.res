@@ -1711,11 +1711,66 @@ let make = (~versions: array<string>) => {
 
   let headers = Array.mapWithIndex(tabs, (tab, i) => {
     let title = switch tab {
-    | Output => "Output"
-    | JavaScript => "JavaScript"
-    | Problems => "Problems"
-    | Settings => "Settings"
+    | Output => "Output"->React.string
+
+    | JavaScript => "JavaScript"->React.string
+
+    | Problems => {
+        let problemCounts: {"warnings": int, "errors": int} = switch compilerState {
+        | Compiling({state: ready})
+        | Ready(ready)
+        | Executing({state: ready})
+        | SwitchingCompiler(ready, _) => {
+            "warnings": switch ready.result {
+            | Comp(Success({warnings})) => warnings->Array.length
+            | _ => 0
+            },
+            "errors": switch ready.result {
+            | FinalResult.Comp(Fail(result)) =>
+              switch result {
+              | SyntaxErr(errors) | TypecheckErr(errors) | OtherErr(errors) => errors->Array.length
+              | WarningErr(errors) => errors->Array.length
+              | WarningFlagErr(_) => 1
+              }
+            | Conv(Fail({details})) => details->Array.length
+            | Comp(Success(_)) => 0
+            | Conv(Success(_)) => 0
+            | Comp(UnexpectedError(_))
+            | Conv(UnexpectedError(_))
+            | Comp(Unknown(_))
+            | Conv(Unknown(_)) => 1
+            | Nothing => 0
+            },
+          }
+
+        | SetupFailed(_) | Init => {
+            "warnings": 0,
+            "errors": 0,
+          }
+        }
+
+        <div className="inline-flex items-center gap-2">
+          {if problemCounts["errors"] > 0 {
+            <span className="text-fire bg-fire-100 px-0.5">
+              {problemCounts["errors"]->React.int}
+            </span>
+          } else {
+            React.null
+          }}
+          {if problemCounts["warnings"] > 0 {
+            <span className="text-orange bg-orange-15 px-0.5">
+              {problemCounts["warnings"]->React.int}
+            </span>
+          } else {
+            React.null
+          }}
+          {"Problems"->React.string}
+        </div>
+      }
+
+    | Settings => "Settings"->React.string
     }
+
     let onClick = evt => {
       ReactEvent.Mouse.preventDefault(evt)
       ReactEvent.Mouse.stopPropagation(evt)
@@ -1723,9 +1778,7 @@ let make = (~versions: array<string>) => {
     }
     let active = currentTab === tab
     let className = makeTabClass(active)
-    <button key={Int.toString(i) ++ ("-" ++ title)} onClick className disabled>
-      {React.string(title)}
-    </button>
+    <button key={Int.toString(i)} onClick className disabled> {title} </button>
   })
 
   <main className={"flex flex-col bg-gray-100 overflow-hidden"}>
