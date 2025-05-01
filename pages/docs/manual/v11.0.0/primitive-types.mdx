@@ -103,7 +103,7 @@ var firstLetterOfAlphabet = /* "a" */97;
 
 **Note**: Char doesn't support Unicode or UTF-8 and is therefore not recommended.
 
-To convert a String to a Char, use `String.get("a", 0)`. To convert a Char to a String, use `String.make(1, 'a')`.
+To convert a String to a Char, use `OCamlCompat.String.get("a", 0)`. To convert a Char to a String, use `OCamlCompat.String.make(0, 'a')` or `String.fromCharCode('a' :> int)`.
 
 ## Regular Expression
 

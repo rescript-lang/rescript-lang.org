@@ -89,7 +89,7 @@
 }
 
 .DocSearch-Input {
-  @apply w-full appearance-none outline-none bg-transparent border-none flex-1 text-14 px-4;
+  @apply h-14 w-full appearance-none focus:outline-none bg-transparent border-none flex-1 text-14 px-4;
 }
 
 .DocSearch-Input::placeholder {
