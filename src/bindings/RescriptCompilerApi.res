@@ -415,17 +415,6 @@ module Compiler = {
     }
   }
 
-  @send @scope("ocaml")
-  external ocamlCompile: (t, string) => JSON.t = "compile"
-
-  let ocamlCompile = (t, code): CompilationResult.t => {
-    let startTime = now()
-    let json = ocamlCompile(t, code)
-    let stopTime = now()
-
-    CompilationResult.decode(~time=stopTime -. startTime, json)
-  }
-
   @send external getConfig: t => Config.t = "getConfig"
 
   @send external setFilename: (t, string) => bool = "setFilename"
