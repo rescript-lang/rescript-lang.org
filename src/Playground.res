@@ -1438,8 +1438,7 @@ let make = (~versions: array<string>) => {
   let initialContent = switch (Dict.get(router.query, "code"), initialLang) {
   | (Some(compressedCode), _) => LzString.decompressToEncodedURIComponent(compressedCode)
   | (None, Reason) => initialReContent
-  | (None, Res)
-  | (None, _) =>
+  | (None, Res) =>
     switch initialVersion {
     | Some({major: 10, minor}) if minor >= 1 => InitialContent.since_10_1
     | Some({major}) if major > 10 => InitialContent.since_11

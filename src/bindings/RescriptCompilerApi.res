@@ -3,27 +3,23 @@
 module Lang = {
   type t =
     | Reason
-    | OCaml
     | Res
 
   let toString = t =>
     switch t {
     | Res => "ReScript"
     | Reason => "Reason"
-    | OCaml => "OCaml"
     }
 
   let toExt = t =>
     switch t {
     | Res => "res"
     | Reason => "re"
-    | OCaml => "ml"
     }
 
   let decode = (json): t => {
     open! Json.Decode
     switch string(json) {
-    | "ml" => OCaml
     | "re" => Reason
     | "res" => Res
     | other => raise(DecodeError(`Unknown language "${other}"`))

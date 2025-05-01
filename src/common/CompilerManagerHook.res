@@ -320,7 +320,6 @@ let useCompilerManager = (
           let convResult = switch ready.targetLang {
           | Res => instance->Compiler.resFormat(code)->Some
           | Reason => instance->Compiler.reasonFormat(code)->Some
-          | _ => None
           }
 
           let result = switch convResult {
@@ -511,13 +510,11 @@ let useCompilerManager = (
         let compResult = switch apiVersion {
         | V1 =>
           switch lang {
-          | Lang.OCaml => instance->Compiler.ocamlCompile(code)
           | Lang.Reason => instance->Compiler.reasonCompile(code)
           | Lang.Res => instance->Compiler.resCompile(code)
           }
         | V2 | V3 | V4 =>
           switch lang {
-          | Lang.OCaml => instance->Compiler.ocamlCompile(code)
           | Lang.Reason =>
             CompilationResult.UnexpectedError(
               `Reason not supported with API version "${apiVersion->RescriptCompilerApi.Version.toString}"`,

@@ -9,7 +9,6 @@
 module Lang: {
   type t =
     | Reason
-    | OCaml
     | Res
 
   let toString: t => string
