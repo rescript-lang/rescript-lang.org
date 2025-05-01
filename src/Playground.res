@@ -1,14 +1,3 @@
-/*
-    TODO / Idea list:
-    - Fix issue with Reason where a comment on the last line causes a infinite loop
-    - Add settings pane to set moduleSystem
-    - Add advanced mode for enabling OCaml output as well
-
-    More advanced tasks:
-    - Fix syntax convertion issue where comments are stripped on Reason <-> Res convertion
-    - Try to get Reason's recoverable errors working
- */
-
 %%raw(`
 if (typeof window !== "undefined" && typeof window.navigator !== "undefined") {
   require("codemirror/mode/javascript/javascript");
