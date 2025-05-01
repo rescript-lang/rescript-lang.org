@@ -1364,6 +1364,56 @@ module App = {
   }
 }
 `
+
+  let since_11 = `module CounterMessage = {
+  @react.component
+  let make = (~count, ~username=?) => {
+    let times = switch count {
+    | 1 => "once"
+    | 2 => "twice"
+    | n => Int.toString(n) ++ " times"
+    }
+
+    let name = switch username {
+    | Some("") => "Anonymous"
+    | Some(name) => name
+    | None => "Anonymous"
+    }
+
+    <div> {React.string(\`Hello \$\{name\}, you clicked me \` ++ times)} </div>
+  }
+}
+
+module App = {
+  @react.component
+  let make = () => {
+    let (count, setCount) = React.useState(() => 0)
+    let (username, setUsername) = React.useState(() => "Anonymous")
+
+    <div>
+      {React.string("Username: ")}
+      <input
+        type_="text"
+        value={username}
+        onChange={event => {
+          event->ReactEvent.Form.preventDefault
+          let eventTarget = event->ReactEvent.Form.target
+          let username = eventTarget["value"]
+          setUsername(_prev => username)
+        }}
+      />
+      <button
+        onClick={_evt => {
+          setCount(prev => prev + 1)
+        }}>
+        {React.string("Click me")}
+      </button>
+      <button onClick={_evt => setCount(_ => 0)}> {React.string("Reset")} </button>
+      <CounterMessage count username />
+    </div>
+  }
+}
+`
 }
 
 // Please note:
@@ -1416,7 +1466,7 @@ let make = (~versions: array<string>) => {
   | (None, _) =>
     switch initialVersion {
     | Some({major: 10, minor}) if minor >= 1 => InitialContent.since_10_1
-    | Some({major}) if major > 10 => InitialContent.since_10_1
+    | Some({major}) if major > 10 => InitialContent.since_11
     | _ => InitialContent.original
     }
   }
@@ -1666,16 +1716,14 @@ let make = (~versions: array<string>) => {
     | Problems => "Problems"
     | Settings => "Settings"
     }
-    let onMouseDown = evt => {
+    let onClick = evt => {
       ReactEvent.Mouse.preventDefault(evt)
       ReactEvent.Mouse.stopPropagation(evt)
       setCurrentTab(_ => tab)
     }
     let active = currentTab === tab
-    // For Safari iOS12
-    let onClick = _ => ()
     let className = makeTabClass(active)
-    <button key={Int.toString(i) ++ ("-" ++ title)} onMouseDown onClick className disabled>
+    <button key={Int.toString(i) ++ ("-" ++ title)} onClick className disabled>
       {React.string(title)}
     </button>
   })
