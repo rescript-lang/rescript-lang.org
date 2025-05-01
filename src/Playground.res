@@ -42,6 +42,22 @@ module DropdownSelect = {
 }
 
 module ToggleSelection = {
+  module SelectionOption = {
+    @react.component
+    let make = (~label, ~isActive, ~disabled, ~onClick) => {
+      <button
+        className={"mr-1 px-2 py-1 rounded inline-block " ++ if isActive {
+          "bg-fire text-white font-bold"
+        } else {
+          "bg-gray-80 opacity-50 hover:opacity-80"
+        }}
+        onClick
+        disabled>
+        {React.string(label)}
+      </button>
+    }
+  }
+
   @react.component
   let make = (
     ~onChange: 'a => unit,
@@ -58,41 +74,21 @@ module ToggleSelection = {
       values
     }
 
-    let selectedIndex = switch Belt.Array.getIndexBy(values, lang => lang === selected) {
-    | Some(i) => i
-    | None => 0
-    }
-
-    let elements = Array.mapWithIndex(values, (value, i) => {
-      let active = i === selectedIndex ? "bg-fire text-white font-bold" : "bg-gray-80 opacity-50"
-      let label = toLabel(value)
-
-      let onMouseDown = evt => {
-        ReactEvent.Mouse.preventDefault(evt)
-        ReactEvent.Mouse.stopPropagation(evt)
-
-        if i !== selectedIndex {
-          switch values[i] {
-          | Some(value) => onChange(value)
-          | None => ()
+    <div className={(disabled ? "opacity-25" : "") ++ "flex w-full"}>
+      {values
+      ->Array.map(value => {
+        let label = toLabel(value)
+        let isActive = value === selected
+        let onClick = _event => {
+          if !isActive {
+            onChange(value)
           }
         }
-      }
 
-      // Required for iOS Safari 12
-      let onClick = _ => ()
-
-      <button
-        disabled
-        onMouseDown
-        onClick
-        key=label
-        className={"mr-1 px-2 py-1 rounded inline-block  " ++ active}>
-        {React.string(label)}
-      </button>
-    })
-
-    <div className={(disabled ? "opacity-25" : "") ++ "flex w-full"}> {React.array(elements)} </div>
+        <SelectionOption key={label} label isActive onClick disabled />
+      })
+      ->React.array}
+    </div>
   }
 }
 
