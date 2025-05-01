@@ -697,9 +697,9 @@ module WarningFlagsWidget = {
       })
       ->React.array
       ->Some
-    | Typing(typing) =>
+    | Typing(typing) if typing.suggestion != NoSuggestion =>
       let suggestions = switch typing.suggestion {
-      | NoSuggestion => React.string("Type + / - followed by a number or letter (e.g. +a+1)")
+      | NoSuggestion => React.null
       | ErrorSuggestion(msg) => React.string(msg)
       | FuzzySuggestions({precedingTokens, selected, results, modifier}) =>
         Array.mapWithIndex(results, ((flag, desc), i) => {
@@ -753,7 +753,8 @@ module WarningFlagsWidget = {
         })->React.array
       }
       Some(suggestions)
-    | HideSuggestion(_) => None
+
+    | Typing(_) | HideSuggestion(_) => None
     }
 
     let suggestionBox =
@@ -829,17 +830,22 @@ module WarningFlagsWidget = {
       <div className={"flex justify-between border p-2 " ++ activeClass}>
         <div>
           chips
-          <input
-            ref={ReactDOM.Ref.domRef(inputRef)}
-            className="outline-none bg-gray-90 placeholder-gray-20 placeholder-opacity-50"
-            placeholder="Flags"
-            type_="text"
-            tabIndex=0
-            value=inputValue
-            onChange
-            onFocus
-            onBlur
-          />
+          <section className="mt-3">
+            <input
+              ref={ReactDOM.Ref.domRef(inputRef)}
+              className="inline-block p-1 max-w-20 outline-none bg-gray-90 placeholder-gray-20 placeholder-opacity-50"
+              placeholder="Flags"
+              type_="text"
+              tabIndex=0
+              value=inputValue
+              onChange
+              onFocus
+              onBlur
+            />
+            <p className="mt-1 text-12">
+              {React.string("Type + / - followed by a number or letter (e.g. +a+1)")}
+            </p>
+          </section>
         </div>
         deleteButton
       </div>
