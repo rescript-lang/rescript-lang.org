@@ -1755,14 +1755,14 @@ let make = (~versions: array<string>) => {
 
         <div className="inline-flex items-center gap-2">
           {if problemCounts["errors"] > 0 {
-            <span className="text-fire bg-fire-100 px-0.5">
+            <span className="inline-block min-w-4 text-fire bg-fire-100 px-0.5">
               {problemCounts["errors"]->React.int}
             </span>
           } else {
             React.null
           }}
           {if problemCounts["warnings"] > 0 {
-            <span className="text-orange bg-orange-15 px-0.5">
+            <span className="inline-block min-w-4 text-orange bg-orange-15 px-0.5">
               {problemCounts["warnings"]->React.int}
             </span>
           } else {
