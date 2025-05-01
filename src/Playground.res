@@ -995,15 +995,19 @@ module Settings = {
           }
         </DropdownSelect>
       </div>
-      <div className="mt-6">
-        <div className=titleClass> {React.string("Syntax")} </div>
-        <ToggleSelection
-          values=availableTargetLangs
-          toLabel={lang => lang->Api.Lang.toExt->String.toUpperCase}
-          selected=readyState.targetLang
-          onChange=onTargetLangSelect
-        />
-      </div>
+      {if availableTargetLangs->Array.length > 1 {
+        <div className="mt-6">
+          <div className=titleClass> {React.string("Syntax")} </div>
+          <ToggleSelection
+            values=availableTargetLangs
+            toLabel={lang => lang->Api.Lang.toExt->String.toUpperCase}
+            selected=readyState.targetLang
+            onChange=onTargetLangSelect
+          />
+        </div>
+      } else {
+        React.null
+      }}
       <div className="mt-6">
         <div className=titleClass> {React.string("Module-System")} </div>
         <ToggleSelection
