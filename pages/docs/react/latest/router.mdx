@@ -76,7 +76,7 @@ let make = () => {
   let url = RescriptReactRouter.useUrl()
   
   switch url.path {
-    | list{"user", id} => <User id />
+    | list{"user", id, ..._} => <User id />
     | list{} => <Home/>
     | _ => <PageNotFound/>
   }
@@ -90,28 +90,28 @@ import * as Home from "./Home.res.js";
 import * as NotFound from "./NotFound.res.js";
 
 function App(Props) {
-  var url = RescriptReactRouter.useUrl(undefined, undefined);
-  var match = url.path;
-  if (!match) {
-    return React.createElement(Home.make, {});
+  let url = RescriptReactRouter.useUrl(undefined, undefined);
+  let match = url.path;
+  if (match === 0) {
+    return JsxRuntime.jsx(Home, {});
   }
-  if (match.hd === "user") {
-    var match$1 = match.tl;
-    if (match$1 && !match$1.tl) {
-      return React.createElement(User.make, {
-                  id: match$1.hd
-                });
-    }
-    
+  if (match.hd !== "user") {
+    return JsxRuntime.jsx(NotFound, {});
   }
-  return React.createElement(NotFound.make, {});
+  let match$1 = match.tl;
+  if (match$1 !== 0 && match$1.tl === 0) {
+    return JsxRuntime.jsx(User, {
+      id: match$1.hd
+    });
+  } else {
+    return JsxRuntime.jsx(NotFound, {});
+  }
 }
 
 var make = App;
 
 export {
-  make ,
-  
+  make,
 }
 ```
 

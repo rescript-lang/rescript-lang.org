@@ -207,13 +207,20 @@ var anotherList = {
 let message =
   switch myList {
   | list{} => "This list is empty"
+  | list{first, second, ...rest} => "The list two items and a potenial remainder of items"
   | list{a, ...rest} => "The head of the list is the string " ++ Int.toString(a)
   }
 ```
 ```js
-var message = myList
-  ? "The head of the list is the string " + (1).toString()
-  : "This list is empty";
+let message = myList !== 0 ? (
+    ({
+      hd: 2,
+      tl: {
+        hd: 3,
+        tl: /* [] */0
+      }
+    }) !== 0 ? "The list two items and a potenial remainder of items" : "The head of the list is the string " + (1).toString()
+  ) : "This list is empty";
 ```
 
 </CodeTab>
