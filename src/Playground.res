@@ -877,7 +877,7 @@ module Settings = {
     let onWarningFlagsResetClick = _evt => {
       setConfig({
         ...config,
-        warn_flags: "+a-4-9-20-41-50-102",
+        warn_flags: "+a-4-9-20-40-41-42-50-61-102-109",
       })
     }
 
