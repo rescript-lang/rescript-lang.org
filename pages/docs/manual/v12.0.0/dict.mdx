@@ -1,0 +1,165 @@
+---
+title: "Dictionary"
+description: "Dictionary type from ReScript Core"
+canonical: "/docs/manual/v12.0.0/dict"
+---
+
+# Dictionary
+
+A mutable dictionary with string keys.  
+Compiles to a regular JavaScript object.  
+Defined in the [Core](/docs/manual/v12.0.0/api/core/dict).
+
+## Create
+
+We have a dedicated syntax to create a new Dictionary.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res prelude
+let d = dict{"A": 5, "B": 6}
+```
+
+```js
+let d = {
+  A: 5,
+  B: 6
+};
+```
+
+</CodeTab>
+
+⚠️ The keys of a dictionary are always strings and the values all have the same type.  
+You will get a compiler error if this is not the case!
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res prelude
+let d = dict{"A": 5, "B": "Hej"}
+```
+
+```js
+We've found a bug for you!
+
+  1 │ let d = dict{"A": 5, "B": "Hej"}
+
+  This has type: string
+  But it's expected to have type: int
+  
+  You can convert string to int with Int.fromString.
+```
+
+</CodeTab>
+
+## Access
+
+You can access values from a Dictionary either via the the Core module functions,
+or using pattern matching.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res prelude
+let d = dict{"A": 5, "B": 6}
+let a : option<int> = d->Dict.get("A")
+
+let b = switch d {
+| dict{"B": b} => Some(b)
+| _ => None
+}
+```
+
+```js
+let d = {
+  A: 5,
+  B: 6
+};
+
+let a = d["A"];
+
+let b = d.B;
+
+let b$1 = b !== undefined ? b : undefined;
+```
+
+</CodeTab>
+
+### Pattern match with JSON.t
+
+Pattern matching a Dictionary with the `dict{}` can be very elegant if you received an (external) [JSON.t](/docs/manual/v12.0.0/api/core/json) object.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res prelude
+@module("some-module")
+external getSettings: string => JSON.t = "getSettings"
+
+let vapidKey = switch getSettings("user") {
+| JSON.Object(dict{
+    "notifications": // A nested object structure
+    JSON.Object(dict{"vapidKey": JSON.String(key)}),
+  }) =>
+  Some(key)
+| _ => {
+    Console.log("key not found")
+    None
+  }
+}
+```
+
+```js
+import * as SomeModule from "some-module";
+
+let match = SomeModule.getSettings("user");
+
+let vapidKey;
+
+if (typeof match === "object" && match !== null && !Array.isArray(match)) {
+  let match$1 = match.notifications;
+  if (typeof match$1 === "object" && match$1 !== null && !Array.isArray(match$1)) {
+    let key = match$1.vapidKey;
+    if (typeof key === "string") {
+      vapidKey = key;
+    } else {
+      console.log("key not found");
+      vapidKey = undefined;
+    }
+  } else {
+    console.log("key not found");
+    vapidKey = undefined;
+  }
+} else {
+  console.log("key not found");
+  vapidKey = undefined;
+}
+```
+
+</CodeTab>
+
+## Mutable Update
+
+Updating an entry happens via the `Dict.set` function.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res prelude
+let d = dict{"A": 5, "B": 6}
+let a : option<int> = d->Dict.get("A")
+
+let b = switch d {
+| dict{"B": b} => Some(b)
+| _ => None
+}
+```
+
+```js
+let d = {
+  A: 5,
+  B: 6
+};
+
+d["A"] = -1;
+
+d["C"] = 0;
+```
+
+</CodeTab>
