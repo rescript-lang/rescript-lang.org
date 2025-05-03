@@ -7,7 +7,6 @@ let numeric = [
     "Fragile pattern matching: matching that will remain complete even if additional constructors are added to one of the variant types matched.",
   ),
   (5, "Partially applied function: expression whose result has function type and is ignored."),
-  (6, "Label omitted in function application."),
   (8, "Partial match: missing cases in pattern-matching."),
   (9, "Missing fields in a record pattern."),
   (
@@ -41,6 +40,7 @@ let numeric = [
   (37, "Unused constructor."),
   (38, "Unused extension constructor."),
   (39, "Unused rec flag."),
+  (41, "Ambiguous constructor or label name."),
   (43, "Nonoptional label applied as optional."),
   (44, "Open statement shadows an already defined identifier."),
   (45, "Open statement shadows an already defined label or constructor."),
@@ -56,7 +56,6 @@ let numeric = [
   (57, "Ambiguous or-pattern variables under guard"),
   (59, "Assignment to non-mutable value"),
   (60, "Unused module declaration"),
-  (61, "Unboxable type in primitive declaration"),
   (62, "Type constraint on GADT type declaration"),
   (101, "Unused bs attributes"),
   (102, "Polymorphic comparison introduced (maybe unsafe)"),

@@ -3,27 +3,23 @@
 module Lang = {
   type t =
     | Reason
-    | OCaml
     | Res
 
   let toString = t =>
     switch t {
     | Res => "ReScript"
     | Reason => "Reason"
-    | OCaml => "OCaml"
     }
 
   let toExt = t =>
     switch t {
     | Res => "res"
     | Reason => "re"
-    | OCaml => "ml"
     }
 
   let decode = (json): t => {
     open! Json.Decode
     switch string(json) {
-    | "ml" => OCaml
     | "re" => Reason
     | "res" => Res
     | other => raise(DecodeError(`Unknown language "${other}"`))
@@ -417,17 +413,6 @@ module Compiler = {
     | Some(ocaml) => ocaml->Dict.get("version")
     | None => None
     }
-  }
-
-  @send @scope("ocaml")
-  external ocamlCompile: (t, string) => JSON.t = "compile"
-
-  let ocamlCompile = (t, code): CompilationResult.t => {
-    let startTime = now()
-    let json = ocamlCompile(t, code)
-    let stopTime = now()
-
-    CompilationResult.decode(~time=stopTime -. startTime, json)
   }
 
   @send external getConfig: t => Config.t = "getConfig"

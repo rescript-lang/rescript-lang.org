@@ -1,14 +1,3 @@
-/*
-    TODO / Idea list:
-    - Fix issue with Reason where a comment on the last line causes a infinite loop
-    - Add settings pane to set moduleSystem
-    - Add advanced mode for enabling OCaml output as well
-
-    More advanced tasks:
-    - Fix syntax convertion issue where comments are stripped on Reason <-> Res convertion
-    - Try to get Reason's recoverable errors working
- */
-
 %%raw(`
 if (typeof window !== "undefined" && typeof window.navigator !== "undefined") {
   require("codemirror/mode/javascript/javascript");
@@ -42,6 +31,22 @@ module DropdownSelect = {
 }
 
 module ToggleSelection = {
+  module SelectionOption = {
+    @react.component
+    let make = (~label, ~isActive, ~disabled, ~onClick) => {
+      <button
+        className={"mr-1 px-2 py-1 rounded inline-block " ++ if isActive {
+          "bg-fire text-white font-bold"
+        } else {
+          "bg-gray-80 opacity-50 hover:opacity-80"
+        }}
+        onClick
+        disabled>
+        {React.string(label)}
+      </button>
+    }
+  }
+
   @react.component
   let make = (
     ~onChange: 'a => unit,
@@ -58,41 +63,21 @@ module ToggleSelection = {
       values
     }
 
-    let selectedIndex = switch Belt.Array.getIndexBy(values, lang => lang === selected) {
-    | Some(i) => i
-    | None => 0
-    }
-
-    let elements = Array.mapWithIndex(values, (value, i) => {
-      let active = i === selectedIndex ? "bg-fire text-white font-bold" : "bg-gray-80 opacity-50"
-      let label = toLabel(value)
-
-      let onMouseDown = evt => {
-        ReactEvent.Mouse.preventDefault(evt)
-        ReactEvent.Mouse.stopPropagation(evt)
-
-        if i !== selectedIndex {
-          switch values[i] {
-          | Some(value) => onChange(value)
-          | None => ()
+    <div className={(disabled ? "opacity-25" : "") ++ "flex w-full"}>
+      {values
+      ->Array.map(value => {
+        let label = toLabel(value)
+        let isActive = value === selected
+        let onClick = _event => {
+          if !isActive {
+            onChange(value)
           }
         }
-      }
 
-      // Required for iOS Safari 12
-      let onClick = _ => ()
-
-      <button
-        disabled
-        onMouseDown
-        onClick
-        key=label
-        className={"mr-1 px-2 py-1 rounded inline-block  " ++ active}>
-        {React.string(label)}
-      </button>
-    })
-
-    <div className={(disabled ? "opacity-25" : "") ++ "flex w-full"}> {React.array(elements)} </div>
+        <SelectionOption key={label} label isActive onClick disabled />
+      })
+      ->React.array}
+    </div>
   }
 }
 
@@ -697,9 +682,9 @@ module WarningFlagsWidget = {
       })
       ->React.array
       ->Some
-    | Typing(typing) =>
+    | Typing(typing) if typing.suggestion != NoSuggestion =>
       let suggestions = switch typing.suggestion {
-      | NoSuggestion => React.string("Type + / - followed by a number or letter (e.g. +a+1)")
+      | NoSuggestion => React.null
       | ErrorSuggestion(msg) => React.string(msg)
       | FuzzySuggestions({precedingTokens, selected, results, modifier}) =>
         Array.mapWithIndex(results, ((flag, desc), i) => {
@@ -753,7 +738,8 @@ module WarningFlagsWidget = {
         })->React.array
       }
       Some(suggestions)
-    | HideSuggestion(_) => None
+
+    | Typing(_) | HideSuggestion(_) => None
     }
 
     let suggestionBox =
@@ -793,20 +779,12 @@ module WarningFlagsWidget = {
     | []
     | [{enabled: false, flag: "a"}] => React.null
     | _ =>
-      let onMouseDown = evt => {
-        ReactEvent.Mouse.preventDefault(evt)
+      let onClick = _evt => {
         onUpdate([{WarningFlagDescription.Parser.enabled: false, flag: "a"}])
       }
 
-      // For iOS12 compat
-      let onClick = _ => ()
-      let onFocus = evt => {
-        ReactEvent.Focus.preventDefault(evt)
-        ReactEvent.Focus.stopPropagation(evt)
-      }
-
       <button
-        onMouseDown
+        title="Clear all flags"
         onClick
         onFocus
         tabIndex=0
@@ -837,17 +815,22 @@ module WarningFlagsWidget = {
       <div className={"flex justify-between border p-2 " ++ activeClass}>
         <div>
           chips
-          <input
-            ref={ReactDOM.Ref.domRef(inputRef)}
-            className="outline-none bg-gray-90 placeholder-gray-20 placeholder-opacity-50"
-            placeholder="Flags"
-            type_="text"
-            tabIndex=0
-            value=inputValue
-            onChange
-            onFocus
-            onBlur
-          />
+          <section className="mt-3">
+            <input
+              ref={ReactDOM.Ref.domRef(inputRef)}
+              className="inline-block p-1 max-w-20 outline-none bg-gray-90 placeholder-gray-20 placeholder-opacity-50"
+              placeholder="Flags"
+              type_="text"
+              tabIndex=0
+              value=inputValue
+              onChange
+              onFocus
+              onBlur
+            />
+            <p className="mt-1 text-12">
+              {React.string("Type + / - followed by a number or letter (e.g. +a+1)")}
+            </p>
+          </section>
         </div>
         deleteButton
       </div>
@@ -891,23 +874,11 @@ module Settings = {
 
     let warnFlagTokens = WarningFlagDescription.Parser.parse(warn_flags)->Result.getOr([])
 
-    let onResetClick = evt => {
-      ReactEvent.Mouse.preventDefault(evt)
-
-      let open_modules = switch readyState.selected.apiVersion {
-      | V1 | V2 | V3 | UnknownVersion(_) => None
-      | V4 | V5 =>
-        readyState.selected.libraries->Array.some(el => el === "@rescript/core")
-          ? Some(["RescriptCore"])
-          : None
-      }
-
-      let defaultConfig = {
-        Api.Config.module_system: "nodejs",
+    let onWarningFlagsResetClick = _evt => {
+      setConfig({
+        ...config,
         warn_flags: "+a-4-9-20-40-41-42-50-61-102-109",
-        ?open_modules,
-      }
-      setConfig(defaultConfig)
+      })
     }
 
     let onCompilerSelect = id => dispatch(SwitchToCompiler(id))
@@ -995,15 +966,19 @@ module Settings = {
           }
         </DropdownSelect>
       </div>
-      <div className="mt-6">
-        <div className=titleClass> {React.string("Syntax")} </div>
-        <ToggleSelection
-          values=availableTargetLangs
-          toLabel={lang => lang->Api.Lang.toExt->String.toUpperCase}
-          selected=readyState.targetLang
-          onChange=onTargetLangSelect
-        />
-      </div>
+      {if availableTargetLangs->Array.length > 1 {
+        <div className="mt-6">
+          <div className=titleClass> {React.string("Syntax")} </div>
+          <ToggleSelection
+            values=availableTargetLangs
+            toLabel={lang => lang->Api.Lang.toExt->String.toUpperCase}
+            selected=readyState.targetLang
+            onChange=onTargetLangSelect
+          />
+        </div>
+      } else {
+        React.null
+      }}
       <div className="mt-6">
         <div className=titleClass> {React.string("Module-System")} </div>
         <ToggleSelection
@@ -1024,7 +999,8 @@ module Settings = {
       <div className="mt-8">
         <div className=titleClass>
           {React.string("Warning Flags")}
-          <button onMouseDown=onResetClick className={"ml-6 text-12 " ++ Text.Link.standalone}>
+          <button
+            onClick=onWarningFlagsResetClick className={"ml-6 text-12 " ++ Text.Link.standalone}>
             {React.string("[reset]")}
           </button>
         </div>
@@ -1364,6 +1340,56 @@ module App = {
   }
 }
 `
+
+  let since_11 = `module CounterMessage = {
+  @react.component
+  let make = (~count, ~username=?) => {
+    let times = switch count {
+    | 1 => "once"
+    | 2 => "twice"
+    | n => Int.toString(n) ++ " times"
+    }
+
+    let name = switch username {
+    | Some("") => "Anonymous"
+    | Some(name) => name
+    | None => "Anonymous"
+    }
+
+    <div> {React.string(\`Hello \$\{name\}, you clicked me \` ++ times)} </div>
+  }
+}
+
+module App = {
+  @react.component
+  let make = () => {
+    let (count, setCount) = React.useState(() => 0)
+    let (username, setUsername) = React.useState(() => "Anonymous")
+
+    <div>
+      {React.string("Username: ")}
+      <input
+        type_="text"
+        value={username}
+        onChange={event => {
+          event->ReactEvent.Form.preventDefault
+          let eventTarget = event->ReactEvent.Form.target
+          let username = eventTarget["value"]
+          setUsername(_prev => username)
+        }}
+      />
+      <button
+        onClick={_evt => {
+          setCount(prev => prev + 1)
+        }}>
+        {React.string("Click me")}
+      </button>
+      <button onClick={_evt => setCount(_ => 0)}> {React.string("Reset")} </button>
+      <CounterMessage count username />
+    </div>
+  }
+}
+`
 }
 
 // Please note:
@@ -1412,11 +1438,10 @@ let make = (~versions: array<string>) => {
   let initialContent = switch (Dict.get(router.query, "code"), initialLang) {
   | (Some(compressedCode), _) => LzString.decompressToEncodedURIComponent(compressedCode)
   | (None, Reason) => initialReContent
-  | (None, Res)
-  | (None, _) =>
+  | (None, Res) =>
     switch initialVersion {
     | Some({major: 10, minor}) if minor >= 1 => InitialContent.since_10_1
-    | Some({major}) if major > 10 => InitialContent.since_10_1
+    | Some({major}) if major > 10 => InitialContent.since_11
     | _ => InitialContent.original
     }
   }
@@ -1661,23 +1686,74 @@ let make = (~versions: array<string>) => {
 
   let headers = Array.mapWithIndex(tabs, (tab, i) => {
     let title = switch tab {
-    | Output => "Output"
-    | JavaScript => "JavaScript"
-    | Problems => "Problems"
-    | Settings => "Settings"
+    | Output => "Output"->React.string
+
+    | JavaScript => "JavaScript"->React.string
+
+    | Problems => {
+        let problemCounts: {"warnings": int, "errors": int} = switch compilerState {
+        | Compiling({state: ready})
+        | Ready(ready)
+        | Executing({state: ready})
+        | SwitchingCompiler(ready, _) => {
+            "warnings": switch ready.result {
+            | Comp(Success({warnings})) => warnings->Array.length
+            | _ => 0
+            },
+            "errors": switch ready.result {
+            | FinalResult.Comp(Fail(result)) =>
+              switch result {
+              | SyntaxErr(errors) | TypecheckErr(errors) | OtherErr(errors) => errors->Array.length
+              | WarningErr(errors) => errors->Array.length
+              | WarningFlagErr(_) => 1
+              }
+            | Conv(Fail({details})) => details->Array.length
+            | Comp(Success(_)) => 0
+            | Conv(Success(_)) => 0
+            | Comp(UnexpectedError(_))
+            | Conv(UnexpectedError(_))
+            | Comp(Unknown(_))
+            | Conv(Unknown(_)) => 1
+            | Nothing => 0
+            },
+          }
+
+        | SetupFailed(_) | Init => {
+            "warnings": 0,
+            "errors": 0,
+          }
+        }
+
+        <div className="inline-flex items-center gap-2">
+          {"Problems"->React.string}
+          {if problemCounts["errors"] > 0 {
+            <span className="inline-block min-w-4 text-fire bg-fire-100 px-0.5">
+              {problemCounts["errors"]->React.int}
+            </span>
+          } else {
+            React.null
+          }}
+          {if problemCounts["warnings"] > 0 {
+            <span className="inline-block min-w-4 text-orange bg-orange-15 px-0.5">
+              {problemCounts["warnings"]->React.int}
+            </span>
+          } else {
+            React.null
+          }}
+        </div>
+      }
+
+    | Settings => "Settings"->React.string
     }
-    let onMouseDown = evt => {
+
+    let onClick = evt => {
       ReactEvent.Mouse.preventDefault(evt)
       ReactEvent.Mouse.stopPropagation(evt)
       setCurrentTab(_ => tab)
     }
     let active = currentTab === tab
-    // For Safari iOS12
-    let onClick = _ => ()
     let className = makeTabClass(active)
-    <button key={Int.toString(i) ++ ("-" ++ title)} onMouseDown onClick className disabled>
-      {React.string(title)}
-    </button>
+    <button key={Int.toString(i)} onClick className disabled> {title} </button>
   })
 
   <main className={"flex flex-col bg-gray-100 overflow-hidden"}>

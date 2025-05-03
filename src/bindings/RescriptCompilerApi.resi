@@ -9,7 +9,6 @@
 module Lang: {
   type t =
     | Reason
-    | OCaml
     | Res
 
   let toString: t => string
@@ -192,7 +191,6 @@ module Compiler: {
    * OCaml compiler actions (Note: no pretty print available for OCaml)
    */
   let ocamlVersion: t => option<string>
-  let ocamlCompile: (t, string) => CompilationResult.t
 
   /*
    * Config setter / getters
