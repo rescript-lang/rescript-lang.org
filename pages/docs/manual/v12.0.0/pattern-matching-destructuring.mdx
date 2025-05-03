@@ -478,6 +478,166 @@ if (person1.TAG) {
 
 **Note:** Rescript versions < 9.0 had a `when` clause, not an `if` clause.  Rescript 9.0 changed `when` to `if`.  (`when` may still work, but is deprecated.)
 
+### Match on subtype variants
+You can refine a variant A to variant B using the [variant type spread syntax](variant.md#variant-type-spreads) in pattern matching. This is possible if variant B [is a subtype of](variant.md#coercion) variant A.
+
+Let's look at an example:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+type pets = Cat | Dog
+type fish = Cod | Salmon
+type animals = | ...pets | ...fish
+
+let greetPet = (pet: pets) => {
+  switch pet {
+  | Cat => Console.log("Hello kitty!")
+  | Dog => Console.log("Woof woof doggie!")
+  }
+}
+
+let greetFish = (fish: fish) => {
+  switch fish {
+  | Cod => Console.log("Blub blub..")
+  | Salmon => Console.log("Blub blub blub blub..")
+  }
+}
+
+let greetAnimal = (animal: animals) => {
+  switch animal {
+  | ...pets as pet => greetPet(pet)
+  | ...fish as fish => greetFish(fish)
+  }
+}
+```
+```js
+function greetPet(pet) {
+  if (pet === "Cat") {
+    console.log("Hello kitty!");
+    return;
+  }
+  console.log("Woof woof doggie!");
+}
+
+function greetFish(fish) {
+  if (fish === "Cod") {
+    console.log("Blub blub..");
+    return;
+  }
+  console.log("Blub blub blub blub..");
+}
+
+function greetAnimal(animal) {
+  switch (animal) {
+    case "Cat" :
+    case "Dog" :
+      return greetPet(animal);
+    case "Cod" :
+    case "Salmon" :
+      return greetFish(animal);
+  }
+}
+```
+</CodeTab>
+
+Let's break down what we did:
+* Defined two different variants for pets and for fish
+* Wrote a dedicated function per animal type to greet that particular type of animal
+* Combined `pets` and `fish` into a main variant for `animals`
+* Wrote a function that can greet any animal by _spreading_ each sub variant on its own branch, aliasing that spread to a variable, and passing that variable to the dedicated greet function for that specific type
+
+Notice how we're able to match on parts of the main variant, as long as the variants are compatible.
+
+The example above aliases the variant type spread to a variable so we can use it in our branch. But, you can just as easily match without aliasing if you don't care about the value:
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let isPet = (animal: animals) => {
+  switch animal {
+  | ...pets => Console.log("A pet!")
+  | _ => Console.log("Not a pet...")
+  }
+}
+
+```
+```js
+function isPet(animal) {
+  switch (animal) {
+    case "Cat" :
+    case "Dog" :
+      console.log("A pet!");
+      return;
+    case "Cod" :
+    case "Salmon" :
+      console.log("Not a pet...");
+      return;
+  }
+}
+```
+</CodeTab>
+
+Similarily, if you want to get advanced, you can even pull out a single variant constructor. This works with and without aliases. Example:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+type dog = Dog
+type pets = Cat | ...dog
+type fish = Cod | Salmon
+type animals = | ...pets | ...fish
+
+let isPet = (animal: animals) => {
+  switch animal {
+  | ...dog => Console.log("A dog!")
+  | _ => Console.log("Not a dog...")
+  }
+}
+
+```
+```js
+function isPet(animal) {
+  if (animal === "Dog") {
+    console.log("A dog!");
+    return;
+  }
+  console.log("Not a dog...");
+}
+```
+</CodeTab>
+
+And, thanks to the rules of subtyping, the `Dog` constructor wouldn't _really_ need to be spread inside of the `pets` variant for this to work:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+type pets = Cat | Dog
+type fish = Cod | Salmon
+type animals = | ...pets | ...fish
+
+// Notice `dog` isn't spread into the `pets` variant, 
+// but this still work due to subtyping.
+type dog = Dog
+
+let isPet = (animal: animals) => {
+  switch animal {
+  | ...dog => Console.log("A dog!")
+  | _ => Console.log("Not a dog...")
+  }
+}
+
+```
+```js
+function isPet(animal) {
+  if (animal === "Dog") {
+    console.log("A dog!");
+    return;
+  }
+  console.log("Not a dog...");
+}
+```
+</CodeTab>
+
 ### Match on Exceptions
 
 If the function throws an exception (covered later), you can also match on _that_, in addition to the function's normally returned values.
