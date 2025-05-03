@@ -73,6 +73,28 @@ let isPet = (animal: animals) => {
 
 Read more about [variant type spreads in pattern matching](pattern-matching-destructuring.md#match-on-subtype-variants).
 
+## Polymorphic variant pattern matching
+You can refine compatible polymorphic variants when pattern matching:
+
+```res
+type red = [#Ruby | #Redwood | #Rust]
+type blue = [#Sapphire | #Neon | #Navy]
+
+// Contains all constructors of red and blue.
+// Also adds #Papayawhip
+type color = [red | blue | #Papayawhip]
+
+let myColor: color = #Ruby
+
+switch myColor {
+| #...blue => Console.log("This blue-ish")
+| #...red => Console.log("This red-ish")
+| other => Console.log2("Other color than red and blue: ", other)
+}
+```
+
+Read more about [pattern matching and polymorphic variants](polymorphic-variant.md#combine-types-and-pattern-match).
+
 ## List immutable update
 Spreads can be used for immutable updates of lists:
 
@@ -133,6 +155,7 @@ Read more about [partial application of functions](function.md#partial-applicati
 * [Record immutable updates](record.md#immutable-update)
 * [Variant type spreads](variant.md#variant-type-spreads)
 * [Variant type spreads in pattern matching](pattern-matching-destructuring.md#match-on-subtype-variants)
+* [Pattern matching and polymorphic variants](polymorphic-variant.md#combine-types-and-pattern-match)
 * [List immutable updates](array-and-list.md#immutable-prepend)
 * [List pattern matching](pattern-matching-destructuring.md#match-on-list)
 * [Array spreads](array-and-list.md#array-spreads)
