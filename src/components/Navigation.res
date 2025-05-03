@@ -177,27 +177,6 @@ module DocsSection = {
           }
         },
       },
-      {
-        imgSrc: "/static/ic_gentype@2x.png",
-        title: "GenType",
-        description: "Seamless TypeScript integration",
-        href: `/docs/manual/${version}/typescript-integration`,
-        isActive: url => {
-          switch url.fullpath {
-          | ["docs", "manual", _, "typescript-integration"] => true
-          | _ => false
-          }
-        },
-      },
-      {
-        imgSrc: "/static/ic_reanalyze@2x.png",
-        title: "Reanalyze",
-        description: "Dead Code & Termination analysis",
-        href: "https://github.com/rescript-lang/reanalyze",
-        isActive: _ => {
-          false
-        },
-      },
     ]
 
     let languageManualColumn =
@@ -532,9 +511,17 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
           <div
             className="flex ml-10 space-x-5 w-full max-w-320"
             style={ReactDOMStyle.make(~maxWidth="26rem", ())}>
-            {collapsibleElements->React.array}
+            <Link
+              href={`/docs/manual/${version}/introduction`}
+              className={linkOrActiveApiSubroute(~route)}>
+              {React.string("Docs")}
+            </Link>
             <Link href={`/docs/manual/${version}/api`} className={linkOrActiveApiSubroute(~route)}>
               {React.string("API")}
+            </Link>
+            <Link
+              href={`/docs/react/latest/introduction`} className={linkOrActiveApiSubroute(~route)}>
+              {React.string("React")}
             </Link>
             <Link
               href="/try"

@@ -2,9 +2,31 @@
   "Overview": [
     "introduction",
     "installation",
-    "migrate-to-v11",
     "editor-plugins",
-    "try"
+    "faq",
+    "llms"
+  ],
+  "Guides": [
+    "converting-from-js",
+    "newcomer-examples",
+    "project-structure"
+  ],
+  "JavaScript Interop": [
+    "interop-cheatsheet",
+    "embed-raw-javascript",
+    "shared-data-types",
+    "external",
+    "bind-to-js-object",
+    "bind-to-js-function",
+    "import-from-export-to-js",
+    "bind-to-global-js-values",
+    "json",
+    "inlining-constants",
+    "use-illegal-identifier-names",
+    "generate-converters-accessors",
+    "browser-support-polyfills",
+    "libraries",
+    "typescript-integration"
   ],
   "Language Features": [
     "overview",
@@ -35,27 +57,7 @@
     "reserved-keywords",
     "equality-comparison"
   ],
-  "Advanced Features": [
-    "extensible-variant",
-    "scoped-polymorphic-types"
-  ],
-  "JavaScript Interop": [
-    "interop-cheatsheet",
-    "embed-raw-javascript",
-    "shared-data-types",
-    "external",
-    "bind-to-js-object",
-    "bind-to-js-function",
-    "import-from-export-to-js",
-    "bind-to-global-js-values",
-    "json",
-    "inlining-constants",
-    "use-illegal-identifier-names",
-    "generate-converters-accessors",
-    "browser-support-polyfills",
-    "libraries",
-    "typescript-integration"
-  ],
+
   "Build System": [
     "build-overview",
     "build-configuration",
@@ -66,13 +68,8 @@
     "build-performance",
     "warning-numbers"
   ],
-  "Guides": [
-    "converting-from-js"
-  ],
-  "Extra": [
-    "newcomer-examples",
-    "project-structure",
-    "faq",
-    "llms"
+  "Advanced Features": [
+    "extensible-variant",
+    "scoped-polymorphic-types"
   ]
 }
