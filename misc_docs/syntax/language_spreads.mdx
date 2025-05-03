@@ -73,6 +73,48 @@ let isPet = (animal: animals) => {
 
 Read more about [variant type spreads in pattern matching](pattern-matching-destructuring.md#match-on-subtype-variants).
 
+## List immutable update
+Spreads can be used for immutable updates of lists:
+
+```res
+let prepended = list{1, ...someOtherList}
+
+// You can spread several lists, but it's O(n) so avoid it if possible
+let multiple = list{1, ...prepended, ...anotherList}
+```
+
+Read more about [immutable list updates](array-and-list.md#immutable-prepend) here.
+
+## List pattern matching
+Spreads can be used when pattern matching on lists:
+
+```res
+let rec printStudents = (students) => {
+  switch students {
+  | list{} => () // done
+  | list{student} => Console.log("Last student: " ++ student)
+  | list{student1, ...otherStudents} =>
+    Console.log(student1)
+    printStudents(otherStudents)
+  }
+}
+printStudents(list{"Jane", "Harvey", "Patrick"})
+```
+
+Read more about [pattern matching on lists](pattern-matching-destructuring.md#match-on-list).
+
+## Array immutable update
+> Available in v11+
+
+You can use spreads to add the contents of one array to another, just like in JavaScript:
+
+```res
+let firstArray = [1, 2, 3]
+let secondArray = [...firstArray, 4, 5]
+```
+
+Read more about [array spreads](array-and-list.md#array-spreads).
+
 ## Partial application of functions
 > Available in v11+ (uncurried mode)
 
@@ -91,5 +133,7 @@ Read more about [partial application of functions](function.md#partial-applicati
 * [Record immutable updates](record.md#immutable-update)
 * [Variant type spreads](variant.md#variant-type-spreads)
 * [Variant type spreads in pattern matching](pattern-matching-destructuring.md#match-on-subtype-variants)
+* [List immutable updates](array-and-list.md#immutable-prepend)
+* [List pattern matching](pattern-matching-destructuring.md#match-on-list)
+* [Array spreads](array-and-list.md#array-spreads)
 * [Partial application of functions](function.md#partial-application)
-
