@@ -479,7 +479,7 @@ if (person1.TAG) {
 **Note:** Rescript versions < 9.0 had a `when` clause, not an `if` clause.  Rescript 9.0 changed `when` to `if`.  (`when` may still work, but is deprecated.)
 
 ### Match on subtype variants
-You can refine a variant A to variant B using the variant type spread syntax in pattern matching. This is possible if variant B is a subtype of variant A.
+You can refine a variant A to variant B using the [variant type spread syntax](variant.md#variant-type-spreads) in pattern matching. This is possible if variant B [is a subtype of](variant.md#coercion) variant A.
 
 Let's look at an example:
 
@@ -549,7 +549,7 @@ Let's break down what we did:
 
 Notice how we're able to match on parts of the main variant, as long as the variants are compatible.
 
-The example above aliases the variant type spread to a variable so we can use it in our branch. But, you can just as easily match without aliasing if you don't care about the actual value for your branch:
+The example above aliases the variant type spread to a variable so we can use it in our branch. But, you can just as easily match without aliasing if you don't care about the value:
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
@@ -577,7 +577,7 @@ function isPet(animal) {
 ```
 </CodeTab>
 
-Similarily, if you want to get really advanced, you can even pull out a single variant constructor. This works with and without aliases. Example:
+Similarily, if you want to get advanced, you can even pull out a single variant constructor. This works with and without aliases. Example:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -615,7 +615,8 @@ type pets = Cat | Dog
 type fish = Cod | Salmon
 type animals = | ...pets | ...fish
 
-// Notice `dog` isn't spread into the `pets` variant, but this still work due to subtyping
+// Notice `dog` isn't spread into the `pets` variant, 
+// but this still work due to subtyping.
 type dog = Dog
 
 let isPet = (animal: animals) => {
