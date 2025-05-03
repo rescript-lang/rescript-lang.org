@@ -67,7 +67,8 @@
     "warning-numbers"
   ],
   "Guides": [
-    "converting-from-js"
+    "converting-from-js",
+    "editor-code-analysis"
   ],
   "Extra": [
     "newcomer-examples",
