@@ -141,10 +141,6 @@ let make = (props: props): React.element => {
       | _ => React.null
       }}
     </EnableCollapsibleNavbar>
-  | {base: ["docs", "reason-compiler"], version: Latest} =>
-    <EnableCollapsibleNavbar>
-      <ReasonCompilerDocsLayout> content </ReasonCompilerDocsLayout>
-    </EnableCollapsibleNavbar>
   // common routes
   | {base} =>
     switch List.fromArray(base) {
