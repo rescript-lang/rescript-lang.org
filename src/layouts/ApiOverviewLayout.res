@@ -10,15 +10,15 @@ let makeCategories: string => array<Sidebar.Category.t> = version => [
     items: [{name: "Core", href: `/docs/manual/${version}/api/core`}],
   },
   {
+    name: "Syntax Lookup",
+    items: [{name: "Core", href: "/syntax-lookup"}],
+  },
+  {
     name: "Additional Libraries",
     items: [
       {name: "Belt", href: `/docs/manual/${version}/api/belt`},
       {name: "Dom", href: `/docs/manual/${version}/api/dom`},
     ],
-  },
-  {
-    name: "Legacy Modules",
-    items: [{name: "Js", href: `/docs/manual/${version}/api/js`}],
   },
 ]
 
