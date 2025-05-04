@@ -112,15 +112,15 @@ ReScript regular expressions compile cleanly to their JavaScript counterpart:
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res example
-let r = %re("/b/g")
+let r = /b/g
 ```
 ```js
-var r = /b/g;
+let r = /b/g;
 ```
 
 </CodeTab>
 
-A regular expression like the above has the type `Re.t`. The [RegExp](api/core/regexp) module contains the regular expression helpers you have seen in JS.
+A regular expression like the above has the type `RegExp.t`. The [RegExp](api/core/regexp) module contains the regular expression helpers you have seen in JS.
 
 ## Boolean
 

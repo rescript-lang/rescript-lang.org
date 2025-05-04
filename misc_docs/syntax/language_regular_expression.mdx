@@ -1,0 +1,31 @@
+---
+id: "regular-expression-syntax"
+keywords: ["regular", "expression", "regex"]
+name: "/re/"
+summary: "This is the `regular expression` syntax."
+category: "languageconstructs"
+---
+
+> Available in v12+
+
+You write regular expressions in ReScript just like you do in JavaScript.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let regex = /^hello/
+let result = regex->RegExp.test("hello world")
+```
+
+```js
+let regex = /^hello/;
+
+let result = regex.test("hello world");
+```
+
+</CodeTab>
+
+### References
+
+* [Regular Expressions](/docs/manual/latest/primitive-types#regular-expression)
+* [RegExp API](/docs/manual/latest/api/core/regexp)
