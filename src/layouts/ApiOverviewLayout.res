@@ -2,16 +2,15 @@ module Sidebar = SidebarLayout.Sidebar
 
 let makeCategories: string => array<Sidebar.Category.t> = version => [
   {
-    name: "Introduction",
-    items: [{name: "Overview", href: `/docs/manual/${version}/api`}],
+    name: "",
+    items: [
+      {name: "Overview", href: `/docs/manual/${version}/api`},
+      {name: "Syntax Lookup", href: "/syntax-lookup"},
+    ],
   },
   {
     name: "Standard Library",
     items: [{name: "Core", href: `/docs/manual/${version}/api/core`}],
-  },
-  {
-    name: "Syntax Lookup",
-    items: [{name: "Core", href: "/syntax-lookup"}],
   },
   {
     name: "Additional Libraries",
