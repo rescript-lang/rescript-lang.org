@@ -82,6 +82,28 @@ let somethingElse = null;
 
 Read more about the [`@as` decorator and variants](variant.md#valid-as-payloads).
 
+## Adding fixed argument values to external functions
+You can leverage the `@as` decorator to add fixed values for external function arguments. You then do not need to supply a value for that argument.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+@module("fs")
+external readFileSyncUtf8: (string, @as(json`{encoding: "utf8"}`) _) => string = "readFileSync"
+
+let contents = readFileSyncUtf8("./someFile.txt")
+```
+
+```js
+import * as Fs from "fs";
+
+let contents = Fs.readFileSync("./someFile.txt", {encoding: "utf8"});
+```
+
+</CodeTab>
+
+Read more about [fixed arguments in functions](bind-to-js-function.md#fixed-arguments).
+
 ### References
 
 * [Bind Using ReScript Record](/docs/manual/latest/bind-to-js-object#bind-using-rescript-record)
