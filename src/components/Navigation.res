@@ -16,6 +16,10 @@ let linkOrActiveApiSubroute = (~route) => {
   }
 }
 
+let isActiveLink = (~route: string, ~href: string) => {
+  route == href ? activeLink : link
+}
+
 module CollapsibleLink = {
   // KeepOpen = Menu has been opened and should stay open
   type state =
@@ -513,14 +517,17 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
             style={ReactDOMStyle.make(~maxWidth="26rem", ())}>
             <Link
               href={`/docs/manual/${version}/introduction`}
-              className={linkOrActiveApiSubroute(~route)}>
+              className={isActiveLink(~route, ~href=`/docs/manual/${version}/introduction`)}>
               {React.string("Docs")}
             </Link>
-            <Link href={`/docs/manual/${version}/api`} className={linkOrActiveApiSubroute(~route)}>
+            <Link
+              href={`/docs/manual/${version}/api`}
+              className={isActiveLink(~route, ~href=`/docs/manual/${version}/api`)}>
               {React.string("API")}
             </Link>
             <Link
-              href={`/docs/react/latest/introduction`} className={linkOrActiveApiSubroute(~route)}>
+              href={`/docs/react/latest/introduction`}
+              className={isActiveLink(~route, ~href=`/docs/react/latest/introduction`)}>
               {React.string("React")}
             </Link>
             <Link
