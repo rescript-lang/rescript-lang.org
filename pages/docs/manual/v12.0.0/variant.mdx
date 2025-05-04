@@ -781,12 +781,15 @@ There's a linear amount of branch checking here (`O(n)`). Compare this to using 
 ```res example
 type animal = Dog | Cat | Bird
 let data = Dog
-let logData = data => switch data {
-| Dog => Console.log("Wof")
-| Cat => Console.log("Meow")
-| Bird => Console.log("Kashiiin")
+let logData = data => {
+  switch data {
+  | Dog => Console.log("Wof")
+  | Cat => Console.log("Meow")
+  | Bird => Console.log("Kashiiin")
+  }
 }
 logData(data)
+
 ```
 ```js
 function logData(data) {
