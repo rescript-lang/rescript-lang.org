@@ -1,19 +1,52 @@
 ---
-title: "Editor Plugins"
-description: "List of ReScript editor plugins"
+title: "Editor"
+metaTitle: "Editor"
+description: "Documentation about ReScript editor plugins and code analysis"
 canonical: "/docs/manual/v12.0.0/editor-plugins"
 ---
 
-# Editor Plugins
+# Editor
+
+This section is about the editor plugin for ReScript. It adds syntax highlighting, autocomplete, type hints, formatting, code navigation, code analysis for `.res` and `.resi` files.
+
+
+## Plugins
 
 - [VSCode](https://marketplace.visualstudio.com/items?itemName=chenglou92.rescript-vscode)
 - [Sublime Text](https://github.com/rescript-lang/rescript-sublime)
 - [Vim/Neovim](https://github.com/rescript-lang/vim-rescript)
 
-## Community Supported
+### Community Supported
 
 We don't officially support these; use them at your own risk!
 
 - [Neovim Tree-sitter](https://github.com/nkrkv/nvim-treesitter-rescript)
 - [IDEA](https://github.com/reasonml-editor/reasonml-idea-plugin)
 - [Emacs](https://github.com/jjlee/rescript-mode)
+
+
+## Code analysis
+
+The code analysis provides extra checks for your ReScript project, such as detecting dead code and unhandled exceptions. It's powered by [reanalyze](https://github.com/rescript-association/reanalyze), which is built into the extension—no separate install required.
+
+### How to Use
+
+- Open the command palette and run:  
+  `ReScript: Start Code Analyzer`
+- Warnings like dead code will show inline in the editor.
+- Suppression actions are available where applicable.
+- To stop analysis, click **Stop Code Analyzer** in the status bar.
+
+### Configuration
+
+Add a `reanalyze` section to your `rescript.json` to control what the analyzer checks or ignores. You’ll get autocomplete for config options in the editor.  
+More details: [reanalyze config docs](https://github.com/rescript-association/reanalyze#configuration-via-bsconfigjson)
+
+### Guide
+
+Look [here](editor-code-analysis) for a more detailed guide about how to use the code analysis tool.
+
+### Caveats
+
+- Doesn't support cross-package dead code analysis in monorepos. Run it per package instead.
+

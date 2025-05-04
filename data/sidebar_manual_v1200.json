@@ -8,6 +8,7 @@
   ],
   "Guides": [
     "converting-from-js",
+    "editor-code-analysis",
     "newcomer-examples",
     "project-structure"
   ],
@@ -57,7 +58,6 @@
     "reserved-keywords",
     "equality-comparison"
   ],
-
   "Build System": [
     "build-overview",
     "build-configuration",
