@@ -16,6 +16,10 @@ let linkOrActiveApiSubroute = (~route) => {
   }
 }
 
+let isActiveLink = (~route: string, ~href: string) => {
+  route == href ? activeLink : link
+}
+
 module CollapsibleLink = {
   // KeepOpen = Menu has been opened and should stay open
   type state =
@@ -175,27 +179,6 @@ module DocsSection = {
           | ["docs", "react"] => true
           | _ => false
           }
-        },
-      },
-      {
-        imgSrc: "/static/ic_gentype@2x.png",
-        title: "GenType",
-        description: "Seamless TypeScript integration",
-        href: `/docs/manual/${version}/typescript-integration`,
-        isActive: url => {
-          switch url.fullpath {
-          | ["docs", "manual", _, "typescript-integration"] => true
-          | _ => false
-          }
-        },
-      },
-      {
-        imgSrc: "/static/ic_reanalyze@2x.png",
-        title: "Reanalyze",
-        description: "Dead Code & Termination analysis",
-        href: "https://github.com/rescript-lang/reanalyze",
-        isActive: _ => {
-          false
         },
       },
     ]
@@ -532,9 +515,20 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
           <div
             className="flex ml-10 space-x-5 w-full max-w-320"
             style={ReactDOMStyle.make(~maxWidth="26rem", ())}>
-            {collapsibleElements->React.array}
-            <Link href={`/docs/manual/${version}/api`} className={linkOrActiveApiSubroute(~route)}>
+            <Link
+              href={`/docs/manual/${version}/introduction`}
+              className={isActiveLink(~route, ~href=`/docs/manual/${version}/introduction`)}>
+              {React.string("Docs")}
+            </Link>
+            <Link
+              href={`/docs/manual/${version}/api`}
+              className={isActiveLink(~route, ~href=`/docs/manual/${version}/api`)}>
               {React.string("API")}
+            </Link>
+            <Link
+              href={`/docs/react/latest/introduction`}
+              className={isActiveLink(~route, ~href=`/docs/react/latest/introduction`)}>
+              {React.string("React")}
             </Link>
             <Link
               href="/try"
