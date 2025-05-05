@@ -1,0 +1,75 @@
+{
+  "Overview": [
+    "introduction",
+    "installation",
+    "editor-plugins",
+    "faq",
+    "llms"
+  ],
+  "Guides": [
+    "converting-from-js",
+    "editor-code-analysis",
+    "project-structure"
+  ],
+  "JavaScript Interop": [
+    "interop-cheatsheet",
+    "embed-raw-javascript",
+    "shared-data-types",
+    "external",
+    "bind-to-js-object",
+    "bind-to-js-function",
+    "import-from-export-to-js",
+    "bind-to-global-js-values",
+    "json",
+    "inlining-constants",
+    "use-illegal-identifier-names",
+    "generate-converters-accessors",
+    "browser-support-polyfills",
+    "libraries",
+    "typescript-integration"
+  ],
+  "Language Features": [
+    "overview",
+    "let-binding",
+    "type",
+    "primitive-types",
+    "tuple",
+    "record",
+    "object",
+    "dict",
+    "variant",
+    "polymorphic-variant",
+    "null-undefined-option",
+    "array-and-list",
+    "function",
+    "control-flow",
+    "pipe",
+    "pattern-matching-destructuring",
+    "mutation",
+    "jsx",
+    "exception",
+    "lazy-values",
+    "promise",
+    "async-await",
+    "tagged-templates",
+    "module",
+    "import-export",
+    "attribute",
+    "reserved-keywords",
+    "equality-comparison"
+  ],
+  "Build System": [
+    "build-overview",
+    "build-configuration",
+    "build-configuration-schema",
+    "build-external-stdlib",
+    "build-pinned-dependencies",
+    "interop-with-js-build-systems",
+    "build-performance",
+    "warning-numbers"
+  ],
+  "Advanced Features": [
+    "extensible-variant",
+    "scoped-polymorphic-types"
+  ]
+}
