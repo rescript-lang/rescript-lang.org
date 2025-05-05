@@ -37,6 +37,7 @@
     "tuple",
     "record",
     "object",
+    "dict",
     "variant",
     "polymorphic-variant",
     "null-undefined-option",
