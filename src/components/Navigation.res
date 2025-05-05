@@ -525,6 +525,9 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
               className={isActiveLink(~route, ~href=`/docs/manual/${version}/api`)}>
               {React.string("API")}
             </Link>
+            <Link href={`/syntax-lookup`} className={isActiveLink(~route, ~href=`/syntax-lookup`)}>
+              {React.string("Syntax")}
+            </Link>
             <Link
               href={`/docs/react/latest/introduction`}
               className={isActiveLink(~route, ~href=`/docs/react/latest/introduction`)}>
