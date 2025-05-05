@@ -29,6 +29,88 @@ type person = {
 
 </CodeTab>
 
+You can also nest definitions of records.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res prelude
+type person = {
+  age: int,
+  name: string,
+  notificationSettings: {
+    sendEmails: bool,
+    allowPasswordLogin: bool,
+  },
+}
+
+let person = {
+  age: 90,
+  name: "Test Person",
+  notificationSettings: {
+    sendEmails: true,
+    allowPasswordLogin: false,
+  },
+}
+
+```
+```js
+let person = {
+  age: 90,
+  name: "Test Person",
+  notificationSettings: {
+    sendEmails: true,
+    allowPasswordLogin: false
+  }
+};
+```
+
+</CodeTab>
+
+Nesting record definitions is a nice way to group records that are part of the same structure, and won't be referenced from the outside.
+
+If you end up needing to refer to a nested record type explicitly, you should make it an explicit definition instead of a nested one. This is mainly for 2 reasons:
+- The records that are automatically generated for the nested record definitions are named in a way that would require you to use escaped identifiers to reference them. The nested record at `notificationSettings` above would be named `\"person.notificationSettings"` for instance
+- For the sake of clarity (and caring about your co-workers), having an explicit and named definition to look at and refer to is much easier than scanning a potentially large record definition for the nested record you're looking for
+
+So if we in the example above ended up needing to refer to `person.notificationSettings` nested record from the outside, we should instead make it explicit, just like how we normally define records:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res prelude
+type personNotificationSettings = {
+  sendEmails: bool,
+  allowPasswordLogin: bool,
+}
+
+type person = {
+  age: int,
+  name: string,
+  notificationSettings: personNotificationSettings
+}
+
+let person = {
+  age: 90,
+  name: "Test Person",
+  notificationSettings: {
+    sendEmails: true,
+    allowPasswordLogin: false,
+  },
+}
+
+```
+```js
+let person = {
+  age: 90,
+  name: "Test Person",
+  notificationSettings: {
+    sendEmails: true,
+    allowPasswordLogin: false
+  }
+};
+```
+
+</CodeTab>
+
 ## Creation
 
 To create a `person` record (declared above):
