@@ -6,7 +6,6 @@ let makeCategories: string => array<Sidebar.Category.t> = version => [
     items: [
       {name: "Overview", href: `/docs/manual/${version}/api`},
       {name: "Core", href: `/docs/manual/${version}/api/core`},
-      {name: "Syntax Lookup", href: "/syntax-lookup"},
     ],
   },
   {
