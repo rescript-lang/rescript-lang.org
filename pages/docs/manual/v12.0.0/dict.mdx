@@ -1,23 +1,25 @@
 ---
 title: "Dictionary"
-description: "Dictionary type from ReScript Core"
+description: "Dictionary data structure in ReScript"
 canonical: "/docs/manual/v12.0.0/dict"
 ---
 
 # Dictionary
 
-A mutable dictionary with string keys.  
-Compiles to a regular JavaScript object.  
-Defined in the [Core](/docs/manual/v12.0.0/api/core/dict).
+ReScript has first class support for dictionaries. Dictionaries are mutable objects with string keys, where all values must have the same type. Dicts compile to regular JavaScript objects at runtime.
 
 ## Create
 
-We have a dedicated syntax to create a new Dictionary.
+You can create a new dictionary in a few different ways, depending on your use case.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res prelude
+// Using the first class dict syntax
 let d = dict{"A": 5, "B": 6}
+
+// Programatically via the standard library
+let d2 = Dict.fromArray([("A", 5), ("B", 6)])
 ```
 
 ```js
@@ -25,53 +27,54 @@ let d = {
   A: 5,
   B: 6
 };
+
+let d2 = Object.fromEntries([
+  [
+    "A",
+    5
+  ],
+  [
+    "B",
+    6
+  ]
+]);
+
 ```
 
 </CodeTab>
 
-⚠️ The keys of a dictionary are always strings and the values all have the same type.  
-You will get a compiler error if this is not the case!
+A few things to note here:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
-
-```res prelude
-let d = dict{"A": 5, "B": "Hej"}
-```
-
-```js
-We've found a bug for you!
-
-  1 │ let d = dict{"A": 5, "B": "Hej"}
-
-  This has type: string
-  But it's expected to have type: int
-  
-  You can convert string to int with Int.fromString.
-```
-
-</CodeTab>
+* Using the first class `dict{}` syntax compiles cleanly to a JavaScript object directly
+* Using `Dict.fromArray` is useful when you need to create a dictionary programatically
 
 ## Access
 
-You can access values from a Dictionary either via the the Core module functions,
-or using pattern matching.
+You can access values from a Dictionary either via the the standard library `Dict` module functions, or using pattern matching.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res prelude
-let d = dict{"A": 5, "B": 6}
-let a : option<int> = d->Dict.get("A")
+let d = dict{"A": 5, "B": 6, "C": 7}
 
+// Using `Dict.get`
+let a = d->Dict.get("A")
+
+// Switching on the full dict
 let b = switch d {
 | dict{"B": b} => Some(b)
 | _ => None
 }
+
+// Destructuring
+let dict{"C": ?c} = d
 ```
 
 ```js
 let d = {
   A: 5,
-  B: 6
+  B: 6,
+  C: 7
 };
 
 let a = d["A"];
@@ -79,76 +82,26 @@ let a = d["A"];
 let b = d.B;
 
 let b$1 = b !== undefined ? b : undefined;
-```
 
+let c = d.C;
+```
 </CodeTab>
 
-### Pattern match with JSON.t
+> In the Destructuring example, we're using the `?` optional pattern match syntax to pull out the `C` key value as an optional, regardless of if the dict has it or not.
 
-Pattern matching a Dictionary with the `dict{}` can be very elegant if you received an (external) [JSON.t](/docs/manual/v12.0.0/api/core/json) object.
+## Pattern matching
+Dictionaries have first class support for pattern matching. Read more in the [dedicated guide on pattern matching and destructring in ReScript](pattern-matching-destructuring.md#match-on-dictionaries).
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+## Updating and setting values
 
-```res prelude
-@module("some-module")
-external getSettings: string => JSON.t = "getSettings"
-
-let vapidKey = switch getSettings("user") {
-| JSON.Object(dict{
-    "notifications": // A nested object structure
-    JSON.Object(dict{"vapidKey": JSON.String(key)}),
-  }) =>
-  Some(key)
-| _ => {
-    Console.log("key not found")
-    None
-  }
-}
-```
-
-```js
-import * as SomeModule from "some-module";
-
-let match = SomeModule.getSettings("user");
-
-let vapidKey;
-
-if (typeof match === "object" && match !== null && !Array.isArray(match)) {
-  let match$1 = match.notifications;
-  if (typeof match$1 === "object" && match$1 !== null && !Array.isArray(match$1)) {
-    let key = match$1.vapidKey;
-    if (typeof key === "string") {
-      vapidKey = key;
-    } else {
-      console.log("key not found");
-      vapidKey = undefined;
-    }
-  } else {
-    console.log("key not found");
-    vapidKey = undefined;
-  }
-} else {
-  console.log("key not found");
-  vapidKey = undefined;
-}
-```
-
-</CodeTab>
-
-## Mutable Update
-
-Updating an entry happens via the `Dict.set` function.
+You can set and update new values on your dictionary using the `Dict.set` function. All updates are mutable.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res prelude
 let d = dict{"A": 5, "B": 6}
-let a : option<int> = d->Dict.get("A")
 
-let b = switch d {
-| dict{"B": b} => Some(b)
-| _ => None
-}
+d->Dict.set("C", 7)
 ```
 
 ```js
@@ -157,9 +110,52 @@ let d = {
   B: 6
 };
 
-d["A"] = -1;
+d["C"] = 7;
+```
 
-d["C"] = 0;
+</CodeTab>
+
+## Advanced example: Pattern matching on JSON
+
+JSON objects are represented as dictionaries (`dict<JSON.t>`). You can leverage that fact to decode JSON in a nice way, using only language features:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res prelude
+type user = {
+  name: string,
+  email: string,
+}
+
+/** Decode JSON to a `user`.
+let decodeUser = (json: JSON.t) => {
+  switch json {
+  | Object(dict{"name": JSON.String(name), "email": JSON.String(email)}) =>
+    Some({name, email})
+  | _ => None
+  }
+}
+
+```
+
+```js
+function decodeUser(json) {
+  if (typeof json !== "object" || json === null || Array.isArray(json)) {
+    return;
+  }
+  let name = json.name;
+  if (typeof name !== "string") {
+    return;
+  }
+  let email = json.email;
+  if (typeof email === "string") {
+    return {
+      name: name,
+      email: email
+    };
+  }
+  
+}
 ```
 
 </CodeTab>

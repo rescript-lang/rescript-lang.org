@@ -602,6 +602,63 @@ printStudents({
 
 </CodeTab>
 
+### Match on Dictionaries
+
+You can pattern match on dictionaries just like you can on other ReScript data structures.
+
+When pattern matching on a dictionary it's assumed by default that you're expecting the keys you match on to exist in the dictionary. Example:
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res prelude
+let d = dict{"A": 5, "B": 6}
+
+// We're expecting the `B` key to exist below, and `b` will be `int` in the match branch
+let b = switch d {
+| dict{"B": b} => Some(b)
+| _ => None
+}
+```
+
+```js
+let d = {
+  A: 5,
+  B: 6
+};
+
+let b = d.B;
+
+let b$1 = b !== undefined ? b : undefined;
+```
+
+</CodeTab>
+
+However, there are situations where you want to pull out the value of a key as an option. You can do that using the `?` optional syntax in the pattern match:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res prelude
+let d = dict{"A": 5, "B": 6}
+
+// We're pulling out `B` regardless of if it has a value or not, and therefore get `b` as `option<int>`
+let b = switch d {
+| dict{"B": ?b} => b
+}
+```
+
+```js
+let d = {
+  A: 5,
+  B: 6
+};
+
+let b = d.B;
+```
+
+</CodeTab>
+
+Notice how in the first case, when not using `?`, we had to supply a catch-all case `_`. That's because the pattern match _expects_ `B` to exist in the first case, for the pattern to match. If `B` doesn't exist, the match falls through to the next branch, and therefore we need to catch it to be exhaustive in our matching.
+
+However, in the second case, we don't need a catch-all case. That's because the first branch will _always_ match the dictionary - either `B` exists or it doesn't, but it doesn't matter because we're pulling it out as an optional value.
 
 ### Small Pitfall
 
