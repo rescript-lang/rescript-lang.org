@@ -127,7 +127,7 @@ type user = {
   email: string,
 }
 
-/** Decode JSON to a `user`.
+/** Decode JSON to a `user`. */
 let decodeUser = (json: JSON.t) => {
   switch json {
   | Object(dict{"name": JSON.String(name), "email": JSON.String(email)}) =>
