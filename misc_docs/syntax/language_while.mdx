@@ -1,0 +1,50 @@
+---
+id: "while"
+keywords: ["while", "loop"]
+name: "while loop"
+summary: "This is the `while` loop."
+category: "languageconstructs"
+---
+
+ReScript supports `while` loops. While loops execute its body code block while its condition is true. 
+
+ReScript does not have the `break` keyword, but you can easily break out of a while loop by using a mutable binding.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let break = ref(false)
+
+while !break.contents {
+  if Math.random() > 0.3 {
+    break := true
+  } else {
+    Console.log("Still running")
+  }
+}
+
+```
+
+```js
+let $$break = {
+  contents: false
+};
+
+while (!$$break.contents) {
+  if (Math.random() > 0.3) {
+    $$break.contents = true;
+  } else {
+    console.log("Still running");
+  }
+};
+```
+
+</CodeTab>
+
+
+### References
+
+* [While Loops](control-flow.md#while-loops)
+
