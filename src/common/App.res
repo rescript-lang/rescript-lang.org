@@ -54,7 +54,8 @@ let make = (props: props): React.element => {
   // landing page
   | {base: [], pagepath: []} => <LandingPageLayout> content </LandingPageLayout>
   // docs routes
-  | {base: ["docs", "manual"], pagepath} => // check if it's an api route
+  | {base: ["docs", "manual"], pagepath} =>
+    // check if it's an api route
     switch pagepath[0] {
     | Some("api") =>
       switch url->Url.getVersionString {
@@ -121,7 +122,8 @@ let make = (props: props): React.element => {
       }
     }
 
-  | {base: ["docs", "react"], version} => switch version {
+  | {base: ["docs", "react"], version} =>
+    switch version {
     | Latest =>
       <ReactDocsLayout.Latest frontmatter={component->frontmatter}>
         content
