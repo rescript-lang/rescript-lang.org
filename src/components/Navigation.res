@@ -165,15 +165,6 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
         <MobileNav route />
       </div>
     </nav>
-    <div
-      className="fixed z-40 bg-gray-10-tr w-full h-full bottom-0"
-      style={
-        open ReactDOM.Style
-        make()
-        ->unsafeAddProp("backdropFilter", "blur(2px)")
-        ->unsafeAddProp("WebkitBackdropFilter", "blur(2px)")
-      }
-    />
   </>
 }
 
