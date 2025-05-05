@@ -21,6 +21,8 @@ type t = {
   urlBox?: React.componentLike<UrlBox.props<string, string, Mdx.MdxChildren.t>, React.element>,
   @as("CodeTab")
   codeTab?: CodeTab.props<Mdx.MdxChildren.t, array<string>> => React.element,
+  @as("DonationForm")
+  donationForm?: React.componentLike<DonationForm.props, React.element>,
   /* Common markdown elements */
   p?: P.props<React.element> => React.element,
   li?: Li.props<React.element> => React.element,
@@ -74,4 +76,5 @@ let default = {
   pre: Pre.make,
   blockquote: Blockquote.make,
   code: Code.make,
+  donationForm: DonationForm.make,
 }
