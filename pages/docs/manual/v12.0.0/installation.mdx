@@ -5,25 +5,25 @@ canonical: "/docs/manual/v12.0.0/installation"
 ---
 
 # Installation
-
-## Notes
-
-With the instructions below, our new standard library [ReScript Core](https://github.com/rescript-association/rescript-core) will be included by default. (In ReScript 11, it comes as a separate npm package `@rescript/core`. In future versions, it will be included in the `rescript` npm package itself.)
-
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/) version >= 14
+- [Node.js](https://nodejs.org/) version >= 20
 - One of the following package managers:
   - [npm](https://docs.npmjs.com/cli/) (comes with Node.js)
-  - [yarn](https://yarnpkg.com/) (yarn versions >1 need to set `nodeLinker: node-modules` in `.yarnrc.yml`)
+  - [yarn](https://yarnpkg.com/)
+    - yarn versions >1 need to set `nodeLinker: node-modules` in `.yarnrc.yml`
   - [pnpm](https://pnpm.io/)
   - [bun](https://bun.sh/)
+  - [deno]()
+    - Configure `"nodeModulesDir": "auto"` in `deno.json`
 
 ## New Project
 
-The fastest and easiest way to spin up a new ReScript project is with the [create-rescript-app](https://github.com/rescript-lang/create-rescript-app) project generator. You can start it with any of the aforementioned package managers or `npx`.
+The fastest and easiest way to spin up a new ReScript project is with the [create-rescript-app](https://github.com/rescript-lang/create-rescript-app) project generator. This will get you started with a fresh Next.js or Vite app with React and Tailwind CSS.
 
-<CodeTab labels={["npm", "npx", "yarn", "pnpm", "bun"]}>
+You can start it with any of the aforementioned package managers or `npx`.
+
+<CodeTab labels={["npm", "npx", "yarn", "pnpm", "bun", "deno"]}>
 
 ```sh example
 npm create rescript-app@latest
@@ -40,7 +40,9 @@ pnpm create rescript-app
 ```sh
 bun create rescript-app
 ```
-
+```sh
+deno run -A npm:create-rescript-app@latest
+```
 </CodeTab>
 
 - Follow the steps of the setup.
@@ -66,7 +68,7 @@ If you already have a JavaScript project into which you'd like to add ReScript y
 ### Quick Setup
 
 In the root directory of your project, execute:
-<CodeTab labels={["npm", "npx", "yarn", "pnpm", "bun"]}>
+<CodeTab labels={["npm", "npx", "yarn", "pnpm", "bun", "deno"]}>
 
 ```sh
 npm create rescript-app@latest
@@ -83,28 +85,34 @@ pnpm create rescript-app
 ```sh
 bun create rescript-app
 ```
-
+```sh
+// you will need deno configured to have a package.json file and node_modules folder
+deno run -A npm:create-rescript-app@latest
+```
 </CodeTab>
 
 `create-rescript-app` will tell you that a `package.json` file has been detected and ask you if it should install ReScript into your project. Just follow the steps accordingly.
 
 ### Manual Setup
 - Install ReScript locally:
-  <CodeTab labels={["npm", "yarn", "pnpm", "bun"]}>
+  <CodeTab labels={["npm", "yarn", "pnpm", "bun", "deno"]}>
 
   ```sh
-  npm install rescript @rescript/core
+  npm install rescript
   ```
   ```sh
-  yarn add rescript @rescript/core
+  yarn add rescript
   ```
   ```sh
-  pnpm install rescript @rescript/core
+  pnpm install rescript
   ```
   ```sh
-  bun install rescript @rescript/core
+  bun install rescript
   ```
-
+  ```sh
+  // you will need deno configured to have a node_modules folder
+  deno install npm:rescript --allow-scripts
+  ```
   </CodeTab>
 - Create a ReScript build configuration file (called `rescript.json`) at the root:
   ```json
@@ -122,13 +130,7 @@ bun create rescript-app
         "in-source": true
       }
     ],
-    "suffix": ".res.js",
-    "bs-dependencies": [
-      "@rescript/core"
-    ],
-    "bsc-flags": [
-      "-open RescriptCore"
-    ]
+    "suffix": ".res.js"
   }
   ```
   See [Build Configuration](build-configuration) for more details on `rescript.json`.
@@ -140,7 +142,7 @@ bun create rescript-app
   }
   ```
 
-Since ReScript compiles to clean readable JS files, the rest of your existing toolchain (e.g. Babel and Webpack) should just work!
+Since ReScript compiles to clean readable JS files, the rest of your existing toolchain (e.g. Vite, Rspack, Rollup) should just work!
 
 Helpful guides:
 
