@@ -320,7 +320,7 @@ let make = (
                   editLinkEl
                 </div>
               </div>
-              <div className={hasBreadcrumbs ? "mt-10" : "-mt-4"}>
+              <div className={hasBreadcrumbs ? "mt-10" : "mt-6 md:-mt-4"}>
                 <MdxProvider components> children </MdxProvider>
               </div>
               pagination

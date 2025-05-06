@@ -27,9 +27,9 @@ let isDocRouteActive = (~route) => isDocRoute(~route) ? activeLink : link
 module MobileNav = {
   @react.component
   let make = (~route: string) => {
-    let base = "font-normal mx-4 py-5 text-gray-20 border-b border-gray-80"
+    let base = "font-normal mx-4 py-5 text-gray-40 border-b border-gray-80"
     let extLink = "block hover:cursor-pointer hover:text-white text-gray-60"
-    <div className="border-gray-80 border-t">
+    <div className="border-gray-80 border-tn">
       <ul>
         <li className=base>
           <Link href="/try" className={linkOrActiveLink(~target="/try", ~route)}>
@@ -126,7 +126,7 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
                 {React.string("Community")}
               </Link>
             </div>
-            <div className="md:flex flex items-center">
+            <div className="md:flex flex items-center text-gray-60">
               <Search />
               <div className="hidden md:flex items-center ml-5">
                 <a href=Constants.githubHref rel="noopener noreferrer" className={"mr-5 " ++ link}>
