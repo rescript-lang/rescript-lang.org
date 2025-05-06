@@ -391,7 +391,7 @@ module MainUSP = {
     <Item
       caption="A robust type system"
       title={<span
-        className="text-transparent bg-clip-text bg-gradient-to-r from-berry-dark-50 to-fire-50">
+        className="text-transparent bg-clip-text bg-linear-to-r from-berry-dark-50 to-fire-50">
         {React.string("Type Better")}
       </span>}
       media={<video

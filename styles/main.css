@@ -1,92 +1,297 @@
-@import './_hljs.css';
-@import './_markdown.css';
-@import "./_fonts.css";
-@import "./_docsearch.css";
+@import './_hljs.css' layer(base);
+@import './_markdown.css' layer(base);
+@import './_fonts.css' layer(base);
+@import './_docsearch.css' layer(base);
 
-@tailwind base;
-@tailwind components;
+@import 'tailwindcss';
 
-/* @import "./_typography.css"; */
+@source '../src/**/*.{mjs,js,res}';
+@source '../pages/**/*.{mjs,js,mdx}';
 
-body {
-  @apply font-sans bg-white sm:subpixel-antialiased ;
-}
+@theme {
+  --radius-*: initial;
+  --radius-none: 0;
+  --radius-sm: 0.125rem;
+  --radius: 0.25rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
 
-.hide-scrollbar {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none;  /* IE 10+ */
-}
+  --breakpoint-*: initial;
+  --breakpoint-xs: 599px;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1440px;
 
-.hide-scrollbar::-webkit-scrollbar {
-  width: 0px;
-  background: transparent; /* Chrome/Safari/Webkit */
-}
+  --text-*: initial;
+  --text-11: 0.6875rem;
+  --text-12: 0.75rem;
+  --text-14: 0.875rem;
+  --text-16: 1rem;
+  --text-18: 1.125rem;
+  --text-24: 1.5rem;
+  --text-32: 2rem;
+  --text-48: 3rem;
+  --text-68: 4.25rem;
 
-a > code {
-  @apply text-fire !important;
-}
+  --font-weight-*: initial;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
 
-@tailwind utilities;
+  --leading-*: initial;
+  --leading-2: 1.35;
+  --leading-4: 1.5;
+  --leading-5: 1.75;
+  --leading-none: 1;
+  --leading-tight: 1.25;
 
-@layer components { 
-  .hl-title {
-    @apply text-[2.5rem] tracking-tighter leading-tight font-semibold text-gray-80
-  }
+  --tracking-*: initial;
+  --tracking-tighter: -0.03em;
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.075em;
+  --tracking-widest: 0.15em;
 
-  @screen xs {
-    .hl-title {
-      @apply text-48
+  --z-index-*: initial;
+  --z-index-0: 0;
+  --z-index-1: 1;
+  --z-index-2: 2;
+  --z-index-3: 3;
+  --z-index-4: 4;
+  --z-index-5: 5;
+  --z-index-10: 10;
+  --z-index-20: 20;
+  --z-index-25: 25;
+  --z-index-30: 30;
+  --z-index-40: 40;
+  --z-index-50: 50;
+  --z-index-75: 75;
+  --z-index-100: 100;
+  --z-index-auto: auto;
+
+  --font-*: initial;
+  --font-sans:
+    Inter, SF Pro Text, Roboto, -apple-system, BlinkMacSystemFont,
+    Helvetica Neue, Arial, sans-serif;
+  --font-mono: Roboto Mono, SFMono-Regular, Menlo, Segoe UI, Courier, monospace;
+
+  --color-gray-5: #fafbfc;
+  --color-gray-10: #fafbfc;
+  --color-gray-20: #edf0f2;
+  --color-gray-30: #cdcdd6;
+  --color-gray-40: #979aad;
+  --color-gray-60: #696b7d;
+  --color-gray-70: #3c3d4e;
+  --color-gray-80: #232538;
+  --color-gray-90: #14162c;
+  --color-gray-95: #14162c;
+  --color-gray-100: #0b0d22;
+  --color-gray-5-tr: rgba(1, 20, 29, 0.02);
+  --color-gray-10-tr: rgba(1, 20, 38, 0.02);
+  --color-gray-60-tr: rgba(1, 4, 39, 0.6);
+  --color-gray-80-tr: rgba(1, 4, 39, 0.8);
+  --color-gray-90-tr: rgba(1, 4, 39, 0.95);
+
+  --color-white: #ffffff;
+  --color-white-80-tr: rgba(255, 255, 255, 0.8);
+  --color-white-60-tr: rgba(255, 255, 255, 0.6);
+  --color-white-40-tr: rgba(255, 255, 255, 0.4);
+
+  --color-fire-5: #fcf1f1;
+  --color-fire-10: #fbb8bb;
+  --color-fire-30: #f4646a;
+  --color-fire-50: #e6484f;
+  --color-fire-70: #c3373d;
+  --color-fire-90: #790c10;
+  --color-fire-100: #211332;
+  --color-fire: #e6484f;
+  --color-fire-dark: #e06c75;
+
+  --color-sky-5: #ecf1fc;
+  --color-sky-10: #dde8fd;
+  --color-sky-30: #638fe6;
+  --color-sky-70: #2258c3;
+  --color-sky-90: #0c2e6f;
+  --color-sky: #376fdd;
+
+  --color-berry-15: rgba(171, 94, 163, 0.15);
+  --color-berry-40: #a766d0;
+  --color-berry: #b151dd;
+  --color-berry-dark-50: #b984db;
+
+  --color-water: #5e5ede;
+  --color-water-dark: #637cc1;
+
+  --color-ocean-dark: #8aaec8;
+
+  --color-turtle: #02a875;
+  --color-turtle-dark: #388b72;
+
+  --color-orange-10: rgba(224, 172, 0, 0.1);
+  --color-orange-15: rgba(224, 172, 0, 0.15);
+  --color-orange: #dd8c1b;
+  --color-orange-dark: #d59b74;
+
+  --height-18: 4.5rem;
+  --height-inherit: inherit;
+
+  --min-width-320: 20rem;
+
+  --container-320: 20rem;
+  --container-400: 25rem;
+  --container-576: 36rem;
+  --container-740: 46.25rem;
+  --container-1060: 66.25rem;
+  --container-1280: 80rem;
+  --container-sm: 30rem;
+  --container-md: 40rem;
+  --container-xl: 66.25rem;
+  --container-none: none;
+  --container-full: 100%;
+
+  --inset-16: 4rem;
+  --inset-18: 4.5rem;
+
+  --spacing-2\/3: 66.666667%;
+  --spacing-9\/16: 56.25%;
+  --spacing-0_75: 0.135rem;
+
+  --animate-pulse: pulse 0.5s cubic-bezier(0.4, 0, 0.6, 1);
+
+  --shadow-sm: 0 0.5px 0.5px 0 rgba(0, 0, 0, 0.05);
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
     }
   }
+}
 
-  @screen md {
-    .hl-title {
-      @apply text-68
-    }
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility hl-title {
+  @apply text-[2.5rem] tracking-tighter leading-tight font-semibold text-gray-80;
+
+  @media (width >= theme(--breakpoint-xs)) {
+    @apply text-48;
   }
 
-  @screen lg {
-    .hl-title {
-      @apply font-bold
-    }
+  @media (width >= theme(--breakpoint-md)) {
+    @apply text-68;
   }
 
+  @media (width >= theme(--breakpoint-lg)) {
+    @apply font-bold;
+  }
+}
+
+@utility hl-1 {
   @layer components {
-    .hl-1 {
-      @apply text-48 font-semibold tracking-tighter leading-tight text-black
-    }
-    .hl-2 {
-      @apply text-32 font-semibold tracking-tighter leading-tight text-black
-    }
-    .hl-3 { 
-      @apply text-24 font-semibold tracking-tight leading-tight text-black
-    }
-    .hl-4 {
-      @apply text-18 font-semibold tracking-tight leading-tight text-gray-80
-    }
-    .hl-5 {
-      @apply text-14 font-bold tracking-normal leading-tight text-gray-80
-    }
-    .hl-overline {
-      @apply text-11 font-semibold tracking-wide leading-tight uppercase text-gray-80
-    }
+    @apply text-48 font-semibold tracking-tighter leading-tight text-black;
+  }
+}
+
+@utility hl-2 {
+  @layer components {
+    @apply text-32 font-semibold tracking-tighter leading-tight text-black;
+  }
+}
+
+@utility hl-3 {
+  @layer components {
+    @apply text-24 font-semibold tracking-tight leading-tight text-black;
+  }
+}
+
+@utility hl-4 {
+  @layer components {
+    @apply text-18 font-semibold tracking-tight leading-tight text-gray-80;
+  }
+}
+
+@utility hl-5 {
+  @layer components {
+    @apply text-14 font-bold tracking-normal leading-tight text-gray-80;
+  }
+}
+
+@utility hl-overline {
+  @layer components {
+    @apply text-11 font-semibold tracking-wide leading-tight uppercase text-gray-80;
+  }
+}
+
+@utility body-lg {
+  @layer components {
+    @apply text-18 font-normal tracking-tight leading-4;
+  }
+}
+
+@utility body-button {
+  @layer components {
+    @apply text-16 font-semibold tracking-normal leading-2;
+  }
+}
+
+@utility body-md {
+  @layer components {
+    @apply text-16 font-normal tracking-tight leading-4;
+  }
+}
+
+@utility body-sm {
+  @layer components {
+    @apply text-14 font-medium tracking-normal leading-2;
+  }
+}
+
+@utility captions {
+  @layer components {
+    @apply text-12 font-medium tracking-normal leading-2;
+  }
+}
+
+@layer components {
+  /* @import "./_typography.css"; */
+
+  body {
+    @apply font-sans bg-white sm:subpixel-antialiased;
   }
 
-  @layer components {
-    .body-lg {
-      @apply text-18 font-normal tracking-tight leading-4
-    }
-    .body-button {
-      @apply text-16 font-semibold tracking-normal leading-2
-    }
-    .body-md {
-      @apply text-16 font-normal tracking-tight leading-4
-    }
-    .body-sm {
-      @apply text-14 font-medium tracking-normal leading-2
-    }
-    .captions {
-      @apply text-12 font-medium tracking-normal leading-2
-    }
+  .hide-scrollbar {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* Chrome/Safari/Webkit */
+  }
+
+  a > code {
+    @apply text-fire!;
   }
 }

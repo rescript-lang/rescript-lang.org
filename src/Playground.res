@@ -355,7 +355,7 @@ module WarningFlagsWidget = {
   @set external _scrollTop: (Dom.element, int) => unit = "scrollTop"
   @send external focus: Dom.element => unit = "focus"
 
-  @send external blur: Dom.element => unit = "blur"
+  @send external blur: Dom.element => unit = "blur-sm"
 
   @get external scrollHeight: Dom.element => int = "scrollHeight"
   @get external clientHeight: Dom.element => int = "clientHeight"
@@ -788,7 +788,7 @@ module WarningFlagsWidget = {
         onClick
         onFocus
         tabIndex=0
-        className="focus:outline-none self-start focus:ring hover:cursor-pointer hover:bg-gray-40 p-2 rounded-full">
+        className="focus:outline-hidden self-start focus:ring-3 hover:cursor-pointer hover:bg-gray-40 p-2 rounded-full">
         <Icon.Close />
       </button>
     }
@@ -818,7 +818,7 @@ module WarningFlagsWidget = {
           <section className="mt-3">
             <input
               ref={ReactDOM.Ref.domRef(inputRef)}
-              className="inline-block p-1 max-w-20 outline-none bg-gray-90 placeholder-gray-20 placeholder-opacity-50"
+              className="inline-block p-1 max-w-20 outline-hidden bg-gray-90 placeholder-gray-20 placeholder-opacity-50"
               placeholder="Flags"
               type_="text"
               tabIndex=0
@@ -1677,7 +1677,7 @@ let make = (~versions: array<string>) => {
   let disabled = false
 
   let makeTabClass = active => {
-    let activeClass = active ? "text-white !border-sky-70 font-medium hover:cursor-default" : ""
+    let activeClass = active ? "text-white border-sky-70! font-medium hover:cursor-default" : ""
 
     "flex-1 items-center p-4 border-t-4 border-transparent " ++ activeClass
   }
@@ -1771,7 +1771,7 @@ let make = (~versions: array<string>) => {
       <div
         ref={ReactDOM.Ref.domRef(leftPanelRef)}
         style={ReactDOM.Style.make(~width=layout == Column ? "100%" : "50%", ())}
-        className={`${layout == Column ? "h-2/4" : "!h-full"}`}>
+        className={`${layout == Column ? "h-2/4" : "h-full!"}`}>
         <CodeMirror
           className="bg-gray-100 h-full"
           mode
@@ -1812,7 +1812,7 @@ let make = (~versions: array<string>) => {
       <div
         ref={ReactDOM.Ref.domRef(rightPanelRef)}
         style={ReactDOM.Style.make(~width=layout == Column ? "100%" : "50%", ())}
-        className={`${layout == Column ? "h-6/15" : "!h-inherit"}`}>
+        className={`${layout == Column ? "h-6/15" : "h-inherit!"}`}>
         <div className={"flex flex-wrap justify-between w-full " ++ (disabled ? "opacity-50" : "")}>
           {React.array(headers)}
         </div>
