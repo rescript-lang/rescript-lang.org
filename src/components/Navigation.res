@@ -171,7 +171,7 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
             id="docs-subnav"
             className="bg-white z-50 px-4 w-full h-12 shadow text-gray-60 text-12 md:text-14 transition duration-300 ease-out group-[.nav-disappear]:-translate-y-16 md:group-[.nav-disappear]:transform-none">
             <div
-              className="pl-30 flex gap-2 md:gap-6 lg:gap-10 items-center h-full w-full max-w-1280 m-auto">
+              className="pl-30 flex gap-6 md:gap-6 lg:gap-10 items-center h-full w-full max-w-1280 m-auto">
               <Link
                 href={`/docs/manual/${version}/introduction`}
                 className={isActiveLink(~includes="/docs/manual/", ~excludes="/api", ~route)}>
