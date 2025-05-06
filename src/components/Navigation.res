@@ -169,7 +169,7 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
       {isDocRoute(~route)
         ? <nav
             id="docs-subnav"
-            className="z-50 px-4 w-full h-12 bg-gray-70 shadow text-white text-14 transition duration-300 ease-out group-[.nav-disappear]:-translate-y-16 md:group-[.nav-disappear]:transform-none">
+            className="z-50 px-4 w-full h-12 shadow text-gray-60 text-14 transition duration-300 ease-out group-[.nav-disappear]:-translate-y-16 md:group-[.nav-disappear]:transform-none">
             <div className="pl-30 flex gap-10 items-center h-full w-full max-w-md">
               <Link
                 href={`/docs/manual/${version}/introduction`}
