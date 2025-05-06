@@ -1,6 +1,6 @@
 module Link = Next.Link
 
-let link = "no-underline block hover:cursor-pointer hover:text-fire-30 text-gray-40 mb-px"
+let link = "no-underline block hover:cursor-pointer hover:text-fire-30 mb-px"
 let activeLink = "font-medium text-fire-30 border-b border-fire"
 
 let linkOrActiveLink = (~target, ~route) => target === route ? activeLink : link
@@ -8,9 +8,21 @@ let linkOrActiveLink = (~target, ~route) => target === route ? activeLink : link
 let linkOrActiveLinkSubroute = (~target, ~route) =>
   String.startsWith(route, target) ? activeLink : link
 
-let isActiveLink = (~route: string, ~href: string) => {
-  route == href ? activeLink : link
+let isActiveLink = (~includes: string, ~excludes: option<string>=?, ~route: string) => {
+  // includes means we want the lnk to be active if it contains the expected text
+  let includes = route->String.includes(includes)
+  // excludes allows us to not have links be active even if they do have the includes text
+  let excludes = switch excludes {
+  | Some(excludes) => route->String.includes(excludes)
+  | None => false
+  }
+  includes && !excludes ? activeLink : link
 }
+
+let isDocRoute = (~route) =>
+  route->String.includes("/docs/") || route->String.includes("/syntax-lookup")
+
+let isDocRouteActive = (~route) => isDocRoute(~route) ? activeLink : link
 
 module MobileNav = {
   @react.component
@@ -91,11 +103,10 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
           <div
             className="flex items-center xs:justify-between w-full bg-gray-90 sm:h-auto sm:relative">
             <div
-              className="flex ml-10 space-x-5 w-full max-w-320"
+              className="flex ml-10 space-x-5 w-full max-w-320 text-gray-40"
               style={ReactDOMStyle.make(~maxWidth="26rem", ())}>
               <Link
-                href={`/docs/manual/${version}/introduction`}
-                className={isActiveLink(~route, ~href=`/docs/manual/${version}/introduction`)}>
+                href={`/docs/manual/${version}/introduction`} className={isDocRouteActive(~route)}>
                 {React.string("Docs")}
               </Link>
 
@@ -154,24 +165,35 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
           <MobileNav route />
         </div>
       </nav>
-      <nav
-        className="z-50 px-4 w-full h-14 bg-gray-100 shadow text-white-80 text-12 transition duration-300 ease-out group-[.nav-disappear]:-translate-y-16 md:group-[.nav-disappear]:transform-none">
-        <div className="pl-30 flex gap-16 items-center h-full w-full max-w-md">
-          <Link
-            href={`/docs/manual/${version}/api`}
-            className={isActiveLink(~route, ~href=`/docs/manual/${version}/api`)}>
-            {React.string("API")}
-          </Link>
-          <Link href={`/syntax-lookup`} className={isActiveLink(~route, ~href=`/syntax-lookup`)}>
-            {React.string("Syntax")}
-          </Link>
-          <Link
-            href={`/docs/react/latest/introduction`}
-            className={isActiveLink(~route, ~href=`/docs/react/latest/introduction`)}>
-            {React.string("React")}
-          </Link>
-        </div>
-      </nav>
+      // This is a subnav for documentation pages
+      {isDocRoute(~route)
+        ? <nav
+            id="docs-subnav"
+            className="z-50 px-4 w-full h-12 bg-gray-70 shadow text-white text-14 transition duration-300 ease-out group-[.nav-disappear]:-translate-y-16 md:group-[.nav-disappear]:transform-none">
+            <div className="pl-30 flex gap-10 items-center h-full w-full max-w-md">
+              <Link
+                href={`/docs/manual/${version}/introduction`}
+                className={isActiveLink(~includes="/docs/manual/", ~excludes="/api", ~route)}>
+                {React.string("Language Manual")}
+              </Link>
+              <Link
+                href={`/docs/manual/${version}/api`}
+                className={isActiveLink(~includes="/api", ~route)}>
+                {React.string("API")}
+              </Link>
+              <Link
+                href={`/syntax-lookup`}
+                className={isActiveLink(~includes="/syntax-lookup", ~route)}>
+                {React.string("Syntax Lookup")}
+              </Link>
+              <Link
+                href={`/docs/react/latest/introduction`}
+                className={isActiveLink(~includes="/docs/react/", ~route)}>
+                {React.string("React")}
+              </Link>
+            </div>
+          </nav>
+        : React.null}
     </header>
   </>
 }
