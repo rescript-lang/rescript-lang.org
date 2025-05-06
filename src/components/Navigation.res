@@ -156,7 +156,7 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
       </nav>
       <nav
         className="z-50 px-4 w-full h-14 bg-gray-100 shadow text-white-80 text-12 transition duration-300 ease-out group-[.nav-disappear]:-translate-y-16 md:group-[.nav-disappear]:transform-none">
-        <div className="p-l-16 flex gap-16 items-center h-full w-full max-w-md">
+        <div className="pl-30 flex gap-16 items-center h-full w-full max-w-md">
           <Link
             href={`/docs/manual/${version}/api`}
             className={isActiveLink(~route, ~href=`/docs/manual/${version}/api`)}>
