@@ -146,7 +146,7 @@ module Sidebar = {
           <div className="flex justify-between">
             <div className="w-3/4 md:w-full"> toplevelNav </div>
             <button
-              style={{ paddingTop: "42px" }}
+              style={{ paddingTop: "54px" }}
               onClick={evt => {
                 ReactEvent.Mouse.preventDefault(evt)
                 toggle()
