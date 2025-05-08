@@ -374,7 +374,7 @@ let default = (props: props) => {
       <div className="text-gray-80">
         <Navigation isOverlayOpen setOverlayOpen />
         <div className="flex xs:justify-center overflow-hidden pb-48">
-          <main className="mt-16 min-w-320 lg:align-center w-full px-4 md:px-8 max-w-1280">
+          <main className="mt-24 min-w-320 lg:align-center w-full px-4 md:px-8 max-w-1280">
             <MdxProvider components=MarkdownComponents.default>
               <div className="flex justify-center">
                 <div className="max-w-740 w-full"> content </div>

@@ -138,14 +138,15 @@ module Sidebar = {
         id="sidebar"
         className={(
           isOpen ? "fixed w-full left-0 h-full z-20 min-w-320" : "hidden "
-        ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 md:h-auto md:relative overflow-y-visible bg-white"}>
+        ) ++ " overflow-x-hidden md:block md:w-48 md:-ml-4 lg:w-1/5 md:h-auto md:relative overflow-y-visible bg-white"}>
         <aside
           id="sidebar-content"
-          className="relative top-0 px-4 w-full block md:top-16 md:pt-16 md:sticky border-r border-gray-20 overflow-y-auto pb-24"
+          className="relative top-0 px-4 w-full block md:top-16 md:pt-4 md:sticky border-r border-gray-20 overflow-y-auto pb-24"
           style={ReactDOMStyle.make(~height="calc(100vh - 4.5rem", ())}>
           <div className="flex justify-between">
             <div className="w-3/4 md:w-full"> toplevelNav </div>
             <button
+              style={{paddingTop: "72px"}}
               onClick={evt => {
                 ReactEvent.Mouse.preventDefault(evt)
                 toggle()
@@ -309,10 +310,10 @@ let make = (
         <div className="flex lg:justify-center">
           <div className="flex w-full max-w-1280 md:mx-8">
             sidebar
-            <main className="px-4 w-full pt-16 md:ml-12 lg:mr-8 mb-32 md:max-w-576 lg:max-w-740">
+            <main className="px-4 w-full pt-20 md:ml-12 lg:mr-8 mb-32 md:max-w-576 lg:max-w-740">
               //width of the right content part
               <div
-                className={"z-10 fixed border-b shadow top-16 left-0 pl-4 bg-white w-full py-4 md:relative md:border-none md:shadow-none md:p-0 md:top-auto flex items-center transition duration-300 ease-out group-[.nav-disappear]:-translate-y-32 md:group-[.nav-disappear]:transform-none"}>
+                className={"z-10 fixed border-b shadow top-[112px] left-0 pl-4 bg-white w-full py-4 md:relative md:border-none md:shadow-none md:p-0 md:top-auto flex items-center transition duration-300 ease-out group-[.nav-disappear]:-translate-y-32 md:group-[.nav-disappear]:transform-none"}>
                 <MobileDrawerButton hidden=isNavOpen onClick={handleDrawerButtonClick} />
                 <div
                   className="truncate overflow-x-auto touch-scroll flex items-center space-x-4 md:justify-between mr-4 w-full">
@@ -320,7 +321,7 @@ let make = (
                   editLinkEl
                 </div>
               </div>
-              <div className={hasBreadcrumbs ? "mt-10" : "-mt-4"}>
+              <div className={hasBreadcrumbs ? "mt-10" : "mt-6 md:-mt-4"}>
                 <MdxProvider components> children </MdxProvider>
               </div>
               pagination
