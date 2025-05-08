@@ -88,7 +88,7 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
     <header
       id="header"
       style={ReactDOMStyle.make(~minWidth, ())}
-      className={fixedNav ++ " items-center z-50 w-full transition duration-300 ease-out group-[.nav-disappear]:-translate-y-16 md:group-[.nav-disappear]:transform-none"}>
+      className={fixedNav ++ " items-center z-50 w-full transition duration-300 ease-out group-[.nav-disappear]:-translate-y-16 group-[.nav-disappear]:pointer-events-none md:group-[.nav-disappear]:transform-none"}>
       <nav className="px-4 flex xs:justify-center bg-gray-90 shadow h-16 text-white-80 text-14">
         <div className="flex justify-between items-center h-full w-full max-w-1280">
           <div className="h-8 w-8 lg:h-10 lg:w-32">

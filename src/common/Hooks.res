@@ -38,31 +38,50 @@ let useScrollDirection = (~topMargin=80, ~threshold=20) => {
   }))
 
   React.useEffect(() => {
-    let onScroll = _e => {
+    let onScroll = e => {
+      let eventType = (e["type"] :> string)
+
       setScrollDir(prev => {
         let scrollY = Webapi.Window.scrollY
         let enterTopMargin = scrollY <= topMargin
 
-        let action = switch prev {
-        | Up(_) if enterTopMargin => Skip
-        | Down(_) if enterTopMargin => EnterTop
-        | Up({scrollY: prevScrollY}) if prevScrollY < scrollY => UpToDown
-        | Up({scrollY: prevScrollY}) if prevScrollY - threshold >= scrollY => KeepUp
-        | Down({scrollY: prevScrollY}) if scrollY < prevScrollY => DownToUp
-        | Down({scrollY: prevScrollY}) if scrollY - threshold >= prevScrollY => KeepDown
-        | _ => Skip
-        }
+        if eventType === "reset-scroll-direction" {
+          Up({scrollY: scrollY})
+        } else {
+          let action = switch prev {
+          | Up(_) if enterTopMargin => Skip
+          | Down(_) if enterTopMargin => EnterTop
+          | Up({scrollY: prevScrollY}) if prevScrollY < scrollY => UpToDown
+          | Up({scrollY: prevScrollY}) if prevScrollY - threshold >= scrollY => KeepUp
+          | Down({scrollY: prevScrollY}) if scrollY < prevScrollY => DownToUp
+          | Down({scrollY: prevScrollY}) if scrollY - threshold >= prevScrollY => KeepDown
+          | _ => Skip
+          }
 
-        switch action {
-        | Skip => prev
-        | EnterTop | DownToUp | KeepUp => Up({scrollY: scrollY})
-        | UpToDown | KeepDown => Down({scrollY: scrollY})
+          switch action {
+          | Skip => prev
+          | EnterTop | DownToUp | KeepUp => Up({scrollY: scrollY})
+          | UpToDown | KeepDown => Down({scrollY: scrollY})
+          }
         }
       })
     }
     Webapi.Window.addEventListener("scroll", onScroll)
-    Some(() => Webapi.Window.removeEventListener("scroll", onScroll))
+    Webapi.Window.addEventListener("reset-scroll-direction", onScroll)
+    Some(
+      () => {
+        Webapi.Window.removeEventListener("scroll", onScroll)
+        Webapi.Window.removeEventListener("reset-scroll-direction", onScroll)
+      },
+    )
   }, [topMargin, threshold])
 
   scrollDir
+}
+
+let useResetScrollDirection = () => {
+  React.useCallback(() => {
+    // We really need better handling for plain DOM...
+    %raw(`window.dispatchEvent(new Event("reset-scroll-direction"))`)
+  }, [])
 }

@@ -234,8 +234,12 @@ let make = (
 
   let breadcrumbs = breadcrumbs->Option.mapOr(React.null, crumbs => <BreadCrumbs crumbs />)
 
+  let resetScrollDirection = Hooks.useResetScrollDirection()
   let (_isSidebarOpen, setSidebarOpen) = sidebarState
-  let toggleSidebar = () => setSidebarOpen(prev => !prev)
+  let toggleSidebar = () => {
+    setSidebarOpen(prev => !prev)
+    resetScrollDirection()
+  }
 
   React.useEffect(() => {
     open Next.Router.Events
@@ -313,7 +317,7 @@ let make = (
             <main className="px-4 w-full pt-20 md:ml-12 lg:mr-8 mb-32 md:max-w-576 lg:max-w-740">
               //width of the right content part
               <div
-                className={"z-10 fixed border-b shadow top-[112px] left-0 pl-4 bg-white w-full py-4 md:relative md:border-none md:shadow-none md:p-0 md:top-auto flex items-center transition duration-300 ease-out group-[.nav-disappear]:-translate-y-32 md:group-[.nav-disappear]:transform-none"}>
+                className={"z-10 fixed border-b shadow top-[112px] left-0 pl-4 bg-white w-full py-4 md:relative md:border-none md:shadow-none md:p-0 md:top-auto flex items-center transition duration-300 ease-out group-[.nav-disappear]:-translate-y-[112px] md:group-[.nav-disappear]:transform-none"}>
                 <MobileDrawerButton hidden=isNavOpen onClick={handleDrawerButtonClick} />
                 <div
                   className="truncate overflow-x-auto touch-scroll flex items-center space-x-4 md:justify-between mr-4 w-full">
