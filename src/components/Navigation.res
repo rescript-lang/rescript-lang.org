@@ -71,7 +71,7 @@ module MobileNav = {
   }
 }
 
-/* isOverlayOpen: if the mobile overlay is toggled open */
+/* isOverlayOpen: if the mobile sidebar is toggled open */
 @react.component
 let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) => unit) => {
   let minWidth = "20rem"
@@ -80,7 +80,9 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
   let url = router.route->Url.parse
   let version = url->Url.getVersionString
 
-  let toggleOverlay = () => setOverlayOpen(prev => !prev)
+  let toggleOverlay = () => {
+    setOverlayOpen(prev => !prev)
+  }
 
   let fixedNav = fixed ? "fixed top-0" : "relative"
 
@@ -169,7 +171,7 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
       {isDocRoute(~route)
         ? <nav
             id="docs-subnav"
-            className="bg-white z-50 px-4 w-full h-12 shadow text-gray-60 text-12 md:text-14 transition duration-300 ease-out group-[.nav-disappear]:-translate-y-16 md:group-[.nav-disappear]:transform-none">
+            className="bg-white z-50 px-4 w-full h-12 shadow text-gray-60 text-12 md:text-14 transition duration-300 ease-out group-[.nav-disappear]:-translate-y-32 md:group-[.nav-disappear]:transform-none">
             <div
               className="pl-30 flex gap-6 lg:gap-10 items-center h-full w-full max-w-1280 m-auto">
               <Link
