@@ -71,7 +71,7 @@ module MobileNav = {
   }
 }
 
-/* isOverlayOpen: if the mobile sidebar is toggled open */
+/* isOverlayOpen: if the mobile overlay is toggled open */
 @react.component
 let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) => unit) => {
   let minWidth = "20rem"
