@@ -51,9 +51,14 @@ let make = () => {
               </Next.Link>
             </li>
             <li>
-              <a href="https://rescript-association.org" className=linkClass>
+              <Next.Link href="/community/association" className={linkClass}>
                 {React.string("ReScript Association")}
-              </a>
+              </Next.Link>
+            </li>
+            <li>
+              <Next.Link href="/community/donate" className={linkClass}>
+                {React.string("Donate")}
+              </Next.Link>
             </li>
           </ul>
         </Section>
