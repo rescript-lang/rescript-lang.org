@@ -3,7 +3,7 @@
     "id": "Belt",
     "name": "Belt",
     "docstrings": [
-      "The ReScript standard library.\n\nBelt is currently mostly covering collection types. It has no string or date functions yet, although Belt.String is in the works. In the meantime, use [Js.String](js/string) for string functions and [Js.Date](js/date) for date functions.\n\n## Motivation\n\nBelt provides:\n\n- The **highest quality** immutable data structures in JavaScript.\n- Safety by default: A Belt function will never throw exceptions, unless it is\n  indicated explicitly in the function name (suffix \"Exn\").\n- Better performance and smaller code size running on the JS platform.\n- Ready for [Tree Shaking](https://webpack.js.org/guides/tree-shaking/).\n\n## Usage\n\nTo use modules from Belt, either refer to them by their fully qualified name (`Belt.List`, `Belt.Array` etc.) or open the `Belt` module by putting\n\n## Examples\n\n```rescript\nopen Belt\n```\n\nat the top of your source files. After opening Belt this way, `Array` will refer to `Belt.Array`, `List` will refer to `Belt.List` etc. in the subsequent code.\n\nIf you want to open Belt globally for all files in your project instead, you can put\n\n```json\n{\n  \"bsc-flags\": [\"-open Belt\"]\n}\n```\n\ninto your `bsconfig.json`.\n\n**Note**: this is the **only** `open` we encourage.\n\nExample usage:\n\n## Examples\n\n```rescript\nlet someNumbers = [1, 1, 4, 2, 3, 6, 3, 4, 2]\n\nlet greaterThan2UniqueAndSorted =\n  someNumbers\n  ->Belt.Array.keep(x => x > 2)\n  // convert to and from set to make values unique\n  ->Belt.Set.Int.fromArray\n  ->Belt.Set.Int.toArray // output is already sorted\n\nJs.log2(\"result\", greaterThan2UniqueAndSorted)\n```\n\n## Curried vs. Uncurried Callbacks\n\nFor functions taking a callback parameter, there are usually two versions\navailable:\n\n- curried (no suffix)\n- uncurried (suffixed with `U`)\n\nE.g.:\n\n## Examples\n\n```rescript\nlet forEach: (t<'a>, 'a => unit) => unit\n\nlet forEachU: (t<'a>, (. 'a) => unit) => unit\n```\n\nThe uncurried version will be faster in some cases, but for simplicity we recommend to stick with the curried version unless you need the extra performance.\n\nThe two versions can be invoked as follows:\n\n## Examples\n\n```rescript\n[\"a\", \"b\", \"c\"]->Belt.Array.forEach(x => Js.log(x))\n\n[\"a\", \"b\", \"c\"]->Belt.Array.forEachU((. x) => Js.log(x))\n```\n\n## Specialized Collections\n\nFor collections types like set or map, Belt provides both a generic module as well as specialized, more efficient implementations for string and int keys.\n\nFor example, Belt has the following set modules:\n\n- [Belt.Set](belt/set)\n- [Belt.Set.Int](belt/set/int)\n- [Belt.Set.String](belt/set/string)\n\n## Implementation Details\n\n### Array access runtime safety\n\nOne common confusion comes from the way Belt handles array access. It differs from than the default standard library's.\n\n## Examples\n\n```rescript\nlet letters = [\"a\", \"b\", \"c\"]\nlet a = letters[0] // a == \"a\"\nlet capitalA = Js.String.toUpperCase(a)\nlet k = letters[10] // Raises an exception! The 10th index doesn't exist.\n```\n\nBecause Belt avoids exceptions and returns `options` instead, this code behaves differently:\n\n## Examples\n\n```rescript\nopen Belt\nlet letters = [\"a\", \"b\", \"c\"]\nlet a = letters[0] // a == Some(\"a\")\nlet captialA = Js.String.toUpperCase(a) // Type error! This code will not compile.\nlet k = letters[10] // k == None\n```\n\nAlthough we've fixed the problem where `k` raises an exception, we now have a type error when trying to capitalize `a`. There are a few things going on here:\n\n- Reason transforms array index access to the function `Array.get`. So `letters[0]` is the same as `Array.get(letters, 0)`.\n- The compiler uses whichever `Array` module is in scope. If you `open Belt`, then it uses `Belt.Array`.\n- `Belt.Array.get` returns values wrapped in options, so `letters[0] == Some(\"a\")`.\n\nFortunately, this is easy to fix:\n\n## Examples\n\n```rescript\nopen Belt\nlet letters = [\"a\", \"b\", \"c\"]\nlet a = letters[0]\n\n// Use a switch statement:\nlet capitalA =\n  switch a {\n  | Some(a) => Some(Js.String.toUpperCase(a))\n  | None => None\n  }\n\nlet k = letters[10] // k == None\n```\n\nWith that little bit of tweaking, our code now compiles successfully and is 100% free of runtime errors!\n\n### A Special Encoding for Collection Safety\n\nWhen we create a collection library for a custom data type we need a way to provide a comparator function. Take Set for example, suppose its element type is a pair of ints, it needs a custom compare function that takes two tuples and returns their order. The Set could not just be typed as Set.t (int \\* int) , its customized compare function needs to manifest itself in the signature, otherwise, if the user creates another customized compare function, the two collection could mix which would result in runtime error.\n\nWe use a phantom type to solve the problem:\n\n## Examples\n\n```rescript\nmodule Comparable1 =\n  Belt.Id.MakeComparable(\n    {\n      type t = (int, int)\n      let cmp = ((a0, a1), (b0, b1)) =>\n        switch Pervasives.compare(a0, b0) {\n        | 0 => Pervasives.compare(a1, b1)\n        | c => c\n        }\n    }\n  )\n\nlet mySet1 = Belt.Set.make(~id=module(Comparable1))\n\nmodule Comparable2 =\n  Belt.Id.MakeComparable(\n    {\n      type t = (int, int)\n      let cmp = ((a0, a1), (b0, b1)) =>\n        switch Pervasives.compare(a0, b0) {\n        | 0 => Pervasives.compare(a1, b1)\n        | c => c\n        }\n    }\n  )\n\nlet mySet2 = Belt.Set.make(~id=module(Comparable2))\n```\n\nHere, the compiler would infer `mySet1` and `mySet2` having different type, so e.g. a `merge` operation that tries to merge these two sets will correctly fail.\n\n## Examples\n\n```rescript\nlet mySet1: t<(int, int), Comparable1.identity>\nlet mySet2: t<(int, int), Comparable2.identity>\n```\n\n`Comparable1.identity` and `Comparable2.identity` are not the same using our encoding scheme."
+      "The ReScript standard library.\n\nBelt is currently mostly covering collection types. It has no string or date functions yet, although Belt.String is in the works. In the meantime, use [Js.String](js/string) for string functions and [Js.Date](js/date) for date functions.\n\n## Motivation\n\nBelt provides:\n\n- The **highest quality** immutable data structures in JavaScript.\n- Safety by default: A Belt function will never throw exceptions, unless it is\n  indicated explicitly in the function name (suffix \"Exn\").\n- Better performance and smaller code size running on the JS platform.\n- Ready for [Tree Shaking](https://webpack.js.org/guides/tree-shaking/).\n\n## Usage\n\nTo use modules from Belt, either refer to them by their fully qualified name (`Belt.List`, `Belt.Array` etc.) or open the `Belt` module by putting\n\n## Examples\n\n```rescript\nopen Belt\n```\n\nat the top of your source files. After opening Belt this way, `Array` will refer to `Belt.Array`, `List` will refer to `Belt.List` etc. in the subsequent code.\n\nIf you want to open Belt globally for all files in your project instead, you can put\n\n```json\n{\n  \"bsc-flags\": [\"-open Belt\"]\n}\n```\n\ninto your `bsconfig.json`.\n\n**Note**: this is the **only** `open` we encourage.\n\nExample usage:\n\n## Examples\n\n```rescript\nlet someNumbers = [1, 1, 4, 2, 3, 6, 3, 4, 2]\n\nlet greaterThan2UniqueAndSorted =\n  someNumbers\n  ->Belt.Array.keep(x => x > 2)\n  // convert to and from set to make values unique\n  ->Belt.Set.Int.fromArray\n  ->Belt.Set.Int.toArray // output is already sorted\n\nJs.log2(\"result\", greaterThan2UniqueAndSorted)\n```\n\n## Specialized Collections\n\nFor collections types like set or map, Belt provides both a generic module as well as specialized, more efficient implementations for string and int keys.\n\nFor example, Belt has the following set modules:\n\n- [Belt.Set](belt/set)\n- [Belt.Set.Int](belt/set/int)\n- [Belt.Set.String](belt/set/string)\n\n## Implementation Details\n\n### Array access runtime safety\n\nOne common confusion comes from the way Belt handles array access. It differs from than the default standard library's.\n\n## Examples\n\n```rescript\nlet letters = [\"a\", \"b\", \"c\"]\nlet a = letters[0] // a == \"a\"\nlet capitalA = Js.String.toUpperCase(a)\nlet k = letters[10] // Raises an exception! The 10th index doesn't exist.\n```\n\nBecause Belt avoids exceptions and returns `options` instead, this code behaves differently:\n\n## Examples\n\n```rescript\nopen Belt\nlet letters = [\"a\", \"b\", \"c\"]\nlet a = letters[0] // a == Some(\"a\")\nlet captialA = Js.String.toUpperCase(a) // Type error! This code will not compile.\nlet k = letters[10] // k == None\n```\n\nAlthough we've fixed the problem where `k` raises an exception, we now have a type error when trying to capitalize `a`. There are a few things going on here:\n\n- Reason transforms array index access to the function `Array.get`. So `letters[0]` is the same as `Array.get(letters, 0)`.\n- The compiler uses whichever `Array` module is in scope. If you `open Belt`, then it uses `Belt.Array`.\n- `Belt.Array.get` returns values wrapped in options, so `letters[0] == Some(\"a\")`.\n\nFortunately, this is easy to fix:\n\n## Examples\n\n```rescript\nopen Belt\nlet letters = [\"a\", \"b\", \"c\"]\nlet a = letters[0]\n\n// Use a switch statement:\nlet capitalA =\n  switch a {\n  | Some(a) => Some(Js.String.toUpperCase(a))\n  | None => None\n  }\n\nlet k = letters[10] // k == None\n```\n\nWith that little bit of tweaking, our code now compiles successfully and is 100% free of runtime errors!\n\n### A Special Encoding for Collection Safety\n\nWhen we create a collection library for a custom data type we need a way to provide a comparator function. Take Set for example, suppose its element type is a pair of ints, it needs a custom compare function that takes two tuples and returns their order. The Set could not just be typed as Set.t (int \\* int) , its customized compare function needs to manifest itself in the signature, otherwise, if the user creates another customized compare function, the two collection could mix which would result in runtime error.\n\nWe use a phantom type to solve the problem:\n\n## Examples\n\n```rescript\nmodule Comparable1 =\n  Belt.Id.MakeComparable(\n    {\n      type t = (int, int)\n      let cmp = ((a0, a1), (b0, b1)) =>\n        switch Pervasives.compare(a0, b0) {\n        | 0 => Pervasives.compare(a1, b1)\n        | c => c\n        }\n    }\n  )\n\nlet mySet1 = Belt.Set.make(~id=module(Comparable1))\n\nmodule Comparable2 =\n  Belt.Id.MakeComparable(\n    {\n      type t = (int, int)\n      let cmp = ((a0, a1), (b0, b1)) =>\n        switch Pervasives.compare(a0, b0) {\n        | 0 => Pervasives.compare(a1, b1)\n        | c => c\n        }\n    }\n  )\n\nlet mySet2 = Belt.Set.make(~id=module(Comparable2))\n```\n\nHere, the compiler would infer `mySet1` and `mySet2` having different type, so e.g. a `merge` operation that tries to merge these two sets will correctly fail.\n\n## Examples\n\n```rescript\nlet mySet1: t<(int, int), Comparable1.identity>\nlet mySet2: t<(int, int), Comparable2.identity>\n```\n\n`Comparable1.identity` and `Comparable2.identity` are not the same using our encoding scheme."
     ],
     "items": []
   },
@@ -91,7 +91,8 @@
         "kind": "value",
         "name": "forEachU",
         "docstrings": [],
-        "signature": "let forEachU: (t<'b>, (key, 'b) => unit) => unit"
+        "signature": "let forEachU: (t<'b>, (key, 'b) => unit) => unit",
+        "deprecated": "Use `forEach` instead"
       },
       {
         "id": "Belt.HashMap.String.forEach",
@@ -105,7 +106,8 @@
         "kind": "value",
         "name": "reduceU",
         "docstrings": [],
-        "signature": "let reduceU: (t<'b>, 'c, ('c, key, 'b) => 'c) => 'c"
+        "signature": "let reduceU: (t<'b>, 'c, ('c, key, 'b) => 'c) => 'c",
+        "deprecated": "Use `reduce` instead"
       },
       {
         "id": "Belt.HashMap.String.reduce",
@@ -119,7 +121,8 @@
         "kind": "value",
         "name": "keepMapInPlaceU",
         "docstrings": [],
-        "signature": "let keepMapInPlaceU: (t<'a>, (key, 'a) => option<'a>) => unit"
+        "signature": "let keepMapInPlaceU: (t<'a>, (key, 'a) => option<'a>) => unit",
+        "deprecated": "Use `keepMapInPlace` instead"
       },
       {
         "id": "Belt.HashMap.String.keepMapInPlace",
@@ -270,7 +273,8 @@
         "kind": "value",
         "name": "forEachU",
         "docstrings": [],
-        "signature": "let forEachU: (t<'b>, (key, 'b) => unit) => unit"
+        "signature": "let forEachU: (t<'b>, (key, 'b) => unit) => unit",
+        "deprecated": "Use `forEach` instead"
       },
       {
         "id": "Belt.HashMap.Int.forEach",
@@ -284,7 +288,8 @@
         "kind": "value",
         "name": "reduceU",
         "docstrings": [],
-        "signature": "let reduceU: (t<'b>, 'c, ('c, key, 'b) => 'c) => 'c"
+        "signature": "let reduceU: (t<'b>, 'c, ('c, key, 'b) => 'c) => 'c",
+        "deprecated": "Use `reduce` instead"
       },
       {
         "id": "Belt.HashMap.Int.reduce",
@@ -298,7 +303,8 @@
         "kind": "value",
         "name": "keepMapInPlaceU",
         "docstrings": [],
-        "signature": "let keepMapInPlaceU: (t<'a>, (key, 'a) => option<'a>) => unit"
+        "signature": "let keepMapInPlaceU: (t<'a>, (key, 'a) => option<'a>) => unit",
+        "deprecated": "Use `keepMapInPlace` instead"
       },
       {
         "id": "Belt.HashMap.Int.keepMapInPlace",
@@ -441,7 +447,8 @@
         "kind": "value",
         "name": "forEachU",
         "docstrings": [],
-        "signature": "let forEachU: (t, key => unit) => unit"
+        "signature": "let forEachU: (t, key => unit) => unit",
+        "deprecated": "Use `forEach` instead"
       },
       {
         "id": "Belt.HashSet.String.forEach",
@@ -455,7 +462,8 @@
         "kind": "value",
         "name": "reduceU",
         "docstrings": [],
-        "signature": "let reduceU: (t, 'c, ('c, key) => 'c) => 'c"
+        "signature": "let reduceU: (t, 'c, ('c, key) => 'c) => 'c",
+        "deprecated": "Use `reduce` instead"
       },
       {
         "id": "Belt.HashSet.String.reduce",
@@ -584,7 +592,8 @@
         "kind": "value",
         "name": "forEachU",
         "docstrings": [],
-        "signature": "let forEachU: (t, key => unit) => unit"
+        "signature": "let forEachU: (t, key => unit) => unit",
+        "deprecated": "Use `forEach` instead"
       },
       {
         "id": "Belt.HashSet.Int.forEach",
@@ -598,7 +607,8 @@
         "kind": "value",
         "name": "reduceU",
         "docstrings": [],
-        "signature": "let reduceU: (t, 'c, ('c, key) => 'c) => 'c"
+        "signature": "let reduceU: (t, 'c, ('c, key) => 'c) => 'c",
+        "deprecated": "Use `reduce` instead"
       },
       {
         "id": "Belt.HashSet.Int.reduce",
@@ -703,7 +713,8 @@
         "kind": "value",
         "name": "cmpU",
         "docstrings": [],
-        "signature": "let cmpU: (t<'a>, t<'a>, ('a, 'a) => int) => int"
+        "signature": "let cmpU: (t<'a>, t<'a>, ('a, 'a) => int) => int",
+        "deprecated": "Use `cmp` instead"
       },
       {
         "id": "Belt.MutableMap.String.cmp",
@@ -719,7 +730,8 @@
         "kind": "value",
         "name": "eqU",
         "docstrings": [],
-        "signature": "let eqU: (t<'a>, t<'a>, ('a, 'a) => bool) => bool"
+        "signature": "let eqU: (t<'a>, t<'a>, ('a, 'a) => bool) => bool",
+        "deprecated": "Use `eq` instead"
       },
       {
         "id": "Belt.MutableMap.String.eq",
@@ -735,7 +747,8 @@
         "kind": "value",
         "name": "forEachU",
         "docstrings": [],
-        "signature": "let forEachU: (t<'a>, (key, 'a) => unit) => unit"
+        "signature": "let forEachU: (t<'a>, (key, 'a) => unit) => unit",
+        "deprecated": "Use `forEach` instead"
       },
       {
         "id": "Belt.MutableMap.String.forEach",
@@ -751,7 +764,8 @@
         "kind": "value",
         "name": "reduceU",
         "docstrings": [],
-        "signature": "let reduceU: (t<'a>, 'b, ('b, key, 'a) => 'b) => 'b"
+        "signature": "let reduceU: (t<'a>, 'b, ('b, key, 'a) => 'b) => 'b",
+        "deprecated": "Use `reduce` instead"
       },
       {
         "id": "Belt.MutableMap.String.reduce",
@@ -767,7 +781,8 @@
         "kind": "value",
         "name": "everyU",
         "docstrings": [],
-        "signature": "let everyU: (t<'a>, (key, 'a) => bool) => bool"
+        "signature": "let everyU: (t<'a>, (key, 'a) => bool) => bool",
+        "deprecated": "Use `every` instead"
       },
       {
         "id": "Belt.MutableMap.String.every",
@@ -783,7 +798,8 @@
         "kind": "value",
         "name": "someU",
         "docstrings": [],
-        "signature": "let someU: (t<'a>, (key, 'a) => bool) => bool"
+        "signature": "let someU: (t<'a>, (key, 'a) => bool) => bool",
+        "deprecated": "Use `some` instead"
       },
       {
         "id": "Belt.MutableMap.String.some",
@@ -963,7 +979,8 @@
         "kind": "value",
         "name": "updateU",
         "docstrings": [],
-        "signature": "let updateU: (t<'a>, key, option<'a> => option<'a>) => unit"
+        "signature": "let updateU: (t<'a>, key, option<'a> => option<'a>) => unit",
+        "deprecated": "Use `update` instead"
       },
       {
         "id": "Belt.MutableMap.String.update",
@@ -977,7 +994,8 @@
         "kind": "value",
         "name": "mapU",
         "docstrings": [],
-        "signature": "let mapU: (t<'a>, 'a => 'b) => t<'b>"
+        "signature": "let mapU: (t<'a>, 'a => 'b) => t<'b>",
+        "deprecated": "Use `map` instead"
       },
       {
         "id": "Belt.MutableMap.String.map",
@@ -993,7 +1011,8 @@
         "kind": "value",
         "name": "mapWithKeyU",
         "docstrings": [],
-        "signature": "let mapWithKeyU: (t<'a>, (key, 'a) => 'b) => t<'b>"
+        "signature": "let mapWithKeyU: (t<'a>, (key, 'a) => 'b) => t<'b>",
+        "deprecated": "Use `mapWithKey` instead"
       },
       {
         "id": "Belt.MutableMap.String.mapWithKey",
@@ -1056,7 +1075,8 @@
         "kind": "value",
         "name": "cmpU",
         "docstrings": [],
-        "signature": "let cmpU: (t<'a>, t<'a>, ('a, 'a) => int) => int"
+        "signature": "let cmpU: (t<'a>, t<'a>, ('a, 'a) => int) => int",
+        "deprecated": "Use `cmp` instead"
       },
       {
         "id": "Belt.MutableMap.Int.cmp",
@@ -1072,7 +1092,8 @@
         "kind": "value",
         "name": "eqU",
         "docstrings": [],
-        "signature": "let eqU: (t<'a>, t<'a>, ('a, 'a) => bool) => bool"
+        "signature": "let eqU: (t<'a>, t<'a>, ('a, 'a) => bool) => bool",
+        "deprecated": "Use `eq` instead"
       },
       {
         "id": "Belt.MutableMap.Int.eq",
@@ -1088,7 +1109,8 @@
         "kind": "value",
         "name": "forEachU",
         "docstrings": [],
-        "signature": "let forEachU: (t<'a>, (key, 'a) => unit) => unit"
+        "signature": "let forEachU: (t<'a>, (key, 'a) => unit) => unit",
+        "deprecated": "Use `forEach` instead"
       },
       {
         "id": "Belt.MutableMap.Int.forEach",
@@ -1104,7 +1126,8 @@
         "kind": "value",
         "name": "reduceU",
         "docstrings": [],
-        "signature": "let reduceU: (t<'a>, 'b, ('b, key, 'a) => 'b) => 'b"
+        "signature": "let reduceU: (t<'a>, 'b, ('b, key, 'a) => 'b) => 'b",
+        "deprecated": "Use `reduce` instead"
       },
       {
         "id": "Belt.MutableMap.Int.reduce",
@@ -1120,7 +1143,8 @@
         "kind": "value",
         "name": "everyU",
         "docstrings": [],
-        "signature": "let everyU: (t<'a>, (key, 'a) => bool) => bool"
+        "signature": "let everyU: (t<'a>, (key, 'a) => bool) => bool",
+        "deprecated": "Use `every` instead"
       },
       {
         "id": "Belt.MutableMap.Int.every",
@@ -1136,7 +1160,8 @@
         "kind": "value",
         "name": "someU",
         "docstrings": [],
-        "signature": "let someU: (t<'a>, (key, 'a) => bool) => bool"
+        "signature": "let someU: (t<'a>, (key, 'a) => bool) => bool",
+        "deprecated": "Use `some` instead"
       },
       {
         "id": "Belt.MutableMap.Int.some",
@@ -1316,7 +1341,8 @@
         "kind": "value",
         "name": "updateU",
         "docstrings": [],
-        "signature": "let updateU: (t<'a>, key, option<'a> => option<'a>) => unit"
+        "signature": "let updateU: (t<'a>, key, option<'a> => option<'a>) => unit",
+        "deprecated": "Use `update` instead"
       },
       {
         "id": "Belt.MutableMap.Int.update",
@@ -1330,7 +1356,8 @@
         "kind": "value",
         "name": "mapU",
         "docstrings": [],
-        "signature": "let mapU: (t<'a>, 'a => 'b) => t<'b>"
+        "signature": "let mapU: (t<'a>, 'a => 'b) => t<'b>",
+        "deprecated": "Use `map` instead"
       },
       {
         "id": "Belt.MutableMap.Int.map",
@@ -1346,7 +1373,8 @@
         "kind": "value",
         "name": "mapWithKeyU",
         "docstrings": [],
-        "signature": "let mapWithKeyU: (t<'a>, (key, 'a) => 'b) => t<'b>"
+        "signature": "let mapWithKeyU: (t<'a>, (key, 'a) => 'b) => t<'b>",
+        "deprecated": "Use `mapWithKey` instead"
       },
       {
         "id": "Belt.MutableMap.Int.mapWithKey",
@@ -1514,7 +1542,8 @@
         "kind": "value",
         "name": "forEachU",
         "docstrings": [],
-        "signature": "let forEachU: (t, value => unit) => unit"
+        "signature": "let forEachU: (t, value => unit) => unit",
+        "deprecated": "Use `forEach` instead"
       },
       {
         "id": "Belt.MutableSet.String.forEach",
@@ -1530,7 +1559,8 @@
         "kind": "value",
         "name": "reduceU",
         "docstrings": [],
-        "signature": "let reduceU: (t, 'a, ('a, value) => 'a) => 'a"
+        "signature": "let reduceU: (t, 'a, ('a, value) => 'a) => 'a",
+        "deprecated": "Use `reduce` instead"
       },
       {
         "id": "Belt.MutableSet.String.reduce",
@@ -1546,7 +1576,8 @@
         "kind": "value",
         "name": "everyU",
         "docstrings": [],
-        "signature": "let everyU: (t, value => bool) => bool"
+        "signature": "let everyU: (t, value => bool) => bool",
+        "deprecated": "Use `every` instead"
       },
       {
         "id": "Belt.MutableSet.String.every",
@@ -1562,7 +1593,8 @@
         "kind": "value",
         "name": "someU",
         "docstrings": [],
-        "signature": "let someU: (t, value => bool) => bool"
+        "signature": "let someU: (t, value => bool) => bool",
+        "deprecated": "Use `some` instead"
       },
       {
         "id": "Belt.MutableSet.String.some",
@@ -1578,7 +1610,8 @@
         "kind": "value",
         "name": "keepU",
         "docstrings": [],
-        "signature": "let keepU: (t, value => bool) => t"
+        "signature": "let keepU: (t, value => bool) => t",
+        "deprecated": "Use `keep` instead"
       },
       {
         "id": "Belt.MutableSet.String.keep",
@@ -1594,7 +1627,8 @@
         "kind": "value",
         "name": "partitionU",
         "docstrings": [],
-        "signature": "let partitionU: (t, value => bool) => (t, t)"
+        "signature": "let partitionU: (t, value => bool) => (t, t)",
+        "deprecated": "Use `partition` instead"
       },
       {
         "id": "Belt.MutableSet.String.partition",
@@ -1856,7 +1890,8 @@
         "kind": "value",
         "name": "forEachU",
         "docstrings": [],
-        "signature": "let forEachU: (t, value => unit) => unit"
+        "signature": "let forEachU: (t, value => unit) => unit",
+        "deprecated": "Use `forEach` instead"
       },
       {
         "id": "Belt.MutableSet.Int.forEach",
@@ -1872,7 +1907,8 @@
         "kind": "value",
         "name": "reduceU",
         "docstrings": [],
-        "signature": "let reduceU: (t, 'a, ('a, value) => 'a) => 'a"
+        "signature": "let reduceU: (t, 'a, ('a, value) => 'a) => 'a",
+        "deprecated": "Use `reduce` instead"
       },
       {
         "id": "Belt.MutableSet.Int.reduce",
@@ -1888,7 +1924,8 @@
         "kind": "value",
         "name": "everyU",
         "docstrings": [],
-        "signature": "let everyU: (t, value => bool) => bool"
+        "signature": "let everyU: (t, value => bool) => bool",
+        "deprecated": "Use `every` instead"
       },
       {
         "id": "Belt.MutableSet.Int.every",
@@ -1904,7 +1941,8 @@
         "kind": "value",
         "name": "someU",
         "docstrings": [],
-        "signature": "let someU: (t, value => bool) => bool"
+        "signature": "let someU: (t, value => bool) => bool",
+        "deprecated": "Use `some` instead"
       },
       {
         "id": "Belt.MutableSet.Int.some",
@@ -1920,7 +1958,8 @@
         "kind": "value",
         "name": "keepU",
         "docstrings": [],
-        "signature": "let keepU: (t, value => bool) => t"
+        "signature": "let keepU: (t, value => bool) => t",
+        "deprecated": "Use `keep` instead"
       },
       {
         "id": "Belt.MutableSet.Int.keep",
@@ -1936,7 +1975,8 @@
         "kind": "value",
         "name": "partitionU",
         "docstrings": [],
-        "signature": "let partitionU: (t, value => bool) => (t, t)"
+        "signature": "let partitionU: (t, value => bool) => (t, t)",
+        "deprecated": "Use `partition` instead"
       },
       {
         "id": "Belt.MutableSet.Int.partition",
@@ -2088,7 +2128,8 @@
         "kind": "value",
         "name": "cmpU",
         "docstrings": [],
-        "signature": "let cmpU: (\n  t<'k, 'v, 'id>,\n  t<'k, 'v, 'id>,\n  ~kcmp: cmp<'k, 'id>,\n  ~vcmp: ('v, 'v) => int,\n) => int"
+        "signature": "let cmpU: (\n  t<'k, 'v, 'id>,\n  t<'k, 'v, 'id>,\n  ~kcmp: cmp<'k, 'id>,\n  ~vcmp: ('v, 'v) => int,\n) => int",
+        "deprecated": "Use `cmp` instead"
       },
       {
         "id": "Belt.Map.Dict.cmp",
@@ -2102,7 +2143,8 @@
         "kind": "value",
         "name": "eqU",
         "docstrings": [],
-        "signature": "let eqU: (\n  t<'k, 'a, 'id>,\n  t<'k, 'a, 'id>,\n  ~kcmp: cmp<'k, 'id>,\n  ~veq: ('a, 'a) => bool,\n) => bool"
+        "signature": "let eqU: (\n  t<'k, 'a, 'id>,\n  t<'k, 'a, 'id>,\n  ~kcmp: cmp<'k, 'id>,\n  ~veq: ('a, 'a) => bool,\n) => bool",
+        "deprecated": "Use `eq` instead"
       },
       {
         "id": "Belt.Map.Dict.eq",
@@ -2118,7 +2160,8 @@
         "kind": "value",
         "name": "findFirstByU",
         "docstrings": [],
-        "signature": "let findFirstByU: (t<'k, 'v, 'id>, ('k, 'v) => bool) => option<('k, 'v)>"
+        "signature": "let findFirstByU: (t<'k, 'v, 'id>, ('k, 'v) => bool) => option<('k, 'v)>",
+        "deprecated": "Use `findFirstBy` instead"
       },
       {
         "id": "Belt.Map.Dict.findFirstBy",
@@ -2134,7 +2177,8 @@
         "kind": "value",
         "name": "forEachU",
         "docstrings": [],
-        "signature": "let forEachU: (t<'k, 'a, 'id>, ('k, 'a) => unit) => unit"
+        "signature": "let forEachU: (t<'k, 'a, 'id>, ('k, 'a) => unit) => unit",
+        "deprecated": "Use `forEach` instead"
       },
       {
         "id": "Belt.Map.Dict.forEach",
@@ -2150,7 +2194,8 @@
         "kind": "value",
         "name": "reduceU",
         "docstrings": [],
-        "signature": "let reduceU: (t<'k, 'a, 'id>, 'b, ('b, 'k, 'a) => 'b) => 'b"
+        "signature": "let reduceU: (t<'k, 'a, 'id>, 'b, ('b, 'k, 'a) => 'b) => 'b",
+        "deprecated": "Use `reduce` instead"
       },
       {
         "id": "Belt.Map.Dict.reduce",
@@ -2166,7 +2211,8 @@
         "kind": "value",
         "name": "everyU",
         "docstrings": [],
-        "signature": "let everyU: (t<'k, 'a, 'id>, ('k, 'a) => bool) => bool"
+        "signature": "let everyU: (t<'k, 'a, 'id>, ('k, 'a) => bool) => bool",
+        "deprecated": "Use `every` instead"
       },
       {
         "id": "Belt.Map.Dict.every",
@@ -2182,7 +2228,8 @@
         "kind": "value",
         "name": "someU",
         "docstrings": [],
-        "signature": "let someU: (t<'k, 'a, 'id>, ('k, 'a) => bool) => bool"
+        "signature": "let someU: (t<'k, 'a, 'id>, ('k, 'a) => bool) => bool",
+        "deprecated": "Use `some` instead"
       },
       {
         "id": "Belt.Map.Dict.some",
@@ -2358,7 +2405,8 @@
         "kind": "value",
         "name": "updateU",
         "docstrings": [],
-        "signature": "let updateU: (\n  t<'a, 'b, 'id>,\n  'a,\n  option<'b> => option<'b>,\n  ~cmp: cmp<'a, 'id>,\n) => t<'a, 'b, 'id>"
+        "signature": "let updateU: (\n  t<'a, 'b, 'id>,\n  'a,\n  option<'b> => option<'b>,\n  ~cmp: cmp<'a, 'id>,\n) => t<'a, 'b, 'id>",
+        "deprecated": "Use `update` instead"
       },
       {
         "id": "Belt.Map.Dict.update",
@@ -2372,7 +2420,8 @@
         "kind": "value",
         "name": "mergeU",
         "docstrings": [],
-        "signature": "let mergeU: (\n  t<'a, 'b, 'id>,\n  t<'a, 'c, 'id>,\n  ('a, option<'b>, option<'c>) => option<'d>,\n  ~cmp: cmp<'a, 'id>,\n) => t<'a, 'd, 'id>"
+        "signature": "let mergeU: (\n  t<'a, 'b, 'id>,\n  t<'a, 'c, 'id>,\n  ('a, option<'b>, option<'c>) => option<'d>,\n  ~cmp: cmp<'a, 'id>,\n) => t<'a, 'd, 'id>",
+        "deprecated": "Use `merge` instead"
       },
       {
         "id": "Belt.Map.Dict.merge",
@@ -2395,7 +2444,8 @@
         "kind": "value",
         "name": "keepU",
         "docstrings": [],
-        "signature": "let keepU: (t<'k, 'a, 'id>, ('k, 'a) => bool) => t<'k, 'a, 'id>"
+        "signature": "let keepU: (t<'k, 'a, 'id>, ('k, 'a) => bool) => t<'k, 'a, 'id>",
+        "deprecated": "Use `keep` instead"
       },
       {
         "id": "Belt.Map.Dict.keep",
@@ -2411,7 +2461,8 @@
         "kind": "value",
         "name": "partitionU",
         "docstrings": [],
-        "signature": "let partitionU: (\n  t<'k, 'a, 'id>,\n  ('k, 'a) => bool,\n) => (t<'k, 'a, 'id>, t<'k, 'a, 'id>)"
+        "signature": "let partitionU: (\n  t<'k, 'a, 'id>,\n  ('k, 'a) => bool,\n) => (t<'k, 'a, 'id>, t<'k, 'a, 'id>)",
+        "deprecated": "Use `partition` instead"
       },
       {
         "id": "Belt.Map.Dict.partition",
@@ -2436,7 +2487,8 @@
         "kind": "value",
         "name": "mapU",
         "docstrings": [],
-        "signature": "let mapU: (t<'k, 'a, 'id>, 'a => 'b) => t<'k, 'b, 'id>"
+        "signature": "let mapU: (t<'k, 'a, 'id>, 'a => 'b) => t<'k, 'b, 'id>",
+        "deprecated": "Use `map` instead"
       },
       {
         "id": "Belt.Map.Dict.map",
@@ -2452,7 +2504,8 @@
         "kind": "value",
         "name": "mapWithKeyU",
         "docstrings": [],
-        "signature": "let mapWithKeyU: (t<'k, 'a, 'id>, ('k, 'a) => 'b) => t<'k, 'b, 'id>"
+        "signature": "let mapWithKeyU: (t<'k, 'a, 'id>, ('k, 'a) => 'b) => t<'k, 'b, 'id>",
+        "deprecated": "Use `mapWithKey` instead"
       },
       {
         "id": "Belt.Map.Dict.mapWithKey",
@@ -2510,7 +2563,8 @@
         "kind": "value",
         "name": "cmpU",
         "docstrings": [],
-        "signature": "let cmpU: (t<'v>, t<'v>, ('v, 'v) => int) => int"
+        "signature": "let cmpU: (t<'v>, t<'v>, ('v, 'v) => int) => int",
+        "deprecated": "Use `cmp` instead"
       },
       {
         "id": "Belt.Map.String.cmp",
@@ -2524,7 +2578,8 @@
         "kind": "value",
         "name": "eqU",
         "docstrings": [],
-        "signature": "let eqU: (t<'v>, t<'v>, ('v, 'v) => bool) => bool"
+        "signature": "let eqU: (t<'v>, t<'v>, ('v, 'v) => bool) => bool",
+        "deprecated": "Use `eq` instead"
       },
       {
         "id": "Belt.Map.String.eq",
@@ -2540,14 +2595,15 @@
         "kind": "value",
         "name": "findFirstByU",
         "docstrings": [],
-        "signature": "let findFirstByU: (t<'v>, (key, 'v) => bool) => option<(key, 'v)>"
+        "signature": "let findFirstByU: (t<'v>, (key, 'v) => bool) => option<(key, 'v)>",
+        "deprecated": "Use `findFirstBy` instead"
       },
       {
         "id": "Belt.Map.String.findFirstBy",
         "kind": "value",
         "name": "findFirstBy",
         "docstrings": [
-          "`findFirstBy(m, p)` uses funcion `f` to find the first key value pair\nto match predicate `p`.\n\n```rescript\nlet s0 = fromArray(~id=module(IntCmp), [(4, \"4\"), (1, \"1\"), (2, \"2,\"(3, \"\"))])\nfindFirstBy(s0, (k, v) => k == 4) == option((4, \"4\"))\n```"
+          "`findFirstBy(m, p)` uses funcion `f` to find the first key value pair\nto match predicate `p`.\n\n## Examples\n\n```rescript\nlet mapString = Belt.Map.String.fromArray([(\"1\", \"one\"), (\"2\", \"two\"), (\"3\", \"three\")])\n\nmapString->\nBelt.Map.String.findFirstBy((k, v) => k == \"1\" && v == \"one\")\n->assertEqual(Some(\"1\", \"one\"))\n```"
         ],
         "signature": "let findFirstBy: (t<'v>, (key, 'v) => bool) => option<(key, 'v)>"
       },
@@ -2556,7 +2612,8 @@
         "kind": "value",
         "name": "forEachU",
         "docstrings": [],
-        "signature": "let forEachU: (t<'v>, (key, 'v) => unit) => unit"
+        "signature": "let forEachU: (t<'v>, (key, 'v) => unit) => unit",
+        "deprecated": "Use `forEach` instead"
       },
       {
         "id": "Belt.Map.String.forEach",
@@ -2572,7 +2629,8 @@
         "kind": "value",
         "name": "reduceU",
         "docstrings": [],
-        "signature": "let reduceU: (t<'v>, 'v2, ('v2, key, 'v) => 'v2) => 'v2"
+        "signature": "let reduceU: (t<'v>, 'v2, ('v2, key, 'v) => 'v2) => 'v2",
+        "deprecated": "Use `reduce` instead"
       },
       {
         "id": "Belt.Map.String.reduce",
@@ -2588,7 +2646,8 @@
         "kind": "value",
         "name": "everyU",
         "docstrings": [],
-        "signature": "let everyU: (t<'v>, (key, 'v) => bool) => bool"
+        "signature": "let everyU: (t<'v>, (key, 'v) => bool) => bool",
+        "deprecated": "Use `every` instead"
       },
       {
         "id": "Belt.Map.String.every",
@@ -2604,7 +2663,8 @@
         "kind": "value",
         "name": "someU",
         "docstrings": [],
-        "signature": "let someU: (t<'v>, (key, 'v) => bool) => bool"
+        "signature": "let someU: (t<'v>, (key, 'v) => bool) => bool",
+        "deprecated": "Use `some` instead"
       },
       {
         "id": "Belt.Map.String.some",
@@ -2782,7 +2842,8 @@
         "kind": "value",
         "name": "updateU",
         "docstrings": [],
-        "signature": "let updateU: (t<'v>, key, option<'v> => option<'v>) => t<'v>"
+        "signature": "let updateU: (t<'v>, key, option<'v> => option<'v>) => t<'v>",
+        "deprecated": "Use `update` instead"
       },
       {
         "id": "Belt.Map.String.update",
@@ -2796,7 +2857,8 @@
         "kind": "value",
         "name": "mergeU",
         "docstrings": [],
-        "signature": "let mergeU: (\n  t<'v>,\n  t<'v2>,\n  (key, option<'v>, option<'v2>) => option<'c>,\n) => t<'c>"
+        "signature": "let mergeU: (\n  t<'v>,\n  t<'v2>,\n  (key, option<'v>, option<'v2>) => option<'c>,\n) => t<'c>",
+        "deprecated": "Use `merge` instead"
       },
       {
         "id": "Belt.Map.String.merge",
@@ -2819,7 +2881,8 @@
         "kind": "value",
         "name": "keepU",
         "docstrings": [],
-        "signature": "let keepU: (t<'v>, (key, 'v) => bool) => t<'v>"
+        "signature": "let keepU: (t<'v>, (key, 'v) => bool) => t<'v>",
+        "deprecated": "Use `keep` instead"
       },
       {
         "id": "Belt.Map.String.keep",
@@ -2835,7 +2898,8 @@
         "kind": "value",
         "name": "partitionU",
         "docstrings": [],
-        "signature": "let partitionU: (t<'v>, (key, 'v) => bool) => (t<'v>, t<'v>)"
+        "signature": "let partitionU: (t<'v>, (key, 'v) => bool) => (t<'v>, t<'v>)",
+        "deprecated": "Use `partition` instead"
       },
       {
         "id": "Belt.Map.String.partition",
@@ -2860,7 +2924,8 @@
         "kind": "value",
         "name": "mapU",
         "docstrings": [],
-        "signature": "let mapU: (t<'v>, 'v => 'v2) => t<'v2>"
+        "signature": "let mapU: (t<'v>, 'v => 'v2) => t<'v2>",
+        "deprecated": "Use `map` instead"
       },
       {
         "id": "Belt.Map.String.map",
@@ -2876,7 +2941,8 @@
         "kind": "value",
         "name": "mapWithKeyU",
         "docstrings": [],
-        "signature": "let mapWithKeyU: (t<'v>, (key, 'v) => 'v2) => t<'v2>"
+        "signature": "let mapWithKeyU: (t<'v>, (key, 'v) => 'v2) => t<'v2>",
+        "deprecated": "Use `mapWithKey` instead"
       },
       {
         "id": "Belt.Map.String.mapWithKey",
@@ -2936,7 +3002,8 @@
         "kind": "value",
         "name": "cmpU",
         "docstrings": [],
-        "signature": "let cmpU: (t<'v>, t<'v>, ('v, 'v) => int) => int"
+        "signature": "let cmpU: (t<'v>, t<'v>, ('v, 'v) => int) => int",
+        "deprecated": "Use `cmp` instead"
       },
       {
         "id": "Belt.Map.Int.cmp",
@@ -2950,7 +3017,8 @@
         "kind": "value",
         "name": "eqU",
         "docstrings": [],
-        "signature": "let eqU: (t<'v>, t<'v>, ('v, 'v) => bool) => bool"
+        "signature": "let eqU: (t<'v>, t<'v>, ('v, 'v) => bool) => bool",
+        "deprecated": "Use `eq` instead"
       },
       {
         "id": "Belt.Map.Int.eq",
@@ -2966,14 +3034,15 @@
         "kind": "value",
         "name": "findFirstByU",
         "docstrings": [],
-        "signature": "let findFirstByU: (t<'v>, (key, 'v) => bool) => option<(key, 'v)>"
+        "signature": "let findFirstByU: (t<'v>, (key, 'v) => bool) => option<(key, 'v)>",
+        "deprecated": "Use `findFirstBy` instead"
       },
       {
         "id": "Belt.Map.Int.findFirstBy",
         "kind": "value",
         "name": "findFirstBy",
         "docstrings": [
-          "`findFirstBy(m, p)` uses funcion `f` to find the first key value pair\nto match predicate `p`.\n\n```rescript\nlet s0 = fromArray(~id=module(IntCmp), [(4, \"4\"), (1, \"1\"), (2, \"2,\"(3, \"\"))])\nfindFirstBy(s0, (k, v) => k == 4) == option((4, \"4\"))\n```"
+          "`findFirstBy(m, p)` uses funcion `f` to find the first key value pair\nto match predicate `p`.\n\n## Examples\n\n```rescript\nlet mapInt = Belt.Map.Int.fromArray([(1, \"one\"), (2, \"two\"), (3, \"three\")])\n\nmapInt->\nBelt.Map.Int.findFirstBy((k, v) => k == 1 && v == \"one\")\n->assertEqual(Some(1, \"one\"))\n```"
         ],
         "signature": "let findFirstBy: (t<'v>, (key, 'v) => bool) => option<(key, 'v)>"
       },
@@ -2982,7 +3051,8 @@
         "kind": "value",
         "name": "forEachU",
         "docstrings": [],
-        "signature": "let forEachU: (t<'v>, (key, 'v) => unit) => unit"
+        "signature": "let forEachU: (t<'v>, (key, 'v) => unit) => unit",
+        "deprecated": "Use `forEach` instead"
       },
       {
         "id": "Belt.Map.Int.forEach",
@@ -2998,7 +3068,8 @@
         "kind": "value",
         "name": "reduceU",
         "docstrings": [],
-        "signature": "let reduceU: (t<'v>, 'v2, ('v2, key, 'v) => 'v2) => 'v2"
+        "signature": "let reduceU: (t<'v>, 'v2, ('v2, key, 'v) => 'v2) => 'v2",
+        "deprecated": "Use `reduce` instead"
       },
       {
         "id": "Belt.Map.Int.reduce",
@@ -3014,7 +3085,8 @@
         "kind": "value",
         "name": "everyU",
         "docstrings": [],
-        "signature": "let everyU: (t<'v>, (key, 'v) => bool) => bool"
+        "signature": "let everyU: (t<'v>, (key, 'v) => bool) => bool",
+        "deprecated": "Use `every` instead"
       },
       {
         "id": "Belt.Map.Int.every",
@@ -3030,7 +3102,8 @@
         "kind": "value",
         "name": "someU",
         "docstrings": [],
-        "signature": "let someU: (t<'v>, (key, 'v) => bool) => bool"
+        "signature": "let someU: (t<'v>, (key, 'v) => bool) => bool",
+        "deprecated": "Use `some` instead"
       },
       {
         "id": "Belt.Map.Int.some",
@@ -3208,7 +3281,8 @@
         "kind": "value",
         "name": "updateU",
         "docstrings": [],
-        "signature": "let updateU: (t<'v>, key, option<'v> => option<'v>) => t<'v>"
+        "signature": "let updateU: (t<'v>, key, option<'v> => option<'v>) => t<'v>",
+        "deprecated": "Use `update` instead"
       },
       {
         "id": "Belt.Map.Int.update",
@@ -3222,7 +3296,8 @@
         "kind": "value",
         "name": "mergeU",
         "docstrings": [],
-        "signature": "let mergeU: (\n  t<'v>,\n  t<'v2>,\n  (key, option<'v>, option<'v2>) => option<'c>,\n) => t<'c>"
+        "signature": "let mergeU: (\n  t<'v>,\n  t<'v2>,\n  (key, option<'v>, option<'v2>) => option<'c>,\n) => t<'c>",
+        "deprecated": "Use `merge` instead"
       },
       {
         "id": "Belt.Map.Int.merge",
@@ -3245,7 +3320,8 @@
         "kind": "value",
         "name": "keepU",
         "docstrings": [],
-        "signature": "let keepU: (t<'v>, (key, 'v) => bool) => t<'v>"
+        "signature": "let keepU: (t<'v>, (key, 'v) => bool) => t<'v>",
+        "deprecated": "Use `keep` instead"
       },
       {
         "id": "Belt.Map.Int.keep",
@@ -3261,7 +3337,8 @@
         "kind": "value",
         "name": "partitionU",
         "docstrings": [],
-        "signature": "let partitionU: (t<'v>, (key, 'v) => bool) => (t<'v>, t<'v>)"
+        "signature": "let partitionU: (t<'v>, (key, 'v) => bool) => (t<'v>, t<'v>)",
+        "deprecated": "Use `partition` instead"
       },
       {
         "id": "Belt.Map.Int.partition",
@@ -3286,7 +3363,8 @@
         "kind": "value",
         "name": "mapU",
         "docstrings": [],
-        "signature": "let mapU: (t<'v>, 'v => 'v2) => t<'v2>"
+        "signature": "let mapU: (t<'v>, 'v => 'v2) => t<'v2>",
+        "deprecated": "Use `map` instead"
       },
       {
         "id": "Belt.Map.Int.map",
@@ -3302,7 +3380,8 @@
         "kind": "value",
         "name": "mapWithKeyU",
         "docstrings": [],
-        "signature": "let mapWithKeyU: (t<'v>, (key, 'v) => 'v2) => t<'v2>"
+        "signature": "let mapWithKeyU: (t<'v>, (key, 'v) => 'v2) => t<'v2>",
+        "deprecated": "Use `mapWithKey` instead"
       },
       {
         "id": "Belt.Map.Int.mapWithKey",
@@ -3481,7 +3560,8 @@
         "docstrings": [
           "Same as [forEach](##forEach) but takes uncurried functon."
         ],
-        "signature": "let forEachU: (t<'value, 'id>, 'value => unit) => unit"
+        "signature": "let forEachU: (t<'value, 'id>, 'value => unit) => unit",
+        "deprecated": "Use `forEach` instead"
       },
       {
         "id": "Belt.Set.Dict.forEach",
@@ -3497,7 +3577,8 @@
         "kind": "value",
         "name": "reduceU",
         "docstrings": [],
-        "signature": "let reduceU: (t<'value, 'id>, 'a, ('a, 'value) => 'a) => 'a"
+        "signature": "let reduceU: (t<'value, 'id>, 'a, ('a, 'value) => 'a) => 'a",
+        "deprecated": "Use `reduce` instead"
       },
       {
         "id": "Belt.Set.Dict.reduce",
@@ -3513,7 +3594,8 @@
         "kind": "value",
         "name": "everyU",
         "docstrings": [],
-        "signature": "let everyU: (t<'value, 'id>, 'value => bool) => bool"
+        "signature": "let everyU: (t<'value, 'id>, 'value => bool) => bool",
+        "deprecated": "Use `every` instead"
       },
       {
         "id": "Belt.Set.Dict.every",
@@ -3529,7 +3611,8 @@
         "kind": "value",
         "name": "someU",
         "docstrings": [],
-        "signature": "let someU: (t<'value, 'id>, 'value => bool) => bool"
+        "signature": "let someU: (t<'value, 'id>, 'value => bool) => bool",
+        "deprecated": "Use `some` instead"
       },
       {
         "id": "Belt.Set.Dict.some",
@@ -3545,7 +3628,8 @@
         "kind": "value",
         "name": "keepU",
         "docstrings": [],
-        "signature": "let keepU: (t<'value, 'id>, 'value => bool) => t<'value, 'id>"
+        "signature": "let keepU: (t<'value, 'id>, 'value => bool) => t<'value, 'id>",
+        "deprecated": "Use `keep` instead"
       },
       {
         "id": "Belt.Set.Dict.keep",
@@ -3561,7 +3645,8 @@
         "kind": "value",
         "name": "partitionU",
         "docstrings": [],
-        "signature": "let partitionU: (\n  t<'value, 'id>,\n  'value => bool,\n) => (t<'value, 'id>, t<'value, 'id>)"
+        "signature": "let partitionU: (\n  t<'value, 'id>,\n  'value => bool,\n) => (t<'value, 'id>, t<'value, 'id>)",
+        "deprecated": "Use `partition` instead"
       },
       {
         "id": "Belt.Set.Dict.partition",
@@ -3687,7 +3772,7 @@
     "name": "String",
     "docstrings": [
       "Specialized when value type is `string`, more efficient than the generic type,\nits compare behavior is fixed using the built-in comparison",
-      "This module is [`Belt.Set`]() specialized with value type to be a primitive type.\n  It is more efficient in general, the  API is the same with [`Belt_Set`]() except its value type is fixed,\n  and identity is not needed(using the built-in one)\n\n  **See** [`Belt.Set`]()"
+      "This module is [`Belt.Set`]() specialized with value type to be a primitive type.\nIt is more efficient in general, the  API is the same with [`Belt_Set`]() except its value type is fixed,\nand identity is not needed(using the built-in one)\n\n**See** [`Belt.Set`]()"
     ],
     "items": [
       {
@@ -3828,7 +3913,8 @@
         "kind": "value",
         "name": "forEachU",
         "docstrings": [],
-        "signature": "let forEachU: (t, value => unit) => unit"
+        "signature": "let forEachU: (t, value => unit) => unit",
+        "deprecated": "Use `forEach` instead"
       },
       {
         "id": "Belt.Set.String.forEach",
@@ -3844,7 +3930,8 @@
         "kind": "value",
         "name": "reduceU",
         "docstrings": [],
-        "signature": "let reduceU: (t, 'a, ('a, value) => 'a) => 'a"
+        "signature": "let reduceU: (t, 'a, ('a, value) => 'a) => 'a",
+        "deprecated": "Use `reduce` instead"
       },
       {
         "id": "Belt.Set.String.reduce",
@@ -3860,7 +3947,8 @@
         "kind": "value",
         "name": "everyU",
         "docstrings": [],
-        "signature": "let everyU: (t, value => bool) => bool"
+        "signature": "let everyU: (t, value => bool) => bool",
+        "deprecated": "Use `every` instead"
       },
       {
         "id": "Belt.Set.String.every",
@@ -3876,7 +3964,8 @@
         "kind": "value",
         "name": "someU",
         "docstrings": [],
-        "signature": "let someU: (t, value => bool) => bool"
+        "signature": "let someU: (t, value => bool) => bool",
+        "deprecated": "Use `some` instead"
       },
       {
         "id": "Belt.Set.String.some",
@@ -3892,7 +3981,8 @@
         "kind": "value",
         "name": "keepU",
         "docstrings": [],
-        "signature": "let keepU: (t, value => bool) => t"
+        "signature": "let keepU: (t, value => bool) => t",
+        "deprecated": "Use `keep` instead"
       },
       {
         "id": "Belt.Set.String.keep",
@@ -3908,7 +3998,8 @@
         "kind": "value",
         "name": "partitionU",
         "docstrings": [],
-        "signature": "let partitionU: (t, value => bool) => (t, t)"
+        "signature": "let partitionU: (t, value => bool) => (t, t)",
+        "deprecated": "Use `partition` instead"
       },
       {
         "id": "Belt.Set.String.partition",
@@ -4016,7 +4107,7 @@
     "name": "Int",
     "docstrings": [
       "Specialized when value type is `int`, more efficient than the generic type, its\ncompare behavior is fixed using the built-in comparison",
-      "This module is [`Belt.Set`]() specialized with value type to be a primitive type.\n  It is more efficient in general, the  API is the same with [`Belt_Set`]() except its value type is fixed,\n  and identity is not needed(using the built-in one)\n\n  **See** [`Belt.Set`]()"
+      "This module is [`Belt.Set`]() specialized with value type to be a primitive type.\nIt is more efficient in general, the  API is the same with [`Belt_Set`]() except its value type is fixed,\nand identity is not needed(using the built-in one)\n\n**See** [`Belt.Set`]()"
     ],
     "items": [
       {
@@ -4157,7 +4248,8 @@
         "kind": "value",
         "name": "forEachU",
         "docstrings": [],
-        "signature": "let forEachU: (t, value => unit) => unit"
+        "signature": "let forEachU: (t, value => unit) => unit",
+        "deprecated": "Use `forEach` instead"
       },
       {
         "id": "Belt.Set.Int.forEach",
@@ -4173,7 +4265,8 @@
         "kind": "value",
         "name": "reduceU",
         "docstrings": [],
-        "signature": "let reduceU: (t, 'a, ('a, value) => 'a) => 'a"
+        "signature": "let reduceU: (t, 'a, ('a, value) => 'a) => 'a",
+        "deprecated": "Use `reduce` instead"
       },
       {
         "id": "Belt.Set.Int.reduce",
@@ -4189,7 +4282,8 @@
         "kind": "value",
         "name": "everyU",
         "docstrings": [],
-        "signature": "let everyU: (t, value => bool) => bool"
+        "signature": "let everyU: (t, value => bool) => bool",
+        "deprecated": "Use `every` instead"
       },
       {
         "id": "Belt.Set.Int.every",
@@ -4205,7 +4299,8 @@
         "kind": "value",
         "name": "someU",
         "docstrings": [],
-        "signature": "let someU: (t, value => bool) => bool"
+        "signature": "let someU: (t, value => bool) => bool",
+        "deprecated": "Use `some` instead"
       },
       {
         "id": "Belt.Set.Int.some",
@@ -4221,7 +4316,8 @@
         "kind": "value",
         "name": "keepU",
         "docstrings": [],
-        "signature": "let keepU: (t, value => bool) => t"
+        "signature": "let keepU: (t, value => bool) => t",
+        "deprecated": "Use `keep` instead"
       },
       {
         "id": "Belt.Set.Int.keep",
@@ -4237,7 +4333,8 @@
         "kind": "value",
         "name": "partitionU",
         "docstrings": [],
-        "signature": "let partitionU: (t, value => bool) => (t, t)"
+        "signature": "let partitionU: (t, value => bool) => (t, t)",
+        "deprecated": "Use `partition` instead"
       },
       {
         "id": "Belt.Set.Int.partition",
@@ -4685,7 +4782,7 @@
         "kind": "value",
         "name": "+",
         "docstrings": [
-          "Addition of two `float` values.\nCan be opened in a module to avoid dot-notation (`+.`), however this yields a shadow warning (Warning number 44) in the default configuration.\n\n## Examples\n\n```rescript\nopen Belt.Float\nJs.log(2.0 + 2.0 === 4.0) /* true */\n```"
+          "Addition of two `float` values.\nCan be opened in a module to avoid dot-notation (`+.`), however this yields a shadow warning (Warning number 44) in the default configuration.\n\n## Examples\n\n```rescript\nopen Belt.Float\nassertEqual(2.0 + 2.0, 4.0)\n```"
         ],
         "signature": "let +: (float, float) => float"
       },
@@ -4694,7 +4791,7 @@
         "kind": "value",
         "name": "-",
         "docstrings": [
-          "Subtraction of two `float` values.\nCan be opened in a module to avoid dot-notation (`-.`), however this yields a shadow warning (Warning number 44) in the default configuration.\n\n## Examples\n\n```rescript\nopen Belt.Float\nJs.log(2.0 - 1.0 === 1.0) /* true */\n```"
+          "Subtraction of two `float` values.\nCan be opened in a module to avoid dot-notation (`-.`), however this yields a shadow warning (Warning number 44) in the default configuration.\n\n## Examples\n\n```rescript\nopen Belt.Float\nassertEqual(2.0 - 1.0, 1.0)\n```"
         ],
         "signature": "let -: (float, float) => float"
       },
@@ -4703,7 +4800,7 @@
         "kind": "value",
         "name": "*",
         "docstrings": [
-          "Multiplication of two `float` values.\nCan be opened in a module to avoid dot-notation (`*.`), however this yields a shadow warning (Warning number 44) in the default configuration.\n\n## Examples\n\n```rescript\nopen Belt.Float\nJs.log(2.0 * 2.0 === 4.0) /* true */\n```"
+          "Multiplication of two `float` values.\nCan be opened in a module to avoid dot-notation (`*.`), however this yields a shadow warning (Warning number 44) in the default configuration.\n\n## Examples\n\n```rescript\nopen Belt.Float\nassertEqual(2.0 * 2.0, 4.0)\n```"
         ],
         "signature": "let *: (float, float) => float"
       },
@@ -4712,7 +4809,7 @@
         "kind": "value",
         "name": "/",
         "docstrings": [
-          "Division of two `float` values.\nCan be opened in a module to avoid dot-notation (`/.`), however this yields a shadow warning (Warning number 44) in the default configuration.\n\n## Examples\n\n```rescript\nopen Belt.Float\nJs.log(4.0 / 2.0 === 2.0) /* true */\n```"
+          "Division of two `float` values.\nCan be opened in a module to avoid dot-notation (`/.`), however this yields a shadow warning (Warning number 44) in the default configuration.\n\n## Examples\n\n```rescript\nopen Belt.Float\nassertEqual(4.0 / 2.0, 2.0)\n```"
         ],
         "signature": "let /: (float, float) => float"
       }
@@ -4731,7 +4828,7 @@
         "kind": "value",
         "name": "toFloat",
         "docstrings": [
-          "Converts a given `int` to a `float`.\n\n## Examples\n\n```rescript\nJs.log(Belt.Int.toFloat(1) === 1.0) /* true */\n```"
+          "Converts a given `int` to a `float`.\n\n## Examples\n\n```rescript\nBelt.Int.toFloat(1)->assertEqual(1.0)\n```"
         ],
         "signature": "let toFloat: int => float"
       },
@@ -4740,7 +4837,7 @@
         "kind": "value",
         "name": "fromFloat",
         "docstrings": [
-          "Converts a given `float` to an `int`.\n\n## Examples\n\n```rescript\nJs.log(Belt.Int.fromFloat(1.0) === 1) /* true */\n```"
+          "Converts a given `float` to an `int`.\n\n## Examples\n\n```rescript\nBelt.Int.fromFloat(1.0)->assertEqual(1)\n```"
         ],
         "signature": "let fromFloat: float => int"
       },
@@ -4749,7 +4846,7 @@
         "kind": "value",
         "name": "fromString",
         "docstrings": [
-          "Converts a given `string` to an `int`. Returns `Some(int)` when the input is a number, `None` otherwise.\n\n## Examples\n\n```rescript\nJs.log(Belt.Int.fromString(\"1\") === Some(1)) /* true */\n```"
+          "Converts a given `string` to an `int`. Returns `Some(int)` when the input is a number, `None` otherwise.\n\n## Examples\n\n```rescript\nBelt.Int.fromString(\"1\")->assertEqual(Some(1))\n```"
         ],
         "signature": "let fromString: string => option<int>"
       },
@@ -4758,7 +4855,7 @@
         "kind": "value",
         "name": "toString",
         "docstrings": [
-          "Converts a given `int` to a `string`. Uses the JavaScript `String` constructor under the hood.\n\n## Examples\n\n```rescript\nJs.log(Belt.Int.toString(1) === \"1\") /* true */\n```"
+          "Converts a given `int` to a `string`. Uses the JavaScript `String` constructor under the hood.\n\n## Examples\n\n```rescript\nBelt.Int.toString(1)->assertEqual(\"1\")\n```"
         ],
         "signature": "let toString: int => string"
       },
@@ -4767,7 +4864,7 @@
         "kind": "value",
         "name": "+",
         "docstrings": [
-          "Addition of two `int` values. Same as the addition from `Pervasives`.\n\n## Examples\n\n```rescript\nopen Belt.Int\nJs.log(2 + 2 === 4) /* true */\n```"
+          "Addition of two `int` values. Same as the addition from `Pervasives`.\n\n## Examples\n\n```rescript\nopen Belt.Int\nassertEqual(2 + 2, 4)\n```"
         ],
         "signature": "let +: (int, int) => int"
       },
@@ -4776,7 +4873,7 @@
         "kind": "value",
         "name": "-",
         "docstrings": [
-          "Subtraction of two `int` values. Same as the subtraction from `Pervasives`.\n\n## Examples\n\n```rescript\nopen Belt.Int\nJs.log(2 - 1 === 1) /* true */\n```"
+          "Subtraction of two `int` values. Same as the subtraction from `Pervasives`.\n\n## Examples\n\n```rescript\nopen Belt.Int\nassertEqual(2 - 1, 1)\n```"
         ],
         "signature": "let -: (int, int) => int"
       },
@@ -4785,7 +4882,7 @@
         "kind": "value",
         "name": "*",
         "docstrings": [
-          "Multiplication of two `int` values. Same as the multiplication from `Pervasives`.\n\n## Examples\n\n```rescript\nopen Belt.Int\nJs.log(2 * 2 === 4) /* true */\n```"
+          "Multiplication of two `int` values. Same as the multiplication from `Pervasives`.\n\n## Examples\n\n```rescript\nopen Belt.Int\nassertEqual(2 * 2, 4)\n```"
         ],
         "signature": "let *: (int, int) => int"
       },
@@ -4794,7 +4891,7 @@
         "kind": "value",
         "name": "/",
         "docstrings": [
-          "Division of two `int` values. Same as the division from `Pervasives`.\n\n## Examples\n\n```rescript\nopen Belt.Int\nJs.log(4 / 2 === 2); /* true */\n```"
+          "Division of two `int` values. Same as the division from `Pervasives`.\n\n## Examples\n\n```rescript\nopen Belt.Int\nassertEqual(4 / 2, 2)\n```"
         ],
         "signature": "let /: (int, int) => int"
       }
@@ -4820,7 +4917,7 @@
         "kind": "value",
         "name": "getExn",
         "docstrings": [
-          "`getExn(res)`: when `res` is `Ok(n)`, returns `n` when `res` is `Error(m)`, raise an exception\n\n## Examples\n\n```rescript\nBelt.Result.getExn(Belt.Result.Ok(42)) == 42\n\nBelt.Result.getExn(Belt.Result.Error(\"Invalid data\")) /* raises exception */\n```"
+          "`getExn(res)`: when `res` is `Ok(n)`, returns `n` when `res` is `Error(m)`, raise an exception\n\n## Examples\n\n```rescript\nBelt.Result.Ok(42)\n->Belt.Result.getExn\n->assertEqual(42)\n\n\nswitch Belt.Result.getExn(Belt.Result.Error(\"Invalid data\")) { // raise a exception\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
         ],
         "signature": "let getExn: t<'a, 'b> => 'a"
       },
@@ -4829,7 +4926,8 @@
         "kind": "value",
         "name": "mapWithDefaultU",
         "docstrings": [],
-        "signature": "let mapWithDefaultU: (t<'a, 'c>, 'b, 'a => 'b) => 'b"
+        "signature": "let mapWithDefaultU: (t<'a, 'c>, 'b, 'a => 'b) => 'b",
+        "deprecated": "Use `mapWithDefault` instead"
       },
       {
         "id": "Belt.Result.mapWithDefault",
@@ -4845,7 +4943,8 @@
         "kind": "value",
         "name": "mapU",
         "docstrings": [],
-        "signature": "let mapU: (t<'a, 'c>, 'a => 'b) => t<'b, 'c>"
+        "signature": "let mapU: (t<'a, 'c>, 'a => 'b) => t<'b, 'c>",
+        "deprecated": "Use `map` instead"
       },
       {
         "id": "Belt.Result.map",
@@ -4861,7 +4960,8 @@
         "kind": "value",
         "name": "flatMapU",
         "docstrings": [],
-        "signature": "let flatMapU: (t<'a, 'c>, 'a => t<'b, 'c>) => t<'b, 'c>"
+        "signature": "let flatMapU: (t<'a, 'c>, 'a => t<'b, 'c>) => t<'b, 'c>",
+        "deprecated": "Use `flatMap` instead"
       },
       {
         "id": "Belt.Result.flatMap",
@@ -4904,7 +5004,8 @@
         "kind": "value",
         "name": "eqU",
         "docstrings": [],
-        "signature": "let eqU: (t<'a, 'c>, t<'b, 'd>, ('a, 'b) => bool) => bool"
+        "signature": "let eqU: (t<'a, 'c>, t<'b, 'd>, ('a, 'b) => bool) => bool",
+        "deprecated": "Use `eq` instead"
       },
       {
         "id": "Belt.Result.eq",
@@ -4920,7 +5021,8 @@
         "kind": "value",
         "name": "cmpU",
         "docstrings": [],
-        "signature": "let cmpU: (t<'a, 'c>, t<'b, 'd>, ('a, 'b) => int) => int"
+        "signature": "let cmpU: (t<'a, 'c>, t<'b, 'd>, ('a, 'b) => int) => int",
+        "deprecated": "Use `cmp` instead"
       },
       {
         "id": "Belt.Result.cmp",
@@ -4948,7 +5050,8 @@
         "docstrings": [
           "Uncurried version of `keep`"
         ],
-        "signature": "let keepU: (option<'a>, 'a => bool) => option<'a>"
+        "signature": "let keepU: (option<'a>, 'a => bool) => option<'a>",
+        "deprecated": "Use `keep` instead"
       },
       {
         "id": "Belt.Option.keep",
@@ -4966,7 +5069,8 @@
         "docstrings": [
           "Uncurried version of `forEach`"
         ],
-        "signature": "let forEachU: (option<'a>, 'a => unit) => unit"
+        "signature": "let forEachU: (option<'a>, 'a => unit) => unit",
+        "deprecated": "Use `forEach` instead"
       },
       {
         "id": "Belt.Option.forEach",
@@ -4982,7 +5086,7 @@
         "kind": "value",
         "name": "getExn",
         "docstrings": [
-          "Raises an Error in case `None` is provided. Use with care.\n\n## Examples\n\n```rescript\nBelt.Option.getExn(Some(3)) /* 3 */\n\nBelt.Option.getExn(None) /* Raises an Error */\n```"
+          "Raises an Error in case `None` is provided. Use with care.\n\n## Examples\n\n```rescript\nSome(3)\n->Belt.Option.getExn\n->assertEqual(3)\n\nswitch Belt.Option.getExn(None) { // Raises an exception\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
         ],
         "signature": "let getExn: option<'a> => 'a"
       },
@@ -5002,7 +5106,8 @@
         "docstrings": [
           "Uncurried version of `mapWithDefault`"
         ],
-        "signature": "let mapWithDefaultU: (option<'a>, 'b, 'a => 'b) => 'b"
+        "signature": "let mapWithDefaultU: (option<'a>, 'b, 'a => 'b) => 'b",
+        "deprecated": "Use `mapWithDefault` instead"
       },
       {
         "id": "Belt.Option.mapWithDefault",
@@ -5020,7 +5125,8 @@
         "docstrings": [
           "Uncurried version of `map`"
         ],
-        "signature": "let mapU: (option<'a>, 'a => 'b) => option<'b>"
+        "signature": "let mapU: (option<'a>, 'a => 'b) => option<'b>",
+        "deprecated": "Use `map` instead"
       },
       {
         "id": "Belt.Option.map",
@@ -5038,7 +5144,8 @@
         "docstrings": [
           "Uncurried version of `flatMap`"
         ],
-        "signature": "let flatMapU: (option<'a>, 'a => option<'b>) => option<'b>"
+        "signature": "let flatMapU: (option<'a>, 'a => option<'b>) => option<'b>",
+        "deprecated": "Use `flatMap` instead"
       },
       {
         "id": "Belt.Option.flatMap",
@@ -5092,7 +5199,8 @@
         "docstrings": [
           "Uncurried version of `eq`"
         ],
-        "signature": "let eqU: (option<'a>, option<'b>, ('a, 'b) => bool) => bool"
+        "signature": "let eqU: (option<'a>, option<'b>, ('a, 'b) => bool) => bool",
+        "deprecated": "Use `eq` instead"
       },
       {
         "id": "Belt.Option.eq",
@@ -5110,7 +5218,8 @@
         "docstrings": [
           "Uncurried version of `cmp`"
         ],
-        "signature": "let cmpU: (option<'a>, option<'b>, ('a, 'b) => int) => int"
+        "signature": "let cmpU: (option<'a>, option<'b>, ('a, 'b) => int) => int",
+        "deprecated": "Use `cmp` instead"
       },
       {
         "id": "Belt.Option.cmp",
@@ -5128,7 +5237,7 @@
     "name": "HashMap",
     "docstrings": [
       "[`Belt.HashMap`]()\n\n  The top level provides generic **mutable** hash map operations.\n\n  It also has two specialized inner modules\n  [`Belt.HashMap.Int`]() and [`Belt.HashMap.String`]()",
-      "A **mutable** Hash map which allows customized [`hash`]() behavior.\n\nAll data are parameterized by not its only type but also a unique identity in\nthe time of initialization, so that two _HashMaps of ints_ initialized with different\n_hash_ functions will have different type.\n\n## Examples\n\n```rescript\ntype t = int\nmodule I0 = unpack(Belt.Id.hashableU(~hash=(. a: t) => \"&\"(a, 0xff_ff), ~eq=(. a, b) => a == b))\nlet s0: t<_, string, _> = make(~hintSize=40, ~id=module(I0))\n\nmodule I1 = unpack(Belt.Id.hashableU(~hash=(. a: t) => \"&\"(a, 0xff), ~eq=(. a, b) => a == b))\nlet s1: t<_, string, _> = make(~hintSize=40, ~id=module(I1))\n```\n\nThe invariant must be held: for two elements who are _equal_,\ntheir hashed value should be the same\n\nHere the compiler would infer `s0` and `s1` having different type so that\nit would not mix.\n\n## Examples\n\n```rescript\nlet s0: t<int, I0.identity>\nlet s1: t<int, I1.identity>\n```\n\nWe can add elements to the collection:\n\n## Examples\n\n```rescript\nlet () = {\n  add(s1, 0, \"3\")\n  add(s1, 1, \"3\")\n}\n```\n\nSince this is an mutable data strucure, `s1` will contain two pairs."
+      "A **mutable** Hash map which allows customized [`hash`]() behavior.\n\nAll data are parameterized by not its only type but also a unique identity in\nthe time of initialization, so that two _HashMaps of ints_ initialized with different\n_hash_ functions will have different type.\n\n## Examples\n\n```rescript\ntype t = int\nmodule I0 = unpack(Belt.Id.hashable(~hash=(_: t) => 0xff_ff, ~eq=(a, b) => a == b))\nlet s0: Belt.HashMap.t<I0.t, int, I0.identity> = Belt.HashMap.make(~hintSize=40, ~id=module(I0))\n\nmodule I1 = unpack(Belt.Id.hashable(~hash=(_: t) => 0xff, ~eq=(a, b) => a == b))\nlet s1: Belt.HashMap.t<I1.t, string, I1.identity> = Belt.HashMap.make(~hintSize=40, ~id=module(I1))\n```\n\nThe invariant must be held: for two elements who are _equal_,\ntheir hashed value should be the same\n\nHere the compiler would infer `s0` and `s1` having different type so that\nit would not mix.\n\n## Examples\n\n```\nlet s0: t<int, I0.identity>\nlet s1: t<int, I1.identity>\n```\n\nWe can add elements to the collection:\n\n## Examples\n\n```rescript\nlet () = {\n  Belt.HashMap.set(s0, 0, 3)\n  Belt.HashMap.set(s1, 1, \"3\")\n}\n```\n\nSince this is an mutable data strucure, `s1` will contain two pairs."
     ],
     "items": [
       {
@@ -5228,7 +5337,8 @@
         "docstrings": [
           "Same as [forEach](#forEach) but takes uncurried function."
         ],
-        "signature": "let forEachU: (t<'key, 'value, 'id>, ('key, 'value) => unit) => unit"
+        "signature": "let forEachU: (t<'key, 'value, 'id>, ('key, 'value) => unit) => unit",
+        "deprecated": "Use `forEach` instead"
       },
       {
         "id": "Belt.HashMap.forEach",
@@ -5244,14 +5354,15 @@
         "kind": "value",
         "name": "reduceU",
         "docstrings": [],
-        "signature": "let reduceU: (t<'key, 'value, 'id>, 'c, ('c, 'key, 'value) => 'c) => 'c"
+        "signature": "let reduceU: (t<'key, 'value, 'id>, 'c, ('c, 'key, 'value) => 'c) => 'c",
+        "deprecated": "Use `reduce` instead"
       },
       {
         "id": "Belt.HashMap.reduce",
         "kind": "value",
         "name": "reduce",
         "docstrings": [
-          "`reduce(tbl, init, f)` computes `(f(kN, dN) ... (f(k1, d1, init))...)`, where `k1 ... kN` are the keys of all bindings in `tbl`, and `d1 ... dN` are the associated values. Each binding is presented exactly once to `f`.\n\nThe order in which the bindings are passed to `f` is unspecified. However, if the table contains several bindings for the same key, they are passed to `f` in reverse order of introduction, that is, the most recent binding is passed first.\n\n## Examples\n\n```rescript\nmodule IntHash = Belt.Id.MakeHashable({\n  type t = int\n  let hash = a => a\n  let eq = (a, b) => a == b\n})\n\nlet s0 = Belt.HashMap.make(~hintSize=10, ~id=module(IntHash))\nBelt.HashMap.set(s0, 1, \"value1\")\nBelt.HashMap.set(s0, 2, \"value2\")\n\nBelt.HashMap.reduce(s0, \"\", (acc, key, value) => acc ++ (\", \" ++ value)) == \"value1, value2\"\n```"
+          "`reduce(tbl, init, f)` computes `(f(kN, dN) ... (f(k1, d1, init))...)`, where `k1 ... kN` are the keys of all bindings in `tbl`, and `d1 ... dN` are the associated values. Each binding is presented exactly once to `f`.\n\nThe order in which the bindings are passed to `f` is unspecified. However, if the table contains several bindings for the same key, they are passed to `f` in reverse order of introduction, that is, the most recent binding is passed first.\n\n## Examples\n\n```rescript\nmodule IntHash = Belt.Id.MakeHashable({\n  type t = int\n  let hash = a => a\n  let eq = (a, b) => a == b\n})\n\nlet s0 = Belt.HashMap.make(~hintSize=10, ~id=module(IntHash))\n\nBelt.HashMap.set(s0, 1, \"value1\")\nBelt.HashMap.set(s0, 2, \"value2\")\n\ns0\n->Belt.HashMap.reduce(\"\", (acc, _, value) => acc ++ (\", \" ++ value))\n->assertEqual(\", value1, value2\")\n```\n\n## More Examples\n\n```rescript\nConsole.log(\"lol\")\n```"
         ],
         "signature": "let reduce: (t<'key, 'value, 'id>, 'c, ('c, 'key, 'value) => 'c) => 'c"
       },
@@ -5262,7 +5373,8 @@
         "docstrings": [
           "Same as [keepMapInPlace](#keepMapInPlace) but takes uncurried function."
         ],
-        "signature": "let keepMapInPlaceU: (\n  t<'key, 'value, 'id>,\n  ('key, 'value) => option<'value>,\n) => unit"
+        "signature": "let keepMapInPlaceU: (\n  t<'key, 'value, 'id>,\n  ('key, 'value) => option<'value>,\n) => unit",
+        "deprecated": "Use `keepMapInPlace` instead"
       },
       {
         "id": "Belt.HashMap.keepMapInPlace",
@@ -5352,7 +5464,7 @@
     "name": "HashSet",
     "docstrings": [
       "[`Belt.HashSet`]()\n\n  The top level provides generic **mutable** hash set operations.\n\n  It also has two specialized inner modules\n  [`Belt.HashSet.Int`]() and [`Belt.HashSet.String`]()",
-      "A **mutable** Hash set which allows customized `hash` behavior.\n\nAll data are parameterized by not its only type but also a unique identity in\nthe time of initialization, so that two _HashSets of ints_ initialized with\ndifferent _hash_ functions will have different type.\n\n## Examples\n\n```rescript\nmodule I0 = unpack(\n  Belt.Id.hashableU(\n    ~hash=(. a: int) => land(a, 65535),\n    ~eq=(. a, b) => a == b,\n  )\n)\n\nlet s0 = Belt.HashSet.make(~id=module(I0), ~hintSize=40)\n\nmodule I1 = unpack(\n  Belt.Id.hashableU(\n    ~hash=(. a: int) => land(a, 255),\n    ~eq=(. a, b) => a == b,\n  )\n)\n\nlet s1 = Belt.HashSet.make(~id=module(I1), ~hintSize=40)\n\nBelt.HashSet.add(s1, 0)\nBelt.HashSet.add(s1, 1)\n```\n\nThe invariant must be held: for two elements who are equal, their hashed\nvalue should be the same.\n\nHere the compiler would infer `s0` and `s1` having different type so that it\nwould not mix.\n\n## Examples\n\n```rescript\nlet s0: Belt.HashSet.t<int, I0.identity>\nlet s1: Belt.HashSet.t<int, I1.identity>\n```\n\nWe can add elements to the collection (see last two lines in the example\nabove). Since this is an mutable data structure, `s1` will contain two pairs."
+      "A **mutable** Hash set which allows customized `hash` behavior.\n\nAll data are parameterized by not its only type but also a unique identity in\nthe time of initialization, so that two _HashSets of ints_ initialized with\ndifferent _hash_ functions will have different type.\n\n## Examples\n\n```rescript\nmodule I0 = unpack(\n  Belt.Id.hashable(\n    ~hash=(a: int) => land(a, 65535),\n    ~eq=(a, b) => a == b,\n  )\n)\n\nlet s0 = Belt.HashSet.make(~id=module(I0), ~hintSize=40)\n\nmodule I1 = unpack(\n  Belt.Id.hashable(\n    ~hash=(a: int) => land(a, 255),\n    ~eq=(a, b) => a == b,\n  )\n)\n\nlet s1 = Belt.HashSet.make(~id=module(I1), ~hintSize=40)\n\nBelt.HashSet.add(s1, 0)\nBelt.HashSet.add(s1, 1)\n```\n\nThe invariant must be held: for two elements who are equal, their hashed\nvalue should be the same.\n\nHere the compiler would infer `s0` and `s1` having different type so that it\nwould not mix.\n\nSignatures:\n\n```\nlet s0: Belt.HashSet.t<int, I0.identity>\nlet s1: Belt.HashSet.t<int, I1.identity>\n```\n\nWe can add elements to the collection (see last two lines in the example\nabove). Since this is an mutable data structure, `s1` will contain two pairs."
     ],
     "items": [
       {
@@ -5425,7 +5537,8 @@
         "kind": "value",
         "name": "forEachU",
         "docstrings": [],
-        "signature": "let forEachU: (t<'a, 'id>, 'a => unit) => unit"
+        "signature": "let forEachU: (t<'a, 'id>, 'a => unit) => unit",
+        "deprecated": "Use `forEach` instead"
       },
       {
         "id": "Belt.HashSet.forEach",
@@ -5441,7 +5554,8 @@
         "kind": "value",
         "name": "reduceU",
         "docstrings": [],
-        "signature": "let reduceU: (t<'a, 'id>, 'c, ('c, 'a) => 'c) => 'c"
+        "signature": "let reduceU: (t<'a, 'id>, 'c, ('c, 'a) => 'c) => 'c",
+        "deprecated": "Use `reduce` instead"
       },
       {
         "id": "Belt.HashSet.reduce",
@@ -5550,7 +5664,8 @@
         "kind": "value",
         "name": "cmpU",
         "docstrings": [],
-        "signature": "let cmpU: (t<'k, 'a, 'id>, t<'k, 'a, 'id>, ('a, 'a) => int) => int"
+        "signature": "let cmpU: (t<'k, 'a, 'id>, t<'k, 'a, 'id>, ('a, 'a) => int) => int",
+        "deprecated": "Use `cmp` instead"
       },
       {
         "id": "Belt.MutableMap.cmp",
@@ -5566,7 +5681,8 @@
         "kind": "value",
         "name": "eqU",
         "docstrings": [],
-        "signature": "let eqU: (t<'k, 'a, 'id>, t<'k, 'a, 'id>, ('a, 'a) => bool) => bool"
+        "signature": "let eqU: (t<'k, 'a, 'id>, t<'k, 'a, 'id>, ('a, 'a) => bool) => bool",
+        "deprecated": "Use `eq` instead"
       },
       {
         "id": "Belt.MutableMap.eq",
@@ -5582,7 +5698,8 @@
         "kind": "value",
         "name": "forEachU",
         "docstrings": [],
-        "signature": "let forEachU: (t<'k, 'a, 'id>, ('k, 'a) => unit) => unit"
+        "signature": "let forEachU: (t<'k, 'a, 'id>, ('k, 'a) => unit) => unit",
+        "deprecated": "Use `forEach` instead"
       },
       {
         "id": "Belt.MutableMap.forEach",
@@ -5598,7 +5715,8 @@
         "kind": "value",
         "name": "reduceU",
         "docstrings": [],
-        "signature": "let reduceU: (t<'k, 'a, 'id>, 'b, ('b, 'k, 'a) => 'b) => 'b"
+        "signature": "let reduceU: (t<'k, 'a, 'id>, 'b, ('b, 'k, 'a) => 'b) => 'b",
+        "deprecated": "Use `reduce` instead"
       },
       {
         "id": "Belt.MutableMap.reduce",
@@ -5614,7 +5732,8 @@
         "kind": "value",
         "name": "everyU",
         "docstrings": [],
-        "signature": "let everyU: (t<'k, 'a, 'id>, ('k, 'a) => bool) => bool"
+        "signature": "let everyU: (t<'k, 'a, 'id>, ('k, 'a) => bool) => bool",
+        "deprecated": "Use `every` instead"
       },
       {
         "id": "Belt.MutableMap.every",
@@ -5630,7 +5749,8 @@
         "kind": "value",
         "name": "someU",
         "docstrings": [],
-        "signature": "let someU: (t<'k, 'a, 'id>, ('k, 'a) => bool) => bool"
+        "signature": "let someU: (t<'k, 'a, 'id>, ('k, 'a) => bool) => bool",
+        "deprecated": "Use `some` instead"
       },
       {
         "id": "Belt.MutableMap.some",
@@ -5808,7 +5928,8 @@
         "kind": "value",
         "name": "updateU",
         "docstrings": [],
-        "signature": "let updateU: (t<'k, 'a, 'id>, 'k, option<'a> => option<'a>) => unit"
+        "signature": "let updateU: (t<'k, 'a, 'id>, 'k, option<'a> => option<'a>) => unit",
+        "deprecated": "Use `update` instead"
       },
       {
         "id": "Belt.MutableMap.update",
@@ -5829,7 +5950,8 @@
         "kind": "value",
         "name": "mapU",
         "docstrings": [],
-        "signature": "let mapU: (t<'k, 'a, 'id>, 'a => 'b) => t<'k, 'b, 'id>"
+        "signature": "let mapU: (t<'k, 'a, 'id>, 'a => 'b) => t<'k, 'b, 'id>",
+        "deprecated": "Use `map` instead"
       },
       {
         "id": "Belt.MutableMap.map",
@@ -5845,7 +5967,8 @@
         "kind": "value",
         "name": "mapWithKeyU",
         "docstrings": [],
-        "signature": "let mapWithKeyU: (t<'k, 'a, 'id>, ('k, 'a) => 'b) => t<'k, 'b, 'id>"
+        "signature": "let mapWithKeyU: (t<'k, 'a, 'id>, ('k, 'a) => 'b) => t<'k, 'b, 'id>",
+        "deprecated": "Use `mapWithKey` instead"
       },
       {
         "id": "Belt.MutableMap.mapWithKey",
@@ -6047,7 +6170,8 @@
         "docstrings": [
           "Same as `Belt.MutableSet.forEach` but takes uncurried functon."
         ],
-        "signature": "let forEachU: (t<'value, 'id>, 'value => unit) => unit"
+        "signature": "let forEachU: (t<'value, 'id>, 'value => unit) => unit",
+        "deprecated": "Use `forEach` instead"
       },
       {
         "id": "Belt.MutableSet.forEach",
@@ -6063,7 +6187,8 @@
         "kind": "value",
         "name": "reduceU",
         "docstrings": [],
-        "signature": "let reduceU: (t<'value, 'id>, 'a, ('a, 'value) => 'a) => 'a"
+        "signature": "let reduceU: (t<'value, 'id>, 'a, ('a, 'value) => 'a) => 'a",
+        "deprecated": "Use `reduce` instead"
       },
       {
         "id": "Belt.MutableSet.reduce",
@@ -6079,7 +6204,8 @@
         "kind": "value",
         "name": "everyU",
         "docstrings": [],
-        "signature": "let everyU: (t<'value, 'id>, 'value => bool) => bool"
+        "signature": "let everyU: (t<'value, 'id>, 'value => bool) => bool",
+        "deprecated": "Use `every` instead"
       },
       {
         "id": "Belt.MutableSet.every",
@@ -6095,7 +6221,8 @@
         "kind": "value",
         "name": "someU",
         "docstrings": [],
-        "signature": "let someU: (t<'value, 'id>, 'value => bool) => bool"
+        "signature": "let someU: (t<'value, 'id>, 'value => bool) => bool",
+        "deprecated": "Use `some` instead"
       },
       {
         "id": "Belt.MutableSet.some",
@@ -6111,7 +6238,8 @@
         "kind": "value",
         "name": "keepU",
         "docstrings": [],
-        "signature": "let keepU: (t<'value, 'id>, 'value => bool) => t<'value, 'id>"
+        "signature": "let keepU: (t<'value, 'id>, 'value => bool) => t<'value, 'id>",
+        "deprecated": "Use `keep` instead"
       },
       {
         "id": "Belt.MutableSet.keep",
@@ -6127,7 +6255,8 @@
         "kind": "value",
         "name": "partitionU",
         "docstrings": [],
-        "signature": "let partitionU: (\n  t<'value, 'id>,\n  'value => bool,\n) => (t<'value, 'id>, t<'value, 'id>)"
+        "signature": "let partitionU: (\n  t<'value, 'id>,\n  'value => bool,\n) => (t<'value, 'id>, t<'value, 'id>)",
+        "deprecated": "Use `partition` instead"
       },
       {
         "id": "Belt.MutableSet.partition",
@@ -6306,7 +6435,8 @@
         "kind": "value",
         "name": "cmpU",
         "docstrings": [],
-        "signature": "let cmpU: (t<'k, 'v, 'id>, t<'k, 'v, 'id>, ('v, 'v) => int) => int"
+        "signature": "let cmpU: (t<'k, 'v, 'id>, t<'k, 'v, 'id>, ('v, 'v) => int) => int",
+        "deprecated": "Use `cmp` instead"
       },
       {
         "id": "Belt.Map.cmp",
@@ -6322,7 +6452,8 @@
         "kind": "value",
         "name": "eqU",
         "docstrings": [],
-        "signature": "let eqU: (t<'k, 'v, 'id>, t<'k, 'v, 'id>, ('v, 'v) => bool) => bool"
+        "signature": "let eqU: (t<'k, 'v, 'id>, t<'k, 'v, 'id>, ('v, 'v) => bool) => bool",
+        "deprecated": "Use `eq` instead"
       },
       {
         "id": "Belt.Map.eq",
@@ -6338,14 +6469,15 @@
         "kind": "value",
         "name": "findFirstByU",
         "docstrings": [],
-        "signature": "let findFirstByU: (t<'k, 'v, 'id>, ('k, 'v) => bool) => option<('k, 'v)>"
+        "signature": "let findFirstByU: (t<'k, 'v, 'id>, ('k, 'v) => bool) => option<('k, 'v)>",
+        "deprecated": "Use `findFirstBy` instead"
       },
       {
         "id": "Belt.Map.findFirstBy",
         "kind": "value",
         "name": "findFirstBy",
         "docstrings": [
-          "`\nfindFirstBy(m, p)` uses function `f` to find the first key value pair to match predicate `p`.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = (a, b) => Pervasives.compare(a, b)\n})\n\nlet s0 = Belt.Map.fromArray(~id=module(IntCmp), [(4, \"4\"), (1, \"1\"), (2, \"2\"), (3, \"\")])\n\nBelt.Map.findFirstBy(s0, (k, v) => k == 4) /* (4, \"4\") */\n```"
+          "`\nfindFirstBy(m, p)` uses function `f` to find the first key value pair to match predicate `p`.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = (a, b) => Pervasives.compare(a, b)\n})\n\nlet s0 = Belt.Map.fromArray(~id=module(IntCmp), [(4, \"4\"), (1, \"1\"), (2, \"2\"), (3, \"\")])\n\ns0\n->Belt.Map.findFirstBy((k, _) => k == 4)\n->assertEqual(Some(4, \"4\"))\n```"
         ],
         "signature": "let findFirstBy: (t<'k, 'v, 'id>, ('k, 'v) => bool) => option<('k, 'v)>"
       },
@@ -6354,7 +6486,8 @@
         "kind": "value",
         "name": "forEachU",
         "docstrings": [],
-        "signature": "let forEachU: (t<'k, 'v, 'id>, ('k, 'v) => unit) => unit"
+        "signature": "let forEachU: (t<'k, 'v, 'id>, ('k, 'v) => unit) => unit",
+        "deprecated": "Use `forEach` instead"
       },
       {
         "id": "Belt.Map.forEach",
@@ -6370,7 +6503,8 @@
         "kind": "value",
         "name": "reduceU",
         "docstrings": [],
-        "signature": "let reduceU: (t<'k, 'v, 'id>, 'acc, ('acc, 'k, 'v) => 'acc) => 'acc"
+        "signature": "let reduceU: (t<'k, 'v, 'id>, 'acc, ('acc, 'k, 'v) => 'acc) => 'acc",
+        "deprecated": "Use `reduce` instead"
       },
       {
         "id": "Belt.Map.reduce",
@@ -6386,7 +6520,8 @@
         "kind": "value",
         "name": "everyU",
         "docstrings": [],
-        "signature": "let everyU: (t<'k, 'v, 'id>, ('k, 'v) => bool) => bool"
+        "signature": "let everyU: (t<'k, 'v, 'id>, ('k, 'v) => bool) => bool",
+        "deprecated": "Use `every` instead"
       },
       {
         "id": "Belt.Map.every",
@@ -6402,7 +6537,8 @@
         "kind": "value",
         "name": "someU",
         "docstrings": [],
-        "signature": "let someU: (t<'k, 'v, 'id>, ('k, 'v) => bool) => bool"
+        "signature": "let someU: (t<'k, 'v, 'id>, ('k, 'v) => bool) => bool",
+        "deprecated": "Use `some` instead"
       },
       {
         "id": "Belt.Map.some",
@@ -6607,7 +6743,8 @@
         "kind": "value",
         "name": "updateU",
         "docstrings": [],
-        "signature": "let updateU: (\n  t<'k, 'v, 'id>,\n  'k,\n  option<'v> => option<'v>,\n) => t<'k, 'v, 'id>"
+        "signature": "let updateU: (\n  t<'k, 'v, 'id>,\n  'k,\n  option<'v> => option<'v>,\n) => t<'k, 'v, 'id>",
+        "deprecated": "Use `update` instead"
       },
       {
         "id": "Belt.Map.update",
@@ -6632,7 +6769,8 @@
         "kind": "value",
         "name": "mergeU",
         "docstrings": [],
-        "signature": "let mergeU: (\n  t<'k, 'v, 'id>,\n  t<'k, 'v2, 'id>,\n  ('k, option<'v>, option<'v2>) => option<'v3>,\n) => t<'k, 'v3, 'id>"
+        "signature": "let mergeU: (\n  t<'k, 'v, 'id>,\n  t<'k, 'v2, 'id>,\n  ('k, option<'v>, option<'v2>) => option<'v3>,\n) => t<'k, 'v3, 'id>",
+        "deprecated": "Use `merge` instead"
       },
       {
         "id": "Belt.Map.merge",
@@ -6648,7 +6786,8 @@
         "kind": "value",
         "name": "keepU",
         "docstrings": [],
-        "signature": "let keepU: (t<'k, 'v, 'id>, ('k, 'v) => bool) => t<'k, 'v, 'id>"
+        "signature": "let keepU: (t<'k, 'v, 'id>, ('k, 'v) => bool) => t<'k, 'v, 'id>",
+        "deprecated": "Use `keep` instead"
       },
       {
         "id": "Belt.Map.keep",
@@ -6664,7 +6803,8 @@
         "kind": "value",
         "name": "partitionU",
         "docstrings": [],
-        "signature": "let partitionU: (\n  t<'k, 'v, 'id>,\n  ('k, 'v) => bool,\n) => (t<'k, 'v, 'id>, t<'k, 'v, 'id>)"
+        "signature": "let partitionU: (\n  t<'k, 'v, 'id>,\n  ('k, 'v) => bool,\n) => (t<'k, 'v, 'id>, t<'k, 'v, 'id>)",
+        "deprecated": "Use `partition` instead"
       },
       {
         "id": "Belt.Map.partition",
@@ -6689,7 +6829,8 @@
         "kind": "value",
         "name": "mapU",
         "docstrings": [],
-        "signature": "let mapU: (t<'k, 'v, 'id>, 'v => 'v2) => t<'k, 'v2, 'id>"
+        "signature": "let mapU: (t<'k, 'v, 'id>, 'v => 'v2) => t<'k, 'v2, 'id>",
+        "deprecated": "Use `map` instead"
       },
       {
         "id": "Belt.Map.map",
@@ -6705,7 +6846,8 @@
         "kind": "value",
         "name": "mapWithKeyU",
         "docstrings": [],
-        "signature": "let mapWithKeyU: (t<'k, 'v, 'id>, ('k, 'v) => 'v2) => t<'k, 'v2, 'id>"
+        "signature": "let mapWithKeyU: (t<'k, 'v, 'id>, ('k, 'v) => 'v2) => t<'k, 'v2, 'id>",
+        "deprecated": "Use `mapWithKey` instead"
       },
       {
         "id": "Belt.Map.mapWithKey",
@@ -6785,7 +6927,7 @@
         "kind": "value",
         "name": "make",
         "docstrings": [
-          "Creates a new set by taking in the comparator\n\n## Examples\n\n```rescript\nlet set = Belt.Set.make(~id=module(IntCmp))\n```"
+          "Creates a new set by taking in the comparator\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet set = Belt.Set.make(~id=module(IntCmp))\n\nBelt.Set.isEmpty(set)->assertEqual(true)\n```"
         ],
         "signature": "let make: (~id: id<'value, 'id>) => t<'value, 'id>"
       },
@@ -6794,7 +6936,7 @@
         "kind": "value",
         "name": "fromArray",
         "docstrings": [
-          "Creates new set from array of elements.\n\n## Examples\n\n```rescript\nlet s0 = Belt.Set.fromArray([1, 3, 2, 4], ~id=module(IntCmp))\n\ns0->Belt.Set.toArray /* [1, 2, 3, 4] */\n```"
+          "Creates new set from array of elements.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.Set.fromArray([1, 3, 2, 4], ~id=module(IntCmp))\n\ns0->Belt.Set.toArray->assertEqual([1, 2, 3, 4])\n```"
         ],
         "signature": "let fromArray: (array<'value>, ~id: id<'value, 'id>) => t<'value, 'id>"
       },
@@ -6812,7 +6954,7 @@
         "kind": "value",
         "name": "isEmpty",
         "docstrings": [
-          "Checks if set is empty.\n\n## Examples\n\n```rescript\nlet empty = Belt.Set.fromArray([], ~id=module(IntCmp))\nlet notEmpty = Belt.Set.fromArray([1],~id=module(IntCmp))\n\nBelt.Set.isEmpty(empty) /* true */\nBelt.Set.isEmpty(notEmpty) /* false */\n```"
+          "Checks if set is empty.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet empty = Belt.Set.fromArray([], ~id=module(IntCmp))\nlet notEmpty = Belt.Set.fromArray([1], ~id=module(IntCmp))\n\nBelt.Set.isEmpty(empty)->assertEqual(true)\nBelt.Set.isEmpty(notEmpty)->assertEqual(false)\n```"
         ],
         "signature": "let isEmpty: t<'a, 'b> => bool"
       },
@@ -6821,7 +6963,7 @@
         "kind": "value",
         "name": "has",
         "docstrings": [
-          "Checks if element exists in set.\n\n## Examples\n\n```rescript\nlet set = Belt.Set.fromArray([1, 4, 2, 5], ~id=module(IntCmp))\n\nset->Belt.Set.has(3) /* false */\nset->Belt.Set.has(1) /* true */\n```"
+          "Checks if element exists in set.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet set = Belt.Set.fromArray([1, 4, 2, 5], ~id=module(IntCmp))\n\nset->Belt.Set.has(3)->assertEqual(false)\nset->Belt.Set.has(1)->assertEqual(true)\n```"
         ],
         "signature": "let has: (t<'value, 'id>, 'value) => bool"
       },
@@ -6830,7 +6972,7 @@
         "kind": "value",
         "name": "add",
         "docstrings": [
-          "Adds element to set. If element existed in set, value is unchanged.\n\n## Examples\n\n```rescript\nlet s0 = Belt.Set.make(~id=module(IntCmp))\nlet s1 = s0->Belt.Set.add(1)\nlet s2 = s1->Belt.Set.add(2)\nlet s3 = s2->Belt.Set.add(2)\ns0->Belt.Set.toArray /* [] */\ns1->Belt.Set.toArray /* [1] */\ns2->Belt.Set.toArray /* [1, 2] */\ns3->Belt.Set.toArray /* [1,2 ] */\ns2 == s3 /* true */\n```"
+          "Adds element to set. If element existed in set, value is unchanged.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.Set.make(~id=module(IntCmp))\n\nlet s1 = s0->Belt.Set.add(1)\nlet s2 = s1->Belt.Set.add(2)\nlet s3 = s2->Belt.Set.add(2)\n\ns0->Belt.Set.toArray->assertEqual([])\ns1->Belt.Set.toArray->assertEqual([1])\ns2->Belt.Set.toArray->assertEqual([1, 2])\ns3->Belt.Set.toArray->assertEqual([1, 2])\nassertEqual(s2, s3)\n```"
         ],
         "signature": "let add: (t<'value, 'id>, 'value) => t<'value, 'id>"
       },
@@ -6839,7 +6981,7 @@
         "kind": "value",
         "name": "mergeMany",
         "docstrings": [
-          "Adds each element of array to set. Unlike `Belt.Set.add`](#add), the reference of return value might be changed even if all values in array already exist in set\n\n## Examples\n\n```rescript\nlet set = Belt.Set.make(~id=module(IntCmp))\n\nlet newSet = set->Belt.Set.mergeMany([5, 4, 3, 2, 1])\nnewSet->Belt.Set.toArray /* [1, 2, 3, 4, 5] */\n```"
+          "Adds each element of array to set. Unlike `Belt.Set.add`](#add), the reference of return value might be changed even if all values in array already exist in set\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet set = Belt.Set.make(~id=module(IntCmp))\n\nlet newSet = set->Belt.Set.mergeMany([5, 4, 3, 2, 1])\n\nnewSet\n->Belt.Set.toArray\n->assertEqual([1, 2, 3, 4, 5])\n```"
         ],
         "signature": "let mergeMany: (t<'value, 'id>, array<'value>) => t<'value, 'id>"
       },
@@ -6848,7 +6990,7 @@
         "kind": "value",
         "name": "remove",
         "docstrings": [
-          "Removes element from set. If element did not exist in set, value is unchanged.\n\n## Examples\n\n```rescript\nlet s0 = Belt.Set.fromArray([2,3,1,4,5], ~id=module(IntCmp))\nlet s1 = s0->Belt.Set.remove(1)\nlet s2 = s1->Belt.Set.remove(3)\nlet s3 = s2->Belt.Set.remove(3)\n\ns1->Belt.Set.toArray /* [2,3,4,5] */\ns2->Belt.Set.toArray /* [2,4,5] */\ns2 == s3 /* true */\n```"
+          "Removes element from set. If element did not exist in set, value is unchanged.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.Set.fromArray([2,3,1,4,5], ~id=module(IntCmp))\nlet s1 = s0->Belt.Set.remove(1)\nlet s2 = s1->Belt.Set.remove(3)\nlet s3 = s2->Belt.Set.remove(3)\n\ns1->Belt.Set.toArray->assertEqual([2,3,4,5])\ns2->Belt.Set.toArray->assertEqual([2,4,5])\nassertEqual(s2, s3)\n```"
         ],
         "signature": "let remove: (t<'value, 'id>, 'value) => t<'value, 'id>"
       },
@@ -6857,7 +6999,7 @@
         "kind": "value",
         "name": "removeMany",
         "docstrings": [
-          "Removes each element of array from set. Unlike [remove](#remove), the reference of return value might be changed even if none of values in array existed in set.\n\n## Examples\n\n```rescript\nlet set = Belt.Set.fromArray([1, 2, 3, 4],~id=module(IntCmp))\n\nlet newSet = set->Belt.Set.removeMany([5, 4, 3, 2, 1])\nnewSet->Belt.Set.toArray /* [] */\n```"
+          "Removes each element of array from set. Unlike [remove](#remove), the reference of return value might be changed even if none of values in array existed in set.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet set = Belt.Set.fromArray([1, 2, 3, 4],~id=module(IntCmp))\n\nlet newSet = set->Belt.Set.removeMany([5, 4, 3, 2, 1])\n\nnewSet\n->Belt.Set.toArray\n->assertEqual([])\n```"
         ],
         "signature": "let removeMany: (t<'value, 'id>, array<'value>) => t<'value, 'id>"
       },
@@ -6866,7 +7008,7 @@
         "kind": "value",
         "name": "union",
         "docstrings": [
-          "Returns union of two sets.\n\n## Examples\n\n```rescript\nlet s0 = Belt.Set.fromArray([5,2,3,5,6], ~id=module(IntCmp))\nlet s1 = Belt.Set.fromArray([5,2,3,1,5,4], ~id=module(IntCmp))\nlet union = Belt.Set.union(s0, s1)\nunion->Belt.Set.toArray /* [1,2,3,4,5,6] */\n```"
+          "Returns union of two sets.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.Set.fromArray([5,2,3,5,6], ~id=module(IntCmp))\nlet s1 = Belt.Set.fromArray([5,2,3,1,5,4], ~id=module(IntCmp))\nlet union = Belt.Set.union(s0, s1)\n\nunion\n->Belt.Set.toArray\n->assertEqual([1,2,3,4,5,6])\n```"
         ],
         "signature": "let union: (t<'value, 'id>, t<'value, 'id>) => t<'value, 'id>"
       },
@@ -6875,7 +7017,7 @@
         "kind": "value",
         "name": "intersect",
         "docstrings": [
-          "Returns intersection of two sets.\n\n## Examples\n\n```rescript\nlet s0 = Belt.Set.fromArray([5,2,3,5,6], ~id=module(IntCmp))\nlet s1 = Belt.Set.fromArray([5,2,3,1,5,4], ~id=module(IntCmp))\nlet intersect = Belt.Set.intersect(s0, s1)\nintersect->Belt.Set.toArray /* [2,3,5] */\n```"
+          "Returns intersection of two sets.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.Set.fromArray([5,2,3,5,6], ~id=module(IntCmp))\nlet s1 = Belt.Set.fromArray([5,2,3,1,5,4], ~id=module(IntCmp))\n\nlet intersect = Belt.Set.intersect(s0, s1)\n\nintersect\n->Belt.Set.toArray\n->assertEqual([2,3,5])\n```"
         ],
         "signature": "let intersect: (t<'value, 'id>, t<'value, 'id>) => t<'value, 'id>"
       },
@@ -6884,7 +7026,7 @@
         "kind": "value",
         "name": "diff",
         "docstrings": [
-          "Returns elements from first set, not existing in second set.\n\n## Examples\n\n```rescript\nlet s0 = Belt.Set.fromArray([5,2,3,5,6], ~id=module(IntCmp))\nlet s1 = Belt.Set.fromArray([5,2,3,1,5,4], ~id=module(IntCmp))\nBelt.Set.toArray(Belt.Set.diff(s0, s1)) /* [6] */\nBelt.Set.toArray(Belt.Set.diff(s1,s0)) /* [1,4] */\n```"
+          "Returns elements from first set, not existing in second set.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.Set.fromArray([5,2,3,5,6], ~id=module(IntCmp))\nlet s1 = Belt.Set.fromArray([5,2,3,1,5,4], ~id=module(IntCmp))\n\nBelt.Set.diff(s0, s1)\n->Belt.Set.toArray\n->assertEqual([6])\n\nBelt.Set.diff(s1,s0)\n->Belt.Set.toArray\n->assertEqual([1,4])\n```"
         ],
         "signature": "let diff: (t<'value, 'id>, t<'value, 'id>) => t<'value, 'id>"
       },
@@ -6893,7 +7035,7 @@
         "kind": "value",
         "name": "subset",
         "docstrings": [
-          "Checks if second set is subset of first set.\n\n## Examples\n\n```rescript\nlet s0 = Belt.Set.fromArray([5,2,3,5,6], ~id=module(IntCmp))\nlet s1 = Belt.Set.fromArray([5,2,3,1,5,4], ~id=module(IntCmp))\nlet s2 = Belt.Set.intersect(s0, s1)\nBelt.Set.subset(s2, s0) /* true */\nBelt.Set.subset(s2, s1) /* true */\nBelt.Set.subset(s1, s0) /* false */\n```"
+          "Checks if second set is subset of first set.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.Set.fromArray([5,2,3,5,6], ~id=module(IntCmp))\nlet s1 = Belt.Set.fromArray([5,2,3,1,5,4], ~id=module(IntCmp))\nlet s2 = Belt.Set.intersect(s0, s1)\n\nBelt.Set.subset(s2, s0)->assertEqual(true)\nBelt.Set.subset(s2, s1)->assertEqual(true)\nBelt.Set.subset(s1, s0)->assertEqual(false)\n```"
         ],
         "signature": "let subset: (t<'value, 'id>, t<'value, 'id>) => bool"
       },
@@ -6911,7 +7053,7 @@
         "kind": "value",
         "name": "eq",
         "docstrings": [
-          "Checks if two sets are equal.\n\n## Examples\n\n```rescript\nlet s0 = Belt.Set.fromArray([5,2,3], ~id=module(IntCmp))\nlet s1 = Belt.Set.fromArray([3,2,5], ~id=module(IntCmp))\n\nBelt.Set.eq(s0, s1) /* true */\n```"
+          "Checks if two sets are equal.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.Set.fromArray([5,2,3], ~id=module(IntCmp))\nlet s1 = Belt.Set.fromArray([3,2,5], ~id=module(IntCmp))\n\nBelt.Set.eq(s0, s1)->assertEqual(true)\n```"
         ],
         "signature": "let eq: (t<'value, 'id>, t<'value, 'id>) => bool"
       },
@@ -6922,14 +7064,15 @@
         "docstrings": [
           "Same as [forEach](#forEach) but takes uncurried functon."
         ],
-        "signature": "let forEachU: (t<'value, 'id>, 'value => unit) => unit"
+        "signature": "let forEachU: (t<'value, 'id>, 'value => unit) => unit",
+        "deprecated": "Use `forEach` instead"
       },
       {
         "id": "Belt.Set.forEach",
         "kind": "value",
         "name": "forEach",
         "docstrings": [
-          "Applies function `f` in turn to all elements of set in increasing order.\n\n## Examples\n\n```rescript\nlet s0 = Belt.Set.fromArray([5,2,3,5,6], ~id=module(IntCmp))\nlet acc = ref(list{})\ns0->Belt.Set.forEach(x => {\n  acc := Belt.List.add(acc.contents, x)\n})\nacc /* [6,5,3,2] */\n```"
+          "Applies function `f` in turn to all elements of set in increasing order.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.Set.fromArray([5,2,3,5,6], ~id=module(IntCmp))\n\nlet acc = ref(list{})\n\ns0->Belt.Set.forEach(x => {\n  acc := Belt.List.add(acc.contents, x)\n})\n\nacc.contents->assertEqual(list{6,5,3,2})\n```"
         ],
         "signature": "let forEach: (t<'value, 'id>, 'value => unit) => unit"
       },
@@ -6938,14 +7081,15 @@
         "kind": "value",
         "name": "reduceU",
         "docstrings": [],
-        "signature": "let reduceU: (t<'value, 'id>, 'a, ('a, 'value) => 'a) => 'a"
+        "signature": "let reduceU: (t<'value, 'id>, 'a, ('a, 'value) => 'a) => 'a",
+        "deprecated": "Use `reduce` instead"
       },
       {
         "id": "Belt.Set.reduce",
         "kind": "value",
         "name": "reduce",
         "docstrings": [
-          "Applies function `f` to each element of set in increasing order. Function `f` has two parameters: the item from the set and an “accumulator”, which starts with a value of `initialValue`. `reduce` returns the final value of the accumulator.\n\n## Examples\n\n```rescript\nlet s0 = Belt.Set.fromArray([5,2,3,5,6], ~id=module(IntCmp))\ns0->Belt.Set.reduce(list{}, (acc, element) =>\n  acc->Belt.List.add(element)\n) /* [6,5,3,2] */\n```"
+          "Applies function `f` to each element of set in increasing order. Function `f` has two parameters: the item from the set and an “accumulator”, which starts with a value of `initialValue`. `reduce` returns the final value of the accumulator.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.Set.fromArray([5,2,3,5,6], ~id=module(IntCmp))\ns0\n->Belt.Set.reduce(list{}, (acc, element) =>\n  acc->Belt.List.add(element)\n)->assertEqual(list{6,5,3,2})\n```"
         ],
         "signature": "let reduce: (t<'value, 'id>, 'a, ('a, 'value) => 'a) => 'a"
       },
@@ -6954,14 +7098,15 @@
         "kind": "value",
         "name": "everyU",
         "docstrings": [],
-        "signature": "let everyU: (t<'value, 'id>, 'value => bool) => bool"
+        "signature": "let everyU: (t<'value, 'id>, 'value => bool) => bool",
+        "deprecated": "Use `every` instead"
       },
       {
         "id": "Belt.Set.every",
         "kind": "value",
         "name": "every",
         "docstrings": [
-          "Checks if all elements of the set satisfy the predicate. Order unspecified.\n\n## Examples\n\n```rescript\nlet isEven = x => mod(x, 2) == 0\n\nlet s0 = Belt.Set.fromArray([2,4,6,8], ~id=module(IntCmp))\ns0->Belt.Set.every(isEven) /* true */\n```"
+          "Checks if all elements of the set satisfy the predicate. Order unspecified.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet isEven = x => mod(x, 2) == 0\n\nlet s0 = Belt.Set.fromArray([2,4,6,8], ~id=module(IntCmp))\ns0->Belt.Set.every(isEven)->assertEqual(true)\n```"
         ],
         "signature": "let every: (t<'value, 'id>, 'value => bool) => bool"
       },
@@ -6970,14 +7115,15 @@
         "kind": "value",
         "name": "someU",
         "docstrings": [],
-        "signature": "let someU: (t<'value, 'id>, 'value => bool) => bool"
+        "signature": "let someU: (t<'value, 'id>, 'value => bool) => bool",
+        "deprecated": "Use `some` instead"
       },
       {
         "id": "Belt.Set.some",
         "kind": "value",
         "name": "some",
         "docstrings": [
-          "Checks if at least one element of the set satisfies the predicate.\n\n## Examples\n\n```rescript\nlet isOdd = x => mod(x, 2) != 0\n\nlet s0 = Belt.Set.fromArray([1,2,4,6,8], ~id=module(IntCmp))\ns0->Belt.Set.some(isOdd) /* true */\n```"
+          "Checks if at least one element of the set satisfies the predicate.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet isOdd = x => mod(x, 2) != 0\n\nlet s0 = Belt.Set.fromArray([1,2,4,6,8], ~id=module(IntCmp))\ns0->Belt.Set.some(isOdd)->assertEqual(true)\n```"
         ],
         "signature": "let some: (t<'value, 'id>, 'value => bool) => bool"
       },
@@ -6986,14 +7132,15 @@
         "kind": "value",
         "name": "keepU",
         "docstrings": [],
-        "signature": "let keepU: (t<'value, 'id>, 'value => bool) => t<'value, 'id>"
+        "signature": "let keepU: (t<'value, 'id>, 'value => bool) => t<'value, 'id>",
+        "deprecated": "Use `keep` instead"
       },
       {
         "id": "Belt.Set.keep",
         "kind": "value",
         "name": "keep",
         "docstrings": [
-          "Returns the set of all elements that satisfy the predicate.\n\n## Examples\n\n```rescript\nlet isEven = x => mod(x, 2) == 0\n\nlet s0 = Belt.Set.fromArray([1,2,3,4,5], ~id=module(IntCmp))\nlet s1 = s0->Belt.Set.keep(isEven)\n\ns1->Belt.Set.toArray /* [2,4] */\n```"
+          "Returns the set of all elements that satisfy the predicate.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet isEven = x => mod(x, 2) == 0\n\nlet s0 = Belt.Set.fromArray([1,2,3,4,5], ~id=module(IntCmp))\nlet s1 = s0->Belt.Set.keep(isEven)\n\ns1->Belt.Set.toArray->assertEqual([2, 4])\n```"
         ],
         "signature": "let keep: (t<'value, 'id>, 'value => bool) => t<'value, 'id>"
       },
@@ -7002,14 +7149,15 @@
         "kind": "value",
         "name": "partitionU",
         "docstrings": [],
-        "signature": "let partitionU: (\n  t<'value, 'id>,\n  'value => bool,\n) => (t<'value, 'id>, t<'value, 'id>)"
+        "signature": "let partitionU: (\n  t<'value, 'id>,\n  'value => bool,\n) => (t<'value, 'id>, t<'value, 'id>)",
+        "deprecated": "Use `partition` instead"
       },
       {
         "id": "Belt.Set.partition",
         "kind": "value",
         "name": "partition",
         "docstrings": [
-          "Returns a pair of sets, where first is the set of all the elements of set that satisfy the predicate, and second is the set of all the elements of set that do not satisfy the predicate.\n\n## Examples\n\n```rescript\nlet isOdd = x => mod(x, 2) != 0\n\nlet s0 = Belt.Set.fromArray([1,2,3,4,5], ~id=module(IntCmp))\nlet (s1, s2) = s0->Belt.Set.partition(isOdd)\n\ns1->Belt.Set.toArray /* [1,3,5] */\ns2->Belt.Set.toArray /* [2,4] */\n```"
+          "Returns a pair of sets, where first is the set of all the elements of set that satisfy the predicate, and second is the set of all the elements of set that do not satisfy the predicate.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet isOdd = x => mod(x, 2) != 0\n\nlet s0 = Belt.Set.fromArray([1,2,3,4,5], ~id=module(IntCmp))\nlet (s1, s2) = s0->Belt.Set.partition(isOdd)\n\ns1->Belt.Set.toArray->assertEqual([1,3,5])\ns2->Belt.Set.toArray->assertEqual([2,4])\n```"
         ],
         "signature": "let partition: (\n  t<'value, 'id>,\n  'value => bool,\n) => (t<'value, 'id>, t<'value, 'id>)"
       },
@@ -7018,7 +7166,7 @@
         "kind": "value",
         "name": "size",
         "docstrings": [
-          "Returns size of the set.\n\n## Examples\n\n```rescript\nlet s0 = Belt.Set.fromArray([1,2,3,4], ~id=module(IntCmp))\n\ns0->Belt.Set.size /* 4 */\n```"
+          "Returns size of the set.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.Set.fromArray([1,2,3,4], ~id=module(IntCmp))\n\ns0->Belt.Set.size->assertEqual(4)\n```"
         ],
         "signature": "let size: t<'value, 'id> => int"
       },
@@ -7027,7 +7175,7 @@
         "kind": "value",
         "name": "toArray",
         "docstrings": [
-          "Returns array of ordered set elements.\n\n## Examples\n\n```rescript\nlet s0 = Belt.Set.fromArray([3,2,1,5], ~id=module(IntCmp))\n\ns0->Belt.Set.toArray /* [1,2,3,5] */\n```"
+          "Returns array of ordered set elements.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.Set.fromArray([3,2,1,5], ~id=module(IntCmp))\n\ns0->Belt.Set.toArray->assertEqual([1,2,3,5])\n```"
         ],
         "signature": "let toArray: t<'value, 'id> => array<'value>"
       },
@@ -7036,7 +7184,7 @@
         "kind": "value",
         "name": "toList",
         "docstrings": [
-          "Returns list of ordered set elements.\n\n## Examples\n\n```rescript\nlet s0 = Belt.Set.fromArray([3,2,1,5], ~id=module(IntCmp))\n\ns0->Belt.Set.toList /* [1,2,3,5] */\n```"
+          "Returns list of ordered set elements.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.Set.fromArray([3,2,1,5], ~id=module(IntCmp))\n\ns0->Belt.Set.toList->assertEqual(list{1,2,3,5})\n```"
         ],
         "signature": "let toList: t<'value, 'id> => list<'value>"
       },
@@ -7045,7 +7193,7 @@
         "kind": "value",
         "name": "minimum",
         "docstrings": [
-          "Returns minimum value of the collection. `None` if collection is empty.\n\n## Examples\n\n```rescript\nlet s0 = Belt.Set.make(~id=module(IntCmp))\nlet s1 = Belt.Set.fromArray([3,2,1,5], ~id=module(IntCmp))\n\ns0->Belt.Set.minimum /* None */\ns1->Belt.Set.minimum /* Some(1) */\n```"
+          "Returns minimum value of the collection. `None` if collection is empty.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.Set.make(~id=module(IntCmp))\nlet s1 = Belt.Set.fromArray([3,2,1,5], ~id=module(IntCmp))\n\ns0->Belt.Set.minimum->assertEqual(None)\ns1->Belt.Set.minimum->assertEqual(Some(1))\n```"
         ],
         "signature": "let minimum: t<'value, 'id> => option<'value>"
       },
@@ -7054,7 +7202,7 @@
         "kind": "value",
         "name": "minUndefined",
         "docstrings": [
-          "Returns minimum value of the collection. `undefined` if collection is empty.\n\n## Examples\n\n```rescript\nlet s0 = Belt.Set.make(~id=module(IntCmp))\nlet s1 = Belt.Set.fromArray([3,2,1,5], ~id=module(IntCmp))\n\ns0->Belt.Set.minUndefined /* undefined */\ns1->Belt.Set.minUndefined /* 1 */\n```"
+          "Returns minimum value of the collection. `undefined` if collection is empty.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.Set.make(~id=module(IntCmp))\nlet s1 = Belt.Set.fromArray([3,2,1,5], ~id=module(IntCmp))\n\ns0->Belt.Set.minUndefined->Js.Undefined.toOption->assertEqual(None)\ns1->Belt.Set.minUndefined->Js.Undefined.toOption->assertEqual(Some(1))\n```"
         ],
         "signature": "let minUndefined: t<'value, 'id> => Js.undefined<'value>"
       },
@@ -7063,7 +7211,7 @@
         "kind": "value",
         "name": "maximum",
         "docstrings": [
-          "Returns maximum value of the collection. `None` if collection is empty.\n\n## Examples\n\n```rescript\nlet s0 = Belt.Set.make(~id=module(IntCmp))\nlet s1 = Belt.Set.fromArray([3,2,1,5], ~id=module(IntCmp))\n\ns0->Belt.Set.maximum /* None */\ns1->Belt.Set.maximum /* Some(5) */\n```"
+          "Returns maximum value of the collection. `None` if collection is empty.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.Set.make(~id=module(IntCmp))\nlet s1 = Belt.Set.fromArray([3,2,1,5], ~id=module(IntCmp))\n\ns0->Belt.Set.maximum->assertEqual(None)\ns1->Belt.Set.maximum->assertEqual(Some(5))\n```"
         ],
         "signature": "let maximum: t<'value, 'id> => option<'value>"
       },
@@ -7072,7 +7220,7 @@
         "kind": "value",
         "name": "maxUndefined",
         "docstrings": [
-          "Returns maximum value of the collection. `undefined` if collection is empty.\n\n## Examples\n\n```rescript\nlet s0 = Belt.Set.make(~id=module(IntCmp))\nlet s1 = Belt.Set.fromArray([3,2,1,5], ~id=module(IntCmp))\n\ns0->Belt.Set.maxUndefined /* undefined */\ns1->Belt.Set.maxUndefined /* 5 */\n```"
+          "Returns maximum value of the collection. `undefined` if collection is empty.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.Set.make(~id=module(IntCmp))\nlet s1 = Belt.Set.fromArray([3,2,1,5], ~id=module(IntCmp))\n\ns0\n->Belt.Set.maxUndefined\n->Js.Undefined.toOption\n->assertEqual(None)\n\ns1\n->Belt.Set.maxUndefined\n->Js.Undefined.toOption\n->assertEqual(Some(5))\n```"
         ],
         "signature": "let maxUndefined: t<'value, 'id> => Js.undefined<'value>"
       },
@@ -7081,7 +7229,7 @@
         "kind": "value",
         "name": "get",
         "docstrings": [
-          "Returns the reference of the value which is equivalent to value using the comparator specifiecd by this collection. Returns `None` if element does not exist.\n\n## Examples\n\n```rescript\nlet s0 = Belt.Set.fromArray([1,2,3,4,5], ~id=module(IntCmp))\n\ns0->Belt.Set.get(3) /* Some(3) */\ns0->Belt.Set.get(20) /* None */\n```"
+          "Returns the reference of the value which is equivalent to value using the comparator specifiecd by this collection. Returns `None` if element does not exist.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.Set.fromArray([1,2,3,4,5], ~id=module(IntCmp))\n\ns0->Belt.Set.get(3)->assertEqual(Some(3))\ns0->Belt.Set.get(20)->assertEqual(None)\n```"
         ],
         "signature": "let get: (t<'value, 'id>, 'value) => option<'value>"
       },
@@ -7108,7 +7256,7 @@
         "kind": "value",
         "name": "split",
         "docstrings": [
-          "Returns a tuple `((smaller, larger), present)`, `present` is true when element exist in set.\n\n## Examples\n\n```rescript\nlet s0 = Belt.Set.fromArray([1,2,3,4,5], ~id=module(IntCmp))\n\nlet ((smaller, larger), present) = s0->Belt.Set.split(3)\n\npresent /* true */\nsmaller->Belt.Set.toArray /* [1,2] */\nlarger->Belt.Set.toArray /* [4,5] */\n\n```"
+          "Returns a tuple `((smaller, larger), present)`, `present` is true when element exist in set.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.Set.fromArray([1, 2, 3, 4, 5], ~id=module(IntCmp))\n\nlet ((smaller, larger), present) = s0->Belt.Set.split(3)\n\npresent->assertEqual(true)\nsmaller->Belt.Set.toArray->assertEqual([1,2])\nlarger->Belt.Set.toArray->assertEqual([4,5])\n```"
         ],
         "signature": "let split: (\n  t<'value, 'id>,\n  'value,\n) => ((t<'value, 'id>, t<'value, 'id>), bool)"
       },
@@ -7163,7 +7311,8 @@
         "kind": "value",
         "name": "forEachU",
         "docstrings": [],
-        "signature": "let forEachU: (int, int, int => unit) => unit"
+        "signature": "let forEachU: (int, int, int => unit) => unit",
+        "deprecated": "Use `forEach` instead"
       },
       {
         "id": "Belt.Range.forEach",
@@ -7179,7 +7328,8 @@
         "kind": "value",
         "name": "everyU",
         "docstrings": [],
-        "signature": "let everyU: (int, int, int => bool) => bool"
+        "signature": "let everyU: (int, int, int => bool) => bool",
+        "deprecated": "Use `every` instead"
       },
       {
         "id": "Belt.Range.every",
@@ -7195,7 +7345,8 @@
         "kind": "value",
         "name": "everyByU",
         "docstrings": [],
-        "signature": "let everyByU: (int, int, ~step: int, int => bool) => bool"
+        "signature": "let everyByU: (int, int, ~step: int, int => bool) => bool",
+        "deprecated": "Use `everyBy` instead"
       },
       {
         "id": "Belt.Range.everyBy",
@@ -7211,7 +7362,8 @@
         "kind": "value",
         "name": "someU",
         "docstrings": [],
-        "signature": "let someU: (int, int, int => bool) => bool"
+        "signature": "let someU: (int, int, int => bool) => bool",
+        "deprecated": "Use `some` instead"
       },
       {
         "id": "Belt.Range.some",
@@ -7227,7 +7379,8 @@
         "kind": "value",
         "name": "someByU",
         "docstrings": [],
-        "signature": "let someByU: (int, int, ~step: int, int => bool) => bool"
+        "signature": "let someByU: (int, int, ~step: int, int => bool) => bool",
+        "deprecated": "Use `someBy` instead"
       },
       {
         "id": "Belt.Range.someBy",
@@ -7289,7 +7442,7 @@
         "kind": "value",
         "name": "headExn",
         "docstrings": [
-          "Same as `Belt.List.head` but raises an exception if `someList` is empty. Use\nwith care.\n\n## Examples\n\n```rescript\nBelt.List.headExn(list{1, 2, 3}) // 1\n\nBelt.List.headExn(list{}) // Raises an Error\n```"
+          "Same as `Belt.List.head` but raises an exception if `someList` is empty. Use\nwith care.\n\n## Examples\n\n```rescript\nBelt.List.headExn(list{1, 2, 3})->assertEqual(1)\n\nswitch Belt.List.headExn(list{}) { // Raises an Error\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
         ],
         "signature": "let headExn: t<'a> => 'a"
       },
@@ -7307,7 +7460,7 @@
         "kind": "value",
         "name": "tailExn",
         "docstrings": [
-          "Same as `Belt.List.tail` but raises an exception if `someList` is empty. Use\nwith care.\n\n## Examples\n\n```rescript\nBelt.List.tailExn(list{1, 2, 3}) // list{2, 3}\n\nBelt.List.tailExn(list{}) // Raises an Error\n```"
+          "Same as `Belt.List.tail` but raises an exception if `someList` is empty. Use\nwith care.\n\n## Examples\n\n```rescript\nBelt.List.tailExn(list{1, 2, 3})->assertEqual(list{2, 3})\n\nswitch Belt.List.tailExn(list{}) { // Raises an Error\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
         ],
         "signature": "let tailExn: t<'a> => t<'a>"
       },
@@ -7334,7 +7487,7 @@
         "kind": "value",
         "name": "getExn",
         "docstrings": [
-          "Same as `Belt.List.get` but raises an exception if `index` is larger than the\nlength. Use with care.\n\n## Examples\n\n```rescript\nlet abc = list{\"A\", \"B\", \"C\"}\n\nabc->Belt.List.getExn(1) // \"B\"\n\nabc->Belt.List.getExn(4) // Raises an Error\n```"
+          "Same as `Belt.List.get` but raises an exception if `index` is larger than the\nlength. Use with care.\n\n## Examples\n\n```rescript\nlet abc = list{\"A\", \"B\", \"C\"}\n\nabc->Belt.List.getExn(1)->assertEqual(\"B\")\n\nswitch abc->Belt.List.getExn(4) { // Raises an Error\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
         ],
         "signature": "let getExn: (t<'a>, int) => 'a"
       },
@@ -7354,7 +7507,8 @@
         "docstrings": [
           "Uncurried version of [makeBy](#makeBy)"
         ],
-        "signature": "let makeByU: (int, int => 'a) => t<'a>"
+        "signature": "let makeByU: (int, int => 'a) => t<'a>",
+        "deprecated": "Use `makeBy` instead"
       },
       {
         "id": "Belt.List.makeBy",
@@ -7444,7 +7598,8 @@
         "docstrings": [
           "Uncurried version of [map](#map)."
         ],
-        "signature": "let mapU: (t<'a>, 'a => 'b) => t<'b>"
+        "signature": "let mapU: (t<'a>, 'a => 'b) => t<'b>",
+        "deprecated": "Use `map` instead"
       },
       {
         "id": "Belt.List.map",
@@ -7471,7 +7626,8 @@
         "docstrings": [
           "Uncurried version of [zipBy](#zipBy)."
         ],
-        "signature": "let zipByU: (t<'a>, t<'b>, ('a, 'b) => 'c) => t<'c>"
+        "signature": "let zipByU: (t<'a>, t<'b>, ('a, 'b) => 'c) => t<'c>",
+        "deprecated": "Use `zipBy` instead"
       },
       {
         "id": "Belt.List.zipBy",
@@ -7489,7 +7645,8 @@
         "docstrings": [
           "Uncurried version of [mapWithIndex](#mapWithIndex)."
         ],
-        "signature": "let mapWithIndexU: (t<'a>, (int, 'a) => 'b) => t<'b>"
+        "signature": "let mapWithIndexU: (t<'a>, (int, 'a) => 'b) => t<'b>",
+        "deprecated": "Use `mapWithIndex` instead"
       },
       {
         "id": "Belt.List.mapWithIndex",
@@ -7534,14 +7691,15 @@
         "docstrings": [
           "Uncurried version of [mapReverse](#mapReverse)."
         ],
-        "signature": "let mapReverseU: (t<'a>, 'a => 'b) => t<'b>"
+        "signature": "let mapReverseU: (t<'a>, 'a => 'b) => t<'b>",
+        "deprecated": "Use `mapReverse` instead"
       },
       {
         "id": "Belt.List.mapReverse",
         "kind": "value",
         "name": "mapReverse",
         "docstrings": [
-          "Equivalent to:\n\n```res\nmap(someList, f)->reverse\n```\n\n## Examples\n\n```rescript\nlist{3, 4, 5}->Belt.List.mapReverse(x => x * x) /* list{25, 16, 9} */\n```"
+          "Equivalent to `Belt.List.map(someList, f)->Belt.List.reverse`\n\n## Examples\n\n```rescript\nlist{3, 4, 5}\n->Belt.List.mapReverse(x => x * x)\n->assertEqual(list{25, 16, 9})\n```"
         ],
         "signature": "let mapReverse: (t<'a>, 'a => 'b) => t<'b>"
       },
@@ -7552,7 +7710,8 @@
         "docstrings": [
           "Uncurried version of [forEach](#forEach)."
         ],
-        "signature": "let forEachU: (t<'a>, 'a => 'b) => unit"
+        "signature": "let forEachU: (t<'a>, 'a => 'b) => unit",
+        "deprecated": "Use `forEach` instead"
       },
       {
         "id": "Belt.List.forEach",
@@ -7570,7 +7729,8 @@
         "docstrings": [
           "Uncurried version of [forEachWithIndex](#forEachWithIndex)."
         ],
-        "signature": "let forEachWithIndexU: (t<'a>, (int, 'a) => 'b) => unit"
+        "signature": "let forEachWithIndexU: (t<'a>, (int, 'a) => 'b) => unit",
+        "deprecated": "Use `forEachWithIndex` instead"
       },
       {
         "id": "Belt.List.forEachWithIndex",
@@ -7588,7 +7748,8 @@
         "docstrings": [
           "Uncurried version of [reduce](#reduce)."
         ],
-        "signature": "let reduceU: (t<'a>, 'b, ('b, 'a) => 'b) => 'b"
+        "signature": "let reduceU: (t<'a>, 'b, ('b, 'a) => 'b) => 'b",
+        "deprecated": "Use `reduce` instead"
       },
       {
         "id": "Belt.List.reduce",
@@ -7606,7 +7767,8 @@
         "docstrings": [
           "Uncurried version of [reduceWithIndex](#reduceWithIndex)."
         ],
-        "signature": "let reduceWithIndexU: (t<'a>, 'b, ('b, 'a, int) => 'b) => 'b"
+        "signature": "let reduceWithIndexU: (t<'a>, 'b, ('b, 'a, int) => 'b) => 'b",
+        "deprecated": "Use `reduceWithIndex` instead"
       },
       {
         "id": "Belt.List.reduceWithIndex",
@@ -7624,7 +7786,8 @@
         "docstrings": [
           "Uncurried version of [reduceReverse](#reduceReverse)."
         ],
-        "signature": "let reduceReverseU: (t<'a>, 'b, ('b, 'a) => 'b) => 'b"
+        "signature": "let reduceReverseU: (t<'a>, 'b, ('b, 'a) => 'b) => 'b",
+        "deprecated": "Use `reduceReverse` instead"
       },
       {
         "id": "Belt.List.reduceReverse",
@@ -7642,7 +7805,8 @@
         "docstrings": [
           "Uncurried version of [mapReverse2](#mapReverse2)."
         ],
-        "signature": "let mapReverse2U: (t<'a>, t<'b>, ('a, 'b) => 'c) => t<'c>"
+        "signature": "let mapReverse2U: (t<'a>, t<'b>, ('a, 'b) => 'c) => t<'c>",
+        "deprecated": "Use `mapReverse2` instead"
       },
       {
         "id": "Belt.List.mapReverse2",
@@ -7660,7 +7824,8 @@
         "docstrings": [
           "Uncurried version of [forEach2](#forEach2)."
         ],
-        "signature": "let forEach2U: (t<'a>, t<'b>, ('a, 'b) => 'c) => unit"
+        "signature": "let forEach2U: (t<'a>, t<'b>, ('a, 'b) => 'c) => unit",
+        "deprecated": "Use `forEach2` instead"
       },
       {
         "id": "Belt.List.forEach2",
@@ -7678,7 +7843,8 @@
         "docstrings": [
           "Uncurried version of [reduce2](#reduce2)."
         ],
-        "signature": "let reduce2U: (t<'b>, t<'c>, 'a, ('a, 'b, 'c) => 'a) => 'a"
+        "signature": "let reduce2U: (t<'b>, t<'c>, 'a, ('a, 'b, 'c) => 'a) => 'a",
+        "deprecated": "Use `reduce2` instead"
       },
       {
         "id": "Belt.List.reduce2",
@@ -7696,7 +7862,8 @@
         "docstrings": [
           "Uncurried version of [reduceReverse2](#reduceReverse2)."
         ],
-        "signature": "let reduceReverse2U: (t<'a>, t<'b>, 'c, ('c, 'a, 'b) => 'c) => 'c"
+        "signature": "let reduceReverse2U: (t<'a>, t<'b>, 'c, ('c, 'a, 'b) => 'c) => 'c",
+        "deprecated": "Use `reduceReverse2` instead"
       },
       {
         "id": "Belt.List.reduceReverse2",
@@ -7714,7 +7881,8 @@
         "docstrings": [
           "Uncurried version of [every](#every)."
         ],
-        "signature": "let everyU: (t<'a>, 'a => bool) => bool"
+        "signature": "let everyU: (t<'a>, 'a => bool) => bool",
+        "deprecated": "Use `every` instead"
       },
       {
         "id": "Belt.List.every",
@@ -7732,7 +7900,8 @@
         "docstrings": [
           "Uncurried version of [some](#some)."
         ],
-        "signature": "let someU: (t<'a>, 'a => bool) => bool"
+        "signature": "let someU: (t<'a>, 'a => bool) => bool",
+        "deprecated": "Use `some` instead"
       },
       {
         "id": "Belt.List.some",
@@ -7750,7 +7919,8 @@
         "docstrings": [
           "Uncurried version of [every2](#every2)."
         ],
-        "signature": "let every2U: (t<'a>, t<'b>, ('a, 'b) => bool) => bool"
+        "signature": "let every2U: (t<'a>, t<'b>, ('a, 'b) => bool) => bool",
+        "deprecated": "Use `every2` instead"
       },
       {
         "id": "Belt.List.every2",
@@ -7768,7 +7938,8 @@
         "docstrings": [
           "Uncurried version of [some2](#some2)."
         ],
-        "signature": "let some2U: (t<'a>, t<'b>, ('a, 'b) => bool) => bool"
+        "signature": "let some2U: (t<'a>, t<'b>, ('a, 'b) => bool) => bool",
+        "deprecated": "Use `some2` instead"
       },
       {
         "id": "Belt.List.some2",
@@ -7795,7 +7966,8 @@
         "docstrings": [
           "Uncurried version of [cmp](#cmp)."
         ],
-        "signature": "let cmpU: (t<'a>, t<'a>, ('a, 'a) => int) => int"
+        "signature": "let cmpU: (t<'a>, t<'a>, ('a, 'a) => int) => int",
+        "deprecated": "Use `cmp` instead"
       },
       {
         "id": "Belt.List.cmp",
@@ -7813,7 +7985,8 @@
         "docstrings": [
           "Uncurried version of [eq](#eq)."
         ],
-        "signature": "let eqU: (t<'a>, t<'a>, ('a, 'a) => bool) => bool"
+        "signature": "let eqU: (t<'a>, t<'a>, ('a, 'a) => bool) => bool",
+        "deprecated": "Use `eq` instead"
       },
       {
         "id": "Belt.List.eq",
@@ -7831,7 +8004,8 @@
         "docstrings": [
           "Uncurried version of [has](#has)."
         ],
-        "signature": "let hasU: (t<'a>, 'b, ('a, 'b) => bool) => bool"
+        "signature": "let hasU: (t<'a>, 'b, ('a, 'b) => bool) => bool",
+        "deprecated": "Use `has` instead"
       },
       {
         "id": "Belt.List.has",
@@ -7849,7 +8023,8 @@
         "docstrings": [
           "Uncurried version of [getBy](#getBy)."
         ],
-        "signature": "let getByU: (t<'a>, 'a => bool) => option<'a>"
+        "signature": "let getByU: (t<'a>, 'a => bool) => option<'a>",
+        "deprecated": "Use `getBy` instead"
       },
       {
         "id": "Belt.List.getBy",
@@ -7867,7 +8042,8 @@
         "docstrings": [
           "Uncurried version of [keep](#keep)."
         ],
-        "signature": "let keepU: (t<'a>, 'a => bool) => t<'a>"
+        "signature": "let keepU: (t<'a>, 'a => bool) => t<'a>",
+        "deprecated": "Use `keep` instead"
       },
       {
         "id": "Belt.List.keep",
@@ -7895,7 +8071,8 @@
         "docstrings": [
           "Uncurried version of [keepWithIndex](#keepWithIndex)."
         ],
-        "signature": "let keepWithIndexU: (t<'a>, ('a, int) => bool) => t<'a>"
+        "signature": "let keepWithIndexU: (t<'a>, ('a, int) => bool) => t<'a>",
+        "deprecated": "Use `keepWithIndex` instead"
       },
       {
         "id": "Belt.List.keepWithIndex",
@@ -7923,7 +8100,8 @@
         "docstrings": [
           "Uncurried version of [keepMap](#keepMap)."
         ],
-        "signature": "let keepMapU: (t<'a>, 'a => option<'b>) => t<'b>"
+        "signature": "let keepMapU: (t<'a>, 'a => option<'b>) => t<'b>",
+        "deprecated": "Use `keepMap` instead"
       },
       {
         "id": "Belt.List.keepMap",
@@ -7941,14 +8119,15 @@
         "docstrings": [
           "Uncurried version of [partition](#partition)."
         ],
-        "signature": "let partitionU: (t<'a>, 'a => bool) => (t<'a>, t<'a>)"
+        "signature": "let partitionU: (t<'a>, 'a => bool) => (t<'a>, t<'a>)",
+        "deprecated": "Use `partition` instead"
       },
       {
         "id": "Belt.List.partition",
         "kind": "value",
         "name": "partition",
         "docstrings": [
-          "Creates a pair of lists; the first list consists of all elements of `someList` that satisfy the predicate function `pred`; the second list consists of all elements of `someList` that _do not_ satisfy `pred.\n\nIn other words:\n\n```rescript\n(elementsThatSatisfies, elementsThatDoesNotSatisfy)\n```\n\n## Examples\n\n```rescript\nBelt.List.partition(list{1, 2, 3, 4}, x => x > 2) /* (list{3, 4}, list{1, 2}) */\n```"
+          "Creates a pair of lists; the first list consists of all elements of `someList` that satisfy the predicate function `pred`; the second list consists of all elements of `someList` that _do not_ satisfy `pred.\n\nIn other words:\n\n```\n(elementsThatSatisfies, elementsThatDoesNotSatisfy)\n```\n\n## Examples\n\n```rescript\nlist{1, 2, 3, 4}\n->Belt.List.partition(x => x > 2)\n->assertEqual((list{3, 4}, list{1, 2}))\n```"
         ],
         "signature": "let partition: (t<'a>, 'a => bool) => (t<'a>, t<'a>)"
       },
@@ -7968,7 +8147,8 @@
         "docstrings": [
           "Uncurried version of [getAssoc](#getAssoc)."
         ],
-        "signature": "let getAssocU: (t<('a, 'c)>, 'b, ('a, 'b) => bool) => option<'c>"
+        "signature": "let getAssocU: (t<('a, 'c)>, 'b, ('a, 'b) => bool) => option<'c>",
+        "deprecated": "Use `getAssoc` instead"
       },
       {
         "id": "Belt.List.getAssoc",
@@ -7986,7 +8166,8 @@
         "docstrings": [
           "Uncurried version of [hasAssoc](#hasAssoc)."
         ],
-        "signature": "let hasAssocU: (t<('a, 'c)>, 'b, ('a, 'b) => bool) => bool"
+        "signature": "let hasAssocU: (t<('a, 'c)>, 'b, ('a, 'b) => bool) => bool",
+        "deprecated": "Use `hasAssoc` instead"
       },
       {
         "id": "Belt.List.hasAssoc",
@@ -8004,7 +8185,8 @@
         "docstrings": [
           "Uncurried version of [removeAssoc](#removeAssoc)."
         ],
-        "signature": "let removeAssocU: (t<('a, 'c)>, 'b, ('a, 'b) => bool) => t<('a, 'c)>"
+        "signature": "let removeAssocU: (t<('a, 'c)>, 'b, ('a, 'b) => bool) => t<('a, 'c)>",
+        "deprecated": "Use `removeAssoc` instead"
       },
       {
         "id": "Belt.List.removeAssoc",
@@ -8022,7 +8204,8 @@
         "docstrings": [
           "Uncurried version of [setAssoc](#setAssoc)."
         ],
-        "signature": "let setAssocU: (t<('a, 'c)>, 'a, 'c, ('a, 'a) => bool) => t<('a, 'c)>"
+        "signature": "let setAssocU: (t<('a, 'c)>, 'a, 'c, ('a, 'a) => bool) => t<('a, 'c)>",
+        "deprecated": "Use `setAssoc` instead"
       },
       {
         "id": "Belt.List.setAssoc",
@@ -8040,7 +8223,8 @@
         "docstrings": [
           "Uncurried version of [sort](#sort)."
         ],
-        "signature": "let sortU: (t<'a>, ('a, 'a) => int) => t<'a>"
+        "signature": "let sortU: (t<'a>, ('a, 'a) => int) => t<'a>",
+        "deprecated": "Use `sort` instead"
       },
       {
         "id": "Belt.List.sort",
@@ -8149,7 +8333,8 @@
         "kind": "value",
         "name": "forEachU",
         "docstrings": [],
-        "signature": "let forEachU: (t<'a>, 'a => unit) => unit"
+        "signature": "let forEachU: (t<'a>, 'a => unit) => unit",
+        "deprecated": "Use `forEach` instead"
       },
       {
         "id": "Belt.MutableStack.forEach",
@@ -8163,7 +8348,8 @@
         "kind": "value",
         "name": "dynamicPopIterU",
         "docstrings": [],
-        "signature": "let dynamicPopIterU: (t<'a>, 'a => unit) => unit"
+        "signature": "let dynamicPopIterU: (t<'a>, 'a => unit) => unit",
+        "deprecated": "Use `dynamicPopIter` instead"
       },
       {
         "id": "Belt.MutableStack.dynamicPopIter",
@@ -8315,7 +8501,8 @@
         "kind": "value",
         "name": "mapU",
         "docstrings": [],
-        "signature": "let mapU: (t<'a>, 'a => 'b) => t<'b>"
+        "signature": "let mapU: (t<'a>, 'a => 'b) => t<'b>",
+        "deprecated": "Use `map` instead"
       },
       {
         "id": "Belt.MutableQueue.map",
@@ -8329,7 +8516,8 @@
         "kind": "value",
         "name": "forEachU",
         "docstrings": [],
-        "signature": "let forEachU: (t<'a>, 'a => unit) => unit"
+        "signature": "let forEachU: (t<'a>, 'a => unit) => unit",
+        "deprecated": "Use `forEach` instead"
       },
       {
         "id": "Belt.MutableQueue.forEach",
@@ -8345,7 +8533,8 @@
         "kind": "value",
         "name": "reduceU",
         "docstrings": [],
-        "signature": "let reduceU: (t<'a>, 'b, ('b, 'a) => 'b) => 'b"
+        "signature": "let reduceU: (t<'a>, 'b, ('b, 'a) => 'b) => 'b",
+        "deprecated": "Use `reduce` instead"
       },
       {
         "id": "Belt.MutableQueue.reduce",
@@ -8389,7 +8578,8 @@
         "kind": "value",
         "name": "strictlySortedLengthU",
         "docstrings": [],
-        "signature": "let strictlySortedLengthU: (array<'a>, ('a, 'a) => bool) => int"
+        "signature": "let strictlySortedLengthU: (array<'a>, ('a, 'a) => bool) => int",
+        "deprecated": "Use `strictlySortedLength` instead"
       },
       {
         "id": "Belt.SortArray.strictlySortedLength",
@@ -8405,7 +8595,8 @@
         "kind": "value",
         "name": "isSortedU",
         "docstrings": [],
-        "signature": "let isSortedU: (array<'a>, ('a, 'a) => int) => bool"
+        "signature": "let isSortedU: (array<'a>, ('a, 'a) => int) => bool",
+        "deprecated": "Use `isSorted` instead"
       },
       {
         "id": "Belt.SortArray.isSorted",
@@ -8421,7 +8612,8 @@
         "kind": "value",
         "name": "stableSortInPlaceByU",
         "docstrings": [],
-        "signature": "let stableSortInPlaceByU: (array<'a>, ('a, 'a) => int) => unit"
+        "signature": "let stableSortInPlaceByU: (array<'a>, ('a, 'a) => int) => unit",
+        "deprecated": "Use `stableSortInPlaceBy` instead"
       },
       {
         "id": "Belt.SortArray.stableSortInPlaceBy",
@@ -8435,7 +8627,8 @@
         "kind": "value",
         "name": "stableSortByU",
         "docstrings": [],
-        "signature": "let stableSortByU: (array<'a>, ('a, 'a) => int) => array<'a>"
+        "signature": "let stableSortByU: (array<'a>, ('a, 'a) => int) => array<'a>",
+        "deprecated": "Use `stableSortBy` instead"
       },
       {
         "id": "Belt.SortArray.stableSortBy",
@@ -8451,7 +8644,8 @@
         "kind": "value",
         "name": "binarySearchByU",
         "docstrings": [],
-        "signature": "let binarySearchByU: (array<'a>, 'a, ('a, 'a) => int) => int"
+        "signature": "let binarySearchByU: (array<'a>, 'a, ('a, 'a) => int) => int",
+        "deprecated": "Use `binarySearchBy` instead"
       },
       {
         "id": "Belt.SortArray.binarySearchBy",
@@ -8467,7 +8661,8 @@
         "kind": "value",
         "name": "unionU",
         "docstrings": [],
-        "signature": "let unionU: (\n  array<'a>,\n  int,\n  int,\n  array<'a>,\n  int,\n  int,\n  array<'a>,\n  int,\n  ('a, 'a) => int,\n) => int"
+        "signature": "let unionU: (\n  array<'a>,\n  int,\n  int,\n  array<'a>,\n  int,\n  int,\n  array<'a>,\n  int,\n  ('a, 'a) => int,\n) => int",
+        "deprecated": "Use `union` instead"
       },
       {
         "id": "Belt.SortArray.union",
@@ -8483,7 +8678,8 @@
         "kind": "value",
         "name": "intersectU",
         "docstrings": [],
-        "signature": "let intersectU: (\n  array<'a>,\n  int,\n  int,\n  array<'a>,\n  int,\n  int,\n  array<'a>,\n  int,\n  ('a, 'a) => int,\n) => int"
+        "signature": "let intersectU: (\n  array<'a>,\n  int,\n  int,\n  array<'a>,\n  int,\n  int,\n  array<'a>,\n  int,\n  ('a, 'a) => int,\n) => int",
+        "deprecated": "Use `intersect` instead"
       },
       {
         "id": "Belt.SortArray.intersect",
@@ -8499,7 +8695,8 @@
         "kind": "value",
         "name": "diffU",
         "docstrings": [],
-        "signature": "let diffU: (\n  array<'a>,\n  int,\n  int,\n  array<'a>,\n  int,\n  int,\n  array<'a>,\n  int,\n  ('a, 'a) => int,\n) => int"
+        "signature": "let diffU: (\n  array<'a>,\n  int,\n  int,\n  array<'a>,\n  int,\n  int,\n  array<'a>,\n  int,\n  ('a, 'a) => int,\n) => int",
+        "deprecated": "Use `diff` instead"
       },
       {
         "id": "Belt.SortArray.diff",
@@ -8690,7 +8887,8 @@
         "kind": "value",
         "name": "makeByU",
         "docstrings": [],
-        "signature": "let makeByU: (int, int => 'a) => t<'a>"
+        "signature": "let makeByU: (int, int => 'a) => t<'a>",
+        "deprecated": "Use `makeBy` instead"
       },
       {
         "id": "Belt.Array.makeBy",
@@ -8706,7 +8904,8 @@
         "kind": "value",
         "name": "makeByAndShuffleU",
         "docstrings": [],
-        "signature": "let makeByAndShuffleU: (int, int => 'a) => t<'a>"
+        "signature": "let makeByAndShuffleU: (int, int => 'a) => t<'a>",
+        "deprecated": "Use `makeByAndShuffle` instead"
       },
       {
         "id": "Belt.Array.makeByAndShuffle",
@@ -8731,7 +8930,8 @@
         "kind": "value",
         "name": "zipByU",
         "docstrings": [],
-        "signature": "let zipByU: (t<'a>, array<'b>, ('a, 'b) => 'c) => array<'c>"
+        "signature": "let zipByU: (t<'a>, array<'b>, ('a, 'b) => 'c) => array<'c>",
+        "deprecated": "Use `zipBy` instead"
       },
       {
         "id": "Belt.Array.zipBy",
@@ -8801,7 +9001,7 @@
         "kind": "value",
         "name": "fill",
         "docstrings": [
-          "`fill(arr, ~offset, ~len, x)` modifies `arr` in place, storing `x` in elements\nnumber `offset` to `offset + len - 1`. `offset` can be negative; and is evaluated\nas `length(arr - offset)`.\n\n`fill(arr, ~offset=-1, ~len=1)` means fill the last element, if the array does not have enough data; `fill` will ignore it\n\n## Examples\n\n```rescript\nlet arr = Belt.Array.makeBy(5, (i) => i)\n\nBelt.Array.fill(arr, ~offset=2, ~len=2, 9)\n\narr == [0, 1, 9, 9, 4]\n\nBelt.Array.fill(arr, ~offset=7, ~len=2, 8)\n\narr == [0, 1, 9, 9, 4]"
+          "`fill(arr, ~offset, ~len, x)` modifies `arr` in place, storing `x` in elements\nnumber `offset` to `offset + len - 1`. `offset` can be negative; and is evaluated\nas `length(arr - offset)`.\n\n`fill(arr, ~offset=-1, ~len=1)` means fill the last element, if the array does not have enough data; `fill` will ignore it\n\n## Examples\n\n```rescript\nlet arr = Belt.Array.makeBy(5, (i) => i)\n\nBelt.Array.fill(arr, ~offset=2, ~len=2, 9)\n\narr == [0, 1, 9, 9, 4]\n\nBelt.Array.fill(arr, ~offset=7, ~len=2, 8)\n\narr == [0, 1, 9, 9, 4]\n```"
         ],
         "signature": "let fill: (t<'a>, ~offset: int, ~len: int, 'a) => unit"
       },
@@ -8828,7 +9028,8 @@
         "kind": "value",
         "name": "forEachU",
         "docstrings": [],
-        "signature": "let forEachU: (t<'a>, 'a => unit) => unit"
+        "signature": "let forEachU: (t<'a>, 'a => unit) => unit",
+        "deprecated": "Use `forEach` instead"
       },
       {
         "id": "Belt.Array.forEach",
@@ -8844,7 +9045,8 @@
         "kind": "value",
         "name": "mapU",
         "docstrings": [],
-        "signature": "let mapU: (t<'a>, 'a => 'b) => array<'b>"
+        "signature": "let mapU: (t<'a>, 'a => 'b) => array<'b>",
+        "deprecated": "Use `map` instead"
       },
       {
         "id": "Belt.Array.map",
@@ -8860,7 +9062,8 @@
         "kind": "value",
         "name": "flatMapU",
         "docstrings": [],
-        "signature": "let flatMapU: (t<'a>, 'a => array<'b>) => array<'b>"
+        "signature": "let flatMapU: (t<'a>, 'a => array<'b>) => array<'b>",
+        "deprecated": "Use `flatMap` instead"
       },
       {
         "id": "Belt.Array.flatMap",
@@ -8876,7 +9079,8 @@
         "kind": "value",
         "name": "getByU",
         "docstrings": [],
-        "signature": "let getByU: (t<'a>, 'a => bool) => option<'a>"
+        "signature": "let getByU: (t<'a>, 'a => bool) => option<'a>",
+        "deprecated": "Use `getBy` instead"
       },
       {
         "id": "Belt.Array.getBy",
@@ -8892,7 +9096,8 @@
         "kind": "value",
         "name": "getIndexByU",
         "docstrings": [],
-        "signature": "let getIndexByU: (t<'a>, 'a => bool) => option<int>"
+        "signature": "let getIndexByU: (t<'a>, 'a => bool) => option<int>",
+        "deprecated": "Use `getIndexBy` instead"
       },
       {
         "id": "Belt.Array.getIndexBy",
@@ -8908,7 +9113,8 @@
         "kind": "value",
         "name": "keepU",
         "docstrings": [],
-        "signature": "let keepU: (t<'a>, 'a => bool) => t<'a>"
+        "signature": "let keepU: (t<'a>, 'a => bool) => t<'a>",
+        "deprecated": "Use `keep` instead"
       },
       {
         "id": "Belt.Array.keep",
@@ -8924,7 +9130,8 @@
         "kind": "value",
         "name": "keepWithIndexU",
         "docstrings": [],
-        "signature": "let keepWithIndexU: (t<'a>, ('a, int) => bool) => t<'a>"
+        "signature": "let keepWithIndexU: (t<'a>, ('a, int) => bool) => t<'a>",
+        "deprecated": "Use `keepWithIndex` instead"
       },
       {
         "id": "Belt.Array.keepWithIndex",
@@ -8940,7 +9147,8 @@
         "kind": "value",
         "name": "keepMapU",
         "docstrings": [],
-        "signature": "let keepMapU: (t<'a>, 'a => option<'b>) => array<'b>"
+        "signature": "let keepMapU: (t<'a>, 'a => option<'b>) => array<'b>",
+        "deprecated": "Use `keepMap` instead"
       },
       {
         "id": "Belt.Array.keepMap",
@@ -8956,7 +9164,8 @@
         "kind": "value",
         "name": "forEachWithIndexU",
         "docstrings": [],
-        "signature": "let forEachWithIndexU: (t<'a>, (int, 'a) => unit) => unit"
+        "signature": "let forEachWithIndexU: (t<'a>, (int, 'a) => unit) => unit",
+        "deprecated": "Use `forEachWithIndex` instead"
       },
       {
         "id": "Belt.Array.forEachWithIndex",
@@ -8972,7 +9181,8 @@
         "kind": "value",
         "name": "mapWithIndexU",
         "docstrings": [],
-        "signature": "let mapWithIndexU: (t<'a>, (int, 'a) => 'b) => array<'b>"
+        "signature": "let mapWithIndexU: (t<'a>, (int, 'a) => 'b) => array<'b>",
+        "deprecated": "Use `mapWithIndex` instead"
       },
       {
         "id": "Belt.Array.mapWithIndex",
@@ -8988,7 +9198,8 @@
         "kind": "value",
         "name": "partitionU",
         "docstrings": [],
-        "signature": "let partitionU: (t<'a>, 'a => bool) => (t<'a>, t<'a>)"
+        "signature": "let partitionU: (t<'a>, 'a => bool) => (t<'a>, t<'a>)",
+        "deprecated": "Use `partition` instead"
       },
       {
         "id": "Belt.Array.partition",
@@ -9004,7 +9215,8 @@
         "kind": "value",
         "name": "reduceU",
         "docstrings": [],
-        "signature": "let reduceU: (array<'b>, 'a, ('a, 'b) => 'a) => 'a"
+        "signature": "let reduceU: (array<'b>, 'a, ('a, 'b) => 'a) => 'a",
+        "deprecated": "Use `reduce` instead"
       },
       {
         "id": "Belt.Array.reduce",
@@ -9020,7 +9232,8 @@
         "kind": "value",
         "name": "reduceReverseU",
         "docstrings": [],
-        "signature": "let reduceReverseU: (array<'b>, 'a, ('a, 'b) => 'a) => 'a"
+        "signature": "let reduceReverseU: (array<'b>, 'a, ('a, 'b) => 'a) => 'a",
+        "deprecated": "Use `reduceReverse` instead"
       },
       {
         "id": "Belt.Array.reduceReverse",
@@ -9036,7 +9249,8 @@
         "kind": "value",
         "name": "reduceReverse2U",
         "docstrings": [],
-        "signature": "let reduceReverse2U: (t<'a>, array<'b>, 'c, ('c, 'a, 'b) => 'c) => 'c"
+        "signature": "let reduceReverse2U: (t<'a>, array<'b>, 'c, ('c, 'a, 'b) => 'c) => 'c",
+        "deprecated": "Use `reduceReverse2` instead"
       },
       {
         "id": "Belt.Array.reduceReverse2",
@@ -9052,7 +9266,8 @@
         "kind": "value",
         "name": "reduceWithIndexU",
         "docstrings": [],
-        "signature": "let reduceWithIndexU: (t<'a>, 'b, ('b, 'a, int) => 'b) => 'b"
+        "signature": "let reduceWithIndexU: (t<'a>, 'b, ('b, 'a, int) => 'b) => 'b",
+        "deprecated": "Use `reduceWithIndex` instead"
       },
       {
         "id": "Belt.Array.reduceWithIndex",
@@ -9068,7 +9283,8 @@
         "kind": "value",
         "name": "joinWithU",
         "docstrings": [],
-        "signature": "let joinWithU: (t<'a>, string, 'a => string) => string"
+        "signature": "let joinWithU: (t<'a>, string, 'a => string) => string",
+        "deprecated": "Use `joinWith` instead"
       },
       {
         "id": "Belt.Array.joinWith",
@@ -9084,7 +9300,8 @@
         "kind": "value",
         "name": "someU",
         "docstrings": [],
-        "signature": "let someU: (t<'a>, 'a => bool) => bool"
+        "signature": "let someU: (t<'a>, 'a => bool) => bool",
+        "deprecated": "Use `some` instead"
       },
       {
         "id": "Belt.Array.some",
@@ -9100,7 +9317,8 @@
         "kind": "value",
         "name": "everyU",
         "docstrings": [],
-        "signature": "let everyU: (t<'a>, 'a => bool) => bool"
+        "signature": "let everyU: (t<'a>, 'a => bool) => bool",
+        "deprecated": "Use `every` instead"
       },
       {
         "id": "Belt.Array.every",
@@ -9116,7 +9334,8 @@
         "kind": "value",
         "name": "every2U",
         "docstrings": [],
-        "signature": "let every2U: (t<'a>, array<'b>, ('a, 'b) => bool) => bool"
+        "signature": "let every2U: (t<'a>, array<'b>, ('a, 'b) => bool) => bool",
+        "deprecated": "Use `every2` instead"
       },
       {
         "id": "Belt.Array.every2",
@@ -9132,7 +9351,8 @@
         "kind": "value",
         "name": "some2U",
         "docstrings": [],
-        "signature": "let some2U: (t<'a>, array<'b>, ('a, 'b) => bool) => bool"
+        "signature": "let some2U: (t<'a>, array<'b>, ('a, 'b) => bool) => bool",
+        "deprecated": "Use `some2` instead"
       },
       {
         "id": "Belt.Array.some2",
@@ -9148,7 +9368,8 @@
         "kind": "value",
         "name": "cmpU",
         "docstrings": [],
-        "signature": "let cmpU: (t<'a>, t<'a>, ('a, 'a) => int) => int"
+        "signature": "let cmpU: (t<'a>, t<'a>, ('a, 'a) => int) => int",
+        "deprecated": "Use `cmp` instead"
       },
       {
         "id": "Belt.Array.cmp",
@@ -9164,7 +9385,8 @@
         "kind": "value",
         "name": "eqU",
         "docstrings": [],
-        "signature": "let eqU: (t<'a>, t<'a>, ('a, 'a) => bool) => bool"
+        "signature": "let eqU: (t<'a>, t<'a>, ('a, 'a) => bool) => bool",
+        "deprecated": "Use `eq` instead"
       },
       {
         "id": "Belt.Array.eq",
@@ -9189,7 +9411,8 @@
         "kind": "value",
         "name": "initU",
         "docstrings": [],
-        "signature": "let initU: (int, int => 'a) => t<'a>"
+        "signature": "let initU: (int, int => 'a) => t<'a>",
+        "deprecated": "Use `init` instead"
       },
       {
         "id": "Belt.Array.init",
@@ -9258,15 +9481,14 @@
         "kind": "value",
         "name": "comparableU",
         "docstrings": [],
-        "signature": "let comparableU: (\n  ~cmp: ('a, 'a) => int,\n) => module(Comparable with type t = 'a)"
+        "signature": "let comparableU: (\n  ~cmp: ('a, 'a) => int,\n) => module(Comparable with type t = 'a)",
+        "deprecated": "Use `comparable` instead"
       },
       {
         "id": "Belt.Id.comparable",
         "kind": "value",
         "name": "comparable",
-        "docstrings": [
-          "## Examples\n\n```rescript\nmodule C = (\n  val Belt.Id.comparable ~cmp:(compare : int -> int -> int)\n)\nlet m = Belt.Set.make(module C)\n```\nNote that the name of C can not be ignored"
-        ],
+        "docstrings": [],
         "signature": "let comparable: (\n  ~cmp: ('a, 'a) => int,\n) => module(Comparable with type t = 'a)"
       },
       {
@@ -9283,7 +9505,8 @@
         "kind": "value",
         "name": "hashableU",
         "docstrings": [],
-        "signature": "let hashableU: (\n  ~hash: 'a => int,\n  ~eq: ('a, 'a) => bool,\n) => module(Hashable with type t = 'a)"
+        "signature": "let hashableU: (\n  ~hash: 'a => int,\n  ~eq: ('a, 'a) => bool,\n) => module(Hashable with type t = 'a)",
+        "deprecated": "Use `hashable` instead"
       },
       {
         "id": "Belt.Id.hashable",
