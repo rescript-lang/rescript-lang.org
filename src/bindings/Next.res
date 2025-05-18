@@ -31,11 +31,6 @@ module GetStaticProps = {
   }
 
   type t<'props, 'params> = context<'props, 'params> => promise<{"props": 'props}>
-
-  type revalidate<'props, 'params> = context<'props, 'params> => promise<{
-    "props": 'props,
-    "revalidate": Nullable.t<int>,
-  }>
 }
 
 module GetStaticPaths = {

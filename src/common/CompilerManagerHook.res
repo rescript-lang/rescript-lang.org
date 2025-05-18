@@ -35,10 +35,7 @@ module LoadScript = {
 }
 
 module CdnMeta = {
-  let baseUrl = switch Node.Process.env->Dict.get("VERCEL") {
-  | Some(_) => "https://cdn.rescript-lang.org"
-  | None => "/playground-bundles"
-  }
+  let baseUrl = "/playground-bundles"
 
   let getCompilerUrl = (version): string => `${baseUrl}/${Semver.toString(version)}/compiler.js`
 

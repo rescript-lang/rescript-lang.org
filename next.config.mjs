@@ -15,13 +15,12 @@ const { ProvidePlugin } = webpack;
 const transpileModules = ["rescript"].concat(bsconfig["bs-dependencies"]);
 
 const config = {
-  output: process.env.BUILD_STATIC === "true" ? "export" : undefined,
+  output: "export",
   pageExtensions: ["jsx", "js", "bs.js", "mdx", "mjs"],
   env: {
     ENV: process.env.NODE_ENV,
     VERSION_LATEST: process.env.VERSION_LATEST,
     VERSION_NEXT: process.env.VERSION_NEXT,
-    VERCEL: process.env.VERCEL,
   },
   swcMinify: false,
   webpack: (config, options) => {
