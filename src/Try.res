@@ -33,22 +33,14 @@ let default = props => {
 
 let getStaticProps: Next.GetStaticProps.t<props, _> = async _ => {
   let versions = {
-    let response = await Webapi.Fetch.fetch("https://cdn.rescript-lang.org/")
-    let text = await Webapi.Fetch.Response.text(response)
-    text
-    ->String.split("\n")
-    ->Array.filterMap(line => {
-      switch line->String.startsWith("<a href") {
-      | true =>
-        // Adapted from https://semver.org/
-        let semverRe = /v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?/
-        switch RegExp.exec(semverRe, line) {
-        | Some(result) => RegExp.Result.fullMatch(result)->Some
-        | None => None
-        }
-      | false => None
-      }
-    })
+    let response = await Webapi.Fetch.fetch(
+      "https://cdn.rescript-lang.org/playground-bundles/versions.json",
+    )
+    let json = await Webapi.Fetch.Response.json(response)
+    json
+    ->JSON.Decode.array
+    ->Option.getExn
+    ->Array.map(json => json->JSON.Decode.string->Option.getExn)
   }
 
   {"props": {versions: versions}}

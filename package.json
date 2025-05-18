@@ -62,6 +62,7 @@
     "test": "node scripts/test-examples.mjs && node scripts/test-hrefs.mjs",
     "reanalyze": "reanalyze -all-cmt .",
     "update-index": "npm run generate-llms && node scripts/extract-indices.mjs && node scripts/extract-tocs.mjs && node scripts/extract-syntax.mjs && node scripts/generate_feed.mjs > public/blog/feed.xml",
+    "sync-bundles": "node scripts/sync-playground-bundles.mjs",
     "generate-llms": "node scripts/generate_llms.mjs",
     "generate-resources": "node scripts/generate_resources.mjs"
   },

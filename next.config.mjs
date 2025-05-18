@@ -21,6 +21,7 @@ const config = {
     ENV: process.env.NODE_ENV,
     VERSION_LATEST: process.env.VERSION_LATEST,
     VERSION_NEXT: process.env.VERSION_NEXT,
+    VERCEL: process.env.VERCEL,
   },
   swcMinify: false,
   webpack: (config, options) => {
