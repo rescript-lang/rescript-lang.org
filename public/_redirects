@@ -9,8 +9,8 @@
 /docs/gentype/latest/usage                            /docs/manual/latest/typescript-integration             308
 /docs/gentype/latest/supported-types                  /docs/manual/latest/typescript-integration             308
 
-/docs/manual/latest/:slug*                            /docs/manual/v11.0.0/:slug*                            307
-/docs/manual/next/:slug*                              /docs/manual/v12.0.0/:slug*                            307
+/docs/manual/latest/*  /docs/manual/v11.0.0/:splat  307
+/llms/manual/latest/*  /llms/manual/v11.0.0/:splat  307
 
-/llms/manual/latest/:file*                            /llms/manual/v11.0.0/:file*                            307
-/llms/manual/next/:file*                              /llms/manual/v12.0.0/:file*                            307
+/docs/manual/next/*    /docs/manual/v12.0.0/:splat  307
+/llms/manual/next/*    /llms/manual/v12.0.0/:splat  307
