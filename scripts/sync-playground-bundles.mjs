@@ -7,6 +7,8 @@ import * as stream from "node:stream/promises";
 const bucketUrl = new URL("https://cdn.rescript-lang.org");
 
 const bundlesDir = path.join(import.meta.dirname, "../public/playground-bundles");
+fs.mkdirSync(bundlesDir, { recursive: true });
+
 const versions = await fetch(new URL("/playground-bundles/versions.json", bucketUrl))
   .then(res => res.json());
 
