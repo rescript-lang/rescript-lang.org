@@ -35,14 +35,18 @@ module LoadScript = {
 }
 
 module CdnMeta = {
-  let getCompilerUrl = (version): string =>
-    `/playground-bundles/${Semver.toString(version)}/compiler.js`
+  let baseUrl = switch Node.Process.env->Dict.get("VERCEL") {
+  | Some(_) => "https://cdn.rescript-lang.org"
+  | None => "/playground-bundles"
+  }
+
+  let getCompilerUrl = (version): string => `${baseUrl}/${Semver.toString(version)}/compiler.js`
 
   let getLibraryCmijUrl = (version, libraryName: string): string =>
-    `/playground-bundles/${Semver.toString(version)}/${libraryName}/cmij.js`
+    `${baseUrl}/${Semver.toString(version)}/${libraryName}/cmij.js`
 
   let getStdlibRuntimeUrl = (version, filename) =>
-    `/playground-bundles/${Semver.toString(version)}/compiler-builtins/stdlib/${filename}`
+    `${baseUrl}/${Semver.toString(version)}/compiler-builtins/stdlib/${filename}`
 }
 
 module FinalResult = {
