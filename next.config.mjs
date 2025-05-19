@@ -154,25 +154,28 @@ const config = {
       },
     ];
 
-    const redirectsFile = path.join(import.meta.dirname, "public/_redirects");
-    await fs.writeFile(
-      redirectsFile,
-      redirects
-        .map(({ source, destination, permanent }) => {
-          return `${source}  ${destination}  ${permanent ? 308 : 307}`;
-        })
-        .join("\n") +
-      "\n" +
-      splatRedirects
-        .map(({ source, destination, permanent }) => {
-          const splatPattern = /:(\w+)\*$/;
-          assert.match(source, splatPattern);
-          assert.match(destination, splatPattern);
-          return `${source.replace(splatPattern, "*")}  ${destination.replace(splatPattern, ":splat")}  ${permanent ? 308 : 307}`;
-        })
-        .join("\n"),
-      "utf8",
-    );
+    if (process.env.NODE_ENV === "production") {
+      const redirectsFile = path.join(import.meta.dirname, "out/_redirects");
+      await fs.mkdir(path.dirname(redirectsFile));
+      await fs.writeFile(
+        redirectsFile,
+        redirects
+          .map(({ source, destination, permanent }) => {
+            return `${source}  ${destination}  ${permanent ? 308 : 307}`;
+          })
+          .join("\n") +
+        "\n" +
+        splatRedirects
+          .map(({ source, destination, permanent }) => {
+            const splatPattern = /:(\w+)\*$/;
+            assert.match(source, splatPattern);
+            assert.match(destination, splatPattern);
+            return `${source.replace(splatPattern, "*")}  ${destination.replace(splatPattern, ":splat")}  ${permanent ? 308 : 307}`;
+          })
+          .join("\n"),
+        "utf8",
+      );
+    }
 
     return [...redirects, ...splatRedirects];
   },

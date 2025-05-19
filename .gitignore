@@ -7,6 +7,7 @@ public/blog/feed.xml
 
 node_modules/
 .next/
+out/
 index_data/*.json
 
 # Generated via test examples script
