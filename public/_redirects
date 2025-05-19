@@ -1,16 +1,12 @@
 /community  /community/overview  308
-
 /bucklescript-rebranding  /blog/bucklescript-is-rebranding  308
-
 /docs/manual/latest/migrate-from-bucklescript-reason  /docs/manual/v10.0.0/migrate-from-bucklescript-reason  308
-/docs/manual/latest/unboxed                           /docs/manual/v10.0.0/unboxed                           308
-/docs/gentype/latest/introduction                     /docs/manual/latest/typescript-integration             308
-/docs/gentype/latest/getting-started                  /docs/manual/latest/typescript-integration             308
-/docs/gentype/latest/usage                            /docs/manual/latest/typescript-integration             308
-/docs/gentype/latest/supported-types                  /docs/manual/latest/typescript-integration             308
-
+/docs/manual/latest/unboxed  /docs/manual/v10.0.0/unboxed  308
+/docs/gentype/latest/introduction  /docs/manual/latest/typescript-integration  308
+/docs/gentype/latest/getting-started  /docs/manual/latest/typescript-integration  308
+/docs/gentype/latest/usage  /docs/manual/latest/typescript-integration  308
+/docs/gentype/latest/supported-types  /docs/manual/latest/typescript-integration  308
 /docs/manual/latest/*  /docs/manual/v11.0.0/:splat  307
+/docs/manual/next/*  /docs/manual/v12.0.0/:splat  307
 /llms/manual/latest/*  /llms/manual/v11.0.0/:splat  307
-
-/docs/manual/next/*    /docs/manual/v12.0.0/:splat  307
-/llms/manual/next/*    /llms/manual/v12.0.0/:splat  307
+/llms/manual/next/*  /llms/manual/v12.0.0/:splat  307
