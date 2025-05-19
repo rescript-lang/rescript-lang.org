@@ -15,13 +15,12 @@ const { ProvidePlugin } = webpack;
 const transpileModules = ["rescript"].concat(bsconfig["bs-dependencies"]);
 
 const config = {
-  output: process.env.BUILD_STATIC === "true" ? "export" : undefined,
+  output: "export",
   pageExtensions: ["jsx", "js", "bs.js", "mdx", "mjs"],
   env: {
     ENV: process.env.NODE_ENV,
     VERSION_LATEST: process.env.VERSION_LATEST,
     VERSION_NEXT: process.env.VERSION_NEXT,
-    VERCEL: process.env.VERCEL,
   },
   swcMinify: false,
   webpack: (config, options) => {
@@ -84,70 +83,6 @@ const config = {
 
     config.plugins.push(new ProvidePlugin({ React: "react" }));
     return config;
-  },
-  async redirects() {
-    return [
-      {
-        source: "/community",
-        destination: "/community/overview",
-        permanent: true,
-      },
-      {
-        source: "/bucklescript-rebranding",
-        destination: "/blog/bucklescript-is-rebranding",
-        permanent: true,
-      },
-      {
-        source: "/docs/manual/latest/migrate-from-bucklescript-reason",
-        destination: "/docs/manual/v10.0.0/migrate-from-bucklescript-reason",
-        permanent: true,
-      },
-      {
-        source: "/docs/manual/latest/unboxed",
-        destination: "/docs/manual/v10.0.0/unboxed",
-        permanent: true,
-      },
-      {
-        source: "/docs/gentype/latest/introduction",
-        destination: "/docs/manual/latest/typescript-integration",
-        permanent: true,
-      },
-      {
-        source: "/docs/gentype/latest/getting-started",
-        destination: "/docs/manual/latest/typescript-integration",
-        permanent: true,
-      },
-      {
-        source: "/docs/gentype/latest/usage",
-        destination: "/docs/manual/latest/typescript-integration",
-        permanent: true,
-      },
-      {
-        source: "/docs/gentype/latest/supported-types",
-        destination: "/docs/manual/latest/typescript-integration",
-        permanent: true,
-      },
-      {
-        source: "/docs/manual/latest/:slug*",
-        destination: `/docs/manual/${process.env.VERSION_LATEST}/:slug*`,
-        permanent: false,
-      },
-      {
-        source: "/docs/manual/next/:slug*",
-        destination: `/docs/manual/${process.env.VERSION_NEXT}/:slug*`,
-        permanent: false,
-      },
-      {
-        source: "/llms/manual/latest/:file*",
-        destination: `/llms/manual/${process.env.VERSION_LATEST}/:file*`,
-        permanent: false,
-      },
-      {
-        source: "/llms/manual/next/:file*",
-        destination: `/llms/manual/${process.env.VERSION_NEXT}/:file*`,
-        permanent: false,
-      },
-    ];
   },
 };
 

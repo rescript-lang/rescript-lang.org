@@ -563,7 +563,7 @@ let parsePkgs = data =>
     }
   })
 
-let getStaticProps: Next.GetStaticProps.revalidate<props, unit> = async _ctx => {
+let getStaticProps: Next.GetStaticProps.t<props, unit> = async _ctx => {
   let baseUrl = "https://registry.npmjs.org/-/v1/search?text=keywords:rescript&size=250&maintenance=1.0&popularity=0.5&quality=0.9"
 
   let (one, two, three) = await Promise.all3((
@@ -603,17 +603,12 @@ let getStaticProps: Next.GetStaticProps.revalidate<props, unit> = async _ctx => 
     ->Node.Fs.readFileSync
     ->JSON.parseExn
     ->unsafeToUrlResource
-  let props: props = {
-    "packages": pkges,
-    "unmaintained": unmaintained,
-    "urlResources": urlResources,
-  }
 
   {
-    "props": props,
-    "revalidate": switch Node.Process.env->Dict.get("BUILD_STATIC") {
-    | Some("true") => Nullable.undefined
-    | _ => Nullable.make(43200)
+    "props": {
+      "packages": pkges,
+      "unmaintained": unmaintained,
+      "urlResources": urlResources,
     },
   }
 }
