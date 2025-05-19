@@ -156,7 +156,7 @@ const config = {
 
     if (process.env.NODE_ENV === "production") {
       const redirectsFile = path.join(import.meta.dirname, "out/_redirects");
-      await fs.mkdir(path.dirname(redirectsFile));
+      await fs.mkdir(path.dirname(redirectsFile), { recursive: true });
       await fs.writeFile(
         redirectsFile,
         redirects
