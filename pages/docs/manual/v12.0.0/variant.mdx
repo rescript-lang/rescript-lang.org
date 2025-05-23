@@ -762,13 +762,16 @@ Performance-wise, a variant can potentially tremendously speed up your program's
 
 ```js
 let data = 'dog'
-if (data === 'dog') {
-  ...
-} else if (data === 'cat') {
-  ...
-} else if (data === 'bird') {
-  ...
+function logData(data) {
+  if (data === 'dog') {
+    ...
+  } else if (data === 'cat') {
+    ...
+  } else if (data === 'bird') {
+    ...
+  }
 }
+logData(data)
 ```
 
 There's a linear amount of branch checking here (`O(n)`). Compare this to using a ReScript variant:
@@ -778,16 +781,32 @@ There's a linear amount of branch checking here (`O(n)`). Compare this to using 
 ```res example
 type animal = Dog | Cat | Bird
 let data = Dog
-switch data {
-| Dog => Console.log("Wof")
-| Cat => Console.log("Meow")
-| Bird => Console.log("Kashiiin")
+let logData = data => {
+  switch data {
+  | Dog => Console.log("Wof")
+  | Cat => Console.log("Meow")
+  | Bird => Console.log("Kashiiin")
+  }
 }
+logData(data)
+
 ```
 ```js
-console.log("Wof");
+function logData(data) {
+  switch (data) {
+    case "Dog" :
+      console.log("Wof");
+      return;
+    case "Cat" :
+      console.log("Meow");
+      return;
+    case "Bird" :
+      console.log("Kashiiin");
+      return;
+  }
+}
 
-var data = "Dog";
+logData("Dog");
 ```
 
 </CodeTab>

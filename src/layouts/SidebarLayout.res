@@ -136,23 +136,26 @@ module Sidebar = {
     <>
       <div
         id="sidebar"
+        style={{
+          marginTop: "112px",
+        }}
         className={(
           isOpen ? "fixed w-full left-0 h-full z-20 min-w-320" : "hidden "
-        ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 md:h-auto md:relative overflow-y-visible bg-white"}>
+        ) ++ " overflow-x-hidden md:block md:w-48 md:-ml-4 lg:w-1/5 md:h-auto md:relative overflow-y-visible bg-white mt-28 md:mt-0"}>
         <aside
           id="sidebar-content"
-          className="relative top-0 px-4 w-full block md:top-16 md:pt-16 md:sticky border-r border-gray-20 overflow-y-auto pb-24"
+          className="relative top-0 px-4 w-full block md:top-16 md:pt-4 md:sticky border-r border-gray-20 overflow-y-auto pb-24"
           style={ReactDOMStyle.make(~height="calc(100vh - 4.5rem", ())}>
+          <button
+            onClick={evt => {
+              ReactEvent.Mouse.preventDefault(evt)
+              toggle()
+            }}
+            className="md:hidden h-16 flex pt-2 right-4 absolute">
+            <Icon.Close />
+          </button>
           <div className="flex justify-between">
             <div className="w-3/4 md:w-full"> toplevelNav </div>
-            <button
-              onClick={evt => {
-                ReactEvent.Mouse.preventDefault(evt)
-                toggle()
-              }}
-              className="md:hidden h-16">
-              <Icon.Close />
-            </button>
           </div>
           preludeSection
           /* Firefox ignores padding in scroll containers, so we need margin
@@ -201,7 +204,7 @@ module BreadCrumbs = {
 module MobileDrawerButton = {
   @react.component
   let make = (~hidden: bool, ~onClick) =>
-    <button className={(hidden ? "hidden" : "") ++ " md:hidden mr-3"} onMouseDown=onClick>
+    <button className={(hidden ? "hidden " : "") ++ "md:hidden mr-3"} onMouseDown=onClick>
       <img className="h-4" src="/static/ic_sidebar_drawer.svg" />
     </button>
 }
@@ -221,6 +224,7 @@ let make = (
   ~children,
 ) => {
   let (isNavOpen, setNavOpen) = React.useState(() => false)
+
   let router = Next.Router.useRouter()
   let version = Url.parse(router.route).version
 
@@ -233,8 +237,11 @@ let make = (
 
   let breadcrumbs = breadcrumbs->Option.mapOr(React.null, crumbs => <BreadCrumbs crumbs />)
 
-  let (_isSidebarOpen, setSidebarOpen) = sidebarState
-  let toggleSidebar = () => setSidebarOpen(prev => !prev)
+  let (isSidebarOpen, setSidebarOpen) = sidebarState
+
+  let toggleSidebar = () => {
+    setSidebarOpen(prev => !prev)
+  }
 
   React.useEffect(() => {
     open Next.Router.Events
@@ -303,36 +310,38 @@ let make = (
 
   <>
     <Meta title=metaTitle version />
-    <div className={"mt-16 min-w-320 " ++ theme}>
-      <div className="w-full">
-        <Navigation isOverlayOpen=isNavOpen setOverlayOpen=setNavOpen />
-        <div className="flex lg:justify-center">
-          <div className="flex w-full max-w-1280 md:mx-8">
-            sidebar
-            <main className="px-4 w-full pt-16 md:ml-12 lg:mr-8 mb-32 md:max-w-576 lg:max-w-740">
-              //width of the right content part
-              <div
-                className={"z-10 fixed border-b shadow top-16 left-0 pl-4 bg-white w-full py-4 md:relative md:border-none md:shadow-none md:p-0 md:top-auto flex items-center transition duration-300 ease-out group-[.nav-disappear]:-translate-y-32 md:group-[.nav-disappear]:transform-none"}>
-                <MobileDrawerButton hidden=isNavOpen onClick={handleDrawerButtonClick} />
+    <EnableCollapsibleNavbar isEnabled={!isSidebarOpen && !isNavOpen}>
+      <div className={"mt-16 min-w-320 " ++ theme}>
+        <div className="w-full">
+          <Navigation isOverlayOpen=isNavOpen setOverlayOpen=setNavOpen />
+          <div className="flex lg:justify-center">
+            <div className="flex w-full max-w-1280 md:mx-8">
+              sidebar
+              <main className="px-4 w-full pt-20 md:ml-12 lg:mr-8 mb-32 md:max-w-576 lg:max-w-740">
+                //width of the right content part
                 <div
-                  className="truncate overflow-x-auto touch-scroll flex items-center space-x-4 md:justify-between mr-4 w-full">
-                  breadcrumbs
-                  editLinkEl
+                  className={"z-10 fixed border-b shadow top-[112px] left-0 pl-4 bg-white w-full py-4 md:relative md:border-none md:shadow-none md:p-0 md:top-auto flex items-center transition duration-300 ease-out group-[.nav-disappear]:-translate-y-64 md:group-[.nav-disappear]:transform-none"}>
+                  <MobileDrawerButton hidden=isNavOpen onClick={handleDrawerButtonClick} />
+                  <div
+                    className="truncate overflow-x-auto touch-scroll flex items-center space-x-4 md:justify-between mr-4 w-full">
+                    breadcrumbs
+                    editLinkEl
+                  </div>
                 </div>
-              </div>
-              <div className={hasBreadcrumbs ? "mt-10" : "-mt-4"}>
-                <MdxProvider components> children </MdxProvider>
-              </div>
-              pagination
-            </main>
-            {switch rightSidebar {
-            | Some(ele) => ele
-            | None => React.null
-            }}
+                <div className={hasBreadcrumbs ? "mt-10" : "mt-6 md:-mt-4"}>
+                  <MdxProvider components> children </MdxProvider>
+                </div>
+                pagination
+              </main>
+              {switch rightSidebar {
+              | Some(ele) => ele
+              | None => React.null
+              }}
+            </div>
           </div>
         </div>
+        <Footer />
       </div>
-      <Footer />
-    </div>
+    </EnableCollapsibleNavbar>
   </>
 }

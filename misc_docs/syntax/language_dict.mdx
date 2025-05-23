@@ -1,0 +1,51 @@
+---
+id: "dict"
+keywords: ["dict"]
+name: "dict"
+summary: "This is the `dict{}` syntax"
+category: "languageconstructs"
+---
+
+> Available in v12+
+
+The `dict{}` syntax is used to represent [dictionaries](dict.md). It's used both when creating dicts, and when pattern matching on dicts.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+// Create a dict
+let d = dict{"A": 5, "B": 6, "C": 7}
+
+// Pattern match on the full dict
+let b = switch d {
+| dict{"B": b} => Some(b)
+| _ => None
+}
+
+// Destructure the dict
+let dict{"C": ?c} = d
+```
+
+```js
+let d = {
+  A: 5,
+  B: 6,
+  C: 7
+};
+
+let b = d.B;
+
+let b$1 = b !== undefined ? b : undefined;
+
+let c = d.C;
+```
+
+</CodeTab>
+
+### References
+
+* [Dictionaries](/docs/manual/latest/dict)
+
+

@@ -181,20 +181,6 @@ const createCommunityToc = () => {
   fs.writeFileSync(TARGET_FILE, JSON.stringify(toc), "utf8");
 };
 
-const createReasonCompilerToc = () => {
-  const MD_DIR = path.join(__dirname, "../pages/docs/reason-compiler/latest");
-  const TARGET_FILE = path.join(
-    __dirname,
-    "../index_data/reason_compiler_toc.json"
-  );
-
-  const files = glob.sync(`${MD_DIR}/*.md?(x)`);
-  const result = files.map(processFile);
-  const toc = createTOC(result);
-
-  fs.writeFileSync(TARGET_FILE, JSON.stringify(toc), "utf8");
-};
-
 /*
 const debugToc = () => {
   const MD_DIR = path.join(__dirname, "../pages/docs/manual/latest");
@@ -216,4 +202,3 @@ let reactManualVersions = ["latest", "v0.10.0", "v0.11.0"];
 manualVersions.forEach(createManualToc);
 reactManualVersions.forEach(createReactToc);
 createCommunityToc();
-createReasonCompilerToc();

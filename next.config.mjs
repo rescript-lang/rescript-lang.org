@@ -1,5 +1,8 @@
-// @ts-check
-import fs from "fs";
+// @ ts-check
+
+import * as assert from "node:assert/strict";
+import * as path from "node:path";
+import * as fs from "node:fs/promises";
 import webpack from "webpack";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
@@ -8,14 +11,15 @@ import remarkFrontmatter from "remark-frontmatter";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import { createLoader } from "simple-functional-loader";
 
-const bsconfig = JSON.parse(fs.readFileSync("./rescript.json").toString());
+const bsconfig = JSON.parse((await fs.readFile("./rescript.json", "utf8")).toString());
 
 const { ProvidePlugin } = webpack;
 
 const transpileModules = ["rescript"].concat(bsconfig["bs-dependencies"]);
 
+/** @type {import("next").NextConfig} */
 const config = {
-  output: process.env.BUILD_STATIC === "true" ? "export" : undefined,
+  output: process.env.NODE_ENV === "production" ? "export" : undefined,
   pageExtensions: ["jsx", "js", "bs.js", "mdx", "mjs"],
   env: {
     ENV: process.env.NODE_ENV,
@@ -85,7 +89,7 @@ const config = {
     return config;
   },
   async redirects() {
-    return [
+    const redirects = [
       {
         source: "/community",
         destination: "/community/overview",
@@ -126,6 +130,8 @@ const config = {
         destination: "/docs/manual/latest/typescript-integration",
         permanent: true,
       },
+    ];
+    const splatRedirects = [
       {
         source: "/docs/manual/latest/:slug*",
         destination: `/docs/manual/${process.env.VERSION_LATEST}/:slug*`,
@@ -147,6 +153,30 @@ const config = {
         permanent: false,
       },
     ];
+
+    if (process.env.NODE_ENV === "production") {
+      const redirectsFile = path.join(import.meta.dirname, "public/_redirects");
+      await fs.writeFile(
+        redirectsFile,
+        redirects
+          .map(({ source, destination, permanent }) => {
+            return `${source}  ${destination}  ${permanent ? 308 : 307}`;
+          })
+          .join("\n") +
+        "\n" +
+        splatRedirects
+          .map(({ source, destination, permanent }) => {
+            const splatPattern = /:(\w+)\*$/;
+            assert.match(source, splatPattern);
+            assert.match(destination, splatPattern);
+            return `${source.replace(splatPattern, "*")}  ${destination.replace(splatPattern, ":splat")}  ${permanent ? 308 : 307}`;
+          })
+          .join("\n"),
+        "utf8",
+      );
+    }
+
+    return [...redirects, ...splatRedirects];
   },
 };
 

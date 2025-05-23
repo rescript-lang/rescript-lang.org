@@ -7,6 +7,7 @@ public/blog/feed.xml
 
 node_modules/
 .next/
+out/
 index_data/*.json
 
 # Generated via test examples script
@@ -26,9 +27,13 @@ lib/
 .vercel
 
 src/**/*.mjs
-scripts/**/*.mjs
+scripts/gendocs.mjs
+scripts/generate_*.mjs
 
 # Generated via generate-llms script
 public/llms/manual/**/llm*.txt
 public/llms/react/**/llm*.txt
 pages/docs/**/**/llms.mdx
+
+public/playground-bundles/
+public/_redirects

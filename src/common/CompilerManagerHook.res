@@ -35,14 +35,15 @@ module LoadScript = {
 }
 
 module CdnMeta = {
-  let getCompilerUrl = (version): string =>
-    `https://cdn.rescript-lang.org/${Semver.toString(version)}/compiler.js`
+  let baseUrl = "/playground-bundles"
+
+  let getCompilerUrl = (version): string => `${baseUrl}/${Semver.toString(version)}/compiler.js`
 
   let getLibraryCmijUrl = (version, libraryName: string): string =>
-    `https://cdn.rescript-lang.org/${Semver.toString(version)}/${libraryName}/cmij.js`
+    `${baseUrl}/${Semver.toString(version)}/${libraryName}/cmij.js`
 
   let getStdlibRuntimeUrl = (version, filename) =>
-    `https://cdn.rescript-lang.org/${Semver.toString(version)}/compiler-builtins/stdlib/${filename}`
+    `${baseUrl}/${Semver.toString(version)}/compiler-builtins/stdlib/${filename}`
 }
 
 module FinalResult = {

@@ -234,12 +234,12 @@ To enable genType, set `"gentypeconfig"` at top level in the project's `rescript
 
 We heavily disrecommend the usage of environment variables, but for certain cases, they're justified.
 
-### Error Output Coloring: `NINJA_ANSI_FORCED`
+### Error Output Coloring: `FORCE_COLOR`
 
 This is mostly for other programmatic usage of `rescript` where outputting colors is not desired.
 
-When `NINJA_ANSI_FORCED` is set to `1`: `rescript` produces color.
-When `NINJA_ANSI_FORCED` is set to `0`: `rescript` doesn't produce color.
-When `NINJA_ANSI_FORCED` is not set: `rescript` might or might not produce color, depending on a smart detection of where it's outputted.
+When `FORCE_COLOR` is set to `1`: `rescript` produces color.
+When `FORCE_COLOR` is set to `0`: `rescript` doesn't produce color.
+When `FORCE_COLOR` is not set: `rescript` might or might not produce color, depending on a smart detection of where it's outputted.
 
 > Note that the underlying compiler will always be passed `-color always`. See more details in [this issue](https://github.com/rescript-lang/rescript-compiler/issues/2984#issuecomment-410669163).
