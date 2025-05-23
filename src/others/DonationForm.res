@@ -4,28 +4,12 @@
 
 @react.component
 let make = () => {
-  <div className="max-w-2xl">
-    <div className="mb-6">
-      <div className="py-4 font-mono">
-        <p>
-          <strong> {React.string("IBAN: ")} </strong>
-          {React.string("AT24 2021 9000 2110 4161")}
-        </p>
-        <p>
-          <strong> {React.string("BIC: ")} </strong>
-          {React.string("GIBAATWWXXX")}
-        </p>
-        <p>
-          <strong> {React.string("Bank: ")} </strong>
-          {React.string("Erste Bank der oesterreichischen Sparkassen AG")}
-        </p>
-        <p>
-          <strong> {React.string("Account Name: ")} </strong>
-          {React.string("ReScript Association")}
-        </p>
-      </div>
-    </div>
-
-    <img src="/static/donation_qr_code.svg" className="w-48 mx-auto mt-6" alt="SEPA QR Code" />
+  <div className="pt-4 max-w-2xl text-center">
+    <stripe-buy-button
+      {...Obj.magic({
+        "buy-button-id": "buy_btn_1RS2jjLvZNMEoCiEOIqXq9y6",
+        "publishable-key": "pk_live_kJ6je9A1VblN5DWtrtedHUQo00mib09Cam",
+      })}
+    />
   </div>
 }
