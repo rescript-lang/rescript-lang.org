@@ -328,6 +328,13 @@ let make = (
                     editLinkEl
                   </div>
                 </div>
+                <p className="text-11 text-gray-70 mt-14 md:mt-4">
+                  <a href="">
+                    {React.string("You are viewing docs for an older version of Rescript.")}
+                    <br />
+                    {React.string("Go to latest version.")}
+                  </a>
+                </p>
                 <div className={hasBreadcrumbs ? "mt-10" : "mt-6 md:-mt-4"}>
                   <MdxProvider components> children </MdxProvider>
                 </div>
