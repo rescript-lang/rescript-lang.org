@@ -18,59 +18,6 @@ module V1100Layout = DocsLayout.Make({
   @module("index_data/manual_v1100_toc.json") external tocData: SidebarLayout.Toc.raw = "default"
 })
 
-module V1200Layout = DocsLayout.Make({
-  // Structure defined by `scripts/extract-tocs.js`
-  @module("index_data/manual_v1200_toc.json") external tocData: SidebarLayout.Toc.raw = "default"
-})
-
-module V1200 = {
-  @react.component
-  let make = (~frontmatter=?, ~components=MarkdownComponents.default, ~children) => {
-    let title = "Language Manual"
-    let router = Next.Router.useRouter()
-    let url = router.route->Url.parse
-    let version = url->Url.getVersionString
-
-    let breadcrumbs = list{
-      {Url.name: "Docs", href: "/docs/" ++ version},
-      {Url.name: "Language Manual", href: "/docs/manual/" ++ (version ++ "/introduction")},
-    }
-
-    let warnBanner = {
-      open Markdown
-
-      let v11Url =
-        "/" ++ (Array.join(url.base, "/") ++ ("/v11.0.0/" ++ Array.join(url.pagepath, "/")))
-
-      <div className="mb-10">
-        <Warn>
-          <P>
-            {React.string(
-              "You are currently looking at the v12 docs, which are still a work in progress. If you miss anything, you may find it in the older v11 docs ",
-            )}
-            <A href=v11Url> {React.string("here")} </A>
-            {React.string(".")}
-          </P>
-        </Warn>
-      </div>
-    }
-
-    <V1200Layout
-      theme=#Reason
-      components
-      version
-      title
-      metaTitleCategory="ReScript Language Manual"
-      availableVersions=Constants.allManualVersions
-      nextVersion=?Constants.nextVersion
-      ?frontmatter
-      breadcrumbs>
-      {version === Constants.versions.next ? warnBanner : React.null}
-      children
-    </V1200Layout>
-  }
-}
-
 module V1100 = {
   @react.component
   let make = (~frontmatter=?, ~components=MarkdownComponents.default, ~children) => {

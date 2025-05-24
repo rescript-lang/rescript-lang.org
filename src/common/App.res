@@ -59,7 +59,7 @@ let make = (props: props): React.element => {
     switch pagepath[0] {
     | Some("api") =>
       switch url->Url.getVersionString {
-      | ("v11.0.0" | "v12.0.0") as version =>
+      | "v11.0.0" as version =>
         switch (Array.length(pagepath), pagepath[1]) {
         | (1, _) => <ApiOverviewLayout.Docs version> content </ApiOverviewLayout.Docs>
         | _ => content
@@ -114,10 +114,6 @@ let make = (props: props): React.element => {
         <ManualDocsLayout.V1100 frontmatter={component->frontmatter}>
           content
         </ManualDocsLayout.V1100>
-      | "v12.0.0" =>
-        <ManualDocsLayout.V1200 frontmatter={component->frontmatter}>
-          content
-        </ManualDocsLayout.V1200>
       | _ => React.null
       }
     }

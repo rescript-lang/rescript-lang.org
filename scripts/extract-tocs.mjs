@@ -2,10 +2,9 @@
  * This script is used for generating the table of contents for prose
  * text documents
  */
-import { unified } from "unified";
+import fs from "fs";
 import glob from "glob";
 import path from "path";
-import fs from "fs";
 import { URL } from "url";
 
 import { defaultProcessor } from "./markdown.js";
@@ -196,7 +195,7 @@ const debugToc = () => {
 debugToc();
 */
 
-let manualVersions = ["v12.0.0", "v11.0.0", "v10.0.0", "v9.0.0", "v8.0.0"];
+let manualVersions = ["v11.0.0", "v10.0.0", "v9.0.0", "v8.0.0"];
 let reactManualVersions = ["latest", "v0.10.0", "v0.11.0"];
 
 manualVersions.forEach(createManualToc);
