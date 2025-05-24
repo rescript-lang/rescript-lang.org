@@ -136,9 +136,6 @@ module Sidebar = {
     <>
       <div
         id="sidebar"
-        style={{
-          marginTop: "112px",
-        }}
         className={(
           isOpen ? "fixed w-full left-0 h-full z-20 min-w-320" : "hidden "
         ) ++ " overflow-x-hidden md:block md:w-48 md:-ml-4 lg:w-1/5 md:h-auto md:relative overflow-y-visible bg-white mt-28 md:mt-0"}>
