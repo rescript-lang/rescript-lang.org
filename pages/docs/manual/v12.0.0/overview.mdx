@@ -187,8 +187,8 @@ canonical: "/docs/manual/v12.0.0/overview"
 
 | JavaScript                                | ReScript                                     |
 | ----------------------------------------- | -------------------------------------------- |
-| `throw new SomeError(...)`                | `raise(SomeError(...))`                      |
-| `try {a} catch (err) {...} finally {...}` | `try a catch { \| SomeError(err) => ...}` \* |
+| `throw new SomeError(...)`                | `throw(SomeException(...))`                      |
+| `try {a} catch (err) {...} finally {...}` | `try a catch { \| SomeException(err) => ...}` \* |
 
 \* No finally.
 
