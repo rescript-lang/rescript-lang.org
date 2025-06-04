@@ -446,7 +446,7 @@ Both JS exceptions and exceptions defined in ReScript can be caught. The compile
 ```res example
 exception SomeReScriptException
 
-let somethingThatMightThrow = async () => raise(SomeReScriptException)
+let somethingThatMightThrow = async () => throw(SomeReScriptException)
 
 let someAsyncFn = async () => {
   switch await somethingThatMightThrow() {

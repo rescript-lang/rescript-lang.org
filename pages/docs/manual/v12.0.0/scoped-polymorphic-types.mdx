@@ -92,9 +92,9 @@ Scoped polymorphic types work only when they are directly applied to let-binding
 ```res
 exception Abort
 
-let testExn: 'a. unit => 'a = () => raise(Abort) // Works!
+let testExn: 'a. unit => 'a = () => throw(Abort) // Works!
 
-let testExn2 = (): 'a. 'a = raise(Abort) // Syntax error!
+let testExn2 = (): 'a. 'a = throw(Abort) // Syntax error!
 type fn = 'a. 'a => unit // Syntax error!
 ```
 

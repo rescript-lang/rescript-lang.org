@@ -130,15 +130,15 @@ You may use `try / catch` or `switch` to handle exceptions during async executio
 ```res
 // For simulation purposes
 let authenticate = async () => {
-  raise(Exn.raiseRangeError("Authentication failed."))
+  JsError.RangeError.throwWithMessage("Authentication failed.")
 }
 
 let checkAuth = async () => {
   try {
     await authenticate()
   } catch {
-  | Exn.Error(e) =>
-    switch Exn.message(e) {
+  | JsExn(e) =>
+    switch JsExn.message(e) {
     | Some(msg) => Console.log("JS error thrown: " ++ msg)
     | None => Console.log("Some other exception has been thrown")
     }
@@ -152,14 +152,14 @@ You may unify error and value handling in a single switch as well:
 
 ```res
 let authenticate = async () => {
-  raise(Exn.raiseRangeError("Authentication failed."))
+  JsError.RangeError.throwWithMessage("Authentication failed.")
 }
 
 let checkAuth = async () => {
   switch await authenticate() {
   | _ => Console.log("ok")
-  | exception Exn.Error(e) => 
-    switch Exn.message(e) {
+  | exception JsExn(e) => 
+    switch JsExn.message(e) {
     | Some(msg) => Console.log("JS error thrown: " ++ msg)
     | None => Console.log("Some other exception has been thrown")
     }
