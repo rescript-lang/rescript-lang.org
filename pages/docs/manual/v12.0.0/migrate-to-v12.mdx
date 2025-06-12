@@ -1,0 +1,57 @@
+---
+title: "Migrate to v12"
+description: "Instructions on upgrading to ReScript 12"
+canonical: "/docs/manual/v12.0.0/migrate-to-v12"
+---
+
+# Migrate to ReScript 12
+
+## Recommended Migration
+
+### Prerequisites
+
+- ReScript V11 project.
+- Uncurried mode must be enabled (i.e. you have not opted-out from it)
+- Your project must not contain any OCaml source code anymore, as support for `.ml` files is removed in this version. However there are ways to convert OCaml syntax with an older ReScript compiler version (see below).
+- The old configuration filename that was deprecated in v11, `bsconfig.json`, is removed. Rename it to `rescript.json`.
+
+### Standard library changes
+
+In V12, the new standard library ships with the compiler, so you can uninstall and remove the `@rescript/core` dependency from your `rescript.json`
+
+```console
+$ npm remove @rescript/core
+```
+
+```diff
+ {
+   "bs-dependencies": [
+-    "@rescript/core"
+   ]
+ }
+```
+
+Also remove auto opening of `RescriptCore`.
+
+```diff
+ {
+   "bsc-flags": [
+-    "-open RescriptCore",
+   ]
+ }
+```
+
+## Replacements
+
+Some typical name changes include:
+
+`Error.t` -> `JsError.t`
+`raise(` ->  `throw(`
+`Js.Exn.Error` exception -> `JsExn`
+`Error.make` -> `JsExn.make`
+`Error.raise` -> `JsExn.raise`
+`Error.message` -> `JsExn.message` 
+ `Int.Bitwise.lsl` -> `Int.shiftLeft`
+
+
+
