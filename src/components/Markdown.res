@@ -136,7 +136,7 @@ module H2 = {
   @react.component
   let make = (~id, ~children) => <>
     // Here we know that children is always a string (## headline)
-    <h2 id className="group mt-16 mb-3 hl-3 scroll-mt-24">
+    <h2 id className="group mt-16 mb-3 hl-3 scroll-mt-32">
       children
       <span className="ml-2">
         <Anchor id />
@@ -148,7 +148,7 @@ module H2 = {
 module H3 = {
   @react.component
   let make = (~id, ~children) =>
-    <h3 id className="group mt-8 mb-4 hl-4 scroll-mt-24">
+    <h3 id className="group mt-8 mb-4 hl-4 scroll-mt-32">
       children
       <span className="ml-2">
         <Anchor id />
@@ -159,7 +159,7 @@ module H3 = {
 module H4 = {
   @react.component
   let make = (~id, ~children) =>
-    <h4 id className="group mt-8 hl-5 scroll-mt-24">
+    <h4 id className="group mt-8 hl-5 scroll-mt-32">
       children
       <span className="ml-2">
         <Anchor id />
