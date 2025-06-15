@@ -148,7 +148,7 @@ module SidebarTree = {
           }}
         </details>
       | false =>
-        <li className={"list-none mt-1 leading-4"}>
+        <li className={"list-none mt-1 leading-4"} key={node.name}>
           <summary className={summaryClassName ++ classNameActive}>
             <Next.Link className={"block"} href> {node.name->React.string} </Next.Link>
           </summary>
