@@ -4534,7 +4534,7 @@
     "id": "Stdlib.Iterator",
     "name": "Iterator",
     "docstrings": [
-      "Bindings to JavaScript iterators.\n\nSee [`iterator protocols`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols) on MDN."
+      "Bindings to JavaScript iterators.\n\nSee [`Iterator`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator) on MDN."
     ],
     "items": [
       {
@@ -4569,7 +4569,7 @@
         "kind": "value",
         "name": "toArray",
         "docstrings": [
-          "Turns an iterator into an array of the remaining values.\nRemember that each invocation of `next` of an iterator consumes a value. `Iterator.toArray` will consume all remaining values of the iterator and return them in an array to you.\n\nSee [iterator protocols](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols) on MDN.\n\n## Examples\n```rescript\nlet map = Map.make()\nmap->Map.set(\"someKey\", \"someValue\")\nmap->Map.set(\"someKey2\", \"someValue2\")\n\n// `Map.keys` returns all keys of the map as an iterator.\nlet mapKeysAsArray = map->Map.keys->Iterator.toArray\n\nConsole.log(mapKeysAsArray) // Logs [\"someKey\", \"someKey2\"] to the console.\n```"
+          "Turns an iterator into an array of the remaining values.\nRemember that each invocation of `next` of an iterator consumes a value. `Iterator.toArray` will consume all remaining values of the iterator and return them in an array to you.\n\nSee [Iterator.prototype.toArray](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/toArray) on MDN.\n\n## Examples\n```rescript\nlet map = Map.make()\nmap->Map.set(\"someKey\", \"someValue\")\nmap->Map.set(\"someKey2\", \"someValue2\")\n\n// `Map.keys` returns all keys of the map as an iterator.\nlet mapKeysAsArray = map->Map.keys->Iterator.toArray\n\nmapKeysAsArray->assertEqual([\"someKey\", \"someKey2\"])\n```\n\n## Remark\n\nSince March 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers.\n```"
         ],
         "signature": "let toArray: t<'a> => array<'a>"
       },
@@ -4578,7 +4578,7 @@
         "kind": "value",
         "name": "toArrayWithMapper",
         "docstrings": [
-          "`toArray(iterator)` turns `iterator` into an array of its remaining values, applying the provided mapper function on each item.\nRemember that each invocation of `next` of an iterator consumes a value. `Iterator.toArrayWithMapper` will consume all remaining values of the iterator and return them in an array to you.\n\nSee [iterator protocols](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols) on MDN.\n\n## Examples\n```rescript\nlet map = Map.make()\nmap->Map.set(\"someKey\", \"someValue\")\nmap->Map.set(\"someKey2\", \"someValue2\")\n\n// `Map.keys` returns all keys of the map as an iterator.\nlet mapKeysAsArray = map\n  ->Map.keys\n  ->Iterator.toArrayWithMapper(key => key->String.length)\n\nConsole.log(mapKeysAsArray) // Logs [7, 8] to the console.\n```"
+          "`toArray(iterator)` turns `iterator` into an array of its remaining values, applying the provided mapper function on each item.\nRemember that each invocation of `next` of an iterator consumes a value. `Iterator.toArrayWithMapper` will consume all remaining values of the iterator and return them in an array to you.\n\nSee [Iterator.prototype.toArray](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/toArray) on MDN.\n\n## Examples\n```rescript\nlet map = Map.make()\nmap->Map.set(\"someKey\", \"someValue\")\nmap->Map.set(\"someKey2\", \"someValue2\")\n\n// `Map.keys` returns all keys of the map as an iterator.\nlet mapKeysAsArray = map\n  ->Map.keys\n  ->Iterator.toArrayWithMapper(key => key->String.length)\n\nmapKeysAsArray->assertEqual([7, 8])\n```"
         ],
         "signature": "let toArrayWithMapper: (t<'a>, 'a => 'b) => array<'b>"
       },
@@ -4587,9 +4587,9 @@
         "kind": "value",
         "name": "forEach",
         "docstrings": [
-          "`forEach(iterator, fn)` consumes all values in the iterator and runs the callback `fn` for each value.\n\nSee [iterator protocols](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols) on MDN.\n\n## Examples\n```rescript\nlet iterator: Iterator.t<string> = %raw(`\n  (() => {\n    var array1 = ['a', 'b', 'c'];\n    var iterator1 = array1[Symbol.iterator]();\n    return iterator1\n  })()\n`)\niterator->Iterator.forEach(v => {\n  switch v {\n  | Some(\"a\" | \"b\" | \"c\") => assert(true)\n  | other =>\n    other\n    ->Option.isNone\n    ->assertEqual(true)\n  }\n})\n```"
+          "`forEach(iterator, fn)` consumes all values in the iterator and runs the callback `fn` for each value.\n\nSee [iterator protocols](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols) on MDN.\n\n## Examples\n```rescript\nlet iterator: Iterator.t<string> = [\"a\", \"b\", \"c\"]->Array.values\nlet acc = ref(\"\")\niterator->Iterator.forEach(v => {\n  acc := acc.contents ++ v\n})\n\nacc.contents->assertEqual(\"abc\")\n```\n\n## Remark\n\nSince March 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers."
         ],
-        "signature": "let forEach: (t<'a>, option<'a> => unit) => unit"
+        "signature": "let forEach: (t<'a>, 'a => unit) => unit"
       },
       {
         "id": "Stdlib.Iterator.ignore",
@@ -4599,6 +4599,87 @@
           "`ignore(iterator)` ignores the provided iterator and returns unit.\n\n  This helper is useful when you want to discard a value (for example, the result of an operation with side effects)\n  without having to store or process it further."
         ],
         "signature": "let ignore: t<'a> => unit"
+      },
+      {
+        "id": "Stdlib.Iterator.drop",
+        "kind": "value",
+        "name": "drop",
+        "docstrings": [
+          "`drop((iterator, n))` returns a new iterator helper object that skips the given number of elements at the start of this iterator.\n\nSee [Iterator.prototype.drop](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/drop) on MDN.\n\n## Examples\n```rescript\nlet fibonacci: Iterator.t<int> = [ 1, 1, 2, 3, 5, 8, 13, 21 ]->Array.values\n\nlet seq = fibonacci->Iterator.drop(2)\nseq->Iterator.next->assertEqual({done: false, value: Some(2)})\nseq->Iterator.next->assertEqual({done: false, value: Some(3)})\n```\n\n## Remark\n\nSince March 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers.\n```"
+        ],
+        "signature": "let drop: (t<'a>, int) => t<'a>"
+      },
+      {
+        "id": "Stdlib.Iterator.every",
+        "kind": "value",
+        "name": "every",
+        "docstrings": [
+          "`every(iterator, fn)` tests whether all elements in the iterator pass the test implemented by the provided function.\n\nSee [Iterator.prototype.every](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/every) on MDN.\n\n## Examples\n```rescript\nlet fibonacci: Iterator.t<int> = [ 1, 1, 2, 3, 5, 8, 13, 21 ]->Array.values\n\nlet areAllEven = fibonacci->Iterator.every(n => n % 2 == 0)\nareAllEven->assertEqual(false)\n```\n\n## Remark\n\nSince March 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers."
+        ],
+        "signature": "let every: (t<'a>, 'a => bool) => bool"
+      },
+      {
+        "id": "Stdlib.Iterator.filter",
+        "kind": "value",
+        "name": "filter",
+        "docstrings": [
+          "`filter(iterator, fn)` returns a new iterator helper object that contains the elements of the original iterator that pass the test implemented by the provided function.\n\nSee [Iterator.prototype.filter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/filter) on MDN.\n\n## Examples\n```rescript\nlet fibonacci: Iterator.t<int> = [ 1, 1, 2, 3, 5, 8, 13, 21 ]->Array.values\n\nlet seq = fibonacci->Iterator.filter(n => n % 2 == 0)\nseq->Iterator.next->assertEqual({done: false, value: Some(2)})\nseq->Iterator.next->assertEqual({done: false, value: Some(8)})\n```\n\n## Remark\n\nSince March 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers."
+        ],
+        "signature": "let filter: (t<'a>, 'a => bool) => t<'a>"
+      },
+      {
+        "id": "Stdlib.Iterator.find",
+        "kind": "value",
+        "name": "find",
+        "docstrings": [
+          "`find(iterator, fn)` returns the value of the first element in the iterator that satisfies the provided testing function.\n\nSee [Iterator.prototype.find](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/find) on MDN.\n\n## Examples\n```rescript\nlet fibonacci: Iterator.t<int> = [ 1, 1, 2, 3, 5, 8, 13, 21 ]->Array.values\n\nlet seq = fibonacci->Iterator.find(n => n % 2 == 0)\nseq->assertEqual(Some(2))\n```\n\n## Remark\n\nSince March 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers."
+        ],
+        "signature": "let find: (t<'a>, 'a => bool) => option<'a>"
+      },
+      {
+        "id": "Stdlib.Iterator.flatMap",
+        "kind": "value",
+        "name": "flatMap",
+        "docstrings": [
+          "`flatMap(iterator, fn)` returns a new iterator helper object that contains the elements of the original iterator that pass the test implemented by the provided function.\n\nSee [Iterator.prototype.flatMap](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/flatMap) on MDN.\n\n## Examples\n```rescript\nlet map1 = Map.fromArray([(\"a\", 1), (\"b\", 2), (\"c\", 3)])\nlet map2 = Map.fromArray([(\"d\", 4), (\"e\", 5), (\"f\", 6)])\n\nlet letters =\n  [map1, map2]\n  ->Array.values\n  ->Iterator.flatMap(m => Map.keys(m))\n  ->Array.fromIterator\nletters->assertEqual([\"a\", \"b\", \"c\", \"d\", \"e\", \"f\"])\n```\n\n## Remark\n\nSince March 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers."
+        ],
+        "signature": "let flatMap: (t<'a>, 'a => t<'b>) => t<'b>"
+      },
+      {
+        "id": "Stdlib.Iterator.map",
+        "kind": "value",
+        "name": "map",
+        "docstrings": [
+          "`map(iterator, fn)` returns a new iterator helper object that yields elements of the iterator, each transformed by a mapping function.\n\nSee [Iterator.prototype.map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/map) on MDN.\n\n## Examples\n```rescript\nlet map = Map.fromArray([(\"a\", 1), (\"b\", 2), (\"c\", 3)])\nlet letters = map->Map.keys->Iterator.map(v => v->String.toUpperCase)->Array.fromIterator\nletters->assertEqual([\"A\", \"B\", \"C\"])\n```\n\n## Remark\n\nSince March 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers."
+        ],
+        "signature": "let map: (t<'a>, 'a => 'b) => t<'b>"
+      },
+      {
+        "id": "Stdlib.Iterator.reduce",
+        "kind": "value",
+        "name": "reduce",
+        "docstrings": [
+          "`reduce(iterator, fn, initialValue)` applies a function against an accumulator and each element in the iterator (from left to right) to reduce it to a single value.\n\nSee [Iterator.prototype.reduce](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/reduce) on MDN.\n\n## Examples\n```rescript\nlet numbers: Iterator.t<int> = [ 1, 2, 3 ]->Array.values\n\nlet sum = numbers->Iterator.reduce((acc, n) => acc + n, ~initialValue=0)\nsum->assertEqual(6)\n```\n\n## Remark\n\nSince March 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers."
+        ],
+        "signature": "let reduce: (t<'a>, ('acc, 'a) => 'acc, ~initialValue: 'acc=?) => 'acc"
+      },
+      {
+        "id": "Stdlib.Iterator.some",
+        "kind": "value",
+        "name": "some",
+        "docstrings": [
+          "`some(iterator, fn)` The some() method of Iterator instances is similar to Array.some: \nit tests whether at least one element produced by the iterator passes the test implemented by the provided function. \nIt returns a boolean value.\n\nSee [Iterator.prototype.some](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/some) on MDN.\n\n## Examples\n```rescript\nlet numbers: Iterator.t<int> = [ 1, 2, 3 ]->Array.values\n\nlet hasEven = numbers->Iterator.some(n => n % 2 == 0)\nhasEven->assertEqual(true)\n```\n\n## Remark\n\nSince March 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers."
+        ],
+        "signature": "let some: (t<'a>, 'a => bool) => bool"
+      },
+      {
+        "id": "Stdlib.Iterator.take",
+        "kind": "value",
+        "name": "take",
+        "docstrings": [
+          "`take((iterator, n))` returns a new iterator helper object that contains the first `n` elements of this iterator.\n\nSee [Iterator.prototype.take](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/take) on MDN.\n\n## Examples\n```rescript\nlet fibonacci: Iterator.t<int> = [ 1, 1, 2, 3, 5, 8, 13, 21 ]->Array.values\n\nlet seq = fibonacci->Iterator.take(2)\nseq->Iterator.next->assertEqual({done: false, value: Some(1)})\nseq->Iterator.next->assertEqual({done: false, value: Some(1)})\nseq->Iterator.next->assertEqual({done: true, value: None})\n```\n\n## Remark\n\nSince March 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers."
+        ],
+        "signature": "let take: (t<'a>, int) => t<'a>"
       }
     ]
   },
@@ -11742,6 +11823,24 @@
           "`ignore(array)` ignores the provided array and returns unit.\n\n  This helper is useful when you want to discard a value (for example, the result of an operation with side effects)\n  without having to store or process it further."
         ],
         "signature": "let ignore: array<'a> => unit"
+      },
+      {
+        "id": "Stdlib.Array.entries",
+        "kind": "value",
+        "name": "entries",
+        "docstrings": [
+          "`entries(array)` returns a new array iterator object that contains the key/value pairs for each index in the array.\n\nSee [Array.prototype.entries](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/entries) on MDN.\n\n## Examples\n\n```rescript\nlet array = [5, 6, 7]\nlet iterator : Iterator.t<(int, int)> = array->Array.entries\niterator->Iterator.next->assertEqual({done: false, value: Some((0, 5))})\niterator->Iterator.next->assertEqual({done: false, value: Some((1, 6))})\n```"
+        ],
+        "signature": "let entries: array<'a> => Iterator.t<(int, 'a)>"
+      },
+      {
+        "id": "Stdlib.Array.values",
+        "kind": "value",
+        "name": "values",
+        "docstrings": [
+          "`values(array)` returns a new array iterator object that contains the values for each index in the array.\n\nSee [Array.prototype.values](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/values) on MDN.\n\n## Examples\n\n```rescript\nlet array = [5, 6, 7]\nlet iterator : Iterator.t<int> = array->Array.values\niterator->Iterator.next->assertEqual({done: false, value: Some(5)})\niterator->Iterator.next->assertEqual({done: false, value: Some(6)})\n```"
+        ],
+        "signature": "let values: array<'a> => Iterator.t<'a>"
       }
     ]
   },
