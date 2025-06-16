@@ -4,13 +4,13 @@ Generate docs from ReScript Compiler
 ## Run
 
 ```bash
-node scripts/gendocs.mjs path/to/rescript-monorepo version forceReWrite
+node scripts/gendocs.mjs path/to/rescript-compiler path/to/rescript-core/src/RescriptCore.res version forceReWrite
 ```
 
 ## Examples
 
 ```bash
-node scripts/gendocs.mjs path/to/rescript-monorepo latest true
+node scripts/gendocs.mjs path/to/rescript-compiler latest true
 ```
 */
 @val @scope(("import", "meta")) external url: string = "url"
@@ -25,16 +25,21 @@ let dirname =
   ->Path.dirname
 
 let compilerLibPath = switch args->Array.get(0) {
-| Some(path) => Path.join([path, "runtime"])
+| Some(path) => Path.join([path, "jscomp", "others"])
 | None => failwith("First argument should be path to rescript-compiler repo")
 }
 
-let version = switch args->Array.get(1) {
-| Some(version) => version
-| None => failwith("Second argument should be a version, `latest`, `v10`")
+let corePath = switch args->Array.get(1) {
+| Some(path) => path
+| _ => failwith("Second argument should be path to rescript-core/src/RescriptCore.res")
 }
 
-let forceReWrite = switch args->Array.get(2) {
+let version = switch args->Array.get(2) {
+| Some(version) => version
+| None => failwith("Third argument should be a version, `latest`, `v10`")
+}
+
+let forceReWrite = switch args->Array.get(3) {
 | Some("true") => true
 | _ => false
 }
@@ -50,7 +55,7 @@ if Fs.existsSync(dirVersion) {
   Fs.mkdirSync(dirVersion)
 }
 
-let entryPointFiles = ["Belt.res", "Dom.res", "Js.res", "Stdlib.res"]
+let entryPointFiles = ["js.ml", "belt.res", "dom.res"]
 
 let hiddenModules = ["Js.Internal", "Js.MapperRt"]
 
@@ -71,32 +76,33 @@ type section = {
 
 let env = Process.env
 
-let docsDecoded = entryPointFiles->Array.map(libFile =>
-  try {
-    let entryPointFile = Path.join2(compilerLibPath, libFile)
+let docsDecoded = entryPointFiles->Array.map(libFile => {
+  let entryPointFile = Path.join2(compilerLibPath, libFile)
 
-    let output = ChildProcess.execSync(
+  Dict.set(env, "FROM_COMPILER", "true")
+
+  let output =
+    ChildProcess.execSync(
       `./node_modules/.bin/rescript-tools doc ${entryPointFile}`,
-      ~options={
-        maxBuffer: 30_000_000.,
-      },
     )->Buffer.toString
 
-    output
-    ->JSON.parseExn
-    ->Docgen.decodeFromJson
-  } catch {
-  | Exn.Error(error) =>
-    Console.error(
-      `Error while generating docs from ${libFile}: ${error
-        ->Error.message
-        ->Option.getOr("[no message]")}`,
-    )
-    Error.raise(error)
-  }
-)
+  output
+  ->JSON.parseExn
+  ->Docgen.decodeFromJson
+})
 
-let removeStdlibOrPrimitive = s => s->String.replaceAllRegExp(/Stdlib_|Primitive_js_extern\./g, "")
+let coreDocs = {
+  Dict.set(env, "FROM_COMPILER", "false")
+
+  let output =
+    ChildProcess.execSync(`./node_modules/.bin/rescript-tools doc ${corePath}`)->Buffer.toString
+
+  output
+  ->JSON.parseExn
+  ->Docgen.decodeFromJson
+}
+
+let docsDecoded = Array.concat(docsDecoded, [coreDocs])
 
 let docs = docsDecoded->Array.map(doc => {
   let topLevelItems = doc.items->Array.filterMap(item =>
@@ -117,6 +123,9 @@ let docs = docsDecoded->Array.map(doc => {
       if Array.includes(hiddenModules, id) {
         getModules(rest, moduleNames)
       } else {
+        let id = String.startsWith(id, "RescriptCore")
+          ? String.replace(id, "RescriptCore", "Core")
+          : id
         getModules(
           list{...rest, ...List.fromArray(items)},
           list{{id, items, name, docstrings}, ...moduleNames},
@@ -126,7 +135,9 @@ let docs = docsDecoded->Array.map(doc => {
     | list{} => moduleNames
     }
 
-  let id = doc.name
+  let id = String.startsWith(doc.name, "RescriptCore")
+    ? String.replace(doc.name, "RescriptCore", "Core")
+    : doc.name
 
   let top = {id, name: id, docstrings: doc.docstrings, items: topLevelItems}
   let submodules = getModules(doc.items->List.fromArray, list{})->List.toArray
@@ -140,6 +151,9 @@ let allModules = {
   let encodeItem = (docItem: Docgen.item) => {
     switch docItem {
     | Value({id, name, docstrings, signature, ?deprecated}) => {
+        let id = String.startsWith(id, "RescriptCore")
+          ? String.replace(id, "RescriptCore", "Core")
+          : id
         let dict = Dict.fromArray(
           [
             ("id", id->String),
@@ -148,15 +162,10 @@ let allModules = {
             (
               "docstrings",
               docstrings
-              ->Array.map(s => s->removeStdlibOrPrimitive->String)
+              ->Array.map(s => s->String)
               ->Array,
             ),
-            (
-              "signature",
-              signature
-              ->removeStdlibOrPrimitive
-              ->String,
-            ),
+            ("signature", signature->String),
           ]->Array.concat(
             switch deprecated {
             | Some(v) => [("deprecated", v->String)]
@@ -168,13 +177,16 @@ let allModules = {
       }
 
     | Type({id, name, docstrings, signature, ?deprecated}) =>
+      let id = String.startsWith(id, "RescriptCore")
+        ? String.replace(id, "RescriptCore", "Core")
+        : id
       let dict = Dict.fromArray(
         [
           ("id", id->String),
           ("kind", "type"->String),
           ("name", name->String),
-          ("docstrings", docstrings->Array.map(s => s->removeStdlibOrPrimitive->String)->Array),
-          ("signature", signature->removeStdlibOrPrimitive->String),
+          ("docstrings", docstrings->Array.map(s => s->String)->Array),
+          ("signature", signature->String),
         ]->Array.concat(
           switch deprecated {
           | Some(v) => [("deprecated", v->String)]
@@ -197,8 +209,10 @@ let allModules = {
           ->Array.filterMap(item => encodeItem(item))
           ->Array
 
+        let id = String.startsWith(mod.id, "RescriptCore") ? "Core" : mod.id
+
         let rest = Dict.fromArray([
-          ("id", mod.id->String),
+          ("id", id->String),
           ("name", mod.name->String),
           ("docstrings", mod.docstrings->Array.map(s => s->String)->Array),
           ("items", items),
@@ -220,6 +234,8 @@ let allModules = {
 let () = {
   allModules->Array.forEach(((topLevelName, mod)) => {
     let json = JSON.Object(mod)
+
+    let topLevelName = String.startsWith(topLevelName, "RescriptCore") ? "Core" : topLevelName
 
     Fs.writeFileSync(
       Path.join([dirVersion, `${topLevelName->String.toLowerCase}.json`]),
@@ -263,6 +279,7 @@ let () = {
   }
 
   let tocTree = docsDecoded->Array.map(({name, items}) => {
+    let name = String.startsWith(name, "RescriptCore") ? "Core" : name
     let path = name->String.toLowerCase
     (
       path,
