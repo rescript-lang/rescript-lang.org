@@ -172,10 +172,14 @@ module SidebarTree = {
             ReactEvent.Form.preventDefault(evt)
             let version = (evt->ReactEvent.Form.target)["value"]
             let url = Url.parse(router.asPath)
-            if version < "v12.0.0" {
-              url.pagepath[1] = "core"
-            } else {
-              url.pagepath[1] = "stdlib"
+            switch url.pagepath[1] {
+            | Some("core") | Some("stdlib") =>
+              if version < "v12.0.0" {
+                url.pagepath[1] = "core"
+              } else {
+                url.pagepath[1] = "stdlib"
+              }
+            | _ => ()
             }
 
             let targetUrl =
