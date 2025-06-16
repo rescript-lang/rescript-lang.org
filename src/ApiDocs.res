@@ -62,7 +62,7 @@ module RightSidebar = {
         }
         let title = `${Option.isSome(deprecatedIcon) ? "Deprecated " : ""}` ++ name
         let result =
-          <li className="my-3">
+          <li className="my-3" key={href}>
             <a
               title
               className="flex items-center w-full font-normal text-14 text-gray-40 leading-tight hover:text-gray-80"
@@ -125,12 +125,12 @@ module SidebarTree = {
       switch hasChildren {
       | true =>
         let open_ =
-          node.path->Array.join("/") ===
+          href ===
             moduleRoute
             ->Array.slice(~start=0, ~end=Array.length(moduleRoute) - 1)
             ->Array.join("/")
 
-        <details key={node.name} open_>
+        <details key={href} open_>
           <summary className={summaryClassName ++ classNameActive}>
             <Next.Link className={"inline-block w-10/12"} href>
               {node.name->React.string}
@@ -148,7 +148,7 @@ module SidebarTree = {
           }}
         </details>
       | false =>
-        <li className={"list-none mt-1 leading-4"} key={node.name}>
+        <li className={"list-none mt-1 leading-4"} key={href}>
           <summary className={summaryClassName ++ classNameActive}>
             <Next.Link className={"block"} href> {node.name->React.string} </Next.Link>
           </summary>
@@ -189,9 +189,10 @@ module SidebarTree = {
           <VersionSelect
             onChange
             version
-            availableVersions=Constants.coreVersions
+            availableVersions=Constants.stdlibVersions
             nextVersion=?Constants.nextVersion
           />
+
         | None => React.null
         }}
       </div>
@@ -314,21 +315,21 @@ let default = (props: props) => {
         | Value({name, signature, docstrings, deprecated}) =>
           let code = String.replaceRegExp(signature, /\\n/g, "\n")
           let slugPrefix = "value-" ++ name
-          <>
+          <React.Fragment key={slugPrefix}>
             <H2 id=slugPrefix> {name->React.string} </H2>
             <DeprecatedMessage deprecated />
             <CodeExample code lang="rescript" />
             <DocstringsStylize docstrings slugPrefix />
-          </>
+          </React.Fragment>
         | Type({name, signature, docstrings, deprecated}) =>
           let code = String.replaceRegExp(signature, /\\n/g, "\n")
           let slugPrefix = "type-" ++ name
-          <>
+          <React.Fragment key={slugPrefix}>
             <H2 id=slugPrefix> {name->React.string} </H2>
             <DeprecatedMessage deprecated />
             <CodeExample code lang="rescript" />
             <DocstringsStylize docstrings slugPrefix />
-          </>
+          </React.Fragment>
         }
       })
 
