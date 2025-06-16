@@ -75,8 +75,6 @@ let docsDecoded = entryPointFiles->Array.map(libFile =>
   try {
     let entryPointFile = Path.join2(compilerLibPath, libFile)
 
-    Dict.set(env, "FROM_COMPILER", "false")
-
     let output = ChildProcess.execSync(
       `./node_modules/.bin/rescript-tools doc ${entryPointFile}`,
       ~options={
