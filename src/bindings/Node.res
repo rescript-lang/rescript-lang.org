@@ -35,6 +35,7 @@ module Buffer = {
 }
 
 module ChildProcess = {
+  type options = {maxBuffer?: float}
   @module("child_process")
-  external execSync: string => Buffer.t = "execSync"
+  external execSync: (string, ~options: options=?) => Buffer.t = "execSync"
 }

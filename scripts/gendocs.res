@@ -50,8 +50,7 @@ if Fs.existsSync(dirVersion) {
   Fs.mkdirSync(dirVersion)
 }
 
-// "Js.res" does not work for some reason
-let entryPointFiles = ["Belt.res", "Dom.res", "Stdlib.res"]
+let entryPointFiles = ["Belt.res", "Dom.res", "Js.res", "Stdlib.res"]
 
 let hiddenModules = ["Js.Internal", "Js.MapperRt"]
 
@@ -72,23 +71,32 @@ type section = {
 
 let env = Process.env
 
-let docsDecoded = entryPointFiles->Array.map(libFile => {
-  let entryPointFile = Path.join2(compilerLibPath, libFile)
+let docsDecoded = entryPointFiles->Array.map(libFile =>
+  try {
+    let entryPointFile = Path.join2(compilerLibPath, libFile)
 
-  Dict.set(env, "FROM_COMPILER", "false")
+    Dict.set(env, "FROM_COMPILER", "false")
 
-  let output =
-    ChildProcess.execSync(
+    let output = ChildProcess.execSync(
       `./node_modules/.bin/rescript-tools doc ${entryPointFile}`,
+      ~options={
+        maxBuffer: 30_000_000.,
+      },
     )->Buffer.toString
 
-  output
-  ->JSON.parseExn
-  ->Docgen.decodeFromJson
-})
-
-let isStdlib = (id: string) => String.startsWith(id, "Stdlib")
-let replaceIdWithStdlib = (id: string) => isStdlib(id) ? String.replace(id, "Stdlib", "Core") : id
+    output
+    ->JSON.parseExn
+    ->Docgen.decodeFromJson
+  } catch {
+  | Exn.Error(error) =>
+    Console.error(
+      `Error while generating docs from ${libFile}: ${error
+        ->Error.message
+        ->Option.getOr("[no message]")}`,
+    )
+    Error.raise(error)
+  }
+)
 
 let removeStdlibOrPrimitive = s => s->String.replaceAllRegExp(/Stdlib_|Primitive_js_extern\./g, "")
 
@@ -111,7 +119,6 @@ let docs = docsDecoded->Array.map(doc => {
       if Array.includes(hiddenModules, id) {
         getModules(rest, moduleNames)
       } else {
-        let id = replaceIdWithStdlib(id)
         getModules(
           list{...rest, ...List.fromArray(items)},
           list{{id, items, name, docstrings}, ...moduleNames},
@@ -121,7 +128,7 @@ let docs = docsDecoded->Array.map(doc => {
     | list{} => moduleNames
     }
 
-  let id = replaceIdWithStdlib(doc.name)
+  let id = doc.name
 
   let top = {id, name: id, docstrings: doc.docstrings, items: topLevelItems}
   let submodules = getModules(doc.items->List.fromArray, list{})->List.toArray
@@ -135,7 +142,6 @@ let allModules = {
   let encodeItem = (docItem: Docgen.item) => {
     switch docItem {
     | Value({id, name, docstrings, signature, ?deprecated}) => {
-        let id = replaceIdWithStdlib(id)
         let dict = Dict.fromArray(
           [
             ("id", id->String),
@@ -164,7 +170,6 @@ let allModules = {
       }
 
     | Type({id, name, docstrings, signature, ?deprecated}) =>
-      let id = replaceIdWithStdlib(id)
       let dict = Dict.fromArray(
         [
           ("id", id->String),
@@ -194,10 +199,8 @@ let allModules = {
           ->Array.filterMap(item => encodeItem(item))
           ->Array
 
-        let id = replaceIdWithStdlib(mod.id)
-
         let rest = Dict.fromArray([
-          ("id", id->String),
+          ("id", mod.id->String),
           ("name", mod.name->String),
           ("docstrings", mod.docstrings->Array.map(s => s->String)->Array),
           ("items", items),
@@ -219,8 +222,6 @@ let allModules = {
 let () = {
   allModules->Array.forEach(((topLevelName, mod)) => {
     let json = JSON.Object(mod)
-
-    let topLevelName = replaceIdWithStdlib(topLevelName)
 
     Fs.writeFileSync(
       Path.join([dirVersion, `${topLevelName->String.toLowerCase}.json`]),
@@ -264,7 +265,6 @@ let () = {
   }
 
   let tocTree = docsDecoded->Array.map(({name, items}) => {
-    let name = replaceIdWithStdlib(name)
     let path = name->String.toLowerCase
     (
       path,
