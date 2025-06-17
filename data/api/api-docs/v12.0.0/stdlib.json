@@ -5525,7 +5525,17 @@
         "docstrings": [
           "`getExn(res)`: when `res` is `Ok(n)`, returns `n` when `res` is `Error(m)`, raise an exception\n\n  ```res example\n  Result.getExn(Result.Ok(42)) == 42\n\n  switch Result.getExn(Error(\"Invalid data\")) {\n  | exception Not_found => assert(true)\n  | _ => assert(false)\n  }\n  ```"
         ],
-        "signature": "let getExn: result<'a, 'b> => 'a"
+        "signature": "let getExn: result<'a, 'b> => 'a",
+        "deprecated": "Use 'getOrThrow' instead"
+      },
+      {
+        "id": "Stdlib.Result.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [
+          "`getOrThrow(res)`: when `res` is `Ok(n)`, returns `n` when `res` is `Error(m)`, raise an exception\n\n  ```res example\n  Result.getOrThrow(Result.Ok(42)) == 42\n\n  switch Result.getOrThrow(Error(\"Invalid data\")) {\n  | exception Not_found => assert(true)\n  | _ => assert(false)\n  }\n  ```"
+        ],
+        "signature": "let getOrThrow: result<'a, 'b> => 'a"
       },
       {
         "id": "Stdlib.Result.mapOr",
@@ -6271,7 +6281,17 @@
         "docstrings": [
           "`getExn(opt, ~message=?)` returns `value` if `opt` is `Some(value)`, otherwise raises an exception with the message provided, or a generic message if no message was provided.\n\n```rescript\nOption.getExn(Some(3))->assertEqual(3)\n\nswitch Option.getExn(None) {\n| exception _ => assert(true)\n| _ => assert(false)\n}\n\nswitch Option.getExn(None, ~message=\"was None!\") {\n| exception _ => assert(true) // Raises an Error with the message \"was None!\"\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises an error if `opt` is `None`"
         ],
-        "signature": "let getExn: (option<'a>, ~message: string=?) => 'a"
+        "signature": "let getExn: (option<'a>, ~message: string=?) => 'a",
+        "deprecated": "Use `getOrThrow` instead"
+      },
+      {
+        "id": "Stdlib.Option.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [
+          "`getOrThrow(opt, ~message=?)` returns `value` if `opt` is `Some(value)`, otherwise raises an exception with the message provided, or a generic message if no message was provided.\n\n```rescript\nOption.getOrThrow(Some(3))->assertEqual(3)\n\nswitch Option.getOrThrow(None) {\n| exception _ => assert(true)\n| _ => assert(false)\n}\n\nswitch Option.getOrThrow(None, ~message=\"was None!\") {\n| exception _ => assert(true) // Raises an Error with the message \"was None!\"\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises an error if `opt` is `None`"
+        ],
+        "signature": "let getOrThrow: (option<'a>, ~message: string=?) => 'a"
       },
       {
         "id": "Stdlib.Option.getUnsafe",
@@ -6754,7 +6774,17 @@
         "docstrings": [
           "`getExn(value)` raises an exception if `null` or `undefined`, otherwise returns the value.\n\n```rescript\nswitch Nullable.getExn(%raw(\"'Hello'\")) {\n| exception Invalid_argument(_) => assert(false)\n| value => assertEqual(value, \"Hello\")\n}\n\nswitch Nullable.getExn(%raw(\"null\")) {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n\nswitch Nullable.getExn(%raw(\"undefined\")) {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises `Invalid_argument` if `value` is `null` or `undefined`"
         ],
-        "signature": "let getExn: t<'a> => 'a"
+        "signature": "let getExn: t<'a> => 'a",
+        "deprecated": "Use `getOrThrow` instead"
+      },
+      {
+        "id": "Stdlib.Nullable.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [
+          "`getOrThrow(value)` raises an exception if `null` or `undefined`, otherwise returns the value.\n\n```rescript\nswitch Nullable.getOrThrow(%raw(\"'Hello'\")) {\n| exception Invalid_argument(_) => assert(false)\n| value => assertEqual(value, \"Hello\")\n}\n\nswitch Nullable.getOrThrow(%raw(\"null\")) {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n\nswitch Nullable.getOrThrow(%raw(\"undefined\")) {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises `Invalid_argument` if `value` is `null` or `undefined`"
+        ],
+        "signature": "let getOrThrow: t<'a> => 'a"
       },
       {
         "id": "Stdlib.Nullable.getUnsafe",
@@ -6917,9 +6947,19 @@
         "kind": "value",
         "name": "getExn",
         "docstrings": [
-          "`getExn(value)` raises an exception if `null`, otherwise returns the value.\n\n```rescript\nNull.getExn(Null.make(3))->assertEqual(3)\n\nswitch Null.getExn(%raw(\"'ReScript'\")) {\n| exception Invalid_argument(_) => assert(false)\n| value => assertEqual(value, \"ReScript\")\n}\n\nswitch Null.getExn(%raw(\"null\")) {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises `Invalid_argument` if `value` is `null`,"
+          "`getExn(value)` raises an exception if `null`, otherwise returns the value.\n\n```rescript\nNull.getExn(Null.make(3))->assertEqual(3)\n\nswitch Null.getExn(%raw(\"'ReScript'\")) {\n| exception Invalid_argument(_) => assert(false)\n| value => assertEqual(value, \"ReScript\")\n}\n\nswitch Null.getExn(%raw(\"null\")) {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises `Invalid_argument` if `value` is `null`"
         ],
-        "signature": "let getExn: t<'a> => 'a"
+        "signature": "let getExn: t<'a> => 'a",
+        "deprecated": "Use `getOrThrow` instead"
+      },
+      {
+        "id": "Stdlib.Null.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [
+          "`getOrThrow(value)` raises an exception if `null`, otherwise returns the value.\n\n```rescript\nNull.getOrThrow(Null.make(3))->assertEqual(3)\n\nswitch Null.getOrThrow(%raw(\"'ReScript'\")) {\n| exception Invalid_argument(_) => assert(false)\n| value => assertEqual(value, \"ReScript\")\n}\n\nswitch Null.getOrThrow(%raw(\"null\")) {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises `Invalid_argument` if `value` is `null`"
+        ],
+        "signature": "let getOrThrow: t<'a> => 'a"
       },
       {
         "id": "Stdlib.Null.getUnsafe",
@@ -7366,7 +7406,17 @@
         "docstrings": [
           "`headExn(list)` same as [`head`](#head).\n\n## Examples\n\n```rescript\nList.headExn(list{1, 2, 3})->assertEqual(1)\n\nswitch List.headExn(list{}) {\n| exception Not_found => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises an Error if list is empty."
         ],
-        "signature": "let headExn: list<'a> => 'a"
+        "signature": "let headExn: list<'a> => 'a",
+        "deprecated": "Use `headOrThrow` instead"
+      },
+      {
+        "id": "Stdlib.List.headOrThrow",
+        "kind": "value",
+        "name": "headOrThrow",
+        "docstrings": [
+          "`headOrThrow(list)` same as [`head`](#head).\n\n## Examples\n\n```rescript\nList.headOrThrow(list{1, 2, 3})->assertEqual(1)\n\nswitch List.headOrThrow(list{}) {\n| exception Not_found => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises an Error if list is empty."
+        ],
+        "signature": "let headOrThrow: list<'a> => 'a"
       },
       {
         "id": "Stdlib.List.tail",
@@ -7384,7 +7434,17 @@
         "docstrings": [
           "`tailExn(list)` same as [`tail`](#tail).\n\n## Examples\n\n```rescript\nList.tailExn(list{1, 2, 3})->assertEqual(list{2, 3})\n\nswitch List.tailExn(list{}) {\n| exception Not_found => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises an Error if list is empty."
         ],
-        "signature": "let tailExn: list<'a> => list<'a>"
+        "signature": "let tailExn: list<'a> => list<'a>",
+        "deprecated": "Use `tailOrThrow` instead"
+      },
+      {
+        "id": "Stdlib.List.tailOrThrow",
+        "kind": "value",
+        "name": "tailOrThrow",
+        "docstrings": [
+          "`tailOrThrow(list)` same as [`tail`](#tail).\n\n## Examples\n\n```rescript\nList.tailOrThrow(list{1, 2, 3})->assertEqual(list{2, 3})\n\nswitch List.tailOrThrow(list{}) {\n| exception Not_found => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises an Error if list is empty."
+        ],
+        "signature": "let tailOrThrow: list<'a> => list<'a>"
       },
       {
         "id": "Stdlib.List.add",
@@ -7411,7 +7471,17 @@
         "docstrings": [
           "`getExn(list, index)` same as [`get`](#get).\n\n## Examples\n\n```rescript\nlet abc = list{\"A\", \"B\", \"C\"}\n\nabc\n->List.getExn(1)\n->assertEqual(\"B\")\n\nswitch abc->List.getExn(4) {\n| exception Not_found => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises an Error if `index` is larger than the length of list."
         ],
-        "signature": "let getExn: (list<'a>, int) => 'a"
+        "signature": "let getExn: (list<'a>, int) => 'a",
+        "deprecated": "Use `getOrThrow` instead"
+      },
+      {
+        "id": "Stdlib.List.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [
+          "`getOrThrow(list, index)` same as [`get`](#get).\n\n## Examples\n\n```rescript\nlet abc = list{\"A\", \"B\", \"C\"}\n\nabc\n->List.getOrThrow(1)\n->assertEqual(\"B\")\n\nswitch abc->List.getOrThrow(4) {\n| exception Not_found => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises an Error if `index` is larger than the length of list."
+        ],
+        "signature": "let getOrThrow: (list<'a>, int) => 'a"
       },
       {
         "id": "Stdlib.List.make",
