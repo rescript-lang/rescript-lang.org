@@ -7003,7 +7003,7 @@
         "kind": "type",
         "name": "obj_val",
         "docstrings": [],
-        "signature": "type obj_val = Type.Classify.object"
+        "signature": "type obj_val = \\\"Type.Classify\".object"
       },
       {
         "id": "Js.Types.undefined_val",
@@ -7028,7 +7028,7 @@
         "kind": "type",
         "name": "function_val",
         "docstrings": [],
-        "signature": "type function_val = Type.Classify.function"
+        "signature": "type function_val = \\\"Type.Classify\".function"
       },
       {
         "id": "Js.Types.t",
@@ -9185,21 +9185,7 @@
         "kind": "value",
         "name": "then_",
         "docstrings": [],
-        "signature": "let then_: (promise<'a>, 'a => promise<'b>) => promise<'b>"
-      },
-      {
-        "id": "Js.Promise.then_",
-        "kind": "value",
-        "name": "then_",
-        "docstrings": [],
         "signature": "let then_: ('a => promise<'b>, promise<'a>) => promise<'b>"
-      },
-      {
-        "id": "Js.Promise.catch",
-        "kind": "value",
-        "name": "catch",
-        "docstrings": [],
-        "signature": "let catch: (promise<'a>, error => promise<'a>) => promise<'a>"
       },
       {
         "id": "Js.Promise.catch",
@@ -9957,26 +9943,8 @@
         "id": "Js.String.charAt",
         "kind": "value",
         "name": "charAt",
-        "docstrings": [
-          "`charAt(n, s)` gets the character at index `n` within string `s`. If `n` is\nnegative or greater than the length of `s`, it returns the empty string. If the\nstring contains characters outside the range \\u0000-\\uffff, it will return the\nfirst 16-bit value at that position in the string.\n\nSee [`String.charAt`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charAt)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.charAt(0, \"Reason\") == \"R\"\nJs.String.charAt(12, \"Reason\") == \"\"\nJs.String.charAt(5, `Rẽasöń`) == `ń`\n```"
-        ],
-        "signature": "let charAt: (t, int) => t"
-      },
-      {
-        "id": "Js.String.charAt",
-        "kind": "value",
-        "name": "charAt",
         "docstrings": [],
         "signature": "let charAt: (int, t) => t"
-      },
-      {
-        "id": "Js.String.charCodeAt",
-        "kind": "value",
-        "name": "charCodeAt",
-        "docstrings": [
-          "`charCodeAt(n, s)` returns the character code at position `n` in string `s`;\nthe result is in the range 0-65535, unlke `codePointAt`, so it will not work\ncorrectly for characters with code points greater than or equal to 0x10000. The\nreturn type is `float` because this function returns NaN if `n` is less than\nzero or greater than the length of the string.\n\nSee [`String.charCodeAt`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.charCodeAt(0, `😺`) == 0xd83d->Belt.Int.toFloat\nJs.String.codePointAt(0, `😺`) == Some(0x1f63a)\n```"
-        ],
-        "signature": "let charCodeAt: (t, int) => float"
       },
       {
         "id": "Js.String.charCodeAt",
@@ -9989,15 +9957,6 @@
         "id": "Js.String.codePointAt",
         "kind": "value",
         "name": "codePointAt",
-        "docstrings": [
-          "`codePointAt(n, s)` returns the code point at position `n` within string `s` as\na `Some(value)`. The return value handles code points greater than or equal to\n0x10000. If there is no code point at the given position, the function returns\n`None`.\n\nSee [`String.codePointAt`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/codePointAt)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.codePointAt(1, `¿😺?`) == Some(0x1f63a)\nJs.String.codePointAt(5, \"abc\") == None\n```"
-        ],
-        "signature": "let codePointAt: (t, int) => option<int>"
-      },
-      {
-        "id": "Js.String.codePointAt",
-        "kind": "value",
-        "name": "codePointAt",
         "docstrings": [],
         "signature": "let codePointAt: (int, t) => option<int>"
       },
@@ -10005,26 +9964,8 @@
         "id": "Js.String.concat",
         "kind": "value",
         "name": "concat",
-        "docstrings": [
-          "`concat(append, original)` returns a new `string` with `append` added after\n`original`.\n\nSee [`String.concat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/concat)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.concat(\"bell\", \"cow\") == \"cowbell\"\n```"
-        ],
-        "signature": "let concat: (t, t) => t"
-      },
-      {
-        "id": "Js.String.concat",
-        "kind": "value",
-        "name": "concat",
         "docstrings": [],
         "signature": "let concat: (t, t) => t"
-      },
-      {
-        "id": "Js.String.concatMany",
-        "kind": "value",
-        "name": "concatMany",
-        "docstrings": [
-          "`concat(arr, original)` returns a new `string` consisting of each item of an\narray of strings added to the `original` string.\n\nSee [`String.concat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/concat)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.concatMany([\"2nd\", \"3rd\", \"4th\"], \"1st\") == \"1st2nd3rd4th\"\n```"
-        ],
-        "signature": "let concatMany: (t, array<t>) => t"
       },
       {
         "id": "Js.String.concatMany",
@@ -10037,26 +9978,8 @@
         "id": "Js.String.endsWith",
         "kind": "value",
         "name": "endsWith",
-        "docstrings": [
-          "ES2015: `endsWith(substr, str)` returns `true` if the `str` ends with `substr`,\n`false` otherwise.\n\nSee [`String.endsWith`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.endsWith(\"Script\", \"ReScript\") == true\nJs.String.endsWith(\"Script\", \"C++\") == false\n```"
-        ],
-        "signature": "let endsWith: (t, t) => bool"
-      },
-      {
-        "id": "Js.String.endsWith",
-        "kind": "value",
-        "name": "endsWith",
         "docstrings": [],
         "signature": "let endsWith: (t, t) => bool"
-      },
-      {
-        "id": "Js.String.endsWithFrom",
-        "kind": "value",
-        "name": "endsWithFrom",
-        "docstrings": [
-          "`endsWithFrom(ending, len, str)` returns `true` if the first len characters of\n`str` end with `ending`, `false` otherwise. If `len` is greater than or equal\nto the length of `str`, then it works like `endsWith`. (Honestly, this should\nhave been named endsWithAt, but oh well.)\n\nSee [`String.endsWith`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.endsWithFrom(\"cd\", 4, \"abcd\") == true\nJs.String.endsWithFrom(\"cd\", 3, \"abcde\") == false\nJs.String.endsWithFrom(\"cde\", 99, \"abcde\") == true\nJs.String.endsWithFrom(\"ple\", 7, \"example.dat\") == true\n```"
-        ],
-        "signature": "let endsWithFrom: (t, t, int) => bool"
       },
       {
         "id": "Js.String.endsWithFrom",
@@ -10069,26 +9992,8 @@
         "id": "Js.String.includes",
         "kind": "value",
         "name": "includes",
-        "docstrings": [
-          "ES2015: `includes(searchValue, str)` returns `true` if `searchValue` is found\nanywhere within `str`, false otherwise.\n\nSee [`String.includes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/includes)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.includes(\"gram\", \"programmer\") == true\nJs.String.includes(\"er\", \"programmer\") == true\nJs.String.includes(\"pro\", \"programmer\") == true\nJs.String.includes(\"xyz\", \"programmer.dat\") == false\n```"
-        ],
-        "signature": "let includes: (t, t) => bool"
-      },
-      {
-        "id": "Js.String.includes",
-        "kind": "value",
-        "name": "includes",
         "docstrings": [],
         "signature": "let includes: (t, t) => bool"
-      },
-      {
-        "id": "Js.String.includesFrom",
-        "kind": "value",
-        "name": "includesFrom",
-        "docstrings": [
-          "ES2015: `includes(searchValue start, str)` returns `true` if `searchValue` is\nfound anywhere within `str` starting at character number `start` (where 0 is\nthe first character), `false` otherwise.\n\nSee [`String.includes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/includes)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.includesFrom(\"gram\", 1, \"programmer\") == true\nJs.String.includesFrom(\"gram\", 4, \"programmer\") == false\nJs.String.includesFrom(`한`, 1, `대한민국`) == true\n```"
-        ],
-        "signature": "let includesFrom: (t, t, int) => bool"
       },
       {
         "id": "Js.String.includesFrom",
@@ -10101,26 +10006,8 @@
         "id": "Js.String.indexOf",
         "kind": "value",
         "name": "indexOf",
-        "docstrings": [
-          "ES2015: `indexOf(searchValue, str)` returns the position at which `searchValue`\nwas first found within `str`, or -1 if `searchValue` is not in `str`.\n\nSee [`String.indexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/indexOf)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.indexOf(\"ok\", \"bookseller\") == 2\nJs.String.indexOf(\"sell\", \"bookseller\") == 4\nJs.String.indexOf(\"ee\", \"beekeeper\") == 1\nJs.String.indexOf(\"xyz\", \"bookseller\") == -1\n```"
-        ],
-        "signature": "let indexOf: (t, t) => int"
-      },
-      {
-        "id": "Js.String.indexOf",
-        "kind": "value",
-        "name": "indexOf",
         "docstrings": [],
         "signature": "let indexOf: (t, t) => int"
-      },
-      {
-        "id": "Js.String.indexOfFrom",
-        "kind": "value",
-        "name": "indexOfFrom",
-        "docstrings": [
-          "`indexOfFrom(searchValue, start, str)` returns the position at which\n`searchValue` was found within `str` starting at character position `start`, or\n-1 if `searchValue` is not found in that portion of `str`. The return value is\nrelative to the beginning of the string, no matter where the search started\nfrom.\n\nSee [`String.indexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/indexOf)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.indexOfFrom(\"ok\", 1, \"bookseller\") == 2\nJs.String.indexOfFrom(\"sell\", 2, \"bookseller\") == 4\nJs.String.indexOfFrom(\"sell\", 5, \"bookseller\") == -1\n```"
-        ],
-        "signature": "let indexOfFrom: (t, t, int) => int"
       },
       {
         "id": "Js.String.indexOfFrom",
@@ -10133,26 +10020,8 @@
         "id": "Js.String.lastIndexOf",
         "kind": "value",
         "name": "lastIndexOf",
-        "docstrings": [
-          "`lastIndexOf(searchValue, str)` returns the position of the last occurrence of\n`searchValue` within `str`, searching backwards from the end of the string.\nReturns -1 if `searchValue` is not in `str`. The return value is always\nrelative to the beginning of the string.\n\nSee [`String.lastIndexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/lastIndexOf)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.lastIndexOf(\"ok\", \"bookseller\") == 2\nJs.String.lastIndexOf(\"ee\", \"beekeeper\") == 4\nJs.String.lastIndexOf(\"xyz\", \"abcdefg\") == -1\n```"
-        ],
-        "signature": "let lastIndexOf: (t, t) => int"
-      },
-      {
-        "id": "Js.String.lastIndexOf",
-        "kind": "value",
-        "name": "lastIndexOf",
         "docstrings": [],
         "signature": "let lastIndexOf: (t, t) => int"
-      },
-      {
-        "id": "Js.String.lastIndexOfFrom",
-        "kind": "value",
-        "name": "lastIndexOfFrom",
-        "docstrings": [
-          "`lastIndexOfFrom(searchValue, start, str)` returns the position of the last\noccurrence of `searchValue` within `str`, searching backwards from the given\nstart position. Returns -1 if `searchValue` is not in `str`. The return value\nis always relative to the beginning of the string.\n\nSee [`String.lastIndexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/lastIndexOf)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.lastIndexOfFrom(\"ok\", 6, \"bookseller\") == 2\nJs.String.lastIndexOfFrom(\"ee\", 8, \"beekeeper\") == 4\nJs.String.lastIndexOfFrom(\"ee\", 3, \"beekeeper\") == 1\nJs.String.lastIndexOfFrom(\"xyz\", 4, \"abcdefg\") == -1\n```"
-        ],
-        "signature": "let lastIndexOfFrom: (t, t, int) => int"
       },
       {
         "id": "Js.String.lastIndexOfFrom",
@@ -10165,26 +10034,8 @@
         "id": "Js.String.localeCompare",
         "kind": "value",
         "name": "localeCompare",
-        "docstrings": [
-          "`localeCompare(comparison, reference)` returns\n- a negative value if reference comes before comparison in sort order\n- zero if reference and comparison have the same sort order\n- a positive value if reference comes after comparison in sort order\n\nSee [`String.localeCompare`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare) on MDN.\n\n## Examples\n\n```rescript\nJs.String.localeCompare(\"ant\", \"zebra\") > 0.0\nJs.String.localeCompare(\"zebra\", \"ant\") < 0.0\nJs.String.localeCompare(\"cat\", \"cat\") == 0.0\nJs.String.localeCompare(\"cat\", \"CAT\") > 0.0\n```"
-        ],
-        "signature": "let localeCompare: (t, t) => float"
-      },
-      {
-        "id": "Js.String.localeCompare",
-        "kind": "value",
-        "name": "localeCompare",
         "docstrings": [],
         "signature": "let localeCompare: (t, t) => float"
-      },
-      {
-        "id": "Js.String.match_",
-        "kind": "value",
-        "name": "match_",
-        "docstrings": [
-          "`match(regexp, str)` matches a `string` against the given `regexp`. If there is\nno match, it returns `None`. For regular expressions without the g modifier, if\n  there is a match, the return value is `Some(array)` where the array contains:\n- The entire matched string\n- Any capture groups if the regexp had parentheses\n\nFor regular expressions with the g modifier, a matched expression returns\n`Some(array)` with all the matched substrings and no capture groups.\n\nSee [`String.match`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.match_(/b[aeiou]t/, \"The better bats\") == Some([\"bet\"])\nJs.String.match_(/b[aeiou]t/g, \"The better bats\") == Some([\"bet\", \"bat\"])\nJs.String.match_(/(\\d+)-(\\d+)-(\\d+)/, \"Today is 2018-04-05.\") ==\n  Some([\"2018-04-05\", \"2018\", \"04\", \"05\"])\nJs.String.match_(/b[aeiou]g/, \"The large container.\") == None\n```"
-        ],
-        "signature": "let match_: (t, Js_re.t) => option<array<option<t>>>"
       },
       {
         "id": "Js.String.match_",
@@ -10206,26 +10057,8 @@
         "id": "Js.String.normalizeByForm",
         "kind": "value",
         "name": "normalizeByForm",
-        "docstrings": [
-          "ES2015: `normalize(form, str)` returns the normalized Unicode string using the specified form of normalization, which may be one of:\n- \"NFC\" — Normalization Form Canonical Composition.\n- \"NFD\" — Normalization Form Canonical Decomposition.\n- \"NFKC\" — Normalization Form Compatibility Composition.\n- \"NFKD\" — Normalization Form Compatibility Decomposition.\n\nSee [`String.normalize`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize) on MDN.\n\nSee also [Unicode technical report #15](https://unicode.org/reports/tr15/) for details."
-        ],
-        "signature": "let normalizeByForm: (t, t) => t"
-      },
-      {
-        "id": "Js.String.normalizeByForm",
-        "kind": "value",
-        "name": "normalizeByForm",
         "docstrings": [],
         "signature": "let normalizeByForm: (t, t) => t"
-      },
-      {
-        "id": "Js.String.repeat",
-        "kind": "value",
-        "name": "repeat",
-        "docstrings": [
-          "`repeat(n, str)` returns a `string` that consists of `n` repetitions of `str`.\nRaises `RangeError` if `n` is negative.\n\nSee [`String.repeat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/repeat)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.repeat(3, \"ha\") == \"hahaha\"\nJs.String.repeat(0, \"empty\") == \"\"\n```"
-        ],
-        "signature": "let repeat: (t, int) => t"
       },
       {
         "id": "Js.String.repeat",
@@ -10238,26 +10071,8 @@
         "id": "Js.String.replace",
         "kind": "value",
         "name": "replace",
-        "docstrings": [
-          "ES2015: `replace(substr, newSubstr, str)` returns a new `string` which is\nidentical to `str` except with the first matching instance of `substr` replaced\nby `newSubstr`. `substr` is treated as a verbatim string to match, not a\nregular expression.\n\nSee [`String.replace`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.replace(\"old\", \"new\", \"old string\") == \"new string\"\nJs.String.replace(\"the\", \"this\", \"the cat and the dog\") == \"this cat and the dog\"\n```"
-        ],
-        "signature": "let replace: (t, t, t) => t"
-      },
-      {
-        "id": "Js.String.replace",
-        "kind": "value",
-        "name": "replace",
         "docstrings": [],
         "signature": "let replace: (t, t, t) => t"
-      },
-      {
-        "id": "Js.String.replaceByRe",
-        "kind": "value",
-        "name": "replaceByRe",
-        "docstrings": [
-          "`replaceByRe(regex, replacement, str)` returns a new `string` where occurrences\nmatching regex have been replaced by `replacement`.\n\nSee [`String.replace`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.replaceByRe(/[aeiou]/g, \"x\", \"vowels be gone\") == \"vxwxls bx gxnx\"\nJs.String.replaceByRe(/(\\w+) (\\w+)/, \"$2, $1\", \"Juan Fulano\") == \"Fulano, Juan\"\n```"
-        ],
-        "signature": "let replaceByRe: (t, Js_re.t, t) => t"
       },
       {
         "id": "Js.String.replaceByRe",
@@ -10270,26 +10085,8 @@
         "id": "Js.String.unsafeReplaceBy0",
         "kind": "value",
         "name": "unsafeReplaceBy0",
-        "docstrings": [
-          "Returns a new `string` with some or all matches of a pattern with no capturing\nparentheses replaced by the value returned from the given function. The\nfunction receives as its parameters the matched string, the offset at which the\nmatch begins, and the whole string being matched.\n\nSee [`String.replace`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)\non MDN.\n\n## Examples\n\n```rescript\nlet str = \"beautiful vowels\"\nlet re = /[aeiou]/g\nlet matchFn = (matchPart, _offset, _wholeString) => Js.String.toUpperCase(matchPart)\n\nJs.String.unsafeReplaceBy0(re, matchFn, str) == \"bEAUtIfUl vOwEls\"\n```"
-        ],
-        "signature": "let unsafeReplaceBy0: (t, Js_re.t, (t, int, t) => t) => t"
-      },
-      {
-        "id": "Js.String.unsafeReplaceBy0",
-        "kind": "value",
-        "name": "unsafeReplaceBy0",
         "docstrings": [],
         "signature": "let unsafeReplaceBy0: (Js_re.t, (t, int, t) => t, t) => t"
-      },
-      {
-        "id": "Js.String.unsafeReplaceBy1",
-        "kind": "value",
-        "name": "unsafeReplaceBy1",
-        "docstrings": [
-          "Returns a new `string` with some or all matches of a pattern with one set of\ncapturing parentheses replaced by the value returned from the given function.\nThe function receives as its parameters the matched string, the captured\nstring, the offset at which the match begins, and the whole string being\nmatched.\n\nSee [`String.replace`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)\non MDN.\n\n## Examples\n\n```rescript\nlet str = \"Jony is 40\"\nlet re = /(Jony is )\\d+/g\nlet matchFn = (_match, part1, _offset, _wholeString) => {\n  part1 ++ \"41\"\n}\n\nJs.String.unsafeReplaceBy1(re, matchFn, str) == \"Jony is 41\"\n```"
-        ],
-        "signature": "let unsafeReplaceBy1: (t, Js_re.t, (t, t, int, t) => t) => t"
       },
       {
         "id": "Js.String.unsafeReplaceBy1",
@@ -10302,26 +10099,8 @@
         "id": "Js.String.unsafeReplaceBy2",
         "kind": "value",
         "name": "unsafeReplaceBy2",
-        "docstrings": [
-          "Returns a new `string` with some or all matches of a pattern with two sets of\ncapturing parentheses replaced by the value returned from the given function.\nThe function receives as its parameters the matched string, the captured\nstrings, the offset at which the match begins, and the whole string being\nmatched.\n\nSee [`String.replace`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)\non MDN.\n\n## Examples\n\n```rescript\nlet str = \"7 times 6\"\nlet re = /(\\d+) times (\\d+)/\nlet matchFn = (_match, p1, p2, _offset, _wholeString) => {\n  switch (Belt.Int.fromString(p1), Belt.Int.fromString(p2)) {\n  | (Some(x), Some(y)) => Belt.Int.toString(x * y)\n  | _ => \"???\"\n  }\n}\n\nJs.String.unsafeReplaceBy2(re, matchFn, str) == \"42\"\n```"
-        ],
-        "signature": "let unsafeReplaceBy2: (t, Js_re.t, (t, t, t, int, t) => t) => t"
-      },
-      {
-        "id": "Js.String.unsafeReplaceBy2",
-        "kind": "value",
-        "name": "unsafeReplaceBy2",
         "docstrings": [],
         "signature": "let unsafeReplaceBy2: (Js_re.t, (t, t, t, int, t) => t, t) => t"
-      },
-      {
-        "id": "Js.String.unsafeReplaceBy3",
-        "kind": "value",
-        "name": "unsafeReplaceBy3",
-        "docstrings": [
-          "Returns a new `string` with some or all matches of a pattern with three sets of\ncapturing parentheses replaced by the value returned from the given function.\nThe function receives as its parameters the matched string, the captured\nstrings, the offset at which the match begins, and the whole string being\nmatched.\n\nSee [`String.replace`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)\non MDN."
-        ],
-        "signature": "let unsafeReplaceBy3: (t, Js_re.t, (t, t, t, t, int, t) => t) => t"
       },
       {
         "id": "Js.String.unsafeReplaceBy3",
@@ -10334,26 +10113,8 @@
         "id": "Js.String.search",
         "kind": "value",
         "name": "search",
-        "docstrings": [
-          "`search(regexp, str)` returns the starting position of the first match of\n`regexp` in the given `str`, or -1 if there is no match.\n\nSee [`String.search`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/search)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.search(/\\d+/, \"testing 1 2 3\") == 8\nJs.String.search(/\\d+/, \"no numbers\") == -1\n```"
-        ],
-        "signature": "let search: (t, Js_re.t) => int"
-      },
-      {
-        "id": "Js.String.search",
-        "kind": "value",
-        "name": "search",
         "docstrings": [],
         "signature": "let search: (Js_re.t, t) => int"
-      },
-      {
-        "id": "Js.String.slice",
-        "kind": "value",
-        "name": "slice",
-        "docstrings": [
-          "`slice(from:n1, to_:n2, str)` returns the substring of `str` starting at\ncharacter `n1` up to but not including `n2`.\n- If either `n1` or `n2` is negative, then it is evaluated as `length(str - n1)` or `length(str - n2)`.\n- If `n2` is greater than the length of `str`, then it is treated as `length(str)`.\n- If `n1` is greater than `n2`, slice returns the empty string.\n\nSee [`String.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice) on MDN.\n\n## Examples\n\n```rescript\nJs.String.slice(~from=2, ~to_=5, \"abcdefg\") == \"cde\"\nJs.String.slice(~from=2, ~to_=9, \"abcdefg\") == \"cdefg\"\nJs.String.slice(~from=-4, ~to_=-2, \"abcdefg\") == \"de\"\nJs.String.slice(~from=5, ~to_=1, \"abcdefg\") == \"\"\n```"
-        ],
-        "signature": "let slice: (t, ~from: int, ~to_: int) => t"
       },
       {
         "id": "Js.String.slice",
@@ -10366,15 +10127,6 @@
         "id": "Js.String.sliceToEnd",
         "kind": "value",
         "name": "sliceToEnd",
-        "docstrings": [
-          "`sliceToEnd(str, from:n)` returns the substring of `str` starting at character\n`n` to the end of the string.\n- If `n` is negative, then it is evaluated as `length(str - n)`.\n- If `n` is greater than the length of `str`, then sliceToEnd returns the empty string.\n\nSee [`String.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice) on MDN.\n\n## Examples\n\n```rescript\nJs.String.sliceToEnd(~from=4, \"abcdefg\") == \"efg\"\nJs.String.sliceToEnd(~from=-2, \"abcdefg\") == \"fg\"\nJs.String.sliceToEnd(~from=7, \"abcdefg\") == \"\"\n```"
-        ],
-        "signature": "let sliceToEnd: (t, ~from: int) => t"
-      },
-      {
-        "id": "Js.String.sliceToEnd",
-        "kind": "value",
-        "name": "sliceToEnd",
         "docstrings": [],
         "signature": "let sliceToEnd: (~from: int, t) => t"
       },
@@ -10382,26 +10134,8 @@
         "id": "Js.String.split",
         "kind": "value",
         "name": "split",
-        "docstrings": [
-          "`split(delimiter, str)` splits the given `str` at every occurrence of\n`delimiter` and returns an array of the resulting substrings.\n\nSee [`String.split`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.split(\"-\", \"2018-01-02\") == [\"2018\", \"01\", \"02\"]\nJs.String.split(\",\", \"a,b,,c\") == [\"a\", \"b\", \"\", \"c\"]\nJs.String.split(\"::\", \"good::bad as great::awful\") == [\"good\", \"bad as great\", \"awful\"]\nJs.String.split(\";\", \"has-no-delimiter\") == [\"has-no-delimiter\"]\n```"
-        ],
-        "signature": "let split: (t, t) => array<t>"
-      },
-      {
-        "id": "Js.String.split",
-        "kind": "value",
-        "name": "split",
         "docstrings": [],
         "signature": "let split: (t, t) => array<t>"
-      },
-      {
-        "id": "Js.String.splitAtMost",
-        "kind": "value",
-        "name": "splitAtMost",
-        "docstrings": [
-          "`splitAtMost(delimiter, ~limit:n, str)` splits the given `str` at every\noccurrence of `delimiter` and returns an array of the first `n` resulting\nsubstrings. If `n` is negative or greater than the number of substrings, the\narray will contain all the substrings.\n\nSee [`String.split`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.splitAtMost(\"/\", ~limit=3, \"ant/bee/cat/dog/elk\") == [\"ant\", \"bee\", \"cat\"]\nJs.String.splitAtMost(\"/\", ~limit=0, \"ant/bee/cat/dog/elk\") == []\nJs.String.splitAtMost(\"/\", ~limit=9, \"ant/bee/cat/dog/elk\") == [\"ant\", \"bee\", \"cat\", \"dog\", \"elk\"]\n```"
-        ],
-        "signature": "let splitAtMost: (t, t, ~limit: int) => array<t>"
       },
       {
         "id": "Js.String.splitAtMost",
@@ -10414,26 +10148,8 @@
         "id": "Js.String.splitByRe",
         "kind": "value",
         "name": "splitByRe",
-        "docstrings": [
-          "`splitByRe(regex, str)` splits the given `str` at every occurrence of `regex`\nand returns an array of the resulting substrings.\n\nSee [`String.split`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.splitByRe(%re(\"/\\s*[,;]\\s*TODO/\"), \"art; bed , cog ;dad\") == [\n    Some(\"art\"),\n    Some(\"bed\"),\n    Some(\"cog\"),\n    Some(\"dad\"),\n  ]\n```"
-        ],
-        "signature": "let splitByRe: (t, Js_re.t) => array<option<t>>"
-      },
-      {
-        "id": "Js.String.splitByRe",
-        "kind": "value",
-        "name": "splitByRe",
         "docstrings": [],
         "signature": "let splitByRe: (Js_re.t, t) => array<option<t>>"
-      },
-      {
-        "id": "Js.String.splitByReAtMost",
-        "kind": "value",
-        "name": "splitByReAtMost",
-        "docstrings": [
-          "`splitByReAtMost(regex, ~limit:n, str)` splits the given `str` at every\noccurrence of `regex` and returns an array of the first `n` resulting\nsubstrings. If `n` is negative or greater than the number of substrings, the\narray will contain all the substrings.\n\nSee [`String.split`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.splitByReAtMost(%re(\"/\\s*[,;]\\s*TODO/\"), ~limit=3, \"one: two: three: four\") == [\n    Some(\"one\"),\n    Some(\"two\"),\n    Some(\"three\"),\n  ]\n\nJs.String.splitByReAtMost(%re(\"/\\s*[,;]\\s*TODO/\"), ~limit=0, \"one: two: three: four\") == []\n\nJs.String.splitByReAtMost(%re(\"/\\s*[,;]\\s*TODO/\"), ~limit=8, \"one: two: three: four\") == [\n    Some(\"one\"),\n    Some(\"two\"),\n    Some(\"three\"),\n    Some(\"four\"),\n  ]\n```"
-        ],
-        "signature": "let splitByReAtMost: (t, Js_re.t, ~limit: int) => array<option<t>>"
       },
       {
         "id": "Js.String.splitByReAtMost",
@@ -10446,26 +10162,8 @@
         "id": "Js.String.startsWith",
         "kind": "value",
         "name": "startsWith",
-        "docstrings": [
-          "ES2015: `startsWith(substr, str)` returns `true` if the `str` starts with\n`substr`, `false` otherwise.\n\nSee [`String.startsWith`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.startsWith(\"Re\", \"ReScript\") == true\nJs.String.startsWith(\"\", \"ReScript\") == true\nJs.String.startsWith(\"Re\", \"JavaScript\") == false\n```"
-        ],
-        "signature": "let startsWith: (t, t) => bool"
-      },
-      {
-        "id": "Js.String.startsWith",
-        "kind": "value",
-        "name": "startsWith",
         "docstrings": [],
         "signature": "let startsWith: (t, t) => bool"
-      },
-      {
-        "id": "Js.String.startsWithFrom",
-        "kind": "value",
-        "name": "startsWithFrom",
-        "docstrings": [
-          "ES2015: `startsWithFrom(substr, n, str)` returns `true` if the `str` starts\nwith `substr` starting at position `n`, false otherwise. If `n` is negative,\nthe search starts at the beginning of `str`.\n\nSee [`String.startsWith`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.startsWithFrom(\"Scri\", 2, \"ReScript\") == true\nJs.String.startsWithFrom(\"\", 2, \"ReScript\") == true\nJs.String.startsWithFrom(\"Scri\", 2, \"JavaScript\") == false\n```"
-        ],
-        "signature": "let startsWithFrom: (t, t, int) => bool"
       },
       {
         "id": "Js.String.startsWithFrom",
@@ -10478,26 +10176,8 @@
         "id": "Js.String.substr",
         "kind": "value",
         "name": "substr",
-        "docstrings": [
-          "`substr(~from:n, str)` returns the substring of `str` from position `n` to the\nend of the string.\n- If `n` is less than zero, the starting position is the length of `str - n`.\n- If `n` is greater than or equal to the length of `str`, returns the empty string.\n\nJavaScript’s `String.substr()` is a legacy function. When possible, use\n`substring()` instead.\n\nSee [`String.substr`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substr)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.substr(~from=3, \"abcdefghij\") == \"defghij\"\nJs.String.substr(~from=-3, \"abcdefghij\") == \"hij\"\nJs.String.substr(~from=12, \"abcdefghij\") == \"\"\n```"
-        ],
-        "signature": "let substr: (t, ~from: int) => t"
-      },
-      {
-        "id": "Js.String.substr",
-        "kind": "value",
-        "name": "substr",
         "docstrings": [],
         "signature": "let substr: (~from: int, t) => t"
-      },
-      {
-        "id": "Js.String.substrAtMost",
-        "kind": "value",
-        "name": "substrAtMost",
-        "docstrings": [
-          "`substrAtMost(~from: pos, ~length: n, str)` returns the substring of `str` of\nlength `n` starting at position `pos`.\n- If `pos` is less than zero, the starting position is the length of `str - pos`.\n- If `pos` is greater than or equal to the length of `str`, returns the empty string.\n- If `n` is less than or equal to zero, returns the empty string.\n\nJavaScript’s `String.substr()` is a legacy function. When possible, use\n`substring()` instead.\n\nSee [`String.substr`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substr)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.substrAtMost(~from=3, ~length=4, \"abcdefghij\") == \"defg\"\nJs.String.substrAtMost(~from=-3, ~length=4, \"abcdefghij\") == \"hij\"\nJs.String.substrAtMost(~from=12, ~length=2, \"abcdefghij\") == \"\"\n```"
-        ],
-        "signature": "let substrAtMost: (t, ~from: int, ~length: int) => t"
       },
       {
         "id": "Js.String.substrAtMost",
@@ -10510,26 +10190,8 @@
         "id": "Js.String.substring",
         "kind": "value",
         "name": "substring",
-        "docstrings": [
-          "`substring(~from: start, ~to_: finish, str)` returns characters `start` up to\nbut not including finish from `str`.\n- If `start` is less than zero, it is treated as zero.\n- If `finish` is zero or negative, the empty string is returned.\n- If `start` is greater than `finish`, the `start` and `finish` points are swapped.\n\nSee [`String.substring`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substring) on MDN.\n\n## Examples\n\n```rescript\nJs.String.substring(~from=3, ~to_=6, \"playground\") == \"ygr\"\nJs.String.substring(~from=6, ~to_=3, \"playground\") == \"ygr\"\nJs.String.substring(~from=4, ~to_=12, \"playground\") == \"ground\"\n```"
-        ],
-        "signature": "let substring: (t, ~from: int, ~to_: int) => t"
-      },
-      {
-        "id": "Js.String.substring",
-        "kind": "value",
-        "name": "substring",
         "docstrings": [],
         "signature": "let substring: (~from: int, ~to_: int, t) => t"
-      },
-      {
-        "id": "Js.String.substringToEnd",
-        "kind": "value",
-        "name": "substringToEnd",
-        "docstrings": [
-          "`substringToEnd(~from: start, str)` returns the substring of `str` from\nposition `start` to the end.\n- If `start` is less than or equal to zero, the entire string is returned.\n- If `start` is greater than or equal to the length of `str`, the empty string is returned.\n\nSee [`String.substring`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substring) on MDN.\n\n## Examples\n\n```rescript\nJs.String.substringToEnd(~from=4, \"playground\") == \"ground\"\nJs.String.substringToEnd(~from=-3, \"playground\") == \"playground\"\nJs.String.substringToEnd(~from=12, \"playground\") == \"\"\n```"
-        ],
-        "signature": "let substringToEnd: (t, ~from: int) => t"
       },
       {
         "id": "Js.String.substringToEnd",
@@ -10587,26 +10249,8 @@
         "id": "Js.String.anchor",
         "kind": "value",
         "name": "anchor",
-        "docstrings": [
-          "`anchor(anchorName, anchorText)` creates a string with an HTML `<a>` element\nwith name attribute of `anchorName` and `anchorText` as its content. Please do\nnot use this method, as it has been removed from the relevant web standards.\n\nSee [`String.anchor`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/anchor)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.anchor(\"page1\", \"Page One\") == \"<a name=\"page1\">Page One</a>\"\n```"
-        ],
-        "signature": "let anchor: (t, t) => t"
-      },
-      {
-        "id": "Js.String.anchor",
-        "kind": "value",
-        "name": "anchor",
         "docstrings": [],
         "signature": "let anchor: (t, t) => t"
-      },
-      {
-        "id": "Js.String.link",
-        "kind": "value",
-        "name": "link",
-        "docstrings": [
-          "ES2015: `link(urlText, linkText)` creates a string with an HTML `<a>` element\nwith href attribute of `urlText` and `linkText` as its content. Please do not\nuse this method, as it has been removed from the relevant web standards.\n\nSee [`String.link`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/link)\non MDN.\n\n## Examples\n\n```rescript\nJs.String.link(\"page2.html\", \"Go to page two\") == \"<a href=\"page2.html\">Go to page two</a>\"\n```"
-        ],
-        "signature": "let link: (t, t) => t"
       },
       {
         "id": "Js.String.link",
@@ -11221,26 +10865,8 @@
         "id": "Js.Array.copyWithin",
         "kind": "value",
         "name": "copyWithin",
-        "docstrings": [
-          "Copies from the first element in the given array to the designated `~to_` position, returning the resulting array. *This function modifies the original array.* See [`Array.copyWithin`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin) on MDN.\n\n## Examples\n\n```rescript\nlet arr = [100, 101, 102, 103, 104]\nJs.Array.copyWithin(~to_=2, arr) == [100, 101, 100, 101, 102]\narr == [100, 101, 100, 101, 102]\n```"
-        ],
-        "signature": "let copyWithin: (t<'a>, ~to_: int) => 'this"
-      },
-      {
-        "id": "Js.Array.copyWithin",
-        "kind": "value",
-        "name": "copyWithin",
         "docstrings": [],
         "signature": "let copyWithin: (~to_: int, t<'a>) => 'b"
-      },
-      {
-        "id": "Js.Array.copyWithinFrom",
-        "kind": "value",
-        "name": "copyWithinFrom",
-        "docstrings": [
-          "Copies starting at element `~from` in the given array to the designated `~to_` position, returning the resulting array. *This function modifies the original array.* See [`Array.copyWithin`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin) on MDN.\n\n## Examples\n\n```rescript\nlet arr = [100, 101, 102, 103, 104]\nJs.Array.copyWithinFrom(~from=2, ~to_=0, arr) == [102, 103, 104, 103, 104]\narr == [102, 103, 104, 103, 104]\n```"
-        ],
-        "signature": "let copyWithinFrom: (t<'a>, ~to_: int, ~from: int) => 'this"
       },
       {
         "id": "Js.Array.copyWithinFrom",
@@ -11253,26 +10879,8 @@
         "id": "Js.Array.copyWithinFromRange",
         "kind": "value",
         "name": "copyWithinFromRange",
-        "docstrings": [
-          "Copies starting at element `~start` in the given array up to but not including `~end_` to the designated `~to_` position, returning the resulting array. *This function modifies the original array.* See [`Array.copyWithin`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin) on MDN.\n\n## Examples\n\n```rescript\nlet arr = [100, 101, 102, 103, 104, 105]\nJs.Array.copyWithinFromRange(~start=2, ~end_=5, ~to_=1, arr) == [100, 102, 103, 104, 104, 105]\narr == [100, 102, 103, 104, 104, 105]\n```"
-        ],
-        "signature": "let copyWithinFromRange: (t<'a>, ~to_: int, ~start: int, ~end_: int) => 'this"
-      },
-      {
-        "id": "Js.Array.copyWithinFromRange",
-        "kind": "value",
-        "name": "copyWithinFromRange",
         "docstrings": [],
         "signature": "let copyWithinFromRange: (~to_: int, ~start: int, ~end_: int, t<'a>) => 'b"
-      },
-      {
-        "id": "Js.Array.fillInPlace",
-        "kind": "value",
-        "name": "fillInPlace",
-        "docstrings": [
-          "Sets all elements of the given array (the second arumgent) to the designated value (the first argument), returning the resulting array. *This function modifies the original array.* See [`Array.fill`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill) on MDN.\n\n## Examples\n\n```rescript\nlet arr = [100, 101, 102, 103, 104]\nJs.Array.fillInPlace(99, arr) == [99, 99, 99, 99, 99]\narr == [99, 99, 99, 99, 99]\n```"
-        ],
-        "signature": "let fillInPlace: (t<'a>, 'a) => 'this"
       },
       {
         "id": "Js.Array.fillInPlace",
@@ -11285,26 +10893,8 @@
         "id": "Js.Array.fillFromInPlace",
         "kind": "value",
         "name": "fillFromInPlace",
-        "docstrings": [
-          "Sets all elements of the given array (the last arumgent) from position `~from` to the end to the designated value (the first argument), returning the resulting array. *This function modifies the original array.* See [`Array.fill`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill) on MDN.\n\n## Examples\n\n```rescript\nlet arr = [100, 101, 102, 103, 104]\nJs.Array.fillFromInPlace(99, ~from=2, arr) == [100, 101, 99, 99, 99]\narr == [100, 101, 99, 99, 99]\n```"
-        ],
-        "signature": "let fillFromInPlace: (t<'a>, 'a, ~from: int) => 'this"
-      },
-      {
-        "id": "Js.Array.fillFromInPlace",
-        "kind": "value",
-        "name": "fillFromInPlace",
         "docstrings": [],
         "signature": "let fillFromInPlace: ('a, ~from: int, t<'a>) => 'b"
-      },
-      {
-        "id": "Js.Array.fillRangeInPlace",
-        "kind": "value",
-        "name": "fillRangeInPlace",
-        "docstrings": [
-          "Sets the elements of the given array (the last arumgent) from position `~start` up to but not including position `~end_` to the designated value (the first argument), returning the resulting array. *This function modifies the original array.* See [`Array.fill`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill) on MDN.\n\n## Examples\n\n```rescript\nlet arr = [100, 101, 102, 103, 104]\nJs.Array.fillRangeInPlace(99, ~start=1, ~end_=4, arr) == [100, 99, 99, 99, 104]\narr == [100, 99, 99, 99, 104]\n```"
-        ],
-        "signature": "let fillRangeInPlace: (t<'a>, 'a, ~start: int, ~end_: int) => 'this"
       },
       {
         "id": "Js.Array.fillRangeInPlace",
@@ -11326,26 +10916,8 @@
         "id": "Js.Array.push",
         "kind": "value",
         "name": "push",
-        "docstrings": [
-          "Appends the given value to the array, returning the number of elements in the updated array. *This function modifies the original array.* See [`Array.push`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push) on MDN.\n\n## Examples\n\n```rescript\nlet arr = [\"ant\", \"bee\", \"cat\"]\nJs.Array.push(\"dog\", arr) == 4\narr == [\"ant\", \"bee\", \"cat\", \"dog\"]\n```"
-        ],
-        "signature": "let push: (t<'a>, 'a) => int"
-      },
-      {
-        "id": "Js.Array.push",
-        "kind": "value",
-        "name": "push",
         "docstrings": [],
         "signature": "let push: ('a, t<'a>) => int"
-      },
-      {
-        "id": "Js.Array.pushMany",
-        "kind": "value",
-        "name": "pushMany",
-        "docstrings": [
-          "Appends the values from one array (the first argument) to another (the second argument), returning the number of elements in the updated array. *This function modifies the original array.* See [`Array.push`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push) on MDN.\n\n## Examples\n\n```rescript\nlet arr = [\"ant\", \"bee\", \"cat\"]\nJs.Array.pushMany([\"dog\", \"elk\"], arr) == 5\narr == [\"ant\", \"bee\", \"cat\", \"dog\", \"elk\"]\n```"
-        ],
-        "signature": "let pushMany: (t<'a>, array<'a>) => int"
       },
       {
         "id": "Js.Array.pushMany",
@@ -11385,26 +10957,8 @@
         "id": "Js.Array.sortInPlaceWith",
         "kind": "value",
         "name": "sortInPlaceWith",
-        "docstrings": [
-          "Sorts the given array in place and returns the sorted array. *This function modifies the original array.*\n\nThe first argument to `sortInPlaceWith()` is a function that compares two items from the array and returns:\n\n* an integer less than zero if the first item is less than the second item\n* zero if the items are equal\n* an integer greater than zero if the first item is greater than the second item\n\nSee [`Array.sort`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort) on MDN.\n\n## Examples\n\n```rescript\n// sort by word length\nlet words = [\"horse\", \"aardvark\", \"dog\", \"camel\"]\nlet byLength = (s1, s2) => Js.String.length(s1) - Js.String.length(s2)\n\nJs.Array.sortInPlaceWith(byLength, words) == [\"dog\", \"horse\", \"camel\", \"aardvark\"]\n\n// sort in reverse numeric order\nlet numbers = [3, 30, 10, 1, 20, 2]\nlet reverseNumeric = (n1, n2) => n2 - n1\nJs.Array.sortInPlaceWith(reverseNumeric, numbers) == [30, 20, 10, 3, 2, 1]\n```"
-        ],
-        "signature": "let sortInPlaceWith: (t<'a>, ('a, 'a) => int) => 'this"
-      },
-      {
-        "id": "Js.Array.sortInPlaceWith",
-        "kind": "value",
-        "name": "sortInPlaceWith",
         "docstrings": [],
         "signature": "let sortInPlaceWith: (('a, 'a) => int, t<'a>) => 'b"
-      },
-      {
-        "id": "Js.Array.spliceInPlace",
-        "kind": "value",
-        "name": "spliceInPlace",
-        "docstrings": [
-          "Starting at position `~pos`, remove `~remove` elements and then add the\nelements from the `~add` array. Returns an array consisting of the removed\nitems. *This function modifies the original array.* See\n[`Array.splice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)\non MDN.\n\n## Examples\n\n```rescript\nlet arr = [\"a\", \"b\", \"c\", \"d\", \"e\", \"f\"]\nJs.Array.spliceInPlace(~pos=2, ~remove=2, ~add=[\"x\", \"y\", \"z\"], arr) == [\"c\", \"d\"]\narr == [\"a\", \"b\", \"x\", \"y\", \"z\", \"e\", \"f\"]\n\nlet arr2 = [\"a\", \"b\", \"c\", \"d\"]\nJs.Array.spliceInPlace(~pos=3, ~remove=0, ~add=[\"x\", \"y\"], arr2) == []\narr2 == [\"a\", \"b\", \"c\", \"x\", \"y\", \"d\"]\n\nlet arr3 = [\"a\", \"b\", \"c\", \"d\", \"e\", \"f\"]\nJs.Array.spliceInPlace(~pos=9, ~remove=2, ~add=[\"x\", \"y\", \"z\"], arr3) == []\narr3 == [\"a\", \"b\", \"c\", \"d\", \"e\", \"f\", \"x\", \"y\", \"z\"]\n```"
-        ],
-        "signature": "let spliceInPlace: (t<'a>, ~pos: int, ~remove: int, ~add: array<'a>) => 'this"
       },
       {
         "id": "Js.Array.spliceInPlace",
@@ -11417,26 +10971,8 @@
         "id": "Js.Array.removeFromInPlace",
         "kind": "value",
         "name": "removeFromInPlace",
-        "docstrings": [
-          "Removes elements from the given array starting at position `~pos` to the end\nof the array, returning the removed elements. *This function modifies the\noriginal array.* See\n[`Array.splice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)\non MDN.\n\n## Examples\n\n```rescript\nlet arr = [\"a\", \"b\", \"c\", \"d\", \"e\", \"f\"]\nJs.Array.removeFromInPlace(~pos=4, arr) == [\"e\", \"f\"]\narr == [\"a\", \"b\", \"c\", \"d\"]\n```"
-        ],
-        "signature": "let removeFromInPlace: (t<'a>, ~pos: int) => 'this"
-      },
-      {
-        "id": "Js.Array.removeFromInPlace",
-        "kind": "value",
-        "name": "removeFromInPlace",
         "docstrings": [],
         "signature": "let removeFromInPlace: (~pos: int, t<'a>) => 'b"
-      },
-      {
-        "id": "Js.Array.removeCountInPlace",
-        "kind": "value",
-        "name": "removeCountInPlace",
-        "docstrings": [
-          "Removes `~count` elements from the given array starting at position `~pos`,\nreturning the removed elements. *This function modifies the original array.*\nSee\n[`Array.splice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)\non MDN.\n\n## Examples\n\n```rescript\nlet arr = [\"a\", \"b\", \"c\", \"d\", \"e\", \"f\"]\nJs.Array.removeCountInPlace(~pos=2, ~count=3, arr) == [\"c\", \"d\", \"e\"]\narr == [\"a\", \"b\", \"f\"]\n```"
-        ],
-        "signature": "let removeCountInPlace: (t<'a>, ~pos: int, ~count: int) => 'this"
       },
       {
         "id": "Js.Array.removeCountInPlace",
@@ -11449,26 +10985,8 @@
         "id": "Js.Array.unshift",
         "kind": "value",
         "name": "unshift",
-        "docstrings": [
-          "Adds the given element to the array, returning the new number of elements in\nthe array. *This function modifies the original array.* See\n[`Array.unshift`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift)\non MDN.\n\n## Examples\n\n```rescript\nlet arr = [\"b\", \"c\", \"d\"]\nJs.Array.unshift(\"a\", arr) == 4\narr == [\"a\", \"b\", \"c\", \"d\"]\n```"
-        ],
-        "signature": "let unshift: (t<'a>, 'a) => int"
-      },
-      {
-        "id": "Js.Array.unshift",
-        "kind": "value",
-        "name": "unshift",
         "docstrings": [],
         "signature": "let unshift: ('a, t<'a>) => int"
-      },
-      {
-        "id": "Js.Array.unshiftMany",
-        "kind": "value",
-        "name": "unshiftMany",
-        "docstrings": [
-          "Adds the elements in the first array argument at the beginning of the second\narray argument, returning the new number of elements in the array. *This\nfunction modifies the original array.* See\n[`Array.unshift`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift)\non MDN.\n\n## Examples\n\n```rescript\nlet arr = [\"d\", \"e\"]\nJs.Array.unshiftMany([\"a\", \"b\", \"c\"], arr) == 5\narr == [\"a\", \"b\", \"c\", \"d\", \"e\"]\n```"
-        ],
-        "signature": "let unshiftMany: (t<'a>, array<'a>) => int"
       },
       {
         "id": "Js.Array.unshiftMany",
@@ -11481,26 +10999,8 @@
         "id": "Js.Array.concat",
         "kind": "value",
         "name": "concat",
-        "docstrings": [
-          "Concatenates the first array argument to the second array argument, returning\na new array. The original arrays are not modified. See\n[`Array.concat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat)\non MDN.\n\n## Examples\n\n```rescript\nJs.Array.concat([\"c\", \"d\", \"e\"], [\"a\", \"b\"]) == [\"a\", \"b\", \"c\", \"d\", \"e\"]\n```"
-        ],
-        "signature": "let concat: (t<'a>, 'this) => 'this"
-      },
-      {
-        "id": "Js.Array.concat",
-        "kind": "value",
-        "name": "concat",
         "docstrings": [],
         "signature": "let concat: ('a, t<'b>) => 'a"
-      },
-      {
-        "id": "Js.Array.concatMany",
-        "kind": "value",
-        "name": "concatMany",
-        "docstrings": [
-          "The first argument to `concatMany()` is an array of arrays; these are added\nat the end of the second argument, returning a new array. See\n[`Array.concat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat)\non MDN.\n\n## Examples\n\n```rescript\nJs.Array.concatMany([[\"d\", \"e\"], [\"f\", \"g\", \"h\"]], [\"a\", \"b\", \"c\"]) == [\n    \"a\",\n    \"b\",\n    \"c\",\n    \"d\",\n    \"e\",\n    \"f\",\n    \"g\",\n    \"h\",\n  ]\n```"
-        ],
-        "signature": "let concatMany: (t<'a>, array<'this>) => 'this"
       },
       {
         "id": "Js.Array.concatMany",
@@ -11513,15 +11013,6 @@
         "id": "Js.Array.includes",
         "kind": "value",
         "name": "includes",
-        "docstrings": [
-          "Returns true if the given value is in the array, `false` otherwise. See\n[`Array.includes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes)\non MDN.\n\n## Examples\n\n```rescript\nJs.Array.includes(\"b\", [\"a\", \"b\", \"c\"]) == true\nJs.Array.includes(\"x\", [\"a\", \"b\", \"c\"]) == false\n```"
-        ],
-        "signature": "let includes: (t<'a>, 'a) => bool"
-      },
-      {
-        "id": "Js.Array.includes",
-        "kind": "value",
-        "name": "includes",
         "docstrings": [],
         "signature": "let includes: ('a, t<'a>) => bool"
       },
@@ -11529,26 +11020,8 @@
         "id": "Js.Array.indexOf",
         "kind": "value",
         "name": "indexOf",
-        "docstrings": [
-          "Returns the index of the first element in the array that has the given value.\nIf the value is not in the array, returns -1. See\n[`Array.indexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf)\non MDN.\n\n## Examples\n\n```rescript\nJs.Array.indexOf(102, [100, 101, 102, 103]) == 2\nJs.Array.indexOf(999, [100, 101, 102, 103]) == -1\n```"
-        ],
-        "signature": "let indexOf: (t<'a>, 'a) => int"
-      },
-      {
-        "id": "Js.Array.indexOf",
-        "kind": "value",
-        "name": "indexOf",
         "docstrings": [],
         "signature": "let indexOf: ('a, t<'a>) => int"
-      },
-      {
-        "id": "Js.Array.indexOfFrom",
-        "kind": "value",
-        "name": "indexOfFrom",
-        "docstrings": [
-          "Returns the index of the first element in the array with the given value. The\nsearch starts at position `~from`. See\n[`Array.indexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf)\non MDN.\n\n## Examples\n\n```rescript\nJs.Array.indexOfFrom(\"a\", ~from=2, [\"a\", \"b\", \"a\", \"c\", \"a\"]) == 2\nJs.Array.indexOfFrom(\"a\", ~from=3, [\"a\", \"b\", \"a\", \"c\", \"a\"]) == 4\nJs.Array.indexOfFrom(\"b\", ~from=2, [\"a\", \"b\", \"a\", \"c\", \"a\"]) == -1\n```"
-        ],
-        "signature": "let indexOfFrom: (t<'a>, 'a, ~from: int) => int"
       },
       {
         "id": "Js.Array.indexOfFrom",
@@ -11569,26 +11042,8 @@
         "id": "Js.Array.joinWith",
         "kind": "value",
         "name": "joinWith",
-        "docstrings": [
-          "This function converts each element of the array to a string (via JavaScript)\nand concatenates them, separated by the string given in the first argument,\ninto a single string. See\n[`Array.join`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/join)\non MDN.\n\n## Examples\n\n```rescript\nJs.Array.joinWith(\"--\", [\"ant\", \"bee\", \"cat\"]) == \"ant--bee--cat\"\nJs.Array.joinWith(\"\", [\"door\", \"bell\"]) == \"doorbell\"\nJs.Array.joinWith(\"/\", [2020, 9, 4]) == \"2020/9/4\"\nJs.Array.joinWith(\";\", [2.5, 3.6, 3e-2]) == \"2.5;3.6;0.03\"\n```"
-        ],
-        "signature": "let joinWith: (t<'a>, string) => string"
-      },
-      {
-        "id": "Js.Array.joinWith",
-        "kind": "value",
-        "name": "joinWith",
         "docstrings": [],
         "signature": "let joinWith: (string, t<'a>) => string"
-      },
-      {
-        "id": "Js.Array.lastIndexOf",
-        "kind": "value",
-        "name": "lastIndexOf",
-        "docstrings": [
-          "Returns the index of the last element in the array that has the given value.\nIf the value is not in the array, returns -1. See\n[`Array.lastIndexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf)\non MDN.\n\n## Examples\n\n```rescript\nJs.Array.lastIndexOf(\"a\", [\"a\", \"b\", \"a\", \"c\"]) == 2\nJs.Array.lastIndexOf(\"x\", [\"a\", \"b\", \"a\", \"c\"]) == -1\n```"
-        ],
-        "signature": "let lastIndexOf: (t<'a>, 'a) => int"
       },
       {
         "id": "Js.Array.lastIndexOf",
@@ -11601,26 +11056,8 @@
         "id": "Js.Array.lastIndexOfFrom",
         "kind": "value",
         "name": "lastIndexOfFrom",
-        "docstrings": [
-          "Returns the index of the last element in the array that has the given value,\nsearching from position `~from` down to the start of the array. If the value\nis not in the array, returns -1. See\n[`Array.lastIndexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf)\non MDN.\n\n## Examples\n\n```rescript\nJs.Array.lastIndexOfFrom(\"a\", ~from=3, [\"a\", \"b\", \"a\", \"c\", \"a\", \"d\"]) == 2\nJs.Array.lastIndexOfFrom(\"c\", ~from=2, [\"a\", \"b\", \"a\", \"c\", \"a\", \"d\"]) == -1\n```"
-        ],
-        "signature": "let lastIndexOfFrom: (t<'a>, 'a, ~from: int) => int"
-      },
-      {
-        "id": "Js.Array.lastIndexOfFrom",
-        "kind": "value",
-        "name": "lastIndexOfFrom",
         "docstrings": [],
         "signature": "let lastIndexOfFrom: ('a, ~from: int, t<'a>) => int"
-      },
-      {
-        "id": "Js.Array.slice",
-        "kind": "value",
-        "name": "slice",
-        "docstrings": [
-          "Returns a shallow copy of the given array from the `~start` index up to but\nnot including the `~end_` position. Negative numbers indicate an offset from\nthe end of the array. See\n[`Array.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice)\non MDN.\n\n## Examples\n\n```rescript\nlet arr = [100, 101, 102, 103, 104, 105, 106]\nJs.Array.slice(~start=2, ~end_=5, arr) == [102, 103, 104]\nJs.Array.slice(~start=-3, ~end_=-1, arr) == [104, 105]\nJs.Array.slice(~start=9, ~end_=10, arr) == []\n```"
-        ],
-        "signature": "let slice: (t<'a>, ~start: int, ~end_: int) => 'this"
       },
       {
         "id": "Js.Array.slice",
@@ -11637,15 +11074,6 @@
           "Returns a copy of the entire array. Same as `Js.Array.Slice(~start=0,\n~end_=Js.Array.length(arr), arr)`. See\n[`Array.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice)\non MDN."
         ],
         "signature": "let copy: t<'a> => 'this"
-      },
-      {
-        "id": "Js.Array.sliceFrom",
-        "kind": "value",
-        "name": "sliceFrom",
-        "docstrings": [
-          "Returns a shallow copy of the given array from the given index to the end. \nSee [`Array.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice) on MDN.\n\n## Examples\n\n```rescript\nJs.Array.sliceFrom(2, [100, 101, 102, 103, 104]) == [102, 103, 104]\n```"
-        ],
-        "signature": "let sliceFrom: (t<'a>, int) => 'this"
       },
       {
         "id": "Js.Array.sliceFrom",
@@ -11676,26 +11104,8 @@
         "id": "Js.Array.every",
         "kind": "value",
         "name": "every",
-        "docstrings": [
-          "The first argument to `every()` is a predicate function that returns a boolean. The `every()` function returns `true` if the predicate function is true for all items in the given array. If given an empty array, returns `true`. See [`Array.every`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every) on MDN.\n\n## Examples\n\n```rescript\nlet isEven = x => mod(x, 2) == 0\nJs.Array.every(isEven, [6, 22, 8, 4]) == true\nJs.Array.every(isEven, [6, 22, 7, 4]) == false\n```"
-        ],
-        "signature": "let every: (t<'a>, 'a => bool) => bool"
-      },
-      {
-        "id": "Js.Array.every",
-        "kind": "value",
-        "name": "every",
         "docstrings": [],
         "signature": "let every: ('a => bool, t<'a>) => bool"
-      },
-      {
-        "id": "Js.Array.everyi",
-        "kind": "value",
-        "name": "everyi",
-        "docstrings": [
-          "The first argument to `everyi()` is a predicate function with two arguments: an array element and that element’s index; it returns a boolean. The `everyi()` function returns `true` if the predicate function is true for all items in the given array. If given an empty array, returns `true`. See [`Array.every`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every) on MDN.\n\n## Examples\n\n```rescript\n// determine if all even-index items are positive\nlet evenIndexPositive = (item, index) => mod(index, 2) == 0 ? item > 0 : true\n\nJs.Array.everyi(evenIndexPositive, [6, -3, 5, 8]) == true\nJs.Array.everyi(evenIndexPositive, [6, 3, -5, 8]) == false\n```"
-        ],
-        "signature": "let everyi: (t<'a>, ('a, int) => bool) => bool"
       },
       {
         "id": "Js.Array.everyi",
@@ -11708,26 +11118,8 @@
         "id": "Js.Array.filter",
         "kind": "value",
         "name": "filter",
-        "docstrings": [
-          "Applies the given predicate function to each element in the array; the result is an array of those elements for which the predicate function returned `true`. See [`Array.filter`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter) on MDN.\n\n## Examples\n\n```rescript\nlet nonEmpty = s => s != \"\"\nJs.Array.filter(nonEmpty, [\"abc\", \"\", \"\", \"def\", \"ghi\"]) == [\"abc\", \"def\", \"ghi\"]\n```"
-        ],
-        "signature": "let filter: (t<'a>, 'a => bool) => 'this"
-      },
-      {
-        "id": "Js.Array.filter",
-        "kind": "value",
-        "name": "filter",
         "docstrings": [],
         "signature": "let filter: ('a => bool, t<'a>) => 'b"
-      },
-      {
-        "id": "Js.Array.filteri",
-        "kind": "value",
-        "name": "filteri",
-        "docstrings": [
-          "Each element of the given array are passed to the predicate function. The\nreturn value is an array of all those elements for which the predicate\nfunction returned `true`.  See\n[`Array.filter`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter)\non MDN.\n\n## Examples\n\n```rescript\n// keep only positive elements at odd indices\nlet positiveOddElement = (item, index) => mod(index, 2) == 1 && item > 0\n\nJs.Array.filteri(positiveOddElement, [6, 3, 5, 8, 7, -4, 1]) == [3, 8]\n```"
-        ],
-        "signature": "let filteri: (t<'a>, ('a, int) => bool) => 'this"
       },
       {
         "id": "Js.Array.filteri",
@@ -11740,26 +11132,8 @@
         "id": "Js.Array.find",
         "kind": "value",
         "name": "find",
-        "docstrings": [
-          "Returns `Some(value)` for the first element in the array that satisifies the\ngiven predicate function, or `None` if no element satisifies the predicate.\nSee\n[`Array.find`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find)\non MDN.\n\n## Examples\n\n```rescript\n// find first negative element\nJs.Array.find(x => x < 0, [33, 22, -55, 77, -44]) == Some(-55)\nJs.Array.find(x => x < 0, [33, 22, 55, 77, 44]) == None\n```"
-        ],
-        "signature": "let find: (t<'a>, 'a => bool) => option<'a>"
-      },
-      {
-        "id": "Js.Array.find",
-        "kind": "value",
-        "name": "find",
         "docstrings": [],
         "signature": "let find: ('a => bool, t<'a>) => option<'a>"
-      },
-      {
-        "id": "Js.Array.findi",
-        "kind": "value",
-        "name": "findi",
-        "docstrings": [
-          "Returns `Some(value)` for the first element in the array that satisifies the given predicate function, or `None` if no element satisifies the predicate. The predicate function takes an array element and an index as its parameters. See [`Array.find`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find) on MDN.\n\n## Examples\n\n```rescript\n// find first positive item at an odd index\nlet positiveOddElement = (item, index) => mod(index, 2) == 1 && item > 0\n\nJs.Array.findi(positiveOddElement, [66, -33, 55, 88, 22]) == Some(88)\nJs.Array.findi(positiveOddElement, [66, -33, 55, -88, 22]) == None\n```"
-        ],
-        "signature": "let findi: (t<'a>, ('a, int) => bool) => option<'a>"
       },
       {
         "id": "Js.Array.findi",
@@ -11772,26 +11146,8 @@
         "id": "Js.Array.findIndex",
         "kind": "value",
         "name": "findIndex",
-        "docstrings": [
-          "Returns the index of the first element in the array that satisifies the given predicate function, or -1 if no element satisifies the predicate. See [`Array.find`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find) on MDN.\n\n## Examples\n\n```rescript\nJs.Array.findIndex(x => x < 0, [33, 22, -55, 77, -44]) == 2\nJs.Array.findIndex(x => x < 0, [33, 22, 55, 77, 44]) == -1\n```"
-        ],
-        "signature": "let findIndex: (t<'a>, 'a => bool) => int"
-      },
-      {
-        "id": "Js.Array.findIndex",
-        "kind": "value",
-        "name": "findIndex",
         "docstrings": [],
         "signature": "let findIndex: ('a => bool, t<'a>) => int"
-      },
-      {
-        "id": "Js.Array.findIndexi",
-        "kind": "value",
-        "name": "findIndexi",
-        "docstrings": [
-          "Returns `Some(value)` for the first element in the array that satisifies the given predicate function, or `None` if no element satisifies the predicate. The predicate function takes an array element and an index as its parameters. See [`Array.find`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find) on MDN.\n\n## Examples\n\n```rescript\n// find index of first positive item at an odd index\nlet positiveOddElement = (item, index) => mod(index, 2) == 1 && item > 0\n\nJs.Array.findIndexi(positiveOddElement, [66, -33, 55, 88, 22]) == 3\nJs.Array.findIndexi(positiveOddElement, [66, -33, 55, -88, 22]) == -1\n```"
-        ],
-        "signature": "let findIndexi: (t<'a>, ('a, int) => bool) => int"
       },
       {
         "id": "Js.Array.findIndexi",
@@ -11804,26 +11160,8 @@
         "id": "Js.Array.forEach",
         "kind": "value",
         "name": "forEach",
-        "docstrings": [
-          "The `forEach()` function applies the function given as the first argument to each element in the array. The function you provide returns `unit`, and the `forEach()` function also returns `unit`. You use `forEach()` when you need to process each element in the array but not return any new array or value; for example, to print the items in an array. See [`Array.forEach`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach) on MDN.\n\n## Examples\n\n```rescript\n// display all elements in an array\nJs.Array.forEach(x => Js.log(x), [\"a\", \"b\", \"c\"]) == ()\n```"
-        ],
-        "signature": "let forEach: (t<'a>, 'a => unit) => unit"
-      },
-      {
-        "id": "Js.Array.forEach",
-        "kind": "value",
-        "name": "forEach",
         "docstrings": [],
         "signature": "let forEach: ('a => unit, t<'a>) => unit"
-      },
-      {
-        "id": "Js.Array.forEachi",
-        "kind": "value",
-        "name": "forEachi",
-        "docstrings": [
-          "The `forEachi()` function applies the function given as the first argument to each element in the array. The function you provide takes an item in the array and its index number, and returns `unit`. The `forEachi()` function also returns `unit`. You use `forEachi()` when you need to process each element in the array but not return any new array or value; for example, to print the items in an array. See [`Array.forEach`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach) on MDN.\n\n## Examples\n\n```rescript\n// display all elements in an array as a numbered list\nJs.Array.forEachi((item, index) => Js.log2(index + 1, item), [\"a\", \"b\", \"c\"]) == ()\n```"
-        ],
-        "signature": "let forEachi: (t<'a>, ('a, int) => unit) => unit"
       },
       {
         "id": "Js.Array.forEachi",
@@ -11836,26 +11174,8 @@
         "id": "Js.Array.map",
         "kind": "value",
         "name": "map",
-        "docstrings": [
-          "Applies the function (given as the first argument) to each item in the array,\nreturning a new array. The result array does not have to have elements of the\nsame type as the input array. See\n[`Array.map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map)\non MDN.\n\n## Examples\n\n```rescript\nJs.Array.map(x => x * x, [12, 4, 8]) == [144, 16, 64]\nJs.Array.map(Js.String.length, [\"animal\", \"vegetable\", \"mineral\"]) == [6, 9, 7]\n```"
-        ],
-        "signature": "let map: (t<'a>, 'a => 'b) => t<'b>"
-      },
-      {
-        "id": "Js.Array.map",
-        "kind": "value",
-        "name": "map",
         "docstrings": [],
         "signature": "let map: ('a => 'b, t<'a>) => t<'b>"
-      },
-      {
-        "id": "Js.Array.mapi",
-        "kind": "value",
-        "name": "mapi",
-        "docstrings": [
-          "Applies the function (given as the first argument) to each item in the array,\nreturning a new array. The function acceps two arguments: an item from the\narray and its index number. The result array does not have to have elements\nof the same type as the input array. See\n[`Array.map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map)\non MDN.\n\n## Examples\n\n```rescript\n// multiply each item in array by its position\nlet product = (item, index) => item * index\nJs.Array.mapi(product, [10, 11, 12]) == [0, 11, 24]\n```"
-        ],
-        "signature": "let mapi: (t<'a>, ('a, int) => 'b) => t<'b>"
       },
       {
         "id": "Js.Array.mapi",
@@ -11868,26 +11188,8 @@
         "id": "Js.Array.reduce",
         "kind": "value",
         "name": "reduce",
-        "docstrings": [
-          "The `reduce()` function takes three parameters: a *reducer function*, a\nbeginning accumulator value, and an array. The reducer function has two\nparameters: an accumulated value and an element of the array.\n\n`reduce()` first calls the reducer function with the beginning value and the\nfirst element in the array. The result becomes the new accumulator value, which\nis passed in to the reducer function along with the second element in the\narray. `reduce()` proceeds through the array, passing in the result of each\nstage as the accumulator to the reducer function.\n\nWhen all array elements are processed, the final value of the accumulator\nbecomes the return value of `reduce()`. See\n[`Array.reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)\non MDN.\n\n## Examples\n\n```rescript\nlet sumOfSquares = (accumulator, item) => accumulator + item * item\n\nJs.Array.reduce(sumOfSquares, 0, [10, 2, 4]) == 120\nJs.Array.reduce(\\\"*\", 1, [10, 2, 4]) == 80\nJs.Array.reduce(\n  (acc, item) => acc + Js.String.length(item),\n  0,\n  [\"animal\", \"vegetable\", \"mineral\"],\n) == 22 // 6 + 9 + 7\nJs.Array.reduce((acc, item) => item /. acc, 1.0, [2.0, 4.0]) == 2.0 // 4.0 / (2.0 / 1.0)\n```"
-        ],
-        "signature": "let reduce: (t<'a>, ('b, 'a) => 'b, 'b) => 'b"
-      },
-      {
-        "id": "Js.Array.reduce",
-        "kind": "value",
-        "name": "reduce",
         "docstrings": [],
         "signature": "let reduce: (('a, 'b) => 'a, 'a, t<'b>) => 'a"
-      },
-      {
-        "id": "Js.Array.reducei",
-        "kind": "value",
-        "name": "reducei",
-        "docstrings": [
-          "The `reducei()` function takes three parameters: a *reducer function*, a\nbeginning accumulator value, and an array. The reducer function has three\nparameters: an accumulated value, an element of the array, and the index of\nthat element.\n\n`reducei()` first calls the reducer function with the beginning value, the\nfirst element in the array, and zero (its index). The result becomes the new\naccumulator value, which is passed to the reducer function along with the\nsecond element in the array and one (its index). `reducei()` proceeds from left\nto right through the array, passing in the result of each stage as the\naccumulator to the reducer function.\n\nWhen all array elements are processed, the final value of the accumulator\nbecomes the return value of `reducei()`. See\n[`Array.reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)\non MDN.\n\n## Examples\n\n```rescript\n// find sum of even-index elements in array\nlet sumOfEvens = (accumulator, item, index) =>\n  if mod(index, 2) == 0 {\n    accumulator + item\n  } else {\n    accumulator\n  }\n\nJs.Array.reducei(sumOfEvens, 0, [2, 5, 1, 4, 3]) == 6\n```"
-        ],
-        "signature": "let reducei: (t<'a>, ('b, 'a, int) => 'b, 'b) => 'b"
       },
       {
         "id": "Js.Array.reducei",
@@ -11900,26 +11202,8 @@
         "id": "Js.Array.reduceRight",
         "kind": "value",
         "name": "reduceRight",
-        "docstrings": [
-          "The `reduceRight()` function takes three parameters: a *reducer function*, a\nbeginning accumulator value, and an array. The reducer function has two\nparameters: an accumulated value and an element of the array.\n\n`reduceRight()` first calls the reducer function with the beginning value and\nthe last element in the array. The result becomes the new accumulator value,\nwhich is passed in to the reducer function along with the next-to-last element\nin the array. `reduceRight()` proceeds from right to left through the array,\npassing in the result of each stage as the accumulator to the reducer function.\n\nWhen all array elements are processed, the final value of the accumulator\nbecomes the return value of `reduceRight()`.  See\n[`Array.reduceRight`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight)\non MDN.\n\n**NOTE:** In many cases, `reduce()` and `reduceRight()` give the same result. However, see the last example here and compare it to the example from `reduce()`, where order makes a difference.\n\n## Examples\n\n```rescript\nlet sumOfSquares = (accumulator, item) => accumulator + item * item\n\nJs.Array.reduceRight(sumOfSquares, 0, [10, 2, 4]) == 120\nJs.Array.reduceRight((acc, item) => item /. acc, 1.0, [2.0, 4.0]) == 0.5 // 2.0 / (4.0 / 1.0)\n```"
-        ],
-        "signature": "let reduceRight: (t<'a>, ('b, 'a) => 'b, 'b) => 'b"
-      },
-      {
-        "id": "Js.Array.reduceRight",
-        "kind": "value",
-        "name": "reduceRight",
         "docstrings": [],
         "signature": "let reduceRight: (('a, 'b) => 'a, 'a, t<'b>) => 'a"
-      },
-      {
-        "id": "Js.Array.reduceRighti",
-        "kind": "value",
-        "name": "reduceRighti",
-        "docstrings": [
-          "The `reduceRighti()` function takes three parameters: a *reducer function*, a\nbeginning accumulator value, and an array. The reducer function has three\nparameters: an accumulated value, an element of the array, and the index of\nthat element. `reduceRighti()` first calls the reducer function with the\nbeginning value, the last element in the array, and its index (length of array\nminus one). The result becomes the new accumulator value, which is passed in to\nthe reducer function along with the second element in the array and one (its\nindex). `reduceRighti()` proceeds from right to left through the array, passing\nin the result of each stage as the accumulator to the reducer function.\n\nWhen all array elements are processed, the final value of the accumulator\nbecomes the return value of `reduceRighti()`. See\n[`Array.reduceRight`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight)\non MDN.\n\n**NOTE:** In many cases, `reducei()` and `reduceRighti()` give the same result.\nHowever, there are cases where the order in which items are processed makes a\ndifference.\n\n## Examples\n\n```rescript\n// find sum of even-index elements in array\nlet sumOfEvens = (accumulator, item, index) =>\n  if mod(index, 2) == 0 {\n    accumulator + item\n  } else {\n    accumulator\n  }\n\nJs.Array.reduceRighti(sumOfEvens, 0, [2, 5, 1, 4, 3]) == 6\n```"
-        ],
-        "signature": "let reduceRighti: (t<'a>, ('b, 'a, int) => 'b, 'b) => 'b"
       },
       {
         "id": "Js.Array.reduceRighti",
@@ -11932,26 +11216,8 @@
         "id": "Js.Array.some",
         "kind": "value",
         "name": "some",
-        "docstrings": [
-          "Returns `true` if the predicate function given as the first argument to\n`some()` returns `true` for any element in the array; `false` otherwise.\n\n## Examples\n\n```rescript\nlet isEven = x => mod(x, 2) == 0\n\nJs.Array.some(isEven, [3, 7, 5, 2, 9]) == true\nJs.Array.some(isEven, [3, 7, 5, 1, 9]) == false\n```"
-        ],
-        "signature": "let some: (t<'a>, 'a => bool) => bool"
-      },
-      {
-        "id": "Js.Array.some",
-        "kind": "value",
-        "name": "some",
         "docstrings": [],
         "signature": "let some: ('a => bool, t<'a>) => bool"
-      },
-      {
-        "id": "Js.Array.somei",
-        "kind": "value",
-        "name": "somei",
-        "docstrings": [
-          "Returns `true` if the predicate function given as the first argument to\n`somei()` returns `true` for any element in the array; `false` otherwise. The\npredicate function has two arguments: an item from the array and the index\nvalue\n\n## Examples\n\n```rescript\n// Does any string in the array\n// have the same length as its index?\n\nlet sameLength = (str, index) => Js.String.length(str) == index\n\n// \"ef\" has length 2 and is it at index 2\nJs.Array.somei(sameLength, [\"ab\", \"cd\", \"ef\", \"gh\"]) == true\n// no item has the same length as its index\nJs.Array.somei(sameLength, [\"a\", \"bc\", \"def\", \"gh\"]) == false\n```"
-        ],
-        "signature": "let somei: (t<'a>, ('a, int) => bool) => bool"
       },
       {
         "id": "Js.Array.somei",

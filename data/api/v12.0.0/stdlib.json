@@ -2144,7 +2144,7 @@
         "kind": "value",
         "name": "formatRange",
         "docstrings": [],
-        "signature": "let formatRange: (\n  t,\n  ~startDate: Date.t,\n  ~endDate: Date.t,\n) => string"
+        "signature": "let formatRange: (t, ~startDate: Date.t, ~endDate: Date.t) => string"
       },
       {
         "id": "Stdlib.Intl.DateTimeFormat.formatRangeToParts",
@@ -4569,7 +4569,7 @@
         "kind": "value",
         "name": "toArray",
         "docstrings": [
-          "Turns an iterator into an array of the remaining values.\nRemember that each invocation of `next` of an iterator consumes a value. `Iterator.toArray` will consume all remaining values of the iterator and return them in an array to you.\n\nSee [Iterator.prototype.toArray](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/toArray) on MDN.\n\n## Examples\n```rescript\nlet map = Map.make()\nmap->Map.set(\"someKey\", \"someValue\")\nmap->Map.set(\"someKey2\", \"someValue2\")\n\n// `Map.keys` returns all keys of the map as an iterator.\nlet mapKeysAsArray = map->Map.keys->Iterator.toArray\n\nmapKeysAsArray->assertEqual([\"someKey\", \"someKey2\"])\n```\n\n## Remark\n\nSince March 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers.\n"
+          "Turns an iterator into an array of the remaining values.\nRemember that each invocation of `next` of an iterator consumes a value. `Iterator.toArray` will consume all remaining values of the iterator and return them in an array to you.\n\nSee [Iterator.prototype.toArray](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/toArray) on MDN.\n\n## Examples\n```rescript\nlet map = Map.make()\nmap->Map.set(\"someKey\", \"someValue\")\nmap->Map.set(\"someKey2\", \"someValue2\")\n\n// `Map.keys` returns all keys of the map as an iterator.\nlet mapKeysAsArray = map->Map.keys->Iterator.toArray\n\nmapKeysAsArray->assertEqual([\"someKey\", \"someKey2\"])\n```\n\n## Remark\n\nSince March 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers."
         ],
         "signature": "let toArray: t<'a> => array<'a>"
       },
@@ -4605,7 +4605,7 @@
         "kind": "value",
         "name": "drop",
         "docstrings": [
-          "`drop(iterator, n)` returns a new iterator helper object that skips the given number of elements at the start of this iterator.\n\nSee [Iterator.prototype.drop](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/drop) on MDN.\n\n## Examples\n```rescript\nlet fibonacci: Iterator.t<int> = [ 1, 1, 2, 3, 5, 8, 13, 21 ]->Array.values\n\nlet seq = fibonacci->Iterator.drop(2)\nseq->Iterator.next->assertEqual({done: false, value: Some(2)})\nseq->Iterator.next->assertEqual({done: false, value: Some(3)})\n```\n\n## Remark\n\nSince March 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers.\n"
+          "`drop(iterator, n)` returns a new iterator helper object that skips the given number of elements at the start of this iterator.\n\nSee [Iterator.prototype.drop](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/drop) on MDN.\n\n## Examples\n```rescript\nlet fibonacci: Iterator.t<int> = [ 1, 1, 2, 3, 5, 8, 13, 21 ]->Array.values\n\nlet seq = fibonacci->Iterator.drop(2)\nseq->Iterator.next->assertEqual({done: false, value: Some(2)})\nseq->Iterator.next->assertEqual({done: false, value: Some(3)})\n```\n\n## Remark\n\nSince March 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers."
         ],
         "signature": "let drop: (t<'a>, int) => t<'a>"
       },
@@ -5126,7 +5126,7 @@
         "docstrings": [
           "`match(str, regexp)` matches a `string` against the given `regexp`. If there is\nno match, it returns `None`. For regular expressions without the g modifier, if\nthere is a match, the return value is `Some(array)` where the array contains:\n- The entire matched string\n- Any capture groups if the regexp had parentheses\nFor regular expressions with the g modifier, a matched expression returns\n`Some(array)` with all the matched substrings and no capture groups.\nSee [`String.match`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match) on MDN.\n\n## Examples\n\n```rescript\nString.match(\"The better bats\", %re(\"/b[aeiou]t/\")) == Some([Some(\"bet\")])\nString.match(\"The better bats\", %re(\"/b[aeiou]t/g\")) == Some([Some(\"bet\"), Some(\"bat\")])\nString.match(\"Today is 2018-04-05.\", %re(\"/(\\d+)-(\\d+)-(\\d+)/\")) ==\n  Some([Some(\"2018-04-05\"), Some(\"2018\"), Some(\"04\"), Some(\"05\")])\nString.match(\"The optional example\", %re(\"/(foo)?(example)/\")) == Some([Some(\"example\"), None, Some(\"example\")])\nString.match(\"The large container.\", %re(\"/b[aeiou]g/\")) == None\n```"
         ],
-        "signature": "let match: (string, RegExp.t) => option<RegExp.Result.t>"
+        "signature": "let match: (string, RegExp.t) => option<\\\"RegExp.Result\".t>"
       },
       {
         "id": "Stdlib.String.normalize",
@@ -5344,7 +5344,7 @@
         "docstrings": [
           "`splitByRegExpAtMost(str, regexp, ~limit)` splits the given `str` at every\noccurrence of `regexp` and returns an array of the first `limit` resulting\nsubstrings. If `limit` is negative or greater than the number of substrings, the\narray will contain all the substrings.\nSee [`String.split`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split) on MDN.\n\n## Examples\n\n```rescript\nString.splitByRegExpAtMost(\"Hello World. How are you doing?\", / /, ~limit=3) ==\n  [Some(\"Hello\"), Some(\"World.\"), Some(\"How\")]\n```"
         ],
-        "signature": "let splitByRegExpAtMost: (\n  string,\n  RegExp.t,\n  ~limit: int,\n) => array<option<string>>"
+        "signature": "let splitByRegExpAtMost: (string, RegExp.t, ~limit: int) => array<option<string>>"
       },
       {
         "id": "Stdlib.String.startsWith",
@@ -5525,7 +5525,17 @@
         "docstrings": [
           "`getExn(res)`: when `res` is `Ok(n)`, returns `n` when `res` is `Error(m)`, raise an exception\n\n  ```res example\n  Result.getExn(Result.Ok(42)) == 42\n\n  switch Result.getExn(Error(\"Invalid data\")) {\n  | exception Not_found => assert(true)\n  | _ => assert(false)\n  }\n  ```"
         ],
-        "signature": "let getExn: result<'a, 'b> => 'a"
+        "signature": "let getExn: result<'a, 'b> => 'a",
+        "deprecated": "Use 'getOrThrow' instead"
+      },
+      {
+        "id": "Stdlib.Result.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [
+          "`getOrThrow(res)`: when `res` is `Ok(n)`, returns `n` when `res` is `Error(m)`, raise an exception\n\n  ```res example\n  Result.getOrThrow(Result.Ok(42)) == 42\n\n  switch Result.getOrThrow(Error(\"Invalid data\")) {\n  | exception Not_found => assert(true)\n  | _ => assert(false)\n  }\n  ```"
+        ],
+        "signature": "let getOrThrow: result<'a, 'b> => 'a"
       },
       {
         "id": "Stdlib.Result.mapOr",
@@ -6271,7 +6281,17 @@
         "docstrings": [
           "`getExn(opt, ~message=?)` returns `value` if `opt` is `Some(value)`, otherwise raises an exception with the message provided, or a generic message if no message was provided.\n\n```rescript\nOption.getExn(Some(3))->assertEqual(3)\n\nswitch Option.getExn(None) {\n| exception _ => assert(true)\n| _ => assert(false)\n}\n\nswitch Option.getExn(None, ~message=\"was None!\") {\n| exception _ => assert(true) // Raises an Error with the message \"was None!\"\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises an error if `opt` is `None`"
         ],
-        "signature": "let getExn: (option<'a>, ~message: string=?) => 'a"
+        "signature": "let getExn: (option<'a>, ~message: string=?) => 'a",
+        "deprecated": "Use `getOrThrow` instead"
+      },
+      {
+        "id": "Stdlib.Option.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [
+          "`getOrThrow(opt, ~message=?)` returns `value` if `opt` is `Some(value)`, otherwise raises an exception with the message provided, or a generic message if no message was provided.\n\n```rescript\nOption.getOrThrow(Some(3))->assertEqual(3)\n\nswitch Option.getOrThrow(None) {\n| exception _ => assert(true)\n| _ => assert(false)\n}\n\nswitch Option.getOrThrow(None, ~message=\"was None!\") {\n| exception _ => assert(true) // Raises an Error with the message \"was None!\"\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises an error if `opt` is `None`"
+        ],
+        "signature": "let getOrThrow: (option<'a>, ~message: string=?) => 'a"
       },
       {
         "id": "Stdlib.Option.getUnsafe",
@@ -6710,7 +6730,7 @@
         "kind": "value",
         "name": "compare",
         "docstrings": [],
-        "signature": "let compare: (\n  t<'a>,\n  t<'b>,\n  ('a, 'b) => Ordering.t,\n) => Ordering.t"
+        "signature": "let compare: (t<'a>, t<'b>, ('a, 'b) => Ordering.t) => Ordering.t"
       },
       {
         "id": "Stdlib.Nullable.toOption",
@@ -6754,7 +6774,17 @@
         "docstrings": [
           "`getExn(value)` raises an exception if `null` or `undefined`, otherwise returns the value.\n\n```rescript\nswitch Nullable.getExn(%raw(\"'Hello'\")) {\n| exception Invalid_argument(_) => assert(false)\n| value => assertEqual(value, \"Hello\")\n}\n\nswitch Nullable.getExn(%raw(\"null\")) {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n\nswitch Nullable.getExn(%raw(\"undefined\")) {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises `Invalid_argument` if `value` is `null` or `undefined`"
         ],
-        "signature": "let getExn: t<'a> => 'a"
+        "signature": "let getExn: t<'a> => 'a",
+        "deprecated": "Use `getOrThrow` instead"
+      },
+      {
+        "id": "Stdlib.Nullable.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [
+          "`getOrThrow(value)` raises an exception if `null` or `undefined`, otherwise returns the value.\n\n```rescript\nswitch Nullable.getOrThrow(%raw(\"'Hello'\")) {\n| exception Invalid_argument(_) => assert(false)\n| value => assertEqual(value, \"Hello\")\n}\n\nswitch Nullable.getOrThrow(%raw(\"null\")) {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n\nswitch Nullable.getOrThrow(%raw(\"undefined\")) {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises `Invalid_argument` if `value` is `null` or `undefined`"
+        ],
+        "signature": "let getOrThrow: t<'a> => 'a"
       },
       {
         "id": "Stdlib.Nullable.getUnsafe",
@@ -6875,7 +6905,7 @@
         "kind": "value",
         "name": "compare",
         "docstrings": [],
-        "signature": "let compare: (\n  t<'a>,\n  t<'b>,\n  ('a, 'b) => Ordering.t,\n) => Ordering.t"
+        "signature": "let compare: (t<'a>, t<'b>, ('a, 'b) => Ordering.t) => Ordering.t"
       },
       {
         "id": "Stdlib.Null.toOption",
@@ -6917,9 +6947,19 @@
         "kind": "value",
         "name": "getExn",
         "docstrings": [
-          "`getExn(value)` raises an exception if `null`, otherwise returns the value.\n\n```rescript\nNull.getExn(Null.make(3))->assertEqual(3)\n\nswitch Null.getExn(%raw(\"'ReScript'\")) {\n| exception Invalid_argument(_) => assert(false)\n| value => assertEqual(value, \"ReScript\")\n}\n\nswitch Null.getExn(%raw(\"null\")) {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises `Invalid_argument` if `value` is `null`,"
+          "`getExn(value)` raises an exception if `null`, otherwise returns the value.\n\n```rescript\nNull.getExn(Null.make(3))->assertEqual(3)\n\nswitch Null.getExn(%raw(\"'ReScript'\")) {\n| exception Invalid_argument(_) => assert(false)\n| value => assertEqual(value, \"ReScript\")\n}\n\nswitch Null.getExn(%raw(\"null\")) {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises `Invalid_argument` if `value` is `null`"
         ],
-        "signature": "let getExn: t<'a> => 'a"
+        "signature": "let getExn: t<'a> => 'a",
+        "deprecated": "Use `getOrThrow` instead"
+      },
+      {
+        "id": "Stdlib.Null.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [
+          "`getOrThrow(value)` raises an exception if `null`, otherwise returns the value.\n\n```rescript\nNull.getOrThrow(Null.make(3))->assertEqual(3)\n\nswitch Null.getOrThrow(%raw(\"'ReScript'\")) {\n| exception Invalid_argument(_) => assert(false)\n| value => assertEqual(value, \"ReScript\")\n}\n\nswitch Null.getOrThrow(%raw(\"null\")) {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises `Invalid_argument` if `value` is `null`"
+        ],
+        "signature": "let getOrThrow: t<'a> => 'a"
       },
       {
         "id": "Stdlib.Null.getUnsafe",
@@ -7366,7 +7406,17 @@
         "docstrings": [
           "`headExn(list)` same as [`head`](#head).\n\n## Examples\n\n```rescript\nList.headExn(list{1, 2, 3})->assertEqual(1)\n\nswitch List.headExn(list{}) {\n| exception Not_found => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises an Error if list is empty."
         ],
-        "signature": "let headExn: list<'a> => 'a"
+        "signature": "let headExn: list<'a> => 'a",
+        "deprecated": "Use `headOrThrow` instead"
+      },
+      {
+        "id": "Stdlib.List.headOrThrow",
+        "kind": "value",
+        "name": "headOrThrow",
+        "docstrings": [
+          "`headOrThrow(list)` same as [`head`](#head).\n\n## Examples\n\n```rescript\nList.headOrThrow(list{1, 2, 3})->assertEqual(1)\n\nswitch List.headOrThrow(list{}) {\n| exception Not_found => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises an Error if list is empty."
+        ],
+        "signature": "let headOrThrow: list<'a> => 'a"
       },
       {
         "id": "Stdlib.List.tail",
@@ -7384,7 +7434,17 @@
         "docstrings": [
           "`tailExn(list)` same as [`tail`](#tail).\n\n## Examples\n\n```rescript\nList.tailExn(list{1, 2, 3})->assertEqual(list{2, 3})\n\nswitch List.tailExn(list{}) {\n| exception Not_found => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises an Error if list is empty."
         ],
-        "signature": "let tailExn: list<'a> => list<'a>"
+        "signature": "let tailExn: list<'a> => list<'a>",
+        "deprecated": "Use `tailOrThrow` instead"
+      },
+      {
+        "id": "Stdlib.List.tailOrThrow",
+        "kind": "value",
+        "name": "tailOrThrow",
+        "docstrings": [
+          "`tailOrThrow(list)` same as [`tail`](#tail).\n\n## Examples\n\n```rescript\nList.tailOrThrow(list{1, 2, 3})->assertEqual(list{2, 3})\n\nswitch List.tailOrThrow(list{}) {\n| exception Not_found => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises an Error if list is empty."
+        ],
+        "signature": "let tailOrThrow: list<'a> => list<'a>"
       },
       {
         "id": "Stdlib.List.add",
@@ -7411,7 +7471,17 @@
         "docstrings": [
           "`getExn(list, index)` same as [`get`](#get).\n\n## Examples\n\n```rescript\nlet abc = list{\"A\", \"B\", \"C\"}\n\nabc\n->List.getExn(1)\n->assertEqual(\"B\")\n\nswitch abc->List.getExn(4) {\n| exception Not_found => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises an Error if `index` is larger than the length of list."
         ],
-        "signature": "let getExn: (list<'a>, int) => 'a"
+        "signature": "let getExn: (list<'a>, int) => 'a",
+        "deprecated": "Use `getOrThrow` instead"
+      },
+      {
+        "id": "Stdlib.List.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [
+          "`getOrThrow(list, index)` same as [`get`](#get).\n\n## Examples\n\n```rescript\nlet abc = list{\"A\", \"B\", \"C\"}\n\nabc\n->List.getOrThrow(1)\n->assertEqual(\"B\")\n\nswitch abc->List.getOrThrow(4) {\n| exception Not_found => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises an Error if `index` is larger than the length of list."
+        ],
+        "signature": "let getOrThrow: (list<'a>, int) => 'a"
       },
       {
         "id": "Stdlib.List.make",
@@ -7718,7 +7788,7 @@
         "docstrings": [
           "`compare(list1, list2, f)` compare elements one by one `f`. `f` returns a negative\nnumber if `list1` is \"less than\" `list2`, zero if `list1` is \"equal to\" `list2`,\na positive number if `list1` is \"greater than\" `list2`.\n\nThe comparison returns the first non-zero result of `f`, or zero if `f` returns\nzero for all `list1` and `list2`.\n\n- If all items have compared equal, but `list1` is exhausted first, return `-1.`. (`list1` is shorter).\n- If all items have compared equal, but `list2` is exhausted first, return `1.` (`list1` is longer).\n\n## Examples\n\n```rescript\nassertEqual(List.compare(list{3}, list{3, 7}, (a, b) => Int.compare(a, b)), -1.)\nassertEqual(List.compare(list{5, 3}, list{5}, (a, b) => Int.compare(a, b)), 1.)\nassertEqual(List.compare(list{1, 3, 5}, list{1, 4, 2}, (a, b) => Int.compare(a, b)), -1.)\nassertEqual(List.compare(list{1, 3, 5}, list{1, 2, 3}, (a, b) => Int.compare(a, b)), 1.)\nassertEqual(List.compare(list{1, 3, 5}, list{1, 3, 5}, (a, b) => Int.compare(a, b)), 0.)\n```\n\n**Please note:** The total ordering of List is different from Array,\nfor Array, we compare the length first and, only if the lengths are equal, elements one by one.\nFor lists, we just compare elements one by one."
         ],
-        "signature": "let compare: (\n  list<'a>,\n  list<'a>,\n  ('a, 'a) => Ordering.t,\n) => Ordering.t"
+        "signature": "let compare: (list<'a>, list<'a>, ('a, 'a) => Ordering.t) => Ordering.t"
       },
       {
         "id": "Stdlib.List.equal",
@@ -10761,14 +10831,18 @@
         "id": "Stdlib.Bool.compare",
         "kind": "value",
         "name": "compare",
-        "docstrings": [],
+        "docstrings": [
+          "Compares two booleans, returns an `Ordering.t` value.\n\n## Examples\n```rescript\nBool.compare(true, true)->assertEqual(Ordering.equal)\nBool.compare(false, false)->assertEqual(Ordering.equal)\nBool.compare(true, false)->assertEqual(Ordering.greater)\nBool.compare(false, true)->assertEqual(Ordering.less)\n```"
+        ],
         "signature": "let compare: (bool, bool) => Ordering.t"
       },
       {
         "id": "Stdlib.Bool.equal",
         "kind": "value",
         "name": "equal",
-        "docstrings": [],
+        "docstrings": [
+          "Checks if two booleans are equal and have the same value.\n\n## Examples\n```rescript\nBool.equal(true, true)->assertEqual(true)\nBool.equal(false, false)->assertEqual(true)\nBool.equal(true, false)->assertEqual(false)\nBool.equal(false, true)->assertEqual(false)\n```"
+        ],
         "signature": "let equal: (bool, bool) => bool"
       }
     ]
@@ -11102,7 +11176,7 @@
         "kind": "value",
         "name": "compare",
         "docstrings": [],
-        "signature": "let compare: (\n  array<'a>,\n  array<'a>,\n  ('a, 'a) => Ordering.t,\n) => Ordering.t"
+        "signature": "let compare: (array<'a>, array<'a>, ('a, 'a) => Ordering.t) => Ordering.t"
       },
       {
         "id": "Stdlib.Array.isArray",
