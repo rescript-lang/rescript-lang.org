@@ -49,8 +49,7 @@ let makeBreadcrumbs = (~basePath: string, route: string): list<Url.breadcrumb> =
 @react.component
 let make = (
   ~breadcrumbs: option<list<Url.breadcrumb>>=?,
-  ~title: string,
-  ~metaTitleCategory: option<string>=?, // e.g. Introduction | My Meta Title Category
+  ~metaTitleCategory: string, // e.g. Introduction | My Meta Title Category
   ~frontmatter=?,
   ~version: option<string>=?,
   ~availableVersions: option<array<(string, string)>>=?,
@@ -86,7 +85,6 @@ let make = (
 
   let preludeSection =
     <div className="flex flex-col justify-between text-fire font-medium items-baseline">
-      {React.string(title)}
       {switch version {
       | Some(version) =>
         switch availableVersions {
@@ -111,14 +109,9 @@ let make = (
     </div>
 
   let sidebar =
-    <Sidebar
-      isOpen=isSidebarOpen toggle=toggleSidebar preludeSection title ?activeToc categories route
-    />
+    <Sidebar isOpen=isSidebarOpen toggle=toggleSidebar preludeSection ?activeToc categories route />
 
-  let metaTitle = switch metaTitleCategory {
-  | Some(titleCategory) => titleCategory ++ (" | " ++ "ReScript Documentation")
-  | None => title
-  }
+  let metaTitle = metaTitleCategory ++ (" | " ++ "ReScript Documentation")
 
   let (metaElement, editHref) = switch frontmatter {
   | Some(frontmatter) =>
@@ -126,15 +119,13 @@ let make = (
     | Some(fm) =>
       let canonical = Null.toOption(fm.canonical)
       let description = Null.toOption(fm.description)
-      let title = switch metaTitleCategory {
-      | Some(titleCategory) =>
+      let title = {
         // We will prefer an existing metaTitle over just a title
         let metaTitle = switch Null.toOption(fm.metaTitle) {
         | Some(metaTitle) => metaTitle
         | None => fm.title
         }
-        metaTitle ++ (" | " ++ titleCategory)
-      | None => title
+        metaTitle ++ (" | " ++ metaTitleCategory)
       }
       let meta = <Meta title ?description ?canonical version=Url.parse(router.route).version />
 
@@ -173,8 +164,7 @@ module Make = (Content: StaticContent) => {
   let make = (
     // base breadcrumbs without the very last element (the currently shown document)
     ~breadcrumbs: option<list<Url.breadcrumb>>=?,
-    ~title: string,
-    ~metaTitleCategory: option<string>=?,
+    ~metaTitleCategory: string,
     ~frontmatter=?,
     ~version: option<string>=?,
     ~availableVersions: option<array<(string, string)>>=?,
@@ -235,8 +225,7 @@ module Make = (Content: StaticContent) => {
 
     make({
       ?breadcrumbs,
-      title,
-      ?metaTitleCategory,
+      metaTitleCategory,
       ?frontmatter,
       ?version,
       ?availableVersions,

@@ -25,9 +25,8 @@ let makeCategories: string => array<Sidebar.Category.t> = version => [
 module Docs = {
   @react.component
   let make = (~version, ~components=ApiMarkdown.default, ~children) => {
-    let title = "API"
     let categories = makeCategories(version)
 
-    <ApiLayout title categories version components> children </ApiLayout>
+    <ApiLayout categories version components> children </ApiLayout>
   }
 }
