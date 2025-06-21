@@ -4,8 +4,7 @@ let makeBreadcrumbs: (~basePath: string, string) => list<Url.breadcrumb>
 @react.component
 let make: (
   ~breadcrumbs: list<Url.breadcrumb>=?,
-  ~title: string,
-  ~metaTitleCategory: string=?, // e.g. Introduction | My Meta Title Category
+  ~metaTitleCategory: string, // e.g. Introduction | My Meta Title Category
   ~frontmatter: JSON.t=?,
   ~version: string=?,
   ~availableVersions: array<(string, string)>=?,
@@ -27,8 +26,7 @@ module Make: (Content: StaticContent) =>
   @react.component
   let make: (
     ~breadcrumbs: list<Url.breadcrumb>=?,
-    ~title: string,
-    ~metaTitleCategory: string=?,
+    ~metaTitleCategory: string,
     ~frontmatter: JSON.t=?,
     ~version: string=?,
     ~availableVersions: array<(string, string)>=?,

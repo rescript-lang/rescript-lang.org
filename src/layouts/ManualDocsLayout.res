@@ -26,7 +26,6 @@ module V1200Layout = DocsLayout.Make({
 module V1200 = {
   @react.component
   let make = (~frontmatter=?, ~components=MarkdownComponents.default, ~children) => {
-    let title = "Language Manual"
     let router = Next.Router.useRouter()
     let url = router.route->Url.parse
     let version = url->Url.getVersionString
@@ -59,7 +58,6 @@ module V1200 = {
       theme=#Reason
       components
       version
-      title
       metaTitleCategory="ReScript Language Manual"
       availableVersions=Constants.allManualVersions
       nextVersion=?Constants.nextVersion
@@ -74,7 +72,6 @@ module V1200 = {
 module V1100 = {
   @react.component
   let make = (~frontmatter=?, ~components=MarkdownComponents.default, ~children) => {
-    let title = "Language Manual"
     let router = Next.Router.useRouter()
     let version = router.route->Url.parse->Url.getVersionString
 
@@ -87,7 +84,6 @@ module V1100 = {
       theme=#Reason
       components
       version
-      title
       metaTitleCategory="ReScript Language Manual"
       availableVersions=Constants.allManualVersions
       nextVersion=?Constants.nextVersion
@@ -122,13 +118,12 @@ module V1000 = {
       },
     }
 
-    let title = "Language Manual"
+    // let title = "Language Manual"
 
     <V1000Layout
       theme=#Reason
       components
       version
-      title
       metaTitleCategory="ReScript Language Manual"
       availableVersions=Constants.allManualVersions
       nextVersion=?Constants.nextVersion
@@ -167,13 +162,10 @@ module V900 = {
       },
     }
 
-    let title = "Language Manual"
-
     <V900Layout
       theme=#Reason
       components
       version
-      title
       metaTitleCategory="ReScript Language Manual"
       availableVersions=Constants.allManualVersions
       nextVersion=?Constants.nextVersion
@@ -208,7 +200,6 @@ module V800 = {
       },
     }
 
-    let title = "Language Manual"
     let version = "v8.0.0"
 
     let warnBanner = {
@@ -249,7 +240,6 @@ module V800 = {
       theme=#Reason
       components
       version
-      title
       metaTitleCategory="ReScript Language Manual"
       availableVersions=Constants.allManualVersions
       nextVersion=?Constants.nextVersion
