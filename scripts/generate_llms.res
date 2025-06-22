@@ -29,32 +29,32 @@ let createDirectoryIfNotExists = (dirPath: string): unit => {
 }
 
 let removeCodeTabTags = (content: string): string => {
-  let regex = RegExp.fromStringWithFlags("<CodeTab.*?>[\\s\\S]*?</CodeTab>", ~flags="g")
+  let regex = RegExp.fromString("<CodeTab.*?>[\\s\\S]*?</CodeTab>", ~flags="g")
   String.replaceRegExp(content, regex, "")
 }
 
 let removeCodeBlocks = (content: string): string => {
-  let regex = RegExp.fromStringWithFlags("```[a-zA-Z]+\\s*[\\s\\S]*?```", ~flags="g")
+  let regex = RegExp.fromString("```[a-zA-Z]+\\s*[\\s\\S]*?```", ~flags="g")
   String.replaceRegExp(content, regex, "")
 }
 
 let removeFileTitle = (content: string): string => {
-  let regex = RegExp.fromStringWithFlags("---\ntitle[\\s\\S]*?---", ~flags="g")
+  let regex = RegExp.fromString("---\ntitle[\\s\\S]*?---", ~flags="g")
   String.replaceRegExp(content, regex, "")
 }
 
 let removeUnnecessaryBreaks = (content: string): string => {
-  let regex = RegExp.fromStringWithFlags("^\n{2,}", ~flags="g")
+  let regex = RegExp.fromString("^\n{2,}", ~flags="g")
   String.replaceRegExp(content, regex, "")
 }
 
 let removeToDos = (content: string): string => {
-  let regex = RegExp.fromStringWithFlags("<!-- TODO[\\s\\S]*?-->", ~flags="g")
+  let regex = RegExp.fromString("<!-- TODO[\\s\\S]*?-->", ~flags="g")
   String.replaceRegExp(content, regex, "")
 }
 
 let fillContentWithVersion = (content: string, version: string): string => {
-  let regex = RegExp.fromStringWithFlags("<VERSION>", ~flags="g")
+  let regex = RegExp.fromString("<VERSION>", ~flags="g")
   String.replaceRegExp(content, regex, version)
 }
 

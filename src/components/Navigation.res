@@ -74,7 +74,6 @@ module MobileNav = {
 /* isOverlayOpen: if the mobile sidebar is toggled open */
 @react.component
 let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) => unit) => {
-  let minWidth = "20rem"
   let router = Next.Router.useRouter()
   let route = router.route
   let url = router.route->Url.parse
@@ -89,8 +88,7 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
   <>
     <header
       id="header"
-      style={ReactDOMStyle.make(~minWidth, ())}
-      className={fixedNav ++ " items-center z-50 w-full transition duration-300 ease-out group-[.nav-disappear]:-translate-y-16 md:group-[.nav-disappear]:transform-none"}>
+      className={fixedNav ++ " items-center z-50 w-full transition duration-300 ease-out group-[.nav-disappear]:-translate-y-16 md:group-[.nav-disappear]:transform-none min-w-[20rem]"}>
       <nav className="px-4 flex xs:justify-center bg-gray-90 shadow h-16 text-white-80 text-14">
         <div className="flex justify-between items-center h-full w-full max-w-1280">
           <div className="h-8 w-8 lg:h-10 lg:w-32">
@@ -101,12 +99,11 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
               <img src="/static/nav-logo-full@2x.png" className="hidden lg:block" />
             </a>
           </div>
+
           /* Desktop horizontal navigation */
           <div
             className="flex items-center xs:justify-between w-full bg-gray-90 sm:h-auto sm:relative">
-            <div
-              className="flex ml-10 space-x-5 w-full max-w-320 text-gray-40"
-              style={ReactDOMStyle.make(~maxWidth="26rem", ())}>
+            <div className="flex ml-10 space-x-5 w-full max-w-320 text-gray-40 max-w[26rem]">
               <Link
                 href={`/docs/manual/${version}/introduction`} className={isDocRouteActive(~route)}>
                 {React.string("Docs")}
@@ -147,6 +144,7 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
             </div>
           </div>
         </div>
+
         /* Burger Button */
         <button
           className="h-full px-4 xs:hidden flex items-center hover:text-white"
@@ -158,12 +156,12 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
             className={"h-1 w-auto block " ++ (isOverlayOpen ? "text-fire" : "text-gray-60")}
           />
         </button>
+
         /* Mobile overlay */
         <div
-          style={ReactDOMStyle.make(~minWidth, ~top="4rem", ())}
           className={(
             isOverlayOpen ? "flex" : "hidden"
-          ) ++ " sm:hidden flex-col fixed top-0 left-0 h-full w-full z-50 sm:w-9/12 bg-gray-100 sm:h-auto sm:flex sm:relative sm:flex-row sm:justify-between"}>
+          ) ++ " top-[4rem] sm:hidden flex-col fixed top-0 left-0 h-full w-full z-50 sm:w-9/12 bg-gray-100 sm:h-auto sm:flex sm:relative sm:flex-row sm:justify-between"}>
           <MobileNav route />
         </div>
       </nav>

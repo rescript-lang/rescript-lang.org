@@ -39,8 +39,8 @@ let getStaticProps: Next.GetStaticProps.t<props, _> = async _ => {
     let json = await Webapi.Fetch.Response.json(response)
     json
     ->JSON.Decode.array
-    ->Option.getExn
-    ->Array.map(json => json->JSON.Decode.string->Option.getExn)
+    ->Option.getOrThrow
+    ->Array.map(json => json->JSON.Decode.string->Option.getOrThrow)
   }
 
   {"props": {versions: versions}}

@@ -498,7 +498,7 @@ let default = (props: props) => {
             className="flex justify-between min-w-320 px-4 pt-16 lg:align-center w-full lg:px-8 pb-48">
             <MdxProvider components=MarkdownComponents.default>
               <main className="max-w-1280 w-full flex justify-center">
-                <div style={ReactDOM.Style.make(~maxWidth="44.0625rem", ())} className="w-full">
+                <div className="w-full max-w-[44.0625rem]">
                   <H1> {React.string("Libraries & Bindings")} </H1>
                   <SearchBox
                     placeholder="Enter a search term, name, keyword, etc"
@@ -601,7 +601,7 @@ let getStaticProps: Next.GetStaticProps.t<props, unit> = async _ctx => {
   let urlResources =
     Node.Path.join2(index_data_dir, "packages_url_resources.json")
     ->Node.Fs.readFileSync
-    ->JSON.parseExn
+    ->JSON.parseOrThrow
     ->unsafeToUrlResource
 
   {

@@ -78,7 +78,7 @@ module CopyButton = {
       switch state {
       | Copied =>
         open DomUtil
-        let buttonEl = Nullable.toOption(buttonRef.current)->Option.getExn
+        let buttonEl = Nullable.toOption(buttonRef.current)->Option.getOrThrow
 
         // Note on this imperative DOM nonsense:
         // For Tailwind transitions to behave correctly, we need to first paint the DOM element in the tree,
@@ -198,16 +198,15 @@ module Toggle = {
         }
 
         let borderColor = if selected === i {
-          "#696B7D #EDF0F2"
+          "border-[#696B7D #EDF0F2]"
         } else {
-          "transparent"
+          "border[transparent]"
         }
 
         <span
           key
-          style={ReactDOM.Style.make(~borderColor, ())}
           className={paddingX ++
-          (" flex-none px-5 inline-block p-1 first:rounded-tl " ++
+          (`${borderColor} flex-none px-5 inline-block p-1 first:rounded-tl ` ++
           activeClass)}
           onClick>
           {React.string(label)}
@@ -258,8 +257,7 @@ module Toggle = {
       <div className="relative pt-6 w-full rounded-none text-gray-80">
         //text within code-box
         <div
-          className="absolute flex w-full font-sans bg-transparent text-14 text-gray-40 "
-          style={ReactDOM.Style.make(~marginTop="-26px", ())}>
+          className="absolute flex w-full font-sans bg-transparent text-14 text-gray-40 mt-[-26px] ">
           <div className="flex xs:ml-0"> {React.array(tabElements)} </div>
           <div className="flex-1 w-full bg-gray-20 border-b rounded-tr border-gray-20 items-center">
             buttonDiv

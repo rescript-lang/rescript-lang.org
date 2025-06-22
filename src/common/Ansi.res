@@ -182,7 +182,7 @@ module Lexer = {
             let groups = RegExp.Result.matches(result)
             switch groups[1] {
             | Some(str) =>
-              switch String.split(str, ";") {
+              switch String.split(str->Option.getUnsafe, ";") {
               | ["0"] => ClearSgr({loc, raw})
               | other =>
                 let params = Array.map(other, s =>

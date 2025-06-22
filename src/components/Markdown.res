@@ -19,9 +19,7 @@ module Cite = {
   let make = (~author: option<string>, ~children) =>
     // For semantics, check out
     // https://css-tricks.com/quoting-in-html-quotations-citations-and-blockquotes/
-    <div
-      className="my-10 border-l-2 border-fire font-normal pl-10 py-1 text-fire"
-      style={ReactDOM.Style.make(~maxWidth="30rem", ())}>
+    <div className="my-10 border-l-2 border-fire font-normal pl-10 py-1 text-fire max-w-[30rem]">
       <blockquote className="text-32 italic mb-2"> children </blockquote>
       {Option.mapOr(author, React.null, author =>
         <figcaption className="font-semibold text-14"> {React.string(author)} </figcaption>
@@ -114,14 +112,13 @@ module Anchor = {
 
   @react.component
   let make = (~id: string) => {
-    let style = ReactDOM.Style.make(~position="absolute", ~top="-7rem", ())
     <span className="inline group relative">
       <a
         className="invisible text-gray-60 opacity-50 text-inherit hover:opacity-100 hover:text-gray-60 hover:cursor-pointer group-hover:visible"
         href={"#" ++ id}>
         <Icon.Hyperlink className="inline-block align-middle text-gray-40" />
       </a>
-      <a style id />
+      <a className="absolute top-[-7rem]" id />
     </span>
   }
 }
@@ -514,9 +511,7 @@ module Video = {
   let make = (~src: string, ~caption: option<string>=?) => {
     <div className="mt-8 mb-12 md:-mx-16">
       <div className={"flex w-full justify-center"}>
-        <div
-          className="relative w-full h-full"
-          style={ReactDOMStyle.make(~width="640px", ~paddingTop="56.25%", ())}>
+        <div className="relative h-full w-[640px] pt-[56.25%]">
           <iframe className={"absolute top-0 left-0 w-full h-full"} src allowFullScreen={true} />
         </div>
       </div>

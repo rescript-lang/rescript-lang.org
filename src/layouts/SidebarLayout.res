@@ -154,6 +154,7 @@ module Sidebar = {
             <div className="w-3/4 md:w-full"> toplevelNav </div>
           </div>
           preludeSection
+
           /* Firefox ignores padding in scroll containers, so we need margin
                to make a bottom gap for the sidebar.
                See https://stackoverflow.com/questions/29986977/firefox-ignores-padding-when-using-overflowscroll

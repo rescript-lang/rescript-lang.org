@@ -45,7 +45,7 @@ let getAllPosts = () => {
     let {frontmatter} =
       Node.Path.join2(postsDirectory, path)->Node.Fs.readFileSync->MarkdownParser.parseSync
     switch BlogFrontmatter.decode(frontmatter) {
-    | Error(msg) => Exn.raiseError(msg)
+    | Error(msg) => JsError.throwWithMessage(msg)
     | Ok(d) => {
         path,
         frontmatter: d,
@@ -58,7 +58,7 @@ let getAllPosts = () => {
     let {frontmatter} =
       Node.Path.join2(archivedPostsDirectory, path)->Node.Fs.readFileSync->MarkdownParser.parseSync
     switch BlogFrontmatter.decode(frontmatter) {
-    | Error(msg) => Exn.raiseError(msg)
+    | Error(msg) => JsError.throwWithMessage(msg)
     | Ok(d) => {
         path: Node.Path.join2("archive", path),
         frontmatter: d,
@@ -79,7 +79,7 @@ let getLivePosts = () => {
     let {frontmatter} =
       Node.Path.join2(postsDirectory, path)->Node.Fs.readFileSync->MarkdownParser.parseSync
     switch BlogFrontmatter.decode(frontmatter) {
-    | Error(msg) => Exn.raiseError(msg)
+    | Error(msg) => JsError.throwWithMessage(msg)
     | Ok(d) => {
         path,
         frontmatter: d,
@@ -101,7 +101,7 @@ let getArchivedPosts = () => {
     let {frontmatter} =
       Node.Path.join2(archivedPostsDirectory, path)->Node.Fs.readFileSync->MarkdownParser.parseSync
     switch BlogFrontmatter.decode(frontmatter) {
-    | Error(msg) => Exn.raiseError(msg)
+    | Error(msg) => JsError.throwWithMessage(msg)
     | Ok(d) => {
         path: Node.Path.join2("archive", path),
         frontmatter: d,
