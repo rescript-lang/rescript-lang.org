@@ -142,7 +142,7 @@ module FeatureCard = {
     }
     <section
       className="flex sm:px-4 md:px-8 lg:px-0 flex-col justify-end lg:flex-row sm:items-center h-full">
-      <div className="w-full h-full sm:self-start md:self-auto max-h-[25.4375]rem">
+      <div className="w-full h-full sm:self-start md:self-auto max-h-[25.4375rem]">
         <Link href={`/blog/${slug}`} className="relative block pt-2/3">
           {switch badge {
           | Some(badge) =>

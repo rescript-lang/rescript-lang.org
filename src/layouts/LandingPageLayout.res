@@ -326,14 +326,7 @@ module MainUSP = {
           //image (right)
           <div className="relative mt-10 lg:mt-0">
             <div
-              className="relative w-full z-2 bg-gray-90 rounded-lg flex md:mt-0 items-center justify-center rounded-lg max-w-[35rem]"
-              // TODO(aspeddro)
-              // style={ReactDOM.Style.make(
-              //   ~maxWidth="35rem",
-              //   ~boxShadow="0px 4px 55px 0px rgba(230,72,79,0.10)",
-              //   (),
-              // )}
-            >
+              className="relative w-full z-2 bg-gray-90 flex md:mt-0 items-center justify-center rounded-lg max-w-[35rem] shadow-[0px_4px_55px_0px_rgba(230,72,79,0.10)]">
               media
             </div>
             <img
