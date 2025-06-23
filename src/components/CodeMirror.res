@@ -514,7 +514,7 @@ let updateErrors = (~state: state, ~onMarkerFocus=?, ~onMarkerFocusLeave=?, ~cm:
           (),
         ),
       )
-      ->(Array.push(state.marked, _))
+      ->Array.push(state.marked, _)
       ->ignore
       ()
     }
@@ -686,7 +686,7 @@ let make = // props relevant for the react wrapper
   }, [errorsFingerprint])
 
   React.useEffect(() => {
-    let cm = Option.getExn(cmRef.current)
+    let cm = Option.getOrThrow(cmRef.current)
     cm->CM.setMode(mode)
     None
   }, [mode])

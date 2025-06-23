@@ -87,7 +87,7 @@ let docsDecoded = entryPointFiles->Array.map(libFile => {
     )->Buffer.toString
 
   output
-  ->JSON.parseExn
+  ->JSON.parseOrThrow
   ->Docgen.decodeFromJson
 })
 
@@ -98,7 +98,7 @@ let coreDocs = {
     ChildProcess.execSync(`./node_modules/.bin/rescript-tools doc ${corePath}`)->Buffer.toString
 
   output
-  ->JSON.parseExn
+  ->JSON.parseOrThrow
   ->Docgen.decodeFromJson
 }
 
@@ -298,6 +298,6 @@ let () = {
     tocTree
     ->Dict.fromArray
     ->JSON.stringifyAny
-    ->Option.getExn,
+    ->Option.getOrThrow,
   )
 }

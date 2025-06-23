@@ -138,10 +138,10 @@ module Sidebar = {
         id="sidebar"
         className={(
           isOpen ? "fixed w-full left-0 h-full z-20 min-w-320" : "hidden "
-        ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 md:h-auto md:relative overflow-y-visible bg-white mt-28 md:mt-0"}>
+        ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible bg-white mt-28 md:mt-0"}>
         <aside
           id="sidebar-content"
-          className="relative top-0 px-4 w-full block md:top-[7rem] md:pt-10 md:sticky border-r border-gray-20 overflow-y-auto pb-24 h-[calc(100vh-7rem)]">
+          className="relative top-0 px-4 w-full block md:pt-10 md:top-[7rem] md:sticky border-r border-gray-20 overflow-y-auto pb-24 h-auto max-h-[calc(100vh-7rem)]">
           <button
             onClick={evt => {
               ReactEvent.Mouse.preventDefault(evt)
@@ -154,6 +154,7 @@ module Sidebar = {
             <div className="w-3/4 md:w-full"> toplevelNav </div>
           </div>
           preludeSection
+
           /* Firefox ignores padding in scroll containers, so we need margin
                to make a bottom gap for the sidebar.
                See https://stackoverflow.com/questions/29986977/firefox-ignores-padding-when-using-overflowscroll

@@ -400,7 +400,7 @@ module Data = {
 
     let pathModule = Path.join([dir, version, `${moduleName}.json`])
 
-    let moduleContent = Fs.readFileSync(pathModule)->JSON.parseExn
+    let moduleContent = Fs.readFileSync(pathModule)->JSON.parseOrThrow
 
     let content = switch moduleContent {
     | Object(dict) => dict->Some
@@ -409,7 +409,7 @@ module Data = {
 
     let toctree = switch Path.join([dir, version, "toc_tree.json"])
     ->Fs.readFileSync
-    ->JSON.parseExn {
+    ->JSON.parseOrThrow {
     | Object(dict) => dict->Some
     | _ => None
     }
@@ -544,7 +544,7 @@ let getStaticPathsByVersion = async (~version: string) => {
       | false =>
         let paths = switch Path.join2(pathDir, file)
         ->Fs.readFileSync
-        ->JSON.parseExn {
+        ->JSON.parseOrThrow {
         | Object(dict) =>
           dict
           ->Dict.keysToArray

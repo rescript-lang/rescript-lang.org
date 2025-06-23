@@ -2,9 +2,9 @@ module Sidebar = SidebarLayout.Sidebar
 
 let makeCategories: string => array<Sidebar.Category.t> = version => [
   {
-    name: "",
+    name: "Overview",
     items: [
-      {name: "Overview", href: `/docs/manual/${version}/api`},
+      {name: "Introduction", href: `/docs/manual/${version}/api`},
       if version >= "v12.0.0" {
         {name: "Stdlib", href: `/docs/manual/${version}/api/stdlib`}
       } else {

@@ -587,7 +587,7 @@ let useCompilerManager = (
       }
     }
 
-    updateState()->Promise.done
+    updateState()->Promise.ignore
     None
   }, (
     state,

@@ -696,8 +696,8 @@ module WarningFlagsWidget = {
               let parent = listboxRef.current->Nullable.toOption
 
               switch (parent, el) {
-              | (Some(parent), Some(el)) => scrollToElement(~parent, el)
-              | _ => ()
+              | (Some(parent), Some(el)) => Some(() => scrollToElement(~parent, el))
+              | _ => None
               }
             })->Some
           } else {
@@ -746,8 +746,7 @@ module WarningFlagsWidget = {
       Option.map(suggestions, elements =>
         <div
           ref={ReactDOM.Ref.domRef(listboxRef)}
-          className="p-2 absolute overflow-auto z-50 border-b rounded border-l border-r block w-full bg-gray-100"
-          style={ReactDOM.Style.make(~maxHeight="15rem", ())}>
+          className="p-2 absolute overflow-auto z-50 border-b rounded border-l border-r block w-full bg-gray-100 max-h-[15rem]">
           elements
         </div>
       )->Option.getOr(React.null)
@@ -1005,7 +1004,7 @@ module Settings = {
           </button>
         </div>
         <div className="flex justify-end" />
-        <div style={ReactDOM.Style.make(~maxWidth="40rem", ())}>
+        <div className="max-w-[40rem]">
           <WarningFlagsWidget onUpdate=onWarningFlagsUpdate flags=warnFlagTokens />
         </div>
       </div>
@@ -1770,8 +1769,9 @@ let make = (~versions: array<string>) => {
       // Left Panel
       <div
         ref={ReactDOM.Ref.domRef(leftPanelRef)}
-        style={ReactDOM.Style.make(~width=layout == Column ? "100%" : "50%", ())}
-        className={`${layout == Column ? "h-2/4" : "!h-full"}`}>
+        className={`${layout == Column ? "h-2/4" : "!h-full"} ${layout == Column
+            ? "w-full"
+            : "w-[50%]"}`}>
         <CodeMirror
           className="bg-gray-100 h-full"
           mode
@@ -1798,9 +1798,11 @@ let make = (~versions: array<string>) => {
       // Separator
       <div
         ref={ReactDOM.Ref.domRef(separatorRef)}
-        style={ReactDOM.Style.make(~cursor=layout == Column ? "row-resize" : "col-resize", ())}
         // TODO: touch-none not applied
-        className={`flex items-center justify-center touch-none select-none bg-gray-70 opacity-30 hover:opacity-50 rounded-lg`}
+        className={`flex items-center justify-center touch-none select-none bg-gray-70 opacity-30 hover:opacity-50 rounded-lg ${layout ==
+            Column
+            ? "cursor-row-resize"
+            : "cursor-col-resize"}`}
         onMouseDown={onMouseDown}
         onTouchStart={onTouchStart}
         onTouchEnd={onMouseUp}>
@@ -1811,8 +1813,9 @@ let make = (~versions: array<string>) => {
       // Right Panel
       <div
         ref={ReactDOM.Ref.domRef(rightPanelRef)}
-        style={ReactDOM.Style.make(~width=layout == Column ? "100%" : "50%", ())}
-        className={`${layout == Column ? "h-6/15" : "!h-inherit"}`}>
+        className={`${layout == Column ? "h-6/15" : "!h-inherit"} ${layout == Column
+            ? "w-full"
+            : "w-[50%]"}`}>
         <div className={"flex flex-wrap justify-between w-full " ++ (disabled ? "opacity-50" : "")}>
           {React.array(headers)}
         </div>

@@ -23,6 +23,10 @@
   display: none !important;
 }
 
+.DocSearch-VisuallyHiddenForAccessibility {
+  display: none;
+}
+
 /* Modal */
 /* Body modifier */
 

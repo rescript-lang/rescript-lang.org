@@ -98,6 +98,7 @@ export {
               </pre>
             </div>
           </div>
+
           /* ---Link to Playground--- */
           <div>
             <Next.Link
@@ -109,9 +110,8 @@ export {
           //
           <div className="hidden md:block">
             <img
-              className="absolute z-0 left-0 top-0 -ml-10 -mt-6"
+              className="absolute z-0 left-0 top-0 -ml-10 -mt-6 h-[24rem] w-[24rem]"
               src="/static/lp/grid.svg"
-              style={ReactDOM.Style.make(~height="24rem", ~width="24rem", ())}
             />
             <img
               className="absolute z-0 left-0 top-0 -ml-10 mt-10" src="/static/lp/illu_left.png"
@@ -119,9 +119,8 @@ export {
           </div>
           <div className="hidden md:block">
             <img
-              className="absolute z-0 right-0 bottom-0 -mb-10 mt-24 -mr-10"
+              className="absolute z-0 right-0 bottom-0 -mb-10 mt-24 -mr-10 h-[24rem] w-[24rem]"
               src="/static/lp/grid.svg"
-              style={ReactDOM.Style.make(~height="24rem", ~width="24rem", ())}
             />
             <img
               className="absolute z-3 right-0 bottom-0 -mr-2 mb-10" src="/static/lp/illu_right.png"
@@ -184,7 +183,7 @@ module QuickInstall = {
         switch state {
         | Copied =>
           open Webapi
-          let buttonEl = Nullable.toOption(buttonRef.current)->Option.getExn
+          let buttonEl = Nullable.toOption(buttonRef.current)->Option.getOrThrow
 
           // Note on this imperative DOM nonsense:
           // For Tailwind transitions to behave correctly, we need to first paint the DOM element in the tree,
@@ -275,8 +274,7 @@ module QuickInstall = {
             className="relative z-1 text-gray-80 font-semibold text-24 md:text-32 leading-2 max-w-[32rem]">
             {React.string(`ReScript is used to ship and maintain mission-critical products with good UI and UX.`)}
           </p>
-          <div
-            className="mt-16 lg:mt-0 self-end" style={ReactDOM.Style.make(~maxWidth="25rem", ())}>
+          <div className="mt-16 lg:mt-0 self-end max-w-[25rem]">
             <Instructions />
           </div>
         </div>
@@ -328,17 +326,11 @@ module MainUSP = {
           //image (right)
           <div className="relative mt-10 lg:mt-0">
             <div
-              className="relative w-full z-2 bg-gray-90 rounded-lg flex md:mt-0 items-center justify-center rounded-lg"
-              style={ReactDOM.Style.make(
-                ~maxWidth="35rem",
-                ~boxShadow="0px 4px 55px 0px rgba(230,72,79,0.10)",
-                (),
-              )}>
+              className="relative w-full z-2 bg-gray-90 flex md:mt-0 items-center justify-center rounded-lg max-w-[35rem] shadow-[0px_4px_55px_0px_rgba(230,72,79,0.10)]">
               media
             </div>
             <img
-              className="absolute z-1 bottom-0 right-0 -mb-12 -mr-12"
-              style={ReactDOM.Style.make(~maxWidth="20rem", ())}
+              className="absolute z-1 bottom-0 right-0 -mb-12 -mr-12 max-w-[20rem]"
               src="/static/lp/grid2.svg"
             />
           </div>
@@ -427,9 +419,7 @@ module MainUSP = {
 
   @react.component
   let make = () => {
-    <section
-      className="w-full bg-gray-90 overflow-hidden"
-      style={ReactDOM.Style.make(~minHeight="37rem", ())}>
+    <section className="w-full bg-gray-90 overflow-hidden min-h-[37rem]">
       item1
       item2
       item3
@@ -541,9 +531,7 @@ module TrustedBy = {
         href="https://github.com/rescript-lang/rescript-lang.org/blob/master/src/common/OurUsers.res">
         <Button> {React.string("Add Your Logo")} </Button>
       </a>
-      <div
-        className="self-start mt-10 max-w-320 overflow-hidden opacity-50"
-        style={ReactDOM.Style.make(~maxHeight="6rem", ())}>
+      <div className="self-start mt-10 max-w-320 overflow-hidden opacity-50 max-h-[6rem]">
         <img className="w-full h-full" src="/static/lp/grid.svg" />
       </div>
     </section>
@@ -599,7 +587,7 @@ module CuratedResources = {
       imgSrc: "/static/vitejs_starter_logo.svg",
       title: <>
         <div> {React.string("ReScript & ")} </div>
-        <div style={ReactDOM.Style.make(~color="#6571FB", ())}> {React.string("ViteJS")} </div>
+        <div className="text-[#6571FB]"> {React.string("ViteJS")} </div>
       </>,
       descr: "Get started with ViteJS and ReScript.",
       href: "https://github.com/rescript-lang/create-rescript-app/blob/master/templates/rescript-template-vite/README.md",
@@ -635,6 +623,7 @@ module CuratedResources = {
         </div>
         <hr className="bg-gray-80 h-px border-0 relative top-[-12px]" />
       </div>
+
       //divider
 
       //container for guides

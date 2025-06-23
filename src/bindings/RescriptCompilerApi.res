@@ -22,7 +22,7 @@ module Lang = {
     switch string(json) {
     | "re" => Reason
     | "res" => Res
-    | other => raise(DecodeError(`Unknown language "${other}"`))
+    | other => throw(DecodeError(`Unknown language "${other}"`))
     }
   }
 }
@@ -226,7 +226,7 @@ module TypeHint = {
     | "type_declaration" => TypeDeclaration(data)
     | "binding" => Binding(data)
     | "core_type" => CoreType(data)
-    | other => raise(DecodeError(`Unknown kind "${other}" type hint`))
+    | other => throw(DecodeError(`Unknown kind "${other}" type hint`))
     }
   }
 }
@@ -299,7 +299,7 @@ module CompileFail = {
     | "warning_flag_error" =>
       let warningFlag = WarningFlag.decode(json)
       WarningFlagErr(warningFlag)
-    | other => raise(DecodeError(`Unknown type "${other}" in CompileFail result`))
+    | other => throw(DecodeError(`Unknown type "${other}" in CompileFail result`))
     }
   }
 }
@@ -452,8 +452,8 @@ module Compiler = {
       ~fromLang,
       ~toLang,
     ) catch {
-    | Exn.Error(obj) =>
-      switch Exn.message(obj) {
+    | JsExn(obj) =>
+      switch JsExn.message(obj) {
       | Some(m) => ConversionResult.UnexpectedError(m)
       | None => UnexpectedError("")
       }
