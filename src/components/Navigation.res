@@ -103,7 +103,7 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
           /* Desktop horizontal navigation */
           <div
             className="flex items-center xs:justify-between w-full bg-gray-90 sm:h-auto sm:relative">
-            <div className="flex ml-10 space-x-5 w-full max-w-320 text-gray-40 max-w[26rem]">
+            <div className="flex ml-10 space-x-5 w-full text-gray-40 max-w-[26rem]">
               <Link
                 href={`/docs/manual/${version}/introduction`} className={isDocRouteActive(~route)}>
                 {React.string("Docs")}
