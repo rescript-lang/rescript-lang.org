@@ -519,7 +519,7 @@ module TrustedBy = {
           | Logo({name, path, url}) => (
               name,
               <a href=url rel="noopener noreferrer">
-                <img className="hover:opacity-75 max-w-sm h-12" src=path />
+                <img className="hover:opacity-75 max-w-sm h-12" src=path loading=#lazy />
               </a>,
             )
           }
