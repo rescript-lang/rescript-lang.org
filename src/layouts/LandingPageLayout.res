@@ -445,6 +445,7 @@ module OtherSellingPoints = {
               "/static/lp/community-2.jpg",
               "/static/lp/community-1.jpg",
             ]}
+            imgLoading=#lazy
           />
           <h3 className="hl-3 text-gray-20 mt-4 mb-2">
             {React.string(`A community of programmers who value getting things done`)}
