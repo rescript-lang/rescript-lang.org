@@ -636,7 +636,7 @@ module CuratedResources = {
               key={Int.toString(i)}
               href={card.href}
               className="hover:bg-gray-80 bg-gray-90 px-4 md:px-8 pb-0 md:pb-8 relative rounded-xl md:min-w-[196px]">
-              <img className="h-[53px] absolute mt-6" src=card.imgSrc />
+              <img className="h-[53px] absolute mt-6" src=card.imgSrc loading=#lazy />
               <h5 className="text-gray-10 hl-4 mt-32 h-12"> {card.title} </h5>
               <div className="text-gray-40 mt-2 mb-8 body-sm"> {React.string(card.descr)} </div>
             </Next.Link>
@@ -659,7 +659,7 @@ module CuratedResources = {
               key={Int.toString(i)}
               href={card.href}
               className="hover:bg-gray-80 bg-gray-90 px-5 pb-8 relative rounded-xl min-w-[200px]">
-              <img className="h-12 absolute mt-5" src=card.imgSrc />
+              <img className="h-12 absolute mt-5" src=card.imgSrc loading=#lazy />
               <h5 className="text-gray-10 hl-4 mt-32 h-12"> {card.title} </h5>
               <div className="text-gray-40 mt-4 body-sm"> {React.string(card.descr)} </div>
             </a>
