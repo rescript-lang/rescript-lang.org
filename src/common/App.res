@@ -59,41 +59,13 @@ let make = (props: props): React.element => {
     switch pagepath[0] {
     | Some("api") =>
       switch url->Url.getVersionString {
-      | ("v11.0.0" | "v12.0.0") as version =>
+      | "v11.0.0" | "v12.0.0" =>
         switch (Array.length(pagepath), pagepath[1]) {
-        | (1, _) => <ApiOverviewLayout.Docs version> content </ApiOverviewLayout.Docs>
+        | (1, _) => <ApiOverviewLayout.Docs version=url> content </ApiOverviewLayout.Docs>
         | _ => content
         }
-      | "v8.0.0" =>
-        switch (Array.length(pagepath), pagepath[1]) {
-        | (1, _) => <ApiOverviewLayout8_0_0.Docs> content </ApiOverviewLayout8_0_0.Docs>
-        | (2, Some("js")) => <JsDocsLayout8_0_0.Prose> content </JsDocsLayout8_0_0.Prose>
-        | (2, Some("belt")) => <BeltDocsLayout8_0_0.Prose> content </BeltDocsLayout8_0_0.Prose>
-        | (_, Some("js")) => <JsDocsLayout8_0_0.Docs> content </JsDocsLayout8_0_0.Docs>
-        | (_, Some("belt")) => <BeltDocsLayout8_0_0.Docs> content </BeltDocsLayout8_0_0.Docs>
-        | (_, Some("dom")) => <DomDocsLayout8_0_0.Docs> content </DomDocsLayout8_0_0.Docs>
-        | _ => React.null
-        }
-      | "v9.0.0" =>
-        switch (Array.length(pagepath), pagepath[1]) {
-        | (1, _) => <ApiOverviewLayout9_0_0.Docs> content </ApiOverviewLayout9_0_0.Docs>
-        | (2, Some("js")) => <JsDocsLayout9_0_0.Prose> content </JsDocsLayout9_0_0.Prose>
-        | (2, Some("belt")) => <BeltDocsLayout9_0_0.Prose> content </BeltDocsLayout9_0_0.Prose>
-        | (_, Some("js")) => <JsDocsLayout9_0_0.Docs> content </JsDocsLayout9_0_0.Docs>
-        | (_, Some("belt")) => <BeltDocsLayout9_0_0.Docs> content </BeltDocsLayout9_0_0.Docs>
-        | (_, Some("dom")) => <DomDocsLayout9_0_0.Docs> content </DomDocsLayout9_0_0.Docs>
-        | _ => React.null
-        }
-      | "v10.0.0" =>
-        switch (Array.length(pagepath), pagepath[1]) {
-        | (1, _) => <ApiOverviewLayout10_0_0.Docs> content </ApiOverviewLayout10_0_0.Docs>
-        | (2, Some("js")) => <JsDocsLayout10_0_0.Prose> content </JsDocsLayout10_0_0.Prose>
-        | (2, Some("belt")) => <BeltDocsLayout10_0_0.Prose> content </BeltDocsLayout10_0_0.Prose>
-        | (_, Some("js")) => <JsDocsLayout10_0_0.Docs> content </JsDocsLayout10_0_0.Docs>
-        | (_, Some("belt")) => <BeltDocsLayout10_0_0.Docs> content </BeltDocsLayout10_0_0.Docs>
-        | (_, Some("dom")) => <DomDocsLayout10_0_0.Docs> content </DomDocsLayout10_0_0.Docs>
-        | _ => React.null
-        }
+      | "v8.0.0" | "v9.0.0" | "v10.0.0" =>
+        <ApiOverviewLayoutLegacy version=url> content </ApiOverviewLayoutLegacy>
       | _ => content
       }
     | _ =>
