@@ -334,9 +334,7 @@ let make = (~components=ApiMarkdown.default, ~version, ~children) => {
   let route = router.route
   let url = router.route->Url.parse
 
-  let versionStr = version
-
-  let warnBanner = <ApiLayout.OldDocsWarning route version=versionStr />
+  let warnBanner = <ApiLayout.OldDocsWarning route version />
 
   switch url.pagepath->Array.get(1) {
   | None =>
@@ -344,18 +342,18 @@ let make = (~components=ApiMarkdown.default, ~version, ~children) => {
     let categories: array<Category.t> = [
       {
         name: "Introduction",
-        items: [{name: "Overview", href: `/docs/manual/${versionStr}/api`}],
+        items: [{name: "Overview", href: `/docs/manual/${version}/api`}],
       },
       {
         name: "Modules",
         items: [
-          {name: "Js Module", href: `/docs/manual/${versionStr}/api/js`},
-          {name: "Belt Module", href: `/docs/manual/${versionStr}/api/belt`},
-          {name: "Dom Module", href: `/docs/manual/${versionStr}/api/dom`},
+          {name: "Js Module", href: `/docs/manual/${version}/api/js`},
+          {name: "Belt Module", href: `/docs/manual/${version}/api/belt`},
+          {name: "Dom Module", href: `/docs/manual/${version}/api/dom`},
         ],
       },
     ]
-    <ApiLayout components categories title version=versionStr>
+    <ApiLayout components categories title version>
       warnBanner
       children
     </ApiLayout>
@@ -363,7 +361,7 @@ let make = (~components=ApiMarkdown.default, ~version, ~children) => {
     let indexData = switch Dict.get(indexData, moduleName) {
     | Some(moduleData) =>
       Dict.get(moduleData, version)->Option.getOrThrow(
-        ~message=`Not found data for ${moduleName} version ${versionStr}`,
+        ~message=`Not found data for ${moduleName} version ${version}`,
       )
     | None => throw(Failure(`Not found index data for module: ${moduleName}`))
     }
@@ -378,7 +376,7 @@ let make = (~components=ApiMarkdown.default, ~version, ~children) => {
 
     let prefix = {
       open Url
-      {name: "API", href: "/docs/manual/" ++ (versionStr ++ "/api")}
+      {name: "API", href: "/docs/manual/" ++ (version ++ "/api")}
     }
 
     let breadcrumbs = ApiLayout.makeBreadcrumbs(~prefix, route)
@@ -391,16 +389,16 @@ let make = (~components=ApiMarkdown.default, ~version, ~children) => {
       }
     }
 
-    let categories = moduleCategories(moduleName, versionStr)
+    let categories = moduleCategories(moduleName, version)
 
     let title = switch moduleName {
-    | "belt" => "Belt Stdlib"
-    | "js" => "Js Stdlib"
-    | "dom" => "Dom Stdlib"
+    | "belt" => "Belt Module"
+    | "js" => "Js Module"
+    | "dom" => "Dom Module"
     | _ => assert(false)
     }
 
-    <ApiLayout components title version={versionStr} activeToc categories breadcrumbs>
+    <ApiLayout components title version activeToc categories breadcrumbs>
       warnBanner
       children
     </ApiLayout>
