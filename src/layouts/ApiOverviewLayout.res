@@ -25,8 +25,17 @@ let makeCategories: string => array<Sidebar.Category.t> = version => [
 module Docs = {
   @react.component
   let make = (~version, ~components=ApiMarkdown.default, ~children) => {
+    let router = Next.Router.useRouter()
+    let route = router.route
+
     let categories = makeCategories(version)
 
-    <ApiLayout categories version components> children </ApiLayout>
+    <ApiLayout categories version components>
+      {switch version {
+      | "v9.0.0" | "v8.0.0" => <ApiLayout.OldDocsWarning route version />
+      | _ => React.null
+      }}
+      children
+    </ApiLayout>
   }
 }
