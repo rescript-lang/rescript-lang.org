@@ -445,6 +445,7 @@ module OtherSellingPoints = {
               "/static/lp/community-2.jpg",
               "/static/lp/community-1.jpg",
             ]}
+            imgLoading=#lazy
           />
           <h3 className="hl-3 text-gray-20 mt-4 mb-2">
             {React.string(`A community of programmers who value getting things done`)}
@@ -519,7 +520,7 @@ module TrustedBy = {
           | Logo({name, path, url}) => (
               name,
               <a href=url rel="noopener noreferrer">
-                <img className="hover:opacity-75 max-w-sm h-12" src=path />
+                <img className="hover:opacity-75 max-w-sm h-12" src=path loading=#lazy />
               </a>,
             )
           }
@@ -636,7 +637,7 @@ module CuratedResources = {
               key={Int.toString(i)}
               href={card.href}
               className="hover:bg-gray-80 bg-gray-90 px-4 md:px-8 pb-0 md:pb-8 relative rounded-xl md:min-w-[196px]">
-              <img className="h-[53px] absolute mt-6" src=card.imgSrc />
+              <img className="h-[53px] absolute mt-6" src=card.imgSrc loading=#lazy />
               <h5 className="text-gray-10 hl-4 mt-32 h-12"> {card.title} </h5>
               <div className="text-gray-40 mt-2 mb-8 body-sm"> {React.string(card.descr)} </div>
             </Next.Link>
@@ -659,7 +660,7 @@ module CuratedResources = {
               key={Int.toString(i)}
               href={card.href}
               className="hover:bg-gray-80 bg-gray-90 px-5 pb-8 relative rounded-xl min-w-[200px]">
-              <img className="h-12 absolute mt-5" src=card.imgSrc />
+              <img className="h-12 absolute mt-5" src=card.imgSrc loading=#lazy />
               <h5 className="text-gray-10 hl-4 mt-32 h-12"> {card.title} </h5>
               <div className="text-gray-40 mt-4 body-sm"> {React.string(card.descr)} </div>
             </a>

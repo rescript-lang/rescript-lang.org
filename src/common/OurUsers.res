@@ -142,7 +142,7 @@ let companies = [
   Logo({
     name: "Instapainting.com",
     url: "https://www.instapainting.com/",
-    path: "/static/lp/instapainting.svg",
+    path: "/static/lp/instapainting.png",
   }),
   Logo({
     name: "Juspay",
