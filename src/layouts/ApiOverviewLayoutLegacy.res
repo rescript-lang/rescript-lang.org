@@ -329,14 +329,16 @@ let moduleCategories = (moduleName, version) => {
 }
 
 @react.component
-let make = (~components=ApiMarkdown.default, ~version: Url.t, ~children) => {
+let make = (~components=ApiMarkdown.default, ~version, ~children) => {
   let router = Next.Router.useRouter()
   let route = router.route
-  let versionStr = version->Url.getVersionString
+  let url = router.route->Url.parse
+
+  let versionStr = version
 
   let warnBanner = <ApiLayout.OldDocsWarning route version=versionStr />
 
-  switch version.pagepath->Array.get(1) {
+  switch url.pagepath->Array.get(1) {
   | None =>
     let title = "API"
     let categories: array<Category.t> = [
@@ -348,7 +350,7 @@ let make = (~components=ApiMarkdown.default, ~version: Url.t, ~children) => {
         name: "Modules",
         items: [
           {name: "Js Module", href: `/docs/manual/${versionStr}/api/js`},
-          {name: "Belt Stdlib", href: `/docs/manual/${versionStr}/api/belt`},
+          {name: "Belt Module", href: `/docs/manual/${versionStr}/api/belt`},
           {name: "Dom Module", href: `/docs/manual/${versionStr}/api/dom`},
         ],
       },
@@ -360,7 +362,7 @@ let make = (~components=ApiMarkdown.default, ~version: Url.t, ~children) => {
   | Some(moduleName) =>
     let indexData = switch Dict.get(indexData, moduleName) {
     | Some(moduleData) =>
-      Dict.get(moduleData, version->Url.getVersionString)->Option.getOrThrow(
+      Dict.get(moduleData, version)->Option.getOrThrow(
         ~message=`Not found data for ${moduleName} version ${versionStr}`,
       )
     | None => throw(Failure(`Not found index data for module: ${moduleName}`))

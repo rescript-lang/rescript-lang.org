@@ -59,13 +59,13 @@ let make = (props: props): React.element => {
     switch pagepath[0] {
     | Some("api") =>
       switch url->Url.getVersionString {
-      | "v11.0.0" | "v12.0.0" =>
+      | ("v11.0.0" | "v12.0.0") as version =>
         switch (Array.length(pagepath), pagepath[1]) {
-        | (1, _) => <ApiOverviewLayout.Docs version=url> content </ApiOverviewLayout.Docs>
+        | (1, _) => <ApiOverviewLayout.Docs version> content </ApiOverviewLayout.Docs>
         | _ => content
         }
-      | "v8.0.0" | "v9.0.0" | "v10.0.0" =>
-        <ApiOverviewLayoutLegacy version=url> content </ApiOverviewLayoutLegacy>
+      | ("v8.0.0" | "v9.0.0" | "v10.0.0") as version =>
+        <ApiOverviewLayoutLegacy version> content </ApiOverviewLayoutLegacy>
       | _ => content
       }
     | _ =>

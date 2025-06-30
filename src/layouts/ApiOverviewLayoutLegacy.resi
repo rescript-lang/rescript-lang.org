@@ -1,6 +1,6 @@
 @react.component
 let make: (
   ~components: MarkdownComponents.t=?,
-  ~version: Url.t,
+  ~version: string,
   ~children: React.element,
 ) => React.element

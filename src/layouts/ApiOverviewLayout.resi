@@ -1,7 +1,7 @@
 module Docs: {
   @react.component
   let make: (
-    ~version: Url.t,
+    ~version: string,
     ~components: MarkdownComponents.t=?,
     ~children: React.element,
   ) => React.element
