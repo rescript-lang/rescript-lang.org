@@ -5,43 +5,33 @@ type t = {
 }
 
 /**
- This function uses JSDOM to fetch a webpage and extract the meta tags from it. 
+ This function uses JSDOM to fetch a webpage and extract the meta tags from it.
  JSDOM is required since this runs on Node.
  */
 let extractMetaTags = async (url: string) => {
-  open Webapi
   try {
-    let response = await Fetch.fetch(url)
+    let response = await fetch(url)
 
-    let html = await response->Fetch.Response.text
+    let html = await response->WebAPI.Response.text
     let dom = Jsdom.make(html)
     let document = dom.window.document
 
-    let metaTags =
-      document
-      ->Document.querySelectorAll("meta")
-      ->Array.fromArrayLike
-      ->Array.reduce(Dict.fromArray([]), (tags, meta) => {
-        let name = meta->Element.getAttribute("name")->Nullable.toOption
-        let property = meta->Element.getAttribute("property")->Nullable.toOption
-        let itemprop = meta->Element.getAttribute("itemprop")->Nullable.toOption
+    let nodeList = document->WebAPI.Document.querySelectorAll("meta")
 
-        let name = switch (name, property, itemprop) {
-        | (Some(name), _, _) => Some(name)
-        | (_, Some(property), _) => Some(property)
-        | (_, _, Some(itemprop)) => Some(itemprop)
-        | _ => None
-        }
+    let nodesArray = []
 
-        let content = meta->Element.getAttribute("content")->Nullable.toOption
+    for i in 0 to nodeList.length {
+      let node = WebAPI.NodeList.item(nodeList, i)
+      nodesArray->Array.push(node)
+    }
 
-        switch (name, content) {
-        | (Some(name), Some(content)) => tags->Dict.set(name, content)
-        | _ => ()
-        }
+    let metaTags = nodesArray->Array.reduce(Dict.fromArray([]), (tags, meta) => {
+      let name = meta->Obj.magic->WebAPI.Element.getAttribute("name")
 
-        tags
-      })
+      let content = meta->Obj.magic->WebAPI.Element.getAttribute("content")
+      tags->Dict.set(name, content)
+      tags
+    })
 
     let title = metaTags->Dict.get("og:title")
     let description = metaTags->Dict.get("og:description")

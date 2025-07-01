@@ -40,7 +40,7 @@ let useScrollDirection = (~topMargin=80, ~threshold=20) => {
   React.useEffect(() => {
     let onScroll = _e => {
       setScrollDir(prev => {
-        let scrollY = Webapi.Window.scrollY
+        let scrollY = scrollY->Float.toInt
         let enterTopMargin = scrollY <= topMargin
 
         let action = switch prev {
@@ -60,8 +60,8 @@ let useScrollDirection = (~topMargin=80, ~threshold=20) => {
         }
       })
     }
-    Webapi.Window.addEventListener("scroll", onScroll)
-    Some(() => Webapi.Window.removeEventListener("scroll", onScroll))
+    WebAPI.Window.addEventListener(window, WebAPI.EventAPI.Scroll, onScroll)
+    Some(() => WebAPI.Window.removeEventListener(window, WebAPI.EventAPI.Scroll, onScroll))
   }, [topMargin, threshold])
 
   scrollDir

@@ -5,7 +5,11 @@
     "version": 4
   },
   "bs-dependencies": [
-    "@rescript/react"
+    "@rescript/react",
+    "@rescript/webapi"
+  ],
+  "bsc-flags": [
+    "-open WebAPI.Global"
   ],
   "sources": [
     {

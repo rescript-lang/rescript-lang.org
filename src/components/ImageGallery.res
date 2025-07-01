@@ -16,7 +16,7 @@ let make = (
     switch mode {
     | NoAuto => None
     | AutoFadeTransition(ms) =>
-      let timerId = setInterval(() => {
+      let timerId = setInterval2(~handler=() => {
         setIndex(
           prev => {
             if prev === imgSrcs->Array.length - 1 {
@@ -26,7 +26,7 @@ let make = (
             }
           },
         )
-      }, ms)
+      }, ~timeout=ms)
 
       Some(
         () => {

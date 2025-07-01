@@ -235,7 +235,7 @@ module HoverTooltip = {
         el: Dom.element,
         marker: CM.TextMarker.t,
         hoverHint: HoverHint.t,
-        hideTimer: option<timeoutId>,
+        hideTimer: option<WebAPI.DOMAPI.timeoutId>,
       })
 
   let make: unit => t = %raw(`
@@ -388,10 +388,10 @@ let useHoverTooltip = (~cmStateRef: React.ref<state>, ~cmRef: React.ref<option<C
       }
 
       marker->CM.TextMarker.clear
-      let timerId = setTimeout(() => {
+      let timerId = setTimeout(~handler=() => {
         stateRef.current = Hidden
         tooltip->HoverTooltip.hide
-      }, 200)
+      }, ~timeout=200)
 
       stateRef.current = Shown({
         el,

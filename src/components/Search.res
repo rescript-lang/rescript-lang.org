@@ -60,7 +60,7 @@ let hit = ({hit, children}: DocSearch.hitComponent) => {
 
 let transformItems = (items: DocSearch.transformItems) => {
   items->Array.filterMap(item => {
-    let url = try Webapi.URL.make(item.url)->Some catch {
+    let url = try WebAPI.URL.make(~url=item.url)->Some catch {
     | Exn.Error(obj) =>
       Console.error2(`Failed to parse URL ${item.url}`, obj)
       None
@@ -80,18 +80,17 @@ let make = () => {
   let version = Url.parse(router.route)->Url.getVersionString
 
   let handleCloseModal = () => {
-    let () = switch ReactDOM.querySelector(".DocSearch-Modal") {
-    | Some(modal) =>
-      switch ReactDOM.querySelector("body") {
-      | Some(body) =>
-        open Webapi
-        body->Element.classList->ClassList.remove("DocSearch--active")
-        modal->Element.addEventListener("transitionend", () => {
+    let () = switch WebAPI.Document.querySelector(document, ".DocSearch-Modal") {
+    | Value(modal) =>
+      switch WebAPI.Document.querySelector(document, "body") {
+      | Value(body) =>
+        WebAPI.DOMTokenList.remove(body.classList, "DocSearch--active")
+        modal->WebAPI.Element.addEventListener(WebAPI.EventAPI.Transitionend, () => {
           setState(_ => Inactive)
         })
-      | None => setState(_ => Inactive)
+      | Null => setState(_ => Inactive)
       }
-    | None => ()
+    | Null => ()
     }
   }
 
