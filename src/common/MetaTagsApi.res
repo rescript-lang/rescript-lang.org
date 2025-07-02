@@ -30,23 +30,20 @@ let extractMetaTags = async (url: string) => {
       let name =
         meta
         ->WebAPI.Element.getAttribute("name")
-        ->Nullable.make
-        ->Nullable.toOption
+        ->Null.make
       let property =
         meta
         ->WebAPI.Element.getAttribute("property")
-        ->Nullable.make
-        ->Nullable.toOption
+        ->Null.make
       let itemprop =
         meta
         ->WebAPI.Element.getAttribute("itemprop")
-        ->Nullable.make
-        ->Nullable.toOption
+        ->Null.make
 
       let name = switch (name, property, itemprop) {
-      | (Some(name), _, _) => Some(name)
-      | (_, Some(property), _) => Some(property)
-      | (_, _, Some(itemprop)) => Some(itemprop)
+      | (Value(name), _, _) => Some(name)
+      | (_, Value(property), _) => Some(property)
+      | (_, _, Value(itemprop)) => Some(itemprop)
       | _ => None
       }
 
