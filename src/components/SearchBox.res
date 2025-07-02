@@ -3,8 +3,6 @@
  * the package index
  */
 
-@send external focus: Dom.element => unit = "focus"
-
 type state =
   | Active
   | Inactive
@@ -18,14 +16,15 @@ let make = (
   ~onValueChange: string => unit,
 ) => {
   let (state, setState) = React.useState(_ => Inactive)
-  let textInput = React.useRef(Nullable.null)
+  let textInput: React.ref<Nullable.t<WebAPI.DOMAPI.htmlInputElement>> = React.useRef(Nullable.null)
 
   let onMouseDownClear = evt => {
     ReactEvent.Mouse.preventDefault(evt)
     onClear()
   }
 
-  let focusInput = () => textInput.current->Nullable.forEach(el => el->focus)
+  let focusInput = () =>
+    textInput.current->Nullable.forEach(el => el->WebAPI.HTMLInputElement.focus)
 
   let onAreaFocus = evt => {
     let el = ReactEvent.Focus.target(evt)
@@ -85,7 +84,7 @@ let make = (
     />
     <input
       value
-      ref={ReactDOM.Ref.domRef(textInput)}
+      ref={ReactDOM.Ref.domRef((Obj.magic(textInput): React.ref<Nullable.t<Dom.element>>))}
       onFocus
       onKeyDown
       onChange={onChange}

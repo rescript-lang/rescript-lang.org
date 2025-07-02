@@ -18,18 +18,49 @@ let extractMetaTags = async (url: string) => {
 
     let nodeList = document->WebAPI.Document.querySelectorAll("meta")
 
-    let nodesArray = []
+    let elements = []
 
     for i in 0 to nodeList.length {
       let node = WebAPI.NodeList.item(nodeList, i)
-      nodesArray->Array.push(node)
+      // cast Node elements to Element
+      elements->Array.push((Obj.magic(node): WebAPI.DOMAPI.element))
     }
 
-    let metaTags = nodesArray->Array.reduce(Dict.fromArray([]), (tags, meta) => {
-      let name = meta->Obj.magic->WebAPI.Element.getAttribute("name")
+    let metaTags = elements->Array.reduce(Dict.fromArray([]), (tags, meta) => {
+      let name =
+        meta
+        ->WebAPI.Element.getAttribute("name")
+        ->Nullable.make
+        ->Nullable.toOption
+      let property =
+        meta
+        ->WebAPI.Element.getAttribute("property")
+        ->Nullable.make
+        ->Nullable.toOption
+      let itemprop =
+        meta
+        ->WebAPI.Element.getAttribute("itemprop")
+        ->Nullable.make
+        ->Nullable.toOption
 
-      let content = meta->Obj.magic->WebAPI.Element.getAttribute("content")
-      tags->Dict.set(name, content)
+      let name = switch (name, property, itemprop) {
+      | (Some(name), _, _) => Some(name)
+      | (_, Some(property), _) => Some(property)
+      | (_, _, Some(itemprop)) => Some(itemprop)
+      | _ => None
+      }
+
+      let content =
+        meta
+        ->WebAPI.Element.getAttribute("content")
+        ->Nullable.make
+        ->Nullable.toOption
+
+      switch (name, content) {
+      | (Some(name), Some(content)) => tags->Dict.set(name, content)
+      | _ => ()
+      }
+
       tags
     })
 

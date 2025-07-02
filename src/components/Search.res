@@ -2,27 +2,6 @@ let apiKey = "a2485ef172b8cd82a2dfa498d551399b"
 let indexName = "rescript-lang"
 let appId = "S32LNEY41T"
 
-@val @scope("document")
-external activeElement: option<Dom.element> = "activeElement"
-
-type keyboardEventLike = {key: string, ctrlKey: bool, metaKey: bool}
-@val @scope("window")
-external addKeyboardEventListener: (string, keyboardEventLike => unit) => unit = "addEventListener"
-
-@val @scope("window")
-external removeKeyboardEventListener: (string, keyboardEventLike => unit) => unit =
-  "addEventListener"
-
-type window
-@val external window: window = "window"
-@get external scrollY: window => int = "scrollY"
-
-@send
-external keyboardEventPreventDefault: keyboardEventLike => unit = "preventDefault"
-
-@get external tagName: Dom.element => string = "tagName"
-@get external isContentEditable: Dom.element => bool = "isContentEditable"
-
 type state = Active | Inactive
 
 let hit = ({hit, children}: DocSearch.hitComponent) => {
@@ -95,22 +74,23 @@ let make = () => {
   }
 
   React.useEffect(() => {
-    let isEditableTag = el =>
-      switch el->tagName {
+    let isEditableTag = (el: WebAPI.DOMAPI.element) =>
+      switch el.tagName {
       | "TEXTAREA" | "SELECT" | "INPUT" => true
       | _ => false
       }
 
-    let focusSearch = e => {
-      switch activeElement {
-      | Some(el) if el->isEditableTag || el->isContentEditable => ()
+    let focusSearch = (e: WebAPI.UIEventsAPI.keyboardEvent) => {
+      switch document.activeElement {
+      | Value(el)
+        if el->isEditableTag || (Obj.magic(el): WebAPI.DOMAPI.htmlElement).isContentEditable => ()
       | _ =>
         setState(_ => Active)
-        e->keyboardEventPreventDefault
+        WebAPI.KeyboardEvent.preventDefault(e)
       }
     }
 
-    let handleGlobalKeyDown = e => {
+    let handleGlobalKeyDown = (e: WebAPI.UIEventsAPI.keyboardEvent) => {
       switch e.key {
       | "/" => focusSearch(e)
       | "k" if e.ctrlKey || e.metaKey => focusSearch(e)
@@ -118,8 +98,8 @@ let make = () => {
       | _ => ()
       }
     }
-    addKeyboardEventListener("keydown", handleGlobalKeyDown)
-    Some(() => removeKeyboardEventListener("keydown", handleGlobalKeyDown))
+    WebAPI.Window.addEventListener(window, Keydown, handleGlobalKeyDown)
+    Some(() => WebAPI.Window.removeEventListener(window, Keydown, handleGlobalKeyDown))
   }, [setState])
 
   let onClick = _ => {
@@ -145,7 +125,7 @@ let make = () => {
             indexName
             onClose
             searchParameters={facetFilters: ["version:" ++ version]}
-            initialScrollY={window->scrollY}
+            initialScrollY={window.scrollY->Float.toInt}
             transformItems={transformItems}
             hitComponent=hit
           />,

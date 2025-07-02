@@ -141,10 +141,7 @@ type state =
   | ShowFiltered(string, array<Item.t>) // (search, filteredItems)
   | ShowDetails(Item.t)
 
-@val @scope("window")
-external scrollTo: (int, int) => unit = "scrollTo"
-
-let scrollToTop = () => scrollTo(0, 0)
+let scrollToTop = () => WebAPI.Window.scrollTo(window, ~options={left: 0.0, top: 0.0})
 
 type props = {mdxSources: array<MdxRemote.output>}
 type params = {slug: string}

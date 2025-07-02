@@ -352,30 +352,20 @@ module ResultPane = {
 }
 
 module WarningFlagsWidget = {
-  @set external _scrollTop: (Dom.element, int) => unit = "scrollTop"
-  @send external focus: Dom.element => unit = "focus"
-
-  @send external blur: Dom.element => unit = "blur"
-
-  @get external scrollHeight: Dom.element => int = "scrollHeight"
-  @get external clientHeight: Dom.element => int = "clientHeight"
-  @get external scrollTop: Dom.element => int = "scrollTop"
-  @get external offsetTop: Dom.element => int = "offsetTop"
-  @get external offsetHeight: Dom.element => int = "offsetHeight"
-
-  @set external setScrollTop: (Dom.element, int) => unit = "scrollTop"
-
   // Inspired by MUI (who got inspired by WAI best practise examples)
   // https://github.com/mui-org/material-ui/blob/next/packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js#L327
-  let scrollToElement = (~parent: Dom.element, element: Dom.element): unit =>
-    if parent->scrollHeight > parent->clientHeight {
-      let scrollBottom = parent->clientHeight + parent->scrollTop
-      let elementBottom = element->offsetTop + element->offsetHeight
+  let scrollToElement = (
+    ~parent: WebAPI.DOMAPI.htmlElement,
+    element: WebAPI.DOMAPI.htmlElement,
+  ): unit =>
+    if parent.scrollHeight > parent.clientHeight {
+      let scrollBottom = parent.clientHeight + Float.toInt(parent.scrollTop)
+      let elementBottom = element.offsetTop + element.offsetHeight
 
       if elementBottom > scrollBottom {
-        parent->setScrollTop(elementBottom - parent->clientHeight)
-      } else if element->offsetTop - element->offsetHeight < parent->scrollTop {
-        parent->setScrollTop(element->offsetTop - element->offsetHeight)
+        parent.scrollTop = Float.fromInt(elementBottom - parent.clientHeight)
+      } else if element.offsetTop - element.offsetHeight < Float.toInt(parent.scrollTop) {
+        parent.scrollTop = Float.fromInt(element.offsetTop - element.offsetHeight)
       }
     }
 
@@ -525,11 +515,15 @@ module WarningFlagsWidget = {
     let listboxRef = React.useRef(Nullable.null)
 
     // Used for the text input
-    let inputRef = React.useRef(Nullable.null)
+    let inputRef: React.ref<Nullable.t<WebAPI.DOMAPI.htmlInputElement>> = React.useRef(
+      Nullable.null,
+    )
 
-    let focusInput = () => inputRef.current->Nullable.forEach(el => el->focus)
+    let focusInput = () =>
+      inputRef.current->Nullable.forEach(el => WebAPI.HTMLInputElement.focus(el))
 
-    let blurInput = () => inputRef.current->Nullable.forEach(el => el->blur)
+    let blurInput = () =>
+      inputRef.current->Nullable.forEach(el => WebAPI.HTMLInputElement.focus(el))
 
     let chips = Array.mapWithIndex(flags, (token, i) => {
       let {WarningFlagDescription.Parser.flag: flag, enabled} = token
@@ -696,7 +690,8 @@ module WarningFlagsWidget = {
               let parent = listboxRef.current->Nullable.toOption
 
               switch (parent, el) {
-              | (Some(parent), Some(el)) => Some(() => scrollToElement(~parent, el))
+              | (Some(parent), Some(el)) =>
+                Some(() => scrollToElement(~parent, (Obj.magic(el): WebAPI.DOMAPI.htmlElement)))
               | _ => None
               }
             })->Some
@@ -745,7 +740,7 @@ module WarningFlagsWidget = {
     let suggestionBox =
       Option.map(suggestions, elements =>
         <div
-          ref={ReactDOM.Ref.domRef(listboxRef)}
+          ref={ReactDOM.Ref.domRef((Obj.magic(listboxRef): React.ref<Nullable.t<Dom.element>>))}
           className="p-2 absolute overflow-auto z-50 border-b rounded border-l border-r block w-full bg-gray-100 max-h-[15rem]">
           elements
         </div>
@@ -816,7 +811,7 @@ module WarningFlagsWidget = {
           chips
           <section className="mt-3">
             <input
-              ref={ReactDOM.Ref.domRef(inputRef)}
+              ref={ReactDOM.Ref.domRef((Obj.magic(inputRef): React.ref<Nullable.t<Dom.element>>))}
               className="inline-block p-1 max-w-20 outline-none bg-gray-90 placeholder-gray-20 placeholder-opacity-50"
               placeholder="Flags"
               type_="text"
@@ -1791,7 +1786,7 @@ let make = (~versions: array<string>) => {
     />
     <div
       className={`flex ${layout == Column ? "flex-col" : "flex-row"}`}
-      ref={ReactDOM.Ref.domRef(panelRef->Obj.magic)}>
+      ref={ReactDOM.Ref.domRef((Obj.magic(panelRef): React.ref<Nullable.t<Dom.element>>))}>
       // Left Panel
       <div
         ref={ReactDOM.Ref.domRef((Obj.magic(leftPanelRef): React.ref<Nullable.t<Dom.element>>))}
@@ -1838,7 +1833,7 @@ let make = (~versions: array<string>) => {
       </div>
       // Right Panel
       <div
-        ref={ReactDOM.Ref.domRef(rightPanelRef->Obj.magic)}
+        ref={ReactDOM.Ref.domRef((Obj.magic(rightPanelRef): React.ref<Nullable.t<Dom.element>>))}
         className={`${layout == Column ? "h-6/15" : "!h-inherit"} ${layout == Column
             ? "w-full"
             : "w-[50%]"}`}>
