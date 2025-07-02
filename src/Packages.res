@@ -525,14 +525,16 @@ let parsePkgs = data => {
       | Object(dict{
           "searchScore": Number(searchScore),
           "score": Object(dict{"detail": Object(dict{"maintenance": Number(maintenanceScore)})}),
-          "package": Object(
-            dict{
-              "name": String(name),
-              "keywords": Array(keywords),
-              "version": String(version),
-              "links": Object(dict{"npm": String(npmHref)} as links),
-            } as package,
-          ),
+          "package": Object(dict{
+            "name": String(name),
+            "keywords": Array(keywords),
+            "version": String(version),
+            "description": ?Some(String(description)),
+            "links": Object(dict{
+              "npm": String(npmHref),
+              "repository": ?Some(String(repositoryHref)),
+            }),
+          }),
         }) =>
         let keywords =
           keywords
@@ -545,22 +547,12 @@ let parsePkgs = data => {
           ->Resource.filterKeywords
           ->Resource.uniqueKeywords
 
-        let repositoryHref = switch links->Dict.get("repository") {
-        | Some(String(v)) => Null.Value(v)
-        | _ => Null
-        }
-
-        let description = switch package {
-        | dict{"description": String(description)} => description
-        | _ => ""
-        }
-
         Some({
           name,
           version,
           keywords,
           description,
-          repositoryHref,
+          repositoryHref: repositoryHref->Null.make,
           npmHref,
           searchScore,
           maintenanceScore,
