@@ -16,7 +16,7 @@ let make = (
   ~onValueChange: string => unit,
 ) => {
   let (state, setState) = React.useState(_ => Inactive)
-  let textInput: React.ref<Nullable.t<WebAPI.DOMAPI.htmlInputElement>> = React.useRef(Nullable.null)
+  let textInput = React.useRef(Nullable.null)
 
   let onMouseDownClear = evt => {
     ReactEvent.Mouse.preventDefault(evt)

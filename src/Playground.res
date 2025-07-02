@@ -515,9 +515,7 @@ module WarningFlagsWidget = {
     let listboxRef = React.useRef(Nullable.null)
 
     // Used for the text input
-    let inputRef: React.ref<Nullable.t<WebAPI.DOMAPI.htmlInputElement>> = React.useRef(
-      Nullable.null,
-    )
+    let inputRef = React.useRef(Nullable.null)
 
     let focusInput = () =>
       inputRef.current->Nullable.forEach(el => WebAPI.HTMLInputElement.focus(el))
@@ -1124,8 +1122,8 @@ module ControlPanel = {
       }
 
       React.useEffect(() => {
-        WebAPI.Window.addEventListener(window, WebAPI.EventAPI.Keydown, onKeyDown)
-        Some(() => WebAPI.Window.removeEventListener(window, WebAPI.EventAPI.Keydown, onKeyDown))
+        WebAPI.Window.addEventListener(window, Keydown, onKeyDown)
+        Some(() => WebAPI.Window.removeEventListener(window, Keydown, onKeyDown))
       }, [])
 
       let runButtonText = {
@@ -1529,8 +1527,8 @@ let make = (~versions: array<string>) => {
   }
 
   React.useEffect(() => {
-    WebAPI.Window.addEventListener(window, WebAPI.EventAPI.Resize, onResize)
-    Some(() => WebAPI.Window.removeEventListener(window, WebAPI.EventAPI.Resize, onResize))
+    WebAPI.Window.addEventListener(window, Resize, onResize)
+    Some(() => WebAPI.Window.removeEventListener(window, Resize, onResize))
   }, [])
 
   // To force CodeMirror render scrollbar on first render
@@ -1615,15 +1613,15 @@ let make = (~versions: array<string>) => {
       onMove(position)
     }
 
-    WebAPI.Window.addEventListener(window, WebAPI.EventAPI.Mousemove, onMouseMove)
-    WebAPI.Window.addEventListener(window, WebAPI.EventAPI.Touchmove, onTouchMove)
-    WebAPI.Window.addEventListener(window, WebAPI.EventAPI.Mouseup, onMouseUp)
+    WebAPI.Window.addEventListener(window, Mousemove, onMouseMove)
+    WebAPI.Window.addEventListener(window, Touchmove, onTouchMove)
+    WebAPI.Window.addEventListener(window, Mouseup, onMouseUp)
 
     Some(
       () => {
-        WebAPI.Window.removeEventListener(window, WebAPI.EventAPI.Mousemove, onMouseMove)
-        WebAPI.Window.removeEventListener(window, WebAPI.EventAPI.Touchmove, onTouchMove)
-        WebAPI.Window.removeEventListener(window, WebAPI.EventAPI.Mouseup, onMouseUp)
+        WebAPI.Window.removeEventListener(window, Mousemove, onMouseMove)
+        WebAPI.Window.removeEventListener(window, Touchmove, onTouchMove)
+        WebAPI.Window.removeEventListener(window, Mouseup, onMouseUp)
       },
     )
   }, [layout])

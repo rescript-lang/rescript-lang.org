@@ -60,8 +60,8 @@ let useScrollDirection = (~topMargin=80, ~threshold=20) => {
         }
       })
     }
-    WebAPI.Window.addEventListener(window, WebAPI.EventAPI.Scroll, onScroll)
-    Some(() => WebAPI.Window.removeEventListener(window, WebAPI.EventAPI.Scroll, onScroll))
+    WebAPI.Window.addEventListener(window, Scroll, onScroll)
+    Some(() => WebAPI.Window.removeEventListener(window, Scroll, onScroll))
   }, [topMargin, threshold])
 
   scrollDir

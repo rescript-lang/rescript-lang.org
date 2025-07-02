@@ -17,8 +17,8 @@ let make = (~logs, ~appendLog) => {
       | _ => ()
       }
     }
-    WebAPI.Window.addEventListener(window, WebAPI.EventAPI.Custom("message"), cb)
-    Some(() => WebAPI.Window.removeEventListener(window, WebAPI.EventAPI.Custom("message"), cb))
+    WebAPI.Window.addEventListener(window, Custom("message"), cb)
+    Some(() => WebAPI.Window.removeEventListener(window, Custom("message"), cb))
   }, [appendLog])
 
   <div className="px-2 py-6 relative flex flex-col flex-1 overflow-y-hidden">

@@ -64,7 +64,7 @@ let make = () => {
       switch WebAPI.Document.querySelector(document, "body") {
       | Value(body) =>
         WebAPI.DOMTokenList.remove(body.classList, "DocSearch--active")
-        modal->WebAPI.Element.addEventListener(WebAPI.EventAPI.Transitionend, () => {
+        modal->WebAPI.Element.addEventListener(Transitionend, () => {
           setState(_ => Inactive)
         })
       | Null => setState(_ => Inactive)
