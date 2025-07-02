@@ -478,9 +478,7 @@ let updateErrors = (
   let isMarkerId = id =>
     String.startsWith(id, "gutter-marker") || String.startsWith(id, "text-marker")
 
-  WebAPI.Element.addEventListener(wrapper, Mouseover, (
-    evt: WebAPI.UIEventsAPI.mouseEvent,
-  ) => {
+  WebAPI.Element.addEventListener(wrapper, Mouseover, (evt: WebAPI.UIEventsAPI.mouseEvent) => {
     let target = (Obj.magic(evt.target): Null.t<WebAPI.DOMAPI.element>)
 
     switch target {
@@ -495,9 +493,7 @@ let updateErrors = (
     }
   })
 
-  WebAPI.Element.addEventListener(wrapper, Mouseout, (
-    evt: WebAPI.UIEventsAPI.mouseEvent,
-  ) => {
+  WebAPI.Element.addEventListener(wrapper, Mouseout, (evt: WebAPI.UIEventsAPI.mouseEvent) => {
     let target = (Obj.magic(evt.target): Null.t<WebAPI.DOMAPI.element>)
 
     switch target {
