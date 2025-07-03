@@ -8,26 +8,6 @@ let langShortname = (lang: string) =>
   | rest => rest
   }
 
-module DomUtil = {
-  @scope("document") @val external createElement: string => Dom.element = "createElement"
-  @scope("document") @val external createTextNode: string => Dom.element = "createTextNode"
-  @send external appendChild: (Dom.element, Dom.element) => unit = "appendChild"
-  @send external removeChild: (Dom.element, Dom.element) => unit = "removeChild"
-
-  @set external setClassName: (Dom.element, string) => unit = "className"
-
-  type classList
-  @get external classList: Dom.element => classList = "classList"
-  @send external toggle: (classList, string) => unit = "toggle"
-
-  type animationFrameId
-  @scope("window") @val
-  external requestAnimationFrame: (unit => unit) => animationFrameId = "requestAnimationFrame"
-
-  @scope("window") @val
-  external cancelAnimationFrame: animationFrameId => unit = "cancelAnimationFrame"
-}
-
 module CopyButton = {
   let copyToClipboard: string => bool = %raw(`
   function(str) {
@@ -77,31 +57,29 @@ module CopyButton = {
     React.useEffect(() => {
       switch state {
       | Copied =>
-        open DomUtil
-        let buttonEl = Nullable.toOption(buttonRef.current)->Option.getExn
+        let buttonEl = Nullable.toOption(buttonRef.current)->Option.getOrThrow
 
         // Note on this imperative DOM nonsense:
         // For Tailwind transitions to behave correctly, we need to first paint the DOM element in the tree,
         // and in the next tick, add the opacity-100 class, so the transition animation actually takes place.
         // If we don't do that, the banner will essentially pop up without any animation
-        let bannerEl = createElement("div")
-        bannerEl->setClassName(
-          "opacity-0 absolute -top-6 right-0 -mt-5 -mr-4 px-4 py-2 w-40 rounded-lg captions text-white bg-gray-100 text-gray-80-tr transition-all duration-1000 ease-in-out ",
-        )
-        let textNode = createTextNode("Copied to clipboard")
+        let bannerEl = WebAPI.Document.createElement(document, "div")
+        bannerEl.className = "opacity-0 absolute -top-6 right-0 -mt-5 -mr-4 px-4 py-2 w-40 rounded-lg captions text-white bg-gray-100 text-gray-80-tr transition-all duration-1000 ease-in-out "
 
-        bannerEl->appendChild(textNode)
-        buttonEl->appendChild(bannerEl)
+        let textNode = WebAPI.Document.createTextNode(document, "Copied to clipboard")
 
-        let nextFrameId = requestAnimationFrame(() => {
-          bannerEl->classList->toggle("opacity-0")
-          bannerEl->classList->toggle("opacity-100")
+        WebAPI.Element.appendChild(bannerEl, textNode)->ignore
+        WebAPI.Element.appendChild(buttonEl, bannerEl)->ignore
+
+        let nextFrameId = WebAPI.Window.requestAnimationFrame(window, _ => {
+          WebAPI.DOMTokenList.toggle(bannerEl.classList, ~token="opacity-0")->ignore
+          WebAPI.DOMTokenList.toggle(bannerEl.classList, ~token="opacity-100")->ignore
         })
 
-        let timeoutId = setTimeout(() => {
-          buttonEl->removeChild(bannerEl)
+        let timeoutId = setTimeout(~handler=() => {
+          buttonEl->WebAPI.Element.removeChild(bannerEl)->ignore
           setState(_ => Init)
-        }, 3000)
+        }, ~timeout=3000)
 
         Some(
           () => {
@@ -114,7 +92,10 @@ module CopyButton = {
     }, [state])
     //Copy-Button
     <button
-      ref={ReactDOM.Ref.domRef(buttonRef)} disabled={state === Copied} className="relative" onClick>
+      ref={ReactDOM.Ref.domRef((Obj.magic(buttonRef): React.ref<Nullable.t<Dom.element>>))}
+      disabled={state === Copied}
+      className="relative"
+      onClick>
       <Icon.Clipboard
         className="text-gray-30 mt-px hover:cursor-pointer hover:text-gray-60 hover:bg-gray-30 w-6 h-6 p-1 rounded transition-all duration-300 ease-in-out"
       />
@@ -198,16 +179,15 @@ module Toggle = {
         }
 
         let borderColor = if selected === i {
-          "#696B7D #EDF0F2"
+          "border-t-[#696b7d]"
         } else {
-          "transparent"
+          "border-t-[transparent]"
         }
 
         <span
           key
-          style={ReactDOM.Style.make(~borderColor, ())}
           className={paddingX ++
-          (" flex-none px-5 inline-block p-1 first:rounded-tl " ++
+          (` ${borderColor} flex-none px-5 inline-block p-1 first:rounded-tl ` ++
           activeClass)}
           onClick>
           {React.string(label)}
@@ -258,8 +238,7 @@ module Toggle = {
       <div className="relative pt-6 w-full rounded-none text-gray-80">
         //text within code-box
         <div
-          className="absolute flex w-full font-sans bg-transparent text-14 text-gray-40 "
-          style={ReactDOM.Style.make(~marginTop="-26px", ())}>
+          className="absolute flex w-full font-sans bg-transparent text-14 text-gray-40 mt-[-26px] overflow-x-auto">
           <div className="flex xs:ml-0"> {React.array(tabElements)} </div>
           <div className="flex-1 w-full bg-gray-20 border-b rounded-tr border-gray-20 items-center">
             buttonDiv

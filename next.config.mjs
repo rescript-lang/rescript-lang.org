@@ -26,7 +26,6 @@ const config = {
     VERSION_LATEST: process.env.VERSION_LATEST,
     VERSION_NEXT: process.env.VERSION_NEXT,
   },
-  swcMinify: false,
   webpack: (config, options) => {
     const { isServer } = options;
     if (!isServer) {

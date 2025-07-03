@@ -93,10 +93,7 @@ module BlogHeader = {
         )}
         <div className="flex flex-col md:flex-row mb-12">
           {Array.map(authors, author =>
-            <div
-              key=author.username
-              style={ReactDOMStyle.make(~minWidth="8.1875rem", ())}
-              className="mt-4 md:mt-0 md:ml-8 first:ml-0">
+            <div key=author.username className="mt-4 md:mt-0 md:ml-8 first:ml-0 min-w-[8.1875rem]">
               <AuthorBox author />
             </div>
           )->React.array}
@@ -105,11 +102,7 @@ module BlogHeader = {
       {switch articleImg {
       | Some(articleImg) =>
         <div className="-mx-8 sm:mx-0 sm:w-full bg-gray-5-tr md:mt-24">
-          <img
-            className="h-full w-full object-cover"
-            src=articleImg
-            style={ReactDOMStyle.make(~maxHeight="33.625rem", ())}
-          />
+          <img className="h-full w-full object-cover max-h-[33.625rem]" src=articleImg />
         </div>
       | None =>
         <div className="max-w-740 w-full">

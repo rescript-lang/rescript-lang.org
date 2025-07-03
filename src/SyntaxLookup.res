@@ -141,10 +141,7 @@ type state =
   | ShowFiltered(string, array<Item.t>) // (search, filteredItems)
   | ShowDetails(Item.t)
 
-@val @scope("window")
-external scrollTo: (int, int) => unit = "scrollTo"
-
-let scrollToTop = () => scrollTo(0, 0)
+let scrollToTop = () => WebAPI.Window.scrollTo(window, ~options={left: 0.0, top: 0.0})
 
 type props = {mdxSources: array<MdxRemote.output>}
 type params = {slug: string}
@@ -155,10 +152,10 @@ let decode = (json: JSON.t) => {
   let keywords = json->field("keywords", array(string, ...), _)
   let name = json->field("name", string, _)
   let summary = json->field("summary", string, _)
-  let category = json->(field("category", string, _))->Category.fromString
+  let category = json->field("category", string, _)->Category.fromString
   let status =
     json
-    ->(optional(field("status", string, _), _))
+    ->optional(field("status", string, _), _)
     ->Option.mapOr(Status.Active, Status.fromString)
 
   {
@@ -342,13 +339,13 @@ let default = (props: props) => {
   let content =
     <div>
       <div className="flex flex-col items-center">
-        <div className="text-center" style={ReactDOM.Style.make(~maxWidth="21rem", ())}>
+        <div className="text-center max-w-[21rem]">
           <Markdown.H1> {React.string("Syntax Lookup")} </Markdown.H1>
           <div className="mb-8 text-gray-60-tr text-14">
             {React.string("Enter some language construct you want to know more about.")}
           </div>
         </div>
-        <div className="w-full" style={ReactDOM.Style.make(~maxWidth="34rem", ())}>
+        <div className="w-full max-w-[34rem]">
           <SearchBox
             placeholder="Enter keywords or syntax..."
             completionValues={Array.map(completionItems, item => item.name)}

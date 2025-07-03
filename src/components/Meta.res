@@ -52,6 +52,7 @@ let make = (
     <link rel="icon" type_="image/png" sizes="32x32" href="/static/favicon/favicon-32x32.png" />
     <link rel="icon" type_="image/png" sizes="16x16" href="/static/favicon/favicon-16x16.png" />
     <link rel="manifest" href="/static/favicon/site.webmanifest" />
+
     /* OG link preview meta data */
     <meta key="og:site_name" property="og:site_name" content=ogSiteName />
     <meta key="og:locale" property="og:locale" content=ogLocale />
@@ -72,6 +73,8 @@ let make = (
       name="docsearch:version"
       content={switch version {
       | Some(Version(v)) => v
+      | Some(Latest) => Constants.versions.latest
+      | Some(Next) => Constants.versions.next
       | _ => Constants.versions.latest
       }}
     />

@@ -33,14 +33,12 @@ let default = props => {
 
 let getStaticProps: Next.GetStaticProps.t<props, _> = async _ => {
   let versions = {
-    let response = await Webapi.Fetch.fetch(
-      "https://cdn.rescript-lang.org/playground-bundles/versions.json",
-    )
-    let json = await Webapi.Fetch.Response.json(response)
+    let response = await fetch("https://cdn.rescript-lang.org/playground-bundles/versions.json")
+    let json = await WebAPI.Response.json(response)
     json
     ->JSON.Decode.array
-    ->Option.getExn
-    ->Array.map(json => json->JSON.Decode.string->Option.getExn)
+    ->Option.getOrThrow
+    ->Array.map(json => json->JSON.Decode.string->Option.getOrThrow)
   }
 
   {"props": {versions: versions}}

@@ -62,7 +62,7 @@ module RightSidebar = {
         }
         let title = `${Option.isSome(deprecatedIcon) ? "Deprecated " : ""}` ++ name
         let result =
-          <li className="my-3">
+          <li className="my-3" key={href}>
             <a
               title
               className="flex items-center w-full font-normal text-14 text-gray-40 leading-tight hover:text-gray-80"
@@ -95,7 +95,7 @@ module SidebarTree = {
     let version = url->Url.getVersionString
 
     let moduleRoute =
-      Webapi.URL.make("file://" ++ router.asPath).pathname
+      WebAPI.URL.make(~url="file://" ++ router.asPath).pathname
       ->String.replace(`/docs/manual/${version}/api/`, "")
       ->String.split("/")
 
@@ -125,12 +125,12 @@ module SidebarTree = {
       switch hasChildren {
       | true =>
         let open_ =
-          node.path->Array.join("/") ===
+          href ===
             moduleRoute
             ->Array.slice(~start=0, ~end=Array.length(moduleRoute) - 1)
             ->Array.join("/")
 
-        <details key={node.name} open_>
+        <details key={href} open_>
           <summary className={summaryClassName ++ classNameActive}>
             <Next.Link className={"inline-block w-10/12"} href>
               {node.name->React.string}
@@ -148,7 +148,7 @@ module SidebarTree = {
           }}
         </details>
       | false =>
-        <li className={"list-none mt-1 leading-4"}>
+        <li className={"list-none mt-1 leading-4"} key={href}>
           <summary className={summaryClassName ++ classNameActive}>
             <Next.Link className={"block"} href> {node.name->React.string} </Next.Link>
           </summary>
@@ -164,7 +164,6 @@ module SidebarTree = {
 
     let preludeSection =
       <div className="flex justify-between text-fire font-medium items-baseline">
-        {React.string(node.name ++ " Module")}
         {switch url {
         | Some(url) =>
           let onChange = evt => {
@@ -172,6 +171,15 @@ module SidebarTree = {
             ReactEvent.Form.preventDefault(evt)
             let version = (evt->ReactEvent.Form.target)["value"]
             let url = Url.parse(router.asPath)
+            switch url.pagepath[1] {
+            | Some("core") | Some("stdlib") =>
+              if version < "v12.0.0" {
+                url.pagepath[1] = "core"
+              } else {
+                url.pagepath[1] = "stdlib"
+              }
+            | _ => ()
+            }
 
             let targetUrl =
               "/" ++
@@ -184,9 +192,10 @@ module SidebarTree = {
           <VersionSelect
             onChange
             version
-            availableVersions=Constants.coreVersions
+            availableVersions=Constants.stdlibVersions
             nextVersion=?Constants.nextVersion
           />
+
         | None => React.null
         }}
       </div>
@@ -197,7 +206,7 @@ module SidebarTree = {
       ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 md:h-auto md:relative overflow-y-visible bg-white"}>
       <aside
         id="sidebar-content"
-        className="relative top-0 px-4 w-full block md:top-16 md:pt-16 md:sticky border-r border-gray-20 overflow-y-auto pb-24 h-[calc(100vh-4.5rem)]">
+        className="relative top-0 px-4 w-full block md:top-[7rem] md:pt-10 md:sticky border-r border-gray-20 overflow-y-auto pb-24 h-[calc(100vh-7rem)]">
         <div className="flex justify-between">
           <div className="w-3/4 md:w-full"> React.null </div>
           <button
@@ -309,21 +318,21 @@ let default = (props: props) => {
         | Value({name, signature, docstrings, deprecated}) =>
           let code = String.replaceRegExp(signature, /\\n/g, "\n")
           let slugPrefix = "value-" ++ name
-          <>
+          <React.Fragment key={slugPrefix}>
             <H2 id=slugPrefix> {name->React.string} </H2>
             <DeprecatedMessage deprecated />
             <CodeExample code lang="rescript" />
             <DocstringsStylize docstrings slugPrefix />
-          </>
+          </React.Fragment>
         | Type({name, signature, docstrings, deprecated}) =>
           let code = String.replaceRegExp(signature, /\\n/g, "\n")
           let slugPrefix = "type-" ++ name
-          <>
+          <React.Fragment key={slugPrefix}>
             <H2 id=slugPrefix> {name->React.string} </H2>
             <DeprecatedMessage deprecated />
             <CodeExample code lang="rescript" />
             <DocstringsStylize docstrings slugPrefix />
-          </>
+          </React.Fragment>
         }
       })
 
@@ -340,7 +349,7 @@ let default = (props: props) => {
   | Ok({module_: {items}}) if Array.length(items) > 0 =>
     <div className="hidden xl:block lg:w-1/5 md:h-auto md:relative overflow-y-visible bg-white">
       <aside
-        className="relative top-0 pl-4 w-full block md:top-16 md:pt-16 md:sticky border-l border-gray-20 overflow-y-auto pb-24 h-[calc(100vh-4.5rem)]">
+        className="relative top-0 pl-4 w-full block md:top-[7rem] md:pt-4 md:sticky border-l border-gray-20 overflow-y-auto pb-24 h-[calc(100vh-7rem)]">
         <div className="hl-overline block text-gray-80 mt-16 mb-2">
           {"Types and values"->React.string}
         </div>
@@ -391,7 +400,7 @@ module Data = {
 
     let pathModule = Path.join([dir, version, `${moduleName}.json`])
 
-    let moduleContent = Fs.readFileSync(pathModule)->JSON.parseExn
+    let moduleContent = Fs.readFileSync(pathModule)->JSON.parseOrThrow
 
     let content = switch moduleContent {
     | Object(dict) => dict->Some
@@ -400,7 +409,7 @@ module Data = {
 
     let toctree = switch Path.join([dir, version, "toc_tree.json"])
     ->Fs.readFileSync
-    ->JSON.parseExn {
+    ->JSON.parseOrThrow {
     | Object(dict) => dict->Some
     | _ => None
     }
@@ -535,7 +544,7 @@ let getStaticPathsByVersion = async (~version: string) => {
       | false =>
         let paths = switch Path.join2(pathDir, file)
         ->Fs.readFileSync
-        ->JSON.parseExn {
+        ->JSON.parseOrThrow {
         | Object(dict) =>
           dict
           ->Dict.keysToArray

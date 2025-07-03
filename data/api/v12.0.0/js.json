@@ -3,7 +3,7 @@
     "id": "Js",
     "name": "Js",
     "docstrings": [
-      "The Js module mostly contains ReScript bindings to _standard JavaScript APIs_\nlike [console.log](https://developer.mozilla.org/en-US/docs/Web/API/Console/log),\nor the JavaScript\n[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String),\n[Date](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date), and\n[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)\nclasses.\n\nIt is meant as a zero-abstraction interop layer and directly exposes JavaScript functions as they are. If you can find your API in this module, prefer this over an equivalent Belt helper. For example, prefer [Js.Array2](js/array2) over [Belt.Array](belt/array)\n\n## Argument Order\n\nFor historical reasons, some APIs in the Js namespace (e.g. [Js.String](js/string)) are\nusing the data-last argument order whereas others (e.g. [Js.Date](js/date)) are using data-first.\n\nFor more information about these argument orders and the trade-offs between them, see\n[this blog post](https://www.javierchavarri.com/data-first-and-data-last-a-comparison/).\n\n_Eventually, all modules in the Js namespace are going to be migrated to data-first though._\n\nIn the meantime, there are several options for dealing with the data-last APIs:\n\n## Examples\n\n```rescript\n/* Js.String (data-last API used with pipe last operator) */\nJs.log(\"2019-11-10\" |> Js.String.split(\"-\"))\nJs.log(\"ReScript\" |> Js.String.startsWith(\"Re\"))\n\n/* Js.String (data-last API used with pipe first operator) */\nJs.log(\"2019-11-10\"->Js.String.split(\"-\", _))\nJs.log(\"ReScript\"->Js.String.startsWith(\"Re\", _))\n\n/* Js.String (data-last API used without any piping) */\nJs.log(Js.String.split(\"-\", \"2019-11-10\"))\nJs.log(Js.String.startsWith(\"Re\", \"ReScript\"))\n```\n## Js.Xxx2 Modules\n\nPrefer `Js.Array2` over `Js.Array`, `Js.String2` over `Js.String`, etc. The latters are old modules."
+      "The Js module mostly contains ReScript bindings to _standard JavaScript APIs_\nlike [console.log](https://developer.mozilla.org/en-US/docs/Web/API/Console/log),\nor the JavaScript\n[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String),\n[Date](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date), and\n[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)\nclasses.\n\nIt is meant as a zero-abstraction interop layer and directly exposes JavaScript functions as they are. If you can find your API in this module, prefer this over an equivalent Belt helper. For example, prefer [Js.Array2](js/array2) over [Belt.Array](belt/array)\n\n## Argument Order\n\nFor historical reasons, some APIs in the Js namespace (e.g. [Js.String](js/string)) are\nusing the data-last argument order whereas others (e.g. [Js.Date](js/date)) are using data-first.\n\nFor more information about these argument orders and the trade-offs between them, see\n[this blog post](https://www.javierchavarri.com/data-first-and-data-last-a-comparison/).\n\n_Eventually, all modules in the Js namespace are going to be migrated to data-first though._\n\nIn the meantime, there are several options for dealing with the data-last APIs:\n\n## Examples\n\n```rescript\n/* Js.String (data-last API used with pipe last operator) */\nJs.log(\\\"2019-11-10\\\" |> Js.String.split(\\\"-\\\"))\nJs.log(\\\"ReScript\\\" |> Js.String.startsWith(\\\"Re\\\"))\n\n/* Js.String (data-last API used with pipe first operator) */\nJs.log(\\\"2019-11-10\\\"->Js.String.split(\\\"-\\\", _))\nJs.log(\\\"ReScript\\\"->Js.String.startsWith(\\\"Re\\\", _))\n\n/* Js.String (data-last API used without any piping) */\nJs.log(Js.String.split(\\\"-\\\", \\\"2019-11-10\\\"))\nJs.log(Js.String.startsWith(\\\"Re\\\", \\\"ReScript\\\"))\n```\n## Js.Xxx2 Modules\n\nPrefer `Js.Array2` over `Js.Array`, `Js.String2` over `Js.String`, etc. The latters are old modules."
     ],
     "items": [
       {
@@ -16,29 +16,34 @@
         "signature": "type t<'a> = 'a\n  constraint 'a = {..}"
       },
       {
+        "id": "Js.globalThis",
+        "kind": "value",
+        "name": "globalThis",
+        "docstrings": [
+          "JS global object reference"
+        ],
+        "signature": "let globalThis: t<{..}>"
+      },
+      {
         "id": "Js.null",
         "kind": "type",
         "name": "null",
-        "docstrings": [
-          "Nullable value of this type can be either null or 'a. This type is equivalent to Js.Null.t."
-        ],
-        "signature": "type null<'a> = Value('a) | Null"
+        "docstrings": [],
+        "signature": "@unboxed\ntype null<'a> = Js_null.t<'a> = Value('a) | @as(null) Null"
       },
       {
         "id": "Js.undefined",
         "kind": "type",
         "name": "undefined",
-        "docstrings": [
-          "A value of this type can be either undefined or 'a. This type is equivalent to Js.Undefined.t."
-        ],
-        "signature": "type undefined<+'a>"
+        "docstrings": [],
+        "signature": "type undefined<'a> = Js_undefined.t<'a>"
       },
       {
         "id": "Js.nullable",
         "kind": "type",
         "name": "nullable",
         "docstrings": [],
-        "signature": "type nullable<'a> = Value('a) | Null | Undefined"
+        "signature": "@unboxed\ntype nullable<'a> = Js_null_undefined.t<'a> =\n  | Value('a)\n  | @as(null) Null\n  | @as(undefined) Undefined"
       },
       {
         "id": "Js.null_undefined",
@@ -768,14 +773,14 @@
         "kind": "value",
         "name": "find",
         "docstrings": [],
-        "signature": "let find: (t, elt => bool) => Js.undefined<elt>"
+        "signature": "let find: (t, elt => bool) => Js_undefined.t<elt>"
       },
       {
         "id": "Js.TypedArray2.Float64Array.findi",
         "kind": "value",
         "name": "findi",
         "docstrings": [],
-        "signature": "let findi: (t, (elt, int) => bool) => Js.undefined<elt>"
+        "signature": "let findi: (t, (elt, int) => bool) => Js_undefined.t<elt>"
       },
       {
         "id": "Js.TypedArray2.Float64Array.findIndex",
@@ -1200,14 +1205,14 @@
         "kind": "value",
         "name": "find",
         "docstrings": [],
-        "signature": "let find: (t, elt => bool) => Js.undefined<elt>"
+        "signature": "let find: (t, elt => bool) => Js_undefined.t<elt>"
       },
       {
         "id": "Js.TypedArray2.Float32Array.findi",
         "kind": "value",
         "name": "findi",
         "docstrings": [],
-        "signature": "let findi: (t, (elt, int) => bool) => Js.undefined<elt>"
+        "signature": "let findi: (t, (elt, int) => bool) => Js_undefined.t<elt>"
       },
       {
         "id": "Js.TypedArray2.Float32Array.findIndex",
@@ -1632,14 +1637,14 @@
         "kind": "value",
         "name": "find",
         "docstrings": [],
-        "signature": "let find: (t, elt => bool) => Js.undefined<elt>"
+        "signature": "let find: (t, elt => bool) => Js_undefined.t<elt>"
       },
       {
         "id": "Js.TypedArray2.Uint32Array.findi",
         "kind": "value",
         "name": "findi",
         "docstrings": [],
-        "signature": "let findi: (t, (elt, int) => bool) => Js.undefined<elt>"
+        "signature": "let findi: (t, (elt, int) => bool) => Js_undefined.t<elt>"
       },
       {
         "id": "Js.TypedArray2.Uint32Array.findIndex",
@@ -2064,14 +2069,14 @@
         "kind": "value",
         "name": "find",
         "docstrings": [],
-        "signature": "let find: (t, elt => bool) => Js.undefined<elt>"
+        "signature": "let find: (t, elt => bool) => Js_undefined.t<elt>"
       },
       {
         "id": "Js.TypedArray2.Int32Array.findi",
         "kind": "value",
         "name": "findi",
         "docstrings": [],
-        "signature": "let findi: (t, (elt, int) => bool) => Js.undefined<elt>"
+        "signature": "let findi: (t, (elt, int) => bool) => Js_undefined.t<elt>"
       },
       {
         "id": "Js.TypedArray2.Int32Array.findIndex",
@@ -2496,14 +2501,14 @@
         "kind": "value",
         "name": "find",
         "docstrings": [],
-        "signature": "let find: (t, elt => bool) => Js.undefined<elt>"
+        "signature": "let find: (t, elt => bool) => Js_undefined.t<elt>"
       },
       {
         "id": "Js.TypedArray2.Uint16Array.findi",
         "kind": "value",
         "name": "findi",
         "docstrings": [],
-        "signature": "let findi: (t, (elt, int) => bool) => Js.undefined<elt>"
+        "signature": "let findi: (t, (elt, int) => bool) => Js_undefined.t<elt>"
       },
       {
         "id": "Js.TypedArray2.Uint16Array.findIndex",
@@ -2928,14 +2933,14 @@
         "kind": "value",
         "name": "find",
         "docstrings": [],
-        "signature": "let find: (t, elt => bool) => Js.undefined<elt>"
+        "signature": "let find: (t, elt => bool) => Js_undefined.t<elt>"
       },
       {
         "id": "Js.TypedArray2.Int16Array.findi",
         "kind": "value",
         "name": "findi",
         "docstrings": [],
-        "signature": "let findi: (t, (elt, int) => bool) => Js.undefined<elt>"
+        "signature": "let findi: (t, (elt, int) => bool) => Js_undefined.t<elt>"
       },
       {
         "id": "Js.TypedArray2.Int16Array.findIndex",
@@ -3360,14 +3365,14 @@
         "kind": "value",
         "name": "find",
         "docstrings": [],
-        "signature": "let find: (t, elt => bool) => Js.undefined<elt>"
+        "signature": "let find: (t, elt => bool) => Js_undefined.t<elt>"
       },
       {
         "id": "Js.TypedArray2.Uint8ClampedArray.findi",
         "kind": "value",
         "name": "findi",
         "docstrings": [],
-        "signature": "let findi: (t, (elt, int) => bool) => Js.undefined<elt>"
+        "signature": "let findi: (t, (elt, int) => bool) => Js_undefined.t<elt>"
       },
       {
         "id": "Js.TypedArray2.Uint8ClampedArray.findIndex",
@@ -3792,14 +3797,14 @@
         "kind": "value",
         "name": "find",
         "docstrings": [],
-        "signature": "let find: (t, elt => bool) => Js.undefined<elt>"
+        "signature": "let find: (t, elt => bool) => Js_undefined.t<elt>"
       },
       {
         "id": "Js.TypedArray2.Uint8Array.findi",
         "kind": "value",
         "name": "findi",
         "docstrings": [],
-        "signature": "let findi: (t, (elt, int) => bool) => Js.undefined<elt>"
+        "signature": "let findi: (t, (elt, int) => bool) => Js_undefined.t<elt>"
       },
       {
         "id": "Js.TypedArray2.Uint8Array.findIndex",
@@ -4224,14 +4229,14 @@
         "kind": "value",
         "name": "find",
         "docstrings": [],
-        "signature": "let find: (t, elt => bool) => Js.undefined<elt>"
+        "signature": "let find: (t, elt => bool) => Js_undefined.t<elt>"
       },
       {
         "id": "Js.TypedArray2.Int8Array.findi",
         "kind": "value",
         "name": "findi",
         "docstrings": [],
-        "signature": "let findi: (t, (elt, int) => bool) => Js.undefined<elt>"
+        "signature": "let findi: (t, (elt, int) => bool) => Js_undefined.t<elt>"
       },
       {
         "id": "Js.TypedArray2.Int8Array.findIndex",
@@ -4751,20 +4756,6 @@
         "signature": "let byteOffset: t => int"
       },
       {
-        "id": "Js.Typed_array.Float64Array.setArray",
-        "kind": "value",
-        "name": "setArray",
-        "docstrings": [],
-        "signature": "let setArray: (array<elt>, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.setArrayOffset",
-        "kind": "value",
-        "name": "setArrayOffset",
-        "docstrings": [],
-        "signature": "let setArrayOffset: (array<elt>, int, t) => unit"
-      },
-      {
         "id": "Js.Typed_array.Float64Array.length",
         "kind": "value",
         "name": "length",
@@ -4772,291 +4763,25 @@
         "signature": "let length: t => int"
       },
       {
-        "id": "Js.Typed_array.Float64Array.copyWithin",
-        "kind": "value",
-        "name": "copyWithin",
-        "docstrings": [],
-        "signature": "let copyWithin: (~to_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.copyWithinFrom",
-        "kind": "value",
-        "name": "copyWithinFrom",
-        "docstrings": [],
-        "signature": "let copyWithinFrom: (~to_: int, ~from: int, t) => t"
-      },
-      {
         "id": "Js.Typed_array.Float64Array.copyWithinFromRange",
         "kind": "value",
         "name": "copyWithinFromRange",
         "docstrings": [],
-        "signature": "let copyWithinFromRange: (~to_: int, ~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.fillInPlace",
-        "kind": "value",
-        "name": "fillInPlace",
-        "docstrings": [],
-        "signature": "let fillInPlace: (elt, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.fillFromInPlace",
-        "kind": "value",
-        "name": "fillFromInPlace",
-        "docstrings": [],
-        "signature": "let fillFromInPlace: (elt, ~from: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.fillRangeInPlace",
-        "kind": "value",
-        "name": "fillRangeInPlace",
-        "docstrings": [],
-        "signature": "let fillRangeInPlace: (elt, ~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.reverseInPlace",
-        "kind": "value",
-        "name": "reverseInPlace",
-        "docstrings": [],
-        "signature": "let reverseInPlace: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.sortInPlace",
-        "kind": "value",
-        "name": "sortInPlace",
-        "docstrings": [],
-        "signature": "let sortInPlace: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.sortInPlaceWith",
-        "kind": "value",
-        "name": "sortInPlaceWith",
-        "docstrings": [],
-        "signature": "let sortInPlaceWith: ((elt, elt) => int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.includes",
-        "kind": "value",
-        "name": "includes",
-        "docstrings": [],
-        "signature": "let includes: (elt, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.indexOf",
-        "kind": "value",
-        "name": "indexOf",
-        "docstrings": [],
-        "signature": "let indexOf: (elt, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.indexOfFrom",
-        "kind": "value",
-        "name": "indexOfFrom",
-        "docstrings": [],
-        "signature": "let indexOfFrom: (elt, ~from: int, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.join",
-        "kind": "value",
-        "name": "join",
-        "docstrings": [],
-        "signature": "let join: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.joinWith",
-        "kind": "value",
-        "name": "joinWith",
-        "docstrings": [],
-        "signature": "let joinWith: (string, t) => string"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.lastIndexOf",
-        "kind": "value",
-        "name": "lastIndexOf",
-        "docstrings": [],
-        "signature": "let lastIndexOf: (elt, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.lastIndexOfFrom",
-        "kind": "value",
-        "name": "lastIndexOfFrom",
-        "docstrings": [],
-        "signature": "let lastIndexOfFrom: (elt, ~from: int, t) => int"
+        "signature": "let copyWithinFromRange: (~to_: int, ~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Float64Array.slice",
         "kind": "value",
         "name": "slice",
         "docstrings": [],
-        "signature": "let slice: (~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.copy",
-        "kind": "value",
-        "name": "copy",
-        "docstrings": [],
-        "signature": "let copy: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.sliceFrom",
-        "kind": "value",
-        "name": "sliceFrom",
-        "docstrings": [],
-        "signature": "let sliceFrom: (int, t) => t"
+        "signature": "let slice: (~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Float64Array.subarray",
         "kind": "value",
         "name": "subarray",
         "docstrings": [],
-        "signature": "let subarray: (~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.subarrayFrom",
-        "kind": "value",
-        "name": "subarrayFrom",
-        "docstrings": [],
-        "signature": "let subarrayFrom: (int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.toString",
-        "kind": "value",
-        "name": "toString",
-        "docstrings": [],
-        "signature": "let toString: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.toLocaleString",
-        "kind": "value",
-        "name": "toLocaleString",
-        "docstrings": [],
-        "signature": "let toLocaleString: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.every",
-        "kind": "value",
-        "name": "every",
-        "docstrings": [],
-        "signature": "let every: (elt => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.everyi",
-        "kind": "value",
-        "name": "everyi",
-        "docstrings": [],
-        "signature": "let everyi: ((elt, int) => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.filter",
-        "kind": "value",
-        "name": "filter",
-        "docstrings": [],
-        "signature": "let filter: (elt => bool, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.filteri",
-        "kind": "value",
-        "name": "filteri",
-        "docstrings": [],
-        "signature": "let filteri: ((elt, int) => bool, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.find",
-        "kind": "value",
-        "name": "find",
-        "docstrings": [],
-        "signature": "let find: (elt => bool, t) => Js.undefined<elt>"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.findi",
-        "kind": "value",
-        "name": "findi",
-        "docstrings": [],
-        "signature": "let findi: ((elt, int) => bool, t) => Js.undefined<elt>"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.findIndex",
-        "kind": "value",
-        "name": "findIndex",
-        "docstrings": [],
-        "signature": "let findIndex: (elt => bool, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.findIndexi",
-        "kind": "value",
-        "name": "findIndexi",
-        "docstrings": [],
-        "signature": "let findIndexi: ((elt, int) => bool, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.forEach",
-        "kind": "value",
-        "name": "forEach",
-        "docstrings": [],
-        "signature": "let forEach: (elt => unit, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.forEachi",
-        "kind": "value",
-        "name": "forEachi",
-        "docstrings": [],
-        "signature": "let forEachi: ((elt, int) => unit, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.map",
-        "kind": "value",
-        "name": "map",
-        "docstrings": [],
-        "signature": "let map: (elt => 'a, t) => typed_array<'a>"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.mapi",
-        "kind": "value",
-        "name": "mapi",
-        "docstrings": [],
-        "signature": "let mapi: ((elt, int) => 'a, t) => typed_array<'a>"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.reduce",
-        "kind": "value",
-        "name": "reduce",
-        "docstrings": [],
-        "signature": "let reduce: (('a, elt) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.reducei",
-        "kind": "value",
-        "name": "reducei",
-        "docstrings": [],
-        "signature": "let reducei: (('a, elt, int) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.reduceRight",
-        "kind": "value",
-        "name": "reduceRight",
-        "docstrings": [],
-        "signature": "let reduceRight: (('a, elt) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.reduceRighti",
-        "kind": "value",
-        "name": "reduceRighti",
-        "docstrings": [],
-        "signature": "let reduceRighti: (('a, elt, int) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.some",
-        "kind": "value",
-        "name": "some",
-        "docstrings": [],
-        "signature": "let some: (elt => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Float64Array.somei",
-        "kind": "value",
-        "name": "somei",
-        "docstrings": [],
-        "signature": "let somei: ((elt, int) => bool, t) => bool"
+        "signature": "let subarray: (~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Float64Array._BYTES_PER_ELEMENT",
@@ -5201,20 +4926,6 @@
         "signature": "let byteOffset: t => int"
       },
       {
-        "id": "Js.Typed_array.Float32Array.setArray",
-        "kind": "value",
-        "name": "setArray",
-        "docstrings": [],
-        "signature": "let setArray: (array<elt>, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.setArrayOffset",
-        "kind": "value",
-        "name": "setArrayOffset",
-        "docstrings": [],
-        "signature": "let setArrayOffset: (array<elt>, int, t) => unit"
-      },
-      {
         "id": "Js.Typed_array.Float32Array.length",
         "kind": "value",
         "name": "length",
@@ -5222,291 +4933,25 @@
         "signature": "let length: t => int"
       },
       {
-        "id": "Js.Typed_array.Float32Array.copyWithin",
-        "kind": "value",
-        "name": "copyWithin",
-        "docstrings": [],
-        "signature": "let copyWithin: (~to_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.copyWithinFrom",
-        "kind": "value",
-        "name": "copyWithinFrom",
-        "docstrings": [],
-        "signature": "let copyWithinFrom: (~to_: int, ~from: int, t) => t"
-      },
-      {
         "id": "Js.Typed_array.Float32Array.copyWithinFromRange",
         "kind": "value",
         "name": "copyWithinFromRange",
         "docstrings": [],
-        "signature": "let copyWithinFromRange: (~to_: int, ~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.fillInPlace",
-        "kind": "value",
-        "name": "fillInPlace",
-        "docstrings": [],
-        "signature": "let fillInPlace: (elt, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.fillFromInPlace",
-        "kind": "value",
-        "name": "fillFromInPlace",
-        "docstrings": [],
-        "signature": "let fillFromInPlace: (elt, ~from: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.fillRangeInPlace",
-        "kind": "value",
-        "name": "fillRangeInPlace",
-        "docstrings": [],
-        "signature": "let fillRangeInPlace: (elt, ~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.reverseInPlace",
-        "kind": "value",
-        "name": "reverseInPlace",
-        "docstrings": [],
-        "signature": "let reverseInPlace: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.sortInPlace",
-        "kind": "value",
-        "name": "sortInPlace",
-        "docstrings": [],
-        "signature": "let sortInPlace: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.sortInPlaceWith",
-        "kind": "value",
-        "name": "sortInPlaceWith",
-        "docstrings": [],
-        "signature": "let sortInPlaceWith: ((elt, elt) => int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.includes",
-        "kind": "value",
-        "name": "includes",
-        "docstrings": [],
-        "signature": "let includes: (elt, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.indexOf",
-        "kind": "value",
-        "name": "indexOf",
-        "docstrings": [],
-        "signature": "let indexOf: (elt, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.indexOfFrom",
-        "kind": "value",
-        "name": "indexOfFrom",
-        "docstrings": [],
-        "signature": "let indexOfFrom: (elt, ~from: int, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.join",
-        "kind": "value",
-        "name": "join",
-        "docstrings": [],
-        "signature": "let join: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.joinWith",
-        "kind": "value",
-        "name": "joinWith",
-        "docstrings": [],
-        "signature": "let joinWith: (string, t) => string"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.lastIndexOf",
-        "kind": "value",
-        "name": "lastIndexOf",
-        "docstrings": [],
-        "signature": "let lastIndexOf: (elt, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.lastIndexOfFrom",
-        "kind": "value",
-        "name": "lastIndexOfFrom",
-        "docstrings": [],
-        "signature": "let lastIndexOfFrom: (elt, ~from: int, t) => int"
+        "signature": "let copyWithinFromRange: (~to_: int, ~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Float32Array.slice",
         "kind": "value",
         "name": "slice",
         "docstrings": [],
-        "signature": "let slice: (~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.copy",
-        "kind": "value",
-        "name": "copy",
-        "docstrings": [],
-        "signature": "let copy: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.sliceFrom",
-        "kind": "value",
-        "name": "sliceFrom",
-        "docstrings": [],
-        "signature": "let sliceFrom: (int, t) => t"
+        "signature": "let slice: (~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Float32Array.subarray",
         "kind": "value",
         "name": "subarray",
         "docstrings": [],
-        "signature": "let subarray: (~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.subarrayFrom",
-        "kind": "value",
-        "name": "subarrayFrom",
-        "docstrings": [],
-        "signature": "let subarrayFrom: (int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.toString",
-        "kind": "value",
-        "name": "toString",
-        "docstrings": [],
-        "signature": "let toString: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.toLocaleString",
-        "kind": "value",
-        "name": "toLocaleString",
-        "docstrings": [],
-        "signature": "let toLocaleString: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.every",
-        "kind": "value",
-        "name": "every",
-        "docstrings": [],
-        "signature": "let every: (elt => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.everyi",
-        "kind": "value",
-        "name": "everyi",
-        "docstrings": [],
-        "signature": "let everyi: ((elt, int) => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.filter",
-        "kind": "value",
-        "name": "filter",
-        "docstrings": [],
-        "signature": "let filter: (elt => bool, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.filteri",
-        "kind": "value",
-        "name": "filteri",
-        "docstrings": [],
-        "signature": "let filteri: ((elt, int) => bool, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.find",
-        "kind": "value",
-        "name": "find",
-        "docstrings": [],
-        "signature": "let find: (elt => bool, t) => Js.undefined<elt>"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.findi",
-        "kind": "value",
-        "name": "findi",
-        "docstrings": [],
-        "signature": "let findi: ((elt, int) => bool, t) => Js.undefined<elt>"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.findIndex",
-        "kind": "value",
-        "name": "findIndex",
-        "docstrings": [],
-        "signature": "let findIndex: (elt => bool, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.findIndexi",
-        "kind": "value",
-        "name": "findIndexi",
-        "docstrings": [],
-        "signature": "let findIndexi: ((elt, int) => bool, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.forEach",
-        "kind": "value",
-        "name": "forEach",
-        "docstrings": [],
-        "signature": "let forEach: (elt => unit, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.forEachi",
-        "kind": "value",
-        "name": "forEachi",
-        "docstrings": [],
-        "signature": "let forEachi: ((elt, int) => unit, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.map",
-        "kind": "value",
-        "name": "map",
-        "docstrings": [],
-        "signature": "let map: (elt => 'a, t) => typed_array<'a>"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.mapi",
-        "kind": "value",
-        "name": "mapi",
-        "docstrings": [],
-        "signature": "let mapi: ((elt, int) => 'a, t) => typed_array<'a>"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.reduce",
-        "kind": "value",
-        "name": "reduce",
-        "docstrings": [],
-        "signature": "let reduce: (('a, elt) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.reducei",
-        "kind": "value",
-        "name": "reducei",
-        "docstrings": [],
-        "signature": "let reducei: (('a, elt, int) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.reduceRight",
-        "kind": "value",
-        "name": "reduceRight",
-        "docstrings": [],
-        "signature": "let reduceRight: (('a, elt) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.reduceRighti",
-        "kind": "value",
-        "name": "reduceRighti",
-        "docstrings": [],
-        "signature": "let reduceRighti: (('a, elt, int) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.some",
-        "kind": "value",
-        "name": "some",
-        "docstrings": [],
-        "signature": "let some: (elt => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Float32Array.somei",
-        "kind": "value",
-        "name": "somei",
-        "docstrings": [],
-        "signature": "let somei: ((elt, int) => bool, t) => bool"
+        "signature": "let subarray: (~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Float32Array._BYTES_PER_ELEMENT",
@@ -5645,20 +5090,6 @@
         "signature": "let byteOffset: t => int"
       },
       {
-        "id": "Js.Typed_array.Uint32Array.setArray",
-        "kind": "value",
-        "name": "setArray",
-        "docstrings": [],
-        "signature": "let setArray: (array<elt>, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.setArrayOffset",
-        "kind": "value",
-        "name": "setArrayOffset",
-        "docstrings": [],
-        "signature": "let setArrayOffset: (array<elt>, int, t) => unit"
-      },
-      {
         "id": "Js.Typed_array.Uint32Array.length",
         "kind": "value",
         "name": "length",
@@ -5666,291 +5097,25 @@
         "signature": "let length: t => int"
       },
       {
-        "id": "Js.Typed_array.Uint32Array.copyWithin",
-        "kind": "value",
-        "name": "copyWithin",
-        "docstrings": [],
-        "signature": "let copyWithin: (~to_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.copyWithinFrom",
-        "kind": "value",
-        "name": "copyWithinFrom",
-        "docstrings": [],
-        "signature": "let copyWithinFrom: (~to_: int, ~from: int, t) => t"
-      },
-      {
         "id": "Js.Typed_array.Uint32Array.copyWithinFromRange",
         "kind": "value",
         "name": "copyWithinFromRange",
         "docstrings": [],
-        "signature": "let copyWithinFromRange: (~to_: int, ~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.fillInPlace",
-        "kind": "value",
-        "name": "fillInPlace",
-        "docstrings": [],
-        "signature": "let fillInPlace: (elt, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.fillFromInPlace",
-        "kind": "value",
-        "name": "fillFromInPlace",
-        "docstrings": [],
-        "signature": "let fillFromInPlace: (elt, ~from: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.fillRangeInPlace",
-        "kind": "value",
-        "name": "fillRangeInPlace",
-        "docstrings": [],
-        "signature": "let fillRangeInPlace: (elt, ~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.reverseInPlace",
-        "kind": "value",
-        "name": "reverseInPlace",
-        "docstrings": [],
-        "signature": "let reverseInPlace: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.sortInPlace",
-        "kind": "value",
-        "name": "sortInPlace",
-        "docstrings": [],
-        "signature": "let sortInPlace: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.sortInPlaceWith",
-        "kind": "value",
-        "name": "sortInPlaceWith",
-        "docstrings": [],
-        "signature": "let sortInPlaceWith: ((elt, elt) => int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.includes",
-        "kind": "value",
-        "name": "includes",
-        "docstrings": [],
-        "signature": "let includes: (elt, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.indexOf",
-        "kind": "value",
-        "name": "indexOf",
-        "docstrings": [],
-        "signature": "let indexOf: (elt, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.indexOfFrom",
-        "kind": "value",
-        "name": "indexOfFrom",
-        "docstrings": [],
-        "signature": "let indexOfFrom: (elt, ~from: int, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.join",
-        "kind": "value",
-        "name": "join",
-        "docstrings": [],
-        "signature": "let join: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.joinWith",
-        "kind": "value",
-        "name": "joinWith",
-        "docstrings": [],
-        "signature": "let joinWith: (string, t) => string"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.lastIndexOf",
-        "kind": "value",
-        "name": "lastIndexOf",
-        "docstrings": [],
-        "signature": "let lastIndexOf: (elt, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.lastIndexOfFrom",
-        "kind": "value",
-        "name": "lastIndexOfFrom",
-        "docstrings": [],
-        "signature": "let lastIndexOfFrom: (elt, ~from: int, t) => int"
+        "signature": "let copyWithinFromRange: (~to_: int, ~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Uint32Array.slice",
         "kind": "value",
         "name": "slice",
         "docstrings": [],
-        "signature": "let slice: (~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.copy",
-        "kind": "value",
-        "name": "copy",
-        "docstrings": [],
-        "signature": "let copy: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.sliceFrom",
-        "kind": "value",
-        "name": "sliceFrom",
-        "docstrings": [],
-        "signature": "let sliceFrom: (int, t) => t"
+        "signature": "let slice: (~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Uint32Array.subarray",
         "kind": "value",
         "name": "subarray",
         "docstrings": [],
-        "signature": "let subarray: (~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.subarrayFrom",
-        "kind": "value",
-        "name": "subarrayFrom",
-        "docstrings": [],
-        "signature": "let subarrayFrom: (int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.toString",
-        "kind": "value",
-        "name": "toString",
-        "docstrings": [],
-        "signature": "let toString: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.toLocaleString",
-        "kind": "value",
-        "name": "toLocaleString",
-        "docstrings": [],
-        "signature": "let toLocaleString: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.every",
-        "kind": "value",
-        "name": "every",
-        "docstrings": [],
-        "signature": "let every: (elt => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.everyi",
-        "kind": "value",
-        "name": "everyi",
-        "docstrings": [],
-        "signature": "let everyi: ((elt, int) => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.filter",
-        "kind": "value",
-        "name": "filter",
-        "docstrings": [],
-        "signature": "let filter: (elt => bool, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.filteri",
-        "kind": "value",
-        "name": "filteri",
-        "docstrings": [],
-        "signature": "let filteri: ((elt, int) => bool, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.find",
-        "kind": "value",
-        "name": "find",
-        "docstrings": [],
-        "signature": "let find: (elt => bool, t) => Js.undefined<elt>"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.findi",
-        "kind": "value",
-        "name": "findi",
-        "docstrings": [],
-        "signature": "let findi: ((elt, int) => bool, t) => Js.undefined<elt>"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.findIndex",
-        "kind": "value",
-        "name": "findIndex",
-        "docstrings": [],
-        "signature": "let findIndex: (elt => bool, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.findIndexi",
-        "kind": "value",
-        "name": "findIndexi",
-        "docstrings": [],
-        "signature": "let findIndexi: ((elt, int) => bool, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.forEach",
-        "kind": "value",
-        "name": "forEach",
-        "docstrings": [],
-        "signature": "let forEach: (elt => unit, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.forEachi",
-        "kind": "value",
-        "name": "forEachi",
-        "docstrings": [],
-        "signature": "let forEachi: ((elt, int) => unit, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.map",
-        "kind": "value",
-        "name": "map",
-        "docstrings": [],
-        "signature": "let map: (elt => 'a, t) => typed_array<'a>"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.mapi",
-        "kind": "value",
-        "name": "mapi",
-        "docstrings": [],
-        "signature": "let mapi: ((elt, int) => 'a, t) => typed_array<'a>"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.reduce",
-        "kind": "value",
-        "name": "reduce",
-        "docstrings": [],
-        "signature": "let reduce: (('a, elt) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.reducei",
-        "kind": "value",
-        "name": "reducei",
-        "docstrings": [],
-        "signature": "let reducei: (('a, elt, int) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.reduceRight",
-        "kind": "value",
-        "name": "reduceRight",
-        "docstrings": [],
-        "signature": "let reduceRight: (('a, elt) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.reduceRighti",
-        "kind": "value",
-        "name": "reduceRighti",
-        "docstrings": [],
-        "signature": "let reduceRighti: (('a, elt, int) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.some",
-        "kind": "value",
-        "name": "some",
-        "docstrings": [],
-        "signature": "let some: (elt => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Uint32Array.somei",
-        "kind": "value",
-        "name": "somei",
-        "docstrings": [],
-        "signature": "let somei: ((elt, int) => bool, t) => bool"
+        "signature": "let subarray: (~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Uint32Array._BYTES_PER_ELEMENT",
@@ -6079,20 +5244,6 @@
         "signature": "let byteOffset: t => int"
       },
       {
-        "id": "Js.Typed_array.Int32Array.setArray",
-        "kind": "value",
-        "name": "setArray",
-        "docstrings": [],
-        "signature": "let setArray: (array<elt>, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.setArrayOffset",
-        "kind": "value",
-        "name": "setArrayOffset",
-        "docstrings": [],
-        "signature": "let setArrayOffset: (array<elt>, int, t) => unit"
-      },
-      {
         "id": "Js.Typed_array.Int32Array.length",
         "kind": "value",
         "name": "length",
@@ -6100,291 +5251,25 @@
         "signature": "let length: t => int"
       },
       {
-        "id": "Js.Typed_array.Int32Array.copyWithin",
-        "kind": "value",
-        "name": "copyWithin",
-        "docstrings": [],
-        "signature": "let copyWithin: (~to_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.copyWithinFrom",
-        "kind": "value",
-        "name": "copyWithinFrom",
-        "docstrings": [],
-        "signature": "let copyWithinFrom: (~to_: int, ~from: int, t) => t"
-      },
-      {
         "id": "Js.Typed_array.Int32Array.copyWithinFromRange",
         "kind": "value",
         "name": "copyWithinFromRange",
         "docstrings": [],
-        "signature": "let copyWithinFromRange: (~to_: int, ~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.fillInPlace",
-        "kind": "value",
-        "name": "fillInPlace",
-        "docstrings": [],
-        "signature": "let fillInPlace: (elt, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.fillFromInPlace",
-        "kind": "value",
-        "name": "fillFromInPlace",
-        "docstrings": [],
-        "signature": "let fillFromInPlace: (elt, ~from: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.fillRangeInPlace",
-        "kind": "value",
-        "name": "fillRangeInPlace",
-        "docstrings": [],
-        "signature": "let fillRangeInPlace: (elt, ~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.reverseInPlace",
-        "kind": "value",
-        "name": "reverseInPlace",
-        "docstrings": [],
-        "signature": "let reverseInPlace: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.sortInPlace",
-        "kind": "value",
-        "name": "sortInPlace",
-        "docstrings": [],
-        "signature": "let sortInPlace: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.sortInPlaceWith",
-        "kind": "value",
-        "name": "sortInPlaceWith",
-        "docstrings": [],
-        "signature": "let sortInPlaceWith: ((elt, elt) => int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.includes",
-        "kind": "value",
-        "name": "includes",
-        "docstrings": [],
-        "signature": "let includes: (elt, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.indexOf",
-        "kind": "value",
-        "name": "indexOf",
-        "docstrings": [],
-        "signature": "let indexOf: (elt, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.indexOfFrom",
-        "kind": "value",
-        "name": "indexOfFrom",
-        "docstrings": [],
-        "signature": "let indexOfFrom: (elt, ~from: int, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.join",
-        "kind": "value",
-        "name": "join",
-        "docstrings": [],
-        "signature": "let join: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.joinWith",
-        "kind": "value",
-        "name": "joinWith",
-        "docstrings": [],
-        "signature": "let joinWith: (string, t) => string"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.lastIndexOf",
-        "kind": "value",
-        "name": "lastIndexOf",
-        "docstrings": [],
-        "signature": "let lastIndexOf: (elt, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.lastIndexOfFrom",
-        "kind": "value",
-        "name": "lastIndexOfFrom",
-        "docstrings": [],
-        "signature": "let lastIndexOfFrom: (elt, ~from: int, t) => int"
+        "signature": "let copyWithinFromRange: (~to_: int, ~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Int32Array.slice",
         "kind": "value",
         "name": "slice",
         "docstrings": [],
-        "signature": "let slice: (~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.copy",
-        "kind": "value",
-        "name": "copy",
-        "docstrings": [],
-        "signature": "let copy: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.sliceFrom",
-        "kind": "value",
-        "name": "sliceFrom",
-        "docstrings": [],
-        "signature": "let sliceFrom: (int, t) => t"
+        "signature": "let slice: (~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Int32Array.subarray",
         "kind": "value",
         "name": "subarray",
         "docstrings": [],
-        "signature": "let subarray: (~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.subarrayFrom",
-        "kind": "value",
-        "name": "subarrayFrom",
-        "docstrings": [],
-        "signature": "let subarrayFrom: (int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.toString",
-        "kind": "value",
-        "name": "toString",
-        "docstrings": [],
-        "signature": "let toString: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.toLocaleString",
-        "kind": "value",
-        "name": "toLocaleString",
-        "docstrings": [],
-        "signature": "let toLocaleString: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.every",
-        "kind": "value",
-        "name": "every",
-        "docstrings": [],
-        "signature": "let every: (elt => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.everyi",
-        "kind": "value",
-        "name": "everyi",
-        "docstrings": [],
-        "signature": "let everyi: ((elt, int) => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.filter",
-        "kind": "value",
-        "name": "filter",
-        "docstrings": [],
-        "signature": "let filter: (elt => bool, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.filteri",
-        "kind": "value",
-        "name": "filteri",
-        "docstrings": [],
-        "signature": "let filteri: ((elt, int) => bool, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.find",
-        "kind": "value",
-        "name": "find",
-        "docstrings": [],
-        "signature": "let find: (elt => bool, t) => Js.undefined<elt>"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.findi",
-        "kind": "value",
-        "name": "findi",
-        "docstrings": [],
-        "signature": "let findi: ((elt, int) => bool, t) => Js.undefined<elt>"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.findIndex",
-        "kind": "value",
-        "name": "findIndex",
-        "docstrings": [],
-        "signature": "let findIndex: (elt => bool, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.findIndexi",
-        "kind": "value",
-        "name": "findIndexi",
-        "docstrings": [],
-        "signature": "let findIndexi: ((elt, int) => bool, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.forEach",
-        "kind": "value",
-        "name": "forEach",
-        "docstrings": [],
-        "signature": "let forEach: (elt => unit, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.forEachi",
-        "kind": "value",
-        "name": "forEachi",
-        "docstrings": [],
-        "signature": "let forEachi: ((elt, int) => unit, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.map",
-        "kind": "value",
-        "name": "map",
-        "docstrings": [],
-        "signature": "let map: (elt => 'a, t) => typed_array<'a>"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.mapi",
-        "kind": "value",
-        "name": "mapi",
-        "docstrings": [],
-        "signature": "let mapi: ((elt, int) => 'a, t) => typed_array<'a>"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.reduce",
-        "kind": "value",
-        "name": "reduce",
-        "docstrings": [],
-        "signature": "let reduce: (('a, elt) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.reducei",
-        "kind": "value",
-        "name": "reducei",
-        "docstrings": [],
-        "signature": "let reducei: (('a, elt, int) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.reduceRight",
-        "kind": "value",
-        "name": "reduceRight",
-        "docstrings": [],
-        "signature": "let reduceRight: (('a, elt) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.reduceRighti",
-        "kind": "value",
-        "name": "reduceRighti",
-        "docstrings": [],
-        "signature": "let reduceRighti: (('a, elt, int) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.some",
-        "kind": "value",
-        "name": "some",
-        "docstrings": [],
-        "signature": "let some: (elt => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Int32Array.somei",
-        "kind": "value",
-        "name": "somei",
-        "docstrings": [],
-        "signature": "let somei: ((elt, int) => bool, t) => bool"
+        "signature": "let subarray: (~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Int32Array._BYTES_PER_ELEMENT",
@@ -6523,20 +5408,6 @@
         "signature": "let byteOffset: t => int"
       },
       {
-        "id": "Js.Typed_array.Uint16Array.setArray",
-        "kind": "value",
-        "name": "setArray",
-        "docstrings": [],
-        "signature": "let setArray: (array<elt>, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.setArrayOffset",
-        "kind": "value",
-        "name": "setArrayOffset",
-        "docstrings": [],
-        "signature": "let setArrayOffset: (array<elt>, int, t) => unit"
-      },
-      {
         "id": "Js.Typed_array.Uint16Array.length",
         "kind": "value",
         "name": "length",
@@ -6544,291 +5415,25 @@
         "signature": "let length: t => int"
       },
       {
-        "id": "Js.Typed_array.Uint16Array.copyWithin",
-        "kind": "value",
-        "name": "copyWithin",
-        "docstrings": [],
-        "signature": "let copyWithin: (~to_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.copyWithinFrom",
-        "kind": "value",
-        "name": "copyWithinFrom",
-        "docstrings": [],
-        "signature": "let copyWithinFrom: (~to_: int, ~from: int, t) => t"
-      },
-      {
         "id": "Js.Typed_array.Uint16Array.copyWithinFromRange",
         "kind": "value",
         "name": "copyWithinFromRange",
         "docstrings": [],
-        "signature": "let copyWithinFromRange: (~to_: int, ~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.fillInPlace",
-        "kind": "value",
-        "name": "fillInPlace",
-        "docstrings": [],
-        "signature": "let fillInPlace: (elt, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.fillFromInPlace",
-        "kind": "value",
-        "name": "fillFromInPlace",
-        "docstrings": [],
-        "signature": "let fillFromInPlace: (elt, ~from: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.fillRangeInPlace",
-        "kind": "value",
-        "name": "fillRangeInPlace",
-        "docstrings": [],
-        "signature": "let fillRangeInPlace: (elt, ~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.reverseInPlace",
-        "kind": "value",
-        "name": "reverseInPlace",
-        "docstrings": [],
-        "signature": "let reverseInPlace: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.sortInPlace",
-        "kind": "value",
-        "name": "sortInPlace",
-        "docstrings": [],
-        "signature": "let sortInPlace: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.sortInPlaceWith",
-        "kind": "value",
-        "name": "sortInPlaceWith",
-        "docstrings": [],
-        "signature": "let sortInPlaceWith: ((elt, elt) => int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.includes",
-        "kind": "value",
-        "name": "includes",
-        "docstrings": [],
-        "signature": "let includes: (elt, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.indexOf",
-        "kind": "value",
-        "name": "indexOf",
-        "docstrings": [],
-        "signature": "let indexOf: (elt, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.indexOfFrom",
-        "kind": "value",
-        "name": "indexOfFrom",
-        "docstrings": [],
-        "signature": "let indexOfFrom: (elt, ~from: int, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.join",
-        "kind": "value",
-        "name": "join",
-        "docstrings": [],
-        "signature": "let join: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.joinWith",
-        "kind": "value",
-        "name": "joinWith",
-        "docstrings": [],
-        "signature": "let joinWith: (string, t) => string"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.lastIndexOf",
-        "kind": "value",
-        "name": "lastIndexOf",
-        "docstrings": [],
-        "signature": "let lastIndexOf: (elt, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.lastIndexOfFrom",
-        "kind": "value",
-        "name": "lastIndexOfFrom",
-        "docstrings": [],
-        "signature": "let lastIndexOfFrom: (elt, ~from: int, t) => int"
+        "signature": "let copyWithinFromRange: (~to_: int, ~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Uint16Array.slice",
         "kind": "value",
         "name": "slice",
         "docstrings": [],
-        "signature": "let slice: (~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.copy",
-        "kind": "value",
-        "name": "copy",
-        "docstrings": [],
-        "signature": "let copy: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.sliceFrom",
-        "kind": "value",
-        "name": "sliceFrom",
-        "docstrings": [],
-        "signature": "let sliceFrom: (int, t) => t"
+        "signature": "let slice: (~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Uint16Array.subarray",
         "kind": "value",
         "name": "subarray",
         "docstrings": [],
-        "signature": "let subarray: (~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.subarrayFrom",
-        "kind": "value",
-        "name": "subarrayFrom",
-        "docstrings": [],
-        "signature": "let subarrayFrom: (int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.toString",
-        "kind": "value",
-        "name": "toString",
-        "docstrings": [],
-        "signature": "let toString: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.toLocaleString",
-        "kind": "value",
-        "name": "toLocaleString",
-        "docstrings": [],
-        "signature": "let toLocaleString: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.every",
-        "kind": "value",
-        "name": "every",
-        "docstrings": [],
-        "signature": "let every: (elt => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.everyi",
-        "kind": "value",
-        "name": "everyi",
-        "docstrings": [],
-        "signature": "let everyi: ((elt, int) => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.filter",
-        "kind": "value",
-        "name": "filter",
-        "docstrings": [],
-        "signature": "let filter: (elt => bool, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.filteri",
-        "kind": "value",
-        "name": "filteri",
-        "docstrings": [],
-        "signature": "let filteri: ((elt, int) => bool, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.find",
-        "kind": "value",
-        "name": "find",
-        "docstrings": [],
-        "signature": "let find: (elt => bool, t) => Js.undefined<elt>"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.findi",
-        "kind": "value",
-        "name": "findi",
-        "docstrings": [],
-        "signature": "let findi: ((elt, int) => bool, t) => Js.undefined<elt>"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.findIndex",
-        "kind": "value",
-        "name": "findIndex",
-        "docstrings": [],
-        "signature": "let findIndex: (elt => bool, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.findIndexi",
-        "kind": "value",
-        "name": "findIndexi",
-        "docstrings": [],
-        "signature": "let findIndexi: ((elt, int) => bool, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.forEach",
-        "kind": "value",
-        "name": "forEach",
-        "docstrings": [],
-        "signature": "let forEach: (elt => unit, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.forEachi",
-        "kind": "value",
-        "name": "forEachi",
-        "docstrings": [],
-        "signature": "let forEachi: ((elt, int) => unit, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.map",
-        "kind": "value",
-        "name": "map",
-        "docstrings": [],
-        "signature": "let map: (elt => 'a, t) => typed_array<'a>"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.mapi",
-        "kind": "value",
-        "name": "mapi",
-        "docstrings": [],
-        "signature": "let mapi: ((elt, int) => 'a, t) => typed_array<'a>"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.reduce",
-        "kind": "value",
-        "name": "reduce",
-        "docstrings": [],
-        "signature": "let reduce: (('a, elt) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.reducei",
-        "kind": "value",
-        "name": "reducei",
-        "docstrings": [],
-        "signature": "let reducei: (('a, elt, int) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.reduceRight",
-        "kind": "value",
-        "name": "reduceRight",
-        "docstrings": [],
-        "signature": "let reduceRight: (('a, elt) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.reduceRighti",
-        "kind": "value",
-        "name": "reduceRighti",
-        "docstrings": [],
-        "signature": "let reduceRighti: (('a, elt, int) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.some",
-        "kind": "value",
-        "name": "some",
-        "docstrings": [],
-        "signature": "let some: (elt => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Uint16Array.somei",
-        "kind": "value",
-        "name": "somei",
-        "docstrings": [],
-        "signature": "let somei: ((elt, int) => bool, t) => bool"
+        "signature": "let subarray: (~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Uint16Array._BYTES_PER_ELEMENT",
@@ -6951,20 +5556,6 @@
         "signature": "let byteOffset: t => int"
       },
       {
-        "id": "Js.Typed_array.Int16Array.setArray",
-        "kind": "value",
-        "name": "setArray",
-        "docstrings": [],
-        "signature": "let setArray: (array<elt>, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.setArrayOffset",
-        "kind": "value",
-        "name": "setArrayOffset",
-        "docstrings": [],
-        "signature": "let setArrayOffset: (array<elt>, int, t) => unit"
-      },
-      {
         "id": "Js.Typed_array.Int16Array.length",
         "kind": "value",
         "name": "length",
@@ -6972,291 +5563,25 @@
         "signature": "let length: t => int"
       },
       {
-        "id": "Js.Typed_array.Int16Array.copyWithin",
-        "kind": "value",
-        "name": "copyWithin",
-        "docstrings": [],
-        "signature": "let copyWithin: (~to_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.copyWithinFrom",
-        "kind": "value",
-        "name": "copyWithinFrom",
-        "docstrings": [],
-        "signature": "let copyWithinFrom: (~to_: int, ~from: int, t) => t"
-      },
-      {
         "id": "Js.Typed_array.Int16Array.copyWithinFromRange",
         "kind": "value",
         "name": "copyWithinFromRange",
         "docstrings": [],
-        "signature": "let copyWithinFromRange: (~to_: int, ~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.fillInPlace",
-        "kind": "value",
-        "name": "fillInPlace",
-        "docstrings": [],
-        "signature": "let fillInPlace: (elt, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.fillFromInPlace",
-        "kind": "value",
-        "name": "fillFromInPlace",
-        "docstrings": [],
-        "signature": "let fillFromInPlace: (elt, ~from: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.fillRangeInPlace",
-        "kind": "value",
-        "name": "fillRangeInPlace",
-        "docstrings": [],
-        "signature": "let fillRangeInPlace: (elt, ~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.reverseInPlace",
-        "kind": "value",
-        "name": "reverseInPlace",
-        "docstrings": [],
-        "signature": "let reverseInPlace: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.sortInPlace",
-        "kind": "value",
-        "name": "sortInPlace",
-        "docstrings": [],
-        "signature": "let sortInPlace: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.sortInPlaceWith",
-        "kind": "value",
-        "name": "sortInPlaceWith",
-        "docstrings": [],
-        "signature": "let sortInPlaceWith: ((elt, elt) => int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.includes",
-        "kind": "value",
-        "name": "includes",
-        "docstrings": [],
-        "signature": "let includes: (elt, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.indexOf",
-        "kind": "value",
-        "name": "indexOf",
-        "docstrings": [],
-        "signature": "let indexOf: (elt, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.indexOfFrom",
-        "kind": "value",
-        "name": "indexOfFrom",
-        "docstrings": [],
-        "signature": "let indexOfFrom: (elt, ~from: int, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.join",
-        "kind": "value",
-        "name": "join",
-        "docstrings": [],
-        "signature": "let join: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.joinWith",
-        "kind": "value",
-        "name": "joinWith",
-        "docstrings": [],
-        "signature": "let joinWith: (string, t) => string"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.lastIndexOf",
-        "kind": "value",
-        "name": "lastIndexOf",
-        "docstrings": [],
-        "signature": "let lastIndexOf: (elt, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.lastIndexOfFrom",
-        "kind": "value",
-        "name": "lastIndexOfFrom",
-        "docstrings": [],
-        "signature": "let lastIndexOfFrom: (elt, ~from: int, t) => int"
+        "signature": "let copyWithinFromRange: (~to_: int, ~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Int16Array.slice",
         "kind": "value",
         "name": "slice",
         "docstrings": [],
-        "signature": "let slice: (~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.copy",
-        "kind": "value",
-        "name": "copy",
-        "docstrings": [],
-        "signature": "let copy: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.sliceFrom",
-        "kind": "value",
-        "name": "sliceFrom",
-        "docstrings": [],
-        "signature": "let sliceFrom: (int, t) => t"
+        "signature": "let slice: (~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Int16Array.subarray",
         "kind": "value",
         "name": "subarray",
         "docstrings": [],
-        "signature": "let subarray: (~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.subarrayFrom",
-        "kind": "value",
-        "name": "subarrayFrom",
-        "docstrings": [],
-        "signature": "let subarrayFrom: (int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.toString",
-        "kind": "value",
-        "name": "toString",
-        "docstrings": [],
-        "signature": "let toString: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.toLocaleString",
-        "kind": "value",
-        "name": "toLocaleString",
-        "docstrings": [],
-        "signature": "let toLocaleString: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.every",
-        "kind": "value",
-        "name": "every",
-        "docstrings": [],
-        "signature": "let every: (elt => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.everyi",
-        "kind": "value",
-        "name": "everyi",
-        "docstrings": [],
-        "signature": "let everyi: ((elt, int) => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.filter",
-        "kind": "value",
-        "name": "filter",
-        "docstrings": [],
-        "signature": "let filter: (elt => bool, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.filteri",
-        "kind": "value",
-        "name": "filteri",
-        "docstrings": [],
-        "signature": "let filteri: ((elt, int) => bool, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.find",
-        "kind": "value",
-        "name": "find",
-        "docstrings": [],
-        "signature": "let find: (elt => bool, t) => Js.undefined<elt>"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.findi",
-        "kind": "value",
-        "name": "findi",
-        "docstrings": [],
-        "signature": "let findi: ((elt, int) => bool, t) => Js.undefined<elt>"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.findIndex",
-        "kind": "value",
-        "name": "findIndex",
-        "docstrings": [],
-        "signature": "let findIndex: (elt => bool, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.findIndexi",
-        "kind": "value",
-        "name": "findIndexi",
-        "docstrings": [],
-        "signature": "let findIndexi: ((elt, int) => bool, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.forEach",
-        "kind": "value",
-        "name": "forEach",
-        "docstrings": [],
-        "signature": "let forEach: (elt => unit, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.forEachi",
-        "kind": "value",
-        "name": "forEachi",
-        "docstrings": [],
-        "signature": "let forEachi: ((elt, int) => unit, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.map",
-        "kind": "value",
-        "name": "map",
-        "docstrings": [],
-        "signature": "let map: (elt => 'a, t) => typed_array<'a>"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.mapi",
-        "kind": "value",
-        "name": "mapi",
-        "docstrings": [],
-        "signature": "let mapi: ((elt, int) => 'a, t) => typed_array<'a>"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.reduce",
-        "kind": "value",
-        "name": "reduce",
-        "docstrings": [],
-        "signature": "let reduce: (('a, elt) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.reducei",
-        "kind": "value",
-        "name": "reducei",
-        "docstrings": [],
-        "signature": "let reducei: (('a, elt, int) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.reduceRight",
-        "kind": "value",
-        "name": "reduceRight",
-        "docstrings": [],
-        "signature": "let reduceRight: (('a, elt) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.reduceRighti",
-        "kind": "value",
-        "name": "reduceRighti",
-        "docstrings": [],
-        "signature": "let reduceRighti: (('a, elt, int) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.some",
-        "kind": "value",
-        "name": "some",
-        "docstrings": [],
-        "signature": "let some: (elt => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Int16Array.somei",
-        "kind": "value",
-        "name": "somei",
-        "docstrings": [],
-        "signature": "let somei: ((elt, int) => bool, t) => bool"
+        "signature": "let subarray: (~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Int16Array._BYTES_PER_ELEMENT",
@@ -7379,20 +5704,6 @@
         "signature": "let byteOffset: t => int"
       },
       {
-        "id": "Js.Typed_array.Uint8ClampedArray.setArray",
-        "kind": "value",
-        "name": "setArray",
-        "docstrings": [],
-        "signature": "let setArray: (array<elt>, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.setArrayOffset",
-        "kind": "value",
-        "name": "setArrayOffset",
-        "docstrings": [],
-        "signature": "let setArrayOffset: (array<elt>, int, t) => unit"
-      },
-      {
         "id": "Js.Typed_array.Uint8ClampedArray.length",
         "kind": "value",
         "name": "length",
@@ -7400,291 +5711,25 @@
         "signature": "let length: t => int"
       },
       {
-        "id": "Js.Typed_array.Uint8ClampedArray.copyWithin",
-        "kind": "value",
-        "name": "copyWithin",
-        "docstrings": [],
-        "signature": "let copyWithin: (~to_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.copyWithinFrom",
-        "kind": "value",
-        "name": "copyWithinFrom",
-        "docstrings": [],
-        "signature": "let copyWithinFrom: (~to_: int, ~from: int, t) => t"
-      },
-      {
         "id": "Js.Typed_array.Uint8ClampedArray.copyWithinFromRange",
         "kind": "value",
         "name": "copyWithinFromRange",
         "docstrings": [],
-        "signature": "let copyWithinFromRange: (~to_: int, ~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.fillInPlace",
-        "kind": "value",
-        "name": "fillInPlace",
-        "docstrings": [],
-        "signature": "let fillInPlace: (elt, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.fillFromInPlace",
-        "kind": "value",
-        "name": "fillFromInPlace",
-        "docstrings": [],
-        "signature": "let fillFromInPlace: (elt, ~from: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.fillRangeInPlace",
-        "kind": "value",
-        "name": "fillRangeInPlace",
-        "docstrings": [],
-        "signature": "let fillRangeInPlace: (elt, ~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.reverseInPlace",
-        "kind": "value",
-        "name": "reverseInPlace",
-        "docstrings": [],
-        "signature": "let reverseInPlace: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.sortInPlace",
-        "kind": "value",
-        "name": "sortInPlace",
-        "docstrings": [],
-        "signature": "let sortInPlace: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.sortInPlaceWith",
-        "kind": "value",
-        "name": "sortInPlaceWith",
-        "docstrings": [],
-        "signature": "let sortInPlaceWith: ((elt, elt) => int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.includes",
-        "kind": "value",
-        "name": "includes",
-        "docstrings": [],
-        "signature": "let includes: (elt, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.indexOf",
-        "kind": "value",
-        "name": "indexOf",
-        "docstrings": [],
-        "signature": "let indexOf: (elt, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.indexOfFrom",
-        "kind": "value",
-        "name": "indexOfFrom",
-        "docstrings": [],
-        "signature": "let indexOfFrom: (elt, ~from: int, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.join",
-        "kind": "value",
-        "name": "join",
-        "docstrings": [],
-        "signature": "let join: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.joinWith",
-        "kind": "value",
-        "name": "joinWith",
-        "docstrings": [],
-        "signature": "let joinWith: (string, t) => string"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.lastIndexOf",
-        "kind": "value",
-        "name": "lastIndexOf",
-        "docstrings": [],
-        "signature": "let lastIndexOf: (elt, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.lastIndexOfFrom",
-        "kind": "value",
-        "name": "lastIndexOfFrom",
-        "docstrings": [],
-        "signature": "let lastIndexOfFrom: (elt, ~from: int, t) => int"
+        "signature": "let copyWithinFromRange: (~to_: int, ~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Uint8ClampedArray.slice",
         "kind": "value",
         "name": "slice",
         "docstrings": [],
-        "signature": "let slice: (~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.copy",
-        "kind": "value",
-        "name": "copy",
-        "docstrings": [],
-        "signature": "let copy: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.sliceFrom",
-        "kind": "value",
-        "name": "sliceFrom",
-        "docstrings": [],
-        "signature": "let sliceFrom: (int, t) => t"
+        "signature": "let slice: (~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Uint8ClampedArray.subarray",
         "kind": "value",
         "name": "subarray",
         "docstrings": [],
-        "signature": "let subarray: (~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.subarrayFrom",
-        "kind": "value",
-        "name": "subarrayFrom",
-        "docstrings": [],
-        "signature": "let subarrayFrom: (int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.toString",
-        "kind": "value",
-        "name": "toString",
-        "docstrings": [],
-        "signature": "let toString: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.toLocaleString",
-        "kind": "value",
-        "name": "toLocaleString",
-        "docstrings": [],
-        "signature": "let toLocaleString: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.every",
-        "kind": "value",
-        "name": "every",
-        "docstrings": [],
-        "signature": "let every: (elt => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.everyi",
-        "kind": "value",
-        "name": "everyi",
-        "docstrings": [],
-        "signature": "let everyi: ((elt, int) => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.filter",
-        "kind": "value",
-        "name": "filter",
-        "docstrings": [],
-        "signature": "let filter: (elt => bool, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.filteri",
-        "kind": "value",
-        "name": "filteri",
-        "docstrings": [],
-        "signature": "let filteri: ((elt, int) => bool, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.find",
-        "kind": "value",
-        "name": "find",
-        "docstrings": [],
-        "signature": "let find: (elt => bool, t) => Js.undefined<elt>"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.findi",
-        "kind": "value",
-        "name": "findi",
-        "docstrings": [],
-        "signature": "let findi: ((elt, int) => bool, t) => Js.undefined<elt>"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.findIndex",
-        "kind": "value",
-        "name": "findIndex",
-        "docstrings": [],
-        "signature": "let findIndex: (elt => bool, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.findIndexi",
-        "kind": "value",
-        "name": "findIndexi",
-        "docstrings": [],
-        "signature": "let findIndexi: ((elt, int) => bool, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.forEach",
-        "kind": "value",
-        "name": "forEach",
-        "docstrings": [],
-        "signature": "let forEach: (elt => unit, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.forEachi",
-        "kind": "value",
-        "name": "forEachi",
-        "docstrings": [],
-        "signature": "let forEachi: ((elt, int) => unit, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.map",
-        "kind": "value",
-        "name": "map",
-        "docstrings": [],
-        "signature": "let map: (elt => 'a, t) => typed_array<'a>"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.mapi",
-        "kind": "value",
-        "name": "mapi",
-        "docstrings": [],
-        "signature": "let mapi: ((elt, int) => 'a, t) => typed_array<'a>"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.reduce",
-        "kind": "value",
-        "name": "reduce",
-        "docstrings": [],
-        "signature": "let reduce: (('a, elt) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.reducei",
-        "kind": "value",
-        "name": "reducei",
-        "docstrings": [],
-        "signature": "let reducei: (('a, elt, int) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.reduceRight",
-        "kind": "value",
-        "name": "reduceRight",
-        "docstrings": [],
-        "signature": "let reduceRight: (('a, elt) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.reduceRighti",
-        "kind": "value",
-        "name": "reduceRighti",
-        "docstrings": [],
-        "signature": "let reduceRighti: (('a, elt, int) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.some",
-        "kind": "value",
-        "name": "some",
-        "docstrings": [],
-        "signature": "let some: (elt => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Uint8ClampedArray.somei",
-        "kind": "value",
-        "name": "somei",
-        "docstrings": [],
-        "signature": "let somei: ((elt, int) => bool, t) => bool"
+        "signature": "let subarray: (~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Uint8ClampedArray._BYTES_PER_ELEMENT",
@@ -7807,20 +5852,6 @@
         "signature": "let byteOffset: t => int"
       },
       {
-        "id": "Js.Typed_array.Uint8Array.setArray",
-        "kind": "value",
-        "name": "setArray",
-        "docstrings": [],
-        "signature": "let setArray: (array<elt>, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.setArrayOffset",
-        "kind": "value",
-        "name": "setArrayOffset",
-        "docstrings": [],
-        "signature": "let setArrayOffset: (array<elt>, int, t) => unit"
-      },
-      {
         "id": "Js.Typed_array.Uint8Array.length",
         "kind": "value",
         "name": "length",
@@ -7828,291 +5859,25 @@
         "signature": "let length: t => int"
       },
       {
-        "id": "Js.Typed_array.Uint8Array.copyWithin",
-        "kind": "value",
-        "name": "copyWithin",
-        "docstrings": [],
-        "signature": "let copyWithin: (~to_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.copyWithinFrom",
-        "kind": "value",
-        "name": "copyWithinFrom",
-        "docstrings": [],
-        "signature": "let copyWithinFrom: (~to_: int, ~from: int, t) => t"
-      },
-      {
         "id": "Js.Typed_array.Uint8Array.copyWithinFromRange",
         "kind": "value",
         "name": "copyWithinFromRange",
         "docstrings": [],
-        "signature": "let copyWithinFromRange: (~to_: int, ~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.fillInPlace",
-        "kind": "value",
-        "name": "fillInPlace",
-        "docstrings": [],
-        "signature": "let fillInPlace: (elt, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.fillFromInPlace",
-        "kind": "value",
-        "name": "fillFromInPlace",
-        "docstrings": [],
-        "signature": "let fillFromInPlace: (elt, ~from: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.fillRangeInPlace",
-        "kind": "value",
-        "name": "fillRangeInPlace",
-        "docstrings": [],
-        "signature": "let fillRangeInPlace: (elt, ~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.reverseInPlace",
-        "kind": "value",
-        "name": "reverseInPlace",
-        "docstrings": [],
-        "signature": "let reverseInPlace: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.sortInPlace",
-        "kind": "value",
-        "name": "sortInPlace",
-        "docstrings": [],
-        "signature": "let sortInPlace: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.sortInPlaceWith",
-        "kind": "value",
-        "name": "sortInPlaceWith",
-        "docstrings": [],
-        "signature": "let sortInPlaceWith: ((elt, elt) => int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.includes",
-        "kind": "value",
-        "name": "includes",
-        "docstrings": [],
-        "signature": "let includes: (elt, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.indexOf",
-        "kind": "value",
-        "name": "indexOf",
-        "docstrings": [],
-        "signature": "let indexOf: (elt, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.indexOfFrom",
-        "kind": "value",
-        "name": "indexOfFrom",
-        "docstrings": [],
-        "signature": "let indexOfFrom: (elt, ~from: int, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.join",
-        "kind": "value",
-        "name": "join",
-        "docstrings": [],
-        "signature": "let join: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.joinWith",
-        "kind": "value",
-        "name": "joinWith",
-        "docstrings": [],
-        "signature": "let joinWith: (string, t) => string"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.lastIndexOf",
-        "kind": "value",
-        "name": "lastIndexOf",
-        "docstrings": [],
-        "signature": "let lastIndexOf: (elt, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.lastIndexOfFrom",
-        "kind": "value",
-        "name": "lastIndexOfFrom",
-        "docstrings": [],
-        "signature": "let lastIndexOfFrom: (elt, ~from: int, t) => int"
+        "signature": "let copyWithinFromRange: (~to_: int, ~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Uint8Array.slice",
         "kind": "value",
         "name": "slice",
         "docstrings": [],
-        "signature": "let slice: (~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.copy",
-        "kind": "value",
-        "name": "copy",
-        "docstrings": [],
-        "signature": "let copy: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.sliceFrom",
-        "kind": "value",
-        "name": "sliceFrom",
-        "docstrings": [],
-        "signature": "let sliceFrom: (int, t) => t"
+        "signature": "let slice: (~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Uint8Array.subarray",
         "kind": "value",
         "name": "subarray",
         "docstrings": [],
-        "signature": "let subarray: (~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.subarrayFrom",
-        "kind": "value",
-        "name": "subarrayFrom",
-        "docstrings": [],
-        "signature": "let subarrayFrom: (int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.toString",
-        "kind": "value",
-        "name": "toString",
-        "docstrings": [],
-        "signature": "let toString: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.toLocaleString",
-        "kind": "value",
-        "name": "toLocaleString",
-        "docstrings": [],
-        "signature": "let toLocaleString: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.every",
-        "kind": "value",
-        "name": "every",
-        "docstrings": [],
-        "signature": "let every: (elt => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.everyi",
-        "kind": "value",
-        "name": "everyi",
-        "docstrings": [],
-        "signature": "let everyi: ((elt, int) => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.filter",
-        "kind": "value",
-        "name": "filter",
-        "docstrings": [],
-        "signature": "let filter: (elt => bool, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.filteri",
-        "kind": "value",
-        "name": "filteri",
-        "docstrings": [],
-        "signature": "let filteri: ((elt, int) => bool, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.find",
-        "kind": "value",
-        "name": "find",
-        "docstrings": [],
-        "signature": "let find: (elt => bool, t) => Js.undefined<elt>"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.findi",
-        "kind": "value",
-        "name": "findi",
-        "docstrings": [],
-        "signature": "let findi: ((elt, int) => bool, t) => Js.undefined<elt>"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.findIndex",
-        "kind": "value",
-        "name": "findIndex",
-        "docstrings": [],
-        "signature": "let findIndex: (elt => bool, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.findIndexi",
-        "kind": "value",
-        "name": "findIndexi",
-        "docstrings": [],
-        "signature": "let findIndexi: ((elt, int) => bool, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.forEach",
-        "kind": "value",
-        "name": "forEach",
-        "docstrings": [],
-        "signature": "let forEach: (elt => unit, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.forEachi",
-        "kind": "value",
-        "name": "forEachi",
-        "docstrings": [],
-        "signature": "let forEachi: ((elt, int) => unit, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.map",
-        "kind": "value",
-        "name": "map",
-        "docstrings": [],
-        "signature": "let map: (elt => 'a, t) => typed_array<'a>"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.mapi",
-        "kind": "value",
-        "name": "mapi",
-        "docstrings": [],
-        "signature": "let mapi: ((elt, int) => 'a, t) => typed_array<'a>"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.reduce",
-        "kind": "value",
-        "name": "reduce",
-        "docstrings": [],
-        "signature": "let reduce: (('a, elt) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.reducei",
-        "kind": "value",
-        "name": "reducei",
-        "docstrings": [],
-        "signature": "let reducei: (('a, elt, int) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.reduceRight",
-        "kind": "value",
-        "name": "reduceRight",
-        "docstrings": [],
-        "signature": "let reduceRight: (('a, elt) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.reduceRighti",
-        "kind": "value",
-        "name": "reduceRighti",
-        "docstrings": [],
-        "signature": "let reduceRighti: (('a, elt, int) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.some",
-        "kind": "value",
-        "name": "some",
-        "docstrings": [],
-        "signature": "let some: (elt => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Uint8Array.somei",
-        "kind": "value",
-        "name": "somei",
-        "docstrings": [],
-        "signature": "let somei: ((elt, int) => bool, t) => bool"
+        "signature": "let subarray: (~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Uint8Array._BYTES_PER_ELEMENT",
@@ -8235,20 +6000,6 @@
         "signature": "let byteOffset: t => int"
       },
       {
-        "id": "Js.Typed_array.Int8Array.setArray",
-        "kind": "value",
-        "name": "setArray",
-        "docstrings": [],
-        "signature": "let setArray: (array<elt>, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.setArrayOffset",
-        "kind": "value",
-        "name": "setArrayOffset",
-        "docstrings": [],
-        "signature": "let setArrayOffset: (array<elt>, int, t) => unit"
-      },
-      {
         "id": "Js.Typed_array.Int8Array.length",
         "kind": "value",
         "name": "length",
@@ -8256,291 +6007,25 @@
         "signature": "let length: t => int"
       },
       {
-        "id": "Js.Typed_array.Int8Array.copyWithin",
-        "kind": "value",
-        "name": "copyWithin",
-        "docstrings": [],
-        "signature": "let copyWithin: (~to_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.copyWithinFrom",
-        "kind": "value",
-        "name": "copyWithinFrom",
-        "docstrings": [],
-        "signature": "let copyWithinFrom: (~to_: int, ~from: int, t) => t"
-      },
-      {
         "id": "Js.Typed_array.Int8Array.copyWithinFromRange",
         "kind": "value",
         "name": "copyWithinFromRange",
         "docstrings": [],
-        "signature": "let copyWithinFromRange: (~to_: int, ~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.fillInPlace",
-        "kind": "value",
-        "name": "fillInPlace",
-        "docstrings": [],
-        "signature": "let fillInPlace: (elt, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.fillFromInPlace",
-        "kind": "value",
-        "name": "fillFromInPlace",
-        "docstrings": [],
-        "signature": "let fillFromInPlace: (elt, ~from: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.fillRangeInPlace",
-        "kind": "value",
-        "name": "fillRangeInPlace",
-        "docstrings": [],
-        "signature": "let fillRangeInPlace: (elt, ~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.reverseInPlace",
-        "kind": "value",
-        "name": "reverseInPlace",
-        "docstrings": [],
-        "signature": "let reverseInPlace: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.sortInPlace",
-        "kind": "value",
-        "name": "sortInPlace",
-        "docstrings": [],
-        "signature": "let sortInPlace: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.sortInPlaceWith",
-        "kind": "value",
-        "name": "sortInPlaceWith",
-        "docstrings": [],
-        "signature": "let sortInPlaceWith: ((elt, elt) => int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.includes",
-        "kind": "value",
-        "name": "includes",
-        "docstrings": [],
-        "signature": "let includes: (elt, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.indexOf",
-        "kind": "value",
-        "name": "indexOf",
-        "docstrings": [],
-        "signature": "let indexOf: (elt, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.indexOfFrom",
-        "kind": "value",
-        "name": "indexOfFrom",
-        "docstrings": [],
-        "signature": "let indexOfFrom: (elt, ~from: int, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.join",
-        "kind": "value",
-        "name": "join",
-        "docstrings": [],
-        "signature": "let join: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.joinWith",
-        "kind": "value",
-        "name": "joinWith",
-        "docstrings": [],
-        "signature": "let joinWith: (string, t) => string"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.lastIndexOf",
-        "kind": "value",
-        "name": "lastIndexOf",
-        "docstrings": [],
-        "signature": "let lastIndexOf: (elt, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.lastIndexOfFrom",
-        "kind": "value",
-        "name": "lastIndexOfFrom",
-        "docstrings": [],
-        "signature": "let lastIndexOfFrom: (elt, ~from: int, t) => int"
+        "signature": "let copyWithinFromRange: (~to_: int, ~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Int8Array.slice",
         "kind": "value",
         "name": "slice",
         "docstrings": [],
-        "signature": "let slice: (~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.copy",
-        "kind": "value",
-        "name": "copy",
-        "docstrings": [],
-        "signature": "let copy: t => t"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.sliceFrom",
-        "kind": "value",
-        "name": "sliceFrom",
-        "docstrings": [],
-        "signature": "let sliceFrom: (int, t) => t"
+        "signature": "let slice: (~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Int8Array.subarray",
         "kind": "value",
         "name": "subarray",
         "docstrings": [],
-        "signature": "let subarray: (~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.subarrayFrom",
-        "kind": "value",
-        "name": "subarrayFrom",
-        "docstrings": [],
-        "signature": "let subarrayFrom: (int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.toString",
-        "kind": "value",
-        "name": "toString",
-        "docstrings": [],
-        "signature": "let toString: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.toLocaleString",
-        "kind": "value",
-        "name": "toLocaleString",
-        "docstrings": [],
-        "signature": "let toLocaleString: t => string"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.every",
-        "kind": "value",
-        "name": "every",
-        "docstrings": [],
-        "signature": "let every: (elt => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.everyi",
-        "kind": "value",
-        "name": "everyi",
-        "docstrings": [],
-        "signature": "let everyi: ((elt, int) => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.filter",
-        "kind": "value",
-        "name": "filter",
-        "docstrings": [],
-        "signature": "let filter: (elt => bool, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.filteri",
-        "kind": "value",
-        "name": "filteri",
-        "docstrings": [],
-        "signature": "let filteri: ((elt, int) => bool, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.find",
-        "kind": "value",
-        "name": "find",
-        "docstrings": [],
-        "signature": "let find: (elt => bool, t) => Js.undefined<elt>"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.findi",
-        "kind": "value",
-        "name": "findi",
-        "docstrings": [],
-        "signature": "let findi: ((elt, int) => bool, t) => Js.undefined<elt>"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.findIndex",
-        "kind": "value",
-        "name": "findIndex",
-        "docstrings": [],
-        "signature": "let findIndex: (elt => bool, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.findIndexi",
-        "kind": "value",
-        "name": "findIndexi",
-        "docstrings": [],
-        "signature": "let findIndexi: ((elt, int) => bool, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.forEach",
-        "kind": "value",
-        "name": "forEach",
-        "docstrings": [],
-        "signature": "let forEach: (elt => unit, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.forEachi",
-        "kind": "value",
-        "name": "forEachi",
-        "docstrings": [],
-        "signature": "let forEachi: ((elt, int) => unit, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.map",
-        "kind": "value",
-        "name": "map",
-        "docstrings": [],
-        "signature": "let map: (elt => 'a, t) => typed_array<'a>"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.mapi",
-        "kind": "value",
-        "name": "mapi",
-        "docstrings": [],
-        "signature": "let mapi: ((elt, int) => 'a, t) => typed_array<'a>"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.reduce",
-        "kind": "value",
-        "name": "reduce",
-        "docstrings": [],
-        "signature": "let reduce: (('a, elt) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.reducei",
-        "kind": "value",
-        "name": "reducei",
-        "docstrings": [],
-        "signature": "let reducei: (('a, elt, int) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.reduceRight",
-        "kind": "value",
-        "name": "reduceRight",
-        "docstrings": [],
-        "signature": "let reduceRight: (('a, elt) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.reduceRighti",
-        "kind": "value",
-        "name": "reduceRighti",
-        "docstrings": [],
-        "signature": "let reduceRighti: (('a, elt, int) => 'a, 'a, t) => 'a"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.some",
-        "kind": "value",
-        "name": "some",
-        "docstrings": [],
-        "signature": "let some: (elt => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.Int8Array.somei",
-        "kind": "value",
-        "name": "somei",
-        "docstrings": [],
-        "signature": "let somei: ((elt, int) => bool, t) => bool"
+        "signature": "let subarray: (~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.Int8Array._BYTES_PER_ELEMENT",
@@ -8661,20 +6146,6 @@
         "signature": "let byteOffset: t => int"
       },
       {
-        "id": "Js.Typed_array.S.setArray",
-        "kind": "value",
-        "name": "setArray",
-        "docstrings": [],
-        "signature": "let setArray: (array<elt>, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.S.setArrayOffset",
-        "kind": "value",
-        "name": "setArrayOffset",
-        "docstrings": [],
-        "signature": "let setArrayOffset: (array<elt>, int, t) => unit"
-      },
-      {
         "id": "Js.Typed_array.S.length",
         "kind": "value",
         "name": "length",
@@ -8682,291 +6153,27 @@
         "signature": "let length: t => int"
       },
       {
-        "id": "Js.Typed_array.S.copyWithin",
-        "kind": "value",
-        "name": "copyWithin",
-        "docstrings": [],
-        "signature": "let copyWithin: (~to_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.S.copyWithinFrom",
-        "kind": "value",
-        "name": "copyWithinFrom",
-        "docstrings": [],
-        "signature": "let copyWithinFrom: (~to_: int, ~from: int, t) => t"
-      },
-      {
         "id": "Js.Typed_array.S.copyWithinFromRange",
         "kind": "value",
         "name": "copyWithinFromRange",
         "docstrings": [],
-        "signature": "let copyWithinFromRange: (~to_: int, ~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.S.fillInPlace",
-        "kind": "value",
-        "name": "fillInPlace",
-        "docstrings": [],
-        "signature": "let fillInPlace: (elt, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.S.fillFromInPlace",
-        "kind": "value",
-        "name": "fillFromInPlace",
-        "docstrings": [],
-        "signature": "let fillFromInPlace: (elt, ~from: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.S.fillRangeInPlace",
-        "kind": "value",
-        "name": "fillRangeInPlace",
-        "docstrings": [],
-        "signature": "let fillRangeInPlace: (elt, ~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.S.reverseInPlace",
-        "kind": "value",
-        "name": "reverseInPlace",
-        "docstrings": [],
-        "signature": "let reverseInPlace: t => t"
-      },
-      {
-        "id": "Js.Typed_array.S.sortInPlace",
-        "kind": "value",
-        "name": "sortInPlace",
-        "docstrings": [],
-        "signature": "let sortInPlace: t => t"
-      },
-      {
-        "id": "Js.Typed_array.S.sortInPlaceWith",
-        "kind": "value",
-        "name": "sortInPlaceWith",
-        "docstrings": [],
-        "signature": "let sortInPlaceWith: ((elt, elt) => int, t) => t"
+        "signature": "let copyWithinFromRange: (~to_: int, ~start: int, ~end_: int) => t"
       },
       {
         "id": "Js.Typed_array.S.includes",
         "kind": "value",
         "name": "includes",
         "docstrings": [],
-        "signature": "let includes: (elt, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.S.indexOf",
-        "kind": "value",
-        "name": "indexOf",
-        "docstrings": [],
-        "signature": "let indexOf: (elt, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.S.indexOfFrom",
-        "kind": "value",
-        "name": "indexOfFrom",
-        "docstrings": [],
-        "signature": "let indexOfFrom: (elt, ~from: int, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.S.join",
-        "kind": "value",
-        "name": "join",
-        "docstrings": [],
-        "signature": "let join: t => string"
-      },
-      {
-        "id": "Js.Typed_array.S.joinWith",
-        "kind": "value",
-        "name": "joinWith",
-        "docstrings": [],
-        "signature": "let joinWith: (string, t) => string"
-      },
-      {
-        "id": "Js.Typed_array.S.lastIndexOf",
-        "kind": "value",
-        "name": "lastIndexOf",
-        "docstrings": [],
-        "signature": "let lastIndexOf: (elt, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.S.lastIndexOfFrom",
-        "kind": "value",
-        "name": "lastIndexOfFrom",
-        "docstrings": [],
-        "signature": "let lastIndexOfFrom: (elt, ~from: int, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.S.slice",
-        "kind": "value",
-        "name": "slice",
-        "docstrings": [],
-        "signature": "let slice: (~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.S.copy",
-        "kind": "value",
-        "name": "copy",
-        "docstrings": [],
-        "signature": "let copy: t => t"
-      },
-      {
-        "id": "Js.Typed_array.S.sliceFrom",
-        "kind": "value",
-        "name": "sliceFrom",
-        "docstrings": [],
-        "signature": "let sliceFrom: (int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.S.subarray",
-        "kind": "value",
-        "name": "subarray",
-        "docstrings": [],
-        "signature": "let subarray: (~start: int, ~end_: int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.S.subarrayFrom",
-        "kind": "value",
-        "name": "subarrayFrom",
-        "docstrings": [],
-        "signature": "let subarrayFrom: (int, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.S.toString",
-        "kind": "value",
-        "name": "toString",
-        "docstrings": [],
-        "signature": "let toString: t => string"
-      },
-      {
-        "id": "Js.Typed_array.S.toLocaleString",
-        "kind": "value",
-        "name": "toLocaleString",
-        "docstrings": [],
-        "signature": "let toLocaleString: t => string"
-      },
-      {
-        "id": "Js.Typed_array.S.every",
-        "kind": "value",
-        "name": "every",
-        "docstrings": [],
-        "signature": "let every: (elt => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.S.everyi",
-        "kind": "value",
-        "name": "everyi",
-        "docstrings": [],
-        "signature": "let everyi: ((elt, int) => bool, t) => bool"
+        "signature": "let includes: elt => bool"
       },
       {
         "id": "Js.Typed_array.S.filter",
         "kind": "value",
         "name": "filter",
-        "docstrings": [],
-        "signature": "let filter: (elt => bool, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.S.filteri",
-        "kind": "value",
-        "name": "filteri",
-        "docstrings": [],
-        "signature": "let filteri: ((elt, int) => bool, t) => t"
-      },
-      {
-        "id": "Js.Typed_array.S.find",
-        "kind": "value",
-        "name": "find",
-        "docstrings": [],
-        "signature": "let find: (elt => bool, t) => Js.undefined<elt>"
-      },
-      {
-        "id": "Js.Typed_array.S.findi",
-        "kind": "value",
-        "name": "findi",
-        "docstrings": [],
-        "signature": "let findi: ((elt, int) => bool, t) => Js.undefined<elt>"
-      },
-      {
-        "id": "Js.Typed_array.S.findIndex",
-        "kind": "value",
-        "name": "findIndex",
-        "docstrings": [],
-        "signature": "let findIndex: (elt => bool, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.S.findIndexi",
-        "kind": "value",
-        "name": "findIndexi",
-        "docstrings": [],
-        "signature": "let findIndexi: ((elt, int) => bool, t) => int"
-      },
-      {
-        "id": "Js.Typed_array.S.forEach",
-        "kind": "value",
-        "name": "forEach",
-        "docstrings": [],
-        "signature": "let forEach: (elt => unit, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.S.forEachi",
-        "kind": "value",
-        "name": "forEachi",
-        "docstrings": [],
-        "signature": "let forEachi: ((elt, int) => unit, t) => unit"
-      },
-      {
-        "id": "Js.Typed_array.S.map",
-        "kind": "value",
-        "name": "map",
-        "docstrings": [],
-        "signature": "let map: (elt => 'b, t) => typed_array<'b>"
-      },
-      {
-        "id": "Js.Typed_array.S.mapi",
-        "kind": "value",
-        "name": "mapi",
-        "docstrings": [],
-        "signature": "let mapi: ((elt, int) => 'b, t) => typed_array<'b>"
-      },
-      {
-        "id": "Js.Typed_array.S.reduce",
-        "kind": "value",
-        "name": "reduce",
-        "docstrings": [],
-        "signature": "let reduce: (('b, elt) => 'b, 'b, t) => 'b"
-      },
-      {
-        "id": "Js.Typed_array.S.reducei",
-        "kind": "value",
-        "name": "reducei",
-        "docstrings": [],
-        "signature": "let reducei: (('b, elt, int) => 'b, 'b, t) => 'b"
-      },
-      {
-        "id": "Js.Typed_array.S.reduceRight",
-        "kind": "value",
-        "name": "reduceRight",
-        "docstrings": [],
-        "signature": "let reduceRight: (('b, elt) => 'b, 'b, t) => 'b"
-      },
-      {
-        "id": "Js.Typed_array.S.reduceRighti",
-        "kind": "value",
-        "name": "reduceRighti",
-        "docstrings": [],
-        "signature": "let reduceRighti: (('b, elt, int) => 'b, 'b, t) => 'b"
-      },
-      {
-        "id": "Js.Typed_array.S.some",
-        "kind": "value",
-        "name": "some",
-        "docstrings": [],
-        "signature": "let some: (elt => bool, t) => bool"
-      },
-      {
-        "id": "Js.Typed_array.S.somei",
-        "kind": "value",
-        "name": "somei",
-        "docstrings": [],
-        "signature": "let somei: ((elt, int) => bool, t) => bool"
+        "docstrings": [
+          "should we use `bool` or `boolean` seems they are intechangeable here"
+        ],
+        "signature": "let filter: (elt => bool) => t"
       }
     ]
   },
@@ -8999,20 +6206,6 @@
         "name": "byteLength",
         "docstrings": [],
         "signature": "let byteLength: t => int"
-      },
-      {
-        "id": "Js.Typed_array.ArrayBuffer.slice",
-        "kind": "value",
-        "name": "slice",
-        "docstrings": [],
-        "signature": "let slice: (~start: int, ~end_: int, t) => array_buffer"
-      },
-      {
-        "id": "Js.Typed_array.ArrayBuffer.sliceFrom",
-        "kind": "value",
-        "name": "sliceFrom",
-        "docstrings": [],
-        "signature": "let sliceFrom: (int, t) => array_buffer"
       }
     ]
   },
@@ -9049,7 +6242,7 @@
         "docstrings": [
           "Underlying type of a JSON value"
         ],
-        "signature": "type t<_> =\n  | String: t<Js_string.t>\n  | Number: t<float>\n  | Object: t<Js_dict.t<json>>\n  | Array: t<array<json>>\n  | Boolean: t<bool>\n  | Null: t<Js_types.null_val>"
+        "signature": "type t<_> =\n  | String: t<Js_string.t>\n  | Number: t<float>\n  | Object: t<dict<json>>\n  | Array: t<array<json>>\n  | Boolean: t<bool>\n  | Null: t<Js_types.null_val>"
       }
     ]
   },
@@ -9066,7 +6259,7 @@
         "kind": "type",
         "name": "t",
         "docstrings": [],
-        "signature": "type t<'k, 'v>"
+        "signature": "type t<'k, 'v> = WeakMap.t<'k, 'v>"
       }
     ]
   },
@@ -9083,7 +6276,7 @@
         "kind": "type",
         "name": "t",
         "docstrings": [],
-        "signature": "type t<'k, 'v>"
+        "signature": "type t<'k, 'v> = Map.t<'k, 'v>"
       }
     ]
   },
@@ -9100,7 +6293,7 @@
         "kind": "type",
         "name": "t",
         "docstrings": [],
-        "signature": "type t<'a>"
+        "signature": "type t<'a> = WeakSet.t<'a>"
       }
     ]
   },
@@ -9117,7 +6310,7 @@
         "kind": "type",
         "name": "t",
         "docstrings": [],
-        "signature": "type t<'a>"
+        "signature": "type t<'a> = Set.t<'a>"
       }
     ]
   },
@@ -9288,343 +6481,6 @@
         "name": "timeEnd",
         "docstrings": [],
         "signature": "let timeEnd: string => unit"
-      }
-    ]
-  },
-  "js/vector": {
-    "id": "Js.Vector",
-    "name": "Vector",
-    "docstrings": [
-      "Provides bindings for JS Vector"
-    ],
-    "items": [
-      {
-        "id": "Js.Vector.t",
-        "kind": "type",
-        "name": "t",
-        "docstrings": [],
-        "signature": "type t<'a> = array<'a>"
-      },
-      {
-        "id": "Js.Vector.filterInPlace",
-        "kind": "value",
-        "name": "filterInPlace",
-        "docstrings": [],
-        "signature": "let filterInPlace: ('a => bool, t<'a>) => unit"
-      },
-      {
-        "id": "Js.Vector.empty",
-        "kind": "value",
-        "name": "empty",
-        "docstrings": [],
-        "signature": "let empty: t<'a> => unit"
-      },
-      {
-        "id": "Js.Vector.pushBack",
-        "kind": "value",
-        "name": "pushBack",
-        "docstrings": [],
-        "signature": "let pushBack: ('a, t<'a>) => unit"
-      },
-      {
-        "id": "Js.Vector.copy",
-        "kind": "value",
-        "name": "copy",
-        "docstrings": [
-          "shallow copy"
-        ],
-        "signature": "let copy: t<'a> => t<'a>"
-      },
-      {
-        "id": "Js.Vector.memByRef",
-        "kind": "value",
-        "name": "memByRef",
-        "docstrings": [],
-        "signature": "let memByRef: ('a, t<'a>) => bool"
-      },
-      {
-        "id": "Js.Vector.iter",
-        "kind": "value",
-        "name": "iter",
-        "docstrings": [],
-        "signature": "let iter: ('a => unit, t<'a>) => unit"
-      },
-      {
-        "id": "Js.Vector.iteri",
-        "kind": "value",
-        "name": "iteri",
-        "docstrings": [],
-        "signature": "let iteri: ((int, 'a) => unit, t<'a>) => unit"
-      },
-      {
-        "id": "Js.Vector.toList",
-        "kind": "value",
-        "name": "toList",
-        "docstrings": [],
-        "signature": "let toList: t<'a> => list<'a>"
-      },
-      {
-        "id": "Js.Vector.map",
-        "kind": "value",
-        "name": "map",
-        "docstrings": [],
-        "signature": "let map: ('a => 'b, t<'a>) => t<'b>"
-      },
-      {
-        "id": "Js.Vector.mapi",
-        "kind": "value",
-        "name": "mapi",
-        "docstrings": [],
-        "signature": "let mapi: ((int, 'a) => 'b, t<'a>) => t<'b>"
-      },
-      {
-        "id": "Js.Vector.foldLeft",
-        "kind": "value",
-        "name": "foldLeft",
-        "docstrings": [],
-        "signature": "let foldLeft: (('a, 'b) => 'a, 'a, t<'b>) => 'a"
-      },
-      {
-        "id": "Js.Vector.foldRight",
-        "kind": "value",
-        "name": "foldRight",
-        "docstrings": [],
-        "signature": "let foldRight: (('b, 'a) => 'a, t<'b>, 'a) => 'a"
-      },
-      {
-        "id": "Js.Vector.length",
-        "kind": "value",
-        "name": "length",
-        "docstrings": [
-          "Return the length (number of elements) of the given array."
-        ],
-        "signature": "let length: t<'a> => int"
-      },
-      {
-        "id": "Js.Vector.get",
-        "kind": "value",
-        "name": "get",
-        "docstrings": [
-          "`Vector.get(a, n)` returns the element number `n` of vector `a`. The first\nelement has number 0. The last element has number `Vector.length(a) - 1`. You\ncan also write `a[n]` instead of `Vector.get(a, n)`. Raise `Invalid_argument\n\"index out of bounds\"` if `n` is outside the range 0 to (`Array.length(a) -\n1`)."
-        ],
-        "signature": "let get: (t<'a>, int) => 'a"
-      },
-      {
-        "id": "Js.Vector.set",
-        "kind": "value",
-        "name": "set",
-        "docstrings": [
-          "`Vector.set(a, n, x)` modifies vector `a` in place, replacing element number\n`n` with `x`. Raise `Invalid_argument \"index out of bounds\"` if `n` is outside\nthe range 0 to `Array.length(a) - 1`."
-        ],
-        "signature": "let set: (t<'a>, int, 'a) => unit"
-      },
-      {
-        "id": "Js.Vector.make",
-        "kind": "value",
-        "name": "make",
-        "docstrings": [
-          "`Vector.make(n, x)` returns a fresh vector of length `n`, initialized with `x`.\nAll the elements of this new vector are initially physically equal to `x` (in\nthe sense of the `==` predicate). Consequently, if `x` is mutable, it is shared\namong all elements of the array, and modifying `x` through one of the array\nentries will modify all other entries at the same time. Raise\n`Invalid_argument` if `n < 0` or `n > Sys.max_array_length`. If the value of\n`x` is a floating-point number, then the maximum size is only\n`Sys.max_array_length / 2`."
-        ],
-        "signature": "let make: (int, 'a) => t<'a>"
-      },
-      {
-        "id": "Js.Vector.init",
-        "kind": "value",
-        "name": "init",
-        "docstrings": [
-          "Raises `RangeError` when n is negative.\nn : size"
-        ],
-        "signature": "let init: (int, int => 'a) => t<'a>"
-      },
-      {
-        "id": "Js.Vector.append",
-        "kind": "value",
-        "name": "append",
-        "docstrings": [
-          "`append(x, a)` returns a fresh vector with `x` appended to `a`."
-        ],
-        "signature": "let append: ('a, t<'a>) => t<'a>"
-      },
-      {
-        "id": "Js.Vector.unsafe_get",
-        "kind": "value",
-        "name": "unsafe_get",
-        "docstrings": [],
-        "signature": "let unsafe_get: (t<'a>, int) => 'a"
-      },
-      {
-        "id": "Js.Vector.unsafe_set",
-        "kind": "value",
-        "name": "unsafe_set",
-        "docstrings": [],
-        "signature": "let unsafe_set: (t<'a>, int, 'a) => unit"
-      }
-    ]
-  },
-  "js/list": {
-    "id": "Js.List",
-    "name": "List",
-    "docstrings": [
-      "Provide utilities for list"
-    ],
-    "items": [
-      {
-        "id": "Js.List.t",
-        "kind": "type",
-        "name": "t",
-        "docstrings": [],
-        "signature": "type t<'a> = list<'a>"
-      },
-      {
-        "id": "Js.List.length",
-        "kind": "value",
-        "name": "length",
-        "docstrings": [],
-        "signature": "let length: t<'a> => int"
-      },
-      {
-        "id": "Js.List.cons",
-        "kind": "value",
-        "name": "cons",
-        "docstrings": [],
-        "signature": "let cons: ('a, t<'a>) => t<'a>"
-      },
-      {
-        "id": "Js.List.isEmpty",
-        "kind": "value",
-        "name": "isEmpty",
-        "docstrings": [],
-        "signature": "let isEmpty: t<'a> => bool"
-      },
-      {
-        "id": "Js.List.hd",
-        "kind": "value",
-        "name": "hd",
-        "docstrings": [],
-        "signature": "let hd: t<'a> => option<'a>"
-      },
-      {
-        "id": "Js.List.tl",
-        "kind": "value",
-        "name": "tl",
-        "docstrings": [],
-        "signature": "let tl: t<'a> => option<t<'a>>"
-      },
-      {
-        "id": "Js.List.nth",
-        "kind": "value",
-        "name": "nth",
-        "docstrings": [],
-        "signature": "let nth: (t<'a>, int) => option<'a>"
-      },
-      {
-        "id": "Js.List.revAppend",
-        "kind": "value",
-        "name": "revAppend",
-        "docstrings": [],
-        "signature": "let revAppend: (t<'a>, t<'a>) => t<'a>"
-      },
-      {
-        "id": "Js.List.rev",
-        "kind": "value",
-        "name": "rev",
-        "docstrings": [],
-        "signature": "let rev: t<'a> => t<'a>"
-      },
-      {
-        "id": "Js.List.mapRev",
-        "kind": "value",
-        "name": "mapRev",
-        "docstrings": [],
-        "signature": "let mapRev: ('a => 'b, t<'a>) => t<'b>"
-      },
-      {
-        "id": "Js.List.map",
-        "kind": "value",
-        "name": "map",
-        "docstrings": [],
-        "signature": "let map: ('a => 'b, t<'a>) => t<'b>"
-      },
-      {
-        "id": "Js.List.iter",
-        "kind": "value",
-        "name": "iter",
-        "docstrings": [],
-        "signature": "let iter: ('a => unit, t<'a>) => unit"
-      },
-      {
-        "id": "Js.List.iteri",
-        "kind": "value",
-        "name": "iteri",
-        "docstrings": [],
-        "signature": "let iteri: ((int, 'a) => unit, t<'a>) => unit"
-      },
-      {
-        "id": "Js.List.foldLeft",
-        "kind": "value",
-        "name": "foldLeft",
-        "docstrings": [
-          "Application order is left to right, tail recurisve"
-        ],
-        "signature": "let foldLeft: (('a, 'b) => 'a, 'a, list<'b>) => 'a"
-      },
-      {
-        "id": "Js.List.foldRight",
-        "kind": "value",
-        "name": "foldRight",
-        "docstrings": [
-          "Application order is right to left tail-recursive."
-        ],
-        "signature": "let foldRight: (('a, 'b) => 'b, list<'a>, 'b) => 'b"
-      },
-      {
-        "id": "Js.List.flatten",
-        "kind": "value",
-        "name": "flatten",
-        "docstrings": [],
-        "signature": "let flatten: t<t<'a>> => t<'a>"
-      },
-      {
-        "id": "Js.List.filter",
-        "kind": "value",
-        "name": "filter",
-        "docstrings": [],
-        "signature": "let filter: ('a => bool, t<'a>) => t<'a>"
-      },
-      {
-        "id": "Js.List.filterMap",
-        "kind": "value",
-        "name": "filterMap",
-        "docstrings": [],
-        "signature": "let filterMap: ('a => option<'b>, t<'a>) => t<'b>"
-      },
-      {
-        "id": "Js.List.countBy",
-        "kind": "value",
-        "name": "countBy",
-        "docstrings": [],
-        "signature": "let countBy: ('a => bool, list<'a>) => int"
-      },
-      {
-        "id": "Js.List.init",
-        "kind": "value",
-        "name": "init",
-        "docstrings": [],
-        "signature": "let init: (int, int => 'a) => t<'a>"
-      },
-      {
-        "id": "Js.List.toVector",
-        "kind": "value",
-        "name": "toVector",
-        "docstrings": [],
-        "signature": "let toVector: t<'a> => array<'a>"
-      },
-      {
-        "id": "Js.List.equal",
-        "kind": "value",
-        "name": "equal",
-        "docstrings": [],
-        "signature": "let equal: (('a, 'a) => bool, list<'a>, list<'a>) => bool"
       }
     ]
   },
@@ -10140,23 +6996,14 @@
         "docstrings": [
           "Js symbol type (only available in ES6)"
         ],
-        "signature": "type symbol"
-      },
-      {
-        "id": "Js.Types.bigint_val",
-        "kind": "type",
-        "name": "bigint_val",
-        "docstrings": [
-          "Js bigint type only available in ES2020"
-        ],
-        "signature": "type bigint_val"
+        "signature": "type symbol = Symbol.t"
       },
       {
         "id": "Js.Types.obj_val",
         "kind": "type",
         "name": "obj_val",
         "docstrings": [],
-        "signature": "type obj_val"
+        "signature": "type obj_val = \\\"Type.Classify\".object"
       },
       {
         "id": "Js.Types.undefined_val",
@@ -10181,14 +7028,14 @@
         "kind": "type",
         "name": "function_val",
         "docstrings": [],
-        "signature": "type function_val"
+        "signature": "type function_val = \\\"Type.Classify\".function"
       },
       {
         "id": "Js.Types.t",
         "kind": "type",
         "name": "t",
         "docstrings": [],
-        "signature": "type t<_> =\n  | Undefined: t<undefined_val>\n  | Null: t<null_val>\n  | Boolean: t<bool>\n  | Number: t<float>\n  | String: t<string>\n  | Function: t<function_val>\n  | Object: t<obj_val>\n  | Symbol: t<symbol>\n  | BigInt: t<bigint_val>"
+        "signature": "type t<_> =\n  | Undefined: t<undefined_val>\n  | Null: t<null_val>\n  | Boolean: t<bool>\n  | Number: t<float>\n  | String: t<string>\n  | Function: t<function_val>\n  | Object: t<obj_val>\n  | Symbol: t<symbol>\n  | BigInt: t<bigint>"
       },
       {
         "id": "Js.Types.test",
@@ -10204,7 +7051,7 @@
         "kind": "type",
         "name": "tagged_t",
         "docstrings": [],
-        "signature": "type tagged_t =\n  | JSFalse\n  | JSTrue\n  | JSNull\n  | JSUndefined\n  | JSNumber(float)\n  | JSString(string)\n  | JSFunction(function_val)\n  | JSObject(obj_val)\n  | JSSymbol(symbol)\n  | JSBigInt(bigint_val)"
+        "signature": "type tagged_t =\n  | JSFalse\n  | JSTrue\n  | JSNull\n  | JSUndefined\n  | JSNumber(float)\n  | JSString(string)\n  | JSFunction(function_val)\n  | JSObject(obj_val)\n  | JSSymbol(symbol)\n  | JSBigInt(bigint)"
       },
       {
         "id": "Js.Types.classify",
@@ -10228,7 +7075,7 @@
         "kind": "type",
         "name": "array_buffer",
         "docstrings": [],
-        "signature": "type array_buffer"
+        "signature": "type array_buffer = ArrayBuffer.t"
       },
       {
         "id": "Js.TypedArray2.array_like",
@@ -10898,14 +7745,14 @@
         "docstrings": [
           "The JSON data structure"
         ],
-        "signature": "type t =\n  | Boolean(bool)\n  | Null\n  | String(string)\n  | Number(float)\n  | Object(Js.Dict.t<t>)\n  | Array(array<t>)"
+        "signature": "@unboxed\ntype t = JSON.t =\n  | Boolean(bool)\n  | @as(null) Null\n  | String(string)\n  | Number(float)\n  | Object(dict<t>)\n  | Array(array<t>)"
       },
       {
         "id": "Js.Json.tagged_t",
         "kind": "type",
         "name": "tagged_t",
         "docstrings": [],
-        "signature": "type tagged_t =\n  | JSONFalse\n  | JSONTrue\n  | JSONNull\n  | JSONString(string)\n  | JSONNumber(float)\n  | JSONObject(Js_dict.t<t>)\n  | JSONArray(array<t>)"
+        "signature": "type tagged_t =\n  | JSONFalse\n  | JSONTrue\n  | JSONNull\n  | JSONString(string)\n  | JSONNumber(float)\n  | JSONObject(dict<t>)\n  | JSONArray(array<t>)"
       },
       {
         "id": "Js.Json.classify",
@@ -10948,7 +7795,7 @@
         "docstrings": [
           "`decodeObject(json)` returns `Some(o)` if `json` is an `object`, `None` otherwise."
         ],
-        "signature": "let decodeObject: t => option<Js_dict.t<t>>"
+        "signature": "let decodeObject: t => option<dict<t>>"
       },
       {
         "id": "Js.Json.decodeArray",
@@ -11018,9 +7865,9 @@
         "kind": "value",
         "name": "object_",
         "docstrings": [
-          "`object_(dict)` makes a JSON object of the `Js.Dict.t` `dict`."
+          "`object_(dict)` makes a JSON object of the `dict`."
         ],
-        "signature": "let object_: Js_dict.t<t> => t"
+        "signature": "let object_: dict<t> => t"
       },
       {
         "id": "Js.Json.array",
@@ -11065,14 +7912,14 @@
         "docstrings": [
           "`objectArray(a) makes a JSON array of the `JsDict.t` array `a`."
         ],
-        "signature": "let objectArray: array<Js_dict.t<t>> => t"
+        "signature": "let objectArray: array<dict<t>> => t"
       },
       {
         "id": "Js.Json.parseExn",
         "kind": "value",
         "name": "parseExn",
         "docstrings": [
-          "`parseExn(s)` parses the `string` `s` into a JSON data structure.\nReturns a JSON data structure.\nRaises `SyntaxError` if the given string is not a valid JSON. Note: `SyntaxError` is a JavaScript exception.\n\nSee [`parse`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse) on MDN.\n\n## Examples\n\n```rescript\n/* parse a simple JSON string */\n\nlet json = try Js.Json.parseExn(` \"hello\" `) catch {\n| _ => failwith(\"Error parsing JSON string\")\n}\n\nswitch Js.Json.classify(json) {\n| Js.Json.JSONString(value) => Js.log(value)\n| _ => failwith(\"Expected a string\")\n}\n```\n\n```rescript\n/* parse a complex JSON string */\n\nlet getIds = s => {\n  let json = try Js.Json.parseExn(s) catch {\n  | _ => failwith(\"Error parsing JSON string\")\n  }\n\n  switch Js.Json.classify(json) {\n  | Js.Json.JSONObject(value) =>\n    /* In this branch, compiler infer value : Js.Json.t Js.Dict.t */\n    switch Js.Dict.get(value, \"ids\") {\n    | Some(ids) =>\n      switch Js.Json.classify(ids) {\n      | Js.Json.JSONArray(ids) => /* In this branch compiler infer ids : Js.Json.t array */\n        ids\n      | _ => failwith(\"Expected an array\")\n      }\n    | None => failwith(\"Expected an `ids` property\")\n    }\n  | _ => failwith(\"Expected an object\")\n  }\n}\n\n/* prints `1, 2, 3` */\nJs.log(getIds(` { \"ids\" : [1, 2, 3 ] } `))\n```"
+          "`parseExn(s)` parses the `string` `s` into a JSON data structure.\nReturns a JSON data structure.\nRaises `SyntaxError` if the given string is not a valid JSON. Note: `SyntaxError` is a JavaScript exception.\n\nSee [`parse`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse) on MDN.\n\n## Examples\n\n```rescript\n/* parse a simple JSON string */\n\nlet json = try Js.Json.parseExn(` \"hello\" `) catch {\n| _ => failwith(\"Error parsing JSON string\")\n}\n\nswitch Js.Json.classify(json) {\n| Js.Json.JSONString(value) => Js.log(value)\n| _ => failwith(\"Expected a string\")\n}\n```\n\n```rescript\n/* parse a complex JSON string */\n\nlet getIds = s => {\n  let json = try Js.Json.parseExn(s) catch {\n  | _ => failwith(\"Error parsing JSON string\")\n  }\n\n  switch Js.Json.classify(json) {\n  | Js.Json.JSONObject(value) =>\n    /* In this branch, compiler infer value : Js.Json.t dict */\n    switch Js.Dict.get(value, \"ids\") {\n    | Some(ids) =>\n      switch Js.Json.classify(ids) {\n      | Js.Json.JSONArray(ids) => /* In this branch compiler infer ids : Js.Json.t array */\n        ids\n      | _ => failwith(\"Expected an array\")\n      }\n    | None => failwith(\"Expected an `ids` property\")\n    }\n  | _ => failwith(\"Expected an object\")\n  }\n}\n\n/* prints `1, 2, 3` */\nJs.log(getIds(` { \"ids\" : [1, 2, 3 ] } `))\n```"
         ],
         "signature": "let parseExn: string => t"
       },
@@ -11138,7 +7985,7 @@
         "docstrings": [
           "Identify an interval started by `Js.Global.setInterval`."
         ],
-        "signature": "type intervalId"
+        "signature": "type intervalId = Global.intervalId"
       },
       {
         "id": "Js.Global.timeoutId",
@@ -11147,7 +7994,7 @@
         "docstrings": [
           "Identify timeout started by `Js.Global.setTimeout`."
         ],
-        "signature": "type timeoutId"
+        "signature": "type timeoutId = Global.timeoutId"
       },
       {
         "id": "Js.Global.clearInterval",
@@ -11379,7 +8226,7 @@
         "kind": "type",
         "name": "t",
         "docstrings": [],
-        "signature": "type t"
+        "signature": "type t = Date.t"
       },
       {
         "id": "Js.Date.valueOf",
@@ -12346,20 +9193,6 @@
         "name": "catch",
         "docstrings": [],
         "signature": "let catch: (error => promise<'a>, promise<'a>) => promise<'a>"
-      },
-      {
-        "id": "Js.Promise.unsafe_async",
-        "kind": "value",
-        "name": "unsafe_async",
-        "docstrings": [],
-        "signature": "let unsafe_async: 'a => promise<'a>"
-      },
-      {
-        "id": "Js.Promise.unsafe_await",
-        "kind": "value",
-        "name": "unsafe_await",
-        "docstrings": [],
-        "signature": "let unsafe_await: promise<'a> => 'a"
       }
     ]
   },
@@ -12378,7 +9211,7 @@
         "docstrings": [
           "The RegExp object."
         ],
-        "signature": "type t"
+        "signature": "type t = RegExp.t"
       },
       {
         "id": "Js.Re.result",
@@ -12396,7 +9229,7 @@
         "docstrings": [
           "An `array` of the match and captures, the first is the full match and the\nremaining are the substring captures."
         ],
-        "signature": "let captures: result => array<Js.nullable<string>>"
+        "signature": "let captures: result => array<Js_null_undefined.t<string>>"
       },
       {
         "id": "Js.Re.matches",
@@ -12429,7 +9262,7 @@
         "kind": "value",
         "name": "fromString",
         "docstrings": [
-          "Constructs a RegExp object (Js.Re.t) from a `string`.\nRegex literals `%re(\"/.../\")` should generally be preferred, but `fromString`\nis useful when you need to dynamically construct a regex using strings,\nexactly like when you do so in JavaScript.\n\n## Examples\n\n```rescript\nlet firstReScriptFileExtension = (filename, content) => {\n  let result = Js.Re.fromString(filename ++ \"\\.(res|resi)\")->Js.Re.exec_(content)\n  switch result {\n  | Some(r) => Js.Nullable.toOption(Js.Re.captures(r)[1])\n  | None => None\n  }\n}\n\n// outputs \"res\"\nfirstReScriptFileExtension(\"School\", \"School.res School.resi Main.js School.bs.js\")\n```"
+          "Constructs a RegExp object (Js.Re.t) from a `string`.\nRegex literals `/.../` should generally be preferred, but `fromString`\nis useful when you need to dynamically construct a regex using strings,\nexactly like when you do so in JavaScript.\n\n## Examples\n\n```rescript\nlet firstReScriptFileExtension = (filename, content) => {\n  let result = Js.Re.fromString(filename ++ \"\\.(res|resi)\")->Js.Re.exec_(content)\n  switch result {\n  | Some(r) => Js.Nullable.toOption(Js.Re.captures(r)[1])\n  | None => None\n  }\n}\n\n// outputs \"res\"\nfirstReScriptFileExtension(\"School\", \"School.res School.resi Main.js School.bs.js\")\n```"
         ],
         "signature": "let fromString: string => t"
       },
@@ -12474,7 +9307,7 @@
         "kind": "value",
         "name": "lastIndex",
         "docstrings": [
-          "Returns the index where the next match will start its search. This property\nwill be modified when the RegExp object is used, if the global (\"g\") flag is\nset.\n\n## Examples\n\n```rescript\nlet re = %re(\"/ab*TODO/g\")\nlet str = \"abbcdefabh\"\n\nlet break = ref(false)\nwhile !break.contents {\n  switch Js.Re.exec_(re, str) {\n  | Some(result) => Js.Nullable.iter(Js.Re.captures(result)[0], (. match_) => {\n      let next = Belt.Int.toString(Js.Re.lastIndex(re))\n      Js.log(\"Found \" ++ (match_ ++ (\". Next match starts at \" ++ next)))\n    })\n  | None => break := true\n  }\n}\n```\n\nSee\n[`RegExp: lastIndex`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/lastIndex)\non MDN."
+          "Returns the index where the next match will start its search. This property\nwill be modified when the RegExp object is used, if the global (\"g\") flag is\nset.\n\n## Examples\n\n```rescript\nlet re = /ab*TODO/g\nlet str = \"abbcdefabh\"\n\nlet break = ref(false)\nwhile !break.contents {\n  switch Js.Re.exec_(re, str) {\n  | Some(result) => Js.Nullable.iter(Js.Re.captures(result)[0], (. match_) => {\n      let next = Belt.Int.toString(Js.Re.lastIndex(re))\n      Js.log(\"Found \" ++ (match_ ++ (\". Next match starts at \" ++ next)))\n    })\n  | None => break := true\n  }\n}\n```\n\nSee\n[`RegExp: lastIndex`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/lastIndex)\non MDN."
         ],
         "signature": "let lastIndex: t => int"
       },
@@ -12528,7 +9361,7 @@
         "kind": "value",
         "name": "exec_",
         "docstrings": [
-          "Executes a search on a given string using the given RegExp object.\nReturns `Some(Js.Re.result)` if a match is found, `None` otherwise.\n\n## Examples\n\n```rescript\n/* Match \"quick brown\" followed by \"jumps\", ignoring characters in between\n * Remember \"brown\" and \"jumps\"\n  * Ignore case\n  */\n\nlet re = %re(\"/quick\\s(brown).+?(jumps)/ig\")\nlet result = Js.Re.exec_(re, \"The Quick Brown Fox Jumps Over The Lazy Dog\")\n```\n\nSee [`RegExp.prototype.exec()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec)\non MDN."
+          "Executes a search on a given string using the given RegExp object.\nReturns `Some(Js.Re.result)` if a match is found, `None` otherwise.\n\n## Examples\n\n```rescript\n/* Match \"quick brown\" followed by \"jumps\", ignoring characters in between\n * Remember \"brown\" and \"jumps\"\n  * Ignore case\n  */\n\nlet re = /quick\\s(brown).+?(jumps)/ig\nlet result = Js.Re.exec_(re, \"The Quick Brown Fox Jumps Over The Lazy Dog\")\n```\n\nSee [`RegExp.prototype.exec()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec)\non MDN."
         ],
         "signature": "let exec_: (t, string) => option<result>"
       },
@@ -12752,7 +9585,7 @@
         "kind": "value",
         "name": "match_",
         "docstrings": [
-          "`match(str, regexp)` matches a `string` against the given `regexp`. If there is\nno match, it returns `None`. For regular expressions without the g modifier, if\n  there is a match, the return value is `Some(array)` where the array contains:\n- The entire matched string\n- Any capture groups if the regexp had parentheses\nFor regular expressions with the g modifier, a matched expression returns\n`Some(array)` with all the matched substrings and no capture groups.\n\nSee [`String.match`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match)\non MDN.\n\n## Examples\n\n```rescript\nJs.String2.match_(\"The better bats\", %re(\"/b[aeiou]t/\")) == Some([\"bet\"])\nJs.String2.match_(\"The better bats\", %re(\"/b[aeiou]t/g\")) == Some([\"bet\", \"bat\"])\nJs.String2.match_(\"Today is 2018-04-05.\", %re(\"/(\\d+)-(\\d+)-(\\d+)/\")) ==\n  Some([\"2018-04-05\", \"2018\", \"04\", \"05\"])\nJs.String2.match_(\"The large container.\", %re(\"/b[aeiou]g/\")) == None\n```"
+          "`match(str, regexp)` matches a `string` against the given `regexp`. If there is\nno match, it returns `None`. For regular expressions without the g modifier, if\n  there is a match, the return value is `Some(array)` where the array contains:\n- The entire matched string\n- Any capture groups if the regexp had parentheses\nFor regular expressions with the g modifier, a matched expression returns\n`Some(array)` with all the matched substrings and no capture groups.\n\nSee [`String.match`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match)\non MDN.\n\n## Examples\n\n```rescript\nJs.String2.match_(\"The better bats\", /b[aeiou]t/) == Some([\"bet\"])\nJs.String2.match_(\"The better bats\", /b[aeiou]t/g) == Some([\"bet\", \"bat\"])\nJs.String2.match_(\"Today is 2018-04-05.\", /(\\d+)-(\\d+)-(\\d+)/) ==\n  Some([\"2018-04-05\", \"2018\", \"04\", \"05\"])\nJs.String2.match_(\"The large container.\", /b[aeiou]g/) == None\n```"
         ],
         "signature": "let match_: (t, Js_re.t) => option<array<option<t>>>"
       },
@@ -12797,7 +9630,7 @@
         "kind": "value",
         "name": "replaceByRe",
         "docstrings": [
-          "`replaceByRe(str, regex, replacement)` returns a new `string` where occurrences\nmatching regex have been replaced by `replacement`.\n\nSee [`String.replace`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)\non MDN.\n\n## Examples\n\n```rescript\nJs.String2.replaceByRe(\"vowels be gone\", %re(\"/[aeiou]/g\"), \"x\") == \"vxwxls bx gxnx\"\nJs.String2.replaceByRe(\"Juan Fulano\", %re(\"/(\\w+) (\\w+)/\"), \"$2, $1\") == \"Fulano, Juan\"\n```"
+          "`replaceByRe(str, regex, replacement)` returns a new `string` where occurrences\nmatching regex have been replaced by `replacement`.\n\nSee [`String.replace`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)\non MDN.\n\n## Examples\n\n```rescript\nJs.String2.replaceByRe(\"vowels be gone\", /[aeiou]/g, \"x\") == \"vxwxls bx gxnx\"\nJs.String2.replaceByRe(\"Juan Fulano\", /(\\w+) (\\w+)/, \"$2, $1\") == \"Fulano, Juan\"\n```"
         ],
         "signature": "let replaceByRe: (t, Js_re.t, t) => t"
       },
@@ -12806,7 +9639,7 @@
         "kind": "value",
         "name": "unsafeReplaceBy0",
         "docstrings": [
-          "Returns a new `string` with some or all matches of a pattern with no capturing\nparentheses replaced by the value returned from the given function. The\nfunction receives as its parameters the matched string, the offset at which the\nmatch begins, and the whole string being matched.\n\nSee [`String.replace`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)\non MDN.\n\n## Examples\n\n```rescript\nlet str = \"beautiful vowels\"\nlet re = %re(\"/[aeiou]/g\")\nlet matchFn = (matchPart, _offset, _wholeString) => Js.String2.toUpperCase(matchPart)\n\nJs.String2.unsafeReplaceBy0(str, re, matchFn) == \"bEAUtIfUl vOwEls\"\n```"
+          "Returns a new `string` with some or all matches of a pattern with no capturing\nparentheses replaced by the value returned from the given function. The\nfunction receives as its parameters the matched string, the offset at which the\nmatch begins, and the whole string being matched.\n\nSee [`String.replace`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)\non MDN.\n\n## Examples\n\n```rescript\nlet str = \"beautiful vowels\"\nlet re = /[aeiou]/g\nlet matchFn = (matchPart, _offset, _wholeString) => Js.String2.toUpperCase(matchPart)\n\nJs.String2.unsafeReplaceBy0(str, re, matchFn) == \"bEAUtIfUl vOwEls\"\n```"
         ],
         "signature": "let unsafeReplaceBy0: (t, Js_re.t, (t, int, t) => t) => t"
       },
@@ -12815,7 +9648,7 @@
         "kind": "value",
         "name": "unsafeReplaceBy1",
         "docstrings": [
-          "Returns a new `string` with some or all matches of a pattern with one set of\ncapturing parentheses replaced by the value returned from the given function.\nThe function receives as its parameters the matched string, the captured\nstring, the offset at which the match begins, and the whole string being\nmatched.\n\nSee [`String.replace`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)\non MDN.\n\n## Examples\n\n```rescript\nlet str = \"Jony is 40\"\nlet re = %re(\"/(Jony is )\\d+/g\")\nlet matchFn = (_match, part1, _offset, _wholeString) => {\n  part1 ++ \"41\"\n}\n\nJs.String2.unsafeReplaceBy1(str, re, matchFn) == \"Jony is 41\"\n```"
+          "Returns a new `string` with some or all matches of a pattern with one set of\ncapturing parentheses replaced by the value returned from the given function.\nThe function receives as its parameters the matched string, the captured\nstring, the offset at which the match begins, and the whole string being\nmatched.\n\nSee [`String.replace`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)\non MDN.\n\n## Examples\n\n```rescript\nlet str = \"Jony is 40\"\nlet re = /(Jony is )\\d+/g\nlet matchFn = (_match, part1, _offset, _wholeString) => {\n  part1 ++ \"41\"\n}\n\nJs.String2.unsafeReplaceBy1(str, re, matchFn) == \"Jony is 41\"\n```"
         ],
         "signature": "let unsafeReplaceBy1: (t, Js_re.t, (t, t, int, t) => t) => t"
       },
@@ -12824,7 +9657,7 @@
         "kind": "value",
         "name": "unsafeReplaceBy2",
         "docstrings": [
-          "Returns a new `string` with some or all matches of a pattern with two sets of\ncapturing parentheses replaced by the value returned from the given function.\nThe function receives as its parameters the matched string, the captured\nstrings, the offset at which the match begins, and the whole string being\nmatched.\n\nSee [`String.replace`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)\non MDN.\n\n## Examples\n\n```rescript\nlet str = \"7 times 6\"\nlet re = %re(\"/(\\d+) times (\\d+)/\")\nlet matchFn = (_match, p1, p2, _offset, _wholeString) => {\n  switch (Belt.Int.fromString(p1), Belt.Int.fromString(p2)) {\n  | (Some(x), Some(y)) => Belt.Int.toString(x * y)\n  | _ => \"???\"\n  }\n}\n\nJs.String2.unsafeReplaceBy2(str, re, matchFn) == \"42\"\n```"
+          "Returns a new `string` with some or all matches of a pattern with two sets of\ncapturing parentheses replaced by the value returned from the given function.\nThe function receives as its parameters the matched string, the captured\nstrings, the offset at which the match begins, and the whole string being\nmatched.\n\nSee [`String.replace`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)\non MDN.\n\n## Examples\n\n```rescript\nlet str = \"7 times 6\"\nlet re = /(\\d+) times (\\d+)/\nlet matchFn = (_match, p1, p2, _offset, _wholeString) => {\n  switch (Belt.Int.fromString(p1), Belt.Int.fromString(p2)) {\n  | (Some(x), Some(y)) => Belt.Int.toString(x * y)\n  | _ => \"???\"\n  }\n}\n\nJs.String2.unsafeReplaceBy2(str, re, matchFn) == \"42\"\n```"
         ],
         "signature": "let unsafeReplaceBy2: (t, Js_re.t, (t, t, t, int, t) => t) => t"
       },
@@ -12842,7 +9675,7 @@
         "kind": "value",
         "name": "search",
         "docstrings": [
-          "`search(str, regexp)` returns the starting position of the first match of\n`regexp` in the given `str`, or -1 if there is no match.\n\nSee [`String.search`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/search)\non MDN.\n\n## Examples\n\n```rescript\nJs.String2.search(\"testing 1 2 3\", %re(\"/\\d+/\")) == 8\nJs.String2.search(\"no numbers\", %re(\"/\\d+/\")) == -1\n```"
+          "`search(str, regexp)` returns the starting position of the first match of\n`regexp` in the given `str`, or -1 if there is no match.\n\nSee [`String.search`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/search)\non MDN.\n\n## Examples\n\n```rescript\nJs.String2.search(\"testing 1 2 3\", /\\d+/) == 8\nJs.String2.search(\"no numbers\", /\\d+/) == -1\n```"
         ],
         "signature": "let search: (t, Js_re.t) => int"
       },
@@ -12887,7 +9720,7 @@
         "kind": "value",
         "name": "splitByRe",
         "docstrings": [
-          "`splitByRe(str, regex)` splits the given `str` at every occurrence of `regex`\nand returns an array of the resulting substrings.\n\nSee [`String.split`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split)\non MDN.\n\n## Examples\n\n```rescript\nJs.String2.splitByRe(\"art; bed , cog ;dad\", %re(\"/\\s*[,;]\\s*TODO/\")) == [\n    Some(\"art\"),\n    Some(\"bed\"),\n    Some(\"cog\"),\n    Some(\"dad\"),\n  ]\n```"
+          "`splitByRe(str, regex)` splits the given `str` at every occurrence of `regex`\nand returns an array of the resulting substrings.\n\nSee [`String.split`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split)\non MDN.\n\n## Examples\n\n```rescript\nJs.String2.splitByRe(\"art; bed , cog ;dad\", /\\s*[,;]\\s*TODO/) == [\n    Some(\"art\"),\n    Some(\"bed\"),\n    Some(\"cog\"),\n    Some(\"dad\"),\n  ]\n```"
         ],
         "signature": "let splitByRe: (t, Js_re.t) => array<option<t>>"
       },
@@ -12896,7 +9729,7 @@
         "kind": "value",
         "name": "splitByReAtMost",
         "docstrings": [
-          "`splitByReAtMost(str, regex, ~limit:n)` splits the given `str` at every\noccurrence of `regex` and returns an array of the first `n` resulting\nsubstrings. If `n` is negative or greater than the number of substrings, the\narray will contain all the substrings.\n\nSee [`String.split`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split)\non MDN.\n\n## Examples\n\n```rescript\nJs.String2.splitByReAtMost(\"one: two: three: four\", %re(\"/\\s*:\\s*TODO/\"), ~limit=3) == [\n    Some(\"one\"),\n    Some(\"two\"),\n    Some(\"three\"),\n  ]\n\nJs.String2.splitByReAtMost(\"one: two: three: four\", %re(\"/\\s*:\\s*TODO/\"), ~limit=0) == []\n\nJs.String2.splitByReAtMost(\"one: two: three: four\", %re(\"/\\s*:\\s*TODO/\"), ~limit=8) == [\n    Some(\"one\"),\n    Some(\"two\"),\n    Some(\"three\"),\n    Some(\"four\"),\n  ]\n```"
+          "`splitByReAtMost(str, regex, ~limit:n)` splits the given `str` at every\noccurrence of `regex` and returns an array of the first `n` resulting\nsubstrings. If `n` is negative or greater than the number of substrings, the\narray will contain all the substrings.\n\nSee [`String.split`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split)\non MDN.\n\n## Examples\n\n```rescript\nJs.String2.splitByReAtMost(\"one: two: three: four\", /\\s*:\\s*TODO/, ~limit=3) == [\n    Some(\"one\"),\n    Some(\"two\"),\n    Some(\"three\"),\n  ]\n\nJs.String2.splitByReAtMost(\"one: two: three: four\", /\\s*:\\s*TODO/, ~limit=0) == []\n\nJs.String2.splitByReAtMost(\"one: two: three: four\", /\\s*:\\s*TODO/, ~limit=8) == [\n    Some(\"one\"),\n    Some(\"two\"),\n    Some(\"three\"),\n    Some(\"four\"),\n  ]\n```"
         ],
         "signature": "let splitByReAtMost: (t, Js_re.t, ~limit: int) => array<option<t>>"
       },
@@ -13461,7 +10294,7 @@
         "docstrings": [
           "A type used to describe JavaScript objects that are like an array or are iterable."
         ],
-        "signature": "type array_like<'a>"
+        "signature": "type array_like<'a> = Array.arrayLike<'a>"
       },
       {
         "id": "Js.Array2.from",
@@ -14033,42 +10866,42 @@
         "kind": "value",
         "name": "copyWithin",
         "docstrings": [],
-        "signature": "let copyWithin: (~to_: int, t<'a>) => t<'a>"
+        "signature": "let copyWithin: (~to_: int, t<'a>) => 'b"
       },
       {
         "id": "Js.Array.copyWithinFrom",
         "kind": "value",
         "name": "copyWithinFrom",
         "docstrings": [],
-        "signature": "let copyWithinFrom: (~to_: int, ~from: int, t<'a>) => t<'a>"
+        "signature": "let copyWithinFrom: (~to_: int, ~from: int, t<'a>) => 'b"
       },
       {
         "id": "Js.Array.copyWithinFromRange",
         "kind": "value",
         "name": "copyWithinFromRange",
         "docstrings": [],
-        "signature": "let copyWithinFromRange: (~to_: int, ~start: int, ~end_: int, t<'a>) => t<'a>"
+        "signature": "let copyWithinFromRange: (~to_: int, ~start: int, ~end_: int, t<'a>) => 'b"
       },
       {
         "id": "Js.Array.fillInPlace",
         "kind": "value",
         "name": "fillInPlace",
         "docstrings": [],
-        "signature": "let fillInPlace: ('a, t<'a>) => t<'a>"
+        "signature": "let fillInPlace: ('a, t<'a>) => 'b"
       },
       {
         "id": "Js.Array.fillFromInPlace",
         "kind": "value",
         "name": "fillFromInPlace",
         "docstrings": [],
-        "signature": "let fillFromInPlace: ('a, ~from: int, t<'a>) => t<'a>"
+        "signature": "let fillFromInPlace: ('a, ~from: int, t<'a>) => 'b"
       },
       {
         "id": "Js.Array.fillRangeInPlace",
         "kind": "value",
         "name": "fillRangeInPlace",
         "docstrings": [],
-        "signature": "let fillRangeInPlace: ('a, ~start: int, ~end_: int, t<'a>) => t<'a>"
+        "signature": "let fillRangeInPlace: ('a, ~start: int, ~end_: int, t<'a>) => 'b"
       },
       {
         "id": "Js.Array.pop",
@@ -14100,7 +10933,7 @@
         "docstrings": [
           "Returns an array with the elements of the input array in reverse order. *This function modifies the original array.* See [`Array.reverse`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse) on MDN.\n\n## Examples\n\n```rescript\nlet arr = [\"ant\", \"bee\", \"cat\"]\nJs.Array.reverseInPlace(arr) == [\"cat\", \"bee\", \"ant\"]\narr == [\"cat\", \"bee\", \"ant\"]\n```"
         ],
-        "signature": "let reverseInPlace: t<'a> => t<'a>"
+        "signature": "let reverseInPlace: t<'a> => 'this"
       },
       {
         "id": "Js.Array.shift",
@@ -14118,35 +10951,35 @@
         "docstrings": [
           "Sorts the given array in place and returns the sorted array. JavaScript sorts the array by converting the arguments to UTF-16 strings and sorting them. See the second example with sorting numbers, which does not do a numeric sort. *This function modifies the original array.* See [`Array.sort`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort) on MDN.\n\n## Examples\n\n```rescript\nlet words = [\"bee\", \"dog\", \"ant\", \"cat\"]\nJs.Array.sortInPlace(words) == [\"ant\", \"bee\", \"cat\", \"dog\"]\nwords == [\"ant\", \"bee\", \"cat\", \"dog\"]\n\nlet numbers = [3, 30, 10, 1, 20, 2]\nJs.Array.sortInPlace(numbers) == [1, 10, 2, 20, 3, 30]\nnumbers == [1, 10, 2, 20, 3, 30]\n```"
         ],
-        "signature": "let sortInPlace: t<'a> => t<'a>"
+        "signature": "let sortInPlace: t<'a> => 'this"
       },
       {
         "id": "Js.Array.sortInPlaceWith",
         "kind": "value",
         "name": "sortInPlaceWith",
         "docstrings": [],
-        "signature": "let sortInPlaceWith: (('a, 'a) => int, t<'a>) => t<'a>"
+        "signature": "let sortInPlaceWith: (('a, 'a) => int, t<'a>) => 'b"
       },
       {
         "id": "Js.Array.spliceInPlace",
         "kind": "value",
         "name": "spliceInPlace",
         "docstrings": [],
-        "signature": "let spliceInPlace: (~pos: int, ~remove: int, ~add: array<'a>, t<'a>) => t<'a>"
+        "signature": "let spliceInPlace: (~pos: int, ~remove: int, ~add: array<'a>, t<'a>) => 'b"
       },
       {
         "id": "Js.Array.removeFromInPlace",
         "kind": "value",
         "name": "removeFromInPlace",
         "docstrings": [],
-        "signature": "let removeFromInPlace: (~pos: int, t<'a>) => t<'a>"
+        "signature": "let removeFromInPlace: (~pos: int, t<'a>) => 'b"
       },
       {
         "id": "Js.Array.removeCountInPlace",
         "kind": "value",
         "name": "removeCountInPlace",
         "docstrings": [],
-        "signature": "let removeCountInPlace: (~pos: int, ~count: int, t<'a>) => t<'a>"
+        "signature": "let removeCountInPlace: (~pos: int, ~count: int, t<'a>) => 'b"
       },
       {
         "id": "Js.Array.unshift",
@@ -14167,14 +11000,14 @@
         "kind": "value",
         "name": "concat",
         "docstrings": [],
-        "signature": "let concat: (t<'a>, t<'a>) => t<'a>"
+        "signature": "let concat: ('a, t<'b>) => 'a"
       },
       {
         "id": "Js.Array.concatMany",
         "kind": "value",
         "name": "concatMany",
         "docstrings": [],
-        "signature": "let concatMany: (array<t<'a>>, t<'a>) => t<'a>"
+        "signature": "let concatMany: (array<'a>, t<'b>) => 'a"
       },
       {
         "id": "Js.Array.includes",
@@ -14231,7 +11064,7 @@
         "kind": "value",
         "name": "slice",
         "docstrings": [],
-        "signature": "let slice: (~start: int, ~end_: int, t<'a>) => t<'a>"
+        "signature": "let slice: (int, ~end_: int, ~obj: t<'a>) => 'b"
       },
       {
         "id": "Js.Array.copy",
@@ -14240,14 +11073,14 @@
         "docstrings": [
           "Returns a copy of the entire array. Same as `Js.Array.Slice(~start=0,\n~end_=Js.Array.length(arr), arr)`. See\n[`Array.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice)\non MDN."
         ],
-        "signature": "let copy: t<'a> => t<'a>"
+        "signature": "let copy: t<'a> => 'this"
       },
       {
         "id": "Js.Array.sliceFrom",
         "kind": "value",
         "name": "sliceFrom",
         "docstrings": [],
-        "signature": "let sliceFrom: (int, t<'a>) => t<'a>"
+        "signature": "let sliceFrom: (int, t<'a>) => 'b"
       },
       {
         "id": "Js.Array.toString",
@@ -14286,14 +11119,14 @@
         "kind": "value",
         "name": "filter",
         "docstrings": [],
-        "signature": "let filter: ('a => bool, t<'a>) => t<'a>"
+        "signature": "let filter: ('a => bool, t<'a>) => 'b"
       },
       {
         "id": "Js.Array.filteri",
         "kind": "value",
         "name": "filteri",
         "docstrings": [],
-        "signature": "let filteri: (('a, int) => bool, t<'a>) => t<'a>"
+        "signature": "let filteri: (('a, int) => bool, t<'a>) => 'b"
       },
       {
         "id": "Js.Array.find",
@@ -14428,60 +11261,58 @@
         "docstrings": [
           "Represents a JS exception"
         ],
-        "signature": "type t"
+        "signature": "type t",
+        "deprecated": "Use `JsExn.t` instead"
       },
       {
         "id": "Js.Exn.asJsExn",
         "kind": "value",
         "name": "asJsExn",
         "docstrings": [],
-        "signature": "let asJsExn: exn => option<t>"
+        "signature": "let asJsExn: exn => option<t>",
+        "deprecated": "Use `JsExn.fromException` instead"
       },
       {
         "id": "Js.Exn.stack",
         "kind": "value",
         "name": "stack",
         "docstrings": [],
-        "signature": "let stack: t => option<string>"
+        "signature": "let stack: t => option<string>",
+        "deprecated": "Use `JsExn.stack` instead"
       },
       {
         "id": "Js.Exn.message",
         "kind": "value",
         "name": "message",
         "docstrings": [],
-        "signature": "let message: t => option<string>"
+        "signature": "let message: t => option<string>",
+        "deprecated": "Use `JsExn.message` instead"
       },
       {
         "id": "Js.Exn.name",
         "kind": "value",
         "name": "name",
         "docstrings": [],
-        "signature": "let name: t => option<string>"
+        "signature": "let name: t => option<string>",
+        "deprecated": "Use `JsExn.name` instead"
       },
       {
         "id": "Js.Exn.fileName",
         "kind": "value",
         "name": "fileName",
         "docstrings": [],
-        "signature": "let fileName: t => option<string>"
-      },
-      {
-        "id": "Js.Exn.isCamlExceptionOrOpenVariant",
-        "kind": "value",
-        "name": "isCamlExceptionOrOpenVariant",
-        "docstrings": [
-          "internal use only"
-        ],
-        "signature": "let isCamlExceptionOrOpenVariant: 'a => bool"
+        "signature": "let fileName: t => option<string>",
+        "deprecated": "Use `JsExn.fileName` instead"
       },
       {
         "id": "Js.Exn.anyToExnInternal",
         "kind": "value",
         "name": "anyToExnInternal",
         "docstrings": [
-          "`anyToExnInternal(obj)` will take any value `obj` and wrap it\nin a Js.Exn.Error if given value is not an exn already. If\n`obj` is an exn, it will return `obj` without any changes.\n\nThis function is mostly useful for cases where you want to unify a type of a value\nthat potentially is either exn, a JS error, or any other JS value really (e.g. for\na value passed to a Promise.catch callback)\n\n**IMPORTANT**: This is an internal API and may be changed / removed any time in the future.\n\n## Examples\n\n```rescript\nswitch (Js.Exn.unsafeAnyToExn(\"test\")) {\n| Js.Exn.Error(v) =>\n  switch(Js.Exn.message(v)) {\n  | Some(str) => Js.log(\"We won't end up here\")\n  | None => Js.log2(\"We will land here: \", v)\n  }\n}\n```"
+          "`anyToExnInternal(obj)` will take any value `obj` and wrap it\nin a Exn.Error if given value is not an exn already. If\n`obj` is an exn, it will return `obj` without any changes.\n\nThis function is mostly useful for cases where you want to unify a type of a value\nthat potentially is either exn, a JS error, or any other JS value really (e.g. for\na value passed to a Promise.catch callback)\n\n**IMPORTANT**: This is an internal API and may be changed / removed any time in the future."
         ],
-        "signature": "let anyToExnInternal: 'a => exn"
+        "signature": "let anyToExnInternal: 'a => exn",
+        "deprecated": "Use `JsExn.anyToExnInternal` instead"
       },
       {
         "id": "Js.Exn.raiseError",
@@ -14490,49 +11321,66 @@
         "docstrings": [
           "Raise Js exception Error object with stacktrace"
         ],
-        "signature": "let raiseError: string => 'a"
+        "signature": "let raiseError: string => 'a",
+        "deprecated": "Use `JsError.throwWithMessage` instead"
       },
       {
         "id": "Js.Exn.raiseEvalError",
         "kind": "value",
         "name": "raiseEvalError",
         "docstrings": [],
-        "signature": "let raiseEvalError: string => 'a"
+        "signature": "let raiseEvalError: string => 'a",
+        "deprecated": "Use `JsError.EvalError.throwWithMessage` instead"
       },
       {
         "id": "Js.Exn.raiseRangeError",
         "kind": "value",
         "name": "raiseRangeError",
         "docstrings": [],
-        "signature": "let raiseRangeError: string => 'a"
+        "signature": "let raiseRangeError: string => 'a",
+        "deprecated": "Use `JsError.RangeError.throwWithMessage` instead"
       },
       {
         "id": "Js.Exn.raiseReferenceError",
         "kind": "value",
         "name": "raiseReferenceError",
         "docstrings": [],
-        "signature": "let raiseReferenceError: string => 'a"
+        "signature": "let raiseReferenceError: string => 'a",
+        "deprecated": "Use `JsError.ReferenceError.throwWithMessage` instead"
       },
       {
         "id": "Js.Exn.raiseSyntaxError",
         "kind": "value",
         "name": "raiseSyntaxError",
         "docstrings": [],
-        "signature": "let raiseSyntaxError: string => 'a"
+        "signature": "let raiseSyntaxError: string => 'a",
+        "deprecated": "Use `JsError.SyntaxError.throwWithMessage` instead"
       },
       {
         "id": "Js.Exn.raiseTypeError",
         "kind": "value",
         "name": "raiseTypeError",
         "docstrings": [],
-        "signature": "let raiseTypeError: string => 'a"
+        "signature": "let raiseTypeError: string => 'a",
+        "deprecated": "Use `JsError.TypeError.throwWithMessage` instead"
       },
       {
         "id": "Js.Exn.raiseUriError",
         "kind": "value",
         "name": "raiseUriError",
         "docstrings": [],
-        "signature": "let raiseUriError: string => 'a"
+        "signature": "let raiseUriError: string => 'a",
+        "deprecated": "Use `JsError.URIError.throwWithMessage` instead"
+      },
+      {
+        "id": "Js.Exn.ignore",
+        "kind": "value",
+        "name": "ignore",
+        "docstrings": [
+          "`ignore(exn)` ignores the provided exn and returns unit.\n\n  This helper is useful when you want to discard a value (for example, the result of an operation with side effects)\n  without having to store or process it further."
+        ],
+        "signature": "let ignore: t => unit",
+        "deprecated": "Use `JsExn.ignore` instead"
       }
     ]
   },
@@ -14547,10 +11395,8 @@
         "id": "Js.Null_undefined.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Local alias for `Js.null_undefined<'a>`."
-        ],
-        "signature": "type t<'a> = Js.nullable<'a> = Value('a) | Null | Undefined"
+        "docstrings": [],
+        "signature": "@unboxed\ntype t<'a> = nullable<'a> =\n  | Value('a)\n  | @as(null) Null\n  | @as(undefined) Undefined"
       },
       {
         "id": "Js.Null_undefined.return",
@@ -14654,10 +11500,8 @@
         "id": "Js.Nullable.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Local alias for `Js.null_undefined<'a>`."
-        ],
-        "signature": "type t<'a> = Js.nullable<'a> = Value('a) | Null | Undefined"
+        "docstrings": [],
+        "signature": "@unboxed\ntype t<'a> = nullable<'a> =\n  | Value('a)\n  | @as(null) Null\n  | @as(undefined) Undefined"
       },
       {
         "id": "Js.Nullable.return",
@@ -14764,7 +11608,7 @@
         "docstrings": [
           "Local alias for `Js.undefined<'a>`"
         ],
-        "signature": "type t<'a> = Js.undefined<'a>"
+        "signature": "type t<'a> = undefined<'a>"
       },
       {
         "id": "Js.Undefined.return",
@@ -14883,10 +11727,8 @@
         "id": "Js.Null.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Local alias for `Js.null<'a>`"
-        ],
-        "signature": "type t<'a> = Js.null<'a> = Value('a) | Null"
+        "docstrings": [],
+        "signature": "@unboxed\ntype t<'a> = null<'a> =\n  | Value('a)\n  | @as(null) Null"
       },
       {
         "id": "Js.Null.return",

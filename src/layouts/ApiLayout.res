@@ -98,7 +98,6 @@ let make = (
 
   let preludeSection =
     <div className="flex justify-between text-fire font-medium items-baseline">
-      {React.string(title)}
       {switch version {
       | Some(version) =>
         let onChange = evt => {

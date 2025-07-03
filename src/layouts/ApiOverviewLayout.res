@@ -2,10 +2,14 @@ module Sidebar = SidebarLayout.Sidebar
 
 let makeCategories: string => array<Sidebar.Category.t> = version => [
   {
-    name: "",
+    name: "Overview",
     items: [
-      {name: "Overview", href: `/docs/manual/${version}/api`},
-      {name: "Core", href: `/docs/manual/${version}/api/core`},
+      {name: "Introduction", href: `/docs/manual/${version}/api`},
+      if version >= "v12.0.0" {
+        {name: "Stdlib", href: `/docs/manual/${version}/api/stdlib`}
+      } else {
+        {name: "Core", href: `/docs/manual/${version}/api/core`}
+      },
     ],
   },
   {
@@ -21,9 +25,17 @@ let makeCategories: string => array<Sidebar.Category.t> = version => [
 module Docs = {
   @react.component
   let make = (~version, ~components=ApiMarkdown.default, ~children) => {
-    let title = "API"
+    let router = Next.Router.useRouter()
+    let route = router.route
+
     let categories = makeCategories(version)
 
-    <ApiLayout title categories version components> children </ApiLayout>
+    <ApiLayout categories version components>
+      {switch version {
+      | "v9.0.0" | "v8.0.0" => <ApiLayout.OldDocsWarning route version />
+      | _ => React.null
+      }}
+      children
+    </ApiLayout>
   }
 }

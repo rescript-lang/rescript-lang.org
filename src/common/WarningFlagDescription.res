@@ -72,7 +72,7 @@ let numeric = [
   (110, "Todo found"),
 ]
 
-let letterAll = numeric->Array.map(fst)
+let letterAll = numeric->Array.map(Pair.first)
 
 // we keep the original variable name `letter` like in warnings.ml
 let _letter = l =>
@@ -184,7 +184,7 @@ module Parser = {
         if cur === "+" || cur === "-" {
           ParseFlag({modifier: cur, acc: ""})
         } else {
-          raise(InvalidInput("Expected '+' or '-' on pos " ++ Int.toString(pos.contents)))
+          throw(InvalidInput("Expected '+' or '-' on pos " ++ Int.toString(pos.contents)))
         }
       | ParseFlag({modifier, acc}) =>
         let next = if pos.contents + 1 < last {
@@ -194,7 +194,7 @@ module Parser = {
         }
 
         if cur->isModifier {
-          raise(
+          throw(
             InvalidInput(
               "'+' and '-' not allowed in flag name on pos " ++ Int.toString(pos.contents),
             ),
@@ -216,7 +216,7 @@ module Parser = {
     // might be a tangling empty flag
     switch state.contents {
     | ParseFlag({modifier, acc: ""}) =>
-      raise(
+      throw(
         InvalidInput(
           "Expected flag name after '" ++ (modifier ++ ("' on pos " ++ Int.toString(pos.contents))),
         ),

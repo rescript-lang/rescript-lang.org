@@ -98,6 +98,7 @@ export {
               </pre>
             </div>
           </div>
+
           /* ---Link to Playground--- */
           <div>
             <Next.Link
@@ -109,9 +110,8 @@ export {
           //
           <div className="hidden md:block">
             <img
-              className="absolute z-0 left-0 top-0 -ml-10 -mt-6"
+              className="absolute z-0 left-0 top-0 -ml-10 -mt-6 h-[24rem] w-[24rem]"
               src="/static/lp/grid.svg"
-              style={ReactDOM.Style.make(~height="24rem", ~width="24rem", ())}
             />
             <img
               className="absolute z-0 left-0 top-0 -ml-10 mt-10" src="/static/lp/illu_left.png"
@@ -119,9 +119,8 @@ export {
           </div>
           <div className="hidden md:block">
             <img
-              className="absolute z-0 right-0 bottom-0 -mb-10 mt-24 -mr-10"
+              className="absolute z-0 right-0 bottom-0 -mb-10 mt-24 -mr-10 h-[24rem] w-[24rem]"
               src="/static/lp/grid.svg"
-              style={ReactDOM.Style.make(~height="24rem", ~width="24rem", ())}
             />
             <img
               className="absolute z-3 right-0 bottom-0 -mr-2 mb-10" src="/static/lp/illu_right.png"
@@ -183,31 +182,30 @@ module QuickInstall = {
       React.useEffect(() => {
         switch state {
         | Copied =>
-          open Webapi
-          let buttonEl = Nullable.toOption(buttonRef.current)->Option.getExn
+          let buttonEl = Nullable.toOption(buttonRef.current)->Option.getOrThrow
 
           // Note on this imperative DOM nonsense:
           // For Tailwind transitions to behave correctly, we need to first paint the DOM element in the tree,
           // and in the next tick, add the opacity-100 class, so the transition animation actually takes place.
           // If we don't do that, the banner will essentially pop up without any animation
-          let bannerEl = Document.createElement("div")
-          bannerEl->Element.setClassName("foobar opacity-0 absolute top-0 mt-4 -mr-1 px-2 rounded right-0
+          let bannerEl = WebAPI.Document.createElement(document, "div")
+          bannerEl.className = "foobar opacity-0 absolute top-0 mt-4 -mr-1 px-2 rounded right-0
             bg-turtle text-gray-80-tr body-sm
-            transition-all duration-500 ease-in-out ")
-          let textNode = Document.createTextNode("Copied!")
+            transition-all duration-500 ease-in-out "
+          let textNode = WebAPI.Document.createTextNode(document, "Copied!")
 
-          bannerEl->Element.appendChild(textNode)
-          buttonEl->Element.appendChild(bannerEl)
+          WebAPI.Element.appendChild(bannerEl, textNode)->ignore
+          WebAPI.Element.appendChild(buttonEl, bannerEl)->ignore
 
-          let nextFrameId = requestAnimationFrame(() => {
-            bannerEl->Element.classList->ClassList.toggle("opacity-0")
-            bannerEl->Element.classList->ClassList.toggle("opacity-100")
+          let nextFrameId = WebAPI.Window.requestAnimationFrame(window, _ => {
+            WebAPI.DOMTokenList.toggle(bannerEl.classList, ~token="opacity-0")->ignore
+            WebAPI.DOMTokenList.toggle(bannerEl.classList, ~token="opacity-100")->ignore
           })
 
-          let timeoutId = setTimeout(() => {
-            buttonEl->Element.removeChild(bannerEl)
+          let timeoutId = setTimeout(~handler=() => {
+            buttonEl->WebAPI.Element.removeChild(bannerEl)->ignore
             setState(_ => Init)
-          }, 2000)
+          }, ~timeout=2000)
 
           Some(
             () => {
@@ -220,7 +218,7 @@ module QuickInstall = {
       }, [state])
 
       <button
-        ref={ReactDOM.Ref.domRef(buttonRef)}
+        ref={ReactDOM.Ref.domRef((Obj.magic(buttonRef): React.ref<Nullable.t<Dom.element>>))}
         disabled={state === Copied}
         className="relative h-10 w-10 flex justify-center items-center "
         onClick>
@@ -275,8 +273,7 @@ module QuickInstall = {
             className="relative z-1 text-gray-80 font-semibold text-24 md:text-32 leading-2 max-w-[32rem]">
             {React.string(`ReScript is used to ship and maintain mission-critical products with good UI and UX.`)}
           </p>
-          <div
-            className="mt-16 lg:mt-0 self-end" style={ReactDOM.Style.make(~maxWidth="25rem", ())}>
+          <div className="mt-16 lg:mt-0 self-end max-w-[25rem]">
             <Instructions />
           </div>
         </div>
@@ -328,17 +325,11 @@ module MainUSP = {
           //image (right)
           <div className="relative mt-10 lg:mt-0">
             <div
-              className="relative w-full z-2 bg-gray-90 rounded-lg flex md:mt-0 items-center justify-center rounded-lg"
-              style={ReactDOM.Style.make(
-                ~maxWidth="35rem",
-                ~boxShadow="0px 4px 55px 0px rgba(230,72,79,0.10)",
-                (),
-              )}>
+              className="relative w-full z-2 bg-gray-90 flex md:mt-0 items-center justify-center rounded-lg max-w-[35rem] shadow-[0px_4px_55px_0px_rgba(230,72,79,0.10)]">
               media
             </div>
             <img
-              className="absolute z-1 bottom-0 right-0 -mb-12 -mr-12"
-              style={ReactDOM.Style.make(~maxWidth="20rem", ())}
+              className="absolute z-1 bottom-0 right-0 -mb-12 -mr-12 max-w-[20rem]"
               src="/static/lp/grid2.svg"
             />
           </div>
@@ -427,9 +418,7 @@ module MainUSP = {
 
   @react.component
   let make = () => {
-    <section
-      className="w-full bg-gray-90 overflow-hidden"
-      style={ReactDOM.Style.make(~minHeight="37rem", ())}>
+    <section className="w-full bg-gray-90 overflow-hidden min-h-[37rem]">
       item1
       item2
       item3
@@ -455,6 +444,7 @@ module OtherSellingPoints = {
               "/static/lp/community-2.jpg",
               "/static/lp/community-1.jpg",
             ]}
+            imgLoading=#lazy
           />
           <h3 className="hl-3 text-gray-20 mt-4 mb-2">
             {React.string(`A community of programmers who value getting things done`)}
@@ -529,7 +519,7 @@ module TrustedBy = {
           | Logo({name, path, url}) => (
               name,
               <a href=url rel="noopener noreferrer">
-                <img className="hover:opacity-75 max-w-sm h-12" src=path />
+                <img className="hover:opacity-75 max-w-sm h-12" src=path loading=#lazy />
               </a>,
             )
           }
@@ -541,9 +531,7 @@ module TrustedBy = {
         href="https://github.com/rescript-lang/rescript-lang.org/blob/master/src/common/OurUsers.res">
         <Button> {React.string("Add Your Logo")} </Button>
       </a>
-      <div
-        className="self-start mt-10 max-w-320 overflow-hidden opacity-50"
-        style={ReactDOM.Style.make(~maxHeight="6rem", ())}>
+      <div className="self-start mt-10 max-w-320 overflow-hidden opacity-50 max-h-[6rem]">
         <img className="w-full h-full" src="/static/lp/grid.svg" />
       </div>
     </section>
@@ -599,7 +587,7 @@ module CuratedResources = {
       imgSrc: "/static/vitejs_starter_logo.svg",
       title: <>
         <div> {React.string("ReScript & ")} </div>
-        <div style={ReactDOM.Style.make(~color="#6571FB", ())}> {React.string("ViteJS")} </div>
+        <div className="text-[#6571FB]"> {React.string("ViteJS")} </div>
       </>,
       descr: "Get started with ViteJS and ReScript.",
       href: "https://github.com/rescript-lang/create-rescript-app/blob/master/templates/rescript-template-vite/README.md",
@@ -635,6 +623,7 @@ module CuratedResources = {
         </div>
         <hr className="bg-gray-80 h-px border-0 relative top-[-12px]" />
       </div>
+
       //divider
 
       //container for guides
@@ -647,7 +636,7 @@ module CuratedResources = {
               key={Int.toString(i)}
               href={card.href}
               className="hover:bg-gray-80 bg-gray-90 px-4 md:px-8 pb-0 md:pb-8 relative rounded-xl md:min-w-[196px]">
-              <img className="h-[53px] absolute mt-6" src=card.imgSrc />
+              <img className="h-[53px] absolute mt-6" src=card.imgSrc loading=#lazy />
               <h5 className="text-gray-10 hl-4 mt-32 h-12"> {card.title} </h5>
               <div className="text-gray-40 mt-2 mb-8 body-sm"> {React.string(card.descr)} </div>
             </Next.Link>
@@ -670,7 +659,7 @@ module CuratedResources = {
               key={Int.toString(i)}
               href={card.href}
               className="hover:bg-gray-80 bg-gray-90 px-5 pb-8 relative rounded-xl min-w-[200px]">
-              <img className="h-12 absolute mt-5" src=card.imgSrc />
+              <img className="h-12 absolute mt-5" src=card.imgSrc loading=#lazy />
               <h5 className="text-gray-10 hl-4 mt-32 h-12"> {card.title} </h5>
               <div className="text-gray-40 mt-4 body-sm"> {React.string(card.descr)} </div>
             </a>

@@ -182,34 +182,37 @@ module Lexer = {
             let groups = RegExp.Result.matches(result)
             switch groups[1] {
             | Some(str) =>
-              switch String.split(str, ";") {
-              | ["0"] => ClearSgr({loc, raw})
-              | other =>
-                let params = Array.map(other, s =>
-                  switch s {
-                  | "1" => Bold
-                  | "30" => Fg(Black)
-                  | "31" => Fg(Red)
-                  | "32" => Fg(Green)
-                  | "33" => Fg(Yellow)
-                  | "34" => Fg(Blue)
-                  | "35" => Fg(Magenta)
-                  | "36" => Fg(Cyan)
-                  | "37" => Fg(White)
-                  | "40" => Bg(Black)
-                  | "41" => Bg(Red)
-                  | "42" => Bg(Green)
-                  | "43" => Bg(Yellow)
-                  | "44" => Bg(Blue)
-                  | "45" => Bg(Magenta)
-                  | "46" => Bg(Cyan)
-                  | "47" => Bg(White)
-                  | o => Unknown(o)
-                  }
-                )
-                Sgr({loc, raw, params})
+              switch str {
+              | Some(str) =>
+                switch String.split(str, ";") {
+                | ["0"] => ClearSgr({loc, raw})
+                | other =>
+                  let params = Array.map(other, s =>
+                    switch s {
+                    | "1" => Bold
+                    | "30" => Fg(Black)
+                    | "31" => Fg(Red)
+                    | "32" => Fg(Green)
+                    | "33" => Fg(Yellow)
+                    | "34" => Fg(Blue)
+                    | "35" => Fg(Magenta)
+                    | "36" => Fg(Cyan)
+                    | "37" => Fg(White)
+                    | "40" => Bg(Black)
+                    | "41" => Bg(Red)
+                    | "42" => Bg(Green)
+                    | "43" => Bg(Yellow)
+                    | "44" => Bg(Blue)
+                    | "45" => Bg(Magenta)
+                    | "46" => Bg(Cyan)
+                    | "47" => Bg(White)
+                    | o => Unknown(o)
+                    }
+                  )
+                  Sgr({loc, raw, params})
+                }
+              | None => Sgr({loc, raw, params: []})
               }
-
             | None => Sgr({loc, raw, params: []})
             }
           | None => Sgr({loc, raw, params: []})

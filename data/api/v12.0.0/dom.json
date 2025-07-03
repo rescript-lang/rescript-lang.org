@@ -1906,13 +1906,6 @@
         "kind": "value",
         "name": "getItem",
         "docstrings": [],
-        "signature": "let getItem: (t, string) => option<string>"
-      },
-      {
-        "id": "Dom.Storage.getItem",
-        "kind": "value",
-        "name": "getItem",
-        "docstrings": [],
         "signature": "let getItem: (string, t) => option<string>"
       },
       {
@@ -1920,21 +1913,7 @@
         "kind": "value",
         "name": "setItem",
         "docstrings": [],
-        "signature": "let setItem: (t, string, string) => unit"
-      },
-      {
-        "id": "Dom.Storage.setItem",
-        "kind": "value",
-        "name": "setItem",
-        "docstrings": [],
         "signature": "let setItem: (string, string, t) => unit"
-      },
-      {
-        "id": "Dom.Storage.removeItem",
-        "kind": "value",
-        "name": "removeItem",
-        "docstrings": [],
-        "signature": "let removeItem: (t, string) => unit"
       },
       {
         "id": "Dom.Storage.removeItem",
@@ -1949,13 +1928,6 @@
         "name": "clear",
         "docstrings": [],
         "signature": "let clear: t => unit"
-      },
-      {
-        "id": "Dom.Storage.key",
-        "kind": "value",
-        "name": "key",
-        "docstrings": [],
-        "signature": "let key: (t, int) => option<string>"
       },
       {
         "id": "Dom.Storage.key",

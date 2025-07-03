@@ -1,8 +1,7 @@
 module Card = {
   @react.component
   let make = (~title: string, ~hrefs: array<(string, string)>) => {
-    let style = ReactDOM.Style.make(~maxWidth="21rem", ())
-    <div style className="border border-gray-10 bg-gray-5 px-5 py-8 rounded-lg">
+    <div className="max-w-[21rem] border border-gray-10 bg-gray-5 px-5 py-8 rounded-lg">
       <h2 className="font-bold text-24 mb-4"> {React.string(title)} </h2>
       <ul>
         {Array.map(hrefs, ((text, href)) =>

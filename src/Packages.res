@@ -73,7 +73,7 @@ module Resource = {
     })
   }
 
-  let uniqueKeywords: array<string> => array<string> = %raw(`(keywords) => [...new Set(keywords)]`)
+  let uniqueKeywords = arr => arr->Set.fromArray->Set.toArray
 
   let isOfficial = (res: t) => {
     switch res {
@@ -340,23 +340,14 @@ module InfoSidebar = {
 }
 
 type props = {
-  "packages": array<npmPackage>,
-  "urlResources": array<urlResource>,
-  "unmaintained": array<npmPackage>,
+  packages: array<npmPackage>,
+  urlResources: array<urlResource>,
+  unmaintained: array<npmPackage>,
 }
 
 type state =
   | All
   | Filtered(string) // search term
-
-let scrollToTop: unit => unit = %raw(`function() {
-  window.scroll({
-    top: 0,
-    left: 0,
-    behavior: 'smooth'
-  });
-}
-`)
 
 let default = (props: props) => {
   open Markdown
@@ -373,9 +364,9 @@ let default = (props: props) => {
   })
 
   let allResources = {
-    let npms = props["packages"]->Array.map(pkg => Resource.Npm(pkg))
-    let urls = props["urlResources"]->Array.map(res => Resource.Url(res))
-    let outdated = props["unmaintained"]->Array.map(pkg => Resource.Outdated(pkg))
+    let npms = props.packages->Array.map(pkg => Resource.Npm(pkg))
+    let urls = props.urlResources->Array.map(res => Resource.Url(res))
+    let outdated = props.unmaintained->Array.map(pkg => Resource.Outdated(pkg))
     Belt.Array.concatMany([npms, urls, outdated])
   }
 
@@ -420,7 +411,7 @@ let default = (props: props) => {
   })
 
   let onKeywordSelect = keyword => {
-    scrollToTop()
+    WebAPI.Window.scrollTo(window, ~options={left: 0.0, top: 0.0, behavior: Smooth})
     setState(_ => {
       Filtered(keyword)
     })
@@ -498,7 +489,7 @@ let default = (props: props) => {
             className="flex justify-between min-w-320 px-4 pt-16 lg:align-center w-full lg:px-8 pb-48">
             <MdxProvider components=MarkdownComponents.default>
               <main className="max-w-1280 w-full flex justify-center">
-                <div style={ReactDOM.Style.make(~maxWidth="44.0625rem", ())} className="w-full">
+                <div className="w-full max-w-[44.0625rem]">
                   <H1> {React.string("Libraries & Bindings")} </H1>
                   <SearchBox
                     placeholder="Enter a search term, name, keyword, etc"
@@ -524,73 +515,99 @@ let default = (props: props) => {
   </>
 }
 
-type npmData = {
-  "objects": array<{
-    "searchScore": float,
-    "score": {
-      "final": float,
-      "detail": {"quality": float, "popularity": float, "maintenance": float},
-    },
-    "package": {
-      "name": string,
-      "keywords": array<string>,
-      "description": option<string>,
-      "version": string,
-      "links": {"npm": string, "repository": option<string>},
-    },
-  }>,
+let parsePkgs = data => {
+  open JSON
+
+  switch data {
+  | Object(dict{"objects": Array(arr)}) =>
+    arr->Array.filterMap(pkg => {
+      switch pkg {
+      | Object(dict{
+          "searchScore": Number(searchScore),
+          "score": Object(dict{"detail": Object(dict{"maintenance": Number(maintenanceScore)})}),
+          "package": Object(dict{
+            "name": String(name),
+            "keywords": Array(keywords),
+            "version": String(version),
+            "description": ?Some(String(description)),
+            "links": Object(dict{
+              "npm": String(npmHref),
+              "repository": ?Some(String(repositoryHref)),
+            }),
+          }),
+        }) =>
+        let keywords =
+          keywords
+          ->Array.filterMap(k => {
+            switch k {
+            | String(k) => Some(k)
+            | _ => None
+            }
+          })
+          ->Resource.filterKeywords
+          ->Resource.uniqueKeywords
+
+        Some({
+          name,
+          version,
+          keywords,
+          description,
+          repositoryHref: repositoryHref->Null.make,
+          npmHref,
+          searchScore,
+          maintenanceScore,
+        })
+      | _ => None
+      }
+    })
+  | _ => []
+  }
 }
-
-module Response = {
-  type t
-  @send external json: t => promise<npmData> = "json"
-}
-
-@val external fetchNpmPackages: string => promise<Response.t> = "fetch"
-
-let parsePkgs = data =>
-  Array.map(data["objects"], item => {
-    let pkg = item["package"]
-    {
-      name: pkg["name"],
-      version: pkg["version"],
-      keywords: Resource.filterKeywords(pkg["keywords"])->Resource.uniqueKeywords,
-      description: Option.getOr(pkg["description"], ""),
-      repositoryHref: Null.fromOption(pkg["links"]["repository"]),
-      npmHref: pkg["links"]["npm"],
-      searchScore: item["searchScore"],
-      maintenanceScore: item["score"]["detail"]["maintenance"],
-    }
-  })
 
 let getStaticProps: Next.GetStaticProps.t<props, unit> = async _ctx => {
   let baseUrl = "https://registry.npmjs.org/-/v1/search?text=keywords:rescript&size=250&maintenance=1.0&popularity=0.5&quality=0.9"
 
   let (one, two, three) = await Promise.all3((
-    fetchNpmPackages(baseUrl),
-    fetchNpmPackages(baseUrl ++ "&from=250"),
-    fetchNpmPackages(baseUrl ++ "&from=500"),
+    fetch(baseUrl),
+    fetch(baseUrl ++ "&from=250"),
+    fetch(baseUrl ++ "&from=500"),
   ))
 
+  let responseToOption = async response => {
+    try {
+      let json = await response->WebAPI.Response.json
+      Some(json)
+    } catch {
+    | _ =>
+      Console.error2("Failed to parse response", response)
+      None
+    }
+  }
+
   let (data1, data2, data3) = await Promise.all3((
-    one->Response.json,
-    two->Response.json,
-    three->Response.json,
+    one->responseToOption,
+    two->responseToOption,
+    three->responseToOption,
   ))
 
   let unmaintained = []
 
   let pkges =
-    parsePkgs(data1)
-    ->Array.concat(parsePkgs(data2))
-    ->Array.concat(parsePkgs(data3))
+    [data1, data2, data3]
+    ->Array.filterMap(d =>
+      switch d {
+      | Some(d) => Some(parsePkgs(d))
+      | None => None
+      }
+    )
+    ->Array.flat
     ->Array.filter(pkg => {
       if packageAllowList->Array.includes(pkg.name) {
         true
       } else if pkg.name->String.includes("reason") {
         false
       } else if pkg.maintenanceScore < 0.3 {
-        let _ = unmaintained->Array.push(pkg)
+        unmaintained->Array.push(pkg)
         false
       } else {
         true
@@ -601,14 +618,14 @@ let getStaticProps: Next.GetStaticProps.t<props, unit> = async _ctx => {
   let urlResources =
     Node.Path.join2(index_data_dir, "packages_url_resources.json")
     ->Node.Fs.readFileSync
-    ->JSON.parseExn
+    ->JSON.parseOrThrow
     ->unsafeToUrlResource
 
   {
     "props": {
-      "packages": pkges,
-      "unmaintained": unmaintained,
-      "urlResources": urlResources,
+      packages: pkges,
+      unmaintained,
+      urlResources,
     },
   }
 }
