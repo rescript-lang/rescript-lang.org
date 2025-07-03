@@ -66,36 +66,58 @@ module CM = {
   }
 
   @module("codemirror")
-  external onMouseOver: (Dom.element, @as("mouseover") _, ReactEvent.Mouse.t => unit) => unit = "on"
+  external onMouseOver: (
+    WebAPI.DOMAPI.element,
+    @as("mouseover") _,
+    ReactEvent.Mouse.t => unit,
+  ) => unit = "on"
 
   @module("codemirror")
-  external onMouseMove: (Dom.element, @as("mousemove") _, ReactEvent.Mouse.t => unit) => unit = "on"
+  external onMouseMove: (
+    WebAPI.DOMAPI.element,
+    @as("mousemove") _,
+    ReactEvent.Mouse.t => unit,
+  ) => unit = "on"
 
   @module("codemirror")
-  external offMouseOver: (Dom.element, @as("mouseover") _, ReactEvent.Mouse.t => unit) => unit =
-    "off"
+  external offMouseOver: (
+    WebAPI.DOMAPI.element,
+    @as("mouseover") _,
+    ReactEvent.Mouse.t => unit,
+  ) => unit = "off"
 
   @module("codemirror")
-  external offMouseOut: (Dom.element, @as("mouseout") _, ReactEvent.Mouse.t => unit) => unit = "off"
+  external offMouseOut: (
+    WebAPI.DOMAPI.element,
+    @as("mouseout") _,
+    ReactEvent.Mouse.t => unit,
+  ) => unit = "off"
 
   @module("codemirror")
-  external offMouseMove: (Dom.element, @as("mousemove") _, ReactEvent.Mouse.t => unit) => unit =
-    "off"
+  external offMouseMove: (
+    WebAPI.DOMAPI.element,
+    @as("mousemove") _,
+    ReactEvent.Mouse.t => unit,
+  ) => unit = "off"
 
   @module("codemirror")
-  external onMouseOut: (Dom.element, @as("mouseout") _, ReactEvent.Mouse.t => unit) => unit = "on"
+  external onMouseOut: (
+    WebAPI.DOMAPI.element,
+    @as("mouseout") _,
+    ReactEvent.Mouse.t => unit,
+  ) => unit = "on"
 
   @module("codemirror")
-  external fromTextArea: (Dom.element, Options.t) => t = "fromTextArea"
+  external fromTextArea: (WebAPI.DOMAPI.element, Options.t) => t = "fromTextArea"
 
   @send
   external setMode: (t, @as("mode") _, string) => unit = "setOption"
 
   @send
-  external getScrollerElement: t => Dom.element = "getScrollerElement"
+  external getScrollerElement: t => WebAPI.DOMAPI.element = "getScrollerElement"
 
   @send
-  external getWrapperElement: t => Dom.element = "getWrapperElement"
+  external getWrapperElement: t => WebAPI.DOMAPI.element = "getWrapperElement"
 
   @send external refresh: t => unit = "refresh"
 
@@ -112,7 +134,7 @@ module CM = {
   external operation: (t, unit => unit) => unit = "operation"
 
   @send
-  external setGutterMarker: (t, int, string, Dom.element) => unit = "setGutterMarker"
+  external setGutterMarker: (t, int, string, WebAPI.DOMAPI.element) => unit = "setGutterMarker"
 
   @send external clearGutter: (t, string) => unit = "clearGutter"
 
@@ -146,60 +168,6 @@ module CM = {
   external coordsChar: (t, {"top": int, "left": int}) => {"line": int, "ch": int} = "coordsChar"
 }
 
-module DomUtil = {
-  module Event = {
-    type t
-
-    @get external target: t => Dom.element = "target"
-  }
-
-  @val @scope("document")
-  external createElement: string => Dom.element = "createElement"
-
-  @send
-  external appendChild: (Dom.element, Dom.element) => unit = "appendChild"
-
-  @set @scope("style")
-  external setMinHeight: (Dom.element, string) => unit = "minHeight"
-
-  @set @scope("style")
-  external setMaxHeight: (Dom.element, string) => unit = "maxHeight"
-
-  @set @scope("style")
-  external _setDisplay: (Dom.element, string) => unit = "display"
-
-  @set @scope("style")
-  external _setTop: (Dom.element, string) => unit = "top"
-
-  @set @scope("style")
-  external _setLeft: (Dom.element, string) => unit = "left"
-
-  @set external setInnerHTML: (Dom.element, string) => unit = "innerHTML"
-
-  @set external setId: (Dom.element, string) => unit = "id"
-  @set external setClassName: (Dom.element, string) => unit = "className"
-
-  @set
-  external setOnMouseOver: (Dom.element, Event.t => unit) => unit = "onmouseover"
-
-  @set
-  external setOnMouseOut: (Dom.element, Event.t => unit) => unit = "onmouseout"
-
-  @get external getId: Dom.element => string = "id"
-
-  type clientRect = {
-    x: int,
-    y: int,
-    width: int,
-    height: int,
-  }
-
-  @send
-  external _getBoundingClientRect: Dom.element => clientRect = "getBoundingClientRect"
-
-  external unsafeObjToDomElement: {..} => Dom.element = "%identity"
-}
-
 module Error = {
   type kind = [#Error | #Warning]
 
@@ -227,53 +195,37 @@ module HoverHint = {
 }
 
 module HoverTooltip = {
-  type t
+  type t = WebAPI.DOMAPI.element
 
   type state =
     | Hidden
     | Shown({
-        el: Dom.element,
+        el: WebAPI.DOMAPI.element,
         marker: CM.TextMarker.t,
         hoverHint: HoverHint.t,
-        hideTimer: option<timeoutId>,
+        hideTimer: option<WebAPI.DOMAPI.timeoutId>,
       })
 
-  let make: unit => t = %raw(`
-  function() {
-    const tooltip = document.createElement("div");
+  let make = () => {
+    let tooltip = WebAPI.Document.createElement(document, "div")
     tooltip.id = "hover-tooltip"
     tooltip.className = "absolute hidden select-none font-mono text-12 z-10 bg-sky-10 py-1 px-2 rounded"
-
-    return tooltip
+    tooltip
   }
-  `)
 
-  let hide: t => unit = %raw(`
-  function(tooltip){
-    tooltip.classList.add("hidden")
-  }`)
+  let hide = (t: t) => WebAPI.DOMTokenList.add(t.classList, "hidden")
 
-  let update: (
-    t,
-    ~top: int,
-    ~left: int,
-    ~text: string,
-  ) => unit = %raw(`function(tooltip, top, left, text){
-    tooltip.style.left = left + "px";
-    tooltip.style.top = top + "px";
+  let update = (t: t, ~top: int, ~left: int, ~text: string) => {
+    let t = (Obj.magic(t): WebAPI.DOMAPI.htmlElement)
+    t.style.left = `${left->Int.toString}px`
+    t.style.top = `${top->Int.toString}px`
+    t.classList->WebAPI.DOMTokenList.remove("hidden")
+    t.innerHTML = text
+  }
 
-    tooltip.classList.remove("hidden");
+  let attach = (t: t) => WebAPI.Element.appendChild(document.body->Obj.magic, t)->ignore
 
-    tooltip.innerHTML = text;
-  }`)
-
-  let attach: t => unit = %raw(`function(tooltip) {
-    document.body.appendChild(tooltip);
-  }`)
-
-  let clear: t => unit = %raw(`function(tooltip) {
-    tooltip.remove()
-  }`)
+  let clear = (t: t) => WebAPI.Element.remove(t->Obj.magic)
 }
 
 // We'll keep this tooltip instance outside the
@@ -283,11 +235,9 @@ let tooltip = HoverTooltip.make()
 
 type state = {mutable marked: array<CM.TextMarker.t>, mutable hoverHints: array<HoverHint.t>}
 
-let isSpanToken: Dom.element => bool = %raw(`
-function(el) {
-  return el.tagName.toUpperCase() === "SPAN" && el.getAttribute("role") !== "presentation"
-}
-`)
+let isSpanToken = (element: WebAPI.DOMAPI.element) =>
+  element.tagName->String.toUpperCase === "SPAN" &&
+    element->WebAPI.Element.getAttribute("role") !== "presentation"
 
 let useHoverTooltip = (~cmStateRef: React.ref<state>, ~cmRef: React.ref<option<CM.t>>, ()) => {
   let stateRef = React.useRef(HoverTooltip.Hidden)
@@ -304,17 +254,18 @@ let useHoverTooltip = (~cmStateRef: React.ref<state>, ~cmRef: React.ref<option<C
     )
   }, [])
 
-  let checkIfTextMarker: Dom.element => bool = %raw(`
-  function(el) {
-    let isToken = el.tagName.toUpperCase() === "SPAN" && el.getAttribute("role") !== "presentation";
-    return isToken && /CodeMirror-hover-hint-marker/.test(el.className)
+  let checkIfTextMarker = (element: WebAPI.DOMAPI.element) => {
+    let isToken =
+      element.tagName->String.toUpperCase === "SPAN" &&
+        element->WebAPI.Element.getAttribute("role") !== "presentation"
+
+    isToken && RegExp.test(/CodeMirror-hover-hint-marker/, element.className)
   }
-  `)
 
   let onMouseOver = evt => {
     switch cmRef.current {
     | Some(cm) =>
-      let target = ReactEvent.Mouse.target(evt)->DomUtil.unsafeObjToDomElement
+      let target = (Obj.magic(ReactEvent.Mouse.target(evt)): WebAPI.DOMAPI.element)
 
       // If mouseover is triggered for a text marker, we don't want to trigger any logic
       if checkIfTextMarker(target) {
@@ -388,10 +339,10 @@ let useHoverTooltip = (~cmStateRef: React.ref<state>, ~cmRef: React.ref<option<C
       }
 
       marker->CM.TextMarker.clear
-      let timerId = setTimeout(() => {
+      let timerId = setTimeout(~handler=() => {
         stateRef.current = Hidden
         tooltip->HoverTooltip.hide
-      }, 200)
+      }, ~timeout=200)
 
       stateRef.current = Shown({
         el,
@@ -420,23 +371,22 @@ let useHoverTooltip = (~cmStateRef: React.ref<state>, ~cmRef: React.ref<option<C
 
 module GutterMarker = {
   // Note: this is not a React component
-  let make = (~rowCol: (int, int), ~kind: Error.kind, ()): Dom.element => {
+  let make = (~rowCol: (int, int), ~kind: Error.kind, ()): WebAPI.DOMAPI.element => {
     // row, col
-    open DomUtil
 
-    let marker = createElement("div")
+    let marker = WebAPI.Document.createElement(document, "div")
     let colorClass = switch kind {
     | #Warning => "text-orange bg-orange-15"
     | #Error => "text-fire bg-fire-100"
     }
 
     let (row, col) = rowCol
-    marker->setId(`gutter-marker_${row->Int.toString}-${col->Int.toString}`)
-    marker->setClassName(
+    marker.id = `gutter-marker_${row->Int.toString}-${col->Int.toString}`
+    marker.className =
       "flex items-center justify-center text-14 text-center ml-1 h-6 font-bold hover:cursor-pointer " ++
-      colorClass,
-    )
-    marker->setInnerHTML("!")
+      colorClass
+
+    marker.innerHTML = "!"
 
     marker
   }
@@ -469,7 +419,13 @@ module ErrorHash = Belt.Id.MakeHashable({
   let eq = (a, b) => a == b
 })
 
-let updateErrors = (~state: state, ~onMarkerFocus=?, ~onMarkerFocusLeave=?, ~cm: CM.t, errors) => {
+let updateErrors = (
+  ~state: state,
+  ~onMarkerFocus=?,
+  ~onMarkerFocusLeave as _=?,
+  ~cm: CM.t,
+  errors,
+) => {
   Array.forEach(state.marked, mark => mark->CM.TextMarker.clear)
 
   let errorsMap = Belt.HashMap.make(~hintSize=Array.length(errors), ~id=module(ErrorHash))
@@ -479,13 +435,12 @@ let updateErrors = (~state: state, ~onMarkerFocus=?, ~onMarkerFocusLeave=?, ~cm:
   let wrapper = cm->CM.getWrapperElement
 
   Array.forEachWithIndex(errors, (e, idx) => {
-    open DomUtil
     open Error
 
     if !Belt.HashMap.has(errorsMap, e.row) {
       let marker = GutterMarker.make(~rowCol=(e.row, e.column), ~kind=e.kind, ())
       Belt.HashMap.set(errorsMap, e.row, idx)
-      wrapper->appendChild(marker)
+      WebAPI.Element.appendChild(wrapper, marker)->ignore
 
       // CodeMirrors line numbers are (strangely enough) zero based
       let row = e.row - 1
@@ -523,27 +478,33 @@ let updateErrors = (~state: state, ~onMarkerFocus=?, ~onMarkerFocusLeave=?, ~cm:
   let isMarkerId = id =>
     String.startsWith(id, "gutter-marker") || String.startsWith(id, "text-marker")
 
-  wrapper->DomUtil.setOnMouseOver(evt => {
-    let target = DomUtil.Event.target(evt)
+  WebAPI.Element.addEventListener(wrapper, Mouseover, (evt: WebAPI.UIEventsAPI.mouseEvent) => {
+    let target = (Obj.magic(evt.target): Null.t<WebAPI.DOMAPI.element>)
 
-    let id = DomUtil.getId(target)
-    if isMarkerId(id) {
-      switch extractRowColFromId(id) {
-      | Some(rowCol) => Option.forEach(onMarkerFocus, cb => cb(rowCol))
-      | None => ()
+    switch target {
+    | Value(target) =>
+      if isMarkerId(target.id) {
+        switch extractRowColFromId(target.id) {
+        | Some(rowCol) => Option.forEach(onMarkerFocus, cb => cb(rowCol))
+        | None => ()
+        }
       }
+    | Null => ()
     }
   })
 
-  wrapper->DomUtil.setOnMouseOut(evt => {
-    let target = DomUtil.Event.target(evt)
+  WebAPI.Element.addEventListener(wrapper, Mouseout, (evt: WebAPI.UIEventsAPI.mouseEvent) => {
+    let target = (Obj.magic(evt.target): Null.t<WebAPI.DOMAPI.element>)
 
-    let id = DomUtil.getId(target)
-    if isMarkerId(id) {
-      switch extractRowColFromId(id) {
-      | Some(rowCol) => Option.forEach(onMarkerFocusLeave, cb => cb(rowCol))
-      | None => ()
+    switch target {
+    | Value(target) =>
+      if isMarkerId(target.id) {
+        switch extractRowColFromId(target.id) {
+        | Some(rowCol) => Option.forEach(onMarkerFocus, cb => cb(rowCol))
+        | None => ()
+        }
       }
+    | Null => ()
     }
   })
 }
@@ -590,13 +551,15 @@ let make = // props relevant for the react wrapper
       }
       let cm = CM.fromTextArea(input, options)
 
-      Option.forEach(minHeight, minHeight =>
-        cm->CM.getScrollerElement->DomUtil.setMinHeight(minHeight)
-      )
+      Option.forEach(minHeight, minHeight => {
+        let element = (Obj.magic(cm->CM.getScrollerElement): WebAPI.DOMAPI.htmlElement)
+        element.style.minHeight = minHeight
+      })
 
-      Option.forEach(maxHeight, maxHeight =>
-        cm->CM.getScrollerElement->DomUtil.setMaxHeight(maxHeight)
-      )
+      Option.forEach(maxHeight, maxHeight => {
+        let element = (Obj.magic(cm->CM.getScrollerElement): WebAPI.DOMAPI.htmlElement)
+        element.style.maxHeight = maxHeight
+      })
 
       Option.forEach(onChange, onValueChange =>
         cm->CM.onChange(instance => onValueChange(instance->CM.getValue))
@@ -704,6 +667,9 @@ let make = // props relevant for the react wrapper
   }, (className, windowWidth))
 
   <div ?className ?style>
-    <textarea className="hidden" ref={ReactDOM.Ref.domRef(inputElement)} />
+    <textarea
+      className="hidden"
+      ref={ReactDOM.Ref.domRef((Obj.magic(inputElement): React.ref<Nullable.t<Dom.element>>))}
+    />
   </div>
 }

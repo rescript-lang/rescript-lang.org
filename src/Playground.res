@@ -352,30 +352,20 @@ module ResultPane = {
 }
 
 module WarningFlagsWidget = {
-  @set external _scrollTop: (Dom.element, int) => unit = "scrollTop"
-  @send external focus: Dom.element => unit = "focus"
-
-  @send external blur: Dom.element => unit = "blur"
-
-  @get external scrollHeight: Dom.element => int = "scrollHeight"
-  @get external clientHeight: Dom.element => int = "clientHeight"
-  @get external scrollTop: Dom.element => int = "scrollTop"
-  @get external offsetTop: Dom.element => int = "offsetTop"
-  @get external offsetHeight: Dom.element => int = "offsetHeight"
-
-  @set external setScrollTop: (Dom.element, int) => unit = "scrollTop"
-
   // Inspired by MUI (who got inspired by WAI best practise examples)
   // https://github.com/mui-org/material-ui/blob/next/packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js#L327
-  let scrollToElement = (~parent: Dom.element, element: Dom.element): unit =>
-    if parent->scrollHeight > parent->clientHeight {
-      let scrollBottom = parent->clientHeight + parent->scrollTop
-      let elementBottom = element->offsetTop + element->offsetHeight
+  let scrollToElement = (
+    ~parent: WebAPI.DOMAPI.htmlElement,
+    element: WebAPI.DOMAPI.htmlElement,
+  ): unit =>
+    if parent.scrollHeight > parent.clientHeight {
+      let scrollBottom = parent.clientHeight + Float.toInt(parent.scrollTop)
+      let elementBottom = element.offsetTop + element.offsetHeight
 
       if elementBottom > scrollBottom {
-        parent->setScrollTop(elementBottom - parent->clientHeight)
-      } else if element->offsetTop - element->offsetHeight < parent->scrollTop {
-        parent->setScrollTop(element->offsetTop - element->offsetHeight)
+        parent.scrollTop = Float.fromInt(elementBottom - parent.clientHeight)
+      } else if element.offsetTop - element.offsetHeight < Float.toInt(parent.scrollTop) {
+        parent.scrollTop = Float.fromInt(element.offsetTop - element.offsetHeight)
       }
     }
 
@@ -527,9 +517,11 @@ module WarningFlagsWidget = {
     // Used for the text input
     let inputRef = React.useRef(Nullable.null)
 
-    let focusInput = () => inputRef.current->Nullable.forEach(el => el->focus)
+    let focusInput = () =>
+      inputRef.current->Nullable.forEach(el => WebAPI.HTMLInputElement.focus(el))
 
-    let blurInput = () => inputRef.current->Nullable.forEach(el => el->blur)
+    let blurInput = () =>
+      inputRef.current->Nullable.forEach(el => WebAPI.HTMLInputElement.focus(el))
 
     let chips = Array.mapWithIndex(flags, (token, i) => {
       let {WarningFlagDescription.Parser.flag: flag, enabled} = token
@@ -696,7 +688,8 @@ module WarningFlagsWidget = {
               let parent = listboxRef.current->Nullable.toOption
 
               switch (parent, el) {
-              | (Some(parent), Some(el)) => Some(() => scrollToElement(~parent, el))
+              | (Some(parent), Some(el)) =>
+                Some(() => scrollToElement(~parent, (Obj.magic(el): WebAPI.DOMAPI.htmlElement)))
               | _ => None
               }
             })->Some
@@ -745,7 +738,7 @@ module WarningFlagsWidget = {
     let suggestionBox =
       Option.map(suggestions, elements =>
         <div
-          ref={ReactDOM.Ref.domRef(listboxRef)}
+          ref={ReactDOM.Ref.domRef((Obj.magic(listboxRef): React.ref<Nullable.t<Dom.element>>))}
           className="p-2 absolute overflow-auto z-50 border-b rounded border-l border-r block w-full bg-gray-100 max-h-[15rem]">
           elements
         </div>
@@ -816,7 +809,7 @@ module WarningFlagsWidget = {
           chips
           <section className="mt-3">
             <input
-              ref={ReactDOM.Ref.domRef(inputRef)}
+              ref={ReactDOM.Ref.domRef((Obj.magic(inputRef): React.ref<Nullable.t<Dom.element>>))}
               className="inline-block p-1 max-w-20 outline-none bg-gray-90 placeholder-gray-20 placeholder-opacity-50"
               placeholder="Flags"
               type_="text"
@@ -1064,7 +1057,7 @@ module ControlPanel = {
 
       let onClick = evt => {
         ReactEvent.Mouse.preventDefault(evt)
-        let ret = copyToClipboard(Webapi.Window.Location.href)
+        let ret = copyToClipboard(window.location.href)
         if ret {
           setState(_ => CopySuccess)
         }
@@ -1129,12 +1122,12 @@ module ControlPanel = {
       }
 
       React.useEffect(() => {
-        Webapi.Window.addEventListener("keydown", onKeyDown)
-        Some(() => Webapi.Window.removeEventListener("keydown", onKeyDown))
+        WebAPI.Window.addEventListener(window, Keydown, onKeyDown)
+        Some(() => WebAPI.Window.removeEventListener(window, Keydown, onKeyDown))
       }, [])
 
       let runButtonText = {
-        let userAgent = Webapi.Window.Navigator.userAgent
+        let userAgent = window.navigator.userAgent
         let run = "Run"
         if userAgent->String.includes("iPhone") || userAgent->String.includes("Android") {
           run
@@ -1496,9 +1489,7 @@ let make = (~versions: array<string>) => {
     None
   }, (compilerState, compilerDispatch))
 
-  let (layout, setLayout) = React.useState(_ =>
-    Webapi.Window.innerWidth < breakingPoint ? Column : Row
-  )
+  let (layout, setLayout) = React.useState(_ => window.innerWidth < breakingPoint ? Column : Row)
 
   let isDragging = React.useRef(false)
 
@@ -1510,26 +1501,34 @@ let make = (~versions: array<string>) => {
   let subPanelRef = React.useRef(Nullable.null)
 
   let onResize = () => {
-    let newLayout = Webapi.Window.innerWidth < breakingPoint ? Column : Row
+    let newLayout = window.innerWidth < breakingPoint ? Column : Row
     setLayout(_ => newLayout)
     switch panelRef.current->Nullable.toOption {
     | Some(element) =>
-      let offsetTop = Webapi.Element.getBoundingClientRect(element)["top"]
-      Webapi.Element.Style.height(element, `calc(100vh - ${offsetTop->Float.toString}px)`)
+      let offsetTop = WebAPI.Element.getBoundingClientRect(element).top
+      WebAPI.Element.setAttribute(
+        element,
+        ~qualifiedName="style",
+        ~value=`height: calc(100vh - ${offsetTop->Float.toString}px)`,
+      )
     | None => ()
     }
 
     switch subPanelRef.current->Nullable.toOption {
     | Some(element) =>
-      let offsetTop = Webapi.Element.getBoundingClientRect(element)["top"]
-      Webapi.Element.Style.height(element, `calc(100vh - ${offsetTop->Float.toString}px)`)
+      let offsetTop = WebAPI.Element.getBoundingClientRect(element).top
+      WebAPI.Element.setAttribute(
+        element,
+        ~qualifiedName="style",
+        ~value=`height: calc(100vh - ${offsetTop->Float.toString}px)`,
+      )
     | None => ()
     }
   }
 
   React.useEffect(() => {
-    Webapi.Window.addEventListener("resize", onResize)
-    Some(() => Webapi.Window.removeEventListener("resize", onResize))
+    WebAPI.Window.addEventListener(window, Resize, onResize)
+    Some(() => WebAPI.Window.removeEventListener(window, Resize, onResize))
   }, [])
 
   // To force CodeMirror render scrollbar on first render
@@ -1552,30 +1551,50 @@ let make = (~versions: array<string>) => {
           subPanelRef.current->Nullable.toOption,
         ) {
         | (Some(panelElement), Some(leftElement), Some(rightElement), Some(subElement)) =>
-          let rectPanel = Webapi.Element.getBoundingClientRect(panelElement)
+          let rectPanel = WebAPI.Element.getBoundingClientRect(panelElement)
 
           // Update OutputPanel height
-          let offsetTop = Webapi.Element.getBoundingClientRect(subElement)["top"]
-          Webapi.Element.Style.height(subElement, `calc(100vh - ${offsetTop->Float.toString}px)`)
+          let offsetTop = WebAPI.Element.getBoundingClientRect(subElement).top
+          WebAPI.Element.setAttribute(
+            subElement,
+            ~qualifiedName="style",
+            ~value=`height: calc(100vh - ${offsetTop->Float.toString}px)`,
+          )
 
           switch layout {
           | Row =>
-            let delta = Int.toFloat(position) -. rectPanel["left"]
+            let delta = Int.toFloat(position) -. rectPanel.left
 
-            let leftWidth = delta /. rectPanel["width"] *. 100.0
-            let rightWidth = (rectPanel["width"] -. delta) /. rectPanel["width"] *. 100.0
+            let leftWidth = delta /. rectPanel.width *. 100.0
+            let rightWidth = (rectPanel.width -. delta) /. rectPanel.width *. 100.0
 
-            Webapi.Element.Style.width(leftElement, `${leftWidth->Float.toString}%`)
-            Webapi.Element.Style.width(rightElement, `${rightWidth->Float.toString}%`)
+            WebAPI.Element.setAttribute(
+              leftElement,
+              ~qualifiedName="style",
+              ~value=`width: ${leftWidth->Float.toString}%`,
+            )
+            WebAPI.Element.setAttribute(
+              rightElement,
+              ~qualifiedName="style",
+              ~value=`width: ${rightWidth->Float.toString}%`,
+            )
 
           | Column =>
-            let delta = Int.toFloat(position) -. rectPanel["top"]
+            let delta = Int.toFloat(position) -. rectPanel.top
 
-            let topHeight = delta /. rectPanel["height"] *. 100.
-            let bottomHeight = (rectPanel["height"] -. delta) /. rectPanel["height"] *. 100.
+            let topHeight = delta /. rectPanel.height *. 100.
+            let bottomHeight = (rectPanel.height -. delta) /. rectPanel.height *. 100.
 
-            Webapi.Element.Style.height(leftElement, `${topHeight->Float.toString}%`)
-            Webapi.Element.Style.height(rightElement, `${bottomHeight->Float.toString}%`)
+            WebAPI.Element.setAttribute(
+              leftElement,
+              ~qualifiedName="style",
+              ~value=`height: ${topHeight->Float.toString}%`,
+            )
+            WebAPI.Element.setAttribute(
+              rightElement,
+              ~qualifiedName="style",
+              ~value=`height: ${bottomHeight->Float.toString}%`,
+            )
           }
         | _ => ()
         }
@@ -1594,15 +1613,15 @@ let make = (~versions: array<string>) => {
       onMove(position)
     }
 
-    Webapi.Window.addEventListener("mousemove", onMouseMove)
-    Webapi.Window.addEventListener("touchmove", onTouchMove)
-    Webapi.Window.addEventListener("mouseup", onMouseUp)
+    WebAPI.Window.addEventListener(window, Mousemove, onMouseMove)
+    WebAPI.Window.addEventListener(window, Touchmove, onTouchMove)
+    WebAPI.Window.addEventListener(window, Mouseup, onMouseUp)
 
     Some(
       () => {
-        Webapi.Window.removeEventListener("mousemove", onMouseMove)
-        Webapi.Window.removeEventListener("touchmove", onTouchMove)
-        Webapi.Window.removeEventListener("mouseup", onMouseUp)
+        WebAPI.Window.removeEventListener(window, Mousemove, onMouseMove)
+        WebAPI.Window.removeEventListener(window, Touchmove, onTouchMove)
+        WebAPI.Window.removeEventListener(window, Mouseup, onMouseUp)
       },
     )
   }, [layout])
@@ -1765,10 +1784,10 @@ let make = (~versions: array<string>) => {
     />
     <div
       className={`flex ${layout == Column ? "flex-col" : "flex-row"}`}
-      ref={ReactDOM.Ref.domRef(panelRef)}>
+      ref={ReactDOM.Ref.domRef((Obj.magic(panelRef): React.ref<Nullable.t<Dom.element>>))}>
       // Left Panel
       <div
-        ref={ReactDOM.Ref.domRef(leftPanelRef)}
+        ref={ReactDOM.Ref.domRef((Obj.magic(leftPanelRef): React.ref<Nullable.t<Dom.element>>))}
         className={`${layout == Column ? "h-2/4" : "!h-full"} ${layout == Column
             ? "w-full"
             : "w-[50%]"}`}>
@@ -1785,10 +1804,10 @@ let make = (~versions: array<string>) => {
             | None => ()
             | Some(timer) => clearTimeout(timer)
             }
-            let timer = setTimeout(() => {
+            let timer = setTimeout(~handler=() => {
               timeoutCompile.current()
               typingTimer.current = None
-            }, 100)
+            }, ~timeout=100)
             typingTimer.current = Some(timer)
           }}
           onMarkerFocus={rowCol => setFocusedRowCol(_prev => Some(rowCol))}
@@ -1797,7 +1816,7 @@ let make = (~versions: array<string>) => {
       </div>
       // Separator
       <div
-        ref={ReactDOM.Ref.domRef(separatorRef)}
+        ref={ReactDOM.Ref.domRef((Obj.magic(separatorRef): React.ref<Nullable.t<Dom.element>>))}
         // TODO: touch-none not applied
         className={`flex items-center justify-center touch-none select-none bg-gray-70 opacity-30 hover:opacity-50 rounded-lg ${layout ==
             Column
@@ -1812,14 +1831,16 @@ let make = (~versions: array<string>) => {
       </div>
       // Right Panel
       <div
-        ref={ReactDOM.Ref.domRef(rightPanelRef)}
+        ref={ReactDOM.Ref.domRef((Obj.magic(rightPanelRef): React.ref<Nullable.t<Dom.element>>))}
         className={`${layout == Column ? "h-6/15" : "!h-inherit"} ${layout == Column
             ? "w-full"
             : "w-[50%]"}`}>
         <div className={"flex flex-wrap justify-between w-full " ++ (disabled ? "opacity-50" : "")}>
           {React.array(headers)}
         </div>
-        <div ref={ReactDOM.Ref.domRef(subPanelRef)} className="overflow-auto">
+        <div
+          ref={ReactDOM.Ref.domRef((Obj.magic(subPanelRef): React.ref<Nullable.t<Dom.element>>))}
+          className="overflow-auto">
           <OutputPanel currentTab compilerDispatch compilerState editorCode />
         </div>
       </div>

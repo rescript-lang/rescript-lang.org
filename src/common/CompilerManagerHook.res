@@ -583,7 +583,7 @@ let useCompilerManager = (
       | SetupFailed(_) => ()
       | Ready(ready) =>
         let url = createUrl(router.route, ready)
-        Webapi.Window.History.replaceState(null, ~url)
+        WebAPI.History.replaceState(history, ~data=JSON.Null, ~unused="", ~url)
       }
     }
 

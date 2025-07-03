@@ -95,7 +95,7 @@ module SidebarTree = {
     let version = url->Url.getVersionString
 
     let moduleRoute =
-      Webapi.URL.make("file://" ++ router.asPath).pathname
+      WebAPI.URL.make(~url="file://" ++ router.asPath).pathname
       ->String.replace(`/docs/manual/${version}/api/`, "")
       ->String.split("/")
 

@@ -182,31 +182,30 @@ module QuickInstall = {
       React.useEffect(() => {
         switch state {
         | Copied =>
-          open Webapi
           let buttonEl = Nullable.toOption(buttonRef.current)->Option.getOrThrow
 
           // Note on this imperative DOM nonsense:
           // For Tailwind transitions to behave correctly, we need to first paint the DOM element in the tree,
           // and in the next tick, add the opacity-100 class, so the transition animation actually takes place.
           // If we don't do that, the banner will essentially pop up without any animation
-          let bannerEl = Document.createElement("div")
-          bannerEl->Element.setClassName("foobar opacity-0 absolute top-0 mt-4 -mr-1 px-2 rounded right-0
+          let bannerEl = WebAPI.Document.createElement(document, "div")
+          bannerEl.className = "foobar opacity-0 absolute top-0 mt-4 -mr-1 px-2 rounded right-0
             bg-turtle text-gray-80-tr body-sm
-            transition-all duration-500 ease-in-out ")
-          let textNode = Document.createTextNode("Copied!")
+            transition-all duration-500 ease-in-out "
+          let textNode = WebAPI.Document.createTextNode(document, "Copied!")
 
-          bannerEl->Element.appendChild(textNode)
-          buttonEl->Element.appendChild(bannerEl)
+          WebAPI.Element.appendChild(bannerEl, textNode)->ignore
+          WebAPI.Element.appendChild(buttonEl, bannerEl)->ignore
 
-          let nextFrameId = requestAnimationFrame(() => {
-            bannerEl->Element.classList->ClassList.toggle("opacity-0")
-            bannerEl->Element.classList->ClassList.toggle("opacity-100")
+          let nextFrameId = WebAPI.Window.requestAnimationFrame(window, _ => {
+            WebAPI.DOMTokenList.toggle(bannerEl.classList, ~token="opacity-0")->ignore
+            WebAPI.DOMTokenList.toggle(bannerEl.classList, ~token="opacity-100")->ignore
           })
 
-          let timeoutId = setTimeout(() => {
-            buttonEl->Element.removeChild(bannerEl)
+          let timeoutId = setTimeout(~handler=() => {
+            buttonEl->WebAPI.Element.removeChild(bannerEl)->ignore
             setState(_ => Init)
-          }, 2000)
+          }, ~timeout=2000)
 
           Some(
             () => {
@@ -219,7 +218,7 @@ module QuickInstall = {
       }, [state])
 
       <button
-        ref={ReactDOM.Ref.domRef(buttonRef)}
+        ref={ReactDOM.Ref.domRef((Obj.magic(buttonRef): React.ref<Nullable.t<Dom.element>>))}
         disabled={state === Copied}
         className="relative h-10 w-10 flex justify-center items-center "
         onClick>
