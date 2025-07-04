@@ -6,13 +6,25 @@ type t = {
 }
 
 let decode = json => {
-  open! Json.Decode
-  try Some({
-    title: field("title", string, json),
-    metaTitle: optional(field("metaTitle", string, ...), json)->Null.fromOption,
-    description: optional(field("description", string, ...), json)->Null.fromOption,
-    canonical: optional(field("canonical", string, ...), json)->Null.fromOption,
-  }) catch {
-  | DecodeError(_errMsg) => None
+  open JSON
+  let optionToNull = opt =>
+    switch opt {
+    | Some(String(v)) => Null.Value(v)
+    | _ => Null
+    }
+  switch json {
+  | Object(dict{
+      "title": String(title),
+      "metaTitle": ?metaTitle,
+      "description": ?description,
+      "canonical": ?canonical,
+    }) =>
+    Some({
+      title,
+      metaTitle: metaTitle->optionToNull,
+      description: description->optionToNull,
+      canonical: canonical->optionToNull,
+    })
+  | _ => None
   }
 }
