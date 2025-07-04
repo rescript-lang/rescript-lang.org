@@ -6,13 +6,29 @@ type t = {
 }
 
 let decode = json => {
-  open! Json.Decode
-  try Some({
-    title: field("title", string, json),
-    metaTitle: optional(field("metaTitle", string, ...), json)->Null.fromOption,
-    description: optional(field("description", string, ...), json)->Null.fromOption,
-    canonical: optional(field("canonical", string, ...), json)->Null.fromOption,
-  }) catch {
-  | DecodeError(_errMsg) => None
+  open JSON
+  switch json {
+  | Object(dict{
+      "title": String(title),
+      "metaTitle": ?metaTitle,
+      "description": ?description,
+      "canonical": ?canonical,
+    }) =>
+    Some({
+      title,
+      metaTitle: switch metaTitle {
+      | Some(String(v)) => Null.Value(v)
+      | _ => Null.Null
+      },
+      description: switch description {
+      | Some(String(v)) => Null.Value(v)
+      | _ => Null.Null
+      },
+      canonical: switch canonical {
+      | Some(String(v)) => Null.Value(v)
+      | _ => Null.Null
+      },
+    })
+  | _ => None
   }
 }
