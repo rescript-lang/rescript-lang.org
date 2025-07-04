@@ -886,7 +886,9 @@ module Settings = {
             ReactEvent.Form.preventDefault(evt)
             let id: string = (evt->ReactEvent.Form.target)["value"]
             switch id->Semver.parse {
-            | Some(v) => onCompilerSelect(v)
+            | Some(v) =>
+              onCompilerSelect(v)
+              WebAPI.Storage.setItem(localStorage, ~key=(Url.Playground :> string), ~value=id)
             | None => ()
             }
           }}>
@@ -1417,7 +1419,11 @@ let make = (~versions: array<string>) => {
 
   let initialVersion = switch Dict.get(router.query, "version") {
   | Some(version) => version->Semver.parse
-  | None => lastStableVersion
+  | None =>
+    switch Url.getVersionFromStorage(Playground) {
+    | Some(v) => v->Semver.parse
+    | None => lastStableVersion
+    }
   }
 
   let initialLang = switch Dict.get(router.query, "ext") {
