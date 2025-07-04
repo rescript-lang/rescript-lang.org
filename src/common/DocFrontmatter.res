@@ -7,6 +7,11 @@ type t = {
 
 let decode = json => {
   open JSON
+  let optionToNull = opt =>
+    switch opt {
+    | Some(String(v)) => Null.Value(v)
+    | _ => Null
+    }
   switch json {
   | Object(dict{
       "title": String(title),
@@ -16,18 +21,9 @@ let decode = json => {
     }) =>
     Some({
       title,
-      metaTitle: switch metaTitle {
-      | Some(String(v)) => Null.Value(v)
-      | _ => Null.Null
-      },
-      description: switch description {
-      | Some(String(v)) => Null.Value(v)
-      | _ => Null.Null
-      },
-      canonical: switch canonical {
-      | Some(String(v)) => Null.Value(v)
-      | _ => Null.Null
-      },
+      metaTitle: metaTitle->optionToNull,
+      description: description->optionToNull,
+      canonical: canonical->optionToNull,
     })
   | _ => None
   }
