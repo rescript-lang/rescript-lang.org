@@ -170,6 +170,7 @@ module SidebarTree = {
             open Url
             ReactEvent.Form.preventDefault(evt)
             let version = (evt->ReactEvent.Form.target)["value"]
+            WebAPI.Storage.setItem(localStorage, ~key=(Manual :> string), ~value=version)
             let url = Url.parse(router.asPath)
             switch url.pagepath[1] {
             | Some("core") | Some("stdlib") =>

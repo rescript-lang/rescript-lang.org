@@ -21,4 +21,12 @@ let parse: string => t
 
 let prettyString: string => string
 
+@unboxed
+type storageKey =
+  | @as("manual_version") Manual
+  | @as("react_version") React
+  | @as("playground_version") Playground
+
+let getVersionFromStorage: storageKey => option<string>
+
 let getVersionString: t => string

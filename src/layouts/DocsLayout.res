@@ -94,6 +94,14 @@ let make = (
             ReactEvent.Form.preventDefault(evt)
             let version = (evt->ReactEvent.Form.target)["value"]
             let url = Url.parse(route)
+            WebAPI.Storage.setItem(
+              localStorage,
+              ~key=switch metaTitleCategory {
+              | "React" => (React :> string)
+              | _ => (Manual :> string)
+              },
+              ~value=version,
+            )
 
             let targetUrl =
               "/" ++
