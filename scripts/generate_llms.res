@@ -124,7 +124,7 @@ let processVersions = (
   })
 }
 
-let manualVersions = ["v12.0.0", "v11.0.0"]
+let manualVersions = ["v11.0.0"]
 let reactManualVersions = ["latest", "v0.10.0", "v0.11.0"]
 
 let manualDocsDirectory = "pages/docs/manual"
