@@ -317,31 +317,31 @@ module CompileFail = {
   let decode = (json): t => {
     open JSON
     switch json {
-    | String(type_) =>
+    | Object(dict{"type": String(type_)}) =>
       switch type_ {
       | "syntax_error" =>
         let locMsgs = switch json {
-        | Object(dict{"erros": Array(errors)}) => errors->Array.map(LocMsg.decode)
-        | _ => throw(Failure(`Failed to decode erros from syntax_error. ${__LOC__}`))
+        | Object(dict{"errors": Array(errors)}) => errors->Array.map(LocMsg.decode)
+        | _ => throw(Failure(`Failed to decode errors from syntax_error. ${__LOC__}`))
         }
         // TODO: There seems to be a bug in the ReScript bundle that reports
         //       back multiple LocMsgs of the same value
         locMsgs->LocMsg.dedupe->SyntaxErr
       | "type_error" =>
         let locMsgs = switch json {
-        | Object(dict{"erros": Array(errors)}) => errors->Array.map(LocMsg.decode)
-        | _ => throw(Failure(`Failed to decode erros from type_error. ${__LOC__}`))
+        | Object(dict{"errors": Array(errors)}) => errors->Array.map(LocMsg.decode)
+        | _ => throw(Failure(`Failed to decode errors from type_error. ${__LOC__}`))
         }
         TypecheckErr(locMsgs)
       | "warning_error" =>
         let warnings = switch json {
-        | Object(dict{"erros": Array(warnings)}) => warnings->Array.map(Warning.decode)
+        | Object(dict{"errors": Array(warnings)}) => warnings->Array.map(Warning.decode)
         | _ => throw(Failure(`Failed to decode errors from warning_error. ${__LOC__}`))
         }
         WarningErr(warnings)
       | "other_error" =>
         let locMsgs = switch json {
-        | Object(dict{"erros": Array(errors)}) => errors->Array.map(LocMsg.decode)
+        | Object(dict{"errors": Array(errors)}) => errors->Array.map(LocMsg.decode)
         | _ => throw(Failure(`Failed to decode errors from other_error. ${__LOC__}`))
         }
         OtherErr(locMsgs)
