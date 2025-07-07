@@ -524,6 +524,11 @@ module Video = {
   }
 }
 
+module DonationForm = {
+  @react.component
+  let make = () => <DonationForm />
+}
+
 // Useful for debugging injected values in props
 //  let mdxTestComponent: React.component<{.}> = %raw(`
 //  function(children) {
