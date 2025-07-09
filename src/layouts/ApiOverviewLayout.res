@@ -31,8 +31,8 @@ module Docs = {
     let categories = makeCategories(version)
 
     let breadcrumbs = list{
-      {Url.name: "Docs", href: "/docs/manual/" ++ version ++ "/introduction"},
-      {name: "API", href: "/docs/manual/" ++ (version ++ "/api")},
+      {Url.name: "Docs", href: `/docs/manual/${version}/introduction`},
+      {name: "API", href: `/docs/manual/${version}/api`},
     }
 
     <ApiLayout breadcrumbs categories version components>
