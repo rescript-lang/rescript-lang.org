@@ -30,7 +30,12 @@ module Docs = {
 
     let categories = makeCategories(version)
 
-    <ApiLayout categories version components>
+    let breadcrumbs = list{
+      {Url.name: "Docs", href: `/docs/manual/${version}/introduction`},
+      {name: "API", href: `/docs/manual/${version}/api`},
+    }
+
+    <ApiLayout breadcrumbs categories version components>
       {switch version {
       | "v9.0.0" | "v8.0.0" => <ApiLayout.OldDocsWarning route version />
       | _ => React.null

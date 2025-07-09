@@ -370,14 +370,15 @@ let default = (props: props) => {
   | Error(_) => React.null
   }
 
-  let prefix = {
-    {Url.name: "API", href: "/docs/manual/" ++ (version ++ "/api")}
-  }
+  let prefix = {Url.name: "API", href: "/docs/manual/" ++ (version ++ "/api")}
 
   let breadcrumbs = ApiLayout.makeBreadcrumbs(~prefix, router.asPath)
 
   <SidebarLayout
-    breadcrumbs
+    breadcrumbs={list{
+      {Url.name: "Docs", href: "/docs/manual/" ++ version ++ "/introduction"},
+      ...breadcrumbs,
+    }}
     metaTitle={title ++ " | ReScript API"}
     theme=#Reason
     components=ApiMarkdown.default
