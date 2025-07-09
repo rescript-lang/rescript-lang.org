@@ -76,11 +76,9 @@ module MobileNav = {
 let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) => unit) => {
   let router = Next.Router.useRouter()
   let route = router.route
-  let url = router.route->Url.parse
-  let verionFromUrl = url->Url.getVersionString
 
   let version = Url.getVersionFromStorage(Manual)->Option.getOr(Constants.versions.latest)
-  let reactVersion = Url.getVersionFromStorage(React)->Option.getOr(verionFromUrl)
+  let reactVersion = Url.getVersionFromStorage(React)->Option.getOr(Constants.latestReactVersion)
 
   let toggleOverlay = () => {
     setOverlayOpen(prev => !prev)
