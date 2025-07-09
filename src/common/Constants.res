@@ -28,7 +28,7 @@ let nextVersion =
 let stdlibVersions =
   versions.latest === "v11.0.0" ? [latestVersion] : [("v11.0.0", "v11"), latestVersion]
 
-let latestReactVersion = "v0.12.0"
+let latestReactVersion = "latest"
 let allReactVersions = [
   ("latest", latestReactVersion),
   ("v0.11.0", "v0.11.0"),
