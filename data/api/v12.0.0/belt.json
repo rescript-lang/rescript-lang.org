@@ -941,6 +941,13 @@
         "signature": "let getExn: (t<'a>, key) => 'a"
       },
       {
+        "id": "Belt.MutableMap.String.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [],
+        "signature": "let getOrThrow: (t<'a>, key) => 'a"
+      },
+      {
         "id": "Belt.MutableMap.String.checkInvariantInternal",
         "kind": "value",
         "name": "checkInvariantInternal",
@@ -1301,6 +1308,13 @@
         "name": "getExn",
         "docstrings": [],
         "signature": "let getExn: (t<'a>, key) => 'a"
+      },
+      {
+        "id": "Belt.MutableMap.Int.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [],
+        "signature": "let getOrThrow: (t<'a>, key) => 'a"
       },
       {
         "id": "Belt.MutableMap.Int.checkInvariantInternal",
@@ -1714,6 +1728,13 @@
         "signature": "let getExn: (t, value) => value"
       },
       {
+        "id": "Belt.MutableSet.String.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [],
+        "signature": "let getOrThrow: (t, value) => value"
+      },
+      {
         "id": "Belt.MutableSet.String.split",
         "kind": "value",
         "name": "split",
@@ -2062,6 +2083,13 @@
         "signature": "let getExn: (t, value) => value"
       },
       {
+        "id": "Belt.MutableSet.Int.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [],
+        "signature": "let getOrThrow: (t, value) => value"
+      },
+      {
         "id": "Belt.MutableSet.Int.split",
         "kind": "value",
         "name": "split",
@@ -2367,6 +2395,13 @@
         "name": "getExn",
         "docstrings": [],
         "signature": "let getExn: (t<'k, 'a, 'id>, 'k, ~cmp: cmp<'k, 'id>) => 'a"
+      },
+      {
+        "id": "Belt.Map.Dict.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [],
+        "signature": "let getOrThrow: (t<'k, 'a, 'id>, 'k, ~cmp: cmp<'k, 'id>) => 'a"
       },
       {
         "id": "Belt.Map.Dict.checkInvariantInternal",
@@ -2802,6 +2837,13 @@
         "name": "getExn",
         "docstrings": [],
         "signature": "let getExn: (t<'v>, key) => 'v"
+      },
+      {
+        "id": "Belt.Map.String.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [],
+        "signature": "let getOrThrow: (t<'v>, key) => 'v"
       },
       {
         "id": "Belt.Map.String.checkInvariantInternal",
@@ -3241,6 +3283,13 @@
         "name": "getExn",
         "docstrings": [],
         "signature": "let getExn: (t<'v>, key) => 'v"
+      },
+      {
+        "id": "Belt.Map.Int.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [],
+        "signature": "let getOrThrow: (t<'v>, key) => 'v"
       },
       {
         "id": "Belt.Map.Int.checkInvariantInternal",
@@ -3748,6 +3797,15 @@
         "signature": "let getExn: (t<'value, 'id>, 'value, ~cmp: cmp<'value, 'id>) => 'value"
       },
       {
+        "id": "Belt.Set.Dict.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [
+          "Same as [get](#get) but raise when element does not exist."
+        ],
+        "signature": "let getOrThrow: (t<'value, 'id>, 'value, ~cmp: cmp<'value, 'id>) => 'value"
+      },
+      {
         "id": "Belt.Set.Dict.split",
         "kind": "value",
         "name": "split",
@@ -4083,6 +4141,13 @@
         "signature": "let getExn: (t, value) => value"
       },
       {
+        "id": "Belt.Set.String.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [],
+        "signature": "let getOrThrow: (t, value) => value"
+      },
+      {
         "id": "Belt.Set.String.split",
         "kind": "value",
         "name": "split",
@@ -4416,6 +4481,13 @@
         "name": "getExn",
         "docstrings": [],
         "signature": "let getExn: (t, value) => value"
+      },
+      {
+        "id": "Belt.Set.Int.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [],
+        "signature": "let getOrThrow: (t, value) => value"
       },
       {
         "id": "Belt.Set.Int.split",
@@ -4922,6 +4994,15 @@
         "signature": "let getExn: t<'a, 'b> => 'a"
       },
       {
+        "id": "Belt.Result.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [
+          "`getOrThrow(res)`: when `res` is `Ok(n)`, returns `n` when `res` is `Error(m)`, raise an exception\n\n## Examples\n\n```rescript\nBelt.Result.Ok(42)\n->Belt.Result.getOrThrow\n->assertEqual(42)\n\n\nswitch Belt.Result.getOrThrow(Belt.Result.Error(\"Invalid data\")) { // raise a exception\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
+        ],
+        "signature": "let getOrThrow: t<'a, 'b> => 'a"
+      },
+      {
         "id": "Belt.Result.mapWithDefaultU",
         "kind": "value",
         "name": "mapWithDefaultU",
@@ -5089,6 +5170,15 @@
           "Raises an Error in case `None` is provided. Use with care.\n\n## Examples\n\n```rescript\nSome(3)\n->Belt.Option.getExn\n->assertEqual(3)\n\nswitch Belt.Option.getExn(None) { // Raises an exception\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
         ],
         "signature": "let getExn: option<'a> => 'a"
+      },
+      {
+        "id": "Belt.Option.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [
+          "Raises an Error in case `None` is provided. Use with care.\n\n## Examples\n\n```rescript\nSome(3)\n->Belt.Option.getOrThrow\n->assertEqual(3)\n\nswitch Belt.Option.getOrThrow(None) { // Raises an exception\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
+        ],
+        "signature": "let getOrThrow: option<'a> => 'a"
       },
       {
         "id": "Belt.Option.getUnsafe",
@@ -5890,6 +5980,13 @@
         "signature": "let getExn: (t<'k, 'a, 'id>, 'k) => 'a"
       },
       {
+        "id": "Belt.MutableMap.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [],
+        "signature": "let getOrThrow: (t<'k, 'a, 'id>, 'k) => 'a"
+      },
+      {
         "id": "Belt.MutableMap.checkInvariantInternal",
         "kind": "value",
         "name": "checkInvariantInternal",
@@ -6358,6 +6455,15 @@
         "signature": "let getExn: (t<'value, 'id>, 'value) => 'value"
       },
       {
+        "id": "Belt.MutableSet.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [
+          "Same as `Belt.MutableSet.get` but raise when element does not exist."
+        ],
+        "signature": "let getOrThrow: (t<'value, 'id>, 'value) => 'value"
+      },
+      {
         "id": "Belt.MutableSet.split",
         "kind": "value",
         "name": "split",
@@ -6707,9 +6813,18 @@
         "kind": "value",
         "name": "getExn",
         "docstrings": [
-          "`getExn(s, k)`\n\nSee `Belt.Map.getExn`\n\nraise when `k` not exist"
+          "`getExn(s, k)`\n\nSee `Belt.Map.get`\n\nraise when `k` not exist"
         ],
         "signature": "let getExn: (t<'k, 'v, 'id>, 'k) => 'v"
+      },
+      {
+        "id": "Belt.Map.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [
+          "`getOrThrow(s, k)`\n\nSee `Belt.Map.get`\n\nraise when `k` not exist"
+        ],
+        "signature": "let getOrThrow: (t<'k, 'v, 'id>, 'k) => 'v"
       },
       {
         "id": "Belt.Map.remove",
@@ -7252,6 +7367,15 @@
         "signature": "let getExn: (t<'value, 'id>, 'value) => 'value"
       },
       {
+        "id": "Belt.Set.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [
+          "Same as [get](#get) but raise when element does not exist."
+        ],
+        "signature": "let getOrThrow: (t<'value, 'id>, 'value) => 'value"
+      },
+      {
         "id": "Belt.Set.split",
         "kind": "value",
         "name": "split",
@@ -7447,6 +7571,15 @@
         "signature": "let headExn: t<'a> => 'a"
       },
       {
+        "id": "Belt.List.headOrThrow",
+        "kind": "value",
+        "name": "headOrThrow",
+        "docstrings": [
+          "Same as `Belt.List.head` but raises an exception if `someList` is empty. Use\nwith care.\n\n## Examples\n\n```rescript\nBelt.List.headOrThrow(list{1, 2, 3})->assertEqual(1)\n\nswitch Belt.List.headOrThrow(list{}) { // Raises an Error\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
+        ],
+        "signature": "let headOrThrow: t<'a> => 'a"
+      },
+      {
         "id": "Belt.List.tail",
         "kind": "value",
         "name": "tail",
@@ -7463,6 +7596,15 @@
           "Same as `Belt.List.tail` but raises an exception if `someList` is empty. Use\nwith care.\n\n## Examples\n\n```rescript\nBelt.List.tailExn(list{1, 2, 3})->assertEqual(list{2, 3})\n\nswitch Belt.List.tailExn(list{}) { // Raises an Error\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
         ],
         "signature": "let tailExn: t<'a> => t<'a>"
+      },
+      {
+        "id": "Belt.List.tailOrThrow",
+        "kind": "value",
+        "name": "tailOrThrow",
+        "docstrings": [
+          "Same as `Belt.List.tail` but raises an exception if `someList` is empty. Use\nwith care.\n\n## Examples\n\n```rescript\nBelt.List.tailOrThrow(list{1, 2, 3})->assertEqual(list{2, 3})\n\nswitch Belt.List.tailOrThrow(list{}) { // Raises an Error\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
+        ],
+        "signature": "let tailOrThrow: t<'a> => t<'a>"
       },
       {
         "id": "Belt.List.add",
@@ -7490,6 +7632,15 @@
           "Same as `Belt.List.get` but raises an exception if `index` is larger than the\nlength. Use with care.\n\n## Examples\n\n```rescript\nlet abc = list{\"A\", \"B\", \"C\"}\n\nabc->Belt.List.getExn(1)->assertEqual(\"B\")\n\nswitch abc->Belt.List.getExn(4) { // Raises an Error\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
         ],
         "signature": "let getExn: (t<'a>, int) => 'a"
+      },
+      {
+        "id": "Belt.List.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [
+          "Same as `Belt.List.get` but raises an exception if `index` is larger than the\nlength. Use with care.\n\n## Examples\n\n```rescript\nlet abc = list{\"A\", \"B\", \"C\"}\n\nabc->Belt.List.getOrThrow(1)->assertEqual(\"B\")\n\nswitch abc->Belt.List.getOrThrow(4) { // Raises an Error\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
+        ],
+        "signature": "let getOrThrow: (t<'a>, int) => 'a"
       },
       {
         "id": "Belt.List.make",
@@ -8447,9 +8598,18 @@
         "kind": "value",
         "name": "peekExn",
         "docstrings": [
-          "raise an exception if `q` is empty"
+          "`peekExn(q)` raises an exception if `q` is empty."
         ],
         "signature": "let peekExn: t<'a> => 'a"
+      },
+      {
+        "id": "Belt.MutableQueue.peekOrThrow",
+        "kind": "value",
+        "name": "peekOrThrow",
+        "docstrings": [
+          "`peekOrThrow(q)` raises an exception if `q` is empty."
+        ],
+        "signature": "let peekOrThrow: t<'a> => 'a"
       },
       {
         "id": "Belt.MutableQueue.pop",
@@ -8477,6 +8637,15 @@
           "`popExn(q)` raise an exception if q is empty."
         ],
         "signature": "let popExn: t<'a> => 'a"
+      },
+      {
+        "id": "Belt.MutableQueue.popOrThrow",
+        "kind": "value",
+        "name": "popOrThrow",
+        "docstrings": [
+          "`popOrThrow(q)` raise an exception if q is empty."
+        ],
+        "signature": "let popOrThrow: t<'a> => 'a"
       },
       {
         "id": "Belt.MutableQueue.copy",
@@ -8712,7 +8881,7 @@
     "name": "Array",
     "docstrings": [
       "[`Belt.Array`]()\n\n  **mutable array**: Utilities functions",
-      "Utilities for `Array` functions.\n\n### Note about index syntax\n\nCode like `arr[0]` does *not* compile to JavaScript `arr[0]`. Reason transforms\nthe `[]` index syntax into a function: `Array.get(arr, 0)`. By default, this\nuses the default standard library's `Array.get` function, which may raise an\nexception if the index isn't found. If you `open Belt`, it will use the\n`Belt.Array.get` function which returns options instead of raising exceptions. \n[See this for more information](../belt.mdx#array-access-runtime-safety)."
+      "Utilities for `Array` functions."
     ],
     "items": [
       {
@@ -8759,6 +8928,15 @@
         "signature": "let getExn: (t<'a>, int) => 'a"
       },
       {
+        "id": "Belt.Array.getOrThrow",
+        "kind": "value",
+        "name": "getOrThrow",
+        "docstrings": [
+          "Raise an exception if `i` is out of range.\nOtherwise return the value at index `i` in `arr`."
+        ],
+        "signature": "let getOrThrow: (t<'a>, int) => 'a"
+      },
+      {
         "id": "Belt.Array.getUnsafe",
         "kind": "value",
         "name": "getUnsafe",
@@ -8793,6 +8971,15 @@
           "`setExn(arr, i, x)` raise an exception if `i` is out of range."
         ],
         "signature": "let setExn: (t<'a>, int, 'a) => unit"
+      },
+      {
+        "id": "Belt.Array.setOrThrow",
+        "kind": "value",
+        "name": "setOrThrow",
+        "docstrings": [
+          "`setOrThrow(arr, i, x)` raise an exception if `i` is out of range."
+        ],
+        "signature": "let setOrThrow: (t<'a>, int, 'a) => unit"
       },
       {
         "id": "Belt.Array.setUnsafe",

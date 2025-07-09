@@ -3961,42 +3961,53 @@
   "stdlib/arraybuffer": {
     "id": "Stdlib.ArrayBuffer",
     "name": "ArrayBuffer",
-    "docstrings": [],
+    "docstrings": [
+      "Functions for interacting with JavaScript ArrayBuffer.\nSee: [`ArrayBuffer`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer)."
+    ],
     "items": [
       {
         "id": "Stdlib.ArrayBuffer.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [],
+        "docstrings": [
+          "Type representing an ArrayBuffer object used to represent a generic raw binary data buffer."
+        ],
         "signature": "type t"
       },
       {
         "id": "Stdlib.ArrayBuffer.make",
         "kind": "value",
         "name": "make",
-        "docstrings": [],
+        "docstrings": [
+          "`make(length)` creates a new ArrayBuffer with the specified length in bytes.\nSee [`ArrayBuffer`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/ArrayBuffer) on MDN.\n\n## Examples\n\n```rescript\nlet buffer = ArrayBuffer.make(8)\nArrayBuffer.byteLength(buffer) == 8\n```\n\n## Exceptions\n\n- `RangeError`: If `length` is larger than `Number.MAX_SAFE_INTEGER` or negative."
+        ],
         "signature": "let make: int => t"
       },
       {
         "id": "Stdlib.ArrayBuffer.byteLength",
         "kind": "value",
         "name": "byteLength",
-        "docstrings": [],
+        "docstrings": [
+          "`byteLength(arrayBuffer)` returns the size, in bytes, of the ArrayBuffer.\nSee [`ArrayBuffer.byteLength`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/byteLength) on MDN.\n\n## Examples\n\n```rescript\nlet buffer = ArrayBuffer.make(16)\nArrayBuffer.byteLength(buffer) == 16\n```"
+        ],
         "signature": "let byteLength: t => int"
       },
       {
         "id": "Stdlib.ArrayBuffer.slice",
         "kind": "value",
         "name": "slice",
-        "docstrings": [],
-        "signature": "let slice: (t, ~start: int, ~end: int) => t"
+        "docstrings": [
+          "`slice(arrayBuffer, ~start, ~end)` returns a new ArrayBuffer whose contents are a copy of this ArrayBuffer's bytes from `start`, inclusive, up to `end`, exclusive.\nSee [`ArrayBuffer.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/slice) on MDN.\n\n## Examples\n\n```rescript\nlet buffer = ArrayBuffer.make(16)\nlet sliced = buffer->ArrayBuffer.slice(~start=4, ~end=12)\nArrayBuffer.byteLength(sliced) == 8\n```"
+        ],
+        "signature": "let slice: (t, ~start: int=?, ~end: int=?) => t"
       },
       {
         "id": "Stdlib.ArrayBuffer.sliceToEnd",
         "kind": "value",
         "name": "sliceToEnd",
         "docstrings": [],
-        "signature": "let sliceToEnd: (t, ~start: int) => t"
+        "signature": "let sliceToEnd: (t, ~start: int) => t",
+        "deprecated": "Use `slice` instead."
       }
     ]
   },
@@ -4947,14 +4958,18 @@
         "id": "Stdlib.String.equal",
         "kind": "value",
         "name": "equal",
-        "docstrings": [],
+        "docstrings": [
+          "`equal(str1, str2)` checks if two strings are equal.\n\n## Examples\n\n```rescript\nString.equal(\"hello\", \"hello\") == true\nString.equal(\"hello\", \"world\") == false\nString.equal(\"\", \"\") == true\n```"
+        ],
         "signature": "let equal: (string, string) => bool"
       },
       {
         "id": "Stdlib.String.compare",
         "kind": "value",
         "name": "compare",
-        "docstrings": [],
+        "docstrings": [
+          "`compare(str1, str2)` compares two strings, returns an `Ordering.t` value.\n\n## Examples\n\n```rescript\nString.compare(\"hello\", \"hello\") == Ordering.equal\nString.compare(\"apple\", \"banana\") == Ordering.less\nString.compare(\"zebra\", \"apple\") == Ordering.greater\n```"
+        ],
         "signature": "let compare: (string, string) => Ordering.t"
       },
       {
@@ -5462,27 +5477,6 @@
           "`padEnd(str, n, padStr)` returns a string that has been padded with `padStr`\n(multiple times, if needed) until the resulting string reaches the given `n`\nlength. The padding is applied from the end of the current string.\nSee [`String.padEnd`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padEnd) on MDN.\n\n## Examples\n\n```rescript\nString.padEnd(\"Hello\", 10, \".\") == \"Hello.....\"\nString.padEnd(\"abc\", 1, \"\") == \"abc\"\n```"
         ],
         "signature": "let padEnd: (string, int, string) => string"
-      },
-      {
-        "id": "Stdlib.String.getSymbol",
-        "kind": "value",
-        "name": "getSymbol",
-        "docstrings": [],
-        "signature": "let getSymbol: (string, Symbol.t) => option<'a>"
-      },
-      {
-        "id": "Stdlib.String.getSymbolUnsafe",
-        "kind": "value",
-        "name": "getSymbolUnsafe",
-        "docstrings": [],
-        "signature": "let getSymbolUnsafe: (string, Symbol.t) => 'a"
-      },
-      {
-        "id": "Stdlib.String.setSymbol",
-        "kind": "value",
-        "name": "setSymbol",
-        "docstrings": [],
-        "signature": "let setSymbol: (string, Symbol.t, 'a) => unit"
       },
       {
         "id": "Stdlib.String.localeCompare",
@@ -6897,14 +6891,18 @@
         "id": "Stdlib.Null.equal",
         "kind": "value",
         "name": "equal",
-        "docstrings": [],
+        "docstrings": [
+          "`equal(a, b, eq)` checks if `a` and `b` are equal.\nIf both are `Null.Value`, it will use function `eq` to check if the values are equal.\n\n## Examples\n```rescript\nlet a = Null.Value(1)\nlet b = Null.null\nlet c = Null.Value(2)\n\nNull.equal(a, b, Int.equal) == false\nNull.equal(a, c, Int.equal) == false\nNull.equal(Null.null, Null.null, Int.equal) == true\n```"
+        ],
         "signature": "let equal: (t<'a>, t<'b>, ('a, 'b) => bool) => bool"
       },
       {
         "id": "Stdlib.Null.compare",
         "kind": "value",
         "name": "compare",
-        "docstrings": [],
+        "docstrings": [
+          "`compare(a, b, cmp)` compares `a` and `b`.\nIf both are `Null.Value`, it will use function `cmp` to compare the values.\n\n## Examples\n```rescript\nlet a = Null.Value(1)\nlet b = Null.null\nlet c = Null.Value(2)\n\n// A value is greater than null\nNull.compare(a, b, Int.compare) == Ordering.greater\n// A value is less than null\nNull.compare(b, a, Int.compare) == Ordering.less\n// A null is equal to null\nNull.compare(Null.null, Null.null, Int.compare) == Ordering.equal\n// The compare function is used if both are `Null.Value`\nNull.compare(a, c, Int.compare) == Ordering.less\n```"
+        ],
         "signature": "let compare: (t<'a>, t<'b>, ('a, 'b) => Ordering.t) => Ordering.t"
       },
       {
@@ -8710,14 +8708,18 @@
         "id": "Stdlib.Float.equal",
         "kind": "value",
         "name": "equal",
-        "docstrings": [],
+        "docstrings": [
+          "Checks if two floating point numbers are equal.\n\n## Examples\n```rescript\nFloat.equal(1.0, 1.0) == true\nFloat.equal(1.0, 2.0) == false\n```"
+        ],
         "signature": "let equal: (float, float) => bool"
       },
       {
         "id": "Stdlib.Float.compare",
         "kind": "value",
         "name": "compare",
-        "docstrings": [],
+        "docstrings": [
+          "Compares two floating point numbers, returns an `Ordering.t` value.\n\n## Examples\n```rescript\nFloat.compare(1.0, 1.0) == Ordering.equal\nFloat.compare(1.0, 2.0) == Ordering.less\nFloat.compare(2.0, 1.0) == Ordering.greater\n```"
+        ],
         "signature": "let compare: (float, float) => Ordering.t"
       },
       {
@@ -8734,7 +8736,7 @@
         "kind": "value",
         "name": "isFinite",
         "docstrings": [
-          "`isFinite(v)` tests if the given `v` is finite.\nSee [`isFinite`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/isFinite) on MDN.\n\n## Examples\n\n```rescript\nFloat.isFinite(1.0) // true\nFloat.isFinite(Float.Constants.nan) // false\nFloat.isFinite(Float.Constants.positiveInfinity) // false\n```"
+          "`isFinite(v)` tests if the given `v` is finite.\nSee [`isFinite`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/isFinite) on MDN.\n\n## Examples\n\n```rescript\nFloat.isFinite(1.0) == true\nFloat.isFinite(Float.Constants.nan) == false\nFloat.isFinite(Float.Constants.positiveInfinity) == false\n```"
         ],
         "signature": "let isFinite: float => bool"
       },
@@ -8743,7 +8745,7 @@
         "kind": "value",
         "name": "parseFloat",
         "docstrings": [
-          "`parseFloat(v)` parse the given `v` and returns a float. Leading whitespace in\n`v` is ignored. Returns `NaN` if `v` can't be parsed. Use [`fromString`] to\nensure it returns a valid float and not `NaN`.\nSee [`parseFloat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseFloat) on MDN.\n\n## Examples\n\n```rescript\nFloat.parseFloat(\"1.0\") // 1.0\nFloat.parseFloat(\"  3.14   \") // 3.14\nFloat.parseFloat(\"3.0\") // 3.0\nFloat.parseFloat(\"3.14some non-digit characters\") // 3.14\nFloat.parseFloat(\"error\")->Float.isNaN // true\n```"
+          "`parseFloat(v)` parse the given `v` and returns a float. Leading whitespace in\n`v` is ignored. Returns `NaN` if `v` can't be parsed. Use [`fromString`] to\nensure it returns a valid float and not `NaN`.\nSee [`parseFloat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseFloat) on MDN.\n\n## Examples\n\n```rescript\nFloat.parseFloat(\"1.0\") == 1.0\nFloat.parseFloat(\"  3.14   \") == 3.14\nFloat.parseFloat(\"3.0\") == 3.0\nFloat.parseFloat(\"3.14some non-digit characters\") == 3.14\nFloat.parseFloat(\"error\")->Float.isNaN == true\n```"
         ],
         "signature": "let parseFloat: string => float"
       },
@@ -8752,7 +8754,7 @@
         "kind": "value",
         "name": "parseInt",
         "docstrings": [
-          "`parseInt(v, ~radix=?)` parse the given `v` and returns a float. Leading\nwhitespace in this argument `v`is ignored. `radix` specifies the radix base to\nuse for the formatted number. The value must be in the range [2, 36] (inclusive).\nReturns `NaN` if `v` can't be parsed and `radix` is smaller than 2 or bigger\nthan 36.\nSee [`parseInt`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt) on MDN.\n\n## Examples\n\n```rescript\nFloat.parseInt(\"1.0\") // 1.0\nFloat.parseInt(\"  3.14   \") // 3.0\nFloat.parseInt(3) // 3.0\nFloat.parseInt(\"3.14some non-digit characters\") // 3.0\nFloat.parseInt(\"error\")->Float.isNaN // true\nFloat.parseInt(\"10.0\", ~radix=2) // 2.0\nFloat.parseInt(\"15 * 3\", ~radix=10) // 15.0\nFloat.parseInt(\"12\", ~radix=13) // 15.0\nFloat.parseInt(\"17\", ~radix=40)->Float.isNaN // true\n```"
+          "`parseInt(v, ~radix=?)` parse the given `v` and returns a float. Leading\nwhitespace in this argument `v`is ignored. `radix` specifies the radix base to\nuse for the formatted number. The value must be in the range [2, 36] (inclusive).\nReturns `NaN` if `v` can't be parsed and `radix` is smaller than 2 or bigger\nthan 36.\nSee [`parseInt`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt) on MDN.\n\n## Examples\n\n```rescript\nFloat.parseInt(\"1.0\") == 1.0\nFloat.parseInt(\"  3.14   \") == 3.0\nFloat.parseInt(3) == 3.0\nFloat.parseInt(\"3.14some non-digit characters\") == 3.0\nFloat.parseInt(\"error\")->Float.isNaN == true\nFloat.parseInt(\"10.0\", ~radix=2) == 2.0\nFloat.parseInt(\"15 * 3\", ~radix=10) == 15.0\nFloat.parseInt(\"12\", ~radix=13) == 15.0\nFloat.parseInt(\"17\", ~radix=40)->Float.isNaN == true\n```"
         ],
         "signature": "let parseInt: ('a, ~radix: int=?) => float"
       },
@@ -8761,7 +8763,7 @@
         "kind": "value",
         "name": "parseIntWithRadix",
         "docstrings": [
-          "`parseIntWithRadix(v, ~radix)` parse the given `v` and returns a float. Leading\nwhitespace in this argument `v`is ignored. `radix` specifies the radix base to\nuse for the formatted number. The value must be in the range [2, 36] (inclusive).\nReturns `NaN` if `v` can't be parsed and `radix` is smaller than 2 or bigger\nthan 36.\nSee [`parseInt`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt) on MDN.\n\n## Examples\n\n```rescript\nFloat.parseIntWithRadix(\"10.0\", ~radix=2) // 2.0\nFloat.parseIntWithRadix(\"15 * 3\", ~radix=10) // 15.0\nFloat.parseIntWithRadix(\"12\", ~radix=13) // 15.0\nFloat.parseIntWithRadix(\"17\", ~radix=40)->Float.isNaN // true\n```"
+          "`parseIntWithRadix(v, ~radix)` parse the given `v` and returns a float. Leading\nwhitespace in this argument `v`is ignored. `radix` specifies the radix base to\nuse for the formatted number. The value must be in the range [2, 36] (inclusive).\nReturns `NaN` if `v` can't be parsed and `radix` is smaller than 2 or bigger\nthan 36.\nSee [`parseInt`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt) on MDN.\n\n## Examples\n\n```rescript\nFloat.parseIntWithRadix(\"10.0\", ~radix=2) == 2.0\nFloat.parseIntWithRadix(\"15 * 3\", ~radix=10) == 15.0\nFloat.parseIntWithRadix(\"12\", ~radix=13) == 15.0\nFloat.parseIntWithRadix(\"17\", ~radix=40)->Float.isNaN == true\n```"
         ],
         "signature": "let parseIntWithRadix: ('a, ~radix: int) => float",
         "deprecated": "Use `parseInt` instead"
@@ -8771,7 +8773,7 @@
         "kind": "value",
         "name": "toExponential",
         "docstrings": [
-          "`toExponential(v, ~digits=?)` return a `string` representing the given value in\nexponential notation. `digits` specifies how many digits should appear after\nthe decimal point.\nSee [`Number.toExponential`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toExponential) on MDN.\n\n## Examples\n\n```rescript\nFloat.toExponential(1000.0) // \"1e+3\"\nFloat.toExponential(-1000.0) // \"-1e+3\"\nFloat.toExponential(77.0, ~digits=2) // \"7.70e+1\"\nFloat.toExponential(5678.0, ~digits=2) // \"5.68e+3\"\n```\n\n## Exceptions\n\n- `RangeError`: If `digits` less than 0 or greater than 10."
+          "`toExponential(v, ~digits=?)` return a `string` representing the given value in\nexponential notation. `digits` specifies how many digits should appear after\nthe decimal point.\nSee [`Number.toExponential`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toExponential) on MDN.\n\n## Examples\n\n```rescript\nFloat.toExponential(1000.0) == \"1e+3\"\nFloat.toExponential(-1000.0) == \"-1e+3\"\nFloat.toExponential(77.0, ~digits=2) == \"7.70e+1\"\nFloat.toExponential(5678.0, ~digits=2) == \"5.68e+3\"\n```\n\n## Exceptions\n\n- `RangeError`: If `digits` less than 0 or greater than 10."
         ],
         "signature": "let toExponential: (float, ~digits: int=?) => string"
       },
@@ -8780,7 +8782,7 @@
         "kind": "value",
         "name": "toExponentialWithPrecision",
         "docstrings": [
-          "`toExponential(v, ~digits)` return a `string` representing the given value in\nexponential notation. `digits` specifies how many digits should appear after\nthe decimal point.\nSee [`Number.toExponential`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toExponential) on MDN.\n\n## Examples\n\n```rescript\nFloat.toExponentialWithPrecision(77.0, ~digits=2) // \"7.70e+1\"\nFloat.toExponentialWithPrecision(5678.0, ~digits=2) // \"5.68e+3\"\n```\n\n## Exceptions\n\n- `RangeError`: If `digits` less than 0 or greater than 10."
+          "`toExponential(v, ~digits)` return a `string` representing the given value in\nexponential notation. `digits` specifies how many digits should appear after\nthe decimal point.\nSee [`Number.toExponential`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toExponential) on MDN.\n\n## Examples\n\n```rescript\nFloat.toExponentialWithPrecision(77.0, ~digits=2) == \"7.70e+1\"\nFloat.toExponentialWithPrecision(5678.0, ~digits=2) == \"5.68e+3\"\n```\n\n## Exceptions\n\n- `RangeError`: If `digits` less than 0 or greater than 10."
         ],
         "signature": "let toExponentialWithPrecision: (float, ~digits: int) => string",
         "deprecated": "Use `toExponential` instead"
@@ -8790,7 +8792,7 @@
         "kind": "value",
         "name": "toFixed",
         "docstrings": [
-          "`toFixed(v, ~digits=?)` return a `string` representing the given\nvalue using fixed-point notation. `digits` specifies how many digits should\nappear after the decimal point.\nSee [`Number.toFixed`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed) on MDN.\n\n## Examples\n\n```rescript\nFloat.toFixed(123456.0) // \"123456.00\"\nFloat.toFixed(10.0) // \"10.00\"\nFloat.toFixed(300.0, ~digits=4) // \"300.0000\"\nFloat.toFixed(300.0, ~digits=1) // \"300.0\"\n```\n\n## Exceptions\n\n- `RangeError`: If `digits` is less than 0 or larger than 100."
+          "`toFixed(v, ~digits=?)` return a `string` representing the given\nvalue using fixed-point notation. `digits` specifies how many digits should\nappear after the decimal point.\nSee [`Number.toFixed`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed) on MDN.\n\n## Examples\n\n```rescript\nFloat.toFixed(123456.0) == \"123456\"\nFloat.toFixed(10.0) == \"10\"\nFloat.toFixed(300.0, ~digits=4) == \"300.0000\"\nFloat.toFixed(300.0, ~digits=1) == \"300.0\"\n```\n\n## Exceptions\n\n- `RangeError`: If `digits` is less than 0 or larger than 100."
         ],
         "signature": "let toFixed: (float, ~digits: int=?) => string"
       },
@@ -8799,7 +8801,7 @@
         "kind": "value",
         "name": "toFixedWithPrecision",
         "docstrings": [
-          "`toFixedWithPrecision(v, ~digits)` return a `string` representing the given\nvalue using fixed-point notation. `digits` specifies how many digits should\nappear after the decimal point.\nSee [`Number.toFixed`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed) on MDN.\n\n## Examples\n\n```rescript\nFloat.toFixedWithPrecision(300.0, ~digits=4) // \"300.0000\"\nFloat.toFixedWithPrecision(300.0, ~digits=1) // \"300.0\"\n```\n\n## Exceptions\n\n- `RangeError`: If `digits` is less than 0 or larger than 100."
+          "`toFixedWithPrecision(v, ~digits)` return a `string` representing the given\nvalue using fixed-point notation. `digits` specifies how many digits should\nappear after the decimal point.\nSee [`Number.toFixed`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed) on MDN.\n\n## Examples\n\n```rescript\nFloat.toFixedWithPrecision(300.0, ~digits=4) == \"300.0000\"\nFloat.toFixedWithPrecision(300.0, ~digits=1) == \"300.0\"\n```\n\n## Exceptions\n\n- `RangeError`: If `digits` is less than 0 or larger than 100."
         ],
         "signature": "let toFixedWithPrecision: (float, ~digits: int) => string",
         "deprecated": "Use `toFixed` instead"
@@ -8809,7 +8811,7 @@
         "kind": "value",
         "name": "toPrecision",
         "docstrings": [
-          "`toPrecision(v, ~digits=?)` return a `string` representing the giver value with\nprecision. `digits` specifies the number of significant digits.\nSee [`Number.toPrecision`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision) on MDN.\n\n## Examples\n\n```rescript\nFloat.toPrecision(100.0) // \"100\"\nFloat.toPrecision(1.0) // \"1\"\nFloat.toPrecision(100.0, ~digits=2) // \"1.0e+2\"\nFloat.toPrecision(1.0, ~digits=1) // \"1\"\n```\n\n## Exceptions\n\n- `RangeError`: If `digits` is not between 1 and 100 (inclusive).\nImplementations are allowed to support larger and smaller values as well.\nECMA-262 only requires a precision of up to 21 significant digits."
+          "`toPrecision(v, ~digits=?)` return a `string` representing the giver value with\nprecision. `digits` specifies the number of significant digits.\nSee [`Number.toPrecision`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision) on MDN.\n\n## Examples\n\n```rescript\nFloat.toPrecision(100.0) == \"100\"\nFloat.toPrecision(1.0) == \"1\"\nFloat.toPrecision(100.0, ~digits=2) == \"1.0e+2\"\nFloat.toPrecision(1.0, ~digits=1) == \"1\"\n```\n\n## Exceptions\n\n- `RangeError`: If `digits` is not between 1 and 100 (inclusive).\nImplementations are allowed to support larger and smaller values as well.\nECMA-262 only requires a precision of up to 21 significant digits."
         ],
         "signature": "let toPrecision: (float, ~digits: int=?) => string"
       },
@@ -8818,7 +8820,7 @@
         "kind": "value",
         "name": "toPrecisionWithPrecision",
         "docstrings": [
-          "`toPrecisionWithPrecision(v, ~digits)` return a `string` representing the giver value with\nprecision. `digits` specifies the number of significant digits.\nSee [`Number.toPrecision`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision) on MDN.\n\n## Examples\n\n```rescript\nFloat.toPrecisionWithPrecision(100.0, ~digits=2) // \"1.0e+2\"\nFloat.toPrecisionWithPrecision(1.0, ~digits=1) // \"1\"\n```\n\n## Exceptions\n\n- `RangeError`: If `digits` is not between 1 and 100 (inclusive).\nImplementations are allowed to support larger and smaller values as well.\nECMA-262 only requires a precision of up to 21 significant digits."
+          "`toPrecisionWithPrecision(v, ~digits)` return a `string` representing the giver value with\nprecision. `digits` specifies the number of significant digits.\nSee [`Number.toPrecision`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision) on MDN.\n\n## Examples\n\n```rescript\nFloat.toPrecisionWithPrecision(100.0, ~digits=2) == \"1.0e+2\"\nFloat.toPrecisionWithPrecision(1.0, ~digits=1) == \"1\"\n```\n\n## Exceptions\n\n- `RangeError`: If `digits` is not between 1 and 100 (inclusive).\nImplementations are allowed to support larger and smaller values as well.\nECMA-262 only requires a precision of up to 21 significant digits."
         ],
         "signature": "let toPrecisionWithPrecision: (float, ~digits: int) => string",
         "deprecated": "Use `toPrecision` instead"
@@ -8828,7 +8830,7 @@
         "kind": "value",
         "name": "toString",
         "docstrings": [
-          "`toString(v)` return a `string` representing the given value.\nSee [`Number.toString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toString) on MDN.\n\n## Examples\n\n```rescript\nFloat.toString(1000.0) // \"1000\"\nFloat.toString(-1000.0) // \"-1000\"\n```"
+          "`toString(v)` return a `string` representing the given value.\nSee [`Number.toString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toString) on MDN.\n\n## Examples\n\n```rescript\nFloat.toString(1000.0) == \"1000\"\nFloat.toString(-1000.0) == \"-1000\"\n```"
         ],
         "signature": "let toString: (float, ~radix: int=?) => string"
       },
@@ -8837,7 +8839,7 @@
         "kind": "value",
         "name": "toStringWithRadix",
         "docstrings": [
-          "`toStringWithRadix(v, ~radix)` return a `string` representing the given value.\n`~radix` specifies the radix base to use for the formatted number.\nSee [`Number.toString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toString) on MDN.\n\n## Examples\n\n```rescript\nFloat.toStringWithRadix(6.0, ~radix=2) // \"110\"\nFloat.toStringWithRadix(3735928559.0, ~radix=16) // \"deadbeef\"\nFloat.toStringWithRadix(123456.0, ~radix=36) // \"2n9c\"\n```\n\n## Exceptions\n\n`RangeError`: if `radix` is less than 2 or greater than 36."
+          "`toStringWithRadix(v, ~radix)` return a `string` representing the given value.\n`~radix` specifies the radix base to use for the formatted number.\nSee [`Number.toString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toString) on MDN.\n\n## Examples\n\n```rescript\nFloat.toStringWithRadix(6.0, ~radix=2) == \"110\"\nFloat.toStringWithRadix(3735928559.0, ~radix=16) == \"deadbeef\"\nFloat.toStringWithRadix(123456.0, ~radix=36) == \"2n9c\"\n```\n\n## Exceptions\n\n`RangeError`: if `radix` is less than 2 or greater than 36."
         ],
         "signature": "let toStringWithRadix: (float, ~radix: int) => string",
         "deprecated": "Use `toString` with `~radix` instead"
@@ -9470,14 +9472,18 @@
         "id": "Stdlib.Date.equal",
         "kind": "value",
         "name": "equal",
-        "docstrings": [],
+        "docstrings": [
+          "`equal(date1, date2)` checks if two dates represent the same point in time.\n\n## Examples\n```rescript\nDate.equal(Date.fromString(\"2023-01-01\"), Date.fromString(\"2023-01-01\")) == true\nDate.equal(Date.fromString(\"2023-01-01\"), Date.fromString(\"2023-01-02\")) == false\n```"
+        ],
         "signature": "let equal: (t, t) => bool"
       },
       {
         "id": "Stdlib.Date.compare",
         "kind": "value",
         "name": "compare",
-        "docstrings": [],
+        "docstrings": [
+          "`compare(date1, date2)` compares two dates chronologically, returns an `Ordering.t` value.\n\n## Examples\n```rescript\nDate.compare(Date.fromString(\"2023-01-01\"), Date.fromString(\"2023-01-01\")) == Ordering.equal\nDate.compare(Date.fromString(\"2023-01-01\"), Date.fromString(\"2023-01-02\")) == Ordering.less\nDate.compare(Date.fromString(\"2023-01-02\"), Date.fromString(\"2023-01-01\")) == Ordering.greater\n```"
+        ],
         "signature": "let compare: (t, t) => Ordering.t"
       },
       {
@@ -10795,7 +10801,7 @@
         "kind": "value",
         "name": "toString",
         "docstrings": [
-          "Converts a boolean to a string.\n\n## Examples\n```rescript\nBool.toString(true)->assertEqual(\"true\")\nBool.toString(false)->assertEqual(\"false\")\n```"
+          "Converts a boolean to a string.\n\n## Examples\n```rescript\nBool.toString(true) == \"true\"\nBool.toString(false) == \"false\"\n```"
         ],
         "signature": "let toString: bool => string"
       },
@@ -10804,7 +10810,7 @@
         "kind": "value",
         "name": "fromString",
         "docstrings": [
-          "Converts a string to a boolean.\n\n## Examples\n```rescript\nBool.fromString(\"true\")->assertEqual(Some(true))\nBool.fromString(\"false\")->assertEqual(Some(false))\nBool.fromString(\"notAValidBoolean\")->assertEqual(None)\n```"
+          "Converts a string to a boolean.\n\n## Examples\n```rescript\nBool.fromString(\"true\") == Some(true)\nBool.fromString(\"false\") == Some(false)\nBool.fromString(\"notAValidBoolean\") == None\n```"
         ],
         "signature": "let fromString: string => option<bool>"
       },
@@ -10813,7 +10819,7 @@
         "kind": "value",
         "name": "fromStringOrThrow",
         "docstrings": [
-          "Converts a string to a boolean.\nThrows an `Invalid_argument` exception if the string is not a valid boolean.\n\n## Examples\n```rescript\nBool.fromStringOrThrow(\"true\")->assertEqual(true)\nBool.fromStringOrThrow(\"false\")->assertEqual(false)\nswitch Bool.fromStringOrThrow(\"notAValidBoolean\") {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n```"
+          "Converts a string to a boolean.\nThrows an `Invalid_argument` exception if the string is not a valid boolean.\n\n## Examples\n```rescript\nBool.fromStringOrThrow(\"true\") == true\nBool.fromStringOrThrow(\"false\") == false\nswitch Bool.fromStringOrThrow(\"notAValidBoolean\") {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n```"
         ],
         "signature": "let fromStringOrThrow: string => bool"
       },
@@ -10822,7 +10828,7 @@
         "kind": "value",
         "name": "fromStringExn",
         "docstrings": [
-          "Converts a string to a boolean.\nBeware, this function will throw an `Invalid_argument` exception \nif the string is not a valid boolean.\n\n## Examples\n```rescript\nBool.fromStringExn(\"true\")->assertEqual(true)\nBool.fromStringExn(\"false\")->assertEqual(false)\nswitch Bool.fromStringExn(\"notAValidBoolean\") {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n```"
+          "Converts a string to a boolean.\nBeware, this function will throw an `Invalid_argument` exception \nif the string is not a valid boolean.\n\n## Examples\n```rescript\nBool.fromStringExn(\"true\") == true\nBool.fromStringExn(\"false\") == false\nswitch Bool.fromStringExn(\"notAValidBoolean\") {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n```"
         ],
         "signature": "let fromStringExn: string => bool",
         "deprecated": "Use `fromStringOrThrow` instead"
@@ -10832,7 +10838,7 @@
         "kind": "value",
         "name": "compare",
         "docstrings": [
-          "Compares two booleans, returns an `Ordering.t` value.\n\n## Examples\n```rescript\nBool.compare(true, true)->assertEqual(Ordering.equal)\nBool.compare(false, false)->assertEqual(Ordering.equal)\nBool.compare(true, false)->assertEqual(Ordering.greater)\nBool.compare(false, true)->assertEqual(Ordering.less)\n```"
+          "Compares two booleans, returns an `Ordering.t` value.\n\n## Examples\n```rescript\nBool.compare(true, true) == Ordering.equal\nBool.compare(false, false) == Ordering.equal\nBool.compare(true, false) == Ordering.greater\nBool.compare(false, true) == Ordering.less\n```"
         ],
         "signature": "let compare: (bool, bool) => Ordering.t"
       },
@@ -10841,7 +10847,7 @@
         "kind": "value",
         "name": "equal",
         "docstrings": [
-          "Checks if two booleans are equal and have the same value.\n\n## Examples\n```rescript\nBool.equal(true, true)->assertEqual(true)\nBool.equal(false, false)->assertEqual(true)\nBool.equal(true, false)->assertEqual(false)\nBool.equal(false, true)->assertEqual(false)\n```"
+          "Checks if two booleans are equal and have the same value.\n\n## Examples\n```rescript\nBool.equal(true, true) == true\nBool.equal(false, false) == true\nBool.equal(true, false) == false\nBool.equal(false, true) == false\n```"
         ],
         "signature": "let equal: (bool, bool) => bool"
       }
@@ -10865,14 +10871,18 @@
         "id": "Stdlib.BigInt.asIntN",
         "kind": "value",
         "name": "asIntN",
-        "docstrings": [],
+        "docstrings": [
+          "`asIntN(~width, bigint)` returns a bigint value truncated to the given number of bits as a signed integer.\n\nSee [`BigInt.asIntN`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt/asIntN) on MDN.\n\n## Examples\n\n```rescript\nBigInt.asIntN(~width=4, 25n)->assertEqual(-7n)\nBigInt.asIntN(~width=4, 3n)->assertEqual(3n)\n```"
+        ],
         "signature": "let asIntN: (~width: int, bigint) => bigint"
       },
       {
         "id": "Stdlib.BigInt.asUintN",
         "kind": "value",
         "name": "asUintN",
-        "docstrings": [],
+        "docstrings": [
+          "`asUintN(~width, bigint)` returns a bigint value truncated to the given number of bits as an unsigned integer.\n\nSee [`BigInt.asUintN`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt/asUintN) on MDN.\n\n## Examples\n\n```rescript\nBigInt.asUintN(~width=4, 25n)->assertEqual(9n)\nBigInt.asUintN(~width=4, 3n)->assertEqual(3n)\n```"
+        ],
         "signature": "let asUintN: (~width: int, bigint) => bigint"
       },
       {
@@ -10905,7 +10915,9 @@
         "id": "Stdlib.BigInt.fromInt",
         "kind": "value",
         "name": "fromInt",
-        "docstrings": [],
+        "docstrings": [
+          "`fromInt(int)` converts an `int` to a `bigint`.\n\n## Examples\n\n```rescript\nBigInt.fromInt(123)->assertEqual(123n)\nBigInt.fromInt(0)->assertEqual(0n)\nBigInt.fromInt(-456)->assertEqual(-456n)\n```"
+        ],
         "signature": "let fromInt: int => bigint"
       },
       {
@@ -10921,7 +10933,9 @@
         "id": "Stdlib.BigInt.fromFloat",
         "kind": "value",
         "name": "fromFloat",
-        "docstrings": [],
+        "docstrings": [
+          "`fromFloat(float)` converts a `float` to a `bigint` using JavaScript semantics.\nReturns `Some(bigint)` if the float is a valid `bigint`, `None` otherwise.\n\n## Examples\n\n```rescript\nBigInt.fromFloat(123.0)->assertEqual(Some(123n))\nBigInt.fromFloat(0.0)->assertEqual(Some(0n))\nBigInt.fromFloat(-456.0)->assertEqual(Some(-456n))\nBigInt.fromFloat(123.5)->assertEqual(None)\n```"
+        ],
         "signature": "let fromFloat: float => option<bigint>"
       },
       {
@@ -10954,91 +10968,117 @@
         "id": "Stdlib.BigInt.toFloat",
         "kind": "value",
         "name": "toFloat",
-        "docstrings": [],
+        "docstrings": [
+          "`toFloat(bigint)` converts a `bigint` to a `float`.\n\n## Examples\n\n```rescript\nBigInt.toFloat(123n)->assertEqual(123.0)\nBigInt.toFloat(0n)->assertEqual(0.0)\nBigInt.toFloat(-456n)->assertEqual(-456.0)\n```"
+        ],
         "signature": "let toFloat: bigint => float"
       },
       {
         "id": "Stdlib.BigInt.toInt",
         "kind": "value",
         "name": "toInt",
-        "docstrings": [],
+        "docstrings": [
+          "`toInt(bigint)` converts a `bigint` to an `int`.\n\n## Examples\n\n```rescript\nBigInt.toInt(123n)->assertEqual(123)\nBigInt.toInt(0n)->assertEqual(0)\nBigInt.toInt(-456n)->assertEqual(-456)\n```"
+        ],
         "signature": "let toInt: bigint => int"
       },
       {
         "id": "Stdlib.BigInt.add",
         "kind": "value",
         "name": "add",
-        "docstrings": [],
+        "docstrings": [
+          "`add(a, b)` calculates the sum of two bigints.\n\n## Examples\n\n```rescript\nBigInt.add(5n, 3n)->assertEqual(8n)\nBigInt.add(-2n, 7n)->assertEqual(5n)\n```"
+        ],
         "signature": "let add: (bigint, bigint) => bigint"
       },
       {
         "id": "Stdlib.BigInt.sub",
         "kind": "value",
         "name": "sub",
-        "docstrings": [],
+        "docstrings": [
+          "`sub(a, b)` calculates the difference of two bigints.\n\n## Examples\n\n```rescript\nBigInt.sub(8n, 3n)->assertEqual(5n)\nBigInt.sub(2n, 7n)->assertEqual(-5n)\n```"
+        ],
         "signature": "let sub: (bigint, bigint) => bigint"
       },
       {
         "id": "Stdlib.BigInt.mul",
         "kind": "value",
         "name": "mul",
-        "docstrings": [],
+        "docstrings": [
+          "`mul(a, b)` calculates the product of two bigints.\n\n## Examples\n\n```rescript\nBigInt.mul(5n, 3n)->assertEqual(15n)\nBigInt.mul(-2n, 7n)->assertEqual(-14n)\n```"
+        ],
         "signature": "let mul: (bigint, bigint) => bigint"
       },
       {
         "id": "Stdlib.BigInt.div",
         "kind": "value",
         "name": "div",
-        "docstrings": [],
+        "docstrings": [
+          "`div(a, b)` calculates the quotient of two bigints.\n\n## Examples\n\n```rescript\nBigInt.div(15n, 3n)->assertEqual(5n)\nBigInt.div(14n, 3n)->assertEqual(4n)\n```"
+        ],
         "signature": "let div: (bigint, bigint) => bigint"
       },
       {
         "id": "Stdlib.BigInt.mod",
         "kind": "value",
         "name": "mod",
-        "docstrings": [],
+        "docstrings": [
+          "`mod(a, b)` calculates the remainder of dividing two bigints.\n\n## Examples\n\n```rescript\nBigInt.mod(15n, 4n)->assertEqual(3n)\nBigInt.mod(14n, 3n)->assertEqual(2n)\n```"
+        ],
         "signature": "let mod: (bigint, bigint) => bigint"
       },
       {
         "id": "Stdlib.BigInt.bitwiseAnd",
         "kind": "value",
         "name": "bitwiseAnd",
-        "docstrings": [],
+        "docstrings": [
+          "`bitwiseAnd(a, b)` calculates the bitwise AND of two bigints.\n\n## Examples\n\n```rescript\nBigInt.bitwiseAnd(7n, 4n)->assertEqual(4n)\nBigInt.bitwiseAnd(15n, 8n)->assertEqual(8n)\n```"
+        ],
         "signature": "let bitwiseAnd: (bigint, bigint) => bigint"
       },
       {
         "id": "Stdlib.BigInt.bitwiseOr",
         "kind": "value",
         "name": "bitwiseOr",
-        "docstrings": [],
+        "docstrings": [
+          "`bitwiseOr(a, b)` calculates the bitwise OR of two bigints.\n\n## Examples\n\n```rescript\nBigInt.bitwiseOr(7n, 4n)->assertEqual(7n)\nBigInt.bitwiseOr(8n, 4n)->assertEqual(12n)\n```"
+        ],
         "signature": "let bitwiseOr: (bigint, bigint) => bigint"
       },
       {
         "id": "Stdlib.BigInt.bitwiseXor",
         "kind": "value",
         "name": "bitwiseXor",
-        "docstrings": [],
+        "docstrings": [
+          "`bitwiseXor(a, b)` calculates the bitwise XOR of two bigints.\n\n## Examples\n\n```rescript\nBigInt.bitwiseXor(7n, 4n)->assertEqual(3n)\nBigInt.bitwiseXor(15n, 8n)->assertEqual(7n)\n```"
+        ],
         "signature": "let bitwiseXor: (bigint, bigint) => bigint"
       },
       {
         "id": "Stdlib.BigInt.bitwiseNot",
         "kind": "value",
         "name": "bitwiseNot",
-        "docstrings": [],
+        "docstrings": [
+          "`bitwiseNot(bigint)` calculates the bitwise NOT of a bigint.\n\n## Examples\n\n```rescript\nBigInt.bitwiseNot(2n)->assertEqual(-3n)\nBigInt.bitwiseNot(-1n)->assertEqual(0n)\n```"
+        ],
         "signature": "let bitwiseNot: bigint => bigint"
       },
       {
         "id": "Stdlib.BigInt.shiftLeft",
         "kind": "value",
         "name": "shiftLeft",
-        "docstrings": [],
+        "docstrings": [
+          "`shiftLeft(bigint, amount)` calculates the shifted value of a bigint by `amount` bits to the left.\n\n## Examples\n\n```rescript\nBigInt.shiftLeft(4n, 1n)->assertEqual(8n)\nBigInt.shiftLeft(1n, 3n)->assertEqual(8n)\n```"
+        ],
         "signature": "let shiftLeft: (bigint, bigint) => bigint"
       },
       {
         "id": "Stdlib.BigInt.shiftRight",
         "kind": "value",
         "name": "shiftRight",
-        "docstrings": [],
+        "docstrings": [
+          "`shiftRight(bigint, amount)` calculates the shifted value of a bigint by `amount` bits to the right.\n\n## Examples\n\n```rescript\nBigInt.shiftRight(8n, 1n)->assertEqual(4n)\nBigInt.shiftRight(16n, 2n)->assertEqual(4n)\n```"
+        ],
         "signature": "let shiftRight: (bigint, bigint) => bigint"
       },
       {
@@ -11054,7 +11094,9 @@
         "id": "Stdlib.BigInt.land",
         "kind": "value",
         "name": "land",
-        "docstrings": [],
+        "docstrings": [
+          "`land(a, b)` calculates the bitwise AND of two bigints.\n\n**Deprecated:** Use `&` operator or `bitwiseAnd` instead.\n\n## Examples\n\n```rescript\nBigInt.land(7n, 4n)->assertEqual(4n)\n```"
+        ],
         "signature": "let land: (bigint, bigint) => bigint",
         "deprecated": "Use `&` operator or `bitwiseAnd` instead."
       },
@@ -11062,7 +11104,9 @@
         "id": "Stdlib.BigInt.lor",
         "kind": "value",
         "name": "lor",
-        "docstrings": [],
+        "docstrings": [
+          "`lor(a, b)` calculates the bitwise OR of two bigints.\n\n**Deprecated:** Use `bitwiseOr` instead.\n\n## Examples\n\n```rescript\nBigInt.lor(7n, 4n)->assertEqual(7n)\n```"
+        ],
         "signature": "let lor: (bigint, bigint) => bigint",
         "deprecated": "Use `bitwiseOr` instead."
       },
@@ -11070,7 +11114,9 @@
         "id": "Stdlib.BigInt.lxor",
         "kind": "value",
         "name": "lxor",
-        "docstrings": [],
+        "docstrings": [
+          "`lxor(a, b)` calculates the bitwise XOR of two bigints.\n\n**Deprecated:** Use `^` operator or `bitwiseXor` instead.\n\n## Examples\n\n```rescript\nBigInt.lxor(7n, 4n)->assertEqual(3n)\n```"
+        ],
         "signature": "let lxor: (bigint, bigint) => bigint",
         "deprecated": "Use `^` operator or `bitwiseXor` instead."
       },
@@ -11078,7 +11124,9 @@
         "id": "Stdlib.BigInt.lnot",
         "kind": "value",
         "name": "lnot",
-        "docstrings": [],
+        "docstrings": [
+          "`lnot(bigint)` calculates the bitwise NOT of a bigint.\n\n**Deprecated:** Use `~` operator or `bitwiseNot` instead.\n\n## Examples\n\n```rescript\nBigInt.lnot(2n)->assertEqual(-3n)\n```"
+        ],
         "signature": "let lnot: bigint => bigint",
         "deprecated": "Use `~` operator or `bitwiseNot` instead."
       },
@@ -11086,7 +11134,9 @@
         "id": "Stdlib.BigInt.lsl",
         "kind": "value",
         "name": "lsl",
-        "docstrings": [],
+        "docstrings": [
+          "`lsl(bigint, amount)` calculates the shifted value of a bigint by `amount` bits to the left.\n\n**Deprecated:** Use `<<` operator or `shiftLeft` instead.\n\n## Examples\n\n```rescript\nBigInt.lsl(4n, 1n)->assertEqual(8n)\n```"
+        ],
         "signature": "let lsl: (bigint, bigint) => bigint",
         "deprecated": "Use `<<` operator or `shiftLeft` instead."
       },
@@ -11094,7 +11144,9 @@
         "id": "Stdlib.BigInt.asr",
         "kind": "value",
         "name": "asr",
-        "docstrings": [],
+        "docstrings": [
+          "`asr(bigint, amount)` calculates the shifted value of a bigint by `amount` bits to the right.\n\n**Deprecated:** Use `>>` operator or `shiftRight` instead.\n\n## Examples\n\n```rescript\nBigInt.asr(8n, 1n)->assertEqual(4n)\n```"
+        ],
         "signature": "let asr: (bigint, bigint) => bigint",
         "deprecated": "Use `>>` operator or `shiftRight` instead."
       }
@@ -11128,7 +11180,7 @@
         "kind": "value",
         "name": "fromIterator",
         "docstrings": [
-          "`fromIterator(iterator)`\n\nCreates an array from the provided `iterator`\n\n## Examples\n\n```rescript\nMap.fromArray([(\"foo\", 1), (\"bar\", 2)])\n->Map.values\n->Array.fromIterator\n->assertEqual([1, 2])\n```"
+          "`fromIterator(iterator)` creates an array from the provided `iterator`\n\n## Examples\n\n```rescript\nMap.fromArray([(\"foo\", 1), (\"bar\", 2)])\n->Map.values\n->Array.fromIterator\n->assertEqual([1, 2])\n```"
         ],
         "signature": "let fromIterator: Iterator.t<'a> => array<'a>"
       },
@@ -11151,7 +11203,7 @@
         "kind": "value",
         "name": "make",
         "docstrings": [
-          "`make(~length, init)`\n\nCreates an array of length `length` initialized with the value of `init`.\n\n## Examples\n\n```rescript\nArray.make(~length=3, #apple)->assertEqual([#apple, #apple, #apple])\nArray.make(~length=6, 7)->assertEqual([7, 7, 7, 7, 7, 7])\n```"
+          "`make(~length, init)` creates an array of length `length` initialized with the value of `init`.\n\n## Examples\n\n```rescript\nArray.make(~length=3, #apple)->assertEqual([#apple, #apple, #apple])\nArray.make(~length=6, 7)->assertEqual([7, 7, 7, 7, 7, 7])\n```"
         ],
         "signature": "let make: (~length: int, 'a) => array<'a>"
       },
