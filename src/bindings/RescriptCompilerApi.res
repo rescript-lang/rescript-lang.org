@@ -390,20 +390,19 @@ module ConversionResult = {
   let decode = (~fromLang: Lang.t, ~toLang: Lang.t, json): t => {
     open JSON
     switch json {
-    | Object(dict{
-        "type": String(type_),
-        "msg": ?Some(String(msg)),
-        "errors": ?Some(Array(errors)),
-      }) =>
-      switch type_ {
-      | "success" => Success(ConvertSuccess.decode(json))
-      | "unexpected_error" => msg->UnexpectedError
-      | "syntax_error" =>
-        let locMsgs = errors->Array.map(LocMsg.decode)
-        Fail({fromLang, toLang, details: locMsgs})
-      | other => Unknown(`Unknown conversion result type "${other}"`, json)
-      }
-    | _ => throw(Failure(`Failed to decode ConversionResult. ${__LOC__}`))
+    | Object(dict{"type": String("success")}) => Success(ConvertSuccess.decode(json))
+    | Object(dict{"type": String("unexpected_error"), "msg": String(msg)}) => UnexpectedError(msg)
+    | Object(dict{"type": String("syntax_error"), "errors": Array(errors)}) =>
+      let locMsgs = errors->Array.map(LocMsg.decode)
+      Fail({fromLang, toLang, details: locMsgs})
+    | Object(dict{"type": String(other)}) =>
+      Unknown(`Unknown conversion result type "${other}"`, json)
+    | _ =>
+      throw(
+        Failure(
+          `Failed to decode ConversionResult. ${__LOC__}. Could not decode \`${json->JSON.stringify}\``,
+        ),
+      )
     }
   }
 }
