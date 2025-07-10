@@ -16,6 +16,9 @@ module Process = {
   @scope("process") external env: Dict.t<string> = "env"
   @scope("process") @val external argv: array<string> = "argv"
   @scope("process") external exit: int => unit = "exit"
+  module Env = {
+    @scope(("process", "env")) external nodeEnv: string = "NODE_ENV"
+  }
 }
 
 module Fs = {
