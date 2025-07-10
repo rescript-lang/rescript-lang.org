@@ -317,39 +317,29 @@ module CompileFail = {
   let decode = (json): t => {
     open JSON
     switch json {
-    | Object(dict{"type": String(type_)}) =>
-      switch type_ {
-      | "syntax_error" =>
-        let locMsgs = switch json {
-        | Object(dict{"errors": Array(errors)}) => errors->Array.map(LocMsg.decode)
-        | _ => throw(Failure(`Failed to decode errors from syntax_error. ${__LOC__}`))
-        }
-        // TODO: There seems to be a bug in the ReScript bundle that reports
-        //       back multiple LocMsgs of the same value
-        locMsgs->LocMsg.dedupe->SyntaxErr
-      | "type_error" =>
-        let locMsgs = switch json {
-        | Object(dict{"errors": Array(errors)}) => errors->Array.map(LocMsg.decode)
-        | _ => throw(Failure(`Failed to decode errors from type_error. ${__LOC__}`))
-        }
-        TypecheckErr(locMsgs)
-      | "warning_error" =>
-        let warnings = switch json {
-        | Object(dict{"errors": Array(warnings)}) => warnings->Array.map(Warning.decode)
-        | _ => throw(Failure(`Failed to decode errors from warning_error. ${__LOC__}`))
-        }
-        WarningErr(warnings)
-      | "other_error" =>
-        let locMsgs = switch json {
-        | Object(dict{"errors": Array(errors)}) => errors->Array.map(LocMsg.decode)
-        | _ => throw(Failure(`Failed to decode errors from other_error. ${__LOC__}`))
-        }
-        OtherErr(locMsgs)
-
-      | "warning_flag_error" => WarningFlagErr(WarningFlag.decode(json))
-      | other => throw(Failure(`Unknown type "${other}" in CompileFail result. ${__LOC__}`))
-      }
-    | _ => throw(Failure(`Failed to decode CompileFail. ${__LOC__}`))
+    | Object(dict{"type": String("syntax_error"), "errors": Array(errors)}) =>
+      let locMsgs = errors->Array.map(LocMsg.decode)
+      // TODO: There seems to be a bug in the ReScript bundle that reports
+      //       back multiple LocMsgs of the same value
+      locMsgs->LocMsg.dedupe->SyntaxErr
+    | Object(dict{"type": String("type_error"), "errors": Array(errors)}) =>
+      let locMsgs = errors->Array.map(LocMsg.decode)
+      TypecheckErr(locMsgs)
+    | Object(dict{"type": String("warning_error"), "errors": Array(warnings)}) =>
+      let warnings = warnings->Array.map(Warning.decode)
+      WarningErr(warnings)
+    | Object(dict{"type": String("other_error"), "errors": Array(errors)}) =>
+      let locMsgs = errors->Array.map(LocMsg.decode)
+      OtherErr(locMsgs)
+    | Object(dict{"type": String("warning_flag_error")}) => WarningFlagErr(WarningFlag.decode(json))
+    | Object(dict{"type": String(other)}) =>
+      throw(Failure(`Unknown type "${other}" in CompileFail result. ${__LOC__}`))
+    | _ =>
+      throw(
+        Failure(
+          `Failed to decode CompileFail. ${__LOC__}. Could not decode \`${json->JSON.stringify}\``,
+        ),
+      )
     }
   }
 }
@@ -365,16 +355,9 @@ module CompilationResult = {
   let decode = (~time: float, json: JSON.t): t => {
     open JSON
     switch json {
-    | Object(dict{"type": String(type_)}) =>
-      switch type_ {
-      | "success" => Success(CompileSuccess.decode(~time, json))
-      | "unexpected_error" =>
-        switch json {
-        | Object(dict{"msg": String(msg)}) => UnexpectedError(msg)
-        | _ => throw(Failure(`Failed to decode msg from unexpected_error. ${__LOC__}`))
-        }
-      | _ => Fail(CompileFail.decode(json))
-      }
+    | Object(dict{"type": String("success")}) => Success(CompileSuccess.decode(~time, json))
+    | Object(dict{"type": String("unexpected_error"), "msg": String(msg)}) => UnexpectedError(msg)
+    | Object(dict{"type": String(_)}) => Fail(CompileFail.decode(json))
     | _ => throw(Failure(`Failed to decode CompilationResult. ${__LOC__}`))
     }
   }
@@ -390,20 +373,19 @@ module ConversionResult = {
   let decode = (~fromLang: Lang.t, ~toLang: Lang.t, json): t => {
     open JSON
     switch json {
-    | Object(dict{
-        "type": String(type_),
-        "msg": ?Some(String(msg)),
-        "errors": ?Some(Array(errors)),
-      }) =>
-      switch type_ {
-      | "success" => Success(ConvertSuccess.decode(json))
-      | "unexpected_error" => msg->UnexpectedError
-      | "syntax_error" =>
-        let locMsgs = errors->Array.map(LocMsg.decode)
-        Fail({fromLang, toLang, details: locMsgs})
-      | other => Unknown(`Unknown conversion result type "${other}"`, json)
-      }
-    | _ => throw(Failure(`Failed to decode ConversionResult. ${__LOC__}`))
+    | Object(dict{"type": String("success")}) => Success(ConvertSuccess.decode(json))
+    | Object(dict{"type": String("unexpected_error"), "msg": String(msg)}) => UnexpectedError(msg)
+    | Object(dict{"type": String("syntax_error"), "errors": Array(errors)}) =>
+      let locMsgs = errors->Array.map(LocMsg.decode)
+      Fail({fromLang, toLang, details: locMsgs})
+    | Object(dict{"type": String(other)}) =>
+      Unknown(`Unknown conversion result type "${other}"`, json)
+    | _ =>
+      throw(
+        Failure(
+          `Failed to decode ConversionResult. ${__LOC__}. Could not decode \`${json->JSON.stringify}\``,
+        ),
+      )
     }
   }
 }

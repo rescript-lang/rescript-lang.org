@@ -35,7 +35,10 @@ module LoadScript = {
 }
 
 module CdnMeta = {
-  let baseUrl = "/playground-bundles"
+  let baseUrl =
+    Node.Process.Env.nodeEnv === "development"
+      ? "https://cdn.rescript-lang.org"
+      : "" + "/playground-bundles"
 
   let getCompilerUrl = (version): string => `${baseUrl}/${Semver.toString(version)}/compiler.js`
 
