@@ -4,7 +4,15 @@ let default = props => {
   let (isOverlayOpen, setOverlayOpen) = React.useState(() => false)
 
   let lazyPlayground = Next.Dynamic.dynamic(
-    async () => await import(Playground.make),
+    async () => {
+      try {
+        await import(Playground.make)
+      } catch {
+      | JsExn(e) =>
+        Console.error2("Error loading Playground:", e)
+        JsExn.throw(e)
+      }
+    },
     {
       ssr: false,
       loading: () => <span> {React.string("Loading...")} </span>,
