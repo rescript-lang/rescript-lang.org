@@ -5495,6 +5495,15 @@
           "`ignore(string)` ignores the provided string and returns unit.\n\n  This helper is useful when you want to discard a value (for example, the result of an operation with side effects)\n  without having to store or process it further."
         ],
         "signature": "let ignore: string => unit"
+      },
+      {
+        "id": "Stdlib.String.getSymbolUnsafe",
+        "kind": "value",
+        "name": "getSymbolUnsafe",
+        "docstrings": [
+          "`getSymbolUnsafe(str, symbol)` returns the value of the symbol property of a string.\n\n## Examples\n\n```rescript\nlet it: Iterator.t<string> = (\"foo\"->String.getSymbolUnsafe(Symbol.iterator))()\nNullable.make(it)->Nullable.isNullable == false\n```"
+        ],
+        "signature": "let getSymbolUnsafe: (string, Symbol.t) => 'a"
       }
     ]
   },
@@ -5536,7 +5545,7 @@
         "kind": "value",
         "name": "mapOr",
         "docstrings": [
-          "`mapOr(res, default, f)`: When res is `Ok(n)`, returns `f(n)`, otherwise `default`.\n\n## Examples\n\n```rescript\nlet ok = Ok(42)\nResult.mapOr(ok, 0, (x) => x / 2) == 21\n\nlet error = Error(\"Invalid data\")\nResult.mapOr(error, 0, (x) => x / 2) == 0\n```"
+          "`mapOr(res, default, f)`: When res is `Ok(n)`, returns `f(n)`, otherwise `default`.\n\n## Examples\n\n```rescript\nlet ok = Ok(42)\nResult.mapOr(ok, 0, x => x / 2) == 21\n\nlet error = Error(\"Invalid data\")\nResult.mapOr(error, 0, x => x / 2) == 0\n```"
         ],
         "signature": "let mapOr: (result<'a, 'c>, 'b, 'a => 'b) => 'b"
       },
@@ -5553,7 +5562,7 @@
         "kind": "value",
         "name": "map",
         "docstrings": [
-          "`map(res, f)`: When res is `Ok(n)`, returns `Ok(f(n))`. Otherwise returns res\nunchanged. Function `f` takes a value of the same type as `n` and returns an\nordinary value.\n\n## Examples\n\n```rescript\nlet f = (x) => sqrt(Int.toFloat(x))\n\nResult.map(Ok(64), f) == Ok(8.0)\n\nResult.map(Error(\"Invalid data\"), f) == Error(\"Invalid data\")\n```"
+          "`map(res, f)`: When res is `Ok(n)`, returns `Ok(f(n))`. Otherwise returns res\nunchanged. Function `f` takes a value of the same type as `n` and returns an\nordinary value.\n\n## Examples\n\n```rescript\nlet f = x => sqrt(Int.toFloat(x))\n\nResult.map(Ok(64), f) == Ok(8.0)\n\nResult.map(Error(\"Invalid data\"), f) == Error(\"Invalid data\")\n```"
         ],
         "signature": "let map: (result<'a, 'c>, 'a => 'b) => result<'b, 'c>"
       },
@@ -5562,7 +5571,7 @@
         "kind": "value",
         "name": "flatMap",
         "docstrings": [
-          "`flatMap(res, f)`: When res is `Ok(n)`, returns `f(n)`. Otherwise, returns res\nunchanged. Function `f` takes a value of the same type as `n` and returns a\n`Result`.\n\n## Examples\n\n```rescript\nlet recip = (x) =>\n  if (x !== 0.0) {\n    Ok(1.0 /. x)\n  } else {\n    Error(\"Divide by zero\")\n  }\n\nResult.flatMap(Ok(2.0), recip) == Ok(0.5)\n\nResult.flatMap(Ok(0.0), recip) == Error(\"Divide by zero\")\n\nResult.flatMap(Error(\"Already bad\"), recip) == Error(\"Already bad\")\n```"
+          "`flatMap(res, f)`: When res is `Ok(n)`, returns `f(n)`. Otherwise, returns res\nunchanged. Function `f` takes a value of the same type as `n` and returns a\n`Result`.\n\n## Examples\n\n```rescript\nlet recip = x =>\n  if x !== 0.0 {\n    Ok(1.0 /. x)\n  } else {\n    Error(\"Divide by zero\")\n  }\n\nResult.flatMap(Ok(2.0), recip) == Ok(0.5)\n\nResult.flatMap(Ok(0.0), recip) == Error(\"Divide by zero\")\n\nResult.flatMap(Error(\"Already bad\"), recip) == Error(\"Already bad\")\n```"
         ],
         "signature": "let flatMap: (result<'a, 'c>, 'a => result<'b, 'c>) => result<'b, 'c>"
       },
@@ -5615,7 +5624,7 @@
         "kind": "value",
         "name": "compare",
         "docstrings": [
-          "`compare(res1, res2, f)`: Compare two `Result` variables with respect to a\ncomparison function. The comparison function returns -1. if the first variable\nis \"less than\" the second, 0. if the two variables are equal, and 1. if the first\nis \"greater than\" the second.\n\nIf `res1` and `res2` are of the form `Ok(n)` and `Ok(m)`, return the result of\n`f(n, m)`. If `res1` is of the form `Error(e)` and `res2` of the form `Ok(n)`,\nreturn -1. (nothing is less than something) If `res1` is of the form `Ok(n)` and\n`res2` of the form `Error(e)`, return 1. (something is greater than nothing) If\nboth `res1` and `res2` are of the form `Error(e)`, return 0. (equal)\n\n## Examples\n\n```rescript\nlet good1 = Ok(59)\n\nlet good2 = Ok(37)\n\nlet bad1 = Error(\"invalid\")\n\nlet bad2 = Error(\"really invalid\")\n\nlet mod10cmp = (a, b) => Int.compare(mod(a, 10), mod(b, 10))\n\nResult.compare(Ok(39), Ok(57), mod10cmp) == 1.\n\nResult.compare(Ok(57), Ok(39), mod10cmp) == (-1.)\n\nResult.compare(Ok(39), Error(\"y\"), mod10cmp) == 1.\n\nResult.compare(Error(\"x\"), Ok(57), mod10cmp) == (-1.)\n\nResult.compare(Error(\"x\"), Error(\"y\"), mod10cmp) == 0.\n```"
+          "`compare(res1, res2, f)`: Compare two `Result` variables with respect to a\ncomparison function. The comparison function returns -1. if the first variable\nis \"less than\" the second, 0. if the two variables are equal, and 1. if the first\nis \"greater than\" the second.\n\nIf `res1` and `res2` are of the form `Ok(n)` and `Ok(m)`, return the result of\n`f(n, m)`. If `res1` is of the form `Error(e)` and `res2` of the form `Ok(n)`,\nreturn -1. (nothing is less than something) If `res1` is of the form `Ok(n)` and\n`res2` of the form `Error(e)`, return 1. (something is greater than nothing) If\nboth `res1` and `res2` are of the form `Error(e)`, return 0. (equal)\n\n## Examples\n\n```rescript\nlet good1 = Ok(59)\n\nlet good2 = Ok(37)\n\nlet bad1 = Error(\"invalid\")\n\nlet bad2 = Error(\"really invalid\")\n\nlet mod10cmp = (a, b) => Int.compare(mod(a, 10), mod(b, 10))\n\nResult.compare(Ok(39), Ok(57), mod10cmp) == 1.\n\nResult.compare(Ok(57), Ok(39), mod10cmp) == -1.\n\nResult.compare(Ok(39), Error(\"y\"), mod10cmp) == 1.\n\nResult.compare(Error(\"x\"), Ok(57), mod10cmp) == -1.\n\nResult.compare(Error(\"x\"), Error(\"y\"), mod10cmp) == 0.\n```"
         ],
         "signature": "let compare: (\n  result<'a, 'c>,\n  result<'b, 'd>,\n  ('a, 'b) => Ordering.t,\n) => Ordering.t"
       },
