@@ -910,28 +910,30 @@ module Settings = {
               {switch experimentalVersions {
               | [] => React.null
               | experimentalVersions =>
-                let versionByOrder = experimentalVersions->Belt.SortArray.stableSortBy((a, b) => {
-                  let cmp = ({Semver.major: major, minor, patch, preRelease}) => {
-                    let preRelease = switch preRelease {
-                    | Some(preRelease) =>
-                      switch preRelease {
-                      | Dev(id) => 0 + id
-                      | Alpha(id) => 10 + id
-                      | Beta(id) => 20 + id
-                      | Rc(id) => 30 + id
+                let versionByOrder = experimentalVersions->Array.toSorted((b, a) => {
+                  if a.major != b.major {
+                    a.major - b.major
+                  } else if a.minor != b.minor {
+                    a.minor - b.minor
+                  } else if a.patch != b.patch {
+                    a.patch - b.patch
+                  } else {
+                    switch (a.preRelease, b.preRelease)->Option.all2 {
+                    | Some((prereleaseA, prereleaseB)) =>
+                      switch (prereleaseA, prereleaseB) {
+                      | (Rc(rcA), Rc(rcB)) => rcA - rcB
+                      | (Rc(rcA), _) => rcA
+                      | (Beta(betaA), Beta(betaB)) => betaA - betaB
+                      | (Beta(betaA), _) => betaA
+                      | (Alpha(alphaA), Alpha(alphaB)) => alphaA - alphaB
+                      | (Alpha(alphaA), _) => alphaA
+                      | (Dev(devA), Dev(devB)) => devA - devB
+                      | (Dev(devA), _) => devA
                       }
+
                     | None => 0
                     }
-                    let number =
-                      [major, minor, patch]
-                      ->Array.map(v => v->Int.toString)
-                      ->Array.join("")
-                      ->Int.fromString
-                      ->Option.getOr(0)
-
-                    number + preRelease
-                  }
-                  cmp(b) - cmp(a)
+                  }->Float.fromInt
                 })
                 <>
                   <VersionSelect.SectionHeader value=Constants.dropdownLabelNext />
