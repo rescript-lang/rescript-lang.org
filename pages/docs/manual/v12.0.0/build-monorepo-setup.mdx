@@ -1,0 +1,102 @@
+---
+title: "Setting up a monorepo"
+metaTitle: "Setting up a monorepo"
+description: "Setting up a monorepo"
+canonical: "/docs/manual/v12.0.0/build-monorepo-setup"
+---
+
+# Setting up a monorepo with ReScript
+
+**Since 12.0**
+
+> A monorepo is a single repository containing multiple distinct projects, with well-defined relationships.
+
+ReScript 12.0 introduces native monorepo support via the new "Rewatch" build system. This guide shows you how to set it up.
+
+**Note:** This feature requires the new build system and is **not compatible** with `rescript legacy`.
+
+## Project Structure
+
+A ReScript monorepo requires a `rescript.json` file at the repository root, plus a `rescript.json` file in each sub-project directory.
+
+A typical structure looks like this:
+
+```
+my-monorepo/
+├── rescript.json
+├── packages/
+│   ├── package-1/
+│   │   ├── rescript.json
+│   │   ├── src/
+│   ├── package-2/
+│   │   ├── rescript.json
+│   │   ├── src/
+│   ├── ...
+```
+
+## Root `rescript.json` Configuration
+
+The root `rescript.json` orchestrates the monorepo by listing its constituent packages.
+
+```json
+{
+  "name": "my-monorepo",
+  "dependencies": [
+    "package-1",
+    "package-2"
+  ],
+  "package-specs": {
+    "module": "esmodule",
+    "in-source": true
+  },
+  "suffix": ".res.mjs",
+  "bsc-flags": []
+}
+```
+
+The "dependencies" array specifies the names of your packages, which must correspond to the "name" fields in their respective sub-rescript.json files.
+
+Inheritance: By default, all settings defined in the root rescript.json are inherited by the individual packages.
+
+## Package `rescript.json` Configuration
+
+Each nested rescript.json configures a specific package.
+
+`packages/package-1/rescript.json`:
+
+```json
+{
+  "name": "package-1",
+  "sources": ["src"],
+  "dependencies": []
+}
+```
+
+`packages/package-2/rescript.json`:
+
+```json
+{
+  "name": "package-2",
+  "sources": ["src"],
+  "dependencies": ["package-1"],
+   "warnings": {
+    "number":"-27"
+  }
+}
+```
+
+In `package-2`, we demonstrate overriding a root setting by specifically disabling warning 27 (unused variable) for this package only.
+
+Note the dependencies array here, which allows one package to depend on another within the monorepo.
+
+## Building the monorepo
+
+From the root directory, build all packages with:
+
+```bash
+rescript build
+```
+
+Note on package.json: ReScript's build system manages the compilation of your ReScript code.
+It does not directly interact with your `package.json` setup or `node_modules`.
+You might need a separate monorepo tool (like Yarn Workspaces, pnpm, or npm Workspaces) to manage your JavaScript/Node.js dependencies across packages if applicable.
