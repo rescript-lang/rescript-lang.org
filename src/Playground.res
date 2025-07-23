@@ -12,6 +12,7 @@
 %%raw(`
 if (typeof window !== "undefined" && typeof window.navigator !== "undefined") {
   require("codemirror/mode/javascript/javascript");
+  require("codemirror/keymap/vim");
   require("codemirror/addon/scroll/simplescrollbars");
   require("plugins/cm-rescript-mode");
   require("plugins/cm-reason-mode");
@@ -1005,8 +1006,10 @@ module Settings = {
     ~setConfig: Api.Config.t => unit,
     ~editorCode: React.ref<string>,
     ~config: Api.Config.t,
+    ~keyMapState: (CodeMirror.KeyMap.t, (CodeMirror.KeyMap.t => CodeMirror.KeyMap.t) => unit),
   ) => {
     let {Api.Config.warn_flags: warn_flags} = config
+    let (keyMap, setKeyMap) = keyMapState
 
     let availableTargetLangs = Api.Version.availableLanguages(readyState.selected.apiVersion)
 
@@ -1083,6 +1086,19 @@ module Settings = {
           toLabel={lang => lang->Api.Lang.toExt->Js.String2.toUpperCase}
           selected=readyState.targetLang
           onChange=onTargetLangSelect
+        />
+      </div>
+      <div className="mt-6">
+        <div className=titleClass> {React.string("Vim")} </div>
+        <ToggleSelection
+          values=[CodeMirror.KeyMap.Default, CodeMirror.KeyMap.Vim]
+          toLabel={enabled =>
+            switch enabled {
+            | CodeMirror.KeyMap.Vim => "On"
+            | CodeMirror.KeyMap.Default => "Off"
+            }}
+          selected=keyMap
+          onChange={value => setKeyMap(_ => value)}
         />
       </div>
       <div className="mt-6">
@@ -1279,6 +1295,7 @@ module OutputPanel = {
     ~compilerDispatch,
     ~compilerState: CompilerManagerHook.state,
     ~editorCode: React.ref<string>,
+    ~keyMapState: (CodeMirror.KeyMap.t, (CodeMirror.KeyMap.t => CodeMirror.KeyMap.t) => unit),
   ) => {
     /*
        We need the prevState to understand different
@@ -1370,7 +1387,9 @@ module OutputPanel = {
       let config = ready.selected.config
       let setConfig = config => compilerDispatch(UpdateConfig(config))
 
-      <Settings readyState=ready dispatch=compilerDispatch editorCode setConfig config />
+      <Settings
+        readyState=ready dispatch=compilerDispatch editorCode setConfig config keyMapState
+      />
     | SetupFailed(msg) => <div> {React.string("Setup failed: " ++ msg)} </div>
     | Init => <div> {React.string("Initalizing Playground...")} </div>
     }
@@ -1565,6 +1584,18 @@ let default = () => {
 
   let windowWidth = CodeMirror.useWindowWidth()
 
+  let (keyMap, setKeyMap) = React.useState(() => {
+    Dom.Storage2.localStorage
+    ->Dom.Storage2.getItem("vimMode")
+    ->Belt.Option.map(CodeMirror.KeyMap.fromString)
+    ->Belt.Option.getWithDefault(CodeMirror.KeyMap.Default)
+  })
+
+  React.useEffect1(() => {
+    Dom.Storage2.localStorage->Dom.Storage2.setItem("vimMode", CodeMirror.KeyMap.toString(keyMap))
+    None
+  }, [keyMap])
+
   // The user can focus an error / warning on a specific line & column
   // which is stored in this ref and triggered by hover / click states
   // in the CodeMirror editor
@@ -1712,13 +1743,16 @@ let default = () => {
                   }}
                   onMarkerFocus={rowCol => setFocusedRowCol(_prev => Some(rowCol))}
                   onMarkerFocusLeave={_ => setFocusedRowCol(_ => None)}
+                  keyMap
                 />
               </div>
             </div>
             <div
               className="relative w-full overflow-x-hidden h-screen lg:h-auto lg:w-1/2"
               style={ReactDOM.Style.make(~maxWidth=windowWidth > 1024 ? "56rem" : "100%", ())}>
-              <OutputPanel compilerDispatch compilerState editorCode />
+              <OutputPanel
+                compilerDispatch compilerState editorCode keyMapState={(keyMap, setKeyMap)}
+              />
               <div className="absolute bottom-0 w-full">
                 <Statusbar
                   actionIndicatorKey={Belt.Int.toString(actionCount)} state=compilerState

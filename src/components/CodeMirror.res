@@ -8,6 +8,21 @@
     This file is providing the core functionality and logic of our CodeMirror instances.
  */
 
+module KeyMap = {
+  type t = Default | Vim
+  let toString = (keyMap: t) =>
+    switch keyMap {
+    | Default => "default"
+    | Vim => "vim"
+    }
+
+  let fromString = (str: string) =>
+    switch str {
+    | "vim" => Vim
+    | _ => Default
+    }
+}
+
 let useWindowWidth: unit => int = %raw(j` () => {
   const isClient = typeof window === 'object';
 
@@ -69,6 +84,8 @@ module CM = {
       fixedGutter: bool,
       @optional
       scrollbarStyle: string,
+      @optional
+      keyMap: string,
     }
   }
 
@@ -597,6 +614,7 @@ let make = // props relevant for the react wrapper
   ~readOnly=false,
   ~lineNumbers=true,
   ~scrollbarStyle="overlay",
+  ~keyMap=KeyMap.Default,
   ~lineWrapping=false,
 ): React.element => {
   let inputElement = React.useRef(Js.Nullable.null)
@@ -606,7 +624,7 @@ let make = // props relevant for the react wrapper
   let windowWidth = useWindowWidth()
   let (onMouseOver, onMouseOut, onMouseMove) = useHoverTooltip(~cmStateRef, ~cmRef, ())
 
-  React.useEffect0(() =>
+  React.useEffect1(() => {
     switch inputElement.current->Js.Nullable.toOption {
     | Some(input) =>
       let options = CM.Options.t(
@@ -617,6 +635,7 @@ let make = // props relevant for the react wrapper
         ~fixedGutter=false,
         ~readOnly,
         ~lineNumbers,
+        ~keyMap=KeyMap.toString(keyMap),
         ~scrollbarStyle,
         (),
       )
@@ -659,7 +678,7 @@ let make = // props relevant for the react wrapper
       Some(cleanup)
     | None => None
     }
-  )
+  }, [keyMap])
 
   React.useEffect1(() => {
     cmStateRef.current.hoverHints = hoverHints
