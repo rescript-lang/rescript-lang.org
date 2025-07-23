@@ -3,36 +3,42 @@ type mode =
   | AutoFadeTransition(int) //milliseconds
 
 @react.component
-let make = (~className="", ~imgClassName="", ~imgSrcs: array<string>, ~mode=NoAuto) => {
+let make = (
+  ~className="",
+  ~imgClassName="",
+  ~imgSrcs: array<string>,
+  ~imgLoading=?,
+  ~mode=NoAuto,
+) => {
   let (index, setIndex) = React.useState(_ => 0)
 
-  React.useEffect0(() => {
+  React.useEffect(() => {
     switch mode {
     | NoAuto => None
     | AutoFadeTransition(ms) =>
-      let timerId = Js.Global.setInterval(() => {
+      let timerId = setInterval2(~handler=() => {
         setIndex(
           prev => {
-            if prev === imgSrcs->Belt.Array.length - 1 {
+            if prev === imgSrcs->Array.length - 1 {
               0
             } else {
               prev + 1
             }
           },
         )
-      }, ms)
+      }, ~timeout=ms)
 
       Some(
         () => {
-          Js.Global.clearInterval(timerId)
+          clearInterval(timerId)
         },
       )
     }
-  })
+  }, [])
 
   let src = imgSrcs->Belt.Array.getExn(index)
 
-  let lineEls = imgSrcs->Belt.Array.mapWithIndex((i, src) => {
+  let lineEls = imgSrcs->Array.mapWithIndex((src, i) => {
     let bgColor = if i === index {
       "bg-gray-40"
     } else {
@@ -52,7 +58,7 @@ let make = (~className="", ~imgClassName="", ~imgSrcs: array<string>, ~mode=NoAu
     ReactEvent.Mouse.preventDefault(evt)
 
     setIndex(prev => {
-      if prev === imgSrcs->Belt.Array.length - 1 {
+      if prev === imgSrcs->Array.length - 1 {
         0
       } else {
         prev + 1
@@ -72,7 +78,7 @@ let make = (~className="", ~imgClassName="", ~imgSrcs: array<string>, ~mode=NoAu
         leave="transition-opacity duration-1000"
         leaveFrom="opacity-100"
         leaveTo="opacity-0">
-        <img className=imgClassName src />
+        <img className=imgClassName src loading=?imgLoading />
       </HeadlessUI.Transition>
     </div>
     <div className="flex space-x-2 mt-4"> {lineEls->React.array} </div>

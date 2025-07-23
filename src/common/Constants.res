@@ -1,10 +1,42 @@
+type versionMapping = {
+  latest: string,
+  next: string,
+}
+
+type versions = {
+  @as("VERSION_NEXT") next: string,
+  @as("VERSION_LATEST") latest: string,
+}
+
+@scope("process") external versions: versions = "env"
+
+let latestVersion = (versions.latest, versions.latest->Semver.tryGetMajorString)
+
 // This is used for the version dropdown in the manual layouts
 let allManualVersions = [
-  ("latest", "v9.1 - v10.0"),
+  latestVersion,
+  ("v10.0.0", "v9.1 - v10.1"),
   ("v9.0.0", "v8.2 - v9.0"),
   ("v8.0.0", "v6.0 - v8.2"),
 ]
-let allReactVersions = [("latest", "v0.11.0"), ("v0.10.0", "v0.10.0")]
+
+let nextVersion =
+  versions.latest === versions.next
+    ? None
+    : Some(versions.next, versions.next->Semver.tryGetMajorString)
+
+let stdlibVersions =
+  versions.latest === "v11.0.0" ? [latestVersion] : [("v11.0.0", "v11"), latestVersion]
+
+let latestReactVersion = "latest"
+let allReactVersions = [
+  ("latest", latestReactVersion),
+  ("v0.11.0", "v0.11.0"),
+  ("v0.10.0", "v0.10.0"),
+]
+
+let dropdownLabelNext = "--- Next ---"
+let dropdownLabelReleased = "--- Released ---"
 
 // Used for the DocsOverview and collapsible navigation
 let languageManual = version => {
@@ -16,11 +48,9 @@ let languageManual = version => {
   ]
 }
 
-let ecosystem = [
-  ("Package Index", "/packages"),
-  ("rescript-react", "/docs/react/latest/introduction"),
-  ("GenType", "/docs/gentype/latest/introduction"),
-  ("Reanalyze", "https://github.com/reason-association/reanalyze"),
-]
-
 let tools = [("Syntax Lookup", "/syntax-lookup")]
+
+let githubHref = "https://github.com/rescript-lang/rescript"
+let xHref = "https://x.com/rescriptlang"
+let blueSkyHref = "https://bsky.app/profile/rescript-lang.org"
+let discourseHref = "https://forum.rescript-lang.org"

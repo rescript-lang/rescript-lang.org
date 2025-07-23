@@ -5,7 +5,7 @@
 */
 
 .CodeMirror {
-  @apply h-auto;
+  @apply h-full;
   background-color: inherit;
   color: inherit;
 }

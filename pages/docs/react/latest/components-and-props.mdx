@@ -26,7 +26,7 @@ Let's start with a first example to see how a ReScript React component looks lik
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res example
 // src/Greeting.res
 @react.component
 let make = () => {
@@ -39,7 +39,9 @@ let make = () => {
 import * as React from "react";
 
 function Greeting(props) {
-  return React.createElement("div", undefined, "Hello ReScripters!");
+  return JsxRuntime.jsx("div", {
+    children: "Hello ReScripters!"
+  });
 }
 
 var make = Greeting;
@@ -51,7 +53,7 @@ var make = Greeting;
 
 We've created a `Greeting.res` file that contains a `make` function that doesn't receive any props (the function doesn't receive any parameters), and returns a `React.element` that represents `<div> Hello ReScripters! </div>` in the rendered DOM.
 
-You can also see in the the JS output that the function we created was directly translated into the pure JS version of a ReactJS component. Note how a  `<div>` transforms into a `React.createElement("div",...)` call in JavaScript.
+You can also see in the the JS output that the function we created was directly translated into the pure JS version of a ReactJS component. Note how a  `<div>` transforms into a `JsxRuntime.jsx("div",...)` call in JavaScript.
 
 ## Defining Props
 
@@ -59,7 +61,7 @@ In ReactJS, props are usually described as a single `props` record. In ReScript,
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res example
 // src/Article.res
 @react.component
 let make = (~title: string, ~visitorCount: int, ~children: React.element) => {
@@ -90,7 +92,7 @@ We can leverage the full power of labeled arguments to define optional props as 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res example
 // Greeting.res
 @react.component
 let make = (~name: option<string>=?) => {
@@ -116,9 +118,20 @@ function Greeting(props) {
 
 In JSX, you can apply optional props with some special syntax:
 
+<div className="hidden">
+
+```res prelude
+module Greeting = {
+  @react.component
+  let make = (~name: option<string>=?) => {React.string(name->Option.getOr(""))}
+}
+```
+
+</div>
+
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res example
 let name = Some("Andrea")
 
 <Greeting ?name />
@@ -162,7 +175,7 @@ as a `React.element`:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res example
 module MyList = {
   @react.component
   let make = (~children: React.element) => {
@@ -219,7 +232,7 @@ module StringChildren = {
 
 **Component with an optional `React.element` as children:**
 
-```res
+```res example
 module OptionalChildren = {
   @react.component
   let make = (~children: option<React.element>=?) => {
@@ -261,6 +274,69 @@ The best way to approach this kind of issue is by using props instead of childre
 **The best use-case for `children` is to pass down `React.element`s without any semantic order or implementation details!**
 
 
+## @react decorators
+
+You might've wondered what `@react.component` actually does.
+It's a decorator that tells the ReScript compiler to treat the function as a React component, transforming it at the syntax level.
+
+In JavaScript, a React component is just a function that takes props (an object) and returns JSX. In ReScript, props are typically represented as a record type.
+The `@react.component` decorator automatically generates that record type and wraps the function for you—so you don't have to.
+
+```res
+// Counter.res
+
+@react.component
+let make = (~title, ~count) => {
+  <h1> {React.string(title)} {React.int(count)} </h1>
+}
+
+// This is equivalent to writing:
+
+type props = {title: string, count: int}
+
+let \"Counter" = ({title, count}: props) => {
+  <h1> {React.string(title)} {React.int(count)} </h1>
+}
+```
+
+However, writing it manually like this means you lose the `make` function name, which prevents JSX from working as expected when using the component elsewhere.
+
+Having an uppercased function name also helps distinguish React components from regular functions in [React DevTools](https://react.dev/learn/react-developer-tools).
+
+If you prefer defining your own props record, you can use `@react.componentWithProps`. This gives you full control over the props type while still generating a proper uppercased component.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+// Counter.res
+type props = {title: string, count: int}
+
+@react.componentWithProps
+let make = (props: props) => {
+  <h1>
+    {React.string(props.title)}
+    {React.int(props.count)}
+  </h1>
+}
+```
+
+```js
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Counter(props) {
+  return JsxRuntime.jsxs("h1", {
+    children: [
+      props.title,
+      props.count
+    ]
+  });
+}
+
+let make = Counter;
+```
+
+</CodeTab>
+
 ## Props & Type Inference
 
 The ReScript type system is really good at inferring the prop types just by looking at its prop usage. 
@@ -268,7 +344,7 @@ The ReScript type system is really good at inferring the prop types just by look
 For simple cases, well-scoped usage, or experimentation, it's still fine to omit type annotations:
 
 
-```res
+```res example
 // Button.res
 
 @react.component
@@ -290,7 +366,7 @@ Every ReScript component can be used in JSX. For example, if we want to use our 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res example
 // src/App.res
 
 @react.component
@@ -324,7 +400,7 @@ For example:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res example
 module Link = {
   type props = {href: string, children: React.element};
   
@@ -365,7 +441,7 @@ More details on the `@react.component` decorator and its generated interface can
 
 We can also represent React components as submodules, which makes it very convenient to build more complex UI without the need to create multiple files for each composite component (that's probably only used by the parent component anyways): 
 
-```res
+```res example
 // src/Button.res
 module Label = {
   @react.component
@@ -394,7 +470,7 @@ let content = <Label title="Test"/>
 
 ## Component Naming
 
-Because components are actually a pair of functions, they have to belong to a module to be used in JSX. It makes sense to use these modules for identification purposes as well. `@react.component` automatically adds the name for you based on the module you are in.
+Because components are actually a pair of functions, they have to belong to a module to be used in JSX. It makes sense to use these modules for identification purposes as well. `@react.component` or `@react.componentWithProps` automatically adds the name for you based on the module you are in.
 
 
 ```res
@@ -412,7 +488,7 @@ module Nested = {
   // will be named `File$Nested` in dev tools
   @react.component
   let make = ...
-};
+}
 ```
 
 If you need a dynamic name for higher-order components or you would like to set your own name you can use `React.setDisplayName(make, "NameThatShouldBeInDevTools")`.

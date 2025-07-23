@@ -10,4 +10,5 @@ let make: (
   ~ogDescription: string=?,
   ~ogTitle: string=?,
   ~ogImage: string=?,
+  ~version: Url.version=?,
 ) => React.element

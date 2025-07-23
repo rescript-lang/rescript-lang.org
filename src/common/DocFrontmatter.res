@@ -1,20 +1,30 @@
 type t = {
   title: string,
-  metaTitle: Js.null<string>,
-  description: Js.null<string>,
-  canonical: Js.null<string>,
-  ghEditHref: string,
+  metaTitle: Null.t<string>,
+  description: Null.t<string>,
+  canonical: Null.t<string>,
 }
 
 let decode = json => {
-  open! Json.Decode
-  try Some({
-    title: field("title", string, json),
-    metaTitle: optional(field("metaTitle", string), json)->Js.Null.fromOption,
-    description: optional(field("description", string), json)->Js.Null.fromOption,
-    canonical: optional(field("canonical", string), json)->Js.Null.fromOption,
-    ghEditHref: field("__ghEditHref", string, json),
-  }) catch {
-  | DecodeError(_errMsg) => None
+  open JSON
+  let optionToNull = opt =>
+    switch opt {
+    | Some(String(v)) => Null.Value(v)
+    | _ => Null
+    }
+  switch json {
+  | Object(dict{
+      "title": String(title),
+      "metaTitle": ?metaTitle,
+      "description": ?description,
+      "canonical": ?canonical,
+    }) =>
+    Some({
+      title,
+      metaTitle: metaTitle->optionToNull,
+      description: description->optionToNull,
+      canonical: canonical->optionToNull,
+    })
+  | _ => None
   }
 }

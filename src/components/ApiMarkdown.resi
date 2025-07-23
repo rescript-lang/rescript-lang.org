@@ -1,1 +1,1 @@
-let default: Mdx.Components.t
+let default: MarkdownComponents.t

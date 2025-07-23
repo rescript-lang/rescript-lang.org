@@ -7,7 +7,11 @@ module Npm: {
   @react.component
   let make: (~className: string) => React.element
 }
-module Twitter: {
+module X: {
+  @react.component
+  let make: (~className: string) => React.element
+}
+module Bluesky: {
   @react.component
   let make: (~className: string) => React.element
 }

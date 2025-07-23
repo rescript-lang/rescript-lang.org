@@ -52,9 +52,9 @@ module Sgr = {
     }
 }
 
-let esc = j`\u001B`
+let esc = `\u001B`
 
-let isAscii = (c: string) => Js.Re.test_(%re(`/[\x40-\x7F]/`), c)
+let isAscii = (c: string) => RegExp.test(/[\x40-\x7F]/, c)
 
 module Location = {
   type t = {
@@ -69,15 +69,15 @@ module Location = {
 
   let fromString = input => {input, pos: -1}
 
-  let isDone = p => p.pos >= Js.String.length(p.input)
+  let isDone = p => p.pos >= String.length(p.input)
 
   let next = p =>
     if !isDone(p) {
-      let c = Js.String2.get(p.input, p.pos + 1)
+      let c = String.get(p.input, p.pos + 1)->Option.getUnsafe
       p.pos = p.pos + 1
       c
     } else {
-      Js.String2.get(p.input, p.pos)
+      String.get(p.input, p.pos)->Option.getUnsafe
     }
 
   let untilNextEsc = p => {
@@ -95,7 +95,7 @@ module Location = {
   // Look is useful to look ahead without reading the character
   // from the stream
   let look = (p, num) => {
-    let length = Js.String.length(p.input)
+    let length = String.length(p.input)
 
     let pos = if p.pos + num >= length {
       length - 1
@@ -103,7 +103,7 @@ module Location = {
       p.pos + num
     }
 
-    Js.String2.get(p.input, pos)
+    String.get(p.input, pos)->Option.getUnsafe
   }
 }
 
@@ -152,7 +152,7 @@ module Lexer = {
             },
             content,
           })
-          Js.Array2.push(acc, token)->ignore
+          Array.push(acc, token)->ignore
           lex(~acc, ~state=ReadSgr({startPos: p.pos, content: c}), p)
         } else if isDone(p) {
           let token = Text({
@@ -162,7 +162,7 @@ module Lexer = {
             },
             content,
           })
-          Js.Array2.push(acc, token)->ignore
+          Array.push(acc, token)->ignore
           acc
         } else {
           let content = content ++ c
@@ -175,49 +175,50 @@ module Lexer = {
         if c !== "[" && isAscii(c) {
           let raw = content ++ c
 
-          let loc = {startPos, endPos: startPos + Js.String.length(raw) - 1}
+          let loc = {startPos, endPos: startPos + String.length(raw) - 1}
 
-          let token = Js.Re.exec_(%re(`/\[([0-9;]+)([\x40-\x7F])/`), raw)->(
-            x =>
-              switch x {
-              | Some(result) =>
-                let groups = Js.Re.captures(result)
-                switch Js.Nullable.toOption(groups[1]) {
-                | Some(str) =>
-                  switch Js.String2.split(str, ";") {
-                  | ["0"] => ClearSgr({loc, raw})
-                  | other =>
-                    let params = Belt.Array.map(other, s =>
-                      switch s {
-                      | "1" => Bold
-                      | "30" => Fg(Black)
-                      | "31" => Fg(Red)
-                      | "32" => Fg(Green)
-                      | "33" => Fg(Yellow)
-                      | "34" => Fg(Blue)
-                      | "35" => Fg(Magenta)
-                      | "36" => Fg(Cyan)
-                      | "37" => Fg(White)
-                      | "40" => Bg(Black)
-                      | "41" => Bg(Red)
-                      | "42" => Bg(Green)
-                      | "43" => Bg(Yellow)
-                      | "44" => Bg(Blue)
-                      | "45" => Bg(Magenta)
-                      | "46" => Bg(Cyan)
-                      | "47" => Bg(White)
-                      | o => Unknown(o)
-                      }
-                    )
-                    Sgr({loc, raw, params})
-                  }
-
-                | None => Sgr({loc, raw, params: []})
+          let token = switch RegExp.exec(/\[([0-9;]+)([\x40-\x7F])/, raw) {
+          | Some(result) =>
+            let groups = RegExp.Result.matches(result)
+            switch groups[1] {
+            | Some(str) =>
+              switch str {
+              | Some(str) =>
+                switch String.split(str, ";") {
+                | ["0"] => ClearSgr({loc, raw})
+                | other =>
+                  let params = Array.map(other, s =>
+                    switch s {
+                    | "1" => Bold
+                    | "30" => Fg(Black)
+                    | "31" => Fg(Red)
+                    | "32" => Fg(Green)
+                    | "33" => Fg(Yellow)
+                    | "34" => Fg(Blue)
+                    | "35" => Fg(Magenta)
+                    | "36" => Fg(Cyan)
+                    | "37" => Fg(White)
+                    | "40" => Bg(Black)
+                    | "41" => Bg(Red)
+                    | "42" => Bg(Green)
+                    | "43" => Bg(Yellow)
+                    | "44" => Bg(Blue)
+                    | "45" => Bg(Magenta)
+                    | "46" => Bg(Cyan)
+                    | "47" => Bg(White)
+                    | o => Unknown(o)
+                    }
+                  )
+                  Sgr({loc, raw, params})
                 }
               | None => Sgr({loc, raw, params: []})
               }
-          )
-          Js.Array2.push(acc, token)->ignore
+            | None => Sgr({loc, raw, params: []})
+            }
+          | None => Sgr({loc, raw, params: []})
+          }
+
+          Array.push(acc, token)->ignore
           lex(~acc, ~state=Scan, p)
         } else {
           lex(~acc, ~state=ReadSgr({startPos, content: content ++ c}), p)
@@ -238,7 +239,7 @@ let parse = (input: string) => {
 
 let onlyText = (tokens: array<Lexer.token>) => {
   open Lexer
-  Belt.Array.keep(tokens, x =>
+  Array.filter(tokens, x =>
     switch x {
     | Text(_) => true
     | _ => false
@@ -260,7 +261,7 @@ module SgrString = {
     let params = ref([])
     let content = ref("")
 
-    let length = Js.Array.length(tokens)
+    let length = Array.length(tokens)
     for i in 0 to length - 1 {
       let token = Belt.Array.getExn(tokens, i)
 
@@ -271,11 +272,11 @@ module SgrString = {
         content := content.contents ++ data.content
         if isLast && content.contents !== "" {
           let element = {content: content.contents, params: params.contents}
-          Js.Array2.push(ret, element)->ignore
+          Array.push(ret, element)->ignore
         }
       | Sgr(data) =>
         // merge together specific sgr params
-        let (fg, bg, rest) = Belt.Array.concat(params.contents, data.params)->Belt.Array.reduce(
+        let (fg, bg, rest) = Array.concat(params.contents, data.params)->Array.reduce(
           (None, None, []),
           (acc, next) => {
             let (fg, bg, other) = acc
@@ -283,8 +284,8 @@ module SgrString = {
             | Fg(_) => (Some(next), bg, other)
             | Bg(_) => (fg, Some(next), other)
             | o =>
-              if Js.Array2.find(other, o2 => o === o2) === None {
-                Js.Array2.push(other, next)->ignore
+              if Array.find(other, o2 => o === o2) === None {
+                Array.push(other, next)->ignore
               }
               (fg, bg, other)
             }
@@ -293,20 +294,20 @@ module SgrString = {
 
         if content.contents !== "" {
           let element = {content: content.contents, params: params.contents}
-          Js.Array2.push(ret, element)->ignore
+          Array.push(ret, element)->ignore
           content := ""
         }
 
         params :=
           Belt.Array.concatMany([
-            Belt.Option.mapWithDefault(fg, [], v => [v]),
-            Belt.Option.mapWithDefault(bg, [], v => [v]),
+            Option.mapOr(fg, [], v => [v]),
+            Option.mapOr(bg, [], v => [v]),
             rest,
           ])
       | ClearSgr(_) =>
         if content.contents !== "" {
           let element = {content: content.contents, params: params.contents}
-          Js.Array2.push(ret, element)->ignore
+          Array.push(ret, element)->ignore
 
           params := []
           content := ""
@@ -319,12 +320,12 @@ module SgrString = {
 
   let toString = (e: t): string => {
     let content = {
-      open Js.String2
-      replaceByRe(e.content, %re("/\n/g"), "\\n")->replace(esc, "")
+      open String
+      replaceRegExp(e.content, /\n/g, "\\n")->replace(esc, "")
     }
-    let params = Belt.Array.map(e.params, Sgr.paramToString)->Js.Array2.joinWith(", ")
+    let params = Array.map(e.params, Sgr.paramToString)->Array.join(", ")
 
-    j`SgrString params: $params | content: $content`
+    `SgrString params: ${params} | content: ${content}`
   }
 }
 
@@ -335,24 +336,24 @@ module Printer = {
     switch t {
     | Text({content, loc: {startPos, endPos}}) =>
       let content = {
-        open Js.String2
-        replaceByRe(content, %re("/\n/g"), "\\n")->replace(esc, "")
+        open String
+        replaceRegExp(content, /\n/g, "\\n")->replace(esc, "")
       }
-      j`Text "$content" ($startPos to $endPos)`
+      `Text "${content}" (${startPos->Int.toString} to ${endPos->Int.toString})`
     | Sgr({params, raw, loc: {startPos, endPos}}) =>
-      let raw = Js.String2.replace(raw, esc, "")
-      let params = Belt.Array.map(params, Sgr.paramToString)->Js.Array2.joinWith(", ")
-      j`Sgr "$raw" -> $params ($startPos to $endPos)`
+      let raw = String.replace(raw, esc, "")
+      let params = Array.map(params, Sgr.paramToString)->Array.join(", ")
+      `Sgr "${raw}" -> ${params} (${startPos->Int.toString} to ${endPos->Int.toString})`
     | ClearSgr({loc: {startPos, endPos}, raw}) =>
-      let raw = Js.String2.replace(raw, esc, "")
-      j`Clear Sgr "$raw" ($startPos to $endPos)`
+      let raw = String.replace(raw, esc, "")
+      `Clear Sgr "${raw}" (${startPos->Int.toString} to ${endPos->Int.toString})`
     }
 
   let plainString = (tokens: array<token>): string =>
-    Belt.Array.map(tokens, x =>
+    Array.map(tokens, x =>
       switch x {
       | Lexer.Text({content}) => content
       | _ => ""
       }
-    )->Js.Array2.joinWith("")
+    )->Array.join("")
 }

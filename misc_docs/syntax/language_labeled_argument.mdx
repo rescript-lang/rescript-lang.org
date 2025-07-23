@@ -1,0 +1,69 @@
+---
+id: "labeled-argument"
+keywords: ["labeled", "argument"]
+name: "~arg"
+summary: "This is a `labeled argument`."
+category: "languageconstructs"
+---
+
+When declaring a function, arguments can be prefixed with `~` which means that they can and need to be called by their name, not the argument position. This is especially useful to differentiate them more easily if they are of the same type.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res prelude
+let calculateDistance = (~x1, ~y1, ~x2, ~y2) => {
+  Math.sqrt((x1 -. x2) ** 2. +. (y1 -. y2) ** 2.)
+}
+
+calculateDistance(~x1=6., ~y1=8., ~x2=3., ~y2=4.) 
+```
+
+```js
+function calculateDistance(x1, y1, x2, y2) {
+  return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+}
+
+calculateDistance(6, 8, 3, 4);
+```
+
+</CodeTab>
+
+Labeled arguments can be provided in any order:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+calculateDistance(~x1=6., ~x2=3., ~y1=8., ~y2=4.) 
+```
+
+```js
+calculateDistance(6, 8, 3, 4);
+```
+
+</CodeTab>
+
+This also works together with partial application:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+let calcY = calculateDistance(~x1=6., ~x2=3., ...)
+calcY(~y1=8., ~y2=4.)
+```
+
+```js
+function calcY(none, extra) {
+  return calculateDistance(6, none, 3, extra);
+}
+
+calcY(8, 4);
+```
+
+</CodeTab>
+
+### References
+
+* [Labeled Arguments](/docs/manual/latest/function#labeled-arguments)
+* [Function Syntax Cheatsheet](/docs/manual/latest/function#tips--tricks)

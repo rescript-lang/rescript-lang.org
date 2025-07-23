@@ -14,7 +14,7 @@ JSX is a syntax sugar that allows us to use React components in an HTML like man
 
 **Note:** This section requires knowledge about the low level apis for [creating elements](./elements-and-jsx#creating-elements-from-component-functions), such as `React.createElement` or `ReactDOM.createDOMElementVariadic`.
 
-> **Note:** This page assumes your `bsconfig.json` to be set to `"jsx": { "version": 4 }` to apply the right JSX transformations. 
+> **Note:** The output shown for the examples on this page assumes your `rescript.json` to be set to `"jsx": { "version": 4, "mode": "classic" }`. We will update it for automatic mode soon.
 
 ## Component Types
 
@@ -22,7 +22,7 @@ A plain React component is defined as a `('props) => React.element` function. Yo
 
 Here are some examples on how to define your own component types (often useful when interoping with existing JS code, or passing around components):
 
-```res
+```res example
 // Plain function type
 type friend = {name: string, online: bool}
 type friendComp = friend => React.element
@@ -38,9 +38,24 @@ The types above are pretty low level (basically the JS representation of a React
 
 A ReScript React component needs to be a (sub-)module with a `make` function and `props` type to be usable in JSX. To make things easier, we provide a `@react.component` decorator to create those functions for you:
 
-<CodeTab labels={["Decorated", "Expanded"]}>
+<div className="hidden">
 
-```res
+```res prelude
+module Friend = {
+  @react.component
+  let make = (~name: string, ~age: int) => {React.string(name ++ ", " ++ age->Int.toString)}
+}
+module Container = {
+  @react.component
+  let make = (~width: int, ~children) => {<> {React.string(width->Int.toString)} children </>}
+}
+```
+
+</div>
+
+<CodeTab labels={["Decorated", "Expanded", "JS Output"]}>
+
+```res example
 module Friend = {
   @react.component
   let make = (~name: string, ~children) => {
@@ -51,7 +66,7 @@ module Friend = {
   }
 }
 ```
-```res
+```res example
 module Friend = {
   type props<'name, 'children> = {
     name: 'name,
@@ -62,6 +77,20 @@ module Friend = {
     ReactDOM.createDOMElementVariadic("div", [{React.string(name)}, children])
   }
 }
+```
+```js
+function Playground$Friend(props) {
+  return JsxRuntime.jsxs("div", {
+              children: [
+                props.name,
+                props.children
+              ]
+            });
+}
+
+var Friend = {
+  make: Playground$Friend
+};
 ```
 
 </CodeTab>
@@ -98,10 +127,9 @@ type props<'className, 'children, 'ref> = {
 }
 
 let make = (
-  {?className, children, _}: props<'className, 'children, ReactRef.currentDomRef>,
-  ref: Js.Nullable.t<ReactRef.currentDomRef>,
-) =>
-  make(~className, ~children, ~ref, ())
+  {?className, children, _}: props<'className, 'children, ReactDOM.Ref.currentDomRef>,
+  ref: Nullable.t<ReactDOM.Ref.currentDomRef>,
+) => make(~className, ~children, ~ref, ())
 ```
 
 </CodeTab>
@@ -116,10 +144,10 @@ Whenever we are using JSX with a custom component ("capitalized JSX"), we are ac
 
 <CodeTab labels={["JSX", "Without JSX", "JS Output"]}>
 
-```res
-<Friend name="Fred" age=20 />
+```res example
+let _ = <Friend name="Fred" age=20 />
 ```
-```res
+```res example
 // classic
 React.createElement(Friend.make, {name: "Fred", age:20})
 
@@ -127,7 +155,7 @@ React.createElement(Friend.make, {name: "Fred", age:20})
 React.jsx(Friend.make, {name: "Fred", age: 20})
 ```
 ```js
-React.createElement(Playground$Friend, { name: "Fred", age: 20 });
+JsxRuntime.jsx(Playground$Friend, { name: "Fred", age: 20 });
 ```
 
 </CodeTab>
@@ -136,14 +164,14 @@ As you can see, it uses `Friend.make` to call the `React.createElement` API. In 
 
 <CodeTab labels={["JSX", "Without JSX", "JS Output"]}>
 
-```res
+```res example
 <Container width=200>
   {React.string("Hello")}
   {React.string("World")}
 </Container>
 ```
 
-```res
+```res example
 // classic
 React.createElementVariadic(
   Container.make,
@@ -159,7 +187,7 @@ React.jsxs(
 ```
 
 ```js
-React.createElement(Container, { width: 200, children: null }, "Hello", "World");
+JsxRuntime.jsx(Container, { width: 200, children: null }, "Hello", "World");
 ```
 
 </CodeTab>
@@ -173,11 +201,11 @@ Note that the `children: React.null` field has no relevance since React will onl
 
 <CodeTab labels={["JSX", "Without JSX", "JS Output"]}>
 
-```res
+```res example
 <div title="test"/>
 ```
 
-```res
+```res example
 // classic
 ReactDOM.createDOMElementVariadic("div", ~props={title: "test"}, [])
 
@@ -186,22 +214,22 @@ ReactDOM.jsx("div", {title: "test"})
 ```
 
 ```js
-React.createElement("div", { title: "test" });
+JsxRuntime.jsx("div", { title: "test" });
 ```
 
 </CodeTab>
 
 The same goes for uncapitalized JSX with children:
 
-<CodeTab labels={["JSX", "Without JSX", "JS Output"]}>
+<CodeTab labels={["JSX", "Without JSX", "JSX Output", "Without JSX Output"]}>
 
-```res
+```res example
 <div title="test">
   <span/>
 </div>
 ```
 
-```res
+```res example
 // classic
 ReactDOM.createDOMElementVariadic(
   "div",
@@ -214,7 +242,16 @@ ReactDOM.jsx("div", {title: "test", children: ?ReactDOM.someElement(ReactDOM.jsx
 ```
 
 ```js
-React.createElement("div", { title: "test" }, React.createElement("span", undefined));
+JsxRuntime.jsx("div", {
+      children: JsxRuntime.jsx("span", {}),
+      title: "test"
+    });
+```
+
+```js
+React.createElement("div", {
+      title: "test"
+    }, React.createElement("span", undefined));
 ```
 
 </CodeTab>

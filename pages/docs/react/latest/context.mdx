@@ -25,9 +25,9 @@ Context is designed to share data that can be considered “global” for a tree
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res example
 // src/App.res
-type theme = Light | Dark;
+type theme = Light | Dark
 
 module Button = {
   @react.component
@@ -35,7 +35,7 @@ module Button = {
     let className = switch theme {
       | Light => "theme-light"
       | Dark => "theme-black"
-    };
+    }
     <button className> {React.string("Click me")} </button>
   }
 }
@@ -97,7 +97,7 @@ Using context, we can avoid passing props through intermediate elements:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res example
 // src/App.res
 
 module ThemeContext = {

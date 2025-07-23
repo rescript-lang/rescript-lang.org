@@ -6,13 +6,15 @@ summary: "This is the `regular expression` extension point."
 category: "extensionpoints"
 ---
 
+> Deprecated in favor of native regular expression syntax in v12+
+
 `%re` is used to create JavaScript regular expressions.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
 let regex = %re("/^hello/")
-let result = regex->Js.Re.test_("hello world")
+let result = regex->Re.test("hello world")
 ```
 
 ```js
@@ -26,4 +28,4 @@ var result = regex.test("hello world");
 
 * [Regular Expressions](/docs/manual/latest/primitive-types#regular-expression)
 * [Extension Point Attributes](/docs/manual/latest/attribute#extension-point)
-* [Js.Re API](/docs/manual/latest/api/js/re)
+* [RegExp API](/docs/manual/latest/api/core/regexp)

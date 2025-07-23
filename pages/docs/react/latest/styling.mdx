@@ -14,12 +14,11 @@ React comes with builtin support for inline styles, but there are also a number 
 
 If they work in JS then they almost certainly work in ReScript. In the next few sections, we've shared some ideas for working with popular libraries. If you're interested in working with one you don't see here, search the [package index](https://rescript-lang.org/packages) or post in [the forum](https://forum.rescript-lang.org).
 
-
 ## Inline Styles
 
 This is the most basic form of styling, coming straight from the 90s. You can apply a `style` attribute to any DOM element with our `ReactDOM.Style.make` API:
 
-```res
+```res example
 <div style={ReactDOM.Style.make(~color="#444444", ~fontSize="68px", ())} />
 ```
 
@@ -31,7 +30,7 @@ It's a [labeled](/docs/manual/latest/function#labeled-arguments) (therefore type
 
 The above `Style.make` API will safely type check every style field! However, we might have missed some more esoteric fields. If that's the case, the type system will tell you that the field you're trying to add doesn't exist. To remediate this, we're exposing a `ReactDOM.Style.unsafeAddProp` to dangerously add a field to a style:
 
-```res
+```res example
 let style =
   ReactDOM.Style.make(
     ~color="red",
@@ -44,12 +43,12 @@ let style =
 
 Use a `%%raw` expression to import CSS files within your ReScript / React component code:
 
-```rescript
-// in a CommonJS setup
-%%raw("require('./styles/main.css')")
-
-// or with ES6
+```res example
+// in a JS module setup
 %%raw("import './styles/main.css'")
+
+// or with CommonJS
+%%raw("require('./styles/main.css')")
 ```
 
 ## CSS Modules
@@ -62,13 +61,13 @@ As an example, let's say we have a CSS module like this:
 /* styles.module.css */
 
 .root {
-  color: red
+  color: red;
 }
 ```
 
-We now need to create a module binding that imports our styles as a JS object: 
+We now need to create a module binding that imports our styles as a JS object:
 
-```res
+```res example
 // {..} means we are handling a JS object with an unknown
 // set of attributes
 @module external styles: {..} = "./styles.module.css"
@@ -78,7 +77,6 @@ let app = <div className={styles["root"]} />
 ```
 
 **Note:** `{..}` is an open [JS object type](/docs/manual/latest/object#type-declaration), which means the type checker will not type check correct classname usage. If you want to enforce compiler errors, replace `{..}` with a concrete JS object type, such as `{"root": string}`.
-
 
 ## CSS Utility Libraries
 
@@ -98,7 +96,7 @@ First, create your TailwindCSS main entrypoint file:
 
 Then, import your `main.css` file in your ReScript / React application:
 
-```res
+```res example
 // src/App.res
 
 %%raw("import './main.css'")
@@ -106,7 +104,7 @@ Then, import your `main.css` file in your ReScript / React application:
 
 Utilize ReScript's pattern matching and string interpolations to combine different classnames:
 
-```res
+```res example
 @react.component
 let make = (~active: bool) => {
   let activeClass = if active {
@@ -122,8 +120,7 @@ let make = (~active: bool) => {
 }
 ```
 
-> **Hint:** `rescript-lang.org` actually uses TailwindCSS under the hood! Check out our [codebase](https://github.com/rescript-association/rescript-lang.org) to get some more inspiration on usage patterns.
-
+> **Hint:** `rescript-lang.org` actually uses TailwindCSS under the hood! Check out our [codebase](https://github.com/rescript-lang/rescript-lang.org) to get some more inspiration on usage patterns.
 
 ## CSS-in-JS
 
@@ -131,7 +128,7 @@ There's no way we could recommend a definitive CSS-in-JS workflow, since there a
 
 For demonstration purposes, let's create some simple bindings to e.g. [`emotion`](https://emotion.sh/docs/introduction) (as described [here](https://github.com/bloodyowl/rescript-react-starter-kit/blob/eca7055c59ba578b2d1994fc928d8f541a423e74/src/shared/Emotion.res)):
 
-```res
+```res example
 // src/Emotion.res
 
 @module("@emotion/css") external css: {..} => string = "css"
@@ -170,7 +167,7 @@ let app = <div className={Styles.container} />
 
 Please note that this approach will not check for invalid css attribute names. If you e.g. want to make sure that only valid CSS attributes are being passed, you could define your `css` function like this as well:
 
-```res
+```res example
 @module("@emotion/css") external css: ReactDOM.Style.t => string = "css"
 
 // Usage is slightly different (and probably less ergonomic)
@@ -181,7 +178,7 @@ let app = <div
 />
 ```
 
-Here we used the already existing `React.Style.t` type to enforce valid CSS attribute names. 
+Here we used the already existing `React.Style.t` type to enforce valid CSS attribute names.
 Last but not least, you can also bind to functions that let you use raw CSS directly:
 
 ```res

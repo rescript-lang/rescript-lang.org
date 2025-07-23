@@ -1,8 +1,8 @@
 module Toc: {
   // the plain data coming from the toc file
-  type raw = Js.Dict.t<{
+  type raw = Dict.t<{
     "title": string,
-    "category": Js.Nullable.t<string>,
+    "category": Nullable.t<string>,
     "headers": array<{
       "name": string,
       "href": string,
@@ -65,11 +65,12 @@ module Sidebar: {
 let make: (
   ~metaTitle: string,
   ~theme: ColorTheme.t,
-  ~components: Mdx.Components.t,
+  ~components: MarkdownComponents.t,
   ~editHref: string=?,
   // (Sidebar, toggleSidebar) ... for toggling sidebar in mobile view
   ~sidebarState: (bool, (bool => bool) => unit),
   ~sidebar: React.element,
+  ~rightSidebar: React.element=?,
   ~categories: array<Sidebar.Category.t>=?,
   ~breadcrumbs: list<Url.breadcrumb>=?,
   ~children: React.element,

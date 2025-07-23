@@ -14,28 +14,23 @@ module GetServerSideProps = {
   // See: https://github.com/zeit/next.js/blob/canary/packages/next/types/index.d.ts
   type context<'props, 'params> = {
     params: 'params,
-    query: Js.Dict.t<string>,
+    query: Dict.t<string>,
     req: Req.t,
     res: Res.t,
   }
 
-  type t<'props, 'params> = context<'props, 'params> => Js.Promise.t<{"props": 'props}>
+  type t<'props, 'params> = context<'props, 'params> => promise<{"props": 'props}>
 }
 
 module GetStaticProps = {
   // See: https://github.com/zeit/next.js/blob/canary/packages/next/types/index.d.ts
   type context<'props, 'params> = {
     params: 'params,
-    query: Js.Dict.t<string>,
-    req: Js.Nullable.t<'props>,
+    query: Dict.t<string>,
+    req: Nullable.t<'props>,
   }
 
-  type t<'props, 'params> = context<'props, 'params> => Js.Promise.t<{"props": 'props}>
-
-  type revalidate<'props, 'params> = context<'props, 'params> => Js.Promise.t<{
-    "props": 'props,
-    "revalidate": int,
-  }>
+  type t<'props, 'params> = context<'props, 'params> => promise<{"props": 'props}>
 }
 
 module GetStaticPaths = {
@@ -48,7 +43,7 @@ module GetStaticPaths = {
     fallback: bool,
   }
 
-  type t<'params> = unit => Promise.t<return<'params>>
+  type t<'params> = unit => promise<return<'params>>
 }
 
 module Link = {
@@ -57,10 +52,12 @@ module Link = {
     ~href: string,
     ~_as: string=?,
     ~prefetch: bool=?,
-    ~replace: option<bool>=?,
-    ~shallow: option<bool>=?,
-    ~passHref: option<bool>=?,
+    ~replace: bool=?,
+    ~shallow: bool=?,
+    ~passHref: bool=?,
     ~children: React.element,
+    ~className: string=?,
+    ~target: string=?,
   ) => React.element = "default"
 }
 
@@ -99,12 +96,12 @@ module Router = {
     asPath: string,
     events: Events.t,
     pathname: string,
-    query: Js.Dict.t<string>,
+    query: Dict.t<string>,
   }
 
   type pathObj = {
     pathname: string,
-    query: Js.Dict.t<string>,
+    query: Dict.t<string>,
   }
 
   @send external push: (router, string) => unit = "push"
@@ -127,16 +124,13 @@ module Error = {
 }
 
 module Dynamic = {
-  @deriving(abstract)
   type options = {
-    @optional
-    ssr: bool,
-    @optional
-    loading: unit => React.element,
+    ssr?: bool,
+    loading?: unit => React.element,
   }
 
   @module("next/dynamic")
-  external dynamic: (unit => Js.Promise.t<'a>, options) => 'a = "default"
+  external dynamic: (unit => promise<'a>, options) => 'a = "default"
 
-  @val external import: string => Js.Promise.t<'a> = "import"
+  @val external import: string => promise<'a> = "import"
 }

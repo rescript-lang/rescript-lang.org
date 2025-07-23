@@ -12,13 +12,13 @@ Elements are the smallest building blocks of React apps. This page will explain 
 
 </Intro>
 
-> **Note:** This page assumes your `bsconfig.json` to be set to `"jsx": { "version": 4 }`, otherwise your JSX will not be transformed to its React specific form. 
+> **Note:** The output shown for the examples on this page assumes your `rescript.json` to be set to `"jsx": { "version": 4, "mode": "classic" }`. We will update it for automatic mode soon.
 
 ## Element Basics
 
 Let's start out by creating our first React element.
 
-```res
+```res example
 let element = <h1> {React.string("Hello World")} </h1>
 ```
 
@@ -26,7 +26,7 @@ The binding `element` and the expression `{React.string("Hello World")}` are bot
 
 Let's say you want to create a function that handles another React element, such as `children`, you can annotate it as `React.element`:
 
-```res
+```res example
 let wrapChildren = (children: React.element) => {
   <div>
     <h1> {React.string("Overview")} </h1>
@@ -45,9 +45,9 @@ Fortunately our React bindings bring all necessary functionality to represent al
 
 You can compose elements into more complex structures by using JSX:
 
-```res
+```res example
 let greeting = React.string("Hello ")
-let name = React.string("Stranger");
+let name = React.string("Stranger")
 
 
 // element is also of type React.element
@@ -64,7 +64,7 @@ Sometimes, when doing a lot of interop with existing ReactJS codebases, you'll f
 
 Apart from using JSX to create our React elements or React components, the `React` module offers various functions to create elements from primitive data types:
 
-```res
+```res example
 React.string("Hello") // new element representing "Hello"
 
 React.int(1) // new element representing "1"
@@ -74,7 +74,7 @@ React.float(1.0) // new element representing "1.0"
 
 It also offers `React.array` to represent multiple elements as one single element (useful for rendering a list of data, or passing children):
 
-```res
+```res example
 let element = React.array([
   React.string("element 1"),
   React.string("element 2"),
@@ -91,7 +91,7 @@ ReScript doesn't allow `element || null` constraints due to it's strongly typed 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res example
 let name = Some("Andrea")
 
 let element = switch name {
@@ -121,7 +121,7 @@ React.createElement("div", undefined, element);
 
 Sometimes it's necessary to pass around component functions to have more control over `React.element` creation. Use the `React.createElement` function to instantiate your elements:
 
-```res
+```res example
 type props = {name: string}
 
 let render = (myComp: props => React.element) => {
@@ -131,7 +131,7 @@ let render = (myComp: props => React.element) => {
 
 This feature is often used when interacting with existing JS / ReactJS code. In pure ReScript React applications, you would rather pass a function that does the rendering for you (also called a "render prop"):
 
-```res
+```res example
 let render = (renderMyComp: (~name: string) => React.element) => {
   <div> {renderMyComp(~name="Franz")} </div>
 }
@@ -143,7 +143,7 @@ There is also a `React.createElementVariadic` function, which takes an array of 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res example
 type props = {title: string, children: React.element}
 
 let render = (article: props => React.element) => {
@@ -183,11 +183,11 @@ This function is mostly used by our JSX transformations, so usually you want to 
 
 To create DOM elements (`<div>`, `<span>`, etc.), use `ReactDOM.createDOMElementVariadic`:
 
-```res
+```res example
 ReactDOM.createDOMElementVariadic("div", ~props={className: "card"}, [])
 ```
 
-ReScript can make sure that we are only passing valid dom props. You can find an exhaustive list of all available props in the [JsxDOM](https://github.com/rescript-lang/rescript-compiler/blob/3bc159f33a3534280bbc26be88fa37ea2114dafe/jscomp/others/jsxDOM.res#L31) module.
+ReScript can make sure that we are only passing valid dom props. You can find an exhaustive list of all available props in the [JsxDOM](https://github.com/rescript-lang/rescript/blob/3bc159f33a3534280bbc26be88fa37ea2114dafe/jscomp/others/jsxDOM.res#L31) module.
 
 ### Cloning Elements
 
@@ -197,11 +197,11 @@ Sometimes it's required to clone an existing element to set, overwrite or add pr
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res example
 let original = <div className="hello"/>
 
 // Will return a new React.element with className set to "world"
-React.cloneElement(original, {"className": "world", "data-name": "some name"});
+React.cloneElement(original, {"className": "world", "data-name": "some name"})
 ```
 ```js
 var original = React.createElement("div", {

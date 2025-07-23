@@ -23,15 +23,6 @@
     See `pages/blog.re` for more context on why we need this API.
  */
 
-module GrayMatter = {
-  type output = {
-    data: Js.Json.t,
-    content: string,
-  }
-
-  @module("gray-matter") external matter: string => output = "default"
-}
-
 type post = {
   path: string,
   archived: bool,
@@ -39,24 +30,22 @@ type post = {
 }
 
 let blogPathToSlug = path => {
-  path->Js.String2.replaceByRe(%re(`/^(archive\/)?\d\d\d\d-\d\d-\d\d-(.+)\.mdx$/`), "$2")
+  path->String.replaceRegExp(/^(archive\/)?\d\d\d\d-\d\d-\d\d-(.+)\.mdx$/, "$2")
 }
 
-@module("path") external extname: string => string = "extname"
+let mdxFiles = dir => {
+  Node.Fs.readdirSync(dir)->Array.filter(path => Node.Path.extname(path) === ".mdx")
+}
 
 let getAllPosts = () => {
   let postsDirectory = Node.Path.join2(Node.Process.cwd(), "_blogposts")
   let archivedPostsDirectory = Node.Path.join2(postsDirectory, "archive")
 
-  let mdxFiles = dir => {
-    Node.Fs.readdirSync(dir)->Js.Array2.filter(path => extname(path) === ".mdx")
-  }
-
-  let nonArchivedPosts = mdxFiles(postsDirectory)->Js.Array2.map(path => {
-    let {GrayMatter.data: data} =
-      Node.Path.join2(postsDirectory, path)->Node.Fs.readFileSync(#utf8)->GrayMatter.matter
-    switch BlogFrontmatter.decode(data) {
-    | Error(msg) => Js.Exn.raiseError(msg)
+  let nonArchivedPosts = mdxFiles(postsDirectory)->Array.map(path => {
+    let {frontmatter} =
+      Node.Path.join2(postsDirectory, path)->Node.Fs.readFileSync->MarkdownParser.parseSync
+    switch BlogFrontmatter.decode(frontmatter) {
+    | Error(msg) => JsError.throwWithMessage(msg)
     | Ok(d) => {
         path,
         frontmatter: d,
@@ -65,11 +54,11 @@ let getAllPosts = () => {
     }
   })
 
-  let archivedPosts = mdxFiles(archivedPostsDirectory)->Js.Array2.map(path => {
-    let {GrayMatter.data: data} =
-      Node.Path.join2(archivedPostsDirectory, path)->Node.Fs.readFileSync(#utf8)->GrayMatter.matter
-    switch BlogFrontmatter.decode(data) {
-    | Error(msg) => Js.Exn.raiseError(msg)
+  let archivedPosts = mdxFiles(archivedPostsDirectory)->Array.map(path => {
+    let {frontmatter} =
+      Node.Path.join2(archivedPostsDirectory, path)->Node.Fs.readFileSync->MarkdownParser.parseSync
+    switch BlogFrontmatter.decode(frontmatter) {
+    | Error(msg) => JsError.throwWithMessage(msg)
     | Ok(d) => {
         path: Node.Path.join2("archive", path),
         frontmatter: d,
@@ -78,9 +67,52 @@ let getAllPosts = () => {
     }
   })
 
-  Js.Array2.concat(nonArchivedPosts, archivedPosts)->Js.Array2.sortInPlaceWith((a, b) => {
+  Array.concat(nonArchivedPosts, archivedPosts)->Array.toSorted((a, b) =>
     String.compare(Node.Path.basename(b.path), Node.Path.basename(a.path))
+  )
+}
+
+let getLivePosts = () => {
+  let postsDirectory = Node.Path.join2(Node.Process.cwd(), "_blogposts")
+
+  let livePosts = mdxFiles(postsDirectory)->Array.map(path => {
+    let {frontmatter} =
+      Node.Path.join2(postsDirectory, path)->Node.Fs.readFileSync->MarkdownParser.parseSync
+    switch BlogFrontmatter.decode(frontmatter) {
+    | Error(msg) => JsError.throwWithMessage(msg)
+    | Ok(d) => {
+        path,
+        frontmatter: d,
+        archived: false,
+      }
+    }
   })
+
+  livePosts->Array.toSorted((a, b) =>
+    String.compare(Node.Path.basename(b.path), Node.Path.basename(a.path))
+  )
+}
+
+let getArchivedPosts = () => {
+  let postsDirectory = Node.Path.join2(Node.Process.cwd(), "_blogposts")
+  let archivedPostsDirectory = Node.Path.join2(postsDirectory, "archive")
+
+  let archivedPosts = mdxFiles(archivedPostsDirectory)->Array.map(path => {
+    let {frontmatter} =
+      Node.Path.join2(archivedPostsDirectory, path)->Node.Fs.readFileSync->MarkdownParser.parseSync
+    switch BlogFrontmatter.decode(frontmatter) {
+    | Error(msg) => JsError.throwWithMessage(msg)
+    | Ok(d) => {
+        path: Node.Path.join2("archive", path),
+        frontmatter: d,
+        archived: true,
+      }
+    }
+  })
+
+  archivedPosts->Array.toSorted((a, b) =>
+    String.compare(Node.Path.basename(b.path), Node.Path.basename(a.path))
+  )
 }
 
 module RssFeed = {
@@ -99,7 +131,7 @@ module RssFeed = {
     title: string,
     href: string,
     description: string,
-    pubDate: Js.Date.t,
+    pubDate: Date.t,
   }
 
   // TODO: This is yet again a dirty approach to prevent UTC to substract too many
@@ -107,17 +139,17 @@ module RssFeed = {
   //       to 15 o clock. We need to reconsider the way we parse blog article dates,
   //       since the dates should always be parsed from a single timezone perspective
   let dateToUTCString = date => {
-    date->Js.Date.setHours(15.0)->ignore
-    date->Js.Date.toUTCString
+    date->Date.setHours(15)->ignore
+    date->Date.toUTCString
   }
 
   // Retrieves the most recent [max] blog post feed items
   let getLatest = (~max=10, ~baseUrl="https://rescript-lang.org", ()): array<item> => {
     let items =
       getAllPosts()
-      ->Js.Array2.map(post => {
+      ->Array.map(post => {
         let fm = post.frontmatter
-        let description = Js.Null.toOption(fm.description)->Belt.Option.getWithDefault("")
+        let description = Null.toOption(fm.description)->Option.getOr("")
         {
           title: fm.title,
           href: baseUrl ++ "/blog/" ++ blogPathToSlug(post.path),
@@ -125,51 +157,52 @@ module RssFeed = {
           pubDate: DateStr.toDate(fm.date),
         }
       })
-      ->Js.Array2.slice(~start=0, ~end_=max)
+      ->Array.slice(~start=0, ~end=max)
     items
   }
 
   let toXmlString = (~siteTitle="ReScript Blog", ~siteDescription="", items: array<item>) => {
     let latestPubDateElement =
-      Belt.Array.get(items, 0)
-      ->Belt.Option.map(item => {
+      items[0]
+      ->Option.map(item => {
         let latestPubDateStr = item.pubDate->dateToUTCString
-        j`<lastBuildDate>$latestPubDateStr</lastBuildDate>`
+        `<lastBuildDate>${latestPubDateStr}</lastBuildDate>`
       })
-      ->Belt.Option.getWithDefault("")
+      ->Option.getOr("")
 
     let itemsStr =
       items
-      ->Js.Array2.map(({title, pubDate, description, href}) => {
+      ->Array.map(({title, pubDate, description, href}) => {
         let descriptionElement = switch description {
         | "" => ""
-        | desc => j`<description>
-            <![CDATA[$desc]]>
+        | desc =>
+          `<description>
+            <![CDATA[${desc}]]>
           </description>`
         }
 
         // TODO: convert pubdate to string
         let dateStr = pubDate->dateToUTCString
-        j`
+        `
         <item>
-          <title> <![CDATA[$title]]></title>
-          <link> $href </link>
-          <guid> $href </guid>
-          $descriptionElement
-          <pubDate>$dateStr</pubDate>
+          <title> <![CDATA[${title}]]></title>
+          <link> ${href} </link>
+          <guid> ${href} </guid>
+          ${descriptionElement}
+          <pubDate>${dateStr}</pubDate>
         </item>`
       })
-      ->Js.Array2.joinWith("\n")
+      ->Array.join("\n")
 
-    let ret = j`<?xml version="1.0" encoding="utf-8" ?>
+    let ret = `<?xml version="1.0" encoding="utf-8" ?>
   <rss version="2.0">
     <channel>
-      <title>$siteTitle</title>
+      <title>${siteTitle}</title>
       <link>https://rescript-lang.org</link>
-      <description>$siteDescription</description>
+      <description>${siteDescription}</description>
       <language>en</language>
-      $latestPubDateElement
-$itemsStr
+      ${latestPubDateElement}
+${itemsStr}
     </channel>
   </rss>` //rescript-lang.org</link>
 

@@ -1,22 +1,20 @@
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
-
-<a href="https://simpleanalytics.com/rescript-lang.org?utm_source=rescript-lang.org&utm_content=badge" referrerpolicy="origin" target="_blank"><img src="https://simpleanalyticsbadge.com/rescript-lang.org?counter=true" loading="lazy" referrerpolicy="no-referrer" crossorigin="anonymous" /></a>
-
 # rescript-lang.org
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
 This is the official documentation platform for the [ReScript](https://rescript-lang.org) programming language.
 
-**Please report any technical issues with ReScript to the [compiler repository](https://github.com/rescript-lang/rescript-compiler).**
+**Please report any technical issues with ReScript to the [compiler repository](https://github.com/rescript-lang/rescript).**
 
 **In case you are missing some specific documentation:**
+
 - Some language / compiler feature may not be documented yet
 - Create an issue to let us know what you are missing
 - In case you want to contribute missing docs, please refer to our [Contribution section](#contributing)
 
 ## System Requirements
 
-- `node@16.x` or higher (for ES6 module compat)
-- `npm@7` or higher (package-lock v2)
+- `node@20` or higher
+- `npm@10` or higher
 
 ## Setup
 
@@ -27,10 +25,7 @@ npm i
 # Initial build
 npx rescript
 
-# Only needed for initial clone (or content H2 changes)
-npm run update-index
-
-# Build the index data
+# Build the index data. Only needed for initial clone (or content H2 changes)
 npm run update-index
 
 # In a new tab
@@ -42,7 +37,7 @@ open localhost:3000
 In case you want to run ReScript in watchmode:
 
 ```sh
-npx rescript build -w
+npx rescript -w
 ```
 
 ## Build Index Data
@@ -82,9 +77,10 @@ build specific pages (file `index_data/x.json` not found).
 ### Markdown Codeblock Tests
 
 We check the validity of our code examples marked with:
-- `` ```res example `` (ReScript code snippet)
-- `` ```res sig `` (signature)
-- `` ```res prelude `` (ReScript code snippet available for all subsequent code snippets)
+
+- ` ```res example ` (ReScript code snippet)
+- ` ```res sig ` (signature)
+- ` ```res prelude ` (ReScript code snippet available for all subsequent code snippets)
 
 Run the checks with:
 

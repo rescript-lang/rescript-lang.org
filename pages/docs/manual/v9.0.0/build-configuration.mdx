@@ -16,7 +16,7 @@ canonical: "/docs/manual/latest/build-configuration"
 If you're using an editor like VSCode, put the following code as your first field in `bsconfig.json` to get schema autocompletion!
 
 ```json
-"$schema": "https://raw.githubusercontent.com/rescript-lang/rescript-compiler/master/docs/docson/build-schema.json"
+"$schema": "https://raw.githubusercontent.com/rescript-lang/rescript/master/docs/docson/build-schema.json"
 ```
 
 ## name, namespace
@@ -42,6 +42,7 @@ Your source files need to be specified explicitly (we don't want to accidentally
   "sources": ["src", "examples"]
 }
 ```
+
 ```json
 {
   "sources": {
@@ -67,9 +68,9 @@ You can mark your directories as dev-only (for e.g. tests). These won't be built
 
 ```json
 {
-  "sources" : {
-    "dir" : "test",
-    "type" : "dev"
+  "sources": {
+    "dir": "test",
+    "type": "dev"
   }
 }
 ```
@@ -98,7 +99,7 @@ More details can be found on our [external stdlib](./build-external-stdlib) page
 
 ```json
 {
-  "reason": {"react-jsx": 3},
+  "reason": { "react-jsx": 3 },
   "refmt": 3
 }
 ```
@@ -157,7 +158,7 @@ Generating JS files with the `.bs.js` suffix means that, on the JS side, you can
 - It's immediately clear that we're dealing with a generated JS file here.
 - It avoids clashes with a potential `theFile.js` file in the same folder.
 - It avoids the need of using a build system loader for ReScript files. This + in-source build means integrating a ReScript project into your pure JS codebase **basically doesn't touch anything in your build pipeline at all**.
-- [genType](/docs/gentype/latest/introduction) requires `bs.js` for compiled JS artifacts. If you are using `genType`, you need to use `bs.js` for now.
+- [genType](/docs/manual/latest/typescript-integration) requires `bs.js` for compiled JS artifacts. If you are using `genType`, you need to use `bs.js` for now.
 
 ## warnings
 
@@ -192,4 +193,4 @@ When `NINJA_ANSI_FORCED` is set to `1`: `bsb` produces color.
 When `NINJA_ANSI_FORCED` is set to `0`: `bsb` doesn't produce color.
 When `NINJA_ANSI_FORCED` is not set: `bsb` might or might not produce color, depending on a smart detection of where it's outputted.
 
-> Note that bsc, the barebone compiler, will always be passed `-color always`. See more details in [this issue](https://github.com/rescript-lang/rescript-compiler/issues/2984#issuecomment-410669163).
+> Note that bsc, the barebone compiler, will always be passed `-color always`. See more details in [this issue](https://github.com/rescript-lang/rescript/issues/2984#issuecomment-410669163).

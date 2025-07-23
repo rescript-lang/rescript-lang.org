@@ -1,11 +1,9 @@
 type company = Logo({name: string, url: string, path: string})
 
+// NOTE: More details on how this works can be found in our README:
+// https://github.com/rescript-lang/rescript-lang.org#how-to-add-your-company-logo-to-our-front-page
+
 let companies = [
-  Logo({
-    name: "Juspay",
-    url: "https://juspay.in",
-    path: "/static/lp/juspay.svg",
-  }),
   Logo({
     name: "Rohea",
     url: "https://rohea.com",
@@ -47,9 +45,9 @@ let companies = [
     path: "/static/lp/walnut.svg",
   }),
   Logo({
-    name: "BeOp",
-    url: "https://beop.io",
-    path: "/static/lp/beop.svg",
+    name: "Collective Audience",
+    url: "https://beop.collectiveaudience.co/",
+    path: "/static/lp/collectiveaudience.svg",
   }),
   Logo({
     name: "Arizon",
@@ -60,11 +58,6 @@ let companies = [
     name: "Stencil",
     url: "https://usestencil.com",
     path: "/static/lp/stencil.svg",
-  }),
-  Logo({
-    name: "Portolab",
-    url: "https://portolab.com.br",
-    path: "/static/lp/portolab.svg",
   }),
   Logo({
     name: "Tiny",
@@ -149,6 +142,51 @@ let companies = [
   Logo({
     name: "Instapainting.com",
     url: "https://www.instapainting.com/",
-    path: "/static/lp/instapainting.svg",
+    path: "/static/lp/instapainting.png",
+  }),
+  Logo({
+    name: "Juspay",
+    url: "https://juspay.in",
+    path: "/static/lp/juspay.svg",
+  }),
+  Logo({
+    name: "Silq",
+    url: "https://www.onesilq.com/",
+    path: "/static/lp/silq.svg",
+  }),
+  Logo({
+    name: "Sensonomic",
+    url: "https://www.sensonomic.com/",
+    path: "/static/lp/sensonomic.svg",
+  }),
+  Logo({
+    name: "Band Protocol",
+    url: "https://www.bandprotocol.com/",
+    path: "/static/lp/bandprotocol.svg",
+  }),
+  Logo({
+    name: "Envio",
+    url: "https://www.envio.dev/",
+    path: "/static/lp/envio.svg",
+  }),
+  Logo({
+    name: "YBRU",
+    url: "https://ybru.ru",
+    path: "/static/lp/ybru.svg",
+  }),
+  Logo({
+    name: "WebCurate",
+    url: "https://webcurate.co",
+    path: "/static/lp/webcurate.svg",
+  }),
+  Logo({
+    name: "Resmume",
+    url: "https://resmume.com/",
+    path: "/static/lp/resmume.svg",
+  }),
+  Logo({
+    name: "Cardoc",
+    url: "https://www.cardoc.co.kr/",
+    path: "/static/lp/cardoc.svg",
   }),
 ]

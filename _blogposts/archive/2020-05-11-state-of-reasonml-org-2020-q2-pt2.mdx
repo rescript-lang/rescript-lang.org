@@ -33,7 +33,7 @@ List.head([1, 2, 3]); /* This should actually be Belt.List */
 Running the test with the broken example would produce:
 
 ```sh
-node scripts/test-examples.js "pages/apis/latest/belt/list.mdx"
+node scripts/test-examples.mjs "pages/apis/latest/belt/list.mdx"
 
 Testing example in 'pages/apis/latest/belt/list.mdx' on line 23...
 Testing example in 'pages/apis/latest/belt/list.mdx' on line 43...
@@ -54,7 +54,7 @@ Failed: 1
 Success: 55
 
 Tip: You can also run tests just for specific files / globs:
-`node scripts/test-examples.js "pages/belt_docs/array.mdx"`
+`node scripts/test-examples.mjs "pages/belt_docs/array.mdx"`
 
 -----------
 Error Preview:

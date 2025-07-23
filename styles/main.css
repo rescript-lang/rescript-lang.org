@@ -1,11 +1,12 @@
-@tailwind base;
-@tailwind components;
-
 @import './_hljs.css';
 @import './_markdown.css';
 @import "./_fonts.css";
 @import "./_docsearch.css";
-/*@import "./_typography.css";*/
+
+@tailwind base;
+@tailwind components;
+
+/* @import "./_typography.css"; */
 
 body {
   @apply font-sans bg-white sm:subpixel-antialiased ;
@@ -21,6 +22,9 @@ body {
   background: transparent; /* Chrome/Safari/Webkit */
 }
 
+a > code {
+  @apply text-fire !important;
+}
 
 @tailwind utilities;
 
@@ -47,7 +51,7 @@ body {
     }
   }
 
-  @responsive {
+  @layer components {
     .hl-1 {
       @apply text-48 font-semibold tracking-tighter leading-tight text-black
     }
@@ -68,7 +72,7 @@ body {
     }
   }
 
-  @responsive {
+  @layer components {
     .body-lg {
       @apply text-18 font-normal tracking-tight leading-4
     }

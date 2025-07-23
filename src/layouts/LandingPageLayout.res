@@ -31,39 +31,43 @@ module PlaygroundHero = {
     {
       res: `module Button = {
   @react.component
-  let make = (~count: int) => {
+  let make = (~count) => {
     let times = switch count {
     | 1 => "once"
     | 2 => "twice"
-    | n => Belt.Int.toString(n) ++ " times"
+    | n => n->Int.toString ++ " times"
     }
-    let msg = "Click me " ++ times
+    let text = \`Click me $\{times\}\`
 
-    <button> {msg->React.string} </button>
+    <button> {text->React.string} </button>
   }
 }`,
-      js: `var React = require("react");
+      js: `import * as JsxRuntime from "react/jsx-runtime";
 
-function Playground$Button(Props) {
-  var count = Props.count;
+function Playground$Button(props) {
+  var count = props.count;
   var times = count !== 1 ? (
-      count !== 2 ? String(count) + " times" : "twice"
-    ) : "once";
-  var msg = "Click me " + times;
-  return React.createElement("button", undefined, msg);
+    count !== 2 ? count.toString() + " times" : "twice"
+  ) : "once";
+  var text = "Click me " + times;
+  return JsxRuntime.jsx("button", {
+    children: text
+  });
 }
 
 var Button = {
   make: Playground$Button
 };
 
-exports.Button = Button;`,
+export {
+  Button,
+}`,
     },
   ]
 
   @react.component
   let make = () => {
-    let (example, _setExample) = React.useState(_ => examples->Js.Array2.unsafe_get(0))
+    let (example, _setExample) = React.useState(_ => examples->Array.getUnsafe(0))
 
     //Playground Section & Background
     <section className="relative mt-20 bg-gray-10">
@@ -94,21 +98,20 @@ exports.Button = Button;`,
               </pre>
             </div>
           </div>
+
           /* ---Link to Playground--- */
           <div>
-            <Next.Link href={`/try?code=${LzString.compressToEncodedURIComponent(example.res)}}`}>
-              <a
-                className="captions md:px-0 border-b border-gray-40 hover:border-gray-60 text-gray-60">
-                {React.string("Edit this example in Playground")}
-              </a>
+            <Next.Link
+              href={`/try?code=${LzString.compressToEncodedURIComponent(example.res)}}`}
+              className="captions md:px-0 border-b border-gray-40 hover:border-gray-60 text-gray-60">
+              {React.string("Edit this example in Playground")}
             </Next.Link>
           </div>
           //
           <div className="hidden md:block">
             <img
-              className="absolute z-0 left-0 top-0 -ml-10 -mt-6"
+              className="absolute z-0 left-0 top-0 -ml-10 -mt-6 h-[24rem] w-[24rem]"
               src="/static/lp/grid.svg"
-              style={ReactDOM.Style.make(~height="24rem", ~width="24rem", ())}
             />
             <img
               className="absolute z-0 left-0 top-0 -ml-10 mt-10" src="/static/lp/illu_left.png"
@@ -116,9 +119,8 @@ exports.Button = Button;`,
           </div>
           <div className="hidden md:block">
             <img
-              className="absolute z-0 right-0 bottom-0 -mb-10 mt-24 -mr-10"
+              className="absolute z-0 right-0 bottom-0 -mb-10 mt-24 -mr-10 h-[24rem] w-[24rem]"
               src="/static/lp/grid.svg"
-              style={ReactDOM.Style.make(~height="24rem", ~width="24rem", ())}
             />
             <img
               className="absolute z-3 right-0 bottom-0 -mr-2 mb-10" src="/static/lp/illu_right.png"
@@ -132,7 +134,7 @@ exports.Button = Button;`,
 
 module QuickInstall = {
   module CopyButton = {
-    let copyToClipboard: string => bool = %raw(j`
+    let copyToClipboard: string => bool = %raw(`
   function(str) {
     try {
       const el = document.createElement('textarea');
@@ -166,7 +168,7 @@ module QuickInstall = {
     let make = (~code) => {
       let (state, setState) = React.useState(_ => Init)
 
-      let buttonRef = React.useRef(Js.Nullable.null)
+      let buttonRef = React.useRef(Nullable.null)
 
       let onClick = evt => {
         ReactEvent.Mouse.preventDefault(evt)
@@ -177,39 +179,38 @@ module QuickInstall = {
         }
       }
 
-      React.useEffect1(() => {
+      React.useEffect(() => {
         switch state {
         | Copied =>
-          open Webapi
-          let buttonEl = Js.Nullable.toOption(buttonRef.current)->Belt.Option.getExn
+          let buttonEl = Nullable.toOption(buttonRef.current)->Option.getOrThrow
 
           // Note on this imperative DOM nonsense:
           // For Tailwind transitions to behave correctly, we need to first paint the DOM element in the tree,
           // and in the next tick, add the opacity-100 class, so the transition animation actually takes place.
           // If we don't do that, the banner will essentially pop up without any animation
-          let bannerEl = Document.createElement("div")
-          bannerEl->Element.setClassName("foobar opacity-0 absolute top-0 mt-4 -mr-1 px-2 rounded right-0 
+          let bannerEl = WebAPI.Document.createElement(document, "div")
+          bannerEl.className = "foobar opacity-0 absolute top-0 mt-4 -mr-1 px-2 rounded right-0
             bg-turtle text-gray-80-tr body-sm
-            transition-all duration-500 ease-in-out ")
-          let textNode = Document.createTextNode("Copied!")
+            transition-all duration-500 ease-in-out "
+          let textNode = WebAPI.Document.createTextNode(document, "Copied!")
 
-          bannerEl->Element.appendChild(textNode)
-          buttonEl->Element.appendChild(bannerEl)
+          WebAPI.Element.appendChild(bannerEl, textNode)->ignore
+          WebAPI.Element.appendChild(buttonEl, bannerEl)->ignore
 
-          let nextFrameId = requestAnimationFrame(() => {
-            bannerEl->Element.classList->ClassList.toggle("opacity-0")
-            bannerEl->Element.classList->ClassList.toggle("opacity-100")
+          let nextFrameId = WebAPI.Window.requestAnimationFrame(window, _ => {
+            WebAPI.DOMTokenList.toggle(bannerEl.classList, ~token="opacity-0")->ignore
+            WebAPI.DOMTokenList.toggle(bannerEl.classList, ~token="opacity-100")->ignore
           })
 
-          let timeoutId = Js.Global.setTimeout(() => {
-            buttonEl->Element.removeChild(bannerEl)
+          let timeoutId = setTimeout(~handler=() => {
+            buttonEl->WebAPI.Element.removeChild(bannerEl)->ignore
             setState(_ => Init)
-          }, 2000)
+          }, ~timeout=2000)
 
           Some(
             () => {
               cancelAnimationFrame(nextFrameId)
-              Js.Global.clearTimeout(timeoutId)
+              clearTimeout(timeoutId)
             },
           )
         | _ => None
@@ -217,7 +218,7 @@ module QuickInstall = {
       }, [state])
 
       <button
-        ref={ReactDOM.Ref.domRef(buttonRef)}
+        ref={ReactDOM.Ref.domRef((Obj.magic(buttonRef): React.ref<Nullable.t<Dom.element>>))}
         disabled={state === Copied}
         className="relative h-10 w-10 flex justify-center items-center "
         onClick>
@@ -272,8 +273,7 @@ module QuickInstall = {
             className="relative z-1 text-gray-80 font-semibold text-24 md:text-32 leading-2 max-w-[32rem]">
             {React.string(`ReScript is used to ship and maintain mission-critical products with good UI and UX.`)}
           </p>
-          <div
-            className="mt-16 lg:mt-0 self-end" style={ReactDOM.Style.make(~maxWidth="25rem", ())}>
+          <div className="mt-16 lg:mt-0 self-end max-w-[25rem]">
             <Instructions />
           </div>
         </div>
@@ -325,17 +325,11 @@ module MainUSP = {
           //image (right)
           <div className="relative mt-10 lg:mt-0">
             <div
-              className="relative w-full z-2 bg-gray-90 rounded-lg flex md:mt-0 items-center justify-center rounded-lg"
-              style={ReactDOM.Style.make(
-                ~maxWidth="35rem",
-                ~boxShadow="0px 4px 55px 0px rgba(230,72,79,0.10)",
-                (),
-              )}>
+              className="relative w-full z-2 bg-gray-90 flex md:mt-0 items-center justify-center rounded-lg max-w-[35rem] shadow-[0px_4px_55px_0px_rgba(230,72,79,0.10)]">
               media
             </div>
             <img
-              className="absolute z-1 bottom-0 right-0 -mb-12 -mr-12"
-              style={ReactDOM.Style.make(~maxWidth="20rem", ())}
+              className="absolute z-1 bottom-0 right-0 -mb-12 -mr-12 max-w-[20rem]"
               src="/static/lp/grid2.svg"
             />
           </div>
@@ -424,9 +418,7 @@ module MainUSP = {
 
   @react.component
   let make = () => {
-    <section
-      className="w-full bg-gray-90 overflow-hidden"
-      style={ReactDOM.Style.make(~minHeight="37rem", ())}>
+    <section className="w-full bg-gray-90 overflow-hidden min-h-[37rem]">
       item1
       item2
       item3
@@ -452,6 +444,7 @@ module OtherSellingPoints = {
               "/static/lp/community-2.jpg",
               "/static/lp/community-1.jpg",
             ]}
+            imgLoading=#lazy
           />
           <h3 className="hl-3 text-gray-20 mt-4 mb-2">
             {React.string(`A community of programmers who value getting things done`)}
@@ -464,10 +457,11 @@ module OtherSellingPoints = {
             who deeply care about simplicity, speed and practicality.`)}
           </p>
           <div className="mt-6">
-            <Button
-              href="https://forum.rescript-lang.org" size={Button.Small} kind={Button.PrimaryBlue}>
-              {React.string("Join our Forum")}
-            </Button>
+            <a href="https://forum.rescript-lang.org">
+              <Button size={Button.Small} kind={Button.PrimaryBlue}>
+                {React.string("Join our Forum")}
+              </Button>
+            </a>
           </div>
         </div>
         // 2 small items
@@ -513,19 +507,19 @@ module OtherSellingPoints = {
 module TrustedBy = {
   @react.component
   let make = () => {
-    <section className="mt-20">
+    <section className="mt-20 flex flex-col items-center">
       <h3 className="hl-1 text-gray-80 text-center max-w-576 mx-auto">
         {React.string("Trusted by our users")}
       </h3>
       <div
-        className="flex flex-wrap mx-4 gap-8 justify-center items-center max-w-xl lg:mx-auto mt-16 ">
+        className="flex flex-wrap mx-4 gap-8 justify-center items-center max-w-xl lg:mx-auto mt-16 mb-16">
         {OurUsers.companies
-        ->Js.Array2.map(company => {
+        ->Array.map(company => {
           let (companyKey, renderedCompany) = switch company {
           | Logo({name, path, url}) => (
               name,
               <a href=url rel="noopener noreferrer">
-                <img className="hover:opacity-75 max-w-sm h-12" src=path />
+                <img className="hover:opacity-75 max-w-sm h-12" src=path loading=#lazy />
               </a>,
             )
           }
@@ -533,9 +527,11 @@ module TrustedBy = {
         })
         ->React.array}
       </div>
-      <div
-        className="mt-10 max-w-320 overflow-hidden opacity-50"
-        style={ReactDOM.Style.make(~maxHeight="6rem", ())}>
+      <a
+        href="https://github.com/rescript-lang/rescript-lang.org/blob/master/src/common/OurUsers.res">
+        <Button> {React.string("Add Your Logo")} </Button>
+      </a>
+      <div className="self-start mt-10 max-w-320 overflow-hidden opacity-50 max-h-[6rem]">
         <img className="w-full h-full" src="/static/lp/grid.svg" />
       </div>
     </section>
@@ -573,7 +569,7 @@ module CuratedResources = {
       imgSrc: "/static/ic_gentype@2x.png",
       title: React.string("TypeScript Integration"),
       descr: "Learn how to integrate ReScript in your existing TypeScript codebases.",
-      href: "/docs/gentype/latest/introduction",
+      href: "/docs/manual/latest/typescript-integration",
     },
   ]
 
@@ -585,30 +581,28 @@ module CuratedResources = {
         <div className="text-gray-40"> {React.string("NextJS")} </div>
       </>,
       descr: "Get started with our NextJS starter template.",
-      href: "https://github.com/ryyppy/rescript-nextjs-template",
+      href: "https://github.com/rescript-lang/create-rescript-app/blob/master/templates/rescript-template-nextjs/README.md",
     },
-    /*
     {
       imgSrc: "/static/vitejs_starter_logo.svg",
       title: <>
         <div> {React.string("ReScript & ")} </div>
-        <div style={ReactDOM.Style.make(~color="#6571FB", ())}> {React.string("ViteJS")} </div>
+        <div className="text-[#6571FB]"> {React.string("ViteJS")} </div>
       </>,
       descr: "Get started with ViteJS and ReScript.",
-      href: "/",
+      href: "https://github.com/rescript-lang/create-rescript-app/blob/master/templates/rescript-template-vite/README.md",
     },
-    {
-      imgSrc: "/static/nodejs_starter_logo.svg",
-      title: <>
-        <div> {React.string("ReScript & ")} </div>
-        <div className="text-gray-40" style={ReactDOM.Style.make(~color="#699D65", ())}>
-          {React.string("NodeJS")}
-        </div>
-      </>,
-      descr: "Get started with ReScript targeting the Node platform.",
-      href: "/",
-    },
- */
+    // {
+    //   imgSrc: "/static/nodejs_starter_logo.svg",
+    //   title: <>
+    //     <div> {React.string("ReScript & ")} </div>
+    //     <div className="text-gray-40" style={ReactDOM.Style.make(~color="#699D65", ())}>
+    //       {React.string("NodeJS")}
+    //     </div>
+    //   </>,
+    //   descr: "Get started with ReScript targeting the Node platform.",
+    //   href: "/",
+    // },
   ]
 
   @react.component
@@ -629,6 +623,7 @@ module CuratedResources = {
         </div>
         <hr className="bg-gray-80 h-px border-0 relative top-[-12px]" />
       </div>
+
       //divider
 
       //container for guides
@@ -636,14 +631,14 @@ module CuratedResources = {
         <div
           className="grid grid-flow-col grid-cols-2 grid-rows-2 lg:grid-cols-4 lg:grid-rows-1 gap-2 md:gap-4 lg:gap-8 max-w-1280 px-5 md:px-8 mx-auto">
           {cards
-          ->Belt.Array.mapWithIndex((i, card) =>
-            <Next.Link key={Belt.Int.toString(i)} href={card.href}>
-              <a
-                className="hover:bg-gray-80 bg-gray-90 px-4 md:px-8 pb-0 md:pb-8 relative rounded-xl md:min-w-[196px]">
-                <img className="h-[53px] absolute mt-6" src=card.imgSrc />
-                <h5 className="text-gray-10 hl-4 mt-32 h-12"> {card.title} </h5>
-                <div className="text-gray-40 mt-2 mb-8 body-sm"> {React.string(card.descr)} </div>
-              </a>
+          ->Array.mapWithIndex((card, i) =>
+            <Next.Link
+              key={Int.toString(i)}
+              href={card.href}
+              className="hover:bg-gray-80 bg-gray-90 px-4 md:px-8 pb-0 md:pb-8 relative rounded-xl md:min-w-[196px]">
+              <img className="h-[53px] absolute mt-6" src=card.imgSrc loading=#lazy />
+              <h5 className="text-gray-10 hl-4 mt-32 h-12"> {card.title} </h5>
+              <div className="text-gray-40 mt-2 mb-8 body-sm"> {React.string(card.descr)} </div>
             </Next.Link>
           )
           ->React.array}
@@ -659,12 +654,12 @@ module CuratedResources = {
         <div
           className="grid grid-flow-col grid-cols-2 lg:grid-cols-3 lg:grid-rows-1 gap-2 md:gap-4 lg:gap-8 max-w-1280 px-5 md:px-8 mx-auto">
           {templates
-          ->Belt.Array.mapWithIndex((i, card) =>
+          ->Array.mapWithIndex((card, i) =>
             <a
-              key={Belt.Int.toString(i)}
+              key={Int.toString(i)}
               href={card.href}
               className="hover:bg-gray-80 bg-gray-90 px-5 pb-8 relative rounded-xl min-w-[200px]">
-              <img className="h-12 absolute mt-5" src=card.imgSrc />
+              <img className="h-12 absolute mt-5" src=card.imgSrc loading=#lazy />
               <h5 className="text-gray-10 hl-4 mt-32 h-12"> {card.title} </h5>
               <div className="text-gray-40 mt-4 body-sm"> {React.string(card.descr)} </div>
             </a>
@@ -687,8 +682,8 @@ module Sponsors = {
 */
 
 @react.component
-let make = (~components=Markdown.default, ~children) => {
-  let overlayState = React.useState(() => false)
+let make = (~components=MarkdownComponents.default, ~children) => {
+  let (isOverlayOpen, setOverlayOpen) = React.useState(() => false)
 
   <>
     <Meta
@@ -698,12 +693,12 @@ let make = (~components=Markdown.default, ~children) => {
       ogImage="/static/Art-3-rescript-launch.jpg"
     />
     <div className="mt-4 xs:mt-16">
-      <div className="text-gray-80 text-18">
-        <Navigation overlayState />
-        <div className="absolute top-16 w-full">
+      <div className="text-gray-80 text-18 z">
+        <Navigation isOverlayOpen setOverlayOpen />
+        <div className="absolute w-full top-16">
           <div className="relative overflow-hidden pb-32">
             <main className="mt-10 min-w-320 lg:align-center w-full">
-              <Mdx.Provider components>
+              <MdxProvider components>
                 <div className="">
                   <div className="w-full">
                     <div className="mt-16 md:mt-32 lg:mt-40 mb-12">
@@ -718,7 +713,7 @@ let make = (~components=Markdown.default, ~children) => {
                     children
                   </div>
                 </div>
-              </Mdx.Provider>
+              </MdxProvider>
             </main>
           </div>
           <Footer />

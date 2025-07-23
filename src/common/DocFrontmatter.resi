@@ -1,9 +1,8 @@
 type t = {
   title: string,
-  metaTitle: Js.null<string>, // If there's no metaTitle, we will take title instead
-  description: Js.null<string>,
-  canonical: Js.null<string>,
-  ghEditHref: string,
+  metaTitle: Null.t<string>, // If there's no metaTitle, we will take title instead
+  description: Null.t<string>,
+  canonical: Null.t<string>,
 }
 
-let decode: Js.Json.t => option<t>
+let decode: JSON.t => option<t>

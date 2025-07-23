@@ -6,22 +6,33 @@ canonical: "/docs/react/latest/spread-props"
 
 # Extensions of Props
 
-> **Note:** This page assumes your `bsconfig.json` to be set to `"jsx": { "version": 4 }` to apply the right JSX transformations.
+> **Note:** The output shown for the examples on this page assumes your `rescript.json` to be set to `"jsx": { "version": 4, "mode": "classic" }`. We will update it for automatic mode soon.
 
 ## Spread props
 
 JSX props spread is supported now, but in a stricter way than in JS.
 
+<div className="hidden">
+
+```res prelude
+module Comp = {
+  type props = {a?: string, b?: string}
+  external make: React.component<props> = "default"
+}
+```
+
+</div>
+
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res example
+let props = {Comp.b: "b"}
 <Comp {...props} a="a" />
 ```
 ```js
-React.createElement(Comp, {
-  a: "a",
-  b: "b"
-});
+var props = {b: "b"};
+var newrecord = Caml_obj.obj_dup(props);
+return JsxRuntime.jsx(default, (newrecord.a = "a", newrecord));
 ```
 
 </CodeTab>
@@ -52,17 +63,17 @@ You can control the definition of the `props` type by passing as argument to `@r
 
 <CodeTab labels={["Decorated", "Expanded"]}>
 
-```res
-type sharedprops<'x, 'y> = {x: 'x, y: 'y, z:string}
+```res example
+type sharedProps<'x, 'y> = {x: 'x, y: 'y, z:string}
 
 module C1 = {
   @react.component(:sharedProps<'a, 'b>)
-  let make = (~x, ~y) => React.string(x ++ y ++ z)
+  let make = (~x, ~y, ~z) => React.string(x ++ y ++ z)
 }
 
 module C2 = {
   @react.component(:sharedProps<string, 'b>)
-  let make = (~x, ~y) => React.string(x ++ y ++ z)
+  let make = (~x, ~y, ~z) => React.string(x ++ y ++ z)
 }
 
 module C3 = {
@@ -72,17 +83,17 @@ module C3 = {
 }
 ```
 
-```res
-type sharedprops<'x, 'y> = {x: 'x, y: 'y, z: string}
+```res example
+type sharedProps<'x, 'y> = {x: 'x, y: 'y, z: string}
 
 module C1 = {
   type props<'a, 'b> = sharedProps<'a, 'b>
-  let make = ({x, y, _}: props<_>) => React.string(x ++ y ++ z)
+  let make = ({x, y, z}: props<_>) => React.string(x ++ y ++ z)
 }
 
 module C2 = {
   type props<'b> = sharedProps<string, 'b>
-  let make = ({x, y, _}: props<_>) => React.string(x ++ y ++ z)
+  let make = ({x, y, z}: props<_>) => React.string(x ++ y ++ z)
 }
 
 module C3 = {
@@ -120,7 +131,7 @@ module Screen: {
 />
 ```
 
-This example cann't pass the type checker, because the props types of both components are nominally different. You can make the both components having the same props type by passing `screenProps` type as argument to `@react.component`.
+This example can't pass the type checker, because the props types of both components are nominally different. You can make the both components having the same props type by passing `screenProps` type as argument to `@react.component`.
 
 ```res
 module A = {

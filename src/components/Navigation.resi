@@ -1,2 +1,6 @@
 @react.component
-let make: (~fixed: bool=?, ~overlayState: (bool, (bool => bool) => unit)) => React.element
+let make: (
+  ~fixed: bool=?,
+  ~isOverlayOpen: bool,
+  ~setOverlayOpen: (bool => bool) => unit,
+) => React.element

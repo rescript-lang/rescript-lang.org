@@ -38,13 +38,13 @@ Avoid using refs for anything that can be done declaratively.
 
 A React ref is represented as a `React.ref('value)` type, a container managing a mutable value of type `'value`. You can create this kind of ref with the [React.useRef](./hooks-ref) hook:
 
-```res
+```res example
 @react.component
 let make = () => {
-  let clicks = React.useRef(0);
+  let clicks = React.useRef(0)
 
   let onClick = (_) => {
-    clicks.current = clicks.current + 1;
+    clicks.current = clicks.current + 1
   };
 
   <div onClick>
@@ -64,7 +64,7 @@ let value = myRef.current
 ```
 
 The value of the ref differs depending on the type of the node:
-- When the ref attribute is used on an HTML element, the ref passed via `ReactDOM.Ref.domRef` receives the underlying DOM element as its current property (type of `React.ref<Js.Nullable.t<Dom.element>>`)
+- When the ref attribute is used on an HTML element, the ref passed via `ReactDOM.Ref.domRef` receives the underlying DOM element as its current property (type of `React.ref<Nullable.t<Dom.element>>`)
 - In case of interop, when the ref attribute is used on a custom class component (based on JS classes), the ref object receives the mounted instance of the component as its current (not discussed in this document).
 - **You may not use the ref attribute on component functions** because they don’t have instances (we don't expose JS classes in ReScript).
 
@@ -76,19 +76,19 @@ This code uses a `React.ref` to store a reference to an `input` DOM node to put 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res example
 // CustomTextInput.res
 
 @send external focus: Dom.element => unit = "focus"
 
 @react.component
 let make = () => {
-  let textInput = React.useRef(Js.Nullable.null)
+  let textInput = React.useRef(Nullable.null)
 
   let focusInput = () =>
-    switch textInput.current->Js.Nullable.toOption {
-    | Some(dom) => dom->focus
-    | None => ()
+    switch textInput.current {
+    | Value(dom) => dom->focus
+    | Null | Undefined => ()
     }
 
   let onClick = _ => focusInput()
@@ -103,22 +103,29 @@ let make = () => {
 ```js
 function CustomTextInput(Props) {
   var textInput = React.useRef(null);
-  var onClick = function (param) {
+  var focusInput = function () {
     var dom = textInput.current;
-    if (!(dom == null)) {
-      dom.focus();
+    if (dom === null || dom === undefined) {
       return ;
     }
-
+    dom.focus();
   };
-  return React.createElement("div", undefined, React.createElement("input", {
-                  ref: textInput,
-                  type: "text"
-                }), React.createElement("input", {
-                  type: "button",
-                  value: "Focus the text input",
-                  onClick: onClick
-                }));
+  var onClick = function (param) {
+    focusInput();
+  };
+  return JsxRuntime.jsxs("div", {
+              children: [
+                JsxRuntime.jsx("input", {
+                      ref: Caml_option.some(textInput),
+                      type: "text"
+                    }),
+                JsxRuntime.jsx("input", {
+                      type: "button",
+                      value: "Focus the text input",
+                      onClick: onClick
+                    })
+              ]
+            });
 }
 ```
 
@@ -126,7 +133,7 @@ function CustomTextInput(Props) {
 
 A few things happened here, so let's break them down:
 
-- We initialize our `textInput` ref as a `Js.Nullable.null`
+- We initialize our `textInput` ref as a `Nullable.null`
 - We register our `textInput` ref in our `<input>` element with `ReactDOM.Ref.domRef(textInput)`
 - In our `focusInput` function, we need to first verify that our DOM element is set, and then use the `focus` binding to set the focus
 
@@ -148,7 +155,7 @@ module MyComp = {
 
 @react.component
 let make = () => {
-  let textInput = React.useRef(Js.Nullable.null)
+  let textInput = React.useRef(Nullable.null)
 
   // This will **not** work
   <MyComp ref={ReactDOM.Ref.domRef(textInput)} />
@@ -186,22 +193,20 @@ The example below implements a common pattern: using the ref callback to store a
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res example
 // CustomTextInput.res
 
 @send external focus: Dom.element => unit = "focus"
 
 @react.component
 let make = () => {
-  let textInput = React.useRef(Js.Nullable.null)
+  let textInput = React.useRef(Nullable.null)
   let setTextInputRef = element => {
-    textInput.current = element;
+    textInput.current = element
   }
 
   let focusTextInput = _ => {
-    textInput.current
-    ->Js.Nullable.toOption
-    ->Belt.Option.forEach(input => input->focus)
+    textInput.current->Nullable.forEach(input => input->focus)
   }
 
   <div>
@@ -218,16 +223,14 @@ function CustomTextInput(Props) {
   var textInput = React.useRef(null);
   var setTextInputRef = function (element) {
     textInput.current = element;
-
   };
   var focusTextInput = function (param) {
-    return Belt_Option.forEach(Caml_option.nullable_to_opt(textInput.current), (function (input) {
-                  input.focus();
-
-                }));
+    Core__Nullable.forEach(textInput.current, (function (input) {
+            input.focus();
+          }));
   };
   return React.createElement("div", undefined, React.createElement("input", {
-                  ref: setTextInputRef,
+                  ref: Caml_option.some(setTextInputRef),
                   type: "text"
                 }), React.createElement("input", {
                   type: "button",
@@ -245,7 +248,7 @@ You can pass callback refs between components like you can with object refs that
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res example
 // Parent.res
 
 @send external focus: Dom.element => unit = "focus"
@@ -261,7 +264,7 @@ module CustomTextInput = {
 
 @react.component
 let make = () => {
-  let textInput = React.useRef(Js.Nullable.null)
+  let textInput = React.useRef(Nullable.null)
   let setInputRef = element => { textInput.current = element}
 
   <CustomTextInput setInputRef/>

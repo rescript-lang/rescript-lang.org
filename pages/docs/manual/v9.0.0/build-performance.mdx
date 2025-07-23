@@ -57,7 +57,7 @@ We've stress-tested bsb on a big project of 10,000 files (2 directories, 5000 fi
 <!-- TODO: better repro -->
 
 - No-op build of 10k files: `800ms` (the minimum amount of time required to check the mtimes of 10k files).
-- Clean build: <3 minutes.
+- Clean build: \<3 minutes.
 - Incremental build: depends on the number of the dependents of the file. No dependent means `1s`.
 
 Note that bsb is a file-based build system. We don't do in-memory build, even if that speeds up the build a lot. In-memory builds risk memory leaks, out-of-memory errors and others. The bsb watcher, on the other hand, can stay open for days.

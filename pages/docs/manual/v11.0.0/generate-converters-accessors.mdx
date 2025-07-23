@@ -1,0 +1,114 @@
+---
+title: "Generate Converters & Helpers"
+description: "All about the @deriving decorator, and how to generate code from types"
+canonical: "/docs/manual/v11.0.0/generate-converters-accessors"
+---
+
+# Generate Converters & Helpers
+
+**Note**: if you're looking for:
+- `@deriving(jsConverter)` for records
+- `@deriving({jsConverter: newType})` for records
+- `@deriving(abstract)` for records
+- `@deriving(jsConverter)` for plain and polymorphic variants
+
+These particular ones are no longer needed. Select a doc version lower than `9.0` in the sidebar to see their old docs.
+
+<!-- TODO: genType -->
+
+When using ReScript, you will sometimes come into situations where you want to
+
+- Automatically generate functions that convert between ReScript's internal and JS runtime values (e.g. variants).
+- Convert a record type into an abstract type with generated creation, accessor and method functions.
+- Generate some other helper functions, such as functions from record attribute names.
+
+You can use the `@deriving` decorator for different code generation scenarios. All different options and configurations will be discussed on this page.
+
+**Note:** Please be aware that extensive use of code generation might make it harder to understand your programs (since the code being generated is not visible in the source code, and you just need to know what kind of functions / values a decorator generates).
+
+## Generate Functions & Plain Values for Variants
+
+Use `@deriving(accessors)` on a variant type to create accessor functions for its constructors.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+@deriving(accessors)
+type action =
+  | Click
+  | Submit(string)
+  | Cancel;
+```
+
+```js
+function submit(param_0) {
+  return /* Submit */[param_0];
+}
+
+var click = /* Click */0;
+
+var cancel = /* Cancel */1;
+
+exports.click  = click;
+exports.submit = submit;
+exports.cancel = cancel;
+```
+
+</CodeTab>
+
+Variants constructors with payloads generate functions, payload-less constructors generate plain integers (the internal representation of variants).
+
+**Note**:
+- The generated accessors are lower-cased.
+- You can now use these helpers on the JavaScript side! But don't rely on their actual values please.
+
+### Usage
+
+```res
+let s = submit("hello"); /* gives Submit("hello") */
+```
+
+This is useful:
+
+- When you're passing the accessor function as a higher-order function (which plain variant constructors aren't).
+- When you'd like the JS side to use these values & functions opaquely and pass you back a variant constructor (since JS has no such thing).
+
+Please note that in case you just want to _pipe a payload into a constructor_, you don't need to generate functions for that. Use the `->` syntax instead, e.g. `"test"->Submit`.
+
+## Generate Field Accessors for Records
+
+Use `@deriving(accessors)` on a record type to create accessors for its record field names.
+
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+@deriving(accessors)
+type pet = {name: string}
+
+let pets = [{name: "bob"}, {name: "bob2"}]
+
+pets
+ ->Array.map(name)
+ ->Array.joinWith("&")
+ ->Console.log
+```
+
+```js
+function name(param) {
+  return param.name;
+}
+
+var pets = [
+  {
+    name: "bob"
+  },
+  {
+    name: "bob2"
+  }
+];
+
+console.log(Belt_Array.map(pets, name).join("&"));
+```
+
+</CodeTab>

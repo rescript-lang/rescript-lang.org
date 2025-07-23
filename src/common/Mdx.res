@@ -42,9 +42,9 @@ module MdxChildren = {
   let classify = (v: t): case =>
     if %raw(`function (a) { return  a instanceof Array}`)(v) {
       Array((Obj.magic(v): array<mdxComponent>))
-    } else if Js.typeof(v) == "string" {
+    } else if typeof(v) == #string {
       String((Obj.magic(v): string))
-    } else if Js.typeof(v) == "object" {
+    } else if typeof(v) == #object {
       Element((Obj.magic(v): mdxComponent))
     } else {
       Unknown((Obj.magic(v): unknown))
@@ -67,98 +67,8 @@ module MdxChildren = {
 }
 
 module Components = {
-  type props = {"children": React.element}
-
-  type headerProps = {
-    "id": string,
-    "children": // Used for anchor tags
-    React.element,
-  }
-
   // Used for reflection based logic in
   // components such as `code` or `ul`
   // with runtime reflection
   type unknown
-
-  @deriving(abstract)
-  type t = {
-    /* MDX shortnames for more advanced components */
-    @as("Cite") @optional
-    cite: React.component<{
-      "author": option<string>,
-      "children": React.element,
-    }>,
-    @as("Info") @optional
-    info: React.component<props>,
-    @as("Warn") @optional
-    warn: React.component<props>,
-    @as("Intro") @optional
-    intro: React.component<props>,
-    @as("UrlBox") @optional
-    urlBox: React.component<{
-      "text": string,
-      "href": string,
-      "children": MdxChildren.t,
-    }>,
-    @as("CodeTab") @optional
-    codeTab: React.component<{
-      "children": MdxChildren.t,
-      "labels": option<array<string>>,
-    }>,
-    /* Common markdown elements */
-    @optional
-    p: React.component<props>,
-    @optional
-    li: React.component<props>,
-    @optional
-    h1: React.component<props>,
-    @optional
-    h2: React.component<headerProps>,
-    @optional
-    h3: React.component<headerProps>,
-    @optional
-    h4: React.component<headerProps>,
-    @optional
-    h5: React.component<headerProps>,
-    @optional
-    ul: React.component<props>,
-    @optional
-    ol: React.component<props>,
-    @optional
-    table: React.component<props>,
-    @optional
-    thead: React.component<props>,
-    @optional
-    th: React.component<props>,
-    @optional
-    td: React.component<props>,
-    @optional
-    blockquote: React.component<props>,
-    @optional
-    inlineCode: React.component<props>,
-    @optional
-    strong: React.component<props>,
-    @optional
-    hr: React.component<{.}>,
-    @optional
-    code: React.component<{
-      "className": option<string>,
-      "metastring": option<string>,
-      "children": unknown,
-    }>,
-    @optional
-    pre: React.component<props>,
-    @optional
-    a: React.component<{
-      "children": React.element,
-      "target": option<string>,
-      "href": string,
-    }>,
-  }
-}
-
-module Provider = {
-  @module("@mdx-js/react") @react.component
-  external make: (~components: Components.t, ~children: React.element=?) => React.element =
-    "MDXProvider"
 }

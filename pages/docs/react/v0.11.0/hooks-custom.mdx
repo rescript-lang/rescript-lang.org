@@ -1,0 +1,537 @@
+---
+title: Build A Custom Hook
+description: "How to build your own hooks in ReScript & React"
+canonical: "/docs/react/latest/hooks-custom"
+---
+
+# Build A Custom Hook
+
+<Intro>
+
+React comes with a few fundamental hooks out-of-the-box, such as `React.useState` or `React.useEffect`. Here you will learn how to build your own, higher-level hooks for your React use-cases.
+
+</Intro>
+
+## Why Custom Hooks?
+
+Custom hooks let you extract existing component logic into reusable, separate functions.
+
+Let's go back to a previous example from our [React.useEffect section](./hooks-effect) where we built a component for a chat application that displays a message, indicating whether a friend is online or offline:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res {16-31}
+// FriendStatus.res
+
+module ChatAPI = {
+  // Imaginary globally available ChatAPI for demo purposes
+  type status = { isOnline: bool };
+  @val external subscribeToFriendStatus: (string, status => unit) => unit = "subscribeToFriendStatus";
+  @val external unsubscribeFromFriendStatus: (string, status => unit) => unit = "unsubscribeFromFriendStatus";
+}
+
+type state = Offline | Loading | Online;
+
+@react.component
+let make = (~friendId: string) => {
+  let (state, setState) = React.useState(_ => Offline)
+
+  React.useEffect(() => {
+    let handleStatusChange = (status) => {
+      setState(_ => {
+        status.ChatAPI.isOnline ? Online : Offline
+      })
+    }
+
+    ChatAPI.subscribeToFriendStatus(friendId, handleStatusChange);
+    setState(_ => Loading);
+
+    let cleanup = () => {
+      ChatAPI.unsubscribeFromFriendStatus(friendId, handleStatusChange)
+    }
+
+    Some(cleanup)
+  })
+
+  let text = switch(state) {
+    | Offline => friendId ++ " is offline"
+    | Online => friendId ++ " is online"
+    | Loading => "loading..."
+  }
+
+  <div>
+  	{React.string(text)}
+  </div>
+}
+
+```
+
+```js
+function FriendStatus(Props) {
+  var friendId = Props.friendId;
+  var match = React.useState(function () {
+        return /* Offline */0;
+      });
+  var setState = match[1];
+  React.useEffect(function () {
+        var handleStatusChange = function (status) {
+          return Curry._1(setState, (function (param) {
+                        if (status.isOnline) {
+                          return /* Online */2;
+                        } else {
+                          return /* Offline */0;
+                        }
+                      }));
+        };
+        subscribeToFriendStatus(friendId, handleStatusChange);
+        Curry._1(setState, (function (param) {
+                return /* Loading */1;
+              }));
+        return (function (param) {
+                  unsubscribeFromFriendStatus(friendId, handleStatusChange);
+
+                });
+      });
+  var text;
+  switch (match[0]) {
+    case /* Offline */0 :
+        text = friendId + " is offline";
+        break;
+    case /* Loading */1 :
+        text = "loading...";
+        break;
+    case /* Online */2 :
+        text = friendId + " is online";
+        break;
+
+  }
+  return React.createElement("div", undefined, text);
+}
+```
+
+</CodeTab>
+
+Now let’s say that our chat application also has a contact list, and we want to render names of online users with a green color. We could copy and paste similar logic above into our `FriendListItem` component but it wouldn’t be ideal:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res {15-30}
+// FriendListItem.res
+type state = Offline | Loading | Online;
+
+// module ChatAPI = {...}
+
+type friend = {
+  id: string,
+  name: string
+};
+
+@react.component
+let make = (~friend: friend) => {
+  let (state, setState) = React.useState(_ => Offline)
+
+  React.useEffect(() => {
+    let handleStatusChange = (status) => {
+      setState(_ => {
+        status.ChatAPI.isOnline ? Online : Offline
+      })
+    }
+
+    ChatAPI.subscribeToFriendStatus(friend.id, handleStatusChange);
+    setState(_ => Loading);
+
+    let cleanup = () => {
+      ChatAPI.unsubscribeFromFriendStatus(friend.id, handleStatusChange)
+    }
+
+    Some(cleanup)
+  })
+
+  let color = switch(state) {
+    | Offline => "red"
+    | Online => "green"
+    | Loading => "grey"
+  }
+
+  <li style={ReactDOMStyle.make(~color,())}>
+      {React.string(friend.name)}
+  </li>
+}
+```
+
+```js
+function FriendListItem(Props) {
+  var friend = Props.friend;
+  var match = React.useState(function () {
+        return /* Offline */0;
+      });
+  var setState = match[1];
+  React.useEffect(function () {
+        var handleStatusChange = function (status) {
+          return Curry._1(setState, (function (param) {
+                        if (status.isOnline) {
+                          return /* Online */2;
+                        } else {
+                          return /* Offline */0;
+                        }
+                      }));
+        };
+        subscribeToFriendStatus(friend.id, handleStatusChange);
+        Curry._1(setState, (function (param) {
+                return /* Loading */1;
+              }));
+        return (function (param) {
+                  unsubscribeFromFriendStatus(friend.id, handleStatusChange);
+
+                });
+      });
+  var color;
+  switch (match[0]) {
+    case /* Offline */0 :
+        color = "red";
+        break;
+    case /* Loading */1 :
+        color = "grey";
+        break;
+    case /* Online */2 :
+        color = "green";
+        break;
+
+  }
+  return React.createElement("li", {
+              style: {
+                color: color
+              }
+            }, friend.name);
+}
+```
+
+</CodeTab>
+
+Instead, we’d like to share this logic between `FriendStatus` and `FriendListItem`.
+
+Traditionally in React, we’ve had two popular ways to share stateful logic between components: render props and higher-order components. We will now look at how Hooks solve many of the same problems without forcing you to add more components to the tree.
+
+## Extracting a Custom Hook
+
+Usually when we want to share logic between two functions, we extract it to a third function. Both components and Hooks are functions, so this works for them too!
+
+**A custom Hook is a function whose name starts with ”use” and that may call other Hooks.** For example, `useFriendStatus` below is our first custom Hook (we create a new file `FriendStatusHook.res` to encapsulate the `state` type as well):
+
+
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+// FriendStatusHook.res
+
+// module ChatAPI {...}
+
+type state = Offline | Loading | Online
+
+let useFriendStatus = (friendId: string): state => {
+  let (state, setState) = React.useState(_ => Offline)
+
+  React.useEffect(() => {
+    let handleStatusChange = status => {
+      setState(_ => {
+        status.ChatAPI.isOnline ? Online : Offline
+      })
+    }
+
+    ChatAPI.subscribeToFriendStatus(friendId, handleStatusChange)
+    setState(_ => Loading)
+
+    let cleanup = () => {
+      ChatAPI.unsubscribeFromFriendStatus(friendId, handleStatusChange)
+    }
+
+    Some(cleanup)
+  })
+
+  state
+}
+```
+
+```js
+function useFriendStatus(friendId) {
+  var match = React.useState(function () {
+        return /* Offline */0;
+      });
+  var setState = match[1];
+  React.useEffect(function () {
+        var handleStatusChange = function (status) {
+          return Curry._1(setState, (function (param) {
+                        if (status.isOnline) {
+                          return /* Online */2;
+                        } else {
+                          return /* Offline */0;
+                        }
+                      }));
+        };
+        subscribeToFriendStatus(friendId, handleStatusChange);
+        Curry._1(setState, (function (param) {
+                return /* Loading */1;
+              }));
+        return (function (param) {
+                  unsubscribeFromFriendStatus(friendId, handleStatusChange);
+
+                });
+      });
+  return match[0];
+}
+```
+
+</CodeTab>
+
+There’s nothing new inside of it — the logic is copied from the components above. Just like in a component, make sure to only call other Hooks unconditionally at the top level of your custom Hook.
+
+Unlike a React component, a custom Hook doesn’t need to have a specific signature. We can decide what it takes as arguments, and what, if anything, it should return. In other words, it’s just like a normal function. Its name should always start with use so that you can tell at a glance that the rules of Hooks apply to it.
+
+The purpose of our `useFriendStatus` Hook is to subscribe us to a friend’s status. This is why it takes `friendId` as an argument, and returns the online state like `Online`, `Offline` or `Loading`:
+
+```res
+let useFriendStatus = (friendId: string): status {
+  let (state, setState) = React.useState(_ => Offline);
+
+  // ...
+
+  state
+}
+```
+
+Now let’s use our custom Hook.
+
+
+## Using a Custom Hook
+
+In the beginning, our stated goal was to remove the duplicated logic from the `FriendStatus` and `FriendListItem` components. Both of them want to know the online state of a friend.
+
+
+Now that we’ve extracted this logic to a useFriendStatus hook, we can just use it:
+
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res {6}
+// FriendStatus.res
+type friend = { id: string };
+
+@react.component
+let make = (~friend: friend) => {
+  let onlineState = FriendStatusHook.useFriendStatus(friend.id);
+
+  let status = switch(onlineState) {
+    | FriendStatusHook.Online => "Online"
+    | Loading => "Loading"
+    | Offline => "Offline"
+  }
+
+  React.string(status);
+}
+```
+```js
+function FriendStatus(Props) {
+  var friend = Props.friend;
+  var onlineState = useFriendStatus(friend.id);
+  var color;
+  switch (onlineState) {
+    case /* Offline */0 :
+        color = "red";
+        break;
+    case /* Loading */1 :
+        color = "grey";
+        break;
+    case /* Online */2 :
+        color = "green";
+        break;
+
+  }
+  return React.createElement("li", {
+              style: {
+                color: color
+              }
+            }, friend.name);
+}
+```
+
+</CodeTab>
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res {4}
+// FriendListItem.res
+@react.component
+let make = (~friend: friend) => {
+  let onlineState = FriendStatusHook.useFriendStatus(friend.id);
+
+  let color = switch(onlineState) {
+    | Offline => "red"
+    | Online => "green"
+    | Loading => "grey"
+  }
+
+  <li style={ReactDOMStyle.make(~color,())}>
+      {React.string(friend.name)}
+  </li>
+}
+```
+
+```js
+function FriendListItem(Props) {
+  var friend = Props.friend;
+  var onlineState = useFriendStatus(friend.id);
+  var color;
+  switch (onlineState) {
+    case /* Offline */0 :
+        color = "red";
+        break;
+    case /* Loading */1 :
+        color = "grey";
+        break;
+    case /* Online */2 :
+        color = "green";
+        break;
+
+  }
+  return React.createElement("li", {
+              style: {
+                color: color
+              }
+            }, friend.name);
+}
+```
+
+</CodeTab>
+
+
+**Is this code equivalent to the original examples?** Yes, it works in exactly the same way. If you look closely, you’ll notice we didn’t make any changes to the behavior. All we did was to extract some common code between two functions into a separate function. Custom Hooks are a convention that naturally follows from the design of Hooks, rather than a React feature.
+
+**Do I have to name my custom Hooks starting with “use”?** Please do. This convention is very important. Without it, we wouldn’t be able to automatically check for violations of rules of Hooks because we couldn’t tell if a certain function contains calls to Hooks inside of it.
+
+**Do two components using the same Hook share state?** No. Custom Hooks are a mechanism to reuse stateful logic (such as setting up a subscription and remembering the current value), but every time you use a custom Hook, all state and effects inside of it are fully isolated.
+
+**How does a custom Hook get isolated state?** Each call to a Hook gets isolated state. Because we call useFriendStatus directly, from React’s point of view our component just calls useState and useEffect. And as we learned earlier, we can call useState and useEffect many times in one component, and they will be completely independent.
+
+
+### Tip: Pass Information Between Hooks
+
+Since Hooks are functions, we can pass information between them.
+
+To illustrate this, we’ll use another component from our hypothetical chat example. This is a chat message recipient picker that displays whether the currently selected friend is online:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res {11,12,14-18,22}
+type friend = {id: string, name: string}
+
+let friendList = [
+  {id: "1", name: "Phoebe"},
+  {id: "2", name: "Rachel"},
+  {id: "3", name: "Ross"},
+]
+
+@react.component
+let make = () => {
+  let (recipientId, setRecipientId) = React.useState(_ => "1")
+  let recipientOnlineState = FriendStatusHook.useFriendStatus(recipientId)
+
+  let color = switch recipientOnlineState {
+  | FriendStatusHook.Offline => Circle.Red
+  | Online => Green
+  | Loading => Grey
+  }
+
+  let onChange = evt => {
+    let value = ReactEvent.Form.target(evt)["value"]
+    setRecipientId(value)
+  }
+
+  let friends = Belt.Array.map(friendList, friend => {
+    <option key={friend.id} value={friend.id}>
+      {React.string(friend.name)}
+    </option>
+  })
+
+  <>
+    <Circle color />
+    <select value={recipientId} onChange>
+      {React.array(friends)}
+    </select>
+  </>
+}
+```
+```js
+var friendList = [
+  {
+    id: "1",
+    name: "Phoebe"
+  },
+  {
+    id: "2",
+    name: "Rachel"
+  },
+  {
+    id: "3",
+    name: "Ross"
+  }
+];
+
+function Playground(Props) {
+  var match = React.useState(function () {
+        return "1";
+      });
+  var setRecipientId = match[1];
+  var recipientId = match[0];
+  var recipientOnlineState = useFriendStatus(recipientId);
+  var color;
+  switch (recipientOnlineState) {
+    case /* Offline */0 :
+        color = /* Red */0;
+        break;
+    case /* Loading */1 :
+        color = /* Grey */2;
+        break;
+    case /* Online */2 :
+        color = /* Green */1;
+        break;
+
+  }
+  var onChange = function (evt) {
+    return Curry._1(setRecipientId, evt.target.value);
+  };
+  var friends = Belt_Array.map(friendList, (function (friend) {
+          return React.createElement("option", {
+                      key: friend.id,
+                      value: friend.id
+                    }, friend.name);
+        }));
+  return React.createElement(React.Fragment, undefined, React.createElement(Playground$Circle, {
+                  color: color
+                }), React.createElement("select", {
+                  value: recipientId,
+                  onChange: onChange
+                }, friends));
+}
+```
+
+</CodeTab>
+
+We keep the currently chosen friend ID in the `recipientId` state variable, and update it if the user chooses a different friend in the `<select>` picker.
+
+Because the useState Hook call gives us the latest value of the `recipientId` state variable, we can pass it to our custom `FriendStatusHook.useFriendStatus` Hook as an argument:
+
+```res
+let (recipientId, setRecipientId) = React.useState(_ => "1")
+let recipientOnlineState = FriendStatusHook.useFriendStatus(recipientId)
+```
+
+This lets us know whether the currently selected friend is online. If we pick a different friend and update the `recipientId` state variable, our `FriendStatus.useFriendStatus` Hook will unsubscribe from the previously selected friend, and subscribe to the status of the newly selected one.
+
+## Use Your Imagination
+
+Custom Hooks offer the flexibility of sharing logic. You can write custom Hooks that cover a wide range of use cases like form handling, animation, declarative subscriptions, timers, and probably many more we haven’t considered. What’s more, you can build Hooks that are just as easy to use as React’s built-in features.
+
+Try to resist adding abstraction too early. It's pretty common that components grow pretty big when there is enough stateful logic handling involved. This is normal — don’t feel like you have to immediately split it into Hooks. But we also encourage you to start spotting cases where a custom Hook could hide complex logic behind a simple interface, or help untangle a messy component.
+
+

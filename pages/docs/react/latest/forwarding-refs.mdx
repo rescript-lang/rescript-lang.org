@@ -16,7 +16,7 @@ Ref forwarding is a technique for automatically passing a [React.ref](./refs-and
 
 Consider a FancyButton component that renders the native button DOM element:
 
-```res
+```res example
 // FancyButton.res
 
 @react.component
@@ -43,7 +43,7 @@ A `React.ref` can be passed down like any other prop. The component will take ca
 
 In the example below, `FancyInput` defines a prop `inputRef` that will be forwarded to its `input` element:
 
-```res
+```res example
 // App.res
 
 module FancyInput = {
@@ -56,12 +56,10 @@ module FancyInput = {
 
 @react.component
 let make = () => {
-  let input = React.useRef(Js.Nullable.null)
+  let input = React.useRef(Nullable.null)
 
   let focusInput = () =>
-    input.current
-    ->Js.Nullable.toOption
-    ->Belt.Option.forEach(input => input->focus)
+    input.current->Nullable.forEach(input => input->focus)
 
   let onClick = _ => focusInput()
 
@@ -78,7 +76,7 @@ We use the `ReactDOM.domRef` type to represent our `inputRef`. We pass our ref i
 
 ## [Discouraged] React.forwardRef
 
-**Note:** We discourage this method since it [will likely go away](https://twitter.com/dan_abramov/status/1173372190395445251) at some point, and doesn't yield any obvious advantages over the previously mentioned ref prop passing.
+**Note:** We discourage this method since it will likely go away at some point, and doesn't yield any obvious advantages over the previously mentioned ref prop passing.
 
 `React.forwardRef` offers a way to "emulate a `ref` prop" within custom components. Internally the component will forward the passed `ref` value to the target DOM element instead.
 
@@ -86,7 +84,7 @@ This is how the previous example would look like with the `React.forwardRef` app
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res example
 // App.res
 
 module FancyInput = {
@@ -96,7 +94,7 @@ module FancyInput = {
       <input
         type_="text"
         ?className
-        ref=?{Js.Nullable.toOption(ref)->Belt.Option.map(ReactDOM.Ref.domRef)}
+        ref=?{Nullable.toOption(ref)->Option.map(ReactDOM.Ref.domRef)}
       />
       children
     </div>
@@ -107,10 +105,10 @@ module FancyInput = {
 
 @react.component
 let make = () => {
-  let input = React.useRef(Js.Nullable.null)
+  let input = React.useRef(Nullable.null)
 
   let focusInput = () =>
-    input.current->Js.Nullable.toOption->Belt.Option.forEach(input => input->focus)
+    input.current->Nullable.forEach(input => input->focus)
 
   let onClick = _ => focusInput()
 

@@ -6,43 +6,36 @@ module Toc = SidebarLayout.Toc
 
 module LatestLayout = DocsLayout.Make({
   // Structure defined by `scripts/extract-tocs.js`
-  let tocData: SidebarLayout.Toc.raw = %raw("require('index_data/react_latest_toc.json')")
+  @module("index_data/react_latest_toc.json") external tocData: SidebarLayout.Toc.raw = "default"
 })
 
 module V0100Layout = DocsLayout.Make({
   // Structure defined by `scripts/extract-tocs.js`
-  let tocData: SidebarLayout.Toc.raw = %raw("require('index_data/react_v0100_toc.json')")
+  @module("index_data/react_v0100_toc.json") external tocData: SidebarLayout.Toc.raw = "default"
+})
+
+module V0110Layout = DocsLayout.Make({
+  // Structure defined by `scripts/extract-tocs.js`
+  @module("index_data/react_v0110_toc.json") external tocData: SidebarLayout.Toc.raw = "default"
 })
 
 module Latest = {
   @react.component
-  let make = (~frontmatter=?, ~components=Markdown.default, ~children) => {
+  let make = (~frontmatter=?, ~components=MarkdownComponents.default, ~children) => {
     let router = Next.Router.useRouter()
     let route = router.route
-
     let url = route->Url.parse
 
     let version = switch url.version {
     | Version(version) => version
-    | NoVersion => "latest"
-    | Latest => "latest"
+    | _ => "latest"
     }
 
     let breadcrumbs = list{
-      {
-        open Url
-        {name: "Docs", href: "/docs/latest"}
-      },
-      {
-        open Url
-        {
-          name: "rescript-react",
-          href: "/docs/react/" ++ (version ++ "/introduction"),
-        }
-      },
+      {Url.name: "Docs", href: "/docs/latest"},
+      {name: "rescript-react", href: "/docs/react/" ++ (version ++ "/introduction")},
     }
 
-    let title = "rescript-react"
     let version = "latest"
 
     <LatestLayout
@@ -51,7 +44,6 @@ module Latest = {
       metaTitleCategory="React"
       availableVersions=Constants.allReactVersions
       version
-      title
       breadcrumbs
       ?frontmatter>
       children
@@ -59,35 +51,52 @@ module Latest = {
   }
 }
 
-module V0100 = {
+module V0110 = {
   @react.component
-  let make = (~frontmatter=?, ~components=Markdown.default, ~children) => {
+  let make = (~frontmatter=?, ~components=MarkdownComponents.default, ~children) => {
     let router = Next.Router.useRouter()
     let route = router.route
-
     let url = route->Url.parse
 
     let version = switch url.version {
     | Version(version) => version
-    | NoVersion => "latest"
-    | Latest => "latest"
+    | _ => "latest"
     }
 
     let breadcrumbs = list{
-      {
-        open Url
-        {name: "Docs", href: "/docs/latest"}
-      },
-      {
-        open Url
-        {
-          name: "rescript-react",
-          href: "/docs/react/" ++ (version ++ "/introduction"),
-        }
-      },
+      {Url.name: "Docs", href: "/docs/latest"},
+      {name: "rescript-react", href: "/docs/react/" ++ (version ++ "/introduction")},
     }
 
-    let title = "rescript-react"
+    <V0110Layout
+      theme=#Reason
+      components
+      metaTitleCategory="React"
+      availableVersions=Constants.allReactVersions
+      version
+      breadcrumbs
+      ?frontmatter>
+      children
+    </V0110Layout>
+  }
+}
+
+module V0100 = {
+  @react.component
+  let make = (~frontmatter=?, ~components=MarkdownComponents.default, ~children) => {
+    let router = Next.Router.useRouter()
+    let route = router.route
+    let url = route->Url.parse
+
+    let version = switch url.version {
+    | Version(version) => version
+    | _ => "latest"
+    }
+
+    let breadcrumbs = list{
+      {Url.name: "Docs", href: "/docs/latest"},
+      {name: "rescript-react", href: "/docs/react/" ++ (version ++ "/introduction")},
+    }
 
     <V0100Layout
       theme=#Reason
@@ -95,7 +104,6 @@ module V0100 = {
       metaTitleCategory="React"
       availableVersions=Constants.allReactVersions
       version
-      title
       breadcrumbs
       ?frontmatter>
       children

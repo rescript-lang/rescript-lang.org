@@ -17,7 +17,7 @@ The `useRef` hooks creates and manages mutable containers inside your React comp
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-let refContainer = React.useRef(initialValue);
+let refContainer = React.useRef(initialValue)
 ```
 
 ```js
@@ -49,19 +49,17 @@ More infos on direct DOM manipulation can be found in the [Refs and the DOM](./r
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res example
 // TextInputWithFocusButton.res
 
 @send external focus: Dom.element => unit = "focus"
 
 @react.component
 let make = () => {
-  let inputEl = React.useRef(Js.Nullable.null)
+  let inputEl = React.useRef(Nullable.null)
 
   let onClick = _ => {
-    inputEl.current
-    ->Js.Nullable.toOption
-    ->Belt.Option.forEach(input => input->focus)
+    inputEl.current->Nullable.forEach(input => input->focus)
   }
 
   <>
@@ -75,13 +73,12 @@ let make = () => {
 function TextInputWithFocusButton(Props) {
   var inputEl = React.useRef(null);
   var onClick = function (param) {
-    return Belt_Option.forEach(Caml_option.nullable_to_opt(inputEl.current), (function (input) {
-                  input.focus();
-
-                }));
+    Core__Nullable.forEach(inputEl.current, (function (input) {
+            input.focus();
+          }));
   };
-  return React.createElement(React.Fragment, undefined, React.createElement("input", {
-                  ref: inputEl,
+  return React.createElement(React.Fragment, {}, React.createElement("input", {
+                  ref: Caml_option.some(inputEl),
                   type: "text"
                 }), React.createElement("button", {
                   onClick: onClick
@@ -97,22 +94,20 @@ Reusing the example from our [Refs and the DOM](./refs-and-the-dom#callback-refs
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res example
 // CustomTextInput.res
 
 @send external focus: Dom.element => unit = "focus"
 
 @react.component
 let make = () => {
-  let textInput = React.useRef(Js.Nullable.null)
+  let textInput = React.useRef(Nullable.null)
   let setTextInputRef = element => {
     textInput.current = element;
   }
 
   let focusTextInput = _ => {
-    textInput.current
-    ->Js.Nullable.toOption
-    ->Belt.Option.forEach(input => input->focus)
+    textInput.current->Nullable.forEach(input => input->focus)
   }
 
   <div>
@@ -129,16 +124,14 @@ function CustomTextInput(Props) {
   var textInput = React.useRef(null);
   var setTextInputRef = function (element) {
     textInput.current = element;
-
   };
   var focusTextInput = function (param) {
-    return Belt_Option.forEach(Caml_option.nullable_to_opt(textInput.current), (function (input) {
-                  input.focus();
-
-                }));
+    Core__Nullable.forEach(textInput.current, (function (input) {
+            input.focus();
+          }));
   };
   return React.createElement("div", undefined, React.createElement("input", {
-                  ref: setTextInputRef,
+                  ref: Caml_option.some(setTextInputRef),
                   type: "text"
                 }), React.createElement("input", {
                   type: "button",

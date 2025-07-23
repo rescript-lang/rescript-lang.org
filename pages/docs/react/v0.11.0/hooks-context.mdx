@@ -1,0 +1,137 @@
+---
+title: useContext Hook
+description: "Details about the useContext React hook in ReScript"
+canonical: "/docs/react/latest/hooks-context"
+---
+
+# useContext
+
+<Intro>
+
+Context provides a way to pass data through the component tree without having to pass props down manually at every level. The `useContext` hooks gives access to such Context values.
+
+</Intro>
+
+> **Note:** All the details and rationale on React's context feature can be found in [here](./context).
+
+## Usage
+
+```res
+let value = React.useContext(myContext)
+```
+
+Accepts a `React.Context.t` (the value returned from `React.createContext`) and returns the current context value for that context. The current context value is determined by the value prop of the nearest `<MyContext.Provider>` above the calling component in the tree.
+
+
+## Examples
+
+### A Simple ThemeProvider
+
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+// App.res
+module ThemeContext = {
+  let context = React.createContext("light")
+
+  module Provider = {
+    let make = React.Context.provider(context)
+  }
+}
+
+module ThemedButton = {
+  @react.component
+  let make = () => {
+    let theme = React.useContext(ThemeContext.context)
+    let (color, backgroundColor) = switch theme {
+    | "dark" => ("#ffffff", "#222222")
+    | "light" | _ => ("#000000", "#eeeeee")
+    }
+
+    let style = ReactDOMStyle.make(~color, ~backgroundColor, ())
+
+    <button style> {React.string("I am a styled button!")} </button>
+  }
+}
+
+module Toolbar = {
+  @react.component
+  let make = () => {
+    <div> <ThemedButton /> </div>
+  }
+}
+
+@react.component
+let make = () => {
+  <ThemeContext.Provider value="dark">
+    <div> <Toolbar /> </div>
+  </ThemeContext.Provider>
+}
+```
+```js
+var context = React.createContext("light");
+
+var make = context.Provider;
+
+var Provider = {
+  make: make
+};
+
+var ThemeContext = {
+  context: context,
+  Provider: Provider
+};
+
+function App$ThemedButton(props) {
+  var theme = React.useContext(context);
+  var match;
+  switch (theme) {
+    case "dark" :
+        match = [
+          "#ffffff",
+          "#222222"
+        ];
+        break;
+    case "light" :
+        match = [
+          "#000000",
+          "#eeeeee"
+        ];
+        break;
+    default:
+      match = [
+        "#000000",
+        "#eeeeee"
+      ];
+  }
+  var style = {
+    backgroundColor: match[1],
+    color: match[0]
+  };
+  return React.createElement("button", {
+              style: style
+            }, "I am a styled button!");
+}
+
+var ThemedButton = {
+  make: App$ThemedButton
+};
+
+function App$Toolbar(props) {
+  return React.createElement("div", undefined, React.createElement(App$ThemedButton, {}));
+}
+
+var Toolbar = {
+  make: App$Toolbar
+};
+
+function App(props) {
+  return React.createElement(make, {
+              value: "dark",
+              children: React.createElement("div", undefined, React.createElement(App$Toolbar, {}))
+            });
+}
+```
+
+</CodeTab>

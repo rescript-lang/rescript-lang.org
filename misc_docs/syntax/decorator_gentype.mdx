@@ -1,20 +1,18 @@
 ---
 id: "gentype-decorator"
-keywords: ["gentype", "decorator", "typescript", "flow"]
+keywords: ["gentype", "decorator", "typescript"]
 name: "@genType"
 summary: "This is the `@genType` decorator."
 category: "decorators"
 ---
 
-The `@genType` decorator may be used to export ReScript values and types to JavaScript, and import JavaScript values and types into ReScript. It allows seamless integration of compiled ReScript modules in existing TypeScript, Flow, or plain JavaScript codebases, without loosing type information across different type systems.
+The `@genType` decorator may be used to export ReScript values and types to JavaScript, and import JavaScript values and types into ReScript. It allows seamless integration of compiled ReScript modules in existing TypeScript, or plain JavaScript codebases, without losing type information across different type systems.
 
-[GenType](/docs/gentype/latest/introduction) is a code generation tool for automatically generating [TypeScript](https://www.typescriptlang.org/) / [Flow](https://flow.org/) type definitions, and JS runtime converters for non-shared ReScript values. It also features first-class support for [ReasonReact](https://reasonml.github.io/reason-react/) components.
-
-**Note:** This decorator requires the `gentype` npm package to be installed and configured correctly. Please refer to genType's [Getting Started](/docs/gentype/latest/getting-started) section for more details.
+[GenType](/docs/manual/latest/typescript-integration) is a code generation tool for automatically generating [TypeScript](https://www.typescriptlang.org/) type definitions, and JS runtime converters for non-shared ReScript values. It also features first-class support for [rescript-react](/docs/react/latest/introduction) components.
 
 ### Example
 
-<CodeTab labels={["ReScript", "TypeScript Output", "Flow Output"]}>
+<CodeTab labels={["ReScript", "TypeScript Output"]}>
 
 ```res
 @genType
@@ -59,45 +57,8 @@ export const make: React.ComponentType<{
 };
 ```
 
-```js
-/**
- * @flow strict
- * @generated from MyComponent.res
- * @nolint
- */
-/* eslint-disable */
-// $FlowExpectedError: Reason checked type sufficiently
-type $any = any;
-
-// $FlowExpectedError: Reason checked type sufficiently
-import * as React from "react";
-
-const $$toRE818596289 = { Red: 0, Blue: 1 };
-
-// $FlowExpectedError: Reason checked type sufficiently
-import * as MyComponentBS from "./MyComponent.bs";
-
-export type color = "Red" | "Blue";
-
-// Type annotated function components are not checked by Flow, but typeof() works.
-const make$$forTypeof = function (_: {|
-  +color: color,
-  +name: string,
-|}): React$Node {
-  return null;
-};
-
-export type Props = {| +color: color, +name: string |};
-
-export const make: typeof make$$forTypeof = function MyComponent(Arg1: $any) {
-  const $props = { color: $$toRE818596289[Arg1.color], name: Arg1.name };
-  const result = React.createElement(MyComponentBS.make, $props);
-  return result;
-};
-```
-
 </CodeTab>
 
 ### References
 
-* [GenType](/docs/gentype/latest/introduction)
+* [TypeScript Integration](/docs/manual/latest/typescript-integration)

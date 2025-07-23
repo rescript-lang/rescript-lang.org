@@ -1,0 +1,150 @@
+---
+author: rescript-team
+date: "2023-09-18"
+title: Uncurried Mode
+badge: roadmap
+description: |
+  A tour of new capabilities coming to ReScript v11
+---
+
+> This is the fourth post covering new capabilities that'll ship in ReScript v11. You can check out the first post on [Better Interop with Customizable Variants](/blog/improving-interop), the second post on [Enhanced Ergonomics for Record Types](/blog/enhanced-ergonomics-for-record-types) and the third post on [First-class Dynamic Import Support](/blog/first-class-dynamic-import-support).
+
+## Introduction
+
+ReScript is a language that strives to keep its users free from experiencing runtime errors. Usually, when a program compiles, it will already do what the user described.
+But there is still a concept in the language that makes it easy to let some errors slip through. Currying! 
+
+Because of currying, partial application of functions is possible. That feature is always advertised as something really powerful. For instance, 
+
+```rescript
+let add = (a, b) => a + b
+let addFive = add(5)
+```
+
+is shorter than having to write all remaining parameters again 
+
+```rescript
+let add = (a, b) => a + b
+let addFive = (b) => add(5, b)
+```
+
+This comes at a price though. Here are some examples to show the drawbacks of currying: 
+
+* Errors because of changed function signatures have their impact at the use site. Consider this example, where the signature of the onChange function is extended with
+a labeled argument 
+  ```diff
+    @react.component
+  -  let make = (~onChange: string => option<unit => unit>) => {
+  +  let make = (~onChange: (~a: int, string) => option<unit => unit>) => {
+      React.useEffect(() => {
+        // As partial application is allowed, there is no error here.
+        let cleanup = onChange("change") 
+        
+        // Here it errors with "This call is missing an argument of type (~a: int)"
+        cleanup 
+      })
+    }
+  ```
+* If you wanted explicitly uncurry a function, you needed to annotate it with the uncurried dot. 
+  ```rescript
+  (. param) => ()
+  ```
+* As ReScript could not fully statically analyze when to automatically uncurry a function over multiple files, it led to unnecessary `Curry.` calls in the emitted JavaScript code. 
+* In the standard library (`Belt`), there are both curried and uncurried versions of the same function so you were required to think for yourself when to use the uncurried version and when only the curried one will work.
+* In combination with `ignore` / `let _ = ...`, curried can lead to unexpected behavior at runtime after adding a parameter to a function, because you are accidentally ignoring the result of a partial evaluation so that the function is not called at all.
+  1. Have a look at this simple function. It is assigned to `_` because we ignore the resulting `string` value. 
+    ```res
+    let myCurriedFn = (~first) => first
+    let _ = myCurriedFn(~first="Hello!")
+    //  ^ string
+    ```
+  2. Now the function got a second parameter `~second`. Here, the resulting value is a function, which means it is not fully applied and thus never executed.
+    ```res
+    let myCurriedFn = (~first, ~second) => first ++ " " ++ second
+    let _ = myCurriedFn(~first="Hello!")
+    //  ^ (~second: string) => string
+    ```
+  3. One way to prevent such errors is to annotate the underscore with the function's return type:
+    ```res
+    let _: string = myCurriedFn(~first="Hello!")
+    ```
+  4. However, the same issue arises when using the built-in ignore function, which cannot be annotated:
+    ```res
+    myCurriedFn(~first="Hello!")->ignore
+    ```
+
+Those are all only some small paper cuts, but all of them are intricacies that make the language harder to learn. 
+
+## Uncurried mode
+
+Starting with ReScript 11, your code will be compiled in uncurried mode. Yes, there is still a way to turn it off ([see below](#how-to-switch-back-to-curried-mode)), but we have decided to already default to this behavior to make it easier for newcomers.
+In uncurried mode, the introductory example yields an error:
+
+```rescript
+let add = (a, b) => a + b
+let addFive = add(5) // <-- Error:
+// This uncurried function has type (. int, int) => int
+// It is applied with 1 arguments but it requires 2.
+```
+
+to fix it, you have two options:
+
+1. state the remaining parameters explicitly 
+  ```rescript
+  let add = (a, b) => a + b
+  let addFive = (b) => add(5, b)
+  ```
+2. or use the new explicit syntax for partial application 
+  ```rescript
+  let add = (a, b) => a + b
+  let addFive = add(5, ...)
+  ```
+
+The former approach helps library authors support both ReScript 11 and earlier versions.
+
+### No final unit anymore
+
+We are happy to announce that with uncurried mode the "final unit" pattern is not necessary anymore, while you still can use optional or default parameters.
+
+```res
+// old 
+let myFun = (~name=?, ())
+
+// new
+let myFun = (~name=?)
+```
+
+### More wins
+
+Furthermore, function calls in uncurried mode are now guaranteed to get compiled as simple JavaScript function calls, which is quite nice for readability of the generated code. 
+It may also give you some (negligible) performance gains. 
+
+### How to switch back to curried mode
+
+While we strongly encourage all users to switch to the new uncurried mode, it is still possible to opt out. Just add a
+
+```json
+{
+  "uncurried": false
+}
+```
+
+to your `bsconfig.json`, and your project will be compiled in curried mode again.
+
+If you have uncurried mode off and still want to try it on a per-file basis, you can turn it on via 
+
+```rescript
+@@uncurried
+```
+
+at the top of a `.res` file.
+
+## Conclusion
+
+Many thoughts have led to this decision, but we think this change is a great fit for a compile-to-JS language overall. If you are interested in the details, have a look at the corresponding [forum post](https://forum.rescript-lang.org/t/uncurried-by-default/) and its comments.
+
+We hope that this new way of writing ReScript will make it both easier for beginners and also more enjoyable for the seasoned developers.
+
+As always, we're eager to hear about your experiences with our new features. Feel free to share your thoughts and feedback with us on our [issue tracker](https://github.com/rescript-lang/rescript/issues) or on the [forum](https://forum.rescript-lang.org).
+
+Happy hacking!

@@ -5,10 +5,14 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@rescript/core": "^1.3.0",
+    "@rescript/react": "^0.12.0",
+    "rescript-1000": "npm:rescript@10.0.0",
+    "rescript-1010": "npm:rescript@10.1.0",
+    "rescript-1100": "npm:rescript@11.0.0",
+    "rescript-1110": "npm:rescript@11.1.0",
     "rescript-820": "npm:bs-platform@8.2.0",
     "rescript-902": "npm:bs-platform@9.0.2",
-    "rescript-912": "npm:rescript@9.1.2",
-    "rescript-1000": "npm:rescript@10.0.0",
-    "rescript-1010": "npm:rescript@10.1.0-rc.4"
+    "rescript-912": "npm:rescript@9.1.2"
   }
 }

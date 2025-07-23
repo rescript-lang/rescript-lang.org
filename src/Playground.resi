@@ -1,2 +1,2 @@
 @react.component
-let default: unit => React.element
+let make: (~versions: array<string>) => React.element

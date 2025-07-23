@@ -6,7 +6,10 @@ summary: "This is an `uncurried function`."
 category: "languageconstructs"
 ---
 
-ReScript functions are curried by default, however in certain cases you may need an uncurried function. In these cases we add a `.` in the argument list.
+**Since 11.0**
+All functions are uncurried by default now. This syntax is only usable if uncurried is set to false in `rescript.json`. In uncurried mode it gets formatted away automatically.
+
+With uncurried mode turned off, or before ReScript 11, ReScript functions are curried by default, however in certain cases you may need an uncurried function. In these cases we add a `.` in the argument list.
 
 When calling uncurried functions, we must also include a `.` in the argument list.
 
@@ -39,3 +42,5 @@ function withCallback(cb) {
 ### References
 
 - [Uncurried Function](/docs/manual/latest/function#uncurried-function)
+- [Uncurried Mode](/blog/uncurried-mode)
+- [Build System configuration](/docs/manual/latest/build-configuration#uncurried)

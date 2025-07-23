@@ -16,16 +16,23 @@ category: "specialvalues"
 let f = () => None
 let (line, f') = __LINE_OF__(f)
 
-line->Js.log
-f'->Js.log
+line->Console.log
+f'->Console.log
 
 ```
 
 ```js
-function f(param) {}
+function f() {
+  
+}
 
 console.log(2);
+
 console.log(f);
+
+var line = 2;
+
+var f$p = f;
 ```
 
 </CodeTab>

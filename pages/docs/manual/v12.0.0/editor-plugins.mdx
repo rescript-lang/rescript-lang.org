@@ -1,0 +1,205 @@
+---
+title: "Editor"
+metaTitle: "Editor"
+description: "Documentation about ReScript editor plugins and code analysis"
+canonical: "/docs/manual/v12.0.0/editor-plugins"
+---
+
+# Editor
+
+This section is about the editor plugin for ReScript. It adds syntax highlighting, autocomplete, type hints, formatting, code navigation, code analysis for `.res` and `.resi` files.
+
+
+## Plugins
+
+- [VSCode](https://marketplace.visualstudio.com/items?itemName=chenglou92.rescript-vscode)
+- [Sublime Text](https://github.com/rescript-lang/rescript-sublime)
+- [Vim/Neovim](https://github.com/rescript-lang/vim-rescript)
+
+### Community Supported
+
+We don't officially support these; use them at your own risk!
+
+- [Neovim Tree-sitter](https://github.com/nkrkv/nvim-treesitter-rescript)
+- [IDEA](https://github.com/reasonml-editor/reasonml-idea-plugin)
+- [Emacs](https://github.com/jjlee/rescript-mode)
+
+
+## Code analysis
+
+The code analysis provides extra checks for your ReScript project, such as detecting dead code and unhandled exceptions. It's powered by [reanalyze](https://github.com/rescript-association/reanalyze), which is built into the extension — no separate install required.
+
+### How to Use
+
+- Open the command palette and run:  
+  `ReScript: Start Code Analyzer`
+- Warnings like dead code will show inline in the editor.
+- Suppression actions are available where applicable.
+- To stop analysis, click **Stop Code Analyzer** in the status bar.
+
+### Configuration
+
+Add a `reanalyze` section to your `rescript.json` to control what the analyzer checks or ignores. You’ll get autocomplete for config options in the editor.  
+More details: [reanalyze config docs](https://github.com/rescript-association/reanalyze#configuration-via-bsconfigjson)
+
+### Guide
+
+Look [here](editor-code-analysis) for a more detailed guide about how to use the code analysis tool.
+
+### Caveats
+
+- Doesn't support cross-package dead code analysis in monorepos. Run it per package instead.
+
+## Editor features
+Below are features and configurations of the editor tooling that might be good to know about.
+
+### Pipe completions
+Pipes (`->`) are a huge and important part of the ReScript language, for many reasons. Because of that, extra care has gone into the editor experience for using pipes.
+
+#### Default pipe completion rules for non-builtin types
+By default, using `->` will give completions from the module where the type of the expression you're piping on is defined. So, if you're piping on something of the type `SomeModule.t` (like `someValue->`) then you'll get completions for all functions defined in `SomeModule` that take the type `t` as the first unlabelled argument.
+
+#### Pipe completions for builtin types
+For builtin types, completion will automatically happen based on the _standard library module_ for that type. So, `array` types will get completions from the `Array` module, `string` gets completions from `String`, and so on.
+
+There is a way to enhance this behavior via configuration, described further down in this document.
+
+### Dot completion enhancements
+In ReScript, using a dot (`.`) normally means "access record field". But, because using `.` to trigger completions is so pervasive in for example JavaScript, we extend `.` to trigger completions in more scenarios than just for record field access.
+
+This behavior has the following important implications:
+- Improves discoverability (E.g. using a `.` will reveal important pipe completions)
+- Enables a more natural completion flow for people used to JavaScript, where dots power more completions naturally
+
+Below is a list of all the scenarios where using dots trigger completion in addition to the normal record field completion.
+
+#### Objects
+When writing a `.` on something that's a [structural object](object.md), you'll get completions for those object properties. Example:
+```res
+let obj = {
+  "first": true,
+  "second": false
+}
+
+let x = obj.
+
+// Will give the following completions for object property access:
+// - ["first"]
+// - ["second"]
+```
+
+#### Pipe completions for anything
+When writing `.` on _anything_, the editor will try to do pipe completion for the value on the left of the `.`. Example:
+
+```res
+let arr = [1, 2, 3]
+
+let x = arr.
+
+// Will give the following pipe completions:
+// - ->Array.length
+// - ->Array.filter
+// - ->Array.map
+```
+
+### `@editor.completeFrom` for drawing completions from additional modules
+You can configure any type you have control over to draw pipe completions from additional modules, in addition to the main module where the type is defined, via the `@editor.completeFrom` decorator. This is useful in many different scenarios:
+
+* When you, for various reasons, need to have your type definition separate from its "main module". Could be because of cyclic dependencies, a need for the type to be in a recursive type definition chain, and so on.
+* You have separate modules with useful functions for your type but that you don't want to (or can't) include in the main module of that type.
+
+Let's look at an example:
+```res
+// Types.res
+// In this example types need to live separately in their own file, for various reasons
+type htmlInput
+
+// Utils.res
+module HtmlInput = {
+  /** Gets the HTML input value. */
+  @get
+  external value: Types.htmlInput => option<string> = "value"
+}
+```
+
+In the example above, if we try and pipe on something of the type `Types.htmlInput`, we'll get no completions because there are no functions in `Types` that take `htmlInput` as its first unlabelled argument. But, better DX would be for the editor to draw completions from our util functions for `htmlInput` in the `Utils.HtmlInput` module.
+
+With `@editor.completeFrom`, we can fix this. Let's look at an updated example:
+```res
+// Types.res
+@editor.completeFrom(Utils.HtmlInput)
+type htmlInput
+
+// Utils.res
+module HtmlInput = {
+  /** Gets the HTML input value. */
+  @get
+  external value: Types.htmlInput => option<string> = "value"
+}
+```
+
+Now when piping on a value of the type `Types.htmlInput`, the editor tooling will know to include relevant functions from the module `Utils.HtmlInput`, and you'll get the completions you expect, even if the functions aren't located in the same module.
+
+> You can point out multiple modules to draw completions from for a type either by repeating `@editor.completeFrom` with a single module path each time, or by passing an array with all the module paths you want to include, like `@editor.completeFrom([Utils.HtmlInput, HtmlInputUtils])`.
+
+### Configuring the editor via `editor` in `rescript.json`
+There's certain configuration you can do for the editor on a per project basis in `rescript.json`. Below lists all of the configuration available.
+
+#### `autocomplete` for pipe completion
+The `autocomplete` property of `editor` in `rescript.json` let's you map types to modules _on the project level_ that you want the editor to leverage when doing autocomplete for pipes. 
+
+This is useful in scenarios like:
+* You have your own util module(s) for builtin types. Maybe you have an `ArrayExtra` with helpers for arrays that you want to get completions from whenever dealing with arrays.
+* You have your own util module(s) for types you don't control yourself (and therefore can't use `@editor.completeFrom`), like from external packages you install.
+
+To configure, you pass `autocomplete` an object where the keys are the _path to the type_ you want to target, and then an array of the path to each module you want to include for consideration for pipe completions.
+
+Let's take two examples.
+
+##### Enhancing completion for builtin types
+First, let's look at including our own `ArrayExtra` in all completions for `array`:
+```json
+{
+  "editor": {
+    "autocomplete": {
+      "array": ["ArrayExtra"]
+    }
+  }
+}
+```
+
+Now, when using pipes on arrays, you'll get completions both from the standard library array functions, and also from your own `ArrayExtra` module.
+```res
+let x = [1, 2, 3]->
+
+// Example of what completing at the pipe might look like
+- Array.length
+- Array.map
+- Array.filter
+- ArrayExtra.someArrayFn
+- ArrayExtra.myOtherArrayFn
+```
+
+##### Enhancing completion for non-builtin types
+Now, let's look at an example of when you have a non-builtin type that you don't have control over.
+
+In this example, imagine this:
+* We're writing an app using `fastify`
+* We're using an external package that provides the necessary bindings in a `Fastify` module
+* We've got our own extra file `FastifyExtra` that has various custom util functions that operate on the main type `Fastify.t`
+
+We now want the editor to always suggest completions from the `FastifyExtra` module, in addition to the regular completions from the main `Fastify` module.
+
+Let's configure this using the `editor.autocomplete` config in `rescript.json`:
+
+```json
+{
+  "editor": {
+    "autocomplete": {
+      "Fastify.t": ["FastifyExt"]
+    }
+  }
+}
+```
+
+Now, when using pipes on anything of type `Fastify.t`, we'll also get completions from our custom `FastifyExtra`.

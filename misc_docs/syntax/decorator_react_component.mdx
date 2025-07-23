@@ -6,11 +6,13 @@ summary: "This is the `@react.component` decorator."
 category: "decorators"
 ---
 
-The `@react.component` decorator is used to annotate functions that are [ReasonReact](https://reasonml.github.io/reason-react/en/) components.
+The `@react.component` decorator is used to annotate functions that are [React](/docs/react/latest/elements-and-jsx) components.
 
 You will need this decorator whenever you want to use a ReScript / React component in ReScript JSX expressions.
 
-**Note:** The `@react.component` decorator requires the [react-jsx config](/docs/manual/latest/build-configuration#reason-refmt-old) to be set in your `bsconfig.json` to enable the required React transformations. 
+
+> **Note**
+> The `@react.component` decorator requires the [react-jsx or jsx config](/docs/react/latest/installation) to be set in your `rescript.json` to enable the required React transformations. 
 
 ### Example
 
@@ -19,23 +21,24 @@ You will need this decorator whenever you want to use a ReScript / React compone
 ```res
 @react.component
 let make = (~name) => {
-  <button> {ReasonReact.string("Hello " ++ name ++ "!")} </button>
+  <button> {React.string("Hello " ++ name ++ "!")} </button>
 }
 ```
 
 ```js
-var React = require("react");
+import * as JsxRuntime from "react/jsx-runtime";
 
-function MyComponent(Props) {
-  var name = Props.name;
-  return React.createElement("button", undefined, "Hello " + name + "!");
+function Playground(props) {
+  return JsxRuntime.jsx("button", {
+              children: "Hello " + props.name + "!"
+            });
 }
 
-var make = MyComponent;
+var make = Playground;
 ```
 
 </CodeTab>
 
 ### References
 
-* [ReasonReact Components](https://reasonml.github.io/reason-react/docs/en/components)
+* [React Components](/docs/react/latest/components-and-props)

@@ -29,12 +29,12 @@ let makeBreadcrumbsFromPaths = (~basePath: string, paths: array<string>): list<U
 let makeBreadcrumbs = (~basePath: string, route: string): list<Url.breadcrumb> => {
   let url = route->Url.parse
 
-  let (_, rest) = url.pagepath->Belt.Array.reduce((basePath, []), (acc, path) => {
+  let (_, rest) = url.pagepath->Array.reduce((basePath, []), (acc, path) => {
     let (baseHref, ret) = acc
 
     let href = baseHref ++ ("/" ++ path)
 
-    Js.Array2.push(
+    Array.push(
       ret,
       {
         open Url
@@ -43,20 +43,20 @@ let makeBreadcrumbs = (~basePath: string, route: string): list<Url.breadcrumb> =
     )->ignore
     (href, ret)
   })
-  rest->Belt.List.fromArray
+  rest->List.fromArray
 }
 
 @react.component
 let make = (
   ~breadcrumbs: option<list<Url.breadcrumb>>=?,
-  ~title: string,
-  ~metaTitleCategory: option<string>=?, // e.g. Introduction | My Meta Title Category
+  ~metaTitleCategory: string, // e.g. Introduction | My Meta Title Category
   ~frontmatter=?,
   ~version: option<string>=?,
   ~availableVersions: option<array<(string, string)>>=?,
+  ~nextVersion: option<(string, string)>=?,
   ~activeToc: option<SidebarLayout.Toc.t>=?,
   ~categories: array<Category.t>,
-  ~components=Markdown.default,
+  ~components=MarkdownComponents.default,
   ~theme=#Reason,
   ~children,
 ) => {
@@ -66,7 +66,7 @@ let make = (
   let (isSidebarOpen, setSidebarOpen) = React.useState(_ => false)
   let toggleSidebar = () => setSidebarOpen(prev => !prev)
 
-  React.useEffect0(() => {
+  React.useEffect(() => {
     open Next.Router.Events
     let {Next.Router.events: events} = router
 
@@ -81,11 +81,10 @@ let make = (
         events->off(#hashChangeComplete(onChangeComplete))
       },
     )
-  })
+  }, [])
 
   let preludeSection =
-    <div className="flex justify-between text-fire font-medium items-baseline">
-      {React.string(title)}
+    <div className="flex flex-col justify-between text-fire font-medium items-baseline">
       {switch version {
       | Some(version) =>
         switch availableVersions {
@@ -95,14 +94,22 @@ let make = (
             ReactEvent.Form.preventDefault(evt)
             let version = (evt->ReactEvent.Form.target)["value"]
             let url = Url.parse(route)
+            WebAPI.Storage.setItem(
+              localStorage,
+              ~key=switch metaTitleCategory {
+              | "React" => (React :> string)
+              | _ => (Manual :> string)
+              },
+              ~value=version,
+            )
 
             let targetUrl =
               "/" ++
-              (Js.Array2.joinWith(url.base, "/") ++
-              ("/" ++ (version ++ ("/" ++ Js.Array2.joinWith(url.pagepath, "/")))))
+              (Array.join(url.base, "/") ++
+              ("/" ++ (version ++ ("/" ++ Array.join(url.pagepath, "/")))))
             router->Next.Router.push(targetUrl)
           }
-          <VersionSelect onChange version availableVersions />
+          <VersionSelect onChange version availableVersions ?nextVersion />
         | None => <span className="font-mono text-14"> {React.string(version)} </span>
         }
       | None => React.null
@@ -110,33 +117,32 @@ let make = (
     </div>
 
   let sidebar =
-    <Sidebar
-      isOpen=isSidebarOpen toggle=toggleSidebar preludeSection title ?activeToc categories route
-    />
+    <Sidebar isOpen=isSidebarOpen toggle=toggleSidebar preludeSection ?activeToc categories route />
 
-  let metaTitle = switch metaTitleCategory {
-  | Some(titleCategory) => titleCategory ++ (" | " ++ "ReScript Documentation")
-  | None => title
-  }
+  let metaTitle = metaTitleCategory ++ (" | " ++ "ReScript Documentation")
 
   let (metaElement, editHref) = switch frontmatter {
   | Some(frontmatter) =>
     switch DocFrontmatter.decode(frontmatter) {
     | Some(fm) =>
-      let canonical = Js.Null.toOption(fm.canonical)
-      let description = Js.Null.toOption(fm.description)
-      let title = switch metaTitleCategory {
-      | Some(titleCategory) =>
+      let canonical = Null.toOption(fm.canonical)
+      let description = Null.toOption(fm.description)
+      let title = {
         // We will prefer an existing metaTitle over just a title
-        let metaTitle = switch Js.Null.toOption(fm.metaTitle) {
+        let metaTitle = switch Null.toOption(fm.metaTitle) {
         | Some(metaTitle) => metaTitle
         | None => fm.title
         }
-        metaTitle ++ (" | " ++ titleCategory)
-      | None => title
+        metaTitle ++ (" | " ++ metaTitleCategory)
       }
-      let meta = <Meta title ?description ?canonical />
-      (meta, Some(fm.ghEditHref))
+      let meta = <Meta title ?description ?canonical version=Url.parse(router.route).version />
+
+      let ghEditHref = switch canonical {
+      | Some(canonical) =>
+        `https://github.com/rescript-lang/rescript-lang.org/blob/master/pages${canonical}.mdx`->Some
+      | None => None
+      }
+      (meta, ghEditHref)
     | None => (React.null, None)
     }
   | None => (React.null, None)
@@ -157,7 +163,7 @@ let make = (
 }
 
 module type StaticContent = {
-  /* let categories: array(SidebarLayout.Sidebar.Category.t); */
+  /* let categories: array<SidebarLayout.Sidebar.Category.t>; */
   let tocData: SidebarLayout.Toc.raw
 }
 
@@ -166,13 +172,13 @@ module Make = (Content: StaticContent) => {
   let make = (
     // base breadcrumbs without the very last element (the currently shown document)
     ~breadcrumbs: option<list<Url.breadcrumb>>=?,
-    ~title: string,
-    ~metaTitleCategory: option<string>=?,
+    ~metaTitleCategory: string,
     ~frontmatter=?,
     ~version: option<string>=?,
     ~availableVersions: option<array<(string, string)>>=?,
-    /* ~activeToc: option(SidebarLayout.Toc.t)=?, */
-    ~components: option<Mdx.Components.t>=?,
+    ~nextVersion: option<(string, string)>=?,
+    /* ~activeToc: option<SidebarLayout.Toc.t>=?, */
+    ~components: option<MarkdownComponents.t>=?,
     ~theme: option<ColorTheme.t>=?,
     ~children: React.element,
   ) => {
@@ -180,55 +186,44 @@ module Make = (Content: StaticContent) => {
     let route = router.route
 
     // Extend breadcrumbs with document title
-    let breadcrumbs = Js.Dict.get(Content.tocData, route)->Belt.Option.mapWithDefault(
-      breadcrumbs,
-      data => {
-        let title = data["title"]
+    let breadcrumbs = Dict.get(Content.tocData, route)->Option.mapOr(breadcrumbs, data => {
+      let title = data["title"]
 
-        Belt.Option.map(breadcrumbs, bc =>
-          Belt.List.concat(bc, list{{Url.name: title, href: route}})
-        )
-      },
-    )
+      Option.map(breadcrumbs, bc => List.concat(bc, list{{Url.name: title, href: route}}))
+    })
 
     let activeToc: option<SidebarLayout.Toc.t> = {
-      open Belt.Option
-      Js.Dict.get(Content.tocData, route)->map(data => {
-        open SidebarLayout.Toc
+      open Option
+      Dict.get(Content.tocData, route)->map(data => {
         let title = data["title"]
-        let entries = Belt.Array.map(data["headers"], header => {
-          header: header["name"],
+        let entries = Array.map(data["headers"], header => {
+          SidebarLayout.Toc.header: header["name"],
           href: "#" ++ header["href"],
         })
-        {title, entries}
+        {SidebarLayout.Toc.title, entries}
       })
     }
 
     let categories = {
-      let groups = Js.Dict.entries(Content.tocData)->Belt.Array.reduce(Js.Dict.empty(), (
-        acc,
-        next,
-      ) => {
+      let groups = Dict.toArray(Content.tocData)->Array.reduce(Dict.make(), (acc, next) => {
         let (_, value) = next
-        switch Js.Nullable.toOption(value["category"]) {
+        switch Nullable.toOption(value["category"]) {
         | Some(category) =>
-          switch acc->Js.Dict.get(category) {
-          | None => acc->Js.Dict.set(category, [next])
+          switch acc->Dict.get(category) {
+          | None => acc->Dict.set(category, [next])
           | Some(arr) =>
-            Js.Array2.push(arr, next)->ignore
-            acc->Js.Dict.set(category, arr)
+            Array.push(arr, next)->ignore
+            acc->Dict.set(category, arr)
           }
-        | None =>
-          Js.log2("has NO category", next)
-          ()
+        | None => Console.log2("has NO category", next)
         }
         acc
       })
-      Js.Dict.entries(groups)->Belt.Array.map(((name, values)) => {
+      Dict.toArray(groups)->Array.map(((name, values)) => {
         open Category
         {
           name,
-          items: Belt.Array.map(values, ((href, value)) => {
+          items: Array.map(values, ((href, value)) => {
             NavItem.name: value["title"],
             href,
           }),
@@ -237,17 +232,17 @@ module Make = (Content: StaticContent) => {
     }
 
     make({
-      "breadcrumbs": breadcrumbs,
-      "title": title,
-      "metaTitleCategory": metaTitleCategory,
-      "frontmatter": frontmatter,
-      "version": version,
-      "availableVersions": availableVersions,
-      "activeToc": activeToc,
-      "categories": categories,
-      "components": components,
-      "theme": theme,
-      "children": children,
+      ?breadcrumbs,
+      metaTitleCategory,
+      ?frontmatter,
+      ?version,
+      ?availableVersions,
+      ?nextVersion,
+      ?activeToc,
+      categories,
+      ?components,
+      ?theme,
+      children,
     })
   }
 }

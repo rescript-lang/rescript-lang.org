@@ -1,3 +1,5 @@
+let allApiVersions: array<(string, string)>
+
 module OldDocsWarning: {
   @react.component
   let make: (~version: string, ~route: string) => React.element
@@ -12,6 +14,6 @@ let make: (
   ~title: string=?,
   ~version: string=?,
   ~activeToc: SidebarLayout.Toc.t=?,
-  ~components: Mdx.Components.t=?,
+  ~components: MarkdownComponents.t=?,
   ~children: React.element,
 ) => React.element

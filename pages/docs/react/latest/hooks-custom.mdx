@@ -20,17 +20,17 @@ Let's go back to a previous example from our [React.useEffect section](./hooks-e
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res {16-31}
+```res example {16-31}
 // FriendStatus.res
 
 module ChatAPI = {
   // Imaginary globally available ChatAPI for demo purposes
-  type status = { isOnline: bool };
-  @val external subscribeToFriendStatus: (string, status => unit) => unit = "subscribeToFriendStatus";
-  @val external unsubscribeFromFriendStatus: (string, status => unit) => unit = "unsubscribeFromFriendStatus";
+  type status = { isOnline: bool }
+  @val external subscribeToFriendStatus: (string, status => unit) => unit = "subscribeToFriendStatus"
+  @val external unsubscribeFromFriendStatus: (string, status => unit) => unit = "unsubscribeFromFriendStatus"
 }
 
-type state = Offline | Loading | Online;
+type state = Offline | Loading | Online
 
 @react.component
 let make = (~friendId: string) => {
@@ -43,15 +43,15 @@ let make = (~friendId: string) => {
       })
     }
 
-    ChatAPI.subscribeToFriendStatus(friendId, handleStatusChange);
-    setState(_ => Loading);
+    ChatAPI.subscribeToFriendStatus(friendId, handleStatusChange)
+    setState(_ => Loading)
 
     let cleanup = () => {
       ChatAPI.unsubscribeFromFriendStatus(friendId, handleStatusChange)
     }
 
     Some(cleanup)
-  })
+  }, [friendId])
 
   let text = switch(state) {
     | Offline => friendId ++ " is offline"
@@ -117,14 +117,14 @@ Now let’s say that our chat application also has a contact list, and we want t
 
 ```res {15-30}
 // FriendListItem.res
-type state = Offline | Loading | Online;
+type state = Offline | Loading | Online
 
 // module ChatAPI = {...}
 
 type friend = {
   id: string,
   name: string
-};
+}
 
 @react.component
 let make = (~friend: friend) => {
@@ -137,8 +137,8 @@ let make = (~friend: friend) => {
       })
     }
 
-    ChatAPI.subscribeToFriendStatus(friend.id, handleStatusChange);
-    setState(_ => Loading);
+    ChatAPI.subscribeToFriendStatus(friend.id, handleStatusChange)
+    setState(_ => Loading)
 
     let cleanup = () => {
       ChatAPI.unsubscribeFromFriendStatus(friend.id, handleStatusChange)
@@ -292,7 +292,7 @@ The purpose of our `useFriendStatus` Hook is to subscribe us to a friend’s sta
 
 ```res
 let useFriendStatus = (friendId: string): status {
-  let (state, setState) = React.useState(_ => Offline);
+  let (state, setState) = React.useState(_ => Offline)
 
   // ...
 
@@ -315,11 +315,11 @@ Now that we’ve extracted this logic to a useFriendStatus hook, we can just use
 
 ```res {6}
 // FriendStatus.res
-type friend = { id: string };
+type friend = { id: string }
 
 @react.component
 let make = (~friend: friend) => {
-  let onlineState = FriendStatusHook.useFriendStatus(friend.id);
+  let onlineState = FriendStatusHook.useFriendStatus(friend.id)
 
   let status = switch(onlineState) {
     | FriendStatusHook.Online => "Online"
@@ -327,7 +327,7 @@ let make = (~friend: friend) => {
     | Offline => "Offline"
   }
 
-  React.string(status);
+  React.string(status)
 }
 ```
 ```js
@@ -363,7 +363,7 @@ function FriendStatus(Props) {
 // FriendListItem.res
 @react.component
 let make = (~friend: friend) => {
-  let onlineState = FriendStatusHook.useFriendStatus(friend.id);
+  let onlineState = FriendStatusHook.useFriendStatus(friend.id)
 
   let color = switch(onlineState) {
     | Offline => "red"

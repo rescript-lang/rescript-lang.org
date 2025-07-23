@@ -3,5 +3,5 @@ type t
 
 external fromString: string => t = "%identity"
 
-let fromDate: Js.Date.t => t
-let toDate: t => Js.Date.t
+let fromDate: Date.t => t
+let toDate: t => Date.t

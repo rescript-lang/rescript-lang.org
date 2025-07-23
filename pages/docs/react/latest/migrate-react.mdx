@@ -6,11 +6,11 @@ canonical: "/docs/react/latest/migrate-react"
 
 # Migrate from JSX v3
 
-JSX v4 introduces a new idiomatic record-based representation of components which is incompatible with v3. Because of this, either the entire project or dependencies need to be compiled in V4 mode, or some compatibility features need to be used to mix V3 and V4 in the same project. This page describes how to migrate from v3 to v4.
+JSX v4 introduces a new idiomatic record-based representation of components which is incompatible with v3. Because of this, either the entire project or dependencies need to be compiled in v4 mode, or some compatibility features need to be used to mix v3 and v4 in the same project. This page describes how to migrate from v3 to v4.
 
 ## Configuration
 
-Remove the existing JSX configuration from `bsconfig.json`:
+Remove the existing JSX configuration from `rescript.json`:
 
 ```json
 {
@@ -26,23 +26,11 @@ Then add the new JSX configuration:
 }
 ```
 
-**Note** JSX v4 requires the rescript compiler 10.1 or higher, and rescript-react version 0.11 or higher. In addition, react version 18.0 is required.
-
-### Classic and Automatic Mode
-
-Classic mode is the default and generates calls to `React.createElement` just as with V3.
+or, to keep using the legacy `React.createElement` API like with JSX v3:
 
 ```json
 {
   "jsx": { "version": 4, "mode": "classic" }
-}
-```
-
-Automatic mode is an experimental mode that generate calls to `_jsx` functions (similar to TypeScript's `react-jsx` mode)
-
-```json
-{
-  "jsx": { "version": 4, "mode": "automatic" }
 }
 ```
 
@@ -84,9 +72,9 @@ JSX v3 is still available with the latest version of compiler and rescript-react
 }
 ```
 
-To build certain dependencies in V3 compatibility mode, whatever the version used in the root project, use `"v3-dependencies"`. The listed dependencies will be built in V3 mode, and in addition `-open ReactV3` is added to the compiler options.
+To build certain dependencies in v3 compatibility mode, whatever the version used in the root project, use `"v3-dependencies"`. The listed dependencies will be built-in v3 mode, and in addition `-open ReactV3` is added to the compiler options.
 
-## Migration of V3 components
+## Migration of v3 components
 
 Some components in existing projects are written in a way that is dependent on the v3 internal representation. Here are a few examples of how to convert them to v4.
 
@@ -105,7 +93,7 @@ module M = {
 
 To this:
 
-```res
+```res example
 // V4
 module M = {
   type props<'msg> = {msg: 'msg}
@@ -134,7 +122,7 @@ module Context = {
 
 To this:
 
-```res
+```res example
 module Context = {
   let context = React.createContext(() => ())
 
@@ -160,7 +148,7 @@ module FancyInput = {
       <input
         type_="text"
         ?className
-        ref=?{ref_->Js.Nullable.toOption->Belt.Option.map(ReactDOM.Ref.domRef)}
+        ref=?{ref_->Nullable.toOption->Option.map(ReactDOM.Ref.domRef)}
       />
       children
     </div>
@@ -168,8 +156,8 @@ module FancyInput = {
 }
 
 @react.component
-let make = () => {
-  let input = React.useRef(Js.Nullable.null)
+let make = (~onClick) => {
+  let input = React.useRef(Nullable.null)
 
   <div>
     <FancyInput ref=input> // prop
@@ -179,9 +167,9 @@ let make = () => {
 }
 ```
 
-To this: In v3, there is an inconsistency between `ref` as prop and `ref_` as argument. With JSX V4, `ref` is only allowed as an argument.
+To this: In v3, there is an inconsistency between `ref` as prop and `ref_` as argument. With JSX v4, `ref` is only allowed as an argument.
 
-```res
+```res example
 module FancyInput = {
   @react.component
   let make = React.forwardRef((
@@ -193,7 +181,7 @@ module FancyInput = {
       <input
         type_="text"
         ?className
-        ref=?{ref->Js.Nullable.toOption->Belt.Option.map(ReactDOM.Ref.domRef)}
+        ref=?{ref->Nullable.toOption->Option.map(ReactDOM.Ref.domRef)}
       />
       children
     </div>
@@ -201,8 +189,8 @@ module FancyInput = {
 }
 
 @react.component
-let make = () => {
-  let input = React.useRef(Js.Nullable.null)
+let make = (~onClick) => {
+  let input = React.useRef(Nullable.null)
 
   <div>
     <FancyInput ref=input>
@@ -238,5 +226,27 @@ module Comp = {
       <Modal _open _type>
         <Description />
       </Modal>
+}
+```
+
+### Bindings to JS components with optional props
+
+Previously, you could wrap optional props with an explicit `option` when writing bindings to JS components. This approach functioned only due to an implementation detail of the ppx in JSX 3; it's not how to correctly write bindings to a function with optional arguments.
+
+Rewrite this:
+
+```res
+module Button = {
+  @module("./Button") @react.component
+  external make: (~text: option<string>=?) => React.element = "default"
+}
+```
+
+To this:
+
+```res example
+module Button = {
+  @module("./Button") @react.component
+  external make: (~text: string=?) => React.element = "default"
 }
 ```

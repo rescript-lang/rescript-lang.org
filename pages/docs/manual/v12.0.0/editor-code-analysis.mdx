@@ -1,0 +1,158 @@
+---
+title: "Dead Code Analysis in ReScript"
+metaTitle: "Dead Code Analysis in ReScript"
+description: "Documentation about ReScript editor plugins and code analysis"
+canonical: "/docs/manual/v12.0.0/editor-plugins"
+---
+
+# Dead Code Analysis in ReScript
+
+This guide provides a detailed walkthrough on how to leverage ReScript’s powerful dead code analysis tools to maintain a clean, efficient, and distraction-free codebase.
+
+Dead code refers to code that's present in your codebase but is never executed. It can lead to:
+
+- Increased compilation times
+- Confusion during development
+- Misleading assumptions about functionality
+
+ReScript’s language design allows for accurate and efficient dead code analysis using the **ReScript Code Analyzer**, available via the official VSCode extension.
+
+### Prerequisites
+
+- ReScript VSCode extension (v1.8.2 or higher)
+
+### Activation
+
+1. Open the Command Palette: `Cmd/Ctrl + P`
+2. Run: `> ReScript: Start Code Analyzer`
+
+### Deactivation
+
+- Run: `> ReScript: Stop Code Analyzer` 
+- Or click “Stop Code Analyzer” in the status bar
+
+### Result
+
+- The “Problems” pane populates with dead code warnings and suggestions.
+
+## Real-World Use Cases
+
+### 1. **Unused Record Fields**
+
+```rescript
+type useReturn = {
+  items: array<item>,
+  toggleItemChecked: string => unit, // ← Never used
+  setCheckedOnItem: (string, bool) => unit,
+  checkAll: unit => unit,
+  uncheckAll: unit => unit,
+}
+```
+
+Remove unused fields to simplify code.
+
+### 2. **Unused Variant Cases**
+
+```rescript
+type textType =
+  | Text(string)
+  | TextWithIcon({icon: React.element, text: string})
+  | Render(React.element) // ← Never constructed
+```
+
+Removing unused variants allows simplifying rendering logic.
+
+### 3. **Unused Parts of State**
+
+```rescript
+type validationState = Idle | Invalid | Valid
+
+type state = {
+  oldPassword: string,
+  newPassword: string,
+  newPasswordRepeated: string,
+  validationState: validationState, // ← Never read
+}
+```
+
+Old validation logic might remain after refactors—clean it up.
+
+### 4. **Unnecessary Interface Exposure**
+
+```rescript
+// DrilldownTarget.resi
+MetricParam.parse // ← Never used
+MetricParam.serialize // ← Never used
+```
+
+Keep interfaces minimal by removing unused exports.
+
+### 5. **Unused Functions**
+
+```rescript
+let routerUrlToPath = ... // ← Never used
+let routeUrlStartsWith = ... // ← Never used
+```
+
+Removing these often uncovers further unused logic.
+
+### 6. **Unused Components**
+
+Components never referenced in production should be removed, unless explicitly preserved.
+
+
+## Keeping Some Dead Code
+
+### Use `@dead` and `@live`
+
+#### `@dead`
+
+Suppresses warnings but notifies if code becomes alive again.
+
+```rescript
+type user = {
+  name: string,
+  @dead age: int,
+}
+```
+
+#### `@live`
+
+Permanently marks code as alive (no future warnings).
+
+```rescript
+@live
+let getUserName = user => user.name
+```
+
+## Configuration
+
+Add to your `rescript.json`:
+
+```json
+"reanalyze": {
+  "analysis": ["dce"],
+  "suppress": ["src/bindings", "src/stories", "src/routes"],
+  "unsuppress": [],
+  "transitive": false
+}
+```
+
+### Options:
+
+- **analysis**: Enables dead code analysis (`"dce"`)
+- **suppress**: Silences reporting for paths (still analyzes)
+- **unsuppress**: Re-enables reports within suppressed paths
+- **transitive**: Controls reporting of indirectly dead code
+
+**Recommendation:** Set `transitive: false` for incremental cleanup.
+
+## Summary
+
+ReScript’s dead code analyzer helps you:
+
+- Incrementally clean up your codebase
+- Avoid confusion and complexity
+- Improve long-term maintainability
+
+Use it regularly for the best results.

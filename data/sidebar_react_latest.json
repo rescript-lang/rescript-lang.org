@@ -9,10 +9,14 @@
     "rendering-elements",
     "components-and-props",
     "arrays-and-keys",
+    "events",
     "refs-and-the-dom",
     "context",
+    "memo",
     "styling",
-    "router"
+    "router",
+    "lazy-components",
+    "import-export-reactjs"
   ],
   "Hooks & State Management": [
     "hooks-overview",
@@ -27,5 +31,8 @@
     "beyond-jsx",
     "forwarding-refs",
     "extensions-of-props"
+  ],
+  "Extra": [
+    "llms"
   ]
 }

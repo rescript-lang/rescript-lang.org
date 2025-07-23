@@ -6,7 +6,7 @@ Category: functional
 
 // Note: Extracted and adapted from the reason-highlightjs package:
 // https://github.com/reasonml-editor/reason-highlightjs
-module.exports = function(hljs) {
+export default function(hljs) {
   function orReValues(ops){
     return ops
     .map(function(op) {

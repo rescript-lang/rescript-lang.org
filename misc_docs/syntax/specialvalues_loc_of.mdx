@@ -16,17 +16,20 @@ category: "specialvalues"
 let f = () => None
 let (loc, f') = __LOC_OF__(f)
 
-loc->Js.log
-f'->Js.log
+loc->Console.log
+f'->Console.log
 ```
 
 ```js
-function f(param) {}
+function f() {
+  
+}
 
 var loc = "File \"testmodule.res\", line 2, characters 27-28";
 
 console.log(loc);
 console.log(f);
+var f$p = f;
 ```
 
 </CodeTab>

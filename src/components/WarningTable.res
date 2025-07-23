@@ -11,7 +11,7 @@ let make = () => {
     </Thead>
     <tbody>
       {WarningFlagDescription.lookupAll()
-      ->Belt.Array.map(((number, description)) =>
+      ->Array.map(((number, description)) =>
         <tr key=number>
           <Td> {React.string(number)} </Td>
           <Td> {React.string(description)} </Td>

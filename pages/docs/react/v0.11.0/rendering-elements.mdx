@@ -1,0 +1,68 @@
+---
+title: Rendering Elements
+description: "How to render React elements to the DOM"
+canonical: "/docs/react/latest/rendering-elements"
+---
+
+# Rendering Elements
+
+<Intro>
+
+In our previous section [React Elements & JSX](./elements-and-jsx) we learned how to create and handle React elements. In this section we will learn how to put our elements into action by rendering them into the DOM.
+
+</Intro>
+
+As we mentioned before, a `React.element` describes what you see on the screen:
+
+```res
+let element = <h1> {React.string("Hello World")} </h1>
+```
+
+Unlike browser DOM elements, React elements are plain objects, and are cheap to create. React DOM takes care of updating the DOM to match the React elements.
+
+## Rendering Elements to the DOM
+
+Let's assume we've got an HTML file that contains a `div` like this:
+
+```html
+<div id="root"/>
+```
+
+We call this a “root” DOM node because everything inside it will be managed by React DOM.
+
+Plain React applications usually have a single root DOM node. If you are integrating React into an existing app, you may have as many isolated root DOM nodes as you like.
+
+To render our React application into the `root` div, we need to do two things:
+- Find our DOM node with `ReactDOM.querySelector`
+- Render our React element to our queried `Dom.element` with `ReactDOM.render`
+
+Here is a full example rendering our application in our `root` div:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+// Dom access can actually fail. ReScript
+// is really explicit about handling edge cases!
+switch ReactDOM.querySelector("#root") {
+| Some(rootElement) => {
+    let root = ReactDOM.Client.createRoot(rootElement)
+    ReactDOM.Client.Root.render(root, <div />)
+  }
+| None => ()
+}
+```
+```js
+var root = document.querySelector("#root");
+
+if (!(root == null)) {
+  ReactDom.render(React.createElement("div", undefined, "Hello Andrea"), root);
+}
+```
+
+</CodeTab>
+
+React elements are immutable. Once you create an element, you can’t change its children or attributes. An element is like a single frame in a movie: it represents the UI at a certain point in time.
+
+At this point we would need to understand a few more concepts, such as React components and state management to be able to update the rendered elements after the initial `ReactDOM.Client.Root.render`. For now, just imagine your React application as a tree of elements, whereby some elements may get replaced during the lifetime of your application.
+
+React will automatically recognize any element changes and will only apply the DOM updates necessary to bring the DOM to the desired state.

@@ -1,0 +1,64 @@
+---
+title: "Migrate to ReScript Syntax"
+description: "Instructions on upgrading from Reason to ReScript"
+canonical: "/docs/manual/latest/migrate-to-new-syntax"
+---
+
+# Migrate from BuckleScript/Reason
+
+ReScript is a rebranding and cleanup of BuckleScript (since `v8.2.0`) & Reason (`v3.6`) that enables us to ship a tighter compile-to-JS stack with more coherent documentation & tools. If you're an existing user of BuckleScript & Reason, here's the gist:
+
+- ReScript is mostly just BuckleScript rebranded, with a new syntax that's like the Reason syntax, but catered more toward the JavaScript crowd.
+- All your existing code will keep working even if you don't upgrade.
+
+## Upgrade Your Codebase
+
+There are lots of exciting improvements in the new syntax (features, speed, error messages, etc.). The upgrade is trivial, backward-compatible and can be done on a per-file basis:
+
+```
+npm install rescript@9
+
+# Also works with .rei / .ml / .mli / etc
+npx rescript convert src/MyFile.re
+```
+
+Enjoy the improved experience!
+
+### Upgrade Individual Folders
+
+This is useful for per-directory conversions:
+
+```console
+# *.rei, *.ml, *.mli,....
+for f in your-folder/**/*.re; do; node_modules/.bin/rescript convert $f && rm $f; done;
+```
+
+### Upgrade an Entire Codebase
+
+In case you are confident in converting your codebase in one step, use the following:
+
+```
+npx rescript convert -all
+```
+
+
+## Difference With Old Reason
+
+- Complete removal of semicolon (you can still write them).
+- No need for parentheses around `if`, `switch` and `try`.
+- Type arguments: from `option(int)` to `option<int>`.
+- Old interpolated string: from `{j|hello ${name}|j}` to `` `hello ${name}` ``. Now with proper unicode support!
+- New interpolated string: `` `hello world` ``. Also supports multiline and unicode. `"hello world"` string is now singleline.
+- Polymorphic variants: from `` `red`` to `#red`.
+- Arrays: from `[|1,2,3|]` to `[1,2,3]`. In JS, arrays are the right default.
+- Lists: from `[1,2,3]` to `list[1,2,3]` (_8.1.1 update_: now it is `list{1, 2, 3}`). This ties with upcoming plans to access containers in a uniform way: `set[...]` and `map[...]`. Maybe temporary.
+- Exception: from `try (compute()) { | Not_found => Js.log("oops")}` to `try compute() catch { | Not_found => Js.log("oops")}`.
+- First class module: from `(module S: Student)` to `module(S: Student)`.
+- No custom infix operator for now (including `mod`).
+- Object access: from `settings##visible #= true` to `settings["visible"] = true`. Rejoice!
+- Object: from `Js.t({"age": int})` to just `{"age": int}`. The `Js.t` part is now unneeded.
+- Attribute: from `[@myAttribute "hello"]` to `@myAttribute("hello")`. From `[%re bla]` to `%re(bla)`.
+- Removed dereference syntax `result^`. Just use `result.contents`.
+- `fun` pattern matching syntax removed.
+- Type declaration is non-recursive by default, consistent with let bindings. To have recursive types, use `type rec myList<'a> = Nil | Cons('a, myList<'a>)`.
+- Use any words, including reserved keywords, as your identifier name: `let \"try" = true`.

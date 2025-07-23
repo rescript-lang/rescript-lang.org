@@ -10,7 +10,7 @@ Ever wanted a language like JavaScript, but without the warts, with a great type
 
 ReScript looks like JS, acts like JS, and compiles to the highest quality of clean, readable and performant JS, directly runnable in browsers and Node.
 
-**This means you can pick up ReScript and access the vast JavaScript ecosystem and tooling as if you've known ReScript for a long time**!
+**This means you can pick up ReScript and access the vast JavaScript ecosystem and tooling as if you've known ReScript for a long time!**
 
 **ReScript is the language for folks who don't necessarily love JavaScript, but who still acknowledge its importance**.
 
@@ -21,6 +21,7 @@ We respect TypeScript very much and think that it's a positive force in the Java
 - TypeScript's (admittedly noble) goal is to cover the entire JavaScript feature set and more. **ReScript covers only a curated subset of JavaScript**. For example, we emphasize plain data + functions over classes, clean [pattern matching](pattern-matching-destructuring.md) over fragile `if`s and virtual dispatches, [proper data modeling](variant.md) over string abuse, etc. JavaScript supersets will only grow larger over time; ReScript doesn't. \*
 
 - Consequently, TypeScript's type system is necessarily complex, pitfalls-ridden, potentially requires tweaking, sometimes slow, and requires quite a bit of noisy annotations that often feel like manual bookkeeping rather than clear documentation. In contrast, ReScript's type system:
+
   - Is deliberately curated to be a simple subset most folks will have an easier time to use.
   - Has **no** pitfalls, aka the type system is "sound" (the types will always be correct). E.g. If a type isn't marked as nullable, its value will never lie and let through some `undefined` value silently. **ReScript code has no null/undefined errors**.
   - Is the same for everyone. No knobs, no bikeshedding opportunity.

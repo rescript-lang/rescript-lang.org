@@ -31,7 +31,7 @@ let renderSgrString = (~key: string, sgrStr: SgrString.t): React.element => {
 
   let className =
     params
-    ->Js.Array2.map(p =>
+    ->Array.map(p =>
       switch p {
       | Sgr.Bold => "bold"
       | Fg(c) => mapColor(~target=Fg, c)
@@ -39,7 +39,7 @@ let renderSgrString = (~key: string, sgrStr: SgrString.t): React.element => {
       | _ => ""
       }
     )
-    ->Js.Array2.joinWith(" ")
+    ->Array.join(" ")
 
   <span key className> {React.string(content)} </span>
 }
@@ -49,8 +49,8 @@ let make = (~className=?, ~children: string) => {
   let spans =
     Ansi.parse(children)
     ->SgrString.fromTokens
-    ->Belt.Array.mapWithIndex((i, str) => {
-      let key = Belt.Int.toString(i)
+    ->Array.mapWithIndex((str, i) => {
+      let key = Int.toString(i)
       renderSgrString(~key, str)
     })
 

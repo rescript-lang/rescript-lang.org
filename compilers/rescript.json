@@ -1,0 +1,15 @@
+{
+  "name": "dummy",
+  "jsx": { "version": 4 },
+  "sources": {
+    "dir": "dummy",
+    "subdirs": true
+  },
+  "bs-dependencies": [
+    "@rescript/core",
+    "@rescript/react"
+  ],
+  "bsc-flags": [
+    "-open RescriptCore"
+  ]
+}

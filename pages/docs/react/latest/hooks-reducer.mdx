@@ -38,7 +38,7 @@ An alternative to [useState](./hooks-state). Accepts a reducer of type `(state, 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res example
 // Counter.res
 
 type action = Inc | Dec
@@ -103,7 +103,7 @@ You can leverage the full power of variants to express actions with data payload
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res example
 // TodoApp.res
 
 type todo = {
@@ -125,13 +125,13 @@ type state = {
 let reducer = (state, action) =>
   switch action {
   | AddTodo(content) =>
-    let todos = Js.Array2.concat(
+    let todos = Array.concat(
       state.todos,
       [{id: state.nextId, content: content, completed: false}],
     )
     {todos: todos, nextId: state.nextId + 1}
   | RemoveTodo(id) =>
-    let todos = Js.Array2.filter(state.todos, todo => todo.id !== id)
+    let todos = Array.filter(state.todos, todo => todo.id !== id)
     {...state, todos: todos}
   | ToggleTodo(id) =>
     let todos = Belt.Array.map(state.todos, todo =>
@@ -278,7 +278,7 @@ It lets you extract the logic for calculating the initial state outside the redu
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res example
 // Counter.res
 
 type action = Inc | Dec | Reset(int)

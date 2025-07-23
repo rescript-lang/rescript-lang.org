@@ -3,8 +3,6 @@
  * the package index
  */
 
-@send external focus: Dom.element => unit = "focus"
-
 type state =
   | Active
   | Inactive
@@ -18,7 +16,7 @@ let make = (
   ~onValueChange: string => unit,
 ) => {
   let (state, setState) = React.useState(_ => Inactive)
-  let textInput = React.useRef(Js.Nullable.null)
+  let textInput = React.useRef(Nullable.null)
 
   let onMouseDownClear = evt => {
     ReactEvent.Mouse.preventDefault(evt)
@@ -26,11 +24,11 @@ let make = (
   }
 
   let focusInput = () =>
-    textInput.current->Js.Nullable.toOption->Belt.Option.forEach(el => el->focus)
+    textInput.current->Nullable.forEach(el => el->WebAPI.HTMLInputElement.focus)
 
   let onAreaFocus = evt => {
     let el = ReactEvent.Focus.target(evt)
-    let isDiv = Js.Null_undefined.isNullable(el["type"])
+    let isDiv = Nullable.isNullable(el["type"])
 
     if isDiv && state === Inactive {
       focusInput()
@@ -54,7 +52,7 @@ let make = (
     switch full {
     | "Escape" => onClear()
     | "Tab" =>
-      if Js.Array.length(completionValues) === 1 {
+      if Array.length(completionValues) === 1 {
         let targetValue = Belt.Array.getExn(completionValues, 0)
 
         if targetValue !== value {
@@ -86,7 +84,7 @@ let make = (
     />
     <input
       value
-      ref={ReactDOM.Ref.domRef(textInput)}
+      ref={ReactDOM.Ref.domRef((Obj.magic(textInput): React.ref<Nullable.t<Dom.element>>))}
       onFocus
       onKeyDown
       onChange={onChange}

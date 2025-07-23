@@ -11,12 +11,18 @@ type npmPackage = {
   version: string,
   keywords: array<string>,
   description: string,
-  repositoryHref: Js.Null.t<string>,
+  repositoryHref: Null.t<string>,
   npmHref: string,
+  searchScore: float,
+  maintenanceScore: float,
 }
 
-type props = {"packages": array<npmPackage>, "urlResources": array<urlResource>}
+type props = {
+  packages: array<npmPackage>,
+  urlResources: array<urlResource>,
+  unmaintained: array<npmPackage>,
+}
 
 let default: props => React.element
 
-let getStaticProps: Next.GetStaticProps.revalidate<props, unit>
+let getStaticProps: Next.GetStaticProps.t<props, unit>

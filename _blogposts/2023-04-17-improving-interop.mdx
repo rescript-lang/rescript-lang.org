@@ -198,7 +198,7 @@ let getBestFriendsAge = user =>
 As you can see, you need to convert each level of nullables explicitly, which makes it hard to fully utilize pattern matching. With the new unboxed variant representation, we'll instead be able to do this:
 
 ```rescript
-// The type definition below is inlined here to examplify, but this definition will live in [Core](https://github.com/rescript-association/rescript-core) and be easily accessible
+// The type definition below is inlined here to examplify, but this definition will live in [Core](https://github.com/rescript-lang/rescript-core) and be easily accessible
 module Null = {
   @unboxed type t<'a> = Present('a) | @as(null) Null
 }

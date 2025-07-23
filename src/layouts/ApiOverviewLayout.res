@@ -1,16 +1,22 @@
 module Sidebar = SidebarLayout.Sidebar
 
-let categories: array<Sidebar.Category.t> = [
+let makeCategories: string => array<Sidebar.Category.t> = version => [
   {
-    name: "Introduction",
-    items: [{name: "Overview", href: "/docs/manual/latest/api"}],
+    name: "Overview",
+    items: [
+      {name: "Introduction", href: `/docs/manual/${version}/api`},
+      if version >= "v12.0.0" {
+        {name: "Stdlib", href: `/docs/manual/${version}/api/stdlib`}
+      } else {
+        {name: "Core", href: `/docs/manual/${version}/api/core`}
+      },
+    ],
   },
   {
-    name: "Modules",
+    name: "Additional Libraries",
     items: [
-      {name: "Js Module", href: "/docs/manual/latest/api/js"},
-      {name: "Belt Stdlib", href: "/docs/manual/latest/api/belt"},
-      {name: "Dom Module", href: "/docs/manual/latest/api/dom"},
+      {name: "Belt", href: `/docs/manual/${version}/api/belt`},
+      {name: "Dom", href: `/docs/manual/${version}/api/dom`},
     ],
   },
 ]
@@ -18,21 +24,23 @@ let categories: array<Sidebar.Category.t> = [
 /* Used for API docs (structured data) */
 module Docs = {
   @react.component
-  let make = (~components=ApiMarkdown.default, ~children) => {
-    let title = "API"
-    let version = "latest"
+  let make = (~version, ~components=ApiMarkdown.default, ~children) => {
+    let router = Next.Router.useRouter()
+    let route = router.route
 
-    <ApiLayout title categories version components> children </ApiLayout>
+    let categories = makeCategories(version)
+
+    let breadcrumbs = list{
+      {Url.name: "Docs", href: `/docs/manual/${version}/introduction`},
+      {name: "API", href: `/docs/manual/${version}/api`},
+    }
+
+    <ApiLayout breadcrumbs categories version components>
+      {switch version {
+      | "v9.0.0" | "v8.0.0" => <ApiLayout.OldDocsWarning route version />
+      | _ => React.null
+      }}
+      children
+    </ApiLayout>
   }
 }
-
-/*
- This layout is used for structured prose text with proper H2 headings.
- We cannot really use the same layout as with the Docs module, since they
- have different semantic styling and do things such as hiding the text
- of H2 nodes.
- */
-/* module Prose = { */
-/* @react.component */
-/* let make = (~children) => <Docs components=Markdown.default> children </Docs> */
-/* } */

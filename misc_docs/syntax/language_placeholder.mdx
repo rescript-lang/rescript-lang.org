@@ -14,13 +14,13 @@ Placeholders may be used for [ignoring parts of values](/docs/manual/latest/patt
 
 ```res
 switch person1 {
-| Teacher(_) => Js.log("Hi teacher")
-| Student(_) => Js.log("Hey student")
+| Teacher(_) => Console.log("Hi teacher")
+| Student(_) => Console.log("Hey student")
 }
 ```
 
 ```js
-if (person1.TAG === /* Teacher */ 0) {
+if (person1.TAG === "Teacher") {
   console.log("Hi teacher");
 } else {
   console.log("Hey student");

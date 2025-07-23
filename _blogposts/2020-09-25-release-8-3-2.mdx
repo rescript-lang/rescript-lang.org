@@ -86,7 +86,7 @@ There are two ways of removing staled artifacts, the second one is introduced in
 
 - Based on live analysis and prebuilt-in knowledge
 
-We scan `lib/bs` directory and check some dangling cm{i,t,j,ti} files, if it does not exist in
+We scan `lib/bs` directory and check some dangling `cm{i,t,j,ti}` files, if it does not exist in
 the current build set, it is considered stale artifacts. If it is `cmt` file, it would trigger some hooks of `genType`, notably -cmt-rm.
 
 - Based on previous build logs

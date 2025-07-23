@@ -19,7 +19,7 @@ It's focused on type safety, performance and JS interop. It used to be called Bu
 npm i bs-platform@8.4.2
 ```
 
-The changes are listed [here](https://github.com/rescript-lang/rescript-compiler/blob/master/Changes.md#841).
+The changes are listed [here](https://github.com/rescript-lang/rescript/blob/master/Changes.md#841).
 
 We will go through some highlighted changes.
 
@@ -33,11 +33,10 @@ In this release, we fix the integrity of `bsb -make-world` which allows user to 
 The fix is well implemented that people who don't do such modifications will not pay for it.
 
 This is one of the highest desired feature request based on the
-[user feedback](https://github.com/rescript-lang/rescript-compiler/issues/4361#issuecomment-739538789), so we will expand a bit here why it is tricky
-to implement it without compromising performance.
+[user feedback](https://github.com/rescript-lang/rescript/issues/4361#issuecomment-739538789), so we will expand a bit here why it is tricky to implement it without compromising performance.
 
 In ReScript compilation scheme, dependencies as packages are treated as a black box,
-changes of dependencies should be *transitive*. The is due to that we have cross module
+changes of dependencies should be _transitive_. The is due to that we have cross module
 optimizations and the binary interface itself is a hash of its dependencies.
 So for a package dependency chain: A -> B -> C, if A changes and B does not change, C still needs get rebuilt.
 Because the intermediate output of B may still change due to the change of A.
@@ -68,6 +67,6 @@ of such stale outptu, such stale `List.cmi` file will break the integrity of the
 In this release, we introduced a more robust algorithm that will always remove stale output before the build so
 that such integrity is not broken.
 
-Last but not the least, we continue improving the readability, debuggability of the [generated output](https://github.com/rescript-lang/rescript-compiler/pull/4858) : )
+Last but not the least, we continue improving the readability, debuggability of the [generated output](https://github.com/rescript-lang/rescript/pull/4858) : )
 
 Happy Hacking! -- Hongbo Zhang

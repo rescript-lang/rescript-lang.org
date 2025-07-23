@@ -15,10 +15,10 @@ In some cases, `open` will cause a "shadow warning" due to existing identifiers 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-open Js.Math
+open Math
 
-// Use _PI and pow_float from the Js.Math module
-let area = radius => _PI *. pow_float(~base=radius, ~exp=2.0)
+// Use _PI and pow_float from the Math module
+let area = radius => Constants.pi *. pow(radius, ~exp=2.0)
 ```
 
 ```js

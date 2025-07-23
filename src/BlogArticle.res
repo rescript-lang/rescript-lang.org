@@ -16,26 +16,14 @@
       builds are taking too long.  I think we will be fine for now.
   Link to NextJS discussion: https://github.com/zeit/next.js/discussions/11728#discussioncomment-3501
  */
-let middleDotSpacer = " " ++ (Js.String.fromCharCode(183) ++ " ")
+
+let middleDotSpacer = " " ++ (String.fromCharCode(183) ++ " ")
 
 module Params = {
   type t = {slug: string}
 }
 
-type props = {path: string}
-
-module BlogComponent = {
-  type t = {default: React.component<{.}>}
-
-  @val external require: string => t = "require"
-
-  let frontmatter: React.component<{.}> => Js.Json.t = %raw(`
-      function(component) {
-        if(typeof component.frontmatter === "object") { return component.frontmatter; }
-        return {};
-      }
-    `)
-}
+type props = {mdxSource: MdxRemote.output, isArchived: bool, path: string}
 
 module Line = {
   @react.component
@@ -51,7 +39,10 @@ module AuthorBox = {
       <div className="w-10 h-10 bg-berry-40 block rounded-full mr-3"> authorImg </div>
       <div className="body-sm">
         <a
-          href={"https://twitter.com/" ++ author.twitter}
+          href={switch author.social {
+          | X(handle) => "https://x.com/" ++ handle
+          | Bluesky(handle) => "https://bsky.app/profile/" ++ handle
+          }}
           className="hover:text-gray-80"
           rel="noopener noreferrer">
           {React.string(author.fullname)}
@@ -75,7 +66,7 @@ module BlogHeader = {
   ) => {
     let date = DateStr.toDate(date)
 
-    let authors = Belt.Array.concat([author], co_authors)
+    let authors = Array.concat([author], co_authors)
 
     <div className="flex flex-col items-center">
       <div className="w-full max-w-740">
@@ -91,7 +82,7 @@ module BlogHeader = {
           {React.string(Util.Date.toDayMonthYear(date))}
         </div>
         <h1 className="hl-title"> {React.string(title)} </h1>
-        {description->Belt.Option.mapWithDefault(React.null, desc =>
+        {description->Option.mapOr(React.null, desc =>
           switch desc {
           | "" => <div className="mb-8" />
           | desc =>
@@ -101,11 +92,8 @@ module BlogHeader = {
           }
         )}
         <div className="flex flex-col md:flex-row mb-12">
-          {Belt.Array.map(authors, author =>
-            <div
-              key=author.username
-              style={ReactDOMStyle.make(~minWidth="8.1875rem", ())}
-              className="mt-4 md:mt-0 md:ml-8 first:ml-0">
+          {Array.map(authors, author =>
+            <div key=author.username className="mt-4 md:mt-0 md:ml-8 first:ml-0 min-w-[8.1875rem]">
               <AuthorBox author />
             </div>
           )->React.array}
@@ -114,11 +102,7 @@ module BlogHeader = {
       {switch articleImg {
       | Some(articleImg) =>
         <div className="-mx-8 sm:mx-0 sm:w-full bg-gray-5-tr md:mt-24">
-          <img
-            className="h-full w-full object-cover"
-            src=articleImg
-            style={ReactDOMStyle.make(~maxHeight="33.625rem", ())}
-          />
+          <img className="h-full w-full object-cover max-h-[33.625rem]" src=articleImg />
         </div>
       | None =>
         <div className="max-w-740 w-full">
@@ -130,19 +114,19 @@ module BlogHeader = {
 }
 
 let default = (props: props) => {
-  let {path} = props
+  let {mdxSource, isArchived, path} = props
 
-  let module_ = BlogComponent.require("../_blogposts/" ++ path)
+  let children =
+    <MdxRemote
+      frontmatter={mdxSource.frontmatter}
+      compiledSource={mdxSource.compiledSource}
+      scope={mdxSource.scope}
+      components={MarkdownComponents.default}
+    />
 
-  let archived = Js.String2.startsWith(path, "archive/")
+  let fm = mdxSource.frontmatter->BlogFrontmatter.decode
 
-  let component = module_.default
-
-  let fm = component->BlogComponent.frontmatter->BlogFrontmatter.decode
-
-  let children = React.createElement(component, Js.Obj.empty())
-
-  let archivedNote = archived
+  let archivedNote = isArchived
     ? {
         open Markdown
         <div className="mb-10">
@@ -164,8 +148,8 @@ let default = (props: props) => {
       <Meta
         siteName="ReScript Blog"
         title={title ++ " | ReScript Blog"}
-        description=?{description->Js.Null.toOption}
-        ogImage={previewImg->Js.Null.toOption->Belt.Option.getWithDefault(Blog.defaultPreviewImg)}
+        description=?{description->Null.toOption}
+        ogImage={previewImg->Null.toOption->Option.getOr(Blog.defaultPreviewImg)}
       />
       <div className="mb-10 md:mb-20">
         <BlogHeader
@@ -173,8 +157,8 @@ let default = (props: props) => {
           author
           co_authors
           title
-          description={description->Js.Null.toOption}
-          articleImg={articleImg->Js.Null.toOption}
+          description={description->Null.toOption}
+          articleImg={articleImg->Null.toOption}
         />
       </div>
       <div className="flex justify-center">
@@ -187,11 +171,9 @@ let default = (props: props) => {
               <div className="text-24 sm:text-32 text-center text-gray-80 font-medium">
                 {React.string("Want to read more?")}
               </div>
-              <Next.Link href="/blog">
-                <a className="text-fire hover:text-fire-70">
-                  {React.string("Back to Overview")}
-                  <Icon.ArrowRight className="ml-2 inline-block" />
-                </a>
+              <Next.Link href="/blog" className="text-fire hover:text-fire-70">
+                {React.string("Back to Overview")}
+                <Icon.ArrowRight className="ml-2 inline-block" />
               </Next.Link>
             </div>
           </div>
@@ -221,14 +203,25 @@ let getStaticProps: Next.GetStaticProps.t<props, Params.t> = async ctx => {
   open Next.GetStaticProps
   let {params} = ctx
 
-  let path = switch BlogApi.getAllPosts()->Js.Array2.find(({path}) =>
+  let path = switch BlogApi.getAllPosts()->Array.find(({path}) =>
     BlogApi.blogPathToSlug(path) == params.slug
   ) {
   | None => params.slug
   | Some({path}) => path
   }
 
-  let props = {path: path}
+  let filePath = Node.Path.resolve("_blogposts", path)
+
+  let isArchived = String.startsWith(path, "archive/")
+
+  let source = filePath->Node.Fs.readFileSync
+
+  let mdxSource = await MdxRemote.serialize(
+    source,
+    {parseFrontmatter: true, mdxOptions: MdxRemote.defaultMdxOptions},
+  )
+
+  let props = {mdxSource, isArchived, path}
 
   {"props": props}
 }
@@ -236,7 +229,7 @@ let getStaticProps: Next.GetStaticProps.t<props, Params.t> = async ctx => {
 let getStaticPaths: Next.GetStaticPaths.t<Params.t> = async () => {
   open Next.GetStaticPaths
 
-  let paths = BlogApi.getAllPosts()->Belt.Array.map(postData => {
+  let paths = BlogApi.getAllPosts()->Array.map(postData => {
     params: {
       Params.slug: BlogApi.blogPathToSlug(postData.path),
     },

@@ -14,7 +14,10 @@ let tempFileNameRegex = /_tempFile\.res/g
 //       see the package.json on how to define another rescript version
 let compilersDir = path.join(__dirname, "..", "compilers")
 
-let bsc = path.join(compilersDir, 'node_modules', 'rescript-1010', process.platform, 'bsc.exe')
+let bsc = path.join(compilersDir, 'node_modules', 'rescript-1110', process.platform, 'bsc.exe');
+let rescriptBin = path.join(compilersDir, 'node_modules', 'rescript-1110', 'rescript');
+let rescriptCoreCompiled = path.join(compilersDir, 'node_modules', '@rescript', 'core', 'lib', 'ocaml');
+let rescriptReactCompiled = path.join(compilersDir, 'node_modules', '@rescript', 'react', 'lib', 'ocaml');
 
 const prepareCompilers = () => {
   if (fs.existsSync(bsc)) {
@@ -22,6 +25,14 @@ const prepareCompilers = () => {
   }
   console.log("compilers not installed. Installing compilers...");
   child_process.execFileSync("npm", ['install'], {cwd: compilersDir})
+}
+
+const prepareDependencies = () => {
+  if (fs.existsSync(rescriptCoreCompiled) && fs.existsSync(rescriptReactCompiled)) {
+    return;
+  }
+  console.log("Dependencies not installed. Installing...");
+  child_process.execFileSync(rescriptBin, [], {cwd: compilersDir})
 }
 
 let parseFile = content => {
@@ -69,13 +80,14 @@ let postprocessOutput = (file, error) => {
 
 
 prepareCompilers();
+prepareDependencies();
 
 console.log("Running tests...")
 fs.writeFileSync(tempFileName, '')
 
 let success = true
 
-glob.sync(__dirname + '/../pages/docs/manual/latest/**/*.mdx').forEach((file) => {
+glob.sync(__dirname + '/../pages/docs/{manual/latest,react/latest}/**/*.mdx').forEach((file) => {
   let content = fs.readFileSync(file, {encoding: 'utf-8'})
   let parsedResult = parseFile(content)
   if (parsedResult != null) {
@@ -83,7 +95,24 @@ glob.sync(__dirname + '/../pages/docs/manual/latest/**/*.mdx').forEach((file) =>
     try {
       // -109 for suppressing `Toplevel expression is expected to have unit type.`
       // Most doc snippets do e.g. `Belt.Array.length(["test"])`, which triggers this
-      child_process.execFileSync(bsc, [tempFileName, '-w', '-109'], {stdio: 'pipe'})
+      child_process.execFileSync(
+        bsc,
+        [
+          tempFileName,
+          '-I',
+          rescriptCoreCompiled,
+          '-I',
+          rescriptReactCompiled,
+          '-bs-jsx',
+          '4',
+          '-w',
+          '-109',
+          '-uncurried',
+          '-open',
+          'RescriptCore',
+        ],
+        { stdio: "pipe" }
+      );
     } catch (e) {
       process.stdout.write(postprocessOutput(file, e))
       success = false

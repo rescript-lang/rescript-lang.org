@@ -1,0 +1,124 @@
+---
+title: "Tagged templates"
+description: "Using tagged templates in ReScript"
+canonical: "/docs/manual/v11.0.0/tagged-templates"
+---
+
+# Tagged templates
+
+**Since 11.1**
+
+Tagged templates provide a special form of string interpolation, enabling the creation of template literals 
+where placeholders aren't restricted to strings. Moreover, the resulting output isn't confined solely to 
+strings either. You can take a look at the [JS documentation 
+about tagged templates](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates)
+to learn more about them.
+
+## Define a tag function
+
+Tag functions in ReScript have the following signature:
+```res 
+let myTagFunction : (array<string>, array<'param>) => 'output
+```
+As you can see, you can have any type you want both for the placeholder array and for the output.
+
+Given how string interpolation works, you'll always have the following invariant:
+```res
+Array.length(strings) == Array.length(placeholder) + 1
+```
+
+Let's say you want to interpolate strings with all kind of builtin types and make it work inside React components,
+you can define the following tag function:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res prelude
+type params =
+  | I(int)
+  | F(float)
+  | S(string)
+  | Bool(bool)
+
+let s = (strings, parameters) => {
+  let text = Array.reduceWithIndex(parameters, Array.getUnsafe(strings, 0), (
+    acc,
+    param,
+    i,
+  ) => {
+    let s = Array.getUnsafe(strings, i + 1)
+    let p = switch param {
+    | I(i) => Int.toString(i)
+    | F(f) => Float.toString(f)
+    | S(s) => s
+    | Bool(true) => "true"
+    | Bool(false) => "false"
+    }
+    acc ++ p ++ s
+  })
+  React.string(text)
+}
+```
+```js
+import * as Core__Array from "./stdlib/core__Array.js";
+
+function s(strings, parameters) {
+  return Core__Array.reduceWithIndex(parameters, strings[0], (function (acc, param, i) {
+                var s = strings[i + 1 | 0];
+                var p;
+                switch (param.TAG) {
+                  case "I" :
+                  case "F" :
+                      p = param._0.toString();
+                      break;
+                  case "S" :
+                      p = param._0;
+                      break;
+                  case "Bool" :
+                      p = param._0 ? "true" : "false";
+                      break;
+                  
+                }
+                return acc + p + s;
+              }));
+}
+```
+
+</CodeTab>
+
+## Write tagged template literals
+
+Now that you have defined your tag function, you can use it this way:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+module Greetings = {
+  @react.component
+  let make = (~name, ~age) => {
+    <div> {s`hello ${S(name)} you're ${I(age)} year old!`} </div>
+  }
+}
+```
+```js
+function Greetings(props) {
+  return React.createElement("div", undefined, s([
+                  "hello ",
+                  " you're ",
+                  " year old!"
+                ], [
+                  {
+                    TAG: "S",
+                    _0: props.name
+                  },
+                  {
+                    TAG: "I",
+                    _0: props.age
+                  }
+                ]));
+}
+```
+
+</CodeTab>
+
+Pretty neat, isn't it? As you can see, it looks like any regular template literal but it accepts placeholders that are not strings 
+and it outputs something that is not a string either, a `React.element` in this case.

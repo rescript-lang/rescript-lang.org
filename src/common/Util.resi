@@ -12,9 +12,5 @@ module String: {
 }
 
 module Date: {
-  let toDayMonthYear: Js.Date.t => string
-}
-
-module Json: {
-  let prettyStringify: Js.Json.t => string
+  let toDayMonthYear: Date.t => string
 }

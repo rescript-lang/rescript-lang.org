@@ -1,6 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="14.46" height="14.171" viewBox="0 0 14.46 14.171">
-  <g id="search" transform="translate(-3.036 -3.036)" opacity="0.904">
-    <path id="Path_149" data-name="Path 149" d="M5,0A5,5,0,1,1,0,5,5,5,0,0,1,5,0Z" transform="translate(4.036 4.036)" fill="none" stroke="#f2656d" stroke-width="2"/>
-    <line id="Line_28" data-name="Line 28" x1="4" y1="4" transform="translate(12.789 12.5)" fill="none" stroke="#f2656d" stroke-linejoin="round" stroke-width="2"/>
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="14.46" height="14.171"><g fill="none" stroke="#f2656d" stroke-width="2" opacity=".904"><path d="M6 1a5 5 0 1 1-5 5 5 5 0 0 1 5-5Z" data-name="Path 149"/><path stroke-linejoin="round" d="m13.753 13.464-4-4" data-name="Line 28"/></g></svg>

@@ -18,7 +18,7 @@ type timeoutID
 @val
 external setTimeout: (unit => unit, int) => timeoutID = "setTimeout"
 
-let timeoutID = setTimeout(() => Js.log("Hello"), 1000)
+let timeoutID = setTimeout(() => Console.log("Hello"), 1000)
 ```
 
 ```js

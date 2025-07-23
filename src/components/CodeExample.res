@@ -8,28 +8,8 @@ let langShortname = (lang: string) =>
   | rest => rest
   }
 
-module DomUtil = {
-  @scope("document") @val external createElement: string => Dom.element = "createElement"
-  @scope("document") @val external createTextNode: string => Dom.element = "createTextNode"
-  @send external appendChild: (Dom.element, Dom.element) => unit = "appendChild"
-  @send external removeChild: (Dom.element, Dom.element) => unit = "removeChild"
-
-  @set external setClassName: (Dom.element, string) => unit = "className"
-
-  type classList
-  @get external classList: Dom.element => classList = "classList"
-  @send external toggle: (classList, string) => unit = "toggle"
-
-  type animationFrameId
-  @scope("window") @val
-  external requestAnimationFrame: (unit => unit) => animationFrameId = "requestAnimationFrame"
-
-  @scope("window") @val
-  external cancelAnimationFrame: animationFrameId => unit = "cancelAnimationFrame"
-}
-
 module CopyButton = {
-  let copyToClipboard: string => bool = %raw(j`
+  let copyToClipboard: string => bool = %raw(`
   function(str) {
     try {
       const el = document.createElement('textarea');
@@ -63,7 +43,7 @@ module CopyButton = {
   let make = (~code) => {
     let (state, setState) = React.useState(_ => Init)
 
-    let buttonRef = React.useRef(Js.Nullable.null)
+    let buttonRef = React.useRef(Nullable.null)
 
     let onClick = evt => {
       ReactEvent.Mouse.preventDefault(evt)
@@ -74,39 +54,37 @@ module CopyButton = {
       }
     }
 
-    React.useEffect1(() => {
+    React.useEffect(() => {
       switch state {
       | Copied =>
-        open DomUtil
-        let buttonEl = Js.Nullable.toOption(buttonRef.current)->Belt.Option.getExn
+        let buttonEl = Nullable.toOption(buttonRef.current)->Option.getOrThrow
 
         // Note on this imperative DOM nonsense:
         // For Tailwind transitions to behave correctly, we need to first paint the DOM element in the tree,
         // and in the next tick, add the opacity-100 class, so the transition animation actually takes place.
         // If we don't do that, the banner will essentially pop up without any animation
-        let bannerEl = createElement("div")
-        bannerEl->setClassName(
-          "opacity-0 absolute -top-6 right-0 -mt-5 -mr-4 px-4 py-2 w-40 rounded-lg captions text-white bg-gray-100 text-gray-80-tr transition-all duration-1000 ease-in-out ",
-        )
-        let textNode = createTextNode("Copied to clipboard")
+        let bannerEl = WebAPI.Document.createElement(document, "div")
+        bannerEl.className = "opacity-0 absolute -top-6 right-0 -mt-5 -mr-4 px-4 py-2 w-40 rounded-lg captions text-white bg-gray-100 text-gray-80-tr transition-all duration-1000 ease-in-out "
 
-        bannerEl->appendChild(textNode)
-        buttonEl->appendChild(bannerEl)
+        let textNode = WebAPI.Document.createTextNode(document, "Copied to clipboard")
 
-        let nextFrameId = requestAnimationFrame(() => {
-          bannerEl->classList->toggle("opacity-0")
-          bannerEl->classList->toggle("opacity-100")
+        WebAPI.Element.appendChild(bannerEl, textNode)->ignore
+        WebAPI.Element.appendChild(buttonEl, bannerEl)->ignore
+
+        let nextFrameId = WebAPI.Window.requestAnimationFrame(window, _ => {
+          WebAPI.DOMTokenList.toggle(bannerEl.classList, ~token="opacity-0")->ignore
+          WebAPI.DOMTokenList.toggle(bannerEl.classList, ~token="opacity-100")->ignore
         })
 
-        let timeoutId = Js.Global.setTimeout(() => {
-          buttonEl->removeChild(bannerEl)
+        let timeoutId = setTimeout(~handler=() => {
+          buttonEl->WebAPI.Element.removeChild(bannerEl)->ignore
           setState(_ => Init)
-        }, 3000)
+        }, ~timeout=3000)
 
         Some(
           () => {
             cancelAnimationFrame(nextFrameId)
-            Js.Global.clearTimeout(timeoutId)
+            clearTimeout(timeoutId)
           },
         )
       | _ => None
@@ -114,7 +92,10 @@ module CopyButton = {
     }, [state])
     //Copy-Button
     <button
-      ref={ReactDOM.Ref.domRef(buttonRef)} disabled={state === Copied} className="relative" onClick>
+      ref={ReactDOM.Ref.domRef((Obj.magic(buttonRef): React.ref<Nullable.t<Dom.element>>))}
+      disabled={state === Copied}
+      className="relative"
+      onClick>
       <Icon.Clipboard
         className="text-gray-30 mt-px hover:cursor-pointer hover:text-gray-60 hover:bg-gray-30 w-6 h-6 p-1 rounded transition-all duration-300 ease-in-out"
       />
@@ -128,9 +109,10 @@ let make = (~highlightedLines=[], ~code: string, ~showLabel=true, ~lang="text") 
 
   let label = if showLabel {
     let label = langShortname(lang)
-    <div className="absolute right-0 px-4 pb-4 font-sans text-12 font-bold text-gray-30">
+    <div
+      className="absolute right-1 top-0 p-1 font-sans text-12 font-bold text-gray-30 pointer-events-none">
       {//RES or JS Label
-      Js.String2.toUpperCase(label)->React.string}
+      String.toUpperCase(label)->React.string}
     </div>
   } else {
     React.null
@@ -138,9 +120,9 @@ let make = (~highlightedLines=[], ~code: string, ~showLabel=true, ~lang="text") 
 
   <div
     //normal code-text without tabs
-    className="relative w-full flex-col rounded-none xs:rounded border-t border-b xs:border border-gray-20 bg-gray-10 py-2 text-gray-80">
+    className="relative w-full flex-col rounded xs:rounded border border-gray-20 bg-gray-10 pt-2 text-gray-80">
     label
-    <div className="px-5 text-14 pt-4 pb-2 overflow-x-auto -mt-2"> children </div>
+    <div className="px-5 text-14 pt-4 pb-4 overflow-x-auto whitespace-pre"> children </div>
   </div>
 }
 
@@ -159,21 +141,21 @@ module Toggle = {
     switch tabs {
     | [tab] =>
       make({
-        "highlightedLines": tab.highlightedLines,
-        "code": tab.code,
-        "lang": tab.lang,
-        "showLabel": Some(true),
+        highlightedLines: ?tab.highlightedLines,
+        code: tab.code,
+        lang: ?tab.lang,
+        showLabel: true,
       })
     | multiple =>
-      let numberOfItems = Js.Array.length(multiple)
-      let tabElements = Belt.Array.mapWithIndex(multiple, (i, tab) => {
+      let numberOfItems = Array.length(multiple)
+      let tabElements = Array.mapWithIndex(multiple, (tab, i) => {
         // if there's no label, infer the label from the language
         let label = switch tab.label {
         | Some(label) => label
         | None =>
           switch tab.lang {
-          | Some(lang) => langShortname(lang)->Js.String2.toUpperCase
-          | None => Belt.Int.toString(i)
+          | Some(lang) => langShortname(lang)->String.toUpperCase
+          | None => Int.toString(i)
           }
         }
 
@@ -187,7 +169,7 @@ module Toggle = {
           ReactEvent.Mouse.preventDefault(evt)
           setSelected(_ => i)
         }
-        let key = label ++ ("-" ++ Belt.Int.toString(i))
+        let key = label ++ ("-" ++ Int.toString(i))
 
         let paddingX = switch numberOfItems {
         | 1
@@ -197,16 +179,15 @@ module Toggle = {
         }
 
         let borderColor = if selected === i {
-          "#696B7D #EDF0F2"
+          "border-t-[#696b7d]"
         } else {
-          "transparent"
+          "border-t-[transparent]"
         }
 
         <span
           key
-          style={ReactDOM.Style.make(~borderColor, ())}
           className={paddingX ++
-          (" flex-none px-5 inline-block p-1 first:rounded-tl " ++
+          (` ${borderColor} flex-none px-5 inline-block p-1 first:rounded-tl ` ++
           activeClass)}
           onClick>
           {React.string(label)}
@@ -214,30 +195,36 @@ module Toggle = {
       })
 
       let children =
-        Belt.Array.get(multiple, selected)
-        ->Belt.Option.map(tab => {
-          let lang = Belt.Option.getWithDefault(tab.lang, "text")
+        multiple[selected]
+        ->Option.map(tab => {
+          let lang = Option.getOr(tab.lang, "text")
           HighlightJs.renderHLJS(~highlightedLines=?tab.highlightedLines, ~code=tab.code, ~lang, ())
         })
-        ->Belt.Option.getWithDefault(React.null)
+        ->Option.getOr(React.null)
 
-      let buttonDiv = switch Js.Array2.find(multiple, tab => {
+      // On a ReScript tab, always copy or open the ReScript code. Otherwise, copy the current selected code.
+      let isReScript = tab =>
         switch tab.lang {
         | Some("res") | Some("rescript") => true
         | _ => false
         }
-      }) {
+
+      let buttonDiv = switch Array.findWithIndex(multiple, (tab, index) =>
+        tab->isReScript || index === selected
+      ) {
       | Some({code: ""}) => React.null
       | Some(tab) =>
         let playgroundLinkButton =
-          <Next.Link href={`/try?code=${LzString.compressToEncodedURIComponent(tab.code)}}`}>
-            <a target="_blank">
-              // ICON Link to PLAYGROUND
-              <Icon.ExternalLink
-                className="text-gray-30 mt-px hover:cursor-pointer hover:text-gray-60 hover:bg-gray-30 w-6 h-6 p-1 rounded transition-all duration-300 ease-in-out"
-              />
-            </a>
-          </Next.Link>
+          tab->isReScript
+            ? <Next.Link
+                href={`/try?code=${LzString.compressToEncodedURIComponent(tab.code)}}`}
+                target="_blank">
+                // ICON Link to PLAYGROUND
+                <Icon.ExternalLink
+                  className="text-gray-30 mt-px hover:cursor-pointer hover:text-gray-60 hover:bg-gray-30 w-6 h-6 p-1 rounded transition-all duration-300 ease-in-out"
+                />
+              </Next.Link>
+            : React.null
 
         let copyButton = <CopyButton code={tab.code} />
 
@@ -251,15 +238,14 @@ module Toggle = {
       <div className="relative pt-6 w-full rounded-none text-gray-80">
         //text within code-box
         <div
-          className="absolute flex w-full font-sans bg-transparent text-14 text-gray-40 "
-          style={ReactDOM.Style.make(~marginTop="-26px", ())}>
-          <div className="flex ml-2 xs:ml-0"> {React.array(tabElements)} </div>
+          className="absolute flex w-full font-sans bg-transparent text-14 text-gray-40 mt-[-26px] overflow-x-auto">
+          <div className="flex xs:ml-0"> {React.array(tabElements)} </div>
           <div className="flex-1 w-full bg-gray-20 border-b rounded-tr border-gray-20 items-center">
             buttonDiv
           </div>
         </div>
         <div
-          className="px-4 lg:px-5 text-14 pb-4 pt-4 overflow-x-auto bg-gray-10 border-gray-20 xs:rounded-b border">
+          className="px-4 lg:px-5 text-14 pb-4 pt-4 overflow-x-auto bg-gray-10 border-gray-20 rounded-b border">
           <pre> children </pre>
         </div>
       </div>

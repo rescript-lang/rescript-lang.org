@@ -26,5 +26,8 @@
   "Guides": [
     "beyond-jsx",
     "forwarding-refs"
+  ],
+  "Extra": [
+    "llms"
   ]
 }

@@ -1,0 +1,44 @@
+---
+id: "tag-decorator"
+keywords: ["tag", "decorator"]
+name: "@tag"
+summary: "This is the `@tag` decorator."
+category: "decorators"
+---
+
+The `@tag` decorator is used to customize the discriminator for tagged variants.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+type mood = Happy({level: int}) | Sad({level: int})
+
+@tag("kind")
+type mood2 = Happy({level: int}) | Sad({level: int})
+
+let mood: mood = Happy({level: 10})
+let mood2: mood2 = Happy({level: 11})
+
+```
+
+```js
+let mood = {
+  TAG: "Happy",
+  level: 10
+};
+
+let mood2 = {
+  kind: "Happy",
+  level: 11
+};
+```
+
+</CodeTab>
+
+Notice the different discriminators in the JS output: `TAG` in `mood` vs `kind` in `mood2`.
+
+Read more about [using `@tag` with variants](variant.md#tagged-variants).
+
+### References
+
+* [Using `@tag` with variants](variant.md#tagged-variants)

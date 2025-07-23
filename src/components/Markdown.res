@@ -19,11 +19,9 @@ module Cite = {
   let make = (~author: option<string>, ~children) =>
     // For semantics, check out
     // https://css-tricks.com/quoting-in-html-quotations-citations-and-blockquotes/
-    <div
-      className="my-10 border-l-2 border-fire font-normal pl-10 py-1 text-fire"
-      style={ReactDOM.Style.make(~maxWidth="30rem", ())}>
+    <div className="my-10 border-l-2 border-fire font-normal pl-10 py-1 text-fire max-w-[30rem]">
       <blockquote className="text-32 italic mb-2"> children </blockquote>
-      {Belt.Option.mapWithDefault(author, React.null, author =>
+      {Option.mapOr(author, React.null, author =>
         <figcaption className="font-semibold text-14"> {React.string(author)} </figcaption>
       )}
     </div>
@@ -62,7 +60,7 @@ module UrlBox = {
       </p>
     | Array(arr) =>
       // Scenario: Take the first element, rewrap its children with the hyperlink img
-      let length = Belt.Array.length(arr)
+      let length = Array.length(arr)
       if length >= 1 {
         let head = Belt.Array.getExn(arr, 0)
         let headChildren = head->getMdxChildren
@@ -73,7 +71,7 @@ module UrlBox = {
             {headChildren->toReactElement}
           </P>
           {if length > 1 {
-            arr->Js.Array2.slice(~start=1, ~end_=length)->Mdx.arrToReactElement
+            arr->Array.slice(~start=1, ~end=length)->Mdx.arrToReactElement
           } else {
             React.null
           }}
@@ -82,7 +80,7 @@ module UrlBox = {
         React.null
       }
     | Unknown(el) =>
-      Js.log2("Received unknown", el)
+      Console.log2("Received unknown", el)
       React.null
     }
 
@@ -94,11 +92,9 @@ module UrlBox = {
         <Icon.ArrowRight className="ml-1" />
       </a>
     } else {
-      <Next.Link href>
-        <a className="flex items-center">
-          {React.string(text)}
-          <Icon.ArrowRight className="ml-1" />
-        </a>
+      <Next.Link href className="flex items-center">
+        {React.string(text)}
+        <Icon.ArrowRight className="ml-1" />
       </Next.Link>
     }
     <div className="md-url-box text-16 border-l-2 border-gray-60 my-6 py-6 pl-8 pr-10 bg-gray-5">
@@ -116,14 +112,13 @@ module Anchor = {
 
   @react.component
   let make = (~id: string) => {
-    let style = ReactDOM.Style.make(~position="absolute", ~top="-7rem", ())
     <span className="inline group relative">
       <a
         className="invisible text-gray-60 opacity-50 text-inherit hover:opacity-100 hover:text-gray-60 hover:cursor-pointer group-hover:visible"
         href={"#" ++ id}>
         <Icon.Hyperlink className="inline-block align-middle text-gray-40" />
       </a>
-      <a style id />
+      <a className="absolute top-[-7rem]" id />
     </span>
   }
 }
@@ -138,7 +133,7 @@ module H2 = {
   @react.component
   let make = (~id, ~children) => <>
     // Here we know that children is always a string (## headline)
-    <h2 className="group mt-16 mb-3 hl-3">
+    <h2 id className="group mt-16 mb-3 hl-3 scroll-mt-32">
       children
       <span className="ml-2">
         <Anchor id />
@@ -150,7 +145,7 @@ module H2 = {
 module H3 = {
   @react.component
   let make = (~id, ~children) =>
-    <h3 className="group mt-8 mb-4 hl-4">
+    <h3 id className="group mt-8 mb-4 hl-4 scroll-mt-32">
       children
       <span className="ml-2">
         <Anchor id />
@@ -161,7 +156,7 @@ module H3 = {
 module H4 = {
   @react.component
   let make = (~id, ~children) =>
-    <h4 className="group mt-8 hl-5">
+    <h4 id className="group mt-8 hl-5 scroll-mt-32">
       children
       <span className="ml-2">
         <Anchor id />
@@ -173,6 +168,7 @@ module H5 = {
   @react.component
   let make = (~id, ~children) =>
     <h5
+      id
       className="group mt-12 mb-3 text-12 leading-2 font-sans font-semibold uppercase tracking-wide text-gray-80">
       children
       <span className="ml-2">
@@ -183,7 +179,7 @@ module H5 = {
 
 module Pre = {
   @react.component
-  let make = (~children) => <pre className="mt-2 mb-4 -mx-6 xs:mx-0 block"> children </pre>
+  let make = (~children) => <pre className="mt-2 mb-4 xs:mx-0 block"> children </pre>
 }
 
 module InlineCode = {
@@ -229,34 +225,29 @@ module Code = {
   // TODO: Might be refactorable with the new @unboxed feature
   type unknown = Mdx.Components.unknown
 
-  let isArray: unknown => bool = %raw("thing => { return thing instanceof Array; }")
-  let isObject: unknown => bool = %raw("thing => { return thing instanceof Object; }")
-  external asStringArray: unknown => array<string> = "%identity"
-  external asElement: unknown => React.element = "%identity"
-
   external unknownAsString: unknown => string = "%identity"
 
   let parseNumericRangeMeta = (metastring: string) =>
-    Js.String2.split(metastring, " ")
-    ->Js.Array2.find(s => Js.String2.startsWith(s, "{") && Js.String2.endsWith(s, "}"))
-    ->Belt.Option.map(str => {
-      let nums = Js.String2.replaceByRe(str, %re("/[\{\}]/g"), "")->parseNumericRange
+    String.split(metastring, " ")
+    ->Array.find(s => String.startsWith(s, "{") && String.endsWith(s, "}"))
+    ->Option.map(str => {
+      let nums = String.replaceRegExp(str, /[\{\}]/g, "")->parseNumericRange
       nums
     })
-    ->Belt.Option.getWithDefault([])
+    ->Option.getOr([])
 
   let makeCodeElement = (~code, ~metastring, ~lang) => {
     let baseClass = "md-code font-mono w-full block mt-5 mb-5"
     let codeElement = switch metastring {
     | None => <CodeExample code lang />
     | Some(metastring) =>
-      let metaSplits = Js.String2.split(metastring, " ")->Belt.List.fromArray
+      let metaSplits = String.split(metastring, " ")->List.fromArray
 
       let highlightedLines = parseNumericRangeMeta(metastring)
 
-      if Belt.List.has(metaSplits, "example", \"=") {
+      if List.has(metaSplits, "example", String.equal) {
         <CodeExample code lang />
-      } else if Belt.List.has(metaSplits, "sig", \"=") {
+      } else if List.has(metaSplits, "sig", String.equal) {
         <CodeExample code lang showLabel=false />
       } else {
         <CodeExample highlightedLines code lang />
@@ -271,42 +262,19 @@ module Code = {
     let lang = switch className {
     | None => "text"
     | Some(str) =>
-      switch Js.String2.split(str, "-") {
+      switch String.split(str, "-") {
       | ["language", ""] => "text"
       | ["language", lang] => lang
       | _ => "text"
       }
     }
 
-    /*
-      Converts the given children provided by remark, depending on
-      given scenarios.
+    let code = children->unknownAsString
+    let isMultiline = code->String.includes("\n")
 
-      Scenario 1 (children = array(string):
-      Someone is using a literal <code> tag with some source in it
-      e.g. <code> hello world </code>
-
-      Then remark would call this component with children = [ "hello", "world" ].
-      In this case we need to open the Array,
-
-      Scenario 2 (children = React element / object):
-      Children is an element, so we will need to render the given
-      React element without adding our own components.
-
-      Scenario 3 (children = string):
-      Children is already a string, we don't need to anything special
- */
-    if isArray(children) {
-      // Scenario 1
-      let code = children->asStringArray->Js.Array2.joinWith("")
-      <InlineCode> {React.string(code)} </InlineCode>
-    } else if isObject(children) {
-      // Scenario 2
-      children->asElement
-    } else {
-      // Scenario 3
-      let code = unknownAsString(children)
-      makeCodeElement(~code, ~metastring, ~lang)
+    switch lang {
+    | "text" if !isMultiline => <InlineCode> {code->React.string} </InlineCode>
+    | lang => <Pre> {makeCodeElement(~code, ~metastring, ~lang)} </Pre>
     }
   }
 }
@@ -326,40 +294,36 @@ module CodeTab = {
     | _ => []
     }
 
-    let tabs = Belt.Array.reduceWithIndex(mdxElements, [], (acc, mdxElement, i) => {
+    let tabs = Array.reduceWithIndex(mdxElements, [], (acc, mdxElement, i) => {
       let child = mdxElement->Mdx.MdxChildren.getMdxChildren->Mdx.MdxChildren.classify
 
       switch child {
       | Element(codeEl) =>
-        switch codeEl->Mdx.getMdxType {
-        | "code" =>
-          let className = Mdx.getMdxClassName(codeEl)->Belt.Option.getWithDefault("")
+        let className = Mdx.getMdxClassName(codeEl)->Option.getOr("")
 
-          let metastring = getMdxMetastring(codeEl)->Belt.Option.getWithDefault("")
+        let metastring = getMdxMetastring(codeEl)->Option.getOr("")
 
-          let lang = switch Js.String2.split(className, "-") {
-          | ["language", lang] => Some(lang)
-          | _ => None
-          }
-
-          let code = Js.String2.make(Mdx.MdxChildren.getMdxChildren(codeEl))
-          let label = Belt.Array.get(labels, i)
-          let tab = {
-            CodeExample.Toggle.lang,
-            code,
-            label,
-            highlightedLines: Some(Code.parseNumericRangeMeta(metastring)),
-          }
-          Js.Array2.push(acc, tab)->ignore
-
-        | _ => ()
+        let lang = switch String.split(className, "-") {
+        | ["language", lang] => Some(lang)
+        | _ => None
         }
+
+        let code = String.make(Mdx.MdxChildren.getMdxChildren(codeEl))
+        let label = labels[i]
+        let tab = {
+          CodeExample.Toggle.lang,
+          code,
+          label,
+          highlightedLines: Some(Code.parseNumericRangeMeta(metastring)),
+        }
+        Array.push(acc, tab)->ignore
+
       | _ => ()
       }
       acc
     })
 
-    <div className="md-codetab mt-8 mb-8 -mx-6 xs:mx-0">
+    <div className="md-codetab mt-8 mb-8 xs:mx-0">
       <CodeExample.Toggle tabs />
     </div>
   }
@@ -407,24 +371,21 @@ module A = {
       // Ideally one would check if this link is relative first,
       // but it's very unlikely we'd refer to an absolute URL ending
       // with .md
-      let regex = %re("/\.md(x)?|\.html$/")
-      let href = switch Js.String2.split(href, "#") {
-      | [pathname, anchor] => Js.String2.replaceByRe(pathname, regex, "") ++ ("#" ++ anchor)
-      | [pathname] => Js.String2.replaceByRe(pathname, regex, "")
+      let regex = /\.md(x)?|\.html$/
+      let href = switch String.split(href, "#") {
+      | [pathname, anchor] => String.replaceRegExp(pathname, regex, "") ++ ("#" ++ anchor)
+      | [pathname] => String.replaceRegExp(pathname, regex, "")
       | _ => href
       }
-      <Next.Link href>
-        <a
-          href rel="noopener noreferrer" className="no-underline text-fire hover:underline" ?target>
-          children
-        </a>
+      <Next.Link href className="no-underline text-fire hover:underline" ?target>
+        children
       </Next.Link>
     }
 }
 
 module Ul = {
   @react.component
-  let make = (~children) => <ul className="md-ul mt-12 mb-16"> children </ul>
+  let make = (~children) => <ul className="md-ul mb-16"> children </ul>
 }
 
 module Ol = {
@@ -453,11 +414,10 @@ module Li = {
     let elements: React.element = if isArray(children) {
       let arr = children->asArray
       let last: React.element = {
-        open Belt.Array
-        arr->getExn(arr->length - 1)
+        arr->Belt.Array.getExn(arr->Array.length - 1)
       }
 
-      let head = Js.Array2.slice(arr, ~start=0, ~end_=arr->Belt.Array.length - 1)
+      let head = Array.slice(arr, ~start=0, ~end=arr->Array.length - 1)
 
       let first = Belt.Array.getExn(head, 0)
 
@@ -509,6 +469,61 @@ module Strong = {
   let make = (~children) => <strong className="font-semibold"> children </strong>
 }
 
+module Image = {
+  @react.component
+  let make = (
+    ~src: string,
+    ~size=#large,
+    ~withShadow=false,
+    ~caption: option<string>=?,
+    ~externalLink: option<string>=?,
+  ) => {
+    let width = switch size {
+    | #large => "w-full"
+    | #small => "w-1/4"
+    }
+
+    let shadow = if withShadow {
+      "shadow-md"
+    } else {
+      ""
+    }
+
+    let target = externalLink->Option.isSome ? Some("_blank") : None
+
+    <div className={`mt-8 mb-12 ${size === #large ? "md:-mx-16" : ""}`}>
+      <a href={externalLink->Option.getOr(src)} rel="noopener noreferrer" ?target>
+        <img className={width ++ " " ++ shadow} src />
+      </a>
+      {switch caption {
+      | None => React.null
+      | Some(caption) =>
+        <div className={`mt-4 text-14 text-gray-60 ${size === #large ? "md:ml-16" : ""}`}>
+          {React.string(caption)}
+        </div>
+      }}
+    </div>
+  }
+}
+
+module Video = {
+  @react.component
+  let make = (~src: string, ~caption: option<string>=?) => {
+    <div className="mt-8 mb-12 md:-mx-16">
+      <div className={"flex w-full justify-center"}>
+        <div className="relative h-full w-[640px] pt-[56.25%]">
+          <iframe className={"absolute top-0 left-0 w-full h-full"} src allowFullScreen={true} />
+        </div>
+      </div>
+      {switch caption {
+      | None => React.null
+      | Some(caption) =>
+        <div className="mt-4 text-14 text-gray-80 md:ml-16"> {React.string(caption)} </div>
+      }}
+    </div>
+  }
+}
+
 // Useful for debugging injected values in props
 //  let mdxTestComponent: React.component<{.}> = %raw(`
 //  function(children) {
@@ -522,32 +537,3 @@ module Strong = {
 /* Sets our preferred branded styles
    We most likely will never need a different ~components
    option on our website. */
-let default = Mdx.Components.t(
-  ~cite=Cite.make,
-  ~info=Info.make,
-  ~intro=Intro.make,
-  ~warn=Warn.make,
-  ~urlBox=UrlBox.make,
-  ~codeTab=CodeTab.make,
-  ~p=P.make,
-  ~li=Li.make,
-  ~h1=H1.make,
-  ~h2=H2.make,
-  ~h3=H3.make,
-  ~h4=H4.make,
-  ~h5=H5.make,
-  ~ul=Ul.make,
-  ~ol=Ol.make,
-  ~table=Table.make,
-  ~thead=Thead.make,
-  ~th=Th.make,
-  ~td=Td.make,
-  ~hr=Hr.make,
-  ~strong=Strong.make,
-  ~a=A.make,
-  ~pre=Pre.make,
-  ~blockquote=Blockquote.make,
-  ~inlineCode=InlineCode.make,
-  ~code=Code.make,
-  (),
-)

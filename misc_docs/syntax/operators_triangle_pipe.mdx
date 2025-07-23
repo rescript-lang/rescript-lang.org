@@ -4,6 +4,7 @@ keywords: [pipe", "triangle", "operator", "function", "argument"]
 name: "|>"
 summary: "This is the `triangle pipe` operator."
 category: "operators"
+status: "deprecated"
 ---
 
 The `|>` operator passes a value to a function as its last argument.
@@ -16,11 +17,11 @@ The `|>` operator passes a value to a function as its last argument.
 
 ```res
 let dieRoll = size => {
-  Js.Math.random_int(1, size)
+  Math.Int.random(1, size)
 }
 
 let dieRollMessage = (name, value) => {
-  "Hi " ++ name ++ ", you rolled a " ++ Js.Int.toString(value)
+  "Hi " ++ name ++ ", you rolled a " ++ Int.toString(value)
 }
 
 let message = dieRoll(6) |> dieRollMessage("Jeremy")
@@ -28,14 +29,14 @@ let message = dieRoll(6) |> dieRollMessage("Jeremy")
 
 ```js
 function dieRoll(size) {
-  return Js_math.random_int(1, size);
+  return Core__Math.Int.random(1, size);
 }
 
 function dieRollMessage(name, value) {
   return "Hi " + name + ", you rolled a " + value.toString();
 }
 
-var message = dieRollMessage("Jeremy", Js_math.random_int(1, 6));
+var message = dieRollMessage("Jeremy", dieRoll(6));
 ```
 
 </CodeTab>

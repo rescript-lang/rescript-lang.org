@@ -1,0 +1,111 @@
+---
+title: Hooks & State Management Overview
+description: "Overview state management and hooks in ReScript and React"
+canonical: "/docs/react/latest/hooks-overview"
+---
+
+# Hooks Overview
+
+<Intro>
+
+Hooks are an essential mechanism to introduce and manage state and effects in React components.
+
+</Intro>
+
+## What is a Hook?
+
+In the previous chapters we learned how React components are just a simple function representing UI based on specific prop values. For an application to be useful we still need a way to manipulate those props interactively either via user input or via requests loading in data from a server.
+
+That's where Hooks come in. A Hook is a function that allows us to introduce component state and trigger side-effects for different tasks, such as HTTP requests, direct HTML DOM access, querying window sizes, etc. 
+
+In other words: **It allows us to "hook into" React features.**
+
+### Example: The `useState` Hook
+
+Just for a quick look, here is an example of a `Counter` component that allows a user to click a button and increment an `count` value that will immediately be rendered on each button click: 
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+// Counter.res
+@react.component
+let make = () => {
+  let (count, setCount) = React.useState(_ => 0);
+
+  let onClick = (_evt) => {
+    setCount(prev => prev + 1)
+  };
+
+  let msg = "You clicked" ++ Belt.Int.toString(count) ++  "times"
+
+  <div>
+    <p>{React.string(msg)}</p>
+    <button onClick> {React.string("Click me")} </button>
+  </div>
+}
+```
+```js
+function Counter(Props) {
+  var match = React.useState(function () {
+        return 0;
+      });
+  var setCount = match[1];
+  var onClick = function (_evt) {
+    return Curry._1(setCount, (function (prev) {
+                  return prev + 1 | 0;
+                }));
+  };
+  var msg = "You clicked" + String(match[0]) + "times";
+  return React.createElement("div", undefined, React.createElement("p", undefined, msg), React.createElement("button", {
+                  onClick: onClick
+                }, "Click me"));
+}
+```
+
+</CodeTab>
+
+
+Here we are using the `React.useState` Hook. We call it inside a component function to add some local state to it. React will preserve this state between re-renders. `React.useState` returns a tuple: the current state value (`count`) and a function that lets you update it (`setCount`). You can call this function from an event handler or pass it down to other components to call the function. 
+
+The only argument to `React.useState` is a function that returns the initial state (`_ => 0`). In the example above, it is 0 because our counter starts from zero. Note that your state can be any type you want and `ReScript` will make sure to infer the types for you (only make sure to return an initial state that matches your type). The initial state argument is only used during the first render.
+
+This was just a quick example on our first hook usage. We will go into more detail in a dedicated [useState](./hooks-state) section.
+
+## Available Hooks
+
+**Note:** All hooks are part of the `React` module (e.g. `React.useState`).
+
+### Basic Hooks:
+
+- [useState](./hooks-state): Adds local state to your component
+- [useEffect](./hooks-effect): Runs side-effectual code within your component
+- [useContext](./hooks-context): Gives your component to a React Context value
+
+### Additional Hooks:
+
+- [useReducer](./hooks-reducer): An alternative to `useState`. Uses the state / action / reduce pattern.
+<!-- - [useCallback](./hooks-callback): Returns a memoized callback -->
+<!-- - [useMemo](./hooks-memo): Returns a memoized value -->
+- [useRef](./hooks-ref): Returns a mutable React-Ref value
+<!-- - [useImperativeHandle](./hooks-imperative-handle): Customizes the instance value that is exposed to parent components when using `ref` -->
+<!-- - [useLayoutEffect](./hooks-layout-effect): Identical to useEffect, but it fires synchronously after all DOM mutations. -->
+
+
+## Rules of Hooks
+
+Hooks are just simple functions, but you need to follow _two rules_ when using them. ReScript doesn't enforce those rules within the compiler, so if you really want to enforce correct hooks conventions, you can use an [eslint-plugin](https://www.npmjs.com/package/eslint-plugin-react-hooks) to check your compiled JS output.
+
+### Rule 1) Only Call Hooks at the Top Level
+
+
+**Don’t call Hooks inside loops, conditions, or nested functions.** Instead, always use Hooks at the top level of your React function. By following this rule, you ensure that Hooks are called in the same order each time a component renders. That’s what allows React to correctly preserve the state of Hooks between multiple `useState` and `useEffect` calls. (If you’re curious, you can check out the in depth explanation in the [ReactJS Hooks docs](https://reactjs.org/docs/hooks-rules.html#explanation))
+
+
+### Rule 2) Only Call Hooks from React Functions
+
+**Don't call Hooks from regular functions.** Instead, you can:
+
+- ✅ Call Hooks from React function components.
+- ✅ Call Hooks from custom Hooks (we’ll learn about them in our [custom hooks](./hooks-custom) section).
+
+By following this rule, you ensure that all stateful logic in a component is clearly visible from its source code.

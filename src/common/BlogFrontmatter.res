@@ -1,9 +1,11 @@
+type social = X(string) | Bluesky(string)
+
 type author = {
   username: string,
   fullname: string,
   role: string,
   imgUrl: string,
-  twitter: string,
+  social: social,
 }
 
 let authors = [
@@ -11,57 +13,64 @@ let authors = [
     username: "hongbo",
     fullname: "Hongbo Zhang",
     role: "Compiler & Build System",
-    imgUrl: "https://pbs.twimg.com/profile_images/1369548222314598400/E2y46vrB_400x400.jpg",
-    twitter: "bobzhang1988",
+    imgUrl: "",
+    social: X("bobzhang1988"),
   },
   {
     username: "chenglou",
     fullname: "Cheng Lou",
     role: "Syntax & Tools",
-    imgUrl: "https://pbs.twimg.com/profile_images/554199709909131265/Y5qUDaCB_400x400.jpeg",
-    twitter: "_chenglou",
+    imgUrl: "",
+    social: X("_chenglou"),
   },
   {
     username: "maxim",
     fullname: "Maxim Valcke",
     role: "Syntax Lead",
-    imgUrl: "https://pbs.twimg.com/profile_images/970271048812974080/Xrr8Ob6J_400x400.jpg",
-    twitter: "_binary_search",
+    imgUrl: "",
+    social: X("_binary_search"),
   },
   {
     username: "ryyppy",
     fullname: "Patrick Ecker",
     role: "Documentation",
     imgUrl: "https://pbs.twimg.com/profile_images/1388426717006544897/B_a7D4GF_400x400.jpg",
-    twitter: "ryyppy",
+    social: X("ryyppy"),
   },
   {
     username: "rickyvetter",
     fullname: "Ricky Vetter",
     role: "ReScript & React",
     imgUrl: "https://pbs.twimg.com/profile_images/541111032207273984/DGsZmmfr_400x400.jpeg",
-    twitter: "rickyvetter",
+    social: X("rickyvetter"),
   },
   {
     username: "made_by_betty",
     fullname: "Bettina Steinbrecher",
     role: "Brand / UI / UX",
     imgUrl: "https://pbs.twimg.com/profile_images/1366785342704136195/3IGyRhV1_400x400.jpg",
-    twitter: "made_by_betty",
+    social: X("made_by_betty"),
   },
   {
     username: "rescript-team",
     fullname: "ReScript Team",
     role: "Core Development",
     imgUrl: "https://pbs.twimg.com/profile_images/1358354824660541440/YMKNWE1V_400x400.png",
-    twitter: "rescriptlang",
+    social: X("rescriptlang"),
   },
   {
     username: "rescript-association",
     fullname: "ReScript Association",
     role: "Foundation",
     imgUrl: "https://pbs.twimg.com/profile_images/1045362176117100545/MioTQoTp_400x400.jpg",
-    twitter: "ReScriptAssoc",
+    social: X("ReScriptAssoc"),
+  },
+  {
+    username: "josh-derocher-vlk",
+    fullname: "Josh Derocher-Vlk",
+    role: "Community Member",
+    imgUrl: "https://cdn.bsky.app/img/avatar/plain/did:plc:erifxn5qcos2zrxvogse5y5s/bafkreif6v7lrtz24vi5ekumkiwg7n7js55coekszduwhjegfmdopd7tqmi@webp",
+    social: Bluesky("vlkpack.com"),
   },
 ]
 
@@ -71,6 +80,7 @@ module Badge = {
     | Testing
     | Preview
     | Roadmap
+    | Community
 
   let toString = (c: t): string =>
     switch c {
@@ -78,6 +88,7 @@ module Badge = {
     | Testing => "Testing"
     | Preview => "Preview"
     | Roadmap => "Roadmap"
+    | Community => "Community"
     }
 }
 
@@ -85,56 +96,83 @@ type t = {
   author: author,
   co_authors: array<author>,
   date: DateStr.t,
-  previewImg: Js.null<string>,
-  articleImg: Js.null<string>,
+  previewImg: Null.t<string>,
+  articleImg: Null.t<string>,
   title: string,
-  badge: Js.null<Badge.t>,
-  description: Js.null<string>,
+  badge: Null.t<Badge.t>,
+  description: Null.t<string>,
 }
 
 let decodeBadge = (str: string): Badge.t =>
-  switch Js.String2.toLowerCase(str) {
+  switch String.toLowerCase(str) {
   | "release" => Release
   | "testing" => Testing
   | "preview" => Preview
   | "roadmap" => Roadmap
-  | str => raise(Json.Decode.DecodeError(j`Unknown category "$str"`))
+  | "community" => Community
+  | str => throw(Failure(`Unknown category "${str}"`))
   }
 
 exception AuthorNotFound(string)
 
 let decodeAuthor = (~fieldName: string, ~authors, username) =>
-  switch Js.Array2.find(authors, a => a.username === username) {
+  switch Array.find(authors, a => a.username === username) {
   | Some(author) => author
-  | None => raise(AuthorNotFound(j`Couldn't find author "$username" in field $fieldName`))
+  | None => throw(AuthorNotFound(`Couldn't find author "${username}" in field ${fieldName}`))
   }
 
-let authorDecoder = (~fieldName: string, ~authors, json) => {
-  open Json.Decode
-
-  let multiple = j => array(string, j)->Belt.Array.map(decodeAuthor(~fieldName, ~authors))
-
-  let single = j => [string(j)->decodeAuthor(~fieldName, ~authors)]
-
-  either(single, multiple, json)
-}
-
-let decode = (json: Js.Json.t): result<t, string> => {
-  open Json.Decode
-  switch {
-    author: json->field("author", string, _)->decodeAuthor(~fieldName="author", ~authors),
-    co_authors: json
-    ->optional(field("co-authors", authorDecoder(~fieldName="co-authors", ~authors)), _)
-    ->Belt.Option.getWithDefault([]),
-    date: json->field("date", string, _)->DateStr.fromString,
-    badge: json->optional(j => field("badge", string, j)->decodeBadge, _)->Js.Null.fromOption,
-    previewImg: json->optional(field("previewImg", string), _)->Js.Null.fromOption,
-    articleImg: json->optional(field("articleImg", string), _)->Js.Null.fromOption,
-    title: json->field("title", string, _),
-    description: json->nullable(field("description", string), _),
-  } {
-  | fm => Ok(fm)
-  | exception DecodeError(str) => Error(str)
+let decode = (json: JSON.t): result<t, string> => {
+  open JSON
+  switch json {
+  | Object(dict{
+      "author": String(author),
+      "co_authors": ?co_authors,
+      "date": String(date),
+      "badge": ?badge,
+      "previewImg": ?previewImg,
+      "articleImg": ?articleImg,
+      "title": String(title),
+      "description": ?description,
+    }) =>
+    let author = decodeAuthor(~fieldName="author", ~authors, author)
+    let co_authors = switch co_authors {
+    | Some(Array(co_authors)) =>
+      co_authors->Array.filterMap(a =>
+        switch a {
+        | String(a) => decodeAuthor(~fieldName="co-authors", ~authors, a)->Some
+        | _ => None
+        }
+      )
+    | _ => []
+    }
+    let date = date->DateStr.fromString
+    let badge = switch badge {
+    | Some(String(badge)) => badge->decodeBadge->Null.Value
+    | _ => Null
+    }
+    let previewImg = switch previewImg {
+    | Some(String(previewImg)) => previewImg->Null.Value
+    | _ => Null
+    }
+    let articleImg = switch articleImg {
+    | Some(String(articleImg)) => articleImg->Null.Value
+    | _ => Null
+    }
+    let description = switch description {
+    | Some(String(description)) => description->Null.Value
+    | _ => Null
+    }
+    Ok({
+      author,
+      co_authors,
+      date,
+      previewImg,
+      articleImg,
+      title,
+      badge,
+      description,
+    })
   | exception AuthorNotFound(str) => Error(str)
+  | _ => Error(`Failed to decode: ${JSON.stringify(json)}`)
   }
 }

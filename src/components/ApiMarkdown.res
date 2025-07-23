@@ -16,23 +16,24 @@ module H2 = {
   </>
 }
 
-let default = Mdx.Components.t(
-  ~intro=Intro.make,
-  ~p=P.make,
-  ~li=Li.make,
-  ~h1=H1.make,
-  ~h2=H2.make,
-  ~h3=H3.make,
-  ~h4=H4.make,
-  ~h5=H5.make,
-  ~ul=Ul.make,
-  ~ol=Ol.make,
-  ~a=A.make,
-  ~thead=Thead.make,
-  ~th=Th.make,
-  ~td=Td.make,
-  ~pre=Pre.make,
-  ~inlineCode=InlineCode.make,
-  ~code=Code.make,
-  (),
-)
+type aliasH2 = Markdown.H2.props<string, React.element> => React.element
+external asMarkdownH2: 'a => aliasH2 = "%identity"
+
+let default = {
+  MarkdownComponents.intro: Intro.make,
+  p: P.make,
+  li: Li.make,
+  h1: H1.make,
+  h2: H2.make->asMarkdownH2,
+  h3: H3.make,
+  h4: H4.make,
+  h5: H5.make,
+  ul: Ul.make,
+  ol: Ol.make,
+  a: A.make,
+  thead: Thead.make,
+  th: Th.make,
+  td: Td.make,
+  pre: Pre.make,
+  code: Code.make,
+}

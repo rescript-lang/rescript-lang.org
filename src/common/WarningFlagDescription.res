@@ -7,7 +7,6 @@ let numeric = [
     "Fragile pattern matching: matching that will remain complete even if additional constructors are added to one of the variant types matched.",
   ),
   (5, "Partially applied function: expression whose result has function type and is ignored."),
-  (6, "Label omitted in function application."),
   (8, "Partial match: missing cases in pattern-matching."),
   (9, "Missing fields in a record pattern."),
   (
@@ -41,6 +40,7 @@ let numeric = [
   (37, "Unused constructor."),
   (38, "Unused extension constructor."),
   (39, "Unused rec flag."),
+  (41, "Ambiguous constructor or label name."),
   (43, "Nonoptional label applied as optional."),
   (44, "Open statement shadows an already defined identifier."),
   (45, "Open statement shadows an already defined label or constructor."),
@@ -56,7 +56,6 @@ let numeric = [
   (57, "Ambiguous or-pattern variables under guard"),
   (59, "Assignment to non-mutable value"),
   (60, "Unused module declaration"),
-  (61, "Unboxable type in primitive declaration"),
   (62, "Type constraint on GADT type declaration"),
   (101, "Unused bs attributes"),
   (102, "Polymorphic comparison introduced (maybe unsafe)"),
@@ -70,9 +69,10 @@ let numeric = [
   (107, "Integer literal exceeds the range of representable integers of type int"),
   (108, "Uninterpreted delimiters (for unicode)"),
   (109, "Toplevel expression has unit type"),
+  (110, "Todo found"),
 ]
 
-let letterAll = numeric->Belt.Array.map(fst)
+let letterAll = numeric->Array.map(Pair.first)
 
 // we keep the original variable name `letter` like in warnings.ml
 let _letter = l =>
@@ -109,18 +109,18 @@ let _letter = l =>
 let letterDescriptions = [("a", "All flags")]
 
 let getDescription = (num: int): option<string> =>
-  numeric->Js.Array2.find(((n, _)) => num === n)->Belt.Option.map(((_, desc)) => desc)
+  numeric->Array.find(((n, _)) => num === n)->Option.map(((_, desc)) => desc)
 
 // returns all possible key / description pairs
 let lookupAll = (): array<(string, string)> => {
-  let nums = numeric->Belt.Array.map(((num, desc)) => (Belt.Int.toString(num), desc))
+  let nums = numeric->Array.map(((num, desc)) => (Int.toString(num), desc))
 
-  Belt.Array.concat(letterDescriptions, nums)
+  Array.concat(letterDescriptions, nums)
 }
 
 // str: a...z or a string number, returns (numStr, description)
 let lookup = (str: string): array<(string, string)> =>
-  switch Belt.Int.fromString(str) {
+  switch Int.fromString(str) {
   | Some(num) =>
     switch getDescription(num) {
     | Some(description) => [(str, description)]
@@ -139,20 +139,20 @@ let lookup = (str: string): array<(string, string)> =>
     /* | None => acc */
     /* } */
     /* }); */
-    let search = str->Js.String2.toLowerCase
-    Belt.Array.keep(letterDescriptions, ((l, _)) => l === search)
+    let search = str->String.toLowerCase
+    Array.filter(letterDescriptions, ((l, _)) => l === search)
   }
 
 // matches all numbers that start with str
 let fuzzyLookup = (str: string): array<(string, string)> => {
-  let letters = Belt.Array.keep(letterDescriptions, ((l, _)) => l->Js.String2.startsWith(str))
+  let letters = Array.filter(letterDescriptions, ((l, _)) => l->String.startsWith(str))
 
   let numbers =
     numeric
-    ->Belt.Array.keep(((n, _)) => Belt.Int.toString(n)->Js.String2.startsWith(str))
-    ->Belt.Array.map(((n, desc)) => (Belt.Int.toString(n), desc))
+    ->Array.filter(((n, _)) => Int.toString(n)->String.startsWith(str))
+    ->Array.map(((n, desc)) => (Int.toString(n), desc))
 
-  Belt.Array.concat(letters, numbers)
+  Array.concat(letters, numbers)
 }
 
 module Parser = {
@@ -175,33 +175,33 @@ module Parser = {
     let pos = ref(0)
 
     let state = ref(ParseModifier)
-    let last = Js.String2.length(input) - 1
+    let last = String.length(input) - 1
 
     while pos.contents <= last {
-      let cur = Js.String2.get(input, pos.contents)
+      let cur = String.get(input, pos.contents)->Option.getUnsafe
       let newState = switch state.contents {
       | ParseModifier =>
         if cur === "+" || cur === "-" {
           ParseFlag({modifier: cur, acc: ""})
         } else {
-          raise(InvalidInput("Expected '+' or '-' on pos " ++ Belt.Int.toString(pos.contents)))
+          throw(InvalidInput("Expected '+' or '-' on pos " ++ Int.toString(pos.contents)))
         }
       | ParseFlag({modifier, acc}) =>
         let next = if pos.contents + 1 < last {
-          Js.String2.get(input, pos.contents + 1)
+          String.get(input, pos.contents + 1)->Option.getUnsafe
         } else {
           cur
         }
 
         if cur->isModifier {
-          raise(
+          throw(
             InvalidInput(
-              "'+' and '-' not allowed in flag name on pos " ++ Belt.Int.toString(pos.contents),
+              "'+' and '-' not allowed in flag name on pos " ++ Int.toString(pos.contents),
             ),
           )
         } else if next === "+" || (next === "-" || pos.contents >= last) {
           let token = {enabled: modifier === "+", flag: acc ++ cur}
-          Js.Array2.push(ret, token)->ignore
+          Array.push(ret, token)->ignore
           ParseModifier
         } else {
           ParseFlag({modifier, acc: acc ++ cur})
@@ -216,17 +216,20 @@ module Parser = {
     // might be a tangling empty flag
     switch state.contents {
     | ParseFlag({modifier, acc: ""}) =>
-      raise(
+      throw(
         InvalidInput(
-          "Expected flag name after '" ++
-          (modifier ++
-          ("' on pos " ++ Belt.Int.toString(pos.contents))),
+          "Expected flag name after '" ++ (modifier ++ ("' on pos " ++ Int.toString(pos.contents))),
         ),
       )
     | _ => ()
     }
 
-    ret
+    ret->Belt.SortArray.stableSortBy((v1, v2) => {
+      let a = v1.flag->Int.fromString
+      let b = v2.flag->Int.fromString
+
+      compare(a, b)
+    })
   }
 
   let parse = (input: string): result<array<token>, string> =>
@@ -236,18 +239,18 @@ module Parser = {
 
   /* // other will override flags within base */
   let merge = (base: array<token>, other: array<token>) => {
-    let dict = Js.Array2.copy(base)->Belt.Array.map(token => (token.flag, token))->Js.Dict.fromArray
+    let dict = Array.copy(base)->Array.map(token => (token.flag, token))->Dict.fromArray
 
-    Belt.Array.forEach(other, token => dict->Js.Dict.set(token.flag, token))
+    Array.forEach(other, token => dict->Dict.set(token.flag, token))
 
-    Js.Dict.values(dict)->Js.Array2.sortInPlaceWith((t1, t2) => {
-      open Js.Float
+    Dict.valuesToArray(dict)->Belt.SortArray.stableSortBy((t1, t2) => {
+      open Float
       let f1 = t1.flag
       let f2 = t2.flag
-      switch (f1->fromString->isNaN, f2->fromString->isNaN) {
+      switch (f1->fromString->Option.isNone, f2->fromString->Option.isNone) {
       | (false, false)
       | (true, true) =>
-        Js.String2.localeCompare(f1, f2)->Belt.Float.toInt
+        String.localeCompare(f1, f2)->Float.toInt
       | (true, false) => -1
       | (false, true) => 1
       }
@@ -257,10 +260,10 @@ module Parser = {
   // Creates a compiler compatible warning flag string
   let tokensToString = tokens => {
     tokens
-    ->Js.Array2.map(token => {
+    ->Array.map(token => {
       let modifier = token.enabled ? "+" : "-"
       modifier ++ token.flag
     })
-    ->Js.Array2.joinWith("")
+    ->Array.join("")
   }
 }

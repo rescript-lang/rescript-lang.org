@@ -16,19 +16,19 @@ ReScript is a robustly typed language that compiles to efficient and human-reada
 
 Use `npm` to install the newest [9.0.1 release](https://www.npmjs.com/package/bs-platform/v/9.0.1) with the following command:
 
-```
+```sh
 npm install bs-platform@9.0.1
 ```
 
 You can also try our new release in the [Online Playground](/try).
 
-In this post we will highlight the most notable changes. The full changelog for this release can be found [here](https://github.com/rescript-lang/rescript-compiler/blob/master/Changes.md#90).
+In this post we will highlight the most notable changes. The full changelog for this release can be found [here](https://github.com/rescript-lang/rescript/blob/master/Changes.md#90).
 
 ## Compiler Improvements
 
 ### New External Stdlib Configuration
 
-This is a long-awaited [feature request](https://github.com/rescript-lang/rescript-compiler/pull/2171).
+This is a long-awaited [feature request](https://github.com/rescript-lang/rescript/pull/2171).
 
 Our compiler comes with a set of stdlib modules (such as `Belt`, `Pervasives`, etc.) for core functionality. Compiled ReScript code relies on the JS runtime version of these stdlib modules.
 
@@ -47,7 +47,7 @@ We made a small [demo repo](https://github.com/bobzhang/zero-cost-rescript) and 
 
 ### Improved Code Generation for Pattern Matching
 
-We fine-tuned our pattern matching engine to optimize the JS output even more. Here is an example of a pretty substantial optimization, based on [this issue](https://github.com/rescript-lang/rescript-compiler/issues/4924):
+We fine-tuned our pattern matching engine to optimize the JS output even more. Here is an example of a pretty substantial optimization, based on [this issue](https://github.com/rescript-lang/rescript/issues/4924):
 
 ```res
 type test =
@@ -87,7 +87,7 @@ function test(x) {
 
 As you can see, the 9.0 compiler removes all the unnecessary `typeof` checks!
 
-This is possible because our optimizer will try to analyze several predicates and get rid of redundant ones. More diffs can be found [here](https://github.com/rescript-lang/rescript-compiler/pull/4927/files?file-filters%5B%5D=.js).
+This is possible because our optimizer will try to analyze several predicates and get rid of redundant ones. More diffs can be found [here](https://github.com/rescript-lang/rescript/pull/4927/files?file-filters%5B%5D=.js).
 
 Another important improvement is that we fixed the pattern match offset issue, which lead to the consequence that magic numbers will not be generated for complex pattern matches anymore.
 

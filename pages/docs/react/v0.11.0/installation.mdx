@@ -1,0 +1,55 @@
+---
+title: Installation
+description: "Installation and Setup"
+canonical: "/docs/react/latest/installation"
+---
+
+# Installation
+
+**Requirements:**
+
+- `rescript@10.1` or later
+- `react@18.0.0` or later
+
+Add following dependency to your ReScript project (in case you don't have any project yet, check out the [installation instructions](/docs/manual/latest/installation) in the manual):
+
+```
+npm install @rescript/react
+```
+
+Then add the following setting to your existing `bsconfig.json`:
+
+```json
+{
+  "jsx": { "version": 4, "mode": "classic" },
+  "bs-dependencies": ["@rescript/react"]
+}
+```
+
+> The [new jsx transform](https://ko.reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html) of ReactJS is available with `mode: "automatic"`.
+
+**Note** JSX v4 is newly introduced with the idiomatic record-based representation of a component. If your dependencies are not compatible with v4 yet, then you can use v3 in the same project. Check out the details in [Migrate from v3](/docs/react/latest/migrate-react)
+
+To test your setup, create a new `.res` file in your source directory and add the following code:
+
+```res
+// src/Test.res
+@react.component
+let make = () => {
+  <div> {React.string("Hello World")} </div>
+}
+```
+
+Now run `npx rescript` and you should see a successful build.
+
+## Exposed Modules
+
+After a successful installation, `@rescript/react` will make the following modules available in your project's global scope:
+
+- `React`: Bindings to React
+- `ReactDOM`: Bindings to the ReactDOM
+- `ReactDOMServer`: Bindings to the ReactDOMServer
+- `ReactEvent`: Bindings to React's synthetic events
+- `ReactDOMStyle`: Bindings to the inline style API
+- `RescriptReactRouter`: A simple, yet fully featured router with minimal memory allocations
+- `RescriptReactErrorBoundary`: A component which handles errors thrown in its child components gracefully

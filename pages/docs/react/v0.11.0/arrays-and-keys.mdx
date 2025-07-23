@@ -1,0 +1,127 @@
+---
+title: Arrays and Keys
+description: "Rendering arrays and handling keys in ReScript and React"
+canonical: "/docs/react/latest/arrays-and-keys"
+---
+
+# Arrays and Keys
+
+<Intro>
+
+Whenever we are transforming data into an array of elements and put it in our React tree, we need to make sure to give every element an unique identifier to help React distinguish elements for each render. This page will explain the `key` attribute and how to apply it whenever we need to map data to `React.element`s.
+
+</Intro>
+
+## Keys & Rendering Arrays
+
+Keys help React identify which elements have been changed, added, or removed throughout each render. Keys should be given to elements inside the array to give the elements a stable identity:
+
+```res
+let numbers = [1, 2, 3, 4, 5];
+
+let items = Belt.Array.map(numbers, (number) => {
+  <li key={Belt.Int.toString(number)}> {React.int(number)} </li>
+})
+```
+
+The best way to pick a key is to use a string that uniquely identifies a list item among its siblings. Most often you would use IDs from your data as keys:
+
+```res
+type todo = {id: string, text: string}
+
+let todos = [
+  {id: "todo1", text: "Todo 1"},
+  {id: "todo2", text: "Todo 2"}
+]
+
+let items = Belt.Array.map(todos, todo => {
+  <li key={todo.id}> {React.string(todo.text)} </li>
+})
+```
+
+If you don’t have stable IDs for rendered items, you may use the item index as a key as a last resort:
+
+```res {1..3}
+let items = Belt.Array.mapWithIndex(todos, (i, todo) => {
+  // Only do this if items have no stable id
+  <li key={Belt.Int.toString(i)}>
+    {todo.text}
+  </li>
+});
+```
+
+### Keys Must Only Be Unique Among Siblings
+
+Keys used within arrays should be unique among their siblings. However they don’t need to be globally unique. We can use the same keys when we produce two different arrays:
+
+```res {6,10,17,18,25,27}
+type post = {id: string, title: string, content: string}
+
+module Blog = {
+  @react.component
+  let make = (~posts: array<post>) => {
+    let sidebar =
+      <ul>
+        {
+          Belt.Array.map(posts, (post) => {
+            <li key={post.id}>
+              {React.string(post.title)}
+            </li>
+          })->React.array
+        }
+      </ul>
+
+    let content = Belt.Array.map(posts, (post) => {
+        <div key={post.id}>
+          <h3>{React.string(post.title)}</h3>
+          <p>{React.string(post.content)}</p>
+        </div>
+    });
+      
+      <div>
+      {sidebar}
+      <hr />
+      {React.array(content)}
+    </div>
+  }
+}
+
+let posts = [
+  {id: "1", title: "Hello World", content: "Welcome to learning ReScript & React!"},
+  {id: "2", title: "Installation", content: "You can install reason-react from npm."}
+]
+
+let blog = <Blog posts/>
+```
+
+
+## Rendering `list` Values
+
+In case you ever want to render a `list` of items, you can do something like this:
+
+```res
+type todo = {id: string, text: string}
+
+@react.component
+let make = () => {
+  let todoList = list{
+    {id: "todo1", text: "Todo 1"},
+    {id: "todo2", text: "Todo 2"},
+  }
+
+  let items =
+    todoList
+    ->Belt.List.toArray
+    ->Belt.Array.map(todo => {
+      <li key={todo.id}> {React.string(todo.text)} </li>
+    })
+
+  <div> {React.array(items)} </div>
+}
+
+```
+
+We use `Belt.List.toArray` to convert our list to an array before creating our `array<React.element>`. Please note that using `list` has performance impact due to extra conversion costs.
+
+99% of the time you'll want to use arrays (seamless interop, faster JS code), but in some cases it might make sense to use a `list` to leverage advanced pattern matching features etc.
+

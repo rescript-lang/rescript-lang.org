@@ -68,11 +68,6 @@ module Pre: {
   let make: (~children: React.element) => React.element
 }
 
-module InlineCode: {
-  @react.component
-  let make: (~children: React.element) => React.element
-}
-
 module Table: {
   @react.component
   let make: (~children: React.element) => React.element
@@ -158,9 +153,24 @@ module Strong: {
   let make: (~children: React.element) => React.element
 }
 
+module Image: {
+  @react.component
+  let make: (
+    ~src: string,
+    ~size: [#large | #small]=?,
+    ~withShadow: bool=?,
+    ~caption: string=?,
+    ~externalLink: string=?,
+  ) => React.element
+}
+
+module Video: {
+  @react.component
+  let make: (~src: string, ~caption: string=?) => React.element
+}
+
 // Used for the MdxJS Provider
 
 /* Sets our preferred branded styles
    We most likely will never need a different ~components
    option on our website. */
-let default: Mdx.Components.t

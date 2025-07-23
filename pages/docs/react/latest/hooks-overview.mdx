@@ -26,15 +26,15 @@ Just for a quick look, here is an example of a `Counter` component that allows a
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res example
 // Counter.res
 @react.component
 let make = () => {
-  let (count, setCount) = React.useState(_ => 0);
+  let (count, setCount) = React.useState(_ => 0)
 
   let onClick = (_evt) => {
     setCount(prev => prev + 1)
-  };
+  }
 
   let msg = "You clicked" ++ Belt.Int.toString(count) ++  "times"
 

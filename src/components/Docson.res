@@ -5,25 +5,22 @@ type t
 @set external setTemplateBaseUrl: (t, string) => unit = "templateBaseUrl"
 
 @module("docson") @scope("default")
-external doc: (string, Js.Json.t, option<string>, string) => unit = "doc"
-
-module Response = {
-  type t
-  @send external json: t => Js.Promise.t<Js.Json.t> = "json"
-}
-@val external fetchSchema: string => Js.Promise.t<Response.t> = "fetch"
+external doc: (string, JSON.t, option<string>, string) => unit = "doc"
 
 @react.component
 let make = (~tag) => {
-  let element = React.useRef(Js.Nullable.null)
+  let element = React.useRef(Nullable.null)
 
-  React.useEffect0(() => {
-    let segment = `https://raw.githubusercontent.com/rescript-lang/rescript-compiler/${tag}/docs/docson/build-schema.json`
+  React.useEffect(() => {
+    let segment = `https://raw.githubusercontent.com/rescript-lang/rescript/${tag}/docs/docson/build-schema.json`
 
     // The api for docson is a little bit funky, so you need to check out the source to understand what it's doing
     // See: https://github.com/lbovet/docson/blob/master/src/index.js
-    let _ = fetchSchema(segment)->Js.Promise.then_(Response.json, _)->Js.Promise.then_(schema => {
-        let _ = switch element.current->Js.Nullable.toOption {
+    let _ =
+      fetch(segment)
+      ->Promise.then(WebAPI.Response.json)
+      ->Promise.then(schema => {
+        let _ = switch element.current->Nullable.toOption {
         | Some(_el) =>
           setTemplateBaseUrl(docson, "/static/docson")
 
@@ -31,10 +28,10 @@ let make = (~tag) => {
 
         | None => ()
         }
-        Js.Promise.resolve()
-      }, _)
+        Promise.resolve()
+      })
 
     None
-  })
+  }, [])
   <div ref={ReactDOM.Ref.domRef(element)} id="docson-root" />
 }

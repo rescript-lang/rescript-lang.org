@@ -19,8 +19,8 @@ It basically provides the same information as `__LOC_OF__`, but separated into m
 let f = () => None
 let (pos, f') = __POS_OF__(f)
 
-pos->Js.log
-f'->Js.log
+pos->Console.log
+f'->Console.log
 ```
 
 ```js
@@ -35,6 +35,7 @@ var pos = [
 
 console.log(pos);
 console.log(f);
+var f$p = f;
 ```
 
 </CodeTab>

@@ -18,23 +18,20 @@ type shape = Circle(float) | Square(float)
 let shape = Square(3.0)
 
 let message = switch shape {
-| Circle(radius) => "Circle with radius " ++ Js.Float.toString(radius)
-| Square(length) => "Square with sides of length " ++ Js.Float.toString(length)
+| Circle(radius) => "Circle with radius " ++ Float.toString(radius)
+| Square(length) => "Square with sides of length " ++ Float.toString(length)
 }
 ```
 
 ```js
 var shape = {
-  TAG: /* Square */ 1,
-  _0: 3.0,
+  TAG: "Square",
+  _0: 3.0
 };
 
 var message;
 
-message =
-  shape.TAG === /* Circle */ 0
-    ? "Circle with radius " + (3.0).toString()
-    : "Square with sides of length " + (3.0).toString();
+message = shape.TAG === "Circle" ? "Circle with radius " + (3.0).toString() : "Square with sides of length " + (3.0).toString();
 ```
 
 </CodeTab>

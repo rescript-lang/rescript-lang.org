@@ -14,8 +14,11 @@ let make = (
   ~ogSiteName=?,
   ~ogDescription=description,
   ~ogTitle=?,
-  ~ogImage=?,
+  ~ogImage="/static/Art-3-rescript-launch.jpg",
+  ~version: option<Url.version>=?,
 ) => {
+  let ogImage = "https://rescript-lang.org" ++ ogImage
+
   let title = switch title {
   | None
   | Some("") => siteName
@@ -40,7 +43,7 @@ let make = (
       content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, minimal-ui"
     />
     <meta key="description" name="description" content=description />
-    <meta key="keywords" name="keywords" content={Js.Array2.joinWith(keywords, ",")} />
+    <meta key="keywords" name="keywords" content={Array.join(keywords, ",")} />
     {switch canonical {
     | Some(href) => <link key="canonical" href rel="canonical" />
     | None => React.null
@@ -49,24 +52,31 @@ let make = (
     <link rel="icon" type_="image/png" sizes="32x32" href="/static/favicon/favicon-32x32.png" />
     <link rel="icon" type_="image/png" sizes="16x16" href="/static/favicon/favicon-16x16.png" />
     <link rel="manifest" href="/static/favicon/site.webmanifest" />
+
     /* OG link preview meta data */
     <meta key="og:site_name" property="og:site_name" content=ogSiteName />
     <meta key="og:locale" property="og:locale" content=ogLocale />
     <meta key="og:title" property="og:title" content=ogTitle />
     <meta key="og:description" property="og:description" content=ogDescription />
-    {switch ogImage {
-    | Some(ogImage) => <meta key="og:image" property="og:image" content=ogImage />
-    | None => React.null
-    }}
+    <meta key="og:image" property="og:image" content=ogImage />
+
     /* Twitter Meta */
     <meta key="twitter:title" name="twitter:title" content=title />
     <meta key="twitter:description" name="twitter:description" content=description />
-    <meta key="twitter:site" name="twitter:site" content="@reasonml" />
-    <meta key="twitter:creator" name="twitter:creator" content="@ReasonAssoc" />
-    <meta property="og:image:type" content="image/jpeg" />
+    <meta key="twitter:site" name="twitter:site" content="@rescriptlang" />
+    <meta key="twitter:image" property="og:image" content=ogImage />
+    <meta key="twitter:creator" name="twitter:creator" content="@ReScriptAssoc" />
     <meta key="twitter:card" name="twitter:card" content="summary_large_image" />
-    /* TODO: Undo this later */
-    /* <meta key="twitter:image" property="twitter:image" content=ogImage /> */
     <link rel="alternate" type_="application/rss+xml" title="ReScript Blog" href="/blog/feed.xml" />
+    // Docsearch meta tags
+    <meta
+      name="docsearch:version"
+      content={switch version {
+      | Some(Version(v)) => v
+      | Some(Latest) => Constants.versions.latest
+      | Some(Next) => Constants.versions.next
+      | _ => Constants.versions.latest
+      }}
+    />
   </Head>
 }

@@ -6,7 +6,7 @@ canonical: "/docs/manual/latest/external"
 
 # External (Bind to Any JS Library)
 
-`external` is the primary ReScript features for bringing in and using JavaScript values.
+`external` is the primary ReScript feature for bringing in and using JavaScript values.
 
 `external` is like a let binding, but:
 - The right side of `=` isn't a value; it's the name of the JS value you're referring to.
@@ -93,7 +93,7 @@ However, if you want to more rigidly bind to the JavaScript library you want, ke
 
 ## Performance & Output Readability
 
-`external`s declarations are inlined into their callers during compilation, **and completely disappear from the JS output**. This means any time you use one, you can be sure that you're not incurring extra JavaScript <-> ReScript conversion cost.
+`external`s declarations are inlined into their callers during compilation, **and completely disappear from the JS output**. This means any time you use one, you can be sure that you're not incurring extra JavaScript \<-> ReScript conversion cost.
 
 Additionally, no extra ReScript-specific runtime is better for output readability.
 

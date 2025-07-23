@@ -1,5 +1,5 @@
 // This is used for the version dropdown in the api layouts
-let allApiVersions = [("latest", "v8.2.0"), ("v8.0.0", "< v8.2.0")]
+let allApiVersions = Constants.allManualVersions
 
 module Sidebar = SidebarLayout.Sidebar
 module Toc = SidebarLayout.Toc
@@ -9,13 +9,11 @@ module OldDocsWarning = {
   let make = (~version: string, ~route: string) => {
     let url = Url.parse(route)
     let latestUrl =
-      "/" ++
-      (Js.Array2.joinWith(url.base, "/") ++
-      ("/latest/" ++ Js.Array2.joinWith(url.pagepath, "/")))
+      "/" ++ (Array.join(url.base, "/") ++ ("/latest/" ++ Array.join(url.pagepath, "/")))
 
     open Markdown
 
-    let label = switch Js.Array2.find(allApiVersions, ((v, _)) => {
+    let label = switch Array.find(allApiVersions, ((v, _)) => {
       v === version
     }) {
     | Some((_, label)) => label
@@ -48,12 +46,12 @@ let makeBreadcrumbs = (~prefix: Url.breadcrumb, route: string): list<Url.breadcr
   let url = route->Url.parse
 
   let (_, rest) = // Strip the "api" part of the url before creating the rest of the breadcrumbs
-  Js.Array2.sliceFrom(url.pagepath, 1)->Belt.Array.reduce((prefix.href, []), (acc, path) => {
+  Array.sliceToEnd(url.pagepath, ~start=1)->Array.reduce((prefix.href, []), (acc, path) => {
     let (baseHref, ret) = acc
 
     let href = baseHref ++ ("/" ++ path)
 
-    Js.Array2.push(
+    Array.push(
       ret,
       {
         open Url
@@ -62,7 +60,7 @@ let makeBreadcrumbs = (~prefix: Url.breadcrumb, route: string): list<Url.breadcr
     )->ignore
     (href, ret)
   })
-  Belt.Array.concat([prefix], rest)->Belt.List.fromArray
+  Array.concat([prefix], rest)->List.fromArray
 }
 
 @react.component
@@ -81,7 +79,7 @@ let make = (
   let (isSidebarOpen, setSidebarOpen) = React.useState(_ => false)
   let toggleSidebar = () => setSidebarOpen(prev => !prev)
 
-  React.useEffect0(() => {
+  React.useEffect(() => {
     open Next.Router.Events
     let {Next.Router.events: events} = router
 
@@ -96,11 +94,10 @@ let make = (
         events->off(#hashChangeComplete(onChangeComplete))
       },
     )
-  })
+  }, [])
 
   let preludeSection =
     <div className="flex justify-between text-fire font-medium items-baseline">
-      {React.string(title)}
       {switch version {
       | Some(version) =>
         let onChange = evt => {
@@ -108,14 +105,17 @@ let make = (
           ReactEvent.Form.preventDefault(evt)
           let version = (evt->ReactEvent.Form.target)["value"]
           let url = Url.parse(route)
+          WebAPI.Storage.setItem(localStorage, ~key=(Url.Manual :> string), ~value=version)
 
           let targetUrl =
             "/" ++
-            (Js.Array2.joinWith(url.base, "/") ++
-            ("/" ++ (version ++ ("/" ++ Js.Array2.joinWith(url.pagepath, "/")))))
+            (Array.join(url.base, "/") ++
+            ("/" ++ (version ++ ("/" ++ Array.join(url.pagepath, "/")))))
           router->Next.Router.push(targetUrl)
         }
-        <VersionSelect onChange version availableVersions=allApiVersions />
+        <VersionSelect
+          onChange version availableVersions=allApiVersions nextVersion=?Constants.nextVersion
+        />
       | None => React.null
       }}
     </div>

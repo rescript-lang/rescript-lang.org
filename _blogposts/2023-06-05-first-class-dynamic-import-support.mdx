@@ -1,0 +1,143 @@
+---
+author: rescript-team
+date: "2023-06-05"
+title: First-class Dynamic Import Support
+badge: roadmap
+description: |
+  A tour of new capabilities coming to ReScript v11
+---
+
+> This is the third post covering new capabilities that'll ship in ReScript v11. You can check out the first post on [Better Interop with Customizable Variants](/blog/improving-interop) and the second post on [Enhanced Ergonomics for Record Types](/blog/enhanced-ergonomics-for-record-types).
+
+## Introduction
+
+When developing apps in JavaScript, every line of code eventually needs to be bundled up and shipped to the browser. As the app grows, it's usually a good idea to split up and load parts of the app code on demand as separate JS modules to prevent bundle bloat.
+
+To accomplish this, browsers provide support for dynamic loading via the globally available [`import()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import) function to allow code splitting and lazy loading and ultimately reducing initial load times for our applications.
+
+Even though ReScript has been able to bind to `import` calls via `external` bindings, doing so was quite hard to maintain for to the following reasons:
+
+1. An `import` call requires a path to a JS file. The ReScript compiler doesn't directly expose file paths for compiled modules, so the user has to manually find and rely on compiled file paths.
+2. The return type of an `import` call needs to be defined manually; a quite repetitive task with lots of potential bugs when the imported module has changed.
+
+Arguably, these kind of problems should ideally be tackled on the compiler level, since the ReScript compiler knows best about module structures and compiled JS file locations — so we finally decided to fix this.
+
+Today we're happy to announce that ReScript v11 will ship with first-class support for dynamic imports as part of the language.
+
+Let's have a look!
+
+## Import Parts of a Module
+
+We can now use the `Js.import` function to dynamically import a value or function from a ReScript module. The import call will return a promise, resolving to the dynamically loaded value.
+
+For example, imagine the following file `MathUtils.res`:
+
+```rescript
+// MathUtils.res
+let add = (a, b) => a + b
+let sub = (a, b) => a - b
+```
+
+Now let's dynamically import the `add` function in another module, e.g. `App.res`:
+
+```rescript
+// App.res
+let main = async () => {
+  let add = await Js.import(MathUtils.add)
+  let onePlusOne = add(1, 1)
+
+  RescriptCore.Console.log(onePlusOne)
+}
+```
+
+This compiles to:
+
+```javascript
+async function main() {
+  var add = await import("./MathUtils.mjs").then(function(m) {
+    return m.add;
+  });
+
+  var onePlusOne = add(1, 1);
+  console.log(onePlusOne);
+}
+```
+
+Notice how the compiler keeps track of the relative path to the module you're importing, as well as plucking out the value you want to use from the imported module.
+
+Quite a difference compared to doing both of those things manually, right? Now let's have a look at a more concrete use-case with React components.
+
+### Use-case: Importing a React component
+
+> **Note:** This section requires the latest [@rescript/react](https://github.com/rescript-lang/rescript-react) bindings to be installed (_0.12.0-alpha.2 and above_).
+
+Our dynamic import makes tasks like [lazy loading React components](https://react.dev/reference/react/lazy#lazy) a simple one-liner. First let's define a simple component as an example:
+
+```rescript
+// Title.res
+@react.component
+let make = (~text) => {
+  <div className="title">{text->React.string}</div>
+}
+```
+
+Now let's dynamically import the `<Title/>` component by passing the result of our dynamic import to `React.lazy_`:
+
+```rescript
+module LazyTitle = {
+  let make = React.lazy_(() => Js.import(Title.make))
+}
+
+let titleJsx = <LazyTitle text="Hello!" />
+```
+
+That's all the code we need! The new `<LazyTitle />` component behaves exactly the same as the wrapped `<Title />` component, but will be lazy loaded via React's built-in lazy mechanism.
+
+Needless to say, all the code examples you've seen so far are fully type-safe.
+
+## Import a Whole Module
+
+Sometimes it is useful to dynamically import the whole module instead. For example, you might have a collection of utility functions in a dedicated module that tend to be used together.
+
+The syntax for importing a whole module looks a little different, since we are operating on the module syntax level; instead of using `Js.import`, you may simply `await` the module itself:
+
+```rescript
+// App.res
+let main = async () => {
+  module Utils = await MathUtils
+
+  let twoPlusTwo = Utils.add(2, 2)
+  RescriptCore.Console.log(twoPlusTwo)
+}
+```
+
+And, the generated JavaScript will look like this:
+
+```js
+async function main() {
+  var Utils = await import("./MathUtils.mjs");
+
+  var twoPlusTwo = Utils.add(2, 2);
+  console.log(twoPlusTwo);
+}
+```
+
+The compiler correctly inserts the module's import path and stores the result in a `Utils` variable.
+
+## Try it out!
+
+Feel free to try out our new dynamic import feature with the latest beta release:
+
+`npm install rescript@11.0.0-beta.1`
+
+Please note that this release is only intended for experiments and feedback purposes.
+
+## Conclusion
+
+The most important take away of the new dynamic imports functionality in ReScript is that you'll never need to care about _where_ what you're importing is located on the file system - the compiler already does it for you.
+
+We hope that it will help shipping software with better end-user experience with faster load times and quicker app interaction, especially on slower network connections.
+
+As always, we're eager to hear about your experiences with our new features. Feel free to share your thoughts and feedback with us on our [issue tracker](https://github.com/rescript-lang/rescript/issues) or on the [forum](https://forum.rescript-lang.org).
+
+Happy hacking!

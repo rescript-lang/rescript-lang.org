@@ -27,6 +27,31 @@ var root = Path.dirname("/User/github");
 
 </CodeTab>
 
+### Import Attributes
+
+**Since 11.1**
+
+`@module` also supports [import attributes](https://github.com/tc39/proposal-import-attributes). It looks like this:
+
+<CodeTab labels={["ReScript", "JS Output (Module)"]}>
+```rescript
+@module({from: "./myJson.json", with: {type_: "json", \"some-exotic-identifier": "someValue"}})
+external myJson: JSON.t = "default"
+
+Console.log(myJson)
+```
+
+```javascript
+import MyJsonJson from "./myJson.json" with {"type": "json", "some-exotic-identifier": "someValue"};
+
+var myJson = MyJsonJson;
+
+console.log(myJson);
+```
+</CodeTab>
+
+More information [in the dedicated documentation for import attributes](/docs/manual/latest/import-from-export-to-js#use-import-attributes).
+
 ### References
 
 * [Import from JavaScript](/docs/manual/latest/import-from-export-to-js#import-from-javascript)

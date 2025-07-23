@@ -18,44 +18,35 @@ module LoadScript = {
     ~src: string,
     ~onSuccess: unit => unit,
     ~onError: err => unit,
-  ) => (. unit) => unit = "default"
+  ) => unit => unit = "default"
 
   @module("../ffi/loadScript")
   external removeScript: (~src: string) => unit = "removeScript"
 
-  let loadScriptPromise = (url: string): Promise.t<result<unit, string>> => {
-    Promise.make((resolve, _reject) => {
+  let loadScriptPromise = (url: string) => {
+    Promise.make((resolve, _) => {
       loadScript(
         ~src=url,
-        ~onSuccess=() => resolve(. Ok()),
-        ~onError=_err => resolve(. Error(j`Could not load script: $url`)),
+        ~onSuccess=() => resolve(Ok()),
+        ~onError=_err => resolve(Error(`Could not load script: ${url}`)),
       )->ignore
     })
   }
 }
 
 module CdnMeta = {
-  // Make sure versions exist on https://cdn.rescript-lang.org
-  // [0] = latest
-  let versions = [
-    "v10.1.2",
-    "v10.0.1",
-    "v10.0.0",
-    "v9.1.2",
-    "v9.0.2",
-    "v9.0.1",
-    "v9.0.0",
-    "v8.4.2",
-    "v8.3.0-dev.2",
-  ]
+  let baseUrl =
+    Node.Process.Env.nodeEnv === "development"
+      ? "https://cdn.rescript-lang.org"
+      : "" + "/playground-bundles"
 
-  let experimentalVersions = ["v11.0.0-alpha.5"]
+  let getCompilerUrl = (version): string => `${baseUrl}/${Semver.toString(version)}/compiler.js`
 
-  let getCompilerUrl = (version: string): string =>
-    j`https://cdn.rescript-lang.org/$version/compiler.js`
+  let getLibraryCmijUrl = (version, libraryName: string): string =>
+    `${baseUrl}/${Semver.toString(version)}/${libraryName}/cmij.js`
 
-  let getLibraryCmijUrl = (version: string, libraryName: string): string =>
-    j`https://cdn.rescript-lang.org/$version/$libraryName/cmij.js`
+  let getStdlibRuntimeUrl = (version, filename) =>
+    `${baseUrl}/${Semver.toString(version)}/compiler-builtins/stdlib/${filename}`
 }
 
 module FinalResult = {
@@ -69,31 +60,36 @@ module FinalResult = {
 // This will a given list of libraries to a specific target version of the compiler.
 // E.g. starting from v9, @rescript/react instead of reason-react is used.
 // If the version can't be parsed, an empty array will be returned.
-let getLibrariesForVersion = (~version: string): array<string> => {
-  switch Js.String2.split(version, ".")->Belt.List.fromArray {
-  | list{major, ..._rest} =>
-    let version =
-      Js.String2.replace(major, "v", "")->Belt.Int.fromString->Belt.Option.getWithDefault(0)
-
-    let libraries = if version >= 9 {
-      ["@rescript/react"]
-    } else if version < 9 {
-      ["reason-react"]
-    } else {
-      []
-    }
-
-    // Since version 11, we ship the compiler-builtins as a separate file, and
-    // we also added @rescript/core as a pre-vendored package
-    if version >= 11 {
-      libraries->Js.Array2.push("@rescript/core")->ignore
-      libraries->Js.Array2.push("compiler-builtins")->ignore
-    }
-
-    libraries
-  | _ => []
+let getLibrariesForVersion = (~version: Semver.t): array<string> => {
+  let libraries = if version.major >= 9 {
+    ["@rescript/react"]
+  } else if version.major < 9 {
+    ["reason-react"]
+  } else {
+    []
   }
+
+  // Since version 11, we ship the compiler-builtins as a separate file
+  if version.major >= 11 {
+    libraries->Array.push("compiler-builtins")
+  }
+
+  // From version 11 to 12.0.0-alpha.3 @rescript/core is an external package
+  switch version {
+  | {major: 11}
+  | {major: 12, minor: 0, patch: 0, preRelease: Some(Alpha(1 | 2 | 3))} =>
+    libraries->Array.push("@rescript/core")
+  | _ => ()
+  }
+
+  libraries
 }
+
+let getOpenModules = (~apiVersion: Version.t, ~libraries: array<string>): option<array<string>> =>
+  switch apiVersion {
+  | V1 | V2 | V3 | UnknownVersion(_) => None
+  | V4 | V5 => libraries->Array.some(el => el === "@rescript/core") ? Some(["RescriptCore"]) : None
+  }
 
 /*
     This function loads the compiler, plus a defined set of libraries that are available
@@ -108,7 +104,7 @@ let getLibrariesForVersion = (~version: string): array<string> => {
     We coupled the compiler / library loading to prevent ppl to try loading compiler / cmij files
     separately and cause all kinds of race conditions.
  */
-let attachCompilerAndLibraries = async (~version: string, ~libraries: array<string>, ()): result<
+let attachCompilerAndLibraries = async (~version, ~libraries: array<string>, ()): result<
   unit,
   array<string>,
 > => {
@@ -120,7 +116,7 @@ let attachCompilerAndLibraries = async (~version: string, ~libraries: array<stri
   switch await LoadScript.loadScriptPromise(compilerUrl) {
   | Error(_) => Error([`Could not load compiler from url ${compilerUrl}`])
   | Ok(_) =>
-    let promises = Belt.Array.map(libraries, async lib => {
+    let promises = Array.map(libraries, async lib => {
       let cmijUrl = CdnMeta.getLibraryCmijUrl(version, lib)
       switch await LoadScript.loadScriptPromise(cmijUrl) {
       | Error(_) => Error(`Could not load cmij from url ${cmijUrl}`)
@@ -130,7 +126,7 @@ let attachCompilerAndLibraries = async (~version: string, ~libraries: array<stri
 
     let all = await Promise.all(promises)
 
-    let errors = Belt.Array.keepMap(all, r => {
+    let errors = Array.filterMap(all, r => {
       switch r {
       | Error(msg) => Some(msg)
       | _ => None
@@ -144,42 +140,75 @@ let attachCompilerAndLibraries = async (~version: string, ~libraries: array<stri
   }
 }
 
+let wrapReactApp = code =>
+  `(function () {
+  ${code}
+  window.reactRoot.render(React.createElement(App.make, {}));
+})();`
+
+let capitalizeFirstLetter = string => {
+  let firstLetter = string->String.charAt(0)->String.toUpperCase
+  `${firstLetter}${string->String.sliceToEnd(~start=1)}`
+}
+
 type error =
   | SetupError(string)
   | CompilerLoadingError(string)
 
 type selected = {
-  id: string, // The id used for loading the compiler bundle (ideally should be the same as compilerVersion)
+  id: Semver.t, // The id used for loading the compiler bundle (ideally should be the same as compilerVersion)
   apiVersion: Version.t, // The playground API version in use
   compilerVersion: string,
-  ocamlVersion: string,
+  ocamlVersion: option<string>,
   libraries: array<string>,
   config: Config.t,
   instance: Compiler.t,
 }
 
 type ready = {
-  versions: array<string>,
-  experimentalVersions: array<string>,
+  code: string,
+  versions: array<Semver.t>,
   selected: selected,
   targetLang: Lang.t,
   errors: array<string>, // For major errors like bundle loading
   result: FinalResult.t,
+  autoRun: bool,
+  validReactCode: bool,
+  logs: array<ConsolePanel.log>,
 }
 
 type state =
   | Init
   | SetupFailed(string)
-  | SwitchingCompiler(ready, string) // (ready, targetId, libraries)
+  | SwitchingCompiler(ready, Semver.t) // (ready, targetId, libraries)
   | Ready(ready)
-  | Compiling(ready, (Lang.t, string))
+  | Compiling({state: ready, previousJsCode: option<string>})
+  | Executing({state: ready, jsCode: string})
 
 type action =
-  | SwitchToCompiler(string) // id
+  | SwitchToCompiler(Semver.t) // id
   | SwitchLanguage({lang: Lang.t, code: string})
   | Format(string)
   | CompileCode(Lang.t, string)
   | UpdateConfig(Config.t)
+  | AppendLog(ConsolePanel.log)
+  | ToggleAutoRun
+  | RunCode
+
+let createUrl = (pathName, ready) => {
+  let params = switch ready.targetLang {
+  | Res => []
+  | lang => [("ext", RescriptCompilerApi.Lang.toExt(lang))]
+  }
+  Array.push(params, ("version", "v" ++ ready.selected.compilerVersion))
+  Array.push(params, ("module", ready.selected.config.module_system))
+  Array.push(params, ("code", ready.code->LzString.compressToEncodedURIComponent))
+  let querystring = params->Array.map(((key, value)) => key ++ "=" ++ value)->Array.join("&")
+  let url = pathName ++ "?" ++ querystring
+  url
+}
+
+let defaultModuleSystem = "esmodule"
 
 // ~initialLang:
 // The target language the compiler should be set to during
@@ -193,129 +222,163 @@ type action =
 //  component to give feedback to the user that an action happened (useful in
 //  cases where the output didn't visually change)
 let useCompilerManager = (
-  ~initialVersion: option<string>=?,
+  ~initialVersion: option<Semver.t>=?,
+  ~initialModuleSystem=defaultModuleSystem,
   ~initialLang: Lang.t=Res,
   ~onAction: option<action => unit>=?,
+  ~versions: array<Semver.t>,
   (),
 ) => {
   let (state, setState) = React.useState(_ => Init)
+  let router = Next.Router.useRouter()
 
   // Dispatch method for the public interface
   let dispatch = (action: action): unit => {
-    Belt.Option.forEach(onAction, cb => cb(action))
-    switch action {
-    | SwitchToCompiler(id) =>
-      switch state {
-      | Ready(ready) =>
-        // TODO: Check if libraries have changed as well
-        if ready.selected.id !== id {
-          setState(_ => SwitchingCompiler(ready, id))
-        } else {
-          ()
+    Option.forEach(onAction, cb => cb(action))
+    setState(state =>
+      switch action {
+      | SwitchToCompiler(id) =>
+        switch state {
+        | Ready(ready) if ready.selected.id !== id =>
+          // TODO: Check if libraries have changed as well
+          SwitchingCompiler(ready, id)
+        | _ => state
         }
-      | _ => ()
-      }
-    | UpdateConfig(config) =>
-      switch state {
-      | Ready(ready) =>
-        ready.selected.instance->Compiler.setConfig(config)
-        setState(_ => {
+      | UpdateConfig(config) =>
+        switch state {
+        | Ready(ready) =>
+          ready.selected.instance->Compiler.setConfig(config)
           let selected = {...ready.selected, config}
-          Ready({...ready, selected})
-        })
-      | _ => ()
-      }
-    | CompileCode(lang, code) =>
-      switch state {
-      | Ready(ready) => setState(_ => Compiling(ready, (lang, code)))
-      | _ => ()
-      }
-    | SwitchLanguage({lang, code}) =>
-      switch state {
-      | Ready(ready) =>
-        let instance = ready.selected.instance
-        let availableTargetLangs = Version.availableLanguages(ready.selected.apiVersion)
-
-        let currentLang = ready.targetLang
-
-        Js.Array2.find(availableTargetLangs, l => l === lang)->Belt.Option.forEach(lang => {
-          // Try to automatically transform code
-          let (result, targetLang) = switch ready.selected.apiVersion {
-          | V1 =>
-            let convResult = switch (currentLang, lang) {
-            | (Reason, Res) =>
-              instance->Compiler.convertSyntax(~fromLang=Reason, ~toLang=Res, ~code)->Some
-            | (Res, Reason) =>
-              instance->Compiler.convertSyntax(~fromLang=Res, ~toLang=Reason, ~code)->Some
+          Compiling({state: {...ready, selected}, previousJsCode: None})
+        | _ => state
+        }
+      | CompileCode(lang, code) =>
+        switch state {
+        | Ready(ready) =>
+          Compiling({
+            state: {...ready, code, targetLang: lang},
+            previousJsCode: switch ready.result {
+            | Comp(Success({jsCode})) => Some(jsCode)
             | _ => None
-            }
+            },
+          })
+        | _ => state
+        }
+      | SwitchLanguage({lang, code}) =>
+        switch state {
+        | Ready(ready) =>
+          let instance = ready.selected.instance
+          let availableTargetLangs = Version.availableLanguages(ready.selected.apiVersion)
 
-            /*
+          let currentLang = ready.targetLang
+
+          Array.find(availableTargetLangs, l => l === lang)
+          ->Option.map(lang => {
+            // Try to automatically transform code
+            let (result, targetLang) = switch ready.selected.apiVersion {
+            | V1 =>
+              let convResult = switch (currentLang, lang) {
+              | (Reason, Res) =>
+                instance->Compiler.convertSyntax(~fromLang=Reason, ~toLang=Res, ~code)->Some
+              | (Res, Reason) =>
+                instance->Compiler.convertSyntax(~fromLang=Res, ~toLang=Reason, ~code)->Some
+              | _ => None
+              }
+
+              /*
                     Syntax convertion works the following way:
                     If currentLang -> otherLang is not valid, try to pretty print the code
                     with the otherLang, in case we e.g. want to copy paste or otherLang code
                     in the editor and quickly switch to it
  */
-            switch convResult {
-            | Some(result) =>
-              switch result {
-              | ConversionResult.Fail(_)
-              | Unknown(_, _)
-              | UnexpectedError(_) =>
-                let secondTry =
-                  instance->Compiler.convertSyntax(~fromLang=lang, ~toLang=lang, ~code)
-                switch secondTry {
+              switch convResult {
+              | Some(result) =>
+                switch result {
                 | ConversionResult.Fail(_)
                 | Unknown(_, _)
-                | UnexpectedError(_) => (FinalResult.Conv(secondTry), lang)
-                | Success(_) => (Conv(secondTry), lang)
+                | UnexpectedError(_) =>
+                  let secondTry =
+                    instance->Compiler.convertSyntax(~fromLang=lang, ~toLang=lang, ~code)
+                  switch secondTry {
+                  | ConversionResult.Fail(_)
+                  | Unknown(_, _)
+                  | UnexpectedError(_) => (FinalResult.Conv(secondTry), lang)
+                  | Success(_) => (Conv(secondTry), lang)
+                  }
+                | ConversionResult.Success(_) => (Conv(result), lang)
                 }
-              | ConversionResult.Success(_) => (Conv(result), lang)
+              | None => (Nothing, lang)
               }
-            | None => (Nothing, lang)
+            | _ => (Nothing, lang)
             }
-          | _ => (Nothing, lang)
+
+            Ready({...ready, result, errors: [], targetLang})
+          })
+          ->Option.getOr(state)
+        | _ => state
+        }
+      | Format(code) =>
+        switch state {
+        | Ready(ready) =>
+          let instance = ready.selected.instance
+          let convResult = switch ready.targetLang {
+          | Res => instance->Compiler.resFormat(code)->Some
+          | Reason => instance->Compiler.reasonFormat(code)->Some
           }
 
-          setState(_ => Ready({...ready, result, errors: [], targetLang}))
-        })
-      | _ => ()
-      }
-    | Format(code) =>
-      switch state {
-      | Ready(ready) =>
-        let instance = ready.selected.instance
-        let convResult = switch ready.targetLang {
-        | Res => instance->Compiler.resFormat(code)->Some
-        | Reason => instance->Compiler.reasonFormat(code)->Some
-        | _ => None
-        }
-
-        let result = switch convResult {
-        | Some(result) =>
-          switch result {
-          | ConversionResult.Success(success) =>
-            // We will only change the result to a ConversionResult
-            // in case the reformatting has actually changed code
-            // otherwise we'd loose previous compilationResults, although
-            // the result should be the same anyways
-            if code !== success.code {
+          let result = switch convResult {
+          | Some(result) =>
+            switch result {
+            | ConversionResult.Success(success) =>
+              // We will only change the result to a ConversionResult
+              // in case the reformatting has actually changed code
+              // otherwise we'd loose previous compilationResults, although
+              // the result should be the same anyways
+              if code !== success.code {
+                FinalResult.Conv(result)
+              } else {
+                ready.result
+              }
+            | ConversionResult.Fail(_)
+            | Unknown(_, _)
+            | UnexpectedError(_) =>
               FinalResult.Conv(result)
-            } else {
-              ready.result
             }
-          | ConversionResult.Fail(_)
-          | Unknown(_, _)
-          | UnexpectedError(_) =>
-            FinalResult.Conv(result)
+          | None => ready.result
           }
-        | None => ready.result
-        }
 
-        setState(_ => Ready({...ready, result, errors: []}))
-      | _ => ()
+          Ready({...ready, result, errors: []})
+        | _ => state
+        }
+      | AppendLog(log) =>
+        switch state {
+        | Ready(ready) => Ready({...ready, logs: Array.concat(ready.logs, [log])})
+        | _ => state
+        }
+      | ToggleAutoRun =>
+        switch state {
+        | Ready({autoRun: true} as ready) => Ready({...ready, autoRun: false})
+        | Ready({autoRun: false} as ready) =>
+          Compiling({
+            state: {
+              ...ready,
+              autoRun: true,
+            },
+            previousJsCode: switch ready.result {
+            | Comp(Success({jsCode})) => Some(jsCode)
+            | _ => None
+            },
+          })
+        | _ => state
+        }
+      | RunCode =>
+        switch state {
+        | Ready({result: Comp(Success({jsCode}))} as ready) =>
+          Executing({state: {...ready, autoRun: false}, jsCode})
+        | _ => state
+        }
       }
-    }
+    )
   }
 
   let dispatchError = (err: error) =>
@@ -325,83 +388,73 @@ let useCompilerManager = (
       | CompilerLoadingError(msg) => msg
       }
       switch prev {
-      | Ready(ready) => Ready({...ready, errors: Js.Array2.concat(ready.errors, [msg])})
+      | Ready(ready) => Ready({...ready, errors: Array.concat(ready.errors, [msg])})
       | _ => SetupFailed(msg)
       }
     })
 
-  React.useEffect1(() => {
+  React.useEffect(() => {
     let updateState = async () => {
       switch state {
       | Init =>
-        switch CdnMeta.versions {
+        switch versions {
         | [] => dispatchError(SetupError("No compiler versions found"))
         | versions =>
-          let latest = versions[0]
-
-          // If the provided initialVersion is not available, fall back
-          // to "latest"
-          let initVersion = switch initialVersion {
+          switch initialVersion {
           | Some(version) =>
-            let allVersions = Belt.Array.concat(CdnMeta.versions, CdnMeta.experimentalVersions)
-            if (
-              allVersions->Js.Array2.some(v => {
-                version == v
-              })
-            ) {
-              version
-            } else {
-              latest
+            // Latest version is already running on @rescript/react
+            let libraries = getLibrariesForVersion(~version)
+
+            switch await attachCompilerAndLibraries(~version, ~libraries, ()) {
+            | Ok() =>
+              let instance = Compiler.make()
+              let apiVersion = apiVersion->Version.fromString
+              let open_modules = getOpenModules(~apiVersion, ~libraries)
+
+              // Note: The compiler bundle currently defaults to
+              // commonjs when initiating the compiler, but our playground
+              // should default to esmodule. So we override the config
+              // and use the `setConfig` function to sync up the
+              // internal compiler state with our playground state.
+              let config = {
+                ...instance->Compiler.getConfig,
+                module_system: initialModuleSystem,
+                ?open_modules,
+              }
+              instance->Compiler.setConfig(config)
+
+              let selected = {
+                id: version,
+                apiVersion,
+                compilerVersion: instance->Compiler.version,
+                ocamlVersion: instance->Compiler.ocamlVersion,
+                config,
+                libraries,
+                instance,
+              }
+
+              let targetLang =
+                Version.availableLanguages(apiVersion)
+                ->Array.find(l => l === initialLang)
+                ->Option.getOr(Version.defaultTargetLang)
+
+              setState(_ => Ready({
+                code: "",
+                selected,
+                targetLang,
+                versions,
+                errors: [],
+                result: FinalResult.Nothing,
+                logs: [],
+                autoRun: false,
+                validReactCode: false,
+              }))
+            | Error(errs) =>
+              let msg = Array.join(errs, "; ")
+
+              dispatchError(CompilerLoadingError(msg))
             }
-          | None => latest
-          }
-
-          // Latest version is already running on @rescript/react
-          let libraries = getLibrariesForVersion(~version=initVersion)
-
-          switch await attachCompilerAndLibraries(~version=initVersion, ~libraries, ()) {
-          | Ok() =>
-            let instance = Compiler.make()
-            let apiVersion = apiVersion->Version.fromString
-
-            // Note: The compiler bundle currently defaults to
-            // commonjs when initiating the compiler, but our playground
-            // should default to ES6. So we override the config
-            // and use the `setConfig` function to sync up the
-            // internal compiler state with our playground state.
-            let config = {
-              ...instance->Compiler.getConfig,
-              module_system: "es6",
-            }
-            instance->Compiler.setConfig(config)
-
-            let selected = {
-              id: initVersion,
-              apiVersion,
-              compilerVersion: instance->Compiler.version,
-              ocamlVersion: instance->Compiler.ocamlVersion,
-              config,
-              libraries,
-              instance,
-            }
-
-            let targetLang =
-              Version.availableLanguages(apiVersion)
-              ->Js.Array2.find(l => l === initialLang)
-              ->Belt.Option.getWithDefault(Version.defaultTargetLang)
-
-            setState(_ => Ready({
-              selected,
-              targetLang,
-              versions,
-              experimentalVersions: CdnMeta.experimentalVersions,
-              errors: [],
-              result: FinalResult.Nothing,
-            }))
-          | Error(errs) =>
-            let msg = Js.Array2.joinWith(errs, "; ")
-
-            dispatchError(CompilerLoadingError(msg))
+          | None => dispatchError(CompilerLoadingError("Cant not found the initial version"))
           }
         }
       | SwitchingCompiler(ready, version) =>
@@ -413,13 +466,20 @@ let useCompilerManager = (
           LoadScript.removeScript(~src=CdnMeta.getCompilerUrl(ready.selected.id))
 
           // We are removing the previous libraries, therefore we use ready.selected here
-          Belt.Array.forEach(ready.selected.libraries, lib =>
+          Array.forEach(ready.selected.libraries, lib =>
             LoadScript.removeScript(~src=CdnMeta.getLibraryCmijUrl(ready.selected.id, lib))
           )
 
           let instance = Compiler.make()
           let apiVersion = apiVersion->Version.fromString
-          let config = instance->Compiler.getConfig
+          let open_modules = getOpenModules(~apiVersion, ~libraries)
+
+          let config = {
+            ...instance->Compiler.getConfig,
+            module_system: defaultModuleSystem,
+            ?open_modules,
+          }
+          instance->Compiler.setConfig(config)
 
           let selected = {
             id: version,
@@ -432,53 +492,115 @@ let useCompilerManager = (
           }
 
           setState(_ => Ready({
+            code: ready.code,
             selected,
             targetLang: Version.defaultTargetLang,
             versions: ready.versions,
-            experimentalVersions: ready.experimentalVersions,
             errors: [],
             result: FinalResult.Nothing,
+            autoRun: ready.autoRun,
+            validReactCode: ready.validReactCode,
+            logs: [],
           }))
         | Error(errs) =>
-          let msg = Js.Array2.joinWith(errs, "; ")
+          let msg = Array.join(errs, "; ")
 
           dispatchError(CompilerLoadingError(msg))
         }
-      | Compiling(ready, (lang, code)) =>
+      | Compiling({state: {targetLang: lang, code, autoRun} as ready}) =>
         let apiVersion = ready.selected.apiVersion
         let instance = ready.selected.instance
 
         let compResult = switch apiVersion {
         | V1 =>
           switch lang {
-          | Lang.OCaml => instance->Compiler.ocamlCompile(code)
           | Lang.Reason => instance->Compiler.reasonCompile(code)
           | Lang.Res => instance->Compiler.resCompile(code)
           }
-        | V2 | V3 =>
+        | V2 | V3 | V4 =>
           switch lang {
-          | Lang.OCaml => instance->Compiler.ocamlCompile(code)
           | Lang.Reason =>
             CompilationResult.UnexpectedError(
               `Reason not supported with API version "${apiVersion->RescriptCompilerApi.Version.toString}"`,
             )
           | Lang.Res => instance->Compiler.resCompile(code)
           }
+        | V5 =>
+          switch lang {
+          | Lang.Res => instance->Compiler.resCompile(code)
+          | _ => CompilationResult.UnexpectedError(`Can't handle with lang: ${lang->Lang.toString}`)
+          }
         | UnknownVersion(version) =>
           CompilationResult.UnexpectedError(
             `Can't handle result of compiler API version "${version}"`,
           )
         }
+        let ready = {...ready, result: FinalResult.Comp(compResult)}
+        setState(_ =>
+          switch (ready.result, autoRun) {
+          | (FinalResult.Comp(Success({jsCode})), true) => Executing({state: ready, jsCode})
+          | _ => Ready(ready)
+          }
+        )
+      | Executing({state, jsCode}) =>
+        open Babel
 
-        setState(_ => Ready({...ready, result: FinalResult.Comp(compResult)}))
-      | SetupFailed(_)
-      | Ready(_) => ()
+        let ast = Parser.parse(jsCode, {sourceType: "module"})
+        let {entryPointExists, code, imports} = PlaygroundValidator.validate(ast)
+        let imports = imports->Dict.mapValues(path => {
+          let filename = path->String.sliceToEnd(~start=9) // the part after "./stdlib/"
+          let filename = switch state.selected.id {
+          | {major: 12, minor: 0, patch: 0, preRelease: Some(Alpha(alpha))} if alpha < 8 =>
+            let filename = if filename->String.startsWith("core__") {
+              filename->String.sliceToEnd(~start=6)
+            } else {
+              filename
+            }
+            capitalizeFirstLetter(filename)
+          | {major} if major < 12 && filename->String.startsWith("core__") =>
+            capitalizeFirstLetter(filename)
+          | _ => filename
+          }
+          let compilerVersion = switch state.selected.id {
+          | {major: 12, minor: 0, patch: 0, preRelease: Some(Alpha(alpha))} if alpha < 9 => {
+              Semver.major: 12,
+              minor: 0,
+              patch: 0,
+              preRelease: Some(Alpha(9)),
+            }
+          | {major, minor} if (major === 11 && minor < 2) || major < 11 => {
+              major: 11,
+              minor: 2,
+              patch: 0,
+              preRelease: Some(Beta(2)),
+            }
+          | version => version
+          }
+          CdnMeta.getStdlibRuntimeUrl(compilerVersion, filename)
+        })
+
+        entryPointExists
+          ? code->wrapReactApp->EvalIFrame.sendOutput(imports)
+          : EvalIFrame.sendOutput(code, imports)
+        setState(_ => Ready({...state, logs: [], validReactCode: entryPointExists}))
+      | SetupFailed(_) => ()
+      | Ready(ready) =>
+        let url = createUrl(router.route, ready)
+        WebAPI.History.replaceState(history, ~data=JSON.Null, ~unused="", ~url)
       }
     }
 
-    updateState()->ignore
+    updateState()->Promise.ignore
     None
-  }, [state])
+  }, (
+    state,
+    dispatchError,
+    initialVersion,
+    initialModuleSystem,
+    initialLang,
+    versions,
+    router.route,
+  ))
 
   (state, dispatch)
 }

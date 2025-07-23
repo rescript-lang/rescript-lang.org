@@ -33,20 +33,17 @@ module HoverHint: {
 /* The module for interacting with the imperative CodeMirror API */
 module CM: {
   module Options: {
-    type t
-
-    let t: (
-      ~theme: string,
-      ~gutters: array<string>=?,
-      ~mode: string,
-      ~lineNumbers: bool=?,
-      ~readOnly: bool=?,
-      ~lineWrapping: bool=?,
-      ~fixedGutter: bool=?,
-      ~scrollbarStyle: string=?,
-      ~keyMap: string=?,
-      unit,
-    ) => t
+    type t = {
+      theme: string,
+      gutters?: array<string>,
+      mode: string,
+      lineNumbers?: bool,
+      readOnly?: bool,
+      lineWrapping?: bool,
+      fixedGutter?: bool,
+      scrollbarStyle?: string,
+      keyMap?: string,
+    }
   }
 }
 

@@ -41,7 +41,7 @@ The `setState` function can be passed down to other components as well, which is
 
 ### Using State for a Text Input
 
-```res
+```res example
 @react.component
 let make = () => {
   let (text, setText) = React.useState(_ => "");
@@ -65,7 +65,7 @@ In this example, we are creating a `ThemeContainer` component that manages a `da
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res example
 // ThemeContainer.res
 module ControlPanel = {
   @react.component
@@ -132,31 +132,3 @@ function ThemeContainer(Props) {
 </CodeTab>
 
 Note that whenever `setDarkmode` is returning a new value (e.g. switching from `true` -> `false`), it will cause a re-render for `ThemeContainer`'s `className` and the toggle text of its nested `ControlPanel`.
-
-
-## Uncurried Version
-
-For cleaner JS output, you can use `React.Uncurried.useState` instead:
-
-<CodeTab labels={["ReScript", "JS Output"]}>
-
-```res
-let (state, setState) = React.Uncurried.useState(_ => 0)
-
-setState(. prev => prev + 1)
-```
-
-```js
-var match = React.useState(function () {
-      return 0;
-  });
-
-var setState = match[1];
-
-setState(function (prev) {
-      return prev + 1 | 0;
-    });
-```
-
-</CodeTab>
-

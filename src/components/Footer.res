@@ -14,7 +14,7 @@ module Section = {
 let make = () => {
   let linkClass = "hover:underline hover:pointer"
   let iconLink = "hover:pointer hover:text-gray-60-tr"
-  let copyrightYear = Js.Date.make()->Js.Date.getFullYear->Js.Float.toString
+  let copyrightYear = Date.make()->Date.getFullYear->Int.toString
 
   <footer className="flex justify-center border-t border-gray-10">
     <div
@@ -23,22 +23,6 @@ let make = () => {
         <img className="w-40 mb-5" src="/static/rescript_logo_black.svg" />
         <div className="text-16">
           <p> {React.string(`© ${copyrightYear} The ReScript Project`)} </p>
-          <p>
-            {React.string("Software and assets distribution powered by ")}
-            <Markdown.A href="https://www.keycdn.com/"> {React.string("KeyCDN")} </Markdown.A>
-            {React.string(".")}
-          </p>
-          <p>
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              href="https://simpleanalytics.com/rescript-lang.org">
-              <img
-                className="h-[2.25rem] mt-6"
-                src="https://simpleanalyticsbadge.com/rescript-lang.org?counter=true&radius=13"
-              />
-            </a>
-          </p>
         </div>
       </div>
       <div
@@ -46,8 +30,8 @@ let make = () => {
         <Section title="About">
           <ul className="text-16 text-gray-80-tr space-y-2">
             <li>
-              <Next.Link href="/community#core-team">
-                <a className={linkClass}> {React.string("Team")} </a>
+              <Next.Link href="/community" className={linkClass}>
+                {React.string("Community")}
               </Next.Link>
             </li>
             <li>
@@ -59,13 +43,16 @@ let make = () => {
         </Section>
         <Section title="Find us on">
           <div className="flex space-x-3 text-gray-100">
-            <a className=iconLink rel="noopener noreferrer" href="https://github.com/rescript-lang">
+            <a className=iconLink rel="noopener noreferrer" href=Constants.githubHref>
               <Icon.GitHub className="w-6 h-6" />
             </a>
-            <a className=iconLink rel="noopener noreferrer" href="https://twitter.com/rescriptlang">
-              <Icon.Twitter className="w-6 h-6" />
+            <a className=iconLink rel="noopener noreferrer" href=Constants.xHref>
+              <Icon.X className="w-6 h-6" />
             </a>
-            <a className=iconLink rel="noopener noreferrer" href="https://forum.rescript-lang.org">
+            <a className=iconLink rel="noopener noreferrer" href=Constants.blueSkyHref>
+              <Icon.Bluesky className="w-6 h-6" />
+            </a>
+            <a className=iconLink rel="noopener noreferrer" href=Constants.discourseHref>
               <Icon.Discourse className="w-6 h-6" />
             </a>
           </div>
@@ -74,3 +61,5 @@ let make = () => {
     </div>
   </footer>
 }
+
+let make = React.memo(make)
