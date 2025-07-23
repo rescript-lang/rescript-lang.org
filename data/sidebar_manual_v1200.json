@@ -62,7 +62,6 @@
     "build-configuration",
     "build-configuration-schema",
     "build-external-stdlib",
-    "build-pinned-dependencies",
     "build-monorepo-setup",
     "interop-with-js-build-systems",
     "build-performance",
