@@ -5526,9 +5526,9 @@
         "kind": "value",
         "name": "getExn",
         "docstrings": [
-          "`getExn(res)`: when `res` is `Ok(n)`, returns `n` when `res` is `Error(m)`, raise an exception\n\n  ```res example\n  Result.getExn(Result.Ok(42)) == 42\n  \n  switch Result.getExn(Error(\"Invalid data\")) {\n  | exception Not_found => assert(true)\n  | _ => assert(false)\n  }\n  ```"
+          "`getExn(res, ~message=?)` returns `n` if `res` is `Ok(n)`, otherwise throws an exception with the message provided, or a generic message if no message was provided.\n\n  ```res example\n  Result.getExn(Result.Ok(42)) == 42\n  \n  switch Result.getExn(Error(\"Invalid data\")) {\n  | exception _ => assert(true)\n  | _ => assert(false)\n  }\n\n  switch Result.getExn(Error(\"Invalid data\"), ~message=\"was Error!\") {\n  | exception _ => assert(true) // Throws a JsError with the message \"was Error!\"\n  | _ => assert(false)\n  }\n  ```"
         ],
-        "signature": "let getExn: result<'a, 'b> => 'a",
+        "signature": "let getExn: (result<'a, 'b>, ~message: string=?) => 'a",
         "deprecated": "Use 'getOrThrow' instead"
       },
       {
@@ -5536,9 +5536,9 @@
         "kind": "value",
         "name": "getOrThrow",
         "docstrings": [
-          "`getOrThrow(res)`: when `res` is `Ok(n)`, returns `n` when `res` is `Error(m)`, raise an exception\n\n  ```res example\n  Result.getOrThrow(Result.Ok(42)) == 42\n  \n  switch Result.getOrThrow(Error(\"Invalid data\")) {\n  | exception Not_found => assert(true)\n  | _ => assert(false)\n  }\n  ```"
+          "`getOrThrow(res, ~message=?)` returns `n` if `res` is `Ok(n)`, otherwise throws an exception with the message provided, or a generic message if no message was provided.\n\n  ```res example\n  Result.getOrThrow(Result.Ok(42)) == 42\n  \n  switch Result.getOrThrow(Error(\"Invalid data\")) {\n  | exception _ => assert(true)\n  | _ => assert(false)\n  }\n\n  switch Result.getOrThrow(Error(\"Invalid data\"), ~message=\"was Error!\") {\n  | exception _ => assert(true) // Throws a JsError with the message \"was Error!\"\n  | _ => assert(false)\n  }\n  ```"
         ],
-        "signature": "let getOrThrow: result<'a, 'b> => 'a"
+        "signature": "let getOrThrow: (result<'a, 'b>, ~message: string=?) => 'a"
       },
       {
         "id": "Stdlib.Result.mapOr",
@@ -5745,6 +5745,15 @@
         ],
         "signature": "let fromStringWithFlags: (string, ~flags: string) => t",
         "deprecated": "Use `fromString` instead"
+      },
+      {
+        "id": "Stdlib.RegExp.escape",
+        "kind": "value",
+        "name": "escape",
+        "docstrings": [
+          "`escape(string)` escapes any potential regex syntax characters in a string.\n\nSee [`RegExp.escape`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/escape) on MDN.\n\n## Examples\n```rescript\nlet literal = \"foo[bar]\"\nlet regexp = literal->RegExp.escape->RegExp.fromString\nregexp->RegExp.test(\"foo[bar]\") == true\n```\n\n## Remark\n\nSince May 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers."
+        ],
+        "signature": "let escape: string => string"
       },
       {
         "id": "Stdlib.RegExp.test",
@@ -6282,7 +6291,7 @@
         "kind": "value",
         "name": "getExn",
         "docstrings": [
-          "`getExn(opt, ~message=?)` returns `value` if `opt` is `Some(value)`, otherwise raises an exception with the message provided, or a generic message if no message was provided.\n\n```rescript\nOption.getExn(Some(3)) == 3\n\nswitch Option.getExn(None) {\n| exception _ => assert(true)\n| _ => assert(false)\n}\n\nswitch Option.getExn(None, ~message=\"was None!\") {\n| exception _ => assert(true) // Raises an Error with the message \"was None!\"\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises an error if `opt` is `None`"
+          "`getExn(opt, ~message=?)` returns `value` if `opt` is `Some(value)`, otherwise throws an exception with the message provided, or a generic message if no message was provided.\n\n```rescript\nOption.getExn(Some(3)) == 3\n\nswitch Option.getExn(None) {\n| exception _ => assert(true)\n| _ => assert(false)\n}\n\nswitch Option.getExn(None, ~message=\"was None!\") {\n| exception _ => assert(true) // Throws a JsError with the message \"was None!\"\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Throws an error if `opt` is `None`"
         ],
         "signature": "let getExn: (option<'a>, ~message: string=?) => 'a",
         "deprecated": "Use `getOrThrow` instead"
@@ -6292,7 +6301,7 @@
         "kind": "value",
         "name": "getOrThrow",
         "docstrings": [
-          "`getOrThrow(opt, ~message=?)` returns `value` if `opt` is `Some(value)`, otherwise raises an exception with the message provided, or a generic message if no message was provided.\n\n```rescript\nOption.getOrThrow(Some(3)) == 3\n\nswitch Option.getOrThrow(None) {\n| exception _ => assert(true)\n| _ => assert(false)\n}\n\nswitch Option.getOrThrow(None, ~message=\"was None!\") {\n| exception _ => assert(true) // Raises an Error with the message \"was None!\"\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises an error if `opt` is `None`"
+          "`getOrThrow(opt, ~message=?)` returns `value` if `opt` is `Some(value)`, otherwise throws an exception with the message provided, or a generic message if no message was provided.\n\n```rescript\nOption.getOrThrow(Some(3)) == 3\n\nswitch Option.getOrThrow(None) {\n| exception _ => assert(true)\n| _ => assert(false)\n}\n\nswitch Option.getOrThrow(None, ~message=\"was None!\") {\n| exception _ => assert(true) // Throws a JsError with the message \"was None!\"\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Throws an error if `opt` is `None`"
         ],
         "signature": "let getOrThrow: (option<'a>, ~message: string=?) => 'a"
       },
