@@ -979,7 +979,7 @@ module Settings = {
         React.null
       }}
       <div className="mt-6">
-        <div className=titleClass> {React.string("Vim")} </div>
+        <div className=titleClass> {React.string("Use Vim Keymap")} </div>
         <ToggleSelection
           values=[CodeMirror.KeyMap.Default, CodeMirror.KeyMap.Vim]
           toLabel={enabled =>
@@ -1485,8 +1485,8 @@ let make = (~versions: array<string>) => {
   let (keyMap, setKeyMap) = React.useState(() => {
     Dom.Storage2.localStorage
     ->Dom.Storage2.getItem("vimMode")
-    ->Belt.Option.map(CodeMirror.KeyMap.fromString)
-    ->Belt.Option.getWithDefault(CodeMirror.KeyMap.Default)
+    ->Option.map(CodeMirror.KeyMap.fromString)
+    ->Option.getOr(CodeMirror.KeyMap.Default)
   })
 
   React.useEffect1(() => {
