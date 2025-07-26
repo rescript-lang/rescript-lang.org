@@ -3,7 +3,7 @@
     "id": "Js",
     "name": "Js",
     "docstrings": [
-      "The Js module mostly contains ReScript bindings to _standard JavaScript APIs_\nlike [console.log](https://developer.mozilla.org/en-US/docs/Web/API/Console/log),\nor the JavaScript\n[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String),\n[Date](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date), and\n[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)\nclasses.\n\nIt is meant as a zero-abstraction interop layer and directly exposes JavaScript functions as they are. If you can find your API in this module, prefer this over an equivalent Belt helper. For example, prefer [Js.Array2](js/array2) over [Belt.Array](belt/array)\n\n## Argument Order\n\nFor historical reasons, some APIs in the Js namespace (e.g. [Js.String](js/string)) are\nusing the data-last argument order whereas others (e.g. [Js.Date](js/date)) are using data-first.\n\nFor more information about these argument orders and the trade-offs between them, see\n[this blog post](https://www.javierchavarri.com/data-first-and-data-last-a-comparison/).\n\n_Eventually, all modules in the Js namespace are going to be migrated to data-first though._\n\nIn the meantime, there are several options for dealing with the data-last APIs:\n\n## Examples\n\n```rescript\n/* Js.String (data-last API used with pipe last operator) */\nJs.log(\\\"2019-11-10\\\" |> Js.String.split(\\\"-\\\"))\nJs.log(\\\"ReScript\\\" |> Js.String.startsWith(\\\"Re\\\"))\n\n/* Js.String (data-last API used with pipe first operator) */\nJs.log(\\\"2019-11-10\\\"->Js.String.split(\\\"-\\\", _))\nJs.log(\\\"ReScript\\\"->Js.String.startsWith(\\\"Re\\\", _))\n\n/* Js.String (data-last API used without any piping) */\nJs.log(Js.String.split(\\\"-\\\", \\\"2019-11-10\\\"))\nJs.log(Js.String.startsWith(\\\"Re\\\", \\\"ReScript\\\"))\n```\n## Js.Xxx2 Modules\n\nPrefer `Js.Array2` over `Js.Array`, `Js.String2` over `Js.String`, etc. The latters are old modules."
+      "The Js module mostly contains ReScript bindings to _standard JavaScript APIs_\nlike [console.log](https://developer.mozilla.org/en-US/docs/Web/API/Console/log),\nor the JavaScript\n[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String),\n[Date](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date), and\n[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)\nclasses.\n\nIt is meant as a zero-abstraction interop layer and directly exposes JavaScript functions as they are. If you can find your API in this module, prefer this over an equivalent Belt helper. For example, prefer [Js.Array2](js/array2) over [Belt.Array](belt/array)\n\n## Argument Order\n\nFor historical reasons, some APIs in the Js namespace (e.g. [Js.String](js/string)) are\nusing the data-last argument order whereas others (e.g. [Js.Date](js/date)) are using data-first.\n\nFor more information about these argument orders and the trade-offs between them, see\n[this blog post](https://www.javierchavarri.com/data-first-and-data-last-a-comparison/).\n\n_Eventually, all modules in the Js namespace are going to be migrated to data-first though._\n\n## Js.Xxx2 Modules\n\nPrefer `Js.Array2` over `Js.Array`, `Js.String2` over `Js.String`, etc. The latters are old modules."
     ],
     "items": [
       {
@@ -6649,7 +6649,7 @@
         "kind": "value",
         "name": "fromStringExn",
         "docstrings": [
-          "Parses the given `string` into a `bigint` using JavaScript semantics. Return the\nnumber as a `bigint` if successfully parsed. Uncaught syntax exception otherwise.\n\n## Examples\n\n```rescript\n/* returns 123n */\nJs.BigInt.fromStringExn(\"123\")\n\n/* returns 0n */\nJs.BigInt.fromStringExn(\"\")\n\n/* returns 17n */\nJs.BigInt.fromStringExn(\"0x11\")\n\n/* returns 3n */\nJs.BigInt.fromStringExn(\"0b11\")\n\n/* returns 9n */\nJs.BigInt.fromStringExn(\"0o11\")\n\n/* catch exception */\ntry {\n  Js.BigInt.fromStringExn(\"a\")\n} catch {\n| _ => ...\n}\n```"
+          "Parses the given `string` into a `bigint` using JavaScript semantics. Return the\nnumber as a `bigint` if successfully parsed. Uncaught syntax exception otherwise.\n\n## Examples\n\n```rescript\n/* returns 123n */\nJs.BigInt.fromStringExn(\"123\")\n\n/* returns 0n */\nJs.BigInt.fromStringExn(\"\")\n\n/* returns 17n */\nJs.BigInt.fromStringExn(\"0x11\")\n\n/* returns 3n */\nJs.BigInt.fromStringExn(\"0b11\")\n\n/* returns 9n */\nJs.BigInt.fromStringExn(\"0o11\")\n\n/* catch exception */\ntry {\n  Js.BigInt.fromStringExn(\"a\")\n} catch {\n| _ => Console.error(\"Error parsing bigint\")\n}\n```"
         ],
         "signature": "let fromStringExn: string => bigint"
       },
@@ -6903,7 +6903,7 @@
         "kind": "value",
         "name": "toExponential",
         "docstrings": [
-          "Formats a `float` using exponential (scientific) notation. Return a\n`string` representing the given value in exponential notation. Raise\nRangeError if digits is not in the range [0, 20] (inclusive). See [`toExponential`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toExponential) on MDN.\n\n## Examples\n\n```rescript\n/* prints \"7.71234e+1\" */\nJs.Float.toExponential(77.1234)->Js.log\n\n/* prints \"7.7e+1\" */\nJs.Float.toExponential(77.)->Js.log\n```"
+          "Formats a `float` using exponential (scientific) notation. Return a\n`string` representing the given value in exponential notation. Raise\nRangeError if digits is not in the range \\[0, 20\\] (inclusive). See [`toExponential`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toExponential) on MDN.\n\n## Examples\n\n```rescript\n/* prints \"7.71234e+1\" */\nJs.Float.toExponential(77.1234)->Js.log\n\n/* prints \"7.7e+1\" */\nJs.Float.toExponential(77.)->Js.log\n```"
         ],
         "signature": "let toExponential: float => string"
       },
@@ -6912,7 +6912,7 @@
         "kind": "value",
         "name": "toExponentialWithPrecision",
         "docstrings": [
-          "Formats a `float` using exponential (scientific) notation. `digits` specifies\nhow many digits should appear after the decimal point. The value must be in\nthe range [0, 20] (inclusive). Return a `string` representing the given value\nin exponential notation. The output will be rounded or padded with zeroes if\nnecessary. Raise RangeError if `digits` is not in the range [0, 20] (inclusive).\nSee [`toExponential`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toExponential) on MDN.\n\n## Examples\n\n```rescript\n/* prints \"7.71e+1\" */\nJs.Float.toExponentialWithPrecision(77.1234, ~digits=2)->Js.log\n```"
+          "Formats a `float` using exponential (scientific) notation. `digits` specifies\nhow many digits should appear after the decimal point. The value must be in\nthe range \\[0, 20\\] (inclusive). Return a `string` representing the given value\nin exponential notation. The output will be rounded or padded with zeroes if\nnecessary. Raise RangeError if `digits` is not in the range \\[0, 20\\] (inclusive).\nSee [`toExponential`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toExponential) on MDN.\n\n## Examples\n\n```rescript\n/* prints \"7.71e+1\" */\nJs.Float.toExponentialWithPrecision(77.1234, ~digits=2)->Js.log\n```"
         ],
         "signature": "let toExponentialWithPrecision: (float, ~digits: int) => string"
       },
@@ -6921,7 +6921,7 @@
         "kind": "value",
         "name": "toFixed",
         "docstrings": [
-          "Formats a `float` using fixed point notation. Return a `string` representing the\ngiven value in fixed-point notation (usually). Raise RangeError if digits is not\nin the range [0, 20] (inclusive). See [`toFixed`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed) on MDN.\n\n## Examples\n\n```rescript\n/* prints \"12346\" (note the rounding) */\nJs.Float.toFixed(12345.6789)->Js.log\n\n/* print \"1.2e+21\" */\nJs.Float.toFixed(1.2e21)->Js.log\n```"
+          "Formats a `float` using fixed point notation. Return a `string` representing the\ngiven value in fixed-point notation (usually). Raise RangeError if digits is not\nin the range \\[0, 20\\] (inclusive). See [`toFixed`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed) on MDN.\n\n## Examples\n\n```rescript\n/* prints \"12346\" (note the rounding) */\nJs.Float.toFixed(12345.6789)->Js.log\n\n/* print \"1.2e+21\" */\nJs.Float.toFixed(1.2e21)->Js.log\n```"
         ],
         "signature": "let toFixed: float => string"
       },
@@ -6930,7 +6930,7 @@
         "kind": "value",
         "name": "toFixedWithPrecision",
         "docstrings": [
-          "Formats a `float` using fixed point notation. `digits` specifies how many digits\nshould appear after the decimal point. The value must be in the range [0, 20]\n(inclusive). Defaults to `0`. Return a `string` representing the given value in\nfixed-point notation (usually). See [`toFixed`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed) on MDN.\n\nThe output will be rounded or padded with zeroes if necessary.\n\nRaise RangeError if digits is not in the range [0, 20] (inclusive)\n\n## Examples\n\n```rescript\n/* prints \"12345.7\" (note the rounding) */\nJs.Float.toFixedWithPrecision(12345.6789, ~digits=1)->Js.log\n\n/* prints \"0.00\" (note the added zeroes) */\nJs.Float.toFixedWithPrecision(0., ~digits=2)->Js.log\n```"
+          "Formats a `float` using fixed point notation. `digits` specifies how many digits\nshould appear after the decimal point. The value must be in the range \\[0, 20\\]\n(inclusive). Defaults to `0`. Return a `string` representing the given value in\nfixed-point notation (usually). See [`toFixed`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed) on MDN.\n\nThe output will be rounded or padded with zeroes if necessary.\n\nRaise RangeError if digits is not in the range \\[0, 20\\] (inclusive)\n\n## Examples\n\n```rescript\n/* prints \"12345.7\" (note the rounding) */\nJs.Float.toFixedWithPrecision(12345.6789, ~digits=1)->Js.log\n\n/* prints \"0.00\" (note the added zeroes) */\nJs.Float.toFixedWithPrecision(0., ~digits=2)->Js.log\n```"
         ],
         "signature": "let toFixedWithPrecision: (float, ~digits: int) => string"
       },
@@ -6966,7 +6966,7 @@
         "kind": "value",
         "name": "toStringWithRadix",
         "docstrings": [
-          "Formats a `float` as a string. `radix` specifies the radix base to use for the\nformatted number. The value must be in the range [2, 36] (inclusive). Return a\n`string` representing the given value in fixed-point (usually). See [`toString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toString) on MDN.\n\nRaise RangeError if radix is not in the range [2, 36] (inclusive)\n\n## Examples\n\n```rescript\n/* prints \"110\" */\nJs.Float.toStringWithRadix(6., ~radix=2)->Js.log\n\n/* prints \"11.001000111101011100001010001111010111000010100011111\" */\nJs.Float.toStringWithRadix(3.14, ~radix=2)->Js.log\n\n/* prints \"deadbeef\" */\nJs.Float.toStringWithRadix(3735928559., ~radix=16)->Js.log\n\n/* prints \"3f.gez4w97ry0a18ymf6qadcxr\" */\nJs.Float.toStringWithRadix(123.456, ~radix=36)->Js.log\n```"
+          "Formats a `float` as a string. `radix` specifies the radix base to use for the\nformatted number. The value must be in the range \\[2, 36\\] (inclusive). Return a\n`string` representing the given value in fixed-point (usually). See [`toString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toString) on MDN.\n\nRaise RangeError if radix is not in the range \\[2, 36\\] (inclusive)\n\n## Examples\n\n```rescript\n/* prints \"110\" */\nJs.Float.toStringWithRadix(6., ~radix=2)->Js.log\n\n/* prints \"11.001000111101011100001010001111010111000010100011111\" */\nJs.Float.toStringWithRadix(3.14, ~radix=2)->Js.log\n\n/* prints \"deadbeef\" */\nJs.Float.toStringWithRadix(3735928559., ~radix=16)->Js.log\n\n/* prints \"3f.gez4w97ry0a18ymf6qadcxr\" */\nJs.Float.toStringWithRadix(123.456, ~radix=36)->Js.log\n```"
         ],
         "signature": "let toStringWithRadix: (float, ~radix: int) => string"
       },
@@ -7304,7 +7304,7 @@
         "kind": "value",
         "name": "atan2",
         "docstrings": [
-          "Returns the angle (in radians) of the quotient `y /. x`. It is also the angle\nbetween the *x*-axis and point (*x*, *y*). See\n[`Math.atan2`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2)\non MDN.\n\n## Examples\n\n```rescript\nJs.Math.atan2(~y=0.0, ~x=10.0, ()) == 0.0\nJs.Math.atan2(~x=5.0, ~y=5.0, ()) == Js.Math._PI /. 4.0\nJs.Math.atan2(~x=-5.0, ~y=5.0, ())\nJs.Math.atan2(~x=-5.0, ~y=5.0, ()) == 3.0 *. Js.Math._PI /. 4.0\nJs.Math.atan2(~x=-0.0, ~y=-5.0, ()) == -.Js.Math._PI /. 2.0\n```"
+          "Returns the angle (in radians) of the quotient `y /. x`. It is also the angle\nbetween the *x*\\-axis and point (*x*, *y*). See\n[`Math.atan2`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2)\non MDN.\n\n## Examples\n\n```rescript\nJs.Math.atan2(~y=0.0, ~x=10.0, ()) == 0.0\nJs.Math.atan2(~x=5.0, ~y=5.0, ()) == Js.Math._PI /. 4.0\nJs.Math.atan2(~x=-5.0, ~y=5.0, ())\nJs.Math.atan2(~x=-5.0, ~y=5.0, ()) == 3.0 *. Js.Math._PI /. 4.0\nJs.Math.atan2(~x=-0.0, ~y=-5.0, ()) == -.Js.Math._PI /. 2.0\n```"
         ],
         "signature": "let atan2: (~y: float, ~x: float, unit) => float"
       },
@@ -7322,7 +7322,7 @@
         "kind": "value",
         "name": "unsafe_ceil_int",
         "docstrings": [
-          "Returns the smallest integer greater than or equal to the argument. This\nfunction may return values not representable by `int`, whose range is\n-2147483648 to 2147483647. This is because, in JavaScript, there are only\n64-bit floating point numbers, which can represent integers in the range\n±(2<sup>53</sup>-1) exactly. See\n[`Math.ceil`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/ceil)\non MDN.\n\n## Examples\n\n```rescript\nJs.Math.unsafe_ceil_int(3.1) == 4\nJs.Math.unsafe_ceil_int(3.0) == 3\nJs.Math.unsafe_ceil_int(-3.1) == -3\nJs.Math.unsafe_ceil_int(1.0e15) // result is outside range of int datatype\n```"
+          "Returns the smallest integer greater than or equal to the argument. This\nfunction may return values not representable by `int`, whose range is\n\\-2147483648 to 2147483647. This is because, in JavaScript, there are only\n64-bit floating point numbers, which can represent integers in the range\n±(2<sup>53</sup>\\-1) exactly. See\n[`Math.ceil`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/ceil)\non MDN.\n\n## Examples\n\n```rescript\nJs.Math.unsafe_ceil_int(3.1) == 4\nJs.Math.unsafe_ceil_int(3.0) == 3\nJs.Math.unsafe_ceil_int(-3.1) == -3\nJs.Math.unsafe_ceil_int(1.0e15) // result is outside range of int datatype\n```"
         ],
         "signature": "let unsafe_ceil_int: float => int"
       },
@@ -7410,7 +7410,7 @@
         "kind": "value",
         "name": "unsafe_floor_int",
         "docstrings": [
-          "Returns the largest integer less than or equal to the argument. This function\nmay return values not representable by `int`, whose range is -2147483648 to\n2147483647. This is because, in JavaScript, there are only 64-bit floating\npoint numbers, which can represent integers in the range\n±(2<sup>53</sup>-1) exactly. See\n[`Math.floor`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/floor)\non MDN.\n\n## Examples\n\n```rescript\nJs.Math.unsafe_floor_int(3.7) == 3\nJs.Math.unsafe_floor_int(3.0) == 3\nJs.Math.unsafe_floor_int(-3.7) == -4\nJs.Math.unsafe_floor_int(1.0e15) // result is outside range of int datatype\n```"
+          "Returns the largest integer less than or equal to the argument. This function\nmay return values not representable by `int`, whose range is -2147483648 to\n2147483647. This is because, in JavaScript, there are only 64-bit floating\npoint numbers, which can represent integers in the range\n±(2<sup>53</sup>\\-1) exactly. See\n[`Math.floor`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/floor)\non MDN.\n\n## Examples\n\n```rescript\nJs.Math.unsafe_floor_int(3.7) == 3\nJs.Math.unsafe_floor_int(3.0) == 3\nJs.Math.unsafe_floor_int(-3.7) == -4\nJs.Math.unsafe_floor_int(1.0e15) // result is outside range of int datatype\n```"
         ],
         "signature": "let unsafe_floor_int: float => int"
       },
@@ -7634,7 +7634,7 @@
         "kind": "value",
         "name": "unsafe_round",
         "docstrings": [
-          "Rounds its argument to nearest integer. For numbers with a fractional portion\nof exactly 0.5, the argument is rounded to the next integer in the direction\nof positive infinity. This function may return values not representable by\n`int`, whose range is -2147483648 to 2147483647. This is because, in\nJavaScript, there are only 64-bit floating point numbers, which can represent\nintegers in the range ±(2<sup>53</sup>-1) exactly. See\n[`Math.round`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round)\non MDN.\n\n## Examples\n\n```rescript\nJs.Math.unsafe_round(3.7) == 4\nJs.Math.unsafe_round(-3.5) == -3\nJs.Math.unsafe_round(2_150_000_000_000.3) // out of range for int\n```"
+          "Rounds its argument to nearest integer. For numbers with a fractional portion\nof exactly 0.5, the argument is rounded to the next integer in the direction\nof positive infinity. This function may return values not representable by\n`int`, whose range is -2147483648 to 2147483647. This is because, in\nJavaScript, there are only 64-bit floating point numbers, which can represent\nintegers in the range ±(2<sup>53</sup>\\-1) exactly. See\n[`Math.round`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round)\non MDN.\n\n## Examples\n\n```rescript\nJs.Math.unsafe_round(3.7) == 4\nJs.Math.unsafe_round(-3.5) == -3\nJs.Math.unsafe_round(2_150_000_000_000.3) // out of range for int\n```"
         ],
         "signature": "let unsafe_round: float => int"
       },
@@ -8001,7 +8001,7 @@
         "kind": "value",
         "name": "clearInterval",
         "docstrings": [
-          "Clear an interval started by `Js.Global.setInterval`\n\n## Examples\n\n```rescript\n/* API for a somewhat aggressive snoozing alarm clock */\n\nlet punchSleepyGuy = () => Js.log(\"Punch\")\n\nlet interval = ref(Js.Nullable.null)\n\nlet remind = () => {\n  Js.log(\"Wake Up!\")\n  punchSleepyGuy()\n}\n\nlet snooze = mins =>\n  interval := Js.Nullable.return(Js.Global.setInterval(remind, mins * 60 * 1000))\n\nlet cancel = () =>\n  Js.Nullable.iter(interval.contents, (. intervalId) => Js.Global.clearInterval(intervalId))\n```"
+          "Clear an interval started by `Js.Global.setInterval`\n\n## Examples\n\n```rescript\n/* API for a somewhat aggressive snoozing alarm clock */\n\nlet punchSleepyGuy = () => Js.log(\"Punch\")\n\nlet interval = ref(Js.Nullable.null)\n\nlet remind = () => {\n  Js.log(\"Wake Up!\")\n  punchSleepyGuy()\n}\n\nlet snooze = mins => interval := Js.Nullable.return(Js.Global.setInterval(remind, mins * 60 * 1000))\n\nlet cancel = () =>\n  Js.Nullable.iter(interval.contents, intervalId => Js.Global.clearInterval(intervalId))\n```"
         ],
         "signature": "let clearInterval: intervalId => unit"
       },
@@ -8010,7 +8010,7 @@
         "kind": "value",
         "name": "clearTimeout",
         "docstrings": [
-          "Clear a timeout started by `Js.Global.setTimeout`.\n\n## Examples\n\n```rescript\n/* A simple model of a code monkey's brain */\n\nlet closeHackerNewsTab = () => Js.log(\"close\")\n\nlet timer = ref(Js.Nullable.null)\n\nlet work = () => closeHackerNewsTab()\n\nlet procrastinate = mins => {\n  Js.Nullable.iter(timer.contents, (. timer) => Js.Global.clearTimeout(timer))\n  timer := Js.Nullable.return(Js.Global.setTimeout(work, mins * 60 * 1000))\n}\n```"
+          "Clear a timeout started by `Js.Global.setTimeout`.\n\n## Examples\n\n```rescript\n/* A simple model of a code monkey's brain */\n\nlet closeHackerNewsTab = () => Js.log(\"close\")\n\nlet timer = ref(Js.Nullable.null)\n\nlet work = () => closeHackerNewsTab()\n\nlet procrastinate = mins => {\n  Js.Nullable.iter(timer.contents, timer => Js.Global.clearTimeout(timer))\n  timer := Js.Nullable.return(Js.Global.setTimeout(work, mins * 60 * 1000))\n}\n```"
         ],
         "signature": "let clearTimeout: timeoutId => unit"
       },
@@ -8207,7 +8207,7 @@
         "kind": "value",
         "name": "map",
         "docstrings": [
-          "`map(f, dict)` maps `dict` to a new dictionary with the same keys, using the\nfunction `f` to map each value.\n\n## Examples\n\n```rescript\nlet prices = Js.Dict.fromList(list{(\"pen\", 1.00), (\"book\", 5.00), (\"stapler\", 7.00)})\n\nlet discount = (. price) => price *. 0.90\nlet salePrices = Js.Dict.map(discount, prices)\n\nsalePrices == Js.Dict.fromList(list{(\"pen\", 0.90), (\"book\", 4.50), (\"stapler\", 6.30)})\n```"
+          "`map(f, dict)` maps `dict` to a new dictionary with the same keys, using the\nfunction `f` to map each value.\n\n## Examples\n\n```rescript\nlet prices = Js.Dict.fromList(list{(\"pen\", 1.00), (\"book\", 5.00), (\"stapler\", 7.00)})\n\nlet discount = price => price *. 0.90\nlet salePrices = Js.Dict.map(discount, prices)\n\nsalePrices == Js.Dict.fromList(list{(\"pen\", 0.90), (\"book\", 4.50), (\"stapler\", 6.30)})\n```"
         ],
         "signature": "let map: ('a => 'b, t<'a>) => t<'b>"
       }
@@ -8654,7 +8654,7 @@
         "kind": "value",
         "name": "setMinutesSMs",
         "docstrings": [
-          "Sets the given `Date`’s minutes, seconds, and milliseconds to the values in the\nlabeled arguments according to the current time zone. Returns the number of\nmilliseconds since the epoch of the updated `Date`. *This function modifies the\noriginal `Date`.* See\n[`Date.setMinutes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setMinutes)\non MDN.\n\n## Examples\n\n```rescript\nlet date1 = Js.Date.fromFloat(123456654321.0) // 29 November 1973 21:30:54.321 GMT\nlet futureTime = Js.Date.setMinutesSMs(\n  date1,\n  ~minutes=34.0,\n  ~seconds=56.0,\n  ~milliseconds=789.0,\n  (),\n)\ndate1 == Js.Date.fromString(\"1973-11-29T21:34:56.789Z00:00\")\nfutureTime == Js.Date.getTime(date1)\n```"
+          "Sets the given `Date`’s minutes, seconds, and milliseconds to the values in the\nlabeled arguments according to the current time zone. Returns the number of\nmilliseconds since the epoch of the updated `Date`. *This function modifies the\noriginal `Date`.* See\n[`Date.setMinutes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setMinutes)\non MDN.\n\n## Examples\n\n```rescript\nlet date1 = Js.Date.fromFloat(123456654321.0) // 29 November 1973 21:30:54.321 GMT\nlet futureTime = Js.Date.setMinutesSMs(date1, ~minutes=34.0, ~seconds=56.0, ~milliseconds=789.0, ())\ndate1 == Js.Date.fromString(\"1973-11-29T21:34:56.789Z00:00\")\nfutureTime == Js.Date.getTime(date1)\n```"
         ],
         "signature": "let setMinutesSMs: (\n  t,\n  ~minutes: float,\n  ~seconds: float,\n  ~milliseconds: float,\n  unit,\n) => float"
       },
@@ -9307,7 +9307,7 @@
         "kind": "value",
         "name": "lastIndex",
         "docstrings": [
-          "Returns the index where the next match will start its search. This property\nwill be modified when the RegExp object is used, if the global (\"g\") flag is\nset.\n\n## Examples\n\n```rescript\nlet re = /ab*TODO/g\nlet str = \"abbcdefabh\"\n\nlet break = ref(false)\nwhile !break.contents {\n  switch Js.Re.exec_(re, str) {\n  | Some(result) => Js.Nullable.iter(Js.Re.captures(result)[0], (. match_) => {\n      let next = Belt.Int.toString(Js.Re.lastIndex(re))\n      Js.log(\"Found \" ++ (match_ ++ (\". Next match starts at \" ++ next)))\n    })\n  | None => break := true\n  }\n}\n```\n\nSee\n[`RegExp: lastIndex`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/lastIndex)\non MDN."
+          "Returns the index where the next match will start its search. This property\nwill be modified when the RegExp object is used, if the global (\"g\") flag is\nset.\n\n## Examples\n\n```rescript\nlet re = /ab*TODO/g\nlet str = \"abbcdefabh\"\n\nlet break = ref(false)\nwhile !break.contents {\n  switch Js.Re.exec_(re, str) {\n  | Some(result) =>\n    Js.Nullable.iter(Js.Re.captures(result)[0], match_ => {\n      let next = Belt.Int.toString(Js.Re.lastIndex(re))\n      Js.log(\"Found \" ++ (match_ ++ (\". Next match starts at \" ++ next)))\n    })\n  | None => break := true\n  }\n}\n```\n\nSee\n[`RegExp: lastIndex`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/lastIndex)\non MDN."
         ],
         "signature": "let lastIndex: t => int"
       },
@@ -9361,7 +9361,7 @@
         "kind": "value",
         "name": "exec_",
         "docstrings": [
-          "Executes a search on a given string using the given RegExp object.\nReturns `Some(Js.Re.result)` if a match is found, `None` otherwise.\n\n## Examples\n\n```rescript\n/* Match \"quick brown\" followed by \"jumps\", ignoring characters in between\n * Remember \"brown\" and \"jumps\"\n  * Ignore case\n  */\n\nlet re = /quick\\s(brown).+?(jumps)/ig\nlet result = Js.Re.exec_(re, \"The Quick Brown Fox Jumps Over The Lazy Dog\")\n```\n\nSee [`RegExp.prototype.exec()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec)\non MDN."
+          "Executes a search on a given string using the given RegExp object.\nReturns `Some(Js.Re.result)` if a match is found, `None` otherwise.\n\n## Examples\n\n```rescript\n/* Match \"quick brown\" followed by \"jumps\", ignoring characters in between\n * Remember \"brown\" and \"jumps\"\n * Ignore case\n */\n\nlet re = /quick\\s(brown).+?(jumps)/ig\nlet result = Js.Re.exec_(re, \"The Quick Brown Fox Jumps Over The Lazy Dog\")\n```\n\nSee [`RegExp.prototype.exec()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec)\non MDN."
         ],
         "signature": "let exec_: (t, string) => option<result>"
       },
@@ -9370,7 +9370,7 @@
         "kind": "value",
         "name": "test_",
         "docstrings": [
-          "Tests whether the given RegExp object will match a given `string`.\nReturns true if a match is found, false otherwise.\n\n## Examples\n\n```rescript\n/* A simple implementation of Js.String.startsWith */\n\nlet str = \"hello world!\"\n\nlet startsWith = (target, substring) =>\n  Js.Re.fromString(\"^\" ++ substring)->Js.Re.test_(target)\n\nJs.log(str->startsWith(\"hello\")) /* prints \"true\" */\n```\n\nSee [`RegExp.prototype.test()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test)\non MDN."
+          "Tests whether the given RegExp object will match a given `string`.\nReturns true if a match is found, false otherwise.\n\n## Examples\n\n```rescript\n/* A simple implementation of Js.String.startsWith */\n\nlet str = \"hello world!\"\n\nlet startsWith = (target, substring) => Js.Re.fromString(\"^\" ++ substring)->Js.Re.test_(target)\n\nJs.log(str->startsWith(\"hello\")) /* prints \"true\" */\n```\n\nSee [`RegExp.prototype.test()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test)\non MDN."
         ],
         "signature": "let test_: (t, string) => bool"
       }
@@ -9459,7 +9459,7 @@
         "kind": "value",
         "name": "charAt",
         "docstrings": [
-          "`charAt(s, n)` gets the character at index `n` within string `s`. If `n` is\nnegative or greater than the length of `s`, it returns the empty string. If the\nstring contains characters outside the range \\u0000-\\uffff, it will return the\nfirst 16-bit value at that position in the string.\n\nSee [`String.charAt`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charAt)\non MDN.\n\n## Examples\n\n```rescript\nJs.String2.charAt(\"Reason\", 0) == \"R\"\nJs.String2.charAt(\"Reason\", 12) == \"\"\nJs.String2.charAt(`Rẽasöń`, 5) == `ń`\n```"
+          "`charAt(s, n)` gets the character at index `n` within string `s`. If `n` is\nnegative or greater than the length of `s`, it returns the empty string. If the\nstring contains characters outside the range \\\\u0000-\\\\uffff, it will return the\nfirst 16-bit value at that position in the string.\n\nSee [`String.charAt`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charAt)\non MDN.\n\n## Examples\n\n```rescript\nJs.String2.charAt(\"Reason\", 0) == \"R\"\nJs.String2.charAt(\"Reason\", 12) == \"\"\nJs.String2.charAt(`Rẽasöń`, 5) == `ń`\n```"
         ],
         "signature": "let charAt: (t, int) => t"
       },
@@ -9549,7 +9549,7 @@
         "kind": "value",
         "name": "indexOfFrom",
         "docstrings": [
-          "`indexOfFrom(str, searchValue, start)` returns the position at which\n`searchValue` was found within `str` starting at character position `start`, or\n-1 if `searchValue` is not found in that portion of `str`. The return value is\nrelative to the beginning of the string, no matter where the search started\nfrom.\n\nSee [`String.indexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/indexOf)\non MDN.\n\n## Examples\n\n```rescript\nJs.String2.indexOfFrom(\"bookseller\", \"ok\", 1) == 2\nJs.String2.indexOfFrom(\"bookseller\", \"sell\", 2) == 4\nJs.String2.indexOfFrom(\"bookseller\", \"sell\", 5) == -1\n```"
+          "`indexOfFrom(str, searchValue, start)` returns the position at which\n`searchValue` was found within `str` starting at character position `start`, or\n\\-1 if `searchValue` is not found in that portion of `str`. The return value is\nrelative to the beginning of the string, no matter where the search started\nfrom.\n\nSee [`String.indexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/indexOf)\non MDN.\n\n## Examples\n\n```rescript\nJs.String2.indexOfFrom(\"bookseller\", \"ok\", 1) == 2\nJs.String2.indexOfFrom(\"bookseller\", \"sell\", 2) == 4\nJs.String2.indexOfFrom(\"bookseller\", \"sell\", 5) == -1\n```"
         ],
         "signature": "let indexOfFrom: (t, t, int) => int"
       },
@@ -9585,7 +9585,7 @@
         "kind": "value",
         "name": "match_",
         "docstrings": [
-          "`match(str, regexp)` matches a `string` against the given `regexp`. If there is\nno match, it returns `None`. For regular expressions without the g modifier, if\n  there is a match, the return value is `Some(array)` where the array contains:\n- The entire matched string\n- Any capture groups if the regexp had parentheses\nFor regular expressions with the g modifier, a matched expression returns\n`Some(array)` with all the matched substrings and no capture groups.\n\nSee [`String.match`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match)\non MDN.\n\n## Examples\n\n```rescript\nJs.String2.match_(\"The better bats\", /b[aeiou]t/) == Some([\"bet\"])\nJs.String2.match_(\"The better bats\", /b[aeiou]t/g) == Some([\"bet\", \"bat\"])\nJs.String2.match_(\"Today is 2018-04-05.\", /(\\d+)-(\\d+)-(\\d+)/) ==\n  Some([\"2018-04-05\", \"2018\", \"04\", \"05\"])\nJs.String2.match_(\"The large container.\", /b[aeiou]g/) == None\n```"
+          "`match(str, regexp)` matches a `string` against the given `regexp`. If there is\nno match, it returns `None`. For regular expressions without the g modifier, if\nthere is a match, the return value is `Some(array)` where the array contains:\n- The entire matched string\n- Any capture groups if the regexp had parentheses\n  For regular expressions with the g modifier, a matched expression returns\n  `Some(array)` with all the matched substrings and no capture groups.\n\nSee [`String.match`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match)\non MDN.\n\n## Examples\n\n```rescript\nJs.String2.match_(\"The better bats\", /b[aeiou]t/) == Some([\"bet\"])\nJs.String2.match_(\"The better bats\", /b[aeiou]t/g) == Some([\"bet\", \"bat\"])\nJs.String2.match_(\"Today is 2018-04-05.\", /(\\d+)-(\\d+)-(\\d+)/) ==\n  Some([\"2018-04-05\", \"2018\", \"04\", \"05\"])\nJs.String2.match_(\"The large container.\", /b[aeiou]g/) == None\n```"
         ],
         "signature": "let match_: (t, Js_re.t) => option<array<option<t>>>"
       },
@@ -9837,7 +9837,7 @@
         "kind": "value",
         "name": "anchor",
         "docstrings": [
-          "`anchor(anchorText, anchorName)` creates a string with an HTML `<a>` element\nwith name attribute of `anchorName` and `anchorText` as its content. Please do\nnot use this method, as it has been removed from the relevant web standards.\n\nSee [`String.anchor`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/anchor)\non MDN.\n\n## Examples\n\n```rescript\nJs.String2.anchor(\"Page One\", \"page1\") == \"<a name=\"page1\">Page One</a>\"\n```"
+          "`anchor(anchorText, anchorName)` creates a string with an HTML `<a>` element\nwith name attribute of `anchorName` and `anchorText` as its content. Please do\nnot use this method, as it has been removed from the relevant web standards.\n\nSee [`String.anchor`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/anchor)\non MDN.\n\n## Examples\n\n```rescript\nJs.String2.anchor(\"Page One\", \"page1\") == \"<a name=\\\"page1\\\">Page One</a>\"\n```"
         ],
         "signature": "let anchor: (t, t) => t"
       },
@@ -9846,7 +9846,7 @@
         "kind": "value",
         "name": "link",
         "docstrings": [
-          "ES2015: `link(linkText, urlText)` creates a string with an HTML `<a>` element\nwith href attribute of `urlText` and `linkText` as its content. Please do not\nuse this method, as it has been removed from the relevant web standards. See\n[`String.link`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/link)\non MDN.\n\n## Examples\n\n```rescript\nJs.String2.link(\"Go to page two\", \"page2.html\") == \"<a href=\"page2.html\">Go to page two</a>\"\n```"
+          "ES2015: `link(linkText, urlText)` creates a string with an HTML `<a>` element\nwith href attribute of `urlText` and `linkText` as its content. Please do not\nuse this method, as it has been removed from the relevant web standards. See\n[`String.link`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/link)\non MDN.\n\n## Examples\n\n```rescript\nJs.String2.link(\"Go to page two\", \"page2.html\") == \"<a href=\\\"page2.html\\\">Go to page two</a>\"\n```"
         ],
         "signature": "let link: (t, t) => t"
       },
@@ -10319,7 +10319,7 @@
         "kind": "value",
         "name": "isArray",
         "docstrings": [
-          "Returns `true` if its argument is an array; `false` otherwise. This is a runtime check, which is why the second example returns `true`---a list is internally represented as a nested JavaScript array.\n\n## Examples\n\n```rescript\nJs.Array2.isArray([5, 2, 3, 1, 4]) == true\nJs.Array2.isArray(list{5, 2, 3, 1, 4}) == true\nJs.Array2.isArray(\"abcd\") == false\n```"
+          "Returns `true` if its argument is an array; `false` otherwise. This is a runtime check, which is why the second example returns `true`\\---a list is internally represented as a nested JavaScript array.\n\n## Examples\n\n```rescript\nJs.Array2.isArray([5, 2, 3, 1, 4]) == true\nJs.Array2.isArray(list{5, 2, 3, 1, 4}) == true\nJs.Array2.isArray(\"abcd\") == false\n```"
         ],
         "signature": "let isArray: 'a => bool"
       },
@@ -10364,7 +10364,7 @@
         "kind": "value",
         "name": "fillInPlace",
         "docstrings": [
-          "Sets all elements of the given array (the first arumgent) to the designated\nvalue (the secon argument), returning the resulting array. *This function\n  modifies the original array.*\n\nSee\n[`Array.fill`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill)\non MDN.\n\n## Examples\n\n```rescript\nlet arr = [100, 101, 102, 103, 104]\nJs.Array2.fillInPlace(arr, 99) == [99, 99, 99, 99, 99]\narr == [99, 99, 99, 99, 99]\n```"
+          "Sets all elements of the given array (the first arumgent) to the designated\nvalue (the secon argument), returning the resulting array. *This function\nmodifies the original array.*\n\nSee\n[`Array.fill`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill)\non MDN.\n\n## Examples\n\n```rescript\nlet arr = [100, 101, 102, 103, 104]\nJs.Array2.fillInPlace(arr, 99) == [99, 99, 99, 99, 99]\narr == [99, 99, 99, 99, 99]\n```"
         ],
         "signature": "let fillInPlace: (t<'a>, 'a) => t<'a>"
       },
@@ -10445,7 +10445,7 @@
         "kind": "value",
         "name": "sortInPlaceWith",
         "docstrings": [
-          "Sorts the given array in place and returns the sorted array. *This function\n  modifies the original array.*\n\nThe first argument to `sortInPlaceWith()` is a function that compares two items\nfrom the array and returns:\n\n* an integer less than zero if the first item is less than the second item *\nzero if the items are equal * an integer greater than zero if the first item is\ngreater than the second item\n\nSee\n[`Array.sort`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)\non MDN.\n\n## Examples\n\n```rescript\n// sort by word length\nlet words = [\"horse\", \"aardvark\", \"dog\", \"camel\"]\nlet byLength = (s1, s2) => Js.String.length(s1) - Js.String.length(s2)\n\nJs.Array2.sortInPlaceWith(words, byLength) == [\"dog\", \"horse\", \"camel\", \"aardvark\"]\n\n// sort in reverse numeric order\nlet numbers = [3, 30, 10, 1, 20, 2]\nlet reverseNumeric = (n1, n2) => n2 - n1\nJs.Array2.sortInPlaceWith(numbers, reverseNumeric) == [30, 20, 10, 3, 2, 1]\n```"
+          "Sorts the given array in place and returns the sorted array. *This function\nmodifies the original array.*\n\nThe first argument to `sortInPlaceWith()` is a function that compares two items\nfrom the array and returns:\n\n* an integer less than zero if the first item is less than the second item \\*\n  zero if the items are equal \\* an integer greater than zero if the first item is\n  greater than the second item\n\nSee\n[`Array.sort`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)\non MDN.\n\n## Examples\n\n```rescript\n// sort by word length\nlet words = [\"horse\", \"aardvark\", \"dog\", \"camel\"]\nlet byLength = (s1, s2) => Js.String.length(s1) - Js.String.length(s2)\n\nJs.Array2.sortInPlaceWith(words, byLength) == [\"dog\", \"horse\", \"camel\", \"aardvark\"]\n\n// sort in reverse numeric order\nlet numbers = [3, 30, 10, 1, 20, 2]\nlet reverseNumeric = (n1, n2) => n2 - n1\nJs.Array2.sortInPlaceWith(numbers, reverseNumeric) == [30, 20, 10, 3, 2, 1]\n```"
         ],
         "signature": "let sortInPlaceWith: (t<'a>, ('a, 'a) => int) => t<'a>"
       },
@@ -10806,7 +10806,7 @@
     "name": "Array",
     "docstrings": [
       "Provide bindings to JS array",
-      "Provides bindings to JavaScript’s `Array` functions. These bindings are\noptimized for pipe-last (`|>`), where the array to be processed is the last\nparameter in the function.\n\nHere is an example to find the sum of squares of all even numbers in an array.\nWithout pipe last, we must call the functions in reverse order:\n\n## Examples\n\n```rescript\nlet isEven = x => mod(x, 2) == 0\nlet square = x => x * x\nlet result = {\n  open Js.Array\n  reduce(\\\"+\", 0, map(square, filter(isEven, [5, 2, 3, 4, 1])))\n}\n```\n\nWith pipe last, we call the functions in the “natural” order:\n\n```rescript\nlet isEven = x => mod(x, 2) == 0\nlet square = x => x * x\nlet result = {\n  open Js.Array\n  [5, 2, 3, 4, 1] |> filter(isEven) |> map(square) |> reduce(\"+\", 0)\n}\n```"
+      "Provides bindings to JavaScript’s `Array` functions. These bindings are\noptimized for pipe-last (`|>`), where the array to be processed is the last\nparameter in the function."
     ],
     "items": [
       {
@@ -11240,7 +11240,7 @@
         "kind": "value",
         "name": "unsafe_set",
         "docstrings": [
-          "Sets the value at the given position in the array if the position is in bounds.\nIf the index is out of bounds, well, “here there be dragons.“ *This function\n  modifies the original array.*\n\n## Examples\n\n```rescript\nlet arr = [100, 101, 102, 103]\nJs.Array.unsafe_set(arr, 3, 99)\n// result is [100, 101, 102, 99]\n\nJs.Array.unsafe_set(arr, 4, 88)\n// result is [100, 101, 102, 99, 88]\n\nJs.Array.unsafe_set(arr, 6, 77)\n// result is [100, 101, 102, 99, 88, <1 empty item>, 77]\n\nJs.Array.unsafe_set(arr, -1, 66)\n// you don't want to know.\n```"
+          "Sets the value at the given position in the array if the position is in bounds.\nIf the index is out of bounds, well, “here there be dragons.“ *This function\nmodifies the original array.*\n\n## Examples\n\n```rescript\nlet arr = [100, 101, 102, 103]\nJs.Array.unsafe_set(arr, 3, 99)\n// result is [100, 101, 102, 99]\n\nJs.Array.unsafe_set(arr, 4, 88)\n// result is [100, 101, 102, 99, 88]\n\nJs.Array.unsafe_set(arr, 6, 77)\n// result is [100, 101, 102, 99, 88, <1 empty item>, 77]\n\nJs.Array.unsafe_set(arr, -1, 66)\n// you don't want to know.\n```"
         ],
         "signature": "let unsafe_set: (array<'a>, int, 'a) => unit"
       }
@@ -11439,7 +11439,7 @@
         "kind": "value",
         "name": "bind",
         "docstrings": [
-          "Maps the contained value using the given function.\n\nIf `Js.null_undefined<'a>` contains a value, that value is unwrapped, mapped to\na `'b` using the given function `a' => 'b`, then wrapped back up and returned\nas `Js.null_undefined<'b>`.\n\n## Examples\n\n```rescript\nlet maybeGreetWorld = (maybeGreeting: Js.null_undefined<string>) =>\n  Js.Null_undefined.bind(maybeGreeting, (. greeting) => greeting ++ \" world!\")\n```"
+          "Maps the contained value using the given function.\n\nIf `Js.null_undefined<'a>` contains a value, that value is unwrapped, mapped to\na `'b` using the given function `a' => 'b`, then wrapped back up and returned\nas `Js.null_undefined<'b>`.\n\n## Examples\n\n```rescript\nlet maybeGreetWorld = (maybeGreeting: Js.null_undefined<string>) =>\n  Js.Null_undefined.bind(maybeGreeting, greeting => greeting ++ \" world!\")\n```"
         ],
         "signature": "let bind: (t<'a>, 'a => 'b) => t<'b>"
       },
@@ -11448,7 +11448,7 @@
         "kind": "value",
         "name": "iter",
         "docstrings": [
-          "Iterates over the contained value with the given function.\nIf `Js.null_undefined<'a>` contains a value, that value is unwrapped and applied to the given function.\n\n## Examples\n\n```rescript\nlet maybeSay = (maybeMessage: Js.null_undefined<string>) =>\n  Js.Null_undefined.iter(maybeMessage, (. message) => Js.log(message))\n```"
+          "Iterates over the contained value with the given function.\nIf `Js.null_undefined<'a>` contains a value, that value is unwrapped and applied to the given function.\n\n## Examples\n\n```rescript\nlet maybeSay = (maybeMessage: Js.null_undefined<string>) =>\n  Js.Null_undefined.iter(maybeMessage, message => Js.log(message))\n```"
         ],
         "signature": "let iter: (t<'a>, 'a => unit) => unit"
       },
@@ -11544,7 +11544,7 @@
         "kind": "value",
         "name": "bind",
         "docstrings": [
-          "Maps the contained value using the given function.\n\nIf `Js.null_undefined<'a>` contains a value, that value is unwrapped, mapped to\na `'b` using the given function `a' => 'b`, then wrapped back up and returned\nas `Js.null_undefined<'b>`.\n\n## Examples\n\n```rescript\nlet maybeGreetWorld = (maybeGreeting: Js.null_undefined<string>) =>\n  Js.Null_undefined.bind(maybeGreeting, (. greeting) => greeting ++ \" world!\")\n```"
+          "Maps the contained value using the given function.\n\nIf `Js.null_undefined<'a>` contains a value, that value is unwrapped, mapped to\na `'b` using the given function `a' => 'b`, then wrapped back up and returned\nas `Js.null_undefined<'b>`.\n\n## Examples\n\n```rescript\nlet maybeGreetWorld = (maybeGreeting: Js.null_undefined<string>) =>\n  Js.Null_undefined.bind(maybeGreeting, greeting => greeting ++ \" world!\")\n```"
         ],
         "signature": "let bind: (t<'a>, 'a => 'b) => t<'b>"
       },
@@ -11553,7 +11553,7 @@
         "kind": "value",
         "name": "iter",
         "docstrings": [
-          "Iterates over the contained value with the given function.\nIf `Js.null_undefined<'a>` contains a value, that value is unwrapped and applied to the given function.\n\n## Examples\n\n```rescript\nlet maybeSay = (maybeMessage: Js.null_undefined<string>) =>\n  Js.Null_undefined.iter(maybeMessage, (. message) => Js.log(message))\n```"
+          "Iterates over the contained value with the given function.\nIf `Js.null_undefined<'a>` contains a value, that value is unwrapped and applied to the given function.\n\n## Examples\n\n```rescript\nlet maybeSay = (maybeMessage: Js.null_undefined<string>) =>\n  Js.Null_undefined.iter(maybeMessage, message => Js.log(message))\n```"
         ],
         "signature": "let iter: (t<'a>, 'a => unit) => unit"
       },
@@ -11666,7 +11666,7 @@
         "kind": "value",
         "name": "bind",
         "docstrings": [
-          "Maps the contained value using the given function.\nIf `Js.undefined<'a>` contains a value, that value is unwrapped, mapped to a\n`'b` using the given function `a' => 'b`, then wrapped back up and returned as\n`Js.undefined<'b>`.\n\n## Examples\n\n```rescript\nlet maybeGreetWorld = (maybeGreeting: Js.undefined<string>) =>\n  Js.Undefined.bind(maybeGreeting, (. greeting) => greeting ++ \" world!\")\n```"
+          "Maps the contained value using the given function.\nIf `Js.undefined<'a>` contains a value, that value is unwrapped, mapped to a\n`'b` using the given function `a' => 'b`, then wrapped back up and returned as\n`Js.undefined<'b>`.\n\n## Examples\n\n```rescript\nlet maybeGreetWorld = (maybeGreeting: Js.undefined<string>) =>\n  Js.Undefined.bind(maybeGreeting, greeting => greeting ++ \" world!\")\n```"
         ],
         "signature": "let bind: (t<'a>, 'a => 'b) => t<'b>"
       },
@@ -11675,7 +11675,7 @@
         "kind": "value",
         "name": "iter",
         "docstrings": [
-          "Iterates over the contained value with the given function. If\n`Js.undefined<'a>` contains a value, that value is unwrapped and applied to the\ngiven function.\n\n## Examples\n\n```rescript\nlet maybeSay = (maybeMessage: Js.undefined<string>) =>\n  Js.Undefined.iter(maybeMessage, (. message) => Js.log(message))\n```"
+          "Iterates over the contained value with the given function. If\n`Js.undefined<'a>` contains a value, that value is unwrapped and applied to the\ngiven function.\n\n## Examples\n\n```rescript\nlet maybeSay = (maybeMessage: Js.undefined<string>) =>\n  Js.Undefined.iter(maybeMessage, message => Js.log(message))\n```"
         ],
         "signature": "let iter: (t<'a>, 'a => unit) => unit"
       },
@@ -11777,7 +11777,7 @@
         "kind": "value",
         "name": "bind",
         "docstrings": [
-          "Maps the contained value using the given function.\n\nIf `Js.null<'a>` contains a value, that value is unwrapped, mapped to a `'b`\nusing the given function `'a => 'b`, then wrapped back up and returned as\n`Js.null<'b>`.\n\n## Examples\n\n```rescript\nlet maybeGreetWorld = (maybeGreeting: Js.null<string>) =>\n  Js.Null.bind(maybeGreeting, (. greeting) => greeting ++ \" world!\")\n```"
+          "Maps the contained value using the given function.\n\nIf `Js.null<'a>` contains a value, that value is unwrapped, mapped to a `'b`\nusing the given function `'a => 'b`, then wrapped back up and returned as\n`Js.null<'b>`.\n\n## Examples\n\n```rescript\nlet maybeGreetWorld = (maybeGreeting: Js.null<string>) =>\n  Js.Null.bind(maybeGreeting, greeting => greeting ++ \" world!\")\n```"
         ],
         "signature": "let bind: (t<'a>, 'a => 'b) => t<'b>"
       },
@@ -11786,7 +11786,7 @@
         "kind": "value",
         "name": "iter",
         "docstrings": [
-          "Iterates over the contained value with the given function.\nIf `Js.null<'a>` contains a value, that value is unwrapped and applied to the given function.\n\n## Examples\n\n```rescript\nlet maybeSay = (maybeMessage: Js.null<string>) =>\n  Js.Null.iter(maybeMessage, (. message) => Js.log(message))\n```"
+          "Iterates over the contained value with the given function.\nIf `Js.null<'a>` contains a value, that value is unwrapped and applied to the given function.\n\n## Examples\n\n```rescript\nlet maybeSay = (maybeMessage: Js.null<string>) =>\n  Js.Null.iter(maybeMessage, message => Js.log(message))\n```"
         ],
         "signature": "let iter: (t<'a>, 'a => unit) => unit"
       },

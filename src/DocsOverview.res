@@ -30,35 +30,8 @@ let default = (~showVersionSelect=true) => {
     ("Reanalyze", "https://github.com/rescript-lang/reanalyze"),
   ]
 
-  let versionSelect = if showVersionSelect {
-    let onChange = evt => {
-      open Url
-      ReactEvent.Form.preventDefault(evt)
-      let version = (evt->ReactEvent.Form.target)["value"]
-      let url = Url.parse(router.route)
-
-      let targetUrl =
-        "/" ++
-        (Array.join(url.base, "/") ++
-        ("/" ++ (version ++ ("/" ++ Array.join(url.pagepath, "/")))))
-      router->Next.Router.push(targetUrl)
-    }
-
-    <div className="text-fire">
-      <VersionSelect
-        availableVersions=Constants.allManualVersions
-        nextVersion=?Constants.nextVersion
-        onChange
-        version
-      />
-    </div>
-  } else {
-    React.null
-  }
-
   <>
     <div>
-      versionSelect
       <div className="mb-6" />
       <Markdown.H1> {React.string("Docs")} </Markdown.H1>
     </div>
