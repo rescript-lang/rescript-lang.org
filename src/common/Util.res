@@ -79,3 +79,11 @@ module Date = {
     dateTimeFormat("en-US", {"month": "short", "day": "numeric", "year": "numeric"})->format(date)
   }
 }
+
+
+let removeVersionFromPathname = (pathname: string) =>
+  pathname->Stdlib.String.split("/")->Array.filter(s => {
+    let isVersion = s->Stdlib.String.includes("v") && s->Stdlib.String.includes(".")
+    !isVersion
+  })
+  ->Array.join("/")

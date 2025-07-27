@@ -133,12 +133,15 @@ module Sidebar = {
         None
       }
 
-    <>
+  let { pathname } = Next.Router.useRouter()
+
+    <>  
       <div
         id="sidebar"
         className={(
           isOpen ? "fixed w-full left-0 h-full z-20 min-w-320" : "hidden "
         ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible bg-white mt-28 md:mt-0"}>
+        
         <aside
           id="sidebar-content"
           className="relative top-0 px-4 w-full block md:pt-10 md:top-[7rem] md:sticky border-r border-gray-20 overflow-y-auto pb-24 h-auto max-h-[calc(100vh-7rem)]">
@@ -150,6 +153,10 @@ module Sidebar = {
             className="md:hidden h-16 flex pt-2 right-4 absolute">
             <Icon.Close />
           </button>
+          <div className="mb-4">
+          <p className="text-11">{React.string("You are viewing an older version of the documentation.")}</p>
+          <a className="text-11 text-fire-30 border-b border-fire" href={`https://rescript-lang.org${pathname->Util.removeVersionFromPathname}`}>{React.string("Go to the latest version.")}</a>
+          </div>
           <div className="flex justify-between">
             <div className="w-3/4 md:w-full"> toplevelNav </div>
           </div>
