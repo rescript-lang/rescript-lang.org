@@ -489,7 +489,7 @@ let default = (props: props) => {
             className="flex justify-between min-w-320 px-4 pt-16 lg:align-center w-full lg:px-8 pb-48">
             <MdxProvider components=MarkdownComponents.default>
               <main className="max-w-1280 w-full flex justify-center">
-                <div className="w-full max-w-[44.0625rem]">
+                <div className="w-full max-w-176.25">
                   <H1> {React.string("Libraries & Bindings")} </H1>
                   <SearchBox
                     placeholder="Enter a search term, name, keyword, etc"

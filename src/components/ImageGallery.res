@@ -50,7 +50,7 @@ let make = (
       setIndex(_ => i)
     }
     <div key={src} onClick className="group flex items-center hover:cursor-pointer h-8 w-8">
-      <div className={`h-[1px] group-hover:bg-gray-40 w-full ${bgColor}`} />
+      <div className={`h-px group-hover:bg-gray-40 w-full ${bgColor}`} />
     </div>
   })
 

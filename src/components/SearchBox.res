@@ -89,7 +89,7 @@ let make = (
       onKeyDown
       onChange={onChange}
       placeholder
-      className="text-16 outline-none ml-4 w-full"
+      className="text-16 outline-hidden ml-4 w-full"
       type_="text"
     />
     <button onFocus className={value === "" ? "hidden" : "block"} onMouseDown=onMouseDownClear>

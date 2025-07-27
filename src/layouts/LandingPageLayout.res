@@ -3,10 +3,10 @@ module Intro = {
   let make = () => {
     <section className="flex justify-center">
       <div className="max-w-1060 flex flex-col items-center px-5 sm:px-8 lg:box-content">
-        <h1 className="hl-title text-center max-w-[53rem]">
+        <h1 className="hl-title text-center max-w-212">
           {React.string("Fast, Simple, Fully Typed JavaScript from the Future")}
         </h1>
-        <h2 className="body-lg text-center text-gray-60 my-4 max-w-[40rem]">
+        <h2 className="body-lg text-center text-gray-60 my-4 max-w-md">
           {React.string(`ReScript is a robustly typed language that compiles to efficient
             and human-readable JavaScript. It comes with a lightning fast
             compiler toolchain that scales to any codebase size.`)}
@@ -110,7 +110,7 @@ export {
           //
           <div className="hidden md:block">
             <img
-              className="absolute z-0 left-0 top-0 -ml-10 -mt-6 h-[24rem] w-[24rem]"
+              className="absolute z-0 left-0 top-0 -ml-10 -mt-6 h-96 w-96"
               src="/static/lp/grid.svg"
             />
             <img
@@ -119,7 +119,7 @@ export {
           </div>
           <div className="hidden md:block">
             <img
-              className="absolute z-0 right-0 bottom-0 -mb-10 mt-24 -mr-10 h-[24rem] w-[24rem]"
+              className="absolute z-0 right-0 bottom-0 -mb-10 mt-24 -mr-10 h-96 w-96"
               src="/static/lp/grid.svg"
             />
             <img
@@ -230,7 +230,7 @@ module QuickInstall = {
   module Instructions = {
     let copyBox = text => {
       <div
-        className="flex justify-between items-center pl-6 pr-3 py-3 w-full bg-gray-10 border border-gray-20 rounded max-w-[25rem]">
+        className="flex justify-between items-center pl-6 pr-3 py-3 w-full bg-gray-10 border border-gray-20 rounded max-w-400">
         <span className="font-mono text-14  text-gray-70"> {React.string(text)} </span>
         <CopyButton code=text />
       </div>
@@ -258,7 +258,7 @@ module QuickInstall = {
     <section className="my-32 sm:px-4 sm:flex sm:justify-center">
       <div className="max-w-1060 flex flex-col w-full px-5 md:px-8 lg:px-8 lg:box-content ">
         //---Textblock on the left side---
-        <div className="relative max-w-[28rem]">
+        <div className="relative max-w-112">
           <p
             className="relative z-1 space-y-12 text-gray-80 font-semibold text-24 md:text-32 leading-2">
             <span className="bg-fire-5 rounded-lg border border-fire-10 p-1 ">
@@ -270,10 +270,10 @@ module QuickInstall = {
         //spacing between columns
         <div className="w-full mt-12 md:flex flex-col lg:flex-row md:justify-between ">
           <p
-            className="relative z-1 text-gray-80 font-semibold text-24 md:text-32 leading-2 max-w-[32rem]">
+            className="relative z-1 text-gray-80 font-semibold text-24 md:text-32 leading-2 max-w-lg">
             {React.string(`ReScript is used to ship and maintain mission-critical products with good UI and UX.`)}
           </p>
-          <div className="mt-16 lg:mt-0 self-end max-w-[25rem]">
+          <div className="mt-16 lg:mt-0 self-end max-w-400">
             <Instructions />
           </div>
         </div>
@@ -315,7 +315,7 @@ module MainUSP = {
         // Content
         <div
           className="relative max-w-1060 z-3 flex flex-wrap justify-center lg:justify-between pb-16 pt-20 md:pb-20 md:pt-32 lg:pb-40 md:space-x-4 w-full">
-          <div className="max-w-[24rem] flex flex-col justify-center mb-6 lg:mb-2">
+          <div className="max-w-96 flex flex-col justify-center mb-6 lg:mb-2">
             <div className="hl-overline text-gray-20 mb-4"> {React.string(caption)} </div>
             <h3 className="text-gray-10 mb-4 hl-2 font-semibold"> title </h3>
             <div className="flex">
@@ -325,7 +325,7 @@ module MainUSP = {
           //image (right)
           <div className="relative mt-10 lg:mt-0">
             <div
-              className="relative w-full z-2 bg-gray-90 flex md:mt-0 items-center justify-center rounded-lg max-w-[35rem] shadow-[0px_4px_55px_0px_rgba(230,72,79,0.10)]">
+              className="relative w-full z-2 bg-gray-90 flex md:mt-0 items-center justify-center rounded-lg max-w-140 shadow-[0px_4px_55px_0px_rgba(230,72,79,0.10)]">
               media
             </div>
             <img
@@ -382,7 +382,7 @@ module MainUSP = {
     <Item
       caption="A robust type system"
       title={<span
-        className="text-transparent bg-clip-text bg-gradient-to-r from-berry-dark-50 to-fire-50">
+        className="text-transparent bg-clip-text bg-linear-to-r from-berry-dark-50 to-fire-50">
         {React.string("Type Better")}
       </span>}
       media={<video
@@ -418,7 +418,7 @@ module MainUSP = {
 
   @react.component
   let make = () => {
-    <section className="w-full bg-gray-90 overflow-hidden min-h-[37rem]">
+    <section className="w-full bg-gray-90 overflow-hidden min-h-148">
       item1
       item2
       item3
@@ -531,7 +531,7 @@ module TrustedBy = {
         href="https://github.com/rescript-lang/rescript-lang.org/blob/master/src/common/OurUsers.res">
         <Button> {React.string("Add Your Logo")} </Button>
       </a>
-      <div className="self-start mt-10 max-w-320 overflow-hidden opacity-50 max-h-[6rem]">
+      <div className="self-start mt-10 max-w-320 overflow-hidden opacity-50 max-h-24">
         <img className="w-full h-full" src="/static/lp/grid.svg" />
       </div>
     </section>
@@ -618,7 +618,7 @@ module CuratedResources = {
       </div>
       <div className="px-5 md:px-8 max-w-1280 mx-auto my-20">
         <div
-          className="body-lg text-center z-2 relative text-gray-40 max-w-[12rem] mx-auto bg-gray-100">
+          className="body-lg text-center z-2 relative text-gray-40 max-w-48 mx-auto bg-gray-100">
           {React.string("Guides and Docs")}
         </div>
         <hr className="bg-gray-80 h-px border-0 relative top-[-12px]" />
@@ -646,7 +646,7 @@ module CuratedResources = {
         //Container for templates
         <div className="px-5 md:px-8 max-w-1280 mx-auto my-20">
           <div
-            className="body-lg text-center z-2 relative text-gray-40 w-[8rem] mx-auto bg-gray-100">
+            className="body-lg text-center z-2 relative text-gray-40 w-32 mx-auto bg-gray-100">
             {React.string("Templates")}
           </div>
           <hr className="bg-gray-80 h-px border-0 relative top-[-12px]" />

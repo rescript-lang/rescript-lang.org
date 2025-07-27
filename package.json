@@ -10,10 +10,7 @@
   "type": "module",
   "postcss": {
     "plugins": {
-      "postcss-import": {},
-      "tailwindcss/nesting": "postcss-nesting",
-      "tailwindcss": {},
-      "autoprefixer": {}
+      "@tailwindcss/postcss": {}
     }
   },
   "dependencies": {
@@ -69,7 +66,7 @@
   },
   "devDependencies": {
     "@mdx-js/react": "^2.3.0",
-    "autoprefixer": "^10.4.14",
+    "@tailwindcss/postcss": "^4.1.11",
     "cssnano": "^6.0.1",
     "dotenv": "^16.4.7",
     "esbuild-loader": "^4.3.0",
@@ -79,6 +76,7 @@
     "postcss-nesting": "^12.1.1",
     "reanalyze": "^2.16.0",
     "simple-functional-loader": "^1.2.1",
-    "tailwindcss": "^3.3.3"
+    "tailwindcss": "^4.1.11",
+    "webpack": "^5.100.2"
   }
 }
