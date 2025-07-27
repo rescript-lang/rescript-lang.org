@@ -5,11 +5,7 @@ let makeCategories: string => array<Sidebar.Category.t> = version => [
     name: "Overview",
     items: [
       {name: "Introduction", href: `/docs/manual/${version}/api`},
-      if version >= "v12.0.0" {
-        {name: "Stdlib", href: `/docs/manual/${version}/api/stdlib`}
-      } else {
-        {name: "Core", href: `/docs/manual/${version}/api/core`}
-      },
+      {name: "Core", href: `/docs/manual/${version}/api/core`}
     ],
   },
   {

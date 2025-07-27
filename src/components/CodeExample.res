@@ -1,3 +1,5 @@
+@directive("use client")
+
 let langShortname = (lang: string) =>
   switch lang {
   | "ocaml" => "ml"

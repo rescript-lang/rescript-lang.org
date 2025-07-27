@@ -52,7 +52,7 @@ const config = {
 
     function mainMdxLoader(plugins) {
       return [
-        createLoader(function(source) {
+        createLoader(function (source) {
           const result = `${source}\n\nMDXContent.frontmatter = frontmatter`;
           return result;
         }),
@@ -90,65 +90,55 @@ const config = {
   async redirects() {
     const redirects = [
       {
+        source: "/blog",
+        destination: "https://rescript-lang.org/blog",
+        permanent: true,
+      },
+      {
+        source: "/blog/:slug*",
+        destination: "https://rescript-lang.org/blog/:slug*",
+        permanent: true,
+      },
+      {
+        source: "/",
+        destination: `https://rescript-lang.org`,
+        permanent: true,
+      },
+      {
+        source: "/try",
+        destination: "https://rescript-lang.org/try",
+        permanent: true,
+      },
+      {
         source: "/community",
-        destination: "/community/overview",
+        destination: "https://rescript-lang.org/community",
         permanent: true,
       },
       {
-        source: "/bucklescript-rebranding",
-        destination: "/blog/bucklescript-is-rebranding",
-        permanent: true,
-      },
-      {
-        source: "/docs/manual/latest/migrate-from-bucklescript-reason",
-        destination: "/docs/manual/v10.0.0/migrate-from-bucklescript-reason",
-        permanent: true,
-      },
-      {
-        source: "/docs/manual/latest/unboxed",
-        destination: "/docs/manual/v10.0.0/unboxed",
-        permanent: true,
-      },
-      {
-        source: "/docs/gentype/latest/introduction",
-        destination: "/docs/manual/latest/typescript-integration",
-        permanent: true,
-      },
-      {
-        source: "/docs/gentype/latest/getting-started",
-        destination: "/docs/manual/latest/typescript-integration",
-        permanent: true,
-      },
-      {
-        source: "/docs/gentype/latest/usage",
-        destination: "/docs/manual/latest/typescript-integration",
-        permanent: true,
-      },
-      {
-        source: "/docs/gentype/latest/supported-types",
-        destination: "/docs/manual/latest/typescript-integration",
+        source: "/community/:slug*",
+        destination: "https://rescript-lang.org/community/:slug*",
         permanent: true,
       },
     ];
     const splatRedirects = [
       {
         source: "/docs/manual/latest/:slug*",
-        destination: `/docs/manual/${process.env.VERSION_LATEST}/:slug*`,
+        destination: `https://rescript-lang.org/docs/manual/${process.env.VERSION_LATEST}/:slug*`,
         permanent: false,
       },
       {
         source: "/docs/manual/next/:slug*",
-        destination: `/docs/manual/${process.env.VERSION_NEXT}/:slug*`,
+        destination: `https://rescript-lang.org/docs/manual/${process.env.VERSION_NEXT}/:slug*`,
         permanent: false,
       },
       {
         source: "/llms/manual/latest/:file*",
-        destination: `/llms/manual/${process.env.VERSION_LATEST}/:file*`,
+        destination: `https://rescript-lang.org/llms/manual/${process.env.VERSION_LATEST}/:file*`,
         permanent: false,
       },
       {
         source: "/llms/manual/next/:file*",
-        destination: `/llms/manual/${process.env.VERSION_NEXT}/:file*`,
+        destination: `https://rescript-lang.org/llms/manual/${process.env.VERSION_NEXT}/:file*`,
         permanent: false,
       },
     ];

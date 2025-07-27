@@ -25,7 +25,7 @@ let default = (~showVersionSelect=true) => {
 
   let ecosystem = [
     ("Package Index", "/packages"),
-    ("rescript-react", "/docs/react/latest/introduction"),
+    ("rescript-react", "/docs/v0.11.0/latest/introduction"),
     ("GenType", `/docs/manual/${version}/typescript-integration`),
     ("Reanalyze", "https://github.com/rescript-lang/reanalyze"),
   ]

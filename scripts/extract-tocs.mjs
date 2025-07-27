@@ -162,6 +162,12 @@ const createReactToc = (version) => {
 
 const createCommunityToc = () => {
   const MD_DIR = path.join(__dirname, "../pages/community");
+  // Skip Community TOC generation if the community directory doesn't exist. This avoids build-time
+  // errors when the community section has been removed or hasn't been migrated yet.
+  if (!fs.existsSync(MD_DIR)) {
+    console.warn(`Skipping Community TOC generation: Directory not found -> ${MD_DIR}`);
+    return;
+  }
   const SIDEBAR_JSON = path.join(__dirname, "../data/sidebar_community.json");
   const TARGET_FILE = path.join(__dirname, "../index_data/community_toc.json");
 
