@@ -110,8 +110,7 @@ export {
           //
           <div className="hidden md:block">
             <img
-              className="absolute z-0 left-0 top-0 -ml-10 -mt-6 h-96 w-96"
-              src="/static/lp/grid.svg"
+              className="absolute z-0 left-0 top-0 -ml-10 -mt-6 h-96 w-96" src="/static/lp/grid.svg"
             />
             <img
               className="absolute z-0 left-0 top-0 -ml-10 mt-10" src="/static/lp/illu_left.png"
@@ -617,8 +616,7 @@ module CuratedResources = {
         <h2 className="hl-1 text-gray-20 text-center"> {React.string("Curated resources")} </h2>
       </div>
       <div className="px-5 md:px-8 max-w-1280 mx-auto my-20">
-        <div
-          className="body-lg text-center z-2 relative text-gray-40 max-w-48 mx-auto bg-gray-100">
+        <div className="body-lg text-center z-2 relative text-gray-40 max-w-48 mx-auto bg-gray-100">
           {React.string("Guides and Docs")}
         </div>
         <hr className="bg-gray-80 h-px border-0 relative top-[-12px]" />
@@ -645,8 +643,7 @@ module CuratedResources = {
         </div>
         //Container for templates
         <div className="px-5 md:px-8 max-w-1280 mx-auto my-20">
-          <div
-            className="body-lg text-center z-2 relative text-gray-40 w-32 mx-auto bg-gray-100">
+          <div className="body-lg text-center z-2 relative text-gray-40 w-32 mx-auto bg-gray-100">
             {React.string("Templates")}
           </div>
           <hr className="bg-gray-80 h-px border-0 relative top-[-12px]" />
