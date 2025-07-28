@@ -16,7 +16,8 @@
     "styling",
     "router",
     "lazy-components",
-    "import-export-reactjs"
+    "import-export-reactjs",
+    "server-components"
   ],
   "Hooks & State Management": [
     "hooks-overview",
