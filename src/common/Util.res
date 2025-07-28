@@ -80,9 +80,10 @@ module Date = {
   }
 }
 
-
 let removeVersionFromPathname = (pathname: string) =>
-  pathname->Stdlib.String.split("/")->Array.filter(s => {
+  pathname
+  ->Stdlib.String.split("/")
+  ->Array.filter(s => {
     let isVersion = s->Stdlib.String.includes("v") && s->Stdlib.String.includes(".")
     !isVersion
   })

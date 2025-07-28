@@ -15,5 +15,4 @@ module Date: {
   let toDayMonthYear: Date.t => string
 }
 
-
 let removeVersionFromPathname: string => string
