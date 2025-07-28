@@ -31,8 +31,5 @@
     "beyond-jsx",
     "forwarding-refs",
     "extensions-of-props"
-  ],
-  "Extra": [
-    "llms"
   ]
 }
