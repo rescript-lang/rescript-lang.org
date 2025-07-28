@@ -64,6 +64,9 @@ let helloWorld: unit => Promise<string>
 
 ```res example
 // src/pages/Index.res
+let data = [1, 2, 3]
+let getData = () => Promise.resolve(data)
+
 @react.component
 let make = async () => {
   // fetch some data from somewhere
@@ -71,6 +74,9 @@ let make = async () => {
   <html>
     <body>
       <h1> {React.string("Hello from server component")} </h1>
+      <ul>
+        {data->Array.map(id => <li> {React.int(id)} </li>)->React.array}
+      </ul>
     </body>
   </html>
 }
@@ -112,29 +118,55 @@ A server function can be inlined in a server component and passed as prop to a c
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
+module ClientComp = {
+  @react.component @module("some-module")
+  external make: (~submit: int => promise<bool>) => React.element =
+    "SomeClientComp"
+}
+
+let data = [1, 2, 3]
+let getData = () => Promise.resolve(data)
+
 @react.component
 let make = async () => {
   let data = await getData()
 
   let addData =
     @directive("'use server'")
-    async (name: string) => {
+    async (id: int) => {
       // add to data store
+      data->Array.push(id)
       true
     }
   <html>
     <body>
       <h1> {React.string("Hello from server component")} </h1>
+      <ul>
+        {data->Array.map(id => <li> {React.int(id)} </li>)->React.array}
+      </ul>
       <ClientComp submit={addData} />
     </body>
   </html>
 }
 ```
 ```js
+import * as SomeModule from "some-module";
+
+let data = [
+  1,
+  2,
+  3
+];
+
+function getData() {
+  return Promise.resolve(data);
+}
+
 async function make(param) {
-  await getData();
-  let addData = async name => {
+  let data$1 = await Promise.resolve(data);
+  let addData = async id => {
     'use server';
+    data$1.push(id);
     return true;
   };
   return JsxRuntime.jsx("html", {
@@ -143,7 +175,12 @@ async function make(param) {
         JsxRuntime.jsx("h1", {
           children: "Hello from server component"
         }),
-        JsxRuntime.jsx(ClientComp, {
+        JsxRuntime.jsx("ul", {
+          children: data$1.map(id => JsxRuntime.jsx("li", {
+            children: id
+          }))
+        }),
+        JsxRuntime.jsx(SomeModule.SomeClientComp, {
           submit: addData
         })
       ]
