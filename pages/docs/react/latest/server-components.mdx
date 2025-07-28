@@ -66,6 +66,7 @@ let helloWorld: unit => Promise<string>
 // src/pages/Index.res
 @react.component
 let make = async () => {
+  // fetch some data from somewhere
   let data = await getData()
   <html>
     <body>
@@ -82,7 +83,7 @@ let default = make
 import * as JsxRuntime from "react/jsx-runtime";
 
 async function make(param) {
-  await moo();
+  await getData();
   return JsxRuntime.jsx("html", {
     children: JsxRuntime.jsx("body", {
       children: JsxRuntime.jsx("h1", {
@@ -131,7 +132,7 @@ let make = async () => {
 ```
 ```js
 async function make(param) {
-  await moo();
+  await getData();
   let addData = async name => {
     'use server';
     return true;
