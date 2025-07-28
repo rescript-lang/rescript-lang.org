@@ -160,32 +160,6 @@ const createReactToc = (version) => {
   fs.writeFileSync(TARGET_FILE, JSON.stringify(toc), "utf8");
 };
 
-const createCommunityToc = () => {
-  const MD_DIR = path.join(__dirname, "../pages/community");
-  // Skip Community TOC generation if the community directory doesn't exist. This avoids build-time
-  // errors when the community section has been removed or hasn't been migrated yet.
-  if (!fs.existsSync(MD_DIR)) {
-    console.warn(`Skipping Community TOC generation: Directory not found -> ${MD_DIR}`);
-    return;
-  }
-  const SIDEBAR_JSON = path.join(__dirname, "../data/sidebar_community.json");
-  const TARGET_FILE = path.join(__dirname, "../index_data/community_toc.json");
-
-  const sidebarJson = JSON.parse(fs.readFileSync(SIDEBAR_JSON));
-
-  const FILE_ORDER = Object.values(sidebarJson).reduce((acc, items) => {
-    return acc.concat(items);
-  }, []);
-
-  const files = glob.sync(`${MD_DIR}/*.?(js|md?(x))`);
-  const ordered = orderFiles(files, FILE_ORDER);
-
-  const result = ordered.map((filepath) => processFile(filepath, sidebarJson));
-  const toc = createTOC(result);
-
-  fs.writeFileSync(TARGET_FILE, JSON.stringify(toc), "utf8");
-};
-
 /*
 const debugToc = () => {
   const MD_DIR = path.join(__dirname, "../pages/docs/manual/latest");
@@ -206,4 +180,3 @@ let reactManualVersions = ["latest", "v0.10.0", "v0.11.0"];
 
 manualVersions.forEach(createManualToc);
 reactManualVersions.forEach(createReactToc);
-createCommunityToc();
