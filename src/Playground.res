@@ -810,7 +810,7 @@ module WarningFlagsWidget = {
           <section className="mt-3">
             <input
               ref={ReactDOM.Ref.domRef((Obj.magic(inputRef): React.ref<Nullable.t<Dom.element>>))}
-              className="inline-block p-1 max-w-20 outline-hidden bg-gray-90 placeholder-gray-20 placeholder-opacity-50"
+              className="inline-block p-1 max-w-20 outline-hidden bg-gray-90 placeholder-gray-20/50"
               placeholder="Flags"
               type_="text"
               tabIndex=0
