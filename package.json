@@ -62,7 +62,8 @@
     "build": "rescript && npm run update-index && next build",
     "test": "node scripts/test-examples.mjs && node scripts/test-hrefs.mjs",
     "reanalyze": "reanalyze -all-cmt .",
-    "update-index": "node scripts/extract-tocs.mjs && node scripts/extract-syntax.mjs"
+    "update-index": "node scripts/extract-tocs.mjs && node scripts/extract-syntax.mjs",
+    "deploy": "wrangler deploy"
   },
   "devDependencies": {
     "@mdx-js/react": "^2.3.0",
@@ -76,6 +77,7 @@
     "postcss-nesting": "^12.1.1",
     "reanalyze": "^2.16.0",
     "simple-functional-loader": "^1.2.1",
-    "tailwindcss": "^3.3.3"
+    "tailwindcss": "^3.3.3",
+    "wrangler": "^4.26.1"
   }
 }
