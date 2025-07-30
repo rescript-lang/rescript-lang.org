@@ -88,20 +88,17 @@ const config = {
     return config;
   },
   async redirects() {
+    // Users browse only /docs in the {version}.rescript.org website.
+    // Otherwise they are redirected to the main website.
     const redirects = [
-      {
-        source: "/blog",
-        destination: "https://rescript-lang.org/blog",
-        permanent: true,
-      },
-      {
-        source: "/blog/:slug*",
-        destination: "https://rescript-lang.org/blog/:slug*",
-        permanent: true,
-      },
       {
         source: "/",
         destination: `https://rescript-lang.org`,
+        permanent: true,
+      },
+      {
+        source: "/blog",
+        destination: "https://rescript-lang.org/blog",
         permanent: true,
       },
       {
@@ -114,13 +111,18 @@ const config = {
         destination: "https://rescript-lang.org/community",
         permanent: true,
       },
+    ];
+    const splatRedirects = [
+      {
+        source: "/blog/:slug*",
+        destination: "https://rescript-lang.org/blog/:slug*",
+        permanent: true,
+      },
       {
         source: "/community/:slug*",
         destination: "https://rescript-lang.org/community/:slug*",
         permanent: true,
       },
-    ];
-    const splatRedirects = [
       {
         source: "/docs/manual/latest/:slug*",
         destination: `https://rescript-lang.org/docs/manual/${process.env.VERSION_LATEST}/:slug*`,
