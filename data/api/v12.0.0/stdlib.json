@@ -2619,7 +2619,7 @@
         "docstrings": [
           "`fromBuffer` creates a `BigUint64Array` from an `ArrayBuffer.t`. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigUint64Array/BigUint64Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBuffer: ArrayBuffer.t => t"
+        "signature": "let fromBuffer: (ArrayBuffer.t, ~byteOffset: int=?, ~length: int=?) => t"
       },
       {
         "id": "Stdlib.BigUint64Array.fromBufferToEnd",
@@ -2628,7 +2628,8 @@
         "docstrings": [
           "`fromBufferToEnd` creates a `BigUint64Array` from an `ArrayBuffer.t`, starting at a particular offset and continuing through to the end. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigUint64Array/BigUint64Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t"
+        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.BigUint64Array.fromBufferWithRange",
@@ -2637,7 +2638,8 @@
         "docstrings": [
           "`fromBufferWithRange` creates a `BigUint64Array` from an `ArrayBuffer.t`, starting at a particular offset and consuming `length` **bytes**. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigUint64Array/BigUint64Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t"
+        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.BigUint64Array.fromLength",
@@ -2655,7 +2657,7 @@
         "docstrings": [
           "`fromArrayLikeOrIterable` creates a `BigUint64Array` from an array-like or iterable object. See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterable: 'a => t"
+        "signature": "let fromArrayLikeOrIterable: ('a, ~map: ('b, int) => bigint=?) => t"
       },
       {
         "id": "Stdlib.BigUint64Array.fromArrayLikeOrIterableWithMap",
@@ -2664,7 +2666,8 @@
         "docstrings": [
           "`fromArrayLikeOrIterableWithMap` creates a `BigUint64Array` from an array-like or iterable object and applies the mapping function to each item. The mapping function expects (value, index). See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => bigint) => t"
+        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => bigint) => t",
+        "deprecated": "Use `fromArrayLikeOrIterable` instead"
       },
       {
         "id": "Stdlib.BigUint64Array.ignore",
@@ -2707,7 +2710,7 @@
         "docstrings": [
           "`fromBuffer` creates a `BigInt64Array` from an `ArrayBuffer.t`. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt64Array/BigInt64Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBuffer: ArrayBuffer.t => t"
+        "signature": "let fromBuffer: (ArrayBuffer.t, ~byteOffset: int=?, ~length: int=?) => t"
       },
       {
         "id": "Stdlib.BigInt64Array.fromBufferToEnd",
@@ -2716,7 +2719,8 @@
         "docstrings": [
           "`fromBufferToEnd` creates a `BigInt64Array` from an `ArrayBuffer.t`, starting at a particular offset and continuing through to the end. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt64Array/BigInt64Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t"
+        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.BigInt64Array.fromBufferWithRange",
@@ -2725,7 +2729,8 @@
         "docstrings": [
           "`fromBufferWithRange` creates a `BigInt64Array` from an `ArrayBuffer.t`, starting at a particular offset and consuming `length` **bytes**. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt64Array/BigInt64Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t"
+        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.BigInt64Array.fromLength",
@@ -2743,7 +2748,7 @@
         "docstrings": [
           "`fromArrayLikeOrIterable` creates a `BigInt64Array` from an array-like or iterable object. See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterable: 'a => t"
+        "signature": "let fromArrayLikeOrIterable: ('a, ~map: ('b, int) => bigint=?) => t"
       },
       {
         "id": "Stdlib.BigInt64Array.fromArrayLikeOrIterableWithMap",
@@ -2752,7 +2757,8 @@
         "docstrings": [
           "`fromArrayLikeOrIterableWithMap` creates a `BigInt64Array` from an array-like or iterable object and applies the mapping function to each item. The mapping function expects (value, index). See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => bigint) => t"
+        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => bigint) => t",
+        "deprecated": "Use `fromArrayLikeOrIterable` instead"
       },
       {
         "id": "Stdlib.BigInt64Array.ignore",
@@ -2795,7 +2801,7 @@
         "docstrings": [
           "`fromBuffer` creates a `Uint8ClampedArray` from an `ArrayBuffer.t`. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray/Uint8ClampedArray)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBuffer: ArrayBuffer.t => t"
+        "signature": "let fromBuffer: (ArrayBuffer.t, ~byteOffset: int=?, ~length: int=?) => t"
       },
       {
         "id": "Stdlib.Uint8ClampedArray.fromBufferToEnd",
@@ -2804,7 +2810,8 @@
         "docstrings": [
           "`fromBufferToEnd` creates a `Uint8ClampedArray` from an `ArrayBuffer.t`, starting at a particular offset and continuing through to the end. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray/Uint8ClampedArray)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t"
+        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Uint8ClampedArray.fromBufferWithRange",
@@ -2813,7 +2820,8 @@
         "docstrings": [
           "`fromBufferWithRange` creates a `Uint8ClampedArray` from an `ArrayBuffer.t`, starting at a particular offset and consuming `length` **bytes**. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray/Uint8ClampedArray)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t"
+        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Uint8ClampedArray.fromLength",
@@ -2831,7 +2839,7 @@
         "docstrings": [
           "`fromArrayLikeOrIterable` creates a `Uint8ClampedArray` from an array-like or iterable object. See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterable: 'a => t"
+        "signature": "let fromArrayLikeOrIterable: ('a, ~map: ('b, int) => int=?) => t"
       },
       {
         "id": "Stdlib.Uint8ClampedArray.fromArrayLikeOrIterableWithMap",
@@ -2840,7 +2848,8 @@
         "docstrings": [
           "`fromArrayLikeOrIterableWithMap` creates a `Uint8ClampedArray` from an array-like or iterable object and applies the mapping function to each item. The mapping function expects (value, index). See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t"
+        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t",
+        "deprecated": "Use `fromArrayLikeOrIterable` instead"
       },
       {
         "id": "Stdlib.Uint8ClampedArray.ignore",
@@ -2883,7 +2892,7 @@
         "docstrings": [
           "`fromBuffer` creates a `Uint32Array` from an `ArrayBuffer.t`. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array/Uint32Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBuffer: ArrayBuffer.t => t"
+        "signature": "let fromBuffer: (ArrayBuffer.t, ~byteOffset: int=?, ~length: int=?) => t"
       },
       {
         "id": "Stdlib.Uint32Array.fromBufferToEnd",
@@ -2892,7 +2901,8 @@
         "docstrings": [
           "`fromBufferToEnd` creates a `Uint32Array` from an `ArrayBuffer.t`, starting at a particular offset and continuing through to the end. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array/Uint32Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t"
+        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Uint32Array.fromBufferWithRange",
@@ -2901,7 +2911,8 @@
         "docstrings": [
           "`fromBufferWithRange` creates a `Uint32Array` from an `ArrayBuffer.t`, starting at a particular offset and consuming `length` **bytes**. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array/Uint32Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t"
+        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Uint32Array.fromLength",
@@ -2919,7 +2930,7 @@
         "docstrings": [
           "`fromArrayLikeOrIterable` creates a `Uint32Array` from an array-like or iterable object. See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterable: 'a => t"
+        "signature": "let fromArrayLikeOrIterable: ('a, ~map: ('b, int) => int=?) => t"
       },
       {
         "id": "Stdlib.Uint32Array.fromArrayLikeOrIterableWithMap",
@@ -2928,7 +2939,8 @@
         "docstrings": [
           "`fromArrayLikeOrIterableWithMap` creates a `Uint32Array` from an array-like or iterable object and applies the mapping function to each item. The mapping function expects (value, index). See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t"
+        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t",
+        "deprecated": "Use `fromArrayLikeOrIterable` instead"
       },
       {
         "id": "Stdlib.Uint32Array.ignore",
@@ -2971,7 +2983,7 @@
         "docstrings": [
           "`fromBuffer` creates a `Uint16Array` from an `ArrayBuffer.t`. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array/Uint16Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBuffer: ArrayBuffer.t => t"
+        "signature": "let fromBuffer: (ArrayBuffer.t, ~byteOffset: int=?, ~length: int=?) => t"
       },
       {
         "id": "Stdlib.Uint16Array.fromBufferToEnd",
@@ -2980,7 +2992,8 @@
         "docstrings": [
           "`fromBufferToEnd` creates a `Uint16Array` from an `ArrayBuffer.t`, starting at a particular offset and continuing through to the end. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array/Uint16Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t"
+        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Uint16Array.fromBufferWithRange",
@@ -2989,7 +3002,8 @@
         "docstrings": [
           "`fromBufferWithRange` creates a `Uint16Array` from an `ArrayBuffer.t`, starting at a particular offset and consuming `length` **bytes**. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array/Uint16Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t"
+        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Uint16Array.fromLength",
@@ -3007,7 +3021,7 @@
         "docstrings": [
           "`fromArrayLikeOrIterable` creates a `Uint16Array` from an array-like or iterable object. See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterable: 'a => t"
+        "signature": "let fromArrayLikeOrIterable: ('a, ~map: ('b, int) => int=?) => t"
       },
       {
         "id": "Stdlib.Uint16Array.fromArrayLikeOrIterableWithMap",
@@ -3016,7 +3030,8 @@
         "docstrings": [
           "`fromArrayLikeOrIterableWithMap` creates a `Uint16Array` from an array-like or iterable object and applies the mapping function to each item. The mapping function expects (value, index). See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t"
+        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t",
+        "deprecated": "Use `fromArrayLikeOrIterable` instead"
       },
       {
         "id": "Stdlib.Uint16Array.ignore",
@@ -3059,7 +3074,7 @@
         "docstrings": [
           "`fromBuffer` creates a `Uint8Array` from an `ArrayBuffer.t`. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/Uint8Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBuffer: ArrayBuffer.t => t"
+        "signature": "let fromBuffer: (ArrayBuffer.t, ~byteOffset: int=?, ~length: int=?) => t"
       },
       {
         "id": "Stdlib.Uint8Array.fromBufferToEnd",
@@ -3068,7 +3083,8 @@
         "docstrings": [
           "`fromBufferToEnd` creates a `Uint8Array` from an `ArrayBuffer.t`, starting at a particular offset and continuing through to the end. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/Uint8Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t"
+        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Uint8Array.fromBufferWithRange",
@@ -3077,7 +3093,8 @@
         "docstrings": [
           "`fromBufferWithRange` creates a `Uint8Array` from an `ArrayBuffer.t`, starting at a particular offset and consuming `length` **bytes**. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/Uint8Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t"
+        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Uint8Array.fromLength",
@@ -3095,7 +3112,7 @@
         "docstrings": [
           "`fromArrayLikeOrIterable` creates a `Uint8Array` from an array-like or iterable object. See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterable: 'a => t"
+        "signature": "let fromArrayLikeOrIterable: ('a, ~map: ('b, int) => int=?) => t"
       },
       {
         "id": "Stdlib.Uint8Array.fromArrayLikeOrIterableWithMap",
@@ -3104,7 +3121,8 @@
         "docstrings": [
           "`fromArrayLikeOrIterableWithMap` creates a `Uint8Array` from an array-like or iterable object and applies the mapping function to each item. The mapping function expects (value, index). See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t"
+        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t",
+        "deprecated": "Use `fromArrayLikeOrIterable` instead"
       },
       {
         "id": "Stdlib.Uint8Array.ignore",
@@ -3147,7 +3165,7 @@
         "docstrings": [
           "`fromBuffer` creates a `Int32Array` from an `ArrayBuffer.t`. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array/Int32Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBuffer: ArrayBuffer.t => t"
+        "signature": "let fromBuffer: (ArrayBuffer.t, ~byteOffset: int=?, ~length: int=?) => t"
       },
       {
         "id": "Stdlib.Int32Array.fromBufferToEnd",
@@ -3156,7 +3174,8 @@
         "docstrings": [
           "`fromBufferToEnd` creates a `Int32Array` from an `ArrayBuffer.t`, starting at a particular offset and continuing through to the end. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array/Int32Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t"
+        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Int32Array.fromBufferWithRange",
@@ -3165,7 +3184,8 @@
         "docstrings": [
           "`fromBufferWithRange` creates a `Int32Array` from an `ArrayBuffer.t`, starting at a particular offset and consuming `length` **bytes**. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array/Int32Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t"
+        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Int32Array.fromLength",
@@ -3183,7 +3203,7 @@
         "docstrings": [
           "`fromArrayLikeOrIterable` creates a `Int32Array` from an array-like or iterable object. See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterable: 'a => t"
+        "signature": "let fromArrayLikeOrIterable: ('a, ~map: ('b, int) => int=?) => t"
       },
       {
         "id": "Stdlib.Int32Array.fromArrayLikeOrIterableWithMap",
@@ -3192,7 +3212,8 @@
         "docstrings": [
           "`fromArrayLikeOrIterableWithMap` creates a `Int32Array` from an array-like or iterable object and applies the mapping function to each item. The mapping function expects (value, index). See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t"
+        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t",
+        "deprecated": "Use `fromArrayLikeOrIterable` instead"
       },
       {
         "id": "Stdlib.Int32Array.ignore",
@@ -3235,7 +3256,7 @@
         "docstrings": [
           "`fromBuffer` creates a `Int16Array` from an `ArrayBuffer.t`. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array/Int16Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBuffer: ArrayBuffer.t => t"
+        "signature": "let fromBuffer: (ArrayBuffer.t, ~byteOffset: int=?, ~length: int=?) => t"
       },
       {
         "id": "Stdlib.Int16Array.fromBufferToEnd",
@@ -3244,7 +3265,8 @@
         "docstrings": [
           "`fromBufferToEnd` creates a `Int16Array` from an `ArrayBuffer.t`, starting at a particular offset and continuing through to the end. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array/Int16Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t"
+        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Int16Array.fromBufferWithRange",
@@ -3253,7 +3275,8 @@
         "docstrings": [
           "`fromBufferWithRange` creates a `Int16Array` from an `ArrayBuffer.t`, starting at a particular offset and consuming `length` **bytes**. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array/Int16Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t"
+        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Int16Array.fromLength",
@@ -3271,7 +3294,7 @@
         "docstrings": [
           "`fromArrayLikeOrIterable` creates a `Int16Array` from an array-like or iterable object. See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterable: 'a => t"
+        "signature": "let fromArrayLikeOrIterable: ('a, ~map: ('b, int) => int=?) => t"
       },
       {
         "id": "Stdlib.Int16Array.fromArrayLikeOrIterableWithMap",
@@ -3280,7 +3303,8 @@
         "docstrings": [
           "`fromArrayLikeOrIterableWithMap` creates a `Int16Array` from an array-like or iterable object and applies the mapping function to each item. The mapping function expects (value, index). See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t"
+        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t",
+        "deprecated": "Use `fromArrayLikeOrIterable` instead"
       },
       {
         "id": "Stdlib.Int16Array.ignore",
@@ -3323,7 +3347,7 @@
         "docstrings": [
           "`fromBuffer` creates a `Int8Array` from an `ArrayBuffer.t`. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array/Int8Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBuffer: ArrayBuffer.t => t"
+        "signature": "let fromBuffer: (ArrayBuffer.t, ~byteOffset: int=?, ~length: int=?) => t"
       },
       {
         "id": "Stdlib.Int8Array.fromBufferToEnd",
@@ -3332,7 +3356,8 @@
         "docstrings": [
           "`fromBufferToEnd` creates a `Int8Array` from an `ArrayBuffer.t`, starting at a particular offset and continuing through to the end. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array/Int8Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t"
+        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Int8Array.fromBufferWithRange",
@@ -3341,7 +3366,8 @@
         "docstrings": [
           "`fromBufferWithRange` creates a `Int8Array` from an `ArrayBuffer.t`, starting at a particular offset and consuming `length` **bytes**. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array/Int8Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t"
+        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Int8Array.fromLength",
@@ -3359,7 +3385,7 @@
         "docstrings": [
           "`fromArrayLikeOrIterable` creates a `Int8Array` from an array-like or iterable object. See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterable: 'a => t"
+        "signature": "let fromArrayLikeOrIterable: ('a, ~map: ('b, int) => int=?) => t"
       },
       {
         "id": "Stdlib.Int8Array.fromArrayLikeOrIterableWithMap",
@@ -3368,7 +3394,8 @@
         "docstrings": [
           "`fromArrayLikeOrIterableWithMap` creates a `Int8Array` from an array-like or iterable object and applies the mapping function to each item. The mapping function expects (value, index). See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t"
+        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t",
+        "deprecated": "Use `fromArrayLikeOrIterable` instead"
       },
       {
         "id": "Stdlib.Int8Array.ignore",
@@ -3411,7 +3438,7 @@
         "docstrings": [
           "`fromBuffer` creates a `Float64Array` from an `ArrayBuffer.t`. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array/Float64Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBuffer: ArrayBuffer.t => t"
+        "signature": "let fromBuffer: (ArrayBuffer.t, ~byteOffset: int=?, ~length: int=?) => t"
       },
       {
         "id": "Stdlib.Float64Array.fromBufferToEnd",
@@ -3420,7 +3447,8 @@
         "docstrings": [
           "`fromBufferToEnd` creates a `Float64Array` from an `ArrayBuffer.t`, starting at a particular offset and continuing through to the end. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array/Float64Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t"
+        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Float64Array.fromBufferWithRange",
@@ -3429,7 +3457,8 @@
         "docstrings": [
           "`fromBufferWithRange` creates a `Float64Array` from an `ArrayBuffer.t`, starting at a particular offset and consuming `length` **bytes**. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array/Float64Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t"
+        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Float64Array.fromLength",
@@ -3447,7 +3476,7 @@
         "docstrings": [
           "`fromArrayLikeOrIterable` creates a `Float64Array` from an array-like or iterable object. See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterable: 'a => t"
+        "signature": "let fromArrayLikeOrIterable: ('a, ~map: ('b, int) => float=?) => t"
       },
       {
         "id": "Stdlib.Float64Array.fromArrayLikeOrIterableWithMap",
@@ -3456,7 +3485,8 @@
         "docstrings": [
           "`fromArrayLikeOrIterableWithMap` creates a `Float64Array` from an array-like or iterable object and applies the mapping function to each item. The mapping function expects (value, index). See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => float) => t"
+        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => float) => t",
+        "deprecated": "Use `fromArrayLikeOrIterable` instead"
       },
       {
         "id": "Stdlib.Float64Array.ignore",
@@ -3499,7 +3529,7 @@
         "docstrings": [
           "`fromBuffer` creates a `Float32Array` from an `ArrayBuffer.t`. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array/Float32Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBuffer: ArrayBuffer.t => t"
+        "signature": "let fromBuffer: (ArrayBuffer.t, ~byteOffset: int=?, ~length: int=?) => t"
       },
       {
         "id": "Stdlib.Float32Array.fromBufferToEnd",
@@ -3508,7 +3538,8 @@
         "docstrings": [
           "`fromBufferToEnd` creates a `Float32Array` from an `ArrayBuffer.t`, starting at a particular offset and continuing through to the end. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array/Float32Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t"
+        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Float32Array.fromBufferWithRange",
@@ -3517,7 +3548,8 @@
         "docstrings": [
           "`fromBufferWithRange` creates a `Float32Array` from an `ArrayBuffer.t`, starting at a particular offset and consuming `length` **bytes**. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array/Float32Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t"
+        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Float32Array.fromLength",
@@ -3535,7 +3567,7 @@
         "docstrings": [
           "`fromArrayLikeOrIterable` creates a `Float32Array` from an array-like or iterable object. See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterable: 'a => t"
+        "signature": "let fromArrayLikeOrIterable: ('a, ~map: ('b, int) => float=?) => t"
       },
       {
         "id": "Stdlib.Float32Array.fromArrayLikeOrIterableWithMap",
@@ -3544,7 +3576,8 @@
         "docstrings": [
           "`fromArrayLikeOrIterableWithMap` creates a `Float32Array` from an array-like or iterable object and applies the mapping function to each item. The mapping function expects (value, index). See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => float) => t"
+        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => float) => t",
+        "deprecated": "Use `fromArrayLikeOrIterable` instead"
       },
       {
         "id": "Stdlib.Float32Array.ignore",
@@ -3637,14 +3670,15 @@
         "kind": "value",
         "name": "copyWithinToEnd",
         "docstrings": [],
-        "signature": "let copyWithinToEnd: (t<'a>, ~target: int, ~start: int) => array<'a>"
+        "signature": "let copyWithinToEnd: (t<'a>, ~target: int, ~start: int) => array<'a>",
+        "deprecated": "Use `copyWithin` instead"
       },
       {
         "id": "Stdlib.TypedArray.copyWithin",
         "kind": "value",
         "name": "copyWithin",
         "docstrings": [],
-        "signature": "let copyWithin: (t<'a>, ~target: int, ~start: int, ~end: int) => array<'a>"
+        "signature": "let copyWithin: (t<'a>, ~target: int, ~start: int, ~end: int=?) => array<'a>"
       },
       {
         "id": "Stdlib.TypedArray.fillAll",
@@ -3658,14 +3692,15 @@
         "kind": "value",
         "name": "fillToEnd",
         "docstrings": [],
-        "signature": "let fillToEnd: (t<'a>, 'a, ~start: int) => t<'a>"
+        "signature": "let fillToEnd: (t<'a>, 'a, ~start: int) => t<'a>",
+        "deprecated": "Use `fill` instead"
       },
       {
         "id": "Stdlib.TypedArray.fill",
         "kind": "value",
         "name": "fill",
         "docstrings": [],
-        "signature": "let fill: (t<'a>, 'a, ~start: int, ~end: int) => t<'a>"
+        "signature": "let fill: (t<'a>, 'a, ~start: int, ~end: int=?) => t<'a>"
       },
       {
         "id": "Stdlib.TypedArray.reverse",
@@ -3749,14 +3784,15 @@
         "kind": "value",
         "name": "slice",
         "docstrings": [],
-        "signature": "let slice: (t<'a>, ~start: int, ~end: int) => t<'a>"
+        "signature": "let slice: (t<'a>, ~start: int, ~end: int=?) => t<'a>"
       },
       {
         "id": "Stdlib.TypedArray.sliceToEnd",
         "kind": "value",
         "name": "sliceToEnd",
         "docstrings": [],
-        "signature": "let sliceToEnd: (t<'a>, ~start: int) => t<'a>"
+        "signature": "let sliceToEnd: (t<'a>, ~start: int) => t<'a>",
+        "deprecated": "Use `slice` instead"
       },
       {
         "id": "Stdlib.TypedArray.copy",
@@ -3770,14 +3806,15 @@
         "kind": "value",
         "name": "subarray",
         "docstrings": [],
-        "signature": "let subarray: (t<'a>, ~start: int, ~end: int) => t<'a>"
+        "signature": "let subarray: (t<'a>, ~start: int, ~end: int=?) => t<'a>"
       },
       {
         "id": "Stdlib.TypedArray.subarrayToEnd",
         "kind": "value",
         "name": "subarrayToEnd",
         "docstrings": [],
-        "signature": "let subarrayToEnd: (t<'a>, ~start: int) => t<'a>"
+        "signature": "let subarrayToEnd: (t<'a>, ~start: int) => t<'a>",
+        "deprecated": "Use `subarray` instead"
       },
       {
         "id": "Stdlib.TypedArray.toString",
@@ -5312,9 +5349,9 @@
         "kind": "value",
         "name": "slice",
         "docstrings": [
-          "`slice(str, ~start, ~end)` returns the substring of `str` starting at\ncharacter `start` up to but not including `end`.\n- If either `start` or `end` is negative, then it is evaluated as\n  `length(str - start)` or `length(str - end)`.\n- If `end` is greater than the length of `str`, then it is treated as\n  `length(str)`.\n- If `start` is greater than `end`, slice returns the empty string.\n  See [`String.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice) on MDN.\n\n## Examples\n\n```rescript\nString.slice(\"abcdefg\", ~start=2, ~end=5) == \"cde\"\nString.slice(\"abcdefg\", ~start=2, ~end=9) == \"cdefg\"\nString.slice(\"abcdefg\", ~start=-4, ~end=-2) == \"de\"\nString.slice(\"abcdefg\", ~start=5, ~end=1) == \"\"\n```"
+          "`slice(str, ~start, ~end)` returns the substring of `str` starting at\ncharacter `start` up to but not including `end`.\n- If either `start` or `end` is negative, then it is evaluated as\n  `length(str - start)` or `length(str - end)`.\n- If `end` is greater than the length of `str`, then it is treated as\n  `length(str)`.\n- If `start` is greater than `end`, slice returns the empty string.\n  See [`String.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice) on MDN.\n\n## Examples\n\n```rescript\nString.slice(\"abcdefg\", ~start=2, ~end=5) == \"cde\"\nString.slice(\"abcdefg\", ~start=2, ~end=9) == \"cdefg\"\nString.slice(\"abcdefg\", ~start=-4, ~end=-2) == \"de\"\nString.slice(\"abcdefg\", ~start=5, ~end=1) == \"\"\nString.slice(\"abcdefg\", ~start=2) == \"cdefg\"\nString.slice(\"Hello World\", ~start=6) == \"World\"\n```"
         ],
-        "signature": "let slice: (string, ~start: int, ~end: int) => string"
+        "signature": "let slice: (string, ~start: int, ~end: int=?) => string"
       },
       {
         "id": "Stdlib.String.sliceToEnd",
@@ -5323,7 +5360,8 @@
         "docstrings": [
           "`sliceToEnd(str, ~start)` returns the substring of `str` starting at character\n`start` to the end of the string.\n- If `start` is negative, then it is evaluated as `length(str - start)`.\n- If `start` is greater than the length of `str`, then sliceToEnd returns the empty string.\n  See [`String.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice) on MDN.\n\n## Examples\n\n```rescript\nString.sliceToEnd(\"abcdefg\", ~start=4) == \"efg\"\nString.sliceToEnd(\"abcdefg\", ~start=-2) == \"fg\"\nString.sliceToEnd(\"abcdefg\", ~start=7) == \"\"\n```"
         ],
-        "signature": "let sliceToEnd: (string, ~start: int) => string"
+        "signature": "let sliceToEnd: (string, ~start: int) => string",
+        "deprecated": "Use `slice` instead"
       },
       {
         "id": "Stdlib.String.split",
@@ -5384,9 +5422,9 @@
         "kind": "value",
         "name": "substring",
         "docstrings": [
-          "`substring(str, ~start, ~end)` returns characters `start` up to but not\nincluding end from `str`.\n- If `start` is less than zero, it is treated as zero.\n- If `end` is zero or negative, the empty string is returned.\n- If `start` is greater than `end`, the `start` and `end` points are swapped.\n  See [`String.substring`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substring) on MDN.\n\n## Examples\n\n```rescript\nString.substring(\"playground\", ~start=3, ~end=6) == \"ygr\"\nString.substring(\"playground\", ~start=6, ~end=3) == \"ygr\"\nString.substring(\"playground\", ~start=4, ~end=12) == \"ground\"\n```"
+          "`substring(str, ~start, ~end)` returns characters `start` up to but not\nincluding end from `str`.\n- If `start` is less than zero, it is treated as zero.\n- If `end` is zero or negative, the empty string is returned.\n- If `start` is greater than `end`, the `start` and `end` points are swapped.\n  See [`String.substring`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substring) on MDN.\n\n## Examples\n\n```rescript\nString.substring(\"playground\", ~start=3, ~end=6) == \"ygr\"\nString.substring(\"playground\", ~start=6, ~end=3) == \"ygr\"\nString.substring(\"playground\", ~start=4, ~end=12) == \"ground\"\nString.substring(\"playground\", ~start=4) == \"ground\"\nString.substring(\"Hello World\", ~start=6) == \"World\"\n```"
         ],
-        "signature": "let substring: (string, ~start: int, ~end: int) => string"
+        "signature": "let substring: (string, ~start: int, ~end: int=?) => string"
       },
       {
         "id": "Stdlib.String.substringToEnd",
@@ -5395,7 +5433,8 @@
         "docstrings": [
           "`substringToEnd(str, ~start)` returns the substring of `str` from position\n`start` to the end.\n- If `start` is less than or equal to zero, the entire string is returned.\n- If `start` is greater than or equal to the length of `str`, the empty string\n  is returned.\n  See [`String.substring`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substring) on MDN.\n\n## Examples\n\n```rescript\nString.substringToEnd(\"playground\", ~start=4) == \"ground\"\nString.substringToEnd(\"playground\", ~start=-3) == \"playground\"\nString.substringToEnd(\"playground\", ~start=12) == \"\"\n```"
         ],
-        "signature": "let substringToEnd: (string, ~start: int) => string"
+        "signature": "let substringToEnd: (string, ~start: int) => string",
+        "deprecated": "Use `substring` instead"
       },
       {
         "id": "Stdlib.String.toLowerCase",
@@ -11269,21 +11308,25 @@
         "kind": "value",
         "name": "copyAllWithin",
         "docstrings": [],
-        "signature": "let copyAllWithin: (array<'a>, ~target: int) => array<'a>"
+        "signature": "let copyAllWithin: (array<'a>, ~target: int) => array<'a>",
+        "deprecated": "Use `copyWithin` instead"
       },
       {
         "id": "Stdlib.Array.copyWithinToEnd",
         "kind": "value",
         "name": "copyWithinToEnd",
         "docstrings": [],
-        "signature": "let copyWithinToEnd: (array<'a>, ~target: int, ~start: int) => array<'a>"
+        "signature": "let copyWithinToEnd: (array<'a>, ~target: int, ~start: int) => array<'a>",
+        "deprecated": "Use `copyWithin` instead"
       },
       {
         "id": "Stdlib.Array.copyWithin",
         "kind": "value",
         "name": "copyWithin",
-        "docstrings": [],
-        "signature": "let copyWithin: (\n  array<'a>,\n  ~target: int,\n  ~start: int,\n  ~end: int,\n) => array<'a>"
+        "docstrings": [
+          "`copyWithin(array, ~target, ~start, ~end)` copies the sequence of array elements within the array to the position starting at `target`. The copy is taken from the index positions `start` to `end`.\n\nBeware this will *mutate* the array.\n\nSee [`Array.copyWithin`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin) on MDN.\n\n## Examples\n\n```rescript\nlet myArray = [1, 2, 3, 4, 5]\nmyArray->Array.copyWithin(~target=0, ~start=3) == [4, 5, 3, 4, 5]\n\nlet myArray = [1, 2, 3, 4, 5]\nmyArray->Array.copyWithin(~target=1, ~start=3, ~end=4) == [1, 4, 3, 4, 5]\n```"
+        ],
+        "signature": "let copyWithin: (\n  array<'a>,\n  ~target: int,\n  ~start: int,\n  ~end: int=?,\n) => array<'a>"
       },
       {
         "id": "Stdlib.Array.fillAll",
@@ -11292,7 +11335,8 @@
         "docstrings": [
           "`fillAll(array, value)` fills the entire `array` with `value`.\n\nBeware this will *mutate* the array.\n\nSee [`Array.fill`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill) on MDN.\n\n## Examples\n\n```rescript\nlet myArray = [1, 2, 3, 4]\nmyArray->Array.fillAll(9)\nmyArray == [9, 9, 9, 9]\n```"
         ],
-        "signature": "let fillAll: (array<'a>, 'a) => unit"
+        "signature": "let fillAll: (array<'a>, 'a) => unit",
+        "deprecated": "Use `fill` instead"
       },
       {
         "id": "Stdlib.Array.fillToEnd",
@@ -11301,16 +11345,17 @@
         "docstrings": [
           "`fillToEnd(array, value, ~start)` fills `array` with `value` from the `start` index.\n\nBeware this will *mutate* the array.\n\nSee [`Array.fill`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill) on MDN.\n\n## Examples\n\n```rescript\nlet myArray = [1, 2, 3, 4]\nmyArray->Array.fillToEnd(9, ~start=1)\nmyArray == [1, 9, 9, 9]\n```"
         ],
-        "signature": "let fillToEnd: (array<'a>, 'a, ~start: int) => unit"
+        "signature": "let fillToEnd: (array<'a>, 'a, ~start: int) => unit",
+        "deprecated": "Use `fill` instead"
       },
       {
         "id": "Stdlib.Array.fill",
         "kind": "value",
         "name": "fill",
         "docstrings": [
-          "`fill(array, value, ~start, ~end)` fills `array` with `value` from `start` to `end`.\n\nBeware this will *mutate* the array.\n\nSee [`Array.fill`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill) on MDN.\n\n## Examples\n\n```rescript\nlet myArray = [1, 2, 3, 4]\n\nmyArray->Array.fill(9, ~start=1, ~end=3)\n\nmyArray == [1, 9, 9, 4]\n```"
+          "`fill(array, value, ~start, ~end)` fills `array` with `value` from `start` to `end`.\n\nBeware this will *mutate* the array.\n\nSee [`Array.fill`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill) on MDN.\n\n## Examples\n\n```rescript\nlet myArray = [1, 2, 3, 4]\n\nmyArray->Array.fill(9)\nmyArray == [9, 9, 9, 9]\n\nmyArray->Array.fill(0, ~start=1)\nmyArray == [9, 0, 0, 0]\n\nmyArray->Array.fill(5, ~start=1, ~end=3)\nmyArray == [9, 5, 5, 0]\n```"
         ],
-        "signature": "let fill: (array<'a>, 'a, ~start: int, ~end: int) => unit"
+        "signature": "let fill: (array<'a>, 'a, ~start: int=?, ~end: int=?) => unit"
       },
       {
         "id": "Stdlib.Array.pop",
@@ -11464,9 +11509,9 @@
         "kind": "value",
         "name": "indexOf",
         "docstrings": [
-          "`indexOf(array, item)` returns the index of the provided `item` in `array`. Uses [strict check for equality](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Strict_equality) when comparing items.\n\nReturns `-1` if the item doesn not exist. Check out `Array.indexOfOpt` for a version that returns `None` instead of `-1` if the item does not exist.\n\nSee [`Array.indexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf) on MDN.\n\n## Examples\n\n```rescript\n[1, 2]->Array.indexOf(2) == 1\n[1, 2]->Array.indexOf(3) == -1\n\n[{\"language\": \"ReScript\"}]->Array.indexOf({\"language\": \"ReScript\"}) == -1 // -1, because of strict equality\n```"
+          "`indexOf(array, item, ~from)` returns the index of the provided `item` in `array`, starting the search at `from`. Uses [strict check for equality](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Strict_equality) when comparing items.\n\nReturns `-1` if the item isn't found. Check out `Array.indexOfOpt` for a version that returns `None` instead of `-1` if the item does not exist.\n\nSee [`Array.indexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf) on MDN.\n\n## Examples\n\n```rescript\n[1, 2]->Array.indexOf(2) == 1\n[1, 2]->Array.indexOf(3) == -1\n[1, 2, 1, 2]->Array.indexOf(2, ~from=2) == 3\n\n[{\"language\": \"ReScript\"}]->Array.indexOf({\"language\": \"ReScript\"}) == -1 // -1, because of strict equality\n```"
         ],
-        "signature": "let indexOf: (array<'a>, 'a) => int"
+        "signature": "let indexOf: (array<'a>, 'a, ~from: int=?) => int"
       },
       {
         "id": "Stdlib.Array.indexOfOpt",
@@ -11482,7 +11527,8 @@
         "kind": "value",
         "name": "indexOfFrom",
         "docstrings": [],
-        "signature": "let indexOfFrom: (array<'a>, 'a, int) => int"
+        "signature": "let indexOfFrom: (array<'a>, 'a, int) => int",
+        "deprecated": "Use `indexOf` instead"
       },
       {
         "id": "Stdlib.Array.join",
@@ -11526,8 +11572,10 @@
         "id": "Stdlib.Array.lastIndexOf",
         "kind": "value",
         "name": "lastIndexOf",
-        "docstrings": [],
-        "signature": "let lastIndexOf: (array<'a>, 'a) => int"
+        "docstrings": [
+          "`lastIndexOf(array, item, ~from)` returns the last index of the provided `item` in `array`, searching backwards from `from`. Uses [strict check for equality](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Strict_equality) when comparing items.\n\nReturns `-1` if the item isn't found. Check out `Array.lastIndexOfOpt` for a version that returns `None` instead of `-1` if the item does not exist.\n\nSee [`Array.lastIndexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf) on MDN.\n\n## Examples\n\n```rescript\n[1, 2, 1, 2]->Array.lastIndexOf(2) == 3\n[1, 2]->Array.lastIndexOf(3) == -1\n[1, 2, 1, 2]->Array.lastIndexOf(2, ~from=2) == 1\n\n[{\"language\": \"ReScript\"}]->Array.lastIndexOf({\"language\": \"ReScript\"}) == -1 // -1, because of strict equality\n```"
+        ],
+        "signature": "let lastIndexOf: (array<'a>, 'a, ~from: int=?) => int"
       },
       {
         "id": "Stdlib.Array.lastIndexOfOpt",
@@ -11541,16 +11589,17 @@
         "kind": "value",
         "name": "lastIndexOfFrom",
         "docstrings": [],
-        "signature": "let lastIndexOfFrom: (array<'a>, 'a, int) => int"
+        "signature": "let lastIndexOfFrom: (array<'a>, 'a, int) => int",
+        "deprecated": "Use `lastIndexOf` instead"
       },
       {
         "id": "Stdlib.Array.slice",
         "kind": "value",
         "name": "slice",
         "docstrings": [
-          "`slice(array, ~start, ~end)` creates a new array of items copied from `array` from `start` until (but not including) `end`.\n\nSee [`Array.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice) on MDN.\n\n## Examples\n\n```rescript\n[1, 2, 3, 4]->Array.slice(~start=1, ~end=3) == [2, 3]\n```"
+          "`slice(array, ~start, ~end)` creates a new array of items copied from `array` from `start` until (but not including) `end`.\n\nSee [`Array.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice) on MDN.\n\n## Examples\n\n```rescript\n[1, 2, 3, 4]->Array.slice(~start=1, ~end=3) == [2, 3]\n[1, 2, 3, 4]->Array.slice(~start=1) == [2, 3, 4]\n[1, 2, 3, 4]->Array.slice == [1, 2, 3, 4]\n```"
         ],
-        "signature": "let slice: (array<'a>, ~start: int, ~end: int) => array<'a>"
+        "signature": "let slice: (array<'a>, ~start: int=?, ~end: int=?) => array<'a>"
       },
       {
         "id": "Stdlib.Array.sliceToEnd",
@@ -11559,7 +11608,8 @@
         "docstrings": [
           "`sliceToEnd(array, start)` creates a new array from `array`, with all items from `array` starting from `start`.\n\nSee [`Array.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice) on MDN.\n\n## Examples\n\n```rescript\n[1, 2, 3, 4]->Array.sliceToEnd(~start=1) == [2, 3, 4]\n```"
         ],
-        "signature": "let sliceToEnd: (array<'a>, ~start: int) => array<'a>"
+        "signature": "let sliceToEnd: (array<'a>, ~start: int) => array<'a>",
+        "deprecated": "Use `slice` instead"
       },
       {
         "id": "Stdlib.Array.copy",
