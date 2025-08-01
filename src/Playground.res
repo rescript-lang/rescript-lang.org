@@ -1478,10 +1478,6 @@ let make = (~versions: array<string>) => {
     (),
   )
 
-  let overlayState = React.useState(() => false)
-
-  let windowWidth = CodeMirror.useWindowWidth()
-
   let (keyMap, setKeyMap) = React.useState(() => {
     Dom.Storage2.localStorage
     ->Dom.Storage2.getItem("vimMode")
