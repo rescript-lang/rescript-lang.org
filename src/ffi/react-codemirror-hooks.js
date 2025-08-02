@@ -5,10 +5,9 @@
 // We keep this around for reference in case we find some 
 // bugs in the new implementation
 //
-import React, { useEffect, useRef } from "react";
 import CodeMirror from "codemirror";
 import "codemirror/lib/codemirror.css";
-import "../styles/cm.css";
+import { useEffect, useRef } from "react";
 
 if (typeof window !== "undefined" && typeof window.navigator !== "undefined") {
   require("codemirror/mode/javascript/javascript");
@@ -81,10 +80,10 @@ function updateErrors(cm, errors) {
     const marker = makeErrorMarker(cm);
     cm.setGutterMarker(e.row, ERROR_GUTTER_ID, marker);
 
-    const from = {line: e.row, ch: e.column};
-    const to = {line: e.endRow, ch: e.endColumn};
-    
-    state.marked.push(cm.markText(from, to, {className: "bg-fire-15"})); 
+    const from = { line: e.row, ch: e.column };
+    const to = { line: e.endRow, ch: e.endColumn };
+
+    state.marked.push(cm.markText(from, to, { className: "bg-fire-15" }));
     console.log("marked", state.marked);
   });
 

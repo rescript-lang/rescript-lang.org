@@ -8,11 +8,6 @@
     "node": ">=20"
   },
   "type": "module",
-  "postcss": {
-    "plugins": {
-      "@tailwindcss/postcss": {}
-    }
-  },
   "dependencies": {
     "@babel/generator": "^7.24.7",
     "@babel/parser": "^7.24.7",
@@ -67,6 +62,7 @@
   "devDependencies": {
     "@mdx-js/react": "^2.3.0",
     "@tailwindcss/postcss": "^4.1.11",
+    "autoprefixer": "^10.4.14",
     "cssnano": "^6.0.1",
     "dotenv": "^16.4.7",
     "esbuild-loader": "^4.3.0",
@@ -76,6 +72,6 @@
     "postcss-nesting": "^12.1.1",
     "reanalyze": "^2.16.0",
     "simple-functional-loader": "^1.2.1",
-    "tailwindcss": "^4.1.11"
+    "tailwindcss": "^4"
   }
 }
