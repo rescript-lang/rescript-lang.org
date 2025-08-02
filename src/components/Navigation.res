@@ -104,7 +104,7 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
           /* Desktop horizontal navigation */
           <div
             className="flex items-center xs:justify-between w-full bg-gray-90 sm:h-auto sm:relative">
-            <div className="flex ml-10 space-x-5 w-full text-gray-40 max-w-[26rem]">
+            <div className="flex ml-10 space-x-5 w-full text-gray-40 max-w-104">
               <Link
                 href={`/docs/manual/${version}/introduction`} className={isDocRouteActive(~route)}>
                 {React.string("Docs")}
@@ -162,7 +162,7 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
         <div
           className={(
             isOverlayOpen ? "flex" : "hidden"
-          ) ++ " top-[4rem] sm:hidden flex-col fixed top-0 left-0 h-full w-full z-50 sm:w-9/12 bg-gray-100 sm:h-auto sm:flex sm:relative sm:flex-row sm:justify-between"}>
+          ) ++ " top-16 sm:hidden flex-col fixed top-0 left-0 h-full w-full z-50 sm:w-9/12 bg-gray-100 sm:h-auto sm:flex sm:relative sm:flex-row sm:justify-between"}>
           <MobileNav route />
         </div>
       </nav>

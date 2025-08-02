@@ -19,7 +19,7 @@ module Cite = {
   let make = (~author: option<string>, ~children) =>
     // For semantics, check out
     // https://css-tricks.com/quoting-in-html-quotations-citations-and-blockquotes/
-    <div className="my-10 border-l-2 border-fire font-normal pl-10 py-1 text-fire max-w-[30rem]">
+    <div className="my-10 border-l-2 border-fire font-normal pl-10 py-1 text-fire max-w-sm">
       <blockquote className="text-32 italic mb-2"> children </blockquote>
       {Option.mapOr(author, React.null, author =>
         <figcaption className="font-semibold text-14"> {React.string(author)} </figcaption>
@@ -118,7 +118,7 @@ module Anchor = {
         href={"#" ++ id}>
         <Icon.Hyperlink className="inline-block align-middle text-gray-40" />
       </a>
-      <a className="absolute top-[-7rem]" id />
+      <a className="absolute -top-28" id />
     </span>
   }
 }
@@ -186,7 +186,7 @@ module InlineCode = {
   @react.component
   let make = (~children) =>
     <code
-      className="md-inline-code px-2 py-0.5  text-gray-60 font-mono rounded-sm bg-gray-10-tr border border-gray-90 border-opacity-5">
+      className="md-inline-code px-2 py-0.5  text-gray-60 font-mono rounded-sm bg-gray-10-tr border border-gray-90/5">
       children
     </code>
 }

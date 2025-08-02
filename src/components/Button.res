@@ -23,7 +23,7 @@ let make = (
   <button
     ?onClick
     role="button"
-    className={`select-none hover:cursor-pointer transition-colors duration-200 body-button focus:outline-none ${bgColor} ${padding}`}>
+    className={`select-none hover:cursor-pointer transition-colors duration-200 body-button focus:outline-hidden ${bgColor} ${padding}`}>
     children
   </button>
 }

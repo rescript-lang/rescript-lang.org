@@ -141,7 +141,7 @@ module Sidebar = {
         ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible bg-white mt-28 md:mt-0"}>
         <aside
           id="sidebar-content"
-          className="relative top-0 px-4 w-full block md:pt-10 md:top-[7rem] md:sticky border-r border-gray-20 overflow-y-auto pb-24 h-auto max-h-[calc(100vh-7rem)]">
+          className="relative top-0 px-4 w-full block md:pt-10 md:top-28 md:sticky border-r border-gray-20 overflow-y-auto pb-24 h-auto max-h-[calc(100vh-7rem)]">
           <button
             onClick={evt => {
               ReactEvent.Mouse.preventDefault(evt)

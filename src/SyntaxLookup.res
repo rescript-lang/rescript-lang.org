@@ -347,13 +347,13 @@ let default = (props: props) => {
   let content =
     <div>
       <div className="flex flex-col items-center">
-        <div className="text-center max-w-[21rem]">
+        <div className="text-center max-w-84">
           <Markdown.H1> {React.string("Syntax Lookup")} </Markdown.H1>
           <div className="mb-8 text-gray-60-tr text-14">
             {React.string("Enter some language construct you want to know more about.")}
           </div>
         </div>
-        <div className="w-full max-w-[34rem]">
+        <div className="w-full max-w-136">
           <SearchBox
             placeholder="Enter keywords or syntax..."
             completionValues={Array.map(completionItems, item => item.name)}
