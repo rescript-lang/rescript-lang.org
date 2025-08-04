@@ -114,7 +114,7 @@ module Anchor = {
   let make = (~id: string) => {
     <span className="inline group relative">
       <a
-        className="invisible text-gray-60 opacity-50 text-inherit hover:opacity-100 hover:text-gray-60 hover:cursor-pointer group-hover:visible"
+        className="invisible text-gray-60 opacity-50 hover:opacity-100 hover:text-gray-60 hover:cursor-pointer group-hover:visible"
         href={"#" ++ id}>
         <Icon.Hyperlink className="inline-block align-middle text-gray-40" />
       </a>
