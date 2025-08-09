@@ -740,7 +740,7 @@ module WarningFlagsWidget = {
       Option.map(suggestions, elements =>
         <div
           ref={ReactDOM.Ref.domRef((Obj.magic(listboxRef): React.ref<Nullable.t<Dom.element>>))}
-          className="p-2 absolute overflow-auto z-50 border-b rounded border-l border-r block w-full bg-gray-100 max-h-[15rem]">
+          className="p-2 absolute overflow-auto z-50 border-b rounded border-l border-r block w-full bg-gray-100 max-h-60">
           elements
         </div>
       )->Option.getOr(React.null)
@@ -781,7 +781,7 @@ module WarningFlagsWidget = {
         onClick
         onFocus
         tabIndex=0
-        className="focus:outline-none self-start focus:ring hover:cursor-pointer hover:bg-gray-40 p-2 rounded-full">
+        className="focus:outline-hidden self-start focus:ring-3 hover:cursor-pointer hover:bg-gray-40 p-2 rounded-full">
         <Icon.Close />
       </button>
     }
@@ -811,7 +811,7 @@ module WarningFlagsWidget = {
           <section className="mt-3">
             <input
               ref={ReactDOM.Ref.domRef((Obj.magic(inputRef): React.ref<Nullable.t<Dom.element>>))}
-              className="inline-block p-1 max-w-20 outline-none bg-gray-90 placeholder-gray-20 placeholder-opacity-50"
+              className="inline-block p-1 max-w-20 outline-hidden bg-gray-90 placeholder-gray-20/50"
               placeholder="Flags"
               type_="text"
               tabIndex=0
@@ -1017,7 +1017,7 @@ module Settings = {
           </button>
         </div>
         <div className="flex justify-end" />
-        <div className="max-w-[40rem]">
+        <div className="max-w-md">
           <WarningFlagsWidget onUpdate=onWarningFlagsUpdate flags=warnFlagTokens />
         </div>
       </div>
@@ -1738,7 +1738,7 @@ let make = (~versions: array<string>) => {
   let disabled = false
 
   let makeTabClass = active => {
-    let activeClass = active ? "text-white !border-sky-70 font-medium hover:cursor-default" : ""
+    let activeClass = active ? "text-white border-sky-70! font-medium hover:cursor-default" : ""
 
     "flex-1 items-center p-4 border-t-4 border-transparent " ++ activeClass
   }
@@ -1831,7 +1831,7 @@ let make = (~versions: array<string>) => {
       // Left Panel
       <div
         ref={ReactDOM.Ref.domRef((Obj.magic(leftPanelRef): React.ref<Nullable.t<Dom.element>>))}
-        className={`${layout == Column ? "h-2/4" : "!h-full"} ${layout == Column
+        className={`${layout == Column ? "h-2/4" : "h-full!"} ${layout == Column
             ? "w-full"
             : "w-[50%]"}`}>
         <CodeMirror
@@ -1876,7 +1876,7 @@ let make = (~versions: array<string>) => {
       // Right Panel
       <div
         ref={ReactDOM.Ref.domRef((Obj.magic(rightPanelRef): React.ref<Nullable.t<Dom.element>>))}
-        className={`${layout == Column ? "h-6/15" : "!h-inherit"} ${layout == Column
+        className={`${layout == Column ? "h-6/15" : "h-inherit!"} ${layout == Column
             ? "w-full"
             : "w-[50%]"}`}>
         <div className={"flex flex-wrap justify-between w-full " ++ (disabled ? "opacity-50" : "")}>

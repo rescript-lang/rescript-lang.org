@@ -179,9 +179,9 @@ module Toggle = {
         }
 
         let borderColor = if selected === i {
-          "border-t-[#696b7d]"
+          "border-t-gray-60"
         } else {
-          "border-t-[transparent]"
+          "border-t-transparent"
         }
 
         <span
