@@ -142,7 +142,7 @@ module FeatureCard = {
     }
     <section
       className="flex sm:px-4 md:px-8 lg:px-0 flex-col justify-end lg:flex-row sm:items-center h-full">
-      <div className="w-full h-full sm:self-start md:self-auto max-h-[25.4375rem]">
+      <div className="w-full h-full sm:self-start md:self-auto max-h-101.75">
         <Link href={`/blog/${slug}`} className="relative block pt-2/3">
           {switch badge {
           | Some(badge) =>
@@ -262,7 +262,7 @@ let default = (props: props): React.element => {
 
     <>
       <div className="hidden sm:flex justify-center ">
-        <div className="my-16 w-full max-w-[12rem]">
+        <div className="my-16 w-full max-w-48">
           <CategorySelector selected=category />
         </div>
       </div>
@@ -284,7 +284,7 @@ let default = (props: props): React.element => {
           <main className="min-w-320 lg:align-center w-full lg:px-0 max-w-1280 pb-48">
             <MdxProvider components=MarkdownComponents.default>
               <div className="flex justify-center">
-                <div className="w-full max-w-[66.625rem]"> content </div>
+                <div className="w-full max-w-266.5"> content </div>
               </div>
             </MdxProvider>
           </main>

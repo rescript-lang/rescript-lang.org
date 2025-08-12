@@ -52,6 +52,7 @@ module Params = Next.MakeParams(P)
 let make = () => {
 // Use the functions, values, or types created by the module function
 let params = Params.useParams()
+
 <div>
 <p>
 {React.string("Tag: " ++ params.tag /_ params is fully typed! _/)}

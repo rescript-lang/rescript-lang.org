@@ -5,10 +5,9 @@
 // We keep this around for reference in case we find some
 // bugs in the new implementation
 //
-import React, { useEffect, useRef } from "react"
 import CodeMirror from "codemirror"
 import "codemirror/lib/codemirror.css"
-import "../styles/cm.css"
+import { useEffect, useRef } from "react"
 
 if (typeof window !== "undefined" && typeof window.navigator !== "undefined") {
   require("codemirror/mode/javascript/javascript")
