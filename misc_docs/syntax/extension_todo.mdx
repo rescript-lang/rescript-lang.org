@@ -21,19 +21,19 @@ Console.log(x->String.includes("x"))
 ```
 
 ```js
-var Js_exn = require("./stdlib/js_exn.js")
+var Js_exn = require("./stdlib/js_exn.js");
 
 function implementMeLater() {
   return Js_exn.raiseError(
     "playground.res:1:37-42 - Todo: This should return a string eventually.",
-  )
+  );
 }
 
 var x = Js_exn.raiseError(
   "playground.res:1:37-42 - Todo: This should return a string eventually.",
-)
+);
 
-console.log(x.includes("x"))
+console.log(x.includes("x"));
 ```
 
 </CodeTab>

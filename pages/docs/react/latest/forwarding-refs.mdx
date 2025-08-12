@@ -120,9 +120,9 @@ let make = () => {
 ```
 
 ```js
-import * as React from "react"
-import * as Belt_Option from "rescript/lib/es6/belt_Option.js"
-import * as Caml_option from "rescript/lib/es6/caml_option.js"
+import * as React from "react";
+import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
+import * as Caml_option from "rescript/lib/es6/caml_option.js";
 
 var make = React.forwardRef(function (props, ref) {
   return React.createElement(
@@ -132,30 +132,30 @@ var make = React.forwardRef(function (props, ref) {
       ref: Belt_Option.map(
         ref == null ? undefined : Caml_option.some(ref),
         function (prim) {
-          return prim
+          return prim;
         },
       ),
       className: props.className,
       type: "text",
     }),
     props.children,
-  )
-})
+  );
+});
 
 var FancyInput = {
   make: make,
-}
+};
 
 function App(props) {
-  var input = React.useRef(null)
+  var input = React.useRef(null);
   var onClick = function (param) {
     Belt_Option.forEach(
       Caml_option.nullable_to_opt(input.current),
       function (input) {
-        input.focus()
+        input.focus();
       },
-    )
-  }
+    );
+  };
   return React.createElement(
     "div",
     undefined,
@@ -170,7 +170,7 @@ function App(props) {
       ),
       ref: input,
     }),
-  )
+  );
 }
 ```
 

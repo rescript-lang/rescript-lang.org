@@ -29,14 +29,14 @@ let message = dieRoll(6) |> dieRollMessage("Jeremy")
 
 ```js
 function dieRoll(size) {
-  return Core__Math.Int.random(1, size)
+  return Core__Math.Int.random(1, size);
 }
 
 function dieRollMessage(name, value) {
-  return "Hi " + name + ", you rolled a " + value.toString()
+  return "Hi " + name + ", you rolled a " + value.toString();
 }
 
-var message = dieRollMessage("Jeremy", dieRoll(6))
+var message = dieRollMessage("Jeremy", dieRoll(6));
 ```
 
 </CodeTab>

@@ -56,19 +56,19 @@ In fact, the code quality of our generated `bs.js` files has also improved. Goin
 
 ```js
 var lazy1 = Caml_obj.caml_lazy_make(function (param) {
-  console.log("Hello, lazy")
-  return 1
-})
+  console.log("Hello, lazy");
+  return 1;
+});
 
-console.log(lazy1, 3)
+console.log(lazy1, 3);
 
-var la = CamlinternalLazy.force(lazy1)
+var la = CamlinternalLazy.force(lazy1);
 
-var lb = CamlinternalLazy.force(3)
+var lb = CamlinternalLazy.force(3);
 
-console.log(la, lb)
+console.log(la, lb);
 
-var lazy2 = 3
+var lazy2 = 3;
 ```
 
 In our new version with all the new changes to the lazy encoding, the output is way more simplified:
@@ -78,23 +78,23 @@ var lazy1 = {
   RE_LAZY_DONE: false,
   value: function () {
     // closure now is uncurried arity-0 function
-    console.log("Hello, lazy")
-    return 1
+    console.log("Hello, lazy");
+    return 1;
   },
-}
+};
 
 var lazy2 = {
   RE_LAZY_DONE: true,
   value: 3,
-}
+};
 
-console.log(lazy1, lazy2)
+console.log(lazy1, lazy2);
 
-var la = CamlinternalLazy.force(lazy1)
+var la = CamlinternalLazy.force(lazy1);
 
-var lb = CamlinternalLazy.force(lazy2)
+var lb = CamlinternalLazy.force(lazy2);
 
-console.log(la, lb)
+console.log(la, lb);
 ```
 
 ## What changes did we make?

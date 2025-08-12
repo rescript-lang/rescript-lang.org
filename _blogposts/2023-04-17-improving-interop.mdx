@@ -31,7 +31,7 @@ This is represented as:
 var user = {
   TAG: /* User */ 0,
   name: "Hello",
-}
+};
 ```
 
 However, this has been problematic when binding to external data because there has been no way to customize the discriminator (the `TAG` property) or how its value is represented for each variant case (`0` representing `User` here). This means that unless your external data is modeled the exact same way as above, which is unlikely, you'd be forced to convert to the structure ReScript expects at runtime.
@@ -42,7 +42,7 @@ To illustrate this, let's imagine we're binding to an external union that looks 
 type LoadingState =
   | { state: "loading"; ready: boolean }
   | { state: "error"; message: string }
-  | { state: "done"; data: Data }
+  | { state: "done"; data: Data };
 ```
 
 Currently, there's no good way to use a ReScript variant to represent this type without resorting to manual and error-prone runtime conversion. However, with the new functionality, binding to the above with no additional runtime cost is easy:
@@ -60,7 +60,7 @@ This will compile to:
 var state = {
   state: "error",
   message: "Something went wrong!",
-}
+};
 ```
 
 Let's break down what we've done to make this work:
@@ -91,7 +91,7 @@ enum Direction {
   Right = "RIGHT",
 }
 
-export const myDirection = Direction.Up
+export const myDirection = Direction.Up;
 ```
 
 Previously, you'd be forced to use a polymorphic variant for this if you wanted clean, zero-cost interop:
@@ -138,7 +138,7 @@ The same logic is easily applied to string literals from TypeScript, only here t
 
 ```typescript
 // direction.ts
-type direction = "UP" | "DOWN" | "LEFT" | "RIGHT"
+type direction = "UP" | "DOWN" | "LEFT" | "RIGHT";
 ```
 
 There's no way to attach documentation strings to string literals in TypeScript, and you only get the actual value to interact with.
@@ -162,7 +162,7 @@ Here, each value will be _unboxed_ at runtime. That means that the variant paylo
 It, therefore, compiles to this JS:
 
 ```javascript
-var myArray = ["hello", true, false, 13.37]
+var myArray = ["hello", true, false, 13.37];
 ```
 
 This was previously possible to do, leveraging a few tricks, when you didn't need to potentially read the values from the array again in ReScript. But, if you wanted to read back the values, you'd have to do a number of manual steps.

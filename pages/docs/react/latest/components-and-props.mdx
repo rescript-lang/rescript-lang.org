@@ -37,15 +37,15 @@ let make = () => {
 ```
 
 ```js
-import * as React from "react"
+import * as React from "react";
 
 function Greeting(props) {
   return JsxRuntime.jsx("div", {
     children: "Hello ReScripters!",
-  })
+  });
 }
 
-var make = Greeting
+var make = Greeting;
 ```
 
 </CodeTab>
@@ -76,20 +76,20 @@ let make = (~title: string, ~visitorCount: int, ~children: React.element) => {
 ```
 
 ```js
-import * as React from "react"
+import * as React from "react";
 
 function Article(props) {
-  var visitorCountMsg = "You are visitor number: " + String(props.visitorCount)
+  var visitorCountMsg = "You are visitor number: " + String(props.visitorCount);
   return React.createElement(
     "div",
     undefined,
     React.createElement("div", undefined, props.title),
     React.createElement("div", undefined, visitorCountMsg),
     props.children,
-  )
+  );
 }
 
-var make = Article
+var make = Article;
 ```
 
 </CodeTab>
@@ -114,9 +114,9 @@ let make = (~name: option<string>=?) => {
 
 ```js
 function Greeting(props) {
-  var name = props.name
-  var greeting = name !== undefined ? "Hello " + name + "!" : "Hello stranger!"
-  return React.createElement("div", undefined, greeting)
+  var name = props.name;
+  var greeting = name !== undefined ? "Hello " + name + "!" : "Hello stranger!";
+  return React.createElement("div", undefined, greeting);
 }
 ```
 
@@ -146,11 +146,11 @@ let name = Some("Andrea")
 ```
 
 ```js
-var name = "Andrea"
+var name = "Andrea";
 
 React.createElement(Greeting, {
   name: name,
-})
+});
 ```
 
 </CodeTab>
@@ -200,12 +200,12 @@ module MyList = {
 
 ```js
 function MyList(props) {
-  return React.createElement("ul", undefined, props.children)
+  return React.createElement("ul", undefined, props.children);
 }
 
 var MyList = {
   make: MyList,
-}
+};
 
 React.createElement(
   MyList,
@@ -214,7 +214,7 @@ React.createElement(
   },
   React.createElement("li", undefined, "Item 1"),
   React.createElement("li", undefined, "Item 2"),
-)
+);
 ```
 
 </CodeTab>
@@ -331,15 +331,15 @@ let make = (props: props) => {
 ```
 
 ```js
-import * as JsxRuntime from "react/jsx-runtime"
+import * as JsxRuntime from "react/jsx-runtime";
 
 function Counter(props) {
   return JsxRuntime.jsxs("h1", {
     children: [props.title, props.count],
-  })
+  });
 }
 
-let make = Counter
+let make = Counter;
 ```
 
 </CodeTab>
@@ -384,18 +384,18 @@ let make = () => {
 ```
 
 ```js
-var React = require("react")
-var Greeting = require("./Greeting.js")
+var React = require("react");
+var Greeting = require("./Greeting.js");
 
 function App(Props) {
   return React.createElement(
     "div",
     undefined,
     React.createElement(Greeting.make, {}),
-  )
+  );
 }
 
-var make = App
+var make = App;
 ```
 
 </CodeTab>
@@ -426,17 +426,17 @@ module Link = {
 
 ```js
 function make(props) {
-  return React.createElement("a", { href: props.href }, props.children)
+  return React.createElement("a", { href: props.href }, props.children);
 }
 
 var Link = {
   make: make,
-}
+};
 
 React.createElement(make, {
   href: "/docs",
   children: "Docs",
-})
+});
 ```
 
 </CodeTab>

@@ -10,7 +10,7 @@ Sometimes, in the JavaScript output, you might want a certain value to be forcef
 
 ```js
 if (process.env.mode === "development") {
-  console.log("Dev-only code here!")
+  console.log("Dev-only code here!");
 }
 ```
 
@@ -18,7 +18,7 @@ The reason is that your JavaScript bundler (e.g. Webpack) might turn that into:
 
 ```js
 if ("production" === "development") {
-  console.log("Dev-only code here!")
+  console.log("Dev-only code here!");
 }
 ```
 
@@ -39,10 +39,10 @@ if (process["env"]["mode"] === mode) {
 ```
 
 ```js
-var mode = "development"
+var mode = "development";
 
 if (process.env.mode === mode) {
-  console.log("Dev-only code here!")
+  console.log("Dev-only code here!");
 }
 ```
 
@@ -65,7 +65,7 @@ if (process["env"]["mode"] === mode) {
 
 ```js
 if (process.env.mode === "development") {
-  console.log("Dev-only code here!")
+  console.log("Dev-only code here!");
 }
 ```
 

@@ -43,9 +43,9 @@ global variable like this
 require("bs-platform/lib/js/caml_external_polyfill.js").register(
   "caml_fancy_add",
   function (x, y) {
-    return +("" + x + ("" + y))
+    return +("" + x + ("" + y));
   },
-)
+);
 ```
 
 Note this is an experimental feature that we don't suggest users to use it

@@ -58,11 +58,11 @@ React.useEffect3(() => {
 ```
 
 ```js
-React.useEffect(function () {})
-React.useEffect(function () {}, [])
-React.useEffect(function () {}, [prop1])
-React.useEffect(function () {}, [prop1, prop2])
-React.useEffect(function () {}, [prop1, prop2, prop3])
+React.useEffect(function () {});
+React.useEffect(function () {}, []);
+React.useEffect(function () {}, [prop1]);
+React.useEffect(function () {}, [prop1, prop2]);
+React.useEffect(function () {}, [prop1, prop2, prop3]);
 ```
 
 </CodeTab>
@@ -119,19 +119,19 @@ let make = () => {
 ```js
 function Counter(Props) {
   var match = React.useState(function () {
-    return 0
-  })
-  var setCount = match[1]
-  var count = match[0]
+    return 0;
+  });
+  var setCount = match[1];
+  var count = match[0];
   React.useEffect(function () {
-    document.title = "You clicked " + String(count) + " times!"
-  })
+    document.title = "You clicked " + String(count) + " times!";
+  });
   var onClick = function (_evt) {
     return Curry._1(setCount, function (prev) {
-      return (prev + 1) | 0
-    })
-  }
-  var msg = "You clicked" + String(count) + "times"
+      return (prev + 1) | 0;
+    });
+  };
+  var msg = "You clicked" + String(count) + "times";
   return React.createElement(
     "div",
     undefined,
@@ -143,7 +143,7 @@ function Counter(Props) {
       },
       "Click me",
     ),
-  )
+  );
 }
 ```
 
@@ -216,42 +216,42 @@ let make = (~friendId: string) => {
 
 ```js
 function FriendStatus(Props) {
-  var friendId = Props.friendId
+  var friendId = Props.friendId;
   var match = React.useState(function () {
-    return /* Offline */ 0
-  })
-  var setState = match[1]
+    return /* Offline */ 0;
+  });
+  var setState = match[1];
   React.useEffect(function () {
     var handleStatusChange = function (status) {
       return Curry._1(setState, function (param) {
         if (status.isOnline) {
-          return /* Online */ 2
+          return /* Online */ 2;
         } else {
-          return /* Offline */ 0
+          return /* Offline */ 0;
         }
-      })
-    }
-    subscribeToFriendStatus(friendId, handleStatusChange)
+      });
+    };
+    subscribeToFriendStatus(friendId, handleStatusChange);
     Curry._1(setState, function (param) {
-      return /* Loading */ 1
-    })
+      return /* Loading */ 1;
+    });
     return function (param) {
-      unsubscribeFromFriendStatus(friendId, handleStatusChange)
-    }
-  })
-  var text
+      unsubscribeFromFriendStatus(friendId, handleStatusChange);
+    };
+  });
+  var text;
   switch (match[0]) {
     case /* Offline */ 0:
-      text = friendId + " is offline"
-      break
+      text = friendId + " is offline";
+      break;
     case /* Loading */ 1:
-      text = "loading..."
-      break
+      text = "loading...";
+      break;
     case /* Online */ 2:
-      text = friendId + " is online"
-      break
+      text = friendId + " is online";
+      break;
   }
-  return React.createElement("div", undefined, text)
+  return React.createElement("div", undefined, text);
 }
 ```
 

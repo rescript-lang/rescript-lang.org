@@ -61,7 +61,7 @@ let x = A(3);
 will translate to following JS:
 
 ```js
-var x = 3
+var x = 3;
 ```
 
 As you can see, we are "unboxing" the `int` value from the internal variant
@@ -79,7 +79,7 @@ let x = {f: "foo"};
 will translate to following JS:
 
 ```js
-var x = "foo"
+var x = "foo";
 ```
 
 The same principle as with variants. Now a lot of people will probably ask:
@@ -130,7 +130,7 @@ let array = [|Any 3; Any "a"|]
 The examples above will translate to following JS:
 
 ```js
-var array = [3, "a"]
+var array = [3, "a"];
 ```
 
 As you can already tell, this feature will give us way better possibilities to

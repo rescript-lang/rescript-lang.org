@@ -126,50 +126,50 @@ let make = () => {
 ```
 
 ```js
-var React = require("react")
-var Belt_Option = require("./stdlib/belt_Option.js")
-var Caml_option = require("./stdlib/caml_option.js")
+var React = require("react");
+var Belt_Option = require("./stdlib/belt_Option.js");
+var Caml_option = require("./stdlib/caml_option.js");
 
 var make = React.forwardRef(function (Props, ref_) {
-  var className = Props.className
-  var children = Props.children
+  var className = Props.className;
+  var children = Props.children;
   var tmp = {
     type: "text",
-  }
+  };
   var tmp$1 = Belt_Option.map(
     ref_ == null ? undefined : Caml_option.some(ref_),
     function (prim) {
-      return prim
+      return prim;
     },
-  )
+  );
   if (tmp$1 !== undefined) {
-    tmp.ref = Caml_option.valFromOption(tmp$1)
+    tmp.ref = Caml_option.valFromOption(tmp$1);
   }
   if (className !== undefined) {
-    tmp.className = Caml_option.valFromOption(className)
+    tmp.className = Caml_option.valFromOption(className);
   }
   return React.createElement(
     "div",
     undefined,
     React.createElement("input", tmp),
     children,
-  )
-})
+  );
+});
 
 var FancyInput = {
   make: make,
-}
+};
 
 function App(Props) {
-  var input = React.useRef(null)
+  var input = React.useRef(null);
   var onClick = function (param) {
     return Belt_Option.forEach(
       Caml_option.nullable_to_opt(input.current),
       function (input) {
-        input.focus()
+        input.focus();
       },
-    )
-  }
+    );
+  };
   return React.createElement(
     "div",
     undefined,
@@ -184,7 +184,7 @@ function App(Props) {
       ),
       ref: input,
     }),
-  )
+  );
 }
 ```
 

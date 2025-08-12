@@ -180,70 +180,70 @@ let root =
 ```
 
 ```js
-import * as React from "react"
-import * as JsxRuntime from "react/jsx-runtime"
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
 
 function Playground$AutomaticModeExample(props) {
   return JsxRuntime.jsx("div", {
     children: "Hello " + props.name + "",
-  })
+  });
 }
 
 var AutomaticModeExample = {
   make: Playground$AutomaticModeExample,
-}
+};
 
 function Playground$ClassicModeExample(props) {
-  return React.createElement("div", undefined, "Hello " + props.name + "")
+  return React.createElement("div", undefined, "Hello " + props.name + "");
 }
 
 var ClassicModeExample = {
   make: Playground$ClassicModeExample,
-}
+};
 
 function make(props) {
   return JsxRuntime.jsx("div", {
     children: "Hello " + props.name + "",
-  })
+  });
 }
 
 var NoAttributeExample = {
   make: make,
-}
+};
 
 function Playground$ReactInterfaceExample(props) {
-  var age = props.age
-  var age$1 = age !== undefined ? age : 0
+  var age = props.age;
+  var age$1 = age !== undefined ? age : 0;
   return JsxRuntime.jsx("div", {
     children:
       "Hello " + props.name + ", you are " + String(age$1) + " years old.",
-  })
+  });
 }
 
 var ReactInterfaceExample = {
   make: Playground$ReactInterfaceExample,
-}
+};
 
 function Playground$PropTypeInjectionExample(props) {
-  var msg = props.isHuman ? "hello human" : "hello fellow computer"
+  var msg = props.isHuman ? "hello human" : "hello fellow computer";
   return JsxRuntime.jsx("div", {
     children: msg,
-  })
+  });
 }
 
 var PropTypeInjectionExample = {
   make: Playground$PropTypeInjectionExample,
-}
+};
 
 function Playground$PropSpreadExample(props) {
   return JsxRuntime.jsx(make, {
     name: "World",
-  })
+  });
 }
 
 var PropSpreadExample = {
   make: Playground$PropSpreadExample,
-}
+};
 
 var root = JsxRuntime.jsxs("div", {
   children: [
@@ -264,7 +264,7 @@ var root = JsxRuntime.jsxs("div", {
     }),
     JsxRuntime.jsx(Playground$PropSpreadExample, {}),
   ],
-})
+});
 
 export {
   AutomaticModeExample,
@@ -274,7 +274,7 @@ export {
   PropTypeInjectionExample,
   PropSpreadExample,
   root,
-}
+};
 ```
 
 </CodeTab>

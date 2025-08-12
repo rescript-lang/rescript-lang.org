@@ -27,13 +27,13 @@ switch possiblyNullValue2 {
 ```
 
 ```js
-var possiblyNullValue1
-var possiblyNullValue2 = "Hello"
+var possiblyNullValue1;
+var possiblyNullValue2 = "Hello";
 
 if (possiblyNullValue2 !== undefined) {
-  console.log(possiblyNullValue2)
+  console.log(possiblyNullValue2);
 } else {
-  console.log("Nothing to see here.")
+  console.log("Nothing to see here.");
 }
 ```
 
@@ -73,7 +73,7 @@ let student1 = {
 var student1 = {
   name: "John",
   age: 30,
-}
+};
 ```
 
 </CodeTab>
@@ -98,7 +98,7 @@ let student1 = {
 var student1 = {
   name: "John",
   age: 30,
-}
+};
 ```
 
 </CodeTab>
@@ -126,9 +126,9 @@ let greetByName = (possiblyNullName) => {
 ```js
 function greetByName(possiblyNullName) {
   if (possiblyNullName == null) {
-    return "Hi"
+    return "Hi";
   } else {
-    return "Hello " + possiblyNullName
+    return "Hello " + possiblyNullName;
   }
 }
 ```

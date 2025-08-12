@@ -68,42 +68,42 @@ let make = (~friendId: string) => {
 
 ```js
 function FriendStatus(Props) {
-  var friendId = Props.friendId
+  var friendId = Props.friendId;
   var match = React.useState(function () {
-    return /* Offline */ 0
-  })
-  var setState = match[1]
+    return /* Offline */ 0;
+  });
+  var setState = match[1];
   React.useEffect(function () {
     var handleStatusChange = function (status) {
       return Curry._1(setState, function (param) {
         if (status.isOnline) {
-          return /* Online */ 2
+          return /* Online */ 2;
         } else {
-          return /* Offline */ 0
+          return /* Offline */ 0;
         }
-      })
-    }
-    subscribeToFriendStatus(friendId, handleStatusChange)
+      });
+    };
+    subscribeToFriendStatus(friendId, handleStatusChange);
     Curry._1(setState, function (param) {
-      return /* Loading */ 1
-    })
+      return /* Loading */ 1;
+    });
     return function (param) {
-      unsubscribeFromFriendStatus(friendId, handleStatusChange)
-    }
-  })
-  var text
+      unsubscribeFromFriendStatus(friendId, handleStatusChange);
+    };
+  });
+  var text;
   switch (match[0]) {
     case /* Offline */ 0:
-      text = friendId + " is offline"
-      break
+      text = friendId + " is offline";
+      break;
     case /* Loading */ 1:
-      text = "loading..."
-      break
+      text = "loading...";
+      break;
     case /* Online */ 2:
-      text = friendId + " is online"
-      break
+      text = friendId + " is online";
+      break;
   }
-  return React.createElement("div", undefined, text)
+  return React.createElement("div", undefined, text);
 }
 ```
 
@@ -159,40 +159,40 @@ let make = (~friend: friend) => {
 
 ```js
 function FriendListItem(Props) {
-  var friend = Props.friend
+  var friend = Props.friend;
   var match = React.useState(function () {
-    return /* Offline */ 0
-  })
-  var setState = match[1]
+    return /* Offline */ 0;
+  });
+  var setState = match[1];
   React.useEffect(function () {
     var handleStatusChange = function (status) {
       return Curry._1(setState, function (param) {
         if (status.isOnline) {
-          return /* Online */ 2
+          return /* Online */ 2;
         } else {
-          return /* Offline */ 0
+          return /* Offline */ 0;
         }
-      })
-    }
-    subscribeToFriendStatus(friend.id, handleStatusChange)
+      });
+    };
+    subscribeToFriendStatus(friend.id, handleStatusChange);
     Curry._1(setState, function (param) {
-      return /* Loading */ 1
-    })
+      return /* Loading */ 1;
+    });
     return function (param) {
-      unsubscribeFromFriendStatus(friend.id, handleStatusChange)
-    }
-  })
-  var color
+      unsubscribeFromFriendStatus(friend.id, handleStatusChange);
+    };
+  });
+  var color;
   switch (match[0]) {
     case /* Offline */ 0:
-      color = "red"
-      break
+      color = "red";
+      break;
     case /* Loading */ 1:
-      color = "grey"
-      break
+      color = "grey";
+      break;
     case /* Online */ 2:
-      color = "green"
-      break
+      color = "green";
+      break;
   }
   return React.createElement(
     "li",
@@ -202,7 +202,7 @@ function FriendListItem(Props) {
       },
     },
     friend.name,
-  )
+  );
 }
 ```
 
@@ -254,28 +254,28 @@ let useFriendStatus = (friendId: string): state => {
 ```js
 function useFriendStatus(friendId) {
   var match = React.useState(function () {
-    return /* Offline */ 0
-  })
-  var setState = match[1]
+    return /* Offline */ 0;
+  });
+  var setState = match[1];
   React.useEffect(function () {
     var handleStatusChange = function (status) {
       return Curry._1(setState, function (param) {
         if (status.isOnline) {
-          return /* Online */ 2
+          return /* Online */ 2;
         } else {
-          return /* Offline */ 0
+          return /* Offline */ 0;
         }
-      })
-    }
-    subscribeToFriendStatus(friendId, handleStatusChange)
+      });
+    };
+    subscribeToFriendStatus(friendId, handleStatusChange);
     Curry._1(setState, function (param) {
-      return /* Loading */ 1
-    })
+      return /* Loading */ 1;
+    });
     return function (param) {
-      unsubscribeFromFriendStatus(friendId, handleStatusChange)
-    }
-  })
-  return match[0]
+      unsubscribeFromFriendStatus(friendId, handleStatusChange);
+    };
+  });
+  return match[0];
 }
 ```
 
@@ -327,19 +327,19 @@ let make = (~friend: friend) => {
 
 ```js
 function FriendStatus(Props) {
-  var friend = Props.friend
-  var onlineState = useFriendStatus(friend.id)
-  var color
+  var friend = Props.friend;
+  var onlineState = useFriendStatus(friend.id);
+  var color;
   switch (onlineState) {
     case /* Offline */ 0:
-      color = "red"
-      break
+      color = "red";
+      break;
     case /* Loading */ 1:
-      color = "grey"
-      break
+      color = "grey";
+      break;
     case /* Online */ 2:
-      color = "green"
-      break
+      color = "green";
+      break;
   }
   return React.createElement(
     "li",
@@ -349,7 +349,7 @@ function FriendStatus(Props) {
       },
     },
     friend.name,
-  )
+  );
 }
 ```
 
@@ -377,19 +377,19 @@ let make = (~friend: friend) => {
 
 ```js
 function FriendListItem(Props) {
-  var friend = Props.friend
-  var onlineState = useFriendStatus(friend.id)
-  var color
+  var friend = Props.friend;
+  var onlineState = useFriendStatus(friend.id);
+  var color;
   switch (onlineState) {
     case /* Offline */ 0:
-      color = "red"
-      break
+      color = "red";
+      break;
     case /* Loading */ 1:
-      color = "grey"
-      break
+      color = "grey";
+      break;
     case /* Online */ 2:
-      color = "green"
-      break
+      color = "green";
+      break;
   }
   return React.createElement(
     "li",
@@ -399,7 +399,7 @@ function FriendListItem(Props) {
       },
     },
     friend.name,
-  )
+  );
 }
 ```
 
@@ -475,30 +475,30 @@ var friendList = [
     id: "3",
     name: "Ross",
   },
-]
+];
 
 function Playground(Props) {
   var match = React.useState(function () {
-    return "1"
-  })
-  var setRecipientId = match[1]
-  var recipientId = match[0]
-  var recipientOnlineState = useFriendStatus(recipientId)
-  var color
+    return "1";
+  });
+  var setRecipientId = match[1];
+  var recipientId = match[0];
+  var recipientOnlineState = useFriendStatus(recipientId);
+  var color;
   switch (recipientOnlineState) {
     case /* Offline */ 0:
-      color = /* Red */ 0
-      break
+      color = /* Red */ 0;
+      break;
     case /* Loading */ 1:
-      color = /* Grey */ 2
-      break
+      color = /* Grey */ 2;
+      break;
     case /* Online */ 2:
-      color = /* Green */ 1
-      break
+      color = /* Green */ 1;
+      break;
   }
   var onChange = function (evt) {
-    return Curry._1(setRecipientId, evt.target.value)
-  }
+    return Curry._1(setRecipientId, evt.target.value);
+  };
   var friends = Belt_Array.map(friendList, function (friend) {
     return React.createElement(
       "option",
@@ -507,8 +507,8 @@ function Playground(Props) {
         value: friend.id,
       },
       friend.name,
-    )
-  })
+    );
+  });
   return React.createElement(
     React.Fragment,
     undefined,
@@ -523,7 +523,7 @@ function Playground(Props) {
       },
       friends,
     ),
-  )
+  );
 }
 ```
 

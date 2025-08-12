@@ -29,8 +29,8 @@ let root = dirname "/User/github" (* returns "User" *)
 ```
 
 ```js
-var Path = require("path")
-var root = Path.dirname("/User/github")
+var Path = require("path");
+var root = Path.dirname("/User/github");
 ```
 
 </CodeTab>
@@ -60,8 +60,8 @@ let paddedResult = leftPad "hi" 5
 ```
 
 ```js
-var LeftPad = require("./leftPad")
-var paddedResult = LeftPad("hi", 5)
+var LeftPad = require("./leftPad");
+var paddedResult = LeftPad("hi", 5);
 ```
 
 </CodeTab>
@@ -83,8 +83,8 @@ let () = Js.log studentName
 ```
 
 ```js
-var Student = require("./student")
-console.log(Student.default)
+var Student = require("./student");
+console.log(Student.default);
 ```
 
 </CodeTab>
@@ -106,12 +106,12 @@ If your JS project is using ES6 modules, you're likely exporting & importing som
 
 ```js
 // student.js
-export default name = "Al"
+export default name = "Al";
 ```
 
 ```js
 // teacher.js
-import studentName from "student.js"
+import studentName from "student.js";
 ```
 
 Technically, since a ReScript file maps to a module, there's no such thing as "default" export, only named ones. However, we've made an exception to support default module when you do the following:
@@ -129,11 +129,11 @@ let default = "Bob"
 ```
 
 ```js
-var $$default = "Bob"
+var $$default = "Bob";
 
-exports.$$default = $$default
-exports.default = $$default
-exports.__esModule = true
+exports.$$default = $$default;
+exports.default = $$default;
+exports.__esModule = true;
 ```
 
 </CodeTab>
@@ -142,11 +142,11 @@ You can then require the default as normal JS side:
 
 ```js
 // teacher2.js
-import studentName from "FavoriteStudent.js"
+import studentName from "FavoriteStudent.js";
 ```
 
 **Note**: the above JS snippet _only_ works if you're using that ES6 import/export syntax in JS. If you're still using `require`, you'd need to do:
 
 ```js
-let studentName = require("FavoriteStudent").default
+let studentName = require("FavoriteStudent").default;
 ```

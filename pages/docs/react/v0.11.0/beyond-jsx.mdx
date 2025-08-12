@@ -130,7 +130,7 @@ React.jsx(Friend.make, {name: "Fred", age: 20})
 ```
 
 ```js
-React.createElement(Playground$Friend, { name: "Fred", age: 20 })
+React.createElement(Playground$Friend, { name: "Fred", age: 20 });
 ```
 
 </CodeTab>
@@ -162,7 +162,12 @@ React.jsxs(
 ```
 
 ```js
-React.createElement(Container, { width: 200, children: null }, "Hello", "World")
+React.createElement(
+  Container,
+  { width: 200, children: null },
+  "Hello",
+  "World",
+);
 ```
 
 </CodeTab>
@@ -188,7 +193,7 @@ ReactDOM.jsx("div", {title: "test"})
 ```
 
 ```js
-React.createElement("div", { title: "test" })
+React.createElement("div", { title: "test" });
 ```
 
 </CodeTab>
@@ -220,7 +225,7 @@ React.createElement(
   "div",
   { title: "test" },
   React.createElement("span", undefined),
-)
+);
 ```
 
 </CodeTab>

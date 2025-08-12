@@ -73,12 +73,12 @@ statement in raw JS syntax. The generated JS code is as follows:
 ```js
 function getSafe(a, b) {
   if (b >= 0 && b < a.length) {
-    return a[b]
+    return a[b];
   }
-  throw new Error("out of range")
+  throw new Error("out of range");
 }
 
-var v = getSafe(/* array */ [1, 2, 3], -1)
+var v = getSafe(/* array */ [1, 2, 3], -1);
 ```
 
 Inserting raw JS code as a function has several advantages:
@@ -133,9 +133,9 @@ The preceding code generates the following JS. As you can see, the binding
 itself is zero cost and serves as formal documentation.
 
 ```js
-var date = new Date(10000)
-date.setDate(3)
-var d = date.getDate()
+var date = new Date(10000);
+date.setDate(3);
+var d = date.getDate();
 ```
 
 A typical workflow is that we create an abstract data type, create bindings for
@@ -172,23 +172,23 @@ The generated JS is as follows, and you can see the cost:
 
 ```js
 function fromFloat(d) {
-  return new Date(d)
+  return new Date(d);
 }
 
 function getDate(d) {
-  return d.getDate()
+  return d.getDate();
 }
 
 function setDate(d, v) {
-  d.setDate(v)
-  return 0 // ocaml representation of unit
+  d.setDate(v);
+  return 0; // ocaml representation of unit
 }
 
-var date = fromFloat(10000)
+var date = fromFloat(10000);
 
-setDate(date, 3)
+setDate(date, 3);
 
-var d = getDate(date)
+var d = getDate(date);
 ```
 
 <!-- ,  and provide various methods over such abstract data type. -->

@@ -27,9 +27,9 @@ let myNumber = #7
 ```
 
 ```js
-var myColor = "red"
-var myLabel = "aria-hidden"
-var myNumber = 7
+var myColor = "red";
+var myLabel = "aria-hidden";
+var myNumber = 7;
 ```
 
 </CodeTab>
@@ -64,9 +64,9 @@ let render = (myColor: [#red | #green | #blue]) => {
 ```js
 function render(myColor) {
   if (myColor === "green" || myColor === "red") {
-    console.log("Hello other colors")
+    console.log("Hello other colors");
   } else {
-    console.log("Hello blue!")
+    console.log("Hello blue!");
   }
 }
 ```
@@ -93,11 +93,11 @@ let render = myColor => {
 ```js
 function render(myColor) {
   if (myColor === "yellow") {
-    console.log("Hello yellow!")
+    console.log("Hello yellow!");
   } else if (myColor === "green") {
-    console.log("Hello green!")
+    console.log("Hello green!");
   } else {
-    console.log("Hello blue!")
+    console.log("Hello blue!");
   }
 }
 ```
@@ -127,12 +127,12 @@ let him: account = #Facebook("Josh", 26)
 var me = {
   NAME: "Instagram",
   VAL: "Jenny",
-}
+};
 
 var him = {
   NAME: "Facebook",
   VAL: ["Josh", 26],
-}
+};
 ```
 
 </CodeTab>
@@ -155,7 +155,7 @@ let myColor: color = #Ruby
 ```
 
 ```js
-var myColor = "Ruby"
+var myColor = "Ruby";
 ```
 
 </CodeTab>
@@ -175,14 +175,14 @@ switch myColor {
 ```
 
 ```js
-var other = myColor
+var other = myColor;
 
 if (other === "Neon" || other === "Navy" || other === "Sapphire") {
-  console.log("This is blue-ish")
+  console.log("This is blue-ish");
 } else if (other === "Rust" || other === "Ruby" || other === "Redwood") {
-  console.log("This is red-ish")
+  console.log("This is red-ish");
 } else {
-  console.log("Other color than red and blue: ", other)
+  console.log("Other color than red and blue: ", other);
 }
 ```
 
@@ -222,21 +222,21 @@ Console.log(displayColor(myColor))
 ```
 
 ```js
-var myColor = "blue"
+var myColor = "blue";
 
 function displayColor(v) {
   if (v === "white") {
-    return "Hey white!"
+    return "Hey white!";
   } else if (v === "red") {
-    return "Hello red"
+    return "Hello red";
   } else if (v === "green") {
-    return "Hello green"
+    return "Hello green";
   } else {
-    return "Hey blue!"
+    return "Hey blue!";
   }
 }
 
-console.log(displayColor("blue"))
+console.log(displayColor("blue"));
 ```
 
 </CodeTab>
@@ -267,7 +267,7 @@ let intl = makeNumberFormat(#"de-DE")
 ```
 
 ```js
-var intl = Intl.NumberFormat("de-DE")
+var intl = Intl.NumberFormat("de-DE");
 ```
 
 </CodeTab>
@@ -302,9 +302,9 @@ type direction = [ #UP | #DOWN | #LEFT | #RIGHT ]
 ```
 
 ```js
-var DirectionJs = require("./direction.js")
+var DirectionJs = require("./direction.js");
 
-var myDirection = DirectionJs.myDirection
+var myDirection = DirectionJs.myDirection;
 ```
 
 </CodeTab>
@@ -392,8 +392,8 @@ let message = "Hello " ++ (theCompany :> string)
 ```
 
 ```js
-var theCompany = "Apple"
-var message = "Hello " + theCompany
+var theCompany = "Apple";
+var message = "Hello " + theCompany;
 ```
 
 </CodeTab>

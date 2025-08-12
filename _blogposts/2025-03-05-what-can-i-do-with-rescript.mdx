@@ -70,13 +70,13 @@ function format(
   date: string | number | Date,
   formatStr: string,
   options?: FormatOptions,
-): string
+): string;
 
 // how it's imported
-import { format } from "date-fns"
+import { format } from "date-fns";
 
 // how it's used
-const result = format(new Date(2014, 1, 11), "MM/dd/yyyy")
+const result = format(new Date(2014, 1, 11), "MM/dd/yyyy");
 ```
 
 That's all we need to know to write bindings to use this function in ReScript.
@@ -103,9 +103,9 @@ let formattedDate = DateFns.formatString(~date="2021-09-01", ~formatStr="MMMM dd
 ```
 
 ```js
-import * as DateFns from "date-fns"
+import * as DateFns from "date-fns";
 
-var formattedDate = DateFns.format("2021-09-01", "MMMM dd, yyyy")
+var formattedDate = DateFns.format("2021-09-01", "MMMM dd, yyyy");
 ```
 
 </CodeTab>
@@ -134,11 +134,11 @@ let formattedDate = formatString(
 ```
 
 ```js
-import * as DateFns from "date-fns"
+import * as DateFns from "date-fns";
 
 var formattedDate = DateFns.format("2021-09-01", "MMMM dd, yyyy", {
   firstWeekContainsDate: 4,
-})
+});
 ```
 
 </CodeTab>

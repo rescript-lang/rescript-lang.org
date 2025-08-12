@@ -21,7 +21,7 @@ validateAge (getAge (parseData person))
 ```
 
 ```js
-validateAge(getAge(parseData(person)))
+validateAge(getAge(parseData(person)));
 ```
 
 </CodeTab>
@@ -45,7 +45,7 @@ person
 ```
 
 ```js
-validateAge(getAge(parseData(person)))
+validateAge(getAge(parseData(person)));
 ```
 
 </CodeTab>
@@ -65,7 +65,7 @@ a one two three
 ```
 
 ```js
-a(one, two, three)
+a(one, two, three);
 ```
 
 </CodeTab>
@@ -83,7 +83,7 @@ one |. a two three
 ```
 
 ```js
-a(one, two, three)
+a(one, two, three);
 ```
 
 </CodeTab>
@@ -164,13 +164,13 @@ let () = send (setWaitDuration (asyncRequest ()) 4000)
 ```js
 var result = [1, 2, 3]
   .map(function (a) {
-    return (a + 1) | 0
+    return (a + 1) | 0;
   })
   .filter(function (a) {
-    return a % 2 === 0
-  })
+    return a % 2 === 0;
+  });
 
-asyncRequest().setWaitDuration(4000).send()
+asyncRequest().setWaitDuration(4000).send();
 ```
 
 </CodeTab>
@@ -198,13 +198,13 @@ asyncRequest()->setWaitDuration(4000)->send
 ```js
 var result = [1, 2, 3]
   .map(function (a) {
-    return (a + 1) | 0
+    return (a + 1) | 0;
   })
   .filter(function (a) {
-    return a % 2 === 0
-  })
+    return a % 2 === 0;
+  });
 
-asyncRequest().setWaitDuration(4000).send()
+asyncRequest().setWaitDuration(4000).send();
 ```
 
 </CodeTab>
@@ -224,7 +224,7 @@ let result = name |. preprocess |. Some
 ```
 
 ```js
-var result = preprocess(name)
+var result = preprocess(name);
 ```
 
 </CodeTab>
@@ -242,7 +242,7 @@ let result = Some (preprocess name)
 ```
 
 ```js
-var result = preprocess(name)
+var result = preprocess(name);
 ```
 
 </CodeTab>
@@ -283,7 +283,7 @@ makePerson ~age=47 ()
 ```
 
 ```js
-namePerson(makePerson(47), "Jane")
+namePerson(makePerson(47), "Jane");
 ```
 
 </CodeTab>
@@ -302,8 +302,8 @@ getName(input)
 ```
 
 ```js
-var __x = getName(input)
-namePerson(personDetails, __x)
+var __x = getName(input);
+namePerson(personDetails, __x);
 ```
 
 </CodeTab>
@@ -322,8 +322,8 @@ getName(input)
 ```
 
 ```js
-var __x = getName(input)
-namePerson(personDetails, __x)
+var __x = getName(input);
+namePerson(personDetails, __x);
 ```
 
 </CodeTab>

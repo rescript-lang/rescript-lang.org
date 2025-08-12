@@ -21,11 +21,11 @@ let hi = {message: "hello!"}
 ```js
 var studentName = /* Name */ {
   _0: "Joe",
-}
+};
 
 var hi = {
   message: "hello!",
-}
+};
 ```
 
 </CodeTab>
@@ -47,9 +47,9 @@ let hi = {message: "hello!"}
 ```
 
 ```js
-var studentName = "Joe"
+var studentName = "Joe";
 
-var hi = "hello!"
+var hi = "hello!";
 ```
 
 </CodeTab>
@@ -85,22 +85,22 @@ renderDot(playerLocalCoordinates)
 
 ```js
 function renderDot(coordinates) {
-  console.log("Pretend to draw at:", coordinates.x, coordinates.y)
+  console.log("Pretend to draw at:", coordinates.x, coordinates.y);
 }
 
 function toWorldCoordinates(localCoordinates) {
   return {
     x: localCoordinates.x + 10,
     y: localCoordinates.x + 20,
-  }
+  };
 }
 
 var playerLocalCoordinates = {
   x: 20.5,
   y: 30.5,
-}
+};
 
-renderDot(playerLocalCoordinates)
+renderDot(playerLocalCoordinates);
 ```
 
 </CodeTab>
@@ -135,22 +135,22 @@ renderDot(playerLocalCoordinates->toWorldCoordinates)
 
 ```js
 function renderDot(coordinates) {
-  console.log("Pretend to draw at:", coordinates.x, coordinates.y)
+  console.log("Pretend to draw at:", coordinates.x, coordinates.y);
 }
 
 function toWorldCoordinates(coordinates) {
   return {
     x: coordinates.x + 10,
     y: coordinates.x + 20,
-  }
+  };
 }
 
 var playerLocalCoordinates = {
   x: 20.5,
   y: 30.5,
-}
+};
 
-renderDot(toWorldCoordinates(playerLocalCoordinates))
+renderDot(toWorldCoordinates(playerLocalCoordinates));
 ```
 
 </CodeTab>

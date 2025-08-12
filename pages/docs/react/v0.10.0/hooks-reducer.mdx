@@ -21,7 +21,7 @@ let (state, dispatch) = React.useReducer(reducer, initialState)
 ```
 
 ```js
-var match = React.useReducer(reducer, initialState)
+var match = React.useReducer(reducer, initialState);
 ```
 
 </CodeTab>
@@ -68,19 +68,19 @@ function reducer(state, action) {
   if (action) {
     return {
       count: (state.count - 1) | 0,
-    }
+    };
   } else {
     return {
       count: (state.count + 1) | 0,
-    }
+    };
   }
 }
 
 function Counter(Props) {
   var match = React.useReducer(reducer, {
     count: 0,
-  })
-  var dispatch = match[1]
+  });
+  var dispatch = match[1];
   return React.createElement(
     React.Fragment,
     undefined,
@@ -89,7 +89,7 @@ function Counter(Props) {
       "button",
       {
         onClick: function (param) {
-          return Curry._1(dispatch, /* Dec */ 1)
+          return Curry._1(dispatch, /* Dec */ 1);
         },
       },
       "-",
@@ -98,12 +98,12 @@ function Counter(Props) {
       "button",
       {
         onClick: function (param) {
-          return Curry._1(dispatch, /* Inc */ 0)
+          return Curry._1(dispatch, /* Inc */ 0);
         },
       },
       "+",
     ),
-  )
+  );
 }
 ```
 
@@ -198,37 +198,37 @@ function reducer(state, action) {
           content: action._0,
           completed: false,
         },
-      ])
+      ]);
       return {
         todos: todos,
         nextId: (state.nextId + 1) | 0,
-      }
+      };
     case /* RemoveTodo */ 1:
-      var id = action._0
+      var id = action._0;
       var todos$1 = state.todos.filter(function (todo) {
-        return todo.id !== id
-      })
+        return todo.id !== id;
+      });
       return {
         todos: todos$1,
         nextId: state.nextId,
-      }
+      };
     case /* ToggleTodo */ 2:
-      var id$1 = action._0
+      var id$1 = action._0;
       var todos$2 = Belt_Array.map(state.todos, function (todo) {
         if (todo.id === id$1) {
           return {
             id: todo.id,
             content: todo.content,
             completed: !todo.completed,
-          }
+          };
         } else {
-          return todo
+          return todo;
         }
-      })
+      });
       return {
         todos: todos$2,
         nextId: state.nextId,
-      }
+      };
   }
 }
 
@@ -238,14 +238,14 @@ var initialTodos = [
     content: "Try ReScript & React",
     completed: false,
   },
-]
+];
 
 function TodoApp(Props) {
   var match = React.useReducer(reducer, {
     todos: initialTodos,
     nextId: 2,
-  })
-  var dispatch = match[1]
+  });
+  var dispatch = match[1];
   var todos = Belt_Array.map(match[0].todos, function (todo) {
     return React.createElement(
       "li",
@@ -258,7 +258,7 @@ function TodoApp(Props) {
             return Curry._1(dispatch, {
               TAG: /* RemoveTodo */ 1,
               _0: todo.id,
-            })
+            });
           },
         },
         "Remove",
@@ -270,17 +270,17 @@ function TodoApp(Props) {
           return Curry._1(dispatch, {
             TAG: /* ToggleTodo */ 2,
             _0: todo.id,
-          })
+          });
         },
       }),
-    )
-  })
+    );
+  });
   return React.createElement(
     React.Fragment,
     undefined,
     React.createElement("h1", undefined, "Todo List:"),
     React.createElement("ul", undefined, todos),
-  )
+  );
 }
 ```
 
@@ -296,7 +296,7 @@ let (state, dispatch) =
 ```
 
 ```js
-var match = React.useReducer(reducer, initialState, init)
+var match = React.useReducer(reducer, initialState, init);
 ```
 
 </CodeTab>
@@ -345,7 +345,7 @@ let make = (~initialCount: int) => {
 function init(initialCount) {
   return {
     count: initialCount,
-  }
+  };
 }
 
 function reducer(state, action) {
@@ -353,23 +353,23 @@ function reducer(state, action) {
     if (action !== 0) {
       return {
         count: (state.count - 1) | 0,
-      }
+      };
     } else {
       return {
         count: (state.count + 1) | 0,
-      }
+      };
     }
   } else {
     return {
       count: action._0,
-    }
+    };
   }
 }
 
 function Counter(Props) {
-  var initialCount = Props.initialCount
-  var match = React.useReducer(reducer, initialCount, init)
-  var dispatch = match[1]
+  var initialCount = Props.initialCount;
+  var match = React.useReducer(reducer, initialCount, init);
+  var dispatch = match[1];
   return React.createElement(
     React.Fragment,
     undefined,
@@ -378,7 +378,7 @@ function Counter(Props) {
       "button",
       {
         onClick: function (param) {
-          return Curry._1(dispatch, /* Dec */ 1)
+          return Curry._1(dispatch, /* Dec */ 1);
         },
       },
       "-",
@@ -387,12 +387,12 @@ function Counter(Props) {
       "button",
       {
         onClick: function (param) {
-          return Curry._1(dispatch, /* Inc */ 0)
+          return Curry._1(dispatch, /* Inc */ 0);
         },
       },
       "+",
     ),
-  )
+  );
 }
 ```
 

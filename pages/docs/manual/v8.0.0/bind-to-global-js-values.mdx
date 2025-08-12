@@ -64,10 +64,10 @@ let () = clearTimeout id
 
 ```js
 var id = setTimeout(function (param) {
-  console.log("hello")
-}, 100)
+  console.log("hello");
+}, 100);
 
-clearTimeout(id)
+clearTimeout(id);
 ```
 
 </CodeTab>
@@ -93,7 +93,7 @@ let someNumber = random ()
 ```
 
 ```js
-var someNumber = Math.random()
+var someNumber = Math.random();
 ```
 
 </CodeTab>
@@ -142,12 +142,12 @@ let () = match [%external __DEV__] with
 ```
 
 ```js
-var match = typeof __DEV__ === "undefined" ? undefined : __DEV__
+var match = typeof __DEV__ === "undefined" ? undefined : __DEV__;
 
 if (match !== undefined) {
-  console.log("dev mode")
+  console.log("dev mode");
 } else {
-  console.log("production mode")
+  console.log("production mode");
 }
 ```
 
@@ -173,12 +173,12 @@ let () = match [%external __filename] with
 ```
 
 ```js
-var match = typeof __filename === "undefined" ? undefined : __filename
+var match = typeof __filename === "undefined" ? undefined : __filename;
 
 if (match !== undefined) {
-  console.log(match)
+  console.log(match);
 } else {
-  console.log("non-node environment")
+  console.log("non-node environment");
 }
 ```
 

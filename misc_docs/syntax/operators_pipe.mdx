@@ -26,14 +26,14 @@ let message = dieRoll(6)->dieRollMessage("Marshall")
 
 ```js
 function dieRoll(size) {
-  return Core__Math.Int.random(1, size)
+  return Core__Math.Int.random(1, size);
 }
 
 function dieRollMessage(value, name) {
-  return "Hi " + name + ", you rolled a " + value.toString()
+  return "Hi " + name + ", you rolled a " + value.toString();
 }
 
-var message = dieRollMessage(dieRoll(6), "Marshall")
+var message = dieRollMessage(dieRoll(6), "Marshall");
 ```
 
 </CodeTab>
@@ -59,16 +59,16 @@ String.toUpperCase("example message")->logMsg(user, datestr, _)
 
 ```js
 function logMsg(user, datestr, msg) {
-  console.log(user + "|" + datestr + "|" + msg)
+  console.log(user + "|" + datestr + "|" + msg);
 }
 
-var datestr = "01-01-2021"
+var datestr = "01-01-2021";
 
-var user = "admin"
+var user = "admin";
 
-;(function (__x) {
-  logMsg(user, datestr, __x)
-})("example message".toUpperCase())
+(function (__x) {
+  logMsg(user, datestr, __x);
+})("example message".toUpperCase());
 ```
 
 </CodeTab>

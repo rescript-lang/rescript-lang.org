@@ -87,34 +87,34 @@ let make = () => {
 ```
 
 ```js
-import * as React from "react"
-import * as User from "./User.res.js"
-import * as RescriptReactRouter from "@rescript/react/src/RescriptReactRouter.res.js"
-import * as Home from "./Home.res.js"
-import * as NotFound from "./NotFound.res.js"
+import * as React from "react";
+import * as User from "./User.res.js";
+import * as RescriptReactRouter from "@rescript/react/src/RescriptReactRouter.res.js";
+import * as Home from "./Home.res.js";
+import * as NotFound from "./NotFound.res.js";
 
 function App(Props) {
-  let url = RescriptReactRouter.useUrl(undefined, undefined)
-  let match = url.path
+  let url = RescriptReactRouter.useUrl(undefined, undefined);
+  let match = url.path;
   if (match === 0) {
-    return JsxRuntime.jsx(Home, {})
+    return JsxRuntime.jsx(Home, {});
   }
   if (match.hd !== "user") {
-    return JsxRuntime.jsx(NotFound, {})
+    return JsxRuntime.jsx(NotFound, {});
   }
-  let match$1 = match.tl
+  let match$1 = match.tl;
   if (match$1 !== 0 && match$1.tl === 0) {
     return JsxRuntime.jsx(User, {
       id: match$1.hd,
-    })
+    });
   } else {
-    return JsxRuntime.jsx(NotFound, {})
+    return JsxRuntime.jsx(NotFound, {});
   }
 }
 
-var make = App
+var make = App;
 
-export { make }
+export { make };
 ```
 
 </CodeTab>

@@ -1,23 +1,23 @@
 // @ ts-check
 
-import * as assert from "node:assert/strict"
-import * as path from "node:path"
-import * as fs from "node:fs/promises"
-import webpack from "webpack"
-import rehypeSlug from "rehype-slug"
-import remarkGfm from "remark-gfm"
-import remarkComment from "remark-comment"
-import remarkFrontmatter from "remark-frontmatter"
-import remarkMdxFrontmatter from "remark-mdx-frontmatter"
-import { createLoader } from "simple-functional-loader"
+import * as assert from "node:assert/strict";
+import * as path from "node:path";
+import * as fs from "node:fs/promises";
+import webpack from "webpack";
+import rehypeSlug from "rehype-slug";
+import remarkGfm from "remark-gfm";
+import remarkComment from "remark-comment";
+import remarkFrontmatter from "remark-frontmatter";
+import remarkMdxFrontmatter from "remark-mdx-frontmatter";
+import { createLoader } from "simple-functional-loader";
 
 const bsconfig = JSON.parse(
   (await fs.readFile("./rescript.json", "utf8")).toString(),
-)
+);
 
-const { ProvidePlugin } = webpack
+const { ProvidePlugin } = webpack;
 
-const transpileModules = ["rescript"].concat(bsconfig["bs-dependencies"])
+const transpileModules = ["rescript"].concat(bsconfig["bs-dependencies"]);
 
 /** @type {import("next").NextConfig} */
 const config = {
@@ -29,14 +29,14 @@ const config = {
     VERSION_NEXT: process.env.VERSION_NEXT,
   },
   webpack: (config, options) => {
-    const { isServer } = options
+    const { isServer } = options;
     if (!isServer) {
       // We shim fs for things like the blog slugs component
       // where we need fs access in the server-side part
       config.resolve.fallback = {
         fs: false,
         path: false,
-      }
+      };
     }
     // We need this additional rule to make sure that mjs files are
     // correctly detected within our src/ folder
@@ -50,21 +50,21 @@ const config = {
       resolve: {
         fullySpecified: false,
       },
-    })
+    });
 
     function mainMdxLoader(plugins) {
       return [
         createLoader(function (source) {
-          const result = `${source}\n\nMDXContent.frontmatter = frontmatter`
-          return result
+          const result = `${source}\n\nMDXContent.frontmatter = frontmatter`;
+          return result;
         }),
-      ]
+      ];
     }
 
     config.module.rules.push({
       test: /\.mdx?$/,
       use: mainMdxLoader(),
-    })
+    });
 
     config.module.rules.push({
       test: /\.mdx?$/,
@@ -84,10 +84,10 @@ const config = {
           },
         },
       ],
-    })
+    });
 
-    config.plugins.push(new ProvidePlugin({ React: "react" }))
-    return config
+    config.plugins.push(new ProvidePlugin({ React: "react" }));
+    return config;
   },
   async redirects() {
     const redirects = [
@@ -131,7 +131,7 @@ const config = {
         destination: "/docs/manual/latest/typescript-integration",
         permanent: true,
       },
-    ]
+    ];
     const splatRedirects = [
       {
         source: "/docs/manual/latest/:slug*",
@@ -153,35 +153,35 @@ const config = {
         destination: `/llms/manual/${process.env.VERSION_NEXT}/:file*`,
         permanent: false,
       },
-    ]
+    ];
 
     if (process.env.NODE_ENV === "production") {
-      const redirectsFile = path.join(import.meta.dirname, "public/_redirects")
+      const redirectsFile = path.join(import.meta.dirname, "public/_redirects");
       await fs.writeFile(
         redirectsFile,
         redirects
           .map(({ source, destination, permanent }) => {
-            return `${source}  ${destination}  ${permanent ? 308 : 307}`
+            return `${source}  ${destination}  ${permanent ? 308 : 307}`;
           })
           .join("\n") +
           "\n" +
           splatRedirects
             .map(({ source, destination, permanent }) => {
-              const splatPattern = /:(\w+)\*$/
-              assert.match(source, splatPattern)
-              assert.match(destination, splatPattern)
-              return `${source.replace(splatPattern, "*")}  ${destination.replace(splatPattern, ":splat")}  ${permanent ? 308 : 307}`
+              const splatPattern = /:(\w+)\*$/;
+              assert.match(source, splatPattern);
+              assert.match(destination, splatPattern);
+              return `${source.replace(splatPattern, "*")}  ${destination.replace(splatPattern, ":splat")}  ${permanent ? 308 : 307}`;
             })
             .join("\n"),
         "utf8",
-      )
+      );
     }
 
-    return [...redirects, ...splatRedirects]
+    return [...redirects, ...splatRedirects];
   },
-}
+};
 
 export default {
   transpilePackages: transpileModules,
   ...config,
-}
+};

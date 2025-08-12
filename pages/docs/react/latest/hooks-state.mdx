@@ -22,12 +22,12 @@ let (state, setState) = React.useState(_ => initialState)
 
 ```js
 var match = React.useState(function () {
-  return initialState
-})
+  return initialState;
+});
 
-var state = match[0]
+var state = match[0];
 
-var setState = match[1]
+var setState = match[1];
 ```
 
 </CodeTab>
@@ -96,15 +96,15 @@ let make = (~content) => {
 
 ```js
 function ControlPanel(Props) {
-  var setDarkmode = Props.setDarkmode
-  var darkmode = Props.darkmode
+  var setDarkmode = Props.setDarkmode;
+  var darkmode = Props.darkmode;
   var onClick = function (evt) {
-    evt.preventDefault()
+    evt.preventDefault();
     return Curry._1(setDarkmode, function (prev) {
-      return !prev
-    })
-  }
-  var toggleText = "Switch to " + ((darkmode ? "light" : "dark") + " theme")
+      return !prev;
+    });
+  };
+  var toggleText = "Switch to " + ((darkmode ? "light" : "dark") + " theme");
   return React.createElement(
     "div",
     undefined,
@@ -115,16 +115,16 @@ function ControlPanel(Props) {
       },
       toggleText,
     ),
-  )
+  );
 }
 
 function ThemeContainer(Props) {
-  var content = Props.content
+  var content = Props.content;
   var match = React.useState(function () {
-    return false
-  })
-  var darkmode = match[0]
-  var className = darkmode ? "theme-dark" : "theme-light"
+    return false;
+  });
+  var darkmode = match[0];
+  var className = darkmode ? "theme-dark" : "theme-light";
   return React.createElement(
     "div",
     {
@@ -140,7 +140,7 @@ function ThemeContainer(Props) {
       setDarkmode: match[1],
       darkmode: darkmode,
     }),
-  )
+  );
 }
 ```
 

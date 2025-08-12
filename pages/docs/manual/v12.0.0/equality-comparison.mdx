@@ -26,12 +26,12 @@ let doStringsMatch = (s1: string, s2: string) => s1 === s2
 ```
 
 ```js
-var t1 = true
-var t2 = "foo" === "foo"
-var t3 = { foo: "bar" } === { foo: "bar" }
+var t1 = true;
+var t2 = "foo" === "foo";
+var t3 = { foo: "bar" } === { foo: "bar" };
 
 function doStringsMatch(s1, s2) {
-  return s1 === s2
+  return s1 === s2;
 }
 ```
 
@@ -55,14 +55,14 @@ let doStringsMatch = (s1: string, s2: string) => s1 == s2
 ```
 
 ```js
-import * as Caml_obj from "./stdlib/caml_obj.js"
+import * as Caml_obj from "./stdlib/caml_obj.js";
 
-var t1 = true
-var t2 = true
-var t3 = Caml_obj.equal({ foo: "bar" }, { foo: "bar" })
+var t1 = true;
+var t2 = true;
+var t3 = Caml_obj.equal({ foo: "bar" }, { foo: "bar" });
 
 function doStringsMatch(s1, s2) {
-  return s1 === s2
+  return s1 === s2;
 }
 ```
 
@@ -112,17 +112,17 @@ let compareOptions = (a: option<float>, b: option<float>) => a < b
 ```
 
 ```js
-import * as Caml_obj from "./stdlib/caml_obj.js"
+import * as Caml_obj from "./stdlib/caml_obj.js";
 
 function compareInt(a, b) {
-  return a > b
+  return a > b;
 }
 
-var t1 = false
+var t1 = false;
 
-var compareArray = Caml_obj.greaterthan
+var compareArray = Caml_obj.greaterthan;
 
-var compareOptions = Caml_obj.lessthan
+var compareOptions = Caml_obj.lessthan;
 ```
 
 </CodeTab>

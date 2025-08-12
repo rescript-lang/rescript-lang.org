@@ -63,11 +63,11 @@ let result = await sh`ls ${filename}`
 ```
 
 ```js
-var $$Bun = require("bun")
+var $$Bun = require("bun");
 
-var filename = "index.res"
+var filename = "index.res";
 
-var result = await $$Bun.$`ls ${filename}`
+var result = await $$Bun.$`ls ${filename}`;
 ```
 
 </CodeTab>
@@ -97,14 +97,14 @@ Console.log(buttonCss)
 ```
 
 ```js
-import * as MyCssCss from "./myCss.css" with { type: "css", "some-identifier": "yep" }
-import MyJsonJson from "./myJson.json" with { type: "json", "some-identifier": "yep" }
+import * as MyCssCss from "./myCss.css" with { type: "css", "some-identifier": "yep" };
+import MyJsonJson from "./myJson.json" with { type: "json", "some-identifier": "yep" };
 
-var myJson = MyJsonJson
-console.log(myJson)
+var myJson = MyJsonJson;
+console.log(myJson);
 
-var buttonCss = MyCssCss.button
-console.log(buttonCss)
+var buttonCss = MyCssCss.button;
+console.log(buttonCss);
 ```
 
 </CodeTab>
@@ -123,9 +123,9 @@ let b = 2n ** 2n
 ```
 
 ```js
-var a = 9007199254740991n + 9007199254740991n
+var a = 9007199254740991n + 9007199254740991n;
 
-var p = 2n ** 2n
+var p = 2n ** 2n;
 ```
 
 </CodeTab>
@@ -183,21 +183,21 @@ let result2 = stringify(obj, ~space=2)
 ```js
 var obj = {
   test: 1,
-}
+};
 
-var result = JSON.stringify(obj, undefined, undefined)
+var result = JSON.stringify(obj, undefined, undefined);
 
-var result2 = JSON.stringify(obj, undefined, 2)
+var result2 = JSON.stringify(obj, undefined, 2);
 ```
 
 ```js
 var obj = {
   test: 1,
-}
+};
 
-var result = JSON.stringify(obj)
+var result = JSON.stringify(obj);
 
-var result2 = JSON.stringify(obj, undefined, 2)
+var result2 = JSON.stringify(obj, undefined, 2);
 ```
 
 </CodeTab>
@@ -219,19 +219,19 @@ Console.log(x->String.includes("x"))
 ```
 
 ```js
-var Js_exn = require("./stdlib/js_exn.js")
+var Js_exn = require("./stdlib/js_exn.js");
 
 function implementMeLater() {
   return Js_exn.raiseError(
     "playground.res:1:37-42 - Todo: This should return a string eventually.",
-  )
+  );
 }
 
 var x = Js_exn.raiseError(
   "playground.res:1:37-42 - Todo: This should return a string eventually.",
-)
+);
 
-console.log(x.includes("x"))
+console.log(x.includes("x"));
 ```
 
 </CodeTab>

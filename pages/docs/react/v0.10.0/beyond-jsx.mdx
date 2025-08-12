@@ -143,7 +143,7 @@ React.createElement(Friend.make, Friend.makeProps(~name="Fred", ~age=1, ()))
 ```
 
 ```js
-React.createElement(Playground$Friend, { name: "Fred", age: 20 })
+React.createElement(Playground$Friend, { name: "Fred", age: 20 });
 ```
 
 </CodeTab>
@@ -168,7 +168,12 @@ React.createElementVariadic(
 ```
 
 ```js
-React.createElement(Container, { width: 200, children: null }, "Hello", "World")
+React.createElement(
+  Container,
+  { width: 200, children: null },
+  "Hello",
+  "World",
+);
 ```
 
 </CodeTab>
@@ -190,7 +195,7 @@ ReactDOMRe.createDOMElementVariadic("div", ~props=ReactDOMRe.domProps(~title="te
 ```
 
 ```js
-React.createElement("div", { title: "test" })
+React.createElement("div", { title: "test" });
 ```
 
 </CodeTab>
@@ -218,7 +223,7 @@ React.createElement(
   "div",
   { title: "test" },
   React.createElement("span", undefined),
-)
+);
 ```
 
 </CodeTab>

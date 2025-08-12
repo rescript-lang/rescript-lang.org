@@ -4,8 +4,8 @@
 // Originally derived from the CodeMirror Rust plugin:
 // https://github.com/codemirror/CodeMirror/blob/master/mode/rust/rust.js
 
-import "codemirror/addon/mode/simple"
-import CodeMirror from "codemirror/lib/codemirror"
+import "codemirror/addon/mode/simple";
+import CodeMirror from "codemirror/lib/codemirror";
 
 CodeMirror.defineSimpleMode("rescript", {
   start: [
@@ -102,7 +102,7 @@ CodeMirror.defineSimpleMode("rescript", {
     lineComment: "//",
     fold: "brace",
   },
-})
+});
 
-CodeMirror.defineMIME("text/x-reasonsrc", "reason")
-CodeMirror.defineMIME("text/reason", "reason")
+CodeMirror.defineMIME("text/x-reasonsrc", "reason");
+CodeMirror.defineMIME("text/reason", "reason");

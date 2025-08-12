@@ -38,13 +38,13 @@ let root = dirname("/User/github") // returns "User"
 ```
 
 ```js
-import * as Path from "path"
-var root = Path.dirname("/User/github")
+import * as Path from "path";
+var root = Path.dirname("/User/github");
 ```
 
 ```js
-var Path = require("path")
-var root = Path.dirname("/User/github")
+var Path = require("path");
+var root = Path.dirname("/User/github");
 ```
 
 </CodeTab>
@@ -69,13 +69,13 @@ let paddedResult = leftPad("hi", 5)
 ```
 
 ```js
-import * as LeftPad from "./leftPad"
-var paddedResult = LeftPad("hi", 5)
+import * as LeftPad from "./leftPad";
+var paddedResult = LeftPad("hi", 5);
 ```
 
 ```js
-var LeftPad = require("./leftPad")
-var paddedResult = LeftPad("hi", 5)
+var LeftPad = require("./leftPad");
+var paddedResult = LeftPad("hi", 5);
 ```
 
 </CodeTab>
@@ -94,8 +94,8 @@ Console.log(studentName)
 ```
 
 ```js
-import Student from "./student"
-var studentName = Student
+import Student from "./student";
+var studentName = Student;
 ```
 
 </CodeTab>
@@ -215,12 +215,12 @@ If your JS project uses JavaScript module, you're likely exporting & importing s
 
 ```js
 // student.js
-export default name = "Al"
+export default name = "Al";
 ```
 
 ```js
 // teacher.js
-import studentName from "student.js"
+import studentName from "student.js";
 ```
 
 A JavaScript default export is really just syntax sugar for a named export implicitly called `default` (now you know!). So to export a default value from ReScript, you can just do:
@@ -233,18 +233,18 @@ let default = "Bob"
 ```
 
 ```js
-var $$default = "Bob"
+var $$default = "Bob";
 
-exports.$$default = $$default
-exports.default = $$default
+exports.$$default = $$default;
+exports.default = $$default;
 // informal transpiler-compatible marker of a default export compiled from JavaScript module
-exports.__esModule = true
+exports.__esModule = true;
 ```
 
 ```js
-var $$default = "Bob"
+var $$default = "Bob";
 
-export { $$default, $$default as default }
+export { $$default, $$default as default };
 ```
 
 </CodeTab>
@@ -253,7 +253,7 @@ You can then import this default export as usual on the JS side:
 
 ```js
 // teacher2.js
-import studentName from "ReScriptStudent.js"
+import studentName from "ReScriptStudent.js";
 ```
 
 If your JavaScript's default import is transpiled by Babel/Webpack/Jest into CommonJS `require`s, we've taken care of that too! See the CommonJS output tab for `__esModule`.

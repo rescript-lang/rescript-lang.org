@@ -59,10 +59,10 @@ Capital letters in Reason are used exclusively for module names, like `String` a
 ```js
 const payload = {
   PostTitle: "Welcome to Reason",
-}
+};
 
 /* this won't work in Reason since `PostTitle` is capitalized, so `paylod.PostTitle` would break */
-const title = payload.PostTitle
+const title = payload.PostTitle;
 ```
 
 In this case, when writing bindings to the JavaScript object, you can use the `[@bs.as "whatever-name-you-want-in-javascript"]` to tell the compiler exactly what the JavaScript attribute name should be in the compiled output:
@@ -97,7 +97,7 @@ let title = payload.postTitle
 
 ```js
 /* The correct capitalized field name is output in the JavaScript! */
-var title = payload.PostTitle
+var title = payload.PostTitle;
 ```
 
 </CodeTab>
@@ -136,7 +136,7 @@ let payloadType = payload.type_
 
 ```js
 /* The reason compiler has correctly ouput `payload.type` even though *we* called the field `type_` */
-var payloadType = payload.type
+var payloadType = payload.type;
 ```
 
 </CodeTab>

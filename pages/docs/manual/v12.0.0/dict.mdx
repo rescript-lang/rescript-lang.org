@@ -26,12 +26,12 @@ let d2 = Dict.fromArray([("A", 5), ("B", 6)])
 let d = {
   A: 5,
   B: 6,
-}
+};
 
 let d2 = Object.fromEntries([
   ["A", 5],
   ["B", 6],
-])
+]);
 ```
 
 </CodeTab>
@@ -68,15 +68,15 @@ let d = {
   A: 5,
   B: 6,
   C: 7,
-}
+};
 
-let a = d["A"]
+let a = d["A"];
 
-let b = d.B
+let b = d.B;
 
-let b$1 = b !== undefined ? b : undefined
+let b$1 = b !== undefined ? b : undefined;
 
-let c = d.C
+let c = d.C;
 ```
 
 </CodeTab>
@@ -103,9 +103,9 @@ d->Dict.set("C", 7)
 let d = {
   A: 5,
   B: 6,
-}
+};
 
-d["C"] = 7
+d["C"] = 7;
 ```
 
 </CodeTab>
@@ -136,18 +136,18 @@ let decodeUser = (json: JSON.t) => {
 ```js
 function decodeUser(json) {
   if (typeof json !== "object" || json === null || Array.isArray(json)) {
-    return
+    return;
   }
-  let name = json.name
+  let name = json.name;
   if (typeof name !== "string") {
-    return
+    return;
   }
-  let email = json.email
+  let email = json.email;
   if (typeof email === "string") {
     return {
       name: name,
       email: email,
-    }
+    };
   }
 }
 ```

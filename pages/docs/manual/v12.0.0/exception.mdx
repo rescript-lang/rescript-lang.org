@@ -19,17 +19,17 @@ throw(InputClosed("The stream has closed!"))
 ```
 
 ```js
-import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js"
+import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js";
 
 let InputClosed = /* @__PURE__ */ Primitive_exceptions.create(
   "Playground.InputClosed",
-)
+);
 
 throw {
   RE_EXN_ID: InputClosed,
   _1: "The stream has closed!",
   Error: new Error(),
-}
+};
 ```
 
 </CodeTab>
@@ -60,28 +60,28 @@ let result =
 ```
 
 ```js
-import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js"
+import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js";
 
 function getItem(item) {
   if (item === 3) {
-    return 1
+    return 1;
   }
   throw {
     RE_EXN_ID: "Not_found",
     Error: new Error(),
-  }
+  };
 }
 
-let result
+let result;
 
 try {
-  result = getItem(2)
+  result = getItem(2);
 } catch (raw_exn) {
-  let exn = Primitive_exceptions.internalToException(raw_exn)
+  let exn = Primitive_exceptions.internalToException(raw_exn);
   if (exn.RE_EXN_ID === "Not_found") {
-    result = 0
+    result = 0;
   } else {
-    throw exn
+    throw exn;
   }
 }
 ```
@@ -102,12 +102,12 @@ switch list{1, 2, 3}->List.getExn(4) {
 ```
 
 ```js
-import * as Stdlib_List from "./stdlib/Stdlib_List.js"
-import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js"
+import * as Stdlib_List from "./stdlib/Stdlib_List.js";
+import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js";
 
-let exit = 0
+let exit = 0;
 
-let item
+let item;
 
 try {
   item = Stdlib_List.getExn(
@@ -122,19 +122,19 @@ try {
       },
     },
     4,
-  )
-  exit = 1
+  );
+  exit = 1;
 } catch (raw_exn) {
-  let exn = Primitive_exceptions.internalToException(raw_exn)
+  let exn = Primitive_exceptions.internalToException(raw_exn);
   if (exn.RE_EXN_ID === "Not_found") {
-    console.log("No such item found!")
+    console.log("No such item found!");
   } else {
-    throw exn
+    throw exn;
   }
 }
 
 if (exit === 1) {
-  console.log(item)
+  console.log(item);
 }
 ```
 
@@ -214,36 +214,36 @@ try decodeUser(%raw("{}"))->Console.log catch {
 ```
 
 ```js
-import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js"
+import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js";
 
 function decodeUser(json) {
   if (typeof json === "object" && json !== null && !Array.isArray(json)) {
-    let match = json["name"]
-    let match$1 = json["age"]
+    let match = json["name"];
+    let match$1 = json["age"];
     if (typeof match === "string" && typeof match$1 === "number") {
-      return [match, match$1 | 0]
+      return [match, match$1 | 0];
     }
     throw {
       RE_EXN_ID: "Assert_failure",
       _1: ["playground.res", 6, 11],
       Error: new Error(),
-    }
+    };
   }
   throw {
     RE_EXN_ID: "Assert_failure",
     _1: ["playground.res", 8, 9],
     Error: new Error(),
-  }
+  };
 }
 
 try {
-  console.log(decodeUser({}))
+  console.log(decodeUser({}));
 } catch (raw_loc) {
-  let loc = Primitive_exceptions.internalToException(raw_loc)
+  let loc = Primitive_exceptions.internalToException(raw_loc);
   if (loc.RE_EXN_ID === "Assert_failure") {
-    console.log(loc._1)
+    console.log(loc._1);
   } else {
-    throw loc
+    throw loc;
   }
 }
 ```
@@ -356,8 +356,8 @@ Throw an exception from JS:
 // Example.js
 
 exports.someJsFunctionThatThrows = () => {
-  throw new Error("A Glitch in the Matrix!")
-}
+  throw new Error("A Glitch in the Matrix!");
+};
 ```
 
 Then catch it from ReScript:
@@ -397,10 +397,10 @@ let myTest = () => {
 ```
 
 ```js
-import * as Stdlib_JsError from "./stdlib/Stdlib_JsError.js"
+import * as Stdlib_JsError from "./stdlib/Stdlib_JsError.js";
 
 function myTest() {
-  return Stdlib_JsError.throwWithMessage("Hello!")
+  return Stdlib_JsError.throwWithMessage("Hello!");
 }
 ```
 
@@ -411,9 +411,9 @@ Then you can catch it from the JS side:
 ```js
 // after importing `myTest`...
 try {
-  myTest()
+  myTest();
 } catch (e) {
-  console.log(e.message) // "Hello!"
+  console.log(e.message); // "Hello!"
 }
 ```
 
@@ -431,7 +431,7 @@ let myTest = () => {
 
 ```js
 function myTest() {
-  throw "some non-error value!"
+  throw "some non-error value!";
 }
 ```
 
@@ -442,9 +442,9 @@ Then you can catch it from the JS side:
 ```js
 // after importing `myTest`...
 try {
-  myTest()
+  myTest();
 } catch (message) {
-  console.log(message) // "Hello!"
+  console.log(message); // "Hello!"
 }
 ```
 
@@ -463,18 +463,18 @@ let myTest = () => {
 ```
 
 ```js
-import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js"
+import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js";
 
 let BadArgument = /* @__PURE__ */ Primitive_exceptions.create(
   "Playground.BadArgument",
-)
+);
 
 function myTest() {
   throw {
     RE_EXN_ID: BadArgument,
     myMessage: "Oops!",
     Error: new Error(),
-  }
+  };
 }
 ```
 
@@ -485,10 +485,10 @@ Then, in your JS:
 ```js
 // after importing `myTest`...
 try {
-  myTest()
+  myTest();
 } catch (e) {
-  console.log(e.myMessage) // "Oops!"
-  console.log(e.Error.stack) // the stack trace
+  console.log(e.myMessage); // "Oops!"
+  console.log(e.Error.stack); // the stack trace
 }
 ```
 

@@ -22,13 +22,13 @@ let expensiveFilesRead = Lazy.make(() => {
 ```
 
 ```js
-import * as Lazy from "./stdlib/Lazy.js"
-import * as Nodefs from "node:fs"
+import * as Lazy from "./stdlib/Lazy.js";
+import * as Nodefs from "node:fs";
 
 let expensiveFilesRead = Lazy.make(() => {
-  console.log("Reading dir")
-  return Nodefs.readdirSync("./pages")
-})
+  console.log("Reading dir");
+  return Nodefs.readdirSync("./pages");
+});
 ```
 
 </CodeTab>
@@ -50,9 +50,9 @@ Console.log(Lazy.get(expensiveFilesRead)) // logs the directory content
 ```
 
 ```js
-console.log(Lazy.get(expensiveFilesRead))
+console.log(Lazy.get(expensiveFilesRead));
 
-console.log(Lazy.get(expensiveFilesRead))
+console.log(Lazy.get(expensiveFilesRead));
 ```
 
 </CodeTab>
@@ -76,16 +76,16 @@ let result = try {
 ```
 
 ```js
-let result
+let result;
 
 try {
-  result = Lazy.get(expensiveFilesRead)
+  result = Lazy.get(expensiveFilesRead);
 } catch (raw_exn) {
-  let exn = Primitive_exceptions.internalToException(raw_exn)
+  let exn = Primitive_exceptions.internalToException(raw_exn);
   if (exn.RE_EXN_ID === "Not_found") {
-    result = []
+    result = [];
   } else {
-    throw exn
+    throw exn;
   }
 }
 ```

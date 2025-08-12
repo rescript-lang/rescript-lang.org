@@ -87,32 +87,32 @@ let make = () => {
 ```
 
 ```js
-import * as React from "react"
-import * as User from "./User.bs.js"
-import * as RescriptReactRouter from "@rescript/react/src/RescriptReactRouter.bs.js"
-import * as Home from "./Home.bs.js"
-import * as NotFound from "./NotFound.bs.js"
+import * as React from "react";
+import * as User from "./User.bs.js";
+import * as RescriptReactRouter from "@rescript/react/src/RescriptReactRouter.bs.js";
+import * as Home from "./Home.bs.js";
+import * as NotFound from "./NotFound.bs.js";
 
 function App(Props) {
-  var url = RescriptReactRouter.useUrl(undefined, undefined)
-  var match = url.path
+  var url = RescriptReactRouter.useUrl(undefined, undefined);
+  var match = url.path;
   if (!match) {
-    return React.createElement(Home.make, {})
+    return React.createElement(Home.make, {});
   }
   if (match.hd === "user") {
-    var match$1 = match.tl
+    var match$1 = match.tl;
     if (match$1 && !match$1.tl) {
       return React.createElement(User.make, {
         id: match$1.hd,
-      })
+      });
     }
   }
-  return React.createElement(NotFound.make, {})
+  return React.createElement(NotFound.make, {});
 }
 
-var make = App
+var make = App;
 
-export { make }
+export { make };
 ```
 
 </CodeTab>

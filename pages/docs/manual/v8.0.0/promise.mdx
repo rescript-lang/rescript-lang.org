@@ -81,22 +81,22 @@ let () = myPromise
 
 ```js
 var myPromise = new Promise(function (resolve, reject) {
-  return resolve(2)
-})
+  return resolve(2);
+});
 
 myPromise
   .then(function (value) {
-    console.log(value)
-    return Promise.resolve((value + 2) | 0)
+    console.log(value);
+    return Promise.resolve((value + 2) | 0);
   })
   .then(function (value) {
-    console.log(value)
-    return Promise.resolve((value + 3) | 0)
+    console.log(value);
+    return Promise.resolve((value + 3) | 0);
   })
   .catch(function (err) {
-    console.log("Failure!!", err)
-    return Promise.resolve(-2)
-  })
+    console.log("Failure!!", err);
+    return Promise.resolve(-2);
+  });
 ```
 
 </CodeTab>

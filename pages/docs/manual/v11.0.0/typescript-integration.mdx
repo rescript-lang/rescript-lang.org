@@ -20,7 +20,7 @@ type t = | A(int) | B(string)
 is exported to a TypeScript type:
 
 ```ts
-type t = { TAG: "A"; _0: number } | { TAG: "B"; _0: string }
+type t = { TAG: "A"; _0: number } | { TAG: "B"; _0: string };
 ```
 
 ## A Quick Example
@@ -64,12 +64,12 @@ On a successful compile, `genType` will convert `src/Color.res` to a TypeScript 
 /* eslint-disable */
 /* tslint:disable */
 
-import * as ColorJS from "./Color.res.js"
+import * as ColorJS from "./Color.res.js";
 
-export type color = "Red" | "Blue"
+export type color = "Red" | "Blue";
 
 export const printColorMessage: (color: color) => void =
-  ColorJS.printColorMessage as any
+  ColorJS.printColorMessage as any;
 ```
 
 genType automatically maps the `color` variant to TS via a string union type `"Red" | "Blue"`.
@@ -79,9 +79,9 @@ Within our TypeScript application, we can now import and use the function in the
 ```ts
 // src/app.ts
 
-import { printColorMessage } from "./Color.gen.tsx"
+import { printColorMessage } from "./Color.gen.tsx";
 
-printColorMessage("Red", "Hello, genType!")
+printColorMessage("Red", "Hello, genType!");
 ```
 
 ## Exporting an entire module
@@ -108,14 +108,14 @@ module Size = {
 ```
 
 ```ts
-import * as MyCompBS__Es6Import from "./MyComp.res"
-const MyCompBS: any = MyCompBS__Es6Import
+import * as MyCompBS__Es6Import from "./MyComp.res";
+const MyCompBS: any = MyCompBS__Es6Import;
 
-export type Size_t = "Small" | "Medium" | "Large"
+export type Size_t = "Small" | "Medium" | "Large";
 
-export const Size_getNum: (size: Size_t) => number = MyCompBS.Size.getNum
+export const Size_getNum: (size: Size_t) => number = MyCompBS.Size.getNum;
 
-export const Size: { getNum: (size: Size_t) => number } = MyCompBS.Size
+export const Size: { getNum: (size: Size_t) => number } = MyCompBS.Size;
 ```
 
 </CodeTab>
@@ -204,7 +204,7 @@ Save the file and rebuild the project via `npm run res:build` or similar. You sh
 Any values exported from `MyComponent.res` can then be imported from TypeScript. For example:
 
 ```js
-import MyComponent from "./components/MyComponent.gen.tsx"
+import MyComponent from "./components/MyComponent.gen.tsx";
 ```
 
 ## Experimental features
@@ -251,13 +251,13 @@ Here are some examples:
 
 ```ts
 // Excerpt from https://github.com/rescript-lang/rescript/blob/master/tests/gentype_tests/typescript-react-example/src/shims/Js.shim.ts
-export type Json_t = unknown
-export type t = unknown
+export type Json_t = unknown;
+export type t = unknown;
 ```
 
 ```ts
 // Excerpt from https://github.com/rescript-lang/rescript/tree/master/tests/gentype_tests/typescript-react-example/src/shims/JsxEvent.shim.ts
-export type inputFocusEvent = React.FocusEvent<HTMLInputElement>
+export type inputFocusEvent = React.FocusEvent<HTMLInputElement>;
 ```
 
 More complete example shims can be found [here](https://github.com/rescript-lang/rescript/blob/master/tests/gentype_tests/typescript-react-example/src/shims/).

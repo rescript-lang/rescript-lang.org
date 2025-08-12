@@ -23,7 +23,7 @@ ReScript supports the JSX syntax, with some slight differences compared to the o
 ```js
 React.createElement(MyComponent, {
   name: "ReScript",
-})
+});
 ```
 
 </CodeTab>
@@ -39,7 +39,7 @@ MyComponent.createElement(~name="ReScript", ~children=list{}, ())
 ```js
 React.createElement(MyComponent, {
   name: "ReScript",
-})
+});
 ```
 
 </CodeTab>
@@ -60,7 +60,7 @@ React.createElement(
   },
   child1,
   child2,
-)
+);
 ```
 
 </CodeTab>
@@ -81,7 +81,7 @@ React.createElement(
   },
   child1,
   child2,
-)
+);
 ```
 
 </CodeTab>
@@ -95,7 +95,7 @@ React.createElement(
 ```
 
 ```js
-React.createElement(React.Fragment, undefined, child1, child2)
+React.createElement(React.Fragment, undefined, child1, child2);
 ```
 
 </CodeTab>
@@ -109,7 +109,7 @@ list{child1, child2}
 ```
 
 ```js
-React.createElement(React.Fragment, undefined, child1, child2)
+React.createElement(React.Fragment, undefined, child1, child2);
 ```
 
 </CodeTab>
@@ -123,7 +123,7 @@ React.createElement(React.Fragment, undefined, child1, child2)
 ```
 
 ```js
-React.createElement(MyComponent, { children: null }, child1, child2)
+React.createElement(MyComponent, { children: null }, child1, child2);
 ```
 
 </CodeTab>
@@ -142,7 +142,7 @@ React.createElement(
   MyComponent.makeProps(null, undefined),
   child1,
   child2,
-)
+);
 ```
 
 </CodeTab>
@@ -178,7 +178,7 @@ React.createElement(MyComponent, {
   intAttribute: 1,
   forcedOptional: "hello",
   onClick: handleClick,
-})
+});
 ```
 
 </CodeTab>
@@ -203,7 +203,7 @@ JSX props spread is supported now, but in a stricter way than in JS.
 React.createElement(Comp, {
   a: "a",
   b: "b",
-})
+});
 ```
 
 </CodeTab>
@@ -245,7 +245,7 @@ React.createElement(MyComponent, {
   isLoading: true,
   text: text,
   onClick: onClick,
-})
+});
 ```
 
 </CodeTab>

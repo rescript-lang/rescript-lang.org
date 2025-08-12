@@ -17,7 +17,7 @@ let myArray = ["hello", "world", "how are you"]
 ```
 
 ```js
-var myArray = ["hello", "world", "how are you"]
+var myArray = ["hello", "world", "how are you"];
 ```
 
 </CodeTab>
@@ -41,11 +41,11 @@ let tenthItem = myArray->Array.get(10) // None
 ```
 
 ```js
-var myArray = ["hello", "world", "how are you"]
+var myArray = ["hello", "world", "how are you"];
 
-var firstItem = myArray[0]
+var firstItem = myArray[0];
 
-var tenthItem = myArray[10]
+var tenthItem = myArray[10];
 ```
 
 </CodeTab>
@@ -71,13 +71,13 @@ myArray->Array.set(0, "bye") //  ["bye", "world", "how are you", "?"]
 ```
 
 ```js
-var myArray = ["hello", "world", "how are you"]
+var myArray = ["hello", "world", "how are you"];
 
-myArray[0] = "hey"
+myArray[0] = "hey";
 
-myArray.push("?")
+myArray.push("?");
 
-myArray[0] = "bye"
+myArray[0] = "bye";
 ```
 
 </CodeTab>
@@ -98,15 +98,15 @@ let x3 = [...y]
 ```
 
 ```javascript
-var Belt_Array = require("rescript/lib/js/belt_Array.js")
+var Belt_Array = require("rescript/lib/js/belt_Array.js");
 
-var y = [1, 2]
+var y = [1, 2];
 
-var x = Belt_Array.concatMany([[4, 5], y])
+var x = Belt_Array.concatMany([[4, 5], y]);
 
-var x2 = Belt_Array.concatMany([[4, 5], y, [7], y])
+var x2 = Belt_Array.concatMany([[4, 5], y, [7], y]);
 
-var x3 = Belt_Array.concatMany([y])
+var x3 = Belt_Array.concatMany([y]);
 ```
 
 </CodeTab>
@@ -138,7 +138,7 @@ var myList = {
       tl: 0,
     },
   },
-}
+};
 ```
 
 </CodeTab>
@@ -174,12 +174,12 @@ var myList = {
       tl: 0,
     },
   },
-}
+};
 
 var anotherList = {
   hd: 0,
   tl: myList,
-}
+};
 ```
 
 </CodeTab>
@@ -215,7 +215,7 @@ let message =
       } !== 0
       ? "The list two items and a potenial remainder of items"
       : "The head of the list is the string " + (1).toString()
-    : "This list is empty"
+    : "This list is empty";
 ```
 
 </CodeTab>

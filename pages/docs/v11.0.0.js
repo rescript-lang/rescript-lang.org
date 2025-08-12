@@ -1,3 +1,3 @@
-import make from "src/DocsOverview.mjs"
+import make from "src/DocsOverview.mjs";
 
-export default make
+export default make;

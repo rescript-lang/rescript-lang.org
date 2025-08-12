@@ -21,8 +21,8 @@ let refContainer = React.useRef(initialValue);
 ```
 
 ```js
-var button = React.useRef(null)
-React.useRef(0)
+var button = React.useRef(null);
+React.useRef(0);
 ```
 
 </CodeTab>
@@ -71,15 +71,15 @@ let make = () => {
 
 ```js
 function TextInputWithFocusButton(Props) {
-  var inputEl = React.useRef(null)
+  var inputEl = React.useRef(null);
   var onClick = function (param) {
     return Belt_Option.forEach(
       Caml_option.nullable_to_opt(inputEl.current),
       function (input) {
-        input.focus()
+        input.focus();
       },
-    )
-  }
+    );
+  };
   return React.createElement(
     React.Fragment,
     undefined,
@@ -94,7 +94,7 @@ function TextInputWithFocusButton(Props) {
       },
       "Focus the input",
     ),
-  )
+  );
 }
 ```
 
@@ -135,18 +135,18 @@ let make = () => {
 
 ```js
 function CustomTextInput(Props) {
-  var textInput = React.useRef(null)
+  var textInput = React.useRef(null);
   var setTextInputRef = function (element) {
-    textInput.current = element
-  }
+    textInput.current = element;
+  };
   var focusTextInput = function (param) {
     return Belt_Option.forEach(
       Caml_option.nullable_to_opt(textInput.current),
       function (input) {
-        input.focus()
+        input.focus();
       },
-    )
-  }
+    );
+  };
   return React.createElement(
     "div",
     undefined,
@@ -159,7 +159,7 @@ function CustomTextInput(Props) {
       value: "Focus the text input",
       onClick: focusTextInput,
     }),
-  )
+  );
 }
 ```
 

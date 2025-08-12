@@ -35,16 +35,16 @@ module School = {
 ```js
 function getProfession(person) {
   if (person) {
-    return "A director"
+    return "A director";
   } else {
-    return "A teacher"
+    return "A teacher";
   }
 }
 
 var School = {
   person1: /* Teacher */ 0,
   getProfession: getProfession,
-}
+};
 ```
 
 </CodeTab>
@@ -60,8 +60,8 @@ Js.log(School.getProfession(anotherPerson)) /* "A teacher" */
 ```
 
 ```js
-var anotherPerson = /* Teacher */ 0
-console.log("A teacher")
+var anotherPerson = /* Teacher */ 0;
+console.log("A teacher");
 ```
 
 </CodeTab>
@@ -83,13 +83,13 @@ let message = MyModule.NestedModule.message
 ```js
 var NestedModule = {
   message: message,
-}
+};
 
 var MyModule = {
   NestedModule: NestedModule,
-}
+};
 
-var message = MyModule.NestedModule.message
+var message = MyModule.NestedModule.message;
 ```
 
 </CodeTab>
@@ -106,7 +106,7 @@ let p = School.getProfession(School.person1)
 ```
 
 ```js
-var p = School.getProfession(School.person1)
+var p = School.getProfession(School.person1);
 ```
 
 </CodeTab>
@@ -121,7 +121,7 @@ let p = getProfession(person1)
 ```
 
 ```js
-var p = School.getProfession(School.person1)
+var p = School.getProfession(School.person1);
 ```
 
 </CodeTab>
@@ -141,7 +141,7 @@ let p = {
 ```
 
 ```js
-var p = School.getProfession(School.person1)
+var p = School.getProfession(School.person1);
 ```
 
 </CodeTab>
@@ -189,28 +189,28 @@ module ActualComponent = {
 ```js
 function getAudience(excited) {
   if (excited) {
-    return "world!"
+    return "world!";
   } else {
-    return "world"
+    return "world";
   }
 }
 
 var BaseComponent = {
   defaultGreeting: "Hello",
   getAudience: getAudience,
-}
+};
 
-var defaultGreeting = "Hey"
+var defaultGreeting = "Hey";
 
 function render(param) {
-  return "Hey world!"
+  return "Hey world!";
 }
 
 var ActualComponent = {
   getAudience: getAudience,
   defaultGreeting: defaultGreeting,
   render: render,
-}
+};
 ```
 
 </CodeTab>
@@ -377,7 +377,7 @@ let render = (str) => str
 
 ```js
 function render(str) {
-  return str
+  return str;
 }
 ```
 
@@ -433,27 +433,27 @@ module MakeSet = (Item: Comparable) => {
 ```
 
 ```js
-var List = require("./stdlib/list.js")
+var List = require("./stdlib/list.js");
 
 function MakeSet(Item) {
   var add = function (currentSet, newItem) {
     if (
       List.exists(function (x) {
-        return Item.equal(x, newItem)
+        return Item.equal(x, newItem);
       }, currentSet)
     ) {
-      return currentSet
+      return currentSet;
     } else {
       return {
         hd: newItem,
         tl: currentSet,
-      }
+      };
     }
-  }
+  };
   return {
     empty: /* [] */ 0,
     add: add,
-  }
+  };
 }
 ```
 
@@ -478,25 +478,25 @@ module SetOfIntPairs = MakeSet(IntPair)
 ```js
 function equal(param, param$1) {
   if (param[0] === param$1[0]) {
-    return param[1] === param$1[1]
+    return param[1] === param$1[1];
   } else {
-    return false
+    return false;
   }
 }
 
 function create(x, y) {
-  return [x, y]
+  return [x, y];
 }
 
 var IntPair = {
   equal: equal,
   create: create,
-}
+};
 
 var SetOfIntPairs = {
   empty: /* [] */ 0,
   add: add,
-}
+};
 ```
 
 </CodeTab>

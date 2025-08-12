@@ -45,11 +45,11 @@ let logUserDetails = async (userId: string) => {
 
 ```js
 async function logUserDetails(userId) {
-  var email = await GlobalAPI.fetchUserMail(userId)
+  var email = await GlobalAPI.fetchUserMail(userId);
   await GlobalAPI.sendAnalytics(
     "User details have been logged for " + userId + "",
-  )
-  console.log("Email address for user " + userId + ": " + email + "")
+  );
+  console.log("Email address for user " + userId + ": " + email + "");
 }
 ```
 
@@ -188,8 +188,8 @@ let fetchData = async () => {
 
 ```js
 async function fetchData(param) {
-  var mail = (await GlobalAPI.fetchUserMail("1234")).toUpperCase()
-  console.log("All upper-cased mail: " + mail + "")
+  var mail = (await GlobalAPI.fetchUserMail("1234")).toUpperCase();
+  console.log("All upper-cased mail: " + mail + "");
 }
 ```
 
@@ -220,21 +220,21 @@ let fetchData = async () => {
 
 ```js
 async function fetchData(param) {
-  var val
-  var val$1
+  var val;
+  var val$1;
   try {
-    val = await GlobalAPI.fetchUserMail("user1")
-    val$1 = await GlobalAPI.fetchUserMail("user2")
+    val = await GlobalAPI.fetchUserMail("user1");
+    val$1 = await GlobalAPI.fetchUserMail("user2");
   } catch (raw_err) {
-    var err = Caml_js_exceptions.internalToOCamlException(raw_err)
+    var err = Caml_js_exceptions.internalToOCamlException(raw_err);
     if (err.RE_EXN_ID === "JsError") {
-      console.log("Some error occurred", err._1)
-      return
+      console.log("Some error occurred", err._1);
+      return;
     }
-    throw err
+    throw err;
   }
-  console.log("user 1 mail: " + val)
-  console.log("user 2 mail: " + val$1)
+  console.log("user 1 mail: " + val);
+  console.log("user 2 mail: " + val$1);
 }
 ```
 

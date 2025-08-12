@@ -17,8 +17,8 @@ let root = dirname("/User/github") // returns "User"
 ```
 
 ```js
-var Path = require("path")
-var root = Path.dirname("/User/github")
+var Path = require("path");
+var root = Path.dirname("/User/github");
 ```
 
 </CodeTab>
@@ -35,8 +35,8 @@ ReScript has [labeled arguments](function.md#labeled-arguments) (that can also b
 function draw(x, y, border) {
   // suppose `border` is optional and defaults to false
 }
-draw(10, 20)
-draw(20, 20, true)
+draw(10, 20);
+draw(20, 20, true);
 ```
 
 It'd be nice if on ReScript's side, we can bind & call `draw` while labeling things a bit:
@@ -52,10 +52,10 @@ draw(~x=10, ~y=20, ())
 ```
 
 ```js
-var MyGame = require("MyGame")
+var MyGame = require("MyGame");
 
-MyGame.draw(10, 20, true)
-MyGame.draw(10, 20, undefined)
+MyGame.draw(10, 20, true);
+MyGame.draw(10, 20, undefined);
 ```
 
 </CodeTab>
@@ -77,10 +77,10 @@ draw(~y=20, ~x=10, ())
 ```
 
 ```js
-var MyGame = require("MyGame")
+var MyGame = require("MyGame");
 
-MyGame.draw(10, 20, undefined)
-MyGame.draw(10, 20, undefined)
+MyGame.draw(10, 20, undefined);
+MyGame.draw(10, 20, undefined);
 ```
 
 </CodeTab>
@@ -100,7 +100,7 @@ let el = getElementById(doc, "myId")
 ```
 
 ```js
-var el = document.getElementById("myId")
+var el = document.getElementById("myId");
 ```
 
 </CodeTab>
@@ -125,8 +125,8 @@ let v = join(["a", "b"])
 ```
 
 ```js
-var Path = require("path")
-var v = Path.join("a", "b")
+var Path = require("path");
+var v = Path.join("a", "b");
 ```
 
 </CodeTab>
@@ -164,12 +164,12 @@ If you have the irresistible urge of saying "if only this JS function argument w
 ```js
 function padLeft(value, padding) {
   if (typeof padding === "number") {
-    return Array(padding + 1).join(" ") + value
+    return Array(padding + 1).join(" ") + value;
   }
   if (typeof padding === "string") {
-    return padding + value
+    return padding + value;
   }
-  throw new Error(`Expected string or number, got '${padding}'.`)
+  throw new Error(`Expected string or number, got '${padding}'.`);
 }
 ```
 
@@ -191,8 +191,8 @@ padLeft("Hello World", #Str("Message from ReScript: "))
 ```
 
 ```js
-padLeft("Hello World", 4)
-padLeft("Hello World", "Message from ReScript: ")
+padLeft("Hello World", 4);
+padLeft("Hello World", "Message from ReScript: ");
 ```
 
 </CodeTab>
@@ -219,8 +219,8 @@ readFileSync(~name="xx.txt", #useAscii)
 ```
 
 ```js
-var Fs = require("fs")
-Fs.readFileSync("xx.txt", "ascii")
+var Fs = require("fs");
+Fs.readFileSync("xx.txt", "ascii");
 ```
 
 </CodeTab>
@@ -247,7 +247,7 @@ testIntType(#inBinary)
 ```
 
 ```js
-testIntType(21)
+testIntType(21);
 ```
 
 </CodeTab>
@@ -302,8 +302,8 @@ function register(rl) {
   return rl
     .on("close", function ($$event) {})
     .on("line", function (line) {
-      console.log(line)
-    })
+      console.log(line);
+    });
 }
 ```
 
@@ -331,8 +331,8 @@ processOnExit(exitCode =>
 
 ```js
 process.on("exit", function (exitCode) {
-  console.log("error code: " + exitCode.toString())
-})
+  console.log("error code: " + exitCode.toString());
+});
 ```
 
 </CodeTab>
@@ -352,7 +352,7 @@ doSomething("this only shows up in ReScript code", "test")
 ```
 
 ```js
-doSomething("test")
+doSomething("test");
 ```
 
 </CodeTab>
@@ -404,8 +404,8 @@ let id = setTimeout((.) => Js.log("hello"), 1000)
 
 ```js
 var id = setTimeout(function () {
-  console.log("hello")
-}, 1000)
+  console.log("hello");
+}, 1000);
 ```
 
 </CodeTab>
@@ -443,8 +443,8 @@ Many JS libraries have callbacks which rely on this (the source), for example:
 
 ```js
 x.onload = function (v) {
-  console.log(this.response + v)
-}
+  console.log(this.response + v);
+};
 ```
 
 Here, `this` would point to `x` (actually, it depends on how `onload` is called, but we digress). It's not correct to declare `x.onload` of type `(. unit) -> unit`. Instead, we introduced a special attribute, `this`, which allows us to type `x` as so:
@@ -461,9 +461,9 @@ setOnload(x, @this ((o, v) => Js.log(resp(o) + v)))
 
 ```js
 x.onload = function (v) {
-  var o = this
-  console.log((o.response + v) | 0)
-}
+  var o = this;
+  console.log((o.response + v) | 0);
+};
 ```
 
 </CodeTab>
@@ -494,12 +494,12 @@ let test = dom => {
 
 ```js
 function test(dom) {
-  var elem = dom.getElementById("haha")
+  var elem = dom.getElementById("haha");
   if (elem == null) {
-    return 1
+    return 1;
   } else {
-    console.log(elem)
-    return 2
+    console.log(elem);
+    return 2;
   }
 }
 ```

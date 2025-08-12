@@ -32,24 +32,24 @@ let result =
 ```js
 function getItem(items) {
   if (callSomeFunctionThatThrows()) {
-    return 1
+    return 1;
   }
   throw {
     RE_EXN_ID: "Not_found",
     Error: new Error(),
-  }
+  };
 }
 
-var result
+var result;
 
 try {
-  result = getItem([1, 2, 3])
+  result = getItem([1, 2, 3]);
 } catch (raw_exn) {
-  var exn = Caml_js_exceptions.internalToOCamlException(raw_exn)
+  var exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
   if (exn.RE_EXN_ID === "Not_found") {
-    result = 0
+    result = 0;
   } else {
-    throw exn
+    throw exn;
   }
 }
 ```
@@ -70,26 +70,26 @@ switch List.find(i => i === theItem, myItems) {
 ```
 
 ```js
-var exit = 0
+var exit = 0;
 
-var item
+var item;
 
 try {
   item = List.find(function (i) {
-    return i === theItem
-  }, myItems)
-  exit = 1
+    return i === theItem;
+  }, myItems);
+  exit = 1;
 } catch (raw_exn) {
-  var exn = Caml_js_exceptions.internalToOCamlException(raw_exn)
+  var exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
   if (exn.RE_EXN_ID === "Not_found") {
-    console.log("No such item found!")
+    console.log("No such item found!");
   } else {
-    throw exn
+    throw exn;
   }
 }
 
 if (exit === 1) {
-  console.log(item)
+  console.log(item);
 }
 ```
 
@@ -106,15 +106,15 @@ raise(InputClosed("The stream has closed!"))
 ```
 
 ```js
-var Caml_exceptions = require("./stdlib/caml_exceptions.js")
+var Caml_exceptions = require("./stdlib/caml_exceptions.js");
 
-var InputClosed = Caml_exceptions.create("MyFile.InputClosed")
+var InputClosed = Caml_exceptions.create("MyFile.InputClosed");
 
 throw {
   RE_EXN_ID: InputClosed,
   _1: "The stream has closed!",
   Error: new Error(),
-}
+};
 ```
 
 </CodeTab>
@@ -138,20 +138,20 @@ try {
 ```
 
 ```js
-var Js_exn = require("./stdlib/js_exn.js")
-var Caml_js_exceptions = require("./stdlib/caml_js_exceptions.js")
+var Js_exn = require("./stdlib/js_exn.js");
+var Caml_js_exceptions = require("./stdlib/caml_js_exceptions.js");
 
 try {
-  someJSFunctionThatThrows()
+  someJSFunctionThatThrows();
 } catch (raw_obj) {
-  var obj = Caml_js_exceptions.internalToOCamlException(raw_obj)
+  var obj = Caml_js_exceptions.internalToOCamlException(raw_obj);
   if (obj.RE_EXN_ID === Js_exn.$$Error) {
-    var m = obj._1.message
+    var m = obj._1.message;
     if (m !== undefined) {
-      console.log("Caught a JS exception! Message: " + m)
+      console.log("Caught a JS exception! Message: " + m);
     }
   } else {
-    throw obj
+    throw obj;
   }
 }
 ```
@@ -173,10 +173,10 @@ let myTest = () => {
 ```
 
 ```js
-var Js_exn = require("./stdlib/js_exn.js")
+var Js_exn = require("./stdlib/js_exn.js");
 
 function myTest() {
-  return Js_exn.raiseError("Hello!")
+  return Js_exn.raiseError("Hello!");
 }
 ```
 
@@ -187,9 +187,9 @@ Then you can catch it from the JS side:
 ```js
 // after importing `myTest`...
 try {
-  myTest()
+  myTest();
 } catch (e) {
-  console.log(e.message) // "Hello!"
+  console.log(e.message); // "Hello!"
 }
 ```
 
@@ -208,16 +208,16 @@ let myTest = () => {
 ```
 
 ```js
-var Caml_exceptions = require("./stdlib/caml_exceptions.js")
+var Caml_exceptions = require("./stdlib/caml_exceptions.js");
 
-var BadArgument = Caml_exceptions.create("Playground.BadArgument")
+var BadArgument = Caml_exceptions.create("Playground.BadArgument");
 
 function myTest() {
   throw {
     RE_EXN_ID: BadArgument,
     myMessage: "Oops!",
     Error: new Error(),
-  }
+  };
 }
 ```
 
@@ -228,10 +228,10 @@ Then, in your JS:
 ```js
 // after importing `myTest`...
 try {
-  myTest()
+  myTest();
 } catch (e) {
-  console.log(e.myMessage) // "Oops!"
-  console.log(e.Error.stack) // the stack trace
+  console.log(e.myMessage); // "Oops!"
+  console.log(e.Error.stack); // the stack trace
 }
 ```
 
@@ -258,19 +258,19 @@ try {
 ```
 
 ```js
-var Js_exn = require("./stdlib/js_exn.js")
-var Caml_js_exceptions = require("./stdlib/caml_js_exceptions.js")
+var Js_exn = require("./stdlib/js_exn.js");
+var Caml_js_exceptions = require("./stdlib/caml_js_exceptions.js");
 
 try {
-  someOtherJSFunctionThatThrows()
+  someOtherJSFunctionThatThrows();
 } catch (raw_obj) {
-  var obj = Caml_js_exceptions.internalToOCamlException(raw_obj)
+  var obj = Caml_js_exceptions.internalToOCamlException(raw_obj);
   if (
     obj.RE_EXN_ID !== "Not_found" &&
     obj.RE_EXN_ID !== "Invalid_argument" &&
     obj.RE_EXN_ID !== Js_exn.$$Error
   ) {
-    throw obj
+    throw obj;
   }
 }
 ```

@@ -111,7 +111,7 @@ raise (A {x : 1 , y : "x"})
 It generates following JS:
 
 ```js
-throw { RE_EXN_ID: "A/uuid", x: 1, y: "x", Error: new Error() }
+throw { RE_EXN_ID: "A/uuid", x: 1, y: "x", Error: new Error() };
 ```
 
 The output above shows that we are now able to attach the stacktrace as an `Error` attribute very easily, since every exception is now an object instead of an array. Really cool!

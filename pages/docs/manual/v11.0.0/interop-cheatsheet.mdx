@@ -65,8 +65,8 @@ let add = %raw("(a, b) => a + b")
 ```
 
 ```js
-var add = (a, b) => a + b
-const a = 1
+var add = (a, b) => a + b;
+const a = 1;
 ```
 
 </CodeTab>
@@ -100,7 +100,7 @@ external length: int = "length"
 ```
 
 ```js
-var someNumber = Math.random()
+var someNumber = Math.random();
 ```
 
 </CodeTab>
@@ -115,8 +115,8 @@ let b = None // compiles to undefined
 ```
 
 ```js
-var a = 5
-var b
+var a = 5;
+var b;
 ```
 
 </CodeTab>
@@ -134,18 +134,18 @@ let result3: option<int> = Nullable.toOption(Nullable.make(10))
 ```
 
 ```js
-import * as Caml_option from "./stdlib/caml_option.js"
-import * as Core__Nullable from "./stdlib/core__Nullable.js"
+import * as Caml_option from "./stdlib/caml_option.js";
+import * as Core__Nullable from "./stdlib/core__Nullable.js";
 
-var result2 = Core__Nullable.fromOption(10)
+var result2 = Core__Nullable.fromOption(10);
 
-var jsNull = null
+var jsNull = null;
 
-var jsUndefined
+var jsUndefined;
 
-var result1 = "hello"
+var result1 = "hello";
 
-var result3 = Caml_option.nullable_to_opt(10)
+var result3 = Caml_option.nullable_to_opt(10);
 ```
 
 </CodeTab>
@@ -175,12 +175,12 @@ var result3 = Caml_option.nullable_to_opt(10)
 console.log(
   [1, 2, 3]
     .map(function (a) {
-      return (a + 1) | 0
+      return (a + 1) | 0;
     })
     .filter(function (a) {
-      return a % 2 === 0
+      return a % 2 === 0;
     }),
-)
+);
 ```
 
 </CodeTab>
@@ -215,9 +215,9 @@ let result = await sh`ls ${filename}`
 ```
 
 ```js
-import * as $$Bun from "bun"
-var filename = "index.res"
-var result = await $$Bun.$`ls ${filename}`
+import * as $$Bun from "bun";
+var filename = "index.res";
+var result = await $$Bun.$`ls ${filename}`;
 ```
 
 </CodeTab>
@@ -254,8 +254,8 @@ padLeft("Hello World", #Str("Message from ReScript: "))
 ```
 
 ```js
-padLeft("Hello World", 4)
-padLeft("Hello World", "Message from ReScript: ")
+padLeft("Hello World", 4);
+padLeft("Hello World", "Message from ReScript: ");
 ```
 
 </CodeTab>
@@ -277,8 +277,8 @@ let gpa = 2.1 +. convertToFloat(age)
 ```
 
 ```js
-var age = 10
-var gpa = 2.1 + 10
+var age = 10;
+var gpa = 2.1 + 10;
 ```
 
 </CodeTab>

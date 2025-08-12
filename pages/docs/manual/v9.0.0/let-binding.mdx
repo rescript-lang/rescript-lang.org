@@ -17,9 +17,9 @@ let newScore = 10 + score
 ```
 
 ```js
-var greeting = "hello!"
-var score = 10
-var newScore = 20
+var greeting = "hello!";
+var score = 10;
+var newScore = 20;
 ```
 
 </CodeTab>
@@ -40,7 +40,7 @@ let message = {
 ```
 
 ```js
-var message = "hello world"
+var message = "hello world";
 ```
 
 </CodeTab>
@@ -63,7 +63,7 @@ if displayGreeting {
 
 ```js
 if (displayGreeting) {
-  console.log("Enjoying the docs so far?")
+  console.log("Enjoying the docs so far?");
 }
 ```
 
@@ -80,17 +80,17 @@ The above restriction might sound unpractical at first. How would you change a v
 The first is to realize that many times, what you want isn't to mutate a variable's value. For example, this JavaScript pattern:
 
 ```js
-var result = 0
-result = calculate(result)
-result = calculateSomeMore(result)
+var result = 0;
+result = calculate(result);
+result = calculateSomeMore(result);
 ```
 
 ...is really just to comment on intermediate steps. You didn't need to mutate `result` at all! You could have just written this JS:
 
 ```js
-var result1 = 0
-var result2 = calculate(result1)
-var result3 = calculateSomeMore(result2)
+var result1 = 0;
+var result2 = calculate(result1);
+var result3 = calculateSomeMore(result2);
 ```
 
 In ReScript, this obviously works too:
@@ -104,9 +104,9 @@ let result3 = calculateSomeMore(result2)
 ```
 
 ```js
-var result1 = 0
-var result2 = calculate(0)
-var result3 = calculateSomeMore(result2)
+var result1 = 0;
+var result2 = calculate(0);
+var result3 = calculateSomeMore(result2);
 ```
 
 </CodeTab>
@@ -122,8 +122,8 @@ let result = calculateSomeMore(result)
 ```
 
 ```js
-var result = calculate(0)
-var result$1 = calculateSomeMore(result)
+var result = calculate(0);
+var result$1 = calculateSomeMore(result);
 ```
 
 </CodeTab>
@@ -142,9 +142,9 @@ Js.log(result) // prints 1
 ```
 
 ```js
-var result = 1
-console.log("hello")
-console.log(1)
+var result = 1;
+console.log("hello");
+console.log(1);
 ```
 
 </CodeTab>

@@ -102,17 +102,17 @@ let make = () => {
 
 ```js
 function CustomTextInput(Props) {
-  var textInput = React.useRef(null)
+  var textInput = React.useRef(null);
   var focusInput = function () {
-    var dom = textInput.current
+    var dom = textInput.current;
     if (dom === null || dom === undefined) {
-      return
+      return;
     }
-    dom.focus()
-  }
+    dom.focus();
+  };
   var onClick = function (param) {
-    focusInput()
-  }
+    focusInput();
+  };
   return JsxRuntime.jsxs("div", {
     children: [
       JsxRuntime.jsx("input", {
@@ -125,7 +125,7 @@ function CustomTextInput(Props) {
         onClick: onClick,
       }),
     ],
-  })
+  });
 }
 ```
 
@@ -217,15 +217,15 @@ let make = () => {
 
 ```js
 function CustomTextInput(Props) {
-  var textInput = React.useRef(null)
+  var textInput = React.useRef(null);
   var setTextInputRef = function (element) {
-    textInput.current = element
-  }
+    textInput.current = element;
+  };
   var focusTextInput = function (param) {
     Core__Nullable.forEach(textInput.current, function (input) {
-      input.focus()
-    })
-  }
+      input.focus();
+    });
+  };
   return React.createElement(
     "div",
     undefined,
@@ -238,7 +238,7 @@ function CustomTextInput(Props) {
       value: "Focus the text input",
       onClick: focusTextInput,
     }),
-  )
+  );
 }
 ```
 
@@ -275,7 +275,7 @@ let make = () => {
 
 ```js
 function CustomTextInput(Props) {
-  var setInputRef = Props.setInputRef
+  var setInputRef = Props.setInputRef;
   return React.createElement(
     "div",
     undefined,
@@ -283,21 +283,21 @@ function CustomTextInput(Props) {
       ref: setInputRef,
       type: "text",
     }),
-  )
+  );
 }
 
 var CustomTextInput = {
   make: CustomTextInput,
-}
+};
 
 function Parent(Props) {
-  var textInput = React.useRef(null)
+  var textInput = React.useRef(null);
   var setInputRef = function (element) {
-    textInput.current = element
-  }
+    textInput.current = element;
+  };
   return React.createElement(CustomTextInput, {
     setInputRef: setInputRef,
-  })
+  });
 }
 ```
 

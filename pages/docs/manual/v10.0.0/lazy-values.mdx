@@ -19,15 +19,15 @@ let expensiveFilesRead = lazy({
 ```
 
 ```js
-var Fs = require("fs")
+var Fs = require("fs");
 
 var expensiveFilesRead = {
   LAZY_DONE: false,
   VAL: function () {
-    console.log("Reading dir")
-    return Fs.readdirSync("./pages")
+    console.log("Reading dir");
+    return Fs.readdirSync("./pages");
   },
-}
+};
 ```
 
 </CodeTab>
@@ -51,9 +51,9 @@ Js.log(Lazy.force(expensiveFilesRead)) // logs the directory content
 ```
 
 ```js
-console.log(CamlinternalLazy.force(expensiveFilesRead))
+console.log(CamlinternalLazy.force(expensiveFilesRead));
 
-console.log(CamlinternalLazy.force(expensiveFilesRead))
+console.log(CamlinternalLazy.force(expensiveFilesRead));
 ```
 
 </CodeTab>
@@ -73,7 +73,7 @@ switch expensiveFilesRead {
 ```
 
 ```js
-var result = CamlinternalLazy.force(expensiveFilesRead)
+var result = CamlinternalLazy.force(expensiveFilesRead);
 ```
 
 </CodeTab>
@@ -88,8 +88,8 @@ Js.log(result)
 ```
 
 ```js
-var result = CamlinternalLazy.force(expensiveFilesRead)
-console.log(result)
+var result = CamlinternalLazy.force(expensiveFilesRead);
+console.log(result);
 ```
 
 </CodeTab>
@@ -109,16 +109,16 @@ let result = try {
 ```
 
 ```js
-var result
+var result;
 
 try {
-  result = CamlinternalLazy.force(expensiveFilesRead)
+  result = CamlinternalLazy.force(expensiveFilesRead);
 } catch (raw_exn) {
-  var exn = Caml_js_exceptions.internalToOCamlException(raw_exn)
+  var exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
   if (exn.RE_EXN_ID === "Not_found") {
-    result = []
+    result = [];
   } else {
-    throw exn
+    throw exn;
   }
 }
 ```

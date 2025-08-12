@@ -5,19 +5,19 @@ description: "Schema exploration widget for the ReScript configuration file"
 canonical: "/docs/manual/v12.0.0/build-configuration-schema"
 ---
 
-import dynamic from "next/dynamic"
+import dynamic from "next/dynamic";
 
 export const Docson = dynamic(
   () =>
     import("src/components/Docson").then((comp) => {
-      return comp.make
+      return comp.make;
     }),
   {
     ssr: false,
     loading: () => <div> Loading... </div>,
   },
-)
+);
 
 export default function BuildConfigurationSchemaPage() {
-  return <Docson tag="master" />
+  return <Docson tag="master" />;
 }

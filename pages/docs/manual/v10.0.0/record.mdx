@@ -47,7 +47,7 @@ let me = {
 var me = {
   age: 5,
   name: "Big ReScript",
-}
+};
 ```
 
 </CodeTab>
@@ -83,11 +83,11 @@ let me2 = {School.age: 20, name: "Big ReScript"}
 var me = {
   age: 20,
   name: "Big ReScript",
-}
+};
 var me2 = {
   age: 20,
   name: "Big ReScript",
-}
+};
 ```
 
 </CodeTab>
@@ -105,7 +105,7 @@ let name = me.name
 ```
 
 ```js
-var name = "Big ReScript"
+var name = "Big ReScript";
 ```
 
 </CodeTab>
@@ -124,7 +124,7 @@ let meNextYear = {...me, age: me.age + 1}
 var meNextYear = {
   age: 21,
   name: "Big ReScript",
-}
+};
 ```
 
 </CodeTab>
@@ -151,9 +151,9 @@ baby.age = baby.age + 1 // `baby.age` is now 6. Happy birthday!
 var baby = {
   name: "Baby ReScript",
   age: 5,
-}
+};
 
-baby.age = (baby.age + 1) | 0
+baby.age = (baby.age + 1) | 0;
 ```
 
 </CodeTab>
@@ -211,11 +211,11 @@ let friend = {
 var me = {
   age: 5,
   name: "Big ReScript",
-}
+};
 
 var friend = {
   age: 7,
-}
+};
 ```
 
 </CodeTab>
@@ -246,18 +246,18 @@ let withoutName = {
 ```
 
 ```js
-import * as Caml_obj from "./stdlib/caml_obj.js"
+import * as Caml_obj from "./stdlib/caml_obj.js";
 
 var me = {
   age: 123,
   name: "Hello",
-}
+};
 
-var newrecord = Caml_obj.obj_dup(me)
+var newrecord = Caml_obj.obj_dup(me);
 
-newrecord.name = "New Name"
+newrecord.name = "New Name";
 
-var withoutName = newrecord
+var withoutName = newrecord;
 ```
 
 </CodeTab>
@@ -286,20 +286,20 @@ let withoutName = {
 ```
 
 ```js
-import * as Caml_obj from "./stdlib/caml_obj.js"
+import * as Caml_obj from "./stdlib/caml_obj.js";
 
 var me = {
   age: 123,
   name: "Hello",
-}
+};
 
-var maybeName = "My Name"
+var maybeName = "My Name";
 
-var newrecord = Caml_obj.obj_dup(me)
+var newrecord = Caml_obj.obj_dup(me);
 
-newrecord.name = maybeName
+newrecord.name = maybeName;
 
-var withoutName = newrecord
+var withoutName = newrecord;
 ```
 
 </CodeTab>
@@ -332,14 +332,14 @@ let isRescript = switch me.name {
 ```
 
 ```js
-var isRescript
+var isRescript;
 
-isRescript = "Hello" === "ReScript" ? true : false
+isRescript = "Hello" === "ReScript" ? true : false;
 
 var me = {
   age: 123,
   name: "Hello",
-}
+};
 ```
 
 </CodeTab>
@@ -367,14 +367,14 @@ let isRescript = switch me {
 ```
 
 ```js
-var isRescript
+var isRescript;
 
-isRescript = "Hello" === "ReScript" ? true : false
+isRescript = "Hello" === "ReScript" ? true : false;
 
 var me = {
   age: 123,
   name: "Hello",
-}
+};
 ```
 
 </CodeTab>
@@ -401,12 +401,12 @@ let nameWasSet = switch me {
 ```
 
 ```js
-var nameWasSet = true
+var nameWasSet = true;
 
 var me = {
   age: 123,
   name: "Hello",
-}
+};
 ```
 
 </CodeTab>
@@ -428,7 +428,7 @@ let getAge = (entity) => entity.age
 
 ```js
 function getAge(entity) {
-  return entity.age
+  return entity.age;
 }
 ```
 

@@ -66,20 +66,20 @@ let make = () => {
 
 ```js
 function Button(props) {
-  var className = props.theme ? "theme-black" : "theme-light"
+  var className = props.theme ? "theme-black" : "theme-light";
   return React.createElement(
     "button",
     {
       className: className,
     },
     "Click me",
-  )
+  );
 }
 
 function ThemedButton(props) {
   return React.createElement(App$Button, {
     theme: props.theme,
-  })
+  });
 }
 
 function Toolbar(props) {
@@ -89,13 +89,13 @@ function Toolbar(props) {
     React.createElement(App$ThemedButton, {
       theme: props.theme,
     }),
-  )
+  );
 }
 
 function App(props) {
   return React.createElement(App$Toolbar, {
     theme: /* Dark */ 1,
-  })
+  });
 }
 ```
 
@@ -157,56 +157,56 @@ let make = () => {
 ```
 
 ```js
-var context = React.createContext(/* Light */ 0)
+var context = React.createContext(/* Light */ 0);
 
-var make = context.Provider
+var make = context.Provider;
 
 var Provider = {
   make: make,
-}
+};
 
 var ThemeContext = {
   context: context,
   Provider: Provider,
-}
+};
 
 function App$Button(props) {
-  var className = props.theme ? "theme-black" : "theme-light"
+  var className = props.theme ? "theme-black" : "theme-light";
   return React.createElement(
     "button",
     {
       className: className,
     },
     "Click me",
-  )
+  );
 }
 
 var Button = {
   make: App$Button,
-}
+};
 
 function App$ThemedButton(props) {
-  var theme = React.useContext(context)
+  var theme = React.useContext(context);
   return React.createElement(App$Button, {
     theme: theme,
-  })
+  });
 }
 
 var ThemedButton = {
   make: App$ThemedButton,
-}
+};
 
 function App$Toolbar(props) {
   return React.createElement(
     "div",
     undefined,
     React.createElement(App$ThemedButton, {}),
-  )
+  );
 }
 
 var Toolbar = {
   make: App$Toolbar,
-}
+};
 
 function App(props) {
   return React.createElement(make, {
@@ -216,7 +216,7 @@ function App(props) {
       undefined,
       React.createElement(App$Toolbar, {}),
     ),
-  })
+  });
 }
 ```
 

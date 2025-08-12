@@ -24,7 +24,7 @@ ReScript supports the JSX syntax, with some slight differences compared to the o
 React.createElement(
   MyComponent.make,
   MyComponent.makeProps("ReScript", undefined),
-)
+);
 ```
 
 </CodeTab>
@@ -41,7 +41,7 @@ becomes
 React.createElement(
   MyComponent.make,
   MyComponent.makeProps("ReScript", undefined),
-)
+);
 ```
 
 </CodeTab>
@@ -62,7 +62,7 @@ React.createElement(
   },
   child1,
   child2,
-)
+);
 ```
 
 </CodeTab>
@@ -83,7 +83,7 @@ React.createElement(
   },
   child1,
   child2,
-)
+);
 ```
 
 </CodeTab>
@@ -97,7 +97,7 @@ React.createElement(
 ```
 
 ```js
-React.createElement(React.Fragment, undefined, child1, child2)
+React.createElement(React.Fragment, undefined, child1, child2);
 ```
 
 </CodeTab>
@@ -111,7 +111,7 @@ becomes
 ```
 
 ```js
-React.createElement(React.Fragment, undefined, child1, child2)
+React.createElement(React.Fragment, undefined, child1, child2);
 ```
 
 </CodeTab>
@@ -130,7 +130,7 @@ React.createElement(
   MyComponent.makeProps(null, undefined),
   child1,
   child2,
-)
+);
 ```
 
 </CodeTab>
@@ -149,7 +149,7 @@ React.createElement(
   MyComponent.makeProps(null, undefined),
   child1,
   child2,
-)
+);
 ```
 
 </CodeTab>
@@ -169,7 +169,10 @@ To solve the above problem, we've introduced
 ```
 
 ```js
-React.createElement(MyComponent.make, MyComponent.makeProps(myChild, undefined))
+React.createElement(
+  MyComponent.make,
+  MyComponent.makeProps(myChild, undefined),
+);
 ```
 
 </CodeTab>
@@ -183,7 +186,10 @@ This passes the value `myChild` _without_ wrapping it in a list (or array, in th
 ```
 
 ```js
-React.createElement(MyComponent.make, MyComponent.makeProps(myChild, undefined))
+React.createElement(
+  MyComponent.make,
+  MyComponent.makeProps(myChild, undefined),
+);
 ```
 
 </CodeTab>
@@ -204,14 +210,14 @@ React.createElement(
   makeProps(function (theClassName) {
     return React.createElement("div", {
       className: theClassName,
-    })
+    });
   }, undefined),
-)
+);
 
 React.createElement(
   MyForm.make,
   MyForm.makeProps(["Hello", "Submit"], undefined),
-)
+);
 ```
 
 </CodeTab>
@@ -247,7 +253,7 @@ React.createElement(
     React.createElement("div", undefined, "hello"),
     undefined,
   ),
-)
+);
 ```
 
 </CodeTab>
@@ -274,7 +280,7 @@ Reason JSX supports punning. `<input checked />` is just a shorthand for `<input
 React.createElement(
   MyComponent.make,
   MyComponent.makeProps(isLoading, text, onClick, undefined),
-)
+);
 ```
 
 </CodeTab>

@@ -54,19 +54,19 @@ let () = (Lazy.force getFiles) |. Js.log
 ```
 
 ```js
-var Fs = require("fs")
-var CamlinternalLazy = require("./stdlib/camlinternalLazy.js")
+var Fs = require("fs");
+var CamlinternalLazy = require("./stdlib/camlinternalLazy.js");
 
 var getFiles = {
   LAZY_DONE: false,
   VAL: function () {
-    console.log("Reading dir")
-    return Fs.readdirSync("./pages")
+    console.log("Reading dir");
+    return Fs.readdirSync("./pages");
   },
-}
+};
 
-console.log(CamlinternalLazy.force(getFiles))
-console.log(CamlinternalLazy.force(getFiles))
+console.log(CamlinternalLazy.force(getFiles));
+console.log(CamlinternalLazy.force(getFiles));
 ```
 
 </CodeTab>
@@ -95,14 +95,14 @@ let lazyGetFiles = Lazy.from_fun getFiles
 ```
 
 ```js
-var Fs = require("fs")
-var Lazy = require("./stdlib/lazy.js")
+var Fs = require("fs");
+var Lazy = require("./stdlib/lazy.js");
 
 function getFiles(param) {
-  return Fs.readdirSync("./pages")
+  return Fs.readdirSync("./pages");
 }
 
-var lazyGetFiles = Lazy.from_fun(getFiles)
+var lazyGetFiles = Lazy.from_fun(getFiles);
 ```
 
 </CodeTab>
@@ -131,23 +131,23 @@ let lazyDoesFileExist = lazy(doesFileExist "blog.re")
 ```
 
 ```js
-var Fs = require("fs")
-var Caml_option = require("./stdlib/caml_option.js")
+var Fs = require("fs");
+var Caml_option = require("./stdlib/caml_option.js");
 
 function doesFileExist(name) {
   return Caml_option.undefined_to_opt(
     Fs.readdirSync("./pages").find(function (s) {
-      return name === s
+      return name === s;
     }),
-  )
+  );
 }
 
 var lazyDoesFileExist = {
   LAZY_DONE: false,
   VAL: function () {
-    return doesFileExist("blog.re")
+    return doesFileExist("blog.re");
   },
-}
+};
 ```
 
 </CodeTab>
@@ -175,14 +175,14 @@ Lazy.force computation
 ```
 
 ```js
-var CamlinternalLazy = require("./stdlib/camlinternalLazy.js")
+var CamlinternalLazy = require("./stdlib/camlinternalLazy.js");
 
 var computation = {
   LAZY_DONE: true,
   VAL: 1,
-}
+};
 
-CamlinternalLazy.force(computation)
+CamlinternalLazy.force(computation);
 ```
 
 </CodeTab>
@@ -211,19 +211,19 @@ let () = match computation with
 ```
 
 ```js
-var CamlinternalLazy = require("./stdlib/camlinternalLazy.js")
+var CamlinternalLazy = require("./stdlib/camlinternalLazy.js");
 
 var computation = {
   LAZY_DONE: true,
   VAL: "computed",
-}
+};
 
-var match = CamlinternalLazy.force(computation)
+var match = CamlinternalLazy.force(computation);
 
 if (match === "computed") {
-  console.log("ok")
+  console.log("ok");
 } else {
-  console.log("not ok")
+  console.log("not ok");
 }
 ```
 
@@ -249,16 +249,16 @@ Js.log word
 ```
 
 ```js
-var CamlinternalLazy = require("./stdlib/camlinternalLazy.js")
+var CamlinternalLazy = require("./stdlib/camlinternalLazy.js");
 
 var match = {
   LAZY_DONE: true,
   VAL: "hello",
-}
+};
 
-var word = CamlinternalLazy.force(match)
+var word = CamlinternalLazy.force(match);
 
-console.log(word)
+console.log(word);
 ```
 
 </CodeTab>
@@ -286,32 +286,32 @@ let lazy word = lazy "hello"
 ```
 
 ```js
-var CamlinternalLazy = require("./stdlib/camlinternalLazy.js")
+var CamlinternalLazy = require("./stdlib/camlinternalLazy.js");
 
 var lazyValues_0 = {
   LAZY_DONE: true,
   VAL: "hello",
-}
+};
 
 var lazyValues_1 = {
   LAZY_DONE: true,
   VAL: "world",
-}
+};
 
-var lazyValues = [lazyValues_0, lazyValues_1]
+var lazyValues = [lazyValues_0, lazyValues_1];
 
-var word1 = CamlinternalLazy.force(lazyValues_0)
+var word1 = CamlinternalLazy.force(lazyValues_0);
 
-var word2 = CamlinternalLazy.force(lazyValues_1)
+var word2 = CamlinternalLazy.force(lazyValues_1);
 
-console.log(word1, word2)
+console.log(word1, word2);
 
 var match = {
   LAZY_DONE: true,
   VAL: "hello",
-}
+};
 
-var word = CamlinternalLazy.force(match)
+var word = CamlinternalLazy.force(match);
 ```
 
 </CodeTab>
@@ -342,8 +342,8 @@ let () = try Lazy.force readFile with
 ```
 
 ```js
-var CamlinternalLazy = require("./stdlib/camlinternalLazy.js")
-var Caml_js_exceptions = require("./stdlib/caml_js_exceptions.js")
+var CamlinternalLazy = require("./stdlib/camlinternalLazy.js");
+var Caml_js_exceptions = require("./stdlib/caml_js_exceptions.js");
 
 var readFile = {
   LAZY_DONE: false,
@@ -351,18 +351,18 @@ var readFile = {
     throw {
       RE_EXN_ID: "Not_found",
       Error: new Error(),
-    }
+    };
   },
-}
+};
 
 try {
-  CamlinternalLazy.force(readFile)
+  CamlinternalLazy.force(readFile);
 } catch (raw_exn) {
-  var exn = Caml_js_exceptions.internalToOCamlException(raw_exn)
+  var exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
   if (exn.RE_EXN_ID === "Not_found") {
-    console.log("No file")
+    console.log("No file");
   } else {
-    throw exn
+    throw exn;
   }
 }
 ```

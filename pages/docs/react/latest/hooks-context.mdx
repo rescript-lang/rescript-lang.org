@@ -69,60 +69,60 @@ let make = () => {
 ```
 
 ```js
-var context = React.createContext("light")
+var context = React.createContext("light");
 
-var make = context.Provider
+var make = context.Provider;
 
 var Provider = {
   make: make,
-}
+};
 
 var ThemeContext = {
   context: context,
   Provider: Provider,
-}
+};
 
 function App$ThemedButton(props) {
-  var theme = React.useContext(context)
-  var match
+  var theme = React.useContext(context);
+  var match;
   switch (theme) {
     case "dark":
-      match = ["#ffffff", "#222222"]
-      break
+      match = ["#ffffff", "#222222"];
+      break;
     case "light":
-      match = ["#000000", "#eeeeee"]
-      break
+      match = ["#000000", "#eeeeee"];
+      break;
     default:
-      match = ["#000000", "#eeeeee"]
+      match = ["#000000", "#eeeeee"];
   }
   var style = {
     backgroundColor: match[1],
     color: match[0],
-  }
+  };
   return React.createElement(
     "button",
     {
       style: style,
     },
     "I am a styled button!",
-  )
+  );
 }
 
 var ThemedButton = {
   make: App$ThemedButton,
-}
+};
 
 function App$Toolbar(props) {
   return React.createElement(
     "div",
     undefined,
     React.createElement(App$ThemedButton, {}),
-  )
+  );
 }
 
 var Toolbar = {
   make: App$Toolbar,
-}
+};
 
 function App(props) {
   return React.createElement(make, {
@@ -132,7 +132,7 @@ function App(props) {
       undefined,
       React.createElement(App$Toolbar, {}),
     ),
-  })
+  });
 }
 ```
 

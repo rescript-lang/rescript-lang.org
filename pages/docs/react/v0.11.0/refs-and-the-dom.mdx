@@ -102,14 +102,14 @@ let make = () => {
 
 ```js
 function CustomTextInput(Props) {
-  var textInput = React.useRef(null)
+  var textInput = React.useRef(null);
   var onClick = function (param) {
-    var dom = textInput.current
+    var dom = textInput.current;
     if (!(dom == null)) {
-      dom.focus()
-      return
+      dom.focus();
+      return;
     }
-  }
+  };
   return React.createElement(
     "div",
     undefined,
@@ -122,7 +122,7 @@ function CustomTextInput(Props) {
       value: "Focus the text input",
       onClick: onClick,
     }),
-  )
+  );
 }
 ```
 
@@ -216,18 +216,18 @@ let make = () => {
 
 ```js
 function CustomTextInput(Props) {
-  var textInput = React.useRef(null)
+  var textInput = React.useRef(null);
   var setTextInputRef = function (element) {
-    textInput.current = element
-  }
+    textInput.current = element;
+  };
   var focusTextInput = function (param) {
     return Belt_Option.forEach(
       Caml_option.nullable_to_opt(textInput.current),
       function (input) {
-        input.focus()
+        input.focus();
       },
-    )
-  }
+    );
+  };
   return React.createElement(
     "div",
     undefined,
@@ -240,7 +240,7 @@ function CustomTextInput(Props) {
       value: "Focus the text input",
       onClick: focusTextInput,
     }),
-  )
+  );
 }
 ```
 
@@ -277,7 +277,7 @@ let make = () => {
 
 ```js
 function CustomTextInput(Props) {
-  var setInputRef = Props.setInputRef
+  var setInputRef = Props.setInputRef;
   return React.createElement(
     "div",
     undefined,
@@ -285,21 +285,21 @@ function CustomTextInput(Props) {
       ref: setInputRef,
       type: "text",
     }),
-  )
+  );
 }
 
 var CustomTextInput = {
   make: CustomTextInput,
-}
+};
 
 function Parent(Props) {
-  var textInput = React.useRef(null)
+  var textInput = React.useRef(null);
   var setInputRef = function (element) {
-    textInput.current = element
-  }
+    textInput.current = element;
+  };
   return React.createElement(CustomTextInput, {
     setInputRef: setInputRef,
-  })
+  });
 }
 ```
 

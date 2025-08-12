@@ -24,8 +24,8 @@ convention to ReasonML.
 A native implementation of curried call like [purescript](https://www.purescript.org/) does will generate very slow code:
 
 ```js
-let curriedFunction = (x) => (y) => (z) => x + y + z
-let curriedApply = curriedFunction(1)(2)(3) // memory allocation triggered
+let curriedFunction = (x) => (y) => (z) => x + y + z;
+let curriedApply = curriedFunction(1)(2)(3); // memory allocation triggered
 ```
 
 BuckleScript does tons of optimizations and very aggressive arity inference so that the curried function is compiled into a multiple-arity function, and when the application is supplied with the exact arguments -- which is true in most cases, it is applied like normal functions.

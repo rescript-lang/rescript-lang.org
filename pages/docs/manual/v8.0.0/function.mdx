@@ -22,7 +22,7 @@ let greet name = "Hello " ^ name
 
 ```js
 function greet(name) {
-  return "Hello " + name
+  return "Hello " + name;
 }
 ```
 
@@ -41,7 +41,7 @@ greet "world!" (* "Hello world!" *)
 ```
 
 ```js
-greet("world!")
+greet("world!");
 ```
 
 </CodeTab>
@@ -62,7 +62,7 @@ let () = add 1 2 3
 
 ```js
 function add(x, y, z) {
-  return (((x + y) | 0) + z) | 0
+  return (((x + y) | 0) + z) | 0;
 }
 ```
 
@@ -87,7 +87,7 @@ let greetMore name =
 
 ```js
 function greetMore(name) {
-  return "Hello " + name
+  return "Hello " + name;
 }
 ```
 
@@ -121,7 +121,7 @@ function addCoordinates(x, y) {
   // use x and y here
 }
 
-addCoordinates(5, 6)
+addCoordinates(5, 6);
 ```
 
 </CodeTab>
@@ -150,7 +150,7 @@ function addCoordinates(x, y) {
   // use x and y here
 }
 
-addCoordinates(5, 6)
+addCoordinates(5, 6);
 ```
 
 </CodeTab>
@@ -168,7 +168,7 @@ addCoordinates ~y=6 ~x=5
 ```
 
 ```js
-addCoordinates(5, 6)
+addCoordinates(5, 6);
 ```
 
 </CodeTab>
@@ -198,11 +198,11 @@ let () = drawCircle ~radius:10 ~color:"red"
 
 ```js
 function drawCircle(r, c) {
-  setColor(c)
-  return startAt(r, r)
+  setColor(c);
+  return startAt(r, r);
 }
 
-drawCircle(10, "red")
+drawCircle(10, "red");
 ```
 
 </CodeTab>
@@ -259,15 +259,15 @@ let drawCircle ~color ?radius () =
 ```
 
 ```js
-var Caml_option = require("./stdlib/caml_option.js")
+var Caml_option = require("./stdlib/caml_option.js");
 
 function drawCircle(color, radius, param) {
-  setColor(color)
+  setColor(color);
   if (radius === undefined) {
-    return startAt(1, 1)
+    return startAt(1, 1);
   }
-  var r_ = Caml_option.valFromOption(radius)
-  return startAt(r_, r_)
+  var r_ = Caml_option.valFromOption(radius);
+  return startAt(r_, r_);
 }
 ```
 
@@ -309,11 +309,11 @@ let drawCircle: color:color -> ?radius:int -> unit -> unit =
 
 ```js
 function drawCircle(color, radius, param) {
-  setColor(color)
+  setColor(color);
   if (radius !== undefined) {
-    return startAt(radius, radius)
+    return startAt(radius, radius);
   } else {
-    return startAt(1, 1)
+    return startAt(1, 1);
   }
 }
 ```
@@ -348,12 +348,12 @@ let result =
 ```
 
 ```js
-var r = payloadRadius
+var r = payloadRadius;
 
 var result =
   r !== undefined
     ? drawCircle(color, Caml_option.valFromOption(r), undefined)
-    : drawCircle(color, undefined)
+    : drawCircle(color, undefined);
 ```
 
 </CodeTab>
@@ -371,7 +371,7 @@ let result = drawCircle ~color ?radius:payloadRadius ()
 ```
 
 ```js
-var result = drawCircle(1, undefined, undefined)
+var result = drawCircle(1, undefined, undefined);
 ```
 
 </CodeTab>
@@ -399,9 +399,9 @@ let drawCircle ?(radius=1) ~color () =
 
 ```js
 function drawCircle(radiusOpt, color, param) {
-  var radius = radiusOpt !== undefined ? radiusOpt : 1
-  setColor(color)
-  return startAt(radius, radius)
+  var radius = radiusOpt !== undefined ? radiusOpt : 1;
+  setColor(color);
+  return startAt(radius, radius);
 }
 ```
 
@@ -424,8 +424,8 @@ let rec neverTerminate () = neverTerminate ()
 ```js
 function neverTerminate(_param) {
   while (true) {
-    _param = undefined
-    continue
+    _param = undefined;
+    continue;
   }
 }
 ```
@@ -459,15 +459,15 @@ let rec listHas list item =
 ```js
 function listHas(_list, item) {
   while (true) {
-    var list = _list
+    var list = _list;
     if (!list) {
-      return false
+      return false;
     }
     if (list.hd === item) {
-      return true
+      return true;
     }
-    _list = list.tl
-    continue
+    _list = list.tl;
+    continue;
   }
 }
 ```
@@ -496,15 +496,15 @@ and callFirst () = callSecond ()
 ```js
 function callSecond(_param) {
   while (true) {
-    _param = undefined
-    continue
+    _param = undefined;
+    continue;
   }
 }
 
 function callFirst(_param) {
   while (true) {
-    _param = undefined
-    continue
+    _param = undefined;
+    continue;
   }
 }
 ```
@@ -530,10 +530,10 @@ let () = add 1 2 [@bs]
 
 ```js
 function add(x, y) {
-  return (x + y) | 0
+  return (x + y) | 0;
 }
 
-add(1, 2)
+add(1, 2);
 ```
 
 </CodeTab>

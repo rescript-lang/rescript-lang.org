@@ -102,14 +102,14 @@ let element = switch name {
 ```
 
 ```js
-var name = "Andrea"
+var name = "Andrea";
 
 var element =
   name !== undefined
     ? React.createElement("div", undefined, "Hello " + name)
-    : null
+    : null;
 
-React.createElement("div", undefined, element)
+React.createElement("div", undefined, element);
 ```
 
 </CodeTab>
@@ -160,16 +160,16 @@ let render = (article: props => React.element) => {
 
 ```js
 function render(article) {
-  var children = ["Introduction", "Body"]
+  var children = ["Introduction", "Body"];
   var props = {
     title: "Article #1",
     children: null,
-  }
+  };
   return Caml_splice_call.spliceApply(React.createElement, [
     article,
     props,
     children,
-  ])
+  ]);
 }
 ```
 
@@ -207,12 +207,12 @@ React.cloneElement(original, {"className": "world", "data-name": "some name"})
 ```js
 var original = React.createElement("div", {
   className: "hello",
-})
+});
 
 React.cloneElement(original, {
   className: "world",
   "data-name": "some name",
-})
+});
 ```
 
 </CodeTab>

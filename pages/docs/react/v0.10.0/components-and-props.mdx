@@ -37,13 +37,13 @@ let make = () => {
 ```
 
 ```js
-var React = require("react")
+var React = require("react");
 
 function Greeting(Props) {
-  return React.createElement("div", undefined, "Hello ReScripters!")
+  return React.createElement("div", undefined, "Hello ReScripters!");
 }
 
-var make = Greeting
+var make = Greeting;
 ```
 
 </CodeTab>
@@ -74,23 +74,23 @@ let make = (~title: string, ~visitorCount: int, ~children: React.element) => {
 ```
 
 ```js
-var React = require("react")
+var React = require("react");
 
 function Article(Props) {
-  var title = Props.title
-  var visitorCount = Props.visitorCount
-  var children = Props.children
-  var visitorCountMsg = "You are visitor number: " + String(visitorCount)
+  var title = Props.title;
+  var visitorCount = Props.visitorCount;
+  var children = Props.children;
+  var visitorCountMsg = "You are visitor number: " + String(visitorCount);
   return React.createElement(
     "div",
     undefined,
     React.createElement("div", undefined, title),
     React.createElement("div", undefined, visitorCountMsg),
     children,
-  )
+  );
 }
 
-var make = Article
+var make = Article;
 ```
 
 </CodeTab>
@@ -115,9 +115,9 @@ let make = (~name: option<string>=?) => {
 
 ```js
 function Greeting(Props) {
-  var name = Props.name
-  var greeting = name !== undefined ? "Hello " + name + "!" : "Hello stranger!"
-  return React.createElement("div", undefined, greeting)
+  var name = Props.name;
+  var greeting = name !== undefined ? "Hello " + name + "!" : "Hello stranger!";
+  return React.createElement("div", undefined, greeting);
 }
 ```
 
@@ -136,16 +136,16 @@ let name = Some("Andrea")
 ```
 
 ```js
-var Caml_option = require("./stdlib/caml_option.js")
-var name = "Andrea"
+var Caml_option = require("./stdlib/caml_option.js");
+var name = "Andrea";
 
-var tmp = {}
+var tmp = {};
 
 if (name !== undefined) {
-  tmp.name = Caml_option.valFromOption(name)
+  tmp.name = Caml_option.valFromOption(name);
 }
 
-var greeting = React.createElement(Playground$Greeting, tmp)
+var greeting = React.createElement(Playground$Greeting, tmp);
 ```
 
 </CodeTab>
@@ -195,13 +195,13 @@ module MyList = {
 
 ```js
 function MyList(Props) {
-  var children = Props.children
-  return React.createElement("ul", undefined, children)
+  var children = Props.children;
+  return React.createElement("ul", undefined, children);
 }
 
 var MyList = {
   make: MyList,
-}
+};
 
 React.createElement(
   MyList,
@@ -210,7 +210,7 @@ React.createElement(
   },
   React.createElement("li", undefined, "Item 1"),
   React.createElement("li", undefined, "Item 2"),
-)
+);
 ```
 
 </CodeTab>
@@ -320,18 +320,18 @@ let make = () => {
 ```
 
 ```js
-var React = require("react")
-var Greeting = require("./Greeting.js")
+var React = require("react");
+var Greeting = require("./Greeting.js");
 
 function App(Props) {
   return React.createElement(
     "div",
     undefined,
     React.createElement(Greeting.make, {}),
-  )
+  );
 }
 
-var make = App
+var make = App;
 ```
 
 </CodeTab>
@@ -372,13 +372,13 @@ function Link(props) {
       href: props.href,
     },
     props.children,
-  )
+  );
 }
 
 React.createElement(Link, {
   href: "/docs",
   children: "Docs",
-})
+});
 ```
 
 </CodeTab>

@@ -23,8 +23,8 @@ let add = [%raw "(a, b) => a + b"]
 ```
 
 ```js
-var add = (a, b) => a + b
-const a = 1
+var add = (a, b) => a + b;
+const a = 1;
 ```
 
 </CodeTab>
@@ -72,7 +72,7 @@ external length: int = "length"
 ```
 
 ```js
-var someNumber = Math.random()
+var someNumber = Math.random();
 ```
 
 </CodeTab>
@@ -92,8 +92,8 @@ let b = None (* compiles to undefined *)
 ```
 
 ```js
-var a = 5
-var b
+var a = 5;
+var b;
 ```
 
 </CodeTab>
@@ -119,14 +119,14 @@ let result3: int option = Js.Nullable.toOption (Js.Nullable.return 10)
 ```
 
 ```js
-var Caml_option = require("./stdlib/caml_option.js")
-var Js_null_undefined = require("./stdlib/js_null_undefined.js")
+var Caml_option = require("./stdlib/caml_option.js");
+var Js_null_undefined = require("./stdlib/js_null_undefined.js");
 
-var jsNull = null
-var jsUndefined
-var result1 = "hello"
-var result2 = Js_null_undefined.fromOption(10)
-var result3 = Caml_option.nullable_to_opt(10)
+var jsNull = null;
+var jsUndefined;
+var result1 = "hello";
+var result2 = Js_null_undefined.fromOption(10);
+var result3 = Caml_option.nullable_to_opt(10);
 ```
 
 </CodeTab>
@@ -165,12 +165,12 @@ external filter: 'a array -> ('a -> 'b) -> 'b array = "filter" [@@bs.send]
 console.log(
   [1, 2, 3]
     .map(function (a) {
-      return (a + 1) | 0
+      return (a + 1) | 0;
     })
     .filter(function (a) {
-      return a % 2 === 0
+      return a % 2 === 0;
     }),
-)
+);
 ```
 
 </CodeTab>
@@ -245,8 +245,8 @@ let _ = padLeft "Hello World" (`Str "Message from ReScript: ")
 ```
 
 ```js
-padLeft("Hello World", 4)
-padLeft("Hello World", "Message from ReScript: ")
+padLeft("Hello World", 4);
+padLeft("Hello World", "Message from ReScript: ");
 ```
 
 </CodeTab>
@@ -274,8 +274,8 @@ let gpa = 2.1 +. (convertToFloat age)
 ```
 
 ```js
-var age = 10
-var gpa = 2.1 + 10
+var age = 10;
+var gpa = 2.1 + 10;
 ```
 
 </CodeTab>

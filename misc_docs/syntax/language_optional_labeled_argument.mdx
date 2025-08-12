@@ -28,15 +28,15 @@ print("An error", ~logLevel=#error)
 ```js
 function print(text, logLevel) {
   if (logLevel === "error") {
-    console.error(text)
+    console.error(text);
   } else {
-    console.log(text)
+    console.log(text);
   }
 }
 
-print("An info", undefined)
+print("An info", undefined);
 
-print("An error", "error")
+print("An error", "error");
 ```
 
 </CodeTab>
@@ -60,19 +60,19 @@ print("A warning", ~logLevel=#warn)
 
 ```js
 function print(text, logLevelOpt) {
-  var logLevel = logLevelOpt !== undefined ? logLevelOpt : "info"
+  var logLevel = logLevelOpt !== undefined ? logLevelOpt : "info";
   if (logLevel === "warn") {
-    console.warn(text)
+    console.warn(text);
   } else if (logLevel === "error") {
-    console.error(text)
+    console.error(text);
   } else {
-    console.log(text)
+    console.log(text);
   }
 }
 
-print("An info", undefined)
+print("An info", undefined);
 
-print("A warning", "warn")
+print("A warning", "warn");
 ```
 
 </CodeTab>

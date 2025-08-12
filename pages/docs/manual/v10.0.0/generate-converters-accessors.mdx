@@ -42,16 +42,16 @@ type action =
 
 ```js
 function submit(param_0) {
-  return /* Submit */ [param_0]
+  return /* Submit */ [param_0];
 }
 
-var click = /* Click */ 0
+var click = /* Click */ 0;
 
-var cancel = /* Cancel */ 1
+var cancel = /* Cancel */ 1;
 
-exports.click = click
-exports.submit = submit
-exports.cancel = cancel
+exports.click = click;
+exports.submit = submit;
+exports.cancel = cancel;
 ```
 
 </CodeTab>
@@ -96,7 +96,7 @@ pets
 
 ```js
 function name(param) {
-  return param.name
+  return param.name;
 }
 
 var pets = [
@@ -106,9 +106,9 @@ var pets = [
   {
     name: "bob2",
   },
-]
+];
 
-console.log(Belt_Array.map(pets, name).join("&"))
+console.log(Belt_Array.map(pets, name).join("&"));
 ```
 
 </CodeTab>
@@ -242,7 +242,7 @@ var joe = {
   name: "Joe",
   age: 20,
   job: "teacher",
-}
+};
 ```
 
 </CodeTab>
@@ -269,7 +269,7 @@ let d = data(~type_="message", ~ariaLabel="hello");
 var d = {
   type: "message",
   "aria-label": "hello",
-}
+};
 ```
 
 </CodeTab>
@@ -295,7 +295,7 @@ let joe = person(~age=20, ~job="teacher", ());
 var joe = {
   age: 20,
   job: "teacher",
-}
+};
 ```
 
 </CodeTab>
@@ -484,7 +484,7 @@ var homeRoute = {
   path: "/",
   action: () => console.log("Home"),
   // options: ...
-}
+};
 ```
 
 But only the first three fields are required; the options field is optional. You can declare the binding function like so:

@@ -85,12 +85,12 @@ module Friend = {
 function Playground$Friend(props) {
   return JsxRuntime.jsxs("div", {
     children: [props.name, props.children],
-  })
+  });
 }
 
 var Friend = {
   make: Playground$Friend,
-}
+};
 ```
 
 </CodeTab>
@@ -156,7 +156,7 @@ React.jsx(Friend.make, {name: "Fred", age: 20})
 ```
 
 ```js
-JsxRuntime.jsx(Playground$Friend, { name: "Fred", age: 20 })
+JsxRuntime.jsx(Playground$Friend, { name: "Fred", age: 20 });
 ```
 
 </CodeTab>
@@ -188,7 +188,7 @@ React.jsxs(
 ```
 
 ```js
-JsxRuntime.jsx(Container, { width: 200, children: null }, "Hello", "World")
+JsxRuntime.jsx(Container, { width: 200, children: null }, "Hello", "World");
 ```
 
 </CodeTab>
@@ -214,7 +214,7 @@ ReactDOM.jsx("div", {title: "test"})
 ```
 
 ```js
-JsxRuntime.jsx("div", { title: "test" })
+JsxRuntime.jsx("div", { title: "test" });
 ```
 
 </CodeTab>
@@ -245,7 +245,7 @@ ReactDOM.jsx("div", {title: "test", children: ?ReactDOM.someElement(ReactDOM.jsx
 JsxRuntime.jsx("div", {
   children: JsxRuntime.jsx("span", {}),
   title: "test",
-})
+});
 ```
 
 ```js
@@ -255,7 +255,7 @@ React.createElement(
     title: "test",
   },
   React.createElement("span", undefined),
-)
+);
 ```
 
 </CodeTab>

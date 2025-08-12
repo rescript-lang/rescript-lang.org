@@ -33,9 +33,9 @@ Js.log x (* 10 *)
 ```
 
 ```js
-var coordinates = [10, 20, 30]
-var x = 10
-console.log(10)
+var coordinates = [10, 20, 30];
+var x = 10;
+console.log(10);
 ```
 
 </CodeTab>
@@ -90,24 +90,24 @@ let head::tail = myList (* 1 assigned to `head`, `[2, 3]` assigned to tail *)
 var student1 = {
   name: "John",
   age: 10,
-}
-var name = "John"
+};
+var name = "John";
 
 var myResult = /* Success */ {
   _0: "You did it!",
-}
-var message = "You did it!"
+};
+var message = "You did it!";
 
-var myArray = [1, 2, 3]
+var myArray = [1, 2, 3];
 if (myArray.length !== 2) {
   throw {
     RE_EXN_ID: "Match_failure",
     _1: ["playground.res", 14, 4],
     Error: new Error(),
-  }
+  };
 }
-var item1 = myArray[0]
-var item2 = myArray[1]
+var item1 = myArray[0];
+var item2 = myArray[1];
 
 var myList = {
   hd: 1,
@@ -118,7 +118,7 @@ var myList = {
       tl: /* [] */ 0,
     },
   },
-}
+};
 // ...
 ```
 
@@ -152,14 +152,14 @@ let () = displayMessage (Success "You did it!")
 
 ```js
 function displayMessage(m) {
-  console.log(m._0)
+  console.log(m._0);
 }
 
 displayMessage(
   /* Success */ {
     _0: "You did it!",
   },
-)
+);
 ```
 
 </CodeTab>
@@ -177,7 +177,7 @@ let {name = n} = student1 (* "John" assigned to `n` *)
 ```
 
 ```js
-var n = "John"
+var n = "John";
 ```
 
 </CodeTab>
@@ -242,16 +242,16 @@ let () = match data with
 var data = {
   TAG: /* GoodResult */ 1,
   _0: "Product shipped!",
-}
+};
 
 if (typeof data === "number") {
-  console.log("Bah.")
+  console.log("Bah.");
 } else if (data.TAG) {
-  console.log("Success! Product shipped!")
+  console.log("Success! Product shipped!");
 } else {
   console.log(
     "Something's wrong. The error code is: " + "Product shipped!".toString(),
-  )
+  );
 }
 ```
 
@@ -357,12 +357,12 @@ let message = match person1 with
 ```
 
 ```js
-var message
+var message;
 
 if (person1.TAG) {
-  var match$1 = person1.status
-  var name = person1.name
-  var match$2 = person1.reportCard
+  var match$1 = person1.status;
+  var name = person1.name;
+  var match$2 = person1.reportCard;
   message = match$2.passing
     ? "Congrats " +
       name +
@@ -375,16 +375,16 @@ if (person1.TAG) {
         : "How are you feeling?"
       : person1.reportCard.gpa !== 0.0
         ? "Good luck next semester " + name + "!"
-        : "Come back in " + match$1._0.toString() + " days!"
+        : "Come back in " + match$1._0.toString() + " days!";
 } else {
-  var name$1 = person1.name
+  var name$1 = person1.name;
   switch (name$1) {
     case "Joe":
     case "Mary":
-      message = "Hey, still going to the party on Saturday?"
-      break
+      message = "Hey, still going to the party on Saturday?";
+      break;
     default:
-      message = "Hello " + name$1 + "."
+      message = "Hello " + name$1 + ".";
   }
 }
 ```
@@ -424,7 +424,7 @@ let categoryId = match (isBig, myAnimal) with
 ```
 
 ```js
-var categoryId = isBig ? (myAnimal + 1) | 0 : myAnimal >= 2 ? 5 : 4
+var categoryId = isBig ? (myAnimal + 1) | 0 : myAnimal >= 2 ? 5 : 4;
 ```
 
 </CodeTab>
@@ -457,9 +457,9 @@ let () = match person with
 
 ```js
 if (person.TAG) {
-  console.log("Hey student")
+  console.log("Hey student");
 } else {
-  console.log("Hi teacher")
+  console.log("Hi teacher");
 }
 ```
 
@@ -498,9 +498,9 @@ let () = match person with
 ```js
 if (person.TAG) {
   if (person.reportCard.gpa < 0.5) {
-    console.log("What's happening")
+    console.log("What's happening");
   } else {
-    console.log("Heyo")
+    console.log("Heyo");
   }
 }
 ```
@@ -535,9 +535,9 @@ let () = match person with
 ```js
 if (person.TAG) {
   if (person.reportCard.gpa < 0.5) {
-    console.log("What's happening")
+    console.log("What's happening");
   } else {
-    console.log("Heyo")
+    console.log("Heyo");
   }
 }
 ```
@@ -564,26 +564,26 @@ let () = match List.find (fun i -> i == theItem) myItems with
 ```
 
 ```js
-var exit = 0
+var exit = 0;
 
-var item
+var item;
 
 try {
   item = List.find(function (i) {
-    return i === theItem
-  }, myItems)
-  exit = 1
+    return i === theItem;
+  }, myItems);
+  exit = 1;
 } catch (raw_exn) {
-  var exn = Caml_js_exceptions.internalToOCamlException(raw_exn)
+  var exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
   if (exn.RE_EXN_ID === "Not_found") {
-    console.log("No such item found!")
+    console.log("No such item found!");
   } else {
-    throw exn
+    throw exn;
   }
 }
 
 if (exit === 1) {
-  console.log(item)
+  console.log(item);
 }
 ```
 
@@ -611,10 +611,10 @@ let () = match coordinates with
 ```
 
 ```js
-var coordinates = [10, 20, 30]
-var centerY = 20
+var coordinates = [10, 20, 30];
+var centerY = 20;
 
-console.log(10)
+console.log(10);
 ```
 
 </CodeTab>
@@ -666,37 +666,37 @@ let message = match person with
 
 ```js
 if (person.TAG) {
-  var match$1 = person.status
-  var name = person.name
-  var match$2 = person.reportCard
+  var match$1 = person.status;
+  var name = person.name;
+  var match$2 = person.reportCard;
   if (match$2.passing) {
     "Congrats " +
       name +
       ", nice GPA of " +
       match$2.gpa.toString() +
-      " you got there!"
+      " you got there!";
   } else if (typeof match$1 === "number") {
     if (match$1 !== 0) {
-      "Good luck next semester " + name + "!"
+      "Good luck next semester " + name + "!";
     } else {
-      ;("How are you feeling?")
+      ("How are you feeling?");
     }
   } else if (person.reportCard.gpa !== 0.0) {
-    "Good luck next semester " + name + "!"
+    "Good luck next semester " + name + "!";
   } else {
-    "Come back in " + match$1._0.toString() + " days!"
+    "Come back in " + match$1._0.toString() + " days!";
   }
 } else {
   switch (person.name) {
     case "Joe":
     case "Mary":
-      break
+      break;
     default:
       throw {
         RE_EXN_ID: "Match_failure",
         _1: ["playground.res", 13, 0],
         Error: new Error(),
-      }
+      };
   }
 }
 ```
@@ -732,9 +732,9 @@ match myNullableValue with
 
 ```js
 if (myNullableValue !== undefined) {
-  console.log("value is present")
+  console.log("value is present");
 } else {
-  console.log("value is absent")
+  console.log("value is absent");
 }
 ```
 
@@ -780,9 +780,9 @@ let optionBoolToBool opt =
 ```js
 function optionBoolToBool(opt) {
   if (opt === undefined) {
-    return false
+    return false;
   } else {
-    return opt === true
+    return opt === true;
   }
 }
 ```
@@ -812,9 +812,9 @@ let optionBoolToBool opt =
 ```js
 function optionBoolToBool(opt) {
   if (opt !== undefined && opt) {
-    return true
+    return true;
   } else {
-    return false
+    return false;
   }
 }
 ```
@@ -846,9 +846,9 @@ let optionBoolToBool opt =
 ```js
 function optionBoolToBool(opt) {
   if (opt !== undefined && opt) {
-    return true
+    return true;
   } else {
-    return false
+    return false;
   }
 }
 ```
@@ -878,9 +878,9 @@ let optionBoolToBool opt =
 ```js
 function optionBoolToBool(opt) {
   if (opt !== undefined && opt) {
-    return true
+    return true;
   } else {
-    return false
+    return false;
   }
 }
 ```
@@ -901,9 +901,9 @@ let optionBoolToBool opt =
 ```js
 function optionBoolToBool(opt) {
   if (opt !== undefined) {
-    return opt
+    return opt;
   } else {
-    return false
+    return false;
   }
 }
 ```

@@ -66,39 +66,39 @@ let make = () => {
 
 ```js
 function Button(Props) {
-  var theme = Props.theme
-  var className = theme ? "theme-black" : "theme-light"
+  var theme = Props.theme;
+  var className = theme ? "theme-black" : "theme-light";
   return React.createElement(
     "button",
     {
       className: className,
     },
     "Click me",
-  )
+  );
 }
 
 function ThemedButton(Props) {
-  var theme = Props.theme
+  var theme = Props.theme;
   return React.createElement(Button, {
     theme: theme,
-  })
+  });
 }
 
 function Toolbar(Props) {
-  var theme = Props.theme
+  var theme = Props.theme;
   return React.createElement(
     "div",
     undefined,
     React.createElement(ThemedButton, {
       theme: theme,
     }),
-  )
+  );
 }
 
 function Playground(Props) {
   return React.createElement(Toolbar, {
     theme: /* Dark */ 1,
-  })
+  });
 }
 ```
 
@@ -161,57 +161,57 @@ let make = () => {
 ```
 
 ```js
-var context = React.createContext(/* Light */ 0)
+var context = React.createContext(/* Light */ 0);
 
-var provider = context.Provider
+var provider = context.Provider;
 
 function ThemeContext$Provider(Props) {
-  var value = Props.value
-  var children = Props.children
+  var value = Props.value;
+  var children = Props.children;
   return React.createElement(provider, {
     value: value,
     children: children,
-  })
+  });
 }
 
 function Button(Props) {
-  var theme = Props.theme
-  var className = theme ? "theme-black" : "theme-light"
+  var theme = Props.theme;
+  var className = theme ? "theme-black" : "theme-light";
   return React.createElement(
     "button",
     {
       className: className,
     },
     "Click me",
-  )
+  );
 }
 
 var Button = {
   make: Button,
-}
+};
 
 function ThemedButton(Props) {
-  var theme = React.useContext(context)
+  var theme = React.useContext(context);
   return React.createElement(Button, {
     theme: theme,
-  })
+  });
 }
 
 var ThemedButton = {
   make: ThemedButton,
-}
+};
 
 function Toolbar(Props) {
   return React.createElement(
     "div",
     undefined,
     React.createElement(ThemedButton, {}),
-  )
+  );
 }
 
 var Toolbar = {
   make: Toolbar,
-}
+};
 
 function Playground(Props) {
   return React.createElement(ThemeContext$Provider, {
@@ -221,7 +221,7 @@ function Playground(Props) {
       undefined,
       React.createElement(Toolbar, {}),
     ),
-  })
+  });
 }
 ```
 

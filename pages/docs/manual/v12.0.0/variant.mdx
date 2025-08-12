@@ -22,7 +22,7 @@ let areYouCrushingIt = Yes
 ```
 
 ```js
-var areYouCrushingIt = "Yes"
+var areYouCrushingIt = "Yes";
 ```
 
 </CodeTab>
@@ -58,8 +58,8 @@ let pet2 = Zoo.Dog
 ```
 
 ```js
-var pet = "Dog"
-var pet2 = "Dog"
+var pet = "Dog";
+var pet2 = "Dog";
 ```
 
 </CodeTab>
@@ -97,11 +97,11 @@ var myAccount = {
   TAG: "Facebook",
   _0: "Josh",
   _1: 26,
-}
+};
 var friendAccount = {
   TAG: "Instagram",
   _0: "Jenny",
-}
+};
 ```
 
 </CodeTab>
@@ -125,7 +125,7 @@ var me = {
   TAG: "Id",
   name: "Joe",
   password: "123",
-}
+};
 ```
 
 </CodeTab>
@@ -152,7 +152,7 @@ var me = {
     name: "Joe",
     password: "123",
   },
-}
+};
 ```
 
 </CodeTab>
@@ -223,48 +223,48 @@ let a2 = Wizard("Joe")
 ```
 
 ```js
-var g1 = "Hello"
+var g1 = "Hello";
 
-var g2 = "Goodbye"
+var g2 = "Goodbye";
 
-var o1 = "Good"
+var o1 = "Good";
 
 var o2 = {
   TAG: "Error",
   _0: "oops!",
-}
+};
 
-var f1 = "Child"
+var f1 = "Child";
 
 var f2 = {
   TAG: "Mom",
   _0: 30,
   _1: "Jane",
-}
+};
 
 var f3 = {
   TAG: "Dad",
   _0: 32,
-}
+};
 
-var p1 = "Teacher"
+var p1 = "Teacher";
 
 var p2 = {
   TAG: "Student",
   gpa: 99.5,
-}
+};
 
 var a1 = {
   TAG: "Warrior",
   _0: {
     score: 10.5,
   },
-}
+};
 
 var a2 = {
   TAG: "Wizard",
   _0: "Joe",
-}
+};
 ```
 
 </CodeTab>
@@ -293,7 +293,7 @@ enum Direction {
   Right = "RIGHT",
 }
 
-export const myDirection = Direction.Up
+export const myDirection = Direction.Up;
 ```
 
 You can bind to the above enums like so:
@@ -328,7 +328,7 @@ The same logic is easily applied to string literals from TypeScript, only here t
 
 ```typescript
 // direction.ts
-type direction = "UP" | "DOWN" | "LEFT" | "RIGHT"
+type direction = "UP" | "DOWN" | "LEFT" | "RIGHT";
 ```
 
 There's no way to attach documentation strings to string literals in TypeScript, and you only get the actual value to interact with.
@@ -359,7 +359,7 @@ Here, each value will be _unboxed_ at runtime. That means that the variant paylo
 It, therefore, compiles to this JS:
 
 ```javascript
-var myArray = ["hello", true, false, 13.37]
+var myArray = ["hello", true, false, 13.37];
 ```
 
 In the above example, reaching back into the values is as simple as pattern matching on them.
@@ -721,16 +721,16 @@ betterDraw(MyFloat(1.5))
 ```
 
 ```js
-var MyLibrary = require("myLibrary")
+var MyLibrary = require("myLibrary");
 
 function betterDraw(animal) {
-  MyLibrary.draw(animal._0)
+  MyLibrary.draw(animal._0);
 }
 
 betterDraw({
   TAG: "MyFloat",
   _0: 1.5,
-})
+});
 ```
 
 </CodeTab>
@@ -758,13 +758,13 @@ betterDraw(MyFloat(1.5))
 ```
 
 ```js
-var MyLibrary = require("myLibrary")
+var MyLibrary = require("myLibrary");
 
 function betterDraw(animal) {
-  MyLibrary.draw(animal)
+  MyLibrary.draw(animal);
 }
 
-MyLibrary.draw(1.5)
+MyLibrary.draw(1.5);
 ```
 
 </CodeTab>
@@ -834,18 +834,18 @@ logData(data)
 function logData(data) {
   switch (data) {
     case "Dog":
-      console.log("Wof")
-      return
+      console.log("Wof");
+      return;
     case "Cat":
-      console.log("Meow")
-      return
+      console.log("Meow");
+      return;
     case "Bird":
-      console.log("Kashiiin")
-      return
+      console.log("Kashiiin");
+      return;
   }
 }
 
-logData("Dog")
+logData("Dog");
 ```
 
 </CodeTab>

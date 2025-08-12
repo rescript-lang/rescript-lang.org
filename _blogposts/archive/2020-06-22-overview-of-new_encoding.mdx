@@ -41,9 +41,9 @@ let rand = ({loBits; hiBits}) => loBits + hiBits;
 It will generate JS output as below:
 
 ```js
-var value = { lo: 32, hi: 33 }
+var value = { lo: 32, hi: 33 };
 function rand(param) {
-  return param.lo + param.hi
+  return param.lo + param.hi;
 }
 ```
 
@@ -61,9 +61,9 @@ let rand = ({loBits, hiBits}) => loBits + hiBits;
 This produces the following JS output:
 
 ```js
-var value = [32, 33]
+var value = [32, 33];
 function rand(param) {
-  return param[0] + param[1]
+  return param[0] + param[1];
 }
 ```
 
@@ -94,9 +94,9 @@ let v1 = Red (empty, 3, empty);
 The generated JS code would be:
 
 ```js
-var empty = /*Empty*/ 0
-var v0 = { TAG: 0 /*Black*/, _0: /*Empty*/ 0, _1: 3, _2: /*Empty */ 0 }
-var v1 = { TAG: 1 /*Red*/, _0: /*Empty*/ 0, _1: 3, _2: /*Empty */ 0 }
+var empty = /*Empty*/ 0;
+var v0 = { TAG: 0 /*Black*/, _0: /*Empty*/ 0, _1: 3, _2: /*Empty */ 0 };
+var v1 = { TAG: 1 /*Red*/, _0: /*Empty*/ 0, _1: 3, _2: /*Empty */ 0 };
 ```
 
 As you can see, variants are divided into two categories.
@@ -145,7 +145,7 @@ let u = Cons(1,Nil)
 will generate the following JS output:
 
 ```js
-var u = { _0: 1, _1: /*Nil*/ 0 } // No TAG data.
+var u = { _0: 1, _1: /*Nil*/ 0 }; // No TAG data.
 ```
 
 ### Specialized for immutable list
@@ -204,7 +204,7 @@ When constructor names are attached to the data, it will be more useful for debu
 The generated code will be changed from below
 
 ```js
-var v0 = { TAG: 0 /*Black*/, _0: /*Empty*/ 0, _1: 3, _2: /*Empty */ 0 }
+var v0 = { TAG: 0 /*Black*/, _0: /*Empty*/ 0, _1: 3, _2: /*Empty */ 0 };
 ```
 
 to
@@ -216,7 +216,7 @@ var v0 = {
   _1: 3,
   _2: /*Empty */ 0,
   [Symbol.for("name")]: "Black",
-}
+};
 ```
 
 ## Polymorphic-variant (internal)
@@ -230,7 +230,7 @@ let u = 3 -> `hello
 It will generate
 
 ```js
-var u = { HASH: MAGIC_NUMBER, VAL: 3 }
+var u = { HASH: MAGIC_NUMBER, VAL: 3 };
 ```
 
 The field of `HASH` is the hash of name `"hello"`, while the `VAL` is the payload
@@ -247,13 +247,13 @@ In debug mode, similar to variant, we carry the name in generated code for debug
 So instead of
 
 ```js
-var u = { HASH: MAGIC_NUMBER, VAL: 3 }
+var u = { HASH: MAGIC_NUMBER, VAL: 3 };
 ```
 
 It will generate
 
 ```js
-var u = { HASH: MAGIC_NUMBER, VAL: 3, [Symbol.for("name")]: "hello" }
+var u = { HASH: MAGIC_NUMBER, VAL: 3, [Symbol.for("name")]: "hello" };
 ```
 
 ## Conclusion
