@@ -69,6 +69,7 @@
     "dotenv": "^16.4.7",
     "esbuild-loader": "^4.3.0",
     "jsdom": "^26.1.0",
+    "lefthook": "^1.12.3",
     "postcss": "^8.4.27",
     "postcss-cli": "^8.3.0",
     "postcss-nesting": "^12.1.1",

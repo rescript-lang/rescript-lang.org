@@ -1,0 +1,13 @@
+# lefthook.yml
+
+pre-commit:
+  parallel: true
+  jobs:
+    - run: npm exec prettier {staged_files} -- --write --experimental-cli
+      stage_fixed: true
+      exclude:
+        - "*.res"
+        - "*.resi"
+    - run: npm exec rescript format {staged_files}
+      stage_fixed: true
+      glob: "*.{res,resi}"
