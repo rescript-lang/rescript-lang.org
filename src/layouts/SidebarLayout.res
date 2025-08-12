@@ -4,7 +4,7 @@
     in other API related layouts, such as the Markdown representation
     or the Sidebar component.
  */
-module Link = Next.Link
+module Link = ReactRouter.Link
 
 module Toc = {
   type raw = Dict.t<{
@@ -32,7 +32,7 @@ module Toc = {
       {Array.map(entries, ({header, href}) =>
         <li key=header className="pl-2 mt-2 first:mt-1">
           <Link
-            href
+            to=Url(href)
             className="font-normal block text-14 text-gray-40 leading-tight hover:text-gray-80">
             {//links, nested
             React.string(header)}
@@ -79,7 +79,7 @@ module Sidebar = {
 
           <li key=m.name className={hidden ++ " mt-1 leading-4"}>
             <Link
-              href=m.href
+              to=Url(m.href)
               className={"truncate block py-1 md:h-auto tracking-tight text-gray-60 rounded-sm hover:bg-gray-20 hover:-ml-2 hover:py-1 hover:pl-2 " ++
               active}>
               {React.string(m.name)}
@@ -182,7 +182,7 @@ module BreadCrumbs = {
         let item = if i === List.length(crumbs) - 1 {
           <span key={Int.toString(i)}> {React.string(crumb.name)} </span>
         } else {
-          <Link key={Int.toString(i)} href=crumb.href> {React.string(crumb.name)} </Link>
+          <Link key={Int.toString(i)} to=Url(crumb.href)> {React.string(crumb.name)} </Link>
         }
         if i > 0 {
           <span key={Int.toString(i)}>
@@ -202,7 +202,7 @@ module MobileDrawerButton = {
   @react.component
   let make = (~hidden: bool, ~onClick) =>
     <button className={(hidden ? "hidden " : "") ++ "md:hidden mr-3"} onMouseDown=onClick>
-      <img className="h-4" src="/static/ic_sidebar_drawer.svg" />
+      <img className="h-4" src="/ic_sidebar_drawer.svg" />
     </button>
 }
 
@@ -280,7 +280,7 @@ let make = (
       let previous = switch items->Array.get(i - 1) {
       | Some({name, href}) =>
         <Link
-          href
+          to=Url(href)
           className={"flex items-center text-fire hover:text-fire-70 border-2 border-red-300 rounded py-1.5 px-3"}>
           <Icon.ArrowRight className={"rotate-180 mr-2"} />
           {React.string(name)}
@@ -290,7 +290,7 @@ let make = (
       let next = switch items->Array.get(i + 1) {
       | Some({name, href}) =>
         <Link
-          href
+          to=Url(href)
           className={"flex items-center text-fire hover:text-fire-70 ml-auto border-2 border-red-300 rounded py-1.5 px-3"}>
           {React.string(name)}
           <Icon.ArrowRight className={"ml-2"} />

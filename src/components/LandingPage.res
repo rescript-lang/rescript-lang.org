@@ -12,9 +12,9 @@ module Intro = {
             compiler toolchain that scales to any codebase size.`)}
         </h2>
         <div className="mt-4 mb-2">
-          <Next.Link href="/docs/manual/latest/installation" passHref={true}>
+          <ReactRouter.Link to=Url("/docs/manual/latest/installation")>
             <Button> {React.string("Get started")} </Button>
-          </Next.Link>
+          </ReactRouter.Link>
         </div>
       </div>
     </section>

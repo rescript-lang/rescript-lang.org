@@ -20,7 +20,7 @@ let make = () => {
     <div
       className="flex flex-col md:flex-row justify-between max-w-1280 w-full px-8 py-16 text-gray-80 ">
       <div>
-        <img className="w-40 mb-5" src="/static/rescript_logo_black.svg" />
+        <img className="w-40 mb-5" src="/rescript_logo_black.svg" />
         <div className="text-16">
           <p> {React.string(`© ${copyrightYear} The ReScript Project`)} </p>
         </div>

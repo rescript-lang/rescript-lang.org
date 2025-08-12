@@ -1,4 +1,4 @@
-module Link = Next.Link
+module Link = ReactRouter.Link
 
 let link = "no-underline block hover:cursor-pointer hover:text-fire-30 mb-px"
 let activeLink = "font-medium text-fire-30 border-b border-fire"
@@ -32,17 +32,17 @@ module MobileNav = {
     <div className="border-gray-80 border-tn">
       <ul>
         <li className=base>
-          <Link href="/try" className={linkOrActiveLink(~target="/try", ~route)}>
+          <Link to=Url("/try") className={linkOrActiveLink(~target="/try", ~route)}>
             {React.string("Playground")}
           </Link>
         </li>
         <li className=base>
-          <Link href="/blog" className={linkOrActiveLinkSubroute(~target="/blog", ~route)}>
+          <Link to=Url("/blog") className={linkOrActiveLinkSubroute(~target="/blog", ~route)}>
             {React.string("Blog")}
           </Link>
         </li>
         <li className=base>
-          <Link href="/community" className={linkOrActiveLink(~target="/community", ~route)}>
+          <Link to=Url("/community") className={linkOrActiveLink(~target="/community", ~route)}>
             {React.string("Community")}
           </Link>
         </li>
@@ -74,8 +74,8 @@ module MobileNav = {
 /* isOverlayOpen: if the mobile sidebar is toggled open */
 @react.component
 let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) => unit) => {
-  let router = Next.Router.useRouter()
-  let route = router.route
+  let location = ReactRouter.useLocation()
+  let route = location.pathname
 
   let version = Url.getVersionFromStorage(Manual)->Option.getOr(Constants.versions.latest)
   let reactVersion = Url.getVersionFromStorage(React)->Option.getOr(Constants.latestReactVersion)
@@ -96,8 +96,8 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
             <a
               href="/"
               className="block hover:cursor-pointer w-full h-full flex justify-center items-center font-bold">
-              <img src="/static/nav-logo@2x.png" className="lg:hidden" />
-              <img src="/static/nav-logo-full@2x.png" className="hidden lg:block" />
+              <img src="/nav-logo@2x.png" className="lg:hidden" />
+              <img src="/nav-logo-full@2x.png" className="hidden lg:block" />
             </a>
           </div>
 
@@ -106,22 +106,22 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
             className="flex items-center xs:justify-between w-full bg-gray-90 sm:h-auto sm:relative">
             <div className="flex ml-10 space-x-5 w-full text-gray-40 max-w-104">
               <Link
-                href={`/docs/manual/${version}/introduction`} className={isDocRouteActive(~route)}>
+                to=Url(`/docs/manual/${version}/introduction`) className={isDocRouteActive(~route)}>
                 {React.string("Docs")}
               </Link>
 
               <Link
-                href="/try"
+                to=Url("/try")
                 className={"hidden xs:block " ++ linkOrActiveLink(~target="/try", ~route)}>
                 {React.string("Playground")}
               </Link>
               <Link
-                href="/blog"
+                to=Url("/blog")
                 className={"hidden xs:block " ++ linkOrActiveLinkSubroute(~target="/blog", ~route)}>
                 {React.string("Blog")}
               </Link>
               <Link
-                href="/community/overview"
+                to=Url("/community/overview")
                 className={"hidden xs:block " ++ linkOrActiveLink(~target="/community", ~route)}>
                 {React.string("Community")}
               </Link>
@@ -173,22 +173,22 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
             className="bg-white z-50 px-4 w-full h-12 shadow text-gray-60 text-12 md:text-14 transition duration-300 ease-out group-[.nav-disappear]:-translate-y-32 md:group-[.nav-disappear]:-translate-y-0">
             <div className="flex gap-6 lg:gap-10 items-center h-full w-full max-w-1280 m-auto">
               <Link
-                href={`/docs/manual/${version}/introduction`}
+                to=Url(`/docs/manual/${version}/introduction`)
                 className={isActiveLink(~includes="/docs/manual/", ~excludes="/api", ~route)}>
                 {React.string("Language Manual")}
               </Link>
               <Link
-                href={`/docs/manual/${version}/api`}
+                to=Url(`/docs/manual/${version}/api`)
                 className={isActiveLink(~includes="/api", ~route)}>
                 {React.string("API")}
               </Link>
               <Link
-                href={`/syntax-lookup`}
+                to=Url("/syntax-lookup")
                 className={isActiveLink(~includes="/syntax-lookup", ~route)}>
                 {React.string("Syntax Lookup")}
               </Link>
               <Link
-                href={`/docs/react/${reactVersion}/introduction`}
+                to=Url(`/docs/react/${reactVersion}/introduction`)
                 className={isActiveLink(~includes="/docs/react/", ~route)}>
                 {React.string("React")}
               </Link>

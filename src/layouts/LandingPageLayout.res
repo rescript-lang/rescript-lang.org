@@ -81,28 +81,22 @@ export {
           /* ---Link to Playground--- */
           <div>
             <Next.Link
-              href={`/try?code=${LzString.compressToEncodedURIComponent(example.res)}}`}
+              href={`/try?code=${encodeURIComponent(example.res)}}`}
               className="captions md:px-0 border-b border-gray-40 hover:border-gray-60 text-gray-60">
               {React.string("Edit this example in Playground")}
             </Next.Link>
           </div>
           //
           <div className="hidden md:block">
-            <img
-              className="absolute z-0 left-0 top-0 -ml-10 -mt-6 h-96 w-96" src="/static/lp/grid.svg"
-            />
-            <img
-              className="absolute z-0 left-0 top-0 -ml-10 mt-10" src="/static/lp/illu_left.png"
-            />
+            <img className="absolute z-0 left-0 top-0 -ml-10 -mt-6 h-96 w-96" src="/lp/grid.svg" />
+            <img className="absolute z-0 left-0 top-0 -ml-10 mt-10" src="/lp/illu_left.png" />
           </div>
           <div className="hidden md:block">
             <img
               className="absolute z-0 right-0 bottom-0 -mb-10 mt-24 -mr-10 h-96 w-96"
-              src="/static/lp/grid.svg"
+              src="/lp/grid.svg"
             />
-            <img
-              className="absolute z-3 right-0 bottom-0 -mr-2 mb-10" src="/static/lp/illu_right.png"
-            />
+            <img className="absolute z-3 right-0 bottom-0 -mr-2 mb-10" src="/lp/illu_right.png" />
           </div>
         </div>
       </div>
@@ -308,7 +302,7 @@ module MainUSP = {
             </div>
             <img
               className="absolute z-1 bottom-0 right-0 -mb-12 -mr-12 max-w-[20rem]"
-              src="/static/lp/grid2.svg"
+              src="/lp/grid2.svg"
             />
           </div>
         </div>
@@ -334,8 +328,7 @@ module MainUSP = {
     <Item
       caption="Fast and simple"
       title={React.string("The fastest build system on the web")}
-      media={<video
-        className="rounded-lg" controls={true} poster={"/static/lp/fast-build-preview.jpg"}>
+      media={<video className="rounded-lg" controls={true} poster={"/lp/fast-build-preview.jpg"}>
         <source src="https://assets-17077.kxcdn.com/videos/fast-build-3.mp4" type_="video/mp4" />
       </video>}
       paragraph={<>
@@ -363,8 +356,7 @@ module MainUSP = {
         className="text-transparent bg-clip-text bg-linear-to-r from-berry-dark-50 to-fire-50">
         {React.string("Type Better")}
       </span>}
-      media={<video
-        className="rounded-lg" controls={true} poster={"/static/lp/type-better-preview.jpg"}>
+      media={<video className="rounded-lg" controls={true} poster={"/lp/type-better-preview.jpg"}>
         <source src="https://assets-17077.kxcdn.com/videos/type-better-3.mp4" type_="video/mp4" />
       </video>}
       polygonDirection=Up
@@ -384,7 +376,7 @@ module MainUSP = {
         {React.string(" at your fingertips")}
       </>}
       media={<video
-        className="rounded-lg" controls={true} poster={"/static/lp/interop-example-preview.jpg"}>
+        className="rounded-lg" controls={true} poster={"/lp/interop-example-preview.jpg"}>
         <source
           src="https://assets-17077.kxcdn.com/videos/interop-example-2.mp4" type_="video/mp4"
         />
@@ -417,11 +409,7 @@ module OtherSellingPoints = {
           <ImageGallery
             className="w-full "
             imgClassName="w-full h-[25.9rem] object-cover rounded-lg"
-            imgSrcs={[
-              "/static/lp/community-3.jpg",
-              "/static/lp/community-2.jpg",
-              "/static/lp/community-1.jpg",
-            ]}
+            imgSrcs={["/lp/community-3.jpg", "/lp/community-2.jpg", "/lp/community-1.jpg"]}
             imgLoading=#lazy
           />
           <h3 className="hl-3 text-gray-20 mt-4 mb-2">
@@ -446,8 +434,7 @@ module OtherSellingPoints = {
         // Item 2
         <div className="col-span-4 lg:row-start-1">
           <img
-            className="w-full rounded-lg border-2 border-turtle-dark"
-            src="/static/lp/editor-tooling-1.jpg"
+            className="w-full rounded-lg border-2 border-turtle-dark" src="/lp/editor-tooling-1.jpg"
           />
           <h3 className="hl-3 text-gray-20 mt-6 mb-2">
             {React.string(`Tooling that just works out of the box`)}
@@ -462,8 +449,7 @@ module OtherSellingPoints = {
         // Item 3
         <div className="col-span-4 lg:row-start-2">
           <img
-            className="w-full rounded-lg border-2 border-fire-30"
-            src="/static/lp/easy-to-unadopt.jpg"
+            className="w-full rounded-lg border-2 border-fire-30" src="/lp/easy-to-unadopt.jpg"
           />
           <h3 className="hl-3 text-gray-20 mt-6 mb-2">
             {React.string(`Easy to adopt — without any lock-in`)}
@@ -510,7 +496,7 @@ module TrustedBy = {
         <Button> {React.string("Add Your Logo")} </Button>
       </a>
       <div className="self-start mt-10 max-w-320 overflow-hidden opacity-50 max-h-24">
-        <img className="w-full h-full" src="/static/lp/grid.svg" />
+        <img className="w-full h-full" src="/lp/grid.svg" />
       </div>
     </section>
   }
@@ -526,25 +512,25 @@ module CuratedResources = {
 
   let cards = [
     {
-      imgSrc: "/static/ic_manual@2x.png",
+      imgSrc: "/ic_manual@2x.png",
       title: React.string("Language Manual"),
       descr: "Look up the basics: Reference for all our language features",
       href: "/docs/manual/latest/introduction",
     },
     {
-      imgSrc: "/static/ic_rescript_react@2x.png",
+      imgSrc: "/ic_rescript_react@2x.png",
       title: React.string("ReScript + React"),
       descr: "First Class bindings for ReactJS used by production users all over the world.",
       href: "/docs/react/latest/introduction",
     },
     {
-      imgSrc: "/static/ic_manual@2x.png",
+      imgSrc: "/ic_manual@2x.png",
       title: React.string("Gradually Adopt ReScript"),
       descr: "Learn how to start using ReScript in your current projects. Try before you buy!",
       href: "/docs/manual/latest/installation#integrate-into-an-existing-js-project",
     },
     {
-      imgSrc: "/static/ic_gentype@2x.png",
+      imgSrc: "/ic_gentype@2x.png",
       title: React.string("TypeScript Integration"),
       descr: "Learn how to integrate ReScript in your existing TypeScript codebases.",
       href: "/docs/manual/latest/typescript-integration",
@@ -553,7 +539,7 @@ module CuratedResources = {
 
   let templates = [
     {
-      imgSrc: "/static/nextjs_starter_logo.svg",
+      imgSrc: "/nextjs_starter_logo.svg",
       title: <>
         <div> {React.string("ReScript & ")} </div>
         <div className="text-gray-40"> {React.string("NextJS")} </div>
@@ -562,7 +548,7 @@ module CuratedResources = {
       href: "https://github.com/rescript-lang/create-rescript-app/blob/master/templates/rescript-template-nextjs/README.md",
     },
     {
-      imgSrc: "/static/vitejs_starter_logo.svg",
+      imgSrc: "/vitejs_starter_logo.svg",
       title: <>
         <div> {React.string("ReScript & ")} </div>
         <div className="text-[#6571FB]"> {React.string("ViteJS")} </div>
@@ -571,7 +557,7 @@ module CuratedResources = {
       href: "https://github.com/rescript-lang/create-rescript-app/blob/master/templates/rescript-template-vite/README.md",
     },
     // {
-    //   imgSrc: "/static/nodejs_starter_logo.svg",
+    //   imgSrc: "/nodejs_starter_logo.svg",
     //   title: <>
     //     <div> {React.string("ReScript & ")} </div>
     //     <div className="text-gray-40" style={ReactDOM.Style.make(~color="#699D65", ())}>
@@ -656,7 +642,7 @@ let make = (~components=MarkdownComponents.default, ~children) => {
       title="The ReScript Programming Language"
       description="Fast, Simple, Fully Typed JavaScript from the Future"
       keywords=["ReScript", "rescriptlang", "JavaScript", "JS", "TypeScript"]
-      ogImage="/static/Art-3-rescript-launch.jpg"
+      ogImage="/Art-3-rescript-launch.jpg"
     />
     <div className="mt-4 xs:mt-16">
       <div className="text-gray-80 text-18 z">

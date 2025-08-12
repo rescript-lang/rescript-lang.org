@@ -111,7 +111,7 @@ let attachCompilerAndLibraries = async (~version, ~libraries: array<string>, ())
   let compilerUrl = CdnMeta.getCompilerUrl(version)
 
   // Useful for debugging our local build
-  /* let compilerUrl = "/static/linked-bs-bundle.js"; */
+  /* let compilerUrl = "/linked-bs-bundle.js"; */
 
   switch await LoadScript.loadScriptPromise(compilerUrl) {
   | Error(_) => Error([`Could not load compiler from url ${compilerUrl}`])
@@ -202,7 +202,7 @@ let createUrl = (pathName, ready) => {
   }
   Array.push(params, ("version", "v" ++ ready.selected.compilerVersion))
   Array.push(params, ("module", ready.selected.config.module_system))
-  Array.push(params, ("code", ready.code->LzString.compressToEncodedURIComponent))
+  Array.push(params, ("code", ready.code->encodeURIComponent))
   let querystring = params->Array.map(((key, value)) => key ++ "=" ++ value)->Array.join("&")
   let url = pathName ++ "?" ++ querystring
   url

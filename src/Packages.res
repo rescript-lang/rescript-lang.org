@@ -325,9 +325,9 @@ module InfoSidebar = {
       <div>
         <h2 className=h2> {React.string("Guidelines")} </h2>
         <ul className="space-y-4">
-          <Next.Link href="/docs/guidelines/publishing-packages" className=link>
+          <ReactRouter.Link to=Url("/docs/guidelines/publishing-packages") className=link>
             {React.string("Publishing ReScript npm packages")}
-          </Next.Link>
+          </ReactRouter.Link>
           /* <li> */
           /* <Next.Link href="/docs/guidelines/writing-bindings"  className=link> */
           /* {React.string("Writing Bindings & Libraries")} */

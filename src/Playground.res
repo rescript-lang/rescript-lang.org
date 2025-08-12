@@ -1,13 +1,3 @@
-%%raw(`
-if (typeof window !== "undefined" && typeof window.navigator !== "undefined") {
-  require("codemirror/mode/javascript/javascript");
-  require("codemirror/keymap/vim");
-  require("codemirror/addon/scroll/simplescrollbars");
-  require("plugins/cm-rescript-mode");
-  require("plugins/cm-reason-mode");
-}
-`)
-
 open CompilerManagerHook
 module Api = RescriptCompilerApi
 
@@ -1455,7 +1445,7 @@ let make = (~versions: array<string>) => {
   let initialModuleSystem = Dict.get(router.query, "module")
 
   let initialContent = switch (Dict.get(router.query, "code"), initialLang) {
-  | (Some(compressedCode), _) => LzString.decompressToEncodedURIComponent(compressedCode)
+  | (Some(compressedCode), _) => encodeURIComponent(compressedCode)
   | (None, Reason) => initialReContent
   | (None, Res) =>
     switch initialVersion {

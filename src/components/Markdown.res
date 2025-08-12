@@ -42,7 +42,7 @@ module Warn = {
 module UrlBox = {
   open! Mdx.MdxChildren
 
-  let imgEl = <img src="/static/hyperlink.svg" className="mr-2 inline-block" />
+  let imgEl = <img src="/hyperlink.svg" className="mr-2 inline-block" />
 
   @react.component
   let make = (~text: string, ~href: string, ~children: Mdx.MdxChildren.t) => {
@@ -92,10 +92,10 @@ module UrlBox = {
         <Icon.ArrowRight className="ml-1" />
       </a>
     } else {
-      <Next.Link href className="flex items-center">
+      <ReactRouter.Link to=Url(href) className="flex items-center">
         {React.string(text)}
         <Icon.ArrowRight className="ml-1" />
-      </Next.Link>
+      </ReactRouter.Link>
     }
     <div className="md-url-box text-16 border-l-2 border-gray-60 my-6 py-6 pl-8 pr-10 bg-gray-5">
       content
@@ -377,9 +377,9 @@ module A = {
       | [pathname] => String.replaceRegExp(pathname, regex, "")
       | _ => href
       }
-      <Next.Link href className="no-underline text-fire hover:underline" ?target>
+      <ReactRouter.Link to=Url(href) className="no-underline text-fire hover:underline" ?target>
         children
-      </Next.Link>
+      </ReactRouter.Link>
     }
 }
 

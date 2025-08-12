@@ -1,8 +1,8 @@
 ---
 author: ryyppy
 date: "2020-05-06"
-previewImg: /static/blog/archive/state-of-reasonml-org-q2-2020.jpg
-articleImg: /static/blog/archive/state-of-reasonml-pt1-hero.jpg
+previewImg: /blog/archive/state-of-reasonml-org-q2-2020.jpg
+articleImg: /blog/archive/state-of-reasonml-pt1-hero.jpg
 title: State of reasonml.org 2020-Q2 / Pt. 1
 description: |
   A report on recent achievements in the reasonml.org project and what
@@ -50,7 +50,7 @@ Building a documentation platform for a whole language ecosystem involves a lot 
 ### The Structure and Design
 The initial work was mostly about understanding the information architecture, relevant documentation dependencies, and finding all the relevant resources across different websites and blog posts. We have also spent a great amount of time finding a proper design language to visually codify different areas of the platform into a distinctive color scheme.
 
-<Image withShadow={true} src="/static/blog/archive/reasonml-org-color-palette-retina.jpg" caption="Current state of the reasonml.org color palette"/>
+<Image withShadow={true} src="/blog/archive/reasonml-org-color-palette-retina.jpg" caption="Current state of the reasonml.org color palette"/>
 
 Surprisingly for us, the navigation and sitemap turned out to be the hardest part to figure out. We had to craft long-lived URLs that would work across multiple versions of the Reason compiler and standard library, had to do research about future localization possibilities, understand the guts and limits of different documentation tools such as docusaurus, find a way to enable component based theming, and then put everything in a layout that actually worked across all sorts of devices without being too cluttered or confusing.
 
@@ -70,7 +70,7 @@ We are now working on further automating the process for generating BuckleScript
 
 Our goal is to have a properly curated, well structured and streamlined overview for all core resources of the Reason platform. So we relocated all the information from the ReasonML, BuckleScript, ReasonReact and GenType website to the reasonml.org codebase.
 
-<Image withShadow={true} src="/static/blog/archive/reasonml-org-structure-retina.jpg" caption="First hand-sketches of the reasonml.org structure"/>
+<Image withShadow={true} src="/blog/archive/reasonml-org-structure-retina.jpg" caption="First hand-sketches of the reasonml.org structure"/>
 
 It didn't take long until we realized that we can't just keep the upstream version in its original form, so we started to make adaptations where it made sense. We also accepted new additions from the community, such as explanations about [function signatures on optional arguments](/docs/manual/latest/function#signatures-and-type-annotations) in the Reason manual, or a new decorator overview in the BuckleScript section.
 

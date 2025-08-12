@@ -206,7 +206,7 @@ let default = (props: props) => {
 
   let fuse: Fuse.t<Item.t> = Fuse.make(allItems, fuseOpts)
 
-  let router = Next.Router.useRouter()
+  let location = ReactRouter.useLocation()
   let (state, setState) = React.useState(_ => ShowAll)
 
   let findItemById = id => allItems->Array.find(item => item.id === id)
@@ -226,7 +226,7 @@ let default = (props: props) => {
   // [B] The search box is cleared.
   // [C] The search box value exactly matches an item name.
   React.useEffect(() => {
-    switch getAnchor(router.asPath) {
+    switch getAnchor(location.pathname) {
     | None => setState(_ => ShowAll)
     | Some(anchor) =>
       switch findItemById(anchor) {
@@ -238,7 +238,7 @@ let default = (props: props) => {
       }
     }
     None
-  }, [router])
+  }, [location.pathname])
 
   // onSearchValueChange() is called when:
   // [A] The search value changes.
@@ -251,15 +251,14 @@ let default = (props: props) => {
   // [3] Search does not match an item - immediately update the view state to show filtered items.
   let onSearchValueChange = value => {
     switch value {
-    | "" => router->Next.Router.push("/syntax-lookup")
+    | "" => ReactRouter.navigate("/syntax-lookup")
     | value =>
       switch findItemByExactName(value) {
       | None => {
           let filtered = searchItems(value)
           setState(_ => ShowFiltered(value, filtered))
         }
-
-      | Some(item) => router->Next.Router.push("/syntax-lookup#" ++ item.id)
+      | Some(item) => ReactRouter.navigate("/syntax-lookup#" ++ item.id)
       }
     }
   }
