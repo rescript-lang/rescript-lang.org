@@ -13,6 +13,10 @@
   ],
   "sources": [
     {
+      "dir": "app",
+      "subdirs": true
+    },
+    {
       "dir": "src",
       "subdirs": true
     },

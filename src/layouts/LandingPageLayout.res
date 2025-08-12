@@ -1,25 +1,4 @@
-module Intro = {
-  @react.component
-  let make = () => {
-    <section className="flex justify-center">
-      <div className="max-w-1060 flex flex-col items-center px-5 sm:px-8 lg:box-content">
-        <h1 className="hl-title text-center max-w-212">
-          {React.string("Fast, Simple, Fully Typed JavaScript from the Future")}
-        </h1>
-        <h2 className="body-lg text-center text-gray-60 my-4 max-w-md">
-          {React.string(`ReScript is a robustly typed language that compiles to efficient
-            and human-readable JavaScript. It comes with a lightning fast
-            compiler toolchain that scales to any codebase size.`)}
-        </h2>
-        <div className="mt-4 mb-2">
-          <Next.Link href="/docs/manual/latest/installation" passHref={true}>
-            <Button> {React.string("Get started")} </Button>
-          </Next.Link>
-        </div>
-      </div>
-    </section>
-  }
-}
+open LandingPage
 
 module PlaygroundHero = {
   type example = {
@@ -668,16 +647,6 @@ module CuratedResources = {
   }
 }
 
-/*
-module Sponsors = {
-  @react.component
-  let make = () =>
-    <div className="mt-24">
-      <h2 className="hl-1 text-center"> {React.string("Sponsors")} </h2>
-    </div>
-}
-*/
-
 @react.component
 let make = (~components=MarkdownComponents.default, ~children) => {
   let (isOverlayOpen, setOverlayOpen) = React.useState(() => false)
@@ -718,4 +687,11 @@ let make = (~components=MarkdownComponents.default, ~children) => {
       </div>
     </div>
   </>
+}
+
+module Layout = {
+  @react.component
+  let make = () => {
+    <Intro />
+  }
 }

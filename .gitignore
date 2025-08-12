@@ -37,3 +37,8 @@ pages/docs/**/**/llms.mdx
 
 public/playground-bundles/
 public/_redirects
+
+
+dist
+build
+.react-router
