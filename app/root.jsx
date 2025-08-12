@@ -26,7 +26,6 @@ hljs.registerLanguage('diff', diff)
 
 
 export default function App() {
-  console.log(import.meta.env.VITE_VERSION_LATEST);
   return (
     <html>
       <head>

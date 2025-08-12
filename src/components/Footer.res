@@ -10,6 +10,8 @@ module Section = {
   }
 }
 
+open ReactRouter
+
 @react.component
 let make = () => {
   let linkClass = "hover:underline hover:pointer"
@@ -30,10 +32,11 @@ let make = () => {
         <Section title="About">
           <ul className="text-16 text-gray-80-tr space-y-2">
             <li>
-              <Next.Link href="/community" className={linkClass}>
+              <Link to={("/community" :> ReactRouter.Link.to)} className={linkClass}>
                 {React.string("Community")}
-              </Next.Link>
+              </Link>
             </li>
+
             <li>
               <a href="https://rescript-association.org" className=linkClass>
                 {React.string("ReScript Association")}

@@ -18,7 +18,7 @@ module Link = {
 
   @module("react-router") @react.component
   external make: (
-    ~children: React.element,
+    ~children: React.element=?,
     ~className: string=?,
     ~target: string=?,
     ~to: to,

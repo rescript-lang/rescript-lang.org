@@ -90,12 +90,16 @@ module RightSidebar = {
 module SidebarTree = {
   @react.component
   let make = (~isOpen: bool, ~toggle: unit => unit, ~node: node, ~items: array<item>) => {
-    let router = Next.Router.useRouter()
-    let url = router.route->Url.parse
+    // let router = Next.Router.useRouter() // Remove Next.js router usage if not needed
+    open ReactRouter
+
+    // Use ReactRouter's useLocation if needed, or refactor to not use router
+    let location = ReactRouter.useLocation()
+    let url = location.pathname->Url.parse
     let version = url->Url.getVersionString
 
     let moduleRoute =
-      WebAPI.URL.make(~url="file://" ++ router.asPath).pathname
+      WebAPI.URL.make(~url="file://" ++ location.pathname).pathname
       ->String.replace(`/docs/manual/${version}/api/`, "")
       ->String.split("/")
 
@@ -132,9 +136,9 @@ module SidebarTree = {
 
         <details key={href} open_>
           <summary className={summaryClassName ++ classNameActive}>
-            <Next.Link className={"inline-block w-10/12"} href>
+            <Link className={"inline-block w-10/12"} to={(href :> ReactRouter.Link.to)}>
               {node.name->React.string}
-            </Next.Link>
+            </Link>
           </summary>
           tocModule
           {if hasChildren {
@@ -150,7 +154,9 @@ module SidebarTree = {
       | false =>
         <li className={"list-none mt-1 leading-4"} key={href}>
           <summary className={summaryClassName ++ classNameActive}>
-            <Next.Link className={"block"} href> {node.name->React.string} </Next.Link>
+            <Link className={"block"} to={(href :> ReactRouter.Link.to)}>
+              {node.name->React.string}
+            </Link>
           </summary>
           tocModule
         </li>
@@ -158,7 +164,7 @@ module SidebarTree = {
     }
 
     let url =
-      router.asPath
+      location.pathname
       ->Url.parse
       ->Some
 
@@ -171,7 +177,7 @@ module SidebarTree = {
             ReactEvent.Form.preventDefault(evt)
             let version = (evt->ReactEvent.Form.target)["value"]
             WebAPI.Storage.setItem(localStorage, ~key=(Manual :> string), ~value=version)
-            let url = Url.parse(router.asPath)
+            let url = Url.parse(location.pathname)
             switch url.pagepath[1] {
             | Some("core") | Some("stdlib") =>
               if version < "v12.0.0" {
@@ -186,7 +192,7 @@ module SidebarTree = {
               "/" ++
               (Array.join(url.base, "/") ++
               ("/" ++ (version ++ ("/" ++ Array.join(url.pagepath, "/")))))
-            router->Next.Router.push(targetUrl)
+            ReactRouter.navigate(targetUrl)
           }
           let version = url->Url.getVersionString
 
@@ -224,12 +230,12 @@ module SidebarTree = {
           <div className="hl-overline block text-gray-80 mt-5 mb-2">
             {"Overview"->React.string}
           </div>
-          <Next.Link
+          <Link
             className={"block " ++
             summaryClassName ++ (moduleRoute->Array.length == 1 ? classNameActive : "")}
-            href={node.path->Array.join("/")}>
+            to={(node.path->Array.join("/") :> ReactRouter.Link.to)}>
             {node.name->React.string}
-          </Next.Link>
+          </Link>
           {moduleRoute->Array.length === 1 ? subMenu : React.null}
         </div>
         <div className="hl-overline text-gray-80 mt-5 mb-2"> {"submodules"->React.string} </div>

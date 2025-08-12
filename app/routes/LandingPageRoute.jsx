@@ -2,6 +2,5 @@ import { make as LandingPageLayout } from '../../src/layouts/LandingPageLayout.m
 
 
 export default function Home() {
-    console.log(import.meta.env);
     return <LandingPageLayout />
 }

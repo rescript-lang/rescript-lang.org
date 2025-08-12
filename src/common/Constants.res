@@ -17,8 +17,6 @@ let versions = {
   next: env.nextVersion,
 }
 
-Console.log(versions)
-
 let latestVersion = (versions.latest, versions.latest->Semver.tryGetMajorString)
 
 // This is used for the version dropdown in the manual layouts

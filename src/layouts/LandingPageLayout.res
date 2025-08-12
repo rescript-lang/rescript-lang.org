@@ -80,11 +80,11 @@ export {
 
           /* ---Link to Playground--- */
           <div>
-            <Next.Link
-              href={`/try?code=${encodeURIComponent(example.res)}}`}
+            <ReactRouter.Link
+              to={(`/try?code=${encodeURIComponent(example.res)}}` :> ReactRouter.Link.to)}
               className="captions md:px-0 border-b border-gray-40 hover:border-gray-60 text-gray-60">
               {React.string("Edit this example in Playground")}
-            </Next.Link>
+            </ReactRouter.Link>
           </div>
           //
           <div className="hidden md:block">
@@ -340,11 +340,11 @@ module MainUSP = {
       down.`)}
         </p>
         <p className="mt-6">
-          <Next.Link href="/docs/manual/latest/build-performance" passHref={true}>
+          <ReactRouter.Link to={("/docs/manual/latest/build-performance" :> ReactRouter.Link.to)}>
             <Button size={Button.Small} kind={Button.PrimaryBlue}>
               {React.string("Learn more")}
             </Button>
-          </Next.Link>
+          </ReactRouter.Link>
         </p>
       </>}
     />
@@ -595,14 +595,14 @@ module CuratedResources = {
           className="grid grid-flow-col grid-cols-2 grid-rows-2 lg:grid-cols-4 lg:grid-rows-1 gap-2 md:gap-4 lg:gap-8 max-w-1280 px-5 md:px-8 mx-auto">
           {cards
           ->Array.mapWithIndex((card, i) =>
-            <Next.Link
+            <ReactRouter.Link
               key={Int.toString(i)}
-              href={card.href}
+              to={(card.href :> ReactRouter.Link.to)}
               className="hover:bg-gray-80 bg-gray-90 px-4 md:px-8 pb-0 md:pb-8 relative rounded-xl md:min-w-[196px]">
               <img className="h-[53px] absolute mt-6" src=card.imgSrc loading=#lazy />
               <h5 className="text-gray-10 hl-4 mt-32 h-12"> {card.title} </h5>
               <div className="text-gray-40 mt-2 mb-8 body-sm"> {React.string(card.descr)} </div>
-            </Next.Link>
+            </ReactRouter.Link>
           )
           ->React.array}
         </div>
