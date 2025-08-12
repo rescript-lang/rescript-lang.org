@@ -14,9 +14,10 @@ This page is solely dedicated to Reason v3.6 related naming collisions and also 
 
 JavaScript has different naming conventions and has only very few limitations when it comes to naming variables, classes, functions, JS object attributes etc.
 
-Reason on the contrary has more restrictive naming rules which need to be considered whenever you define  a type, function, value, module, record attribute or similar. Here are a few typical naming restrictions which cause trouble with JS:
+Reason on the contrary has more restrictive naming rules which need to be considered whenever you define a type, function, value, module, record attribute or similar. Here are a few typical naming restrictions which cause trouble with JS:
+
 - Every name needs to start with a lowercase letter (uppercase is reserved for module names)
-- For the same reason, names can't be all caps  (very common for JS constants: `const MY_CONSTANT = "my_constant"`)
+- For the same reason, names can't be all caps (very common for JS constants: `const MY_CONSTANT = "my_constant"`)
 - It's not possible to use [reserved keywords](/docs/manual/latest/reserved-keywords) for names
 - Labeled arguments (for defining JSX attributes) can't be named after keywords and can't start with an uppercase letter
 - etc.
@@ -40,6 +41,7 @@ If you're using a React component with a reserved keyword as a prop name, then s
 /* This works because `_type` is not a reserved keyword */
 <Component _type="title" />
 ```
+
 ```ml
 (* Doesn't exist in old ML syntax *)
 ```
@@ -57,10 +59,10 @@ Capital letters in Reason are used exclusively for module names, like `String` a
 ```js
 const payload = {
   PostTitle: "Welcome to Reason",
-};
+}
 
 /* this won't work in Reason since `PostTitle` is capitalized, so `paylod.PostTitle` would break */
-const title = payload.PostTitle;
+const title = payload.PostTitle
 ```
 
 In this case, when writing bindings to the JavaScript object, you can use the `[@bs.as "whatever-name-you-want-in-javascript"]` to tell the compiler exactly what the JavaScript attribute name should be in the compiled output:
@@ -79,6 +81,7 @@ let payload = {
 /* ReScript is happy since we're using the valid `postTitle` field name */
 let title = payload.postTitle;
 ```
+
 ```ml
 type payload = {
   postTitle: string [@bs.as "PostTitle"]
@@ -91,16 +94,17 @@ let payload = {
 (* ReScript is happy since we're using the valid `postTitle` field name *)
 let title = payload.postTitle
 ```
+
 ```js
 /* The correct capitalized field name is output in the JavaScript! */
-var title = payload.PostTitle;
+var title = payload.PostTitle
 ```
 
 </CodeTab>
 
 ## Accessing reserved keywords as JavaScript object attribute names
 
-Just like accessing attributes that start with a capital letter, we can use `[@bs.as "the-reserved-keyword-that-javascript-wants"]`. It's customary to append an underscore (unlike the JSX case, where we *prepend* the underscore) to the reserved keyword name:
+Just like accessing attributes that start with a capital letter, we can use `[@bs.as "the-reserved-keyword-that-javascript-wants"]`. It's customary to append an underscore (unlike the JSX case, where we _prepend_ the underscore) to the reserved keyword name:
 
 <CodeTab labels={["Reason (Old Syntax)", "ML (Older Syntax)", "JS Output"]}>
 
@@ -116,6 +120,7 @@ let payload = {
 /* ReScript is happy since we're using the valid `type_` field name */
 let payloadType = payload.type_;
 ```
+
 ```ml
 type payload = {
   type_: string [@bs.as "type"]
@@ -128,9 +133,10 @@ let payload = {
 (* ReScript is happy since we're using the valid `type_` field name *)
 let payloadType = payload.type_
 ```
+
 ```js
 /* The reason compiler has correctly ouput `payload.type` even though *we* called the field `type_` */
-var payloadType = payload.type;
+var payloadType = payload.type
 ```
 
 </CodeTab>
@@ -145,7 +151,7 @@ var payloadType = payload.type;
 
 When accessing a JavaScript object field in a structural way (e.g. `myJsObject##some`), the following rules apply:
 
-1. A single _leading_ underscore will be *dropped* from the output: `myJsObject##_type` => `myJsObject.type`
-1. Two (or more) _leading_ underscores will be *kept* in the output: `myJsObject##__type` => `myJsObject.__type`
+1. A single _leading_ underscore will be _dropped_ from the output: `myJsObject##_type` => `myJsObject.type`
+1. Two (or more) _leading_ underscores will be _kept_ in the output: `myJsObject##__type` => `myJsObject.__type`
 1. There is _no way_ to access e.g. `myJsObject##_type` structurally - use records and `[@bs.as "_type"]` instead
 1. The _final trailing_ double underscores (and anything following them) will be dropped from the output: `myJsObject##this_is_kept__this_is_omitted` => `myJsObject.this_is_kept`

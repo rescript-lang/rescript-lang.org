@@ -15,8 +15,9 @@ Why would you use it? Imagine you have the following:
 ```res
 validateAge(getAge(parseData(person)))
 ```
+
 ```js
-validateAge(getAge(parseData(person)));
+validateAge(getAge(parseData(person)))
 ```
 
 </CodeTab>
@@ -31,8 +32,9 @@ person
   ->getAge
   ->validateAge
 ```
+
 ```js
-validateAge(getAge(parseData(person)));
+validateAge(getAge(parseData(person)))
 ```
 
 </CodeTab>
@@ -46,8 +48,9 @@ Basically, `parseData(person)` is transformed into `person->parseData`, and `get
 ```res
 a(one, two, three)
 ```
+
 ```js
-a(one, two, three);
+a(one, two, three)
 ```
 
 </CodeTab>
@@ -59,8 +62,9 @@ is the same as
 ```res
 one->a(two, three)
 ```
+
 ```js
-a(one, two, three);
+a(one, two, three)
 ```
 
 </CodeTab>
@@ -80,11 +84,9 @@ _This section requires understanding of [our binding API](bind-to-js-function.md
 JavaScript's APIs are often attached to objects, and are often chainable, like so:
 
 ```js
-const result = [1, 2, 3].map(a => a + 1).filter(a => a % 2 === 0);
+const result = [1, 2, 3].map((a) => a + 1).filter((a) => a % 2 === 0)
 
-asyncRequest()
-  .setWaitDuration(4000)
-  .send();
+asyncRequest().setWaitDuration(4000).send()
 ```
 
 Assuming we don't need the chaining behavior above, we'd bind to each case of this using [`@send`](/syntax-lookup#send-decorator) from the aforementioned binding API page:
@@ -97,6 +99,7 @@ type request
 @send external setWaitDuration: (request, int) => request = "setWaitDuration"
 @send external send: request => unit = "send"
 ```
+
 ```js
 // Empty output
 ```
@@ -115,14 +118,17 @@ let result = Array.filter(
 
 send(setWaitDuration(asyncRequest(), 4000))
 ```
-```js
-var result = [1, 2, 3].map(function(a) {
-  return a + 1 | 0;
-}).filter(function(a) {
-  return a % 2 === 0;
-});
 
-asyncRequest().setWaitDuration(4000).send();
+```js
+var result = [1, 2, 3]
+  .map(function (a) {
+    return (a + 1) | 0
+  })
+  .filter(function (a) {
+    return a % 2 === 0
+  })
+
+asyncRequest().setWaitDuration(4000).send()
 ```
 
 </CodeTab>
@@ -138,14 +144,17 @@ let result = [1, 2, 3]
 
 asyncRequest()->setWaitDuration(4000)->send
 ```
-```js
-var result = [1, 2, 3].map(function(a) {
-  return a + 1 | 0;
-}).filter(function(a) {
-  return a % 2 === 0;
-});
 
-asyncRequest().setWaitDuration(4000).send();
+```js
+var result = [1, 2, 3]
+  .map(function (a) {
+    return (a + 1) | 0
+  })
+  .filter(function (a) {
+    return a % 2 === 0
+  })
+
+asyncRequest().setWaitDuration(4000).send()
 ```
 
 </CodeTab>
@@ -159,8 +168,9 @@ You can pipe into a variant's constructor as if it was a function:
 ```res
 let result = name->preprocess->Some
 ```
+
 ```js
-var result = preprocess(name);
+var result = preprocess(name)
 ```
 
 </CodeTab>
@@ -172,8 +182,9 @@ We turn this into:
 ```res
 let result = Some(preprocess(name))
 ```
+
 ```js
-var result = preprocess(name);
+var result = preprocess(name)
 ```
 
 </CodeTab>
@@ -199,8 +210,9 @@ Let's say you have a function `namePerson`, which takes a `person` then a `name`
 makePerson(~age=47)
   ->namePerson("Jane")
 ```
+
 ```js
-namePerson(makePerson(47), "Jane");
+namePerson(makePerson(47), "Jane")
 ```
 
 </CodeTab>
@@ -213,9 +225,10 @@ If you have a name that you want to apply to a person object, you can use a plac
 getName(input)
   ->namePerson(personDetails, _)
 ```
+
 ```js
-var __x = getName(input);
-namePerson(personDetails, __x);
+var __x = getName(input)
+namePerson(personDetails, __x)
 ```
 
 </CodeTab>
@@ -228,9 +241,10 @@ This allows you to pipe into any positional argument. It also works for named ar
 getName(input)
   ->namePerson(~person=personDetails, ~name=_)
 ```
+
 ```js
-var __x = getName(input);
-namePerson(personDetails, __x);
+var __x = getName(input)
+namePerson(personDetails, __x)
 ```
 
 </CodeTab>

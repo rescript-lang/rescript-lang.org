@@ -52,7 +52,7 @@ BuckleScript allows users to insert raw JS using extension nodes directly.
 Please refer to the
 [documentation](https://bucklescript.github.io/docs/en/embed-raw-javascript)
 for details. Here we only talk about one of the most used styles: inserting raw
-  JS code as a function.
+JS code as a function.
 
 ```reason
 let getSafe: (array(int), int) => int = [%raw
@@ -71,18 +71,14 @@ Here the raw extension node asks the user to list the parameters and function
 statement in raw JS syntax. The generated JS code is as follows:
 
 ```js
-function getSafe (a,b){
-	if (b>=0 && b < a.length) {
-    	return a [b]
-     }
-     throw new Error("out of range")
-  };
+function getSafe(a, b) {
+  if (b >= 0 && b < a.length) {
+    return a[b]
+  }
+  throw new Error("out of range")
+}
 
-var v = getSafe(/* array */[
-      1,
-      2,
-      3
-    ], -1);
+var v = getSafe(/* array */ [1, 2, 3], -1)
 ```
 
 Inserting raw JS code as a function has several advantages:
@@ -92,6 +88,7 @@ Inserting raw JS code as a function has several advantages:
 - The compiler still has some knowledge about the function, for example, its arity.
 
 Some advice about using this style:
+
 - Always annotate the raw function with explicit type annotation.
 - When annotating raw JS, you can use polymorphic types, but don’t create them when you don’t really need them. In general, non polymoprhic type is safer and more efficient.
 - Write a unit test for the function.
@@ -136,9 +133,9 @@ The preceding code generates the following JS. As you can see, the binding
 itself is zero cost and serves as formal documentation.
 
 ```js
-var date = new Date(10000);
-date.setDate(3);
-var d = date.getDate();
+var date = new Date(10000)
+date.setDate(3)
+var d = date.getDate()
 ```
 
 A typical workflow is that we create an abstract data type, create bindings for
@@ -148,6 +145,7 @@ Thanks to native support of abstract data types in OCaml, the interop is easy
 to reason about.
 
 Some advice when using this style:
+
 - Again, you can use polymorphic types in your annotations, but don't create
   polymorphic types when you don't need them.
 - Write a unit test for each external.
@@ -173,20 +171,24 @@ let d = date->getDate;
 The generated JS is as follows, and you can see the cost:
 
 ```js
-function fromFloat (d){return new Date(d)};
+function fromFloat(d) {
+  return new Date(d)
+}
 
-function getDate (d){return d.getDate()};
+function getDate(d) {
+  return d.getDate()
+}
 
-function setDate (d,v){
-   d.setDate(v);
-   return 0; // ocaml representation of unit
-};
+function setDate(d, v) {
+  d.setDate(v)
+  return 0 // ocaml representation of unit
+}
 
-var date = fromFloat(10000);
+var date = fromFloat(10000)
 
-setDate(date, 3);
+setDate(date, 3)
 
-var d = getDate(date);
+var d = getDate(date)
 ```
 
 <!-- ,  and provide various methods over such abstract data type. -->

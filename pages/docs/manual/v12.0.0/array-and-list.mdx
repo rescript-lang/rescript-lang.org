@@ -15,8 +15,9 @@ Arrays are our main ordered data structure. They work the same way as JavaScript
 ```res example
 let myArray = ["hello", "world", "how are you"]
 ```
+
 ```js
-var myArray = ["hello", "world", "how are you"];
+var myArray = ["hello", "world", "how are you"]
 ```
 
 </CodeTab>
@@ -24,7 +25,9 @@ var myArray = ["hello", "world", "how are you"];
 ReScript arrays' items must have the same type, i.e. homogeneous.
 
 ### Usage
+
 #### Access
+
 Accessing items in an array will return an `option` and can be done like so:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
@@ -36,21 +39,23 @@ let firstItem = myArray[0] // Some("hello")
 
 let tenthItem = myArray->Array.get(10) // None
 ```
+
 ```js
-var myArray = ["hello", "world", "how are you"];
+var myArray = ["hello", "world", "how are you"]
 
-var firstItem = myArray[0];
+var firstItem = myArray[0]
 
-var tenthItem = myArray[10];
+var tenthItem = myArray[10]
 ```
 
 </CodeTab>
 
-The behavior of returning an `option` is new to V11 when you have [Core](api/core) open. 
+The behavior of returning an `option` is new to V11 when you have [Core](api/core) open.
 It provides a safer way to access array items, which is especially useful when you're not sure if the index is out of bounds.
 If you would like to not use an `option`, you can use [`Array.getUnsafe`](api/core/array#value-getUnsafe).
 
 #### Update
+
 Items in an array can be updated by assigning a value to an index or using a function:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
@@ -64,14 +69,15 @@ myArray->Array.push("?") //  ["hey", "world", "how are you", "?"]
 
 myArray->Array.set(0, "bye") //  ["bye", "world", "how are you", "?"]
 ```
+
 ```js
-var myArray = ["hello", "world", "how are you"];
+var myArray = ["hello", "world", "how are you"]
 
-myArray[0] = "hey";
+myArray[0] = "hey"
 
-myArray.push("?");
+myArray.push("?")
 
-myArray[0] = "bye";
+myArray[0] = "bye"
 ```
 
 </CodeTab>
@@ -79,7 +85,6 @@ myArray[0] = "bye";
 ### Array spreads
 
 **Since 11.1**
-
 
 You can spread arrays of the the same type into new arrays, just like in JavaScript:
 
@@ -93,33 +98,17 @@ let x3 = [...y]
 ```
 
 ```javascript
-var Belt_Array = require("rescript/lib/js/belt_Array.js");
+var Belt_Array = require("rescript/lib/js/belt_Array.js")
 
-var y = [
-  1,
-  2
-];
+var y = [1, 2]
 
-var x = Belt_Array.concatMany([
-      [
-        4,
-        5
-      ],
-      y
-    ]);
+var x = Belt_Array.concatMany([[4, 5], y])
 
-var x2 = Belt_Array.concatMany([
-      [
-        4,
-        5
-      ],
-      y,
-      [7],
-      y
-    ]);
+var x2 = Belt_Array.concatMany([[4, 5], y, [7], y])
 
-var x3 = Belt_Array.concatMany([y]);
+var x3 = Belt_Array.concatMany([y])
 ```
+
 </CodeTab>
 
 > Note that array spreads compiles to `Belt.Array.concatMany` right now. This is likely to change to native array spreads in the future.
@@ -138,6 +127,7 @@ ReScript provides a singly linked list too. Lists are:
 ```res example
 let myList = list{1, 2, 3}
 ```
+
 ```js
 var myList = {
   hd: 1,
@@ -145,10 +135,10 @@ var myList = {
     hd: 2,
     tl: {
       hd: 3,
-      tl: 0
-    }
-  }
-};
+      tl: 0,
+    },
+  },
+}
 ```
 
 </CodeTab>
@@ -173,6 +163,7 @@ Use the spread syntax:
 let myList = list{1, 2, 3}
 let anotherList = list{0, ...myList}
 ```
+
 ```js
 var myList = {
   hd: 1,
@@ -180,15 +171,15 @@ var myList = {
     hd: 2,
     tl: {
       hd: 3,
-      tl: 0
-    }
-  }
-};
+      tl: 0,
+    },
+  },
+}
 
 var anotherList = {
   hd: 0,
-  tl: myList
-};
+  tl: myList,
+}
 ```
 
 </CodeTab>
@@ -211,16 +202,20 @@ let message =
   | list{a, ...rest} => "The head of the list is the string " ++ Int.toString(a)
   }
 ```
+
 ```js
-let message = myList !== 0 ? (
-    ({
-      hd: 2,
-      tl: {
-        hd: 3,
-        tl: /* [] */0
-      }
-    }) !== 0 ? "The list two items and a potenial remainder of items" : "The head of the list is the string " + (1).toString()
-  ) : "This list is empty";
+let message =
+  myList !== 0
+    ? {
+        hd: 2,
+        tl: {
+          hd: 3,
+          tl: /* [] */ 0,
+        },
+      } !== 0
+      ? "The list two items and a potenial remainder of items"
+      : "The head of the list is the string " + (1).toString()
+    : "This list is empty"
 ```
 
 </CodeTab>

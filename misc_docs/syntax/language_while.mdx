@@ -6,7 +6,7 @@ summary: "This is the `while` loop."
 category: "languageconstructs"
 ---
 
-ReScript supports `while` loops. While loops execute its body code block while its condition is true. 
+ReScript supports `while` loops. While loops execute its body code block while its condition is true.
 
 ReScript does not have the `break` keyword, but you can easily break out of a while loop by using a mutable binding.
 
@@ -29,22 +29,20 @@ while !break.contents {
 
 ```js
 let $$break = {
-  contents: false
-};
+  contents: false,
+}
 
 while (!$$break.contents) {
   if (Math.random() > 0.3) {
-    $$break.contents = true;
+    $$break.contents = true
   } else {
-    console.log("Still running");
+    console.log("Still running")
   }
-};
+}
 ```
 
 </CodeTab>
 
-
 ### References
 
-* [While Loops](control-flow.md#while-loops)
-
+- [While Loops](control-flow.md#while-loops)

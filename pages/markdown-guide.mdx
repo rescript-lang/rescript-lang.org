@@ -8,15 +8,13 @@ all available components and demonstrates some use-cases.
 
 </Intro>
 
-
 ## How does it work?
 
 We use a toolset called [mdxjs](https://mdxjs.com) to parse and interpret
-`.mdx` files within the `pages/` directory.  The default set for our markdown
+`.mdx` files within the `pages/` directory. The default set for our markdown
 components is defined in the `Markdown.default` binding. Each layout in our
 codebase injects the components via the `Mdx.Provider` component, kinda like
 this:
-
 
 ```re
 let components = Markdown.default;
@@ -59,9 +57,7 @@ If you leave them out, the content will be a **plain string** without further fo
 
 Keep this in mind when editing content.
 
-
 ## Text Components
-
 
 ### Info / Blockquote
 
@@ -83,7 +79,6 @@ section. You can use it via JSX syntax...
 
 The `Info` component is also really useful if you want its children to be
 parsed as markdown. You can even pass in html elements.
-
 
 ```
 <Info>
@@ -115,7 +110,6 @@ similar information.
 
 </Warn>
 
-
 ### UrlBox
 
 ```
@@ -128,7 +122,9 @@ This is how you define a UrlBox
 
 **Examples:**
 
-<UrlBox href="https://rescript-lang.org" text="rescript-lang.org">Check out the officially deployed version of this website (via absolute URL)</UrlBox>
+<UrlBox href="https://rescript-lang.org" text="rescript-lang.org">
+  Check out the officially deployed version of this website (via absolute URL)
+</UrlBox>
 
 <UrlBox href="/md-kitchensink" text="This is a link">
 
@@ -139,7 +135,6 @@ Try **multiple paragraphs** for instance!
 
 </UrlBox>
 
-
 ### Cite
 
 <Cite author="No Designer Ever">
@@ -147,7 +142,6 @@ Try **multiple paragraphs** for instance!
 "Always, always make the logo bigger, no matter what."
 
 </Cite>
-
 
 ```
 <Cite author="No Designer Ever">
@@ -159,8 +153,8 @@ Try **multiple paragraphs** for instance!
 
 ### Intro / Chapter Hero
 
-This component is useful to ease the user into the topic.  Use it for the first
-paragraph and give a quick overview on what the document is about. 
+This component is useful to ease the user into the topic. Use it for the first
+paragraph and give a quick overview on what the document is about.
 
 <Intro>
 
@@ -178,12 +172,10 @@ Your hero text
 </Intro>
 ```
 
-
 ## Codeblocks
 
 Codeblocks are represented via \`\`\` codefences.
 Following languages are available: `res`, `re`, `js`, `ml`, `text`, `json`, `sh`
-
 
 ```res
 let a = "This is a Reason codeblock"
@@ -198,7 +190,7 @@ highlighting
 
 To highlight codelines in your code snippet, use the `{range}` meta parameter:
 
-~~~
+````
 ```res {1,4-5}
 
 let a = 1
@@ -210,7 +202,7 @@ switch a => {
 | _ => b
 }
 ```
-~~~
+````
 
 which will render:
 
@@ -231,7 +223,8 @@ For cases where you want to show a single codeblock with multiple syntaxes, use 
 Make sure to leave a newline between the `<CodeToggle>` JSX tags, otherwise codeblock children won't be recognized!
 
 **Example:**
-~~~
+
+````
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
@@ -245,23 +238,23 @@ var highlighted = "yep"
 ```
 
 </CodeTab>
-~~~
+````
 
 Renders to following output:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-  ```res
-  let a = "Some ReScript code"
-  switch myValue {
+```res
+let a = "Some ReScript code"
+switch myValue {
 
-  }
-  ```
+}
+```
 
-  ```js {3} 
-  var a = "Some JavaScript code";
+```js {3}
+var a = "Some JavaScript code"
 
-  var highlighted = "Also supports highlighting ranges";
-  ```
+var highlighted = "Also supports highlighting ranges"
+```
 
 </CodeTab>

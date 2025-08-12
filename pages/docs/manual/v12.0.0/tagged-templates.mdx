@@ -8,21 +8,24 @@ canonical: "/docs/manual/v12.0.0/tagged-templates"
 
 **Since 11.1**
 
-Tagged templates provide a special form of string interpolation, enabling the creation of template literals 
-where placeholders aren't restricted to strings. Moreover, the resulting output isn't confined solely to 
-strings either. You can take a look at the [JS documentation 
+Tagged templates provide a special form of string interpolation, enabling the creation of template literals
+where placeholders aren't restricted to strings. Moreover, the resulting output isn't confined solely to
+strings either. You can take a look at the [JS documentation
 about tagged templates](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates)
 to learn more about them.
 
 ## Define a tag function
 
 Tag functions in ReScript have the following signature:
-```res 
+
+```res
 let myTagFunction : (array<string>, array<'param>) => 'output
 ```
+
 As you can see, you can have any type you want both for the placeholder array and for the output.
 
 Given how string interpolation works, you'll always have the following invariant:
+
 ```res
 Array.length(strings) == Array.length(placeholder) + 1
 ```
@@ -58,28 +61,32 @@ let s = (strings, parameters) => {
   React.string(text)
 }
 ```
+
 ```js
-import * as Core__Array from "./stdlib/core__Array.js";
+import * as Core__Array from "./stdlib/core__Array.js"
 
 function s(strings, parameters) {
-  return Core__Array.reduceWithIndex(parameters, strings[0], (function (acc, param, i) {
-                var s = strings[i + 1 | 0];
-                var p;
-                switch (param.TAG) {
-                  case "I" :
-                  case "F" :
-                      p = param._0.toString();
-                      break;
-                  case "S" :
-                      p = param._0;
-                      break;
-                  case "Bool" :
-                      p = param._0 ? "true" : "false";
-                      break;
-                  
-                }
-                return acc + p + s;
-              }));
+  return Core__Array.reduceWithIndex(
+    parameters,
+    strings[0],
+    function (acc, param, i) {
+      var s = strings[(i + 1) | 0]
+      var p
+      switch (param.TAG) {
+        case "I":
+        case "F":
+          p = param._0.toString()
+          break
+        case "S":
+          p = param._0
+          break
+        case "Bool":
+          p = param._0 ? "true" : "false"
+          break
+      }
+      return acc + p + s
+    },
+  )
 }
 ```
 
@@ -99,26 +106,30 @@ module Greetings = {
   }
 }
 ```
+
 ```js
 function Greetings(props) {
-  return React.createElement("div", undefined, s([
-                  "hello ",
-                  " you're ",
-                  " year old!"
-                ], [
-                  {
-                    TAG: "S",
-                    _0: props.name
-                  },
-                  {
-                    TAG: "I",
-                    _0: props.age
-                  }
-                ]));
+  return React.createElement(
+    "div",
+    undefined,
+    s(
+      ["hello ", " you're ", " year old!"],
+      [
+        {
+          TAG: "S",
+          _0: props.name,
+        },
+        {
+          TAG: "I",
+          _0: props.age,
+        },
+      ],
+    ),
+  )
 }
 ```
 
 </CodeTab>
 
-Pretty neat, isn't it? As you can see, it looks like any regular template literal but it accepts placeholders that are not strings 
+Pretty neat, isn't it? As you can see, it looks like any regular template literal but it accepts placeholders that are not strings
 and it outputs something that is not a string either, a `React.element` in this case.

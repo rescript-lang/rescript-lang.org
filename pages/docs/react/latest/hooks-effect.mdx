@@ -8,7 +8,7 @@ canonical: "/docs/react/latest/hooks-effect"
 
 <Intro>
 
-The *Effect* Hook lets you perform side effects in function components.
+The _Effect_ Hook lets you perform side effects in function components.
 
 </Intro>
 
@@ -17,7 +17,6 @@ The *Effect* Hook lets you perform side effects in function components.
 Common examples for (side) effects are data fetching, setting up a subscription, and manually changing the DOM in React components.
 
 There are two common kinds of side effects in React components: those that don’t require cleanup, and those that do. We'll look into the distinction later on in our examples, but first let's see how the interface looks like.
-
 
 ## Basic Usage
 
@@ -58,11 +57,11 @@ React.useEffect(() => {
 ```
 
 ```js
-React.useEffect(function () { });
-React.useEffect((function () { }), []);
-React.useEffect((function () { }), [prop1]);
-React.useEffect((function () { }), [ prop1, prop2 ]);
-React.useEffect((function () { }), [ prop1, prop2, prop3 ]);
+React.useEffect(function () {})
+React.useEffect(function () {}, [])
+React.useEffect(function () {}, [prop1])
+React.useEffect(function () {}, [prop1, prop2])
+React.useEffect(function () {}, [prop1, prop2, prop3])
 ```
 
 </CodeTab>
@@ -74,7 +73,6 @@ A `useEffect` call may receive an additional array of dependencies. The effect f
 **Note:** You probably wonder why the `React.useEffect` with only one dependency receives an `array`, while `useEffect`'s with multiple dependencies require a `tuple` (e.g. `(prop1, prop2)`) for the dependency list. That's because a tuple can receive multiple values of different types, whereas an `array` only accepts values of identical types. It's possible to replicate a `useEffect` with multiple dependencies by doing `React.useEffect(fn, [1, 2])`, on other hand the type checker wouldn't allow `React.useEffect(fn, [1, "two"])`.
 
 `React.useEffectOnEveryRender` will run its function after every completed render, while `React.useEffect` will only run the effect on the first render (when the component has mounted).
-
 
 ## Examples
 
@@ -119,28 +117,35 @@ let make = () => {
   </div>
 }
 ```
+
 ```js
 function Counter(Props) {
   var match = React.useState(function () {
-        return 0;
-      });
-  var setCount = match[1];
-  var count = match[0];
+    return 0
+  })
+  var setCount = match[1]
+  var count = match[0]
   React.useEffect(function () {
-        document.title = "You clicked " + String(count) + " times!";
-
-      });
+    document.title = "You clicked " + String(count) + " times!"
+  })
   var onClick = function (_evt) {
-    return Curry._1(setCount, (function (prev) {
-                  return prev + 1 | 0;
-                }));
-  };
-  var msg = "You clicked" + String(count) + "times";
-  return React.createElement("div", undefined,
+    return Curry._1(setCount, function (prev) {
+      return (prev + 1) | 0
+    })
+  }
+  var msg = "You clicked" + String(count) + "times"
+  return React.createElement(
+    "div",
+    undefined,
     React.createElement("p", undefined, msg),
-      React.createElement("button", {
-                  onClick: onClick
-                }, "Click me"));
+    React.createElement(
+      "button",
+      {
+        onClick: onClick,
+      },
+      "Click me",
+    ),
+  )
 }
 ```
 
@@ -211,51 +216,49 @@ let make = (~friendId: string) => {
   </div>
 }
 ```
+
 ```js
 function FriendStatus(Props) {
-  var friendId = Props.friendId;
+  var friendId = Props.friendId
   var match = React.useState(function () {
-        return /* Offline */0;
-      });
-  var setState = match[1];
+    return /* Offline */ 0
+  })
+  var setState = match[1]
   React.useEffect(function () {
-        var handleStatusChange = function (status) {
-          return Curry._1(setState, (function (param) {
-                        if (status.isOnline) {
-                          return /* Online */2;
-                        } else {
-                          return /* Offline */0;
-                        }
-                      }));
-        };
-        subscribeToFriendStatus(friendId, handleStatusChange);
-        Curry._1(setState, (function (param) {
-                return /* Loading */1;
-              }));
-        return (function (param) {
-                  unsubscribeFromFriendStatus(friendId, handleStatusChange);
-
-                });
-      });
-  var text;
+    var handleStatusChange = function (status) {
+      return Curry._1(setState, function (param) {
+        if (status.isOnline) {
+          return /* Online */ 2
+        } else {
+          return /* Offline */ 0
+        }
+      })
+    }
+    subscribeToFriendStatus(friendId, handleStatusChange)
+    Curry._1(setState, function (param) {
+      return /* Loading */ 1
+    })
+    return function (param) {
+      unsubscribeFromFriendStatus(friendId, handleStatusChange)
+    }
+  })
+  var text
   switch (match[0]) {
-    case /* Offline */0 :
-        text = friendId + " is offline";
-        break;
-    case /* Loading */1 :
-        text = "loading...";
-        break;
-    case /* Online */2 :
-        text = friendId + " is online";
-        break;
-
+    case /* Offline */ 0:
+      text = friendId + " is offline"
+      break
+    case /* Loading */ 1:
+      text = "loading..."
+      break
+    case /* Online */ 2:
+      text = friendId + " is online"
+      break
   }
-  return React.createElement("div", undefined, text);
+  return React.createElement("div", undefined, text)
 }
 ```
 
 </CodeTab>
-
 
 ## Effect Dependencies
 
@@ -269,6 +272,7 @@ React.useEffect(() => {
   None
 }, [count])
 ```
+
 Here, we pass `[count]` to `useEffect` as a dependency. What does this mean? If the `count` is 5, and then our component re-renders with count still equal to 5, React will compare `[5]` from the previous render and `[5]` from the next render. Because all items within the array are the same (5 === 5), React would skip the effect. That’s our optimization.
 
 When we render with count updated to 6, React will compare the items in the `[5]` array from the previous render to items in the `[6]` array from the next render. This time, React will re-apply the effect because `5 !== 6`. If there are multiple items in the array, React will re-run the effect even if just one of them is different.
@@ -304,4 +308,3 @@ let make = (~friendId: string) => {
 If you want to run an effect and clean it up only once (on mount and unmount), use `React.useEffect` with an empty dependency array `[]`.
 
 If you are interested in more performance optmization related topics, have a look at the ReactJS [Performance Optimization Docs](https://reactjs.org/docs/hooks-faq.html#performance-optimizations) for more detailed infos.
-

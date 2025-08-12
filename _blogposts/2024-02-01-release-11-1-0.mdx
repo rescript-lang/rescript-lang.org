@@ -22,7 +22,7 @@ Find a list of all the new features below:
 
 ## JSX for more than React
 
-Historically, ReScript has focused mainly on React for its frontend support. This has led to ReScript having a great JSX transform built into the language itself. However, that JSX transform has been quite difficult to use with anything but React. 
+Historically, ReScript has focused mainly on React for its frontend support. This has led to ReScript having a great JSX transform built into the language itself. However, that JSX transform has been quite difficult to use with anything but React.
 
 With v11.1, that changes! The JSX transform can now be configured to work with any framework. First class React support is of course still the same, and remains a priority. This makes it possible to integrate any other framework's JSX idiomatically in ReScript. And, all the tooling like autocompletion of prop names and types just works.
 
@@ -61,16 +61,16 @@ external sh: (array<string>, array<string>) => promise<result> = "$"
 let filename = "index.res"
 let result = await sh`ls ${filename}`
 ```
+
 ```js
-var $$Bun = require("bun");
+var $$Bun = require("bun")
 
-var filename = "index.res";
+var filename = "index.res"
 
-var result = await $$Bun.$`ls ${filename}`;
+var result = await $$Bun.$`ls ${filename}`
 ```
 
 </CodeTab>
-
 
 Of course you can also create your own tag function in ReScript now as well, it is just a function with the following signature.
 
@@ -95,16 +95,18 @@ Console.log(myJson)
 external buttonCss: string = "button"
 Console.log(buttonCss)
 ```
+
 ```js
-import * as MyCssCss from "./myCss.css" with {"type": "css", "some-identifier": "yep"};
-import MyJsonJson from "./myJson.json" with {"type": "json", "some-identifier": "yep"};
+import * as MyCssCss from "./myCss.css" with { type: "css", "some-identifier": "yep" }
+import MyJsonJson from "./myJson.json" with { type: "json", "some-identifier": "yep" }
 
-var myJson = MyJsonJson;
-console.log(myJson);
+var myJson = MyJsonJson
+console.log(myJson)
 
-var buttonCss = MyCssCss.button;
-console.log(buttonCss);
+var buttonCss = MyCssCss.button
+console.log(buttonCss)
 ```
+
 </CodeTab>
 
 ## BigInt support
@@ -114,15 +116,16 @@ ReScript now natively supports [JavaScript's `bigint` type](https://developer.mo
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res example
-open! Js.BigInt 
+open! Js.BigInt
 
 let a = 9007199254740991n + 9007199254740991n
 let b = 2n ** 2n
 ```
-```js
-var a = 9007199254740991n + 9007199254740991n;
 
-var p = 2n ** 2n;
+```js
+var a = 9007199254740991n + 9007199254740991n
+
+var p = 2n ** 2n
 ```
 
 </CodeTab>
@@ -176,24 +179,27 @@ let result = stringify(obj)
 
 let result2 = stringify(obj, ~space=2)
 ```
+
 ```js
 var obj = {
-  test: 1
-};
+  test: 1,
+}
 
-var result = JSON.stringify(obj, undefined, undefined);
+var result = JSON.stringify(obj, undefined, undefined)
 
-var result2 = JSON.stringify(obj, undefined, 2);
+var result2 = JSON.stringify(obj, undefined, 2)
 ```
+
 ```js
 var obj = {
-  test: 1
-};
+  test: 1,
+}
 
-var result = JSON.stringify(obj);
+var result = JSON.stringify(obj)
 
-var result2 = JSON.stringify(obj, undefined, 2);
+var result2 = JSON.stringify(obj, undefined, 2)
 ```
+
 </CodeTab>
 
 ## %todo and warn-error
@@ -213,15 +219,19 @@ Console.log(x->String.includes("x"))
 ```
 
 ```js
-var Js_exn = require("./stdlib/js_exn.js");
+var Js_exn = require("./stdlib/js_exn.js")
 
 function implementMeLater() {
-  return Js_exn.raiseError("playground.res:1:37-42 - Todo: This should return a string eventually.");
+  return Js_exn.raiseError(
+    "playground.res:1:37-42 - Todo: This should return a string eventually.",
+  )
 }
 
-var x = Js_exn.raiseError("playground.res:1:37-42 - Todo: This should return a string eventually.");
+var x = Js_exn.raiseError(
+  "playground.res:1:37-42 - Todo: This should return a string eventually.",
+)
 
-console.log(x.includes("x"));
+console.log(x.includes("x"))
 ```
 
 </CodeTab>
@@ -238,8 +248,8 @@ See ["Compile with stricter errors in CI"](/docs/manual/latest/build-overview#co
 
 Of course we also got a bunch of other changes and bug fixes in this release. Check out the [compiler changelog](https://github.com/rescript-lang/rescript/blob/11.0_release/CHANGELOG.md#1110-rc1) if you are interested.
 
-
 ## v12 is next
+
 v11.1 marks the completion of the v11 versions feature wise. We will of course continue to support the v11 release series with bug fixes and other important updates. However, our focus for new feature development will move to v12. You'll hear more about v12 and the plans for that version soon.
 
 ## Acknowledgements

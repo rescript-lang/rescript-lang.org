@@ -9,7 +9,7 @@ canonical: "/docs/manual/v11.0.0/inlining-constants"
 Sometimes, in the JavaScript output, you might want a certain value to be forcefully inlined. For example:
 
 ```js
-if (process.env.mode === 'development') {
+if (process.env.mode === "development") {
   console.log("Dev-only code here!")
 }
 ```
@@ -17,7 +17,7 @@ if (process.env.mode === 'development') {
 The reason is that your JavaScript bundler (e.g. Webpack) might turn that into:
 
 ```js
-if ('production' === 'development') {
+if ("production" === "development") {
   console.log("Dev-only code here!")
 }
 ```
@@ -37,11 +37,12 @@ if (process["env"]["mode"] === mode) {
   Console.log("Dev-only code here!")
 }
 ```
+
 ```js
-var mode = "development";
+var mode = "development"
 
 if (process.env.mode === mode) {
-  console.log("Dev-only code here!");
+  console.log("Dev-only code here!")
 }
 ```
 
@@ -61,9 +62,10 @@ if (process["env"]["mode"] === mode) {
   Console.log("Dev-only code here!")
 }
 ```
+
 ```js
 if (process.env.mode === "development") {
-  console.log("Dev-only code here!");
+  console.log("Dev-only code here!")
 }
 ```
 

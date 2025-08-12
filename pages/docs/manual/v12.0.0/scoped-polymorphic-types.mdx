@@ -27,7 +27,7 @@ const logger = {
       /* handle other types */
     }
   },
-};
+}
 ```
 
 In ReScript, we can bind to this function as a record with a scoped polymorphic function type:
@@ -52,10 +52,10 @@ myLogger.log(42)
 ```
 
 ```js
-var myLogger = JsAPI.getLogger();
+var myLogger = JsAPI.getLogger()
 
-myLogger.log("Hello, ReScript!");
-myLogger.log(42);
+myLogger.log("Hello, ReScript!")
+myLogger.log(42)
 ```
 
 </CodeTab>
@@ -97,4 +97,3 @@ let testExn: 'a. unit => 'a = () => throw(Abort) // Works!
 let testExn2 = (): 'a. 'a = throw(Abort) // Syntax error!
 type fn = 'a. 'a => unit // Syntax error!
 ```
-

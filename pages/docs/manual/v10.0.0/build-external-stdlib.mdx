@@ -10,6 +10,7 @@ canonical: "/docs/manual/latest/build-external-stdlib"
 **Since 9.0**
 
 Your ReScript project depends on the `rescript` package as a [`devDependency`](https://docs.npmjs.com/specifying-dependencies-and-devdependencies-in-a-package-json-file), which includes our compiler, build system and runtime like `Belt`. However, you had to move it to `dependency` in `package.json` if you publish your code:
+
 - To Docker or other low-storage deployment devices.
 - For pure JS/TS consumers who probably won't install `bs-platform` in their own project.
 
@@ -33,7 +34,7 @@ Then add this to `bsconfig.json`:
 ```json
 {
   // ...
-  "external-stdlib" : "@rescript/std"
+  "external-stdlib": "@rescript/std"
 }
 ```
 
@@ -47,11 +48,11 @@ Belt.Array.forEach([1, 2, 3], num => Js.log(num))
 
 ```js
 // Note the require path starting with "@rescript/std".
-var Belt_Array = require("@rescript/std/lib/js/belt_Array.js");
+var Belt_Array = require("@rescript/std/lib/js/belt_Array.js")
 
 Belt_Array.forEach([1, 2, 3], function (num) {
-  console.log(num);
-});
+  console.log(num)
+})
 ```
 
 </CodeTab>

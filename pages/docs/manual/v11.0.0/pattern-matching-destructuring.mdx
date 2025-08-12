@@ -25,10 +25,11 @@ let coordinates = (10, 20, 30)
 let (x, _, _) = coordinates
 Console.log(x) // 10
 ```
+
 ```js
-var coordinates = [10, 20, 30];
-var x = 10;
-console.log(10);
+var coordinates = [10, 20, 30]
+var x = 10
+console.log(10)
 ```
 
 </CodeTab>
@@ -49,32 +50,29 @@ type result =
 let myResult = Success("You did it!")
 let Success(message) = myResult // "You did it!" assigned to `message`
 ```
+
 ```js
 var student1 = {
   name: "John",
-  age: 10
-};
-var name = "John";
+  age: 10,
+}
+var name = "John"
 
-var myResult = /* Success */{
-  _0: "You did it!"
-};
+var myResult = /* Success */ {
+  _0: "You did it!",
+}
 var message = "You did it!"
 
-var myArray = [1, 2, 3];
+var myArray = [1, 2, 3]
 if (myArray.length !== 2) {
   throw {
     RE_EXN_ID: "Match_failure",
-    _1: [
-      "playground.res",
-      14,
-      4
-    ],
-    Error: new Error()
-  };
+    _1: ["playground.res", 14, 4],
+    Error: new Error(),
+  }
 }
-var item1 = myArray[0];
-var item2 = myArray[1];
+var item1 = myArray[0]
+var item2 = myArray[1]
 
 var myList = {
   hd: 1,
@@ -82,10 +80,10 @@ var myList = {
     hd: 2,
     tl: {
       hd: 3,
-      tl: /* [] */0
-    }
-  }
-};
+      tl: /* [] */ 0,
+    },
+  },
+}
 // ...
 ```
 
@@ -105,14 +103,17 @@ let displayMessage = (Success(m)) => {
 }
 displayMessage(Success("You did it!"))
 ```
+
 ```js
 function displayMessage(m) {
-  console.log(m._0);
+  console.log(m._0)
 }
 
-displayMessage(/* Success */{
-  _0: "You did it!"
-});
+displayMessage(
+  /* Success */ {
+    _0: "You did it!",
+  },
+)
 ```
 
 </CodeTab>
@@ -124,8 +125,9 @@ For a record, you can rename the field while destructuring:
 ```res
 let {name: n} = student1 // "John" assigned to `n`
 ```
+
 ```js
-var n = "John";
+var n = "John"
 ```
 
 </CodeTab>
@@ -158,6 +160,7 @@ type payload =
   | GoodResult(string)
   | NoResult
 ```
+
 ```js
 // Empty output
 ```
@@ -181,18 +184,21 @@ switch data {
   Console.log("Bah.")
 }
 ```
+
 ```js
 var data = {
   TAG: "GoodResult",
-  _0: "Product shipped!"
-};
+  _0: "Product shipped!",
+}
 
 if (typeof data !== "object") {
-  console.log("Bah.");
+  console.log("Bah.")
 } else if (data.TAG === "BadResult") {
-  console.log("Something's wrong. The error code is: " + "Product shipped!".toString());
+  console.log(
+    "Something's wrong. The error code is: " + "Product shipped!".toString(),
+  )
 } else {
-  console.log("Success! Product shipped!");
+  console.log("Success! Product shipped!")
 }
 ```
 
@@ -216,6 +222,7 @@ type person =
   | Teacher({name: string, age: int})
   | Student(student)
 ```
+
 ```js
 // Empty output
 ```
@@ -256,35 +263,46 @@ let message = switch person1 {
   `Good luck next semester ${name}!`
 }
 ```
+
 ```js
 var person1 = {
   TAG: "Teacher",
   name: "Jane",
-  age: 35
-};
+  age: 35,
+}
 
-var message;
+var message
 
 if (person1.TAG === "Teacher") {
-  message = "Hello Jane.";
+  message = "Hello Jane."
 } else {
-  var match = "Jane";
-  var match$1 = match.status;
-  var name = match.name;
-  var match$2 = match.reportCard;
+  var match = "Jane"
+  var match$1 = match.status
+  var name = match.name
+  var match$2 = match.reportCard
   if (match$2.passing) {
-    message = "Congrats " + name + ", nice GPA of " + match$2.gpa.toString() + " you got there!";
+    message =
+      "Congrats " +
+      name +
+      ", nice GPA of " +
+      match$2.gpa.toString() +
+      " you got there!"
   } else {
-    var exit = 0;
+    var exit = 0
     if (typeof match$1 !== "object") {
-      message = match$1 === "Sick" ? "How are you feeling?" : "Good luck next semester " + name + "!";
+      message =
+        match$1 === "Sick"
+          ? "How are you feeling?"
+          : "Good luck next semester " + name + "!"
     } else {
-      exit = 1;
+      exit = 1
     }
     if (exit === 1) {
-      message = match.reportCard.gpa !== 0.0 ? "Good luck next semester " + name + "!" : "Come back in " + match$1._0.toString() + " days!";
+      message =
+        match.reportCard.gpa !== 0.0
+          ? "Good luck next semester " + name + "!"
+          : "Come back in " + match$1._0.toString() + " days!"
     }
-    
   }
 }
 ```
@@ -292,6 +310,7 @@ if (person1.TAG === "Teacher") {
 </CodeTab>
 
 **Note** how we've:
+
 - drilled deep down into the value concisely
 - using a **nested pattern check** `"Mary" | "Joe"` and `Vacations | Sabbatical`
 - while extracting the `daysLeft` number from the latter case
@@ -311,18 +330,19 @@ let categoryId = switch (isBig, myAnimal) {
 | (false, Bird) => 5
 }
 ```
+
 ```js
-var categoryId = isBig ? (myAnimal + 1) | 0 : myAnimal >= 2 ? 5 : 4;
+var categoryId = isBig ? (myAnimal + 1) | 0 : myAnimal >= 2 ? 5 : 4
 ```
 
 </CodeTab>
 
 **Note** how pattern matching on a tuple is equivalent to a 2D table:
 
-isBig \ myAnimal | Dog | Cat | Bird
------------------|-----|-----|------
-true             |  1  |  2  |  3
-false            |  4  |  4  |  5
+| isBig \ myAnimal | Dog | Cat | Bird |
+| ---------------- | --- | --- | ---- |
+| true             | 1   | 2   | 3    |
+| false            | 4   | 4   | 5    |
 
 ### Fall-Through Patterns
 
@@ -340,16 +360,17 @@ switch myStatus {
 | Present => Console.log("Hey! How are you?")
 }
 ```
+
 ```js
 var myStatus = {
-  TAG: /* Vacations */0,
-  _0: 10
-};
+  TAG: /* Vacations */ 0,
+  _0: 10,
+}
 
 if (typeof myStatus === "number") {
-  console.log("Hey! How are you?");
+  console.log("Hey! How are you?")
 } else {
-  console.log("Come back in " + (10).toString() + " days!");
+  console.log("Come back in " + (10).toString() + " days!")
 }
 ```
 
@@ -369,11 +390,12 @@ switch person1 {
 | Student(_) => Console.log("Hey student")
 }
 ```
+
 ```js
 if (person1.TAG === "Teacher") {
-  console.log("Hi teacher");
+  console.log("Hi teacher")
 } else {
-  console.log("Hey student");
+  console.log("Hey student")
 }
 ```
 
@@ -389,11 +411,12 @@ switch myStatus {
 | _ => Console.log("Ok.")
 }
 ```
+
 ```js
 if (typeof myStatus !== "object" || myStatus.TAG !== "Vacations") {
-  console.log("Ok.");
+  console.log("Ok.")
 } else {
-  console.log("Have fun!");
+  console.log("Have fun!")
 }
 ```
 
@@ -409,11 +432,12 @@ switch myStatus {
 | Sabbatical(_) | Sick | Present => Console.log("Ok.")
 }
 ```
+
 ```js
 if (typeof myStatus !== "object" || myStatus.TAG !== "Vacations") {
-  console.log("Ok.");
+  console.log("Ok.")
 } else {
-  console.log("Have fun!");
+  console.log("Have fun!")
 }
 ```
 
@@ -438,12 +462,13 @@ switch person1 {
   }
 }
 ```
+
 ```js
 if (person1.TAG !== "Teacher") {
   if ("Jane".reportCard.gpa < 0.5) {
-    console.log("What's happening");
+    console.log("What's happening")
   } else {
-    console.log("Heyo");
+    console.log("Heyo")
   }
 }
 ```
@@ -464,12 +489,13 @@ switch person1 {
   Console.log("Heyo")
 }
 ```
+
 ```js
 if (person1.TAG) {
   if (person1.reportCard.gpa < 0.5) {
-    console.log("What's happening");
+    console.log("What's happening")
   } else {
-    console.log("Heyo");
+    console.log("Heyo")
   }
 }
 ```
@@ -490,28 +516,28 @@ switch List.find(i => i === theItem, myItems) {
 | exception Not_found => Console.log("No such item found!")
 }
 ```
-```js
-var exit = 0;
 
-var item;
+```js
+var exit = 0
+
+var item
 
 try {
-  item = List.find(function(i) {
-    return i === theItem;
-  }, myItems);
-  exit = 1;
-}
-catch (raw_exn){
-  var exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
+  item = List.find(function (i) {
+    return i === theItem
+  }, myItems)
+  exit = 1
+} catch (raw_exn) {
+  var exn = Caml_js_exceptions.internalToOCamlException(raw_exn)
   if (exn.RE_EXN_ID === "Not_found") {
-    console.log("No such item found!");
+    console.log("No such item found!")
   } else {
-    throw exn;
+    throw exn
   }
 }
 
 if (exit === 1) {
-  console.log(item);
+  console.log(item)
 }
 ```
 
@@ -532,20 +558,21 @@ switch students {
   Console.log2("The students are: ", manyStudents)
 }
 ```
-```js
-var students = ["Jane", "Harvey", "Patrick"];
 
-var len = students.length;
+```js
+var students = ["Jane", "Harvey", "Patrick"]
+
+var len = students.length
 
 if (len !== 1) {
   if (len !== 0) {
-    console.log("The students are: ", students);
+    console.log("The students are: ", students)
   } else {
-    console.log("There are no students");
+    console.log("There are no students")
   }
 } else {
-  var student1 = students[0];
-  console.log("There's a single student here: " + student1);
+  var student1 = students[0]
+  console.log("There's a single student here: " + student1)
 }
 ```
 
@@ -569,23 +596,24 @@ let rec printStudents = (students) => {
 }
 printStudents(list{"Jane", "Harvey", "Patrick"})
 ```
+
 ```js
 function printStudents(_students) {
-  while(true) {
-    var students = _students;
+  while (true) {
+    var students = _students
     if (!students) {
-      return;
+      return
     }
-    var otherStudents = students.tl;
-    var student = students.hd;
+    var otherStudents = students.tl
+    var student = students.hd
     if (otherStudents) {
-      console.log(student);
-      _students = otherStudents;
-      continue;
+      console.log(student)
+      _students = otherStudents
+      continue
     }
-    console.log("Last student: " + student);
-    return;
-  };
+    console.log("Last student: " + student)
+    return
+  }
 }
 
 printStudents({
@@ -594,14 +622,13 @@ printStudents({
     hd: "Harvey",
     tl: {
       hd: "Patrick",
-      tl: /* [] */0
-    }
-  }
-});
+      tl: /* [] */ 0,
+    },
+  },
+})
 ```
 
 </CodeTab>
-
 
 ### Small Pitfall
 
@@ -616,11 +643,12 @@ switch coordinates {
 | (x, _centerY, _) => Console.log(x)
 }
 ```
-```js
-var coordinates = [10, 20, 30];
-var centerY = 20;
 
-console.log(10);
+```js
+var coordinates = [10, 20, 30]
+var centerY = 20
+
+console.log(10)
 ```
 
 </CodeTab>
@@ -652,39 +680,40 @@ let message = switch person1 {
   `Good luck next semester ${name}!`
 }
 ```
+
 ```js
 if (person1.TAG) {
-  var match$1 = person1.status;
-  var name = person1.name;
-  var match$2 = person1.reportCard;
+  var match$1 = person1.status
+  var name = person1.name
+  var match$2 = person1.reportCard
   if (match$2.passing) {
-    "Congrats " + name + ", nice GPA of " + match$2.gpa.toString() + " you got there!";
+    "Congrats " +
+      name +
+      ", nice GPA of " +
+      match$2.gpa.toString() +
+      " you got there!"
   } else if (typeof match$1 === "number") {
     if (match$1 !== 0) {
-      "Good luck next semester " + name + "!";
+      "Good luck next semester " + name + "!"
     } else {
-      "How are you feeling?";
+      ;("How are you feeling?")
     }
   } else if (person1.reportCard.gpa !== 0.0) {
-    "Good luck next semester " + name + "!";
+    "Good luck next semester " + name + "!"
   } else {
-    "Come back in " + match$1._0.toString() + " days!";
+    "Come back in " + match$1._0.toString() + " days!"
   }
 } else {
   switch (person1.name) {
     case "Joe":
     case "Mary":
-      break;
+      break
     default:
       throw {
         RE_EXN_ID: "Match_failure",
-        _1: [
-          "playground.res",
-          13,
-          0
-        ],
-        Error: new Error()
-      };
+        _1: ["playground.res", 13, 0],
+        Error: new Error(),
+      }
   }
 }
 ```
@@ -713,13 +742,14 @@ switch myNullableValue {
 | None => Console.log("value is absent")
 }
 ```
+
 ```js
-var myNullableValue = 5;
+var myNullableValue = 5
 
 if (myNullableValue !== undefined) {
-  console.log("value is present");
+  console.log("value is present")
 } else {
-  console.log("value is absent");
+  console.log("value is absent")
 }
 ```
 
@@ -733,7 +763,7 @@ Hopefully you can see how pattern matching is a game changer for writing correct
 
 Below is some advice:
 
-Avoid using the wildcard `_` unnecessarily.  Using the wildcard `_` will bypass the compiler's exhaustiveness check.  Consequently, the compiler will not be able to notify you of probable errors when you add a new case to a variant. Try only using `_` against infinite possibilities, e.g. string, int, etc.
+Avoid using the wildcard `_` unnecessarily. Using the wildcard `_` will bypass the compiler's exhaustiveness check. Consequently, the compiler will not be able to notify you of probable errors when you add a new case to a variant. Try only using `_` against infinite possibilities, e.g. string, int, etc.
 
 Use the `if` clause sparingly.
 
@@ -752,12 +782,13 @@ let optionBoolToBool = opt => {
   }
 }
 ```
+
 ```js
 function optionBoolToBool(opt) {
   if (opt === undefined) {
-    return false;
+    return false
   } else {
-    return opt === true;
+    return opt === true
   }
 }
 ```
@@ -776,12 +807,13 @@ let optionBoolToBool = opt => {
   }
 }
 ```
+
 ```js
 function optionBoolToBool(opt) {
   if (opt !== undefined && opt) {
-    return true;
+    return true
   } else {
-    return false;
+    return false
   }
 }
 ```
@@ -801,12 +833,13 @@ let optionBoolToBool = opt => {
   }
 }
 ```
+
 ```js
 function optionBoolToBool(opt) {
   if (opt !== undefined && opt) {
-    return true;
+    return true
   } else {
-    return false;
+    return false
   }
 }
 ```
@@ -825,12 +858,13 @@ let optionBoolToBool = opt => {
   }
 }
 ```
+
 ```js
 function optionBoolToBool(opt) {
   if (opt !== undefined && opt) {
-    return true;
+    return true
   } else {
-    return false;
+    return false
   }
 }
 ```
@@ -849,12 +883,13 @@ let optionBoolToBool = opt => {
   }
 }
 ```
+
 ```js
 function optionBoolToBool(opt) {
   if (opt !== undefined) {
-    return opt;
+    return opt
   } else {
-    return false;
+    return false
   }
 }
 ```

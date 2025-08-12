@@ -33,6 +33,7 @@ Add `-w` to keep the built-in watcher running. Any new file change will be picke
 **Note**: third-party libraries (in `node_modules`) aren't watched, as doing so may exceed the node.js watcher count limit. If you're doing quick and dirty modifications inside `node_modules`, you have to do `bsb -clean-world -make-world` to rebuild them.
 
 **Note 3**: If you are developing across multiple devices, you may find the `-ws` configuration useful in order to have live-reloading across the network. Possible configurations are:
+
 - `bsb -make-world -w -ws _` (default)
 - `bsb -make-world -w -ws 0.0.0.0:9999`
 - `bsb -make-world -w -ws 5000`

@@ -19,14 +19,16 @@ ReScript supports the JSX syntax, with some slight differences compared to the o
 ```re
 <MyComponent name={"ReScript"} />;
 ```
+
 ```ml
 (* doesn't exist in old ML syntax *)
 ```
+
 ```js
 React.createElement(
   MyComponent.make,
-  MyComponent.makeProps("ReScript", undefined)
-);
+  MyComponent.makeProps("ReScript", undefined),
+)
 ```
 
 </CodeTab>
@@ -38,14 +40,16 @@ becomes
 ```re
 [@JSX] MyComponent.createElement(~name="ReScript", ~children=[], ());
 ```
+
 ```ml
 MyComponent.createElement ~name:"ReScript" ~children:[] [@JSX]
 ```
+
 ```js
 React.createElement(
   MyComponent.make,
-  MyComponent.makeProps("ReScript", undefined)
-);
+  MyComponent.makeProps("ReScript", undefined),
+)
 ```
 
 </CodeTab>
@@ -57,13 +61,20 @@ React.createElement(
 ```re
 <div onClick={handler}> child1 child2 </div>;
 ```
+
 ```ml
 (* doesn't exist in old ML syntax *)
 ```
+
 ```js
-React.createElement("div", {
-  onClick: handler
-}, child1, child2);
+React.createElement(
+  "div",
+  {
+    onClick: handler,
+  },
+  child1,
+  child2,
+)
 ```
 
 </CodeTab>
@@ -75,13 +86,20 @@ becomes
 ```re
 [@JSX] div(~onClick=handler, ~children=[child1, child2], ());
 ```
+
 ```ml
 div ~onClick:handler ~children:[child1; child2] () [@@JSX]
 ```
+
 ```js
-React.createElement("div", {
-  onClick: handler
-}, child1, child2);
+React.createElement(
+  "div",
+  {
+    onClick: handler,
+  },
+  child1,
+  child2,
+)
 ```
 
 </CodeTab>
@@ -93,11 +111,13 @@ React.createElement("div", {
 ```re
 <> child1 child2 </>;
 ```
+
 ```ml
 (* doesn't exist in old ML syntax *)
 ```
+
 ```js
-React.createElement(React.Fragment, undefined, child1, child2);
+React.createElement(React.Fragment, undefined, child1, child2)
 ```
 
 </CodeTab>
@@ -109,11 +129,13 @@ becomes
 ```re
 [@JSX] [child1, child2];
 ```
+
 ```ml
 [child1; child2] [@@JSX]
 ```
+
 ```js
-React.createElement(React.Fragment, undefined, child1, child2);
+React.createElement(React.Fragment, undefined, child1, child2)
 ```
 
 </CodeTab>
@@ -125,11 +147,18 @@ React.createElement(React.Fragment, undefined, child1, child2);
 ```re
 <MyComponent> child1 child2 </MyComponent>;
 ```
+
 ```ml
 (* doesn't exist in old ML syntax *)
 ```
+
 ```js
-React.createElement(MyComponent.make, MyComponent.makeProps(null, undefined), child1, child2);
+React.createElement(
+  MyComponent.make,
+  MyComponent.makeProps(null, undefined),
+  child1,
+  child2,
+)
 ```
 
 </CodeTab>
@@ -141,11 +170,18 @@ This is the syntax for passing a list of two items, `child1` and `child2`, to th
 ```re
 [@JSX] MyComponent.createElement(~children=[child1, child2], ());
 ```
+
 ```ml
 MyComponent.createElement ~children:[child1; child2] () [@@JSX]
 ```
+
 ```js
-React.createElement(MyComponent.make, MyComponent.makeProps(null, undefined), child1, child2);
+React.createElement(
+  MyComponent.make,
+  MyComponent.makeProps(null, undefined),
+  child1,
+  child2,
+)
 ```
 
 </CodeTab>
@@ -163,11 +199,13 @@ To solve the above problem, we've introduced
 ```re
 <MyComponent> ...myChild </MyComponent>;
 ```
+
 ```ml
 (* doesn't exist in old ML syntax *)
 ```
+
 ```js
-React.createElement(MyComponent.make, MyComponent.makeProps(myChild, undefined));
+React.createElement(MyComponent.make, MyComponent.makeProps(myChild, undefined))
 ```
 
 </CodeTab>
@@ -179,11 +217,13 @@ This passes the value `myChild` _without_ wrapping it in a list (or array, in th
 ```re
 [@JSX] MyComponent.createElement(~children=myChild, ());
 ```
+
 ```ml
 MyComponent.createElement ~children:myChild () [@@JSX]
 ```
+
 ```js
-React.createElement(MyComponent.make, MyComponent.makeProps(myChild, undefined));
+React.createElement(MyComponent.make, MyComponent.makeProps(myChild, undefined))
 ```
 
 </CodeTab>
@@ -197,20 +237,25 @@ This is extra useful in the cases where you are handled `myChild` that is alread
 
 <MyForm> ...("Hello", "Submit") </MyForm>;
 ```
+
 ```ml
 (* doesn't exist in old ML syntax *)
 ```
+
 ```js
 React.createElement(
   make,
   makeProps(function (theClassName) {
     return React.createElement("div", {
       className: theClassName,
-    });
-  }, undefined)
-);
+    })
+  }, undefined),
+)
 
-React.createElement(MyForm.make, MyForm.makeProps(["Hello", "Submit"], undefined));
+React.createElement(
+  MyForm.make,
+  MyForm.makeProps(["Hello", "Submit"], undefined),
+)
 ```
 
 </CodeTab>
@@ -233,9 +278,11 @@ Here's a JSX tag that shows most of the features.
   <div> {React.string("hello")} </div>
 </MyComponent>;
 ```
+
 ```ml
 (* doesn't exist in old ML syntax *)
 ```
+
 ```js
 React.createElement(
   MyComponent.make,
@@ -246,9 +293,9 @@ React.createElement(
     "hello",
     handleClick,
     React.createElement("div", undefined, "hello"),
-    undefined
-  )
-);
+    undefined,
+  ),
+)
 ```
 
 </CodeTab>
@@ -256,7 +303,7 @@ React.createElement(
 ## Departures From JS JSX
 
 - Attributes and children don't mandate `{}`, but we show them anyway for ease of learning. Once you format your file, some of them go away and some turn into parentheses.
-- There is no support for JSX prop spread: `<Comp {...props} />`. Though somewhat related,  we do have children spread, described above: `<Comp> ...children </Comp>`.
+- There is no support for JSX prop spread: `<Comp {...props} />`. Though somewhat related, we do have children spread, described above: `<Comp> ...children </Comp>`.
 - Punning!
 
 ### Punning
@@ -270,14 +317,16 @@ Reason JSX supports punning. `<input checked />` is just a shorthand for `<input
 ```re
 <MyComponent isLoading text onClick />;
 ```
+
 ```ml
 (* doesn't exist in old ML syntax *)
 ```
+
 ```js
 React.createElement(
   MyComponent.make,
-  MyComponent.makeProps(isLoading, text, onClick, undefined)
-);
+  MyComponent.makeProps(isLoading, text, onClick, undefined),
+)
 ```
 
 </CodeTab>

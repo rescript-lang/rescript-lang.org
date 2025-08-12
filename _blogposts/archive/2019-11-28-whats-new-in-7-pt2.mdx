@@ -39,7 +39,11 @@ let f4 = ({x, y, z: {hi}}) => (x + y + hi) * 2;
 
 ```js
 function f4(param) {
-  return (((param.EXACT_MAPPING_TO_JS_LABEL + param.EXACT_2 | 0) + param.z.hello | 0) << 1);
+  return (
+    ((((param.EXACT_MAPPING_TO_JS_LABEL + param.EXACT_2) | 0) + param.z.hello) |
+      0) <<
+    1
+  )
 }
 ```
 

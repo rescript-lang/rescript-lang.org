@@ -8,7 +8,6 @@ category: "decorators"
 
 The `@ignore` decorator "hides" a parameter of an `external` function on the JS side. It's useful give a function call more type context without impacting the resulting JS.
 
-
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
@@ -18,11 +17,11 @@ doSomething("this only shows up in ReScript code", "test")
 ```
 
 ```js
-doSomething("test");
+doSomething("test")
 ```
 
 </CodeTab>
 
 ### References
 
-* [Bind to JS Function (Ignore Arguments)](/docs/manual/latest/bind-to-js-function#ignore-arguments)
+- [Bind to JS Function (Ignore Arguments)](/docs/manual/latest/bind-to-js-function#ignore-arguments)

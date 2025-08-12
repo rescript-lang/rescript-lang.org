@@ -10,7 +10,7 @@ Note this article is for library authors, it has something in depth which is
 not necessary for people who use BuckleScript at daily work.
 
 When we build some generic data structure, abstract over function is not
-enough. For example,  a type safe generic balanced AVL tree not only relies on
+enough. For example, a type safe generic balanced AVL tree not only relies on
 the types of a comparison function, but also the identity of such function. Two
 balanced AVL trees which are initialized over same type of comparison function
 still can not be mixed.
@@ -83,7 +83,7 @@ Error: This expression has type Ins2.coll
 There are some issues with such encoding:
 
 - From runtime point of view, `Ins1` is initialized during runtime, its
-  implementation is a *big closure*, which means even if you only use on
+  implementation is a _big closure_, which means even if you only use on
   function in `Ins1` module, all functions will be linked in.
 
 - From user point of view, people has to call `Ins1.add` and `Ins2.add` instead
@@ -188,7 +188,5 @@ As you read here, by using such encoding, the data structure is more
 generalized from user point of view. The generated JS code is not in a big
 closure so that it can be dead code eliminated better.
 
-This style is extensively used in Belt encoding, we  encourage you to have a
+This style is extensively used in Belt encoding, we encourage you to have a
 look at its implementation for better ideas.
-
-

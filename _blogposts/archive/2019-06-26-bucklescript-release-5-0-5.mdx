@@ -40,9 +40,12 @@ global variable like this
  * @returns {int}
  *
  */
-require('bs-platform/lib/js/caml_external_polyfill.js').register('caml_fancy_add',function(x,y){
-  return + ((""+x ) + (""+y))
-})
+require("bs-platform/lib/js/caml_external_polyfill.js").register(
+  "caml_fancy_add",
+  function (x, y) {
+    return +("" + x + ("" + y))
+  },
+)
 ```
 
 Note this is an experimental feature that we don't suggest users to use it
@@ -56,12 +59,15 @@ Previously, there are some scenarios that the Js function name is inferred
 during the interop.
 
 For example
+
 ```ocaml
 external f : int -> int = "" [@@bs.val]
 ```
+
 ```reason
 [@bs.val] external f : int => int = ""
 ```
+
 Here the JS function name is inferred as `f` which is the same as OCaml
 function name.
 

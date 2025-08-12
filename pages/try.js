@@ -1,1 +1,1 @@
-export { getStaticProps, default } from "src/Try.mjs";
+export { getStaticProps, default } from "src/Try.mjs"

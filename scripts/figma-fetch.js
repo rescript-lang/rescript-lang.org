@@ -16,95 +16,93 @@
  */
 // Inspect the /files JSON response, or the URL of the Figma page:
 // https://www.figma.com/file/<file key>/Some-Name?node-id=<encoded page ID, like '183%3A0 = 183:0'>
-const PAGE_ID = '312:2';
+const PAGE_ID = "312:2"
 // Go to a team URL and get the ID:
 // https://www.figma.com/files/team/<team id>/Team-Name
-const TEAM_ID = '977136127691894995';
+const TEAM_ID = "977136127691894995"
 // Get this from the URL of a single file:
 // https://www.figma.com/file/<file key>/Some-Name?node-id=182%3A0
-const FILE_KEY = 'FsQT67sVviqPXhYoTbpfIb';
+const FILE_KEY = "FsQT67sVviqPXhYoTbpfIb"
 
-const fetch = require('node-fetch');
-const fs = require('fs');
-const { promisify } = require('util');
-const path = require('path');
+const fetch = require("node-fetch")
+const fs = require("fs")
+const { promisify } = require("util")
+const path = require("path")
 
-const writeFile = promisify(fs.writeFile);
+const writeFile = promisify(fs.writeFile)
 
-const personalToken = process.env.FIGMA_PERSONAL_TOKEN;
+const personalToken = process.env.FIGMA_PERSONAL_TOKEN
 
 if (!personalToken) {
-    console.error('Please pass FIGMA_PERSONAL_TOKEN to this script and re-run');
-    process.exit(1);
+  console.error("Please pass FIGMA_PERSONAL_TOKEN to this script and re-run")
+  process.exit(1)
 }
 
-const figmaBase = 'https://api.figma.com/';
+const figmaBase = "https://api.figma.com/"
 
 const rgbToHex = (r, g, b) => {
-  const color = '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+  const color =
+    "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
 
   if (color.length > 7) {
-    return color.slice(0, 7);
+    return color.slice(0, 7)
   }
-  return color;
-};
+  return color
+}
 
-const slugify = (str) => str.toLowerCase().replace(/\s+/, '-');
+const slugify = (str) => str.toLowerCase().replace(/\s+/, "-")
 
 const doFetch = (url) =>
-    fetch(`${figmaBase}v1${url}`, {
-        headers: {
-            'X-Figma-Token': personalToken,
-        },
+  fetch(`${figmaBase}v1${url}`, {
+    headers: {
+      "X-Figma-Token": personalToken,
+    },
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error(`Status: ${res.status}`)
+      }
+
+      return res.json()
     })
-        .then((res) => {
-            if (!res.ok) {
-                throw new Error(`Status: ${res.status}`);
-            }
+    .then((json) => {
+      if (json.error || (json.status && json.status !== 200)) {
+        throw new Error(json.error || `Status ${json.status}: ${json.err}`)
+      }
 
-            return res.json();
-        })
-        .then((json) => {
-            if (json.error || (json.status && json.status !== 200)) {
-                throw new Error(
-                    json.error || `Status ${json.status}: ${json.err}`
-                );
-            }
-
-            return json;
-        });
+      return json
+    })
 
 const fetchStyles = async (teamId) => {
-    const json = await doFetch(`/teams/${teamId}/styles?page_size=99`);
+  const json = await doFetch(`/teams/${teamId}/styles?page_size=99`)
 
-    return json.meta.styles;
-};
+  return json.meta.styles
+}
 
-const fetchFile = async (key) => await doFetch(`/files/${key}`);
+const fetchFile = async (key) => await doFetch(`/files/${key}`)
 
 // eslint-disable-next-line
-const fetchStyle = async (key) => await doFetch(`/styles/${key}`);
+const fetchStyle = async (key) => await doFetch(`/styles/${key}`)
 
 // Retrieves all elements from groups from a given root
 const flattenTree = (root) => {
-  let ret = [];
+  let ret = []
 
-  let { children = [] } = root;
+  let { children = [] } = root
 
-  for(let i = 0; i < children.length; i++) {
-    const el = children[i];
-    const type = el.type;
+  for (let i = 0; i < children.length; i++) {
+    const el = children[i]
+    const type = el.type
 
-    if(type === "GROUP") {
-      let sub = flattenTree(el);
-      ret = ret.concat(sub);
-    }
-    else {
+    if (type === "GROUP") {
+      let sub = flattenTree(el)
+      ret = ret.concat(sub)
+    } else {
       ret.push(el)
     }
   }
 
-  return ret;
+  return ret
 }
 
 /**
@@ -133,40 +131,39 @@ const flattenTree = (root) => {
  ```
  */
 const fetchAllColorStyles = async () => {
-  const styles = await fetchStyles(TEAM_ID);
-  const file = await fetchFile(FILE_KEY);
+  const styles = await fetchStyles(TEAM_ID)
+  const file = await fetchFile(FILE_KEY)
 
-  const root = file.document.children[0];
+  const root = file.document.children[0]
 
-  if(!root) {
+  if (!root) {
     return []
   }
 
-  const canvas = root.children.find((page) =>{ 
+  const canvas = root.children.find((page) => {
     return page.id === PAGE_ID
-  });
+  })
 
-  const isRectOrVector = (c) => c.type === "RECTANGLE" || c.type === "VECTOR";
+  const isRectOrVector = (c) => c.type === "RECTANGLE" || c.type === "VECTOR"
 
   console.log(JSON.stringify(canvas, null, 2))
 
-  const allElements = flattenTree(canvas);
+  const allElements = flattenTree(canvas)
 
-  return (
-    allElements
-    .filter((c) => isRectOrVector(c) && c.styles != null && c.styles.fill != null)
+  return allElements
+    .filter(
+      (c) => isRectOrVector(c) && c.styles != null && c.styles.fill != null,
+    )
     .map((c) => {
-      const { r, g, b, a} = c.fills[0].color;
-      const { opacity = a } = c.fills[0];
-      const nodeId = c.styles.fill;
+      const { r, g, b, a } = c.fills[0].color
+      const { opacity = a } = c.fills[0]
+      const nodeId = c.styles.fill
 
-
-      let color;
-      if(opacity < 1) {
-        color = `rgba(${(r*255).toFixed(0)}, ${(g*255).toFixed(0)}, ${(b*255).toFixed(0)}, ${opacity.toFixed(2)})`
-      }
-      else {
-        color = rgbToHex(r * 256, g * 256, b * 256); 
+      let color
+      if (opacity < 1) {
+        color = `rgba(${(r * 255).toFixed(0)}, ${(g * 255).toFixed(0)}, ${(b * 255).toFixed(0)}, ${opacity.toFixed(2)})`
+      } else {
+        color = rgbToHex(r * 256, g * 256, b * 256)
       }
 
       return {
@@ -174,41 +171,40 @@ const fetchAllColorStyles = async () => {
         // give us the HEX color codes in their /styles endpoint .. :(
         ...styles.find((s) => s.node_id === nodeId),
         color,
-      };
+      }
     })
     .filter((c) => c.name != null)
-  );
-};
+}
 
 /**
  * Calls Figma's API and saves to a `colors.js` file in the project root.
  */
 const writeColorsFromFigma = async () => {
-    const styles = await fetchAllColorStyles();
+  const styles = await fetchAllColorStyles()
 
-    if (!styles) {
-        throw new Error('No styles found');
-    }
+  if (!styles) {
+    throw new Error("No styles found")
+  }
 
-    const colors = styles
-        .sort((a, b) => (a.sort_position < b.sort_position ? -1 : 1))
-        .map(
-            (s) => {
-              return (s.description ? `    /** ${s.description} */\n` : '') +
-                `    '${slugify(s.name)}': '${s.color}',`
-            }
-        )
-        .join('\n');
+  const colors = styles
+    .sort((a, b) => (a.sort_position < b.sort_position ? -1 : 1))
+    .map((s) => {
+      return (
+        (s.description ? `    /** ${s.description} */\n` : "") +
+        `    '${slugify(s.name)}': '${s.color}',`
+      )
+    })
+    .join("\n")
 
-    const fileContents = `/* eslint-disable */
+  const fileContents = `/* eslint-disable */
 /* Updated at ${new Date().toUTCString()}*/
 module.exports = {
 ${colors}
-}`;
+}`
 
-  await writeFile(path.resolve(__dirname + '/../colors.js'), fileContents);
+  await writeFile(path.resolve(__dirname + "/../colors.js"), fileContents)
 
-    console.log(`Wrote ${styles.length} colors to colors.js`);
-};
+  console.log(`Wrote ${styles.length} colors to colors.js`)
+}
 
-writeColorsFromFigma().catch(console.error);
+writeColorsFromFigma().catch(console.error)

@@ -17,6 +17,7 @@ We represent the existence and nonexistence of a value by wrapping it with the `
 ```res example
 type option<'a> = None | Some('a)
 ```
+
 ```js
 // Empty output
 ```
@@ -36,8 +37,9 @@ Here's a normal value:
 ```res example
 let licenseNumber = 5
 ```
+
 ```js
-var licenseNumber = 5;
+var licenseNumber = 5
 ```
 
 </CodeTab>
@@ -54,8 +56,9 @@ let licenseNumber =
     None
   }
 ```
+
 ```js
-var licenseNumber = personHasACar ? 5 : undefined;
+var licenseNumber = personHasACar ? 5 : undefined
 ```
 
 </CodeTab>
@@ -72,13 +75,14 @@ switch licenseNumber {
   Console.log("The person's license number is " ++ Int.toString(number))
 }
 ```
+
 ```js
-var number = licenseNumber;
+var number = licenseNumber
 
 if (number !== undefined) {
-  console.log("The person's license number is " + number.toString());
+  console.log("The person's license number is " + number.toString())
 } else {
-  console.log("The person doesn't have a car");
+  console.log("The person doesn't have a car")
 }
 ```
 
@@ -95,8 +99,9 @@ The `option` type is common enough that we special-case it when compiling to Jav
 ```res example
 let x = Some(5)
 ```
+
 ```js
-var x = 5;
+var x = 5
 ```
 
 </CodeTab>
@@ -108,8 +113,9 @@ simply compiles down to `5`, and
 ```res example
 let x = None
 ```
+
 ```js
-var x;
+var x
 ```
 
 </CodeTab>
@@ -125,8 +131,9 @@ The option-to-undefined translation isn't perfect, because on our side, `option`
 ```res example
 let x = Some(Some(Some(5)))
 ```
+
 ```js
-var x = 5;
+var x = 5
 ```
 
 </CodeTab>
@@ -138,10 +145,11 @@ This still compiles to `5`, but this gets troublesome:
 ```res example
 let x = Some(None)
 ```
-```js
-var Caml_option = require("./stdlib/caml_option.js");
 
-var x = Caml_option.some(undefined);
+```js
+var Caml_option = require("./stdlib/caml_option.js")
+
+var x = Caml_option.some(undefined)
 ```
 
 (See output tab).
@@ -172,6 +180,7 @@ If you're receiving, for example, a JS string that can be `null` and `undefined`
 ```res example
 @module("MyConstant") external myId: Nullable.t<string> = "myId"
 ```
+
 ```js
 // Empty output
 ```
@@ -188,10 +197,11 @@ let personId: Nullable.t<string> = Nullable.make("abc123")
 
 let result = validate(personId)
 ```
+
 ```js
-var MyIdValidator = require("MyIdValidator");
-var personId = "abc123";
-var result = MyIdValidator.validate(personId);
+var MyIdValidator = require("MyIdValidator")
+var personId = "abc123"
+var result = MyIdValidator.validate(personId)
 ```
 
 </CodeTab>

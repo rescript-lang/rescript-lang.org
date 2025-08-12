@@ -25,15 +25,17 @@ let coordinates = (10, 20, 30);
 let (x, _, _) = coordinates;
 Js.log(x); // 10
 ```
+
 ```ml
 let coordinates = (10, 20, 30)
 let (x, _, _) = coordinates
 Js.log x (* 10 *)
 ```
+
 ```js
-var coordinates = [10, 20, 30];
-var x = 10;
-console.log(10);
+var coordinates = [10, 20, 30]
+var x = 10
+console.log(10)
 ```
 
 </CodeTab>
@@ -62,6 +64,7 @@ let [|item1, item2, _|] = myArray; // 1 assigned to `item1`, 2 assigned to `item
 let myList = [1, 2, 3];
 let [head, ...tail] = myList; // 1 assigned to `head`, `[2, 3]` assigned to tail
 ```
+
 ```ml
 // Record
 type student = {name: string; age: int}
@@ -82,32 +85,29 @@ let [|item1; item2; _|] = myArray (* 1 assigned to `item1`, 2 assigned to `item2
 let myList = [1; 2; 3]
 let head::tail = myList (* 1 assigned to `head`, `[2, 3]` assigned to tail *)
 ```
+
 ```js
 var student1 = {
   name: "John",
-  age: 10
-};
-var name = "John";
+  age: 10,
+}
+var name = "John"
 
-var myResult = /* Success */{
-  _0: "You did it!"
-};
+var myResult = /* Success */ {
+  _0: "You did it!",
+}
 var message = "You did it!"
 
-var myArray = [1, 2, 3];
+var myArray = [1, 2, 3]
 if (myArray.length !== 2) {
   throw {
     RE_EXN_ID: "Match_failure",
-    _1: [
-      "playground.res",
-      14,
-      4
-    ],
-    Error: new Error()
-  };
+    _1: ["playground.res", 14, 4],
+    Error: new Error(),
+  }
 }
-var item1 = myArray[0];
-var item2 = myArray[1];
+var item1 = myArray[0]
+var item2 = myArray[1]
 
 var myList = {
   hd: 1,
@@ -115,10 +115,10 @@ var myList = {
     hd: 2,
     tl: {
       hd: 3,
-      tl: /* [] */0
-    }
-  }
-};
+      tl: /* [] */ 0,
+    },
+  },
+}
 // ...
 ```
 
@@ -138,6 +138,7 @@ let displayMessage = (Success(m)) => {
 }
 displayMessage(Success("You did it!"));
 ```
+
 ```ml
 type result =
   | Success of string
@@ -148,14 +149,17 @@ let displayMessage (Success m) =
 
 let () = displayMessage (Success "You did it!")
 ```
+
 ```js
 function displayMessage(m) {
-  console.log(m._0);
+  console.log(m._0)
 }
 
-displayMessage(/* Success */{
-  _0: "You did it!"
-});
+displayMessage(
+  /* Success */ {
+    _0: "You did it!",
+  },
+)
 ```
 
 </CodeTab>
@@ -167,11 +171,13 @@ For a record, you can rename the field while destructuring:
 ```re
 let {name: n} = student1; // "John" assigned to `n`
 ```
+
 ```ml
 let {name = n} = student1 (* "John" assigned to `n` *)
 ```
+
 ```js
-var n = "John";
+var n = "John"
 ```
 
 </CodeTab>
@@ -190,12 +196,14 @@ type payload =
   | GoodResult(string)
   | NoResult;
 ```
+
 ```ml
 type payload =
   | BadResult of int
   | GoodResult of string
   | NoResult
 ```
+
 ```js
 // Empty output
 ```
@@ -219,6 +227,7 @@ switch (data) {
   Js.log("Bah.")
 };
 ```
+
 ```ml
 let data = GoodResult ("Product shipped!")
 let () = match data with
@@ -228,18 +237,21 @@ let () = match data with
   Js.log ("Something's wrong. The error code is: " ^ (Js.Int.toString errorCode))
 | NoResult -> Js.log "Bah."
 ```
+
 ```js
 var data = {
-  TAG: /* GoodResult */1,
-  _0: "Product shipped!"
-};
+  TAG: /* GoodResult */ 1,
+  _0: "Product shipped!",
+}
 
 if (typeof data === "number") {
-  console.log("Bah.");
+  console.log("Bah.")
 } else if (data.TAG) {
-  console.log("Success! Product shipped!");
+  console.log("Success! Product shipped!")
 } else {
-  console.log("Something's wrong. The error code is: " + "Product shipped!".toString());
+  console.log(
+    "Something's wrong. The error code is: " + "Product shipped!".toString(),
+  )
 }
 ```
 
@@ -269,6 +281,7 @@ type person =
     reportCard: reportCard,
   });
 ```
+
 ```ml
 type status = Vacations of int | Sabbatical of int | Sick | Present
 type reportCard = {passing: bool; gpa: float}
@@ -283,6 +296,7 @@ type person =
     reportCard: reportCard;
   }
 ```
+
 ```js
 // Empty output
 ```
@@ -321,6 +335,7 @@ let message = switch (person1) {
   {j|Good luck next semester $(name)!|j}
 };
 ```
+
 ```ml
 let message = match person1 with
 | Teacher {name = "Mary" | "Joe"} ->
@@ -340,13 +355,14 @@ let message = match person1 with
 | Student {name} ->
   {j|Good luck next semester $(name)!|j}
 ```
+
 ```js
-var message;
+var message
 
 if (person1.TAG) {
-  var match$1 = person1.status;
-  var name = person1.name;
-  var match$2 = person1.reportCard;
+  var match$1 = person1.status
+  var name = person1.name
+  var match$2 = person1.reportCard
   message = match$2.passing
     ? "Congrats " +
       name +
@@ -354,21 +370,21 @@ if (person1.TAG) {
       match$2.gpa.toString() +
       " you got there!"
     : typeof match$1 === "number"
-    ? match$1 !== 0
-      ? "Good luck next semester " + name + "!"
-      : "How are you feeling?"
-    : person1.reportCard.gpa !== 0.0
-    ? "Good luck next semester " + name + "!"
-    : "Come back in " + match$1._0.toString() + " days!";
+      ? match$1 !== 0
+        ? "Good luck next semester " + name + "!"
+        : "How are you feeling?"
+      : person1.reportCard.gpa !== 0.0
+        ? "Good luck next semester " + name + "!"
+        : "Come back in " + match$1._0.toString() + " days!"
 } else {
-  var name$1 = person1.name;
+  var name$1 = person1.name
   switch (name$1) {
     case "Joe":
     case "Mary":
-      message = "Hey, still going to the party on Saturday?";
-      break;
+      message = "Hey, still going to the party on Saturday?"
+      break
     default:
-      message = "Hello " + name$1 + ".";
+      message = "Hello " + name$1 + "."
   }
 }
 ```
@@ -376,6 +392,7 @@ if (person1.TAG) {
 </CodeTab>
 
 **Note** how we've:
+
 - drilled deep down into the value concisely
 - using a nested pattern check `"Mary" | "Joe"` and `Vacations | Sabbatical`
 - while extracting the `daysLeft` number from the latter case
@@ -395,6 +412,7 @@ let categoryId = switch (isBig, myAnimal) {
 | (false, Bird) => 5
 };
 ```
+
 ```ml
 type animal = Dog | Cat | Bird
 let categoryId = match (isBig, myAnimal) with
@@ -404,18 +422,19 @@ let categoryId = match (isBig, myAnimal) with
 | (false, (Dog | Cat)) -> 4
 | (false, Bird) -> 5
 ```
+
 ```js
-var categoryId = isBig ? (myAnimal + 1) | 0 : myAnimal >= 2 ? 5 : 4;
+var categoryId = isBig ? (myAnimal + 1) | 0 : myAnimal >= 2 ? 5 : 4
 ```
 
 </CodeTab>
 
 **Note** how pattern matching on a tuple is equivalent to a 2D table:
 
-isBig \ myAnimal | Dog | Cat | Bird
------------------|-----|-----|------
-true             |  1  |  2  |  3
-false            |  4  |  4  |  5
+| isBig \ myAnimal | Dog | Cat | Bird |
+| ---------------- | --- | --- | ---- |
+| true             | 1   | 2   | 3    |
+| false            | 4   | 4   | 5    |
 
 ### Ignore Part of a Value
 
@@ -429,16 +448,18 @@ switch (person) {
 | Student(_) => Js.log("Hey student")
 };
 ```
+
 ```ml
 let () = match person with
 | Teacher _ -> Js.log "Hi teacher"
 | Student _ -> Js.log "Hey student"
 ```
+
 ```js
 if (person.TAG) {
-  console.log("Hey student");
+  console.log("Hey student")
 } else {
-  console.log("Hi teacher");
+  console.log("Hi teacher")
 }
 ```
 
@@ -463,6 +484,7 @@ switch (person) {
   }
 };
 ```
+
 ```ml
 let () = match person with
 | Teacher _ -> () (* do nothing *)
@@ -472,12 +494,13 @@ let () = match person with
   else
     Js.log "Heyo"
 ```
+
 ```js
 if (person.TAG) {
   if (person.reportCard.gpa < 0.5) {
-    console.log("What's happening");
+    console.log("What's happening")
   } else {
-    console.log("Heyo");
+    console.log("Heyo")
   }
 }
 ```
@@ -498,6 +521,7 @@ switch (person) {
   Js.log("Heyo");
 }
 ```
+
 ```ml
 let () = match person with
 | Teacher _ -> () (* do nothing *)
@@ -507,12 +531,13 @@ let () = match person with
   (* fall-through, catch-all case *)
   Js.log "Heyo"
 ```
+
 ```js
 if (person.TAG) {
   if (person.reportCard.gpa < 0.5) {
-    console.log("What's happening");
+    console.log("What's happening")
   } else {
-    console.log("Heyo");
+    console.log("Heyo")
   }
 }
 ```
@@ -531,33 +556,34 @@ switch (List.find(i => i === theItem, myItems)) {
 | exception Not_found => Js.log("No such item found!")
 };
 ```
+
 ```ml
 let () = match List.find (fun i -> i == theItem) myItems with
 | item -> Js.log item
 | exception Not_found -> Js.log "No such item found!"
 ```
-```js
-var exit = 0;
 
-var item;
+```js
+var exit = 0
+
+var item
 
 try {
-  item = List.find(function(i) {
-    return i === theItem;
-  }, myItems);
-  exit = 1;
-}
-catch (raw_exn){
-  var exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
+  item = List.find(function (i) {
+    return i === theItem
+  }, myItems)
+  exit = 1
+} catch (raw_exn) {
+  var exn = Caml_js_exceptions.internalToOCamlException(raw_exn)
   if (exn.RE_EXN_ID === "Not_found") {
-    console.log("No such item found!");
+    console.log("No such item found!")
   } else {
-    throw exn;
+    throw exn
   }
 }
 
 if (exit === 1) {
-  console.log(item);
+  console.log(item)
 }
 ```
 
@@ -576,17 +602,19 @@ switch (coordinates) {
 | (x, centerY, _) => /* code */
 }
 ```
+
 ```ml
 let coordinates = (10, 20, 30)
 let centerY = 20
 let () = match coordinates with
 | (x, centerY, _) => (* code *)
 ```
-```js
-var coordinates = [10, 20, 30];
-var centerY = 20;
 
-console.log(10);
+```js
+var coordinates = [10, 20, 30]
+var centerY = 20
+
+console.log(10)
 ```
 
 </CodeTab>
@@ -618,6 +646,7 @@ let message = switch (person) {
   "Good luck next semester " ++ name ++ "!"
 }
 ```
+
 ```ml
 let message = match person with
 | Teacher {name = "Mary" | "Joe"} ->
@@ -634,39 +663,40 @@ let message = match person with
 | Student {name} ->
   "Good luck next semester "^ name ^ "!"
 ```
+
 ```js
 if (person.TAG) {
-  var match$1 = person.status;
-  var name = person.name;
-  var match$2 = person.reportCard;
+  var match$1 = person.status
+  var name = person.name
+  var match$2 = person.reportCard
   if (match$2.passing) {
-    "Congrats " + name + ", nice GPA of " + match$2.gpa.toString() + " you got there!";
+    "Congrats " +
+      name +
+      ", nice GPA of " +
+      match$2.gpa.toString() +
+      " you got there!"
   } else if (typeof match$1 === "number") {
     if (match$1 !== 0) {
-      "Good luck next semester " + name + "!";
+      "Good luck next semester " + name + "!"
     } else {
-      "How are you feeling?";
+      ;("How are you feeling?")
     }
   } else if (person.reportCard.gpa !== 0.0) {
-    "Good luck next semester " + name + "!";
+    "Good luck next semester " + name + "!"
   } else {
-    "Come back in " + match$1._0.toString() + " days!";
+    "Come back in " + match$1._0.toString() + " days!"
   }
 } else {
   switch (person.name) {
     case "Joe":
     case "Mary":
-      break;
+      break
     default:
       throw {
         RE_EXN_ID: "Match_failure",
-        _1: [
-          "playground.res",
-          13,
-          0
-        ],
-        Error: new Error()
-      };
+        _1: ["playground.res", 13, 0],
+        Error: new Error(),
+      }
   }
 }
 ```
@@ -693,16 +723,18 @@ switch (myNullableValue) {
 | None => Js.log("value is absent")
 };
 ```
+
 ```ml
 match myNullableValue with
 | Some v -> Js.log "value is present"
 | None -> Js.log "value is absent"
 ```
+
 ```js
 if (myNullableValue !== undefined) {
-  console.log("value is present");
+  console.log("value is present")
 } else {
-  console.log("value is absent");
+  console.log("value is absent")
 }
 ```
 
@@ -735,6 +767,7 @@ let optionBoolToBool = opt => {
   }
 }
 ```
+
 ```ml
 let optionBoolToBool opt =
   if opt = None
@@ -743,12 +776,13 @@ let optionBoolToBool opt =
     true
   else false
 ```
+
 ```js
 function optionBoolToBool(opt) {
   if (opt === undefined) {
-    return false;
+    return false
   } else {
-    return opt === true;
+    return opt === true
   }
 }
 ```
@@ -767,18 +801,20 @@ let optionBoolToBool = opt => {
   }
 };
 ```
+
 ```ml
 let optionBoolToBool opt =
   match opt with
   | None -> false
   | Some a -> if a then true else false
 ```
+
 ```js
 function optionBoolToBool(opt) {
   if (opt !== undefined && opt) {
-    return true;
+    return true
   } else {
-    return false;
+    return false
   }
 }
 ```
@@ -798,6 +834,7 @@ let optionBoolToBool = opt => {
   }
 };
 ```
+
 ```ml
 let optionBoolToBool opt =
   match opt with
@@ -805,12 +842,13 @@ let optionBoolToBool opt =
   | Some true -> true
   | Some false -> false
 ```
+
 ```js
 function optionBoolToBool(opt) {
   if (opt !== undefined && opt) {
-    return true;
+    return true
   } else {
-    return false;
+    return false
   }
 }
 ```
@@ -829,18 +867,20 @@ let optionBoolToBool = opt => {
   }
 };
 ```
+
 ```ml
 let optionBoolToBool opt =
   match opt with
   | Some true -> true
   | _ -> false
 ```
+
 ```js
 function optionBoolToBool(opt) {
   if (opt !== undefined && opt) {
-    return true;
+    return true
   } else {
-    return false;
+    return false
   }
 }
 ```
@@ -857,12 +897,13 @@ let optionBoolToBool opt =
   | Some trueOrFalse -> trueOrFalse
   | None -> false
 ```
+
 ```js
 function optionBoolToBool(opt) {
   if (opt !== undefined) {
-    return opt;
+    return opt
   } else {
-    return false;
+    return false
   }
 }
 ```

@@ -19,13 +19,15 @@ Tuples are a ReScript-specific data structure that don't exist in JavaScript. Th
 let ageAndName = (24, "Lil' ReScript");
 let my3dCoordinates = (20.0, 30.5, 100.0);
 ```
+
 ```ml
 let ageAndName = (24, "Lil' ReScript")
 let my3dCoordinates = (20.0, 30.5, 100.0)
 ```
+
 ```js
-var ageAndName = [24, "Lil' ReScript"];
-var my3dCoordinates = [20.0, 30.5, 100.0];
+var ageAndName = [24, "Lil' ReScript"]
+var my3dCoordinates = [20.0, 30.5, 100.0]
 ```
 
 </CodeTab>
@@ -40,16 +42,19 @@ let ageAndName: (int, string) = (24, "Lil' ReScript");
 type coord3d = (float, float, float);
 let my3dCoordinates: coord3d = (20.0, 30.5, 100.0);
 ```
+
 ```ml
 let ageAndName: (int * string) = (24, "Lil' ReScript")
 (* a tuple type alias *)
 type coord3d = (float * float * float)
 let my3dCoordinates: coord3d = (20.0, 30.5, 100.0)
 ```
+
 ```js
-var ageAndName = [24, "Lil' ReScript"];
-var my3dCoordinates = [20.0, 30.5, 100.0];
+var ageAndName = [24, "Lil' ReScript"]
+var my3dCoordinates = [20.0, 30.5, 100.0]
 ```
+
 </CodeTab>
 
 **Note**: there's no tuple of size 1. You'd just use the value itself.
@@ -63,11 +68,13 @@ To get a specific member of a tuple, destructure it:
 ```re
 let (_, y, _) = my3dCoordinates; // now you've retrieved y
 ```
+
 ```ml
 let (_, y, _) = my3dCoordinates; (* now you've retrieved y *)
 ```
+
 ```js
-var y = 30.5;
+var y = 30.5
 ```
 
 </CodeTab>
@@ -83,15 +90,17 @@ let coordinates1 = (10, 20, 30);
 let (c1x, _, _) = coordinates1;
 let coordinates2 = (c1x + 50, 20, 30);
 ```
+
 ```ml
 let coordinates1 = (10, 20, 30)
 let (c1x, _, _) = coordinates1
 let coordinates2 = (c1x + 50, 20, 30)
 ```
+
 ```js
-var coordinates1 = [10, 20, 30];
-var c1x = 10;
-var coordinates2 = [60, 20, 30];
+var coordinates1 = [10, 20, 30]
+var c1x = 10
+var coordinates2 = [60, 20, 30]
 ```
 
 </CodeTab>
@@ -109,17 +118,19 @@ let getCenterCoordinates = () => {
   (x, y)
 };
 ```
+
 ```ml
 let getCenterCoordinates () =
   let x = doSomeOperationsHere () in
   let y = doSomeMoreOperationsHere () in
   (x, y)
 ```
+
 ```js
 function getCenterCoordinates(param) {
-  var x = doSomeOperationsHere(undefined);
-  var y = doSomeMoreOperationsHere(undefined);
-  return [x, y];
+  var x = doSomeOperationsHere(undefined)
+  var y = doSomeMoreOperationsHere(undefined)
+  return [x, y]
 }
 ```
 

@@ -25,6 +25,7 @@ switch (possiblyNullValue2) {
 | Some(message) => Js.log(message)
 };
 ```
+
 ```ml
 let possiblyNullValue1 = None
 let possiblyNullValue2 = Some "Hello"
@@ -33,16 +34,16 @@ let () = match possiblyNullValue2 with
 | None -> Js.log "Nothing to see here."
 | Some(message) -> Js.log message
 ```
+
 ```js
-var possiblyNullValue1;
-var possiblyNullValue2 = "Hello";
+var possiblyNullValue1
+var possiblyNullValue2 = "Hello"
 
 if (possiblyNullValue2 !== undefined) {
-  console.log(possiblyNullValue2);
+  console.log(possiblyNullValue2)
 } else {
-  console.log("Nothing to see here.");
+  console.log("Nothing to see here.")
 }
-
 ```
 
 </CodeTab>
@@ -59,6 +60,7 @@ type response('studentType) = {
   student: 'studentType,
 };
 ```
+
 ```ml
 type universityStudent = {gpa: float}
 
@@ -67,6 +69,7 @@ type 'studentType response = {
   student: 'studentType;
 }
 ```
+
 ```js
 // Empty output
 ```
@@ -83,17 +86,19 @@ let student1 = {
   "age": 30,
 };
 ```
+
 ```ml
 let student1 = [%bs.obj {
   name = "John";
   age = 30
 }]
 ```
+
 ```js
 var student1 = {
   name: "John",
   age: 30,
-};
+}
 ```
 
 </CodeTab>
@@ -113,6 +118,7 @@ let student1 = {
   age: 30,
 };
 ```
+
 ```ml
 type payload = {
   name: string;
@@ -124,11 +130,12 @@ let student1 = {
   age = 30;
 }
 ```
+
 ```js
 var student1 = {
   name: "John",
   age: 30,
-};
+}
 ```
 
 </CodeTab>
@@ -152,6 +159,7 @@ let greetByName = (possiblyNullName) => {
   }
 };
 ```
+
 ```ml
 let greetByName possiblyNullName =
   let optionName = Js.Nullable.toOption possiblyNullName in
@@ -159,12 +167,13 @@ let greetByName possiblyNullName =
   | None -> "Hi"
   | Some name -> "Hello " ^ name
 ```
+
 ```js
 function greetByName(possiblyNullName) {
   if (possiblyNullName == null) {
-    return "Hi";
+    return "Hi"
   } else {
-    return "Hello " + possiblyNullName;
+    return "Hello " + possiblyNullName
   }
 }
 ```

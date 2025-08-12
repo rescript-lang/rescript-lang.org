@@ -7,6 +7,7 @@ canonical: "/docs/manual/v11.0.0/type"
 # Type
 
 Types are the highlight of ReScript! They are:
+
 - **Strong**. A type can't change into another type. In JavaScript, your variable's type might change when the code runs (aka at runtime). E.g. a `number` variable might change into a `string` sometimes. This is an anti-feature; it makes the code much harder to understand when reading or debugging.
 - **Static**. ReScript types are erased after compilation and don't exist at runtime. Never worry about your types dragging down performance. You don't need type info during runtime; we report all the information (especially all the type errors) during compile time. Catch the bugs earlier!
 - **Sound**. This is our biggest differentiator versus many other typed languages that compile to JavaScript. Our type system is guaranteed to **never** be wrong. Most type systems make a guess at the type of a value and show you a type in your editor that's sometime incorrect. We don't do that. We believe that a type system that is sometime incorrect can end up being dangerous due to expectation mismatches.
@@ -25,10 +26,11 @@ This let-binding doesn't contain any written type:
 let score = 10
 let add = (a, b) => a + b
 ```
+
 ```js
-var score = 10;
+var score = 10
 function add(a, b) {
-  return a + b | 0;
+  return (a + b) | 0
 }
 ```
 
@@ -45,8 +47,9 @@ But you can also optionally write down the type, aka annotate your value:
 ```res example
 let score: int = 10
 ```
+
 ```js
-var score = 10;
+var score = 10
 ```
 
 </CodeTab>
@@ -64,10 +67,11 @@ let myInt = (5: int) + (4: int)
 let add = (x: int, y: int) : int => x + y
 let drawCircle = (~radius as r: int): circleType => /* code here */
 ```
+
 ```js
-var myInt = 9;
+var myInt = 9
 function add(x, y) {
-  return x + y | 0;
+  return (x + y) | 0
 }
 function drawCircle(r) {
   /* code here */
@@ -88,8 +92,9 @@ You can refer to a type by a different name. They'll be equivalent:
 type scoreType = int
 let x: scoreType = 10
 ```
+
 ```js
-var x = 10;
+var x = 10
 ```
 
 </CodeTab>
@@ -110,9 +115,10 @@ type floatCoordinates = (float, float, float)
 let a: intCoordinates = (10, 20, 20)
 let b: floatCoordinates = (10.5, 20.5, 20.5)
 ```
+
 ```js
-var a = [10, 20, 20];
-var b = [10.5, 20.5, 20.5];
+var a = [10, 20, 20]
+var b = [10.5, 20.5, 20.5]
 ```
 
 </CodeTab>
@@ -127,9 +133,10 @@ type coordinates<'a> = ('a, 'a, 'a)
 let a: coordinates<int> = (10, 20, 20)
 let b: coordinates<float> = (10.5, 20.5, 20.5)
 ```
+
 ```js
-var a = [10, 20, 20];
-var b = [10.5, 20.5, 20.5];
+var a = [10, 20, 20]
+var b = [10.5, 20.5, 20.5]
 ```
 
 </CodeTab>
@@ -141,8 +148,9 @@ Note that the above codes are just contrived examples for illustration purposes.
 ```res example
 let buddy = (10, 20, 20)
 ```
+
 ```js
-var buddy = [10, 20, 20];
+var buddy = [10, 20, 20]
 ```
 
 </CodeTab>
@@ -157,9 +165,10 @@ Type arguments appear in many places. Our `array<'a>` type is such a type that r
 // inferred as `array<string>`
 let greetings = ["hello", "world", "how are you"]
 ```
+
 ```js
 // inferred as `array<string>`
-var greetings = ["hello", "world", "how are you"];
+var greetings = ["hello", "world", "how are you"]
 ```
 
 </CodeTab>
@@ -187,21 +196,22 @@ let payloadResults: myPayloadResults<string> = [
   Error("Something wrong happened!")
 ]
 ```
+
 ```js
 var payloadResults = [
   {
-    TAG: /* Ok */0,
-    _0: {data: "hi"}
+    TAG: /* Ok */ 0,
+    _0: { data: "hi" },
   },
   {
-    TAG: /* Ok */0,
-    _0: {data: "bye"}
+    TAG: /* Ok */ 0,
+    _0: { data: "bye" },
   },
   {
-    TAG: /* Error */1,
-    _0: "Something wrong happened!"
-  }
-];
+    TAG: /* Error */ 1,
+    _0: "Something wrong happened!",
+  },
+]
 ```
 
 </CodeTab>
@@ -218,6 +228,7 @@ type rec person = {
   friends: array<person>
 }
 ```
+
 ```js
 // Empty output
 ```
@@ -234,6 +245,7 @@ Types can also be _mutually_ recursive through `and`:
 type rec student = {taughtBy: teacher}
 and teacher = {students: array<student>}
 ```
+
 ```js
 // Empty output
 ```
@@ -249,6 +261,7 @@ ReScript's type system is robust and does not allow dangerous, unsafe stuff like
 ```res
 external myShadyConversion: myType1 => myType2 = "%identity"
 ```
+
 ```js
 // Empty output
 ```
@@ -264,9 +277,10 @@ external convertToFloat : int => float = "%identity"
 let age = 10
 let gpa = 2.1 +. convertToFloat(age)
 ```
+
 ```js
-var age = 10;
-var gpa = 2.1 + 10;
+var age = 10
+var gpa = 2.1 + 10
 ```
 
 </CodeTab>

@@ -23,9 +23,10 @@ external parseIntoMyData: string => data = "parse"
 let result = parseIntoMyData(`{"names": ["Luke", "Christine"]}`)
 let name1 = result.names[0]
 ```
+
 ```js
-var result = JSON.parse("{\"names\": [\"Luke\", \"Christine\"]}");
-var name1 = result.names[0];
+var result = JSON.parse('{"names": ["Luke", "Christine"]}')
+var name1 = result.names[0]
 ```
 
 </CodeTab>
@@ -41,11 +42,9 @@ Use [`JSON.stringify`](api/core/json#value-stringify) if your data is of type `J
 ```res example
 Console.log(JSON.stringifyAny(["Amy", "Joe"]))
 ```
+
 ```js
-console.log(JSON.stringify([
-  "Amy",
-  "Joe"
-]));
+console.log(JSON.stringify(["Amy", "Joe"]))
 ```
 
 </CodeTab>
@@ -60,19 +59,21 @@ Use the `@module` attribute to import JSON files directly.
 @module external studentNames: JSON.t = "./students.json"
 Console.log(studentNames)
 ```
+
 ```js
-import * as StudentsJson from "./students.json";
+import * as StudentsJson from "./students.json"
 
-var studentNames = StudentsJson;
+var studentNames = StudentsJson
 
-console.log(studentNames);
+console.log(studentNames)
 ```
+
 ```js
-var StudentsJson = require("./students.json");
+var StudentsJson = require("./students.json")
 
-var studentNames = StudentsJson;
+var studentNames = StudentsJson
 
-console.log(studentNames);
+console.log(studentNames)
 ```
 
 </CodeTab>

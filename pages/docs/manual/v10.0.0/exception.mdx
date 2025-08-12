@@ -28,30 +28,30 @@ let result =
   | Not_found => 0 // Default value if getItem throws
   }
 ```
+
 ```js
-var Caml_js_exceptions = require("./stdlib/caml_js_exceptions.js");
+var Caml_js_exceptions = require("./stdlib/caml_js_exceptions.js")
 
 function getItem(item) {
   if (item === 3) {
-    return 1;
+    return 1
   }
   throw {
     RE_EXN_ID: "Not_found",
-    Error: new Error()
-  };
+    Error: new Error(),
+  }
 }
 
-var result;
+var result
 
 try {
-  result = getItem(2);
-}
-catch (raw_exn){
-  var exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
+  result = getItem(2)
+} catch (raw_exn) {
+  var exn = Caml_js_exceptions.internalToOCamlException(raw_exn)
   if (exn.RE_EXN_ID === "Not_found") {
-    result = 0;
+    result = 0
   } else {
-    throw exn;
+    throw exn
   }
 }
 ```
@@ -70,40 +70,43 @@ switch List.find(i => i === 4, list{1, 2, 3}) {
 | exception Not_found => Js.log("No such item found!")
 }
 ```
+
 ```js
-var List = require("./stdlib/list.js");
-var Caml_js_exceptions = require("./stdlib/caml_js_exceptions.js");
+var List = require("./stdlib/list.js")
+var Caml_js_exceptions = require("./stdlib/caml_js_exceptions.js")
 
-var exit = 0;
+var exit = 0
 
-var item;
+var item
 
 try {
-  item = List.find((function (i) {
-          return i === 4;
-        }), {
-        hd: 1,
+  item = List.find(
+    function (i) {
+      return i === 4
+    },
+    {
+      hd: 1,
+      tl: {
+        hd: 2,
         tl: {
-          hd: 2,
-          tl: {
-            hd: 3,
-            tl: /* [] */0
-          }
-        }
-      });
-  exit = 1;
-}
-catch (raw_exn){
-  var exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
+          hd: 3,
+          tl: /* [] */ 0,
+        },
+      },
+    },
+  )
+  exit = 1
+} catch (raw_exn) {
+  var exn = Caml_js_exceptions.internalToOCamlException(raw_exn)
   if (exn.RE_EXN_ID === "Not_found") {
-    console.log("No such item found!");
+    console.log("No such item found!")
   } else {
-    throw exn;
+    throw exn
   }
 }
 
 if (exit === 1) {
-  console.log(item);
+  console.log(item)
 }
 ```
 
@@ -118,16 +121,17 @@ exception InputClosed(string)
 // later on
 raise(InputClosed("The stream has closed!"))
 ```
-```js
-var Caml_exceptions = require("./stdlib/caml_exceptions.js");
 
-var InputClosed = Caml_exceptions.create("MyFile.InputClosed");
+```js
+var Caml_exceptions = require("./stdlib/caml_exceptions.js")
+
+var InputClosed = Caml_exceptions.create("MyFile.InputClosed")
 
 throw {
   RE_EXN_ID: InputClosed,
   _1: "The stream has closed!",
-  Error: new Error()
-};
+  Error: new Error(),
+}
 ```
 
 </CodeTab>
@@ -136,14 +140,13 @@ throw {
 
 To distinguish between JavaScript exceptions and ReScript exceptions, ReScript namespaces JS exceptions under the `Js.Exn.Error(payload)` variant. To catch an exception thrown from the JS side:
 
-
 Throw an exception from JS:
 
 ```js
 // Example.js
 
 exports.someJsFunctionThatThrows = () => {
-    throw new Error("A Glitch in the Matrix!");
+  throw new Error("A Glitch in the Matrix!")
 }
 ```
 
@@ -151,7 +154,7 @@ Then catch it from ReScript:
 
 ```res
 // import the method in Example.js
-@module("./Example") 
+@module("./Example")
 external someJsFunctionThatThrows: () => unit = "someJsFunctionThatThrows"
 
 try {
@@ -179,11 +182,12 @@ let myTest = () => {
   Js.Exn.raiseError("Hello!")
 }
 ```
+
 ```js
-var Js_exn = require("./stdlib/js_exn.js");
+var Js_exn = require("./stdlib/js_exn.js")
 
 function myTest() {
-  return Js_exn.raiseError("Hello!");
+  return Js_exn.raiseError("Hello!")
 }
 ```
 
@@ -213,17 +217,18 @@ let myTest = () => {
   raise(BadArgument({myMessage: "Oops!"}))
 }
 ```
-```js
-var Caml_exceptions = require("./stdlib/caml_exceptions.js");
 
-var BadArgument = Caml_exceptions.create("Playground.BadArgument");
+```js
+var Caml_exceptions = require("./stdlib/caml_exceptions.js")
+
+var BadArgument = Caml_exceptions.create("Playground.BadArgument")
 
 function myTest() {
   throw {
     RE_EXN_ID: BadArgument,
     myMessage: "Oops!",
-    Error: new Error()
-  };
+    Error: new Error(),
+  }
 }
 ```
 

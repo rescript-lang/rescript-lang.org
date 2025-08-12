@@ -8,7 +8,7 @@ category: "languageconstructs"
 
 Placeholders may be used for [ignoring parts of values](/docs/manual/latest/pattern-matching-destructuring#ignore-part-of-a-value) (including serving as a catch-all in `switch` statements), and [specifying the position of an argument](/docs/manual/latest/pipe#pipe-placeholders).
 
-### Example: Ignoring values 
+### Example: Ignoring values
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -21,16 +21,15 @@ switch person1 {
 
 ```js
 if (person1.TAG === "Teacher") {
-  console.log("Hi teacher");
+  console.log("Hi teacher")
 } else {
-  console.log("Hey student");
+  console.log("Hey student")
 }
 ```
 
 </CodeTab>
 
 ### Example: Specifying an argument position
-
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -43,15 +42,15 @@ let greetJohn = "John"->greet("Hello", _)
 
 ```js
 function greet(greeting, name) {
-  return greeting + " " + name;
+  return greeting + " " + name
 }
 
-var greetJohn = "Hello John";
+var greetJohn = "Hello John"
 ```
 
 </CodeTab>
 
 ### References
 
-* [Ignore part of a value](/docs/manual/latest/pattern-matching-destructuring#ignore-part-of-a-value)
-* [Pipe placeholders](/docs/manual/latest/pipe#pipe-placeholders)
+- [Ignore part of a value](/docs/manual/latest/pattern-matching-destructuring#ignore-part-of-a-value)
+- [Pipe placeholders](/docs/manual/latest/pipe#pipe-placeholders)

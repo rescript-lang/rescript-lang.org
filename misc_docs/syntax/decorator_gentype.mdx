@@ -34,31 +34,31 @@ export make = (~name: string, ~color: color) => {
 /* TypeScript file generated from MyComponent.res by genType. */
 /* eslint-disable import/first */
 
-import * as React from "react";
+import * as React from "react"
 
-const $$toRE818596289: { [key: string]: any } = { Red: 0, Blue: 1 };
+const $$toRE818596289: { [key: string]: any } = { Red: 0, Blue: 1 }
 
 // tslint:disable-next-line:no-var-requires
-const MyComponentBS = require("./MyComponent.bs");
+const MyComponentBS = require("./MyComponent.bs")
 
 // tslint:disable-next-line:interface-over-type-literal
-export type color = "Red" | "Blue";
+export type color = "Red" | "Blue"
 
 // tslint:disable-next-line:interface-over-type-literal
-export type Props = { readonly color: color; readonly name: string };
+export type Props = { readonly color: color; readonly name: string }
 
 export const make: React.ComponentType<{
-  readonly color: color;
-  readonly name: string;
+  readonly color: color
+  readonly name: string
 }> = function MyComponent(Arg1: any) {
-  const $props = { color: $$toRE818596289[Arg1.color], name: Arg1.name };
-  const result = React.createElement(MyComponentBS.make, $props);
-  return result;
-};
+  const $props = { color: $$toRE818596289[Arg1.color], name: Arg1.name }
+  const result = React.createElement(MyComponentBS.make, $props)
+  return result
+}
 ```
 
 </CodeTab>
 
 ### References
 
-* [TypeScript Integration](/docs/manual/latest/typescript-integration)
+- [TypeScript Integration](/docs/manual/latest/typescript-integration)

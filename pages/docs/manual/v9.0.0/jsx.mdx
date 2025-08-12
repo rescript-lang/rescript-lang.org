@@ -19,11 +19,12 @@ ReScript supports the JSX syntax, with some slight differences compared to the o
 ```res
 <MyComponent name={"ReScript"} />
 ```
+
 ```js
 React.createElement(
   MyComponent.make,
-  MyComponent.makeProps("ReScript", undefined)
-);
+  MyComponent.makeProps("ReScript", undefined),
+)
 ```
 
 </CodeTab>
@@ -35,11 +36,12 @@ becomes
 ```res
 @JSX MyComponent.createElement(~name="ReScript", ~children=list{}, ())
 ```
+
 ```js
 React.createElement(
   MyComponent.make,
-  MyComponent.makeProps("ReScript", undefined)
-);
+  MyComponent.makeProps("ReScript", undefined),
+)
 ```
 
 </CodeTab>
@@ -51,10 +53,16 @@ React.createElement(
 ```res
 <div onClick={handler}> child1 child2 </div>
 ```
+
 ```js
-React.createElement("div", {
-  onClick: handler
-}, child1, child2);
+React.createElement(
+  "div",
+  {
+    onClick: handler,
+  },
+  child1,
+  child2,
+)
 ```
 
 </CodeTab>
@@ -66,10 +74,16 @@ becomes
 ```res
 @JSX div(~onClick=handler, ~children=list{child1, child2}, ())
 ```
+
 ```js
-React.createElement("div", {
-  onClick: handler
-}, child1, child2);
+React.createElement(
+  "div",
+  {
+    onClick: handler,
+  },
+  child1,
+  child2,
+)
 ```
 
 </CodeTab>
@@ -81,8 +95,9 @@ React.createElement("div", {
 ```res
 <> child1 child2 </>
 ```
+
 ```js
-React.createElement(React.Fragment, undefined, child1, child2);
+React.createElement(React.Fragment, undefined, child1, child2)
 ```
 
 </CodeTab>
@@ -94,8 +109,9 @@ becomes
 ```res
 @JSX list{child1, child2}
 ```
+
 ```js
-React.createElement(React.Fragment, undefined, child1, child2);
+React.createElement(React.Fragment, undefined, child1, child2)
 ```
 
 </CodeTab>
@@ -107,8 +123,14 @@ React.createElement(React.Fragment, undefined, child1, child2);
 ```res
 <MyComponent> child1 child2 </MyComponent>
 ```
+
 ```js
-React.createElement(MyComponent.make, MyComponent.makeProps(null, undefined), child1, child2);
+React.createElement(
+  MyComponent.make,
+  MyComponent.makeProps(null, undefined),
+  child1,
+  child2,
+)
 ```
 
 </CodeTab>
@@ -120,8 +142,14 @@ This is the syntax for passing a list of two items, `child1` and `child2`, to th
 ```res
 @JSX MyComponent.createElement(~children=list{child1, child2}, ())
 ```
+
 ```js
-React.createElement(MyComponent.make, MyComponent.makeProps(null, undefined), child1, child2);
+React.createElement(
+  MyComponent.make,
+  MyComponent.makeProps(null, undefined),
+  child1,
+  child2,
+)
 ```
 
 </CodeTab>
@@ -139,8 +167,9 @@ To solve the above problem, we've introduced
 ```res
 <MyComponent> ...myChild </MyComponent>
 ```
+
 ```js
-React.createElement(MyComponent.make, MyComponent.makeProps(myChild, undefined));
+React.createElement(MyComponent.make, MyComponent.makeProps(myChild, undefined))
 ```
 
 </CodeTab>
@@ -152,8 +181,9 @@ This passes the value `myChild` _without_ wrapping it in a list (or array, in th
 ```res
 @JSX MyComponent.createElement(~children=myChild, ())
 ```
+
 ```js
-React.createElement(MyComponent.make, MyComponent.makeProps(myChild, undefined));
+React.createElement(MyComponent.make, MyComponent.makeProps(myChild, undefined))
 ```
 
 </CodeTab>
@@ -167,17 +197,21 @@ This is extra useful in the cases where you are handled `myChild` that is alread
 
 <MyForm> ...("Hello", "Submit") </MyForm>
 ```
+
 ```js
 React.createElement(
   make,
   makeProps(function (theClassName) {
     return React.createElement("div", {
       className: theClassName,
-    });
-  }, undefined)
-);
+    })
+  }, undefined),
+)
 
-React.createElement(MyForm.make, MyForm.makeProps(["Hello", "Submit"], undefined));
+React.createElement(
+  MyForm.make,
+  MyForm.makeProps(["Hello", "Submit"], undefined),
+)
 ```
 
 </CodeTab>
@@ -200,6 +234,7 @@ Here's a JSX tag that shows most of the features.
   <div> {React.string("hello")} </div>
 </MyComponent>
 ```
+
 ```js
 React.createElement(
   MyComponent.make,
@@ -210,9 +245,9 @@ React.createElement(
     "hello",
     handleClick,
     React.createElement("div", undefined, "hello"),
-    undefined
-  )
-);
+    undefined,
+  ),
+)
 ```
 
 </CodeTab>
@@ -220,7 +255,7 @@ React.createElement(
 ## Departures From JS JSX
 
 - Attributes and children don't mandate `{}`, but we show them anyway for ease of learning. Once you format your file, some of them go away and some turn into parentheses.
-- There is no support for JSX prop spread: `<Comp {...props} />`. Though somewhat related,  we do have children spread, described above: `<Comp> ...children </Comp>`.
+- There is no support for JSX prop spread: `<Comp {...props} />`. Though somewhat related, we do have children spread, described above: `<Comp> ...children </Comp>`.
 - Punning!
 
 ### Punning
@@ -234,11 +269,12 @@ Reason JSX supports punning. `<input checked />` is just a shorthand for `<input
 ```res
 <MyComponent isLoading text onClick />
 ```
+
 ```js
 React.createElement(
   MyComponent.make,
-  MyComponent.makeProps(isLoading, text, onClick, undefined)
-);
+  MyComponent.makeProps(isLoading, text, onClick, undefined),
+)
 ```
 
 </CodeTab>

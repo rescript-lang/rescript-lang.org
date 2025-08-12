@@ -19,105 +19,104 @@
  * to NodeJS > v12
  */
 
-const path = require("path");
-const child_process = require("child_process");
-const bsconfig = require(path.join(process.cwd(), "bsconfig.json"));
+const path = require("path")
+const child_process = require("child_process")
+const bsconfig = require(path.join(process.cwd(), "bsconfig.json"))
 
-const BSB_BIN = "./node_modules/.bin/bsb";
+const BSB_BIN = "./node_modules/.bin/bsb"
 
-const bsbClean = () => child_process.spawnSync(BSB_BIN, ["-clean"]);
+const bsbClean = () => child_process.spawnSync(BSB_BIN, ["-clean"])
 
 // returns time { real, user, sys }
 const timeBsbBuild = () => {
-  const ret = child_process.spawnSync("time", [BSB_BIN]);
+  const ret = child_process.spawnSync("time", [BSB_BIN])
   if (ret.status !== 0) {
     throw new Error(`bsb build failed with exit code ${ret.status}
 fix the build issue before benchmarking
-    `);
+    `)
   }
 
   // return output of the time function
-  const output = ret.stderr.toString();
-  const match = output.match(/\s+(.*)\sreal\s*(.*)\suser\s*(.*)\ssys.*/);
+  const output = ret.stderr.toString()
+  const match = output.match(/\s+(.*)\sreal\s*(.*)\suser\s*(.*)\ssys.*/)
 
-  let time;
+  let time
   if (match) {
     time = {
       real: parseFloat(match[1]),
       user: parseFloat(match[2]),
-      sys: parseFloat(match[3])
-    };
+      sys: parseFloat(match[3]),
+    }
   }
 
-  return time;
-};
+  return time
+}
 
 const getFileMetrics = () => {
-  const paths = bsconfig.sources.map(source => {
+  const paths = bsconfig.sources.map((source) => {
     if (typeof source === "string") {
-      return source;
+      return source
     }
     if (typeof source === "object") {
-      return source.dir;
+      return source.dir
     }
-  });
+  })
 
-  const args = paths.concat(["--include-lang=ReasonML", "--json"]);
-  const ret = child_process.spawnSync("cloc", args);
+  const args = paths.concat(["--include-lang=ReasonML", "--json"])
+  const ret = child_process.spawnSync("cloc", args)
 
   if (ret.status !== 0) {
-    throw new Error(`cloc failed with exit code ${ret.status}`);
+    throw new Error(`cloc failed with exit code ${ret.status}`)
   }
 
-  const out = JSON.parse(ret.stdout.toString());
+  const out = JSON.parse(ret.stdout.toString())
   return {
     numberOfFiles: out.ReasonML.nFiles,
     blankLines: out.ReasonML.blank,
     commentLines: out.ReasonML.comment,
     codeLines: out.ReasonML.code,
-    totalLines: out.header.n_lines
-  };
-};
+    totalLines: out.header.n_lines,
+  }
+}
 
 function main() {
-  const arg = process.argv[2];
+  const arg = process.argv[2]
   if (arg === "--help" || arg === "-h") {
-    console.log("Runs simple benchmarks for a BuckleScript project");
-    return;
+    console.log("Runs simple benchmarks for a BuckleScript project")
+    return
   }
 
-  let asJson = true;
+  let asJson = true
 
-  console.error("Capturing LOC / file numbers...");
-  const fileMetrics = getFileMetrics();
+  console.error("Capturing LOC / file numbers...")
+  const fileMetrics = getFileMetrics()
 
-  console.error("Cleaning the project first...");
-  bsbClean();
+  console.error("Cleaning the project first...")
+  bsbClean()
 
-  console.error("Measuring build performance...");
-  let buildTime = timeBsbBuild();
+  console.error("Measuring build performance...")
+  let buildTime = timeBsbBuild()
 
-  let locPerSec = Math.round(fileMetrics.totalLines / buildTime.real);
+  let locPerSec = Math.round(fileMetrics.totalLines / buildTime.real)
 
   let result = {
     fileMetrics,
     buildTime,
     results: {
-      locPerSec
-    }
-  };
-
-  if (asJson) {
-    console.log(JSON.stringify(result, null, 2));
+      locPerSec,
+    },
   }
 
+  if (asJson) {
+    console.log(JSON.stringify(result, null, 2))
+  }
 
   // TODO: maybe add human readable format as an option?
 }
 
 try {
-  main();
+  main()
 } catch (err) {
-  console.error("Something went wrong: " + err);
-  process.exit(1);
+  console.error("Something went wrong: " + err)
+  process.exit(1)
 }

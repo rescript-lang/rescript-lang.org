@@ -67,13 +67,6 @@
     "build-performance",
     "warning-numbers"
   ],
-  "Guides": [
-    "converting-from-js"
-  ],
-  "Extra": [
-    "newcomer-examples",
-    "project-structure",
-    "faq",
-    "llms"
-  ]
+  "Guides": ["converting-from-js"],
+  "Extra": ["newcomer-examples", "project-structure", "faq", "llms"]
 }

@@ -17,6 +17,7 @@ type t('a) = option('a);
 ```re sig
 let some: 'a => option('a);
 ```
+
 Wraps the given value in `Some()`
 
 ```re example
@@ -68,14 +69,14 @@ If the argument to `getExn()` is of the form `Some(value)`, returns `value`. If 
 let equal: ((. 'a, 'b) => bool, option('a), option('b)) => bool;
 ```
 
-The first argument to `equal` is an uncurried function `eq()` that takes two arguments and returns `true` if they are considered to be equal. The second and third arguments are `option` values. 
+The first argument to `equal` is an uncurried function `eq()` that takes two arguments and returns `true` if they are considered to be equal. The second and third arguments are `option` values.
 
 If the second and third arguments are of the form:
 
-* `Some(v1)` and `Some(v2)`: returns `eq(v1, v2)`
-* `Some(v1)` and `None`: returns `false`
-* `None` and `Some(v2)`: returns `false`
-* `None` and `None`: returns `true`
+- `Some(v1)` and `Some(v2)`: returns `eq(v1, v2)`
+- `Some(v1)` and `None`: returns `false`
+- `None` and `Some(v2)`: returns `false`
+- `None` and `None`: returns `true`
 
 ```re example
 let clockEqual = (. a, b) => (a mod 12 == b mod 12);
@@ -142,9 +143,9 @@ let default: ('a, option('a)) => 'a;
 let filter: ((. 'a) => bool, option('a)) => option('a);
 ```
 
-The first argument to `filter()` is an uncurried function that takes a plain value and returns a boolean. The second argument is an `option` value. 
+The first argument to `filter()` is an uncurried function that takes a plain value and returns a boolean. The second argument is an `option` value.
 
-If the second argument is of the form `Some(v)` and `f(v)` is `true`, 
+If the second argument is of the form `Some(v)` and `f(v)` is `true`,
 the return value is `Some(v)`. Otherwise, the return value is `None`.
 
 ```re example

@@ -19,14 +19,16 @@ let greeting = "Hello world!";
 let multilineGreeting = "Hello
  world!";
 ```
+
 ```ml
 let greeting = "Hello world!"
 let multilineGreeting = "Hello
  world!";
 ```
+
 ```js
-var greeting = "Hello world!";
-var multilineGreeting = "Hello\n world!";
+var greeting = "Hello world!"
+var multilineGreeting = "Hello\n world!"
 ```
 
 </CodeTab>
@@ -38,11 +40,13 @@ To concatenate strings, use `++`:
 ```re
 let greetings = "Hello " ++ "world!";
 ```
+
 ```ml
 let greetings = "Hello " ^ "world!"
 ```
+
 ```js
-var greetings = "Hello world!";
+var greetings = "Hello world!"
 ```
 
 </CodeTab>
@@ -62,14 +66,16 @@ World
 $(name)
 |j}
 ```
+
 ```ml
 let greeting = {j|Hello
 World
 $(name)
 |j}
 ```
+
 ```js
-var greeting = "Hello\nWorld\n" + name + "\n";
+var greeting = "Hello\nWorld\n" + name + "\n"
 ```
 
 </CodeTab>
@@ -101,11 +107,13 @@ ReScript has a type for a string with a single letter:
 ```re
 let firstLetterOfAlphabet = 'a';
 ```
+
 ```ml
 let firstLetterOfAlphabet = 'a'
 ```
+
 ```js
-var firstLetterOfAlphabet = /* "a" */97;
+var firstLetterOfAlphabet = /* "a" */ 97
 ```
 
 </CodeTab>
@@ -123,11 +131,13 @@ ReScript regular expressions compile cleanly to their JavaScript counterpart:
 ```re
 let r = [%re "/b/g"];
 ```
+
 ```ml
 let r = [%re "/b/g"]
 ```
+
 ```js
-var r = /b/g;
+var r = /b/g
 ```
 
 </CodeTab>

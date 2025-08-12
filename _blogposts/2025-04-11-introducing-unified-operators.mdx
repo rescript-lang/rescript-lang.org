@@ -72,11 +72,11 @@ let compareFloat = (a: float, b) => a < b
 
 ```js
 function compareInt(a, b) {
-  return a < b;
+  return a < b
 }
 
 function compareFloat(a, b) {
-  return a < b;
+  return a < b
 }
 ```
 
@@ -88,9 +88,9 @@ let compareNumber = (a: int, b: float) => a < b
 // [E] Line 1, column 46:
 // This has type: float
 //   But it's being compared to something of type: int
-// 
+//
 //   You can only compare things of the same type.
-//   
+//
 //   You can convert float to int with Belt.Float.toInt.
 //   If this is a literal, try a number without a trailing dot (e.g. 20).
 ```
@@ -106,9 +106,9 @@ let comparePoly = (a, b) => a < b
 ```
 
 ```js
-import * as Primitive_object from "./stdlib/Primitive_object.js";
+import * as Primitive_object from "./stdlib/Primitive_object.js"
 
-let comparePoly = Primitive_object.lessthan;
+let comparePoly = Primitive_object.lessthan
 ```
 
 As both operands `a` and `b` are inferred as "open type", it turned it into a "runtime primitive" that takes any type and performs a struct comparison at runtime.
@@ -136,7 +136,7 @@ let t3 = "1" + "2" // => (string, string) => string
 let t4 = 1n + 2n   // => (bigint, bigint) => bigint
 
 let fn1 = (a, b) => a + b        // (int, int) => int
-let fn2 = (a: float, b) => a + b // (float, float) => float 
+let fn2 = (a: float, b) => a + b // (float, float) => float
 let fn3 = (a, b: float) => a + b // (float, float) => float
 
 let inv1 = (a: int, b: float) => a + b  // => (int, int) => int
@@ -193,11 +193,11 @@ external \"person$equals": (person, person) => bool = "%equals"
 
 ```javascript
 function person$compare(a, b) {
-  return a.name.localeCompare(b.name);
+  return a.name.localeCompare(b.name)
 }
 
 function person$equals(a, b) {
-  return a.name === b.name;
+  return a.name === b.name
 }
 ```
 

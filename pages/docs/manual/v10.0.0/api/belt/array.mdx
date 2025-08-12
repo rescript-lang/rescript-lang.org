@@ -8,7 +8,7 @@ Utililites for `Array` functions.
 
 ### Note about index syntax
 
-Code like `arr[0]` does *not* compile to JavaScript `arr[0]`. ReScript transforms the `[]` index syntax into a function: `Array.get(arr, 0)`. By default, this uses the default standard library's `Array.get` function, which may raise an exception if the index isn't found. If you `open Belt`, it will use the `Belt.Array.get` function which returns options instead of raising exceptions. [See this for more information](../belt.mdx#array-access-runtime-safety).
+Code like `arr[0]` does _not_ compile to JavaScript `arr[0]`. ReScript transforms the `[]` index syntax into a function: `Array.get(arr, 0)`. By default, this uses the default standard library's `Array.get` function, which may raise an exception if the index isn't found. If you `open Belt`, it will use the `Belt.Array.get` function which returns options instead of raising exceptions. [See this for more information](../belt.mdx#array-access-runtime-safety).
 
 ## length
 
@@ -705,7 +705,7 @@ let reduce: (array<'b>, 'a, ('a, 'b) => 'a) => 'a
 
 Applies `f` to each element of `arr`.
 
-Function `f` has two parameters: an "accumulator" which starts with a value of `init` and the next value from the array. 
+Function `f` has two parameters: an "accumulator" which starts with a value of `init` and the next value from the array.
 
 It returns the final value of the accumulator.
 

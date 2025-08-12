@@ -15,10 +15,11 @@ let greeting = "hello!"
 let score = 10
 let newScore = 10 + score
 ```
+
 ```js
-var greeting = "hello!";
-var score = 10;
-var newScore = 20;
+var greeting = "hello!"
+var score = 10
+var newScore = 20
 ```
 
 </CodeTab>
@@ -37,8 +38,9 @@ let message = {
 }
 // `part1` and `part2` are not accessible here!
 ```
+
 ```js
-var message = "hello world";
+var message = "hello world"
 ```
 
 </CodeTab>
@@ -58,9 +60,10 @@ if displayGreeting {
 }
 // `message` not accessible here!
 ```
+
 ```js
 if (displayGreeting) {
-  console.log("Enjoying the docs so far?");
+  console.log("Enjoying the docs so far?")
 }
 ```
 
@@ -77,17 +80,17 @@ The above restriction might sound impractical at first. How would you change a v
 The first is to realize that many times, what you want isn't to mutate a variable's value. For example, this JavaScript pattern:
 
 ```js
-var result = 0;
-result = calculate(result);
-result = calculateSomeMore(result);
+var result = 0
+result = calculate(result)
+result = calculateSomeMore(result)
 ```
 
 ...is really just to comment on intermediate steps. You didn't need to mutate `result` at all! You could have just written this JS:
 
 ```js
-var result1 = 0;
-var result2 = calculate(result1);
-var result3 = calculateSomeMore(result2);
+var result1 = 0
+var result2 = calculate(result1)
+var result3 = calculateSomeMore(result2)
 ```
 
 In ReScript, this obviously works too:
@@ -99,10 +102,11 @@ let result1 = 0
 let result2 = calculate(result1)
 let result3 = calculateSomeMore(result2)
 ```
+
 ```js
-var result1 = 0;
-var result2 = calculate(0);
-var result3 = calculateSomeMore(result2);
+var result1 = 0
+var result2 = calculate(0)
+var result3 = calculateSomeMore(result2)
 ```
 
 </CodeTab>
@@ -116,9 +120,10 @@ let result = 0
 let result = calculate(result)
 let result = calculateSomeMore(result)
 ```
+
 ```js
-var result = calculate(0);
-var result$1 = calculateSomeMore(result);
+var result = calculate(0)
+var result$1 = calculateSomeMore(result)
 ```
 
 </CodeTab>
@@ -135,10 +140,11 @@ Js.log(result) // prints "hello"
 let result = 1
 Js.log(result) // prints 1
 ```
+
 ```js
-var result = 1;
-console.log("hello");
-console.log(1);
+var result = 1
+console.log("hello")
+console.log(1)
 ```
 
 </CodeTab>
@@ -162,6 +168,7 @@ module A: {
   let b = 4
 }
 ```
+
 `%%private` gives you an option to mark private fields directly
 
 ```res
@@ -182,4 +189,3 @@ Still, `%%private` is useful in the following scenarios:
 - **Code generators.** Some code generators want to hide some values but it is sometimes very hard or time consuming for code generators to synthesize the types for public fields.
 
 - **Quick prototyping.** During prototyping, we still want to hide some values, but the interface file is not stable yet. `%%private` provides you such convenience.
-

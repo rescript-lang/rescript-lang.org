@@ -17,14 +17,15 @@ let studentName = Name("Joe")
 type greeting = {message: string}
 let hi = {message: "hello!"}
 ```
+
 ```js
-var studentName = /* Name */{
-  _0: "Joe"
-};
+var studentName = /* Name */ {
+  _0: "Joe",
+}
 
 var hi = {
-  message: "hello!"
-};
+  message: "hello!",
+}
 ```
 
 </CodeTab>
@@ -44,10 +45,11 @@ let studentName = Name("Joe")
 type greeting = {message: string}
 let hi = {message: "hello!"}
 ```
-```js
-var studentName = "Joe";
 
-var hi = "hello!";
+```js
+var studentName = "Joe"
+
+var hi = "hello!"
 ```
 
 </CodeTab>
@@ -80,24 +82,25 @@ let playerLocalCoordinates = {x: 20.5, y: 30.5}
 
 renderDot(playerLocalCoordinates)
 ```
+
 ```js
 function renderDot(coordinates) {
-  console.log("Pretend to draw at:", coordinates.x, coordinates.y);
+  console.log("Pretend to draw at:", coordinates.x, coordinates.y)
 }
 
 function toWorldCoordinates(localCoordinates) {
   return {
     x: localCoordinates.x + 10,
-    y: localCoordinates.x + 20
-  };
+    y: localCoordinates.x + 20,
+  }
 }
 
 var playerLocalCoordinates = {
   x: 20.5,
-  y: 30.5
-};
+  y: 30.5,
+}
 
-renderDot(playerLocalCoordinates);
+renderDot(playerLocalCoordinates)
 ```
 
 </CodeTab>
@@ -129,24 +132,25 @@ let playerLocalCoordinates = Local({x: 20.5, y: 30.5})
 // We're forced to do this instead:
 renderDot(playerLocalCoordinates->toWorldCoordinates)
 ```
+
 ```js
 function renderDot(coordinates) {
-  console.log("Pretend to draw at:", coordinates.x, coordinates.y);
+  console.log("Pretend to draw at:", coordinates.x, coordinates.y)
 }
 
 function toWorldCoordinates(coordinates) {
   return {
     x: coordinates.x + 10,
-    y: coordinates.x + 20
-  };
+    y: coordinates.x + 20,
+  }
 }
 
 var playerLocalCoordinates = {
   x: 20.5,
-  y: 30.5
-};
+  y: 30.5,
+}
 
-renderDot(toWorldCoordinates(playerLocalCoordinates));
+renderDot(toWorldCoordinates(playerLocalCoordinates))
 ```
 
 </CodeTab>
@@ -154,4 +158,3 @@ renderDot(toWorldCoordinates(playerLocalCoordinates));
 Now `renderDot` only takes `worldCoordinates`. Through a nice combination of using distinct variant types + argument destructuring, we've achieved better safety **without compromising on performance**: the `unboxed` attribute compiled to clean, variant-wrapper-less JS code! Check the output.
 
 As for a record with a single field, the use-cases are a bit more edgy. We won't mention them here.
-

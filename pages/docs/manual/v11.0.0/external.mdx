@@ -9,6 +9,7 @@ canonical: "/docs/manual/v11.0.0/external"
 `external` is the primary ReScript feature for bringing in and using JavaScript values.
 
 `external` is like a let binding, but:
+
 - The right side of `=` isn't a value; it's the name of the JS value you're referring to.
 - The type for the binding is mandatory, since we need to know what the type of that JS value is.
 - Can only exist at the top level of a file or module.
@@ -18,6 +19,7 @@ canonical: "/docs/manual/v11.0.0/external"
 ```res example
 @val external setTimeout: (unit => unit, int) => float = "setTimeout"
 ```
+
 ```js
 // Empty output
 ```
@@ -60,14 +62,15 @@ let loc = document["location"]
 // set a property
 document["location"]["href"] = "rescript-lang.org"
 ```
+
 ```js
-document.addEventListener("mouseup", function(_event) {
-  console.log("clicked!");
-});
+document.addEventListener("mouseup", function (_event) {
+  console.log("clicked!")
+})
 
-var loc = document.location;
+var loc = document.location
 
-document.location.href = "rescript-lang.org";
+document.location.href = "rescript-lang.org"
 ```
 
 </CodeTab>

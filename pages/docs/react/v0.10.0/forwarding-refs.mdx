@@ -75,7 +75,6 @@ let make = () => {
 
 We use the `ReactDOM.domRef` type to represent our `inputRef`. We pass our ref in the exact same manner as we'd do a DOM `ref` attribute (`<input ref={ReactDOM.Ref.domRef(myRef)} />`).
 
-
 ## [Discouraged] React.forwardRef
 
 **Note:** We discourage this method since it will likely go away at some point, and doesn't yield any obvious advantages over the previously mentioned ref prop passing.
@@ -127,47 +126,65 @@ let make = () => {
 ```
 
 ```js
-var React = require("react");
-var Belt_Option = require("./stdlib/belt_Option.js");
-var Caml_option = require("./stdlib/caml_option.js");
+var React = require("react")
+var Belt_Option = require("./stdlib/belt_Option.js")
+var Caml_option = require("./stdlib/caml_option.js")
 
 var make = React.forwardRef(function (Props, ref_) {
-      var className = Props.className;
-      var children = Props.children;
-      var tmp = {
-        type: "text"
-      };
-      var tmp$1 = Belt_Option.map((ref_ == null) ? undefined : Caml_option.some(ref_), (function (prim) {
-              return prim;
-            }));
-      if (tmp$1 !== undefined) {
-        tmp.ref = Caml_option.valFromOption(tmp$1);
-      }
-      if (className !== undefined) {
-        tmp.className = Caml_option.valFromOption(className);
-      }
-      return React.createElement("div", undefined, React.createElement("input", tmp), children);
-    });
+  var className = Props.className
+  var children = Props.children
+  var tmp = {
+    type: "text",
+  }
+  var tmp$1 = Belt_Option.map(
+    ref_ == null ? undefined : Caml_option.some(ref_),
+    function (prim) {
+      return prim
+    },
+  )
+  if (tmp$1 !== undefined) {
+    tmp.ref = Caml_option.valFromOption(tmp$1)
+  }
+  if (className !== undefined) {
+    tmp.className = Caml_option.valFromOption(className)
+  }
+  return React.createElement(
+    "div",
+    undefined,
+    React.createElement("input", tmp),
+    children,
+  )
+})
 
 var FancyInput = {
-  make: make
-};
+  make: make,
+}
 
 function App(Props) {
-  var input = React.useRef(null);
+  var input = React.useRef(null)
   var onClick = function (param) {
-    return Belt_Option.forEach(Caml_option.nullable_to_opt(input.current), (function (input) {
-                  input.focus();
-
-                }));
-  };
-  return React.createElement("div", undefined, React.createElement(make, {
-                  className: "fancy",
-                  children: React.createElement("button", {
-                        onClick: onClick
-                      }, "Click to focus"),
-                  ref: input
-                }));
+    return Belt_Option.forEach(
+      Caml_option.nullable_to_opt(input.current),
+      function (input) {
+        input.focus()
+      },
+    )
+  }
+  return React.createElement(
+    "div",
+    undefined,
+    React.createElement(make, {
+      className: "fancy",
+      children: React.createElement(
+        "button",
+        {
+          onClick: onClick,
+        },
+        "Click to focus",
+      ),
+      ref: input,
+    }),
+  )
 }
 ```
 

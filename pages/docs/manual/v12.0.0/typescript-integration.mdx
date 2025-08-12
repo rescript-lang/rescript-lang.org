@@ -20,7 +20,7 @@ type t = | A(int) | B(string)
 is exported to a TypeScript type:
 
 ```ts
-type t = { TAG: "A"; _0: number } | { TAG: "B"; _0: string };
+type t = { TAG: "A"; _0: number } | { TAG: "B"; _0: string }
 ```
 
 ## A Quick Example
@@ -64,13 +64,12 @@ On a successful compile, `genType` will convert `src/Color.res` to a TypeScript 
 /* eslint-disable */
 /* tslint:disable */
 
-import * as ColorJS from "./Color.res.js";
+import * as ColorJS from "./Color.res.js"
 
-export type color = "Red" | "Blue";
+export type color = "Red" | "Blue"
 
-export const printColorMessage: (
-  color: color
-) => void = ColorJS.printColorMessage as any;
+export const printColorMessage: (color: color) => void =
+  ColorJS.printColorMessage as any
 ```
 
 genType automatically maps the `color` variant to TS via a string union type `"Red" | "Blue"`.
@@ -80,14 +79,14 @@ Within our TypeScript application, we can now import and use the function in the
 ```ts
 // src/app.ts
 
-import { printColorMessage } from "./Color.gen.tsx";
+import { printColorMessage } from "./Color.gen.tsx"
 
-printColorMessage("Red", "Hello, genType!");
+printColorMessage("Red", "Hello, genType!")
 ```
 
 ## Exporting an entire module
 
-_Since ReScript `11.0.0`_ modules can be annotated with `@genType` as well. In that case, all types and values of the module will be converted to TS types. Example: 
+_Since ReScript `11.0.0`_ modules can be annotated with `@genType` as well. In that case, all types and values of the module will be converted to TS types. Example:
 
 <CodeTab labels={["ReScript", "TypeScript Output"]}>
 
@@ -109,17 +108,17 @@ module Size = {
 ```
 
 ```ts
-import * as MyCompBS__Es6Import from './MyComp.res';
-const MyCompBS: any = MyCompBS__Es6Import;
+import * as MyCompBS__Es6Import from "./MyComp.res"
+const MyCompBS: any = MyCompBS__Es6Import
 
-export type Size_t = "Small" | "Medium" | "Large";
+export type Size_t = "Small" | "Medium" | "Large"
 
-export const Size_getNum: (size:Size_t) => number = MyCompBS.Size.getNum;
+export const Size_getNum: (size: Size_t) => number = MyCompBS.Size.getNum
 
-export const Size: { getNum: (size:Size_t) => number } = MyCompBS.Size
+export const Size: { getNum: (size: Size_t) => number } = MyCompBS.Size
 ```
-</CodeTab>
 
+</CodeTab>
 
 ## Setup
 
@@ -205,7 +204,7 @@ Save the file and rebuild the project via `npm run res:build` or similar. You sh
 Any values exported from `MyComponent.res` can then be imported from TypeScript. For example:
 
 ```js
-import MyComponent from "./components/MyComponent.gen.tsx";
+import MyComponent from "./components/MyComponent.gen.tsx"
 ```
 
 ## Experimental features
@@ -214,13 +213,13 @@ These features are for experimentation only. They could be changed/removed any t
 
 - Export object and record types as interfaces. To activate, add `"exportInterfaces": true` to the configuration. The types are also renamed from `name` to `Iname`.
 
-
 ## Shims
 
 A shim is a TS file that provides user-provided definitions for library types.
 
 Required only if one needs to export certain basic ReScript data types to JS when one cannot modify the sources to add annotations (e.g. exporting ReScript lists), and if the types are not first-classed in genType.
-  - Example: `Array<string>` with format: `"RescriptModule=JavaScriptModule"`
+
+- Example: `Array<string>` with format: `"RescriptModule=JavaScriptModule"`
 
 Configure your shim files within `"gentypeconfig"` in your [`rescript.json`]:
 
@@ -232,12 +231,12 @@ Configure your shim files within `"gentypeconfig"` in your [`rescript.json`]:
       "ReactEvent": "ReactEvent",
       "RescriptPervasives": "RescriptPervasives",
       "ReasonReact": "ReactShim"
-    },
-  },
+    }
+  }
 }
 ```
 
-and add relevant `.shim.ts` files in a directory which is visible by ReScript e.g. 
+and add relevant `.shim.ts` files in a directory which is visible by ReScript e.g.
 
 ```
 ├── rescript.json
@@ -252,13 +251,13 @@ Here are some examples:
 
 ```ts
 // Excerpt from https://github.com/rescript-lang/rescript-compiler/blob/master/jscomp/gentype_tests/typescript-react-example/src/shims/Js.shim.ts
-export type Json_t = unknown;
-export type t = unknown;
+export type Json_t = unknown
+export type t = unknown
 ```
 
 ```ts
 // Excerpt from https://github.com/rescript-lang/rescript-compiler/tree/master/jscomp/gentype_tests/typescript-react-example/src/shims
-export type inputFocusEvent = React.FocusEvent<HTMLInputElement>;
+export type inputFocusEvent = React.FocusEvent<HTMLInputElement>
 ```
 
 More complete example shims can be found [here](https://github.com/rescript-lang/rescript-compiler/blob/master/jscomp/gentype_tests/typescript-react-example/src/shims/).

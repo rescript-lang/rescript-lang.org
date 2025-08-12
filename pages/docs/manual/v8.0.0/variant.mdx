@@ -20,6 +20,7 @@ type myResponse =
 
 let areYouCrushingIt = Yes;
 ```
+
 ```ml
 type myResponse =
   | Yes
@@ -28,8 +29,9 @@ type myResponse =
 
 let areYouCrushingIt = Yes
 ```
+
 ```js
-var areYouCrushingIt = /* Yes */0;
+var areYouCrushingIt = /* Yes */ 0
 ```
 
 </CodeTab>
@@ -48,10 +50,12 @@ If the variant you're using is in a different file, bring it into scope like you
 // Zoo.re
 type animal = Dog | Cat | Bird;
 ```
+
 ```ml
 (* Zoo.re *)
 type animal = Dog | Cat | Bird
 ```
+
 ```js
 // Empty output
 ```
@@ -66,15 +70,17 @@ let pet: Zoo.animal = Dog; // preferred
 // or
 let pet2 = Zoo.Dog;
 ```
+
 ```ml
 (* Example.re *)
 let pet: Zoo.animal = Dog (* preferred *)
 (* or *)
 let pet2 = Zoo.Dog
 ```
+
 ```js
-var pet = /* Dog */0;
-var pet2 = /* Dog */0;
+var pet = /* Dog */ 0
+var pet2 = /* Dog */ 0
 ```
 
 </CodeTab>
@@ -91,12 +97,14 @@ type account =
   | Instagram(string)
   | Facebook(string, int);
 ```
+
 ```ml
 type account =
   | None
   | Instagram of string
   | Facebook of string * int
 ```
+
 ```js
 // Empty output
 ```
@@ -111,22 +119,24 @@ Here, `Instagram` holds a `string`, and `Facebook` holds a `string` and an `int`
 let myAccount = Facebook("Josh", 26);
 let friendAccount = Instagram("Jenny");
 ```
+
 ```ml
 let myAccount =
   Facebook ("Josh", 26)
 let friendAccount =
   Instagram "Jenny"
 ```
+
 ```js
 var myAccount = {
-  TAG: /* Facebook */1,
+  TAG: /* Facebook */ 1,
   _0: "Josh",
-  _1: 26
-};
+  _1: 26,
+}
 var friendAccount = {
-  TAG: /* Instagram */0,
-  _0: "Jenny"
-};
+  TAG: /* Instagram */ 0,
+  _0: "Jenny",
+}
 ```
 
 </CodeTab>
@@ -144,6 +154,7 @@ type user =
   | Number(int)
   | Id(idType);
 ```
+
 ```ml
 type idType = {name: string; password: string}
 
@@ -151,6 +162,7 @@ type user =
   | Number of int
   | Id of idType
 ```
+
 ```js
 // Empty output
 ```
@@ -166,11 +178,13 @@ type user =
   | Number(int)
   | Id({name: string, password: string});
 ```
+
 ```ml
 type user =
   | Number of int
   | Id of {name: string; password: string}
 ```
+
 ```js
 // Empty output
 ```
@@ -193,12 +207,14 @@ type account =
 type account2 =
   | Instagram((string, int)); // 1 argument - happens to be a 2-tuple
 ```
+
 ```ml
 type account =
   | Facebook of string * int (* 2 arguments *)
 type account2 =
   | Instagram of (string * int) (* 1 argument - happens to be a 2-tuple *)
 ```
+
 ```js
 // Empty output
 ```
@@ -233,6 +249,7 @@ let betterDraw = (animal) =>
 
 betterDraw(MyFloat(1.5));
 ```
+
 ```ml
 (* reserved for internal usage *)
 external draw: 'a => unit = "draw" [@@bs.module "myLibrary"]
@@ -248,17 +265,18 @@ let betterDraw animal =
 
 let () = betterDraw (MyFloat 1.5)
 ```
+
 ```js
-var MyLibrary = require("myLibrary");
+var MyLibrary = require("myLibrary")
 
 function betterDraw(animal) {
-  MyLibrary.draw(animal._0);
+  MyLibrary.draw(animal._0)
 }
 
 betterDraw({
-  TAG: /* MyFloat */0,
-  _0: 1.5
-});
+  TAG: /* MyFloat */ 0,
+  _0: 1.5,
+})
 ```
 
 </CodeTab>
@@ -271,10 +289,12 @@ You could definitely do that, but there are better ways! For example, define two
 [@bs.module "myLibrary"] external drawFloat: float => unit = "draw";
 [@bs.module "myLibrary"] external drawString: string => unit = "draw";
 ```
+
 ```ml
 external drawFloat: float -> unit = "draw" [@@bs.module "myLibrary"]
 external drawString: string -> unit = "draw" [@@bs.module "myLibrary"]
 ```
+
 ```js
 // Empty output
 ```
@@ -319,6 +339,7 @@ switch (data) {
 | Bird => Js.log("Kashiiin")
 }
 ```
+
 ```ml
 type animal = Dog | Cat | Bird
 let data = Dog
@@ -328,10 +349,11 @@ let () =
   | Cat -> Js.log "Meow"
   | Bird -> Js.log "Kashiiin"
 ```
-```js
-console.log("Wof");
 
-var data = /* Dog */0;
+```js
+console.log("Wof")
+
+var data = /* Dog */ 0
 ```
 
 </CodeTab>

@@ -23,6 +23,7 @@ type person = {
   name: string
 }
 ```
+
 ```js
 // Empty output
 ```
@@ -41,11 +42,12 @@ let me = {
   name: "Big ReScript"
 }
 ```
+
 ```js
 var me = {
   age: 5,
-  name: "Big ReScript"
-};
+  name: "Big ReScript",
+}
 ```
 
 </CodeTab>
@@ -60,6 +62,7 @@ The type is found by looking above the `me` value. **Note**: if the type instead
 // School.res
 type person = {age: int, name: string}
 ```
+
 ```js
 // Empty output
 ```
@@ -75,15 +78,16 @@ let me: School.person = {age: 20, name: "Big ReScript"}
 /* or */
 let me2 = {School.age: 20, name: "Big ReScript"}
 ```
+
 ```js
 var me = {
   age: 20,
-  name: "Big ReScript"
-};
+  name: "Big ReScript",
+}
 var me2 = {
   age: 20,
-  name: "Big ReScript"
-};
+  name: "Big ReScript",
+}
 ```
 
 </CodeTab>
@@ -99,8 +103,9 @@ Use the familiar dot notation:
 ```res example
 let name = me.name
 ```
+
 ```js
-var name = "Big ReScript";
+var name = "Big ReScript"
 ```
 
 </CodeTab>
@@ -114,11 +119,12 @@ New records can be created from old records with the `...` spread operator. The 
 ```res example
 let meNextYear = {...me, age: me.age + 1}
 ```
+
 ```js
 var meNextYear = {
   age: 21,
-  name: "Big ReScript"
-};
+  name: "Big ReScript",
+}
 ```
 
 </CodeTab>
@@ -140,13 +146,14 @@ type person = {
 let baby = {name: "Baby ReScript", age: 5}
 baby.age = baby.age + 1 // `baby.age` is now 6. Happy birthday!
 ```
+
 ```js
 var baby = {
   name: "Baby ReScript",
-  age: 5
-};
+  age: 5,
+}
 
-baby.age = baby.age + 1 | 0;
+baby.age = (baby.age + 1) | 0
 ```
 
 </CodeTab>
@@ -169,9 +176,10 @@ type monster = {age: int, hasTentacles: bool}
 
 let getAge = (entity) => entity.age
 ```
+
 ```js
 function getAge(entity) {
-  return entity.age;
+  return entity.age
 }
 ```
 

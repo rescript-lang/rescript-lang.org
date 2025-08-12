@@ -15,12 +15,14 @@ ReScript functions are declared with an arrow and return an expression, just lik
 ```re
 let greet = (name) => "Hello " ++ name;
 ```
+
 ```ml
 let greet name = "Hello " ^ name
 ```
+
 ```js
 function greet(name) {
-  return "Hello " + name;
+  return "Hello " + name
 }
 ```
 
@@ -33,11 +35,13 @@ This declares a function and assigns to it the name `greet`, which you can call 
 ```re
 greet("world!"); // "Hello world!"
 ```
+
 ```ml
 greet "world!" (* "Hello world!" *)
 ```
+
 ```js
-greet("world!");
+greet("world!")
 ```
 
 </CodeTab>
@@ -50,13 +54,15 @@ Multi-arguments functions have arguments separated by comma:
 let add = (x, y, z) => x + y + z;
 add(1, 2, 3); // 6
 ```
+
 ```ml
 let add x y z = (x + y) + z
 let () = add 1 2 3
 ```
+
 ```js
 function add(x, y, z) {
-  return (x + y | 0) + z | 0;
+  return (((x + y) | 0) + z) | 0
 }
 ```
 
@@ -72,14 +78,16 @@ let greetMore = (name) => {
   part1 ++ " " ++ name;
 };
 ```
+
 ```ml
 let greetMore name =
   let part1 = "Hello" in
   part1 ^ " " ^ name
 ```
+
 ```js
 function greetMore(name) {
-  return "Hello " + name;
+  return "Hello " + name
 }
 ```
 
@@ -100,18 +108,20 @@ let addCoordinates = (x, y) => {
 // ...
 addCoordinates(5, 6); // which is x, which is y?
 ```
+
 ```ml
 let addCoordinates x t =
   (* use x and y here *)
 (* ... *)
 addCoordinates 5 6 (* which is x, which is y? *)
 ```
+
 ```js
 function addCoordinates(x, y) {
   // use x and y here
 }
 
-addCoordinates(5, 6);
+addCoordinates(5, 6)
 ```
 
 </CodeTab>
@@ -127,18 +137,20 @@ let addCoordinates = (~x, ~y) => {
 // ...
 addCoordinates(~x=5, ~y=6);
 ```
+
 ```ml
 let addCoordinates ~x ~y =
   (* use x and y here *)
 (* ... *)
 addCoordinates ~x=5 ~y=6
 ```
+
 ```js
 function addCoordinates(x, y) {
   // use x and y here
 }
 
-addCoordinates(5, 6);
+addCoordinates(5, 6)
 ```
 
 </CodeTab>
@@ -150,11 +162,13 @@ You can provide the arguments in **any order**:
 ```re
 addCoordinates(~y=6, ~x=5);
 ```
+
 ```ml
 addCoordinates ~y=6 ~x=5
 ```
+
 ```js
-addCoordinates(5, 6);
+addCoordinates(5, 6)
 ```
 
 </CodeTab>
@@ -172,6 +186,7 @@ let drawCircle = (~radius as r, ~color as c) => {
 
 drawCircle(~radius=10, ~color="red");
 ```
+
 ```ml
 let drawCircle ~radius:r ~color:c =
   setColor c;
@@ -180,13 +195,14 @@ let drawCircle ~radius:r ~color:c =
 
 let () = drawCircle ~radius:10 ~color:"red"
 ```
+
 ```js
 function drawCircle(r, c) {
-  setColor(c);
-  return startAt(r, r);
+  setColor(c)
+  return startAt(r, r)
 }
 
-drawCircle(10, "red");
+drawCircle(10, "red")
 ```
 
 </CodeTab>
@@ -202,10 +218,12 @@ let drawCircle = (~radius as r: int, ~color as c: string) => {
   // code here
 };
 ```
+
 ```ml
 let drawCircle ~radius:(r : int) ~color:(c : string) =
   (* code *)
 ```
+
 ```js
 function drawCircle(r, c) {
   // code here
@@ -230,6 +248,7 @@ let drawCircle = (~color, ~radius=?, ()) => {
   };
 };
 ```
+
 ```ml
 (* radius can be omitted *)
 let drawCircle ~color ?radius () =
@@ -238,16 +257,17 @@ let drawCircle ~color ?radius () =
   | None -> startAt 1 1
   | Some r_ -> startAt r_ r_
 ```
+
 ```js
-var Caml_option = require("./stdlib/caml_option.js");
+var Caml_option = require("./stdlib/caml_option.js")
 
 function drawCircle(color, radius, param) {
-  setColor(color);
+  setColor(color)
   if (radius === undefined) {
-    return startAt(1, 1);
+    return startAt(1, 1)
   }
-  var r_ = Caml_option.valFromOption(radius);
-  return startAt(r_, r_);
+  var r_ = Caml_option.valFromOption(radius)
+  return startAt(r_, r_)
 }
 ```
 
@@ -277,6 +297,7 @@ let drawCircle: (~color: color, ~radius: int=?, unit) => unit =
     };
   };
 ```
+
 ```ml
 let drawCircle: color:color -> ?radius:int -> unit -> unit =
   fun ~color:(color : color) ?radius:(radius : int option) () ->
@@ -285,13 +306,14 @@ let drawCircle: color:color -> ?radius:int -> unit -> unit =
     | None -> startAt 1 1
     | Some r_ -> startAt r_ r_
 ```
+
 ```js
 function drawCircle(color, radius, param) {
-  setColor(color);
+  setColor(color)
   if (radius !== undefined) {
-    return startAt(radius, radius);
+    return startAt(radius, radius)
   } else {
-    return startAt(1, 1);
+    return startAt(1, 1)
   }
 }
 ```
@@ -317,18 +339,21 @@ let result =
   | Some(r) => drawCircle(~color, ~radius=r, ())
   };
 ```
+
 ```ml
 let result =
   match payloadRadius with
   | None -> drawCircle ~color ()
   | Some r -> drawCircle ~color ~radius:r ()
 ```
-```js
-var r = payloadRadius;
 
-var result = r !== undefined
-  ? drawCircle(color, Caml_option.valFromOption(r), undefined)
-  : drawCircle(color, undefined);
+```js
+var r = payloadRadius
+
+var result =
+  r !== undefined
+    ? drawCircle(color, Caml_option.valFromOption(r), undefined)
+    : drawCircle(color, undefined)
 ```
 
 </CodeTab>
@@ -340,11 +365,13 @@ This quickly gets tedious. We provide a shortcut:
 ```re
 let result = drawCircle(~color, ~radius=?payloadRadius, ());
 ```
+
 ```ml
 let result = drawCircle ~color ?radius:payloadRadius ()
 ```
+
 ```js
-var result = drawCircle(1, undefined, undefined);
+var result = drawCircle(1, undefined, undefined)
 ```
 
 </CodeTab>
@@ -363,16 +390,18 @@ let drawCircle = (~radius=1, ~color, ()) => {
   startAt(radius, radius);
 };
 ```
+
 ```ml
 let drawCircle ?(radius=1) ~color () =
   setColor color;
   startAt radius radius
 ```
+
 ```js
 function drawCircle(radiusOpt, color, param) {
-  var radius = radiusOpt !== undefined ? radiusOpt : 1;
-  setColor(color);
-  return startAt(radius, radius);
+  var radius = radiusOpt !== undefined ? radiusOpt : 1
+  setColor(color)
+  return startAt(radius, radius)
 }
 ```
 
@@ -387,15 +416,17 @@ ReScript chooses the sane default of preventing a function to be called recursiv
 ```re
 let rec neverTerminate = () => neverTerminate()
 ```
+
 ```ml
 let rec neverTerminate () = neverTerminate ()
 ```
+
 ```js
 function neverTerminate(_param) {
-  while(true) {
-    _param = undefined;
-    continue ;
-  };
+  while (true) {
+    _param = undefined
+    continue
+  }
 }
 ```
 
@@ -414,6 +445,7 @@ let rec listHas = (list, item) =>
   | [a, ...rest] => a === item || listHas(rest, item)
   };
 ```
+
 ```ml
 (* Recursively check every item on the list until one equals the `item` *)
 (* argument. If a match is found, return `true`, otherwise return `false` *)
@@ -423,19 +455,20 @@ let rec listHas list item =
   | [] -> false
   | a::rest -> (a == item) || (listHas rest item)
 ```
+
 ```js
 function listHas(_list, item) {
-  while(true) {
-    var list = _list;
+  while (true) {
+    var list = _list
     if (!list) {
-      return false;
+      return false
     }
     if (list.hd === item) {
-      return true;
+      return true
     }
-    _list = list.tl;
-    continue ;
-  };
+    _list = list.tl
+    continue
+  }
 }
 ```
 
@@ -454,23 +487,25 @@ Mutually recursive functions start like a single recursive function using the
 let rec callSecond = () => callFirst()
 and callFirst = () => callSecond();
 ```
+
 ```ml
 let rec callSecond () = callFirst ()
 and callFirst () = callSecond ()
 ```
+
 ```js
 function callSecond(_param) {
-  while(true) {
-    _param = undefined;
-    continue ;
-  };
+  while (true) {
+    _param = undefined
+    continue
+  }
 }
 
 function callFirst(_param) {
-  while(true) {
-    _param = undefined;
-    continue ;
-  };
+  while (true) {
+    _param = undefined
+    continue
+  }
 }
 ```
 
@@ -487,16 +522,18 @@ let add = (. x, y) => x + y;
 
 add(. 1, 2);
 ```
+
 ```ml
 let add = (fun x y -> x + y) [@bs]
 let () = add 1 2 [@bs]
 ```
+
 ```js
 function add(x, y) {
-  return x + y | 0;
+  return (x + y) | 0
 }
 
-add(1, 2);
+add(1, 2)
 ```
 
 </CodeTab>
@@ -536,6 +573,7 @@ let add = (~first as x=?, ~second as y=?) => switch (x) {...};
 // with punning
 let add = (~first=?, ~second=?) => switch (first) {...};
 ```
+
 ```ml
 (* anonymous function *)
 fun x y -> 1
@@ -587,6 +625,7 @@ let add = (~first as x: option(int)=?, ~second as y: option(int)=?) : int => swi
 // Inside the function, `first` and `second` are `option(int)`.
 let add = (~first: option(int)=?, ~second: option(int)=?) : int => switch (first) {...};
 ```
+
 ```ml
 (* anonymous function *)
 fun (x: int) (y: int) : int -> 1
@@ -627,6 +666,7 @@ add(~first=?Some(1), ~second=?Some(2));
 // with punning
 add(~first?, ~second?);
 ```
+
 ```ml
 add x y
 
@@ -663,6 +703,7 @@ add(~first=1: int, ~second=2: int);
 add(~first=?Some(1): option(int), ~second=?Some(2): option(int));
 // no punning sugar when you want to type annotate
 ```
+
 ```ml
 (* labeled *)
 add ~first:(1: int) ~second:(2: int)
@@ -692,6 +733,7 @@ type add = (~first: int, ~second: int) => int;
 // labeled
 type add = (~first: int=?, ~second: int=?, unit) => int;
 ```
+
 ```ml
 (* first arg type, second arg type, return type *)
 type add = int -> int -> int
@@ -714,6 +756,7 @@ To annotate a function from the implementation file (`.re`) in your interface fi
 ```re
 let add: (int, int) => int;
 ```
+
 ```ml
 val add: int -> int -> int
 ```

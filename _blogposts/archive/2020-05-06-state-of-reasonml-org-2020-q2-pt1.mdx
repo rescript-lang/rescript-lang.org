@@ -9,7 +9,7 @@ description: |
   to expect in the future. The first part is an introduction to our project.
 ---
 
-import Image from "src/components/Image";
+import Image from "src/components/Image"
 
 ## Hello World!
 
@@ -41,16 +41,21 @@ It gives users a big-picture overview of the core Reason ecosystem as well as a 
 
 Last but not least, `reasonml.org` is built on Reason & BuckleScript as well, leading by example and dog-fooding along the way - spotting issues in newer compiler and syntax releases before they hit our users.
 
-We also give the community more power to chime in and take ownership over the documentation, and offer enough human capacity to collaborate on PRs (give guidance, help refine written texts, give early feedback), which is at the heart of  great Open Source!
+We also give the community more power to chime in and take ownership over the documentation, and offer enough human capacity to collaborate on PRs (give guidance, help refine written texts, give early feedback), which is at the heart of great Open Source!
 
 ## What We've Accomplished
 
 Building a documentation platform for a whole language ecosystem involves a lot of different disciplines. For this article we will cover three major topics: Structure & Design, the API Docs and the Reason Ecosystem Docs.
 
 ### The Structure and Design
+
 The initial work was mostly about understanding the information architecture, relevant documentation dependencies, and finding all the relevant resources across different websites and blog posts. We have also spent a great amount of time finding a proper design language to visually codify different areas of the platform into a distinctive color scheme.
 
-<Image withShadow={true} src="/static/blog/archive/reasonml-org-color-palette-retina.jpg" caption="Current state of the reasonml.org color palette"/>
+<Image
+  withShadow={true}
+  src="/static/blog/archive/reasonml-org-color-palette-retina.jpg"
+  caption="Current state of the reasonml.org color palette"
+/>
 
 Surprisingly for us, the navigation and sitemap turned out to be the hardest part to figure out. We had to craft long-lived URLs that would work across multiple versions of the Reason compiler and standard library, had to do research about future localization possibilities, understand the guts and limits of different documentation tools such as docusaurus, find a way to enable component based theming, and then put everything in a layout that actually worked across all sorts of devices without being too cluttered or confusing.
 
@@ -60,7 +65,7 @@ We also focused a lot on early feedback from the community, so we regularly [pos
 
 ### Improving the API Docs (Belt / JS)
 
-The current [official BuckleScript's API docs](https://bucklescript.github.io/bucklescript/api/index_modules.html) aren't visually stunning, but they *are* important for getting things done as a user. The docs are maintained within the BuckleScript repository, and there was no process to make sure the documentation site remained up to date with each BuckleScript release. It also presented a huge bottleneck for anyone hoping to contribute from the outside. So [Nik Graf](https://twitter.com/nikgraf) bit the bullet, did the massive amount of grunt work to extract all the available modules and function headers into hand curated markdown files, and organize them into easily-maintained documents from a technical writer's perspective.
+The current [official BuckleScript's API docs](https://bucklescript.github.io/bucklescript/api/index_modules.html) aren't visually stunning, but they _are_ important for getting things done as a user. The docs are maintained within the BuckleScript repository, and there was no process to make sure the documentation site remained up to date with each BuckleScript release. It also presented a huge bottleneck for anyone hoping to contribute from the outside. So [Nik Graf](https://twitter.com/nikgraf) bit the bullet, did the massive amount of grunt work to extract all the available modules and function headers into hand curated markdown files, and organize them into easily-maintained documents from a technical writer's perspective.
 
 So we now have most of BuckleScript v7's [JS / Belt module](/docs/manual/latest/api/belt) documented.
 
@@ -70,10 +75,13 @@ We are now working on further automating the process for generating BuckleScript
 
 Our goal is to have a properly curated, well structured and streamlined overview for all core resources of the Reason platform. So we relocated all the information from the ReasonML, BuckleScript, ReasonReact and GenType website to the reasonml.org codebase.
 
-<Image withShadow={true} src="/static/blog/archive/reasonml-org-structure-retina.jpg" caption="First hand-sketches of the reasonml.org structure"/>
+<Image
+  withShadow={true}
+  src="/static/blog/archive/reasonml-org-structure-retina.jpg"
+  caption="First hand-sketches of the reasonml.org structure"
+/>
 
 It didn't take long until we realized that we can't just keep the upstream version in its original form, so we started to make adaptations where it made sense. We also accepted new additions from the community, such as explanations about [function signatures on optional arguments](/docs/manual/latest/function#signatures-and-type-annotations) in the Reason manual, or a new decorator overview in the BuckleScript section.
-
 
 That said, we do keep track of new changes on the upstream sources and cherry-pick changes if necessary. To make this process more transparent, we introduced a version table on our [startpage](/) to make it easier to see the latest cherry-pick commit for each resource (ReasonML, BuckleScript, etc.).
 
@@ -92,6 +100,7 @@ We will try to put a banner on the website soon to prevent confusion.
 ## What is still missing?
 
 So far following features are still missing:
+
 - Full Page Search
 - Reason Playground
 - Full API Docs
@@ -112,7 +121,7 @@ This article is part of the "State of reasonml.org 2020-Q2" series, which will c
 
 The progress on `reasonml.org` has been fantastic so far. Even though the current global health situation pushed us a bit behind our original schedule with the Reason playground, etc, we are still quite happy with the outcome and we hope you are as well!
 
-`reasonml.org` is still a work in progress and there is, of course, *much* to build before reaching the first official release. Until then, we would love for you to give it a try and let us know what you think, either by opening an issue, or even a PR.
+`reasonml.org` is still a work in progress and there is, of course, _much_ to build before reaching the first official release. Until then, we would love for you to give it a try and let us know what you think, either by opening an issue, or even a PR.
 
 In case you have any questions or comments, make sure to let us know in the [Reason Discord](https://discord.gg/reasonml) `#docs` channel!
 

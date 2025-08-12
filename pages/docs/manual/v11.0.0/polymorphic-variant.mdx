@@ -27,9 +27,9 @@ let myNumber = #7
 ```
 
 ```js
-var myColor = "red";
-var myLabel = "aria-hidden";
-var myNumber = 7;
+var myColor = "red"
+var myLabel = "aria-hidden"
+var myNumber = 7
 ```
 
 </CodeTab>
@@ -64,9 +64,9 @@ let render = (myColor: [#red | #green | #blue]) => {
 ```js
 function render(myColor) {
   if (myColor === "green" || myColor === "red") {
-    console.log("Hello other colors");
+    console.log("Hello other colors")
   } else {
-    console.log("Hello blue!");
+    console.log("Hello blue!")
   }
 }
 ```
@@ -93,11 +93,11 @@ let render = myColor => {
 ```js
 function render(myColor) {
   if (myColor === "yellow") {
-    console.log("Hello yellow!");
+    console.log("Hello yellow!")
   } else if (myColor === "green") {
-    console.log("Hello green!");
+    console.log("Hello green!")
   } else {
-    console.log("Hello blue!");
+    console.log("Hello blue!")
   }
 }
 ```
@@ -126,16 +126,13 @@ let him: account = #Facebook("Josh", 26)
 ```js
 var me = {
   NAME: "Instagram",
-  VAL: "Jenny"
-};
+  VAL: "Jenny",
+}
 
 var him = {
   NAME: "Facebook",
-  VAL: [
-    "Josh",
-    26
-  ]
-};
+  VAL: ["Josh", 26],
+}
 ```
 
 </CodeTab>
@@ -158,7 +155,7 @@ let myColor: color = #Ruby
 ```
 
 ```js
-var myColor = "Ruby";
+var myColor = "Ruby"
 ```
 
 </CodeTab>
@@ -178,14 +175,14 @@ switch myColor {
 ```
 
 ```js
-var other = myColor;
+var other = myColor
 
 if (other === "Neon" || other === "Navy" || other === "Sapphire") {
-  console.log("This is blue-ish");
+  console.log("This is blue-ish")
 } else if (other === "Rust" || other === "Ruby" || other === "Redwood") {
-  console.log("This is red-ish");
+  console.log("This is red-ish")
 } else {
-  console.log("Other color than red and blue: ", other);
+  console.log("Other color than red and blue: ", other)
 }
 ```
 
@@ -225,21 +222,21 @@ Console.log(displayColor(myColor))
 ```
 
 ```js
-var myColor = "blue";
+var myColor = "blue"
 
 function displayColor(v) {
   if (v === "white") {
-    return "Hey white!";
+    return "Hey white!"
   } else if (v === "red") {
-    return "Hello red";
+    return "Hello red"
   } else if (v === "green") {
-    return "Hello green";
+    return "Hello green"
   } else {
-    return "Hey blue!";
+    return "Hey blue!"
   }
 }
 
-console.log(displayColor("blue"));
+console.log(displayColor("blue"))
 ```
 
 </CodeTab>
@@ -270,7 +267,7 @@ let intl = makeNumberFormat(#"de-DE")
 ```
 
 ```js
-var intl = Intl.NumberFormat("de-DE");
+var intl = Intl.NumberFormat("de-DE")
 ```
 
 </CodeTab>
@@ -297,7 +294,6 @@ export const myDirection = Direction.Up
 
 For this particular example, we can also inline poly variant type definitions to design the type for the imported `myDirection` value:
 
-
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
@@ -306,9 +302,9 @@ type direction = [ #UP | #DOWN | #LEFT | #RIGHT ]
 ```
 
 ```js
-var DirectionJs = require("./direction.js");
+var DirectionJs = require("./direction.js")
 
-var myDirection = DirectionJs.myDirection;
+var myDirection = DirectionJs.myDirection
 ```
 
 </CodeTab>
@@ -396,8 +392,8 @@ let message = "Hello " ++ (theCompany :> string)
 ```
 
 ```js
-var theCompany = "Apple";
-var message = "Hello " + theCompany;
+var theCompany = "Apple"
+var message = "Hello " + theCompany
 ```
 
 </CodeTab>
@@ -412,14 +408,17 @@ One might think that polymorphic variants are superior to regular [variants](./v
 
 - Due to their "structural" nature, poly variant's type errors might be more confusing. If you accidentally write `#blur` instead of `#blue`, ReScript will still error but can't indicate the correct source as easily. Regular variants' source of truth is the type definition, so the error can't go wrong.
 - It's also harder to refactor poly variants. Consider this:
+
   ```res
   let myFruit = #Apple
   let mySecondFruit = #Apple
   let myCompany = #Apple
   ```
+
   Refactoring the first one to `#Orange` doesn't mean we should refactor the third one. Therefore, the editor plugin can't touch the second one either. Regular variant doesn't have such problem, as these 2 values presumably come from different variant type definitions.
 
 - You might lose some nice pattern match checks from the compiler:
+
   ```res
   let myColor = #red
 
@@ -428,6 +427,7 @@ One might think that polymorphic variants are superior to regular [variants](./v
   | #blue => Console.log("Hello blue!")
   }
   ```
+
   Because there's no poly variant definition, it's hard to know whether the `#blue` case can be safely removed.
 
 In most scenarios, we'd recommend to use regular variants over polymorphic variants, especially when you are writing plain ReScript code. In case you want to write zero-cost interop bindings or generate clean JS output, poly variants are oftentimes a better option.

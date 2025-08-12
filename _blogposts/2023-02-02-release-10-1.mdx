@@ -70,10 +70,9 @@ Way easier on the eyes, don't you think? Note that the new `promise` type is ful
 
 Additionally, we also introduced the `Js.Promise2` module as a stepping stone to migrate `Js.Promise` based code to a first-pipe (->) friendly solution. For the daily practise you'll almost always want to use `async` / `await` to handle promises.
 
-(*Sidenote*: We are also well aware that our users want a solution to unify `Belt`, `Js` and `Js.xxx2` and have a fully featured "standard library" instead of adding more `Js.xxx2` modules. Good news is that we have a solution in the pipeline to fix this. `Js.Promise2` was introduced to ease the process later on and is not supposed to be the panacea of promise handling.)
+(_Sidenote_: We are also well aware that our users want a solution to unify `Belt`, `Js` and `Js.xxx2` and have a fully featured "standard library" instead of adding more `Js.xxx2` modules. Good news is that we have a solution in the pipeline to fix this. `Js.Promise2` was introduced to ease the process later on and is not supposed to be the panacea of promise handling.)
 
 If you are already using a third-party promise library like [ryyppy/rescript-promise](https://github.com/ryyppy/rescript-promise) or similar, there's no need to migrate any existing code. Introduce `async` / `await` gradually in your codebase as you go.
-
 
 ## New JSX v4 syntax
 
@@ -83,7 +82,7 @@ ReScript 10.1 now ships with JSX v4. Here's what's new:
 - **Two new transformation modes**. JSX v4 comes with a `classic` mode (= `React.createElement`) and `automatic` mode (= `jsx-runtime` calls). The latter is the new default, moving forward with `rescript/react@0.11` and `React@18`.
 - **Allow mixing JSX configurations on the project and module level.** Gradually mix and match JSX transformations and modes without migrating any old code!
 - **Pass `prop` types** to `@react.component`. You can now fine tune `@react.component` with your specific prop type needs. Very useful for libraries and frameworks to define component interfaces.
-- **Less boilerplate when using `React.Context`**. Check out our [example](/docs/react/latest/migrate-react#reactcontext) for comparison. 
+- **Less boilerplate when using `React.Context`**. Check out our [example](/docs/react/latest/migrate-react#reactcontext) for comparison.
 - **Revisited props spread operator.** This will allow users to spread records in JSX without sacrificing their sanity. Note that this implementation has harder constraints than its JS counterpart. (requires `rescript/react@0.11` or higher)
 - **Better type inference of props.** Type inference when passing e.g. variants that are defined in the same module as the component is much improved. With the earlier JSX version, you'd often need to write code like this in order for the compiler to understand which variant you're passing: `<Button variant=Button.Primary text="Click" />`. With JSX v4, you won't need to tell the compiler where the variant you're passing is located: `<Button variant=Primary text="Click" />`.
 
@@ -181,101 +180,103 @@ let root =
 ```
 
 ```js
-import * as React from "react";
-import * as JsxRuntime from "react/jsx-runtime";
+import * as React from "react"
+import * as JsxRuntime from "react/jsx-runtime"
 
 function Playground$AutomaticModeExample(props) {
   return JsxRuntime.jsx("div", {
-              children: "Hello " + props.name + ""
-            });
+    children: "Hello " + props.name + "",
+  })
 }
 
 var AutomaticModeExample = {
-  make: Playground$AutomaticModeExample
-};
+  make: Playground$AutomaticModeExample,
+}
 
 function Playground$ClassicModeExample(props) {
-  return React.createElement("div", undefined, "Hello " + props.name + "");
+  return React.createElement("div", undefined, "Hello " + props.name + "")
 }
 
 var ClassicModeExample = {
-  make: Playground$ClassicModeExample
-};
+  make: Playground$ClassicModeExample,
+}
 
 function make(props) {
   return JsxRuntime.jsx("div", {
-              children: "Hello " + props.name + ""
-            });
+    children: "Hello " + props.name + "",
+  })
 }
 
 var NoAttributeExample = {
-  make: make
-};
+  make: make,
+}
 
 function Playground$ReactInterfaceExample(props) {
-  var age = props.age;
-  var age$1 = age !== undefined ? age : 0;
+  var age = props.age
+  var age$1 = age !== undefined ? age : 0
   return JsxRuntime.jsx("div", {
-              children: "Hello " + props.name + ", you are " + String(age$1) + " years old."
-            });
+    children:
+      "Hello " + props.name + ", you are " + String(age$1) + " years old.",
+  })
 }
 
 var ReactInterfaceExample = {
-  make: Playground$ReactInterfaceExample
-};
+  make: Playground$ReactInterfaceExample,
+}
 
 function Playground$PropTypeInjectionExample(props) {
-  var msg = props.isHuman ? "hello human" : "hello fellow computer";
+  var msg = props.isHuman ? "hello human" : "hello fellow computer"
   return JsxRuntime.jsx("div", {
-              children: msg
-            });
+    children: msg,
+  })
 }
 
 var PropTypeInjectionExample = {
-  make: Playground$PropTypeInjectionExample
-};
+  make: Playground$PropTypeInjectionExample,
+}
 
 function Playground$PropSpreadExample(props) {
   return JsxRuntime.jsx(make, {
-              name: "World"
-            });
+    name: "World",
+  })
 }
 
 var PropSpreadExample = {
-  make: Playground$PropSpreadExample
-};
+  make: Playground$PropSpreadExample,
+}
 
 var root = JsxRuntime.jsxs("div", {
-      children: [
-        JsxRuntime.jsx(Playground$AutomaticModeExample, {
-              name: "Automatic"
-            }),
-        JsxRuntime.jsx(Playground$ClassicModeExample, {
-              name: "Classic"
-            }),
-        JsxRuntime.jsx(make, {
-              name: "NoAttribute"
-            }),
-        JsxRuntime.jsx(Playground$ReactInterfaceExample, {
-              name: "Interface"
-            }),
-        JsxRuntime.jsx(Playground$PropTypeInjectionExample, {
-              isHuman: true
-            }),
-        JsxRuntime.jsx(Playground$PropSpreadExample, {})
-      ]
-    });
+  children: [
+    JsxRuntime.jsx(Playground$AutomaticModeExample, {
+      name: "Automatic",
+    }),
+    JsxRuntime.jsx(Playground$ClassicModeExample, {
+      name: "Classic",
+    }),
+    JsxRuntime.jsx(make, {
+      name: "NoAttribute",
+    }),
+    JsxRuntime.jsx(Playground$ReactInterfaceExample, {
+      name: "Interface",
+    }),
+    JsxRuntime.jsx(Playground$PropTypeInjectionExample, {
+      isHuman: true,
+    }),
+    JsxRuntime.jsx(Playground$PropSpreadExample, {}),
+  ],
+})
 
 export {
-  AutomaticModeExample ,
-  ClassicModeExample ,
-  NoAttributeExample ,
-  ReactInterfaceExample ,
-  PropTypeInjectionExample ,
-  PropSpreadExample ,
-  root ,
+  AutomaticModeExample,
+  ClassicModeExample,
+  NoAttributeExample,
+  ReactInterfaceExample,
+  PropTypeInjectionExample,
+  PropSpreadExample,
+  root,
 }
 ```
+
 </CodeTab>
 
 ### How to migrate to JSX v4?
@@ -289,7 +290,7 @@ Make sure to also check out the [rescript-react changelog](https://github.com/re
 Our contributors are already one step ahead and are currently working on improvements for the next major v11 release. Things that are currently being explored:
 
 - Make uncurried functions the default. This will be a huge change in terms of how we do interop and will open completely new ways to interact with existing codebases. It will also allow us to improve tooling in ways that wouldn't have been possible in a curried language.
-- Explorations for a community "standard library" that goes beyond `Belt` and `Js.*`. This will also involve disabling / removing global "Stdlib" modules that shouldn't be used (e.g. `Array`, `List`, etc). 
+- Explorations for a community "standard library" that goes beyond `Belt` and `Js.*`. This will also involve disabling / removing global "Stdlib" modules that shouldn't be used (e.g. `Array`, `List`, etc).
 - New tooling to generate markdown from docstrings (module, type and value level). This will be super simple, but very effective.
 - Explorations for a [localized documentation page](https://forum.rescript-lang.org/t/translation-project-rescript-lang-org/4022) (currently in a slowed-down exploration phase, but we will be getting there)
 
@@ -299,7 +300,7 @@ Check out the [v11](https://github.com/rescript-lang/rescript/issues?q=is%3Aopen
 
 As always, we want to thank our [contributors](https://github.com/rescript-lang/rescript/graphs/contributors?from=2019-11-24&to=2023-02-02&type=c) for building an amazing platform. Special thanks go out to [mununki](https://github.com/mununki) for building the new JSX v4 syntax. Amazing work!
 
-## That's it 
+## That's it
 
 We hope you enjoy the newest improvements as much as we do.
 

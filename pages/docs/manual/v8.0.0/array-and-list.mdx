@@ -15,11 +15,13 @@ Arrays are our main ordered data structure. They work the same way as JavaScript
 ```re
 let myArray = [|"hello", "world", "how are you"|];
 ```
+
 ```ml
 let myArray = [|"hello"; "world"; "how are you"|]
 ```
+
 ```js
-var myArray = ["hello", "world", "how are you"];
+var myArray = ["hello", "world", "how are you"]
 ```
 
 </CodeTab>
@@ -43,6 +45,7 @@ myArray[0] = "hey"; // now [|"hey", "world", "how are you"|]
 
 let pushedValue = Js.Array2.push(myArray, "bye");
 ```
+
 ```ml
 let myArray = [|"hello"; "world"; "how are you"|]
 
@@ -50,14 +53,15 @@ let firstItem = myArray(0)  (* "hello" *)
 
 let () = myArray.(0) <- "hey" (* now [|"hey"; "world"; "how are you"|] *)
 ```
+
 ```js
-var myArray = ["hello", "world", "how are you"];
+var myArray = ["hello", "world", "how are you"]
 
-var firstItem = myArray[0];
+var firstItem = myArray[0]
 
-myArray[0] = "hey";
+myArray[0] = "hey"
 
-var pushedValue = myArray.push("bye");
+var pushedValue = myArray.push("bye")
 ```
 
 </CodeTab>
@@ -76,9 +80,11 @@ ReScript provides a singly linked list too. Lists are:
 ```re
 let myList = [1, 2, 3];
 ```
+
 ```ml
 let myList = [1; 2; 3]
 ```
+
 ```js
 var myList = {
   hd: 1,
@@ -86,10 +92,10 @@ var myList = {
     hd: 2,
     tl: {
       hd: 3,
-      tl: 0
-    }
-  }
-};
+      tl: 0,
+    },
+  },
+}
 ```
 
 </CodeTab>
@@ -114,10 +120,12 @@ Use the spread syntax:
 let myList = [1, 2, 3];
 let anotherList = [0, ...myList];
 ```
+
 ```ml
 let myList = [1; 2; 3]
 let anotherList = 0 :: myList
 ```
+
 ```js
 var myList = {
   hd: 1,
@@ -125,15 +133,15 @@ var myList = {
     hd: 2,
     tl: {
       hd: 3,
-      tl: 0
-    }
-  }
-};
+      tl: 0,
+    },
+  },
+}
 
 var anotherList = {
   hd: 0,
-  tl: myList
-};
+  tl: myList,
+}
 ```
 
 </CodeTab>
@@ -157,16 +165,18 @@ let message =
   | [a, ...rest] => "The head of the list is the string " ++ Js.Int.toString(a)
   };
 ```
+
 ```ml
 let message =
   match myList with
   | [] -> "This list is empty"
   | a::rest -> "The head of the list is the string " ^ (Js.Int.toString a)
 ```
+
 ```js
 var message = myList
   ? "The head of the list is the string " + (1).toString()
-  : "This list is empty";
+  : "This list is empty"
 ```
 
 </CodeTab>

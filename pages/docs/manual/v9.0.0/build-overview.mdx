@@ -11,7 +11,7 @@ ReScript comes with a build system, bsb, that's meant to be fast, lean and used 
 
 The build description file is called `bsconfig.json`. Every ReScript project needs one.
 
-## Build Project 
+## Build Project
 
 Each build will create build artifacts from your project's source files.
 
@@ -28,7 +28,6 @@ Add `-w` to keep the built-in watcher running. Any new file change will be picke
 **Note 2**: In case you want to set up a project in a JS-monorepo-esque approach (`yarn workspaces` / `lerna`) where changes in your sub packages should be noticed by the compiler (`bsb -make-world`), you will need to define pinned dependencies in your main project's `bsconfig.json`. More details [here](./build-pinned-dependencies).
 
 **To build only your project's files (without dependencies)**, run:
-
 
 ```sh
 bsb

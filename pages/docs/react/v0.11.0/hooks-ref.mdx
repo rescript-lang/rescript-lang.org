@@ -21,8 +21,8 @@ let refContainer = React.useRef(initialValue);
 ```
 
 ```js
-  var button = React.useRef(null);
-  React.useRef(0);
+var button = React.useRef(null)
+React.useRef(0)
 ```
 
 </CodeTab>
@@ -37,7 +37,6 @@ However, `useRef()` is useful for more than the ref attribute. It's handy for ke
 
 This works because `useRef()` creates a plain JavaScript object. The only difference between `useRef()` and creating a `{current: ...}` object yourself is that useRef will give you the same ref object on every render.
 
-
 Keep in mind that `useRef` doesn’t notify you when its content changes. Mutating the `.current` record field doesn’t cause a re-render. If you want to run some code when React attaches or detaches a ref to a DOM node, you may want to use a [callback ref](./refs-and-the-dom#callback-refs) instead.
 
 More infos on direct DOM manipulation can be found in the [Refs and the DOM](./refs-and-the-dom) section.
@@ -45,7 +44,6 @@ More infos on direct DOM manipulation can be found in the [Refs and the DOM](./r
 ## Examples
 
 ### Managing Focus for a Text Input
-
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -73,19 +71,30 @@ let make = () => {
 
 ```js
 function TextInputWithFocusButton(Props) {
-  var inputEl = React.useRef(null);
+  var inputEl = React.useRef(null)
   var onClick = function (param) {
-    return Belt_Option.forEach(Caml_option.nullable_to_opt(inputEl.current), (function (input) {
-                  input.focus();
-
-                }));
-  };
-  return React.createElement(React.Fragment, undefined, React.createElement("input", {
-                  ref: inputEl,
-                  type: "text"
-                }), React.createElement("button", {
-                  onClick: onClick
-                }, "Focus the input"));
+    return Belt_Option.forEach(
+      Caml_option.nullable_to_opt(inputEl.current),
+      function (input) {
+        input.focus()
+      },
+    )
+  }
+  return React.createElement(
+    React.Fragment,
+    undefined,
+    React.createElement("input", {
+      ref: inputEl,
+      type: "text",
+    }),
+    React.createElement(
+      "button",
+      {
+        onClick: onClick,
+      },
+      "Focus the input",
+    ),
+  )
 }
 ```
 
@@ -126,25 +135,31 @@ let make = () => {
 
 ```js
 function CustomTextInput(Props) {
-  var textInput = React.useRef(null);
+  var textInput = React.useRef(null)
   var setTextInputRef = function (element) {
-    textInput.current = element;
-
-  };
+    textInput.current = element
+  }
   var focusTextInput = function (param) {
-    return Belt_Option.forEach(Caml_option.nullable_to_opt(textInput.current), (function (input) {
-                  input.focus();
-
-                }));
-  };
-  return React.createElement("div", undefined, React.createElement("input", {
-                  ref: setTextInputRef,
-                  type: "text"
-                }), React.createElement("input", {
-                  type: "button",
-                  value: "Focus the text input",
-                  onClick: focusTextInput
-                }));
+    return Belt_Option.forEach(
+      Caml_option.nullable_to_opt(textInput.current),
+      function (input) {
+        input.focus()
+      },
+    )
+  }
+  return React.createElement(
+    "div",
+    undefined,
+    React.createElement("input", {
+      ref: setTextInputRef,
+      type: "text",
+    }),
+    React.createElement("input", {
+      type: "button",
+      value: "Focus the text input",
+      onClick: focusTextInput,
+    }),
+  )
 }
 ```
 

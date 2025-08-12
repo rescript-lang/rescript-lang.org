@@ -17,7 +17,7 @@ As a functional language, the vanilla OCaml only provides curried calling
 convention, BuckleScript employs fairly [advanced
 optimizations](http://bucklescript.github.io/bucklescript-playground/#Curry_Optimization)
 for curried calling convention, however, the most efficient code is efficient
-  code not relying on optimizations.
+code not relying on optimizations.
 
 Since this release, we provide first class uncurried calling convention, _all
 toolchains provided by BuckleScript_ can understand uncurried calling
@@ -64,8 +64,8 @@ function (`(. 'a) => 'b`) while `f` is still a curried function.
 The compiler will also yield following JS output:
 
 ```js
-function f (g,x){
-    return g (x)
+function f(g, x) {
+  return g(x)
 }
 ```
 
@@ -76,7 +76,7 @@ Again, the code shows that...
 
 ### API documentation
 
-Now `ocamldoc` can  understand `[@bs]` natively(instead of printing a desugared
+Now `ocamldoc` can understand `[@bs]` natively(instead of printing a desugared
 output), we provide an [API
 documentation](http://bucklescript.github.io/bucklescript/api/) for the library
 shipped with BuckleScript, we plan to ship the documentation generator in next
@@ -98,13 +98,12 @@ See [Catch exception](/docs/manual/latest/exception)
 See
 [`bs.open`](http://bucklescript.github.io/bucklescript/Manual.html#__code_bs_open_code_type_safe_external_data_source_handling_since_1_7_0)
 
-
 ### ES6 support in Safari
 
 See [fix es6 support in
 browser](https://github.com/bucklescript/bucklescript/issues/1465)
 
-### `bs-dev-dependencies` support  in the build system
+### `bs-dev-dependencies` support in the build system
 
 See [build
 schema](http://bucklescript.github.io/bucklescript/docson/#build-schema.json)

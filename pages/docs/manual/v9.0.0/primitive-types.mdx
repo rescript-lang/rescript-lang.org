@@ -21,9 +21,10 @@ let greeting = "Hello world!"
 let multilineGreeting = "Hello
  world!"
 ```
+
 ```js
-var greeting = "Hello world!";
-var multilineGreeting = "Hello\n world!";
+var greeting = "Hello world!"
+var multilineGreeting = "Hello\n world!"
 ```
 
 </CodeTab>
@@ -35,8 +36,9 @@ To concatenate strings, use `++`:
 ```res example
 let greetings = "Hello " ++ "world!"
 ```
+
 ```js
-var greetings = "Hello world!";
+var greetings = "Hello world!"
 ```
 
 </CodeTab>
@@ -61,10 +63,11 @@ World
 ${name}
 `
 ```
-```js
-var name = "Joe";
 
-var greeting = "Hello\nWorld\n👋\n" + name + "\n";
+```js
+var name = "Joe"
+
+var greeting = "Hello\nWorld\n👋\n" + name + "\n"
 ```
 
 </CodeTab>
@@ -79,8 +82,9 @@ For interpolation, you'll have to convert the binding (`name` in the example) in
 let age = 10
 let message = j`Today I am $age years old.`
 ```
+
 ```js
-var message = "Today I am " + 10 + " years old.";
+var message = "Today I am " + 10 + " years old."
 ```
 
 </CodeTab>
@@ -110,8 +114,9 @@ ReScript has a type for a string with a single letter:
 ```res example
 let firstLetterOfAlphabet = 'a'
 ```
+
 ```js
-var firstLetterOfAlphabet = /* "a" */97;
+var firstLetterOfAlphabet = /* "a" */ 97
 ```
 
 </CodeTab>
@@ -129,8 +134,9 @@ ReScript regular expressions compile cleanly to their JavaScript counterpart:
 ```res example
 let r = %re("/b/g")
 ```
+
 ```js
-var r = /b/g;
+var r = /b/g
 ```
 
 </CodeTab>

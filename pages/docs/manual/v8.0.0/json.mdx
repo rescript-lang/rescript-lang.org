@@ -23,6 +23,7 @@ external parseIntoMyData: string => data = "parse";
 let result = parseIntoMyData({|{"names": ["Luke", "Christine"]}|});
 let name1 = result.names[0];
 ```
+
 ```ml
 (* declare the shape of the json you're binding to *)
 type data = {names: string array}
@@ -34,9 +35,10 @@ external parseIntoMyData: string -> data = "parse"
 let result = parseIntoMyData {|{"names": ["Luke", "Christine"]}|}
 let name1 = (result.names).(0)
 ```
+
 ```js
-var result = JSON.parse("{\"names\": [\"Luke\", \"Christine\"]}");
-var name1 = result.names[0];
+var result = JSON.parse('{"names": ["Luke", "Christine"]}')
+var name1 = result.names[0]
 ```
 
 </CodeTab>
@@ -52,14 +54,13 @@ Use `Js.Json.stringify`:
 ```re
 Js.log(Js.Json.stringifyAny([|"Amy", "Joe"|]));
 ```
+
 ```ml
 Js.log (Js.Json.stringifyAny [|"Amy"; "Joe"|])
 ```
+
 ```js
-console.log(JSON.stringify([
-  "Amy",
-  "Joe"
-]));
+console.log(JSON.stringify(["Amy", "Joe"]))
 ```
 
 </CodeTab>

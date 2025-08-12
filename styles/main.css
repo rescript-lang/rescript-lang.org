@@ -1,5 +1,5 @@
-@import './_hljs.css';
-@import './_markdown.css';
+@import "./_hljs.css";
+@import "./_markdown.css";
 @import "./_fonts.css";
 @import "./_docsearch.css";
 
@@ -9,12 +9,12 @@
 /* @import "./_typography.css"; */
 
 body {
-  @apply font-sans bg-white sm:subpixel-antialiased ;
+  @apply font-sans bg-white sm:subpixel-antialiased;
 }
 
 .hide-scrollbar {
   scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none;  /* IE 10+ */
+  -ms-overflow-style: none; /* IE 10+ */
 }
 
 .hide-scrollbar::-webkit-scrollbar {
@@ -28,65 +28,65 @@ a > code {
 
 @tailwind utilities;
 
-@layer components { 
+@layer components {
   .hl-title {
-    @apply text-[2.5rem] tracking-tighter leading-tight font-semibold text-gray-80
+    @apply text-[2.5rem] tracking-tighter leading-tight font-semibold text-gray-80;
   }
 
   @screen xs {
     .hl-title {
-      @apply text-48
+      @apply text-48;
     }
   }
 
   @screen md {
     .hl-title {
-      @apply text-68
+      @apply text-68;
     }
   }
 
   @screen lg {
     .hl-title {
-      @apply font-bold
+      @apply font-bold;
     }
   }
 
   @layer components {
     .hl-1 {
-      @apply text-48 font-semibold tracking-tighter leading-tight text-black
+      @apply text-48 font-semibold tracking-tighter leading-tight text-black;
     }
     .hl-2 {
-      @apply text-32 font-semibold tracking-tighter leading-tight text-black
+      @apply text-32 font-semibold tracking-tighter leading-tight text-black;
     }
-    .hl-3 { 
-      @apply text-24 font-semibold tracking-tight leading-tight text-black
+    .hl-3 {
+      @apply text-24 font-semibold tracking-tight leading-tight text-black;
     }
     .hl-4 {
-      @apply text-18 font-semibold tracking-tight leading-tight text-gray-80
+      @apply text-18 font-semibold tracking-tight leading-tight text-gray-80;
     }
     .hl-5 {
-      @apply text-14 font-bold tracking-normal leading-tight text-gray-80
+      @apply text-14 font-bold tracking-normal leading-tight text-gray-80;
     }
     .hl-overline {
-      @apply text-11 font-semibold tracking-wide leading-tight uppercase text-gray-80
+      @apply text-11 font-semibold tracking-wide leading-tight uppercase text-gray-80;
     }
   }
 
   @layer components {
     .body-lg {
-      @apply text-18 font-normal tracking-tight leading-4
+      @apply text-18 font-normal tracking-tight leading-4;
     }
     .body-button {
-      @apply text-16 font-semibold tracking-normal leading-2
+      @apply text-16 font-semibold tracking-normal leading-2;
     }
     .body-md {
-      @apply text-16 font-normal tracking-tight leading-4
+      @apply text-16 font-normal tracking-tight leading-4;
     }
     .body-sm {
-      @apply text-14 font-medium tracking-normal leading-2
+      @apply text-14 font-medium tracking-normal leading-2;
     }
     .captions {
-      @apply text-12 font-medium tracking-normal leading-2
+      @apply text-12 font-medium tracking-normal leading-2;
     }
   }
 }

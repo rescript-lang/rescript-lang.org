@@ -26,21 +26,21 @@ let message = dieRoll(6)->dieRollMessage("Marshall")
 
 ```js
 function dieRoll(size) {
-  return Core__Math.Int.random(1, size);
+  return Core__Math.Int.random(1, size)
 }
 
 function dieRollMessage(value, name) {
-  return "Hi " + name + ", you rolled a " + value.toString();
+  return "Hi " + name + ", you rolled a " + value.toString()
 }
 
-var message = dieRollMessage(dieRoll(6), "Marshall");
+var message = dieRollMessage(dieRoll(6), "Marshall")
 ```
 
 </CodeTab>
 
 Which produces a message such as `Hello Marshall, you rolled a 3`.
 
-You can also explicitly define the argument position of a piped value by using the `_` placeholder: 
+You can also explicitly define the argument position of a piped value by using the `_` placeholder:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -59,20 +59,20 @@ String.toUpperCase("example message")->logMsg(user, datestr, _)
 
 ```js
 function logMsg(user, datestr, msg) {
-  console.log(user + "|" + datestr + "|" + msg);
+  console.log(user + "|" + datestr + "|" + msg)
 }
 
-var datestr = "01-01-2021";
+var datestr = "01-01-2021"
 
-var user = "admin";
+var user = "admin"
 
-((function (__x) {
-        logMsg(user, datestr, __x);
-      })("example message".toUpperCase()));
+;(function (__x) {
+  logMsg(user, datestr, __x)
+})("example message".toUpperCase())
 ```
 
 </CodeTab>
 
 ### References
 
-* [Pipe](/docs/manual/latest/pipe)
+- [Pipe](/docs/manual/latest/pipe)

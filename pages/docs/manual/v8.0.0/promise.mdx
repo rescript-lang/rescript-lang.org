@@ -24,6 +24,7 @@ Js.Promise.make: (
   ) => unit
 ) => Js.Promise.t('a);
 ```
+
 ```mli
 Js.Promise.make: (
   resolve:(('a -> unit) [@bs]) ->
@@ -34,8 +35,7 @@ Js.Promise.make: (
 
 </CodeTab>
 
-This type signature means that `make` takes a callback that takes 2 named arguments, `resolve` and `reject`. Both arguments are themselves [uncurried callbacks](
-function.md#uncurried-function) (with a dot). `make` returns the created promise.
+This type signature means that `make` takes a callback that takes 2 named arguments, `resolve` and `reject`. Both arguments are themselves [uncurried callbacks](function.md#uncurried-function) (with a dot). `make` returns the created promise.
 
 ## Usage
 
@@ -60,6 +60,7 @@ myPromise
      Js.Promise.resolve(-2);
    });
 ```
+
 ```ml
 let myPromise = Js.Promise.make (fun ~resolve ~reject -> ((resolve 2) [@bs]))
 
@@ -77,24 +78,25 @@ let () = myPromise
      Js.Promise.resolve -2
    )
 ```
+
 ```js
 var myPromise = new Promise(function (resolve, reject) {
-  return resolve(2);
-});
+  return resolve(2)
+})
 
 myPromise
   .then(function (value) {
-    console.log(value);
-    return Promise.resolve((value + 2) | 0);
+    console.log(value)
+    return Promise.resolve((value + 2) | 0)
   })
   .then(function (value) {
-    console.log(value);
-    return Promise.resolve((value + 3) | 0);
+    console.log(value)
+    return Promise.resolve((value + 3) | 0)
   })
   .catch(function (err) {
-    console.log("Failure!!", err);
-    return Promise.resolve(-2);
-  });
+    console.log("Failure!!", err)
+    return Promise.resolve(-2)
+  })
 ```
 
 </CodeTab>

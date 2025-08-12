@@ -16,6 +16,7 @@ Some JS values, like `setTimeout`, live in the global scope. You can bind to the
 @val external setTimeout: (unit => unit, int) => float = "setTimeout"
 @val external clearTimeout: float => unit = "clearTimeout"
 ```
+
 ```js
 // Empty output
 ```
@@ -46,12 +47,13 @@ type timerId
 let id = setTimeout(() => Js.log("hello"), 100)
 clearTimeout(id)
 ```
+
 ```js
 var id = setTimeout(function (param) {
-  console.log("hello");
-}, 100);
+  console.log("hello")
+}, 100)
 
-clearTimeout(id);
+clearTimeout(id)
 ```
 
 </CodeTab>
@@ -70,8 +72,9 @@ If you want to bind to a value inside a global module, e.g. `Math.random`, attac
 @scope("Math") @val external random: unit => float = "random"
 let someNumber = random()
 ```
+
 ```js
-var someNumber = Math.random();
+var someNumber = Math.random()
 ```
 
 </CodeTab>
@@ -84,6 +87,7 @@ you can bind to an arbitrarily deep object by passing a tuple to `scope`:
 @val @scope(("window", "location", "ancestorOrigins"))
 external length: int = "length"
 ```
+
 ```js
 // Empty output
 ```
@@ -106,13 +110,14 @@ switch %external(__DEV__) {
 | None => Js.log("production mode")
 }
 ```
+
 ```js
-var match = typeof __DEV__ === "undefined" ? undefined : __DEV__;
+var match = typeof __DEV__ === "undefined" ? undefined : __DEV__
 
 if (match !== undefined) {
-  console.log("dev mode");
+  console.log("dev mode")
 } else {
-  console.log("production mode");
+  console.log("production mode")
 }
 ```
 
@@ -130,13 +135,14 @@ switch %external(__filename) {
 | None => Js.log("non-node environment")
 };
 ```
+
 ```js
-var match = typeof (__filename) === "undefined" ? undefined : (__filename);
+var match = typeof __filename === "undefined" ? undefined : __filename
 
 if (match !== undefined) {
-  console.log(match);
+  console.log(match)
 } else {
-  console.log("non-node environment");
+  console.log("non-node environment")
 }
 ```
 

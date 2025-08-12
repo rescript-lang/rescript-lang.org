@@ -21,29 +21,28 @@ type t +=
   | Point(float, float)
   | Line(float, float, float, float)
 ```
+
 ```js
-var Caml_exceptions = require("./stdlib/caml_exceptions.js");
+var Caml_exceptions = require("./stdlib/caml_exceptions.js")
 
-var Other = Caml_exceptions.create("Playground.Other");
+var Other = Caml_exceptions.create("Playground.Other")
 
-var Point = Caml_exceptions.create("Playground.Point");
+var Point = Caml_exceptions.create("Playground.Point")
 
-var Line = Caml_exceptions.create("Playground.Line");
+var Line = Caml_exceptions.create("Playground.Line")
 ```
 
 </CodeTab>
 
-The `..` in the type declaration above defines an extensible variant `type t`. The `+=` operator is then used to add constructors to the given type. 
+The `..` in the type declaration above defines an extensible variant `type t`. The `+=` operator is then used to add constructors to the given type.
 
 **Note:** Don't forget the leading `type` keyword when using the `+=` operator!
 
 ## Pattern Matching Caveats
 
-Extensible variants are open-ended, so the compiler will not be able to exhaustively pattern match all available cases. You will always need to provide a default `_` case for every `switch` expression. 
-
+Extensible variants are open-ended, so the compiler will not be able to exhaustively pattern match all available cases. You will always need to provide a default `_` case for every `switch` expression.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
-
 
 ```res
 let print = v =>
@@ -54,15 +53,16 @@ let print = v =>
   | _ => Js.log("Other")
   }
 ```
+
 ```js
 function print(v) {
   if (v.RE_EXN_ID === Point) {
-    console.log("Point", [v._1, v._2]);
+    console.log("Point", [v._1, v._2])
   } else if (v.RE_EXN_ID === Line) {
-    console.log("Line", [v._1, v._2, v._3, v._4]);
+    console.log("Line", [v._1, v._2, v._3, v._4])
   } else {
-    console.log("Other");
-  } 
+    console.log("Other")
+  }
 }
 ```
 

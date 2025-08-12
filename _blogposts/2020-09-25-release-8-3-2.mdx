@@ -74,7 +74,7 @@ To get the build output, instead of communicating through IPC, we adopted a simp
 This makes the editor integration build-system agnostic, it does not need talk to the build system directly.
 
 It also makes our build tool work with other watchers including Facebook's [watchman](https://facebook.github.io/watchman/).
-Watchman is  a more scalable watcher tool for some specific platforms and less memory hungry, however, we still need a watchman-client to get the output of triggered job.
+Watchman is a more scalable watcher tool for some specific platforms and less memory hungry, however, we still need a watchman-client to get the output of triggered job.
 We write the output to `.compiler.log` per each build, allowing clients to read compiler diagnostics when they want.
 
 ## A better algorithm for removing stale outputs
@@ -90,8 +90,8 @@ We scan `lib/bs` directory and check some dangling `cm{i,t,j,ti}` files, if it d
 the current build set, it is considered stale artifacts. If it is `cmt` file, it would trigger some hooks of `genType`, notably -cmt-rm.
 
 - Based on previous build logs
-We store previous compilation stats.  If a file is in the previous compiler output, but no longer in the output of the new build, it is considered stale and can be removed.
-it is considered stale output which can be removed.
+  We store previous compilation stats. If a file is in the previous compiler output, but no longer in the output of the new build, it is considered stale and can be removed.
+  it is considered stale output which can be removed.
 
 In general, strategy two is more reliable and efficient.
 
@@ -100,11 +100,9 @@ In general, strategy two is more reliable and efficient.
 
 However, strategy one is easier for tooling like `genType`. Not every tool has knowledge of the build system.
 
-
 Sometimes a combination of both strategies is needed.
-- When removing .cm* files, we use the first strategy.
+
+- When removing .cm\* files, we use the first strategy.
 - When removing generated javascript, we use strategy two,
-
-
 
 Happy Hacking!

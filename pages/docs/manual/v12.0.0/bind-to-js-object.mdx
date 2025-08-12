@@ -36,10 +36,11 @@ type person = {
 
 let johnName = john.name
 ```
-```js
-var MySchool = require("MySchool");
 
-var johnName = MySchool.john.name;
+```js
+var MySchool = require("MySchool")
+
+var johnName = MySchool.john.name
 ```
 
 </CodeTab>
@@ -57,10 +58,11 @@ type action = {
 
 let action = {type_: "ADD_USER"}
 ```
+
 ```js
 var action = {
-  type: "ADD_USER"
-};
+  type: "ADD_USER",
+}
 ```
 
 </CodeTab>
@@ -81,14 +83,10 @@ let value = {foo: 7, bar: "baz"}
 ```
 
 ```js
-var value = [
-  7,
-  "baz"
-];
+var value = [7, "baz"]
 ```
 
 </CodeTab>
-
 
 ### Bind Using ReScript Object
 
@@ -107,10 +105,11 @@ type person = {
 
 let johnName = john["name"]
 ```
-```js
-var MySchool = require("MySchool");
 
-var johnName = MySchool.john.name;
+```js
+var MySchool = require("MySchool")
+
+var johnName = MySchool.john.name
 ```
 
 </CodeTab>
@@ -126,7 +125,9 @@ type textarea
 @set external setName: (textarea, string) => unit = "name"
 @get external getName: textarea => string = "name"
 ```
+
 ```js
+
 ```
 
 </CodeTab>
@@ -145,10 +146,11 @@ let i32arr = create(3)
 i32arr->set(0, 42)
 Console.log(i32arr->get(0))
 ```
+
 ```js
-var i32arr = new Int32Array(3);
-i32arr[0] = 42;
-console.log(i32arr[0]);
+var i32arr = new Int32Array(3)
+i32arr[0] = 42
+console.log(i32arr[0])
 ```
 
 </CodeTab>
@@ -174,8 +176,9 @@ type t
 
 let date = createDate()
 ```
+
 ```js
-var date = new Date();
+var date = new Date()
 ```
 
 </CodeTab>
@@ -189,9 +192,10 @@ type t
 @new @module external book: unit => t = "Book"
 let myBook = book()
 ```
+
 ```js
-var Book = require("Book");
-var myBook = new Book();
+var Book = require("Book")
+var myBook = new Book()
 ```
 
 </CodeTab>

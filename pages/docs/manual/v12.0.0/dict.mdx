@@ -25,28 +25,21 @@ let d2 = Dict.fromArray([("A", 5), ("B", 6)])
 ```js
 let d = {
   A: 5,
-  B: 6
-};
+  B: 6,
+}
 
 let d2 = Object.fromEntries([
-  [
-    "A",
-    5
-  ],
-  [
-    "B",
-    6
-  ]
-]);
-
+  ["A", 5],
+  ["B", 6],
+])
 ```
 
 </CodeTab>
 
 A few things to note here:
 
-* Using the first class `dict{}` syntax compiles cleanly to a JavaScript object directly
-* Using `Dict.fromArray` is useful when you need to create a dictionary programatically
+- Using the first class `dict{}` syntax compiles cleanly to a JavaScript object directly
+- Using `Dict.fromArray` is useful when you need to create a dictionary programatically
 
 ## Access
 
@@ -74,22 +67,24 @@ let dict{"C": ?c} = d
 let d = {
   A: 5,
   B: 6,
-  C: 7
-};
+  C: 7,
+}
 
-let a = d["A"];
+let a = d["A"]
 
-let b = d.B;
+let b = d.B
 
-let b$1 = b !== undefined ? b : undefined;
+let b$1 = b !== undefined ? b : undefined
 
-let c = d.C;
+let c = d.C
 ```
+
 </CodeTab>
 
 > In the Destructuring example, we're using the `?` optional pattern match syntax to pull out the `C` key value as an optional, regardless of if the dict has it or not.
 
 ## Pattern matching
+
 Dictionaries have first class support for pattern matching. Read more in the [dedicated guide on pattern matching and destructring in ReScript](pattern-matching-destructuring.md#match-on-dictionaries).
 
 ## Updating and setting values
@@ -107,10 +102,10 @@ d->Dict.set("C", 7)
 ```js
 let d = {
   A: 5,
-  B: 6
-};
+  B: 6,
+}
 
-d["C"] = 7;
+d["C"] = 7
 ```
 
 </CodeTab>
@@ -141,20 +136,19 @@ let decodeUser = (json: JSON.t) => {
 ```js
 function decodeUser(json) {
   if (typeof json !== "object" || json === null || Array.isArray(json)) {
-    return;
+    return
   }
-  let name = json.name;
+  let name = json.name
   if (typeof name !== "string") {
-    return;
+    return
   }
-  let email = json.email;
+  let email = json.email
   if (typeof email === "string") {
     return {
       name: name,
-      email: email
-    };
+      email: email,
+    }
   }
-  
 }
 ```
 

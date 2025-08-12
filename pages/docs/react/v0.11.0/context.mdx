@@ -18,7 +18,6 @@ In a typical React application, data is passed top-down (parent to child) via pr
 
 **Note:** In ReScript, passing down props is way simpler than in TS / JS due to its [JSX prop punning](/docs/manual/latest/jsx#punning) feature and strong type inference, so it's often preferrable to keep it simple and just do props passing. Less magic means more transparency!
 
-
 ## When to Use Context
 
 Context is designed to share data that can be considered “global” for a tree of React components, such as the current authenticated user, theme, or preferred language. For example, in the code below we manually thread through a “theme” prop in order to style the Button component:
@@ -67,30 +66,39 @@ let make = () => {
 
 ```js
 function Button(props) {
-  var className = props.theme ? "theme-black" : "theme-light";
-  return React.createElement("button", {
-              className: className
-            }, "Click me");
+  var className = props.theme ? "theme-black" : "theme-light"
+  return React.createElement(
+    "button",
+    {
+      className: className,
+    },
+    "Click me",
+  )
 }
 
 function ThemedButton(props) {
   return React.createElement(App$Button, {
-              theme: props.theme
-            });
+    theme: props.theme,
+  })
 }
 
 function Toolbar(props) {
-  return React.createElement("div", undefined, React.createElement(App$ThemedButton, {
-                  theme: props.theme
-                }));
+  return React.createElement(
+    "div",
+    undefined,
+    React.createElement(App$ThemedButton, {
+      theme: props.theme,
+    }),
+  )
 }
 
 function App(props) {
   return React.createElement(App$Toolbar, {
-              theme: /* Dark */1
-            });
+    theme: /* Dark */ 1,
+  })
 }
 ```
+
 </CodeTab>
 
 Using context, we can avoid passing props through intermediate elements:
@@ -147,55 +155,68 @@ let make = () => {
   </ThemeContext.Provider>
 }
 ```
-```js
-var context = React.createContext(/* Light */0);
 
-var make = context.Provider;
+```js
+var context = React.createContext(/* Light */ 0)
+
+var make = context.Provider
 
 var Provider = {
-  make: make
-};
+  make: make,
+}
 
 var ThemeContext = {
   context: context,
-  Provider: Provider
-};
+  Provider: Provider,
+}
 
 function App$Button(props) {
-  var className = props.theme ? "theme-black" : "theme-light";
-  return React.createElement("button", {
-              className: className
-            }, "Click me");
+  var className = props.theme ? "theme-black" : "theme-light"
+  return React.createElement(
+    "button",
+    {
+      className: className,
+    },
+    "Click me",
+  )
 }
 
 var Button = {
-  make: App$Button
-};
+  make: App$Button,
+}
 
 function App$ThemedButton(props) {
-  var theme = React.useContext(context);
+  var theme = React.useContext(context)
   return React.createElement(App$Button, {
-              theme: theme
-            });
+    theme: theme,
+  })
 }
 
 var ThemedButton = {
-  make: App$ThemedButton
-};
+  make: App$ThemedButton,
+}
 
 function App$Toolbar(props) {
-  return React.createElement("div", undefined, React.createElement(App$ThemedButton, {}));
+  return React.createElement(
+    "div",
+    undefined,
+    React.createElement(App$ThemedButton, {}),
+  )
 }
 
 var Toolbar = {
-  make: App$Toolbar
-};
+  make: App$Toolbar,
+}
 
 function App(props) {
   return React.createElement(make, {
-              value: /* Dark */1,
-              children: React.createElement("div", undefined, React.createElement(App$Toolbar, {}))
-            });
+    value: /* Dark */ 1,
+    children: React.createElement(
+      "div",
+      undefined,
+      React.createElement(App$Toolbar, {}),
+    ),
+  })
 }
 ```
 

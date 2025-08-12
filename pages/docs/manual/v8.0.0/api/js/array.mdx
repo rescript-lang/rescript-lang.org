@@ -52,7 +52,7 @@ A type used to describe JavaScript objects that are like an array or are iterabl
 let from: array_like('a) => array('b);
 ```
 
-Creates a shallow copy of an array from an array-like object. See [`Array.from`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from) on MDN. 
+Creates a shallow copy of an array from an array-like object. See [`Array.from`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from) on MDN.
 
 ```re example
 let strArr = Js.String.castToArrayLike("abcd");
@@ -65,7 +65,7 @@ Js.Array.from(strArr) == [|"a", "b", "c", "d"|];
 let fromMap: (array_like('a), 'a => 'b) => array('b);
 ```
 
-Creates a new array by applying a function (the second argument) to each item in the `array_like` first argument.  See [`Array.from`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from) on MDN.
+Creates a new array by applying a function (the second argument) to each item in the `array_like` first argument. See [`Array.from`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from) on MDN.
 
 ```re example
 let strArr = Js.String.castToArrayLike("abcd");
@@ -101,7 +101,7 @@ Returns the number of elements in the array. See [`Array.length`](https://develo
 let copyWithin: (~to_: int, t('a)) => t('a);
 ```
 
-Copies from the first element in the given array to the designated `~to_` position, returning the resulting array. *This function modifies the original array.* See [`Array.copyWithin`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin) on MDN.
+Copies from the first element in the given array to the designated `~to_` position, returning the resulting array. _This function modifies the original array._ See [`Array.copyWithin`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin) on MDN.
 
 ```re example
 let arr = [|100, 101, 102, 103, 104|];
@@ -116,7 +116,7 @@ arr == [|100, 101, 100, 101, 102|];
 let copyWithinFrom: (~to_: int, ~from: int, t('a)) => t('a);
 ```
 
-Copies starting at element `~from` in the given array to the designated `~to_` position, returning the resulting array. *This function modifies the original array.* See [`Array.copyWithin`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin) on MDN.
+Copies starting at element `~from` in the given array to the designated `~to_` position, returning the resulting array. _This function modifies the original array._ See [`Array.copyWithin`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin) on MDN.
 
 ```re example
 let arr = [|100, 101, 102, 103, 104|];
@@ -131,7 +131,7 @@ arr == [|102, 103, 104, 103, 104|];
 let copyWithinFromRange: (~to_: int, ~start: int, ~end_: int, t('a)) => t('a);
 ```
 
-Copies starting at element `~start` in the given array up to but not including `~end_` to the designated `~to_` position, returning the resulting array. *This function modifies the original array.* See [`Array.copyWithin`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin) on MDN.
+Copies starting at element `~start` in the given array up to but not including `~end_` to the designated `~to_` position, returning the resulting array. _This function modifies the original array._ See [`Array.copyWithin`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin) on MDN.
 
 ```re example
 let arr = [|100, 101, 102, 103, 104, 105|];
@@ -145,7 +145,8 @@ arr == [|100, 102, 103, 104, 104, 105|];
 ```re sig
 let fillInPlace: ('a, t('a)) => t('a);
 ```
-Sets all elements of the given array (the second arumgent) to the designated value (the first argument), returning the resulting array. *This function modifies the original array.* See [`Array.fill`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill) on MDN.
+
+Sets all elements of the given array (the second arumgent) to the designated value (the first argument), returning the resulting array. _This function modifies the original array._ See [`Array.fill`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill) on MDN.
 
 ```re example
 let arr = [|100, 101, 102, 103, 104|];
@@ -159,7 +160,8 @@ arr == [|99, 99, 99, 99, 99|];
 ```re sig
 let fillFromInPlace: ('a, ~from: int, t('a)) => t('a);
 ```
-Sets all elements of the given array (the last arumgent) from position `~from` to the end to the designated value (the first argument), returning the resulting array. *This function modifies the original array.* See [`Array.fill`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill) on MDN.
+
+Sets all elements of the given array (the last arumgent) from position `~from` to the end to the designated value (the first argument), returning the resulting array. _This function modifies the original array._ See [`Array.fill`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill) on MDN.
 
 ```re example
 let arr = [|100, 101, 102, 103, 104|];
@@ -174,14 +176,14 @@ arr == [|100, 101, 99, 99, 99|];
 let fillRangeInPlace: ('a, ~start: int, ~end_: int, t('a)) => t('a);
 ```
 
-Sets the elements of the given array (the last arumgent) from position `~start` up to but not including position `~end_` to the designated value (the first argument), returning the resulting array. *This function modifies the original array.* See [`Array.fill`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill) on MDN.
+Sets the elements of the given array (the last arumgent) from position `~start` up to but not including position `~end_` to the designated value (the first argument), returning the resulting array. _This function modifies the original array._ See [`Array.fill`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill) on MDN.
 
 ```re example
 let arr = [|100, 101, 102, 103, 104|];
 Js.Array.fillRangeInPlace(99, ~start=1, ~end_=4, arr)
   == [|100, 99, 99, 99, 104|];
 arr == [|100, 99, 99, 99, 104|];
-```                                           
+```
 
 ## pop
 
@@ -189,7 +191,7 @@ arr == [|100, 99, 99, 99, 104|];
 let pop: t('a) => option('a);
 ```
 
-If the array is not empty, removes the last element and returns it as `Some(value)`; returns `None` if the array is empty. *This function modifies the original array.* See [`Array.pop`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/pop) on MDN.
+If the array is not empty, removes the last element and returns it as `Some(value)`; returns `None` if the array is empty. _This function modifies the original array._ See [`Array.pop`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/pop) on MDN.
 
 ```re example
 let arr = [|100, 101, 102, 103, 104|];
@@ -206,7 +208,7 @@ Js.Array.pop(empty) == None;
 let push: ('a, t('a)) => int;
 ```
 
-Appends the given value to the array, returning the number of elements in the updated array. *This function modifies the original array.* See [`Array.push`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push) on MDN.
+Appends the given value to the array, returning the number of elements in the updated array. _This function modifies the original array._ See [`Array.push`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push) on MDN.
 
 ```re example
 let arr = [|"ant", "bee", "cat"|];
@@ -220,7 +222,7 @@ arr == [|"ant", "bee", "cat", "dog"|];
 let pushMany: (array('a), t('a)) => int;
 ```
 
-Appends the values from one array (the first argument) to another (the second argument), returning the number of elements in the updated array. *This function modifies the original array.* See [`Array.push`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push) on MDN.
+Appends the values from one array (the first argument) to another (the second argument), returning the number of elements in the updated array. _This function modifies the original array._ See [`Array.push`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push) on MDN.
 
 ```re example
 let arr = [|"ant", "bee", "cat"|];
@@ -234,7 +236,7 @@ arr == [|"ant", "bee", "cat", "dog", "elk"|];
 let reverseInPlace: t('a) => t('a);
 ```
 
-Returns an array with the elements of the input array in reverse order. *This function modifies the original array.* See [`Array.reverse`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse) on MDN.
+Returns an array with the elements of the input array in reverse order. _This function modifies the original array._ See [`Array.reverse`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse) on MDN.
 
 ```re example
 let arr = [|"ant", "bee", "cat"|];
@@ -247,7 +249,8 @@ arr == [|"cat", "bee", "ant"|];
 ```re sig
 let shift: t('a) => option('a);
 ```
-If the array is not empty, removes the first element and returns it as `Some(value)`; returns `None` if the array is empty. *This function modifies the original array.* See [`Array.shift`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/shift) on MDN.
+
+If the array is not empty, removes the first element and returns it as `Some(value)`; returns `None` if the array is empty. _This function modifies the original array._ See [`Array.shift`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/shift) on MDN.
 
 ```re example
 let arr = [|100, 101, 102, 103, 104|];
@@ -257,13 +260,14 @@ arr == [|101, 102, 103, 104|];
 let empty: array(int) = [| |];
 Js.Array.shift(empty) == None;
 ```
+
 ## sortInPlace
 
 ```re sig
 let sortInPlace: t('a) => t('a);
 ```
 
-Sorts the given array in place and returns the sorted array. JavaScript sorts the array by converting the arguments to UTF-16 strings and sorting them. See the second example with sorting numbers, which does not do a numeric sort. *This function modifies the original array.* See [`Array.sort`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort) on MDN.
+Sorts the given array in place and returns the sorted array. JavaScript sorts the array by converting the arguments to UTF-16 strings and sorting them. See the second example with sorting numbers, which does not do a numeric sort. _This function modifies the original array._ See [`Array.sort`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort) on MDN.
 
 ```re example
 let words = [|"bee", "dog", "ant", "cat"|];
@@ -281,13 +285,13 @@ numbers == [|1, 10, 2, 20, 3, 30|];
 let sortInPlaceWith: (('a, 'a) => int, t('a)) => t('a);
 ```
 
-Sorts the given array in place and returns the sorted array. *This function modifies the original array.*
+Sorts the given array in place and returns the sorted array. _This function modifies the original array._
 
 The first argument to `sortInPlaceWith()` is a function that compares two items from the array and returns:
 
-* an integer less than zero if the first item is less than the second item
-* zero if the items are equal
-* an integer greater than zero if the first item is greater than the second item
+- an integer less than zero if the first item is less than the second item
+- zero if the items are equal
+- an integer greater than zero if the first item is greater than the second item
 
 See [`Array.sort`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort) on MDN.
 
@@ -300,7 +304,7 @@ let byLength = (s1, s2) => {
 
 Js.Array.sortInPlaceWith(byLength, words)
   == [|"dog", "horse", "camel", "aardvark"|];
-  
+
 // sort in reverse numeric order
 let numbers = [|3, 30, 10, 1, 20, 2|];
 let reverseNumeric = (n1, n2) => {n2 - n1};
@@ -314,7 +318,7 @@ Js.Array.sortInPlaceWith(reverseNumeric, numbers)
 let spliceInPlace: (~pos: int, ~remove: int, ~add: array('a), t('a)) => t('a);
 ```
 
-Starting at position `~pos`, remove `~remove` elements and then add the elements from the `~add` array. Returns an array consisting of the removed items. *This function modifies the original array.* See [`Array.splice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice) on MDN.
+Starting at position `~pos`, remove `~remove` elements and then add the elements from the `~add` array. Returns an array consisting of the removed items. _This function modifies the original array._ See [`Array.splice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice) on MDN.
 
 ```re example
 let arr = [|"a", "b", "c", "d", "e", "f"|];
@@ -336,7 +340,7 @@ arr3 == [|"a", "b", "c", "d", "e", "f", "x", "y", "z"|];
 let removeFromInPlace: (~pos: int, t('a)) => t('a);
 ```
 
-Removes elements from the given array starting at position `~pos` to the end of the array, returning the removed elements. *This function modifies the original array.* See [`Array.splice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice) on MDN.
+Removes elements from the given array starting at position `~pos` to the end of the array, returning the removed elements. _This function modifies the original array._ See [`Array.splice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice) on MDN.
 
 ```re example
 let arr = [|"a", "b", "c", "d", "e", "f"|];
@@ -350,7 +354,7 @@ arr == [|"a", "b", "c", "d"|];
 let removeCountInPlace: (~pos: int, ~count: int, t('a)) => t('a);
 ```
 
-Removes `~count` elements from the given array starting at position `~pos`, returning the removed elements. *This function modifies the original array.* See [`Array.splice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice) on MDN.
+Removes `~count` elements from the given array starting at position `~pos`, returning the removed elements. _This function modifies the original array._ See [`Array.splice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice) on MDN.
 
 ```re example
 let arr = [|"a", "b", "c", "d", "e", "f"|];
@@ -364,7 +368,7 @@ arr == [|"a", "b", "f"|];
 let unshift: ('a, t('a)) => int;
 ```
 
-Adds the given element to the array, returning the new number of elements in the array. *This function modifies the original array.* See [`Array.unshift`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift) on MDN.
+Adds the given element to the array, returning the new number of elements in the array. _This function modifies the original array._ See [`Array.unshift`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift) on MDN.
 
 ```re example
 let arr = [|"b", "c", "d"|];
@@ -378,7 +382,7 @@ arr == [|"a", "b", "c", "d"|];
 let unshiftMany: (array('a), t('a)) => int;
 ```
 
-Adds the elements in the first array argument at the beginning of the second array argument, returning the new number of elements in the array. *This function modifies the original array.* See [`Array.unshift`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift) on MDN.
+Adds the elements in the first array argument at the beginning of the second array argument, returning the new number of elements in the array. _This function modifies the original array._ See [`Array.unshift`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift) on MDN.
 
 ```re example
 let arr = [|"d", "e"|];
@@ -438,6 +442,7 @@ Js.Array.includes("x", [|"a", "b", "c"|]) == false;
 ```re sig
 let indexOf: ('a, t('a)) => int;
 ```
+
 Returns the index of the first element in the array that has the given value. If the value is not in the array, returns -1. See [`Array.indexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf) on MDN.
 
 ```re example
@@ -465,6 +470,7 @@ Js.Array.indexOfFrom("b", ~from=2, [|"a", "b", "a", "c", "a"|]) == -1;
 ```re sig
 let join: t('a) => string;
 ```
+
 Deprecated. Use `joinWith` instead.
 
 ## joinWith
@@ -472,6 +478,7 @@ Deprecated. Use `joinWith` instead.
 ```re sig
 let joinWith: (string, t('a)) => string;
 ```
+
 This function converts each element of the array to a string (via JavaScript) and concatenates them, separated by the string given in the first argument, into a single string. See [`Array.join`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/join) on MDN.
 
 ```re example
@@ -617,7 +624,7 @@ The first argument to `everyi()` is a predicate function with two arguments: an 
 
 ```re example
 // determine if all even-index items are positive
-let evenIndexPositive = (item, index) => 
+let evenIndexPositive = (item, index) =>
   {(index mod 2 == 0) ? item > 0 : true;};
 
 Js.Array.everyi(evenIndexPositive, [|6, -3, 5, 8|]) == true;
@@ -638,18 +645,17 @@ Js.Array.filter(nonEmpty, [|"abc", "", "", "def", "ghi"|])
   == [|"abc", "def", "ghi"|];
 ```
 
-
 ## filteri
 
 ```re sig
 let filteri: (('a, int) => bool, t('a)) => t('a);
 ```
 
-Each element of the given array are passed to the predicate function. The return value is an array of all those elements for which the predicate function returned `true`.  See [`Array.filter`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter) on MDN.
+Each element of the given array are passed to the predicate function. The return value is an array of all those elements for which the predicate function returned `true`. See [`Array.filter`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter) on MDN.
 
 ```re example
 // keep only positive elements at odd indices
-let positiveOddElement = (item, index) => 
+let positiveOddElement = (item, index) =>
   {(index mod 2 == 1) && (item > 0)};
 
 Js.Array.filteri(positiveOddElement,
@@ -680,7 +686,7 @@ Returns `Some(value)` for the first element in the array that satisifies the giv
 
 ```re example
 // find first positive item at an odd index
-let positiveOddElement = (item, index) => 
+let positiveOddElement = (item, index) =>
   {(index mod 2 == 1) && (item > 0)};
 
 Js.Array.findi(positiveOddElement, [|66, -33, 55, 88, 22|]) == Some(88);
@@ -699,6 +705,7 @@ Returns the index of the first element in the array that satisifies the given pr
 Js.Array.findIndex((x) => {x < 0}, [|33, 22, -55, 77, -44|]) == 2;
 Js.Array.findIndex((x) => {x < 0}, [|33, 22, 55, 77, 44|]) == -1;
 ```
+
 ## findIndexi
 
 ```re sig
@@ -709,7 +716,7 @@ Returns `Some(value)` for the first element in the array that satisifies the giv
 
 ```re example
 // find index of first positive item at an odd index
-let positiveOddElement = (item, index) => 
+let positiveOddElement = (item, index) =>
   {(index mod 2 == 1) && (item > 0)};
 
 Js.Array.findIndexi(positiveOddElement, [|66, -33, 55, 88, 22|]) == 3;
@@ -776,7 +783,7 @@ Js.Array.mapi(product, [|10, 11, 12|]) == [|0, 11, 24|];
 let reduce: (('b, 'a) => 'b, 'b, t('a)) => 'b;
 ```
 
-The `reduce()` function takes three parameters: a *reducer function*, a beginning accumulator value, and an array. The reducer function has two parameters: an accumulated value and an element of the array.
+The `reduce()` function takes three parameters: a _reducer function_, a beginning accumulator value, and an array. The reducer function has two parameters: an accumulated value and an element of the array.
 
 `reduce()` first calls the reducer function with the beginning value and the first element in the array. The result becomes the new accumulator value, which is passed in to the reducer function along with the second element in the array. `reduce()` proceeds through the array, passing in the result of each stage as the accumulator to the reducer function.
 
@@ -801,7 +808,7 @@ Js.Array.reduce((acc, item) => {item /. acc}, 1.0,
 let reducei: (('b, 'a, int) => 'b, 'b, t('a)) => 'b;
 ```
 
-The `reducei()` function takes three parameters: a *reducer function*, a beginning accumulator value, and an array. The reducer function has three parameters: an accumulated value, an element of the array, and the index of that element. 
+The `reducei()` function takes three parameters: a _reducer function_, a beginning accumulator value, and an array. The reducer function has three parameters: an accumulated value, an element of the array, and the index of that element.
 
 `reducei()` first calls the reducer function with the beginning value, the first element in the array, and zero (its index). The result becomes the new accumulator value, which is passed to the reducer function along with the second element in the array and one (its index). `reducei()` proceeds from left to right through the array, passing in the result of each stage as the accumulator to the reducer function.
 
@@ -826,11 +833,11 @@ Js.Array.reducei(sumOfEvens, 0, [|2, 5, 1, 4, 3|]) == 6;
 let reduceRight: (('b, 'a) => 'b, 'b, t('a)) => 'b;
 ```
 
-The `reduceRight()` function takes three parameters: a *reducer function*, a beginning accumulator value, and an array. The reducer function has two parameters: an accumulated value and an element of the array.
+The `reduceRight()` function takes three parameters: a _reducer function_, a beginning accumulator value, and an array. The reducer function has two parameters: an accumulated value and an element of the array.
 
 `reduceRight()` first calls the reducer function with the beginning value and the last element in the array. The result becomes the new accumulator value, which is passed in to the reducer function along with the next-to-last element in the array. `reduceRight()` proceeds from right to left through the array, passing in the result of each stage as the accumulator to the reducer function.
 
-When all array elements are processed, the final value of the accumulator becomes the return value of `reduceRight()`.  See [`Array.reduceRight`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight) on MDN.
+When all array elements are processed, the final value of the accumulator becomes the return value of `reduceRight()`. See [`Array.reduceRight`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight) on MDN.
 
 **NOTE:** In many cases, `reduce()` and `reduceRight()` give the same result. However, see the last example here and compare it to the example from `reduce()`, where order makes a difference.
 
@@ -850,7 +857,7 @@ Js.Array.reduceRight((acc, item) => {item /. acc}, 1.0,
 let reduceRighti: (('b, 'a, int) => 'b, 'b, t('a)) => 'b;
 ```
 
-The `reduceRighti()` function takes three parameters: a *reducer function*, a beginning accumulator value, and an array. The reducer function has three parameters: an accumulated value, an element of the array, and the index of that element. `reduceRighti()` first calls the reducer function with the beginning value, the last element in the array, and its index (length of array minus one). The result becomes the new accumulator value, which is passed in to the reducer function along with the second element in the array and one (its index). `reduceRighti()` proceeds from right to left through the array, passing in the result of each stage as the accumulator to the reducer function.
+The `reduceRighti()` function takes three parameters: a _reducer function_, a beginning accumulator value, and an array. The reducer function has three parameters: an accumulated value, an element of the array, and the index of that element. `reduceRighti()` first calls the reducer function with the beginning value, the last element in the array, and its index (length of array minus one). The result becomes the new accumulator value, which is passed in to the reducer function along with the second element in the array and one (its index). `reduceRighti()` proceeds from right to left through the array, passing in the result of each stage as the accumulator to the reducer function.
 
 When all array elements are processed, the final value of the accumulator becomes the return value of `reduceRighti()`. See [`Array.reduceRight`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight) on MDN.
 
@@ -911,6 +918,7 @@ Js.Array.somei(sameLength, [|"a", "bc", "def", "gh"|]) == false;
 ```re sig
 let unsafe_get: (array('a), int) => 'a;
 ```
+
 Returns the value at the given position in the array if the position is in bounds; returns
 the JavaScript value `undefined` otherwise.
 
@@ -926,7 +934,7 @@ Js.Array.unsafe_get(arr, 4); // returns undefined
 let unsafe_set: (array('a), int, 'a) => unit;
 ```
 
-Sets the value at the given position in the array if the position is in bounds. If the index is out of bounds, well, “here there be dragons.“ *This function modifies the original array.*
+Sets the value at the given position in the array if the position is in bounds. If the index is out of bounds, well, “here there be dragons.“ _This function modifies the original array._
 
 ```re example
 let arr = [|100, 101, 102, 103|];

@@ -12,7 +12,7 @@ Elements are the smallest building blocks of React apps. This page will explain 
 
 </Intro>
 
-> **Note:** This page assumes your `bsconfig.json` to be set to `"reason": { "react-jsx": 3 }`, otherwise your JSX will not be transformed to its React specific form. 
+> **Note:** This page assumes your `bsconfig.json` to be set to `"reason": { "react-jsx": 3 }`, otherwise your JSX will not be transformed to its React specific form.
 
 ## Element Basics
 
@@ -86,8 +86,7 @@ let element = React.array([
 
 ### Creating Null Elements
 
-ReScript doesn't allow `element || null` constraints due to it's strongly typed nature. Whenever you are expressing conditionals where a value might, or might not be rendered, you will need the `React.null` constant to represent *Nothingness*:
-
+ReScript doesn't allow `element || null` constraints due to it's strongly typed nature. Whenever you are expressing conditionals where a value might, or might not be rendered, you will need the `React.null` constant to represent _Nothingness_:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -101,12 +100,16 @@ let element = switch name {
 
 <div> element </div>
 ```
+
 ```js
-var name = "Andrea";
+var name = "Andrea"
 
-var element = name !== undefined ? React.createElement("div", undefined, "Hello " + name) : null;
+var element =
+  name !== undefined
+    ? React.createElement("div", undefined, "Hello " + name)
+    : null
 
-React.createElement("div", undefined, element);
+React.createElement("div", undefined, element)
 ```
 
 </CodeTab>
@@ -156,18 +159,19 @@ let render = (article: props => React.element) => {
   {React.createElementVariadic(article, props, children)}
 }
 ```
+
 ```js
 function render(article) {
-  var children = ["Introduction"];
+  var children = ["Introduction"]
   var props = {
     title: "Article #1",
-    children: null
-  };
+    children: null,
+  }
   return Caml_splice_call.spliceApply(React.createElement, [
-              article,
-              props,
-              children
-            ]);
+    article,
+    props,
+    children,
+  ])
 }
 ```
 
@@ -178,7 +182,6 @@ function render(article) {
 This function is mostly used by our JSX transformations, so usually you want to use `React.createElement` and pass a children prop instead.
 
 ### Creating DOM Elements
-
 
 To create DOM elements (`<div>`, `<span>`, etc.), use `ReactDOMRe.createDOMElementVariadic`:
 
@@ -194,7 +197,7 @@ The function above requires the `ReactDOM.domProps` constructor function, so ReS
 
 **Note:** This is an escape hatch feature and will only be useful for interoping with existing JS code / libraries.
 
-Sometimes it's required to clone an existing element to set, overwrite or add prop values to a new instance, or if you want to set invalid prop names such as `data-name`. You can use `React.cloneElement` for that: 
+Sometimes it's required to clone an existing element to set, overwrite or add prop values to a new instance, or if you want to set invalid prop names such as `data-name`. You can use `React.cloneElement` for that:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -204,15 +207,16 @@ let original = <div className="hello"/>
 // Will return a new React.element with className set to "world"
 React.cloneElement(original, {"className": "world", "data-name": "some name"});
 ```
+
 ```js
 var original = React.createElement("div", {
-      className: "hello"
-    });
+  className: "hello",
+})
 
 React.cloneElement(original, {
-      className: "world",
-      "data-name": "some name"
-    });
+  className: "world",
+  "data-name": "some name",
+})
 ```
 
 </CodeTab>

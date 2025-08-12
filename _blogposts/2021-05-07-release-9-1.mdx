@@ -41,6 +41,7 @@ The default `rescript` is equivalent to `rescript build` subcommand
 ```
 
 Here's a table of translation, if you're upgrading your script that is currently using `bsc` and `bsb`:
+
 - `bsc -format myFile.res`: `rescript format myFile.res`
 - `bsb`: `rescript build` \*
 - `bsb -make-world`: `rescript build -with-deps` \*
@@ -53,7 +54,8 @@ This means that you can ditch your old `-make-world` (now the explicit `-with-de
 
 ### Polymorphic Variants for Numbers and Strings
 
-*Drumrolls*
+_Drumrolls_
+
 - Poly variants like `#1`, `#42` compile to JavaScript numbers.
 - Poly variants like `#hello`, `#world` compile to JavaScript Strings.
 
@@ -77,13 +79,13 @@ let test = (arg: t) => {
 ```
 
 ```js
-var secret = 42;
+var secret = 42
 
 function test(arg) {
   if (arg === 5) {
-    return "world";
+    return "world"
   } else {
-    return "hello";
+    return "hello"
   }
 }
 ```
@@ -109,15 +111,15 @@ Js.log(test3(Some(#3)))
 
 ```js
 function test2(arg) {
-  return arg;
+  return arg
 }
 
 function test3(arg) {
-  return arg;
+  return arg
 }
 
-console.log(1);
-console.log(3);
+console.log(1)
+console.log(3)
 ```
 
 </CodeTab>

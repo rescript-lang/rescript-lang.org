@@ -34,7 +34,6 @@ Our compiler comes with a set of stdlib modules (such as `Belt`, `Pervasives`, e
 
 In previous versions, users couldn't ship their compiled JS code without defining a `package.json` dependency on `bs-platform`. Whenever a ReScript developer wanted to publish a package just for pure JS consumption / lean container deployment, they were required to use a bundler to bundle up their library / stdlib code, which made things way more complex and harder to understand.
 
-
 To fix this problem, we introduced an `external-stdlib` configuration that allows specifying a pre-compiled stdlib npm package (`@rescript/std`). More details on how to use that feature can be found in our [External Stdlib](/docs/manual/latest/build-external-stdlib) documentation.
 
 ### Less Bundle Bloat when Adding ReScript
@@ -67,7 +66,7 @@ The snippet above will compile to the following JS output:
 <CodeTab labels={["9.0 Output", "8.4 Output" ]}>
 
 ```js
-function test(x){
+function test(x) {
   return x === 0
 }
 ```
@@ -75,13 +74,12 @@ function test(x){
 ```js
 function test(x) {
   if (typeof x === "number") {
-    return x === 0;
+    return x === 0
   } else {
-    return false;
+    return false
   }
 }
 ```
-
 
 </CodeTab>
 
@@ -153,7 +151,6 @@ type animation = [ #\"ease-in" | #\"ease-out" ]
 
 We introduced this change to allow easier interop with existing JS string enums. In pure ReScript code, we'd still recommend our users to stick with valid identifier names instead (e.g. `easeIn` instead of `ease-in`).
 
-
 ## Breaking Changes
 
 This release comes with a minor breaking change that shouldn't have much impact on the upgrade of existing codebases.
@@ -208,6 +205,5 @@ We only highlighted a few user-facing features, but there are also some pretty i
 For example, we are tinkering with the idea on using WASM to replace Camlp4, and we are also working on a generalized visitor pattern that doesn't require objects.
 
 We will discuss these topics in a separate development post, but we are already excited about the new possibilities this will bring within the compiler toolchain.
-
 
 Happy Hacking!

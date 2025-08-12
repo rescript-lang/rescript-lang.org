@@ -54,12 +54,12 @@ This compiles to:
 
 ```javascript
 async function main() {
-  var add = await import("./MathUtils.mjs").then(function(m) {
-    return m.add;
-  });
+  var add = await import("./MathUtils.mjs").then(function (m) {
+    return m.add
+  })
 
-  var onePlusOne = add(1, 1);
-  console.log(onePlusOne);
+  var onePlusOne = add(1, 1)
+  console.log(onePlusOne)
 }
 ```
 
@@ -115,10 +115,10 @@ And, the generated JavaScript will look like this:
 
 ```js
 async function main() {
-  var Utils = await import("./MathUtils.mjs");
+  var Utils = await import("./MathUtils.mjs")
 
-  var twoPlusTwo = Utils.add(2, 2);
-  console.log(twoPlusTwo);
+  var twoPlusTwo = Utils.add(2, 2)
+  console.log(twoPlusTwo)
 }
 ```
 

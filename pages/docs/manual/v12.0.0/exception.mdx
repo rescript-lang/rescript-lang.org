@@ -17,16 +17,19 @@ exception InputClosed(string)
 // later on
 throw(InputClosed("The stream has closed!"))
 ```
-```js
-import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js";
 
-let InputClosed = /* @__PURE__ */Primitive_exceptions.create("Playground.InputClosed");
+```js
+import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js"
+
+let InputClosed = /* @__PURE__ */ Primitive_exceptions.create(
+  "Playground.InputClosed",
+)
 
 throw {
   RE_EXN_ID: InputClosed,
   _1: "The stream has closed!",
-  Error: new Error()
-};
+  Error: new Error(),
+}
 ```
 
 </CodeTab>
@@ -55,29 +58,30 @@ let result =
   | Not_found => 0 // Default value if getItem throws
   }
 ```
+
 ```js
-import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js";
+import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js"
 
 function getItem(item) {
   if (item === 3) {
-    return 1;
+    return 1
   }
   throw {
     RE_EXN_ID: "Not_found",
-    Error: new Error()
-  };
+    Error: new Error(),
+  }
 }
 
-let result;
+let result
 
 try {
-  result = getItem(2);
+  result = getItem(2)
 } catch (raw_exn) {
-  let exn = Primitive_exceptions.internalToException(raw_exn);
+  let exn = Primitive_exceptions.internalToException(raw_exn)
   if (exn.RE_EXN_ID === "Not_found") {
-    result = 0;
+    result = 0
   } else {
-    throw exn;
+    throw exn
   }
 }
 ```
@@ -96,37 +100,41 @@ switch list{1, 2, 3}->List.getExn(4) {
 | exception Not_found => Console.log("No such item found!")
 }
 ```
+
 ```js
-import * as Stdlib_List from "./stdlib/Stdlib_List.js";
-import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js";
+import * as Stdlib_List from "./stdlib/Stdlib_List.js"
+import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js"
 
-let exit = 0;
+let exit = 0
 
-let item;
+let item
 
 try {
-  item = Stdlib_List.getExn({
-    hd: 1,
-    tl: {
-      hd: 2,
+  item = Stdlib_List.getExn(
+    {
+      hd: 1,
       tl: {
-        hd: 3,
-        tl: /* [] */0
-      }
-    }
-  }, 4);
-  exit = 1;
+        hd: 2,
+        tl: {
+          hd: 3,
+          tl: /* [] */ 0,
+        },
+      },
+    },
+    4,
+  )
+  exit = 1
 } catch (raw_exn) {
-  let exn = Primitive_exceptions.internalToException(raw_exn);
+  let exn = Primitive_exceptions.internalToException(raw_exn)
   if (exn.RE_EXN_ID === "Not_found") {
-    console.log("No such item found!");
+    console.log("No such item found!")
   } else {
-    throw exn;
+    throw exn
   }
 }
 
 if (exit === 1) {
-  console.log(item);
+  console.log(item)
 }
 ```
 
@@ -149,7 +157,8 @@ let divide = (a, b) =>
 try divide(2, 0)->Console.log catch {
 | Invalid_argument(msg) => Console.log(msg) // Denominator is zero
 }
-```
+
+````
 
 ```js
 import * as Primitive_int from "./stdlib/Primitive_int.js";
@@ -176,7 +185,7 @@ try {
     throw msg;
   }
 }
-```
+````
 
 </CodeTab>
 
@@ -205,47 +214,36 @@ try decodeUser(%raw("{}"))->Console.log catch {
 ```
 
 ```js
-import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js";
+import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js"
 
 function decodeUser(json) {
   if (typeof json === "object" && json !== null && !Array.isArray(json)) {
-    let match = json["name"];
-    let match$1 = json["age"];
+    let match = json["name"]
+    let match$1 = json["age"]
     if (typeof match === "string" && typeof match$1 === "number") {
-      return [
-        match,
-        match$1 | 0
-      ];
+      return [match, match$1 | 0]
     }
     throw {
       RE_EXN_ID: "Assert_failure",
-      _1: [
-        "playground.res",
-        6,
-        11
-      ],
-      Error: new Error()
-    };
+      _1: ["playground.res", 6, 11],
+      Error: new Error(),
+    }
   }
   throw {
     RE_EXN_ID: "Assert_failure",
-    _1: [
-      "playground.res",
-      8,
-      9
-    ],
-    Error: new Error()
-  };
+    _1: ["playground.res", 8, 9],
+    Error: new Error(),
+  }
 }
 
 try {
-  console.log(decodeUser({}));
+  console.log(decodeUser({}))
 } catch (raw_loc) {
-  let loc = Primitive_exceptions.internalToException(raw_loc);
+  let loc = Primitive_exceptions.internalToException(raw_loc)
   if (loc.RE_EXN_ID === "Assert_failure") {
-    console.log(loc._1);
+    console.log(loc._1)
   } else {
-    throw loc;
+    throw loc
   }
 }
 ```
@@ -256,7 +254,6 @@ try {
 
 Exception thrown to signal that the given arguments do not make sense. This
 exception takes a string as an argument.
-
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 ```res example
@@ -270,14 +267,14 @@ let isValidEmail = email => {
   }
 }
 
-
 let isValid = try isValidEmail("rescript.org") catch {
 | Failure(msg) => {
-    Console.error(msg)
-    false
-  }
+Console.error(msg)
+false
 }
-```
+}
+
+````
 
 ```js
 import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js";
@@ -308,14 +305,13 @@ try {
     throw msg;
   }
 }
-```
+````
 
 </CodeTab>
 
 ### `Division_by_zero`
 
 Exception thrown by integer division and remainder operations when their second argument is zero.
-
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 ```res example
@@ -325,7 +321,8 @@ let result = try Some(10 / 0) catch {
 }
 
 Console.log(result) // None
-```
+
+````
 
 ```js
 import * as Primitive_int from "./stdlib/Primitive_int.js";
@@ -345,7 +342,7 @@ try {
 }
 
 console.log(result);
-```
+````
 
 </CodeTab>
 
@@ -353,14 +350,13 @@ console.log(result);
 
 To distinguish between JavaScript exceptions and ReScript exceptions, ReScript namespaces JS exceptions under the `JsExn(payload)` variant. To catch an exception thrown from the JS side:
 
-
 Throw an exception from JS:
 
 ```js
 // Example.js
 
 exports.someJsFunctionThatThrows = () => {
-    throw new Error("A Glitch in the Matrix!");
+  throw new Error("A Glitch in the Matrix!")
 }
 ```
 
@@ -368,7 +364,7 @@ Then catch it from ReScript:
 
 ```res
 // import the method in Example.js
-@module("./Example") 
+@module("./Example")
 external someJsFunctionThatThrows: () => unit = "someJsFunctionThatThrows"
 
 try {
@@ -399,11 +395,12 @@ let myTest = () => {
   JsError.throwWithMessage("Hello!")
 }
 ```
+
 ```js
-import * as Stdlib_JsError from "./stdlib/Stdlib_JsError.js";
+import * as Stdlib_JsError from "./stdlib/Stdlib_JsError.js"
 
 function myTest() {
-  return Stdlib_JsError.throwWithMessage("Hello!");
+  return Stdlib_JsError.throwWithMessage("Hello!")
 }
 ```
 
@@ -431,9 +428,10 @@ let myTest = () => {
   JsExn.throw("some non-error value!")
 }
 ```
+
 ```js
 function myTest() {
-  throw "some non-error value!";
+  throw "some non-error value!"
 }
 ```
 
@@ -463,17 +461,20 @@ let myTest = () => {
   throw(BadArgument({myMessage: "Oops!"}))
 }
 ```
-```js
-import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js";
 
-let BadArgument = /* @__PURE__ */Primitive_exceptions.create("Playground.BadArgument");
+```js
+import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js"
+
+let BadArgument = /* @__PURE__ */ Primitive_exceptions.create(
+  "Playground.BadArgument",
+)
 
 function myTest() {
   throw {
     RE_EXN_ID: BadArgument,
     myMessage: "Oops!",
-    Error: new Error()
-  };
+    Error: new Error(),
+  }
 }
 ```
 
