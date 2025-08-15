@@ -4152,6 +4152,15 @@
         "signature": "let size: t<'a> => int"
       },
       {
+        "id": "Stdlib.Set.isEmpty",
+        "kind": "value",
+        "name": "isEmpty",
+        "docstrings": [
+          "`isEmpty(set)` returns `true` if the set has no values, `false` otherwise.\n\n## Examples\n```rescript\nlet emptySet = Set.make()\nemptySet->Set.isEmpty->assertEqual(true)\n\nlet set = Set.make()\nset->Set.add(\"someValue\")\nset->Set.isEmpty->assertEqual(false)\n\n// After clearing the set\nset->Set.clear\nset->Set.isEmpty->assertEqual(true)\n```"
+        ],
+        "signature": "let isEmpty: t<'a> => bool"
+      },
+      {
         "id": "Stdlib.Set.clear",
         "kind": "value",
         "name": "clear",
@@ -4397,6 +4406,15 @@
           "Returns the size, the number of key/value pairs, of the map.\n\n## Examples\n```rescript\nlet map = Map.make()\n\nmap->Map.set(\"someKey\", \"someValue\")\n\nlet size = map->Map.size // 1\n```"
         ],
         "signature": "let size: t<'k, 'v> => int"
+      },
+      {
+        "id": "Stdlib.Map.isEmpty",
+        "kind": "value",
+        "name": "isEmpty",
+        "docstrings": [
+          "`isEmpty(map)` returns `true` if the map has no key/value pairs, `false` otherwise.\n\n## Examples\n```rescript\nlet emptyMap = Map.make()\nemptyMap->Map.isEmpty->assertEqual(true)\n\nlet map = Map.make()\nmap->Map.set(\"someKey\", \"someValue\")\nmap->Map.isEmpty->assertEqual(false)\n\n// After clearing the map\nmap->Map.clear\nmap->Map.isEmpty->assertEqual(true)\n```"
+        ],
+        "signature": "let isEmpty: t<'k, 'v> => bool"
       },
       {
         "id": "Stdlib.Map.clear",
@@ -5343,6 +5361,24 @@
           "`searchOpt(str, regexp)`. Like `search`, but return an `option<int>`.\n\n## Examples\n\n```rescript\nString.searchOpt(\"testing 1 2 3\", /\\d+/) == Some(8)\nString.searchOpt(\"no numbers\", /\\d+/) == None\n```"
         ],
         "signature": "let searchOpt: (string, RegExp.t) => option<int>"
+      },
+      {
+        "id": "Stdlib.String.isEmpty",
+        "kind": "value",
+        "name": "isEmpty",
+        "docstrings": [
+          "`isEmpty(str)` returns `true` if the string is empty (has zero length), \n`false` otherwise.\n\n## Examples\n\n```rescript\nString.isEmpty(\"\") == true\nString.isEmpty(\"hello\") == false\nString.isEmpty(\"  \") == false\n```"
+        ],
+        "signature": "let isEmpty: string => bool"
+      },
+      {
+        "id": "Stdlib.String.capitalize",
+        "kind": "value",
+        "name": "capitalize",
+        "docstrings": [
+          "`capitalize(str)` returns a new string with the first character converted to \nuppercase and the remaining characters unchanged. If the string is empty, \nreturns the empty string.\n\n## Examples\n\n```rescript\nString.capitalize(\"hello\") == \"Hello\"\nString.capitalize(\"HELLO\") == \"HELLO\"\nString.capitalize(\"hello world\") == \"Hello world\"\nString.capitalize(\"\") == \"\"\n```"
+        ],
+        "signature": "let capitalize: string => string"
       },
       {
         "id": "Stdlib.String.slice",
@@ -9328,6 +9364,24 @@
         "signature": "let keysToArray: dict<'a> => array<string>"
       },
       {
+        "id": "Stdlib.Dict.size",
+        "kind": "value",
+        "name": "size",
+        "docstrings": [
+          "`size(dictionary)` returns the number of key/value pairs in the dictionary.\n\n## Examples\n```rescript\nlet dict = Dict.make()\ndict->Dict.size->assertEqual(0)\n\ndict->Dict.set(\"someKey\", 1)\ndict->Dict.set(\"someKey2\", 2)\ndict->Dict.size->assertEqual(2)\n\n// After deleting a key\ndict->Dict.delete(\"someKey\")\ndict->Dict.size->assertEqual(1)\n```"
+        ],
+        "signature": "let size: dict<'a> => int"
+      },
+      {
+        "id": "Stdlib.Dict.isEmpty",
+        "kind": "value",
+        "name": "isEmpty",
+        "docstrings": [
+          "`isEmpty(dictionary)` returns `true` if the dictionary is empty (has no key/value pairs), `false` otherwise.\n\n## Examples\n```rescript\nlet emptyDict = Dict.make()\nemptyDict->Dict.isEmpty->assertEqual(true)\n\nlet dict = Dict.make()\ndict->Dict.set(\"someKey\", 1)\ndict->Dict.isEmpty->assertEqual(false)\n\n// After clearing all keys\ndict->Dict.delete(\"someKey\")\ndict->Dict.isEmpty->assertEqual(true)\n```"
+        ],
+        "signature": "let isEmpty: dict<'a> => bool"
+      },
+      {
         "id": "Stdlib.Dict.valuesToArray",
         "kind": "value",
         "name": "valuesToArray",
@@ -11304,6 +11358,15 @@
         "signature": "let length: array<'a> => int"
       },
       {
+        "id": "Stdlib.Array.isEmpty",
+        "kind": "value",
+        "name": "isEmpty",
+        "docstrings": [
+          "`isEmpty(array)` returns `true` if the array is empty (has length 0), `false` otherwise.\n\n## Examples\n\n```rescript\n[]->Array.isEmpty->assertEqual(true)\n[1, 2, 3]->Array.isEmpty->assertEqual(false)\n\nlet emptyArray = []\nemptyArray->Array.isEmpty->assertEqual(true)\n\nlet nonEmptyArray = [\"hello\"]\nnonEmptyArray->Array.isEmpty->assertEqual(false)\n```"
+        ],
+        "signature": "let isEmpty: array<'a> => bool"
+      },
+      {
         "id": "Stdlib.Array.copyAllWithin",
         "kind": "value",
         "name": "copyAllWithin",
@@ -11785,7 +11848,7 @@
         "kind": "value",
         "name": "reduce",
         "docstrings": [
-          "`reduce(xs, init, fn)`\n\nApplies `fn` to each element of `xs` from beginning to end. Function `fn` has two parameters: the item from the list and an “accumulator”; which starts with a value of `init`. `reduce` returns the final value of the accumulator.\n\n## Examples\n\n```rescript\nArray.reduce([2, 3, 4], 1, (a, b) => a + b) == 10\n\nArray.reduce([\"a\", \"b\", \"c\", \"d\"], \"\", (a, b) => a ++ b) == \"abcd\"\n\n[1, 2, 3]->Array.reduce(list{}, List.add) == list{3, 2, 1}\n\nArray.reduce([], list{}, List.add) == list{}\n```"
+          "`reduce(xs, init, fn)`\n\nApplies `fn` to each element of `xs` from beginning to end. Function `fn` has two parameters: the item from the list and an \"accumulator\"; which starts with a value of `init`. `reduce` returns the final value of the accumulator.\n\n## Examples\n\n```rescript\nArray.reduce([2, 3, 4], 1, (a, b) => a + b) == 10\n\nArray.reduce([\"a\", \"b\", \"c\", \"d\"], \"\", (a, b) => a ++ b) == \"abcd\"\n\n[1, 2, 3]->Array.reduce(list{}, List.add) == list{3, 2, 1}\n\nArray.reduce([], list{}, List.add) == list{}\n```"
         ],
         "signature": "let reduce: (array<'a>, 'b, ('b, 'a) => 'b) => 'b"
       },
@@ -11794,7 +11857,7 @@
         "kind": "value",
         "name": "reduceWithIndex",
         "docstrings": [
-          "`reduceWithIndex(x, init, fn)`\n\nApplies `fn` to each element of `xs` from beginning to end. Function `fn` has three parameters: the item from the array and an “accumulator”, which starts with a value of `init` and the index of each element. `reduceWithIndex` returns the final value of the accumulator.\n\n## Examples\n\n```rescript\nArray.reduceWithIndex([1, 2, 3, 4], 0, (acc, x, i) => acc + x + i) == 16\n\nArray.reduceWithIndex([1, 2, 3], list{}, (acc, v, i) => list{v + i, ...acc}) == list{5, 3, 1}\n\nArray.reduceWithIndex([], list{}, (acc, v, i) => list{v + i, ...acc}) == list{}\n```"
+          "`reduceWithIndex(x, init, fn)`\n\nApplies `fn` to each element of `xs` from beginning to end. Function `fn` has three parameters: the item from the array and an \"accumulator\", which starts with a value of `init` and the index of each element. `reduceWithIndex` returns the final value of the accumulator.\n\n## Examples\n\n```rescript\nArray.reduceWithIndex([1, 2, 3, 4], 0, (acc, x, i) => acc + x + i) == 16\n\nArray.reduceWithIndex([1, 2, 3], list{}, (acc, v, i) => list{v + i, ...acc}) == list{5, 3, 1}\n\nArray.reduceWithIndex([], list{}, (acc, v, i) => list{v + i, ...acc}) == list{}\n```"
         ],
         "signature": "let reduceWithIndex: (array<'a>, 'b, ('b, 'a, int) => 'b) => 'b"
       },
