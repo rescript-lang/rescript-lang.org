@@ -8,6 +8,17 @@
     "node": ">=20"
   },
   "type": "module",
+  "scripts": {
+    "dev": "react-router dev",
+    "res:watch": "rescript build -w",
+    "build": "rescript && react-router build",
+    "test": "node scripts/test-examples.mjs && node scripts/test-hrefs.mjs",
+    "reanalyze": "reanalyze -all-cmt .",
+    "update-index": "npm run generate-llms && node scripts/extract-indices.mjs && node scripts/extract-tocs.mjs && node scripts/extract-syntax.mjs && node scripts/generate_feed.mjs > public/blog/feed.xml",
+    "sync-bundles": "node scripts/sync-playground-bundles.mjs",
+    "generate-llms": "node scripts/generate_llms.mjs",
+    "generate-resources": "node scripts/generate_resources.mjs"
+  },
   "dependencies": {
     "@babel/generator": "^7.24.7",
     "@babel/parser": "^7.24.7",
@@ -15,7 +26,7 @@
     "@docsearch/react": "^3.9.0",
     "@headlessui/react": "^2.2.4",
     "@mdx-js/loader": "^3.1.0",
-    "@react-router/node": "^7.7.1",
+    "@react-router/node": "^7.8.1",
     "@rescript/react": "^0.14.0-rc.1",
     "@rescript/webapi": "^0.1.0-experimental-03eae8b",
     "codemirror": "^5.54.0",
@@ -35,7 +46,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-markdown": "^10.1.0",
-    "react-router": "^7.7.1",
+    "react-router": "^7.8.1",
     "react-router-mdx": "^1.0.6",
     "rehype-slug": "^6.0.0",
     "rehype-stringify": "^10.0.1",
@@ -52,24 +63,13 @@
     "unified": "^11.0.5",
     "vfile-matter": "^5.0.0"
   },
-  "scripts": {
-    "dev": "vite",
-    "res:watch": "rescript build -w",
-    "build": "rescript && vite build",
-    "test": "node scripts/test-examples.mjs && node scripts/test-hrefs.mjs",
-    "reanalyze": "reanalyze -all-cmt .",
-    "update-index": "npm run generate-llms && node scripts/extract-indices.mjs && node scripts/extract-tocs.mjs && node scripts/extract-syntax.mjs && node scripts/generate_feed.mjs > public/blog/feed.xml",
-    "sync-bundles": "node scripts/sync-playground-bundles.mjs",
-    "generate-llms": "node scripts/generate_llms.mjs",
-    "generate-resources": "node scripts/generate_resources.mjs"
-  },
   "devDependencies": {
     "@mdx-js/react": "^2.3.0",
     "@mdx-js/rollup": "^3.1.0",
-    "@react-router/dev": "^7.7.1",
+    "@react-router/dev": "^7.8.1",
+    "@tailwindcss/postcss": "^4.1.11",
     "@vitejs/plugin-react": "^4.7.0",
     "@vitejs/plugin-rsc": "^0.4.16",
-    "@tailwindcss/postcss": "^4.1.11",
     "autoprefixer": "^10.4.14",
     "cssnano": "^6.0.1",
     "dotenv": "^16.4.7",
@@ -78,7 +78,7 @@
     "postcss-nesting": "^12.1.1",
     "reanalyze": "^2.16.0",
     "simple-functional-loader": "^1.2.1",
-    "vite": "^7.0.6",
-    "tailwindcss": "^4"
+    "tailwindcss": "^4",
+    "vite": "^7.0.6"
   }
 }

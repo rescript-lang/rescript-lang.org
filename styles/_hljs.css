@@ -2,10 +2,12 @@
 Docco style used in http://jashkenas.github.com/docco/ converted by Simon Madine (@thingsinjars)
 */
 
+@reference "./main.css"
+
 /* purgecss start ignore */
 .hljs {
   display: block;
-  
+
   /*overflow-x: auto;*/
   /*background: #f8f8ff;*/
 }
@@ -15,7 +17,8 @@ Docco style used in http://jashkenas.github.com/docco/ converted by Simon Madine
   font-style: italic;
 }
 
-.hljs-operator, .hljs-literal {
+.hljs-operator,
+.hljs-literal {
   @apply text-water;
 }
 
@@ -115,7 +118,7 @@ Docco style used in http://jashkenas.github.com/docco/ converted by Simon Madine
 }
 
 .hljs-constructor {
-@apply text-orange
+  @apply text-orange
 }
 
 /* DARK MODE COLORS */
@@ -132,11 +135,14 @@ Docco style used in http://jashkenas.github.com/docco/ converted by Simon Madine
   color: #546E7A;
 }
 
-.hljs.dark .hljs-operator, .hljs.dark .hljs-literal {
+.hljs.dark .hljs-operator,
+.hljs.dark .hljs-literal {
   @apply text-ocean-dark;
 }
 
-.hljs.dark .hljs-tag, .hljs.dark .hljs-name, .hljs.dark .hljs-attribute {
+.hljs.dark .hljs-tag,
+.hljs.dark .hljs-name,
+.hljs.dark .hljs-attribute {
   @apply text-water-dark;
   font-weight: normal;
 }

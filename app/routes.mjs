@@ -3,5 +3,5 @@ import { routes } from 'react-router-mdx/server';
 
 export default [
     index("./routes/LandingPageRoute.jsx"),
-    ...routes("./routes/mdx.jsx")
+    ...routes("./routes/mdx.jsx"),
 ]

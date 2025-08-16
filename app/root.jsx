@@ -1,4 +1,4 @@
-import { Outlet, Scripts } from "react-router";
+import { isRouteErrorResponse, Outlet, Scripts, useNavigate } from "react-router";
 import { make as Navigation } from "../src/components/Navigation.mjs";
 import "../styles/_hljs.css";
 import "../styles/main.css";
@@ -25,6 +25,7 @@ hljs.registerLanguage('html', html)
 hljs.registerLanguage('diff', diff)
 
 
+
 export default function App() {
   return (
     <html>
@@ -41,4 +42,31 @@ export default function App() {
       </body>
     </html>
   );
+}
+
+export function ErrorBoundary({
+  error,
+}) {
+  const navigate = useNavigate()
+  if (isRouteErrorResponse(error)) {
+    return (
+      <>
+        <h1>
+          {error.status} {error.statusText}
+        </h1>
+        <p>{error.data}</p>
+      </>
+    );
+  } else if (error instanceof Error) {
+    return (
+      <div>
+        <h1>Error</h1>
+        <p>{error.message}</p>
+        <p>The stack trace is:</p>
+        <pre>{error.stack}</pre>
+      </div>
+    );
+  } else {
+    return <h1>Unknown Error</h1>;
+  }
 }

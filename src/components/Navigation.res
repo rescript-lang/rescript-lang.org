@@ -77,9 +77,6 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
   let location = ReactRouter.useLocation()
   let route = location.pathname
 
-  let version = Url.getVersionFromStorage(Manual)->Option.getOr(Constants.versions.latest)
-  let reactVersion = Url.getVersionFromStorage(React)->Option.getOr(Constants.latestReactVersion)
-
   let toggleOverlay = () => {
     setOverlayOpen(prev => !prev)
   }
@@ -105,8 +102,7 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
           <div
             className="flex items-center xs:justify-between w-full bg-gray-90 sm:h-auto sm:relative">
             <div className="flex ml-10 space-x-5 w-full text-gray-40 max-w-104">
-              <Link
-                to=Url(`/docs/manual/${version}/introduction`) className={isDocRouteActive(~route)}>
+              <Link to=Url(`/docs/manual/introduction`) className={isDocRouteActive(~route)}>
                 {React.string("Docs")}
               </Link>
 
@@ -173,13 +169,11 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
             className="bg-white z-50 px-4 w-full h-12 shadow text-gray-60 text-12 md:text-14 transition duration-300 ease-out group-[.nav-disappear]:-translate-y-32 md:group-[.nav-disappear]:-translate-y-0">
             <div className="flex gap-6 lg:gap-10 items-center h-full w-full max-w-1280 m-auto">
               <Link
-                to=Url(`/docs/manual/${version}/introduction`)
+                to=Url(`/docs/manual/introduction`)
                 className={isActiveLink(~includes="/docs/manual/", ~excludes="/api", ~route)}>
                 {React.string("Language Manual")}
               </Link>
-              <Link
-                to=Url(`/docs/manual/${version}/api`)
-                className={isActiveLink(~includes="/api", ~route)}>
+              <Link to=Url(`/docs/manual/api`) className={isActiveLink(~includes="/api", ~route)}>
                 {React.string("API")}
               </Link>
               <Link
@@ -188,7 +182,7 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
                 {React.string("Syntax Lookup")}
               </Link>
               <Link
-                to=Url(`/docs/react/${reactVersion}/introduction`)
+                to=Url(`/docs/react/introduction`)
                 className={isActiveLink(~includes="/docs/react/", ~route)}>
                 {React.string("React")}
               </Link>

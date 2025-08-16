@@ -1,5 +1,5 @@
 import { init } from "react-router-mdx/server";
-const mdx = init({ paths: ["_blogposts"], aliases: ["blog"] });
+const mdx = init({ paths: ["_blogposts", "docs"], aliases: ["blog"] });
 
 
 export default {
