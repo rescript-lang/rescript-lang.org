@@ -7,7 +7,6 @@ category: "decorators"
 status: "deprecated"
 ---
 
-
 > Deprecated since compiler version 11.0. It was mainly used to bind to JS param objects with many optional fields, [records with optional fields](https://rescript-lang.org/docs/manual/latest/record#optional-record-fields) are now natively supported.
 
 The `@obj` decorator is used to create functions that return JavaScript objects
@@ -26,7 +25,7 @@ let helloAction = action(~name="Hello", ())
 
 ```js
 var helloAction = {
-  name: "Hello"
+  name: "Hello",
 };
 ```
 
@@ -34,4 +33,4 @@ var helloAction = {
 
 ### References
 
-* [Convert External into JS Object Creation Function](/docs/manual/v10.0.0/generate-converters-accessors#convert-external-into-js-object-creation-function)
+- [Convert External into JS Object Creation Function](/docs/manual/v10.0.0/generate-converters-accessors#convert-external-into-js-object-creation-function)

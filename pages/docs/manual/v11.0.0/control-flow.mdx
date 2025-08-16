@@ -23,6 +23,7 @@ let message = if isMorning {
   "Hello!"
 }
 ```
+
 ```js
 var message = isMorning ? "Good morning!" : "Hello!";
 ```
@@ -38,6 +39,7 @@ if showMenu {
   displayMenu()
 }
 ```
+
 ```js
 if (showMenu) {
   displayMenu();
@@ -57,9 +59,10 @@ if showMenu {
   ()
 }
 ```
+
 ```js
 if (showMenu) {
-  displayMenu()
+  displayMenu();
 }
 ```
 
@@ -82,6 +85,7 @@ We also have ternary sugar, but **we encourage you to prefer if-else when possib
 ```res
 let message = isMorning ? "Good morning!" : "Hello!"
 ```
+
 ```js
 var message = isMorning ? "Good morning!" : "Hello!";
 ```
@@ -101,8 +105,9 @@ for i in startValueInclusive to endValueInclusive {
   Console.log(i)
 }
 ```
+
 ```js
-for(var i = startValueInclusive; i <= endValueInclusive; ++i){
+for (var i = startValueInclusive; i <= endValueInclusive; ++i) {
   console.log(i);
 }
 ```
@@ -117,8 +122,9 @@ for x in 1 to 3 {
   Console.log(x)
 }
 ```
+
 ```js
-for(var x = 1; x <= 3; ++x){
+for (var x = 1; x <= 3; ++x) {
   console.log(x);
 }
 ```
@@ -134,8 +140,9 @@ for i in startValueInclusive downto endValueInclusive {
   Console.log(i)
 }
 ```
+
 ```js
-for(var i = startValueInclusive; i >= endValueInclusive; --i){
+for (var i = startValueInclusive; i >= endValueInclusive; --i) {
   console.log(i);
 }
 ```
@@ -150,8 +157,9 @@ for x in 3 downto 1 {
   Console.log(x)
 }
 ```
+
 ```js
-for(var x = 3; x >= 1; --x){
+for (var x = 3; x >= 1; --x) {
   console.log(x);
 }
 ```
@@ -169,6 +177,7 @@ while testCondition {
   // body here
 }
 ```
+
 ```js
 while (testCondition) {
   // body here
@@ -194,18 +203,19 @@ while !break.contents {
   }
 }
 ```
+
 ```js
 var $$break = {
-  contents: false
+  contents: false,
 };
 
-while(!$$break.contents) {
+while (!$$break.contents) {
   if (Math.random() > 0.3) {
     $$break.contents = true;
   } else {
     console.log("Still running");
   }
-};
+}
 ```
 
 </CodeTab>

@@ -15,6 +15,7 @@ ReScript functions are declared with an arrow and return an expression, just lik
 ```res prelude
 let greet = (name) => "Hello " ++ name
 ```
+
 ```js
 function greet(name) {
   return "Hello " + name;
@@ -30,6 +31,7 @@ This declares a function and assigns to it the name `greet`, which you can call 
 ```res example
 greet("world!") // "Hello world!"
 ```
+
 ```js
 greet("world!");
 ```
@@ -44,9 +46,10 @@ Multi-arguments functions have arguments separated by comma:
 let add = (x, y, z) => x + y + z
 add(1, 2, 3) // 6
 ```
+
 ```js
 function add(x, y, z) {
-  return (x + y | 0) + z | 0;
+  return (((x + y) | 0) + z) | 0;
 }
 ```
 
@@ -62,6 +65,7 @@ let greetMore = (name) => {
   part1 ++ " " ++ name
 }
 ```
+
 ```js
 function greetMore(name) {
   return "Hello " + name;
@@ -85,6 +89,7 @@ let addCoordinates = (x, y) => {
 // ...
 addCoordinates(5, 6) // which is x, which is y?
 ```
+
 ```js
 function addCoordinates(x, y) {
   // use x and y here
@@ -106,6 +111,7 @@ let addCoordinates = (~x, ~y) => {
 // ...
 addCoordinates(~x=5, ~y=6)
 ```
+
 ```js
 function addCoordinates(x, y) {
   // use x and y here
@@ -123,6 +129,7 @@ You can provide the arguments in **any order**:
 ```res
 addCoordinates(~y=6, ~x=5)
 ```
+
 ```js
 addCoordinates(5, 6);
 ```
@@ -142,6 +149,7 @@ let drawCircle = (~radius as r, ~color as c) => {
 
 drawCircle(~radius=10, ~color="red")
 ```
+
 ```js
 function drawCircle(r, c) {
   setColor(c);
@@ -164,6 +172,7 @@ let drawCircle = (~radius as r: int, ~color as c: string) => {
   // code here
 }
 ```
+
 ```js
 function drawCircle(r, c) {
   // code here
@@ -188,6 +197,7 @@ let drawCircle = (~color, ~radius=?, ()) => {
   }
 }
 ```
+
 ```js
 var Caml_option = require("./stdlib/caml_option.js");
 
@@ -227,6 +237,7 @@ let drawCircle: (~color: color, ~radius: int=?, unit) => unit =
     }
   }
 ```
+
 ```js
 function drawCircle(color, radius, param) {
   setColor(color);
@@ -259,12 +270,14 @@ let result =
   | Some(r) => drawCircle(~color, ~radius=r, ())
   }
 ```
+
 ```js
 var r = payloadRadius;
 
-var result = r !== undefined
-  ? drawCircle(color, Caml_option.valFromOption(r), undefined)
-  : drawCircle(color, undefined);
+var result =
+  r !== undefined
+    ? drawCircle(color, Caml_option.valFromOption(r), undefined)
+    : drawCircle(color, undefined);
 ```
 
 </CodeTab>
@@ -276,6 +289,7 @@ This quickly gets tedious. We provide a shortcut:
 ```res
 let result = drawCircle(~color, ~radius=?payloadRadius, ())
 ```
+
 ```js
 var result = drawCircle(1, undefined, undefined);
 ```
@@ -296,6 +310,7 @@ let drawCircle = (~radius=1, ~color, ()) => {
   startAt(radius, radius)
 }
 ```
+
 ```js
 function drawCircle(radiusOpt, color, param) {
   var radius = radiusOpt !== undefined ? radiusOpt : 1;
@@ -315,12 +330,13 @@ ReScript chooses the sane default of preventing a function to be called recursiv
 ```res example
 let rec neverTerminate = () => neverTerminate()
 ```
+
 ```js
 function neverTerminate(_param) {
-  while(true) {
+  while (true) {
     _param = undefined;
-    continue ;
-  };
+    continue;
+  }
 }
 ```
 
@@ -339,9 +355,10 @@ let rec listHas = (list, item) =>
   | list{a, ...rest} => a === item || listHas(rest, item)
   }
 ```
+
 ```js
 function listHas(_list, item) {
-  while(true) {
+  while (true) {
     var list = _list;
     if (!list) {
       return false;
@@ -350,8 +367,8 @@ function listHas(_list, item) {
       return true;
     }
     _list = list.tl;
-    continue ;
-  };
+    continue;
+  }
 }
 ```
 
@@ -370,19 +387,20 @@ Mutually recursive functions start like a single recursive function using the
 let rec callSecond = () => callFirst()
 and callFirst = () => callSecond()
 ```
+
 ```js
 function callSecond(_param) {
-  while(true) {
+  while (true) {
     _param = undefined;
-    continue ;
-  };
+    continue;
+  }
 }
 
 function callFirst(_param) {
-  while(true) {
+  while (true) {
     _param = undefined;
-    continue ;
-  };
+    continue;
+  }
 }
 ```
 
@@ -399,9 +417,10 @@ let add = (. x, y) => x + y
 
 add(. 1, 2)
 ```
+
 ```js
 function add(x, y) {
-  return x + y | 0;
+  return (x + y) | 0;
 }
 
 add(1, 2);
@@ -428,7 +447,6 @@ echo(undefined);
 ```
 
 </CodeTab>
-
 
 If you write down the uncurried function's type, you'll add a dot there as well.
 

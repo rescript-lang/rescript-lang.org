@@ -29,8 +29,7 @@ Js.Promise.make: (
 ) => Js.Promise.t<'a>
 ```
 
-This type signature means that `make` takes a callback that takes 2 named arguments, `resolve` and `reject`. Both arguments are themselves [uncurried callbacks](
-function.md#uncurried-function) (with a dot). `make` returns the created promise.
+This type signature means that `make` takes a callback that takes 2 named arguments, `resolve` and `reject`. Both arguments are themselves [uncurried callbacks](function.md#uncurried-function) (with a dot). `make` returns the created promise.
 
 ## Usage
 
@@ -52,6 +51,7 @@ myPromise->Js.Promise.then_(value => {
   Js.Promise.resolve(-2)
 }, _)
 ```
+
 ```js
 var myPromise = new Promise(function (resolve, reject) {
   return resolve(2);
@@ -73,5 +73,3 @@ myPromise
 ```
 
 </CodeTab>
-
-

@@ -15,6 +15,7 @@ Binding a JS function is like binding any other value:
 @module("path") external dirname: string => string = "dirname"
 let root = dirname("/User/github") // returns "User"
 ```
+
 ```js
 var Path = require("path");
 var root = Path.dirname("/User/github");
@@ -32,10 +33,10 @@ ReScript has [labeled arguments](function.md#labeled-arguments) (that can also b
 // MyGame.js
 
 function draw(x, y, border) {
-   // suppose `border` is optional and defaults to false
+  // suppose `border` is optional and defaults to false
 }
-draw(10, 20)
-draw(20, 20, true)
+draw(10, 20);
+draw(20, 20, true);
 ```
 
 It'd be nice if on ReScript's side, we can bind & call `draw` while labeling things a bit:
@@ -49,6 +50,7 @@ external draw: (~x: int, ~y: int, ~border: bool=?, unit) => unit = "draw"
 draw(~x=10, ~y=20, ~border=true, ())
 draw(~x=10, ~y=20, ())
 ```
+
 ```js
 var MyGame = require("MyGame");
 
@@ -73,6 +75,7 @@ external draw: (~x: int, ~y: int, ~border: bool=?, unit) => unit = "draw"
 draw(~x=10, ~y=20, ())
 draw(~y=20, ~x=10, ())
 ```
+
 ```js
 var MyGame = require("MyGame");
 
@@ -95,6 +98,7 @@ type document // abstract type for a document object
 
 let el = getElementById(doc, "myId")
 ```
+
 ```js
 var el = document.getElementById("myId");
 ```
@@ -119,6 +123,7 @@ external join: array<string> => string = "join"
 
 let v = join(["a", "b"])
 ```
+
 ```js
 var Path = require("path");
 var v = Path.join("a", "b");
@@ -143,6 +148,7 @@ If you can exhaustively enumerate the many forms an overloaded JS function can t
 @module("MyGame") external drawDog: (~giveName: string) => unit = "draw"
 @module("MyGame") external draw: (string, ~useRandomAnimal: bool) => unit = "draw"
 ```
+
 ```js
 // Empty output
 ```
@@ -183,6 +189,7 @@ external padLeft: (
 padLeft("Hello World", #Int(4))
 padLeft("Hello World", #Str("Message from ReScript: "))
 ```
+
 ```js
 padLeft("Hello World", 4);
 padLeft("Hello World", "Message from ReScript: ");
@@ -210,6 +217,7 @@ external readFileSync: (
 
 readFileSync(~name="xx.txt", #useAscii)
 ```
+
 ```js
 var Fs = require("fs");
 Fs.readFileSync("xx.txt", "ascii");
@@ -237,6 +245,7 @@ external testIntType: (
   => int = "testIntType"
 testIntType(#inBinary)
 ```
+
 ```js
 testIntType(21);
 ```
@@ -287,11 +296,12 @@ let register = rl =>
   ->on(#close(event => ()))
   ->on(#line(line => Js.log(line)));
 ```
+
 ```js
 function register(rl) {
   return rl
-    .on("close", function($$event) {})
-    .on("line", function(line) {
+    .on("close", function ($$event) {})
+    .on("line", function (line) {
       console.log(line);
     });
 }
@@ -318,6 +328,7 @@ processOnExit(exitCode =>
   Js.log("error code: " ++ Js.Int.toString(exitCode))
 );
 ```
+
 ```js
 process.on("exit", function (exitCode) {
   console.log("error code: " + exitCode.toString());
@@ -326,7 +337,7 @@ process.on("exit", function (exitCode) {
 
 </CodeTab>
 
-The `@as("exit")` and the placeholder `_` argument together indicates that you want the first argument to compile to the string `"exit"`. You can also use any JSON literal with `as`: `` @as(json`true`) ``, `` @as(json`{"name": "John"}`) ``, etc.
+The `@as("exit")` and the placeholder `_` argument together indicates that you want the first argument to compile to the string `"exit"`. You can also use any JSON literal with `as`: ``@as(json`true`)``, ``@as(json`{"name": "John"}`)``, etc.
 
 ## Ignore arguments
 
@@ -347,7 +358,6 @@ doSomething("test");
 </CodeTab>
 
 **Note:** It's a pretty niche feature, mostly used to map to polymorphic JS APIs.
-
 
 ## Curry & Uncurry
 
@@ -391,6 +401,7 @@ type timerId
 
 let id = setTimeout((.) => Js.log("hello"), 1000)
 ```
+
 ```js
 var id = setTimeout(function () {
   console.log("hello");
@@ -417,6 +428,7 @@ Then try `@uncurry`:
 @send external map: (array<'a>, @uncurry ('a => 'b)) => array<'b> = "map"
 map([1, 2, 3], x => x + 1)
 ```
+
 ```js
 // Empty output
 ```
@@ -430,9 +442,9 @@ In general, `uncurry` is recommended; the compiler will do lots of optimizations
 Many JS libraries have callbacks which rely on this (the source), for example:
 
 ```js
-x.onload = function(v) {
-  console.log(this.response + v)
-}
+x.onload = function (v) {
+  console.log(this.response + v);
+};
 ```
 
 Here, `this` would point to `x` (actually, it depends on how `onload` is called, but we digress). It's not correct to declare `x.onload` of type `(. unit) -> unit`. Instead, we introduced a special attribute, `this`, which allows us to type `x` as so:
@@ -446,6 +458,7 @@ type x
 @get external resp: x => int = "response"
 setOnload(x, @this ((o, v) => Js.log(resp(o) + v)))
 ```
+
 ```js
 x.onload = function (v) {
   var o = this;
@@ -478,6 +491,7 @@ let test = dom => {
   }
 }
 ```
+
 ```js
 function test(dom) {
   var elem = dom.getElementById("haha");
@@ -488,7 +502,6 @@ function test(dom) {
     return 2;
   }
 }
-
 ```
 
 </CodeTab>

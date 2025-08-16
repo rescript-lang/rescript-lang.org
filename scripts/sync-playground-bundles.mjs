@@ -6,11 +6,15 @@ import * as stream from "node:stream/promises";
 
 const bucketUrl = new URL("https://cdn.rescript-lang.org");
 
-const bundlesDir = path.join(import.meta.dirname, "../public/playground-bundles");
+const bundlesDir = path.join(
+  import.meta.dirname,
+  "../public/playground-bundles",
+);
 fs.mkdirSync(bundlesDir, { recursive: true });
 
-const versions = await fetch(new URL("/playground-bundles/versions.json", bucketUrl))
-  .then(res => res.json());
+const versions = await fetch(
+  new URL("/playground-bundles/versions.json", bucketUrl),
+).then((res) => res.json());
 
 for (const version of versions) {
   const versionDir = path.join(bundlesDir, version);
@@ -23,7 +27,9 @@ for (const version of versions) {
   console.group(`Syncing %s...`, version);
   {
     console.log(`Downloading archive file...`);
-    const res = await fetch(new URL(`/playground-bundles/${version}.tar.zst`, bucketUrl));
+    const res = await fetch(
+      new URL(`/playground-bundles/${version}.tar.zst`, bucketUrl),
+    );
     if (!res.ok) {
       console.error(await res.text());
       continue;

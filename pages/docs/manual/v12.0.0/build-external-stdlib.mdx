@@ -10,6 +10,7 @@ canonical: "/docs/manual/v12.0.0/build-external-stdlib"
 **Since 9.0**
 
 Your ReScript project depends on the `rescript` package as a [`devDependency`](https://docs.npmjs.com/specifying-dependencies-and-devdependencies-in-a-package-json-file), which includes our compiler, build system and runtime like `Belt`. However, you had to move it to `dependency` in `package.json` if you publish your code:
+
 - To Docker or other low-storage deployment devices.
 - For pure JS/TS consumers who probably won't install `rescript` in their own project.
 
@@ -33,7 +34,7 @@ Then add this to `rescript.json`:
 ```json
 {
   // ...
-  "external-stdlib" : "@rescript/std"
+  "external-stdlib": "@rescript/std"
 }
 ```
 

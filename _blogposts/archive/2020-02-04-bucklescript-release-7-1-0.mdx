@@ -11,7 +11,7 @@ description: |
 ## About this Release
 
 `bs-platform@7.1.0` is a major release. You can try it with `npm i -g
-bs-platform`!  (If you have permission issues, try `sudo npm i --unsafe-perm -g
+bs-platform`! (If you have permission issues, try `sudo npm i --unsafe-perm -g
 bs-platform`)
 
 It was called 7.0.2 but bumped into 7.1.0 due to a soundness fix (a breaking
@@ -48,6 +48,7 @@ is a function or not and the arity of raw function:
 ```ocaml
 let f = [%raw "function(x){return x}"]
 ```
+
 ```reason
 let f = [%raw "function(x){return x}"];
 ```
@@ -79,13 +80,13 @@ blogged [here](https://bucklescript.github.io/blog/2019/12/20/release-7-02).
 ## Uniform Warning System
 
 Previously warnings are reported in two ways:
+
 - The OCaml compiler style: `-w +10`
 - Ad-hoc warnings introduced by flags `-bs-warn-unimplemented-external`
 
-
-In this release, we  make such integration so that BuckleScript warnings are
+In this release, we make such integration so that BuckleScript warnings are
 handled in the same way as OCaml's own warnings, for example, the warning
-attribute below can also turn off  BuckleScript warnings now.
+attribute below can also turn off BuckleScript warnings now.
 
 ```reason
 [@warning "-101"]; // file-level config

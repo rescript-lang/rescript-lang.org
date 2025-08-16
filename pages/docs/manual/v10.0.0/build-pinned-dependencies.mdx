@@ -28,6 +28,7 @@ Whenever a package is being built (`rescript build`), the build system will buil
 The build system respects the following rules for each package type:
 
 **Toplevel**
+
 - Warnings reported
 - Warn-error respected
 - Builds dev dependencies
@@ -36,6 +37,7 @@ The build system respects the following rules for each package type:
 - Package-specs like ES6/CommonJS overrides all its dependencies
 
 **Pinned dependencies**
+
 - Warnings reported
 - Warn-error respected
 - Ignores pinned dependencies
@@ -43,6 +45,7 @@ The build system respects the following rules for each package type:
 - Runs custom rules
 
 **Normal dependencies**
+
 - Warnings, warn-error ignored
 - Ignores dev directories
 - Ignores pinned dependencies
@@ -77,15 +80,10 @@ Our `package.json` file within our codebase root would look like this:
   "name": "myproject",
   "private": true,
   "workspaces": {
-    "packages": [
-      "app",
-      "common",
-      "myplugin"
-    ]
+    "packages": ["app", "common", "myplugin"]
   }
 }
 ```
-
 
 Our `app` folder would be our toplevel package, consuming our `common` and `myplugin` packages as `pinned-dependencies`. The configuration for `app/bsconfig.json` looks like this:
 
@@ -94,15 +92,12 @@ Our `app` folder would be our toplevel package, consuming our `common` and `mypl
   "name": "app",
   "version": "1.0.0",
   "sources": {
-    "dir" : "src",
-    "subdirs" : true
+    "dir": "src",
+    "subdirs": true
   },
   /* ... */
-  "bs-dependencies": [
-    "common",
-    "myplugin"
-  ],
-  "pinned-dependencies": ["common", "myplugin"],
+  "bs-dependencies": ["common", "myplugin"],
+  "pinned-dependencies": ["common", "myplugin"]
   /* ... */
 }
 ```

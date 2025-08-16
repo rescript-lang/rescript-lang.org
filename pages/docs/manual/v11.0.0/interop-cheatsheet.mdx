@@ -63,9 +63,10 @@ This is a glossary with examples. All the features are described by later pages.
 let add = %raw("(a, b) => a + b")
 %%raw("const a = 1")
 ```
+
 ```js
-var add = ((a, b) => a + b);
-const a = 1
+var add = (a, b) => a + b;
+const a = 1;
 ```
 
 </CodeTab>
@@ -77,6 +78,7 @@ const a = 1
 ```res example
 @val external setTimeout: (unit => unit, int) => float = "setTimeout"
 ```
+
 ```js
 // Empty output
 ```
@@ -96,6 +98,7 @@ let someNumber = random()
 @val @scope(("window", "location", "ancestorOrigins"))
 external length: int = "length"
 ```
+
 ```js
 var someNumber = Math.random();
 ```
@@ -110,6 +113,7 @@ var someNumber = Math.random();
 let a = Some(5) // compiles to 5
 let b = None // compiles to undefined
 ```
+
 ```js
 var a = 5;
 var b;
@@ -128,6 +132,7 @@ let result1: Nullable.t<string> = Nullable.make("hello")
 let result2: Nullable.t<int> = Nullable.fromOption(Some(10))
 let result3: option<int> = Nullable.toOption(Nullable.make(10))
 ```
+
 ```js
 import * as Caml_option from "./stdlib/caml_option.js";
 import * as Core__Nullable from "./stdlib/core__Nullable.js";
@@ -165,6 +170,7 @@ var result3 = Caml_option.nullable_to_opt(10);
   ->filter(a => mod(a, 2) == 0)
   ->Console.log
 ```
+
 ```js
 console.log(
   [1, 2, 3]
@@ -173,7 +179,7 @@ console.log(
     })
     .filter(function (a) {
       return a % 2 === 0;
-    })
+    }),
 );
 ```
 
@@ -187,6 +193,7 @@ console.log(
 @module("path") @variadic
 external join: array<string> => string = "join"
 ```
+
 ```js
 // Empty output
 ```
@@ -207,7 +214,7 @@ let filename = "index.res"
 let result = await sh`ls ${filename}`
 ```
 
-```js 
+```js
 import * as $$Bun from "bun";
 var filename = "index.res";
 var result = await $$Bun.$`ls ${filename}`;
@@ -223,6 +230,7 @@ var result = await $$Bun.$`ls ${filename}`;
 @module("Drawing") external drawCat: unit => unit = "draw"
 @module("Drawing") external drawDog: (~giveName: string) => unit = "draw"
 ```
+
 ```js
 // Empty output
 ```
@@ -244,6 +252,7 @@ external padLeft: (
 padLeft("Hello World", #Int(4))
 padLeft("Hello World", #Str("Message from ReScript: "))
 ```
+
 ```js
 padLeft("Hello World", 4);
 padLeft("Hello World", "Message from ReScript: ");
@@ -266,6 +275,7 @@ external convertToFloat: int => float = "%identity"
 let age = 10
 let gpa = 2.1 +. convertToFloat(age)
 ```
+
 ```js
 var age = 10;
 var gpa = 2.1 + 10;

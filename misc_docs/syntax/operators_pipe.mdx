@@ -40,7 +40,7 @@ var message = dieRollMessage(dieRoll(6), "Marshall");
 
 Which produces a message such as `Hello Marshall, you rolled a 3`.
 
-You can also explicitly define the argument position of a piped value by using the `_` placeholder: 
+You can also explicitly define the argument position of a piped value by using the `_` placeholder:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -66,13 +66,13 @@ var datestr = "01-01-2021";
 
 var user = "admin";
 
-((function (__x) {
-        logMsg(user, datestr, __x);
-      })("example message".toUpperCase()));
+(function (__x) {
+  logMsg(user, datestr, __x);
+})("example message".toUpperCase());
 ```
 
 </CodeTab>
 
 ### References
 
-* [Pipe](/docs/manual/latest/pipe)
+- [Pipe](/docs/manual/latest/pipe)

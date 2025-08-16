@@ -24,7 +24,7 @@ type user = {name: string}
 let fetchUser: string => promise<user>
 ```
 
-To work with promise values (instead of using `async` / `await`) you may want to use the built-in `Js.Promise2` module. 
+To work with promise values (instead of using `async` / `await`) you may want to use the built-in `Js.Promise2` module.
 
 ## Js.Promise2
 
@@ -83,7 +83,6 @@ Needless to say, the async / await version offers better ergonomics and less opp
 
 In case you want to launch multiple promises in parallel, use `Js.Promise2.all`:
 
-
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
@@ -100,15 +99,13 @@ let logAsyncMessage = async () => {
 ```js
 async function logAsyncMessage(param) {
   var messages = await Promise.all([
-        global.fetchMessage("message1"),
-        global.fetchMessage("message2")
-      ]);
+    global.fetchMessage("message1"),
+    global.fetchMessage("message2"),
+  ]);
   console.log(messages.join(", "));
 }
 
-export {
-  logAsyncMessage ,
-}
+export { logAsyncMessage };
 ```
 
 </CodeTab>
@@ -134,8 +131,7 @@ Js.Promise.make: (
 ) => Js.Promise.t<'a>
 ```
 
-This type signature means that `make` takes a callback that takes 2 named arguments, `resolve` and `reject`. Both arguments are themselves [uncurried callbacks](
-function.md#uncurried-function) (with a dot). `make` returns the created promise.
+This type signature means that `make` takes a callback that takes 2 named arguments, `resolve` and `reject`. Both arguments are themselves [uncurried callbacks](function.md#uncurried-function) (with a dot). `make` returns the created promise.
 
 ### Usage
 
@@ -157,6 +153,7 @@ myPromise->Js.Promise.then_(value => {
   Js.Promise.resolve(-2)
 }, _)
 ```
+
 ```js
 var myPromise = new Promise(function (resolve, reject) {
   return resolve(2);

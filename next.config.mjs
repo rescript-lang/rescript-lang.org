@@ -11,7 +11,9 @@ import remarkFrontmatter from "remark-frontmatter";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import { createLoader } from "simple-functional-loader";
 
-const bsconfig = JSON.parse((await fs.readFile("./rescript.json", "utf8")).toString());
+const bsconfig = JSON.parse(
+  (await fs.readFile("./rescript.json", "utf8")).toString(),
+);
 
 const { ProvidePlugin } = webpack;
 
@@ -52,7 +54,7 @@ const config = {
 
     function mainMdxLoader(plugins) {
       return [
-        createLoader(function(source) {
+        createLoader(function (source) {
           const result = `${source}\n\nMDXContent.frontmatter = frontmatter`;
           return result;
         }),
@@ -162,15 +164,15 @@ const config = {
             return `${source}  ${destination}  ${permanent ? 308 : 307}`;
           })
           .join("\n") +
-        "\n" +
-        splatRedirects
-          .map(({ source, destination, permanent }) => {
-            const splatPattern = /:(\w+)\*$/;
-            assert.match(source, splatPattern);
-            assert.match(destination, splatPattern);
-            return `${source.replace(splatPattern, "*")}  ${destination.replace(splatPattern, ":splat")}  ${permanent ? 308 : 307}`;
-          })
-          .join("\n"),
+          "\n" +
+          splatRedirects
+            .map(({ source, destination, permanent }) => {
+              const splatPattern = /:(\w+)\*$/;
+              assert.match(source, splatPattern);
+              assert.match(destination, splatPattern);
+              return `${source.replace(splatPattern, "*")}  ${destination.replace(splatPattern, ":splat")}  ${permanent ? 308 : 307}`;
+            })
+            .join("\n"),
         "utf8",
       );
     }

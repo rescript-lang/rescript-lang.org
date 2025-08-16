@@ -13,7 +13,6 @@ Usually we'd recommend to use ReScript in a single-codebase style by using one `
 
 There are scenarios where you still want to connect and build multiple independent ReScript packages for one main project though (`yarn workspaces`-like "monorepos"). This is where `pinned-dependencies` come into play.
 
-
 ## Package Types
 
 Before we go into detail, let's first explain all the different package types recognized by the build system:
@@ -29,6 +28,7 @@ Whenever a package is being built (`bsb -make-world`), the build system will bui
 The build system respects the following rules for each package type:
 
 **Toplevel**
+
 - Warnings reported
 - Warn-error respected
 - Builds dev dependencies
@@ -37,6 +37,7 @@ The build system respects the following rules for each package type:
 - Package-specs like ES6/CommonJS overrides all its dependencies
 
 **Pinned dependencies**
+
 - Warnings reported
 - Warn-error respected
 - Ignores pinned dependencies
@@ -44,6 +45,7 @@ The build system respects the following rules for each package type:
 - Runs custom rules
 
 **Normal dependencies**
+
 - Warnings, warn-error ignored
 - Ignores dev directories
 - Ignores pinned dependencies
@@ -78,15 +80,10 @@ Our `package.json` file within our codebase root would look like this:
   "name": "myproject",
   "private": true,
   "workspaces": {
-    "packages": [
-      "app",
-      "common",
-      "myplugin"
-    ]
+    "packages": ["app", "common", "myplugin"]
   }
 }
 ```
-
 
 Our `app` folder would be our toplevel package, consuming our `common` and `myplugin` packages as `pinned-dependencies`. The configuration for `app/bsconfig.json` looks like this:
 
@@ -95,15 +92,12 @@ Our `app` folder would be our toplevel package, consuming our `common` and `mypl
   "name": "app",
   "version": "1.0.0",
   "sources": {
-    "dir" : "src",
-    "subdirs" : true
+    "dir": "src",
+    "subdirs": true
   },
   /* ... */
-  "bs-dependencies": [
-    "common",
-    "myplugin"
-  ],
-  "pinned-dependencies": ["common", "myplugin"],
+  "bs-dependencies": ["common", "myplugin"],
+  "pinned-dependencies": ["common", "myplugin"]
   /* ... */
 }
 ```
@@ -111,4 +105,3 @@ Our `app` folder would be our toplevel package, consuming our `common` and `mypl
 Now, whenever we are running `npx bsb -make-world` within our `app` package, the compiler would always rebuild any changes within its pinned dependencies as well.
 
 **Important:** ReScript will not rebuild any `pinned-dependencies` in watch mode! This is due to the complexity of file watching, so you'd need to set up your own file-watcher process that runs `bsb -make-world` on specific file changes. E.g. you could use [`watchman-make`](https://facebook.github.io/watchman/docs/watchman-make.html) to automatically run the build task when a file in `common` or `myplugin` has been changed.
-

@@ -6,11 +6,12 @@ Provide utilities for JS float.
 
 </Intro>
 
-## _NaN
+## \_NaN
 
 ```re sig
 let _NaN: float;
 ```
+
 The special value "Not a Number".
 
 ## isNaN
@@ -19,7 +20,7 @@ The special value "Not a Number".
 let isNaN: float => bool;
 ```
 
-Tests if the given value is _NaN.
+Tests if the given value is \_NaN.
 Note that both `_NaN == _NaN` and `_NaN === _NaN` will return false. `isNaN` is therefore necessary to test for `_NaN`.
 
 Returns true if the given value is `_NaN`, false otherwise.
@@ -171,7 +172,7 @@ Returns a `string` representing the given value in fixed-point or scientific not
 
 The output will be rounded or padded with zeroes if necessary.
 
-`toPrecisionWithPrecision` differs from `toFixedWithPrecision` in that the former will count all digits against the precision, while the latter will count only the digits after the decimal point. 
+`toPrecisionWithPrecision` differs from `toFixedWithPrecision` in that the former will count all digits against the precision, while the latter will count only the digits after the decimal point.
 `toPrecisionWithPrecision` will also use scientific notation if the specified precision is less than the number for digits before the decimal point.
 Raises `RangeError` if `digits` is not in the range accepted by this function.
 

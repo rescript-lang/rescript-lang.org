@@ -34,10 +34,7 @@
     "unboxed",
     "reserved-keywords"
   ],
-  "Advanced Features": [
-    "extensible-variant",
-    "scoped-polymorphic-types"
-  ],
+  "Advanced Features": ["extensible-variant", "scoped-polymorphic-types"],
   "JavaScript Interop": [
     "interop-cheatsheet",
     "embed-raw-javascript",
@@ -64,12 +61,6 @@
     "build-performance",
     "warning-numbers"
   ],
-  "Guides": [
-    "converting-from-js"
-  ],
-  "Extra": [
-    "newcomer-examples",
-    "project-structure",
-    "faq"
-  ]
+  "Guides": ["converting-from-js"],
+  "Extra": ["newcomer-examples", "project-structure", "faq"]
 }

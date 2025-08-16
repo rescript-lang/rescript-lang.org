@@ -22,8 +22,8 @@ let (state, setState) = React.useState(_ => initialState)
 
 ```js
 var match = React.useState(function () {
-      return initialState;
-    });
+  return initialState;
+});
 
 var state = match[0];
 
@@ -31,7 +31,6 @@ var setState = match[1];
 ```
 
 </CodeTab>
-
 
 During the initial render, the returned state `state` is the same as the value passed as the first argument (initialState).
 
@@ -61,7 +60,6 @@ let make = () => {
 ### Passing `setState` to a Child Component
 
 In this example, we are creating a `ThemeContainer` component that manages a `darkmode` boolean state and passes the `setDarkmode` function to a `ControlPanel` component to trigger the state changes.
-
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -95,37 +93,54 @@ let make = (~content) => {
   </div>
 }
 ```
+
 ```js
 function ControlPanel(Props) {
   var setDarkmode = Props.setDarkmode;
   var darkmode = Props.darkmode;
   var onClick = function (evt) {
     evt.preventDefault();
-    return Curry._1(setDarkmode, (function (prev) {
-                  return !prev;
-                }));
+    return Curry._1(setDarkmode, function (prev) {
+      return !prev;
+    });
   };
-  var toggleText = "Switch to " + ((
-      darkmode ? "light" : "dark"
-    ) + " theme");
-  return React.createElement("div", undefined, React.createElement("button", {
-                  onClick: onClick
-                }, toggleText));
+  var toggleText = "Switch to " + ((darkmode ? "light" : "dark") + " theme");
+  return React.createElement(
+    "div",
+    undefined,
+    React.createElement(
+      "button",
+      {
+        onClick: onClick,
+      },
+      toggleText,
+    ),
+  );
 }
 
 function ThemeContainer(Props) {
   var content = Props.content;
   var match = React.useState(function () {
-        return false;
-      });
+    return false;
+  });
   var darkmode = match[0];
   var className = darkmode ? "theme-dark" : "theme-light";
-  return React.createElement("div", {
-              className: className
-            }, React.createElement("section", undefined, React.createElement("h1", undefined, "More Infos about ReScript"), content), React.createElement(Playground$ControlPanel, {
-                  setDarkmode: match[1],
-                  darkmode: darkmode
-                }));
+  return React.createElement(
+    "div",
+    {
+      className: className,
+    },
+    React.createElement(
+      "section",
+      undefined,
+      React.createElement("h1", undefined, "More Infos about ReScript"),
+      content,
+    ),
+    React.createElement(Playground$ControlPanel, {
+      setDarkmode: match[1],
+      darkmode: darkmode,
+    }),
+  );
 }
 ```
 

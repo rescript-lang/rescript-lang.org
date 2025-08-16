@@ -20,7 +20,7 @@ this is very helpful for advanced users to write performance predictable JS code
 This is a nice [introduction](https://mrale.ph/blog/2012/06/03/explaining-js-vms-in-js-inline-caches.html) to inline caching if you are unfamiliar with this topic,
 or you can skip the section about IC and come back later when you get more familiar.
 
-Note: this article is quite dense, so  we will skip the old encoding.
+Note: this article is quite dense, so we will skip the old encoding.
 
 ## Record (stable)
 
@@ -39,14 +39,15 @@ let rand = ({loBits; hiBits}) => loBits + hiBits;
 ```
 
 It will generate JS output as below:
+
 ```js
-var value = {lo : 32, hi : 33}
-function rand (param){
-    return param.lo + param.hi
+var value = { lo: 32, hi: 33 };
+function rand(param) {
+  return param.lo + param.hi;
 }
 ```
 
-If users want to make it even  shorter, in next version, they can choose to compile record as an array, as follows:
+If users want to make it even shorter, in next version, they can choose to compile record as an array, as follows:
 
 ```reasonml
 type int64 = {
@@ -60,9 +61,9 @@ let rand = ({loBits, hiBits}) => loBits + hiBits;
 This produces the following JS output:
 
 ```js
-var value = [32,33]
-function rand(param){
-    return param[0] + param[1]
+var value = [32, 33];
+function rand(param) {
+  return param[0] + param[1];
 }
 ```
 
@@ -75,7 +76,8 @@ only the type definition needs to be adapted; other parts of code remain untouch
 Records are always in a perfect position for Inline Caching(IC); the compiler can ensure all generated records are of the same shape.
 
 ## Variant (internal)
-This encoding for variants may be  subject to change in the future, but it is so simple that it makes sense for users to have a basic understanding.
+
+This encoding for variants may be subject to change in the future, but it is so simple that it makes sense for users to have a basic understanding.
 
 Take the following type definition, for example:
 
@@ -88,12 +90,13 @@ let empty = Empty  ;
 let v0 = Black (empty, 3, empty);
 let v1 = Red (empty, 3, empty);
 ```
+
 The generated JS code would be:
 
 ```js
-var empty =/*Empty*/ 0;
-var v0  = {TAG : 0/*Black*/, _0 : /*Empty*/ 0 , _1 : 3 , _2 : /*Empty */ 0};
-var v1 = {TAG : 1/*Red*/, _0 : /*Empty*/ 0 , _1 : 3 , _2 : /*Empty */ 0};
+var empty = /*Empty*/ 0;
+var v0 = { TAG: 0 /*Black*/, _0: /*Empty*/ 0, _1: 3, _2: /*Empty */ 0 };
+var v1 = { TAG: 1 /*Red*/, _0: /*Empty*/ 0, _1: 3, _2: /*Empty */ 0 };
 ```
 
 As you can see, variants are divided into two categories.
@@ -113,13 +116,14 @@ let empty = Empty  ;
 let v0 = Black ({l:empty, value: 3, r:empty});
 let v1 = Red ({l:empty, value:3, r: empty});
 ```
+
 The generated JS code would be:
+
 ```js
 var empty =/*Empty*/ 0;
 var v0  = {TAG : 0/*Black*/, l: /*Empty*/ 0 , value : 3 , r: : /*Empty */ 0};
 var v1 = {TAG : 1/*Red*/, l : /*Empty*/ 0 , value : 3 , r : /*Empty */ 0};
 ```
-
 
 ### Special case when the number of variants which has payload is only 1.
 
@@ -131,17 +135,17 @@ type list =
     | Cons (int , list);
 ```
 
-
-Since only one variant has a payload, the compiler does not need  add `TAG` when we destructure the data for pattern matching.
+Since only one variant has a payload, the compiler does not need add `TAG` when we destructure the data for pattern matching.
 Thus, the following code:
 
 ```reasonml
 let u = Cons(1,Nil)
 ```
+
 will generate the following JS output:
 
 ```js
-var u = {_0: 1, _1 : /*Nil*/ 0 }; // No TAG data.
+var u = { _0: 1, _1: /*Nil*/ 0 }; // No TAG data.
 ```
 
 ### Specialized for immutable list
@@ -160,7 +164,9 @@ Since lists are so pervasive, we provide some special treatment so that
 ```reasonml
 let u = [0,1,2,3]
 ```
+
 Will generate js code as below:
+
 ```js
 var u = {hd : 0, {tl : {hd : 1, {tl : {hd: 2, {tl : {hd :3 , tl : /*[]*/0 }}}}}}}
 ```
@@ -196,13 +202,21 @@ Note we only generate constructor names in comments for debugging.
 When constructor names are attached to the data, it will be more useful for debugging. When debug mode is activated using `-bs-g`,
 
 The generated code will be changed from below
+
 ```js
-var v0  = {TAG : 0/*Black*/, _0 : /*Empty*/ 0 , _1 : 3 , _2 : /*Empty */ 0};
+var v0 = { TAG: 0 /*Black*/, _0: /*Empty*/ 0, _1: 3, _2: /*Empty */ 0 };
 ```
+
 to
 
 ```js
-var v0  = {TAG : 0, _0 : /*Empty*/ 0 , _1 : 3 , _2 : /*Empty */ 0, [Symbol.for("name")]: "Black"};
+var v0 = {
+  TAG: 0,
+  _0: /*Empty*/ 0,
+  _1: 3,
+  _2: /*Empty */ 0,
+  [Symbol.for("name")]: "Black",
+};
 ```
 
 ## Polymorphic-variant (internal)
@@ -214,9 +228,11 @@ let u = 3 -> `hello
 ```
 
 It will generate
+
 ```js
-var u = {HASH : MAGIC_NUMBER, VAL: 3 }
+var u = { HASH: MAGIC_NUMBER, VAL: 3 };
 ```
+
 The field of `HASH` is the hash of name `"hello"`, while the `VAL` is the payload
 
 ### IC friendliness
@@ -224,25 +240,25 @@ The field of `HASH` is the hash of name `"hello"`, while the `VAL` is the payloa
 Polymorphic variants are always in a perfect position for IC, the compiler can ensure all generated objects are of the same shape.
 This is because the payload is not unpacked; it is always just one payload.
 
-
 ### Polymorphic variant in debug mode
 
 In debug mode, similar to variant, we carry the name in generated code for debugging,
 
 So instead of
+
 ```js
-var u = {HASH : MAGIC_NUMBER, VAL: 3 }
+var u = { HASH: MAGIC_NUMBER, VAL: 3 };
 ```
 
 It will generate
 
 ```js
-var u = {HASH : MAGIC_NUMBER, VAL: 3 , [Symbol.for("name")] : "hello"}
+var u = { HASH: MAGIC_NUMBER, VAL: 3, [Symbol.for("name")]: "hello" };
 ```
 
 ## Conclusion
 
-BuckleScript users will  profit from better runtime performance and a better debugging experience for various data types, such as variants,
+BuckleScript users will profit from better runtime performance and a better debugging experience for various data types, such as variants,
 exceptions, lazy values and more since version 8.0.
 
 Happy Hacking!

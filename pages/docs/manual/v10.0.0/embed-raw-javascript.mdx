@@ -21,11 +21,12 @@ function greet(m) {
 }
 `)
 ```
+
 ```js
 // look ma, regular JavaScript!
 var message = "hello";
 function greet(m) {
-  console.log(m)
+  console.log(m);
 }
 ```
 
@@ -49,10 +50,11 @@ let add = %raw(`
 
 Js.log(add(1, 2))
 ```
+
 ```js
-var add = function(a, b) {
+var add = function (a, b) {
   console.log("hello from raw JavaScript!");
-  return a + b
+  return a + b;
 };
 
 console.log(add(1, 2));
@@ -61,6 +63,7 @@ console.log(add(1, 2));
 </CodeTab>
 
 The above code:
+
 - declared a ReScript variable `add`,
 - with the raw JavaScript value of a function declaration,
 - then called that function in ReScript.
@@ -79,10 +82,11 @@ let f = (x, y) => {
   x + y
 }
 ```
+
 ```js
 function f(x, y) {
   debugger;
-  return x + y | 0;
+  return (x + y) | 0;
 }
 ```
 

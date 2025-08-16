@@ -6,25 +6,26 @@
  * the website.
  */
 
-import { config } from "dotenv"
+import { config } from "dotenv";
 import glob from "glob";
 import path from "path";
 import fs from "fs";
 import urlModule from "url";
-import { URL } from 'url';
-import { getAllPosts, blogPathToSlug } from '../src/common/BlogApi.mjs'
+import { URL } from "url";
+import { getAllPosts, blogPathToSlug } from "../src/common/BlogApi.mjs";
 
 import { defaultProcessor } from "./markdown.js";
 
-config()
+config();
 
-let latestVersion = process.env.VERSION_LATEST
-let nextVersion = process.env.VERSION_NEXT
+let latestVersion = process.env.VERSION_LATEST;
+let nextVersion = process.env.VERSION_NEXT;
 
-const pathname = new URL('.', import.meta.url).pathname;
-const __dirname = process.platform !== 'win32' ? pathname : pathname.substring(1)
+const pathname = new URL(".", import.meta.url).pathname;
+const __dirname =
+  process.platform !== "win32" ? pathname : pathname.substring(1);
 
-const mapBlogFilePath = path => {
+const mapBlogFilePath = (path) => {
   const match = path.match(/\.\/_blogposts\/(.*\.mdx)/);
 
   if (match) {
@@ -40,26 +41,24 @@ const mapBlogFilePath = path => {
 
 // Static files are located in /public/static/img/somefile.png
 // within markdown files they are referenced as /static/img/somefile.png
-const mapStaticFilePath = path => {
+const mapStaticFilePath = (path) => {
   return path.replace("./public", "");
-}
+};
 
 // Creates a lookup table of all available pages within the website
 // It will also automatically map urls for dedicated directorys (such as _blogposts)
 // to the correct url
 // { key=url: value=original_filepath}
-const createPageIndex = files => {
+const createPageIndex = (files) => {
   return files.reduce((acc, path) => {
     // We need to consider all the different file formats used in pages
     // Calculate the website url by stripping .re, .bs.js, .md(x), etc.
     let url;
     if (path.startsWith("./_blogposts")) {
-      url = mapBlogFilePath(path)
-    }
-    else if (path.startsWith("./public/static")) {
+      url = mapBlogFilePath(path);
+    } else if (path.startsWith("./public/static")) {
       url = mapStaticFilePath(path);
-    }
-    else {
+    } else {
       url = path;
     }
 
@@ -75,7 +74,7 @@ const createPageIndex = files => {
   }, {});
 };
 
-const flattenChildren = children => {
+const flattenChildren = (children) => {
   return children.reduce((acc, node) => {
     if (node.type === "link") {
       return acc.concat([node]);
@@ -88,7 +87,7 @@ const flattenChildren = children => {
 };
 
 // Finds all relative links within a file
-const hrefs = options => (tree, file) => {
+const hrefs = (options) => (tree, file) => {
   const links = flattenChildren(tree.children);
 
   file.data = Object.assign({}, file.data, { links });
@@ -96,7 +95,7 @@ const hrefs = options => (tree, file) => {
 
 const processor = defaultProcessor.use(hrefs);
 
-const processFile = filepath => {
+const processFile = (filepath) => {
   const content = fs.readFileSync(filepath, "utf8");
   const result = processor.processSync(content);
 
@@ -105,27 +104,34 @@ const processFile = filepath => {
   return result.data;
 };
 
-const showErrorMsg = failedTest => {
+const showErrorMsg = (failedTest) => {
   const { stderr } = failedTest;
   console.log(`\n-----------\nError Preview:`);
   console.log(stderr);
 };
 
-const createApiIndexModules = version => {
+const createApiIndexModules = (version) => {
   const dir = path.join(__dirname, "..", "data", "api", version);
-  const modules = fs.readdirSync(dir).filter(file => file !== "toc_tree.json");
+  const modules = fs
+    .readdirSync(dir)
+    .filter((file) => file !== "toc_tree.json");
   const paths = modules.reduce((acc, file) => {
     const json = JSON.parse(fs.readFileSync(path.join(dir, file)));
     const keys = Object.keys(json);
 
-    const paths = keys.map(modulePath => path.join(version, "api", modulePath));
+    const paths = keys.map((modulePath) =>
+      path.join(version, "api", modulePath),
+    );
 
     return acc.concat(paths);
   }, []);
   return [`${version}/api`, ...paths];
 };
 
-const apiIndexModules = [...createApiIndexModules(latestVersion), ...createApiIndexModules(nextVersion)]
+const apiIndexModules = [
+  ...createApiIndexModules(latestVersion),
+  ...createApiIndexModules(nextVersion),
+];
 
 const testFile = (pageMap, test) => {
   const filepath = test.filepath;
@@ -133,7 +139,7 @@ const testFile = (pageMap, test) => {
   // Used for storing failed / ok hrefs
   const results = [];
 
-  test.links.forEach(link => {
+  test.links.forEach((link) => {
     // Simulate the redirect of "latest" and "next" version aliases.
     if (link.url.includes("/manual/latest/")) {
       link.url = link.url.replace("/latest/", `/${latestVersion}/`);
@@ -176,19 +182,15 @@ const testFile = (pageMap, test) => {
       let resolved;
       if (!path.isAbsolute(url)) {
         resolved = path.join("/", path.dirname(filepath), parsed.pathname);
-      }
-      else {
+      } else {
         if (parsed.pathname.startsWith("/static")) {
           console.log("Static");
           resolved = path.join(parsed.pathname);
-        }
-        else {
+        } else {
           // e.g. /api/javascript/latest/js needs to be prefixed to actual pages dir
           resolved = path.join("/pages", parsed.pathname);
         }
       }
-
-
 
       if (
         resolved.startsWith(`/pages/docs/manual/${latestVersion}/api`) ||
@@ -200,7 +202,7 @@ const testFile = (pageMap, test) => {
         if (pathExists) {
           results.push({
             status: "ok",
-            link
+            link,
           });
         } else {
           const { line, column } = link.position.start;
@@ -209,7 +211,7 @@ const testFile = (pageMap, test) => {
             status: "failed",
             filepath,
             stderr,
-            link
+            link,
           });
         }
         return;
@@ -223,7 +225,7 @@ const testFile = (pageMap, test) => {
           status: "failed",
           filepath,
           stderr,
-          link
+          link,
         });
         return;
       }
@@ -231,20 +233,20 @@ const testFile = (pageMap, test) => {
 
     results.push({
       status: "ok",
-      link
+      link,
     });
   });
 
   if (results.length > 0) {
     console.log(`\n-------Results for '${filepath}'----------`);
 
-    results.forEach(r => {
+    results.forEach((r) => {
       const { status } = r;
       const { line, column } = r.link.position.start;
 
       if (status === "failed") {
         console.log(
-          `${filepath}:${line} => ${status} / Unknown href '${r.link.url}' in line ${line}:${column}`
+          `${filepath}:${line} => ${status} / Unknown href '${r.link.url}' in line ${line}:${column}`,
         );
       } else {
         console.log(`${filepath}:${line} => ${status}`);
@@ -254,7 +256,7 @@ const testFile = (pageMap, test) => {
 
   return {
     data: test,
-    results
+    results,
   };
 };
 
@@ -265,12 +267,14 @@ const main = () => {
   // All files that are going to be tested for broken links
   const files = glob.sync(
     pattern ? pattern : `./{pages,_blogposts,misc_docs}/**/*.md?(x)`,
-    { cwd }
+    { cwd },
   );
 
   // We need to capture all files independently from the test file glob
   const pageMapFiles = glob.sync("./{pages,_blogposts}/**/*.{js,mdx}", { cwd });
-  const staticFiles = glob.sync("./public/static/**/*.{svg,png,woff2}", { cwd });
+  const staticFiles = glob.sync("./public/static/**/*.{svg,png,woff2}", {
+    cwd,
+  });
 
   const allFiles = pageMapFiles.concat(staticFiles);
 
@@ -278,14 +282,14 @@ const main = () => {
 
   const processedFiles = files.map(processFile);
 
-  const allTested = processedFiles.map(file => testFile(pageMap, file));
+  const allTested = processedFiles.map((file) => testFile(pageMap, file));
 
   const failed = allTested.reduce((acc, test) => {
-    return acc.concat(test.results.filter(r => r.status === "failed"));
+    return acc.concat(test.results.filter((r) => r.status === "failed"));
   }, []);
 
   const success = allTested.reduce((acc, test) => {
-    return acc.concat(test.results.filter(r => r.status === "ok"));
+    return acc.concat(test.results.filter((r) => r.status === "ok"));
   }, []);
 
   console.log("-----------\nSummary:");
@@ -295,7 +299,7 @@ const main = () => {
 
   if (failed.length > 0) {
     console.log(
-      `\nTip: You can also run tests just for specific files / globs:`
+      `\nTip: You can also run tests just for specific files / globs:`,
     );
     console.log('`node scripts/test-hrefs.js "pages/**/*.mdx"`');
     showErrorMsg(failed[0]);

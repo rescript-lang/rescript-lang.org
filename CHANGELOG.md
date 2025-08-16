@@ -1,6 +1,5 @@
 # Changelog
 
-
 This changelog documents significant changes that caused a new version in the manual, or other related resources.
 
 We don't create a version fork for every minor release, and try to make docs "append only" as much as possible. Usually when we introduce a new feature we add a `since 9.0` annotation to a specific section, and be done with it.
@@ -13,8 +12,7 @@ Here are the notes on major changes we did, and how the version corresponds to s
 
 ### latest
 
-- 9.1 related
-  -
+- ## 9.1 related
 
 ### v9.0 (v8.3 - v9.0)
 
@@ -34,5 +32,3 @@ Here are the notes on major changes we did, and how the version corresponds to s
 ### v8.0.0 (v6 - v8.3)
 
 - Docs with Reason / OCaml syntax before the new syntax
-
-

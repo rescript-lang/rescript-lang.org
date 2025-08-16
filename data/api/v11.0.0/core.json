@@ -275,9 +275,7 @@
   "core/intl/segmenter": {
     "id": "Core.Intl.Segmenter",
     "name": "Segmenter",
-    "docstrings": [
-      "Not supported in Firefox"
-    ],
+    "docstrings": ["Not supported in Firefox"],
     "items": [
       {
         "id": "Core.Intl.Segmenter.t",
@@ -591,9 +589,7 @@
         "id": "Core.Intl.NumberFormat.currency",
         "kind": "type",
         "name": "currency",
-        "docstrings": [
-          "An ISO 4217 currency code. e.g. USD, EUR, CNY"
-        ],
+        "docstrings": ["An ISO 4217 currency code. e.g. USD, EUR, CNY"],
         "signature": "type currency = string"
       },
       {
@@ -621,9 +617,7 @@
         "id": "Core.Intl.NumberFormat.compactDisplay",
         "kind": "type",
         "name": "compactDisplay",
-        "docstrings": [
-          "Used only when notation is #compact"
-        ],
+        "docstrings": ["Used only when notation is #compact"],
         "signature": "type compactDisplay = [#long | #short]"
       },
       {
@@ -653,9 +647,7 @@
         "id": "Core.Intl.NumberFormat.unitDisplay",
         "kind": "type",
         "name": "unitDisplay",
-        "docstrings": [
-          "Only used when style is #unit"
-        ],
+        "docstrings": ["Only used when style is #unit"],
         "signature": "type unitDisplay = [#long | #narrow | #short]"
       },
       {
@@ -1734,9 +1726,7 @@
         "id": "Core.JSON.Classify.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "A type representing a JavaScript type."
-        ],
+        "docstrings": ["A type representing a JavaScript type."],
         "signature": "type t =\n  | Bool(bool)\n  | Null\n  | String(string)\n  | Number(float)\n  | Object(Core__Dict.t<t>)\n  | Array(array<t>)"
       },
       {
@@ -1777,9 +1767,7 @@
         "id": "Core.Type.Classify.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "The type representing a classified JavaScript value."
-        ],
+        "docstrings": ["The type representing a classified JavaScript value."],
         "signature": "type t =\n  | Bool(bool)\n  | Null\n  | Undefined\n  | String(string)\n  | Number(float)\n  | Object(object)\n  | Function(function)\n  | Symbol(Core__Symbol.t)\n  | BigInt(bigint)"
       },
       {
@@ -1802,9 +1790,7 @@
         "id": "Core.RegExp.Result.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Type representing the result of a `RegExp` execution."
-        ],
+        "docstrings": ["Type representing the result of a `RegExp` execution."],
         "signature": "type t = array<option<string>>"
       },
       {
@@ -1846,9 +1832,7 @@
   "core/math/int": {
     "id": "Core.Math.Int",
     "name": "Int",
-    "docstrings": [
-      "Provide Math utilities for `int`"
-    ],
+    "docstrings": ["Provide Math utilities for `int`"],
     "items": [
       {
         "id": "Core.Math.Int.abs",
@@ -1963,9 +1947,7 @@
   "core/math/constants": {
     "id": "Core.Math.Constants",
     "name": "Constants",
-    "docstrings": [
-      "Mathematical Constants"
-    ],
+    "docstrings": ["Mathematical Constants"],
     "items": [
       {
         "id": "Core.Math.Constants.e",
@@ -2069,9 +2051,7 @@
   "core/float/constants": {
     "id": "Core.Float.Constants",
     "name": "Constants",
-    "docstrings": [
-      "Float constants."
-    ],
+    "docstrings": ["Float constants."],
     "items": [
       {
         "id": "Core.Float.Constants.nan",
@@ -3076,27 +3056,21 @@
         "id": "Core.Intl.getCanonicalLocalesExn",
         "kind": "value",
         "name": "getCanonicalLocalesExn",
-        "docstrings": [
-          "@throws RangeError"
-        ],
+        "docstrings": ["@throws RangeError"],
         "signature": "let getCanonicalLocalesExn: string => array<string>"
       },
       {
         "id": "Core.Intl.getCanonicalLocalesManyExn",
         "kind": "value",
         "name": "getCanonicalLocalesManyExn",
-        "docstrings": [
-          "@throws RangeError"
-        ],
+        "docstrings": ["@throws RangeError"],
         "signature": "let getCanonicalLocalesManyExn: array<string> => array<string>"
       },
       {
         "id": "Core.Intl.supportedValuesOfExn",
         "kind": "value",
         "name": "supportedValuesOfExn",
-        "docstrings": [
-          "@throws RangeError"
-        ],
+        "docstrings": ["@throws RangeError"],
         "signature": "let supportedValuesOfExn: string => array<string>"
       }
     ]
@@ -4429,9 +4403,7 @@
         "id": "Core.Set.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Type representing an instance of `Set`."
-        ],
+        "docstrings": ["Type representing an instance of `Set`."],
         "signature": "type t<'a> = Js.Set.t<'a>"
       },
       {
@@ -4586,9 +4558,7 @@
         "id": "Core.Map.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Type representing an instance of `Map`."
-        ],
+        "docstrings": ["Type representing an instance of `Map`."],
         "signature": "type t<'k, 'v> = Js.Map.t<'k, 'v>"
       },
       {
@@ -4730,9 +4700,7 @@
         "id": "Core.AsyncIterator.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "The type representing an async iterator."
-        ],
+        "docstrings": ["The type representing an async iterator."],
         "signature": "type t<'a>"
       },
       {
@@ -4773,18 +4741,14 @@
         "id": "Core.Iterator.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "The type representing an iterator."
-        ],
+        "docstrings": ["The type representing an iterator."],
         "signature": "type t<'a>"
       },
       {
         "id": "Core.Iterator.value",
         "kind": "type",
         "name": "value",
-        "docstrings": [
-          "The current value of an iterator."
-        ],
+        "docstrings": ["The current value of an iterator."],
         "signature": "type value<'a> = {done: bool, value: option<'a>}"
       },
       {
@@ -4828,17 +4792,13 @@
   "core/json": {
     "id": "Core.JSON",
     "name": "JSON",
-    "docstrings": [
-      "Functions for interacting with JSON."
-    ],
+    "docstrings": ["Functions for interacting with JSON."],
     "items": [
       {
         "id": "Core.JSON.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "A type representing a JSON object."
-        ],
+        "docstrings": ["A type representing a JSON object."],
         "signature": "type t = Js.Json.t =\n  | Boolean(bool)\n  | Null\n  | String(string)\n  | Number(float)\n  | Object(Core__Dict.t<t>)\n  | Array(array<t>)"
       },
       {
@@ -4998,9 +4958,7 @@
         "id": "Core.Type.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "The possible types of JavaScript values."
-        ],
+        "docstrings": ["The possible types of JavaScript values."],
         "signature": "type t = [\n  | #bigint\n  | #boolean\n  | #function\n  | #number\n  | #object\n  | #string\n  | #symbol\n  | #undefined\n]"
       },
       {
@@ -5715,9 +5673,7 @@
         "id": "Core.RegExp.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Type representing an instantiated `RegExp`."
-        ],
+        "docstrings": ["Type representing an instantiated `RegExp`."],
         "signature": "type t = Js.Re.t"
       },
       {
@@ -7347,9 +7303,7 @@
         "id": "Core.Int.rangeOptions",
         "kind": "type",
         "name": "rangeOptions",
-        "docstrings": [
-          "The options for `range`."
-        ],
+        "docstrings": ["The options for `range`."],
         "signature": "type rangeOptions = {step?: int, inclusive?: bool}"
       },
       {
@@ -7385,9 +7339,7 @@
   "core/float": {
     "id": "Core.Float",
     "name": "Float",
-    "docstrings": [
-      "Functions for interacting with float."
-    ],
+    "docstrings": ["Functions for interacting with float."],
     "items": [
       {
         "id": "Core.Float.equal",
@@ -7592,9 +7544,7 @@
         "id": "Core.Error.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Represents a JavaScript exception."
-        ],
+        "docstrings": ["Represents a JavaScript exception."],
         "signature": "type t = Js.Exn.t"
       },
       {
@@ -7689,9 +7639,7 @@
         "id": "Core.Dict.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Type representing a dictionary of value `'a`."
-        ],
+        "docstrings": ["Type representing a dictionary of value `'a`."],
         "signature": "type t<'a> = Js.Dict.t<'a>"
       },
       {
@@ -7834,17 +7782,13 @@
   "core/date": {
     "id": "Core.Date",
     "name": "Date",
-    "docstrings": [
-      "Functions for interacting with JavaScript Dates."
-    ],
+    "docstrings": ["Functions for interacting with JavaScript Dates."],
     "items": [
       {
         "id": "Core.Date.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "A type representing a JavaScript date."
-        ],
+        "docstrings": ["A type representing a JavaScript date."],
         "signature": "type t = Js.Date.t"
       },
       {

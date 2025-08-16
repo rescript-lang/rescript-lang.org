@@ -12,7 +12,6 @@ The `@jsx.component` decorator is used to annotate functions that are [JSX](/doc
 
 You will need this decorator whenever you want to use JSX component in JSX expressions, with a [generic JSX transform](/docs/manual/latest/jsx#generic-jsx-transform-jsx-beyond-react-experimental) configured.
 
-
 ### Example
 
 <CodeTab labels={["ReScript", "JS Output"]}>
@@ -30,8 +29,8 @@ import * as Preact from "preact";
 
 function Playground(props) {
   return Preact.jsx("button", {
-              children: "Hello " + props.name + "!"
-            });
+    children: "Hello " + props.name + "!",
+  });
 }
 
 var make = Playground;
@@ -41,4 +40,4 @@ var make = Playground;
 
 ### References
 
-* [Generic JSX transform](/docs/manual/latest/jsx#generic-jsx-transform-jsx-beyond-react-experimental)
+- [Generic JSX transform](/docs/manual/latest/jsx#generic-jsx-transform-jsx-beyond-react-experimental)

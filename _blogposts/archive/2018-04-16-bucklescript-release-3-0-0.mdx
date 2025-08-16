@@ -23,10 +23,10 @@ description: |
   potentially obsoletes the need for a few other APIs. Please see the linked
   docs and help us test it!
 - `raw` now accepts a function declaration with an unsafe string body: `let f =
-  [%raw (a, b) => "return a + b"]` (OCaml syntax: `let f = [%raw fun a b ->
-  "return a + b"]`). This makes embedding escape-hatch raw JS code even easier
+[%raw (a, b) => "return a + b"]` (OCaml syntax: `let f = [%raw fun a b ->
+"return a + b"]`). This makes embedding escape-hatch raw JS code even easier
   for the compiler to optimize for speed and readability, as you've indicated
-    that the raw code block is a function, with specific numbers of arguments.
+  that the raw code block is a function, with specific numbers of arguments.
 
 The usual changelog is
 [here](https://github.com/BuckleScript/bucklescript/blob/master/Changes.md#300).

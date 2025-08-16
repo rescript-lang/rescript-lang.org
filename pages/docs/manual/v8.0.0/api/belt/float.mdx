@@ -8,7 +8,7 @@ This module includes convenience methods for handling `float` types.
 let toInt: float => int;
 ```
 
-Converts a given `float` to an `int`. 
+Converts a given `float` to an `int`.
 
 ```re example
 Js.log(Belt.Float.toInt(1.0) === 1); /* true */
@@ -56,7 +56,7 @@ Js.log(Belt.Float.toString(1.0) === "1.0"); /* true */
 let (+): (float, float) => float;
 ```
 
-Addition of two `float` values. 
+Addition of two `float` values.
 Can be opened in a module to avoid dot-notation (`+.`), however this yields a shadow warning (Warning number 44) in the default configuration.
 
 ```re example
@@ -84,7 +84,7 @@ Js.log(2.0 - 1.0 === 1.0); /* true */
 let ( * ): (float, float) => float;
 ```
 
-Multiplication of two `float` values. 
+Multiplication of two `float` values.
 Can be opened in a module to avoid dot-notation (`*.`), however this yields a shadow warning (Warning number 44) in the default configuration.
 
 ```re example

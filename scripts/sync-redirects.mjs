@@ -10,14 +10,10 @@ const redirectsConfig = await nextConfig.redirects();
  *   source: string,
  *   destination: string,
  *   permanent: boolean,
- * }} config 
+ * }} config
  * @return {string}
  */
-function lineFormat({
-  source,
-  destination,
-  permanent,
-}) {
+function lineFormat({ source, destination, permanent }) {
   return `${source}  ${destination}  ${permanent ? 308 : 307}`;
 }
 

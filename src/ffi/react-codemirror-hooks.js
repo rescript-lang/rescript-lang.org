@@ -2,7 +2,7 @@
 // OBSOLETE!
 //
 // This file is reimplemented in common/CodeMirrorBase.re
-// We keep this around for reference in case we find some 
+// We keep this around for reference in case we find some
 // bugs in the new implementation
 //
 import CodeMirror from "codemirror";
@@ -103,7 +103,7 @@ export default function CodeMirrorReact(props) {
     const cm = CodeMirror.fromTextArea(inputElement.current, {
       theme: "material",
       gutters: [ERROR_GUTTER_ID, "CodeMirror-linenumbers"],
-      ...options
+      ...options,
     });
 
     cm.getScrollerElement().style.minHeight = props.minHeight;

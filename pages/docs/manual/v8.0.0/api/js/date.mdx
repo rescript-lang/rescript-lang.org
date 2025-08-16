@@ -3,7 +3,8 @@
 <Intro>
 
 Provide bindings to JS date. (See [`Date`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) on MDN.) JavaScript stores dates as the number of milliseconds since
-the UNIX *epoch*, midnight 1 January 1970, UTC.
+the UNIX _epoch_, midnight 1 January 1970, UTC.
+
 </Intro>
 
 In these examples, we will be using this date:
@@ -17,7 +18,6 @@ The code used to access this date is running in the Europe/Austria time zone wit
 
 In all of these functions, month values are in the range 0-11, where January is month zero.
 
-
 ## t
 
 ```re sig
@@ -29,6 +29,7 @@ type t;
 ```re sig
 let valueOf: t => float;
 ```
+
 Returns the primitive value of this date, equivalent to `getTime()`. (See [`Date.valueOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/valueOf) on MDN.)
 
 ```re example
@@ -40,6 +41,7 @@ Js.Date.valueOf(exampleDate) == 123456654321.0;
 ```re sig
 let make: unit => t;
 ```
+
 Returns a date representing the current time. See [`Date()` Constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/Date) on MDN.
 
 ```re example
@@ -77,6 +79,7 @@ Js.Date.fromString("Thor, 32 Lok -19 60:70:80 XYZ"); // returns NaN
 ```re sig
 let makeWithYM: (~year: float, ~month: float, unit) => t;
 ```
+
 Returns a date representing midnight of the first day of the given month and year in the current time zone. Fractional parts of arguments are ignored. See [`Date()` Constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/Date) on MDN.
 
 ```re example
@@ -88,6 +91,7 @@ let november1 = Js.Date.makeWithYM(~year=2020.0, ~month=10.0, ());
 ```re sig
 let makeWithYMD: (~year: float, ~month: float, ~date: float, unit) => t;
 ```
+
 Returns a date representing midnight of the given date of the given month and year in the current time zone. Fractional parts of arguments are ignored. See [`Date()` Constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/Date) on MDN.
 
 ## makeWithYMDH
@@ -95,6 +99,7 @@ Returns a date representing midnight of the given date of the given month and ye
 ```re sig
 let makeWithYMDH: (~year: float, ~month: float, ~date: float, ~hours: float, unit) => t;
 ```
+
 Returns a date representing the given date of the given month and year, at zero minutes and zero seconds past the given `hours`, in the current time zone. Fractional parts of arguments are ignored. See [`Date()` Constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/Date) on MDN. Fractional parts of the arguments are ignored.
 
 ## makeWithYMDHM
@@ -102,13 +107,15 @@ Returns a date representing the given date of the given month and year, at zero 
 ```re sig
 let makeWithYMDHM: (~year: float, ~month: float, ~date: float, ~hours: float, ~minutes: float, unit) => t;
 ```
-Returns a date representing the given date of the given month and year, at zero seconds past the given time in hours and minutes in the current time zone.  Fractional parts of arguments are ignored. See [`Date()` Constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/Date) on MDN.
+
+Returns a date representing the given date of the given month and year, at zero seconds past the given time in hours and minutes in the current time zone. Fractional parts of arguments are ignored. See [`Date()` Constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/Date) on MDN.
 
 ## makeWithYMDHMS
 
 ```re sig
 let makeWithYMDHMS: (~year: float, ~month: float, ~date: float, ~hours: float, ~minutes: float, ~seconds: float, unit) => t;
 ```
+
 Returns a date representing the given date of the given month and year, at the given time in hours, minutes, and seconds in the current time zone. Fractional parts of arguments are ignored. See [`Date()` Constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/Date) on MDN.
 
 ```re example
@@ -121,6 +128,7 @@ Js.Date.makeWithYMDHMS(~year=1973.0, ~month=11.0, ~date=29.0,
 ```re sig
 let utcWithYM: (~year: float, ~month: float, unit) => float;
 ```
+
 Returns a float representing the number of milliseconds past the epoch for midnight of the first day of the given month and year in UTC. Fractional parts of arguments are ignored. See [`Date.UTC`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/UTC) on MDN.
 
 ```re example
@@ -132,6 +140,7 @@ let november1 = Js.Date.utcWithYM(~year=2020.0, ~month=10.0, ());
 ```re sig
 let utcWithYMD: (~year: float, ~month: float, ~date: float, unit) => float;
 ```
+
 Returns a float representing the number of milliseconds past the epoch for midnight of the given date of the given month and year in UTC. Fractional parts of arguments are ignored. See [`Date.UTC`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/UTC) on MDN.
 
 ## utcWithYMDH
@@ -139,6 +148,7 @@ Returns a float representing the number of milliseconds past the epoch for midni
 ```re sig
 let utcWithYMDH: (~year: float, ~month: float, ~date: float, ~hours: float, unit) => float;
 ```
+
 Returns a float representing the number of milliseconds past the epoch for midnight of the given date of the given month and year, at zero minutes and seconds past the given hours in UTC. Fractional parts of arguments are ignored. See [`Date.UTC`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/UTC) on MDN.
 
 ## utcWithYMDHM
@@ -146,6 +156,7 @@ Returns a float representing the number of milliseconds past the epoch for midni
 ```re sig
 let utcWithYMDHM: (~year: float, ~month: float, ~date: float, ~hours: float, ~minutes: float, unit) => float;
 ```
+
 Returns a float representing the number of milliseconds past the epoch for midnight of the given date of the given month and year, at zero seconds past the given number of minutes past the given hours in UTC. Fractional parts of arguments are ignored. See [`Date.UTC`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/UTC) on MDN.
 
 ## utcWithYMDHMS
@@ -153,6 +164,7 @@ Returns a float representing the number of milliseconds past the epoch for midni
 ```re sig
 let utcWithYMDHMS: (~year: float, ~month: float, ~date: float, ~hours: float, ~minutes: float, ~seconds: float, unit) => float;
 ```
+
 Returns a float representing the number of milliseconds past the epoch for midnight of the given date of the given month and year, at the given time in hours, minutes and seconds in UTC. Fractional parts of arguments are ignored. See [`Date.UTC`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/UTC) on MDN.
 
 ## now
@@ -160,6 +172,7 @@ Returns a float representing the number of milliseconds past the epoch for midni
 ```re sig
 let now: unit => float;
 ```
+
 Returns the current time as number of milliseconds since Unix epoch.
 
 ## parse
@@ -167,6 +180,7 @@ Returns the current time as number of milliseconds since Unix epoch.
 ```re sig
 let parse: string => t;
 ```
+
 Deprecated. Use [`fromString()`](#fromstring).
 
 ## parseAsFloat
@@ -174,6 +188,7 @@ Deprecated. Use [`fromString()`](#fromstring).
 ```re sig
 let parseAsFloat: string => float;
 ```
+
 Returns a float with the number of milliseconds past the epoch represented by the given string. The string can be in “IETF-compliant RFC 2822 timestamps, and also strings in a version of ISO8601.” Returns `NaN` if given an invalid date string. According to the [`Date.parse`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse) documentation on MDN, its use is discouraged. Returns `NaN` if passed invalid date string.
 
 ## getDate
@@ -181,6 +196,7 @@ Returns a float with the number of milliseconds past the epoch represented by th
 ```re sig
 let getDate: t => float;
 ```
+
 Returns the day of the month for its argument. The argument is evaluated in the current time zone. See [`Date.getDate`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getDate) on MDN.
 
 ```re example
@@ -192,7 +208,8 @@ Js.Date.getDate(exampleDate) == 29.0;
 ```re sig
 let getDay: t => float;
 ```
-Returns the day of the week (0.0-6.0) for its argument, where 0.0 represents Sunday. The argument is evaluated in the current time zone.  See [`Date.getDay`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getDay) on MDN.
+
+Returns the day of the week (0.0-6.0) for its argument, where 0.0 represents Sunday. The argument is evaluated in the current time zone. See [`Date.getDay`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getDay) on MDN.
 
 ```re example
 Js.Date.getDay(exampleDate) == 4.0;
@@ -203,6 +220,7 @@ Js.Date.getDay(exampleDate) == 4.0;
 ```re sig
 let getFullYear: t => float;
 ```
+
 Returns the full year (as opposed to the range 0-99) for its argument. The argument is evaluated in the current time zone. See [`Date.getFullYear`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getFullYear) on MDN.
 
 ```re example
@@ -214,6 +232,7 @@ Js.Date.getFullYear(exampleDate) == 1973.0;
 ```re sig
 let getHours: t => float;
 ```
+
 Returns the hours for its argument, evaluated in the current time zone. See [`Date.getHours`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getHours) on MDN.
 
 ```re example
@@ -225,6 +244,7 @@ Js.Date.getHours(exampleDate) == 22.0; // Vienna is in GMT+01:00
 ```re sig
 let getMilliseconds: t => float;
 ```
+
 Returns the number of milliseconds for its argument, evaluated in the current time zone. See [`Date.getMilliseconds`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getMilliseconds) on MDN.
 
 ```re example
@@ -236,6 +256,7 @@ Js.Date.getMilliseconds(exampleDate) == 321.0;
 ```re sig
 let getMinutes: t => float;
 ```
+
 Returns the number of minutes for its argument, evaluated in the current time zone. See [`Date.getMinutes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getMinutes) on MDN.
 
 ```re example
@@ -247,7 +268,8 @@ Js.Date.getMinutes(exampleDate) == 30.0;
 ```re sig
 let getMonth: t => float;
 ```
-Returns the month (0.0-11.0) for its argument, evaluated in the current time zone. January is month zero.  See [`Date.getMonth`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getMonth) on MDN.
+
+Returns the month (0.0-11.0) for its argument, evaluated in the current time zone. January is month zero. See [`Date.getMonth`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getMonth) on MDN.
 
 ```re example
 Js.Date.getMonth(exampleDate) == 10.0;
@@ -258,6 +280,7 @@ Js.Date.getMonth(exampleDate) == 10.0;
 ```re sig
 let getSeconds: t => float;
 ```
+
 Returns the seconds for its argument, evaluated in the current time zone. See [`Date.getSeconds`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getSeconds) on MDN.
 
 ```re example
@@ -269,7 +292,8 @@ Js.Date.getSeconds(exampleDate) == 54.0;
 ```re sig
 let getTime: t => float;
 ```
-Returns the number of milliseconds since Unix epoch, evaluated in UTC.  See [`Date.getTime`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getTime) on MDN.
+
+Returns the number of milliseconds since Unix epoch, evaluated in UTC. See [`Date.getTime`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getTime) on MDN.
 
 ```re example
 Js.Date.getTime(exampleDate) == 123456654321.0
@@ -292,6 +316,7 @@ Js.Date.getTimezoneOffset(exampleDate) == -60.0;
 ```re sig
 let getUTCDate: t => float;
 ```
+
 Returns the day of the month of the argument, evaluated in UTC. See [`Date.getUTCDate`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCDate) on MDN.
 
 ```re example
@@ -303,6 +328,7 @@ Js.Date.getUTCDate(exampleDate) == 29.0;
 ```re sig
 let getUTCDay: t => float;
 ```
+
 Returns the day of the week of the argument, evaluated in UTC. The range of the return value is 0.0-6.0, where Sunday is zero. See [`Date.getUTCDay`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCDay) on MDN.
 
 ```re example
@@ -314,7 +340,8 @@ Js.Date.getUTCDay(exampleDate) == 4.0;
 ```re sig
 let getUTCFullYear: t => float;
 ```
-Returns the full year (as opposed to the range 0-99) for its argument. The argument is evaluated in UTC.  See [`Date.getUTCFullYear`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCFullYear) on MDN.
+
+Returns the full year (as opposed to the range 0-99) for its argument. The argument is evaluated in UTC. See [`Date.getUTCFullYear`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCFullYear) on MDN.
 
 ```re example
 Js.Date.getUTCFullYear(exampleDate) == 1973.0;
@@ -325,6 +352,7 @@ Js.Date.getUTCFullYear(exampleDate) == 1973.0;
 ```re sig
 let getUTCHours: t => float;
 ```
+
 Returns the hours for its argument, evaluated in the current time zone. See [`Date.getUTCHours`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCHours) on MDN.
 
 ```re example
@@ -336,6 +364,7 @@ Js.Date.getUTCHours(exampleDate) == 21.0;
 ```re sig
 let getUTCMilliseconds: t => float;
 ```
+
 Returns the number of milliseconds for its argument, evaluated in UTC. See [`Date.getUTCMilliseconds`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCMilliseconds) on MDN.
 
 ```re example
@@ -347,6 +376,7 @@ Js.Date.getUTCMilliseconds(exampleDate) == 321.0;
 ```re sig
 let getUTCMinutes: t => float;
 ```
+
 Returns the number of minutes for its argument, evaluated in UTC. See [`Date.getUTCMinutes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCMinutes) on MDN.
 
 ```re example
@@ -358,6 +388,7 @@ Js.Date.getUTCMinutes(exampleDate) == 30.0;
 ```re sig
 let getUTCMonth: t => float;
 ```
+
 Returns the month (0.0-11.0) for its argument, evaluated in UTC. January is month zero. See [`Date.getUTCMonth`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCMonth) on MDN.
 
 ```re example
@@ -369,6 +400,7 @@ Js.Date.getUTCMonth(exampleDate) == 10.0;
 ```re sig
 let getUTCSeconds: t => float;
 ```
+
 Returns the seconds for its argument, evaluated in UTC. See [`Date.getUTCSeconds`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCSeconds) on MDN.
 
 ```re example
@@ -380,6 +412,7 @@ Js.Date.getUTCSeconds(exampleDate) == 54.0;
 ```re sig
 let getYear: t => float;
 ```
+
 Deprecated. Use `getFullYear()` instead.
 
 ## setDate
@@ -387,7 +420,8 @@ Deprecated. Use `getFullYear()` instead.
 ```re sig
 let setDate: (t, float) => float;
 ```
-Sets the given `Date`’s day of month to the value in the second argument according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setDate`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setDate) on MDN.
+
+Sets the given `Date`’s day of month to the value in the second argument according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setDate`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setDate) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -401,7 +435,8 @@ twoWeeksBefore == Js.Date.getTime(date1);
 ```re sig
 let setFullYear: (t, float) => float;
 ```
-Sets the given `Date`’s year to the value in the second argument according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setFullYear`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setFullYear) on MDN.
+
+Sets the given `Date`’s year to the value in the second argument according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setFullYear`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setFullYear) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -416,7 +451,7 @@ nextYear == Js.Date.getTime(date1);
 let setFullYearM: (t, ~year: float, ~month: float, unit) => float;
 ```
 
-Sets the given `Date`’s year and month to the values in the labeled arguments according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setFullYear`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setFullYear) on MDN.
+Sets the given `Date`’s year and month to the values in the labeled arguments according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setFullYear`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setFullYear) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -430,7 +465,8 @@ future == Js.Date.getTime(date1);
 ```re sig
 let setFullYearMD: (t, ~year: float, ~month: float, ~date: float, unit) => float;
 ```
-Sets the given `Date`’s year, month, and day of month to the values in the labeled arguments according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setFullYear`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setFullYear) on MDN.
+
+Sets the given `Date`’s year, month, and day of month to the values in the labeled arguments according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setFullYear`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setFullYear) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -444,7 +480,8 @@ future == Js.Date.getTime(date1);
 ```re sig
 let setHours: (t, float) => float;
 ```
-Sets the given `Date`’s hours to the value in the second argument according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setHours`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setHours) on MDN.
+
+Sets the given `Date`’s hours to the value in the second argument according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setHours`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setHours) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -458,7 +495,8 @@ nextHour == Js.Date.getTime(date1);
 ```re sig
 let setHoursM: (t, ~hours: float, ~minutes: float, unit) => float;
 ```
-Sets the given `Date`’s hours and minutes to the values in the labeled arguments according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setHours`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setHours) on MDN.
+
+Sets the given `Date`’s hours and minutes to the values in the labeled arguments according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setHours`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setHours) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -472,11 +510,12 @@ futureTime == Js.Date.getTime(date1);
 ```re sig
 let setHoursMS: (t, ~hours: float, ~minutes: float, ~seconds: float, unit) => float;
 ```
-Sets the given `Date`’s hours, minutes, and seconds to the values in the labeled arguments according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setHours`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setHours) on MDN.
+
+Sets the given `Date`’s hours, minutes, and seconds to the values in the labeled arguments according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setHours`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setHours) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
-let futureTime = Js.Date.setHoursMS(date1, ~hours=22.0, ~minutes=46.0, 
+let futureTime = Js.Date.setHoursMS(date1, ~hours=22.0, ~minutes=46.0,
   ~seconds=37.0, ());
 date1 == Js.Date.fromString("1973-11-29T22:46:37.321Z00:00");
 futureTime == Js.Date.getTime(date1);
@@ -487,11 +526,12 @@ futureTime == Js.Date.getTime(date1);
 ```re sig
 let setHoursMSMs: (t, ~hours: float, ~minutes: float, ~seconds: float, ~milliseconds: float, unit) => float;
 ```
-Sets the given `Date`’s hours, minutes, seconds, and milliseconds to the values in the labeled arguments according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setHours`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setHours) on MDN.
+
+Sets the given `Date`’s hours, minutes, seconds, and milliseconds to the values in the labeled arguments according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setHours`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setHours) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
-let futureTime = Js.Date.setHoursMSMs(date1, ~hours=22.0, ~minutes=46.0, 
+let futureTime = Js.Date.setHoursMSMs(date1, ~hours=22.0, ~minutes=46.0,
   ~seconds=37.0, ~milliseconds=494.0, ());
 date1 == Js.Date.fromString("1973-11-29T22:46:37.494Z00:00");
 futureTime == Js.Date.getTime(date1);
@@ -502,7 +542,8 @@ futureTime == Js.Date.getTime(date1);
 ```re sig
 let setMilliseconds: (t, float) => float;
 ```
-Sets the given `Date`’s milliseconds to the value in the second argument according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setMilliseconds`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setMilliseconds) on MDN.
+
+Sets the given `Date`’s milliseconds to the value in the second argument according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setMilliseconds`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setMilliseconds) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -516,7 +557,8 @@ futureTime == Js.Date.getTime(date1);
 ```re sig
 let setMinutes: (t, float) => float;
 ```
-Sets the given `Date`’s minutes to the value in the second argument according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setMinutes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setMinutes) on MDN.
+
+Sets the given `Date`’s minutes to the value in the second argument according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setMinutes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setMinutes) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -530,7 +572,8 @@ futureTime == Js.Date.getTime(date1);
 ```re sig
 let setMinutesS: (t, ~minutes: float, ~seconds: float, unit) => float;
 ```
-Sets the given `Date`’s minutes and seconds to the values in the labeled arguments according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setMinutes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setMinutes) on MDN.
+
+Sets the given `Date`’s minutes and seconds to the values in the labeled arguments according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setMinutes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setMinutes) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -544,7 +587,8 @@ futureTime == Js.Date.getTime(date1);
 ```re sig
 let setMinutesSMs: (t, ~minutes: float, ~seconds: float, ~milliseconds: float, unit) => float;
 ```
-Sets the given `Date`’s minutes, seconds, and milliseconds to the values in the labeled arguments according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setMinutes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setMinutes) on MDN.
+
+Sets the given `Date`’s minutes, seconds, and milliseconds to the values in the labeled arguments according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setMinutes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setMinutes) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -559,7 +603,8 @@ futureTime == Js.Date.getTime(date1);
 ```re sig
 let setMonth: (t, float) => float;
 ```
-Sets the given `Date`’s month to the value in the second argument according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setMonth`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setMonth) on MDN.
+
+Sets the given `Date`’s month to the value in the second argument according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setMonth`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setMonth) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -573,7 +618,8 @@ futureTime == Js.Date.getTime(date1);
 ```re sig
 let setMonthD: (t, ~month: float, ~date: float, unit) => float;
 ```
-Sets the given `Date`’s month and day of month to the values in the labeled arguments according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setMonth`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setMonth) on MDN.
+
+Sets the given `Date`’s month and day of month to the values in the labeled arguments according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setMonth`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setMonth) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -587,7 +633,8 @@ futureTime == Js.Date.getTime(date1);
 ```re sig
 let setSeconds: (t, float) => float;
 ```
-Sets the given `Date`’s seconds to the value in the second argument according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setSeconds`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setSeconds) on MDN.
+
+Sets the given `Date`’s seconds to the value in the second argument according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setSeconds`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setSeconds) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -601,7 +648,8 @@ futureTime == Js.Date.getTime(date1);
 ```re sig
 let setSecondsMs: (t, ~seconds: float, ~milliseconds: float, unit) => float;
 ```
-Sets the given `Date`’s seconds and milliseconds to the values in the labeled arguments according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setSeconds`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setSeconds) on MDN.
+
+Sets the given `Date`’s seconds and milliseconds to the values in the labeled arguments according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setSeconds`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setSeconds) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -616,7 +664,8 @@ futureTime == Js.Date.getTime(date1);
 ```re sig
 let setTime: (t, float) => float;
 ```
-Sets the given `Date`’s value in terms of milliseconds since the epoch. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setTime`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setTime) on MDN.
+
+Sets the given `Date`’s value in terms of milliseconds since the epoch. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setTime`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setTime) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -631,7 +680,8 @@ futureTime == Js.Date.getTime(date1);
 ```re sig
 let setUTCDate: (t, float) => float;
 ```
-Sets the given `Date`’s day of month to the value in the second argument according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setUTCDate`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCDate) on MDN.
+
+Sets the given `Date`’s day of month to the value in the second argument according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setUTCDate`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCDate) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -645,7 +695,8 @@ twoWeeksBefore == Js.Date.getTime(date1);
 ```re sig
 let setUTCFullYear: (t, float) => float;
 ```
-Sets the given `Date`’s year to the value in the second argument according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setUTCFullYear`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCFullYear) on MDN.
+
+Sets the given `Date`’s year to the value in the second argument according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setUTCFullYear`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCFullYear) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -659,7 +710,8 @@ nextYear == Js.Date.getTime(date1);
 ```re sig
 let setUTCFullYearM: (t, ~year: float, ~month: float, unit) => float;
 ```
-Sets the given `Date`’s year and month to the values in the labeled arguments according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setUTCFullYear`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCFullYear) on MDN.
+
+Sets the given `Date`’s year and month to the values in the labeled arguments according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setUTCFullYear`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCFullYear) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -673,7 +725,8 @@ future == Js.Date.getTime(date1);
 ```re sig
 let setUTCFullYearMD: (t, ~year: float, ~month: float, ~date: float, unit) => float;
 ```
-Sets the given `Date`’s year, month, and day of month to the values in the labeled arguments according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setUTCFullYear`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCFullYear) on MDN.
+
+Sets the given `Date`’s year, month, and day of month to the values in the labeled arguments according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setUTCFullYear`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCFullYear) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -687,7 +740,8 @@ future == Js.Date.getTime(date1);
 ```re sig
 let setUTCHours: (t, float) => float;
 ```
-Sets the given `Date`’s hours to the value in the second argument according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setUTCHours`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCHours) on MDN.
+
+Sets the given `Date`’s hours to the value in the second argument according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setUTCHours`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCHours) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -701,7 +755,8 @@ nextHour == Js.Date.getTime(date1);
 ```re sig
 let setUTCHoursM: (t, ~hours: float, ~minutes: float, unit) => float;
 ```
-Sets the given `Date`’s hours and minutes to the values in the labeled arguments according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setUTCHours`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCHours) on MDN.
+
+Sets the given `Date`’s hours and minutes to the values in the labeled arguments according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setUTCHours`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCHours) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -715,11 +770,12 @@ futureTime == Js.Date.getTime(date1);
 ```re sig
 let setUTCHoursMS: (t, ~hours: float, ~minutes: float, ~seconds: float, unit) => float;
 ```
-Sets the given `Date`’s hours, minutes, and seconds to the values in the labeled arguments according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setUTCHours`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCHours) on MDN.
+
+Sets the given `Date`’s hours, minutes, and seconds to the values in the labeled arguments according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setUTCHours`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCHours) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
-let futureTime = Js.Date.setUTCHoursMS(date1, ~hours=22.0, ~minutes=46.0, 
+let futureTime = Js.Date.setUTCHoursMS(date1, ~hours=22.0, ~minutes=46.0,
   ~seconds=37.0, ());
 date1 == Js.Date.fromString("1973-11-29T22:46:37.321Z00:00");
 futureTime == Js.Date.getTime(date1);
@@ -730,11 +786,12 @@ futureTime == Js.Date.getTime(date1);
 ```re sig
 let setUTCHoursMSMs: (t, ~hours: float, ~minutes: float, ~seconds: float, ~milliseconds: float, unit) => float;
 ```
-Sets the given `Date`’s hours, minutes, seconds, and milliseconds to the values in the labeled arguments according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setUTCHours`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCHours) on MDN.
+
+Sets the given `Date`’s hours, minutes, seconds, and milliseconds to the values in the labeled arguments according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setUTCHours`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCHours) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
-let futureTime = Js.Date.setUTCHoursMSMs(date1, ~hours=22.0, ~minutes=46.0, 
+let futureTime = Js.Date.setUTCHoursMSMs(date1, ~hours=22.0, ~minutes=46.0,
   ~seconds=37.0, ~milliseconds=494.0, ());
 date1 == Js.Date.fromString("1973-11-29T22:46:37.494Z00:00");
 futureTime == Js.Date.getTime(date1);
@@ -745,7 +802,8 @@ futureTime == Js.Date.getTime(date1);
 ```re sig
 let setUTCMilliseconds: (t, float) => float;
 ```
-Sets the given `Date`’s milliseconds to the value in the second argument according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setUTCMilliseconds`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCMilliseconds) on MDN.
+
+Sets the given `Date`’s milliseconds to the value in the second argument according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setUTCMilliseconds`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCMilliseconds) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -759,7 +817,8 @@ futureTime == Js.Date.getTime(date1);
 ```re sig
 let setUTCMinutes: (t, float) => float;
 ```
-Sets the given `Date`’s minutes to the value in the second argument according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setUTCMinutes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCMinutes) on MDN.
+
+Sets the given `Date`’s minutes to the value in the second argument according to the current time zone. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setUTCMinutes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCMinutes) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -773,7 +832,8 @@ futureTime == Js.Date.getTime(date1);
 ```re sig
 let setUTCMinutesS: (t, ~minutes: float, ~seconds: float, unit) => float;
 ```
-Sets the given `Date`’s minutes and seconds to the values in the labeled arguments according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setUTCMinutes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCMinutes) on MDN.
+
+Sets the given `Date`’s minutes and seconds to the values in the labeled arguments according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setUTCMinutes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCMinutes) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -787,7 +847,8 @@ futureTime == Js.Date.getTime(date1);
 ```re sig
 let setUTCMinutesSMs: (t, ~minutes: float, ~seconds: float, ~milliseconds: float, unit) => float;
 ```
-Sets the given `Date`’s minutes, seconds, and milliseconds to the values in the labeled arguments according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setUTCMinutes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCMinutes) on MDN.
+
+Sets the given `Date`’s minutes, seconds, and milliseconds to the values in the labeled arguments according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setUTCMinutes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCMinutes) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -802,7 +863,8 @@ futureTime == Js.Date.getTime(date1);
 ```re sig
 let setUTCMonth: (t, float) => float;
 ```
-Sets the given `Date`’s month to the value in the second argument according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setUTCMonth`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCMonth) on MDN.
+
+Sets the given `Date`’s month to the value in the second argument according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setUTCMonth`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCMonth) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -816,7 +878,8 @@ futureTime == Js.Date.getTime(date1);
 ```re sig
 let setUTCMonthD: (t, ~month: float, ~date: float, unit) => float;
 ```
-Sets the given `Date`’s month and day of month to the values in the labeled arguments according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setUTCMonth`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCMonth) on MDN.
+
+Sets the given `Date`’s month and day of month to the values in the labeled arguments according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setUTCMonth`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCMonth) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -830,7 +893,8 @@ futureTime == Js.Date.getTime(date1);
 ```re sig
 let setUTCSeconds: (t, float) => float;
 ```
-Sets the given `Date`’s seconds to the value in the second argument according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setUTCSeconds`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCSeconds) on MDN.
+
+Sets the given `Date`’s seconds to the value in the second argument according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setUTCSeconds`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCSeconds) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -844,7 +908,8 @@ futureTime == Js.Date.getTime(date1);
 ```re sig
 let setUTCSecondsMs: (t, ~seconds: float, ~milliseconds: float, unit) => float;
 ```
-Sets the given `Date`’s seconds and milliseconds to the values in the labeled arguments according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. *This function modifies the original `Date`.* See [`Date.setUTCSeconds`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCSeconds) on MDN.
+
+Sets the given `Date`’s seconds and milliseconds to the values in the labeled arguments according to UTC. Returns the number of milliseconds since the epoch of the updated `Date`. _This function modifies the original `Date`._ See [`Date.setUTCSeconds`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCSeconds) on MDN.
 
 ```re example
 let date1 = Js.Date.fromFloat(123456654321.0); // 29 November 1973 21:30:54.321 GMT
@@ -859,6 +924,7 @@ futureTime == Js.Date.getTime(date1);
 ```re sig
 let setUTCTime: (t, float) => float;
 ```
+
 Same as [`setTime()`](#settime).
 
 ## setYear
@@ -866,6 +932,7 @@ Same as [`setTime()`](#settime).
 ```re sig
 let setYear: (t, float) => float;
 ```
+
 Deprecated. Use [`setFullYear()`](#setfullyear) instead.
 
 ## toDateString
@@ -873,6 +940,7 @@ Deprecated. Use [`setFullYear()`](#setfullyear) instead.
 ```re sig
 let toDateString: t => string;
 ```
+
 Returns the date (day of week, year, month, and day of month) portion of a `Date` in English. See [`Date.toDateString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toDateString) on MDN.
 
 ```re example
@@ -884,6 +952,7 @@ Js.Date.toDateString(exampleDate) == "Thu Nov 29 1973";
 ```re sig
 let toGMTString: t => string;
 ```
+
 Deprecated. Use [`toUTCString()`](#toutcstring) instead.
 
 ## toISOString
@@ -891,6 +960,7 @@ Deprecated. Use [`toUTCString()`](#toutcstring) instead.
 ```re sig
 let toISOString: t => string;
 ```
+
 Returns a simplified version of the ISO 8601 format for the date. See [`Date.toISOString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString) on MDN.
 
 ```re example
@@ -902,6 +972,7 @@ Js.Date.toISOString(exampleDate) == "1973-11-29T21:30:54.321Z";
 ```re sig
 let toJSON: t => string;
 ```
+
 Deprecated. This method is unsafe. It will be changed to return `option` in a future release. Please use `toJSONUnsafe()` instead.
 
 ## toJSONUnsafe
@@ -909,6 +980,7 @@ Deprecated. This method is unsafe. It will be changed to return `option` in a fu
 ```re sig
 let toJSONUnsafe: t => string;
 ```
+
 Returns a string representation of the given date. See [`Date.toJSON`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toJSON) on MDN.
 
 ```re example
@@ -928,12 +1000,12 @@ Js.Date.toLocaleDateString(exampleDate) == "11/29/1973"; // for en_US.utf8
 Js.Date.toLocaleDateString(exampleDate) == "29.11.73"; // for de_DE.utf8
 ```
 
-
 ## toLocaleString
 
 ```re sig
 let toLocaleString: t => string;
 ```
+
 Returns the time and date for the given `Date` in the current locale format. See [`Date.toLocaleString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString) on MDN.
 
 ```re example
@@ -946,6 +1018,7 @@ Js.Date.toLocaleString(exampleDate) == "29.11.1973, 22:30:54"; // for de_DE.utf8
 ```re sig
 let toLocaleTimeString: t => string;
 ```
+
 Returns the time of day for the given `Date` in the current locale format. See [`Date.toLocaleTimeString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString) on MDN.
 
 ```re example
@@ -958,6 +1031,7 @@ Js.Date.toLocaleTimeString(exampleDate) == "22:30:54"; // for de_DE.utf8
 ```re sig
 let toString: t => string;
 ```
+
 Returns a string representing the date and time of day for the given `Date` in the current locale and time zone. See [`Date.toString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toString) on MDN.
 
 ```re example
@@ -970,7 +1044,7 @@ Js.Date.toString(exampleDate) == "Thu Nov 29 1973 22:30:54 GMT+0100 (Central Eur
 let toTimeString: t => string;
 ```
 
-Returns a string representing the time of day for the given `Date` in the current locale and time zone.  See [`Date.toTimeString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toTimeString) on MDN.
+Returns a string representing the time of day for the given `Date` in the current locale and time zone. See [`Date.toTimeString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toTimeString) on MDN.
 
 ```re example
 Js.Date.toTimeString(exampleDate) == "22:30:54 GMT+0100 (Central European Standard Time)";

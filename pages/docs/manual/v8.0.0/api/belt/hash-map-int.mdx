@@ -46,7 +46,7 @@ let clear: t('b) => unit;
 Clears a hash table.
 
 ```re example
-let hMap = Belt.HashMap.Int.fromArray([|(1, "1")|])  
+let hMap = Belt.HashMap.Int.fromArray([|(1, "1")|])
 Belt.HashMap.Int.clear(hMap)
 Belt.HashMap.Int.isEmpty(hMap) == true;
 ```
@@ -60,7 +60,7 @@ let isEmpty: t('a) => bool;
 `isEmpty(m)` checks whether a hash map is empty.
 
 ```re example
-let hMap = Belt.HashMap.Int.fromArray([|(1, "1")|])  
+let hMap = Belt.HashMap.Int.fromArray([|(1, "1")|])
 Belt.HashMap.Int.isEmpty(hMap) == false;
 ```
 
@@ -73,7 +73,7 @@ let set: (t('a), key, 'a) => unit;
 `set(tbl, k, v)` if `k` does not exist, add the binding `k,v`, otherwise, update the old value with the new `v`.
 
 ```re example
- 
+
 let hMap = Belt.HashMap.Int.fromArray([|(2, "2")|]);
 
 Belt.HashMap.Int.set(hMap, 1, "1");

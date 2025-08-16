@@ -32,7 +32,7 @@ const orderFiles = (filepaths, orderArr) => {
     // sidebar json
     if (filepath == null) {
       throw new Error(
-        `Cannot find file for "${name}". Does it exist in the pages folder?`
+        `Cannot find file for "${name}". Does it exist in the pages folder?`,
       );
     }
   });
@@ -111,12 +111,12 @@ const createManualToc = (version) => {
 
   const SIDEBAR_JSON = path.join(
     __dirname,
-    `../data/sidebar_manual_${versionNoDot}.json`
+    `../data/sidebar_manual_${versionNoDot}.json`,
   );
 
   const TARGET_FILE = path.join(
     __dirname,
-    `../index_data/manual_${versionNoDot}_toc.json`
+    `../index_data/manual_${versionNoDot}_toc.json`,
   );
 
   const sidebarJson = JSON.parse(fs.readFileSync(SIDEBAR_JSON));
@@ -139,11 +139,11 @@ const createReactToc = (version) => {
   const MD_DIR = path.join(__dirname, "../pages/docs/react");
   const SIDEBAR_JSON = path.join(
     __dirname,
-    `../data/sidebar_react_${versionLabel}.json`
+    `../data/sidebar_react_${versionLabel}.json`,
   );
   const TARGET_FILE = path.join(
     __dirname,
-    `../index_data/react_${versionLabel}_toc.json`
+    `../index_data/react_${versionLabel}_toc.json`,
   );
 
   const sidebarJson = JSON.parse(fs.readFileSync(SIDEBAR_JSON));

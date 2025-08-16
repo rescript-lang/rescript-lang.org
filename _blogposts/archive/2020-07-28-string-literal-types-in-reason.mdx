@@ -8,7 +8,6 @@ description: |
   and how they will benefit our users.
 ---
 
-
 ## String literal types in BuckleScript
 
 [String literal types](https://www.typescriptlang.org/docs/handbook/advanced-types.html#string-literal-types) were introduced by TypeScript to model
@@ -46,7 +45,7 @@ function encoding(en) {
 }
 ```
 
-If you pass a random encoding, e.g, `` encoding (`ucs32) ``, you get a type error:
+If you pass a random encoding, e.g, ``encoding (`ucs32)``, you get a type error:
 
 ```
 This expression has type [> `ucs32 ]
@@ -99,6 +98,7 @@ type ascii = [
 ]
 
 ```
+
 You can also embed string literal types directly inside other types without declaring it first:
 
 ```reasonml
@@ -158,6 +158,7 @@ type encoding = [
 [@bs.val] [@bs.module "fs"]
 external readFileSync: (string, encoding) => string = "readFileSync";
 ```
+
 ## String literal types attached to data
 
 Since Reason is a typed language, you can not mix data of different types in a collection.
@@ -172,7 +173,7 @@ With string literal types, you can do things like this:
 [ 3 -> `Int , "3" -> `String ]
 ```
 
-Note the generated code for `` 3 -> `Int`, "3"-> `String `` would be:
+Note the generated code for ``3 -> `Int`, "3"-> `String`` would be:
 
 ```js
 { NAME: "Int", VAL : 3}

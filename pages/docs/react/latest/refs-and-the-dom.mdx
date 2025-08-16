@@ -12,7 +12,6 @@ Refs provide a way to access DOM nodes or React elements created within your `ma
 
 </Intro>
 
-
 In the typical React dataflow, [props](./components-and-props) are the only way that parent components interact with their children. To modify a child, you re-render it with new props. However, there are a few cases where you need to imperatively modify a child outside of the typical dataflow. The child to be modified could be an `React.element`, or it could be a `Dom.element`. For both of these cases, React provides an escape hatch.
 
 A `React.ref` is defined like this:
@@ -21,13 +20,13 @@ A `React.ref` is defined like this:
 type t<'value> = { mutable current: 'value }
 ```
 
-> *Note that the `Ref.ref` should not to be confused with the builtin [ref type](/docs/manual/latest/mutation), the language feature that enables mutation.*
+> _Note that the `Ref.ref` should not to be confused with the builtin [ref type](/docs/manual/latest/mutation), the language feature that enables mutation._
 
 ## When to use Refs
 
 There are a few good use cases for refs:
 
-- Managing state that *should not trigger* any re-render.
+- Managing state that _should not trigger_ any re-render.
 - Managing focus, text selection, or media playback.
 - Triggering imperative animations.
 - Integrating with third-party DOM libraries.
@@ -64,6 +63,7 @@ let value = myRef.current
 ```
 
 The value of the ref differs depending on the type of the node:
+
 - When the ref attribute is used on an HTML element, the ref passed via `ReactDOM.Ref.domRef` receives the underlying DOM element as its current property (type of `React.ref<Nullable.t<Dom.element>>`)
 - In case of interop, when the ref attribute is used on a custom class component (based on JS classes), the ref object receives the mounted instance of the component as its current (not discussed in this document).
 - **You may not use the ref attribute on component functions** because they don’t have instances (we don't expose JS classes in ReScript).
@@ -106,7 +106,7 @@ function CustomTextInput(Props) {
   var focusInput = function () {
     var dom = textInput.current;
     if (dom === null || dom === undefined) {
-      return ;
+      return;
     }
     dom.focus();
   };
@@ -114,18 +114,18 @@ function CustomTextInput(Props) {
     focusInput();
   };
   return JsxRuntime.jsxs("div", {
-              children: [
-                JsxRuntime.jsx("input", {
-                      ref: Caml_option.some(textInput),
-                      type: "text"
-                    }),
-                JsxRuntime.jsx("input", {
-                      type: "button",
-                      value: "Focus the text input",
-                      onClick: onClick
-                    })
-              ]
-            });
+    children: [
+      JsxRuntime.jsx("input", {
+        ref: Caml_option.some(textInput),
+        type: "text",
+      }),
+      JsxRuntime.jsx("input", {
+        type: "button",
+        value: "Focus the text input",
+        onClick: onClick,
+      }),
+    ],
+  });
 }
 ```
 
@@ -139,11 +139,9 @@ A few things happened here, so let's break them down:
 
 React will assign the `current` field with the DOM element when the component mounts, and assign it back to null when it unmounts.
 
-
 ### Refs and Component Functions
 
 In React, you **can't** pass a `ref` attribute to a component function:
-
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -173,7 +171,6 @@ let make = () => {
 The snippet above will not compile and output an error that looks like this: `"Ref cannot be passed as a normal prop. Please use forwardRef API instead."`.
 
 As the error message implies, If you want to allow people to take a ref to your component function, you can use [ref forwarding](./forwarding-refs) (possibly in conjunction with useImperativeHandle) instead.
-
 
 ## Exposing DOM Refs to Parent Components
 
@@ -225,18 +222,23 @@ function CustomTextInput(Props) {
     textInput.current = element;
   };
   var focusTextInput = function (param) {
-    Core__Nullable.forEach(textInput.current, (function (input) {
-            input.focus();
-          }));
+    Core__Nullable.forEach(textInput.current, function (input) {
+      input.focus();
+    });
   };
-  return React.createElement("div", undefined, React.createElement("input", {
-                  ref: Caml_option.some(setTextInputRef),
-                  type: "text"
-                }), React.createElement("input", {
-                  type: "button",
-                  value: "Focus the text input",
-                  onClick: focusTextInput
-                }));
+  return React.createElement(
+    "div",
+    undefined,
+    React.createElement("input", {
+      ref: Caml_option.some(setTextInputRef),
+      type: "text",
+    }),
+    React.createElement("input", {
+      type: "button",
+      value: "Focus the text input",
+      onClick: focusTextInput,
+    }),
+  );
 }
 ```
 
@@ -274,30 +276,31 @@ let make = () => {
 ```js
 function CustomTextInput(Props) {
   var setInputRef = Props.setInputRef;
-  return React.createElement("div", undefined, React.createElement("input", {
-                  ref: setInputRef,
-                  type: "text"
-                }));
+  return React.createElement(
+    "div",
+    undefined,
+    React.createElement("input", {
+      ref: setInputRef,
+      type: "text",
+    }),
+  );
 }
 
 var CustomTextInput = {
-  make: CustomTextInput
+  make: CustomTextInput,
 };
 
 function Parent(Props) {
   var textInput = React.useRef(null);
   var setInputRef = function (element) {
     textInput.current = element;
-
   };
   return React.createElement(CustomTextInput, {
-              setInputRef: setInputRef
-            });
+    setInputRef: setInputRef,
+  });
 }
 ```
 
 </CodeTab>
 
-
 In the example above, `Parent` passes its ref callback as an `setInputRef` prop to the `CustomTextInput`, and the `CustomTextInput` passes the same function as a special ref attribute to the `<input>`. As a result, the `textInput` ref in Parent will be set to the DOM node corresponding to the `<input>` element in the `CustomTextInput`.
-

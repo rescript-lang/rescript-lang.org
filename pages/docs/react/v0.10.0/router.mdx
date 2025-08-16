@@ -15,18 +15,19 @@ RescriptReact comes with a router! We've leveraged the language and library feat
 ## How does it work?
 
 The available methods are listed here:
-  - `RescriptReactRouter.push(string)`: takes a new path and update the URL.
-  - `RescriptReactRouter.replace(string)`: like `push`, but replaces the current URL.
-  - `RescriptReactRouter.watchUrl(f)`: start watching for URL changes. Returns a subscription token. Upon url change, calls the callback and passes it the `RescriptReactRouter.url` record.
-  - `RescriptReactRouter.unwatchUrl(watcherID)`: stop watching for URL changes.
-  - `RescriptReactRouter.dangerouslyGetInitialUrl()`: get `url` record outside of `watchUrl`. Described later.
-  - `RescriptReactRouter.useUrl(~serverUrl)`: returns the `url` record inside a component.
+
+- `RescriptReactRouter.push(string)`: takes a new path and update the URL.
+- `RescriptReactRouter.replace(string)`: like `push`, but replaces the current URL.
+- `RescriptReactRouter.watchUrl(f)`: start watching for URL changes. Returns a subscription token. Upon url change, calls the callback and passes it the `RescriptReactRouter.url` record.
+- `RescriptReactRouter.unwatchUrl(watcherID)`: stop watching for URL changes.
+- `RescriptReactRouter.dangerouslyGetInitialUrl()`: get `url` record outside of `watchUrl`. Described later.
+- `RescriptReactRouter.useUrl(~serverUrl)`: returns the `url` record inside a component.
 
 > If you want to know more about the low level details on how the router interface is implemented, refer to the [RescriptReactRouter implementation](https://github.com/rescript-lang/rescript-react/blob/master/src/RescriptReactRouter.res).
 
 ## Match a Route
 
-*There's no API*! `watchUrl` gives you back a `url` record of the following shape:
+_There's no API_! `watchUrl` gives you back a `url` record of the following shape:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -40,6 +41,7 @@ type url = {
   search: string
 }
 ```
+
 ```js
 // Empty output
 ```
@@ -57,6 +59,7 @@ So the url `www.hello.com/book/10/edit?name=Jane#author` is given back as:
   search: "name=Jane"
 }
 ```
+
 ```js
 // Empty output
 ```
@@ -74,7 +77,7 @@ Let's start with a first example to see how a ReScript React Router looks like:
 @react.component
 let make = () => {
   let url = RescriptReactRouter.useUrl()
-  
+
   switch url.path {
     | list{"user", id} => <User id />
     | list{} => <Home/>
@@ -82,6 +85,7 @@ let make = () => {
   }
 }
 ```
+
 ```js
 import * as React from "react";
 import * as User from "./User.bs.js";
@@ -99,20 +103,16 @@ function App(Props) {
     var match$1 = match.tl;
     if (match$1 && !match$1.tl) {
       return React.createElement(User.make, {
-                  id: match$1.hd
-                });
+        id: match$1.hd,
+      });
     }
-    
   }
   return React.createElement(NotFound.make, {});
 }
 
 var make = App;
 
-export {
-  make ,
-  
-}
+export { make };
 ```
 
 </CodeTab>
@@ -126,6 +126,7 @@ In other words, you'd like to read from the `url` record once at the beginning o
 Note: the reason why we label it as "dangerous" is to remind you not to read this `url` in any arbitrary component's e.g. `render`, since that information might be out of date if said component doesn't also contain a `watchUrl` subscription that re-renders the component when the URL changes. Aka, please only use `dangerouslyGetInitialUrl` alongside `watchUrl`.
 
 ## Push a New Route
+
 From anywhere in your app, just call e.g. `RescriptReactRouter.push("/books/10/edit#validated")`. This will trigger a URL change (without a page refresh) and `watchUrl`'s callback will be called again.
 
 We might provide better facilities for typed routing + payload carrying in the future!

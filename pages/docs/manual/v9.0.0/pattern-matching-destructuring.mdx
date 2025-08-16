@@ -25,6 +25,7 @@ let coordinates = (10, 20, 30)
 let (x, _, _) = coordinates
 Js.log(x) // 10
 ```
+
 ```js
 var coordinates = [10, 20, 30];
 var x = 10;
@@ -49,28 +50,25 @@ type result =
 let myResult = Success("You did it!")
 let Success(message) = myResult // "You did it!" assigned to `message`
 ```
+
 ```js
 var student1 = {
   name: "John",
-  age: 10
+  age: 10,
 };
 var name = "John";
 
-var myResult = /* Success */{
-  _0: "You did it!"
+var myResult = /* Success */ {
+  _0: "You did it!",
 };
-var message = "You did it!"
+var message = "You did it!";
 
 var myArray = [1, 2, 3];
 if (myArray.length !== 2) {
   throw {
     RE_EXN_ID: "Match_failure",
-    _1: [
-      "playground.res",
-      14,
-      4
-    ],
-    Error: new Error()
+    _1: ["playground.res", 14, 4],
+    Error: new Error(),
   };
 }
 var item1 = myArray[0];
@@ -82,9 +80,9 @@ var myList = {
     hd: 2,
     tl: {
       hd: 3,
-      tl: /* [] */0
-    }
-  }
+      tl: /* [] */ 0,
+    },
+  },
 };
 // ...
 ```
@@ -105,14 +103,17 @@ let displayMessage = (Success(m)) => {
 }
 displayMessage(Success("You did it!"))
 ```
+
 ```js
 function displayMessage(m) {
   console.log(m._0);
 }
 
-displayMessage(/* Success */{
-  _0: "You did it!"
-});
+displayMessage(
+  /* Success */ {
+    _0: "You did it!",
+  },
+);
 ```
 
 </CodeTab>
@@ -124,6 +125,7 @@ For a record, you can rename the field while destructuring:
 ```res
 let {name: n} = student1 // "John" assigned to `n`
 ```
+
 ```js
 var n = "John";
 ```
@@ -158,6 +160,7 @@ type payload =
   | GoodResult(string)
   | NoResult
 ```
+
 ```js
 // Empty output
 ```
@@ -181,16 +184,19 @@ switch data {
   Js.log("Bah.")
 }
 ```
+
 ```js
 var data = {
-  TAG: /* GoodResult */1,
-  _0: "Product shipped!"
+  TAG: /* GoodResult */ 1,
+  _0: "Product shipped!",
 };
 
 if (typeof data === "number") {
   console.log("Bah.");
 } else if (data.TAG === /* BadResult */ 0) {
-  console.log("Something's wrong. The error code is: " + "Product shipped!".toString());
+  console.log(
+    "Something's wrong. The error code is: " + "Product shipped!".toString(),
+  );
 } else {
   console.log("Success! Product shipped!");
 }
@@ -222,6 +228,7 @@ type person =
     reportCard: reportCard,
   })
 ```
+
 ```js
 // Empty output
 ```
@@ -262,11 +269,12 @@ let message = switch person1 {
   `Good luck next semester ${name}!`
 }
 ```
+
 ```js
 var person1 = {
-  TAG: /* Teacher */0,
+  TAG: /* Teacher */ 0,
   name: "Jane",
-  age: 35
+  age: 35,
 };
 
 var message;
@@ -282,12 +290,12 @@ if (person1.TAG) {
       match$2.gpa.toString() +
       " you got there!"
     : typeof match$1 === "number"
-    ? match$1 !== 0
-      ? "Good luck next semester " + name + "!"
-      : "How are you feeling?"
-    : person1.reportCard.gpa !== 0.0
-    ? "Good luck next semester " + name + "!"
-    : "Come back in " + match$1._0.toString() + " days!";
+      ? match$1 !== 0
+        ? "Good luck next semester " + name + "!"
+        : "How are you feeling?"
+      : person1.reportCard.gpa !== 0.0
+        ? "Good luck next semester " + name + "!"
+        : "Come back in " + match$1._0.toString() + " days!";
 } else {
   var name$1 = person1.name;
   switch (name$1) {
@@ -304,6 +312,7 @@ if (person1.TAG) {
 </CodeTab>
 
 **Note** how we've:
+
 - drilled deep down into the value concisely
 - using a **nested pattern check** `"Mary" | "Joe"` and `Vacations | Sabbatical`
 - while extracting the `daysLeft` number from the latter case
@@ -323,6 +332,7 @@ let categoryId = switch (isBig, myAnimal) {
 | (false, Bird) => 5
 }
 ```
+
 ```js
 var categoryId = isBig ? (myAnimal + 1) | 0 : myAnimal >= 2 ? 5 : 4;
 ```
@@ -331,10 +341,10 @@ var categoryId = isBig ? (myAnimal + 1) | 0 : myAnimal >= 2 ? 5 : 4;
 
 **Note** how pattern matching on a tuple is equivalent to a 2D table:
 
-isBig \ myAnimal | Dog | Cat | Bird
------------------|-----|-----|------
-true             |  1  |  2  |  3
-false            |  4  |  4  |  5
+| isBig \ myAnimal | Dog | Cat | Bird |
+| ---------------- | --- | --- | ---- |
+| true             | 1   | 2   | 3    |
+| false            | 4   | 4   | 5    |
 
 ### Fall-Through Patterns
 
@@ -352,10 +362,11 @@ switch myStatus {
 | Present => Js.log("Hey! How are you?")
 }
 ```
+
 ```js
 var myStatus = {
-  TAG: /* Vacations */0,
-  _0: 10
+  TAG: /* Vacations */ 0,
+  _0: 10,
 };
 
 if (typeof myStatus === "number") {
@@ -381,6 +392,7 @@ switch person1 {
 | Student(_) => Js.log("Hey student")
 }
 ```
+
 ```js
 if (person1.TAG) {
   console.log("Hey student");
@@ -401,6 +413,7 @@ switch myStatus {
 | _ => Js.log("Ok.")
 }
 ```
+
 ```js
 if (typeof myStatus === "number" || myStatus.TAG) {
   console.log("Ok.");
@@ -421,6 +434,7 @@ switch myStatus {
 | Sabbatical(_) | Sick | Present => Js.log("Ok.")
 }
 ```
+
 ```js
 if (typeof myStatus === "number" || myStatus.TAG) {
   console.log("Ok.");
@@ -450,6 +464,7 @@ switch person1 {
   }
 }
 ```
+
 ```js
 if (person1.TAG) {
   if (person1.reportCard.gpa < 0.5) {
@@ -476,6 +491,7 @@ switch person1 {
   Js.log("Heyo")
 }
 ```
+
 ```js
 if (person1.TAG) {
   if (person1.reportCard.gpa < 0.5) {
@@ -502,18 +518,18 @@ switch List.find(i => i === theItem, myItems) {
 | exception Not_found => Js.log("No such item found!")
 }
 ```
+
 ```js
 var exit = 0;
 
 var item;
 
 try {
-  item = List.find(function(i) {
+  item = List.find(function (i) {
     return i === theItem;
   }, myItems);
   exit = 1;
-}
-catch (raw_exn){
+} catch (raw_exn) {
   var exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
   if (exn.RE_EXN_ID === "Not_found") {
     console.log("No such item found!");
@@ -544,6 +560,7 @@ switch students {
   Js.log2("The students are: ", manyStudents)
 }
 ```
+
 ```js
 var students = ["Jane", "Harvey", "Patrick"];
 
@@ -581,9 +598,10 @@ let rec printStudents = (students) => {
 }
 printStudents(list{"Jane", "Harvey", "Patrick"})
 ```
+
 ```js
 function printStudents(_students) {
-  while(true) {
+  while (true) {
     var students = _students;
     if (!students) {
       return;
@@ -597,7 +615,7 @@ function printStudents(_students) {
     }
     console.log("Last student: " + student);
     return;
-  };
+  }
 }
 
 printStudents({
@@ -606,14 +624,13 @@ printStudents({
     hd: "Harvey",
     tl: {
       hd: "Patrick",
-      tl: /* [] */0
-    }
-  }
+      tl: /* [] */ 0,
+    },
+  },
 });
 ```
 
 </CodeTab>
-
 
 ### Small Pitfall
 
@@ -628,6 +645,7 @@ switch coordinates {
 | (x, centerY, _) => Js.log(x)
 }
 ```
+
 ```js
 var coordinates = [10, 20, 30];
 var centerY = 20;
@@ -664,18 +682,23 @@ let message = switch person1 {
   `Good luck next semester ${name}!`
 }
 ```
+
 ```js
 if (person1.TAG) {
   var match$1 = person1.status;
   var name = person1.name;
   var match$2 = person1.reportCard;
   if (match$2.passing) {
-    "Congrats " + name + ", nice GPA of " + match$2.gpa.toString() + " you got there!";
+    "Congrats " +
+      name +
+      ", nice GPA of " +
+      match$2.gpa.toString() +
+      " you got there!";
   } else if (typeof match$1 === "number") {
     if (match$1 !== 0) {
       "Good luck next semester " + name + "!";
     } else {
-      "How are you feeling?";
+      ("How are you feeling?");
     }
   } else if (person1.reportCard.gpa !== 0.0) {
     "Good luck next semester " + name + "!";
@@ -690,12 +713,8 @@ if (person1.TAG) {
     default:
       throw {
         RE_EXN_ID: "Match_failure",
-        _1: [
-          "playground.res",
-          13,
-          0
-        ],
-        Error: new Error()
+        _1: ["playground.res", 13, 0],
+        Error: new Error(),
       };
   }
 }
@@ -725,6 +744,7 @@ switch myNullableValue {
 | None => Js.log("value is absent")
 }
 ```
+
 ```js
 var myNullableValue = 5;
 
@@ -764,6 +784,7 @@ let optionBoolToBool = opt => {
   }
 }
 ```
+
 ```js
 function optionBoolToBool(opt) {
   if (opt === undefined) {
@@ -788,6 +809,7 @@ let optionBoolToBool = opt => {
   }
 }
 ```
+
 ```js
 function optionBoolToBool(opt) {
   if (opt !== undefined && opt) {
@@ -813,6 +835,7 @@ let optionBoolToBool = opt => {
   }
 }
 ```
+
 ```js
 function optionBoolToBool(opt) {
   if (opt !== undefined && opt) {
@@ -837,6 +860,7 @@ let optionBoolToBool = opt => {
   }
 }
 ```
+
 ```js
 function optionBoolToBool(opt) {
   if (opt !== undefined && opt) {
@@ -861,6 +885,7 @@ let optionBoolToBool = opt => {
   }
 }
 ```
+
 ```js
 function optionBoolToBool(opt) {
   if (opt !== undefined) {

@@ -14,11 +14,11 @@ JSX is a syntax sugar that allows us to use React components in an HTML like man
 
 **Note:** This section requires knowledge about the low level apis for [creating elements](./elements-and-jsx#creating-elements-from-component-functions), such as `React.createElement` or `ReactDOMRe.createDOMElementVariadic`.
 
-> **Note:** This page assumes your `bsconfig.json` to be set to `"reason": { "react-jsx": 3 }` to apply the right JSX transformations. 
+> **Note:** This page assumes your `bsconfig.json` to be set to `"reason": { "react-jsx": 3 }` to apply the right JSX transformations.
 
 ## Component Types
 
-A plain React component is defined as a `('props) => React.element` function. You can also express a component more efficiently with our shorthand type `React.component<'props>`. 
+A plain React component is defined as a `('props) => React.element` function. You can also express a component more efficiently with our shorthand type `React.component<'props>`.
 
 Here are some examples on how to define your own component types (often useful when interoping with existing JS code, or passing around components):
 
@@ -35,6 +35,7 @@ type containerComp =
     "children": React.element
   }>;
 ```
+
 The types above are pretty low level (basically the JS representation of a React component), but since ReScript React has its own ways of defining React components in a more language specific way, let's have a closer look on the anatomy of such a construct.
 
 ## JSX Component Interface
@@ -54,6 +55,7 @@ module Friend = {
   }
 }
 ```
+
 ```res
 module Friend = {
   @obj
@@ -81,7 +83,6 @@ In the expanded output:
 ### Special Case React.forwardRef
 
 The `@react.component` decorator also works for `React.forwardRef` calls:
-
 
 <CodeTab labels={["Decorated", "Expanded"]}>
 
@@ -129,16 +130,18 @@ So now that we know how the ReScript React component transformation works, let's
 
 ## JSX Under the Hood
 
-Whenever we are using JSX with a custom component ("capitalized JSX"), we are actually using `React.createElement` to create a new element. Here is an example of a React component without children: 
+Whenever we are using JSX with a custom component ("capitalized JSX"), we are actually using `React.createElement` to create a new element. Here is an example of a React component without children:
 
 <CodeTab labels={["JSX", "Without JSX"]}>
 
 ```res
 <Friend name="Fred" age=1 />
 ```
+
 ```res
 React.createElement(Friend.make, Friend.makeProps(~name="Fred", ~age=1, ()))
 ```
+
 ```js
 React.createElement(Playground$Friend, { name: "Fred", age: 20 });
 ```
@@ -165,17 +168,21 @@ React.createElementVariadic(
 ```
 
 ```js
-React.createElement(Container, { width: 200, children: null }, "Hello", "World");
+React.createElement(
+  Container,
+  { width: 200, children: null },
+  "Hello",
+  "World",
+);
 ```
 
 </CodeTab>
 
 Note that the `~children=React.null` prop has no relevance since React will only care about the children array passed as a third argument.
 
-
 ### Dom Elements
 
-"Uncapitalized JSX" expressions are treated as DOM elements and will be converted to `ReactDOMRe.createDOMElementVariadic` calls: 
+"Uncapitalized JSX" expressions are treated as DOM elements and will be converted to `ReactDOMRe.createDOMElementVariadic` calls:
 
 <CodeTab labels={["JSX", "Without JSX", "JS Output"]}>
 
@@ -188,7 +195,7 @@ ReactDOMRe.createDOMElementVariadic("div", ~props=ReactDOMRe.domProps(~title="te
 ```
 
 ```js
- React.createElement("div", { title: "test" });
+React.createElement("div", { title: "test" });
 ```
 
 </CodeTab>
@@ -212,7 +219,11 @@ ReactDOMRe.createDOMElementVariadic(
 ```
 
 ```js
-React.createElement("div", { title: "test" }, React.createElement("span", undefined));
+React.createElement(
+  "div",
+  { title: "test" },
+  React.createElement("span", undefined),
+);
 ```
 
 </CodeTab>

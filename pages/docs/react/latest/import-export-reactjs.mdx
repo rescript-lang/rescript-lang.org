@@ -6,7 +6,7 @@ canonical: "/docs/react/latest/import-export-reactjs"
 
 # Import / Export ReactJS
 
-Reusing existing React components in ReScript is straightforward. 
+Reusing existing React components in ReScript is straightforward.
 This guide will walk you through the steps required to import and use React components within ReScript,
 including defining component props and handling various import scenarios.
 
@@ -37,9 +37,9 @@ var Confetti = {};
 
 function Playground(props) {
   return JsxRuntime.jsx(ReactConfetti, {
-              width: 300,
-              height: 300
-            });
+    width: 300,
+    height: 300,
+  });
 }
 ```
 
@@ -50,7 +50,7 @@ function Playground(props) {
 You can import components from relative file paths using the `@module` attribute.  
 Use "default" to indicate the default export, or specify a named export if needed.
 
-### Named Export Example 
+### Named Export Example
 
 <CodeTab labels={["ReScript"]}>
 
@@ -97,9 +97,9 @@ var Confetti = {};
 
 function Playground(props) {
   return JsxRuntime.jsx(ReactConfetti, {
-              width: 300,
-              height: 300
-            });
+    width: 300,
+    height: 300,
+  });
 }
 ```
 
@@ -138,9 +138,9 @@ var Confetti = {};
 
 function Playground(props) {
   return JsxRuntime.jsx(ReactConfetti, {
-              width: 300,
-              height: 300
-            });
+    width: 300,
+    height: 300,
+  });
 }
 ```
 
@@ -177,10 +177,10 @@ var Foo$1 = {};
 
 function Playground(props) {
   return JsxRuntime.jsx(Foo, {
-              height: "300px",
-              width: "300px",
-              customProp: "bar"
-            });
+    height: "300px",
+    width: "300px",
+    customProp: "bar",
+  });
 }
 ```
 

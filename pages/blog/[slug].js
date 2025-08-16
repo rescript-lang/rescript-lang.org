@@ -1,5 +1,1 @@
-export {
-  default,
-  getStaticPaths,
-  getStaticProps
-} from "src/BlogArticle.mjs";
+export { default, getStaticPaths, getStaticProps } from "src/BlogArticle.mjs";

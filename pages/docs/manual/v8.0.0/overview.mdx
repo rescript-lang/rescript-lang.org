@@ -13,33 +13,33 @@ canonical: "/docs/manual/latest/overview"
 
 ### Semicolon
 
-| JavaScript                           | Us                   |
-| ------------------------------------ | -------------------- |
-| Rules enforced by linter/formatter   | No semicolon needed! |
+| JavaScript                         | Us                   |
+| ---------------------------------- | -------------------- |
+| Rules enforced by linter/formatter | No semicolon needed! |
 
 ### Comments
 
-| JavaScript        | Us          |
-| ----------------- | ----------- |
-| `/* Comment */`   | Same        |
-| `// Line comment` | Same        |
+| JavaScript        | Us   |
+| ----------------- | ---- |
+| `/* Comment */`   | Same |
+| `// Line comment` | Same |
 
 ### Variable
 
-| JavaScript              | Us                             |
-| ----------------------- | ------------------------------ |
-| `const x = 5;`          | `let x = 5`                    |
-| `var x = y;`            | No equivalent (thankfully)     |
+| JavaScript              | Us                                    |
+| ----------------------- | ------------------------------------- |
+| `const x = 5;`          | `let x = 5`                           |
+| `var x = y;`            | No equivalent (thankfully)            |
 | `let x = 5; x = x + 1;` | `let x = ref(5); x := x.contents + 1` |
 
 ### String & Character
 
-| JavaScript                | Us                      |
-| --------------------------| ----------------------- |
-| `"Hello world!"`          | Same                    |
-| `'Hello world!'`          | Strings must use `"`    |
-| `"hello " + "world"`      | `"hello " ++ "world"`   |
-| `` `hello ${message}` ``  | `\{j|Hello $(message)|j}`|
+| JavaScript               | Us                    |
+| ------------------------ | --------------------- | ---------------- | --- |
+| `"Hello world!"`         | Same                  |
+| `'Hello world!'`         | Strings must use `"`  |
+| `"hello " + "world"`     | `"hello " ++ "world"` |
+| `` `hello ${message}` `` | `\{j                  | Hello $(message) | j}` |
 
 ### Boolean
 
@@ -76,11 +76,11 @@ canonical: "/docs/manual/latest/overview"
 
 ### Array
 
-| JavaScript            | Us                                 |
-| --------------------- | ---------------------------------- |
-| `[1, 2, 3]`           | <code>[&#124;1, 2, 3&#124;]</code> |
-| `myArray[1] = 10`     | Same                               |
-| `[1, "Bob", true]`    | `(1, "Bob", true)` \*              |
+| JavaScript         | Us                                 |
+| ------------------ | ---------------------------------- |
+| `[1, 2, 3]`        | <code>[&#124;1, 2, 3&#124;]</code> |
+| `myArray[1] = 10`  | Same                               |
+| `[1, "Bob", true]` | `(1, "Bob", true)` \*              |
 
 \* Heterogenous arrays in JS are disallowed for us. Use tuple instead.
 
@@ -134,13 +134,12 @@ canonical: "/docs/manual/latest/overview"
   </tbody>
 </table>
 
-
 ### If-else
 
-| JavaScript            | Us                                                                  |
-| --------------------- | ------------------------------------------------------------------- |
-| `if (a) {b} else {c}` | `if (a) {b} else {c}` \*                                            |
-| `a ? b : c`           | Same                                                                |
+| JavaScript            | Us                                                                                |
+| --------------------- | --------------------------------------------------------------------------------- |
+| `if (a) {b} else {c}` | `if (a) {b} else {c}` \*                                                          |
+| `a ? b : c`           | Same                                                                              |
 | `switch`              | `switch` but [super-powered pattern matching!](pattern-matching-destructuring.md) |
 
 \* Our conditionals are always expressions! You can write `let result = if (a) {"hello"} else {"bye"}`
@@ -176,9 +175,9 @@ canonical: "/docs/manual/latest/overview"
 
 ### Exception
 
-| JavaScript                                | Us                                         |
-| ----------------------------------------- | ------------------------------------------ |
-| `throw new SomeError(...)`                | `raise(SomeError(...))`                    |
+| JavaScript                                | Us                                |
+| ----------------------------------------- | --------------------------------- |
+| `throw new SomeError(...)`                | `raise(SomeError(...))`           |
 | `try {a} catch (Err) {...} finally {...}` | `try a catch { \| Err => ...}` \* |
 
 \* No finally.
@@ -220,25 +219,25 @@ The last expression of a block delimited by `{}` implicitly returns (including f
 
 ## Common Features' JS Output
 
-Feature                         | Example                              | JavaScript Output
---------------------------------|--------------------------------------|----------------------
-String                          | `"Hello"`                            | `"Hello"`
-String Interpolation            | `\{j|Hello $(message)|j}`             | `"Hello " + message`
-Character (disrecommended)      | `'x'`                                | `120` (char code)
-Integer                         | `23`, `-23`                          | `23`, `-23`
-Float                           | `23.0`, `-23.0`                      | `23.0`, `-23.0`
-Integer Addition                | `23 + 1`                             | `23 + 1`
-Float Addition                  | `23.0 +. 1.0`                        | `23.0 + 1.0`
-Integer Division/Multiplication | `2 / 23 * 1`                         | `2 / 23 * 1`
-Float Division/Multiplication   | `2.0 /. 23.0 *. 1.0`                 | `2.0 / 23.0 * 1.0`
-Float Exponentiation            | `2.0 ** 3.0`                         | `Math.pow(2.0, 3.0)`
-String Concatenation            | `"Hello " ++ "World"`                | `"Hello " + "World"`
-Comparison                      | `>`, `<`, `>=`, `<=`                 | `>`, `<`, `>=`, `<=`
-Boolean operation               | `!`, `&&`, `\|\|`                    | `!`, `&&`, `\|\|`
-Shallow and deep Equality       | `===`, `==`                          | `===`, `==`
-List (disrecommended)           | `[1, 2, 3]`                          | `{hd: 1, tl: {hd: 2, tl: {hd: 3, tl: 0}}}`
-List Prepend                    | `[a1, a2, ...oldList]`               | `{hd: a1, tl: {hd: a2, tl: theRest}}`
-Array                           | <code>[&#124;1, 2, 3&#124;]</code>   | `[1, 2, 3]`
-Record                          | `type t = {b: int}; let a = {b: 10}` | `var a = {b: 10}`
-Multiline Comment               | `/* Comment here */`                 | Not in output
-Single line Comment             | `// Comment here`                    | Not in output
+| Feature                         | Example                              | JavaScript Output                          |
+| ------------------------------- | ------------------------------------ | ------------------------------------------ | --- | -------------------- |
+| String                          | `"Hello"`                            | `"Hello"`                                  |
+| String Interpolation            | `\{j                                 | Hello $(message)                           | j}` | `"Hello " + message` |
+| Character (disrecommended)      | `'x'`                                | `120` (char code)                          |
+| Integer                         | `23`, `-23`                          | `23`, `-23`                                |
+| Float                           | `23.0`, `-23.0`                      | `23.0`, `-23.0`                            |
+| Integer Addition                | `23 + 1`                             | `23 + 1`                                   |
+| Float Addition                  | `23.0 +. 1.0`                        | `23.0 + 1.0`                               |
+| Integer Division/Multiplication | `2 / 23 * 1`                         | `2 / 23 * 1`                               |
+| Float Division/Multiplication   | `2.0 /. 23.0 *. 1.0`                 | `2.0 / 23.0 * 1.0`                         |
+| Float Exponentiation            | `2.0 ** 3.0`                         | `Math.pow(2.0, 3.0)`                       |
+| String Concatenation            | `"Hello " ++ "World"`                | `"Hello " + "World"`                       |
+| Comparison                      | `>`, `<`, `>=`, `<=`                 | `>`, `<`, `>=`, `<=`                       |
+| Boolean operation               | `!`, `&&`, `\|\|`                    | `!`, `&&`, `\|\|`                          |
+| Shallow and deep Equality       | `===`, `==`                          | `===`, `==`                                |
+| List (disrecommended)           | `[1, 2, 3]`                          | `{hd: 1, tl: {hd: 2, tl: {hd: 3, tl: 0}}}` |
+| List Prepend                    | `[a1, a2, ...oldList]`               | `{hd: a1, tl: {hd: a2, tl: theRest}}`      |
+| Array                           | <code>[&#124;1, 2, 3&#124;]</code>   | `[1, 2, 3]`                                |
+| Record                          | `type t = {b: int}; let a = {b: 10}` | `var a = {b: 10}`                          |
+| Multiline Comment               | `/* Comment here */`                 | Not in output                              |
+| Single line Comment             | `// Comment here`                    | Not in output                              |

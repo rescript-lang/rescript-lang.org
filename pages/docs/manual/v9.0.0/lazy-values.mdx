@@ -17,15 +17,16 @@ let expensiveFilesRead = lazy({
   Node.Fs.readdirSync("./pages")
 })
 ```
+
 ```js
 var Fs = require("fs");
 
 var expensiveFilesRead = {
   LAZY_DONE: false,
-  VAL: (function () {
+  VAL: function () {
     console.log("Reading dir");
     return Fs.readdirSync("./pages");
-  })
+  },
 };
 ```
 
@@ -48,6 +49,7 @@ Js.log(Lazy.force(expensiveFilesRead)) // logs "Reading dir" and the directory c
 // Second call. Will just return the already calculated result
 Js.log(Lazy.force(expensiveFilesRead)) // logs the directory content
 ```
+
 ```js
 console.log(CamlinternalLazy.force(expensiveFilesRead));
 
@@ -69,6 +71,7 @@ switch expensiveFilesRead {
 | lazy(result) => Js.log(result)
 }
 ```
+
 ```js
 var result = CamlinternalLazy.force(expensiveFilesRead);
 ```
@@ -83,6 +86,7 @@ Since pattern matching also works on a `let` binding, you can also do:
 let lazy(result) = expensiveFilesRead
 Js.log(result)
 ```
+
 ```js
 var result = CamlinternalLazy.force(expensiveFilesRead);
 console.log(result);
@@ -103,6 +107,7 @@ let result = try {
 | Not_found => [] // empty array of files
 }
 ```
+
 ```js
 var result;
 

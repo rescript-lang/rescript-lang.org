@@ -50,13 +50,6 @@
     "interop-with-js-build-systems",
     "build-performance"
   ],
-  "Guides": [
-    "converting-from-js",
-    "libraries"
-  ],
-  "Extra": [
-    "newcomer-examples",
-    "project-structure",
-    "faq"
-  ]
+  "Guides": ["converting-from-js", "libraries"],
+  "Extra": ["newcomer-examples", "project-structure", "faq"]
 }

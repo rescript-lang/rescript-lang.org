@@ -19,6 +19,7 @@ ReScript supports the JSX syntax, with some slight differences compared to the o
 ```res
 <MyComponent name={"ReScript"} />
 ```
+
 ```js
 React.createElement(MyComponent, {
   name: "ReScript",
@@ -34,6 +35,7 @@ becomes
 ```res
 MyComponent.createElement(~name="ReScript", ~children=list{}, ())
 ```
+
 ```js
 React.createElement(MyComponent, {
   name: "ReScript",
@@ -49,10 +51,16 @@ React.createElement(MyComponent, {
 ```res
 <div onClick={handler}> child1 child2 </div>
 ```
+
 ```js
-React.createElement("div", {
-  onClick: handler
-}, child1, child2);
+React.createElement(
+  "div",
+  {
+    onClick: handler,
+  },
+  child1,
+  child2,
+);
 ```
 
 </CodeTab>
@@ -64,10 +72,16 @@ becomes
 ```res
 div(~onClick=handler, ~children=list{child1, child2}, ())
 ```
+
 ```js
-React.createElement("div", {
-  onClick: handler
-}, child1, child2);
+React.createElement(
+  "div",
+  {
+    onClick: handler,
+  },
+  child1,
+  child2,
+);
 ```
 
 </CodeTab>
@@ -79,6 +93,7 @@ React.createElement("div", {
 ```res
 <> child1 child2 </>
 ```
+
 ```js
 React.createElement(React.Fragment, undefined, child1, child2);
 ```
@@ -92,6 +107,7 @@ becomes
 ```res
 list{child1, child2}
 ```
+
 ```js
 React.createElement(React.Fragment, undefined, child1, child2);
 ```
@@ -105,6 +121,7 @@ React.createElement(React.Fragment, undefined, child1, child2);
 ```res
 <MyComponent> child1 child2 </MyComponent>
 ```
+
 ```js
 React.createElement(MyComponent, { children: null }, child1, child2);
 ```
@@ -118,8 +135,14 @@ This is the syntax for passing a list of two items, `child1` and `child2`, to th
 ```res
 MyComponent.createElement(~children=list{child1, child2}, ())
 ```
+
 ```js
-React.createElement(MyComponent.make, MyComponent.makeProps(null, undefined), child1, child2);
+React.createElement(
+  MyComponent.make,
+  MyComponent.makeProps(null, undefined),
+  child1,
+  child2,
+);
 ```
 
 </CodeTab>
@@ -146,6 +169,7 @@ Here's a JSX tag that shows most of the features.
   <div> {React.string("hello")} </div>
 </MyComponent>
 ```
+
 ```js
 React.createElement(MyComponent, {
   children: React.createElement("div", undefined, "hello"),
@@ -153,7 +177,7 @@ React.createElement(MyComponent, {
   stringAttribute: "string",
   intAttribute: 1,
   forcedOptional: "hello",
-  onClick: handleClick
+  onClick: handleClick,
 });
 ```
 
@@ -174,10 +198,11 @@ JSX props spread is supported now, but in a stricter way than in JS.
 ```res
 <Comp {...props} a="a" />
 ```
+
 ```js
 React.createElement(Comp, {
   a: "a",
-  b: "b"
+  b: "b",
 });
 ```
 
@@ -214,11 +239,12 @@ JSX supports punning. `<input checked />` is just a shorthand for `<input checke
 ```res
 <MyComponent isLoading text onClick />
 ```
+
 ```js
 React.createElement(MyComponent, {
   isLoading: true,
   text: text,
-  onClick: onClick
+  onClick: onClick,
 });
 ```
 

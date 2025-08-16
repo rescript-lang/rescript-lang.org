@@ -5,6 +5,7 @@ canonical: "/docs/manual/latest/async-await"
 ---
 
 <!-- This prelude is used in many different followup examples, so we use it to shorten the noise of the example code. -->
+
 <div className="hidden">
 
 ```res prelude
@@ -22,10 +23,9 @@ canonical: "/docs/manual/latest/async-await"
 
 ReScript comes with `async` / `await` support to make asynchronous, `Promise` based code easier to read and write. This feature is very similar to its JS equivalent, so if you are already familiar with JS' `async` / `await`, you will feel right at home.
 
-## How it looks 
+## How it looks
 
 Let's start with a quick example to show-case the syntax:
-
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -48,7 +48,9 @@ let logUserDetails = async (userId: string) => {
 ```js
 async function logUserDetails(userId) {
   var email = await GlobalAPI.fetchUserMail(userId);
-  await GlobalAPI.sendAnalytics("User details have been logged for " + userId + "");
+  await GlobalAPI.sendAnalytics(
+    "User details have been logged for " + userId + "",
+  );
   console.log("Email address for user " + userId + ": " + email + "");
 }
 ```
@@ -66,7 +68,6 @@ You will probably notice that this looks very similar to `async` / `await` in JS
 - `await` calls are expressions, therefore they can be used in pattern matching (`switch`)
 - A function returning a `promise<'a>` is equivalent to an `async` function returning a value `'a` (important for writing signature files and bindings)
 - `promise` values and types returned from an `async` function don't auto-collapse into a "flat promise" like in JS (more on this later)
-
 
 ## Types and `async` functions
 
@@ -170,7 +171,7 @@ let authenticate = async () => {
 let checkAuth = async () => {
   switch await authenticate() {
   | _ => Js.log("ok")
-  | exception Js.Exn.Error(e) => 
+  | exception Js.Exn.Error(e) =>
     switch Js.Exn.message(e) {
     | Some(msg) => Js.log("JS error thrown: " ++ msg)
     | None => Js.log("Some other exception has been thrown")
@@ -236,12 +237,11 @@ async function fetchData(param) {
   try {
     val = await GlobalAPI.fetchUserMail("user1");
     val$1 = await GlobalAPI.fetchUserMail("user2");
-  }
-  catch (raw_err){
+  } catch (raw_err) {
     var err = Caml_js_exceptions.internalToOCamlException(raw_err);
     if (err.RE_EXN_ID === "JsError") {
       console.log("Some error occurred", err._1);
-      return ;
+      return;
     }
     throw err;
   }
@@ -335,4 +335,3 @@ let login = async (email: string, password: string) => {
   }
 }
 ```
-

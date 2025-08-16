@@ -14,12 +14,12 @@ and avoid issues with currying.
 Suppose we have the following JavaScript:
 
 ```js
-function say (a, b) {
+function say(a, b) {
   console.log(a, b);
-};
+}
 
-var john = { 
-  say
+var john = {
+  say,
 };
 ```
 
@@ -40,6 +40,3 @@ john.say("hey", "jude");
 ```
 
 </CodeTab>
-
-
-

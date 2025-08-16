@@ -12,68 +12,77 @@ description: |
 ## Introduction
 
 ReScript is a language that strives to keep its users free from experiencing runtime errors. Usually, when a program compiles, it will already do what the user described.
-But there is still a concept in the language that makes it easy to let some errors slip through. Currying! 
+But there is still a concept in the language that makes it easy to let some errors slip through. Currying!
 
-Because of currying, partial application of functions is possible. That feature is always advertised as something really powerful. For instance, 
+Because of currying, partial application of functions is possible. That feature is always advertised as something really powerful. For instance,
 
 ```rescript
 let add = (a, b) => a + b
 let addFive = add(5)
 ```
 
-is shorter than having to write all remaining parameters again 
+is shorter than having to write all remaining parameters again
 
 ```rescript
 let add = (a, b) => a + b
 let addFive = (b) => add(5, b)
 ```
 
-This comes at a price though. Here are some examples to show the drawbacks of currying: 
+This comes at a price though. Here are some examples to show the drawbacks of currying:
 
-* Errors because of changed function signatures have their impact at the use site. Consider this example, where the signature of the onChange function is extended with
-a labeled argument 
+- Errors because of changed function signatures have their impact at the use site. Consider this example, where the signature of the onChange function is extended with
+  a labeled argument
+
   ```diff
     @react.component
   -  let make = (~onChange: string => option<unit => unit>) => {
   +  let make = (~onChange: (~a: int, string) => option<unit => unit>) => {
       React.useEffect(() => {
         // As partial application is allowed, there is no error here.
-        let cleanup = onChange("change") 
-        
+        let cleanup = onChange("change")
+
         // Here it errors with "This call is missing an argument of type (~a: int)"
-        cleanup 
+        cleanup
       })
     }
   ```
-* If you wanted explicitly uncurry a function, you needed to annotate it with the uncurried dot. 
+
+- If you wanted explicitly uncurry a function, you needed to annotate it with the uncurried dot.
   ```rescript
   (. param) => ()
   ```
-* As ReScript could not fully statically analyze when to automatically uncurry a function over multiple files, it led to unnecessary `Curry.` calls in the emitted JavaScript code. 
-* In the standard library (`Belt`), there are both curried and uncurried versions of the same function so you were required to think for yourself when to use the uncurried version and when only the curried one will work.
-* In combination with `ignore` / `let _ = ...`, curried can lead to unexpected behavior at runtime after adding a parameter to a function, because you are accidentally ignoring the result of a partial evaluation so that the function is not called at all.
-  1. Have a look at this simple function. It is assigned to `_` because we ignore the resulting `string` value. 
-    ```res
-    let myCurriedFn = (~first) => first
-    let _ = myCurriedFn(~first="Hello!")
-    //  ^ string
-    ```
-  2. Now the function got a second parameter `~second`. Here, the resulting value is a function, which means it is not fully applied and thus never executed.
-    ```res
-    let myCurriedFn = (~first, ~second) => first ++ " " ++ second
-    let _ = myCurriedFn(~first="Hello!")
-    //  ^ (~second: string) => string
-    ```
-  3. One way to prevent such errors is to annotate the underscore with the function's return type:
-    ```res
-    let _: string = myCurriedFn(~first="Hello!")
-    ```
-  4. However, the same issue arises when using the built-in ignore function, which cannot be annotated:
-    ```res
-    myCurriedFn(~first="Hello!")->ignore
-    ```
+- As ReScript could not fully statically analyze when to automatically uncurry a function over multiple files, it led to unnecessary `Curry.` calls in the emitted JavaScript code.
+- In the standard library (`Belt`), there are both curried and uncurried versions of the same function so you were required to think for yourself when to use the uncurried version and when only the curried one will work.
+- In combination with `ignore` / `let _ = ...`, curried can lead to unexpected behavior at runtime after adding a parameter to a function, because you are accidentally ignoring the result of a partial evaluation so that the function is not called at all.
+  1. Have a look at this simple function. It is assigned to `_` because we ignore the resulting `string` value.
 
-Those are all only some small paper cuts, but all of them are intricacies that make the language harder to learn. 
+  ```res
+  let myCurriedFn = (~first) => first
+  let _ = myCurriedFn(~first="Hello!")
+  //  ^ string
+  ```
+
+  2. Now the function got a second parameter `~second`. Here, the resulting value is a function, which means it is not fully applied and thus never executed.
+
+  ```res
+  let myCurriedFn = (~first, ~second) => first ++ " " ++ second
+  let _ = myCurriedFn(~first="Hello!")
+  //  ^ (~second: string) => string
+  ```
+
+  3. One way to prevent such errors is to annotate the underscore with the function's return type:
+
+  ```res
+  let _: string = myCurriedFn(~first="Hello!")
+  ```
+
+  4. However, the same issue arises when using the built-in ignore function, which cannot be annotated:
+
+  ```res
+  myCurriedFn(~first="Hello!")->ignore
+  ```
+
+Those are all only some small paper cuts, but all of them are intricacies that make the language harder to learn.
 
 ## Uncurried mode
 
@@ -89,16 +98,19 @@ let addFive = add(5) // <-- Error:
 
 to fix it, you have two options:
 
-1. state the remaining parameters explicitly 
-  ```rescript
-  let add = (a, b) => a + b
-  let addFive = (b) => add(5, b)
-  ```
-2. or use the new explicit syntax for partial application 
-  ```rescript
-  let add = (a, b) => a + b
-  let addFive = add(5, ...)
-  ```
+1. state the remaining parameters explicitly
+
+```rescript
+let add = (a, b) => a + b
+let addFive = (b) => add(5, b)
+```
+
+2. or use the new explicit syntax for partial application
+
+```rescript
+let add = (a, b) => a + b
+let addFive = add(5, ...)
+```
 
 The former approach helps library authors support both ReScript 11 and earlier versions.
 
@@ -107,7 +119,7 @@ The former approach helps library authors support both ReScript 11 and earlier v
 We are happy to announce that with uncurried mode the "final unit" pattern is not necessary anymore, while you still can use optional or default parameters.
 
 ```res
-// old 
+// old
 let myFun = (~name=?, ())
 
 // new
@@ -116,8 +128,8 @@ let myFun = (~name=?)
 
 ### More wins
 
-Furthermore, function calls in uncurried mode are now guaranteed to get compiled as simple JavaScript function calls, which is quite nice for readability of the generated code. 
-It may also give you some (negligible) performance gains. 
+Furthermore, function calls in uncurried mode are now guaranteed to get compiled as simple JavaScript function calls, which is quite nice for readability of the generated code.
+It may also give you some (negligible) performance gains.
 
 ### How to switch back to curried mode
 
@@ -131,7 +143,7 @@ While we strongly encourage all users to switch to the new uncurried mode, it is
 
 to your `bsconfig.json`, and your project will be compiled in curried mode again.
 
-If you have uncurried mode off and still want to try it on a per-file basis, you can turn it on via 
+If you have uncurried mode off and still want to try it on a per-file basis, you can turn it on via
 
 ```rescript
 @@uncurried

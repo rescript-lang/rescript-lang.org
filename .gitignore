@@ -22,7 +22,6 @@ _tempFile.cmt
 .bsb.lock
 .merlin
 lib/
-.vscode/
 
 .vercel
 

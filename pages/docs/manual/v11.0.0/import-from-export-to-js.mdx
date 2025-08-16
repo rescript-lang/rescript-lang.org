@@ -36,10 +36,12 @@ Use the `module` [external](external.md):
 @module("path") external dirname: string => string = "dirname"
 let root = dirname("/User/github") // returns "User"
 ```
+
 ```js
 import * as Path from "path";
 var root = Path.dirname("/User/github");
 ```
+
 ```js
 var Path = require("path");
 var root = Path.dirname("/User/github");
@@ -65,10 +67,12 @@ By omitting the string argument to `module`, you bind to the whole JS module:
 @module external leftPad: (string, int) => string = "./leftPad"
 let paddedResult = leftPad("hi", 5)
 ```
+
 ```js
 import * as LeftPad from "./leftPad";
 var paddedResult = LeftPad("hi", 5);
 ```
+
 ```js
 var LeftPad = require("./leftPad");
 var paddedResult = LeftPad("hi", 5);
@@ -88,6 +92,7 @@ Use the value `default` on the right hand side:
 @module("./student") external studentName: string = "default"
 Console.log(studentName)
 ```
+
 ```js
 import Student from "./student";
 var studentName = Student;
@@ -107,7 +112,8 @@ var studentName = Student;
 external myJson: JSON.t = "default"
 
 Console.log(myJson)
-```
+
+````
 
 ```javascript
 import MyJsonJson from "./myJson.json" with {"type": "json", "some-exotic-identifier": "someValue"};
@@ -115,12 +121,14 @@ import MyJsonJson from "./myJson.json" with {"type": "json", "some-exotic-identi
 var myJson = MyJsonJson;
 
 console.log(myJson);
-```
+````
+
 </CodeTab>
 
 This above imports the local `./myJson.json` file, adding import attributes.
 
 This is how it works:
+
 1. Instead of passing a string or tuple to `@module`, pass a record.
 2. This record should have a `from` key. The value of that is where you want the module to be imported from (just like the regular string to `@module` is).
 3. It should also have a `with` key, with another record where you put all the import attributes you want emitted.
@@ -129,9 +137,11 @@ Notice `\"some-exotic-identifier"` - you'll need to escape any key that's not a 
 Also notice `type_`. Since `type` is a reserved keyword in ReScript, you can use `type_` instead. It will be output as `type` in the JavaScript code.
 
 ## Dynamic Import
+
 Leveraging JavaScript's [dynamic `import`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import) to reduce bundle size and lazy load code as needed is easy in ReScript. It's also a little bit more convenient than in regular JavaScript because you don't need to keep track of file paths manually with ReScript's module system.
 
 ### Dynamically Importing Parts of a Module
+
 Use the `import` function to dynamically import a specific part of a module. Put whatever `let` binding you want to import in there, and you'll get a `promise` back resolving to that specific binding.
 
 Let's look at an example. Imagine the following file `MathUtils.res`:
@@ -150,9 +160,10 @@ let main = async () => {
   let add = await import(MathUtils.add)
   let onePlusOne = add(1, 1)
 
-  Console.log(onePlusOne)
+Console.log(onePlusOne)
 }
-```
+
+````
 ```javascript
 async function main() {
   var add = await import("./MathUtils.mjs").then(function(m) {
@@ -162,21 +173,25 @@ async function main() {
   var onePlusOne = add(1, 1);
   console.log(onePlusOne);
 }
-```
+````
+
 </CodeTab>
 
 ### Dynamically Importing an Entire Module
+
 The syntax for importing a whole module looks a little different, since we are operating on the module syntax level; instead of using `import`, you may simply `await` the module itself:
+
 <CodeTab labels={["ReScript", "JS Output (Module)"]}>
 ```rescript
 // App.res
 let main = async () => {
   module Utils = await MathUtils
 
-  let twoPlusTwo = Utils.add(2, 2)
-  Console.log(twoPlusTwo)
+let twoPlusTwo = Utils.add(2, 2)
+Console.log(twoPlusTwo)
 }
-```
+
+````
 ```javascript
 async function main() {
   var Utils = await import("./MathUtils.mjs");
@@ -184,7 +199,8 @@ async function main() {
   var twoPlusTwo = Utils.add(2, 2);
   console.log(twoPlusTwo);
 }
-```
+````
+
 </CodeTab>
 
 ## Export To JavaScript
@@ -204,7 +220,7 @@ export default name = "Al";
 
 ```js
 // teacher.js
-import studentName from 'student.js';
+import studentName from "student.js";
 ```
 
 A JavaScript default export is really just syntax sugar for a named export implicitly called `default` (now you know!). So to export a default value from ReScript, you can just do:
@@ -215,6 +231,7 @@ A JavaScript default export is really just syntax sugar for a named export impli
 // ReScriptStudent.res
 let default = "Bob"
 ```
+
 ```js
 var $$default = "Bob";
 
@@ -223,13 +240,11 @@ exports.default = $$default;
 // informal transpiler-compatible marker of a default export compiled from JavaScript module
 exports.__esModule = true;
 ```
+
 ```js
 var $$default = "Bob";
 
-export {
-  $$default,
-  $$default as default,
-}
+export { $$default, $$default as default };
 ```
 
 </CodeTab>
@@ -238,7 +253,7 @@ You can then import this default export as usual on the JS side:
 
 ```js
 // teacher2.js
-import studentName from 'ReScriptStudent.js';
+import studentName from "ReScriptStudent.js";
 ```
 
 If your JavaScript's default import is transpiled by Babel/Webpack/Jest into CommonJS `require`s, we've taken care of that too! See the CommonJS output tab for `__esModule`.

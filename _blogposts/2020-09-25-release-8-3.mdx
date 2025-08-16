@@ -17,9 +17,7 @@ It's focused on type safety, performance and JS interop. It used to be called Bu
 npm i bs-platform@8.3.0
 ```
 
-The changes are listed [here](https://github.com/rescript-lang/rescript/blob/master/Changes.md#83), this is a large release,  and we will go through some highlighted changes.
-
-
+The changes are listed [here](https://github.com/rescript-lang/rescript/blob/master/Changes.md#83), this is a large release, and we will go through some highlighted changes.
 
 ## Lightweight FFI attributes without `bs.` prefix
 
@@ -27,18 +25,19 @@ In this release, we make the `bs.` prefix optional, this will make the FFI less 
 
 For example, the old externals for `readFileAsUtf8Sync` used to be written like this
 
-
 <CodeTab labels={["ReScript", "Reason (Old Syntax)", "ML Syntax"]}>
 
 ```res
 @bs.val @bs.module("fs")
 external readFileAsUtf8Sync: (string, @bs.as("utf8") _) => string = "readFileSync"
 ```
+
 ```reason
 [@bs.val] [@bs.module "fs"]
 external readFileAsUtf8Sync: (string, [@bs.as "utf8"] _) => string =
   "readFileSync";
 ```
+
 ```ocaml
 external readFileAsUtf8Sync : string -> (_[@bs.as "utf8"]) -> string = "readFileSync" [@@bs.val] [@@bs.module "fs"]
 ```
@@ -52,11 +51,13 @@ It can now be simplified as
 ```res
 @val @module("fs") external readFileAsUtf8Sync: (string, @as("utf8") _) => string = "readFileSync"
 ```
+
 ```reason
 [@val] [@module "fs"]
 external readFileAsUtf8Sync: (string, [@as "utf8"] _) => string =
   "readFileSync";
 ```
+
 ```ocaml
 external readFileAsUtf8Sync : string -> (_[@as "utf8"]) -> string = "readFileSync"
 [@@val] [@@module "fs"]
@@ -70,8 +71,7 @@ with the exception of the following two that don't have abbreviations:
 - `bs.send.pipe` : this attribute was deprecated in favor of `bs.send`; you can still use the existing one for backward compatibility.
 
 - `bs.splice` : this attribute was deprecated in favor of `bs.variadic`; you can still use the existing one for
-backward compatibility.
-
+  backward compatibility.
 
 ## default import in Es6 support
 
@@ -84,11 +84,13 @@ If you use es6 module output, the default bindings will be compiled properly now
 
 let a = input("hello")
 ```
+
 ```reason
 [@module "hello"] external input: string => string = "default";
 
 let a = input("hello");
 ```
+
 ```ocaml
 external input : string -> string = "default" [@@module "hello"]
 
@@ -103,7 +105,6 @@ Will now be compiled properly under es6 format as below:
 import Hello from "hello";
 var a = Hello("hello");
 ```
-
 
 ## Customized js file extension support
 
@@ -126,8 +127,6 @@ To have better integration with other [JS infrastructures](https://github.com/re
 for example, Next.js/React Native, we allow file names like `404.res`,
 `Button.Android.res` so that it can just be picked up by those tools
 
-
-
 ## Better type based inference for pattern `let {a,b,c} = value`
 
 Previously, for code like this:
@@ -144,6 +143,7 @@ let f = (u: N.t) => {
   x + 1
 } /* type error */
 ```
+
 ```reason
 module N = {
   type t = {x: int};
@@ -154,6 +154,7 @@ let f = (u: N.t) => {
   x + 1;
 }; /* type error */
 ```
+
 ```ocaml
 module N = struct
     type t = {
