@@ -1,0 +1,319 @@
+---
+title: Arrays and Keys
+description: "Rendering arrays and handling keys in ReScript and React"
+canonical: "/docs/react/latest/arrays-and-keys"
+---
+
+# Arrays and Keys
+
+<Intro>
+
+Whenever we are transforming data into an array of elements and put it in our React tree, we need to make sure to give every element an unique identifier to help React distinguish elements for each render. This page will explain the `key` attribute and how to apply it whenever we need to map data to `React.element`s.
+
+</Intro>
+
+## Rendering Arrays
+
+Arrays require a special function `React.array` to convert an `array<Jsx.element>` to render as `Jsx.element`.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+type todo = {id: string, text: string}
+
+@react.component
+let make = () => {
+  let todos = [{id: "todo1", text: "Todo 1"}, {id: "todo2", text: "Todo 2"}]
+
+  let items = Array.map(todos, todo => {
+    <li key={todo.id}> {React.string(todo.text)} </li>
+  })
+
+  <ul> {React.array(items)} </ul>
+}
+```
+
+```js
+function Playground(props) {
+  var todos = [
+    {
+      id: "todo1",
+      text: "Todo 1"
+    },
+    {
+      id: "todo2",
+      text: "Todo 2"
+    }
+  ];
+  var items = todos.map(function (todo) {
+        return JsxRuntime.jsx("li", {
+                    children: todo.text
+                  }, todo.id);
+      });
+  return JsxRuntime.jsx("ul", {
+              children: items
+            });
+}
+```
+
+</CodeTab>
+
+## Keys
+
+Keys help React identify which elements have been changed, added, or removed throughout each render. Keys should be given to elements inside the array to give the elements a stable identity:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+let numbers = [1, 2, 3, 4, 5]
+
+let items = Array.map(numbers, (number) => {
+  <li key={Int.toString(number)}> {React.int(number)} </li>
+})
+```
+
+```js
+var numbers = [
+  1,
+  2,
+  3,
+  4,
+  5
+];
+
+var items = numbers.map(function (number) {
+      return JsxRuntime.jsx("li", {
+                  children: number
+                }, number.toString());
+    });
+```
+
+</CodeTab>
+
+The best way to pick a key is to use a string that uniquely identifies a list item among its siblings. Most often you would use IDs from your data as keys:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res prelude
+type todo = {id: string, text: string}
+
+let todos = [
+  {id: "todo1", text: "Todo 1"},
+  {id: "todo2", text: "Todo 2"}
+]
+
+let items = Array.map(todos, todo => {
+  <li key={todo.id}> {React.string(todo.text)} </li>
+})
+```
+
+```js
+var todos = [
+  {
+    id: "todo1",
+    text: "Todo 1"
+  },
+  {
+    id: "todo2",
+    text: "Todo 2"
+  }
+];
+
+var items = todos.map(function (todo) {
+      return JsxRuntime.jsx("li", {
+                  children: todo.text
+                }, todo.id);
+    });
+```
+
+</CodeTab>
+
+If you don’t have stable IDs for rendered items, you may use the item index as a key as a last resort:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example {1..3}
+let items = Array.mapWithIndex(todos, (todo, i) => {
+  // Only do this if items have no stable id
+  <li key={Int.toString(i)}>
+    {React.string(todo.text)}
+  </li>
+})
+```
+
+```js
+var items = todos.map(function (todo, i) {
+      return JsxRuntime.jsx("li", {
+                  children: todo.text
+                }, i.toString());
+    });
+```
+
+</CodeTab>
+
+
+### Keys Must Only Be Unique Among Siblings
+
+Keys used within arrays should be unique among their siblings. However they don’t need to be globally unique. We can use the same keys when we produce two different arrays:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example {6,10,17,18,25,27}
+type post = {id: string, title: string, content: string}
+
+module Blog = {
+  @react.component
+  let make = (~posts: array<post>) => {
+    let sidebar =
+      <ul>
+        {Array.map(posts, post => {
+          <li key={post.id}> {React.string(post.title)} </li>
+        })->React.array}
+      </ul>
+
+    let content = Array.map(posts, post => {
+      <div key={post.id}>
+        <h3> {React.string(post.title)} </h3>
+        <p> {React.string(post.content)} </p>
+      </div>
+    })
+
+    <div>
+      {sidebar}
+      <hr />
+      {React.array(content)}
+    </div>
+  }
+}
+
+let posts = [
+  {
+    id: "1",
+    title: "Hello World",
+    content: "Welcome to learning ReScript & React!",
+  },
+  {
+    id: "2",
+    title: "Installation",
+    content: "You can install reason-react from npm.",
+  },
+]
+
+let blog = <Blog posts />
+```
+
+```js
+function Playground$Blog(props) {
+  var posts = props.posts;
+  var sidebar = JsxRuntime.jsx("ul", {
+        children: posts.map(function (post) {
+              return JsxRuntime.jsx("li", {
+                          children: post.title
+                        }, post.id);
+            })
+      });
+  var content = posts.map(function (post) {
+        return JsxRuntime.jsxs("div", {
+                    children: [
+                      JsxRuntime.jsx("h3", {
+                            children: post.title
+                          }),
+                      JsxRuntime.jsx("p", {
+                            children: post.content
+                          })
+                    ]
+                  }, post.id);
+      });
+  return JsxRuntime.jsxs("div", {
+              children: [
+                sidebar,
+                JsxRuntime.jsx("hr", {}),
+                content
+              ]
+            });
+}
+
+var Blog = {
+  make: Playground$Blog
+};
+
+var posts = [
+  {
+    id: "1",
+    title: "Hello World",
+    content: "Welcome to learning ReScript & React!"
+  },
+  {
+    id: "2",
+    title: "Installation",
+    content: "You can install reason-react from npm."
+  }
+];
+
+var blog = JsxRuntime.jsx(Playground$Blog, {
+      posts: posts
+    });
+```
+
+</CodeTab>
+
+
+## Rendering `list` Values
+
+In case you ever want to render a `list` of items, you can do something like this:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+type todo = {id: string, text: string}
+
+@react.component
+let make = () => {
+  let todoList = list{
+    {id: "todo1", text: "Todo 1"},
+    {id: "todo2", text: "Todo 2"},
+  }
+
+  let items =
+    todoList
+    ->List.toArray
+    ->Array.map(todo => {
+      <li key={todo.id}> {React.string(todo.text)} </li>
+    })
+
+  <div> {React.array(items)} </div>
+}
+
+```
+
+```js
+function Playground(props) {
+  var items = Core__List.toArray({
+          hd: {
+            id: "todo1",
+            text: "Todo 1"
+          },
+          tl: {
+            hd: {
+              id: "todo2",
+              text: "Todo 2"
+            },
+            tl: /* [] */0
+          }
+        }).map(function (todo) {
+        return JsxRuntime.jsx("li", {
+                    children: todo.text
+                  }, todo.id);
+      });
+  return JsxRuntime.jsx("div", {
+              children: items
+            });
+}
+```
+
+</CodeTab>
+
+We use `List.toArray` to convert our list to an array before creating our `array<React.element>`. Please note that using `list` has performance impact due to extra conversion costs.
+
+99% of the time you'll want to use arrays (seamless interop, faster JS code), but in some cases it might make sense to use a `list` to leverage advanced pattern matching features etc.
+

@@ -1,11 +1,8 @@
 import { useMdxAttributes, useMdxComponent } from 'react-router-mdx/client'
 import { loadMdx } from 'react-router-mdx/server'
 
-export async function loader({ request, ...rest }) {
-    const res = loadMdx(request)
-    console.log(await res)
-    console.log(rest)
-    return res
+export async function loader({ request }) {
+    return loadMdx(request)
 }
 
 export default function Route() {
