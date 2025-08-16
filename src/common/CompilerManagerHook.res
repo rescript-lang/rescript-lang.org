@@ -446,7 +446,7 @@ let useCompilerManager = (
                 errors: [],
                 result: FinalResult.Nothing,
                 logs: [],
-                autoRun: false,
+                autoRun: true,
                 validReactCode: false,
               }))
             | Error(errs) =>
