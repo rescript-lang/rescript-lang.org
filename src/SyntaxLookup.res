@@ -226,17 +226,17 @@ let default = (props: props) => {
   // [B] The search box is cleared.
   // [C] The search box value exactly matches an item name.
   React.useEffect(() => {
-    switch getAnchor(location.pathname) {
-    | None => setState(_ => ShowAll)
-    | Some(anchor) =>
-      switch findItemById(anchor) {
-      | None => setState(_ => ShowAll)
-      | Some(item) => {
-          setState(_ => ShowDetails(item))
-          scrollToTop()
-        }
-      }
-    }
+    // switch getAnchor(location.pathname) {
+    // | None => setState(_ => ShowAll)
+    // | Some(anchor) =>
+    //   switch findItemById(anchor) {
+    //   | None => setState(_ => ShowAll)
+    //   | Some(item) => {
+    //       setState(_ => ShowDetails(item))
+    //       scrollToTop()
+    //     }
+    //   }
+    // }
     None
   }, [location.pathname])
 

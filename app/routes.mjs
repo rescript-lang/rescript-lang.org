@@ -7,7 +7,10 @@ import * as Routes from "@react-router/dev/routes";
 let $$default = Belt_Array.concatMany([
   [
     Routes.index("./routes/LandingPageRoute.mjs"),
-    Routes.route("syntax-lookup", "./routes/SyntaxLookupRoute.mjs")
+    Routes.route("try", "./routes/TryRoute.mjs"),
+    Routes.route("community", "./routes/CommunityRoute.mjs"),
+    Routes.route("syntax-lookup", "./routes/SyntaxLookupRoute.mjs"),
+    Routes.route("blog", "./routes/BlogRoute.mjs")
   ],
   Server.routes("./routes/MdxRoute.mjs")
 ]);

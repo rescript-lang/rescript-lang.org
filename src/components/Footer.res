@@ -32,9 +32,7 @@ let make = () => {
         <Section title="About">
           <ul className="text-16 text-gray-80-tr space-y-2">
             <li>
-              <Link to={("/community" :> ReactRouter.Link.to)} className={linkClass}>
-                {React.string("Community")}
-              </Link>
+              <Link to=#community className={linkClass}> {React.string("Community")} </Link>
             </li>
 
             <li>

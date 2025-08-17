@@ -6,7 +6,7 @@ module Card = {
       <ul>
         {Array.map(hrefs, ((text, href)) =>
           <li key=text className="text-16 mb-1 last:mb-0">
-            <ReactRouter.Link to=Url(href)> {React.string(text)} </ReactRouter.Link>
+            <ReactRouter.Link.String to=href> {React.string(text)} </ReactRouter.Link.String>
           </li>
         )->React.array}
       </ul>

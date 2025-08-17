@@ -219,14 +219,17 @@ module Toggle = {
         open ReactRouter
         let playgroundLinkButton =
           tab->isReScript
-            ? <Link
-                to={(`/try?code=${encodeURIComponent(tab.code)})}}` :> ReactRouter.Link.to)}
+            ? <Link.Path
+                to={
+                  pathname: #"try",
+                  search: `?code=${encodeURIComponent(tab.code)}`,
+                }
                 target="_blank">
                 // ICON Link to PLAYGROUND
                 <Icon.ExternalLink
                   className="text-gray-30 mt-px hover:cursor-pointer hover:text-gray-60 hover:bg-gray-30 w-6 h-6 p-1 rounded transition-all duration-300 ease-in-out"
                 />
-              </Link>
+              </Link.Path>
             : React.null
 
         let copyButton = <CopyButton code={tab.code} />

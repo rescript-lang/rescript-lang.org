@@ -32,17 +32,17 @@ module MobileNav = {
     <div className="border-gray-80 border-tn">
       <ul>
         <li className=base>
-          <Link to=Url("/try") className={linkOrActiveLink(~target="/try", ~route)}>
+          <Link to=#"try" className={linkOrActiveLink(~target="/try", ~route)}>
             {React.string("Playground")}
           </Link>
         </li>
         <li className=base>
-          <Link to=Url("/blog") className={linkOrActiveLinkSubroute(~target="/blog", ~route)}>
+          <Link to=#blog className={linkOrActiveLinkSubroute(~target="/blog", ~route)}>
             {React.string("Blog")}
           </Link>
         </li>
         <li className=base>
-          <Link to=Url("/community") className={linkOrActiveLink(~target="/community", ~route)}>
+          <Link to=#community className={linkOrActiveLink(~target="/community", ~route)}>
             {React.string("Community")}
           </Link>
         </li>
@@ -102,25 +102,29 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
           <div
             className="flex items-center xs:justify-between w-full bg-gray-90 sm:h-auto sm:relative">
             <div className="flex ml-10 space-x-5 w-full text-gray-40 max-w-104">
-              <Link to=Url(`/docs/manual/introduction`) className={isDocRouteActive(~route)}>
+              <Link
+                to=#"docs/manual/introduction"
+                className={isDocRouteActive(~route=(route :> string))}>
                 {React.string("Docs")}
               </Link>
 
               <Link
-                to=Url("/try")
-                className={"hidden xs:block " ++ linkOrActiveLink(~target="/try", ~route)}>
+                to=#"try"
+                className={"hidden xs:block " ++
+                linkOrActiveLink(~target="/try", ~route=(route :> string))}>
                 {React.string("Playground")}
               </Link>
-              <Link
-                to=Url("/blog")
-                className={"hidden xs:block " ++ linkOrActiveLinkSubroute(~target="/blog", ~route)}>
-                {React.string("Blog")}
-              </Link>
-              <Link
-                to=Url("/community/overview")
-                className={"hidden xs:block " ++ linkOrActiveLink(~target="/community", ~route)}>
-                {React.string("Community")}
-              </Link>
+              // <Link
+              //   to=#"blog"
+              //   className={"hidden xs:block " ++ linkOrActiveLinkSubroute(~target="/blog", ~~route=(route))}>
+              //   {React.string("Blog")}
+              // </Link>
+              // <Link
+              //   to=#"community/overview"
+              //   // className={"hidden xs:block " ++ linkOrActiveLink(~target="/community", ~route)}
+              // >
+              //   {React.string("Community")}
+              // </Link>
             </div>
             <div className="md:flex flex items-center text-gray-60">
               <Search />
@@ -159,36 +163,36 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
           className={(
             isOverlayOpen ? "flex" : "hidden"
           ) ++ " top-16 sm:hidden flex-col fixed top-0 left-0 h-full w-full z-50 sm:w-9/12 bg-gray-100 sm:h-auto sm:flex sm:relative sm:flex-row sm:justify-between"}>
-          <MobileNav route />
+          // <MobileNav route />
         </div>
       </nav>
       // This is a subnav for documentation pages
-      {isDocRoute(~route)
-        ? <nav
-            id="docs-subnav"
-            className="bg-white z-50 px-4 w-full h-12 shadow text-gray-60 text-12 md:text-14 transition duration-300 ease-out group-[.nav-disappear]:-translate-y-32 md:group-[.nav-disappear]:-translate-y-0">
-            <div className="flex gap-6 lg:gap-10 items-center h-full w-full max-w-1280 m-auto">
-              <Link
-                to=Url(`/docs/manual/introduction`)
-                className={isActiveLink(~includes="/docs/manual/", ~excludes="/api", ~route)}>
-                {React.string("Language Manual")}
-              </Link>
-              <Link to=Url(`/docs/manual/api`) className={isActiveLink(~includes="/api", ~route)}>
-                {React.string("API")}
-              </Link>
-              <Link
-                to=Url("/syntax-lookup")
-                className={isActiveLink(~includes="/syntax-lookup", ~route)}>
-                {React.string("Syntax Lookup")}
-              </Link>
-              <Link
-                to=Url(`/docs/react/introduction`)
-                className={isActiveLink(~includes="/docs/react/", ~route)}>
-                {React.string("React")}
-              </Link>
-            </div>
-          </nav>
-        : React.null}
+      // {isDocRoute(~route)
+      //   ? <nav
+      //       id="docs-subnav"
+      //       className="bg-white z-50 px-4 w-full h-12 shadow text-gray-60 text-12 md:text-14 transition duration-300 ease-out group-[.nav-disappear]:-translate-y-32 md:group-[.nav-disappear]:-translate-y-0">
+      //       <div className="flex gap-6 lg:gap-10 items-center h-full w-full max-w-1280 m-auto">
+      //         <Link
+      //           to=Url(`/docs/manual/introduction`)
+      //           className={isActiveLink(~includes="/docs/manual/", ~excludes="/api", ~route)}>
+      //           {React.string("Language Manual")}
+      //         </Link>
+      //         <Link to=Url(`/docs/manual/api`) className={isActiveLink(~includes="/api", ~route)}>
+      //           {React.string("API")}
+      //         </Link>
+      //         <Link
+      //           to=Url("/syntax-lookup")
+      //           className={isActiveLink(~includes="/syntax-lookup", ~route)}>
+      //           {React.string("Syntax Lookup")}
+      //         </Link>
+      //         <Link
+      //           to=Url(`/docs/react/introduction`)
+      //           className={isActiveLink(~includes="/docs/react/", ~route)}>
+      //           {React.string("React")}
+      //         </Link>
+      //       </div>
+      //     </nav>
+      //   : React.null}
     </header>
   </>
 }

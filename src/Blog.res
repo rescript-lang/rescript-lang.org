@@ -51,23 +51,23 @@ module CategorySelector = {
     let tabs = [All, Archived]
 
     <div className="text-16 w-full flex items-center justify-between text-gray-60">
-      {tabs
-      ->Array.map(tab => {
-        // Deep comparison here!
-        let isActive = selected == tab
-        let text = (tab :> string)
-        let href = switch tab {
-        | All => "/blog"
-        | Archived => "/blog/archived"
-        }
-        let className =
-          switch isActive {
-          | true => "bg-gray-20 text-gray-80 rounded py-1"
-          | false => "hover:cursor-pointer bg-white hover:text-gray-80"
-          } ++ " px-4 inline-block"
-        <Link key=text to=Url(href) className> {React.string(text)} </Link>
-      })
-      ->React.array}
+      // {tabs
+      // ->Array.map(tab => {
+      //   // Deep comparison here!
+      //   let isActive = selected == tab
+      //   let text = (tab :> string)
+      //   let href = switch tab {
+      //   | All => "/blog"
+      //   | Archived => "/blog/archived"
+      //   }
+      //   let className =
+      //     switch isActive {
+      //     | true => "bg-gray-20 text-gray-80 rounded py-1"
+      //     | false => "hover:cursor-pointer bg-white hover:text-gray-80"
+      //     } ++ " px-4 inline-block"
+      //   // <Link key=text to=Url(href) className> {React.string(text)} </Link>
+      // })
+      // ->React.array}
     </div>
   }
 }
@@ -85,6 +85,7 @@ module BlogCard = {
   ) =>
     <section className="h-full">
       <div className="relative">
+        // <ReactRouter.SafeLink to=#"syntax-lookup" />
         {switch badge {
         | None => React.null
         | Some(badge) =>
@@ -92,20 +93,20 @@ module BlogCard = {
             <Badge badge />
           </div>
         }}
-        <Link to=Url(`/blog/${slug}`) className="relative hl-title block mb-4 pt-9/16">
-          {
-            let className = "absolute top-0 h-full w-full object-cover"
-            switch previewImg {
-            | Some(src) => <img className src loading={#lazy} />
-            | None => <img className src=defaultPreviewImg loading={#lazy} />
-            }
-          }
-        </Link>
+        // <Link to=Url(`/blog/${slug}`) className="relative hl-title block mb-4 pt-9/16">
+        //   {
+        //     let className = "absolute top-0 h-full w-full object-cover"
+        //     switch previewImg {
+        //     | Some(src) => <img className src loading={#lazy} />
+        //     | None => <img className src=defaultPreviewImg loading={#lazy} />
+        //     }
+        //   }
+        // </Link>
       </div>
       <div className="px-2">
-        <Link to=Url(`/blog/${slug}`)>
-          <h2 className="hl-4"> {React.string(title)} </h2>
-        </Link>
+        //   <Link to=Url(`/blog/${slug}`)>
+        //     <h2 className="hl-4"> {React.string(title)} </h2>
+        //   </Link>
         <div className="captions text-gray-40 pt-1">
           {switch category {
           | Some(category) =>
@@ -143,22 +144,22 @@ module FeatureCard = {
     <section
       className="flex sm:px-4 md:px-8 lg:px-0 flex-col justify-end lg:flex-row sm:items-center h-full">
       <div className="w-full h-full sm:self-start md:self-auto max-h-101.75">
-        <Link to=Url(`/blog/${slug}`) className="relative block pt-2/3">
-          {switch badge {
-          | Some(badge) =>
-            <div className="absolute z-10 top-0 mt-10 ml-4 lg:-ml-4">
-              <Badge badge />
-            </div>
-          | None => React.null
-          }}
-          {
-            let className = "absolute top-0 h-full w-full object-cover"
-            switch previewImg {
-            | Some(src) => <img className src />
-            | None => <img className src=defaultPreviewImg loading={#eager} />
-            }
-          }
-        </Link>
+        // <Link to=Url(`/blog/${slug}`) className="relative block pt-2/3">
+        //   {switch badge {
+        //   | Some(badge) =>
+        //     <div className="absolute z-10 top-0 mt-10 ml-4 lg:-ml-4">
+        //       <Badge badge />
+        //     </div>
+        //   | None => React.null
+        //   }}
+        //   {
+        //     let className = "absolute top-0 h-full w-full object-cover"
+        //     switch previewImg {
+        //     | Some(src) => <img className src />
+        //     | None => <img className src=defaultPreviewImg loading={#eager} />
+        //     }
+        //   }
+        // </Link>
       </div>
       <div
         className="relative px-4 lg:self-auto sm:pt-12 md:px-20 sm:self-start md:-mt-20 mt-4 bg-white lg:w-full lg:pt-0 lg:mt-0 lg:px-0 lg:ml-12">
@@ -192,9 +193,9 @@ module FeatureCard = {
             <p className="body-md text-gray-70"> {React.string(firstParagraph)} </p>
           </div>
         </div>
-        <Link to=Url(`/blog/${slug}`)>
-          <Button> {React.string("Read Article")} </Button>
-        </Link>
+        // <Link to=Url(`/blog/${slug}`)>
+        //   <Button> {React.string("Read Article")} </Button>
+        // </Link>
       </div>
     </section>
   }

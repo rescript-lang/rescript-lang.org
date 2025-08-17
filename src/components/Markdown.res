@@ -45,7 +45,8 @@ module UrlBox = {
   let imgEl = <img src="/hyperlink.svg" className="mr-2 inline-block" />
 
   @react.component
-  let make = (~text: string, ~href: string, ~children: Mdx.MdxChildren.t) => {
+  let // TODO: can this href be a Path.t somehow?
+  make = (~text: string, ~href: string, ~children: Mdx.MdxChildren.t) => {
     let content = switch classify(children) {
     | String(str) =>
       <p>
@@ -92,10 +93,10 @@ module UrlBox = {
         <Icon.ArrowRight className="ml-1" />
       </a>
     } else {
-      <ReactRouter.Link to=Url(href) className="flex items-center">
+      <ReactRouter.Link.String to=href className="flex items-center">
         {React.string(text)}
         <Icon.ArrowRight className="ml-1" />
-      </ReactRouter.Link>
+      </ReactRouter.Link.String>
     }
     <div className="md-url-box text-16 border-l-2 border-gray-60 my-6 py-6 pl-8 pr-10 bg-gray-5">
       content
@@ -377,9 +378,9 @@ module A = {
       | [pathname] => String.replaceRegExp(pathname, regex, "")
       | _ => href
       }
-      <ReactRouter.Link to=Url(href) className="no-underline text-fire hover:underline" ?target>
+      <ReactRouter.Link.String to=href className="no-underline text-fire hover:underline" ?target>
         children
-      </ReactRouter.Link>
+      </ReactRouter.Link.String>
     }
 }
 
