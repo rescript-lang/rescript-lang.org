@@ -24,10 +24,14 @@ Console.log(x->String.includes("x"))
 var Js_exn = require("./stdlib/js_exn.js");
 
 function implementMeLater() {
-  return Js_exn.raiseError("playground.res:1:37-42 - Todo: This should return a string eventually.");
+  return Js_exn.raiseError(
+    "playground.res:1:37-42 - Todo: This should return a string eventually.",
+  );
 }
 
-var x = Js_exn.raiseError("playground.res:1:37-42 - Todo: This should return a string eventually.");
+var x = Js_exn.raiseError(
+  "playground.res:1:37-42 - Todo: This should return a string eventually.",
+);
 
 console.log(x.includes("x"));
 ```
@@ -44,5 +48,5 @@ This will crash when executed. We suggest to [promote the warning to an error](/
 
 ### References
 
-* [Stricter compilation in CI](/docs/manual/latest/build-overview#compile-with-stricter-errors-in-ci)
-* [Extension Point Attributes](/docs/manual/latest/attribute#extension-point)
+- [Stricter compilation in CI](/docs/manual/latest/build-overview#compile-with-stricter-errors-in-ci)
+- [Extension Point Attributes](/docs/manual/latest/attribute#extension-point)

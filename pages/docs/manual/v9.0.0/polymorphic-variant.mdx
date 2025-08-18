@@ -119,7 +119,7 @@ let acc: account = #Instagram("test")
 ```js
 var acc = {
   NAME: "Instagram",
-  VAL: "test"
+  VAL: "test",
 };
 ```
 
@@ -203,8 +203,8 @@ var content = {
   NAME: "Paragraph",
   VAL: {
     NAME: "Text",
-    VAL: "hello world"
-  }
+    VAL: "hello world",
+  },
 };
 ```
 
@@ -228,7 +228,6 @@ let background: [< #Red | #Blue] = #Red
 ```
 
 Don't worry about the upper / lower bound feature just yet, since this is a very advanced topic that's often not really needed. For the sake of completeness, we mention a few details about it [later on](#lower--upper-bound-constraints).
-
 
 ## Polymorphic Variants are Structurally Typed
 
@@ -261,7 +260,7 @@ let other = [#Green]
 let all = Belt.Array.concat(colors, other)
 ```
 
-As you can see in the example above, the type checker doesn't really care about the fact that `other` is not annotated as an `array<rgb>` type. 
+As you can see in the example above, the type checker doesn't really care about the fact that `other` is not annotated as an `array<rgb>` type.
 
 As soon as it hits the first constraint (`Belt.Array.concat`), it will try to check if the structural types of `colors` and `other` unify into one poly variant type. If there's a mismatch, you will get an error on the `Belt.Array.concat` call.
 
@@ -289,7 +288,6 @@ A value compiles to the following JavaScript output:
 
 Check the output in these examples:
 
-
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res example
@@ -308,14 +306,13 @@ var lowercased = "goodbye";
 
 var err = {
   NAME: "error",
-  VAL: "oops!"
+  VAL: "oops!",
 };
 
 var num = "1";
 ```
 
 </CodeTab>
-
 
 ### Bind to JS Functions
 
@@ -347,10 +344,9 @@ var intl = Intl.NumberFormat("de-DE");
 
 </CodeTab>
 
-The JS Output is practically identical to handwritten JS, but we also get to enjoy all the benefits of a variant. 
+The JS Output is practically identical to handwritten JS, but we also get to enjoy all the benefits of a variant.
 
 More usage examples for poly variant interop can be found in [Bind to JS Function](bind-to-js-function#constrain-arguments-better) and [Generate Converters and Helper](generate-converters-accessors#generate-converters-for-js-string-enums-and-polymorphic-variants).
-
 
 ### Bind to String Enums
 
@@ -369,7 +365,6 @@ export const myDirection = Direction.Up
 ```
 
 For this particular example, we can also inline poly variant type definitions to design the type for the imported `myDirection` value:
-
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -406,7 +401,7 @@ let color: rgb = #Green
 
 In the example above, `color` will only allow one of the three constructors that are defined in the `rgb` type. This is usually the way how poly variants should be defined.
 
-In case you want to define a type that is extensible in polymorphic ways (or in other words, subtyping allowed sets of constructors), you'll need to use the lower / upper bound syntax. 
+In case you want to define a type that is extensible in polymorphic ways (or in other words, subtyping allowed sets of constructors), you'll need to use the lower / upper bound syntax.
 
 ### Lower Bound (`[>`)
 
@@ -424,7 +419,7 @@ let color:  color = #Purple
 type notWorking = basicBlueTone<[#Purple]>
 ```
 
-Here, the compiler will enforce the user to define `#Blue | #DeepBlue | #LightBlue` as the minimum set of constructors when trying to extend `basicBlueTone<'a>`. 
+Here, the compiler will enforce the user to define `#Blue | #DeepBlue | #LightBlue` as the minimum set of constructors when trying to extend `basicBlueTone<'a>`.
 
 **Note:** Since we want to define an extensible poly variant, we need to provide a type placeholder `<'a>`, and also add `as 'a` after the poly variant declaration, which essentially means: "Given type `'a` is constraint to the minimum set of constructors (`#Blue | #DeepBlue | #LightBlue`) defined in `basicBlueTone`".
 

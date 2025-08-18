@@ -20,8 +20,9 @@ type myResponse =
 
 let areYouCrushingIt = Yes
 ```
+
 ```js
-var areYouCrushingIt = /* Yes */0;
+var areYouCrushingIt = /* Yes */ 0;
 ```
 
 </CodeTab>
@@ -40,6 +41,7 @@ If the variant you're using is in a different file, bring it into scope like you
 // Zoo.res
 type animal = Dog | Cat | Bird
 ```
+
 ```js
 // Empty output
 ```
@@ -54,9 +56,10 @@ let pet: Zoo.animal = Dog // preferred
 // or
 let pet2 = Zoo.Dog
 ```
+
 ```js
-var pet = /* Dog */0;
-var pet2 = /* Dog */0;
+var pet = /* Dog */ 0;
+var pet2 = /* Dog */ 0;
 ```
 
 </CodeTab>
@@ -73,6 +76,7 @@ type account =
   | Instagram(string)
   | Facebook(string, int)
 ```
+
 ```js
 // Empty output
 ```
@@ -87,15 +91,16 @@ Here, `Instagram` holds a `string`, and `Facebook` holds a `string` and an `int`
 let myAccount = Facebook("Josh", 26)
 let friendAccount = Instagram("Jenny")
 ```
+
 ```js
 var myAccount = {
-  TAG: /* Facebook */1,
+  TAG: /* Facebook */ 1,
   _0: "Josh",
-  _1: 26
+  _1: 26,
 };
 var friendAccount = {
-  TAG: /* Instagram */0,
-  _0: "Jenny"
+  TAG: /* Instagram */ 0,
+  _0: "Jenny",
 };
 ```
 
@@ -114,11 +119,12 @@ type user =
 
 let me = Id({name: "Joe", password: "123"})
 ```
+
 ```js
 var me = {
-  TAG: /* Id */1,
+  TAG: /* Id */ 1,
   name: "Joe",
-  password: "123"
+  password: "123",
 };
 ```
 
@@ -138,13 +144,14 @@ type user =
 
 let me = Id({name: "Joe", password: "123"})
 ```
+
 ```js
 var me = {
-  TAG: /* Id */1,
+  TAG: /* Id */ 1,
   _0: {
     name: "Joe",
-    password: "123"
-  }
+    password: "123",
+  },
 };
 ```
 
@@ -192,40 +199,41 @@ type adventurer = Warrior(s) | Wizard(string)
 let a1 = Warrior({score: 10.5})
 let a2 = Wizard("Joe")
 ```
-```js
-var g1 = /* Hello */0;
-var g2 = /* Goodbye */1;
 
-var o1 = /* Good */0;
-var o2 = /* Error */{
-  _0: "oops!"
+```js
+var g1 = /* Hello */ 0;
+var g2 = /* Goodbye */ 1;
+
+var o1 = /* Good */ 0;
+var o2 = /* Error */ {
+  _0: "oops!",
 };
 
-var f1 = /* Child */0;
+var f1 = /* Child */ 0;
 var f2 = {
-  TAG: /* Mom */0,
+  TAG: /* Mom */ 0,
   _0: 30,
-  _1: "Jane"
+  _1: "Jane",
 };
 var f3 = {
-  TAG: /* Dad */1,
-  _0: 32
+  TAG: /* Dad */ 1,
+  _0: 32,
 };
 
-var p1 = /* Teacher */0;
-var p2 = /* Student */{
-  gpa: 99.5
+var p1 = /* Teacher */ 0;
+var p2 = /* Student */ {
+  gpa: 99.5,
 };
 
 var a1 = {
-  TAG: /* Warrior */0,
+  TAG: /* Warrior */ 0,
   _0: {
-    score: 10.5
-  }
+    score: 10.5,
+  },
 };
 var a2 = {
-  TAG: /* Wizard */1,
-  _0: "Joe"
+  TAG: /* Wizard */ 1,
+  _0: "Joe",
 };
 ```
 
@@ -243,6 +251,7 @@ type account =
 type account2 =
   | Instagram((string, int)) // 1 argument - happens to be a 2-tuple
 ```
+
 ```js
 // Empty output
 ```
@@ -277,6 +286,7 @@ let betterDraw = (animal) =>
 
 betterDraw(MyFloat(1.5))
 ```
+
 ```js
 var MyLibrary = require("myLibrary");
 
@@ -285,8 +295,8 @@ function betterDraw(animal) {
 }
 
 betterDraw({
-  TAG: /* MyFloat */0,
-  _0: 1.5
+  TAG: /* MyFloat */ 0,
+  _0: 1.5,
 });
 ```
 
@@ -300,6 +310,7 @@ betterDraw({
 @module("myLibrary") external drawFloat: float => unit = "draw"
 @module("myLibrary") external drawString: string => unit = "draw"
 ```
+
 ```js
 // Empty output
 ```
@@ -344,10 +355,11 @@ switch data {
 | Bird => Js.log("Kashiiin")
 }
 ```
+
 ```js
 console.log("Wof");
 
-var data = /* Dog */0;
+var data = /* Dog */ 0;
 ```
 
 </CodeTab>

@@ -1,16 +1,28 @@
 ---
 id: "spreads"
-keywords: ["spread", "record", "variant", "polymorphic", "array", "list", "function", "partial"]
+keywords:
+  [
+    "spread",
+    "record",
+    "variant",
+    "polymorphic",
+    "array",
+    "list",
+    "function",
+    "partial",
+  ]
 name: "..."
 summary: "This is the `...` syntax."
 category: "languageconstructs"
 ---
 
 A `spread` is three dots in a row: `...`. Spreads have many different uses in ReScript depending on in which context it is used.
+
 ## Record definitions
+
 > Available in v10+
 
-Spreads can be used to copy fields from one record definition into another. 
+Spreads can be used to copy fields from one record definition into another.
 
 ```res
 type a = {
@@ -32,6 +44,7 @@ type c = {
 Read more about [record type spreads here](record.md#record-type-spread).
 
 ## Record immutable update
+
 Spreads can be used for immutable updates of records:
 
 ```res
@@ -41,6 +54,7 @@ let meNextYear = {...me, age: me.age + 1}
 Read more about [record immutable updates here](record.md#immutable-update).
 
 ## Variant definitions
+
 > Available in v11+
 
 Spreads can be used to copy constructors from one variant definition to another.
@@ -54,9 +68,11 @@ type b = | ...a | Four | Five
 Read more about [variant type spreads](variant.md#variant-type-spreads) here.
 
 ## Variant pattern matching
+
 > Available in v12+
 
 You can refine the type of a variant by spreading compatible a variant when pattern matching:
+
 ```res
 type pets = Cat | Dog
 type fish = Cod | Salmon
@@ -74,6 +90,7 @@ let isPet = (animal: animals) => {
 Read more about [variant type spreads in pattern matching](pattern-matching-destructuring.md#match-on-subtype-variants).
 
 ## Polymorphic variant pattern matching
+
 You can refine compatible polymorphic variants when pattern matching:
 
 ```res
@@ -96,6 +113,7 @@ switch myColor {
 Read more about [pattern matching and polymorphic variants](polymorphic-variant.md#combine-types-and-pattern-match).
 
 ## List immutable update
+
 Spreads can be used for immutable updates of lists:
 
 ```res
@@ -108,6 +126,7 @@ let multiple = list{1, ...prepended, ...anotherList}
 Read more about [immutable list updates](array-and-list.md#immutable-prepend) here.
 
 ## List pattern matching
+
 Spreads can be used when pattern matching on lists:
 
 ```res
@@ -126,6 +145,7 @@ printStudents(list{"Jane", "Harvey", "Patrick"})
 Read more about [pattern matching on lists](pattern-matching-destructuring.md#match-on-list).
 
 ## Array immutable update
+
 > Available in v11+
 
 You can use spreads to add the contents of one array to another, just like in JavaScript:
@@ -138,6 +158,7 @@ let secondArray = [...firstArray, 4, 5]
 Read more about [array spreads](array-and-list.md#array-spreads).
 
 ## Partial application of functions
+
 > Available in v11+ (uncurried mode)
 
 You can partially apply a function using the spread syntax. Partially applying a function will return a new function taking only the arguments that wasn't applied partially.
@@ -151,12 +172,12 @@ Read more about [partial application of functions](function.md#partial-applicati
 
 ### References
 
-* [Record type spreads](record.md#record-type-spread)
-* [Record immutable updates](record.md#immutable-update)
-* [Variant type spreads](variant.md#variant-type-spreads)
-* [Variant type spreads in pattern matching](pattern-matching-destructuring.md#match-on-subtype-variants)
-* [Pattern matching and polymorphic variants](polymorphic-variant.md#combine-types-and-pattern-match)
-* [List immutable updates](array-and-list.md#immutable-prepend)
-* [List pattern matching](pattern-matching-destructuring.md#match-on-list)
-* [Array spreads](array-and-list.md#array-spreads)
-* [Partial application of functions](function.md#partial-application)
+- [Record type spreads](record.md#record-type-spread)
+- [Record immutable updates](record.md#immutable-update)
+- [Variant type spreads](variant.md#variant-type-spreads)
+- [Variant type spreads in pattern matching](pattern-matching-destructuring.md#match-on-subtype-variants)
+- [Pattern matching and polymorphic variants](polymorphic-variant.md#combine-types-and-pattern-match)
+- [List immutable updates](array-and-list.md#immutable-prepend)
+- [List pattern matching](pattern-matching-destructuring.md#match-on-list)
+- [Array spreads](array-and-list.md#array-spreads)
+- [Partial application of functions](function.md#partial-application)

@@ -7,6 +7,7 @@ canonical: "/docs/manual/latest/use-illegal-identifier-names"
 # Use Illegal Identifier Names
 
 Sometime, for e.g. a let binding or a record field, you might want to use:
+
 - A capitalized name.
 - A name that contains illegal characters (e.g. emojis, hyphen, space).
 - A name that's one of ReScript's reserved keywords.
@@ -32,17 +33,18 @@ let calculate = (~\"Props") => {
   \"Props" + 1
 }
 ```
+
 ```js
 var my$$unknown$unknown$unknown$unknown = 10;
 
 var myElement = {
-  "aria-label": "close"
+  "aria-label": "close",
 };
 
 var label = myElement["aria-label"];
 
 function calculate(Props) {
-  return Props + 1 | 0;
+  return (Props + 1) | 0;
 }
 ```
 

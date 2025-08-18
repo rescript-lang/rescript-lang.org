@@ -17,15 +17,19 @@ npm install rescript@10
 All changes are listed [here](https://github.com/rescript-lang/rescript/blob/10.0_release/CHANGELOG.md). Let's take a tour of a few of the features we're extra excited about.
 
 ## Faster builds with native M1 support
+
 Users with M1 chips should see a notable speedup, as the new ReScript version has full native support for M1.
 
 ## Better ergonomics with Unicode support in regular strings
+
 You can now use Unicode characters directly in regular strings. This will now produce what you'd expect:
+
 ```res
 let str = "Σ"
 ```
 
 You can also pattern match on Unicode characters:
+
 ```res
 switch someCharacter {
   | 'Σ' => "what a fine Unicode char"
@@ -34,7 +38,9 @@ switch someCharacter {
 ```
 
 ## Experimental optional record fields
+
 Previously, a record would always have to define all its optional fields:
+
 ```res
 type user = {
   name: string,
@@ -51,6 +57,7 @@ let userWithAge = {
   age: Some(34),
 }
 ```
+
 For small records like the one above, this is typically fine. But for records with many fields, the friction of having to always set all optional fields explicitly adds up. This release has a new experimental feature called optional record fields, allowing you to rewrite the above to this instead:
 
 ```res

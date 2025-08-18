@@ -21,6 +21,7 @@ let greeting = "Hello world!"
 let multilineGreeting = "Hello
  world!"
 ```
+
 ```js
 var greeting = "Hello world!";
 var multilineGreeting = "Hello\n world!";
@@ -35,6 +36,7 @@ To concatenate strings, use `++`:
 ```res example
 let greetings = "Hello " ++ "world!"
 ```
+
 ```js
 var greetings = "Hello world!";
 ```
@@ -61,6 +63,7 @@ World
 ${name}
 `
 ```
+
 ```js
 var name = "Joe";
 
@@ -83,6 +86,7 @@ For interpolation, you'll have to convert the binding (`name` in the example) in
 let age = 10
 let message = j`Today I am $age years old.`
 ```
+
 ```js
 var message = "Today I am " + 10 + " years old.";
 ```
@@ -114,8 +118,9 @@ ReScript has a type for a string with a single letter:
 ```res example
 let firstLetterOfAlphabet = 'a'
 ```
+
 ```js
-var firstLetterOfAlphabet = /* "a" */97;
+var firstLetterOfAlphabet = /* "a" */ 97;
 ```
 
 </CodeTab>
@@ -133,6 +138,7 @@ ReScript regular expressions compile cleanly to their JavaScript counterpart:
 ```res example
 let r = %re("/b/g")
 ```
+
 ```js
 var r = /b/g;
 ```
@@ -176,12 +182,12 @@ The `unit` type indicates the absence of a specific value. It has only a single 
 
 Consider the `Math.random` function. Its type signature is `unit => float`, which means it receives a `unit` as input and calculates a random `float` as output. You use the function like this - `let x = Math.random()`. Notice `()` as the first and only function argument.
 
-Imagine a simplified `Console.log` function that prints a message. Its type signature is `string => unit` and you'd use it like this `Console.log("Hello!")`. It takes a string as input, prints it, and then returns nothing useful. When `unit` is the output of a function it means the function performs some kind of side-effect. 
+Imagine a simplified `Console.log` function that prints a message. Its type signature is `string => unit` and you'd use it like this `Console.log("Hello!")`. It takes a string as input, prints it, and then returns nothing useful. When `unit` is the output of a function it means the function performs some kind of side-effect.
 
 ## Unknown
 
 The `unknown` type represents values with contents that are a mystery or are not 100% guaranteed to be what you think they are. It provides type-safety when interacting with data received from an untrusted source. For example, suppose an external function is supposed to return a `string`. It might. But if the documentation is not accurate or the code has bugs, the function could return `null`, an `array`, or something else you weren't expecting.
 
-The ReScript type system helps you avoid run-time crashes and unpredicatable behavior by preventing you from using `unknown` in places that expect a `string` or `int` or some other type. The ReScript core libraries also provide utility functions to help you inspect `unknown` values and access their contents. In some cases you may need a JSON parsing library to convert `unknown` values to types you can safely use.   
+The ReScript type system helps you avoid run-time crashes and unpredicatable behavior by preventing you from using `unknown` in places that expect a `string` or `int` or some other type. The ReScript core libraries also provide utility functions to help you inspect `unknown` values and access their contents. In some cases you may need a JSON parsing library to convert `unknown` values to types you can safely use.
 
 Consider using `unknown` when receiving data from [external JavaScript functions](/docs/manual/latest/bind-to-js-function)

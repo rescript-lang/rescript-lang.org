@@ -25,6 +25,7 @@ switch possiblyNullValue2 {
 | Some(message) => Console.log(message)
 }
 ```
+
 ```js
 var possiblyNullValue1;
 var possiblyNullValue2 = "Hello";
@@ -34,7 +35,6 @@ if (possiblyNullValue2 !== undefined) {
 } else {
   console.log("Nothing to see here.");
 }
-
 ```
 
 </CodeTab>
@@ -51,6 +51,7 @@ type response<'studentType> = {
   student: 'studentType,
 }
 ```
+
 ```js
 // Empty output
 ```
@@ -67,6 +68,7 @@ let student1 = {
   "age": 30,
 }
 ```
+
 ```js
 var student1 = {
   name: "John",
@@ -91,6 +93,7 @@ let student1 = {
   age: 30,
 }
 ```
+
 ```js
 var student1 = {
   name: "John",
@@ -119,6 +122,7 @@ let greetByName = (possiblyNullName) => {
   }
 }
 ```
+
 ```js
 function greetByName(possiblyNullName) {
   if (possiblyNullName == null) {

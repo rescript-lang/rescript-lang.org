@@ -36,6 +36,7 @@ type person = {
 
 let johnName = john.name;
 ```
+
 ```ml
 type person = {
   name: string;
@@ -47,6 +48,7 @@ external john: person = "john" [@@bs.module "MySchool"]
 
 let johnName = john.name
 ```
+
 ```js
 var MySchool = require("MySchool");
 
@@ -75,6 +77,7 @@ type person = {
 
 let johnName = john##name;
 ```
+
 ```ml
 type person = <
   name: string;
@@ -86,6 +89,7 @@ external john: person = "john" [@@bs.module "MySchool"]
 
 let johnName = ## john name
 ```
+
 ```js
 var MySchool = require("MySchool");
 
@@ -105,12 +109,15 @@ type textarea;
 [@bs.set] external setName: (textarea, string) => unit = "name";
 [@bs.get] external getName: textarea => string = "name";
 ```
+
 ```ml
 type textarea;
 external setName: textarea -> string -> unit = "name" [@@bs.set]
 external getName: textarea -> string = "name" [@@bs.get]
 ```
+
 ```js
+
 ```
 
 </CodeTab>
@@ -129,6 +136,7 @@ let i32arr = create(3);
 i32arr->set(0, 42);
 Js.log(i32arr->get(0));
 ```
+
 ```ml
 type t
 external create: int -> t = "Int32Array" [@@bs.new]
@@ -139,6 +147,7 @@ let i32arr = create 3
 let () = i32arr |. (set 0 42)
 let () = Js.log (i32arr |. (get 0))
 ```
+
 ```js
 var i32arr = new Int32Array(3);
 i32arr[0] = 42;
@@ -168,12 +177,14 @@ type t;
 
 let date = createDate();
 ```
+
 ```ml
 type t
 external createDate: unit -> t = "Date" [@@bs.new]
 
 let date = createDate ()
 ```
+
 ```js
 var date = new Date();
 ```
@@ -189,11 +200,13 @@ type t;
 [@bs.new] [@bs.module] external book: unit => t = "Book";
 let myBook = book();
 ```
+
 ```ml
 type t
 external book: unit -> t = "Book" [@@bs.new][@@bs.module]
 let myBook = book ()
 ```
+
 ```js
 var Book = require("Book");
 var myBook = new Book();

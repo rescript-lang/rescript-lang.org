@@ -44,14 +44,14 @@ type action =
 
 ```js
 function submit(param_0) {
-  return /* Submit */[param_0];
+  return /* Submit */ [param_0];
 }
 
-var click = /* Click */0;
+var click = /* Click */ 0;
 
-var cancel = /* Cancel */1;
+var cancel = /* Cancel */ 1;
 
-exports.click  = click;
+exports.click = click;
 exports.submit = submit;
 exports.cancel = cancel;
 ```
@@ -61,6 +61,7 @@ exports.cancel = cancel;
 Variants constructors with payloads generate functions, payload-less constructors generate plain integers (the internal representation of variants).
 
 **Note**:
+
 - The generated accessors are lower-cased.
 - You can now use these helpers on the JavaScript side! But don't rely on their actual values please.
 
@@ -88,7 +89,6 @@ Please note that in case you just want to _pipe a payload into a constructor_, y
 ## Generate Field Accessors for Records
 
 Use `[@bs.deriving accessors]` on a record type to create accessors for its record field names.
-
 
 <CodeTab labels={["Reason (Old Syntax)", "ML (Older Syntax)", "JS Output"]}>
 
@@ -126,11 +126,11 @@ function name(param) {
 
 var pets = [
   {
-    name: "bob"
+    name: "bob",
   },
   {
-    name: "bob2"
-  }
+    name: "bob2",
+  },
 ];
 
 console.log(Belt_Array.map(pets, name).join("&"));
@@ -145,7 +145,6 @@ console.log(Belt_Array.map(pets, name).join("&"));
 > obsolete and will generate a no-op function for compatibility instead.
 
 Use `[@bs.deriving jsConverter]` on a record type to create convertion functions between records / JS object runtime values.
-
 
 <CodeTab labels={["Reason (Old Syntax)", "ML (Older Syntax)"]}>
 
@@ -308,9 +307,9 @@ type fruit =
 
 ```ocaml
 type fruit =
-  | Apple 
-  | Orange 
-  | Kiwi 
+  | Apple
+  | Orange
+  | Kiwi
   | Watermelon [@@bs.deriving jsConverter]
 ```
 
@@ -362,7 +361,7 @@ switch (fruitFromJs(100)) {
 
 ```ocaml
 type fruit =
-  | Apple 
+  | Apple
   | Orange [@bs.as 10]
   | Kiwi [@bs.as 100]
   | Watermelon [@@bs.deriving jsConverter]
@@ -394,7 +393,7 @@ type fruit =
 
 ```ocaml
 type fruit =
-  | Apple 
+  | Apple
   | Kiwi [@bs.as 100]
   | Watermelon [@@bs.deriving { jsConverter = newType }]
 ```
@@ -442,7 +441,7 @@ let error = fruitFromJs(100); /* nope, can't take a random int */
 
 ```ocaml
 type fruit =
-  | Apple 
+  | Apple
   | Kiwi [@bs.as 100]
   | Watermelon [@@bs.deriving { jsConverter = newType }]
 
@@ -480,7 +479,7 @@ let kiwiString = fruitToJs(`Kiwi); /* "miniCoconut" */
 
 ```ocaml
 type fruit = [
-  | `Apple 
+  | `Apple
   | `Kiwi [@bs.as "miniCoconut"]
   | `Watermelon
 ] [@@bs.deriving jsConverter]
@@ -495,8 +494,8 @@ You can also use `[@bs.deriving {jsConverter: newType}]` to generate abstract ty
 
 ## Convert Record Type to Abstract Record
 
-> **Note**: For ReScript >= v7, we recommend using [plain records to compile to JS objects](bind-to-js-object#bind-to-record-like-js-objects). 
-> This feature might still be useful for certain scenarios, but the ergonomics might be worse 
+> **Note**: For ReScript >= v7, we recommend using [plain records to compile to JS objects](bind-to-js-object#bind-to-record-like-js-objects).
+> This feature might still be useful for certain scenarios, but the ergonomics might be worse
 
 Use `[@bs.deriving abstract]` on a record type to expand the type into a creation, and a set of getter / setter functions for fields and methods.
 
@@ -553,7 +552,7 @@ let joe = person ~name:"Joe" ~age:20 ~job:"teacher"
 var joe = {
   name: "Joe",
   age: 20,
-  job: "teacher"
+  job: "teacher",
 };
 ```
 
@@ -589,7 +588,7 @@ let d = data ~type_:"message" ~ariaLabel:"hello"
 ```js
 var d = {
   type: "message",
-  "aria-label": "hello"
+  "aria-label": "hello",
 };
 ```
 
@@ -625,7 +624,7 @@ let joe = person ~age:20 ~job:"teacher" ()
 ```js
 var joe = {
   age: 20,
-  job: "teacher"
+  job: "teacher",
 };
 ```
 
@@ -902,7 +901,7 @@ let cat = Cat.t(~name="Snowball", ~isLazy=true);
 /* We can use each nameGet function separately now */
 let shoutPersonName = Person.(person->nameGet->Js.String.toUpperCase);
 
-/* Note how we use a local open Cat.([some expression]) to 
+/* Note how we use a local open Cat.([some expression]) to
    get access to Cat's nameGet function */
 let whisperCatName = Cat.(cat->nameGet->Js.String.toLowerCase);
 ```
@@ -936,7 +935,6 @@ This is very handy because you can make some of those labelled parameters option
 
 For example, suppose you need a JavaScript object like this:
 
-
 ```js
 var homeRoute = {
   method: "GET",
@@ -947,7 +945,6 @@ var homeRoute = {
 ```
 
 But only the first three fields are required; the options field is optional. You can declare the binding function like so:
-
 
 <CodeTab labels={["Reason (Old Syntax)", "ML (Older Syntax)", "JS Output"]}>
 

@@ -36,6 +36,7 @@ type person = {
 
 let johnName = john.name
 ```
+
 ```js
 var MySchool = require("MySchool");
 
@@ -63,6 +64,7 @@ type person = {
 
 let johnName = john["name"]
 ```
+
 ```js
 var MySchool = require("MySchool");
 
@@ -82,7 +84,9 @@ type textarea
 @set external setName: (textarea, string) => unit = "name"
 @get external getName: textarea => string = "name"
 ```
+
 ```js
+
 ```
 
 </CodeTab>
@@ -101,6 +105,7 @@ let i32arr = create(3)
 i32arr->set(0, 42)
 Js.log(i32arr->get(0))
 ```
+
 ```js
 var i32arr = new Int32Array(3);
 i32arr[0] = 42;
@@ -130,6 +135,7 @@ type t
 
 let date = createDate()
 ```
+
 ```js
 var date = new Date();
 ```
@@ -145,6 +151,7 @@ type t
 @new @module external book: unit => t = "Book"
 let myBook = book()
 ```
+
 ```js
 var Book = require("Book");
 var myBook = new Book();

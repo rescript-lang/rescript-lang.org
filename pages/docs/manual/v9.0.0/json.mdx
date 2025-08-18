@@ -23,8 +23,9 @@ external parseIntoMyData: string => data = "parse"
 let result = parseIntoMyData(`{"names": ["Luke", "Christine"]}`)
 let name1 = result.names[0]
 ```
+
 ```js
-var result = JSON.parse("{\"names\": [\"Luke\", \"Christine\"]}");
+var result = JSON.parse('{"names": ["Luke", "Christine"]}');
 var name1 = result.names[0];
 ```
 
@@ -41,11 +42,9 @@ Use `Js.Json.stringify`:
 ```res example
 Js.log(Js.Json.stringifyAny(["Amy", "Joe"]))
 ```
+
 ```js
-console.log(JSON.stringify([
-  "Amy",
-  "Joe"
-]));
+console.log(JSON.stringify(["Amy", "Joe"]));
 ```
 
 </CodeTab>

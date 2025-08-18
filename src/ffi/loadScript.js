@@ -1,5 +1,5 @@
 const isBrowser =
-    typeof window !== 'undefined' && typeof window.document !== 'undefined';
+  typeof window !== "undefined" && typeof window.document !== "undefined";
 
 export default function loadScript(src, onSuccess, onError) {
   if (!isBrowser) return;
@@ -22,5 +22,5 @@ export function removeScript(src) {
   const existing = document.body.querySelectorAll(`script[src="${src}"]`);
   existing.forEach((el) => {
     document.body.removeChild(el);
-  })
+  });
 }

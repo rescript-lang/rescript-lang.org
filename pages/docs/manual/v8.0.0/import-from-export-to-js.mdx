@@ -21,11 +21,13 @@ Use the `bs.module` [external](external.md):
 [@bs.module "path"] external dirname: string => string = "dirname";
 let root = dirname("/User/github"); // returns "User"
 ```
+
 ```ml
 (* Import nodejs' path.dirname *)
 external dirname: string -> string = "dirname" [@@bs.module "path"]
 let root = dirname "/User/github" (* returns "User" *)
 ```
+
 ```js
 var Path = require("path");
 var root = Path.dirname("/User/github");
@@ -51,10 +53,12 @@ By omitting the string argument to `bs.module`, you bind to the whole JS module:
 [@bs.module] external leftPad: string => int => string = "./leftPad";
 let paddedResult = leftPad("hi", 5);
 ```
+
 ```ml
 external leftPad: string -> int -> string = "./leftPad" [@@bs.module]
 let paddedResult = leftPad "hi" 5
 ```
+
 ```js
 var LeftPad = require("./leftPad");
 var paddedResult = LeftPad("hi", 5);
@@ -72,10 +76,12 @@ If your JS project is using ES6, you're likely using Babel to compile it to regu
 [@bs.module "./student"] external studentName: string = "default";
 Js.log(studentName);
 ```
+
 ```ml
 external studentName: string = "default" [@@bs.module "./student"]
 let () = Js.log studentName
 ```
+
 ```js
 var Student = require("./student");
 console.log(Student.default);
@@ -105,7 +111,7 @@ export default name = "Al";
 
 ```js
 // teacher.js
-import studentName from 'student.js';
+import studentName from "student.js";
 ```
 
 Technically, since a ReScript file maps to a module, there's no such thing as "default" export, only named ones. However, we've made an exception to support default module when you do the following:
@@ -116,10 +122,12 @@ Technically, since a ReScript file maps to a module, there's no such thing as "d
 /* FavoriteStudent.re */
 let default = "Bob";
 ```
+
 ```re
 (* FavoriteStudent.re *)
 let default = "Bob"
 ```
+
 ```js
 var $$default = "Bob";
 
@@ -134,11 +142,11 @@ You can then require the default as normal JS side:
 
 ```js
 // teacher2.js
-import studentName from 'FavoriteStudent.js';
+import studentName from "FavoriteStudent.js";
 ```
 
 **Note**: the above JS snippet _only_ works if you're using that ES6 import/export syntax in JS. If you're still using `require`, you'd need to do:
 
 ```js
-let studentName = require('FavoriteStudent').default;
+let studentName = require("FavoriteStudent").default;
 ```

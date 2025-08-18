@@ -16,10 +16,12 @@ Some JS values, like `setTimeout`, live in the global scope. You can bind to the
 [@bs.val] external setTimeout: (unit => unit, int) => float = "setTimeout";
 [@bs.val] external clearTimeout: float => unit = "clearTimeout";
 ```
+
 ```ml
 external setTimeout: (unit -> unit) -> int -> float = "setTimeout" [@@bs.val]
 external clearTimeout: float -> unit = "clearTimeout" [@@bs.val]
 ```
+
 ```js
 // Empty output
 ```
@@ -50,6 +52,7 @@ type timerId;
 let id = setTimeout(() => Js.log("hello"), 100);
 clearTimeout(id);
 ```
+
 ```ml
 type timerId
 external setTimeout: (unit -> unit) -> int -> timerId = "setTimeout" [@@bs.val]
@@ -58,6 +61,7 @@ external clearTimeout: timerId -> unit = "clearTimeout" [@@bs.val]
 let id = setTimeout (fun () -> Js.log "hello") 100
 let () = clearTimeout id
 ```
+
 ```js
 var id = setTimeout(function (param) {
   console.log("hello");
@@ -82,10 +86,12 @@ If you want to bind to a value inside a global module, e.g. `Math.random`, attac
 [@bs.scope "Math"] [@bs.val] external random: unit => float = "random";
 let someNumber = random();
 ```
+
 ```ml
 external random : unit -> float = "random" [@@bs.scope "Math"][@@bs.val]
 let someNumber = random ()
 ```
+
 ```js
 var someNumber = Math.random();
 ```
@@ -100,10 +106,12 @@ you can bind to an arbitrarily deep object by passing a tuple to `bs.scope`:
 [@bs.val] [@bs.scope ("window", "location", "ancestorOrigins")]
 external length: int = "length";
 ```
+
 ```ml
 external length: int = "length"
 [@@bs.val][@@bs.scope ("window", "location", "ancestorOrigins")]
 ```
+
 ```js
 // Empty output
 ```
@@ -126,11 +134,13 @@ switch ([%external __DEV__]) {
 | None => Js.log("production mode")
 };
 ```
+
 ```ml
 let () = match [%external __DEV__] with
 | Some _ -> Js.log "dev mode"
 | None -> Js.log "production mode"
 ```
+
 ```js
 var match = typeof __DEV__ === "undefined" ? undefined : __DEV__;
 
@@ -155,13 +165,15 @@ switch ([%external __filename]) {
 | None => Js.log("non-node environment")
 };
 ```
+
 ```ml
 let () = match [%external __filename] with
 | Some f -> Js.log f
 | None -> Js.log "non-node environment"
 ```
+
 ```js
-var match = typeof (__filename) === "undefined" ? undefined : (__filename);
+var match = typeof __filename === "undefined" ? undefined : __filename;
 
 if (match !== undefined) {
   console.log(match);

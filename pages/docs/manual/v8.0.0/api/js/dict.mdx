@@ -29,7 +29,7 @@ This Dictionary type is mostly used with the Js_json.t type.
 type key = string;
 ```
 
-The type for dictionary keys. This means that dictionaries *must* use `string`s as their keys.
+The type for dictionary keys. This means that dictionaries _must_ use `string`s as their keys.
 
 ## get
 
@@ -49,6 +49,7 @@ Js.Dict.get(ages, "Paul") == None;
 ```re sig
 let unsafeGet: (t('a), key) => 'a;
 ```
+
 `Js.Dict.unsafeGet(key)` returns the value if the key exists, otherwise an `undefined` value is returned. Use this only when you are sure the key exists (i.e. when having used the `keys()` function to check that the key is valid).
 
 ```re example
@@ -62,7 +63,7 @@ Js.Dict.unsafeGet(ages, "Paul"); // returns undefined
 let set: (t('a), key, 'a) => unit;
 ```
 
-`Js.Dict.set(dict, key, value)` sets the key/value in the dictionary `dict`. If the key does not exist, and entry will be created for it. *This function modifies the original dictionary.*
+`Js.Dict.set(dict, key, value)` sets the key/value in the dictionary `dict`. If the key does not exist, and entry will be created for it. _This function modifies the original dictionary._
 
 ```re example
 Js.Dict.set(ages, "Maria", 31)
