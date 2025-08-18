@@ -1,8 +1,9 @@
-@import './_markdown.css' layer(base);
-@import './_fonts.css' layer(base);
-@import './_docsearch.css' layer(base);
+@import "./_hljs.css" layer(base);
+@import "./_markdown.css" layer(base);
+@import "./_fonts.css" layer(base);
+@import "./_docsearch.css" layer(base);
 
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @source '../src/**/*.{mjs,js,res}';
 @source '../pages/**/*.{mjs,js,mdx}';
@@ -301,7 +302,6 @@
   }
 }
 
-
 .CodeMirror {
   @apply h-full;
   background-color: inherit;
@@ -342,7 +342,7 @@
 }
 
 .cm-s-material .CodeMirror-cursor {
-  border-left: 1px solid #FFCC00;
+  border-left: 1px solid #ffcc00;
 }
 
 .cm-s-material div.CodeMirror-selected {
@@ -390,7 +390,7 @@
 }
 
 .cm-s-material .cm-variable-2 {
-  color: #EEFFFF;
+  color: #eeffff;
 }
 
 .cm-s-material .cm-variable-3,
@@ -439,41 +439,39 @@
 }
 
 .cm-s-material .cm-tag {
-  color: #FF5370;
+  color: #ff5370;
 }
 
 .cm-s-material .cm-meta {
-  color: #FFCB6B;
+  color: #ffcb6b;
 }
 
 .cm-s-material .cm-attribute {
-  color: #C792EA;
+  color: #c792ea;
 }
 
 .cm-s-material .cm-property {
-  color: #C792EA;
+  color: #c792ea;
 }
 
 .cm-s-material .cm-qualifier {
-  color: #DECB6B;
+  color: #decb6b;
 }
 
 .cm-s-material .cm-variable-3,
 .cm-s-material .cm-type {
-  color: #DECB6B;
+  color: #decb6b;
 }
 
-
 .cm-s-material .cm-error {
-  color: rgba(255, 255, 255, 1.0);
-  background-color: #FF5370;
+  color: rgba(255, 255, 255, 1);
+  background-color: #ff5370;
 }
 
 .cm-s-material .CodeMirror-matchingbracket {
   text-decoration: underline;
   color: white !important;
 }
-
 
 /* simplescrollbars style */
 .CodeMirror-simplescroll-horizontal div,
@@ -514,7 +512,6 @@
   right: 0;
   width: 100%;
 }
-
 
 .CodeMirror-overlayscroll .CodeMirror-scrollbar-filler,
 .CodeMirror-overlayscroll .CodeMirror-gutter-filler {

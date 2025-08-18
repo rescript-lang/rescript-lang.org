@@ -41,6 +41,7 @@ The default `rescript` is equivalent to `rescript build` subcommand
 ```
 
 Here's a table of translation, if you're upgrading your script that is currently using `bsc` and `bsb`:
+
 - `bsc -format myFile.res`: `rescript format myFile.res`
 - `bsb`: `rescript build` \*
 - `bsb -make-world`: `rescript build -with-deps` \*
@@ -53,7 +54,8 @@ This means that you can ditch your old `-make-world` (now the explicit `-with-de
 
 ### Polymorphic Variants for Numbers and Strings
 
-*Drumrolls*
+_Drumrolls_
+
 - Poly variants like `#1`, `#42` compile to JavaScript numbers.
 - Poly variants like `#hello`, `#world` compile to JavaScript Strings.
 

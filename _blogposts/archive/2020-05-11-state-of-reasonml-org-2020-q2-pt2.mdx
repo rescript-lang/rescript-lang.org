@@ -21,14 +21,14 @@ To tackle this issue, we built a simple mechanism to automatically verify every 
 
 A markdown example with a code snippet might look like this:
 
-~~~
+````
 some text with some broken `List.head` example:
 
 ```reason example
 Belt.List.head([]); /* None */
 List.head([1, 2, 3]); /* This should actually be Belt.List */
 ```
-~~~
+````
 
 Running the test with the broken example would produce:
 
@@ -136,7 +136,7 @@ Right now, the official documentation websites are maintained by the Reason / Bu
 
 Also knowing just one project well is not enough to build a documentation platform for the whole ecosystem. For instance, it doesn't make sense to only write about Reason syntax features when most of the interesting features are coupled to the Reason JS compiler (BuckleScript).
 
-We tried our best to raise enough funding and set our budgets in a way that allows us to allocate time and resources to work *full time* on the documentation for 2020. That means that we can build up competences with a holistic view on the whole Reason platform, and can spend enough time on reviewing PRs, giving feedback and allocating tasks. We also want to make sure to lower the bus factor by adding more core documentation maintainers in the future. Continuous and deep collaboration, proper guidance and mutual trust will be the foundation for this.
+We tried our best to raise enough funding and set our budgets in a way that allows us to allocate time and resources to work _full time_ on the documentation for 2020. That means that we can build up competences with a holistic view on the whole Reason platform, and can spend enough time on reviewing PRs, giving feedback and allocating tasks. We also want to make sure to lower the bus factor by adding more core documentation maintainers in the future. Continuous and deep collaboration, proper guidance and mutual trust will be the foundation for this.
 
 To wrap things up, we think that we'll be able to establish a reliable documentation focused culture to share responsibilities within the community. That said, we'll try to be clear on our processes and goals, since we believe these are key aspects for successful collaboration.
 

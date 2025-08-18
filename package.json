@@ -17,7 +17,9 @@
     "update-index": "npm run generate-llms && node scripts/extract-indices.mjs && node scripts/extract-tocs.mjs && node scripts/extract-syntax.mjs && node scripts/generate_feed.mjs > public/blog/feed.xml",
     "sync-bundles": "node scripts/sync-playground-bundles.mjs",
     "generate-llms": "node scripts/generate_llms.mjs",
-    "generate-resources": "node scripts/generate_resources.mjs"
+    "generate-resources": "node scripts/generate_resources.mjs",
+    "format": "prettier . --write --experimental-cli && rescript format",
+    "ci:format": "prettier . --check --experimental-cli"
   },
   "dependencies": {
     "@babel/generator": "^7.24.7",
@@ -42,7 +44,6 @@
     "lz-string": "^1.4.4",
     "next": "^15.0.0",
     "next-mdx-remote": "^5.0.0",
-    "prettier": "^1.18.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-markdown": "^10.1.0",
@@ -66,6 +67,7 @@
   "devDependencies": {
     "@mdx-js/react": "^2.3.0",
     "@mdx-js/rollup": "^3.1.0",
+    "@prettier/plugin-oxc": "^0.0.4",
     "@react-router/dev": "^7.8.1",
     "@tailwindcss/postcss": "^4.1.11",
     "@vitejs/plugin-react": "^4.7.0",
@@ -76,6 +78,7 @@
     "esbuild-loader": "^4.3.0",
     "jsdom": "^26.1.0",
     "postcss-nesting": "^12.1.1",
+    "prettier": "^3.6.2",
     "reanalyze": "^2.16.0",
     "simple-functional-loader": "^1.2.1",
     "tailwindcss": "^4",

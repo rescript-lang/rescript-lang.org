@@ -30,7 +30,6 @@ A highlighting feature is that we added Generalized Unboxed Support (so called
 [@unboxed] annotations). Here's a short definition from the official OCaml
 Manual:
 
-
 > unboxed can be used on a type definition if the type is a single-field record
 > or a concrete type with a single constructor that has a single argument. It
 > tells the compiler to optimize the representation of the type by removing the
@@ -39,7 +38,6 @@ Manual:
 > restriction applies: the argument must not be an existential variable,
 > represented by an existential type variable, or an abstract type constructor
 > applied to an existential type variable.
-
 
 **Note**: The beforementioned restriction about GADTs only applies to OCaml's
 native compiler, not to BuckleScript's JavaScript compilation. So we will get
@@ -102,7 +100,7 @@ can be called with many different types (e.g. `f(1)` and `f("hi")`). The
 compiler will not try to lock `'a` for the first type it sees (e.g. the `int`)
 on the first call site. The parameter `'a` is therefore polymorphic!
 
-By `unboxing` those records with one polymorphic function,  we will get rid of
+By `unboxing` those records with one polymorphic function, we will get rid of
 [value restriction for our existing encoding of uncurried
 function](https://github.com/BuckleScript/bucklescript/issues/4058), this will
 be a major feature!
@@ -119,6 +117,7 @@ type t =
 
 let array = [|Any(3), Any("a")|];
 ```
+
 ```ocaml
 (* OCaml *)
 type t =
@@ -131,12 +130,12 @@ let array = [|Any 3; Any "a"|]
 The examples above will translate to following JS:
 
 ```js
-var array = [ 3, "a"];
+var array = [3, "a"];
 ```
 
 As you can already tell, this feature will give us way better possibilities to
 do interop with polymorphic array representations in JavaScript (without losing
-  any type safetiness!).
+any type safetiness!).
 
 As a more concrete use-case, this will give users the possibility to define
 types such as `int_or_string`.

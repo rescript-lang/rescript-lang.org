@@ -29,6 +29,7 @@ type person = {
   "name": string
 };
 ```
+
 ```js
 // Empty output
 ```
@@ -51,10 +52,11 @@ let me = {
   "name": "Big ReScript"
 }
 ```
+
 ```js
 var me = {
-  "age": 5,
-  "name": "Big ReScript"
+  age: 5,
+  name: "Big ReScript",
 };
 ```
 
@@ -73,9 +75,10 @@ let me = {
   "age": "hello!" // age is a string. No error.
 }
 ```
+
 ```js
 var me = {
-  "age": "hello!"
+  age: "hello!",
 };
 ```
 
@@ -98,6 +101,7 @@ Now the type system will error properly.
 ```res
 let age = me["age"]
 ```
+
 ```js
 var age = me["age"];
 ```
@@ -119,6 +123,7 @@ type student = {
 
 student1["name"] = "Mary"
 ```
+
 ```js
 var MyJSFile = require("MyJSFile");
 MyJSFile.student1.name = "Mary";
@@ -148,11 +153,12 @@ let myPoint: point3d = {
   "z": 3.0,
 }
 ```
+
 ```js
 var myPoint = {
   x: 1.0,
   y: 2.0,
-  z: 3.0
+  z: 3.0,
 };
 ```
 
@@ -182,8 +188,9 @@ let loc = document["location"]
 // set a property
 document["location"]["href"] = "rescript-lang.org"
 ```
+
 ```js
-document.addEventListener("mouseup", function(_event) {
+document.addEventListener("mouseup", function (_event) {
   console.log("clicked!");
 });
 var loc = document.location;

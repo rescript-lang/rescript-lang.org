@@ -32,7 +32,7 @@ compilation and installation.
 Previously we recommended installing `bs-platform` globally to save on
 installation time.
 
-However, with this release the installation is so fast that  we recommend
+However, with this release the installation is so fast that we recommend
 installing it locally instead - per project - instead, as there's no additional
 cost, and it provides better isolation.
 
@@ -58,6 +58,7 @@ module A : { let b : int} = {
 }
 
 ```
+
 `let` `%private` gives you an option to mark private fields directly
 
 ```reason
@@ -75,7 +76,6 @@ Note interface files are still recommended as a general best practice since they
 
 - Quick prototyping. During prototyping, we still want to hide some values, but the interface file is not stable yet, `let%private` provide you such convenience.
 
-
 ### Int64 performance optimization
 
 We received feedback from some users that various Int64 operations became bottlenecks in their code performance, in particular `Int64.to_string`.
@@ -83,6 +83,7 @@ We received feedback from some users that various Int64 operations became bottle
 We responded to this, and after some hard work - but _without_ changing the underlying representation - our `Int64.to_string` is even faster than `bigint` for common inputs.
 
 A micro-benchmark for comparison:
+
 ```
 running on 7.1
 Int64.to_string: 367.788ms # super positive number
@@ -102,7 +103,7 @@ Int64.to_string: 43.270ms
 
 We also apply such optimizations to other Int64 operations.
 
-Note that Int64 is implemented in OCaml itself without any raw JavaScript. This is case compelling hints that our optimizing compiler not only provides expressivity and type-safe guarantees, but also empowers users to write maintainable, *efficient* code.
+Note that Int64 is implemented in OCaml itself without any raw JavaScript. This is case compelling hints that our optimizing compiler not only provides expressivity and type-safe guarantees, but also empowers users to write maintainable, _efficient_ code.
 
 ## File level compilation flags
 

@@ -16,7 +16,6 @@ In [part 2](/blog/state-of-reasonml-org-2020-q2-pt2) of this blog series, we tal
 
 This article will cover some features and exciting ideas we have been working on for quite a while now. Even though these features are not fully implemented yet, we still think it's important to communicate the whole spectrum of the project.
 
-
 ## Generating Full API Docs
 
 As we already mentioned in our previous posts, the API documentation is currently maintained by hand, and we only offer documentation for the `Js` and `Belt` module, since they are the most relevant for BuckleScript development.
@@ -37,7 +36,11 @@ We don't have any **search functionality** yet, and this will take some more tim
 
 There were some solutions, but still, Algolia turned out to be the best candidate with its smallest pricing tier. We don't want to rely on the Algolia OSS webscraping API, since it doesn't give us enough control on manipulating the search results, and we need more control if we want to be able to design a custom search experience.
 
-<Image src="/blog/archive/search-mockup.jpg" withShadow={true} caption="A unified search overlay mockup for prose & API content" />
+<Image
+  src="/static/blog/archive/search-mockup.jpg"
+  withShadow={true}
+  caption="A unified search overlay mockup for prose & API content"
+/>
 
 We did the ground work for our search feature and we will get into more detail as soon as we are able to generate API docs with our aforementioned `doc-tools`. Like with the API docs, we'll first need the doc-tools infrastructure so we can generate indexable data for Algolia as well.
 
@@ -45,7 +48,11 @@ We did the ground work for our search feature and we will get into more detail a
 
 We also invested a lot of time into thinking about the future of the Reason playground from a UX perspective. Our most important goal is to make it possible to switch BuckleScript versions on demand. We also wanted the relevant Reason version to be part of the playground bundle.
 
-<Image src="/blog/archive/playground-mockup.jpg" withShadow={true} caption="UI mockup for the new playground (Desktop version)" />
+<Image
+  src="/static/blog/archive/playground-mockup.jpg"
+  withShadow={true}
+  caption="UI mockup for the new playground (Desktop version)"
+/>
 
 Users should always know what version of BuckleScript / Reason is running when writing and sharing code, and the code written on a playground should be runnable with an equivalent bs-platform setup on a local machine. Right now, `reasonml.github.io/try` uses different refmt.js / playground bundle versions, which makes it really hard to write reproducible code for the same BuckleScript version.
 

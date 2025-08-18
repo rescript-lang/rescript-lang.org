@@ -24,7 +24,7 @@ convention to ReasonML.
 A native implementation of curried call like [purescript](https://www.purescript.org/) does will generate very slow code:
 
 ```js
-let curriedFunction = x => y => z => x + y +z ;
+let curriedFunction = (x) => (y) => (z) => x + y + z;
 let curriedApply = curriedFunction(1)(2)(3); // memory allocation triggered
 ```
 
@@ -45,7 +45,6 @@ In cases where arity inference does not help, the arity guessing has to be delay
 
 When we create bindings for high order functions in the JS world, we would like to have native uncurried functions which behave the same as JS world -- no semantics mismatch.
 
-
 ## Generalized uncurried calling convention in this release
 
 Before release 7.3, we had introduced uncurried calling convention, however, it has serious limitations -- uncurried functions can not be polymorphic, it does not support labels, the error
@@ -53,21 +52,36 @@ message leaks the underlying encoding -- now all those limitations are gone!
 
 **Previously:**
 
-<img src="/blog/archive/poly-error.png" className="my-4 mx-auto max-h-[500px]"/>
+<img
+  src="/static/blog/archive/poly-error.png"
+  className="my-4 mx-auto max-h-[500px]"
+/>
 
-<img src="/blog/archive/label-error.png" className="my-4 mx-auto max-h-[500px]"/>
+<img
+  src="/static/blog/archive/label-error.png"
+  className="my-4 mx-auto max-h-[500px]"
+/>
 
-<img src="/blog/archive/recursive-error.png" className="my-4 mx-auto max-h-[500px]"/>
+<img
+  src="/static/blog/archive/recursive-error.png"
+  className="my-4 mx-auto max-h-[500px]"
+/>
 
 The error messages above are cryptic and hard to understand. And the limitation of not supporting recursive functions make uncurried support pretty weak.
 
 Now those limitations are all gone, you can have polymorphic uncurried recursive functions and it support labels.
 
-<img src="/blog/archive/uncurry-label.png" className="my-4 mx-auto max-h-[500px]"/>
+<img
+  src="/static/blog/archive/uncurry-label.png"
+  className="my-4 mx-auto max-h-[500px]"
+/>
 
-<img src="/blog/archive/recursive.png" className="my-4 mx-auto max-h-[500px]"/>
+<img
+  src="/static/blog/archive/recursive.png"
+  className="my-4 mx-auto max-h-[500px]"
+/>
 
-The error message is  also enhanced significantly
+The error message is also enhanced significantly
 
 ### When the uncurried function is used in curried
 
@@ -128,6 +142,7 @@ Error: This expression has type (. int, int) => int
 ```
 
 The new message:
+
 ```
 Error: This function has arity2 but was expected arity3
 ```

@@ -31,24 +31,22 @@ artifact describing the interface of the Pervasives module and
 the Pervasives module. `Pervasives.cm[ij]` and other modules in stdlib are
 shipped together with the compiler.
 
-
 **This traditional mode has some consequences:**
 
 - The compiler is not stand-alone and relocatable. Even if we have the compiler
-prebuilt for different platforms, we still have to compile stdlib
-post-installation. `postinstall` is supported by npm, but it has
-[various](https://github.com/BuckleScript/bucklescript/issues/3213)
-[issues](https://github.com/BuckleScript/bucklescript/issues/2799)
-[against](https://github.com/BuckleScript/bucklescript/issues/3254) yarn.
+  prebuilt for different platforms, we still have to compile stdlib
+  post-installation. `postinstall` is supported by npm, but it has
+  [various](https://github.com/BuckleScript/bucklescript/issues/3213)
+  [issues](https://github.com/BuckleScript/bucklescript/issues/2799)
+  [against](https://github.com/BuckleScript/bucklescript/issues/3254) yarn.
 
 - It's hard to split the compiler from the generated stdlib JS artifacts. When
-a BuckleScript user deploys apps depending on BuckleScript, in theory, the app
-only needs to deploy those generated JS artifacts; the native binary is not
-needed in production. However, the artifacts are still loaded since they are
-bundled together. Allowing easy delivery of compiled code is one of the
-community’s most desired [feature
-requests](https://github.com/BuckleScript/bucklescript/issues/2772).
-
+  a BuckleScript user deploys apps depending on BuckleScript, in theory, the app
+  only needs to deploy those generated JS artifacts; the native binary is not
+  needed in production. However, the artifacts are still loaded since they are
+  bundled together. Allowing easy delivery of compiled code is one of the
+  community’s most desired [feature
+  requests](https://github.com/BuckleScript/bucklescript/issues/2772).
 
 In this release, we solve the problem by embedding the binary artifacts into
 the compiler directly and loading it on demand.
@@ -98,7 +96,7 @@ seconds to 3 seconds. Reinstallation is almost a no-op now.
 ### JS playground is easier to build
 
 We translate the compiler into JS so that
-developers can play with it in the browser.  To make this happen, we used to
+developers can play with it in the browser. To make this happen, we used to
 fake the IO system; this not needed any more since no IO happens when compiling
 a single file to a string.
 
@@ -126,5 +124,3 @@ Here is the new layout:
 |     |-- bsc.exe
 
 ```
-
-
