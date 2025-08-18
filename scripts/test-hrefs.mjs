@@ -11,7 +11,7 @@ import fs from "fs";
 import glob from "glob";
 import path from "path";
 import urlModule, { URL } from "url";
-import { blogPathToSlug, getAllPosts } from '../src/common/BlogApi.mjs';
+import { blogPathToSlug, getAllPosts } from "../src/common/BlogApi.mjs";
 
 import { defaultProcessor } from "./markdown.js";
 
@@ -40,7 +40,7 @@ const mapBlogFilePath = (path) => {
 
 // Static files are located in /public/img/somefile.png
 // within markdown files they are referenced as /img/somefile.png
-const mapStaticFilePath = path => {
+const mapStaticFilePath = (path) => {
   return path.replace("./public", "");
 };
 

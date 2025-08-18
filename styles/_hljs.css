@@ -118,7 +118,7 @@ Docco style used in http://jashkenas.github.com/docco/ converted by Simon Madine
 }
 
 .hljs-constructor {
-  @apply text-orange
+  @apply text-orange;
 }
 
 /* DARK MODE COLORS */
