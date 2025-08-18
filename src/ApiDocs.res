@@ -94,15 +94,13 @@ module SidebarTree = {
     open ReactRouter
 
     // Use ReactRouter's useLocation if needed, or refactor to not use router
-    let location = ReactRouter.useLocation()
-    let url = ""
+    // let location = ReactRouter.useLocation()
+    // let url = ""
     // let url = location.pathname->Url.parse
-    // let version = url->Url.getVersionString
-    let version = ""
 
     let moduleRoute =
       WebAPI.URL.make(~url="file://" ++ "" /* TODO: location.pathname */).pathname
-      ->String.replace(`/docs/manual/${version}/api/`, "")
+      ->String.replace(`/docs/manual/api/`, "")
       ->String.split("/")
 
     let summaryClassName = "truncate py-1 md:h-auto tracking-tight text-gray-60 font-medium text-14 rounded-sm hover:bg-gray-20 hover:-ml-2 hover:py-1 hover:pl-2 "
@@ -138,9 +136,9 @@ module SidebarTree = {
 
         <details key={href} open_>
           <summary className={summaryClassName ++ classNameActive}>
-            // <Link className={"inline-block w-10/12"} to={(href :> ReactRouter.Link.to)}>
-            //   {node.name->React.string}
-            // </Link>
+            <Link.String className={"inline-block w-10/12"} to=href>
+              {node.name->React.string}
+            </Link.String>
           </summary>
           tocModule
           {if hasChildren {
@@ -154,11 +152,9 @@ module SidebarTree = {
           }}
         </details>
       | false =>
-        <li className={"list-none mt-1 leading-4"} key={href}>
+        <li className="list-none mt-1 leading-4" key=href>
           <summary className={summaryClassName ++ classNameActive}>
-            // <Link className={"block"} to={(href :> ReactRouter.Link.to)}>
-            //   {node.name->React.string}
-            // </Link>
+            <Link.String className={"block"} to=href> {node.name->React.string} </Link.String>
           </summary>
           tocModule
         </li>
@@ -234,12 +230,12 @@ module SidebarTree = {
           <div className="hl-overline block text-gray-80 mt-5 mb-2">
             {"Overview"->React.string}
           </div>
-          // <Link
-          //   className={"block " ++
-          //   summaryClassName ++ (moduleRoute->Array.length == 1 ? classNameActive : "")}
-          //   to={(node.path->Array.join("/") :> ReactRouter.Link.to)}>
-          //   {node.name->React.string}
-          // </Link>
+          <Link.String
+            className={"block " ++
+            summaryClassName ++ (moduleRoute->Array.length == 1 ? classNameActive : "")}
+            to={node.path->Array.join("/")}>
+            {node.name->React.string}
+          </Link.String>
           {moduleRoute->Array.length === 1 ? subMenu : React.null}
         </div>
         <div className="hl-overline text-gray-80 mt-5 mb-2"> {"submodules"->React.string} </div>

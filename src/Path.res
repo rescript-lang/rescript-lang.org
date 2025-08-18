@@ -2,6 +2,7 @@ type t = [
 #"undefined" |
 #"try" |
 #"community" |
+#"community/overview" |
 #"syntax-lookup" |
 #"blog" |
 #"blog/2025-04-11-introducing-unified-operators" |

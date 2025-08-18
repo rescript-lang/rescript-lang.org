@@ -591,21 +591,21 @@ module CuratedResources = {
 
       //container for guides
       <div>
-        // <div
-        //   className="grid grid-flow-col grid-cols-2 grid-rows-2 lg:grid-cols-4 lg:grid-rows-1 gap-2 md:gap-4 lg:gap-8 max-w-1280 px-5 md:px-8 mx-auto">
-        //   {cards
-        //   ->Array.mapWithIndex((card, i) =>
-        //     <ReactRouter.Link
-        //       key={Int.toString(i)}
-        //       to={(card.href :> ReactRouter.Link.to)}
-        //       className="hover:bg-gray-80 bg-gray-90 px-4 md:px-8 pb-0 md:pb-8 relative rounded-xl md:min-w-[196px]">
-        //       <img className="h-[53px] absolute mt-6" src=card.imgSrc loading=#lazy />
-        //       <h5 className="text-gray-10 hl-4 mt-32 h-12"> {card.title} </h5>
-        //       <div className="text-gray-40 mt-2 mb-8 body-sm"> {React.string(card.descr)} </div>
-        //     </ReactRouter.Link>
-        //   )
-        //   ->React.array}
-        // </div>
+        <div
+          className="grid grid-flow-col grid-cols-2 grid-rows-2 lg:grid-cols-4 lg:grid-rows-1 gap-2 md:gap-4 lg:gap-8 max-w-1280 px-5 md:px-8 mx-auto">
+          {cards
+          ->Array.mapWithIndex((card, i) =>
+            <ReactRouter.Link.String
+              key={Int.toString(i)}
+              to=card.href
+              className="hover:bg-gray-80 bg-gray-90 px-4 md:px-8 pb-0 md:pb-8 relative rounded-xl md:min-w-[196px]">
+              <img className="h-[53px] absolute mt-6" src=card.imgSrc loading=#lazy />
+              <h5 className="text-gray-10 hl-4 mt-32 h-12"> {card.title} </h5>
+              <div className="text-gray-40 mt-2 mb-8 body-sm"> {React.string(card.descr)} </div>
+            </ReactRouter.Link.String>
+          )
+          ->React.array}
+        </div>
         //Container for templates
         <div className="px-5 md:px-8 max-w-1280 mx-auto my-20">
           <div className="body-lg text-center z-2 relative text-gray-40 w-32 mx-auto bg-gray-100">

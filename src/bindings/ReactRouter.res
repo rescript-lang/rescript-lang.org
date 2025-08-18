@@ -63,8 +63,10 @@ module Routes = {
   @module("@react-router/dev/routes")
   external index: string => t = "index"
 
+  type routeOptions = {id?: string}
+
   @module("@react-router/dev/routes")
-  external route: (string, string) => t = "route"
+  external route: (string, string, ~options: routeOptions=?) => t = "route"
 }
 
 module Mdx = {
