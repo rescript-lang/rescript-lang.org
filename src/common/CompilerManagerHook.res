@@ -148,7 +148,7 @@ let wrapReactApp = code =>
 
 let capitalizeFirstLetter = string => {
   let firstLetter = string->String.charAt(0)->String.toUpperCase
-  `${firstLetter}${string->String.sliceToEnd(~start=1)}`
+  `${firstLetter}${string->String.slice(~start=1)}`
 }
 
 type error =
@@ -548,11 +548,11 @@ let useCompilerManager = (
         let ast = Parser.parse(jsCode, {sourceType: "module"})
         let {entryPointExists, code, imports} = PlaygroundValidator.validate(ast)
         let imports = imports->Dict.mapValues(path => {
-          let filename = path->String.sliceToEnd(~start=9) // the part after "./stdlib/"
+          let filename = path->String.slice(~start=9) // the part after "./stdlib/"
           let filename = switch state.selected.id {
           | {major: 12, minor: 0, patch: 0, preRelease: Some(Alpha(alpha))} if alpha < 8 =>
             let filename = if filename->String.startsWith("core__") {
-              filename->String.sliceToEnd(~start=6)
+              filename->String.slice(~start=6)
             } else {
               filename
             }

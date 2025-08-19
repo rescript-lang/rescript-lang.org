@@ -18,7 +18,7 @@ node scripts/gendocs.mjs path/to/rescript-compiler latest true
 open Node
 module Docgen = RescriptTools.Docgen
 
-let args = Process.argv->Array.sliceToEnd(~start=2)
+let args = Process.argv->Array.slice(~start=2)
 let dirname =
   url
   ->URL.fileURLToPath

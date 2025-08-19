@@ -253,7 +253,7 @@ type state = {mutable marked: array<CM.TextMarker.t>, mutable hoverHints: array<
 
 let isSpanToken = (element: WebAPI.DOMAPI.element) =>
   element.tagName->String.toUpperCase === "SPAN" &&
-    element->WebAPI.Element.getAttribute("role") !== "presentation"
+    element->WebAPI.Element.getAttribute("role") !== Value("presentation")
 
 let useHoverTooltip = (~cmStateRef: React.ref<state>, ~cmRef: React.ref<option<CM.t>>, ()) => {
   let stateRef = React.useRef(HoverTooltip.Hidden)
@@ -273,7 +273,7 @@ let useHoverTooltip = (~cmStateRef: React.ref<state>, ~cmRef: React.ref<option<C
   let checkIfTextMarker = (element: WebAPI.DOMAPI.element) => {
     let isToken =
       element.tagName->String.toUpperCase === "SPAN" &&
-        element->WebAPI.Element.getAttribute("role") !== "presentation"
+        element->WebAPI.Element.getAttribute("role") !== Value("presentation")
 
     isToken && RegExp.test(/CodeMirror-hover-hint-marker/, element.className)
   }

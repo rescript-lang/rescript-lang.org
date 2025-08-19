@@ -5,11 +5,11 @@ let appId = "S32LNEY41T"
 type state = Active | Inactive
 
 let hit = ({hit, children}: DocSearch.hitComponent) => {
-  let toTitle = str => str->String.charAt(0)->String.toUpperCase ++ String.sliceToEnd(str, ~start=1)
+  let toTitle = str => str->String.charAt(0)->String.toUpperCase ++ String.slice(str, ~start=1)
 
   let description = switch hit.url
   ->String.split("/")
-  ->Array.sliceToEnd(~start=1)
+  ->Array.slice(~start=1)
   ->List.fromArray {
   | list{"blog" as r | "community" as r, ..._} => r->toTitle
   | list{"docs", doc, version, ...rest} =>
