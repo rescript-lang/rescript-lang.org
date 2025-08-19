@@ -13,8 +13,7 @@
     },
     {
       "dir": "scripts",
-      "subdirs": true,
-      "type": "dev"
+      "subdirs": true
     }
   ],
   "package-specs": {
