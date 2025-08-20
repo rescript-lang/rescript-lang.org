@@ -218,7 +218,7 @@ let default = (props: props): React.element => {
     | 0 => <div> {React.string("No posts for this category available...")} </div>
     | _ =>
       let first = Belt.Array.getExn(posts, 0)
-      let rest = Array.sliceToEnd(posts, ~start=1)
+      let rest = Array.slice(posts, ~start=1)
 
       let featureBox =
         <div className="w-full mb-24 lg:px-8 xl:px-0">

@@ -290,7 +290,7 @@ module DocstringsStylize = {
       [Rehype.WithOptions([Plugin(Rehype.slug), SlugOption({prefix: slugPrefix ++ "-"})])]->Some
 
     let content = switch docstrings->Array.length > 1 {
-    | true => docstrings->Array.sliceToEnd(~start=1)
+    | true => docstrings->Array.slice(~start=1)
     | false => docstrings
     }->Array.join("\n")
 

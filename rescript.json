@@ -4,8 +4,8 @@
   "jsx": {
     "version": 4
   },
-  "bs-dependencies": ["@rescript/react", "@rescript/webapi"],
-  "bsc-flags": ["-open WebAPI.Global"],
+  "dependencies": ["@rescript/react", "@rescript/webapi"],
+  "compiler-flags": ["-open WebAPI.Global"],
   "sources": [
     {
       "dir": "src",
@@ -13,8 +13,7 @@
     },
     {
       "dir": "scripts",
-      "subdirs": true,
-      "type": "dev"
+      "subdirs": true
     }
   ],
   "package-specs": {

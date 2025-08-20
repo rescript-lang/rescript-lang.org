@@ -17,7 +17,7 @@ const bsconfig = JSON.parse(
 
 const { ProvidePlugin } = webpack;
 
-const transpileModules = ["rescript"].concat(bsconfig["bs-dependencies"]);
+const transpileModules = ["rescript"].concat(bsconfig["dependencies"]);
 
 /** @type {import("next").NextConfig} */
 const config = {

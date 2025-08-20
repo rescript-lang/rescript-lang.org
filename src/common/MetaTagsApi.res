@@ -27,18 +27,9 @@ let extractMetaTags = async (url: string) => {
     }
 
     let metaTags = elements->Array.reduce(Dict.fromArray([]), (tags, meta) => {
-      let name =
-        meta
-        ->WebAPI.Element.getAttribute("name")
-        ->Null.make
-      let property =
-        meta
-        ->WebAPI.Element.getAttribute("property")
-        ->Null.make
-      let itemprop =
-        meta
-        ->WebAPI.Element.getAttribute("itemprop")
-        ->Null.make
+      let name = meta->WebAPI.Element.getAttribute("name")
+      let property = meta->WebAPI.Element.getAttribute("property")
+      let itemprop = meta->WebAPI.Element.getAttribute("itemprop")
 
       let name = switch (name, property, itemprop) {
       | (Value(name), _, _) => Some(name)
@@ -47,14 +38,10 @@ let extractMetaTags = async (url: string) => {
       | _ => None
       }
 
-      let content =
-        meta
-        ->WebAPI.Element.getAttribute("content")
-        ->Nullable.make
-        ->Nullable.toOption
+      let content = meta->WebAPI.Element.getAttribute("content")
 
       switch (name, content) {
-      | (Some(name), Some(content)) => tags->Dict.set(name, content)
+      | (Some(name), Value(content)) => tags->Dict.set(name, content)
       | _ => ()
       }
 
