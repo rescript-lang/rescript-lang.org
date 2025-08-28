@@ -25,51 +25,15 @@ let getUser = async (id) => {
 }
 ```
 
-This desugars to a **sequence** of `switch`/early-returns that you’d otherwise write by hand, so there’s **no extra runtime cost** and it plays nicely with `async/await`. Same idea works for `option` with `Some(...)` (and the PR also extends support so the left pattern can be `Error(...)`/`None`, not just `Ok(...)`/`Some(...)`). ([[ReScript Forum](https://forum.rescript-lang.org/t/proposing-new-syntax-for-zero-cost-unwrapping-options-results/6227)][2], [[GitHub](https://github.com/rescript-lang/rescript/pull/7582/files)][3])
+This desugars to a **sequence** of `switch`/early-returns that you’d otherwise write by hand, so there’s **no extra runtime cost** and it plays nicely with `async/await`. Same idea works for `option` with `Some(...)` (and the PR also extends support so the left pattern can be `Error(...)`/`None`, not just `Ok(...)`/`Some(...)`).
 
-### Where it works (and doesn’t)
-
-* Targets **built-ins** only: `result` and `option`. (Custom variants still need `switch`.) ([[ReScript Forum](https://forum.rescript-lang.org/t/proposing-new-syntax-for-zero-cost-unwrapping-options-results/6227)][2])
-* **Block/local bindings** only; tests show top-level usage is rejected. ([[GitHub](https://github.com/rescript-lang/rescript/pull/7582/files)][3])
-* The printed JS is the straightforward if/return form (i.e., “zero cost”). ([[ReScript Forum](https://forum.rescript-lang.org/t/proposing-new-syntax-for-zero-cost-unwrapping-options-results/6227)][2])
+Beware it targets built-ins only: `result` and `option`. (Custom variants still need `switch`.) And it is for block or local bindings only; top-level usage is rejected. 
+Compiled JS code is the straightforward if/return form (i.e., “zero cost”). 
 
 ### How to enable it (experimental)
 
-* The PR adds an **experimental-features infrastructure** to the toolchain and **CLI support**: `-enable-experimental …`. Rewatch reads config from `rescript.json` and forwards the feature(s) to the compiler. (See `rewatch` config + compile changes and the new compiler flag.) ([[GitHub](https://github.com/rescript-lang/rescript/pull/7582/files)][3])
-* There are tests and docs stubs around the experimental toggle plus “feature not enabled” error cases. ([[GitHub](https://github.com/rescript-lang/rescript/pull/7582/files)][3])
+We have added an **experimental-features infrastructure** to the toolchain. The corresponding compiler flag is `-enable-experimental`. This means you can enable `let?` in your `rescript.json`s `compiler-flags` and it forwards the feature to the compiler. 
 
-> In short: add the feature in `rescript.json` via the new “experimental features” setting (per the updated `CompilerConfigurationSpec.md`), or pass `-enable-experimental` in your build; otherwise `let?` is unavailable. ([[GitHub](https://github.com/rescript-lang/rescript/pull/7582/files)][3])
+This is purely a syntactical change so performance is not affected.
 
-# Dev notes (what changed under the hood)
 
-* **Lexer/Parser/Printer:** new token for `let?`, grammar rules, and pretty-printer support. ([[GitHub](https://github.com/rescript-lang/rescript/pull/7582/files)][3])
-* **Frontend transform:** AST handling lowers `let?` to the equivalent `switch`/early return; tailored super-errors for misuse. ([[GitHub](https://github.com/rescript-lang/rescript/pull/7582/files)][3])
-* **Feature gate:** new module(s) to register/enable experimental features, with CLI wiring and rewatch config reading. ([[GitHub](https://github.com/rescript-lang/rescript/pull/7582/files)][3])
-* **Tests:** syntax parsing, printer snapshots, super-errors (e.g., “feature not enabled”, “top-level not allowed”, “not supported variant”, and return-type mismatch). ([[GitHub](https://github.com/rescript-lang/rescript/pull/7582/files)][3])
-
-# Safety analysis: can this break anything when **off**?
-
-**Bottom line:** extremely low risk when the flag is **off**.
-
-Why:
-
-1. **Gated by default.** The feature is unreachable unless explicitly enabled; using `let?` without the gate yields a dedicated “feature not enabled” error (there are fixtures for this). That means existing codebases remain unaffected. ([[GitHub](https://github.com/rescript-lang/rescript/pull/7582/files)][3])
-2. **New syntax, not repurposed.** `let?` didn’t previously parse; recognizing it only at a `let` binding start avoids collisions with existing `?` uses (e.g., ternary) elsewhere in expressions. Parser tests were added to lock this down. ([[GitHub](https://github.com/rescript-lang/rescript/pull/7582/files)][3])
-3. **No runtime path changes.** It’s a compile-time sugar that lowers to the same `switch`/return structure you’d hand-write. If you don’t use it, nothing in your generated JS changes. ([[ReScript Forum](https://forum.rescript-lang.org/t/proposing-new-syntax-for-zero-cost-unwrapping-options-results/6227)][2])
-4. **Confined scope.** Even when enabled, top-level `let?` is rejected; only local/block bindings are supported. This reduces any accidental global impact. ([[GitHub](https://github.com/rescript-lang/rescript/pull/7582/files)][3])
-5. **Tooling guarded.** The PR tracks TODOs for error coverage and editor support; with the gate off, current editor plugins behave as before. ([[GitHub](https://github.com/rescript-lang/rescript/pull/7582)][1])
-
-**Potential edge considerations (still low risk off):**
-
-* **Tokenization side-effects:** The scanner learns the `let?` token, but the feature gate + grammar location prevents it from altering how existing, valid programs lex/parse when you don’t write `let?`. Tests cover “not enabled” and misuse shapes. ([[GitHub](https://github.com/rescript-lang/rescript/pull/7582/files)][3])
-* **Error text churn:** Some super-error messages were added (including a hint when code looks *eligible* for `let?`). That only triggers in error paths; it won’t change successful builds. ([[GitHub](https://github.com/rescript-lang/rescript/pull/7582/files)][3])
-
-**Conclusion:** With the experimental flag **off**, there are no functional or runtime changes, and parser behavior for all previously valid code paths is preserved. It’s safe to ship behind the flag.
-
----
-
-If you want, I can also jot down a tiny rollout checklist (enable flag in a sample app, verify editor plugin snapshot, run the super-errors suite) next.
-
-[1]: https://github.com/rescript-lang/rescript/pull/7582 "PoC of let? by zth · Pull Request #7582 · rescript-lang/rescript · GitHub"
-[2]: https://forum.rescript-lang.org/t/proposing-new-syntax-for-zero-cost-unwrapping-options-results/6227 "Proposing new syntax for zero-cost unwrapping options/results - Development - ReScript Forum"
-[3]: https://github.com/rescript-lang/rescript/pull/7582/files "PoC of let? by zth · Pull Request #7582 · rescript-lang/rescript · GitHub"
