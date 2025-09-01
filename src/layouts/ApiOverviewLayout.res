@@ -4,19 +4,15 @@ let makeCategories: string => array<Sidebar.Category.t> = version => [
   {
     name: "Overview",
     items: [
-      {name: "Introduction", href: `/docs/manual/${version}/api`},
-      if version >= "v12.0.0" {
-        {name: "Stdlib", href: `/docs/manual/${version}/api/stdlib`}
-      } else {
-        {name: "Core", href: `/docs/manual/${version}/api/core`}
-      },
+      {name: "Introduction", href: #"docs/manual/api"},
+      {name: "Stdlib", href: #"docs/manual/api/stdlib"},
     ],
   },
   {
     name: "Additional Libraries",
     items: [
-      {name: "Belt", href: `/docs/manual/${version}/api/belt`},
-      {name: "Dom", href: `/docs/manual/${version}/api/dom`},
+      {name: "Belt", href: #"docs/manual/api/belt"},
+      {name: "Dom", href: #"docs/manual/api/dom"},
     ],
   },
 ]
@@ -25,8 +21,7 @@ let makeCategories: string => array<Sidebar.Category.t> = version => [
 module Docs = {
   @react.component
   let make = (~version, ~components=ApiMarkdown.default, ~children) => {
-    let router = Next.Router.useRouter()
-    let route = router.route
+    let {pathname: route} = ReactRouter.useLocation()
 
     let categories = makeCategories(version)
 

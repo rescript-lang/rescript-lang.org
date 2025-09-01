@@ -2,9 +2,11 @@ open WebAPI
 
 @module("react-router-dom")
 external navigate: string => unit = "navigate"
-// TODO: get this to use the actual paths available
-// I can create a script that will generate the paths from the route file and create a rescript file for the types
-// for example, <Link to=#index />
+
+@module("react-router")
+external useNavigate: unit => string => unit = "useNavigate"
+
+/* The types for this are auto-generated from the react-router.config.mjs file */
 type path = {pathname: Path.t, search?: string, hash?: string}
 
 module Loader = {
@@ -67,6 +69,9 @@ module Routes = {
 
   @module("@react-router/dev/routes")
   external route: (string, string, ~options: routeOptions=?) => t = "route"
+
+  @module("@react-router/dev/routes")
+  external layout: (string, array<t>) => t = "layout"
 }
 
 module Mdx = {

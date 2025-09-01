@@ -378,7 +378,9 @@ let default = (props: props) => {
 
   let prefix = {Url.name: "API", href: "/docs/manual/" ++ (version ++ "/api")}
 
-  let breadcrumbs = ApiLayout.makeBreadcrumbs(~prefix, router.asPath)
+  let {pathname: route} = ReactRouter.useLocation()
+
+  let breadcrumbs = ApiLayout.makeBreadcrumbs(~prefix, route)
 
   <SidebarLayout
     breadcrumbs={list{

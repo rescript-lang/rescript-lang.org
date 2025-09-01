@@ -6,8 +6,8 @@ module Toc = SidebarLayout.Toc
 
 module OldDocsWarning = {
   @react.component
-  let make = (~version: string, ~route: string) => {
-    let url = Url.parse(route)
+  let make = (~version: string, ~route: Path.t) => {
+    let url = Url.parse((route :> string))
     let latestUrl =
       "/" ++ (Array.join(url.base, "/") ++ ("/latest/" ++ Array.join(url.pagepath, "/")))
 
@@ -42,8 +42,8 @@ module OldDocsWarning = {
   }
 }
 
-let makeBreadcrumbs = (~prefix: Url.breadcrumb, route: string): list<Url.breadcrumb> => {
-  let url = route->Url.parse
+let makeBreadcrumbs = (~prefix: Url.breadcrumb, route: Path.t): list<Url.breadcrumb> => {
+  let url = Url.parse((route :> string))
 
   let (_, rest) = // Strip the "api" part of the url before creating the rest of the breadcrumbs
   Array.sliceToEnd(url.pagepath, ~start=1)->Array.reduce((prefix.href, []), (acc, path) => {
@@ -73,28 +73,31 @@ let make = (
   ~components=ApiMarkdown.default,
   ~children,
 ) => {
-  let router = Next.Router.useRouter()
-  let route = router.route
+  let {pathname: route} = ReactRouter.useLocation()
 
   let (isSidebarOpen, setSidebarOpen) = React.useState(_ => false)
   let toggleSidebar = () => setSidebarOpen(prev => !prev)
 
   React.useEffect(() => {
-    open Next.Router.Events
-    let {Next.Router.events: events} = router
+    // TODO: replicate this for React Router
+    // open Next.Router.Events
+    // let {Next.Router.events: events} = router
 
-    let onChangeComplete = _url => setSidebarOpen(_ => false)
+    // let onChangeComplete = _url => setSidebarOpen(_ => false)
 
-    events->on(#routeChangeComplete(onChangeComplete))
-    events->on(#hashChangeComplete(onChangeComplete))
+    // events->on(#routeChangeComplete(onChangeComplete))
+    // events->on(#hashChangeComplete(onChangeComplete))
 
-    Some(
-      () => {
-        events->off(#routeChangeComplete(onChangeComplete))
-        events->off(#hashChangeComplete(onChangeComplete))
-      },
-    )
+    // Some(
+    //   () => {
+    //     events->off(#routeChangeComplete(onChangeComplete))
+    //     events->off(#hashChangeComplete(onChangeComplete))
+    //   },
+    // )
+    None
   }, [])
+
+  let navigate = ReactRouter.useNavigate()
 
   let preludeSection =
     <div className="flex justify-between text-fire font-medium items-baseline">
@@ -104,14 +107,14 @@ let make = (
           open Url
           ReactEvent.Form.preventDefault(evt)
           let version = (evt->ReactEvent.Form.target)["value"]
-          let url = Url.parse(route)
+          let url = Url.parse((route :> string))
           WebAPI.Storage.setItem(localStorage, ~key=(Url.Manual :> string), ~value=version)
 
           let targetUrl =
             "/" ++
             (Array.join(url.base, "/") ++
             ("/" ++ (version ++ ("/" ++ Array.join(url.pagepath, "/")))))
-          router->Next.Router.push(targetUrl)
+          navigate(targetUrl)
         }
         <VersionSelect
           onChange version availableVersions=allApiVersions nextVersion=?Constants.nextVersion

@@ -5,7 +5,7 @@ module Toc: {
     "category": Nullable.t<string>,
     "headers": array<{
       "name": string,
-      "href": string,
+      "href": Path.t,
     }>,
   }>
 
@@ -24,7 +24,7 @@ module Sidebar: {
   module NavItem: {
     type t = {
       name: string,
-      href: string,
+      href: Path.t,
     }
     @react.component
     let make: (
@@ -51,7 +51,7 @@ module Sidebar: {
   @react.component
   let make: (
     ~categories: array<Category.t>,
-    ~route: string,
+    ~route: Path.t,
     ~toplevelNav: React.element=?,
     ~title: string=?,
     ~preludeSection: React.element=?,

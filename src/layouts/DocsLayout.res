@@ -60,28 +60,28 @@ let make = (
   ~theme=#Reason,
   ~children,
 ) => {
-  let router = Next.Router.useRouter()
-  let route = router.route
+  let {pathname: route} = ReactRouter.useLocation()
 
   let (isSidebarOpen, setSidebarOpen) = React.useState(_ => false)
   let toggleSidebar = () => setSidebarOpen(prev => !prev)
 
   React.useEffect(() => {
-    open Next.Router.Events
-    let {Next.Router.events: events} = router
-
-    let onChangeComplete = _url => setSidebarOpen(_ => false)
-
-    events->on(#routeChangeComplete(onChangeComplete))
-    events->on(#hashChangeComplete(onChangeComplete))
-
-    Some(
-      () => {
-        events->off(#routeChangeComplete(onChangeComplete))
-        events->off(#hashChangeComplete(onChangeComplete))
-      },
-    )
+    // TODO: make this work for React Router
+    // open Next.Router.Events
+    // let {Next.Router.events: events} = router
+    // let onChangeComplete = _url => setSidebarOpen(_ => false)
+    // events->on(#routeChangeComplete(onChangeComplete))
+    // events->on(#hashChangeComplete(onChangeComplete))
+    // Some(
+    //   () => {
+    //     events->off(#routeChangeComplete(onChangeComplete))
+    //     events->off(#hashChangeComplete(onChangeComplete))
+    //   },
+    // )
+    None
   }, [])
+
+  let navigate = ReactRouter.useNavigate()
 
   let preludeSection =
     <div className="flex flex-col justify-between text-fire font-medium items-baseline">
@@ -93,7 +93,7 @@ let make = (
             open Url
             ReactEvent.Form.preventDefault(evt)
             let version = (evt->ReactEvent.Form.target)["value"]
-            let url = Url.parse(route)
+            let url = Url.parse((route :> string))
             WebAPI.Storage.setItem(
               localStorage,
               ~key=switch metaTitleCategory {
@@ -107,7 +107,7 @@ let make = (
               "/" ++
               (Array.join(url.base, "/") ++
               ("/" ++ (version ++ ("/" ++ Array.join(url.pagepath, "/")))))
-            router->Next.Router.push(targetUrl)
+            navigate(targetUrl)
           }
           <VersionSelect onChange version availableVersions ?nextVersion />
         | None => <span className="font-mono text-14"> {React.string(version)} </span>
@@ -135,7 +135,8 @@ let make = (
         }
         metaTitle ++ (" | " ++ metaTitleCategory)
       }
-      let meta = <Meta title ?description ?canonical version=Url.parse(router.route).version />
+      let meta =
+        <Meta title ?description ?canonical /* version=Url.parse(router.route).version */ />
 
       let ghEditHref = switch canonical {
       | Some(canonical) =>
@@ -198,7 +199,7 @@ module Make = (Content: StaticContent) => {
         let title = data["title"]
         let entries = Array.map(data["headers"], header => {
           SidebarLayout.Toc.header: header["name"],
-          href: "#" ++ header["href"],
+          href: "#" ++ (header["href"] :> string),
         })
         {SidebarLayout.Toc.title, entries}
       })
@@ -224,8 +225,9 @@ module Make = (Content: StaticContent) => {
         {
           name,
           items: Array.map(values, ((href, value)) => {
+            // TODO: this probably doesn't work as expected
             NavItem.name: value["title"],
-            href,
+            href: (value["headers"]->Array.getUnsafe(0))["href"],
           }),
         }
       })

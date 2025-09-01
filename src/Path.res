@@ -5,6 +5,10 @@ type t = [
 #"community/overview" |
 #"syntax-lookup" |
 #"blog" |
+#"docs/manual/api/stdlib" |
+#"docs/manual/api/introduction" |
+#"docs/manual/api/belt" |
+#"docs/manual/api/dom" |
 #"blog/2025-04-11-introducing-unified-operators" |
 #"blog/2025-03-17-retreats" |
 #"blog/2025-03-05-what-can-i-do-with-rescript" |
@@ -165,5 +169,6 @@ type t = [
 #"docs/manual/attribute" |
 #"docs/manual/async-await" |
 #"docs/manual/array-and-list" |
-#"docs/manual/api"
+#"docs/manual/api" |
+#"docs/guidelines/publishing-packages"
 ]

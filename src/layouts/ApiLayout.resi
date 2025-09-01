@@ -2,10 +2,10 @@ let allApiVersions: array<(string, string)>
 
 module OldDocsWarning: {
   @react.component
-  let make: (~version: string, ~route: string) => React.element
+  let make: (~version: string, ~route: Path.t) => React.element
 }
 
-let makeBreadcrumbs: (~prefix: Url.breadcrumb, string) => list<Url.breadcrumb>
+let makeBreadcrumbs: (~prefix: Url.breadcrumb, Path.t) => list<Url.breadcrumb>
 
 @react.component
 let make: (

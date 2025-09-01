@@ -12,7 +12,7 @@ module Toc = {
     "category": Nullable.t<string>,
     "headers": array<{
       "name": string,
-      "href": string,
+      "href": Path.t,
     }>,
   }>
 
@@ -56,7 +56,7 @@ module Sidebar = {
     // Navigation point information
     type t = {
       name: string,
-      href: string,
+      href: Path.t,
     }
     @react.component
     let make = (
@@ -116,7 +116,7 @@ module Sidebar = {
   @react.component
   let make = (
     ~categories: array<Category.t>,
-    ~route: string,
+    ~route: Path.t,
     ~toplevelNav=React.null,
     ~title as _: option<string>=?,
     ~preludeSection=React.null,
@@ -223,8 +223,7 @@ let make = (
 ) => {
   let (isNavOpen, setNavOpen) = React.useState(() => false)
 
-  let router = Next.Router.useRouter()
-  let version = Url.parse(router.route).version
+  let location = ReactRouter.useLocation()
 
   let theme = ColorTheme.toCN(theme)
 
@@ -242,20 +241,22 @@ let make = (
   }
 
   React.useEffect(() => {
-    open Next.Router.Events
-    let {Next.Router.events: events} = router
+    // TODO: figure out how to watch for route changes
+    // open Next.Router.Events
+    // let {Next.Router.events: events} = router
 
-    let onChangeComplete = _url => setSidebarOpen(_ => false)
+    // let onChangeComplete = _url => setSidebarOpen(_ => false)
 
-    events->on(#routeChangeComplete(onChangeComplete))
-    events->on(#hashChangeComplete(onChangeComplete))
+    // events->on(#routeChangeComplete(onChangeComplete))
+    // events->on(#hashChangeComplete(onChangeComplete))
 
-    Some(
-      () => {
-        events->off(#routeChangeComplete(onChangeComplete))
-        events->off(#hashChangeComplete(onChangeComplete))
-      },
-    )
+    // Some(
+    //   () => {
+    //     events->off(#routeChangeComplete(onChangeComplete))
+    //     events->off(#hashChangeComplete(onChangeComplete))
+    //   },
+    // )
+    None
   }, [])
 
   let handleDrawerButtonClick = React.useCallback(evt => {
@@ -275,17 +276,17 @@ let make = (
   | Some(categories) =>
     let items = categories->Array.flatMap(c => c.items)
 
-    switch items->Array.findIndex(item => item.href === router.route) {
+    switch items->Array.findIndex(item => item.href === location.pathname) {
     | -1 => React.null
     | i =>
       let previous = switch items->Array.get(i - 1) {
-      | Some({name, href}) => React.null
-      // <Link
-      //   to=Url(href)
-      //   className={"flex items-center text-fire hover:text-fire-70 border-2 border-red-300 rounded py-1.5 px-3"}>
-      //   <Icon.ArrowRight className={"rotate-180 mr-2"} />
-      //   {React.string(name)}
-      // </Link>
+      | Some({name, href}) =>
+        <Link
+          to=href
+          className={"flex items-center text-fire hover:text-fire-70 border-2 border-red-300 rounded py-1.5 px-3"}>
+          <Icon.ArrowRight className={"rotate-180 mr-2"} />
+          {React.string(name)}
+        </Link>
       | None => React.null
       }
       let next = switch items->Array.get(i + 1) {
@@ -307,7 +308,7 @@ let make = (
   }
 
   <>
-    <Meta title=metaTitle version />
+    <Meta title=metaTitle />
     <EnableCollapsibleNavbar isEnabled={!isSidebarOpen && !isNavOpen}>
       <div className={"mt-16 min-w-320 " ++ theme}>
         <div className="w-full">

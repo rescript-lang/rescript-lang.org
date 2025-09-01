@@ -39,8 +39,6 @@ let make = (props: props): React.element => {
         | (1, _) => <ApiOverviewLayout.Docs version> content </ApiOverviewLayout.Docs>
         | _ => content
         }
-      | ("v8.0.0" | "v9.0.0" | "v10.0.0") as version =>
-        <ApiOverviewLayoutLegacy version> content </ApiOverviewLayoutLegacy>
       | _ => content
       }
     | _ =>
