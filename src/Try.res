@@ -1,4 +1,7 @@
-type props = {versions: array<string>}
+type props = {
+  bundleBaseUrl: string,
+  versions: array<string>,
+}
 
 let default = props => {
   let (isOverlayOpen, setOverlayOpen) = React.useState(() => false)
@@ -19,7 +22,13 @@ let default = props => {
     },
   )
 
-  let playground = React.createElement(lazyPlayground, {versions: props.versions})
+  let playground = React.createElement(
+    lazyPlayground,
+    {
+      bundleBaseUrl: props.bundleBaseUrl,
+      versions: props.versions,
+    },
+  )
 
   <>
     <Meta
@@ -40,8 +49,13 @@ let default = props => {
 }
 
 let getStaticProps: Next.GetStaticProps.t<props, _> = async _ => {
+  let bundleBaseUrl = switch (Node.Process.Env.playgroundBundleEndpoint, Node.Process.Env.nodeEnv) {
+  | (Some(baseUrl), _) => baseUrl
+  | (None, "development") => "https://cdn.rescript-lang.org"
+  | (None, _) => ""
+  }
   let versions = {
-    let response = await fetch("https://cdn.rescript-lang.org/playground-bundles/versions.json")
+    let response = await fetch(bundleBaseUrl + "/playground-bundles/versions.json")
     let json = await WebAPI.Response.json(response)
     json
     ->JSON.Decode.array
@@ -49,5 +63,10 @@ let getStaticProps: Next.GetStaticProps.t<props, _> = async _ => {
     ->Array.map(json => json->JSON.Decode.string->Option.getOrThrow)
   }
 
-  {"props": {versions: versions}}
+  {
+    "props": {
+      bundleBaseUrl,
+      versions,
+    },
+  }
 }

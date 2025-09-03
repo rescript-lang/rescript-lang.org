@@ -31,7 +31,7 @@ type ready = {
 }
 
 module CdnMeta: {
-  let getStdlibRuntimeUrl: (Semver.t, string) => string
+  let getStdlibRuntimeUrl: (string, Semver.t, string) => string
 }
 
 type state =
@@ -53,6 +53,7 @@ type action =
   | RunCode
 
 let useCompilerManager: (
+  ~bundleBaseUrl: string,
   ~initialVersion: Semver.t=?,
   ~initialModuleSystem: string=?,
   ~initialLang: Lang.t=?,
