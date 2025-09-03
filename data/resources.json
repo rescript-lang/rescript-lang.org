@@ -1,5 +1,35 @@
 [
   {
+    "title": "Making Sense of JSX in ReScript",
+    "description": "JSX in ReScript is not what you think. Learn how JSX really works in ReScript, how it differs from React's JSX.",
+    "image": "https://img.youtube.com/vi/xGN3d6hPSC0/maxresdefault.jpg",
+    "url": "https://youtu.be/xGN3d6hPSC0"
+  },
+  {
+    "title": "Waku Layouts",
+    "description": "Crafting reusable components with Waku layouts using ReScript.",
+    "image": "https://img.youtube.com/vi/zhGUW0ThPZo/maxresdefault.jpg",
+    "url":"https://youtu.be/zhGUW0ThPZo,"
+  },
+  {
+    "title": "Waku, React Server Components and Chrome extension",
+    "description": "Messing around with ReScript,Waku, React Server Components and Chrome extensions",
+    "image": "https://img.youtube.com/vi/yKuPJdOZVB0/maxresdefault.jpg",
+    "url": "https://youtu.be/yKuPJdOZVB0"
+  },
+  {
+    "title": "More ReScript and Kaplay",
+    "description": "ReScript bindings for KAPLAY to npm",
+    "image": "https://img.youtube.com/vi/xxBPtmtvBTc/maxresdefault.jpg",
+    "url": "https://youtu.be/xxBPtmtvBTc"
+  },
+  {
+    "title": "Building a game with ReScript & KAPLAY",
+    "description": "Creating a simple snake game using ReScript and KAPLAY!",
+    "image": "https://img.youtube.com/vi/zUyrHXB_ImE/maxresdefault.jpg",
+    "url": "https://youtu.be/zUyrHXB_ImE"
+  },
+  {
     "title": "JavaScript schema library from the Future 🧬",
     "description": "ReScript Schema - The fastest parser in the entire JavaScript ecosystem with a focus on small bundle...",
     "image": "https://media2.dev.to/dynamic/image/width=1000,height=500,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fn102ksd9w1xo5ysgxbur.png",
