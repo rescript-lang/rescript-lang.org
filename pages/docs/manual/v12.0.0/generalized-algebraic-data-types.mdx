@@ -4,20 +4,19 @@ description: "Generalized Algebraic Data Types in Rescript"
 canonical: "/docs/manual/v12.0.0/generalized-algebraic-data-types"
 ---
 
-Generalized Algebraic Data Types
-====
+# Generalized Algebraic Data Types
 
 Generalized Algebraic Data Types (GADTs) are an advanced feature of Rescript's type system. "Generalized" can be somewhat of a misnomer -- what they actually allow you to do is add some extra type-specificity to your variants. Using a GADT, you can give the individual cases of a variant _different_ types.
 
 For a quick overview of the use cases, reach for GADTs when:
+
 1. You need to distinguish between different members of a variant at the type-level
 2. You want to "hide" type information in a type-safe way, without resorting to casts.
 3. You need a function to return a different type depending on its input.
 
 GADTs usually are overkill, but when you need them, you need them! Understanding them from first principles is difficult, so it is best to explain through some motivating examples.
 
-Distinguishing Constructors (Subtyping)
-----
+## Distinguishing Constructors (Subtyping)
 
 Suppose a simple variant type that represents the current timezone of a date value. This handles both daylight savings and standard time:
 
@@ -28,8 +27,10 @@ type timezone =
  | CST // standard time
  | CDT // daylight time
 // etc...
-``` 
+```
+
 Using this variant type, we will end up having functions like this:
+
 ```res example
 let convert_to_daylight = tz => {
   switch tz {
@@ -51,10 +52,12 @@ type daylight_or_standard =
 ```
 
 This has a lot of problems. For one, it's cumbersome and redundant. We would now have to pattern-match twice whenever we deal with a timezone that's wrapped up here. The compiler will force us to check whether we are dealing with daylight or standard time, but notice that there's nothing stopping us from providing invalid timezones to these constructors:
+
 ```res example
 let invalid_tz1 = Daylight(EST)
 let invalid_tz2 = Standard(EDT)
 ```
+
 Consequently, we still have to write our redundant catchall cases. We could define daylight savings time and standard time as two _separate_ types, and unify those in our `daylight_or_standard` variant. That could be a passable solution, but that makes a distinction really would like to do is implement some kind of _subtyping_ relationship. We have two _kinds_ of timezone. This is where GADTs are handy:
 
 ```res example
@@ -66,8 +69,9 @@ type rec timezone<_> =
   | EDT: timezone<daylight>
   | CST: timezone<standard>
   | CDT: timezone<daylight>
-``` 
-We define our type with a type parameter. We manually annotate each constructor, providing it with the correct type parameter indicating whether it is standard or daylight. Each constructor is a `timezone`, 
+```
+
+We define our type with a type parameter. We manually annotate each constructor, providing it with the correct type parameter indicating whether it is standard or daylight. Each constructor is a `timezone`,
 but we've added another level of specificity using a type parameter. Constructors are now understood to be `standard` or `daylight` at the _type_ level. Now we can fix our function like this:
 
 ```res example
@@ -80,8 +84,8 @@ let convert_to_daylight = tz => {
 ```
 
 The compiler can infer correctly that this function should only take `timezone<standard>` and only output
-`timezone<daylight>`. We don't need to add any redundant catchall cases and the compiler will even error if 
-we try to return a standard timezone from this function. Actually, this seems like it could be a problem, 
+`timezone<daylight>`. We don't need to add any redundant catchall cases and the compiler will even error if
+we try to return a standard timezone from this function. Actually, this seems like it could be a problem,
 we still want to be able to match on all cases of the variant sometimes, and a naive attempt at this will not pass the type checker. A naive example will fail:
 
 ```res example
@@ -103,8 +107,8 @@ let convert_to_daylight : type a. timezone<a> => timezone<daylight> =  // ...
 
 `type a.` here defines a _locally abstract type_ which basically tells the compiler that the type parameter a is some specific type, but we don't care what it is. The cost of the extra specificity and safety that GADTs give us is that the compiler is not able to help us with type inference as much.
 
-Varying return type
-----
+## Varying return type
+
 Sometimes, a function should have a different return type based on what you give it, and GADTs are how we can do this in a type-safe way. We can implement a generic `add` function that works on both `int` or `float`:
 
 ```res example
@@ -129,7 +133,7 @@ We can also use this to avoid returning `option` unnecessarily. This example is 
 
 ```res example
 module If_not_found = {
-    type t<_,_> 
+    type t<_,_>
 }module IfNotFound = {
   type rec t<_, _> =
     | Raise: t<'a, 'a>
@@ -159,8 +163,8 @@ let flexible_find:
 
 ```
 
-Hide and recover Type information Dynamically
----
+## Hide and recover Type information Dynamically
+
 In a very advanced case that combines many of the above techniques, we can use GADTs to selectively hide and recover type information. This helps us create more generic types.
 The below example defines a `num` type similar to our above addition example, but this lets us use `int` and `float` arrays
 interchangeably, hiding the implementation type rather than exposing it. This is similar to a regular variant. However, it is a tuple including embedding a `num_ty` and another value.
@@ -185,13 +189,13 @@ let sum = (Narray(witness, array)) => {
 }
 ```
 
-A Practical Example -- writing bindings:
----
-Javascript libraries that are highly polymorphic or use inheritance can benefit hugely from GADTs, but they can be useful for bindings even in other cases. The following examples are writing bindings to a simplified 
+## A Practical Example -- writing bindings:
+
+Javascript libraries that are highly polymorphic or use inheritance can benefit hugely from GADTs, but they can be useful for bindings even in other cases. The following examples are writing bindings to a simplified
 of Node's `Stream` API.
 
-This API has a method for binding event handlers, `on`. This takes an event and a callback. The callback accepts different parameters 
-depending in which event we are binding to. A naive implementation might look similar to this, defining a 
+This API has a method for binding event handlers, `on`. This takes an event and a callback. The callback accepts different parameters
+depending in which event we are binding to. A naive implementation might look similar to this, defining a
 separate method for each stream event to wrap the unsafe version of on.
 
 ```res example
@@ -207,11 +211,11 @@ module Stream = {
 }
 ```
 
-Not only is this quite tedious to write, and quite ugly, but we gain very little from it. The function wrappers even add performance overhead, so we are losing on almost all fronts. If we define subtypes of 
-Stream like `Readable` or  `Writable`, which have all sorts of special interactions with the callback that jeopardize our type-safety, we are going to be in even deeper trouble.
+Not only is this quite tedious to write, and quite ugly, but we gain very little from it. The function wrappers even add performance overhead, so we are losing on almost all fronts. If we define subtypes of
+Stream like `Readable` or `Writable`, which have all sorts of special interactions with the callback that jeopardize our type-safety, we are going to be in even deeper trouble.
 
-Instead, we can use the same GADT technique that let us vary return type to vary the input type. 
-Not only are we able to now just use a single method, but the compiler will guarantee we are always using the correct callback type for the given event. We simply define an event GADT which specifies 
+Instead, we can use the same GADT technique that let us vary return type to vary the input type.
+Not only are we able to now just use a single method, but the compiler will guarantee we are always using the correct callback type for the given event. We simply define an event GADT which specifies
 the type signature of the callback and pass this instead of a plain string.
 
 Additionally, we use some type parameters to represent the different types of Streams.
@@ -220,7 +224,7 @@ This example is complex, but it enforces tons of useful rules. The wrong event c
 with the wrong callback, but it also will never be used with the wrong kind of stream. The compiler will will complain for example if we try to use a `Pipe` event with anything other than a `writable` stream.
 
 The real magic happens in the signature of `on`. Read it carefully, and then look at the examples and try to
-follow how the type variables are getting filled in, write it out on paper what each type variable is equal 
+follow how the type variables are getting filled in, write it out on paper what each type variable is equal
 to if you need and it will soon become clear.
 
 ```res example
@@ -232,7 +236,7 @@ module Stream = {
   type readable
 
   type buffer = {buffer: ArrayBuffer.t}
-  
+
   @unboxed
   type chunk =
     | Str(string)
@@ -270,21 +274,21 @@ writer->Stream.on(End, _ => Js.log("End reached"))
 
 ```
 
-This example is only over a tiny, imaginary subset of node's Stream API, but it shows a real-life example 
+This example is only over a tiny, imaginary subset of node's Stream API, but it shows a real-life example
 where GADTs are all but indispensable.
 
-Conclusion
------
+## Conclusion
+
 While GADTs can make your types extra-expressive and get more safety, with great power comes great
-responsibility. Code that uses GADTs can sometimes be too clever for its own good. The type errors you 
-encounter will be more difficult to understand, and the compiler sometimes requires extra help to properly 
-type your code. 
+responsibility. Code that uses GADTs can sometimes be too clever for its own good. The type errors you
+encounter will be more difficult to understand, and the compiler sometimes requires extra help to properly
+type your code.
 
-However, There are definite situations where GADTs are the _right_ decision 
-and will _simplify_ your code and help you avoid bugs, even rendering some bugs impossible. The `Stream` example above is a good example where the "simpler" alternative of using regular variants or even strings. 
-would lead to a much more complex and error prone interface. 
+However, There are definite situations where GADTs are the _right_ decision
+and will _simplify_ your code and help you avoid bugs, even rendering some bugs impossible. The `Stream` example above is a good example where the "simpler" alternative of using regular variants or even strings.
+would lead to a much more complex and error prone interface.
 
-Ordinary variants are not necessarily _simple_ therefore, and neither are GADTs necessarily _complex_. 
-The choice is rather which tool is the right one for the job. When your logic is complex, the highly expressive nature of GADTs can make it simpler to capture that logic. 
-When your logic is simple, it's best to reach for a simpler tool and avoid the cognitive overhead. 
-The only way to get good at identifying which the situation calls for is to try out 
+Ordinary variants are not necessarily _simple_ therefore, and neither are GADTs necessarily _complex_.
+The choice is rather which tool is the right one for the job. When your logic is complex, the highly expressive nature of GADTs can make it simpler to capture that logic.
+When your logic is simple, it's best to reach for a simpler tool and avoid the cognitive overhead.
+The only way to get good at identifying which the situation calls for is to try out
