@@ -49,13 +49,25 @@ let default = props => {
 }
 
 let getStaticProps: Next.GetStaticProps.t<props, _> = async _ => {
-  let bundleBaseUrl = switch (Node.Process.Env.playgroundBundleEndpoint, Node.Process.Env.nodeEnv) {
-  | (Some(baseUrl), _) => baseUrl
-  | (None, "development") => "https://cdn.rescript-lang.org"
-  | (None, _) => ""
+  let (bundleBaseUrl, versionsBaseUrl) = switch (
+    Node.Process.Env.playgroundBundleEndpoint,
+    Node.Process.Env.nodeEnv,
+  ) {
+  | (Some(baseUrl), _) => (baseUrl, baseUrl)
+  | (None, "development") => {
+      // Use remote bundles in dev
+      let baseUrl = "https://cdn.rescript-lang.org"
+      (baseUrl, baseUrl)
+    }
+  | (None, _) => (
+      // Use same-origin requests for the bundle
+      "",
+      // There is no version endpoint in the build phase
+      "https://cdn.rescript-lang.org",
+    )
   }
   let versions = {
-    let response = await fetch(bundleBaseUrl + "/playground-bundles/versions.json")
+    let response = await fetch(versionsBaseUrl + "/playground-bundles/versions.json")
     let json = await WebAPI.Response.json(response)
     json
     ->JSON.Decode.array
