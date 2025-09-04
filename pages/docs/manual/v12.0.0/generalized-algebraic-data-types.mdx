@@ -58,9 +58,9 @@ let invalidTz1 = Daylight(EST)
 let invalidTz2 = Standard(EDT)
 ```
 
-Consequently, we still have to write our redundant catchall cases. We could define daylight savings time and standard time as two _separate_ types, and unify those in our `daylightOrStandard` variant. 
-    That could be a passable solution, but what we would really like to do is implement some kind of subtyping relationship.
- We have two _kinds_ of timezone. This is where GADTs are handy:
+Consequently, we still have to write our redundant catchall cases. We could define daylight savings time and standard time as two _separate_ types, and unify those in our `daylightOrStandard` variant.
+That could be a passable solution, but what we would really like to do is implement some kind of subtyping relationship.
+We have two _kinds_ of timezone. This is where GADTs are handy:
 
 ```res example
 type standard
