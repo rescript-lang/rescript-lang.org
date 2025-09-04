@@ -61,7 +61,7 @@ let getStaticProps: Next.GetStaticProps.t<props, _> = async _ => {
     }
   | (None, _) => (
       // Use same-origin requests for the bundle
-      "",
+      "/playground-bundles",
       // There is no version endpoint in the build phase
       "https://cdn.rescript-lang.org",
     )
