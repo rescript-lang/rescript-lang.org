@@ -35,17 +35,13 @@ module LoadScript = {
 }
 
 module CdnMeta = {
-  let baseUrl =
-    Node.Process.Env.nodeEnv === "development"
-      ? "https://cdn.rescript-lang.org"
-      : "" + "/playground-bundles"
+  let getCompilerUrl = (baseUrl, version): string =>
+    `${baseUrl}/${Semver.toString(version)}/compiler.js`
 
-  let getCompilerUrl = (version): string => `${baseUrl}/${Semver.toString(version)}/compiler.js`
-
-  let getLibraryCmijUrl = (version, libraryName: string): string =>
+  let getLibraryCmijUrl = (baseUrl, version, libraryName: string): string =>
     `${baseUrl}/${Semver.toString(version)}/${libraryName}/cmij.js`
 
-  let getStdlibRuntimeUrl = (version, filename) =>
+  let getStdlibRuntimeUrl = (baseUrl, version, filename) =>
     `${baseUrl}/${Semver.toString(version)}/compiler-builtins/stdlib/${filename}`
 }
 
@@ -104,11 +100,11 @@ let getOpenModules = (~apiVersion: Version.t, ~libraries: array<string>): option
     We coupled the compiler / library loading to prevent ppl to try loading compiler / cmij files
     separately and cause all kinds of race conditions.
  */
-let attachCompilerAndLibraries = async (~version, ~libraries: array<string>, ()): result<
+let attachCompilerAndLibraries = async (~baseUrl, ~version, ~libraries: array<string>, ()): result<
   unit,
   array<string>,
 > => {
-  let compilerUrl = CdnMeta.getCompilerUrl(version)
+  let compilerUrl = CdnMeta.getCompilerUrl(baseUrl, version)
 
   // Useful for debugging our local build
   /* let compilerUrl = "/static/linked-bs-bundle.js"; */
@@ -117,7 +113,7 @@ let attachCompilerAndLibraries = async (~version, ~libraries: array<string>, ())
   | Error(_) => Error([`Could not load compiler from url ${compilerUrl}`])
   | Ok(_) =>
     let promises = Array.map(libraries, async lib => {
-      let cmijUrl = CdnMeta.getLibraryCmijUrl(version, lib)
+      let cmijUrl = CdnMeta.getLibraryCmijUrl(baseUrl, version, lib)
       switch await LoadScript.loadScriptPromise(cmijUrl) {
       | Error(_) => Error(`Could not load cmij from url ${cmijUrl}`)
       | r => r
@@ -222,6 +218,7 @@ let defaultModuleSystem = "esmodule"
 //  component to give feedback to the user that an action happened (useful in
 //  cases where the output didn't visually change)
 let useCompilerManager = (
+  ~bundleBaseUrl: string,
   ~initialVersion: option<Semver.t>=?,
   ~initialModuleSystem=defaultModuleSystem,
   ~initialLang: Lang.t=Res,
@@ -405,7 +402,12 @@ let useCompilerManager = (
             // Latest version is already running on @rescript/react
             let libraries = getLibrariesForVersion(~version)
 
-            switch await attachCompilerAndLibraries(~version, ~libraries, ()) {
+            switch await attachCompilerAndLibraries(
+              ~baseUrl=bundleBaseUrl,
+              ~version,
+              ~libraries,
+              (),
+            ) {
             | Ok() =>
               let instance = Compiler.make()
               let apiVersion = apiVersion->Version.fromString
@@ -460,14 +462,16 @@ let useCompilerManager = (
       | SwitchingCompiler(ready, version) =>
         let libraries = getLibrariesForVersion(~version)
 
-        switch await attachCompilerAndLibraries(~version, ~libraries, ()) {
+        switch await attachCompilerAndLibraries(~baseUrl=bundleBaseUrl, ~version, ~libraries, ()) {
         | Ok() =>
           // Make sure to remove the previous script from the DOM as well
-          LoadScript.removeScript(~src=CdnMeta.getCompilerUrl(ready.selected.id))
+          LoadScript.removeScript(~src=CdnMeta.getCompilerUrl(bundleBaseUrl, ready.selected.id))
 
           // We are removing the previous libraries, therefore we use ready.selected here
           Array.forEach(ready.selected.libraries, lib =>
-            LoadScript.removeScript(~src=CdnMeta.getLibraryCmijUrl(ready.selected.id, lib))
+            LoadScript.removeScript(
+              ~src=CdnMeta.getLibraryCmijUrl(bundleBaseUrl, ready.selected.id, lib),
+            )
           )
 
           let instance = Compiler.make()
@@ -576,7 +580,7 @@ let useCompilerManager = (
             }
           | version => version
           }
-          CdnMeta.getStdlibRuntimeUrl(compilerVersion, filename)
+          CdnMeta.getStdlibRuntimeUrl(bundleBaseUrl, compilerVersion, filename)
         })
 
         entryPointExists

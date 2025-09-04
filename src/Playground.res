@@ -1419,7 +1419,7 @@ module App = {
 let initialReContent = `Js.log("Hello Reason 3.6!");`
 
 @react.component
-let make = (~versions: array<string>) => {
+let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   let router = Next.Router.useRouter()
 
   let versions =
@@ -1436,14 +1436,18 @@ let make = (~versions: array<string>) => {
       cmp(b) - cmp(a)
     })
 
-  let lastStableVersion = versions->Array.find(version => version.preRelease->Option.isNone)
-
-  let initialVersion = switch Dict.get(router.query, "version") {
-  | Some(version) => version->Semver.parse
-  | None =>
-    switch Url.getVersionFromStorage(Playground) {
-    | Some(v) => v->Semver.parse
-    | None => lastStableVersion
+  let initialVersion = switch versions {
+  | [v] => Some(v) // only single version available. maybe local dev.
+  | versions => {
+      let lastStableVersion = versions->Array.find(version => version.preRelease->Option.isNone)
+      switch Dict.get(router.query, "version") {
+      | Some(version) => version->Semver.parse
+      | None =>
+        switch Url.getVersionFromStorage(Playground) {
+        | Some(v) => v->Semver.parse
+        | None => lastStableVersion
+        }
+      }
     }
   }
 
@@ -1470,6 +1474,7 @@ let make = (~versions: array<string>) => {
   let (actionCount, setActionCount) = React.useState(_ => 0)
   let onAction = _ => setActionCount(prev => prev > 1000000 ? 0 : prev + 1)
   let (compilerState, compilerDispatch) = useCompilerManager(
+    ~bundleBaseUrl,
     ~initialVersion?,
     ~initialModuleSystem?,
     ~initialLang,
