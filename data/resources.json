@@ -1,5 +1,11 @@
 [
   {
+    "title": "YouTube Videos by @nojaf",
+    "description": "Talks, tutorials, and deep dives into the ReScript programming language — covering syntax, tooling, and real‑world use cases.",
+    "image": "https://img.youtube.com/vi/xGN3d6hPSC0/maxresdefault.jpg",
+    "url": "https://www.youtube.com/playlist?list=PLvw_J2kfZCX0u_27-uIoalSPR6TOMPmuD"
+  },
+  {
     "title": "JavaScript schema library from the Future 🧬",
     "description": "ReScript Schema - The fastest parser in the entire JavaScript ecosystem with a focus on small bundle...",
     "image": "https://media2.dev.to/dynamic/image/width=1000,height=500,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fn102ksd9w1xo5ysgxbur.png",
