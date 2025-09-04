@@ -1,33 +1,9 @@
 [
   {
-    "title": "Making Sense of JSX in ReScript",
-    "description": "JSX in ReScript is not what you think. Learn how JSX really works in ReScript, how it differs from React's JSX.",
+    "title": "YouTube Videos by @nojaf",
+    "description": "Talks, tutorials, and deep dives into the ReScript programming language — covering syntax, tooling, and real‑world use cases.",
     "image": "https://img.youtube.com/vi/xGN3d6hPSC0/maxresdefault.jpg",
-    "url": "https://youtu.be/xGN3d6hPSC0"
-  },
-  {
-    "title": "Waku Layouts",
-    "description": "Crafting reusable components with Waku layouts using ReScript.",
-    "image": "https://img.youtube.com/vi/zhGUW0ThPZo/maxresdefault.jpg",
-    "url": "https://youtu.be/zhGUW0ThPZo,"
-  },
-  {
-    "title": "Waku, React Server Components and Chrome extension",
-    "description": "Messing around with ReScript,Waku, React Server Components and Chrome extensions",
-    "image": "https://img.youtube.com/vi/yKuPJdOZVB0/maxresdefault.jpg",
-    "url": "https://youtu.be/yKuPJdOZVB0"
-  },
-  {
-    "title": "More ReScript and Kaplay",
-    "description": "ReScript bindings for KAPLAY to npm",
-    "image": "https://img.youtube.com/vi/xxBPtmtvBTc/maxresdefault.jpg",
-    "url": "https://youtu.be/xxBPtmtvBTc"
-  },
-  {
-    "title": "Building a game with ReScript & KAPLAY",
-    "description": "Creating a simple snake game using ReScript and KAPLAY!",
-    "image": "https://img.youtube.com/vi/zUyrHXB_ImE/maxresdefault.jpg",
-    "url": "https://youtu.be/zUyrHXB_ImE"
+    "url": "https://www.youtube.com/playlist?list=PLvw_J2kfZCX0u_27-uIoalSPR6TOMPmuD"
   },
   {
     "title": "JavaScript schema library from the Future 🧬",
