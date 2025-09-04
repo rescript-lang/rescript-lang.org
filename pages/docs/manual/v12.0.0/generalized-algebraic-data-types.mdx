@@ -1,16 +1,16 @@
 ---
 title: "Generalized Algebraic Data Types"
-description: "Generalized Algebraic Data Types in Rescript"
+description: "Generalized Algebraic Data Types in ReScript"
 canonical: "/docs/manual/v12.0.0/generalized-algebraic-data-types"
 ---
 
 # Generalized Algebraic Data Types
 
-Generalized Algebraic Data Types (GADTs) are an advanced feature of Rescript's type system. "Generalized" can be somewhat of a misnomer -- what they actually allow you to do is add some extra type-specificity to your variants. Using a GADT, you can give the individual cases of a variant _different_ types.
+Generalized Algebraic Data Types (GADTs) are an advanced feature of ReScript's type system. "Generalized" can be somewhat of a misnomer -- what they actually allow you to do is add some extra type-specificity to your variants. Using a GADT, you can give the individual cases of a variant _different_ types.
 
 For a quick overview of the use cases, reach for GADTs when:
 
-1. You need to distinguish between different members of a variant at the type-level
+1. You need to distinguish between different members of a variant at the type level.
 2. You want to "hide" type information in a type-safe way, without resorting to casts.
 3. You need a function to return a different type depending on its input.
 
@@ -32,7 +32,7 @@ type timezone =
 Using this variant type, we will end up having functions like this:
 
 ```res example
-let convert_to_daylight = tz => {
+let convertToDaylight = tz => {
   switch tz {
   | EST => EDT
   | CST => CDT
@@ -43,10 +43,10 @@ let convert_to_daylight = tz => {
 
 This function is only valid for a subset of our variant type's constructors but we can't handle this in a type-safe way using regular variants. We have to enforce that at runtime -- and moreover the compiler can't help us ensure we are failing only in the invalid cases. We are back to dynamically checking validity like we would in a language without static typing. If you work with a large variant type long enough, you will frequently find yourself writing repetitive catchall `switch` statements like the above, and for little actual benefit. The compiler should be able to help us here.
 
-Lets see if we can find a way for the compiler to help us out with normal variants. We could define another variant type to distinguish the two kinds of timezone.
+Let's see if we can find a way for the compiler to help us with normal variants. We could define another variant type to distinguish the two kinds of timezone.
 
 ```res example
-type daylight_or_standard =
+type daylightOrStandard =
   | Daylight(timezone)
   | Standard(timezone)
 ```
@@ -54,11 +54,13 @@ type daylight_or_standard =
 This has a lot of problems. For one, it's cumbersome and redundant. We would now have to pattern-match twice whenever we deal with a timezone that's wrapped up here. The compiler will force us to check whether we are dealing with daylight or standard time, but notice that there's nothing stopping us from providing invalid timezones to these constructors:
 
 ```res example
-let invalid_tz1 = Daylight(EST)
-let invalid_tz2 = Standard(EDT)
+let invalidTz1 = Daylight(EST)
+let invalidTz2 = Standard(EDT)
 ```
 
-Consequently, we still have to write our redundant catchall cases. We could define daylight savings time and standard time as two _separate_ types, and unify those in our `daylight_or_standard` variant. That could be a passable solution, but that makes a distinction really would like to do is implement some kind of _subtyping_ relationship. We have two _kinds_ of timezone. This is where GADTs are handy:
+Consequently, we still have to write our redundant catchall cases. We could define daylight savings time and standard time as two _separate_ types, and unify those in our `daylightOrStandard` variant. 
+    That could be a passable solution, but what we would really like to do is implement some kind of subtyping relationship.
+ We have two _kinds_ of timezone. This is where GADTs are handy:
 
 ```res example
 type standard
@@ -75,7 +77,7 @@ We define our type with a type parameter. We manually annotate each constructor,
 but we've added another level of specificity using a type parameter. Constructors are now understood to be `standard` or `daylight` at the _type_ level. Now we can fix our function like this:
 
 ```res example
-let convert_to_daylight = tz => {
+let convertToDaylight = tz => {
   switch tz {
   | EST => EDT
   | CST => CDT
@@ -89,7 +91,7 @@ we try to return a standard timezone from this function. Actually, this seems li
 we still want to be able to match on all cases of the variant sometimes, and a naive attempt at this will not pass the type checker. A naive example will fail:
 
 ```res example
-let convert_to_daylight = tz => {
+let convertToDaylight = tz => {
   switch tz {
   | EST => EDT
   | CST => CDT
@@ -102,7 +104,7 @@ let convert_to_daylight = tz => {
 This will complain that `daylight` and `standard` are incompatible. To fix this, we need to explicitly annotate to tell the compiler to accept both:
 
 ```res example
-let convert_to_daylight : type a. timezone<a> => timezone<daylight> =  // ...
+let convertToDaylight : type a. timezone<a> => timezone<daylight> =  // ...
 ```
 
 `type a.` here defines a _locally abstract type_ which basically tells the compiler that the type parameter a is some specific type, but we don't care what it is. The cost of the extra specificity and safety that GADTs give us is that the compiler is not able to help us with type inference as much.
@@ -127,7 +129,7 @@ let foo = add(Int(1), Int(2))
 let bar = add(Int(1), Float(2.0)) // the compiler will complain here
 ```
 
-How does this work? The key thing is the function signature for add. The number GADT is acting as a `type witness`. We have told the compiler that the type parameter for `number` will be the same as the type we return -- both are set to `a`. So if we provide a `number<int>`, `a` equals `int`, and the function will therefore return an `int`.
+How does this work? The key thing is the function signature for add. The `number` GADT is acting as a _type witness_. We have told the compiler that the type parameter for `number` will be the same as the type we return -- both are set to `a`. So if we provide a `number<int>`, `a` equals `int`, and the function will therefore return an `int`.
 
 We can also use this to avoid returning `option` unnecessarily. This example is adapted from Real World Ocaml, chapter 9. We create an array searching function can be configured to either raise an exception, return an `option`, or provide a `default` value depending on the behavior we want.
 
@@ -165,26 +167,26 @@ let flexible_find:
 
 ## Hide and recover Type information Dynamically
 
-In a very advanced case that combines many of the above techniques, we can use GADTs to selectively hide and recover type information. This helps us create more generic types.
+In an advanced case that combines the above techniques, we can use GADTs to selectively hide and recover type information. This helps us create more generic types.
 The below example defines a `num` type similar to our above addition example, but this lets us use `int` and `float` arrays
-interchangeably, hiding the implementation type rather than exposing it. This is similar to a regular variant. However, it is a tuple including embedding a `num_ty` and another value.
-`num_ty` serves as a type-witness, making it
-possible to recover type information that was hidden dynamically. Matching on `num_ty` will "reveal" the type of the other value in the pair.We can use this to write a generic sum function over arrays of numbers:
+interchangeably, hiding the implementation type rather than exposing it. This is similar to a regular variant. However, it is a tuple including embedding a `numTy` and another value.
+`numTy` serves as a type-witness, making it
+possible to recover type information that was hidden dynamically. Matching on `numTy` will "reveal" the type of the other value in the pair.We can use this to write a generic sum function over arrays of numbers:
 
 ```res example
-type rec num_ty<'a> =
-  | Int: num_ty<int>
-  | Float: num_ty<float>
-and num = Num(num_ty<'a>, 'a): num
-and num_array = Narray(num_ty<'a>, array<'a>): num_array
+type rec numTy<'a> =
+  | Int: numTy<int>
+  | Float: numTy<float>
+and num = Num(numTy<'a>, 'a): num
+and num_array = Narray(numTy<'a>, array<'a>): num_array
 
-let add_int = (x, y) => x + y
-let add_float = (x, y) => x +. y
+let addInt = (x, y) => x + y
+let addFloat = (x, y) => x +. y
 
 let sum = (Narray(witness, array)) => {
   switch witness {
-  | Int => Num(Int, array->Array.reduce(0, add_int))
-  | Float => Num(Float, array->Array.reduce(0., add_float))
+  | Int => Num(Int, array->Array.reduce(0, addInt))
+  | Float => Num(Float, array->Array.reduce(0., addFloat))
   }
 }
 ```
@@ -211,7 +213,7 @@ module Stream = {
 }
 ```
 
-Not only is this quite tedious to write, and quite ugly, but we gain very little from it. The function wrappers even add performance overhead, so we are losing on almost all fronts. If we define subtypes of
+Not only is this quite tedious to write and quite ugly, but we gain very little in return. The function wrappers even add performance overhead, so we are losing on all fronts. If we define subtypes of
 Stream like `Readable` or `Writable`, which have all sorts of special interactions with the callback that jeopardize our type-safety, we are going to be in even deeper trouble.
 
 Instead, we can use the same GADT technique that let us vary return type to vary the input type.
@@ -221,7 +223,7 @@ the type signature of the callback and pass this instead of a plain string.
 Additionally, we use some type parameters to represent the different types of Streams.
 
 This example is complex, but it enforces tons of useful rules. The wrong event can never be used
-with the wrong callback, but it also will never be used with the wrong kind of stream. The compiler will will complain for example if we try to use a `Pipe` event with anything other than a `writable` stream.
+with the wrong callback, but it also will never be used with the wrong kind of stream. The compiler will complain for example if we try to use a `Pipe` event with anything other than a `writable` stream.
 
 The real magic happens in the signature of `on`. Read it carefully, and then look at the examples and try to
 follow how the type variables are getting filled in, write it out on paper what each type variable is equal
@@ -260,35 +262,35 @@ let writer = Stream.Writable.make()
 let reader = Stream.Readable.make()
 // Types will be correctly inferred for each callback, based on the event parameter provided
 writer->Stream.on(Pipe, r => {
-  Js.log("Piping has started")
+  Console.log("Piping has started")
 
   r->Stream.on(Data, chunk =>
     switch chunk {
-    | Stream.Str(s) => Js.log(s)
-    | Stream.Buf(buffer) => Js.log(buffer)
+    | Stream.Str(s) => Console.log(s)
+    | Stream.Buf(buffer) => Console.log(buffer)
     }
   )
 })
 
-writer->Stream.on(End, _ => Js.log("End reached"))
+writer->Stream.on(End, _ => Console.log("End reached"))
 
 ```
 
-This example is only over a tiny, imaginary subset of node's Stream API, but it shows a real-life example
+This example is only over a tiny, imaginary subset of Node's Stream API, but it shows a real-life example
 where GADTs are all but indispensable.
 
 ## Conclusion
 
-While GADTs can make your types extra-expressive and get more safety, with great power comes great
+While GADTs can make your types extra-expressive and provide more safety, with great power comes great
 responsibility. Code that uses GADTs can sometimes be too clever for its own good. The type errors you
 encounter will be more difficult to understand, and the compiler sometimes requires extra help to properly
 type your code.
 
-However, There are definite situations where GADTs are the _right_ decision
+However, there are definite situations where GADTs are the _right_ decision
 and will _simplify_ your code and help you avoid bugs, even rendering some bugs impossible. The `Stream` example above is a good example where the "simpler" alternative of using regular variants or even strings.
 would lead to a much more complex and error prone interface.
 
 Ordinary variants are not necessarily _simple_ therefore, and neither are GADTs necessarily _complex_.
 The choice is rather which tool is the right one for the job. When your logic is complex, the highly expressive nature of GADTs can make it simpler to capture that logic.
 When your logic is simple, it's best to reach for a simpler tool and avoid the cognitive overhead.
-The only way to get good at identifying which the situation calls for is to try out
+The only way to get good at identifying which tool to use in a given situation is to practice and experiment with both.
