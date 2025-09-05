@@ -1,0 +1,39 @@
+---
+author: rescript-team
+date: "2025-09-01"
+badge: roadmap
+title: let?
+description: |
+  A new let-unwrap syntax just landed in ReScript.
+---
+
+After long discussions we finally decided on an unwrap syntax for both the `option` and `result` types that we are happy with and that still matches the explicitness of ReScript we all like.
+
+# What is it exactly?
+
+`let?` or `let-unwrap` is a tiny syntax that unwraps `result`/`option` values and *early-returns* on `Error`/`None`. It’s explicitly **experimental** and **disabled by default** behind a new “experimental features” gate.
+
+### Example
+
+```rescript
+let getUser = async (id) => {
+  let? Ok(user)  = await fetchUser(id)
+  let? Ok(decodedUser) = decodeUser(user)
+  Console.log(`Got user ${decodedUser.name}!`)
+  let? Ok() = await ensureUserActive(decodedUser)
+  Ok(decodedUser)
+}
+```
+
+This desugars to a **sequence** of `switch`/early-returns that you’d otherwise write by hand, so there’s **no extra runtime cost** and it plays nicely with `async/await`. Same idea works for `option` with `Some(...)` (and the PR also extends support so the left pattern can be `Error(...)`/`None`, not just `Ok(...)`/`Some(...)`).
+
+Beware it targets built-ins only: `result` and `option`. (Custom variants still need `switch`.) And it is for block or local bindings only; top-level usage is rejected. 
+Compiled JS code is the straightforward if/return form (i.e., “zero cost”). 
+
+### How to enable it (experimental)
+
+We have added an **experimental-features infrastructure** to the toolchain. The corresponding compiler flag is `-enable-experimental`. This means you can enable `let?` in your `rescript.json`s `compiler-flags` and it forwards the feature to the compiler. 
+
+This is purely a syntactical change so performance is not affected.
+
+
