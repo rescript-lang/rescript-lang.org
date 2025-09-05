@@ -91,14 +91,13 @@ we try to return a standard timezone from this function. Actually, this seems li
 we still want to be able to match on all cases of the variant sometimes, and a naive attempt at this will not pass the type checker. A naive example will fail:
 
 ```res example
-let convertToDaylight = tz => {
+let convertToDaylight = tz =>
   switch tz {
   | EST => EDT
   | CST => CDT
   | CDT => CDT
   | EDT => EDT
   }
-}
 ```
 
 This will complain that `daylight` and `standard` are incompatible. To fix this, we need to explicitly annotate to tell the compiler to accept both:
@@ -107,11 +106,14 @@ This will complain that `daylight` and `standard` are incompatible. To fix this,
 let convertToDaylight : type a. timezone<a> => timezone<daylight> =  // ...
 ```
 
-`type a.` here defines a _locally abstract type_ which basically tells the compiler that the type parameter a is some specific type, but we don't care what it is. The cost of the extra specificity and safety that GADTs give us is that the compiler is not able to help us with type inference as much.
+The syntax `type a.` here defines a _locally abstract type_ which basically tells the compiler that the type parameter a is some specific type, but we don't care what it is. The cost of the extra specificity and safety that
+GADTs give us is that the compiler less able to help us with type inference.
 
 ## Varying return type
 
-Sometimes, a function should have a different return type based on what you give it, and GADTs are how we can do this in a type-safe way. We can implement a generic `add` function that works on both `int` or `float`:
+Sometimes, a function should have a different return type based on what you give it, and GADTs are how we can do this in a type-safe way. We can implement a generic `add` function[^1] that works on both `int` or `float`:
+
+[^1]: In ReScript v12, the built-in operators are already generic, but we use them in this example for simplicity.
 
 ```res example
 type rec number<_> = Int(int): number<int> | Float(float): number<float>
@@ -131,7 +133,9 @@ let bar = add(Int(1), Float(2.0)) // the compiler will complain here
 
 How does this work? The key thing is the function signature for add. The `number` GADT is acting as a _type witness_. We have told the compiler that the type parameter for `number` will be the same as the type we return -- both are set to `a`. So if we provide a `number<int>`, `a` equals `int`, and the function will therefore return an `int`.
 
-We can also use this to avoid returning `option` unnecessarily. This example is adapted from Real World Ocaml, chapter 9. We create an array searching function can be configured to either raise an exception, return an `option`, or provide a `default` value depending on the behavior we want.
+We can also use this to avoid returning `option` unnecessarily. We create an array searching function which either raises an exception, returns an `option`, or provides a `default` value depending on the behavior we ask for.[^2]
+
+[^2]: This example is adapted from [here](https://dev.realworldocaml.org/gadts.html).
 
 ```res example
 module If_not_found = {
@@ -171,7 +175,7 @@ In an advanced case that combines the above techniques, we can use GADTs to sele
 The below example defines a `num` type similar to our above addition example, but this lets us use `int` and `float` arrays
 interchangeably, hiding the implementation type rather than exposing it. This is similar to a regular variant. However, it is a tuple including embedding a `numTy` and another value.
 `numTy` serves as a type-witness, making it
-possible to recover type information that was hidden dynamically. Matching on `numTy` will "reveal" the type of the other value in the pair.We can use this to write a generic sum function over arrays of numbers:
+possible to recover type information that was hidden dynamically. Matching on `numTy` will "reveal" the type of the other value in the pair. We can use this to write a generic sum function over arrays of numbers:
 
 ```res example
 type rec numTy<'a> =
@@ -197,8 +201,8 @@ Javascript libraries that are highly polymorphic or use inheritance can benefit 
 of Node's `Stream` API.
 
 This API has a method for binding event handlers, `on`. This takes an event and a callback. The callback accepts different parameters
-depending in which event we are binding to. A naive implementation might look similar to this, defining a
-separate method for each stream event to wrap the unsafe version of on.
+depending on which event we are binding to. A naive implementation might look similar to this, defining a
+separate method for each stream event to wrap the unsafe version of `on`.
 
 ```res example
 module Stream = {
@@ -223,7 +227,7 @@ the type signature of the callback and pass this instead of a plain string.
 Additionally, we use some type parameters to represent the different types of Streams.
 
 This example is complex, but it enforces tons of useful rules. The wrong event can never be used
-with the wrong callback, but it also will never be used with the wrong kind of stream. The compiler will complain for example if we try to use a `Pipe` event with anything other than a `writable` stream.
+with the wrong callback, but it also will never be used with the wrong kind of stream. The compiler will for example complain if we try to use a `Pipe` event with anything other than a `writable` stream.
 
 The real magic happens in the signature of `on`. Read it carefully, and then look at the examples and try to
 follow how the type variables are getting filled in, write it out on paper what each type variable is equal
@@ -242,7 +246,7 @@ module Stream = {
   @unboxed
   type chunk =
     | Str(string)
-    // Node uses actually its own buffer type, but for the tutorial are just using the stdlib's buffer type.
+    // Node uses actually its own buffer type, but for the tutorial we are using the stdlib's buffer type.
     | Buf(buffer)
 
   type rec event<_, _> =
@@ -287,7 +291,7 @@ encounter will be more difficult to understand, and the compiler sometimes requi
 type your code.
 
 However, there are definite situations where GADTs are the _right_ decision
-and will _simplify_ your code and help you avoid bugs, even rendering some bugs impossible. The `Stream` example above is a good example where the "simpler" alternative of using regular variants or even strings.
+and will _simplify_ your code and help you avoid bugs, even rendering some bugs impossible. The `Stream` example above is a good example where the "simpler" alternative of using regular variants or even strings
 would lead to a much more complex and error prone interface.
 
 Ordinary variants are not necessarily _simple_ therefore, and neither are GADTs necessarily _complex_.
