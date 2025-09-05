@@ -108,7 +108,7 @@ Below is an excerpt from the compiler changelog about all the breaking changes o
   Also, `(. int) => string => bool` is not equivalen to `(. int, string) => bool` anymore.
   These are only breaking changes for unformatted code.
 - Exponentiation operator `**` is now right-associative. `2. ** 3. ** 2.` now compile to `Math.pow(2, Math.pow(3, 2))` and not anymore `Math.pow(Math.pow(2, 3), 2)`. Parentheses can be used to change precedence.
-- Stop mangling object field names. If you had objects with field names containing "\__" or leading "_", they won't be mangled in the compiled JavaScript and represented as it is without changes. https://github.com/rescript-lang/rescript-compiler/pull/6354
+- Stop mangling object field names. If you had objects with field names containing "\_\_" or leading "\_", they won't be mangled in the compiled JavaScript and represented as it is without changes. https://github.com/rescript-lang/rescript-compiler/pull/6354
 - `$$default` is no longer exported from the generated JavaScript when using default exports. https://github.com/rescript-lang/rescript-compiler/pull/6328
 - `-bs-super-errors` flag has been deprecated along with Super_errors. https://github.com/rescript-lang/rescript-compiler/pull/6243
 - Remove unsafe `` j`$(a)$(b)` `` interpolation deprecated in compiler version 10 https://github.com/rescript-lang/rescript-compiler/pull/6068
