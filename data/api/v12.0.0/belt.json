@@ -9661,7 +9661,7 @@
         "docstrings": [
           "`('key, 'id) cmparable` is a module of functions, here it only includes `cmp`.\n\nUnlike normal functions, when created, it comes with a unique identity (guaranteed\nby the type system).\n\nIt can be created using function [`comparableU`]() or [`comparable`]().\n\nThe idea of a unique identity when created is that it makes sure two sets would type\nmismatch if they use different comparison function"
         ],
-        "signature": "type comparable<'key, 'id> = module(Comparable\n  with type identity = 'id\n  with type t = 'key)"
+        "signature": "type comparable<'key, 'id> = module(Comparable\n  with type identity = 'id\n  and type t = 'key)"
       },
       {
         "id": "Belt.Id.comparableU",
@@ -9685,7 +9685,7 @@
         "docstrings": [
           "`('key, 'id) hashable` is a module of functions, here it only includes `hash`, `eq`.\n\nUnlike normal functions, when created, it comes with a unique identity (guaranteed\nby the type system).\n\nIt can be created using function [`hashableU`]() or [`hashable`]().\n\nThe idea of a unique identity when created is that it makes sure two hash sets would type\nmismatch if they use different comparison function"
         ],
-        "signature": "type hashable<'key, 'id> = module(Hashable\n  with type identity = 'id\n  with type t = 'key)"
+        "signature": "type hashable<'key, 'id> = module(Hashable\n  with type identity = 'id\n  and type t = 'key)"
       },
       {
         "id": "Belt.Id.hashableU",
