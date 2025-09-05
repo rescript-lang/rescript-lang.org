@@ -138,9 +138,7 @@ We can also use this to avoid returning `option` unnecessarily. We create an arr
 [^2]: This example is adapted from [here](https://dev.realworldocaml.org/gadts.html).
 
 ```res example
-module If_not_found = {
-    type t<_,_>
-}module IfNotFound = {
+module IfNotFound = {
   type rec t<_, _> =
     | Raise: t<'a, 'a>
     | ReturnNone: t<'a, option<'a>>
