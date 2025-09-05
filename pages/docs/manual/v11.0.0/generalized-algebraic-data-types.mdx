@@ -118,13 +118,11 @@ Sometimes, a function should have a different return type based on what you give
 ```res example
 type rec number<_> = Int(int): number<int> | Float(float): number<float>
 
-let add:
-  type a. (number<a>, number<a>) => a =
-  (a, b) =>
-    switch (a, b) {
-    | (Int(a), Int(b)) => a + b
-    | (Float(a), Float(b)) => a +. b
-    }
+let add = (type a, x: number<a>, y: number<a>): a =>
+  switch (x, y) {
+  | (Int(x), Int(y)) => x + y
+  | (Float(x), Float(y)) => x +. y
+  }
 
 let foo = add(Int(1), Int(2))
 
@@ -145,26 +143,28 @@ module IfNotFound = {
     | DefaultTo('a): t<'a, 'a>
 }
 
-let flexible_find:
-  type a b. (~f: a => bool, array<a>, IfNotFound.t<a, b>) => b =
-  (~f, arr, ifNotFound) => {
-    open IfNotFound
-    switch Array.find(arr, f) {
-    | None =>
-      switch ifNotFound {
-      | Raise => failwith("No matching item found")
-      | ReturnNone => None
-      | DefaultTo(x) => x
-      }
-    | Some(x) =>
-      switch ifNotFound {
-      | ReturnNone => Some(x)
-      | Raise => x
-      | DefaultTo(_) => x
-      }
+let flexible_find = (
+  type a b,
+  ~f: a => bool,
+  arr: array<a>,
+  ifNotFound: IfNotFound.t<a, b>,
+): b => {
+  open IfNotFound
+  switch Array.find(arr, f) {
+  | None =>
+    switch ifNotFound {
+    | Raise => failwith("No matching item found")
+    | ReturnNone => None
+    | DefaultTo(x) => x
+    }
+  | Some(x) =>
+    switch ifNotFound {
+    | ReturnNone => Some(x)
+    | Raise => x
+    | DefaultTo(_) => x
     }
   }
-
+}
 ```
 
 ## Hide and recover Type information Dynamically
