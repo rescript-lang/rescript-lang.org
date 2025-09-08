@@ -353,6 +353,8 @@ Below is a full list of everything you need in a generic JSX transform module, i
 
 > You can easily copy-paste-and-adapt this to your needs if you're creating bindings to a JSX framework. Most often, all you'll need to change is what the `@module("") external` points to, so the runtime calls point to the correct JS module.
 
+<CodeTab labels={["ReScript"]}>
+
 ```rescript
 // Preact.res
 /* Below is a number of aliases to the common `Jsx` module */
@@ -362,16 +364,16 @@ type component<'props> = Jsx.component<'props>
 
 type componentLike<'props, 'return> = Jsx.componentLike<'props, 'return>
 
-@module("preact")
+@module("preact/jsx-runtime")
 external jsx: (component<'props>, 'props) => element = "jsx"
 
-@module("preact")
+@module("preact/jsx-runtime")
 external jsxKeyed: (component<'props>, 'props, ~key: string=?, @ignore unit) => element = "jsx"
 
-@module("preact")
+@module("preact/jsx-runtime")
 external jsxs: (component<'props>, 'props) => element = "jsxs"
 
-@module("preact")
+@module("preact/jsx-runtime")
 external jsxsKeyed: (component<'props>, 'props, ~key: string=?, @ignore unit) => element = "jsxs"
 
 /* These identity functions and static values below are optional, but lets
@@ -383,13 +385,14 @@ external array: array<element> => element = "%identity"
 external float: float => element = "%identity"
 external int: int => element = "%identity"
 external string: string => element = "%identity"
+external promise: promise<element> => element = "%identity"
 
 /* These are needed for Fragment (<> </>) support */
 type fragmentProps = {children?: element}
 
-@module("preact") external jsxFragment: component<fragmentProps> = "Fragment"
+@module("preact/jsx-runtime") external jsxFragment: component<fragmentProps> = "Fragment"
 
-/* The Elements module is the equivalent to the ReactDOM module in React. This holds things relevant to _lowercase_ JSX elements. */
+/* The Elements module is the equivalent to the ReactDOM module in Preact. This holds things relevant to _lowercase_ JSX elements. */
 module Elements = {
   /* Here you can control what props lowercase JSX elements should have.
   A base that the React JSX transform uses is provided via JsxDOM.domProps,
@@ -397,23 +400,38 @@ module Elements = {
   autocompletion etc for your specific type. */
   type props = JsxDOM.domProps
 
-  @module("preact")
+  @module("preact/jsx-runtime")
   external jsx: (string, props) => Jsx.element = "jsx"
 
-  @module("preact")
+  @module("preact/jsx-runtime")
   external div: (string, props) => Jsx.element = "jsx"
 
-  @module("preact")
+  @module("preact/jsx-runtime")
   external jsxKeyed: (string, props, ~key: string=?, @ignore unit) => Jsx.element = "jsx"
 
-  @module("preact")
+  @module("preact/jsx-runtime")
   external jsxs: (string, props) => Jsx.element = "jsxs"
 
-  @module("preact")
+  @module("preact/jsx-runtime")
   external jsxsKeyed: (string, props, ~key: string=?, @ignore unit) => Jsx.element = "jsxs"
 
   external someElement: element => option<element> = "%identity"
 }
 ```
 
+</CodeTab>
+
 As you can see, most of the things you'll want to implement will be copy paste from the above. But do note that **everything needs to be there unless explicitly noted** or the transform will fail at compile time.
+
+To enable this, you need to configure the `jsx` `module` in your `rescript.json`:
+
+```json
+{
+  "jsx": {
+    "version": 4,
+    "module": "Preact"
+  }
+}
+```
+
+_value "Preact" is the name of the module that implements the generic JSX transform._
