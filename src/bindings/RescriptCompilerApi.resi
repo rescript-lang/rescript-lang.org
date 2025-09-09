@@ -25,6 +25,7 @@ module Version: {
     | V3
     | V4
     | V5
+    | V6
     | UnknownVersion(string)
 
   // Helps finding the right API version
@@ -163,6 +164,9 @@ module Config: {
     /** Only available in apiVersion > 3 (= ReScript 11+) */
     uncurried?: bool,
     open_modules?: array<string>,
+    /** Only available in apiVersion >= 6 (= ReScript 12+) */
+    experimental_features?: array<string>,
+    jsx_preserve_mode?: bool,
   }
 }
 

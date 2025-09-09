@@ -84,7 +84,8 @@ let getLibrariesForVersion = (~version: Semver.t): array<string> => {
 let getOpenModules = (~apiVersion: Version.t, ~libraries: array<string>): option<array<string>> =>
   switch apiVersion {
   | V1 | V2 | V3 | UnknownVersion(_) => None
-  | V4 | V5 => libraries->Array.some(el => el === "@rescript/core") ? Some(["RescriptCore"]) : None
+  | V4 | V5 | V6 =>
+    libraries->Array.some(el => el === "@rescript/core") ? Some(["RescriptCore"]) : None
   }
 
 /*
@@ -191,15 +192,37 @@ type action =
   | ToggleAutoRun
   | RunCode
 
+type queryParams =
+  | @as("ext") Ext
+  | @as("version") Version
+  | @as("module") Module
+  | @as("jsxPreserve") JsxPreserve
+  | @as("experiments") Experiments
+  | @as("code") Code
+
 let createUrl = (pathName, ready) => {
   let params = switch ready.targetLang {
   | Res => []
-  | lang => [("ext", RescriptCompilerApi.Lang.toExt(lang))]
+  | lang => [(Ext, RescriptCompilerApi.Lang.toExt(lang))]
   }
-  Array.push(params, ("version", "v" ++ ready.selected.compilerVersion))
-  Array.push(params, ("module", ready.selected.config.module_system))
-  Array.push(params, ("code", ready.code->LzString.compressToEncodedURIComponent))
-  let querystring = params->Array.map(((key, value)) => key ++ "=" ++ value)->Array.join("&")
+
+  Array.push(params, (Version, "v" ++ ready.selected.compilerVersion))
+  Array.push(params, (Module, ready.selected.config.module_system))
+
+  if ready.selected.config.jsx_preserve_mode->Option.getOr(false) {
+    Array.push(params, (JsxPreserve, "true"))
+  }
+
+  switch ready.selected.config.experimental_features {
+  | Some([]) | None => ()
+  | Some(features) => Array.push(params, (Experiments, features->Array.join(",")))
+  }
+
+  // Put code last as it is the longest param.
+  Array.push(params, (Code, ready.code->LzString.compressToEncodedURIComponent))
+
+  let querystring =
+    params->Array.map(((key, value)) => (key :> string) ++ "=" ++ value)->Array.join("&")
   let url = pathName ++ "?" ++ querystring
   url
 }
@@ -221,6 +244,8 @@ let useCompilerManager = (
   ~bundleBaseUrl: string,
   ~initialVersion: option<Semver.t>=?,
   ~initialModuleSystem=defaultModuleSystem,
+  ~initialJsxPreserveMode=false,
+  ~initialExperimentalFeatures=[],
   ~initialLang: Lang.t=Res,
   ~onAction: option<action => unit>=?,
   ~versions: array<Semver.t>,
@@ -421,6 +446,8 @@ let useCompilerManager = (
               let config = {
                 ...instance->Compiler.getConfig,
                 module_system: initialModuleSystem,
+                experimental_features: initialExperimentalFeatures,
+                jsx_preserve_mode: initialJsxPreserveMode,
                 ?open_modules,
               }
               instance->Compiler.setConfig(config)
@@ -529,7 +556,7 @@ let useCompilerManager = (
             )
           | Lang.Res => instance->Compiler.resCompile(code)
           }
-        | V5 =>
+        | V5 | V6 =>
           switch lang {
           | Lang.Res => instance->Compiler.resCompile(code)
           | _ => CompilationResult.UnexpectedError(`Can't handle with lang: ${lang->Lang.toString}`)
@@ -601,6 +628,8 @@ let useCompilerManager = (
     dispatchError,
     initialVersion,
     initialModuleSystem,
+    initialJsxPreserveMode,
+    initialExperimentalFeatures,
     initialLang,
     versions,
     router.route,

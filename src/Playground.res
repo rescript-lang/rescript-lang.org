@@ -13,6 +13,38 @@ module Api = RescriptCompilerApi
 
 type layout = Column | Row
 type tab = JavaScript | Output | Problems | Settings
+
+module JsxCompilation = {
+  type t =
+    | Plain
+    | PreserveJsx
+
+  let getLabel = (mode: t): string =>
+    switch mode {
+    | Plain => "Plain JS functions"
+    | PreserveJsx => "Preserve JSX"
+    }
+
+  let toBool = (mode: t): bool =>
+    switch mode {
+    | Plain => false
+    | PreserveJsx => true
+    }
+
+  let fromBool = (bool): t => bool ? PreserveJsx : Plain
+}
+
+module ExperimentalFeatures = {
+  type t = LetUnwrap
+
+  let getLabel = (feature: t): string =>
+    switch feature {
+    | LetUnwrap => "let?"
+    }
+
+  let list = [LetUnwrap]
+}
+
 let breakingPoint = 1024
 
 module DropdownSelect = {
@@ -31,23 +63,23 @@ module DropdownSelect = {
   }
 }
 
-module ToggleSelection = {
-  module SelectionOption = {
-    @react.component
-    let make = (~label, ~isActive, ~disabled, ~onClick) => {
-      <button
-        className={"mr-1 px-2 py-1 rounded inline-block " ++ if isActive {
-          "bg-fire text-white font-bold"
-        } else {
-          "bg-gray-80 opacity-50 hover:opacity-80"
-        }}
-        onClick
-        disabled>
-        {React.string(label)}
-      </button>
-    }
+module SelectionOption = {
+  @react.component
+  let make = (~label, ~isActive, ~disabled, ~onClick) => {
+    <button
+      className={"mr-1 px-2 py-1 rounded inline-block " ++ if isActive {
+        "bg-fire text-white font-bold"
+      } else {
+        "bg-gray-80 opacity-50 hover:opacity-80"
+      }}
+      onClick
+      disabled>
+      {React.string(label)}
+    </button>
   }
+}
 
+module ToggleSelection = {
   @react.component
   let make = (
     ~onChange: 'a => unit,
@@ -867,6 +899,25 @@ module Settings = {
       setConfig(config)
     }
 
+    let onJsxPreserveModeUpdate = compilation => {
+      let jsx_preserve_mode = JsxCompilation.toBool(compilation)
+      let config = {...config, jsx_preserve_mode}
+      setConfig(config)
+    }
+
+    let onExperimentalFeaturesUpdate = feature => {
+      let features = config.experimental_features->Option.getOr([])
+
+      let experimental_features = if features->Array.includes(feature) {
+        features->Array.filter(x => x !== feature)
+      } else {
+        [...features, feature]
+      }
+
+      let config = {...config, experimental_features}
+      setConfig(config)
+    }
+
     let warnFlagTokens = WarningFlagDescription.Parser.parse(warn_flags)->Result.getOr([])
 
     let onWarningFlagsResetClick = _evt => {
@@ -1000,6 +1051,40 @@ module Settings = {
           onChange=onModuleSystemUpdate
         />
       </div>
+      {switch readyState.selected.apiVersion {
+      | V1 | V2 | V3 | V4 | V5 | UnknownVersion(_) => React.null
+      | V6 =>
+        <>
+          <div className="mt-6">
+            <div className=titleClass> {React.string("JSX")} </div>
+            <ToggleSelection
+              values=[JsxCompilation.Plain, PreserveJsx]
+              toLabel=JsxCompilation.getLabel
+              selected={config.jsx_preserve_mode->Option.getOr(false)->JsxCompilation.fromBool}
+              onChange=onJsxPreserveModeUpdate
+            />
+          </div>
+          <div className="mt-6">
+            <div className=titleClass> {React.string("Experimental Features")} </div>
+            {ExperimentalFeatures.list
+            ->Array.map(feature => {
+              let key = (feature :> string)
+
+              <SelectionOption
+                key
+                disabled=false
+                label={feature->ExperimentalFeatures.getLabel}
+                isActive={config.experimental_features
+                ->Option.getOr([])
+                ->Array.includes(key)}
+                onClick={_evt => onExperimentalFeaturesUpdate(key)}
+              />
+            })
+            ->React.array}
+          </div>
+        </>
+      }}
+
       <div className="mt-6">
         <div className=titleClass> {React.string("Loaded Libraries")} </div>
         <ul>
@@ -1440,7 +1525,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   | [v] => Some(v) // only single version available. maybe local dev.
   | versions => {
       let lastStableVersion = versions->Array.find(version => version.preRelease->Option.isNone)
-      switch Dict.get(router.query, "version") {
+      switch Dict.get(router.query, (CompilerManagerHook.Version :> string)) {
       | Some(version) => version->Semver.parse
       | None =>
         switch Url.getVersionFromStorage(Playground) {
@@ -1451,14 +1536,20 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     }
   }
 
-  let initialLang = switch Dict.get(router.query, "ext") {
+  let initialLang = switch Dict.get(router.query, (CompilerManagerHook.Ext :> string)) {
   | Some("re") => Api.Lang.Reason
   | _ => Api.Lang.Res
   }
 
-  let initialModuleSystem = Dict.get(router.query, "module")
+  let initialModuleSystem = Dict.get(router.query, (Module :> string))
+  let initialJsxPreserveMode = Dict.get(router.query, (JsxPreserve :> string))->Option.isSome
 
-  let initialContent = switch (Dict.get(router.query, "code"), initialLang) {
+  let initialExperimentalFeatures =
+    Dict.get(router.query, (Experiments :> string))->Option.mapOr([], str =>
+      str->String.split(",")->Array.map(String.trim)
+    )
+
+  let initialContent = switch (Dict.get(router.query, (Code :> string)), initialLang) {
   | (Some(compressedCode), _) => LzString.decompressToEncodedURIComponent(compressedCode)
   | (None, Reason) => initialReContent
   | (None, Res) =>
@@ -1477,6 +1568,8 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     ~bundleBaseUrl,
     ~initialVersion?,
     ~initialModuleSystem?,
+    ~initialJsxPreserveMode,
+    ~initialExperimentalFeatures,
     ~initialLang,
     ~onAction,
     ~versions,

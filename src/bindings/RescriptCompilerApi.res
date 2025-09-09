@@ -34,6 +34,7 @@ module Version = {
     | V3
     | V4
     | V5
+    | V6
     | UnknownVersion(string)
 
   // Helps finding the right API version
@@ -57,6 +58,7 @@ module Version = {
     | list{"3"} => V3
     | list{"4"} => V4
     | list{"5"} => V5
+    | list{"6"} => V6
     | _ => UnknownVersion(apiVersion)
     }
 
@@ -67,6 +69,7 @@ module Version = {
     | V3 => "3.0"
     | V4 => "4.0"
     | V5 => "5.0"
+    | V6 => "6.0"
     | UnknownVersion(version) => version
     }
 
@@ -75,7 +78,7 @@ module Version = {
   let availableLanguages = t =>
     switch t {
     | V1 => [Lang.Reason, Res]
-    | V2 | V3 | V4 | V5 => [Lang.Res]
+    | V2 | V3 | V4 | V5 | V6 => [Lang.Res]
     | UnknownVersion(_) => [Res]
     }
 }
@@ -396,6 +399,8 @@ module Config = {
     warn_flags: string,
     uncurried?: bool,
     open_modules?: array<string>,
+    experimental_features?: array<string>,
+    jsx_preserve_mode?: bool,
   }
 }
 
@@ -469,6 +474,10 @@ module Compiler = {
 
   @send external setOpenModules: (t, array<string>) => bool = "setOpenModules"
 
+  @send external setExperimentalFeatures: (t, array<string>) => bool = "setExperimentalFeatures"
+
+  @send external setJsxPreserveMode: (t, bool) => bool = "setJsxPreserveMode"
+
   let setConfig = (t: t, config: Config.t): unit => {
     let moduleSystem = switch config.module_system {
     | "commonjs" => #nodejs->Some
@@ -478,6 +487,10 @@ module Compiler = {
 
     Option.forEach(moduleSystem, moduleSystem => t->setModuleSystem(moduleSystem)->ignore)
     Option.forEach(config.open_modules, modules => t->setOpenModules(modules)->ignore)
+    Option.forEach(config.experimental_features, features =>
+      t->setExperimentalFeatures(features)->ignore
+    )
+    Option.forEach(config.jsx_preserve_mode, toggle => t->setJsxPreserveMode(toggle)->ignore)
 
     t->setWarnFlags(config.warn_flags)->ignore
   }
