@@ -1047,43 +1047,41 @@ module Settings = {
         <ToggleSelection
           values=["commonjs", "esmodule"]
           toLabel={value => value}
-          selected=config.module_system
+          selected=config.moduleSystem
           onChange=onModuleSystemUpdate
         />
       </div>
-      {switch readyState.selected.apiVersion {
-      | V1 | V2 | V3 | V4 | V5 | UnknownVersion(_) => React.null
-      | V6 =>
-        <>
-          <div className="mt-6">
-            <div className=titleClass> {React.string("JSX")} </div>
-            <ToggleSelection
-              values=[JsxCompilation.Plain, PreserveJsx]
-              toLabel=JsxCompilation.getLabel
-              selected={config.jsx_preserve_mode->Option.getOr(false)->JsxCompilation.fromBool}
-              onChange=onJsxPreserveModeUpdate
-            />
-          </div>
-          <div className="mt-6">
-            <div className=titleClass> {React.string("Experimental Features")} </div>
-            {ExperimentalFeatures.list
-            ->Array.map(feature => {
-              let key = (feature :> string)
-
-              <SelectionOption
-                key
-                disabled=false
-                label={feature->ExperimentalFeatures.getLabel}
-                isActive={config.experimental_features
-                ->Option.getOr([])
-                ->Array.includes(key)}
-                onClick={_evt => onExperimentalFeaturesUpdate(key)}
+      {readyState.selected.apiVersion->RescriptCompilerApi.Version.isMinimumVersion(V6)
+        ? <>
+            <div className="mt-6">
+              <div className=titleClass> {React.string("JSX")} </div>
+              <ToggleSelection
+                values=[JsxCompilation.Plain, PreserveJsx]
+                toLabel=JsxCompilation.getLabel
+                selected={config.jsxPreserveMode->Option.getOr(false)->JsxCompilation.fromBool}
+                onChange=onJsxPreserveModeUpdate
               />
-            })
-            ->React.array}
-          </div>
-        </>
-      }}
+            </div>
+            <div className="mt-6">
+              <div className=titleClass> {React.string("Experimental Features")} </div>
+              {ExperimentalFeatures.list
+              ->Array.map(feature => {
+                let key = (feature :> string)
+
+                <SelectionOption
+                  key
+                  disabled=false
+                  label={feature->ExperimentalFeatures.getLabel}
+                  isActive={config.experimentalFeatures
+                  ->Option.getOr([])
+                  ->Array.includes(key)}
+                  onClick={_evt => onExperimentalFeaturesUpdate(key)}
+                />
+              })
+              ->React.array}
+            </div>
+          </>
+        : React.null}
 
       <div className="mt-6">
         <div className=titleClass> {React.string("Loaded Libraries")} </div>

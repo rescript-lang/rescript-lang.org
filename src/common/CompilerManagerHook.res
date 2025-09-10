@@ -269,7 +269,7 @@ let useCompilerManager = (
       | UpdateConfig(config) =>
         switch state {
         | Ready(ready) =>
-          ready.selected.instance->Compiler.setConfig(config)
+          ready.selected.instance->Compiler.setConfig(config, ready.selected.apiVersion)
           let selected = {...ready.selected, config}
           Compiling({state: {...ready, selected}, previousJsCode: None})
         | _ => state
@@ -450,7 +450,8 @@ let useCompilerManager = (
                 jsxPreserveMode: initialJsxPreserveMode,
                 ?openModules,
               }
-              instance->Compiler.setConfig(config)
+
+              instance->Compiler.setConfig(config, apiVersion)
 
               let selected = {
                 id: version,
@@ -510,7 +511,8 @@ let useCompilerManager = (
             moduleSystem: defaultModuleSystem,
             ?openModules,
           }
-          instance->Compiler.setConfig(config)
+
+          instance->Compiler.setConfig(config, apiVersion)
 
           let selected = {
             id: version,
