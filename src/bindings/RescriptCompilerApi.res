@@ -395,12 +395,12 @@ module ConversionResult = {
 
 module Config = {
   type t = {
-    module_system: string,
-    warn_flags: string,
+    @as("module_system") moduleSystem: string,
+    @as("warn_flags") warnFlags: string,
     uncurried?: bool,
-    open_modules?: array<string>,
-    experimental_features?: array<string>,
-    jsx_preserve_mode?: bool,
+    @as("open_modules") openModules?: array<string>,
+    @as("experimental_features") experimentalFeatures?: array<string>,
+    @as("jsx_preserve_mode") jsxPreserveMode?: bool,
   }
 }
 
@@ -486,13 +486,13 @@ module Compiler = {
     }
 
     Option.forEach(moduleSystem, moduleSystem => t->setModuleSystem(moduleSystem)->ignore)
-    Option.forEach(config.open_modules, modules => t->setOpenModules(modules)->ignore)
-    Option.forEach(config.experimental_features, features =>
+    Option.forEach(config.openModules, modules => t->setOpenModules(modules)->ignore)
+    Option.forEach(config.experimentalFeatures, features =>
       t->setExperimentalFeatures(features)->ignore
     )
-    Option.forEach(config.jsx_preserve_mode, toggle => t->setJsxPreserveMode(toggle)->ignore)
+    Option.forEach(config.jsxPreserveMode, toggle => t->setJsxPreserveMode(toggle)->ignore)
 
-    t->setWarnFlags(config.warn_flags)->ignore
+    t->setWarnFlags(config.warnFlags)->ignore
   }
 
   @send

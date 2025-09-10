@@ -207,13 +207,13 @@ let createUrl = (pathName, ready) => {
   }
 
   Array.push(params, (Version, "v" ++ ready.selected.compilerVersion))
-  Array.push(params, (Module, ready.selected.config.module_system))
+  Array.push(params, (Module, ready.selected.config.moduleSystem))
 
-  if ready.selected.config.jsx_preserve_mode->Option.getOr(false) {
+  if ready.selected.config.jsxPreserveMode->Option.getOr(false) {
     Array.push(params, (JsxPreserve, "true"))
   }
 
-  switch ready.selected.config.experimental_features {
+  switch ready.selected.config.experimentalFeatures {
   | Some([]) | None => ()
   | Some(features) => Array.push(params, (Experiments, features->Array.join(",")))
   }
@@ -436,7 +436,7 @@ let useCompilerManager = (
             | Ok() =>
               let instance = Compiler.make()
               let apiVersion = apiVersion->Version.fromString
-              let open_modules = getOpenModules(~apiVersion, ~libraries)
+              let openModules = getOpenModules(~apiVersion, ~libraries)
 
               // Note: The compiler bundle currently defaults to
               // commonjs when initiating the compiler, but our playground
@@ -445,10 +445,10 @@ let useCompilerManager = (
               // internal compiler state with our playground state.
               let config = {
                 ...instance->Compiler.getConfig,
-                module_system: initialModuleSystem,
-                experimental_features: initialExperimentalFeatures,
-                jsx_preserve_mode: initialJsxPreserveMode,
-                ?open_modules,
+                moduleSystem: initialModuleSystem,
+                experimentalFeatures: initialExperimentalFeatures,
+                jsxPreserveMode: initialJsxPreserveMode,
+                ?openModules,
               }
               instance->Compiler.setConfig(config)
 
@@ -503,12 +503,12 @@ let useCompilerManager = (
 
           let instance = Compiler.make()
           let apiVersion = apiVersion->Version.fromString
-          let open_modules = getOpenModules(~apiVersion, ~libraries)
+          let openModules = getOpenModules(~apiVersion, ~libraries)
 
           let config = {
             ...instance->Compiler.getConfig,
-            module_system: defaultModuleSystem,
-            ?open_modules,
+            moduleSystem: defaultModuleSystem,
+            ?openModules,
           }
           instance->Compiler.setConfig(config)
 

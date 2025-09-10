@@ -874,7 +874,7 @@ module Settings = {
     ~config: Api.Config.t,
     ~keyMapState: (CodeMirror.KeyMap.t, (CodeMirror.KeyMap.t => CodeMirror.KeyMap.t) => unit),
   ) => {
-    let {Api.Config.warn_flags: warn_flags} = config
+    let {Api.Config.warnFlags: warnFlags} = config
     let (keyMap, setKeyMap) = keyMapState
 
     let availableTargetLangs = Api.Version.availableLanguages(readyState.selected.apiVersion)
@@ -889,41 +889,41 @@ module Settings = {
         }
       let config = {
         ...config,
-        warn_flags: flags->normalizeEmptyFlags->WarningFlagDescription.Parser.tokensToString,
+        warnFlags: flags->normalizeEmptyFlags->WarningFlagDescription.Parser.tokensToString,
       }
       setConfig(config)
     }
 
-    let onModuleSystemUpdate = module_system => {
-      let config = {...config, module_system}
+    let onModuleSystemUpdate = moduleSystem => {
+      let config = {...config, moduleSystem}
       setConfig(config)
     }
 
     let onJsxPreserveModeUpdate = compilation => {
-      let jsx_preserve_mode = JsxCompilation.toBool(compilation)
-      let config = {...config, jsx_preserve_mode}
+      let jsxPreserveMode = JsxCompilation.toBool(compilation)
+      let config = {...config, jsxPreserveMode}
       setConfig(config)
     }
 
     let onExperimentalFeaturesUpdate = feature => {
-      let features = config.experimental_features->Option.getOr([])
+      let features = config.experimentalFeatures->Option.getOr([])
 
-      let experimental_features = if features->Array.includes(feature) {
+      let experimentalFeatures = if features->Array.includes(feature) {
         features->Array.filter(x => x !== feature)
       } else {
         [...features, feature]
       }
 
-      let config = {...config, experimental_features}
+      let config = {...config, experimentalFeatures}
       setConfig(config)
     }
 
-    let warnFlagTokens = WarningFlagDescription.Parser.parse(warn_flags)->Result.getOr([])
+    let warnFlagTokens = WarningFlagDescription.Parser.parse(warnFlags)->Result.getOr([])
 
     let onWarningFlagsResetClick = _evt => {
       setConfig({
         ...config,
-        warn_flags: "+a-4-9-20-40-41-42-50-61-102-109",
+        warnFlags: "+a-4-9-20-40-41-42-50-61-102-109",
       })
     }
 
