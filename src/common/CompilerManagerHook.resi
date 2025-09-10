@@ -8,6 +8,14 @@ module FinalResult: {
     | Nothing
 }
 
+type queryParams =
+  | @as("ext") Ext
+  | @as("version") Version
+  | @as("module") Module
+  | @as("jsxPreserve") JsxPreserve
+  | @as("experiments") Experiments
+  | @as("code") Code
+
 type selected = {
   id: Semver.t, // The id used for loading the compiler bundle (ideally should be the same as compilerVersion)
   apiVersion: Version.t, // The playground API version in use
@@ -56,6 +64,8 @@ let useCompilerManager: (
   ~bundleBaseUrl: string,
   ~initialVersion: Semver.t=?,
   ~initialModuleSystem: string=?,
+  ~initialJsxPreserveMode: bool=?,
+  ~initialExperimentalFeatures: array<string>=?,
   ~initialLang: Lang.t=?,
   ~onAction: action => unit=?,
   ~versions: array<Semver.t>,

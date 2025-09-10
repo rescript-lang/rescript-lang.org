@@ -84,7 +84,8 @@ let getLibrariesForVersion = (~version: Semver.t): array<string> => {
 let getOpenModules = (~apiVersion: Version.t, ~libraries: array<string>): option<array<string>> =>
   switch apiVersion {
   | V1 | V2 | V3 | UnknownVersion(_) => None
-  | V4 | V5 => libraries->Array.some(el => el === "@rescript/core") ? Some(["RescriptCore"]) : None
+  | V4 | V5 | V6 =>
+    libraries->Array.some(el => el === "@rescript/core") ? Some(["RescriptCore"]) : None
   }
 
 /*
@@ -191,15 +192,37 @@ type action =
   | ToggleAutoRun
   | RunCode
 
+type queryParams =
+  | @as("ext") Ext
+  | @as("version") Version
+  | @as("module") Module
+  | @as("jsxPreserve") JsxPreserve
+  | @as("experiments") Experiments
+  | @as("code") Code
+
 let createUrl = (pathName, ready) => {
   let params = switch ready.targetLang {
   | Res => []
-  | lang => [("ext", RescriptCompilerApi.Lang.toExt(lang))]
+  | lang => [(Ext, RescriptCompilerApi.Lang.toExt(lang))]
   }
-  Array.push(params, ("version", "v" ++ ready.selected.compilerVersion))
-  Array.push(params, ("module", ready.selected.config.module_system))
-  Array.push(params, ("code", ready.code->LzString.compressToEncodedURIComponent))
-  let querystring = params->Array.map(((key, value)) => key ++ "=" ++ value)->Array.join("&")
+
+  Array.push(params, (Version, "v" ++ ready.selected.compilerVersion))
+  Array.push(params, (Module, ready.selected.config.moduleSystem))
+
+  if ready.selected.config.jsxPreserveMode->Option.getOr(false) {
+    Array.push(params, (JsxPreserve, "true"))
+  }
+
+  switch ready.selected.config.experimentalFeatures {
+  | Some([]) | None => ()
+  | Some(features) => Array.push(params, (Experiments, features->Array.join(",")))
+  }
+
+  // Put code last as it is the longest param.
+  Array.push(params, (Code, ready.code->LzString.compressToEncodedURIComponent))
+
+  let querystring =
+    params->Array.map(((key, value)) => (key :> string) ++ "=" ++ value)->Array.join("&")
   let url = pathName ++ "?" ++ querystring
   url
 }
@@ -221,6 +244,8 @@ let useCompilerManager = (
   ~bundleBaseUrl: string,
   ~initialVersion: option<Semver.t>=?,
   ~initialModuleSystem=defaultModuleSystem,
+  ~initialJsxPreserveMode=false,
+  ~initialExperimentalFeatures=[],
   ~initialLang: Lang.t=Res,
   ~onAction: option<action => unit>=?,
   ~versions: array<Semver.t>,
@@ -244,7 +269,7 @@ let useCompilerManager = (
       | UpdateConfig(config) =>
         switch state {
         | Ready(ready) =>
-          ready.selected.instance->Compiler.setConfig(config)
+          ready.selected.instance->Compiler.setConfig(config, ready.selected.apiVersion)
           let selected = {...ready.selected, config}
           Compiling({state: {...ready, selected}, previousJsCode: None})
         | _ => state
@@ -411,7 +436,7 @@ let useCompilerManager = (
             | Ok() =>
               let instance = Compiler.make()
               let apiVersion = apiVersion->Version.fromString
-              let open_modules = getOpenModules(~apiVersion, ~libraries)
+              let openModules = getOpenModules(~apiVersion, ~libraries)
 
               // Note: The compiler bundle currently defaults to
               // commonjs when initiating the compiler, but our playground
@@ -420,10 +445,13 @@ let useCompilerManager = (
               // internal compiler state with our playground state.
               let config = {
                 ...instance->Compiler.getConfig,
-                module_system: initialModuleSystem,
-                ?open_modules,
+                moduleSystem: initialModuleSystem,
+                experimentalFeatures: initialExperimentalFeatures,
+                jsxPreserveMode: initialJsxPreserveMode,
+                ?openModules,
               }
-              instance->Compiler.setConfig(config)
+
+              instance->Compiler.setConfig(config, apiVersion)
 
               let selected = {
                 id: version,
@@ -476,14 +504,15 @@ let useCompilerManager = (
 
           let instance = Compiler.make()
           let apiVersion = apiVersion->Version.fromString
-          let open_modules = getOpenModules(~apiVersion, ~libraries)
+          let openModules = getOpenModules(~apiVersion, ~libraries)
 
           let config = {
             ...instance->Compiler.getConfig,
-            module_system: defaultModuleSystem,
-            ?open_modules,
+            moduleSystem: defaultModuleSystem,
+            ?openModules,
           }
-          instance->Compiler.setConfig(config)
+
+          instance->Compiler.setConfig(config, apiVersion)
 
           let selected = {
             id: version,
@@ -529,7 +558,7 @@ let useCompilerManager = (
             )
           | Lang.Res => instance->Compiler.resCompile(code)
           }
-        | V5 =>
+        | V5 | V6 =>
           switch lang {
           | Lang.Res => instance->Compiler.resCompile(code)
           | _ => CompilationResult.UnexpectedError(`Can't handle with lang: ${lang->Lang.toString}`)
@@ -601,6 +630,8 @@ let useCompilerManager = (
     dispatchError,
     initialVersion,
     initialModuleSystem,
+    initialJsxPreserveMode,
+    initialExperimentalFeatures,
     initialLang,
     versions,
     router.route,

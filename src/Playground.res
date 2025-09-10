@@ -13,6 +13,38 @@ module Api = RescriptCompilerApi
 
 type layout = Column | Row
 type tab = JavaScript | Output | Problems | Settings
+
+module JsxCompilation = {
+  type t =
+    | Plain
+    | PreserveJsx
+
+  let getLabel = (mode: t): string =>
+    switch mode {
+    | Plain => "Plain JS functions"
+    | PreserveJsx => "Preserve JSX"
+    }
+
+  let toBool = (mode: t): bool =>
+    switch mode {
+    | Plain => false
+    | PreserveJsx => true
+    }
+
+  let fromBool = (bool): t => bool ? PreserveJsx : Plain
+}
+
+module ExperimentalFeatures = {
+  type t = LetUnwrap
+
+  let getLabel = (feature: t): string =>
+    switch feature {
+    | LetUnwrap => "let?"
+    }
+
+  let list = [LetUnwrap]
+}
+
 let breakingPoint = 1024
 
 module DropdownSelect = {
@@ -31,23 +63,23 @@ module DropdownSelect = {
   }
 }
 
-module ToggleSelection = {
-  module SelectionOption = {
-    @react.component
-    let make = (~label, ~isActive, ~disabled, ~onClick) => {
-      <button
-        className={"mr-1 px-2 py-1 rounded inline-block " ++ if isActive {
-          "bg-fire text-white font-bold"
-        } else {
-          "bg-gray-80 opacity-50 hover:opacity-80"
-        }}
-        onClick
-        disabled>
-        {React.string(label)}
-      </button>
-    }
+module SelectionOption = {
+  @react.component
+  let make = (~label, ~isActive, ~disabled, ~onClick) => {
+    <button
+      className={"mr-1 px-2 py-1 rounded inline-block " ++ if isActive {
+        "bg-fire text-white font-bold"
+      } else {
+        "bg-gray-80 opacity-50 hover:opacity-80"
+      }}
+      onClick
+      disabled>
+      {React.string(label)}
+    </button>
   }
+}
 
+module ToggleSelection = {
   @react.component
   let make = (
     ~onChange: 'a => unit,
@@ -842,7 +874,7 @@ module Settings = {
     ~config: Api.Config.t,
     ~keyMapState: (CodeMirror.KeyMap.t, (CodeMirror.KeyMap.t => CodeMirror.KeyMap.t) => unit),
   ) => {
-    let {Api.Config.warn_flags: warn_flags} = config
+    let {Api.Config.warnFlags: warnFlags} = config
     let (keyMap, setKeyMap) = keyMapState
 
     let availableTargetLangs = Api.Version.availableLanguages(readyState.selected.apiVersion)
@@ -857,22 +889,41 @@ module Settings = {
         }
       let config = {
         ...config,
-        warn_flags: flags->normalizeEmptyFlags->WarningFlagDescription.Parser.tokensToString,
+        warnFlags: flags->normalizeEmptyFlags->WarningFlagDescription.Parser.tokensToString,
       }
       setConfig(config)
     }
 
-    let onModuleSystemUpdate = module_system => {
-      let config = {...config, module_system}
+    let onModuleSystemUpdate = moduleSystem => {
+      let config = {...config, moduleSystem}
       setConfig(config)
     }
 
-    let warnFlagTokens = WarningFlagDescription.Parser.parse(warn_flags)->Result.getOr([])
+    let onJsxPreserveModeUpdate = compilation => {
+      let jsxPreserveMode = JsxCompilation.toBool(compilation)
+      let config = {...config, jsxPreserveMode}
+      setConfig(config)
+    }
+
+    let onExperimentalFeaturesUpdate = feature => {
+      let features = config.experimentalFeatures->Option.getOr([])
+
+      let experimentalFeatures = if features->Array.includes(feature) {
+        features->Array.filter(x => x !== feature)
+      } else {
+        [...features, feature]
+      }
+
+      let config = {...config, experimentalFeatures}
+      setConfig(config)
+    }
+
+    let warnFlagTokens = WarningFlagDescription.Parser.parse(warnFlags)->Result.getOr([])
 
     let onWarningFlagsResetClick = _evt => {
       setConfig({
         ...config,
-        warn_flags: "+a-4-9-20-40-41-42-50-61-102-109",
+        warnFlags: "+a-4-9-20-40-41-42-50-61-102-109",
       })
     }
 
@@ -996,10 +1047,42 @@ module Settings = {
         <ToggleSelection
           values=["commonjs", "esmodule"]
           toLabel={value => value}
-          selected=config.module_system
+          selected=config.moduleSystem
           onChange=onModuleSystemUpdate
         />
       </div>
+      {readyState.selected.apiVersion->RescriptCompilerApi.Version.isMinimumVersion(V6)
+        ? <>
+            <div className="mt-6">
+              <div className=titleClass> {React.string("JSX")} </div>
+              <ToggleSelection
+                values=[JsxCompilation.Plain, PreserveJsx]
+                toLabel=JsxCompilation.getLabel
+                selected={config.jsxPreserveMode->Option.getOr(false)->JsxCompilation.fromBool}
+                onChange=onJsxPreserveModeUpdate
+              />
+            </div>
+            <div className="mt-6">
+              <div className=titleClass> {React.string("Experimental Features")} </div>
+              {ExperimentalFeatures.list
+              ->Array.map(feature => {
+                let key = (feature :> string)
+
+                <SelectionOption
+                  key
+                  disabled=false
+                  label={feature->ExperimentalFeatures.getLabel}
+                  isActive={config.experimentalFeatures
+                  ->Option.getOr([])
+                  ->Array.includes(key)}
+                  onClick={_evt => onExperimentalFeaturesUpdate(key)}
+                />
+              })
+              ->React.array}
+            </div>
+          </>
+        : React.null}
+
       <div className="mt-6">
         <div className=titleClass> {React.string("Loaded Libraries")} </div>
         <ul>
@@ -1440,7 +1523,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   | [v] => Some(v) // only single version available. maybe local dev.
   | versions => {
       let lastStableVersion = versions->Array.find(version => version.preRelease->Option.isNone)
-      switch Dict.get(router.query, "version") {
+      switch Dict.get(router.query, (CompilerManagerHook.Version :> string)) {
       | Some(version) => version->Semver.parse
       | None =>
         switch Url.getVersionFromStorage(Playground) {
@@ -1451,14 +1534,20 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     }
   }
 
-  let initialLang = switch Dict.get(router.query, "ext") {
+  let initialLang = switch Dict.get(router.query, (CompilerManagerHook.Ext :> string)) {
   | Some("re") => Api.Lang.Reason
   | _ => Api.Lang.Res
   }
 
-  let initialModuleSystem = Dict.get(router.query, "module")
+  let initialModuleSystem = Dict.get(router.query, (Module :> string))
+  let initialJsxPreserveMode = Dict.get(router.query, (JsxPreserve :> string))->Option.isSome
 
-  let initialContent = switch (Dict.get(router.query, "code"), initialLang) {
+  let initialExperimentalFeatures =
+    Dict.get(router.query, (Experiments :> string))->Option.mapOr([], str =>
+      str->String.split(",")->Array.map(String.trim)
+    )
+
+  let initialContent = switch (Dict.get(router.query, (Code :> string)), initialLang) {
   | (Some(compressedCode), _) => LzString.decompressToEncodedURIComponent(compressedCode)
   | (None, Reason) => initialReContent
   | (None, Res) =>
@@ -1477,6 +1566,8 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     ~bundleBaseUrl,
     ~initialVersion?,
     ~initialModuleSystem?,
+    ~initialJsxPreserveMode,
+    ~initialExperimentalFeatures,
     ~initialLang,
     ~onAction,
     ~versions,
