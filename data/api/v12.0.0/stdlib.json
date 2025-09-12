@@ -5068,9 +5068,18 @@
         "kind": "value",
         "name": "charCodeAt",
         "docstrings": [
-          "`charCodeAt(str, index)` returns the character code at position `index` in\nstring `str` the result is in the range 0-65535, unlike `codePointAt`, so it\nwill not work correctly for characters with code points greater than or equal\nto 0x10000. The return type is `float` because this function returns NaN if\n`index` is less than zero or greater than the length of the string.\nSee [`String.charCodeAt`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt) on MDN.\n\n## Examples\n\n```rescript\nString.charCodeAt(`😺`, 0) == 0xd83d->Int.toFloat\nString.codePointAt(`😺`, 0) == Some(0x1f63a)\n```"
+          "`charCodeAt(str, index)` returns the character code at position `index` in\nstring `str` the result is in the range 0-65535, unlike `codePointAt`, so it\nwill not work correctly for characters with code points greater than or equal\nto 0x10000.\nSee [`String.charCodeAt`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt) on MDN.\n\n## Examples\n\n```rescript\nString.charCodeAt(`😺`, 0) == Some(0xd83d)\nString.charCodeAt(\"\", 0) == None\nString.codePointAt(`😺`, 0) == Some(0x1f63a)\n```"
         ],
-        "signature": "let charCodeAt: (string, int) => float"
+        "signature": "let charCodeAt: (string, int) => option<int>"
+      },
+      {
+        "id": "Stdlib.String.charCodeAtUnsafe",
+        "kind": "value",
+        "name": "charCodeAtUnsafe",
+        "docstrings": [
+          "`charCodeAtUnsafe(str, index)` returns the character code at position `index` in\nstring `str` the result is in the range 0-65535, unlike `codePointAt`, so it\nwill not work correctly for characters with code points greater than or equal\nto 0x10000.\nBeware: If the index is out of range, it will return `NaN` which is not actually a valid int.\nSee [`String.charCodeAt`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt) on MDN.\n\n## Examples\n\n```rescript\nString.charCodeAtUnsafe(`😺`, 0) == 0xd83d\nString.codePointAt(`😺`, 0) == Some(0x1f63a)\n```"
+        ],
+        "signature": "let charCodeAtUnsafe: (string, int) => int"
       },
       {
         "id": "Stdlib.String.codePointAt",
@@ -8820,7 +8829,7 @@
         "kind": "value",
         "name": "isNaN",
         "docstrings": [
-          "`isNaN(v)` tests if the given `v` is `NaN`.\nSee [`NaN`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN) on MDN.\n\n## Examples\n\n```rescript\nFloat.isNaN(3.0) // false\nFloat.isNaN(Float.Constants.nan) // true\n```"
+          "`isNaN(v)` tests if the given `v` is `NaN`.\nSee [`isNaN`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isNaN) on MDN.\n\n## Examples\n\n```rescript\nFloat.isNaN(3.0) // false\nFloat.isNaN(Float.Constants.nan) // true\n```"
         ],
         "signature": "let isNaN: float => bool"
       },
@@ -11999,6 +12008,15 @@
           "`filterMap(array, fn)`\n\nCalls `fn` for each element and returns a new array containing results of the `fn` calls which are not `None`.\n\n## Examples\n\n```rescript\n[\"Hello\", \"Hi\", \"Good bye\"]->Array.filterMap(item =>\n  switch item {\n  | \"Hello\" => Some(item->String.length)\n  | _ => None\n  }\n) == [5]\n\n[1, 2, 3, 4, 5, 6]->Array.filterMap(n => mod(n, 2) == 0 ? Some(n * n) : None) == [4, 16, 36]\n\nArray.filterMap([1, 2, 3, 4, 5, 6], _ => None) == []\n\nArray.filterMap([], n => mod(n, 2) == 0 ? Some(n * n) : None) == []\n```"
         ],
         "signature": "let filterMap: (array<'a>, 'a => option<'b>) => array<'b>"
+      },
+      {
+        "id": "Stdlib.Array.filterMapWithIndex",
+        "kind": "value",
+        "name": "filterMapWithIndex",
+        "docstrings": [
+          "`filterMapWithIndex(array, fn)`\n\nCalls `fn` for each element and returns a new array containing results of the `fn` calls which are not `None`.\n\n## Examples\n\n```rescript\n[\"Hello\", \"Hi\", \"Good bye\"]->Array.filterMapWithIndex((item, index) =>\n  switch item {\n  | \"Hello\" => Some(index)\n  | _ => None\n  }\n) == [0]\n```"
+        ],
+        "signature": "let filterMapWithIndex: (array<'a>, ('a, int) => option<'b>) => array<'b>"
       },
       {
         "id": "Stdlib.Array.keepSome",
