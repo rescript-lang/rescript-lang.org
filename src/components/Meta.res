@@ -78,5 +78,6 @@ let make = (
       | _ => Constants.versions.latest
       }}
     />
+    <script src="https://js.stripe.com/v3/buy-button.js" />
   </Head>
 }
