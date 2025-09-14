@@ -15,15 +15,58 @@ After long discussions we finally decided on an unwrap syntax for both the `opti
 
 ### Example
 
+Before showing off this new feauture, let's explore why it is useful. Consider a chain of `async` functions that are dependent on the result of the previous one. The naive way to write this in modern ReScript with `async`/`await` is to just `switch` on the results.
+
+```res
+let getUser = async id =>
+  switch await fetchUser(id) {
+  | Error(error) => Error(error)
+  | Ok(res) =>
+    switch await decodeUser(res) {
+    | Error(error) => Error(error)
+    | Ok(decodedUser) =>
+      switch await ensureUserActive(decodedUser) {
+      | Error(error) => Error(error)
+      | Ok() => Ok(decodedUser)
+      }
+    }
+  }
+```
+
+Two observations: 
+  1. with every `switch` expression, this function gets nested deeper.
+  2. The `Error` branch of every `switch` is just an identity mapper (neither wrapper nor contents change)
+
+This means even though `async`/`await` syntax is available in ReScript for some time now, it is also understandable that people created their own `ResultPromise` libraries to handle such things with less lines of code, e.g.:
+
+```res
+module ResultPromise = {
+  let flatMapOk = async (p: promise<'res>, f) =>
+    switch await p {
+    | Ok(x) => await f(x)
+    | Error(_) as res => res
+    }
+}
+
+let getUserPromises = id =>
+  fetchUser(id)
+  ->ResultPromise.flatMapOk(user => Promise.resolve(user->decodeUser))
+  ->ResultPromise.flatMapOk(decodedUser => ensureUserActive(decodedUser))
+```
+
+While this is much shorter, it is also harder to understand because we have two wrapper types here, `promise` and `result`. And we have to wrap the non-async type in a `Promise.resolve` in order to stay on the same type level.
+
 ```rescript
 let getUser = async (id) => {
   let? Ok(user)  = await fetchUser(id)
   let? Ok(decodedUser) = decodeUser(user)
-  Console.log(`Got user ${decodedUser.name}!`)
   let? Ok() = await ensureUserActive(decodedUser)
   Ok(decodedUser)
 }
 ```
+With the new `let-unwrap` syntax, `let?` in short, we now have to follow the happy-path (in the scope of the function). And it's immediately clear that `fetchUser` is an `async` function while `decodeUser` is not. There is no nesting as the `Error` is automatically mapped. But be assured the error case is also handled as the type checker will complain when you don't handle the `Error` returned by the `getUser` function.
+
+<!-- TODO: demonstrate error handling with polymorphic variants a little more -->
 
 This desugars to a **sequence** of `switch`/early-returns that you’d otherwise write by hand, so there’s **no extra runtime cost** and it plays nicely with `async/await`. Same idea works for `option` with `Some(...)` (and the PR also extends support so the left pattern can be `Error(...)`/`None`, not just `Ok(...)`/`Some(...)`).
 
