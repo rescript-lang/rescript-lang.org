@@ -5610,7 +5610,7 @@
         "kind": "value",
         "name": "getExn",
         "docstrings": [
-          "`getExn(res, ~message=?)` returns `n` if `res` is `Ok(n)`, otherwise throws an exception with the message provided, or a generic message if no message was provided.\n\n  ```res example\n  Result.getExn(Result.Ok(42)) == 42\n  \n  switch Result.getExn(Error(\"Invalid data\")) {\n  | exception _ => assert(true)\n  | _ => assert(false)\n  }\n\n  switch Result.getExn(Error(\"Invalid data\"), ~message=\"was Error!\") {\n  | exception _ => assert(true) // Throws a JsError with the message \"was Error!\"\n  | _ => assert(false)\n  }\n  ```"
+          "`getExn(res, ~message=?)` returns `n` if `res` is `Ok(n)`, otherwise throws an exception with the message provided, or a generic message if no message was provided.\n\n  ```res example\n  Result.getExn(Result.Ok(42)) == 42\n  \n  switch Result.getExn(Error(\"Invalid data\")) {\n  | exception _ => true\n  | _ => false\n  } == true\n\n  switch Result.getExn(Error(\"Invalid data\"), ~message=\"was Error!\") {\n  | exception _ => true // Throws a JsError with the message \"was Error!\"\n  | _ => false\n  } == true\n  ```"
         ],
         "signature": "let getExn: (result<'a, 'b>, ~message: string=?) => 'a",
         "deprecated": "Use 'getOrThrow' instead"
@@ -5620,7 +5620,7 @@
         "kind": "value",
         "name": "getOrThrow",
         "docstrings": [
-          "`getOrThrow(res, ~message=?)` returns `n` if `res` is `Ok(n)`, otherwise throws an exception with the message provided, or a generic message if no message was provided.\n\n  ```res example\n  Result.getOrThrow(Result.Ok(42)) == 42\n  \n  switch Result.getOrThrow(Error(\"Invalid data\")) {\n  | exception _ => assert(true)\n  | _ => assert(false)\n  }\n\n  switch Result.getOrThrow(Error(\"Invalid data\"), ~message=\"was Error!\") {\n  | exception _ => assert(true) // Throws a JsError with the message \"was Error!\"\n  | _ => assert(false)\n  }\n  ```"
+          "`getOrThrow(res, ~message=?)` returns `n` if `res` is `Ok(n)`, otherwise throws an exception with the message provided, or a generic message if no message was provided.\n\n  ```res example\n  Result.getOrThrow(Result.Ok(42)) == 42\n  \n  switch Result.getOrThrow(Error(\"Invalid data\")) {\n  | exception _ => true\n  | _ => false\n  } == true\n\n  switch Result.getOrThrow(Error(\"Invalid data\"), ~message=\"was Error!\") {\n  | exception _ => true // Throws a JsError with the message \"was Error!\"\n  | _ => false\n  } == true\n  ```"
         ],
         "signature": "let getOrThrow: (result<'a, 'b>, ~message: string=?) => 'a"
       },
@@ -5726,7 +5726,7 @@
         "kind": "value",
         "name": "mapError",
         "docstrings": [
-          "`mapError(r, f)` generates a new `result` by applying the function `f` to the `Error` value. If the source is `Ok`, return it as-is.\n\n## Examples\n\n```rescript\nlet format = n => `Error code: ${n->Int.toString}`\nResult.mapError(Error(14), format) // Error(\"Error code: 14\")\nResult.mapError(Ok(\"abc\"), format) // Ok(\"abc\")\n```"
+          "`mapError(r, f)` generates a new `result` by applying the function `f` to the `Error` value. If the source is `Ok`, return it as-is.\n\n## Examples\n\n```rescript\nlet format = n => `Error code: ${n->Int.toString}`\nResult.mapError(Error(14), format) == Error(\"Error code: 14\")\nResult.mapError(Ok(\"abc\"), format) == Ok(\"abc\")\n```"
         ],
         "signature": "let mapError: (result<'a, 'b>, 'b => 'c) => result<'a, 'c>"
       },
@@ -5735,7 +5735,7 @@
         "kind": "value",
         "name": "all",
         "docstrings": [
-          "`all(results)` returns a result of array if all options are Ok, otherwise returns Error.\n## Examples\n```rescript\nResult.all([Ok(1), Ok(2), Ok(3)]) // Ok([1, 2, 3])\nResult.all([Ok(1), Error(1)]) // Error(1)\n```"
+          "`all(results)` returns a result of array if all options are Ok, otherwise returns Error.\n## Examples\n```rescript\nResult.all([Ok(1), Ok(2), Ok(3)]) == Ok([1, 2, 3])\nResult.all([Ok(1), Error(1)]) == Error(1)\n```"
         ],
         "signature": "let all: array<result<'a, 'b>> => result<array<'a>, 'b>"
       },
@@ -5792,6 +5792,42 @@
           "`ignore(result)` ignores the provided result and returns unit.\n\n  This helper is useful when you want to discard a value (for example, the result of an operation with side effects)\n  without having to store or process it further."
         ],
         "signature": "let ignore: result<'res, 'err> => unit"
+      },
+      {
+        "id": "Stdlib.Result.mapOkAsync",
+        "kind": "value",
+        "name": "mapOkAsync",
+        "docstrings": [
+          "`mapOkAsync(res, f)`: Asynchronously maps over the Ok value of a Result. When `res` is `Ok(n)`, \napplies the async function `f` to `n` and wraps the result in `Ok`. \nWhen `res` is `Error`, returns the error unchanged.\n\n## Examples\n\n```rescript\nlet asyncSquare = async x => x * x\n\nlet result1 = Result.mapOkAsync(Promise.resolve(Ok(4)), asyncSquare) // Returns promise that resolves to Ok(16)\nlet result2 = Result.mapOkAsync(Promise.resolve(Error(\"invalid\")), asyncSquare) // Returns promise that resolves to Error(\"invalid\")\n```"
+        ],
+        "signature": "let mapOkAsync: (\n  promise<result<'ok, 'error>>,\n  'ok => 'mappedOk,\n) => promise<result<'mappedOk, 'error>>"
+      },
+      {
+        "id": "Stdlib.Result.mapErrorAsync",
+        "kind": "value",
+        "name": "mapErrorAsync",
+        "docstrings": [
+          "`mapErrorAsync(res, f)`: Asynchronously maps over the Error value of a Result. When `res` is `Error(e)`, \napplies the async function `f` to `e` and wraps the result in `Error`. \nWhen `res` is `Ok`, returns the ok value unchanged.\n\n## Examples\n\n```rescript\nlet asyncFormatError = async e => `Error: ${e}`\n\nlet result1 = Result.mapErrorAsync(Promise.resolve(Ok(42)), asyncFormatError) // Returns promise that resolves to Ok(42)\nlet result2 = Result.mapErrorAsync(Promise.resolve(Error(\"invalid\")), asyncFormatError) // Returns promise that resolves to Error(\"Error: invalid\")\n```"
+        ],
+        "signature": "let mapErrorAsync: (\n  promise<result<'ok, 'error>>,\n  'error => 'mappedError,\n) => promise<result<'ok, 'mappedError>>"
+      },
+      {
+        "id": "Stdlib.Result.flatMapOkAsync",
+        "kind": "value",
+        "name": "flatMapOkAsync",
+        "docstrings": [
+          "`flatMapOkAsync(res, f)`: Asynchronously flat-maps over the Ok value of a Result. When `res` is `Ok(n)`, \napplies the async function `f` to `n` which returns a Promise of a Result. \nWhen `res` is `Error`, returns the error unchanged.\n\n## Examples\n\n```rescript\nlet asyncValidate = async x => \n  if x > 0 {\n    Ok(x * 2)\n  } else {\n    Error(\"Must be positive\")\n  }\n\nlet result1 = Result.flatMapOkAsync(Promise.resolve(Ok(5)), asyncValidate) // Returns promise that resolves to Ok(10)\nlet result2 = Result.flatMapOkAsync(Promise.resolve(Error(\"Already failed\")), asyncValidate) // Returns promise that resolves to Error(\"Already failed\")\n```"
+        ],
+        "signature": "let flatMapOkAsync: (\n  promise<result<'ok, 'error>>,\n  'ok => promise<result<'mappedOk, 'error>>,\n) => promise<result<'mappedOk, 'error>>"
+      },
+      {
+        "id": "Stdlib.Result.flatMapErrorAsync",
+        "kind": "value",
+        "name": "flatMapErrorAsync",
+        "docstrings": [
+          "`flatMapErrorAsync(res, f)`: Asynchronously flat-maps over the Error value of a Result. When `res` is `Error(e)`, \napplies the async function `f` to `e` which returns a Promise of a Result. \nWhen `res` is `Ok`, returns the ok value unchanged.\n\n## Examples\n\n```rescript\nlet asyncRecover = async error => \n  if error === \"timeout\" {\n    Ok(\"default\")\n  } else {\n    Error(error)\n  }\n\nlet result1 = Result.flatMapErrorAsync(Promise.resolve(Error(\"timeout\")), asyncRecover) // Returns promise that resolves to Ok(\"default\")\nlet result2 = Result.flatMapErrorAsync(Promise.resolve(Ok(\"default\")), asyncRecover) // Returns promise that resolves to Ok(\"default\")\n```"
+        ],
+        "signature": "let flatMapErrorAsync: (\n  promise<result<'ok, 'error>>,\n  'error => promise<result<'ok, 'mappedError>>,\n) => promise<result<'ok, 'mappedError>>"
       }
     ]
   },
@@ -10187,203 +10223,279 @@
   "stdlib/dataview": {
     "id": "Stdlib.DataView",
     "name": "DataView",
-    "docstrings": [],
+    "docstrings": [
+      "Functions for interacting with DataView.\n\nSee [`DataView`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView) on MDN."
+    ],
     "items": [
       {
         "id": "Stdlib.DataView.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [],
+        "docstrings": [
+          "Type representing a DataView."
+        ],
         "signature": "type t"
       },
       {
         "id": "Stdlib.DataView.fromBuffer",
         "kind": "value",
         "name": "fromBuffer",
-        "docstrings": [],
-        "signature": "let fromBuffer: ArrayBuffer.t => t"
+        "docstrings": [
+          "`fromBuffer(buffer)` creates a DataView for the entire ArrayBuffer.\n\nSee [`DataView`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView) on MDN.\n\n## Examples\n\n```rescript\nDataView.fromBuffer(ArrayBuffer.make(16)) \nDataView.fromBuffer(ArrayBuffer.make(16), ~byteOffset=4)  \nDataView.fromBuffer(ArrayBuffer.make(16), ~byteOffset=4, ~length=8) \n```"
+        ],
+        "signature": "let fromBuffer: (ArrayBuffer.t, ~byteOffset: int=?, ~length: int=?) => t"
       },
       {
         "id": "Stdlib.DataView.fromBufferToEnd",
         "kind": "value",
         "name": "fromBufferToEnd",
-        "docstrings": [],
-        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t"
+        "docstrings": [
+          "`fromBufferToEnd(buffer, ~byteOffset)` creates a DataView starting at a given byte offset. See [`DataView`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView) on MDN.\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds.\n\n## Examples\n\n```rescript\nDataView.fromBufferToEnd(buffer, ~byteOffset=4)\n```"
+        ],
+        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.DataView.fromBufferWithRange",
         "kind": "value",
         "name": "fromBufferWithRange",
-        "docstrings": [],
-        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t"
+        "docstrings": [
+          "`fromBufferWithRange(buffer, ~byteOffset, ~length)` creates a DataView for a specific byte range. \n\nSee [`DataView`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView) on MDN.\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds.\n\n## Examples\n\n```rescript\nDataView.fromBufferWithRange(ArrayBuffer.make(16), ~byteOffset=2, ~length=8) \n```"
+        ],
+        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.DataView.buffer",
         "kind": "value",
         "name": "buffer",
-        "docstrings": [],
+        "docstrings": [
+          "`buffer(dataView)` returns the underlying ArrayBuffer referenced by this DataView.\n\nSee [`DataView.buffer`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/buffer) on MDN.\n\n## Examples\n\n```rescript\nlet array_buffer = ArrayBuffer.make(16)\nlet dv = DataView.fromBuffer(array_buffer)\nDataView.buffer(dv) == array_buffer\n```"
+        ],
         "signature": "let buffer: t => ArrayBuffer.t"
       },
       {
         "id": "Stdlib.DataView.byteLength",
         "kind": "value",
         "name": "byteLength",
-        "docstrings": [],
+        "docstrings": [
+          "`byteLength(dataView)` returns the length (in bytes) of this DataView.\n\nSee [`DataView.byteLength`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/byteLength) on MDN.\n\n## Examples\n\n```rescript\nlet array_buffer = ArrayBuffer.make(16)\nlet dv = DataView.fromBuffer(array_buffer)\nDataView.byteLength(dv) == 16\n```"
+        ],
         "signature": "let byteLength: t => int"
       },
       {
         "id": "Stdlib.DataView.byteOffset",
         "kind": "value",
         "name": "byteOffset",
-        "docstrings": [],
+        "docstrings": [
+          "`byteOffset(dataView)` returns the byte offset of this DataView from the start of its ArrayBuffer.\n\nSee [`DataView.byteOffset`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/byteOffset) on MDN.\n\n## Examples\n\n```rescript\nlet array_buffer = ArrayBuffer.make(16)\nlet dv = DataView.fromBuffer(array_buffer, ~byteOffset=4)\nDataView.byteOffset(dv) == 4\n```"
+        ],
         "signature": "let byteOffset: t => int"
       },
       {
         "id": "Stdlib.DataView.getInt8",
         "kind": "value",
         "name": "getInt8",
-        "docstrings": [],
+        "docstrings": [
+          "`getInt8(dataView, offset)` reads an 8-bit signed integer at the specified byte offset.\n\nSee [`DataView.getInt8`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getInt8) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\ndv->DateView.setInt8(0, -12)\nDataView.getInt8(dv, 0) == -12\n```"
+        ],
         "signature": "let getInt8: (t, int) => int"
       },
       {
         "id": "Stdlib.DataView.getUint8",
         "kind": "value",
         "name": "getUint8",
-        "docstrings": [],
+        "docstrings": [
+          "`getUint8(dataView, offset)` reads an 8-bit unsigned integer at the specified byte offset.\n\nSee [`DataView.getUint8`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getUint8) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\ndv->DateView.setUint8(1, 255)\nDataView.getUint8(dv, 1) == 255\n```"
+        ],
         "signature": "let getUint8: (t, int) => int"
       },
       {
         "id": "Stdlib.DataView.getInt16",
         "kind": "value",
         "name": "getInt16",
-        "docstrings": [],
-        "signature": "let getInt16: (t, int) => int"
+        "docstrings": [
+          "`getInt16(dataView, offset, ~littleEndian=?)` reads a 16-bit signed integer at the specified byte offset, with optional endianness.\n\nSee [`DataView.getInt16`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getInt16) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\ndv->DateView.setInt16(0, -1234)\ndv->DateView.setInt16(2, -1234, ~littleEndian=true)\nDataView.getInt16(dv, 0) == -1234\nDataView.getInt16(dv, 2, ~littleEndian=true) == -1234\n```"
+        ],
+        "signature": "let getInt16: (t, int, ~littleEndian: bool=?) => int"
       },
       {
         "id": "Stdlib.DataView.getUint16",
         "kind": "value",
         "name": "getUint16",
-        "docstrings": [],
-        "signature": "let getUint16: (t, int) => int"
+        "docstrings": [
+          "`getUint16(dataView, offset, ~littleEndian=?)` reads a 16-bit unsigned integer at the specified byte offset, with optional endianness.\n\nSee [`DataView.getUint16`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getUint16) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\ndv->DateView.setUint16(0, 1234)\ndv->DateView.setUint16(2, 1234, ~littleEndian=true)\nDataView.getUint16(dv, 0) == 1234\nDataView.getUint16(dv, 2, ~littleEndian=true) == 1234\n```"
+        ],
+        "signature": "let getUint16: (t, int, ~littleEndian: bool=?) => int"
       },
       {
         "id": "Stdlib.DataView.getInt32",
         "kind": "value",
         "name": "getInt32",
-        "docstrings": [],
-        "signature": "let getInt32: (t, int) => int"
+        "docstrings": [
+          "`getInt32(dataView, offset, ~littleEndian=?)` reads a 32-bit signed integer at the specified byte offset, with optional endianness.\n\nSee [`DataView.getInt32`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getInt32) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\ndv->DateView.setInt32(0, -123456)\ndv->DateView.setInt32(4, -123456, ~littleEndian=true)\nDataView.getInt32(dv, 0) == -123456\nDataView.getInt32(dv, 4, ~littleEndian=true) == -123456\n```"
+        ],
+        "signature": "let getInt32: (t, int, ~littleEndian: bool=?) => int"
       },
       {
         "id": "Stdlib.DataView.getUint32",
         "kind": "value",
         "name": "getUint32",
-        "docstrings": [],
-        "signature": "let getUint32: (t, int) => int"
+        "docstrings": [
+          "`getUint32(dataView, offset, ~littleEndian=?)` reads a 32-bit unsigned integer at the specified byte offset, with optional endianness.\n\nSee [`DataView.getUint32`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getUint32) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\ndv->DateView.setUint32(0, 123456)\ndv->DateView.setUint32(4, 123456, ~littleEndian=true)\nDataView.getUint32(dv, 0) == 123456\nDataView.getUint32(dv, 4, ~littleEndian=true) == 123456\n```"
+        ],
+        "signature": "let getUint32: (t, int, ~littleEndian: bool=?) => int"
+      },
+      {
+        "id": "Stdlib.DataView.getFloat16",
+        "kind": "value",
+        "name": "getFloat16",
+        "docstrings": [
+          "`getFloat16(dataView, offset, ~littleEndian=?)` reads a 16-bit floating point number (if supported) at the specified byte offset, with optional endianness.\n\nSee [`DataView.getFloat16`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getFloat16) on MDN.\n\n## Examples\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\ndv->DateView.setFloat16(0, 1.5)\ndv->DateView.setFloat16(2, 1.5, ~littleEndian=true)\nDataView.getFloat16(dv, 0) == 1.5\nDataView.getFloat16(dv, 2, ~littleEndian=true) == 1.5\n```"
+        ],
+        "signature": "let getFloat16: (t, int, ~littleEndian: bool=?) => float"
       },
       {
         "id": "Stdlib.DataView.getFloat32",
         "kind": "value",
         "name": "getFloat32",
-        "docstrings": [],
-        "signature": "let getFloat32: (t, int) => float"
+        "docstrings": [
+          "`getFloat32(dataView, offset, ~littleEndian=?)` reads a 32-bit floating point number at the specified byte offset, with optional endianness.\n\nSee [`DataView.getFloat32`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getFloat32) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\ndv->DateView.setFloat32(0, 3.14)\ndv->DateView.setFloat32(4, 3.14, ~littleEndian=true\nDataView.getFloat32(dv, 0) == 3.14\nDataView.getFloat32(dv, 4, ~littleEndian=true) == 3.14\n```"
+        ],
+        "signature": "let getFloat32: (t, int, ~littleEndian: bool=?) => float"
       },
       {
         "id": "Stdlib.DataView.getFloat64",
         "kind": "value",
         "name": "getFloat64",
-        "docstrings": [],
-        "signature": "let getFloat64: (t, int) => float"
+        "docstrings": [
+          "`getFloat64(dataView, offset, ~littleEndian=?)` reads a 64-bit floating point number at the specified byte offset, with optional endianness.\n\nSee [`DataView.getFloat64`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getFloat64) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\ndv->DateView.setFloat64(0, 6.28)\ndv->DateView.setFloat64(8, 6.28, ~littleEndian=true)\nDataView.getFloat64(dv, 0) == 6.28\nDataView.getFloat64(dv, 8, ~littleEndian=true) == 6.28\n```"
+        ],
+        "signature": "let getFloat64: (t, int, ~littleEndian: bool=?) => float"
       },
       {
         "id": "Stdlib.DataView.getBigInt64",
         "kind": "value",
         "name": "getBigInt64",
-        "docstrings": [],
-        "signature": "let getBigInt64: (t, int) => bigint"
+        "docstrings": [
+          "`getBigInt64(dataView, offset, ~littleEndian=?)` reads a 64-bit signed integer (BigInt) at the specified byte offset, with optional endianness.\n\nSee [`DataView.getBigInt64`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getBigInt64) on MDN.\n\n## Examples\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\ndv->DateView.setBigInt64(0, -123456789n)\ndv->DateView.setBigInt64(8, -123456789n, ~littleEndian=true)\nDataView.getBigInt64(dv, 0) == -123456789n\nDataView.getBigInt64(dv, 8, ~littleEndian=true) == -123456789n\n```"
+        ],
+        "signature": "let getBigInt64: (t, int, ~littleEndian: bool=?) => bigint"
       },
       {
         "id": "Stdlib.DataView.getBigUint64",
         "kind": "value",
         "name": "getBigUint64",
-        "docstrings": [],
-        "signature": "let getBigUint64: (t, int) => bigint"
+        "docstrings": [
+          "`getBigUint64(dataView, offset, ~littleEndian=?)` reads a 64-bit unsigned integer (BigInt) at the specified byte offset, with optional endianness.\n\nSee [`DataView.getBigUint64`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getBigUint64) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\ndv->DateView.setBigUint64(0, 123456789n)\ndv->DateView.setBigUint64(8, 123456789n, ~littleEndian=true)\nDataView.getBigUint64(dv, 0) == 123456789n\nDataView.getBigUint64(dv, 8, ~littleEndian=true) == 123456789n\n```"
+        ],
+        "signature": "let getBigUint64: (t, int, ~littleEndian: bool=?) => bigint"
       },
       {
         "id": "Stdlib.DataView.setInt8",
         "kind": "value",
         "name": "setInt8",
-        "docstrings": [],
+        "docstrings": [
+          "`setInt8(dataView, offset, value)` writes an 8-bit signed integer at the specified byte offset.\n\nSee [`DataView.setInt8`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setInt8) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\nDataView.setInt8(dv, 0, -12)\ndv->DateView.getInt8(0) == -12\n```"
+        ],
         "signature": "let setInt8: (t, int, int) => unit"
       },
       {
         "id": "Stdlib.DataView.setUint8",
         "kind": "value",
         "name": "setUint8",
-        "docstrings": [],
+        "docstrings": [
+          "`setUint8(dataView, offset, value)` writes an 8-bit unsigned integer at the specified byte offset.\n\nSee [`DataView.setUint8`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setUint8) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\nDataView.setUint8(dv, 0, 255)\ndv->DateView.getUint8(0) == 255\n```"
+        ],
         "signature": "let setUint8: (t, int, int) => unit"
       },
       {
         "id": "Stdlib.DataView.setInt16",
         "kind": "value",
         "name": "setInt16",
-        "docstrings": [],
-        "signature": "let setInt16: (t, int, int) => unit"
+        "docstrings": [
+          "`setInt16(dataView, offset, value, ~littleEndian=?)` writes a 16-bit signed integer at the specified byte offset, with optional endianness.\n\nSee [`DataView.setInt16`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setInt16) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\nDataView.setInt16(dv, 0 -1234)\nDataView.setInt16(dv, 2, -1234, ~littleEndian=true)\ndv->DateView.getInt16(0) == -1234\ndv->DateView.getInt16(2, ~littleEndian=true) == -1234\n```"
+        ],
+        "signature": "let setInt16: (t, int, int, ~littleEndian: bool=?) => unit"
       },
       {
         "id": "Stdlib.DataView.setUint16",
         "kind": "value",
         "name": "setUint16",
-        "docstrings": [],
-        "signature": "let setUint16: (t, int, int) => unit"
+        "docstrings": [
+          "`setUint16(dataView, offset, value, ~littleEndian=?)` writes a 16-bit unsigned integer at the specified byte offset, with optional endianness.\n\nSee [`DataView.setUint16`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setUint16) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\nDataView.setUint16(dv, 0, 1234)\nDataView.setUint16(dv, 2, 1234, ~littleEndian=true)\ndv->DateView.getUint16(0) == 1234\ndv->DateView.getUint16(2, ~littleEndian=true) == 1234\n```"
+        ],
+        "signature": "let setUint16: (t, int, int, ~littleEndian: bool=?) => unit"
       },
       {
         "id": "Stdlib.DataView.setInt32",
         "kind": "value",
         "name": "setInt32",
-        "docstrings": [],
-        "signature": "let setInt32: (t, int, int) => unit"
+        "docstrings": [
+          "`setInt32(dataView, offset, value, ~littleEndian=?)` writes a 32-bit signed integer at the specified byte offset, with optional endianness.\n\nSee [`DataView.setInt32`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setInt32) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\nDataView.setInt32(dv, 0, -123456)\nDataView.setInt32(dv, 4, -123456, ~littleEndian=true)\ndv->DateView.getInt32(0) == -123456\ndv->DateView.getInt32(4, ~littleEndian=true) == -123456\n```"
+        ],
+        "signature": "let setInt32: (t, int, int, ~littleEndian: bool=?) => unit"
       },
       {
         "id": "Stdlib.DataView.setUint32",
         "kind": "value",
         "name": "setUint32",
-        "docstrings": [],
-        "signature": "let setUint32: (t, int, int) => unit"
+        "docstrings": [
+          "`setUint32(dataView, offset, value, ~littleEndian=?)` writes a 32-bit unsigned integer at the specified byte offset, with optional endianness.\n\nSee [`DataView.setUint32`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setUint32) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\nDataView.setUint32(dv, 0 123456)\nDataView.setUint32(dv, 4, 123456, ~littleEndian=true)\ndv->DateView.getUint32(0) == 123456\ndv->DateView.getUint32(4, ~littleEndian=true) == 123456\n```"
+        ],
+        "signature": "let setUint32: (t, int, int, ~littleEndian: bool=?) => unit"
+      },
+      {
+        "id": "Stdlib.DataView.setFloat16",
+        "kind": "value",
+        "name": "setFloat16",
+        "docstrings": [
+          "`setFloat16(dataView, offset, value, ~littleEndian=?)` writes a 16-bit floating point number (if supported) at the specified byte offset, with optional endianness.\n\nSee [`DataView.setFloat16`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setFloat16) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\nDataView.setFloat16(dv, 0, 1.5)\nDataView.setFloat16(dv, 2, 1.5, ~littleEndian=true)\ndv->DateView.getFloat16(0) == 1.5\ndv->DateView.getFloat16(2, ~littleEndian=true) == 1.5\n```"
+        ],
+        "signature": "let setFloat16: (t, int, float, ~littleEndian: bool=?) => unit"
       },
       {
         "id": "Stdlib.DataView.setFloat32",
         "kind": "value",
         "name": "setFloat32",
-        "docstrings": [],
-        "signature": "let setFloat32: (t, int, float) => unit"
+        "docstrings": [
+          "`setFloat32(dataView, offset, value, ~littleEndian=?)` writes a 32-bit floating point number at the specified byte offset, with optional endianness.\n\nSee [`DataView.setFloat32`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setFloat32) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\nDataView.setFloat32(dv, 0, 3.14)\nDataView.setFloat32(dv, 4, 3.14, ~littleEndian=true)\ndv->DateView.getFloat32(0) == 3.14\ndv->DateView.getFloat32(4, ~littleEndian=true) == 3.14\n```"
+        ],
+        "signature": "let setFloat32: (t, int, float, ~littleEndian: bool=?) => unit"
       },
       {
         "id": "Stdlib.DataView.setFloat64",
         "kind": "value",
         "name": "setFloat64",
-        "docstrings": [],
-        "signature": "let setFloat64: (t, int, float) => unit"
+        "docstrings": [
+          "`setFloat64(dataView, offset, value, ~littleEndian=?)` writes a 64-bit floating point number at the specified byte offset, with optional endianness.\n\nSee [`DataView.setFloat64`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setFloat64) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\nDataView.setFloat64(dv, 0, 6.28)\nDataView.setFloat64(dv, 8, 6.28, ~littleEndian=true)\ndv->DateView.getFloat64(0) == 6.28\ndv->DateView.getFloat64(8, ~littleEndian=true) == 6.28\n```"
+        ],
+        "signature": "let setFloat64: (t, int, float, ~littleEndian: bool=?) => unit"
       },
       {
         "id": "Stdlib.DataView.setBigInt64",
         "kind": "value",
         "name": "setBigInt64",
-        "docstrings": [],
-        "signature": "let setBigInt64: (t, int, bigint) => unit"
+        "docstrings": [
+          "`setBigInt64(dataView, offset, value, ~littleEndian=?)` writes a 64-bit signed integer (BigInt) at the specified byte offset, with optional endianness.\n\nSee [`DataView.setBigInt64`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setBigInt64) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\nDataView.setBigInt64(dv, 0, -123456789n)\nDataView.setBigInt64(dv, 8, -123456789n, ~littleEndian=true)\ndv->DateView.getBigInt64(0) == -123456789n\ndv->DateView.getBigInt64(8, ~littleEndian=true) == -123456789n\n```"
+        ],
+        "signature": "let setBigInt64: (t, int, bigint, ~littleEndian: bool=?) => unit"
       },
       {
         "id": "Stdlib.DataView.setBigUint64",
         "kind": "value",
         "name": "setBigUint64",
-        "docstrings": [],
-        "signature": "let setBigUint64: (t, int, bigint) => unit"
+        "docstrings": [
+          "`setBigUint64(dataView, offset, value, ~littleEndian=?)` writes a 64-bit unsigned integer (BigInt) at the specified byte offset, with optional endianness.\n\nSee [`DataView.setBigUint64`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setBigUint64) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\nDataView.setBigUint64(dv, 0, 123456789n)\nDataView.setBigUint64(dv, 8, 123456789n, ~littleEndian=true)\ndv->DateView.getBigUint64(0) == 123456789n\ndv->DateView.getBigUint64(8, ~littleEndian=true) == 123456789n\n```"
+        ],
+        "signature": "let setBigUint64: (t, int, bigint, ~littleEndian: bool=?) => unit"
       },
       {
         "id": "Stdlib.DataView.ignore",
         "kind": "value",
         "name": "ignore",
         "docstrings": [
-          "`ignore(dataView)` ignores the provided dataView and returns unit.\n\n  This helper is useful when you want to discard a value (for example, the result of an operation with side effects)\n  without having to store or process it further."
+          "`ignore(dataView)` ignores the provided DataView and returns unit.\n\nThis helper is useful when you want to discard a value (for example, the result of an operation with side effects) without having to store or process it further."
         ],
         "signature": "let ignore: t => unit"
       }
