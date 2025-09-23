@@ -196,6 +196,17 @@ let x = [1, 2, 3]->
 - ArrayExtra.myOtherArrayFn
 ```
 
+**Note**: generic types like `promise.t` and `result.t` do not need any additional types in the `rescript.json`:
+
+```json
+"editor": {
+  "autocomplete": {
+    "promise": ["PromiseExt"],
+    "result": ["ResultExt"]
+  }
+}
+```
+
 ##### Enhancing completion for non-builtin types
 
 Now, let's look at an example of when you have a non-builtin type that you don't have control over.
@@ -221,3 +232,35 @@ Let's configure this using the `editor.autocomplete` config in `rescript.json`:
 ```
 
 Now, when using pipes on anything of type `Fastify.t`, we'll also get completions from our custom `FastifyExtra`.
+
+##### Enhancing completion for non-builtin types with namespaces
+
+When a project uses a namespace, this affects the internal representation of type names used in the `autocomplete` configuration.
+
+Consider the [geolocation](https://rescript-lang.github.io/experimental-rescript-webapi/apidocs/geolocation-api/#geolocation) type from the [Experimental WebAPI bindings](https://rescript-lang.github.io/experimental-rescript-webapi/).  
+This project specifies in its `rescript.json`:
+
+```json
+{
+  "name": "@rescript/webapi",
+  "namespace": "WebAPI"
+}
+```
+
+This makes the `geolocation` type internally represented as `GeolocationAPI-WebAPI.geolocation`, where:
+
+- `GeolocationAPI` is the module name
+- `WebAPI` is the namespace
+- `geolocation` is the type name
+
+**Important**: You must use this internal representation when configuring autocomplete for namespaced types:
+
+```json
+{
+  "editor": {
+    "autocomplete": {
+      "GeolocationAPI-WebAPI.geolocation": ["GeolocationExt"]
+    }
+  }
+}
+```
