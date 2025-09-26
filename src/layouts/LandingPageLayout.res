@@ -668,15 +668,38 @@ module CuratedResources = {
   }
 }
 
-/*
 module Sponsors = {
   @react.component
-  let make = () =>
-    <div className="mt-24">
-      <h2 className="hl-1 text-center"> {React.string("Sponsors")} </h2>
-    </div>
+  let make = () => {
+    <section className="mt-20 flex flex-col items-center">
+      <h3 className="hl-1 text-gray-80 text-center max-w-576 mx-auto">
+        {React.string("From the community, for the community")}
+      </h3>
+      <div
+        className="flex flex-wrap mx-4 gap-8 justify-center items-center max-w-md lg:mx-auto mt-16 mb-16">
+        <p className="leading-4">
+          {React.string(
+            "We rely on donations from organizations and individuals to stay independent. ",
+          )}
+        </p>
+        <p className="leading-4">
+          {<>
+            {React.string(
+              "Additional financial resources help us to maintain essential language infrastructure, and to organize events, like the ",
+            )}
+            <Next.Link href="/blog/retreats" className="no-underline text-fire hover:underline">
+              {React.string("annual ReScript Retreat")}
+            </Next.Link>
+            {React.string(".")}
+          </>}
+        </p>
+      </div>
+      <Next.Link href="/community/donate">
+        <Button> {React.string("Donate")} </Button>
+      </Next.Link>
+    </section>
+  }
 }
-*/
 
 @react.component
 let make = (~components=MarkdownComponents.default, ~children) => {
@@ -707,6 +730,7 @@ let make = (~components=MarkdownComponents.default, ~children) => {
                     <OtherSellingPoints />
                     <TrustedBy />
                     <CuratedResources />
+                    <Sponsors />
                     children
                   </div>
                 </div>

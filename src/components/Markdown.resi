@@ -169,6 +169,11 @@ module Video: {
   let make: (~src: string, ~caption: string=?) => React.element
 }
 
+module DonationForm: {
+  @react.component
+  let make: unit => React.element
+}
+
 // Used for the MdxJS Provider
 
 /* Sets our preferred branded styles
