@@ -31,7 +31,8 @@ module Badge = {
     let text = badge->BlogFrontmatter.Badge.toString
 
     <div
-      className={bgColor ++ " flex items-center h-6 font-medium tracking-tight text-gray-80-tr text-14 px-2 rounded-sm"}>
+      className={bgColor ++ " flex items-center h-6 font-medium tracking-tight text-gray-80-tr text-14 px-2 rounded-sm"}
+    >
       <div>
         <img className="h-3 block mr-1" src="/star.svg" />
       </div>
@@ -85,7 +86,7 @@ module BlogCard = {
   ) =>
     <section className="h-full">
       <div className="relative">
-        <ReactRouter.Link to=#"syntax-lookup" />
+        <ReactRouter.Link to=#"/syntax-lookup" />
         {switch badge {
         | None => React.null
         | Some(badge) =>
@@ -142,7 +143,8 @@ module FeatureCard = {
       </div>
     }
     <section
-      className="flex sm:px-4 md:px-8 lg:px-0 flex-col justify-end lg:flex-row sm:items-center h-full">
+      className="flex sm:px-4 md:px-8 lg:px-0 flex-col justify-end lg:flex-row sm:items-center h-full"
+    >
       <div className="w-full h-full sm:self-start md:self-auto max-h-101.75">
         <Link.String to={`/blog/${slug}`} className="relative block pt-2/3">
           {switch badge {
@@ -162,7 +164,8 @@ module FeatureCard = {
         </Link.String>
       </div>
       <div
-        className="relative px-4 lg:self-auto sm:pt-12 md:px-20 sm:self-start md:-mt-20 mt-4 bg-white lg:w-full lg:pt-0 lg:mt-0 lg:px-0 lg:ml-12">
+        className="relative px-4 lg:self-auto sm:pt-12 md:px-20 sm:self-start md:-mt-20 mt-4 bg-white lg:w-full lg:pt-0 lg:mt-0 lg:px-0 lg:ml-12"
+      >
         <div className="max-w-400 ">
           <h2 className="hl-1"> {React.string(title)} </h2>
           <div className="mb-6">
@@ -175,7 +178,8 @@ module FeatureCard = {
                   | X(handle) => "https://x.com/" ++ handle
                   | Bluesky(handle) => "https://bsky.app/profile/" ++ handle
                   }}
-                  rel="noopener noreferrer">
+                  rel="noopener noreferrer"
+                >
                   {React.string(author.fullname)}
                 </a>
                 {switch category {
@@ -238,7 +242,8 @@ let default = (props: props): React.element => {
       | [] => React.null
       | rest =>
         <div
-          className="px-4 md:px-8 xl:px-0 grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-20 gap-y-12 md:gap-y-24 w-full">
+          className="px-4 md:px-8 xl:px-0 grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-20 gap-y-12 md:gap-y-24 w-full"
+        >
           {Array.map(rest, post => {
             let badge = post.frontmatter.badge->Null.toOption
 

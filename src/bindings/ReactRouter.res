@@ -3,8 +3,12 @@ open WebAPI
 @module("react-router-dom")
 external navigate: string => unit = "navigate"
 
+// https://api.reactrouter.com/v7/functions/react_router.useNavigate.html
 @module("react-router")
 external useNavigate: unit => string => unit = "useNavigate"
+
+@module("react-router")
+external useSearchParams: unit => ({..}, {..} => unit) = "useSearchParams"
 
 /* The types for this are auto-generated from the react-router.config.mjs file */
 type path = {pathname: Path.t, search?: string, hash?: string}

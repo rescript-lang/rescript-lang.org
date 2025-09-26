@@ -12,7 +12,7 @@ module Intro = {
             compiler toolchain that scales to any codebase size.`)}
         </h2>
         <div className="mt-4 mb-2">
-          <ReactRouter.Link to=#"docs/manual/installation">
+          <ReactRouter.Link to=#"/docs/manual/installation">
             <Button> {React.string("Get started")} </Button>
           </ReactRouter.Link>
         </div>
@@ -75,11 +75,13 @@ export {
         <div className="relative w-full pt-6 pb-8 sm:px-8 md:px-16 max-w-[1400px]">
           // Playground widget
           <div
-            className="relative z-2 flex flex-col md:flex-row bg-gray-90 mx-auto sm:rounded-lg max-w-[1280px]">
+            className="relative z-2 flex flex-col md:flex-row bg-gray-90 mx-auto sm:rounded-lg max-w-[1280px]"
+          >
             //Left Side (ReScript)
             <div className="md:w-1/2">
               <div
-                className="body-sm text-gray-40 text-center py-3 sm:rounded-t-lg md:rounded-tl-lg bg-gray-100">
+                className="body-sm text-gray-40 text-center py-3 sm:rounded-t-lg md:rounded-tl-lg bg-gray-100"
+              >
                 {React.string("Write in ReScript")}
               </div>
               <pre className="text-14 px-8 pt-6 pb-12 whitespace-pre-wrap">
@@ -89,11 +91,13 @@ export {
             //Right Side (JavaScript)
             <div className="md:w-1/2 ">
               <div
-                className="body-sm text-gray-40 py-3 text-center md:border-l border-gray-80 bg-gray-100 sm:rounded-tr-lg">
+                className="body-sm text-gray-40 py-3 text-center md:border-l border-gray-80 bg-gray-100 sm:rounded-tr-lg"
+              >
                 {React.string("Compile to JavaScript")}
               </div>
               <pre
-                className="text-14 px-8 pt-6 pb-14 md:border-l border-gray-80 whitespace-pre-wrap">
+                className="text-14 px-8 pt-6 pb-14 md:border-l border-gray-80 whitespace-pre-wrap"
+              >
                 {HighlightJs.renderHLJS(~darkmode=true, ~code=example.js, ~lang="js", ())}
               </pre>
             </div>
@@ -214,7 +218,8 @@ module QuickInstall = {
         ref={ReactDOM.Ref.domRef((Obj.magic(buttonRef): React.ref<Nullable.t<Dom.element>>))}
         disabled={state === Copied}
         className="relative h-10 w-10 flex justify-center items-center "
-        onClick>
+        onClick
+      >
         <Icon.Copy className="w-6 h-6 mt-px text-gray-40 hover:cursor-pointer hover:text-gray-80" />
       </button>
     }
@@ -223,7 +228,8 @@ module QuickInstall = {
   module Instructions = {
     let copyBox = text => {
       <div
-        className="flex justify-between items-center pl-6 pr-3 py-3 w-full bg-gray-10 border border-gray-20 rounded max-w-400">
+        className="flex justify-between items-center pl-6 pr-3 py-3 w-full bg-gray-10 border border-gray-20 rounded max-w-400"
+      >
         <span className="font-mono text-14  text-gray-70"> {React.string(text)} </span>
         <CopyButton code=text />
       </div>
@@ -253,7 +259,8 @@ module QuickInstall = {
         //---Textblock on the left side---
         <div className="relative max-w-112">
           <p
-            className="relative z-1 space-y-12 text-gray-80 font-semibold text-24 md:text-32 leading-2">
+            className="relative z-1 space-y-12 text-gray-80 font-semibold text-24 md:text-32 leading-2"
+          >
             <span className="bg-fire-5 rounded-lg border border-fire-10 p-1 ">
               {React.string(`Leverage the full power`)}
             </span>
@@ -263,7 +270,8 @@ module QuickInstall = {
         //spacing between columns
         <div className="w-full mt-12 md:flex flex-col lg:flex-row md:justify-between ">
           <p
-            className="relative z-1 text-gray-80 font-semibold text-24 md:text-32 leading-2 max-w-lg">
+            className="relative z-1 text-gray-80 font-semibold text-24 md:text-32 leading-2 max-w-lg"
+          >
             {React.string(`ReScript is used to ship and maintain mission-critical products with good UI and UX.`)}
           </p>
           <div className="mt-16 lg:mt-0 self-end max-w-400">
@@ -304,10 +312,12 @@ module MainUSP = {
       }
 
       <div
-        className="relative flex justify-center w-full bg-gray-90 px-5 sm:px-8 lg:px-14 overflow-hidden">
+        className="relative flex justify-center w-full bg-gray-90 px-5 sm:px-8 lg:px-14 overflow-hidden"
+      >
         // Content
         <div
-          className="relative max-w-1060 z-3 flex flex-wrap justify-center lg:justify-between pb-16 pt-20 md:pb-20 md:pt-32 lg:pb-40 md:space-x-4 w-full">
+          className="relative max-w-1060 z-3 flex flex-wrap justify-center lg:justify-between pb-16 pt-20 md:pb-20 md:pt-32 lg:pb-40 md:space-x-4 w-full"
+        >
           <div className="max-w-96 flex flex-col justify-center mb-6 lg:mb-2">
             <div className="hl-overline text-gray-20 mb-4"> {React.string(caption)} </div>
             <h3 className="text-gray-10 mb-4 hl-2 font-semibold"> title </h3>
@@ -318,7 +328,8 @@ module MainUSP = {
           //image (right)
           <div className="relative mt-10 lg:mt-0">
             <div
-              className="relative w-full z-2 bg-gray-90 flex md:mt-0 items-center justify-center rounded-lg max-w-140 shadow-[0px_4px_55px_0px_rgba(230,72,79,0.10)]">
+              className="relative w-full z-2 bg-gray-90 flex md:mt-0 items-center justify-center rounded-lg max-w-140 shadow-[0px_4px_55px_0px_rgba(230,72,79,0.10)]"
+            >
               media
             </div>
             <img
@@ -331,14 +342,16 @@ module MainUSP = {
         <svg
           className={`md:hidden absolute z-1 w-full h-full bottom-0 left-0 ${polyColor}`}
           viewBox="0 0 100 100"
-          preserveAspectRatio="none">
+          preserveAspectRatio="none"
+        >
           <polygon className="fill-current" points=polyPointsMobile />
         </svg>
         // Tablet / Desktop SVG
         <svg
           className={`hidden md:block absolute z-1 w-full h-full right-0 top-0 ${polyColor}`}
           viewBox="0 0 100 100"
-          preserveAspectRatio="none">
+          preserveAspectRatio="none"
+        >
           <polygon className="fill-current" points=polyPointsLg />
         </svg>
       </div>
@@ -374,7 +387,8 @@ module MainUSP = {
     <Item
       caption="A robust type system"
       title={<span
-        className="text-transparent bg-clip-text bg-linear-to-r from-berry-dark-50 to-fire-50">
+        className="text-transparent bg-clip-text bg-linear-to-r from-berry-dark-50 to-fire-50"
+      >
         {React.string("Type Better")}
       </span>}
       media={<video className="rounded-lg" controls={true} poster={"/lp/type-better-preview.jpg"}>
@@ -397,7 +411,8 @@ module MainUSP = {
         {React.string(" at your fingertips")}
       </>}
       media={<video
-        className="rounded-lg" controls={true} poster={"/lp/interop-example-preview.jpg"}>
+        className="rounded-lg" controls={true} poster={"/lp/interop-example-preview.jpg"}
+      >
         <source
           src="https://assets-17077.kxcdn.com/videos/interop-example-2.mp4" type_="video/mp4"
         />
@@ -422,7 +437,8 @@ module OtherSellingPoints = {
   let make = () => {
     <section
       className="flex justify-center w-full bg-gray-90 border-t border-gray-80
-            px-4 sm:px-8 lg:px-16 pt-24 pb-20 ">
+            px-4 sm:px-8 lg:px-16 pt-24 pb-20 "
+    >
       //defines the grid
       <div className="max-w-1060 grid grid-cols-4 md:grid-cols-10 grid-rows-2 gap-8">
         //Large Item
@@ -497,7 +513,8 @@ module TrustedBy = {
         {React.string("Trusted by our users")}
       </h3>
       <div
-        className="flex flex-wrap mx-4 gap-8 justify-center items-center max-w-xl lg:mx-auto mt-16 mb-16">
+        className="flex flex-wrap mx-4 gap-8 justify-center items-center max-w-xl lg:mx-auto mt-16 mb-16"
+      >
         {OurUsers.companies
         ->Array.map(company => {
           let (companyKey, renderedCompany) = switch company {
@@ -513,7 +530,8 @@ module TrustedBy = {
         ->React.array}
       </div>
       <a
-        href="https://github.com/rescript-lang/rescript-lang.org/blob/master/src/common/OurUsers.res">
+        href="https://github.com/rescript-lang/rescript-lang.org/blob/master/src/common/OurUsers.res"
+      >
         <Button> {React.string("Add Your Logo")} </Button>
       </a>
       <div className="self-start mt-10 max-w-320 overflow-hidden opacity-50 max-h-24">
@@ -595,7 +613,8 @@ module CuratedResources = {
     <section className="bg-gray-100 w-full pb-40 pt-20 ">
       //headline container
       <div
-        className="mb-10 max-w-1280 flex flex-col justify-center items-center mx-5 md:mx-8 lg:mx-auto">
+        className="mb-10 max-w-1280 flex flex-col justify-center items-center mx-5 md:mx-8 lg:mx-auto"
+      >
         <div className="body-sm md:body-lg text-gray-40 w-40 mb-4 xs:w-auto text-center">
           {React.string("Get up and running with ReScript")}
         </div>
@@ -613,13 +632,15 @@ module CuratedResources = {
       //container for guides
       <div>
         <div
-          className="grid grid-flow-col grid-cols-2 grid-rows-2 lg:grid-cols-4 lg:grid-rows-1 gap-2 md:gap-4 lg:gap-8 max-w-1280 px-5 md:px-8 mx-auto">
+          className="grid grid-flow-col grid-cols-2 grid-rows-2 lg:grid-cols-4 lg:grid-rows-1 gap-2 md:gap-4 lg:gap-8 max-w-1280 px-5 md:px-8 mx-auto"
+        >
           {cards
           ->Array.mapWithIndex((card, i) =>
             <ReactRouter.Link.String
               key={Int.toString(i)}
               to=card.href
-              className="hover:bg-gray-80 bg-gray-90 px-4 md:px-8 pb-0 md:pb-8 relative rounded-xl md:min-w-[196px]">
+              className="hover:bg-gray-80 bg-gray-90 px-4 md:px-8 pb-0 md:pb-8 relative rounded-xl md:min-w-[196px]"
+            >
               <img className="h-[53px] absolute mt-6" src=card.imgSrc loading=#lazy />
               <h5 className="text-gray-10 hl-4 mt-32 h-12"> {card.title} </h5>
               <div className="text-gray-40 mt-2 mb-8 body-sm"> {React.string(card.descr)} </div>
@@ -635,13 +656,15 @@ module CuratedResources = {
           <hr className="bg-gray-80 h-px border-0 relative top-[-12px]" />
         </div>
         <div
-          className="grid grid-flow-col grid-cols-2 lg:grid-cols-3 lg:grid-rows-1 gap-2 md:gap-4 lg:gap-8 max-w-1280 px-5 md:px-8 mx-auto">
+          className="grid grid-flow-col grid-cols-2 lg:grid-cols-3 lg:grid-rows-1 gap-2 md:gap-4 lg:gap-8 max-w-1280 px-5 md:px-8 mx-auto"
+        >
           {templates
           ->Array.mapWithIndex((card, i) =>
             <a
               key={Int.toString(i)}
               href={card.href}
-              className="hover:bg-gray-80 bg-gray-90 px-5 pb-8 relative rounded-xl min-w-[200px]">
+              className="hover:bg-gray-80 bg-gray-90 px-5 pb-8 relative rounded-xl min-w-[200px]"
+            >
               <img className="h-12 absolute mt-5" src=card.imgSrc loading=#lazy />
               <h5 className="text-gray-10 hl-4 mt-32 h-12"> {card.title} </h5>
               <div className="text-gray-40 mt-4 body-sm"> {React.string(card.descr)} </div>

@@ -35,22 +35,22 @@ module MobileNav = {
     <div className="border-gray-80 border-tn">
       <ul>
         <li className=base>
-          <Link to=#"try" className={linkOrActiveLink(~target=#"try", ~route)}>
+          <Link to=#"/try" className={linkOrActiveLink(~target=#"/try", ~route)}>
             {React.string("Playground")}
           </Link>
         </li>
         <li className=base>
-          <Link to=#blog className={linkOrActiveLinkSubroute(~target=#blog, ~route)}>
+          <Link to=#"/blog" className={linkOrActiveLinkSubroute(~target=#"/blog", ~route)}>
             {React.string("Blog")}
           </Link>
         </li>
         <li className=base>
-          <Link to=#community className={linkOrActiveLink(~target=#community, ~route)}>
+          <Link to=#"/community" className={linkOrActiveLink(~target=#"/community", ~route)}>
             {React.string("Community")}
           </Link>
         </li>
         <li className=base>
-          <Link href="/packages" className={linkOrActiveLink(~target="/packages", ~route)}>
+          <Link to=#"/packages" className={linkOrActiveLink(~target=#"/packages", ~route)}>
             {React.string("Packages")}
           </Link>
         </li>
@@ -94,13 +94,15 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
   <>
     <header
       id="header"
-      className={fixedNavClassName ++ " items-center z-50 w-full transition duration-300 ease-out group-[.nav-disappear]:-translate-y-16 md:group-[.nav-disappear]:-translate-y-0 min-w-[20rem]"}>
+      className={fixedNavClassName ++ " items-center z-50 w-full transition duration-300 ease-out group-[.nav-disappear]:-translate-y-16 md:group-[.nav-disappear]:-translate-y-0 min-w-[20rem]"}
+    >
       <nav className="px-4 flex xs:justify-center bg-gray-90 shadow h-16 text-white-80 text-14">
         <div className="flex justify-between items-center h-full w-full max-w-1280">
           <div className="h-8 w-8 lg:h-10 lg:w-32">
             <a
               href="/"
-              className="block hover:cursor-pointer w-full h-full flex justify-center items-center font-bold">
+              className="block hover:cursor-pointer w-full h-full flex justify-center items-center font-bold"
+            >
               <img src="/nav-logo@2x.png" className="lg:hidden" />
               <img src="/nav-logo-full@2x.png" className="hidden lg:block" />
             </a>
@@ -108,33 +110,38 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
 
           /* Desktop horizontal navigation */
           <div
-            className="flex items-center xs:justify-between w-full bg-gray-90 sm:h-auto sm:relative">
+            className="flex items-center xs:justify-between w-full bg-gray-90 sm:h-auto sm:relative"
+          >
             <div className="flex ml-10 space-x-5 w-full text-gray-40 max-w-104">
-              <Link to=#"docs/manual/introduction" className={isDocRouteActive(~route)}>
+              <Link to=#"/docs/manual/introduction" className={isDocRouteActive(~route)}>
                 {React.string("Docs")}
               </Link>
 
               <Link
-                to=#"try"
-                className={"hidden xs:block " ++ linkOrActiveLink(~target=#"try", ~route)}>
+                to=#"/try"
+                className={"hidden xs:block " ++ linkOrActiveLink(~target=#"/try", ~route)}
+              >
                 {React.string("Playground")}
               </Link>
 
               <Link
-                to=#blog
-                className={"hidden xs:block " ++ linkOrActiveLinkSubroute(~target=#blog, ~route)}>
+                to=#"/blog"
+                className={"hidden xs:block " ++ linkOrActiveLinkSubroute(~target=#"/blog", ~route)}
+              >
                 {React.string("Blog")}
               </Link>
 
               <Link
-                to=#"community/overview"
-                className={"hidden xs:block " ++ linkOrActiveLink(~target=#community, ~route)}>
+                to=#"/community/overview"
+                className={"hidden xs:block " ++ linkOrActiveLink(~target=#"/community", ~route)}
+              >
                 {React.string("Community")}
               </Link>
 
               <Link
-                href="/packages"
-                className={"hidden xs:block " ++ linkOrActiveLink(~target="/packages", ~route)}>
+                to=#"/packages"
+                className={"hidden xs:block " ++ linkOrActiveLink(~target=#"/packages", ~route)}
+              >
                 {React.string("Packages")}
               </Link>
             </div>
@@ -164,7 +171,8 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
           onClick={evt => {
             ReactEvent.Mouse.preventDefault(evt)
             toggleOverlay()
-          }}>
+          }}
+        >
           <Icon.DrawerDots
             className={"h-1 w-auto block " ++ (isOverlayOpen ? "text-fire" : "text-gray-60")}
           />
@@ -174,7 +182,8 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
         <div
           className={(
             isOverlayOpen ? "flex" : "hidden"
-          ) ++ " top-16 sm:hidden flex-col fixed top-0 left-0 h-full w-full z-50 sm:w-9/12 bg-gray-100 sm:h-auto sm:flex sm:relative sm:flex-row sm:justify-between"}>
+          ) ++ " top-16 sm:hidden flex-col fixed top-0 left-0 h-full w-full z-50 sm:w-9/12 bg-gray-100 sm:h-auto sm:flex sm:relative sm:flex-row sm:justify-between"}
+        >
           <MobileNav route />
         </div>
       </nav>
@@ -182,23 +191,27 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
       {isDocRoute(~route)
         ? <nav
             id="docs-subnav"
-            className="bg-white z-50 px-4 w-full h-12 shadow text-gray-60 text-12 md:text-14 transition duration-300 ease-out group-[.nav-disappear]:-translate-y-32 md:group-[.nav-disappear]:-translate-y-0">
+            className="bg-white z-50 px-4 w-full h-12 shadow text-gray-60 text-12 md:text-14 transition duration-300 ease-out group-[.nav-disappear]:-translate-y-32 md:group-[.nav-disappear]:-translate-y-0"
+          >
             <div className="flex gap-6 lg:gap-10 items-center h-full w-full max-w-1280 m-auto">
               <Link
-                to=#"docs/manual/introduction"
-                className={isActiveLink(~includes="/docs/manual/", ~excludes="/api", ~route)}>
+                to=#"/docs/manual/introduction"
+                className={isActiveLink(~includes="/docs/manual/", ~excludes="/api", ~route)}
+              >
                 {React.string("Language Manual")}
               </Link>
-              <Link to=#"docs/manual/api" className={isActiveLink(~includes="/api", ~route)}>
+              <Link to=#"/docs/manual/api" className={isActiveLink(~includes="/api", ~route)}>
                 {React.string("API")}
               </Link>
               <Link
-                to=#"syntax-lookup" className={isActiveLink(~includes="/syntax-lookup", ~route)}>
+                to=#"/syntax-lookup" className={isActiveLink(~includes="/syntax-lookup", ~route)}
+              >
                 {React.string("Syntax Lookup")}
               </Link>
               <Link
-                to=#"docs/react/introduction"
-                className={isActiveLink(~includes="/docs/react/", ~route)}>
+                to=#"/docs/react/introduction"
+                className={isActiveLink(~includes="/docs/react/", ~route)}
+              >
                 {React.string("React")}
               </Link>
             </div>

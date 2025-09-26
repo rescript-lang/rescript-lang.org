@@ -4,15 +4,15 @@ let makeCategories: string => array<Sidebar.Category.t> = version => [
   {
     name: "Overview",
     items: [
-      {name: "Introduction", href: #"docs/manual/api"},
-      {name: "Stdlib", href: #"docs/manual/api/stdlib"},
+      {name: "Introduction", href: #"/docs/manual/api"},
+      {name: "Stdlib", href: #"/docs/manual/api/stdlib"},
     ],
   },
   {
     name: "Additional Libraries",
     items: [
-      {name: "Belt", href: #"docs/manual/api/belt"},
-      {name: "Dom", href: #"docs/manual/api/dom"},
+      {name: "Belt", href: #"/docs/manual/api/belt"},
+      {name: "Dom", href: #"/docs/manual/api/dom"},
     ],
   },
 ]

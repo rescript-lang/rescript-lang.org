@@ -3,6 +3,7 @@ open ReactRouter.Mdx
 
 let default = [
   index("./routes/LandingPageRoute.mjs"),
+  route("packages", "./routes/PackagesRoute.mjs"),
   route("try", "./routes/TryRoute.mjs"),
   route("community", "./routes/CommunityRoute.mjs"),
   route("community/overview", "./routes/CommunityRoute.mjs", ~options={id: "overview"}),
