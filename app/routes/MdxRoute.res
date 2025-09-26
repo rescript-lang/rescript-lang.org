@@ -6,7 +6,7 @@ module Sidebar = SidebarLayout.Sidebar
 module NavItem = Sidebar.NavItem
 module Category = Sidebar.Category
 
-type loaderData = {...Mdx.t}
+type loaderData = {...Mdx.t, categories: array<SidebarLayout.Sidebar.Category.t>}
 
 /**
  This configures the MDX component to use our custom markdown components
@@ -45,15 +45,35 @@ let components = {
 
 let loader: Loader.t<loaderData> = async ({request}) => {
   let mdx = await loadMdx(request)
-  let res: loaderData = {__raw: mdx.__raw, attributes: mdx.attributes}
+  Console.log(
+    (await loadAllMdx())->Array.filter(page =>
+      (page.path :> string)->String.includes("docs/manual")
+    ),
+  )
+  let res: loaderData = {
+    __raw: mdx.__raw,
+    attributes: mdx.attributes,
+    categories: [
+      {
+        name: "overview",
+        items: [{name: "Introduction", href: #"/docs/manual/installation"}],
+      },
+    ],
+  }
   res
 }
 
 let default = () => {
+  let {pathname} = useLocation()
   let component = useMdxComponent(~components)
   let attributes = useMdxAttributes()
-  let _ = Toc.useToc(~category="manual")
 
+  let {categories} = useLoaderData()
+
+  let metaTitleCategory =
+    (pathname :> string)->String.includes("docs/manual")
+      ? "ReScript Language Manual"
+      : "Some other page"
   // TODO directly use layout and pass props
 
   // Console.log(attributes)
@@ -64,7 +84,7 @@ let default = () => {
   //   nextVersion=?Constants.nextVersion>
   //   // {React.string(attributes.title)} </h1>
   <div>
-    <DocsLayout metaTitleCategory="Foo" categories=[]>
+    <DocsLayout metaTitleCategory categories>
       <div className="markdown-body"> {component()} </div>
     </DocsLayout>
   </div>

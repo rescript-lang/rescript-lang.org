@@ -31,12 +31,13 @@ module Toc = {
     <ul className="mt-3 py-1 mb-4 border-l border-fire-10">
       {Array.map(entries, ({header, href}) =>
         <li key=header className="pl-2 mt-2 first:mt-1">
-          // <Link
-          //   to=Url(href)
-          //   className="font-normal block text-14 text-gray-40 leading-tight hover:text-gray-80">
-          //   {//links, nested
-          //   React.string(header)}
-          // </Link>
+          <Link.String
+            to=href
+            className="font-normal block text-14 text-gray-40 leading-tight hover:text-gray-80"
+          >
+            {//links, nested
+            React.string(header)}
+          </Link.String>
         </li>
       )->React.array}
     </ul>
@@ -78,12 +79,13 @@ module Sidebar = {
           }
 
           <li key=m.name className={hidden ++ " mt-1 leading-4"}>
-            // <Link
-            //   to=Url(m.href)
-            //   className={"truncate block py-1 md:h-auto tracking-tight text-gray-60 rounded-sm hover:bg-gray-20 hover:-ml-2 hover:py-1 hover:pl-2 " ++
-            //   active}>
-            //   {React.string(m.name)}
-            // </Link>
+            <Link
+              to=m.href
+              className={"truncate block py-1 md:h-auto tracking-tight text-gray-60 rounded-sm hover:bg-gray-20 hover:-ml-2 hover:py-1 hover:pl-2 " ++
+              active}
+            >
+              {React.string(m.name)}
+            </Link>
             {switch activeToc {
             | Some({entries}) =>
               if Array.length(entries) === 0 {
@@ -138,16 +140,19 @@ module Sidebar = {
         id="sidebar"
         className={(
           isOpen ? "fixed w-full left-0 h-full z-20 min-w-320" : "hidden "
-        ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible bg-white mt-28 md:mt-0"}>
+        ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible bg-white mt-28 md:mt-0"}
+      >
         <aside
           id="sidebar-content"
-          className="relative top-0 px-4 w-full block md:pt-10 md:top-28 md:sticky border-r border-gray-20 overflow-y-auto pb-24 h-auto max-h-[calc(100vh-7rem)]">
+          className="relative top-0 px-4 w-full block md:pt-10 md:top-28 md:sticky border-r border-gray-20 overflow-y-auto pb-24 h-auto max-h-[calc(100vh-7rem)]"
+        >
           <button
             onClick={evt => {
               ReactEvent.Mouse.preventDefault(evt)
               toggle()
             }}
-            className="md:hidden h-16 flex pt-2 right-4 absolute">
+            className="md:hidden h-16 flex pt-2 right-4 absolute"
+          >
             <Icon.Close />
           </button>
           <div className="flex justify-between">
@@ -182,8 +187,9 @@ module BreadCrumbs = {
         let item = if i === List.length(crumbs) - 1 {
           <span key={Int.toString(i)}> {React.string(crumb.name)} </span>
         } else {
-          React.null
-          // <Link key={Int.toString(i)} to=Url(crumb.href)> {React.string(crumb.name)} </Link>
+          <Link.String key={Int.toString(i)} to=crumb.href>
+            {React.string(crumb.name)}
+          </Link.String>
         }
         if i > 0 {
           <span key={Int.toString(i)}>
@@ -241,7 +247,7 @@ let make = (
   }
 
   React.useEffect(() => {
-    // TODO: figure out how to watch for route changes
+    // TODO RR7: figure out how to watch for route changes
     // open Next.Router.Events
     // let {Next.Router.events: events} = router
 
@@ -283,20 +289,22 @@ let make = (
       | Some({name, href}) =>
         <Link
           to=href
-          className={"flex items-center text-fire hover:text-fire-70 border-2 border-red-300 rounded py-1.5 px-3"}>
+          className={"flex items-center text-fire hover:text-fire-70 border-2 border-red-300 rounded py-1.5 px-3"}
+        >
           <Icon.ArrowRight className={"rotate-180 mr-2"} />
           {React.string(name)}
         </Link>
       | None => React.null
       }
       let next = switch items->Array.get(i + 1) {
-      | Some({name, href}) => React.null
-      // <Link
-      //   to=Url(href)
-      //   className={"flex items-center text-fire hover:text-fire-70 ml-auto border-2 border-red-300 rounded py-1.5 px-3"}>
-      //   {React.string(name)}
-      //   <Icon.ArrowRight className={"ml-2"} />
-      // </Link>
+      | Some({name, href}) =>
+        <Link
+          to=href
+          className={"flex items-center text-fire hover:text-fire-70 ml-auto border-2 border-red-300 rounded py-1.5 px-3"}
+        >
+          {React.string(name)}
+          <Icon.ArrowRight className={"ml-2"} />
+        </Link>
       | None => React.null
       }
       <div className={"flex justify-between mt-9"}>
@@ -309,7 +317,7 @@ let make = (
 
   <>
     <Meta title=metaTitle />
-    <EnableCollapsibleNavbar isEnabled={!isSidebarOpen && !isNavOpen}>
+    <EnableCollapsibleNavbar isEnabled={isSidebarOpen && isNavOpen}>
       <div className={"mt-16 min-w-320 " ++ theme}>
         <div className="w-full">
           <Navigation isOverlayOpen=isNavOpen setOverlayOpen=setNavOpen />
@@ -319,10 +327,12 @@ let make = (
               <main className="px-4 w-full pt-20 md:ml-12 lg:mr-8 mb-32 md:max-w-576 lg:max-w-740">
                 //width of the right content part
                 <div
-                  className={"z-10 fixed border-b shadow top-[112px] left-0 pl-4 bg-white w-full py-4 md:relative md:border-none md:shadow-none md:p-0 md:top-auto flex items-center transition duration-300 ease-out group-[.nav-disappear]:-translate-y-64 md:group-[.nav-disappear]:-translate-y-0"}>
+                  className={"z-10 fixed border-b shadow top-[112px] left-0 pl-4 bg-white w-full py-4 md:relative md:border-none md:shadow-none md:p-0 md:top-auto flex items-center transition duration-300 ease-out group-[.nav-disappear]:-translate-y-64 md:group-[.nav-disappear]:-translate-y-0"}
+                >
                   <MobileDrawerButton hidden=isNavOpen onClick={handleDrawerButtonClick} />
                   <div
-                    className="truncate overflow-x-auto touch-scroll flex items-center space-x-4 md:justify-between mr-4 w-full">
+                    className="truncate overflow-x-auto touch-scroll flex items-center space-x-4 md:justify-between mr-4 w-full"
+                  >
                     breadcrumbs
                     editLinkEl
                   </div>

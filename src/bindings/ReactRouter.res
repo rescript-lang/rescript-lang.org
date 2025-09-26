@@ -10,6 +10,9 @@ external useNavigate: unit => string => unit = "useNavigate"
 @module("react-router")
 external useSearchParams: unit => ({..}, {..} => unit) = "useSearchParams"
 
+@module("react-router")
+external useLoaderData: unit => 'a = "useLoaderData"
+
 /* The types for this are auto-generated from the react-router.config.mjs file */
 type path = {pathname: Path.t, search?: string, hash?: string}
 
@@ -83,11 +86,14 @@ module Routes = {
 
 module Mdx = {
   type attributes = {
-    title: string,
-    description?: string,
+    canonical: Path.t,
     category?: string,
-    section?: string,
+    description?: string,
     order?: int,
+    path: Path.t,
+    section?: string,
+    slug: string,
+    title: string,
   }
 
   type t = {
@@ -108,5 +114,9 @@ module Mdx = {
   external useMdxComponent: (~components: {..}=?) => Jsx.component<'a> = "useMdxComponent"
 
   @module("react-router-mdx/server")
-  external loadAllMdx: (~filterByPaths: array<string>=?) => promise<array<t>> = "loadAllMdx"
+  external loadAllMdx: (~filterByPaths: array<string>=?) => promise<array<attributes>> =
+    "loadAllMdx"
+
+  @module("react-router-mdx/client")
+  external useMdxFiles: unit => {..} = "useMdxFiles"
 }
