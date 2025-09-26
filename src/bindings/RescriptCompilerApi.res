@@ -28,12 +28,16 @@ module Lang = {
 }
 
 module Version = {
+  type numbered =
+    | @as(1) V1
+    | @as(2) V2
+    | @as(3) V3
+    | @as(4) V4
+    | @as(5) V5
+    | @as(6) V6
+
   type t =
-    | V1
-    | V2
-    | V3
-    | V4
-    | V5
+    | ...numbered
     | UnknownVersion(string)
 
   // Helps finding the right API version
@@ -57,6 +61,7 @@ module Version = {
     | list{"3"} => V3
     | list{"4"} => V4
     | list{"5"} => V5
+    | list{"6"} => V6
     | _ => UnknownVersion(apiVersion)
     }
 
@@ -67,6 +72,7 @@ module Version = {
     | V3 => "3.0"
     | V4 => "4.0"
     | V5 => "5.0"
+    | V6 => "6.0"
     | UnknownVersion(version) => version
     }
 
@@ -75,8 +81,14 @@ module Version = {
   let availableLanguages = t =>
     switch t {
     | V1 => [Lang.Reason, Res]
-    | V2 | V3 | V4 | V5 => [Lang.Res]
+    | V2 | V3 | V4 | V5 | V6 => [Lang.Res]
     | UnknownVersion(_) => [Res]
+    }
+
+  let isMinimumVersion = (version: t, minimum: numbered) =>
+    switch version {
+    | ...numbered as version => version >= minimum
+    | UnknownVersion(_) => false
     }
 }
 
@@ -392,10 +404,12 @@ module ConversionResult = {
 
 module Config = {
   type t = {
-    module_system: string,
-    warn_flags: string,
+    @as("module_system") moduleSystem: string,
+    @as("warn_flags") warnFlags: string,
     uncurried?: bool,
-    open_modules?: array<string>,
+    @as("open_modules") openModules?: array<string>,
+    @as("experimental_features") experimentalFeatures?: array<string>,
+    @as("jsx_preserve_mode") jsxPreserveMode?: bool,
   }
 }
 
@@ -469,17 +483,31 @@ module Compiler = {
 
   @send external setOpenModules: (t, array<string>) => bool = "setOpenModules"
 
-  let setConfig = (t: t, config: Config.t): unit => {
-    let moduleSystem = switch config.module_system {
+  @send external setExperimentalFeatures: (t, array<string>) => bool = "setExperimentalFeatures"
+
+  @send external setJsxPreserveMode: (t, bool) => bool = "setJsxPreserveMode"
+
+  let setConfig = (t: t, config: Config.t, version: Version.t): unit => {
+    let moduleSystem = switch config.moduleSystem {
     | "commonjs" => #nodejs->Some
     | "esmodule" => #es6->Some
     | _ => None
     }
 
     Option.forEach(moduleSystem, moduleSystem => t->setModuleSystem(moduleSystem)->ignore)
-    Option.forEach(config.open_modules, modules => t->setOpenModules(modules)->ignore)
 
-    t->setWarnFlags(config.warn_flags)->ignore
+    if version->Version.isMinimumVersion(V4) {
+      Option.forEach(config.openModules, modules => t->setOpenModules(modules)->ignore)
+    }
+
+    if version->Version.isMinimumVersion(V6) {
+      Option.forEach(config.experimentalFeatures, features =>
+        t->setExperimentalFeatures(features)->ignore
+      )
+      Option.forEach(config.jsxPreserveMode, toggle => t->setJsxPreserveMode(toggle)->ignore)
+    }
+
+    t->setWarnFlags(config.warnFlags)->ignore
   }
 
   @send

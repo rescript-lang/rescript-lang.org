@@ -19,7 +19,6 @@ type npmPackage = {
 
 type props = {
   packages: array<npmPackage>,
-  urlResources: array<urlResource>,
   unmaintained: array<npmPackage>,
 }
 

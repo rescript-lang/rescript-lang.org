@@ -106,15 +106,39 @@ module CopyButton = {
 }
 
 @react.component
-let make = (~highlightedLines=[], ~code: string, ~showLabel=true, ~lang="text") => {
+let make = (
+  ~highlightedLines=[],
+  ~code: string,
+  ~showLabel=true,
+  ~lang="text",
+  ~showCopyButton=false,
+) => {
   let children = HighlightJs.renderHLJS(~highlightedLines, ~code, ~lang, ())
 
   let label = if showLabel {
     let label = langShortname(lang)
+    let rightPosition = if showCopyButton {
+      "right-8" // Move label left when copy button is present
+    } else {
+      "right-1"
+    }
+    let topPosition = if showCopyButton {
+      "top-1"
+    } else {
+      "top-0"
+    }
     <div
-      className="absolute right-1 top-0 p-1 font-sans text-12 font-bold text-gray-30 pointer-events-none">
+      className={`absolute ${rightPosition} ${topPosition} p-1 font-sans text-12 font-bold text-gray-30 pointer-events-none`}>
       {//RES or JS Label
       String.toUpperCase(label)->React.string}
+    </div>
+  } else {
+    React.null
+  }
+
+  let copyButton = if showCopyButton {
+    <div className="absolute right-1 top-0 p-1">
+      <CopyButton code />
     </div>
   } else {
     React.null
@@ -124,6 +148,7 @@ let make = (~highlightedLines=[], ~code: string, ~showLabel=true, ~lang="text") 
     //normal code-text without tabs
     className="relative w-full flex-col rounded xs:rounded border border-gray-20 bg-gray-10 pt-2 text-gray-80">
     label
+    copyButton
     <div className="px-5 text-14 pt-4 pb-4 overflow-x-auto whitespace-pre"> children </div>
   </div>
 }
@@ -147,6 +172,7 @@ module Toggle = {
         code: tab.code,
         lang: ?tab.lang,
         showLabel: true,
+        showCopyButton: true,
       })
     | multiple =>
       let numberOfItems = Array.length(multiple)

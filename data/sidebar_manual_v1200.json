@@ -58,5 +58,10 @@
     "build-performance",
     "warning-numbers"
   ],
-  "Advanced Features": ["extensible-variant", "scoped-polymorphic-types"]
+  "Advanced Features": [
+    "extensible-variant",
+    "scoped-polymorphic-types",
+    "module-functions",
+    "generalized-algebraic-data-types"
+  ]
 }

@@ -50,6 +50,11 @@ module MobileNav = {
           </Link>
         </li>
         <li className=base>
+          <Link href="/packages" className={linkOrActiveLink(~target="/packages", ~route)}>
+            {React.string("Packages")}
+          </Link>
+        </li>
+        <li className=base>
           <a href=Constants.xHref rel="noopener noreferrer" className=extLink>
             {React.string("X")}
           </a>
@@ -114,15 +119,23 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
                 className={"hidden xs:block " ++ linkOrActiveLink(~target=#"try", ~route)}>
                 {React.string("Playground")}
               </Link>
+
               <Link
                 to=#blog
                 className={"hidden xs:block " ++ linkOrActiveLinkSubroute(~target=#blog, ~route)}>
                 {React.string("Blog")}
               </Link>
+
               <Link
                 to=#"community/overview"
                 className={"hidden xs:block " ++ linkOrActiveLink(~target=#community, ~route)}>
                 {React.string("Community")}
+              </Link>
+
+              <Link
+                href="/packages"
+                className={"hidden xs:block " ++ linkOrActiveLink(~target="/packages", ~route)}>
+                {React.string("Packages")}
               </Link>
             </div>
             <div className="md:flex flex items-center text-gray-60">

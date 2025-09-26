@@ -4,11 +4,11 @@
   "jsx": {
     "version": 4
   },
-  "bs-dependencies": [
+  "dependencies": [
     "@rescript/react",
     "@rescript/webapi"
   ],
-  "bsc-flags": [
+  "compiler-flags": [
     "-open WebAPI.Global"
   ],
   "sources": [
@@ -22,8 +22,7 @@
     },
     {
       "dir": "scripts",
-      "subdirs": true,
-      "type": "dev"
+      "subdirs": true
     }
   ],
   "package-specs": {

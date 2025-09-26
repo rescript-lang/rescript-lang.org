@@ -46,7 +46,7 @@ let makeBreadcrumbs = (~prefix: Url.breadcrumb, route: Path.t): list<Url.breadcr
   let url = Url.parse((route :> string))
 
   let (_, rest) = // Strip the "api" part of the url before creating the rest of the breadcrumbs
-  Array.sliceToEnd(url.pagepath, ~start=1)->Array.reduce((prefix.href, []), (acc, path) => {
+  Array.slice(url.pagepath, ~start=1)->Array.reduce((prefix.href, []), (acc, path) => {
     let (baseHref, ret) = acc
 
     let href = baseHref ++ ("/" ++ path)

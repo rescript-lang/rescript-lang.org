@@ -35,17 +35,13 @@ module LoadScript = {
 }
 
 module CdnMeta = {
-  let baseUrl =
-    Node.Process.Env.nodeEnv === "development"
-      ? "https://cdn.rescript-lang.org"
-      : "" + "/playground-bundles"
+  let getCompilerUrl = (baseUrl, version): string =>
+    `${baseUrl}/${Semver.toString(version)}/compiler.js`
 
-  let getCompilerUrl = (version): string => `${baseUrl}/${Semver.toString(version)}/compiler.js`
-
-  let getLibraryCmijUrl = (version, libraryName: string): string =>
+  let getLibraryCmijUrl = (baseUrl, version, libraryName: string): string =>
     `${baseUrl}/${Semver.toString(version)}/${libraryName}/cmij.js`
 
-  let getStdlibRuntimeUrl = (version, filename) =>
+  let getStdlibRuntimeUrl = (baseUrl, version, filename) =>
     `${baseUrl}/${Semver.toString(version)}/compiler-builtins/stdlib/${filename}`
 }
 
@@ -88,7 +84,8 @@ let getLibrariesForVersion = (~version: Semver.t): array<string> => {
 let getOpenModules = (~apiVersion: Version.t, ~libraries: array<string>): option<array<string>> =>
   switch apiVersion {
   | V1 | V2 | V3 | UnknownVersion(_) => None
-  | V4 | V5 => libraries->Array.some(el => el === "@rescript/core") ? Some(["RescriptCore"]) : None
+  | V4 | V5 | V6 =>
+    libraries->Array.some(el => el === "@rescript/core") ? Some(["RescriptCore"]) : None
   }
 
 /*
@@ -104,11 +101,11 @@ let getOpenModules = (~apiVersion: Version.t, ~libraries: array<string>): option
     We coupled the compiler / library loading to prevent ppl to try loading compiler / cmij files
     separately and cause all kinds of race conditions.
  */
-let attachCompilerAndLibraries = async (~version, ~libraries: array<string>, ()): result<
+let attachCompilerAndLibraries = async (~baseUrl, ~version, ~libraries: array<string>, ()): result<
   unit,
   array<string>,
 > => {
-  let compilerUrl = CdnMeta.getCompilerUrl(version)
+  let compilerUrl = CdnMeta.getCompilerUrl(baseUrl, version)
 
   // Useful for debugging our local build
   /* let compilerUrl = "/linked-bs-bundle.js"; */
@@ -117,7 +114,7 @@ let attachCompilerAndLibraries = async (~version, ~libraries: array<string>, ())
   | Error(_) => Error([`Could not load compiler from url ${compilerUrl}`])
   | Ok(_) =>
     let promises = Array.map(libraries, async lib => {
-      let cmijUrl = CdnMeta.getLibraryCmijUrl(version, lib)
+      let cmijUrl = CdnMeta.getLibraryCmijUrl(baseUrl, version, lib)
       switch await LoadScript.loadScriptPromise(cmijUrl) {
       | Error(_) => Error(`Could not load cmij from url ${cmijUrl}`)
       | r => r
@@ -148,7 +145,7 @@ let wrapReactApp = code =>
 
 let capitalizeFirstLetter = string => {
   let firstLetter = string->String.charAt(0)->String.toUpperCase
-  `${firstLetter}${string->String.sliceToEnd(~start=1)}`
+  `${firstLetter}${string->String.slice(~start=1)}`
 }
 
 type error =
@@ -195,15 +192,37 @@ type action =
   | ToggleAutoRun
   | RunCode
 
+type queryParams =
+  | @as("ext") Ext
+  | @as("version") Version
+  | @as("module") Module
+  | @as("jsxPreserve") JsxPreserve
+  | @as("experiments") Experiments
+  | @as("code") Code
+
 let createUrl = (pathName, ready) => {
   let params = switch ready.targetLang {
   | Res => []
-  | lang => [("ext", RescriptCompilerApi.Lang.toExt(lang))]
+  | lang => [(Ext, RescriptCompilerApi.Lang.toExt(lang))]
   }
-  Array.push(params, ("version", "v" ++ ready.selected.compilerVersion))
-  Array.push(params, ("module", ready.selected.config.module_system))
-  Array.push(params, ("code", ready.code->encodeURIComponent))
-  let querystring = params->Array.map(((key, value)) => key ++ "=" ++ value)->Array.join("&")
+
+  Array.push(params, (Version, "v" ++ ready.selected.compilerVersion))
+  Array.push(params, (Module, ready.selected.config.moduleSystem))
+
+  if ready.selected.config.jsxPreserveMode->Option.getOr(false) {
+    Array.push(params, (JsxPreserve, "true"))
+  }
+
+  switch ready.selected.config.experimentalFeatures {
+  | Some([]) | None => ()
+  | Some(features) => Array.push(params, (Experiments, features->Array.join(",")))
+  }
+
+  // Put code last as it is the longest param.
+  Array.push(params, (Code, ready.code->LzString.compressToEncodedURIComponent))
+
+  let querystring =
+    params->Array.map(((key, value)) => (key :> string) ++ "=" ++ value)->Array.join("&")
   let url = pathName ++ "?" ++ querystring
   url
 }
@@ -222,8 +241,11 @@ let defaultModuleSystem = "esmodule"
 //  component to give feedback to the user that an action happened (useful in
 //  cases where the output didn't visually change)
 let useCompilerManager = (
+  ~bundleBaseUrl: string,
   ~initialVersion: option<Semver.t>=?,
   ~initialModuleSystem=defaultModuleSystem,
+  ~initialJsxPreserveMode=false,
+  ~initialExperimentalFeatures=[],
   ~initialLang: Lang.t=Res,
   ~onAction: option<action => unit>=?,
   ~versions: array<Semver.t>,
@@ -247,7 +269,7 @@ let useCompilerManager = (
       | UpdateConfig(config) =>
         switch state {
         | Ready(ready) =>
-          ready.selected.instance->Compiler.setConfig(config)
+          ready.selected.instance->Compiler.setConfig(config, ready.selected.apiVersion)
           let selected = {...ready.selected, config}
           Compiling({state: {...ready, selected}, previousJsCode: None})
         | _ => state
@@ -405,11 +427,16 @@ let useCompilerManager = (
             // Latest version is already running on @rescript/react
             let libraries = getLibrariesForVersion(~version)
 
-            switch await attachCompilerAndLibraries(~version, ~libraries, ()) {
+            switch await attachCompilerAndLibraries(
+              ~baseUrl=bundleBaseUrl,
+              ~version,
+              ~libraries,
+              (),
+            ) {
             | Ok() =>
               let instance = Compiler.make()
               let apiVersion = apiVersion->Version.fromString
-              let open_modules = getOpenModules(~apiVersion, ~libraries)
+              let openModules = getOpenModules(~apiVersion, ~libraries)
 
               // Note: The compiler bundle currently defaults to
               // commonjs when initiating the compiler, but our playground
@@ -418,10 +445,13 @@ let useCompilerManager = (
               // internal compiler state with our playground state.
               let config = {
                 ...instance->Compiler.getConfig,
-                module_system: initialModuleSystem,
-                ?open_modules,
+                moduleSystem: initialModuleSystem,
+                experimentalFeatures: initialExperimentalFeatures,
+                jsxPreserveMode: initialJsxPreserveMode,
+                ?openModules,
               }
-              instance->Compiler.setConfig(config)
+
+              instance->Compiler.setConfig(config, apiVersion)
 
               let selected = {
                 id: version,
@@ -460,26 +490,29 @@ let useCompilerManager = (
       | SwitchingCompiler(ready, version) =>
         let libraries = getLibrariesForVersion(~version)
 
-        switch await attachCompilerAndLibraries(~version, ~libraries, ()) {
+        switch await attachCompilerAndLibraries(~baseUrl=bundleBaseUrl, ~version, ~libraries, ()) {
         | Ok() =>
           // Make sure to remove the previous script from the DOM as well
-          LoadScript.removeScript(~src=CdnMeta.getCompilerUrl(ready.selected.id))
+          LoadScript.removeScript(~src=CdnMeta.getCompilerUrl(bundleBaseUrl, ready.selected.id))
 
           // We are removing the previous libraries, therefore we use ready.selected here
           Array.forEach(ready.selected.libraries, lib =>
-            LoadScript.removeScript(~src=CdnMeta.getLibraryCmijUrl(ready.selected.id, lib))
+            LoadScript.removeScript(
+              ~src=CdnMeta.getLibraryCmijUrl(bundleBaseUrl, ready.selected.id, lib),
+            )
           )
 
           let instance = Compiler.make()
           let apiVersion = apiVersion->Version.fromString
-          let open_modules = getOpenModules(~apiVersion, ~libraries)
+          let openModules = getOpenModules(~apiVersion, ~libraries)
 
           let config = {
             ...instance->Compiler.getConfig,
-            module_system: defaultModuleSystem,
-            ?open_modules,
+            moduleSystem: defaultModuleSystem,
+            ?openModules,
           }
-          instance->Compiler.setConfig(config)
+
+          instance->Compiler.setConfig(config, apiVersion)
 
           let selected = {
             id: version,
@@ -525,7 +558,7 @@ let useCompilerManager = (
             )
           | Lang.Res => instance->Compiler.resCompile(code)
           }
-        | V5 =>
+        | V5 | V6 =>
           switch lang {
           | Lang.Res => instance->Compiler.resCompile(code)
           | _ => CompilationResult.UnexpectedError(`Can't handle with lang: ${lang->Lang.toString}`)
@@ -548,11 +581,11 @@ let useCompilerManager = (
         let ast = Parser.parse(jsCode, {sourceType: "module"})
         let {entryPointExists, code, imports} = PlaygroundValidator.validate(ast)
         let imports = imports->Dict.mapValues(path => {
-          let filename = path->String.sliceToEnd(~start=9) // the part after "./stdlib/"
+          let filename = path->String.slice(~start=9) // the part after "./stdlib/"
           let filename = switch state.selected.id {
           | {major: 12, minor: 0, patch: 0, preRelease: Some(Alpha(alpha))} if alpha < 8 =>
             let filename = if filename->String.startsWith("core__") {
-              filename->String.sliceToEnd(~start=6)
+              filename->String.slice(~start=6)
             } else {
               filename
             }
@@ -576,7 +609,7 @@ let useCompilerManager = (
             }
           | version => version
           }
-          CdnMeta.getStdlibRuntimeUrl(compilerVersion, filename)
+          CdnMeta.getStdlibRuntimeUrl(bundleBaseUrl, compilerVersion, filename)
         })
 
         entryPointExists
@@ -597,6 +630,8 @@ let useCompilerManager = (
     dispatchError,
     initialVersion,
     initialModuleSystem,
+    initialJsxPreserveMode,
+    initialExperimentalFeatures,
     initialLang,
     versions,
     router.route,
