@@ -105,7 +105,7 @@ module Mdx = {
   external useMdxAttributes: unit => attributes = "useMdxAttributes"
 
   @module("react-router-mdx/client")
-  external useMdxComponent: unit => Jsx.component<'a> = "useMdxComponent"
+  external useMdxComponent: (~components: {..}=?) => Jsx.component<'a> = "useMdxComponent"
 
   @module("react-router-mdx/server")
   external loadAllMdx: (~filterByPaths: array<string>=?) => promise<array<t>> = "loadAllMdx"

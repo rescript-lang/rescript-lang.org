@@ -1,66 +1,75 @@
 /* Markdown related stuff */
 /* Sometimes we cannot circumvent the cascade, especially for nested lists */
+.markdown-body {
 
-.md-ul,
-.md-ol {
-  @apply mb-8;
-}
+  ol {
+    li {
+      counter-increment: li;
 
-.md-ul ul {
-  @apply mb-0;
-}
+      &::before {
+        content: counter(li) ".";
+        @apply absolute font-semibold;
+      }
+    }
+  }
 
-.md-ol > li {
-  counter-increment: li;
-}
+  ul {
+    @apply mb-0;
 
-.md-ul .md-li {
-  @apply relative my-6;
-}
+    ol {
+      @apply mb-0;
+    }
 
-.md-ol > .md-li::before {
-  content: counter(li) ".";
-  @apply absolute font-semibold;
-}
+    li {
+      @apply relative my-6;
 
-.md-ul > .md-li::before {
-  content: "•";
-  @apply absolute;
-}
+      &::before {
+        content: "•";
+        @apply absolute;
+      }
 
-.md-ul > .md-li > ul > li::before {
-  content: "—";
-  @apply absolute;
-}
+      ul {
+        @apply mb-14 ml-4;
+      }
 
-.md-ul > .md-li > ul {
-  @apply mb-14 ml-4;
-}
+      p {
+        @apply text-gray-80 ml-5;
+      }
+    }
+  }
 
-.md-li > p {
-  @apply text-gray-80 ml-5;
-}
+  li {
+    ul {
+      p {
+        @apply ml-6;
+      }
+    }
+  }
 
-.md-li > ul > li p {
-  @apply ml-6;
-}
+  p+p {
+    @apply mt-6;
+  }
 
-.md-p + .md-p {
-  @apply mt-6;
-}
+  /* INFOBOX (Markdown.res) Find a better solution for <p> text inside of Info-Box (Markdown)? */
+  .infobox {
+    p {
+      @apply text-14 mt-0;
 
-/* INFOBOX (Markdown.res) Find a better solution for <p> text inside of Info-Box (Markdown)? */
-.infobox > p {
-  @apply text-14 mt-0;
-}
+      a {
+        @apply underline text-current;
 
-.infobox > .md-p {
-  @apply mt-0;
-}
+        &::hover {
+          @apply no-underline text-current text-gray-70;
+        }
+      }
+    }
+  }
 
-.infobox > p > a {
-  @apply underline text-current;
-}
-.infobox > p > a:hover {
-  @apply no-underline text-current text-gray-70;
+  .install-list {
+    li {
+      ul {
+        @apply !mb-0;
+      }
+    }
+  }
 }

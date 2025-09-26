@@ -116,7 +116,8 @@ module Anchor = {
     <span className="inline group relative">
       <a
         className="invisible text-gray-60 opacity-50 hover:opacity-100 hover:text-gray-60 hover:cursor-pointer group-hover:visible"
-        href={"#" ++ id}>
+        href={"#" ++ id}
+      >
         <Icon.Hyperlink className="inline-block align-middle text-gray-40" />
       </a>
       <a className="absolute -top-28" id />
@@ -170,7 +171,8 @@ module H5 = {
   let make = (~id, ~children) =>
     <h5
       id
-      className="group mt-12 mb-3 text-12 leading-2 font-sans font-semibold uppercase tracking-wide text-gray-80">
+      className="group mt-12 mb-3 text-12 leading-2 font-sans font-semibold uppercase tracking-wide text-gray-80"
+    >
       children
       <span className="ml-2">
         <Anchor id />
@@ -187,7 +189,8 @@ module InlineCode = {
   @react.component
   let make = (~children) =>
     <code
-      className="md-inline-code px-2 py-0.5  text-gray-60 font-mono rounded-sm bg-gray-10-tr border border-gray-90/5">
+      className="md-inline-code px-2 py-0.5  text-gray-60 font-mono rounded-sm bg-gray-10-tr border border-gray-90/5"
+    >
       children
     </code>
 }
@@ -209,7 +212,8 @@ module Th = {
   @react.component
   let make = (~children) =>
     <th
-      className="py-2 pr-8 text-12 text-gray-60 uppercase font-medium tracking-wide text-left border-b-2 border-gray-20">
+      className="py-2 pr-8 text-12 text-gray-60 uppercase font-medium tracking-wide text-left border-b-2 border-gray-20"
+    >
       children
     </th>
 }
