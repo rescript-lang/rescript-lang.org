@@ -58,7 +58,10 @@ module Link = {
 external useLocation: unit => path = "useLocation"
 
 module Routes = {
-  type t
+  type t = {
+    id: string,
+    path?: string,
+  }
 
   type config = array<t>
 
@@ -75,11 +78,17 @@ module Routes = {
 }
 
 module Mdx = {
-  type t
-
   type attributes = {
     title: string,
     description?: string,
+    category?: string,
+    section?: string,
+    order?: int,
+  }
+
+  type t = {
+    __raw: string,
+    attributes: attributes,
   }
 
   @module("react-router-mdx/server")
@@ -93,4 +102,7 @@ module Mdx = {
 
   @module("react-router-mdx/client")
   external useMdxComponent: unit => Jsx.component<'a> = "useMdxComponent"
+
+  @module("react-router-mdx/server")
+  external loadAllMdx: (~filterByPaths: array<string>=?) => promise<array<t>> = "loadAllMdx"
 }
