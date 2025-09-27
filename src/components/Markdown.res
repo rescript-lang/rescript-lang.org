@@ -1,6 +1,8 @@
 // This file was automatically converted to ReScript from 'Markdown.re'
 // Check the output and make sure to delete the original file
 
+external childrenToString: React.element => string = "%identity"
+
 module P = {
   @react.component
   let make = (~children) =>
@@ -112,9 +114,10 @@ module Anchor = {
   // function
 
   @react.component
-  let make = (~id: string) => {
-    <span className="inline group relative">
+  let make = (~id: string, ~title: string) => {
+    <span className="inline group relative" title>
       <a
+        title
         className="invisible text-gray-60 opacity-50 hover:opacity-100 hover:text-gray-60 hover:cursor-pointer group-hover:visible"
         href={"#" ++ id}
       >
@@ -133,51 +136,63 @@ module H1 = {
 
 module H2 = {
   @react.component
-  let make = (~id, ~children) => <>
-    // Here we know that children is always a string (## headline)
-    <h2 id className="group mt-16 mb-3 hl-3 scroll-mt-32">
-      children
-      <span className="ml-2">
-        <Anchor id />
-      </span>
-    </h2>
-  </>
+  let make = (~id, ~children) => {
+    let title = childrenToString(children)->String.toLowerCase->String.replaceAll(" ", "-")
+
+    Console.log(title)
+
+    <>
+      // Here we know that children is always a string (## headline)
+      <h2 id className="group mt-16 mb-3 hl-3 scroll-mt-32">
+        children
+        <span className="ml-2">
+          <Anchor title={title} id={title} />
+        </span>
+      </h2>
+    </>
+  }
 }
 
 module H3 = {
   @react.component
-  let make = (~id, ~children) =>
+  let make = (~id, ~children) => {
+    let title = childrenToString(children)
     <h3 id className="group mt-8 mb-4 hl-4 scroll-mt-32">
       children
       <span className="ml-2">
-        <Anchor id />
+        <Anchor title={title} id={title->encodeURIComponent} />
       </span>
     </h3>
+  }
 }
 
 module H4 = {
   @react.component
-  let make = (~id, ~children) =>
+  let make = (~id, ~children) => {
+    let title = childrenToString(children)
     <h4 id className="group mt-8 hl-5 scroll-mt-32">
       children
       <span className="ml-2">
-        <Anchor id />
+        <Anchor title={title} id={title->encodeURIComponent} />
       </span>
     </h4>
+  }
 }
 
 module H5 = {
   @react.component
-  let make = (~id, ~children) =>
+  let make = (~id, ~children) => {
+    let title = childrenToString(children)
     <h5
       id
       className="group mt-12 mb-3 text-12 leading-2 font-sans font-semibold uppercase tracking-wide text-gray-80"
     >
       children
       <span className="ml-2">
-        <Anchor id />
+        <Anchor title={title} id={title->encodeURIComponent} />
       </span>
     </h5>
+  }
 }
 
 module Pre = {

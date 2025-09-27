@@ -35,7 +35,7 @@ module Anchor: {
   /* let idFormat = (id: string): string => id */
 
   @react.component
-  let make: (~id: string) => React.element
+  let make: (~id: string, ~title: string) => React.element
 }
 
 module H1: {

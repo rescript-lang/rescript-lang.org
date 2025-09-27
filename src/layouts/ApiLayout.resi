@@ -13,7 +13,7 @@ let make: (
   ~categories: array<SidebarLayout.Sidebar.Category.t>,
   ~title: string=?,
   ~version: string=?,
-  ~activeToc: SidebarLayout.Toc.t=?,
+  ~activeToc: TableOfContents.t=?,
   ~components: MarkdownComponents.t=?,
   ~children: React.element,
 ) => React.element

@@ -8,16 +8,6 @@ module Toc: {
       "href": Path.t,
     }>,
   }>
-
-  type entry = {
-    header: string,
-    href: string,
-  }
-
-  type t = {
-    title: string,
-    entries: array<entry>,
-  }
 }
 
 module Sidebar: {
@@ -28,7 +18,7 @@ module Sidebar: {
     }
     @react.component
     let make: (
-      ~getActiveToc: t => option<Toc.t>=?,
+      ~getActiveToc: t => option<TableOfContents.t>=?,
       ~isItemActive: t => bool=?,
       ~isHidden: bool=?,
       ~items: array<t>,
@@ -42,7 +32,7 @@ module Sidebar: {
 
     @react.component
     let make: (
-      ~getActiveToc: NavItem.t => option<Toc.t>=?,
+      ~getActiveToc: NavItem.t => option<TableOfContents.t>=?,
       ~isItemActive: NavItem.t => bool=?,
       ~category: t,
     ) => React.element
@@ -55,7 +45,7 @@ module Sidebar: {
     ~toplevelNav: React.element=?,
     ~title: string=?,
     ~preludeSection: React.element=?,
-    ~activeToc: Toc.t=?,
+    ~activeToc: TableOfContents.t=?,
     ~isOpen: bool,
     ~toggle: unit => unit,
   ) => React.element

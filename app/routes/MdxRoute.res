@@ -6,7 +6,11 @@ module Sidebar = SidebarLayout.Sidebar
 module NavItem = Sidebar.NavItem
 module Category = Sidebar.Category
 
-type loaderData = {...Mdx.t, categories: array<SidebarLayout.Sidebar.Category.t>}
+type loaderData = {
+  ...Mdx.t,
+  categories: array<SidebarLayout.Sidebar.Category.t>,
+  entries: array<TableOfContents.entry>,
+}
 
 /**
  This configures the MDX component to use our custom markdown components
@@ -45,18 +49,38 @@ let components = {
 
 let loader: Loader.t<loaderData> = async ({request}) => {
   let mdx = await loadMdx(request)
-  Console.log(
-    (await loadAllMdx())->Array.filter(page =>
-      (page.path :> string)->String.includes("docs/manual")
-    ),
-  )
+
+  let fileContents = await (await loadAllMdx(~filterByPaths=["docs"]))
+  ->Array.filter(mdx => (mdx.path :> string)->String.includes("docs/manual/introduction"))
+  ->Array.get(0)
+  ->Option.map(mdx => mdx.path)
+  ->Option.map(path => Node.Fs.readFile((path :> string), "utf-8"))
+  ->Option.getOrThrow
+
+  let markdownTree = Mdast.fromMarkdown(fileContents)
+  let tocResult = Mdast.toc(markdownTree, {maxDepth: 2})
+
+  let headers = Js.Dict.empty()
+
+  Mdast.reduceHeaders(tocResult.map, headers)
+
+  let entries =
+    headers
+    ->Dict.toArray
+    ->Array.map(((header, url)): TableOfContents.entry => {
+      header,
+      href: (url :> string),
+    })
+    ->Array.slice(~start=2) // skip first two entries which are "Introduction" and "Getting Started"
+
   let res: loaderData = {
     __raw: mdx.__raw,
     attributes: mdx.attributes,
+    entries,
     categories: [
       {
         name: "overview",
-        items: [{name: "Introduction", href: #"/docs/manual/installation"}],
+        items: [{name: "Introduction", href: #"/docs/manual/introduction"}],
       },
     ],
   }
@@ -68,23 +92,17 @@ let default = () => {
   let component = useMdxComponent(~components)
   let attributes = useMdxAttributes()
 
-  let {categories} = useLoaderData()
+  let {categories, entries} = useLoaderData()
+
+  Console.log(entries)
 
   let metaTitleCategory =
     (pathname :> string)->String.includes("docs/manual")
       ? "ReScript Language Manual"
       : "Some other page"
-  // TODO directly use layout and pass props
 
-  // Console.log(attributes)
-  // <ManualDocsLayout.V1200Layout
-  //   metaTitleCategory="ReScript Language Manual"
-  //   version="latest"
-  //   availableVersions=Constants.allManualVersions
-  //   nextVersion=?Constants.nextVersion>
-  //   // {React.string(attributes.title)} </h1>
   <div>
-    <DocsLayout metaTitleCategory categories>
+    <DocsLayout metaTitleCategory categories activeToc={title: "Introduction", entries}>
       <div className="markdown-body"> {component()} </div>
     </DocsLayout>
   </div>

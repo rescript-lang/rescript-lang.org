@@ -48,13 +48,13 @@ let makeBreadcrumbs = (~basePath: string, route: string): list<Url.breadcrumb> =
 
 @react.component
 let make = (
+  ~activeToc: option<TableOfContents.t>=?,
   ~breadcrumbs: option<list<Url.breadcrumb>>=?,
   ~metaTitleCategory: string, // e.g. Introduction | My Meta Title Category
   ~frontmatter=?,
   ~version: option<string>=?,
   ~availableVersions: option<array<(string, string)>>=?,
   ~nextVersion: option<(string, string)>=?,
-  ~activeToc: option<SidebarLayout.Toc.t>=?,
   ~categories: array<Category.t>,
   ~components=MarkdownComponents.default,
   ~theme=#Reason,
@@ -116,6 +116,8 @@ let make = (
       }}
     </div>
 
+  Console.log2("activeToc", activeToc)
+
   let sidebar =
     <Sidebar isOpen=isSidebarOpen toggle=toggleSidebar preludeSection ?activeToc categories route />
 
@@ -157,7 +159,8 @@ let make = (
     sidebar
     categories
     ?breadcrumbs
-    ?editHref>
+    ?editHref
+  >
     metaElement
     children
   </SidebarLayout>
@@ -178,7 +181,6 @@ module Make = (Content: StaticContent) => {
     ~version: option<string>=?,
     ~availableVersions: option<array<(string, string)>>=?,
     ~nextVersion: option<(string, string)>=?,
-    /* ~activeToc: option<SidebarLayout.Toc.t>=?, */
     ~components: option<MarkdownComponents.t>=?,
     ~theme: option<ColorTheme.t>=?,
     ~children: React.element,
@@ -193,17 +195,9 @@ module Make = (Content: StaticContent) => {
       Option.map(breadcrumbs, bc => List.concat(bc, list{{Url.name: title, href: route}}))
     })
 
-    let activeToc: option<SidebarLayout.Toc.t> = {
-      open Option
-      Dict.get(Content.tocData, route)->map(data => {
-        let title = data["title"]
-        let entries = Array.map(data["headers"], header => {
-          SidebarLayout.Toc.header: header["name"],
-          href: "#" ++ (header["href"] :> string),
-        })
-        {SidebarLayout.Toc.title, entries}
-      })
-    }
+    let {toc} = TableOfContents.Context.useTocContext()
+
+    let activeToc = toc
 
     let categories = {
       let groups = Dict.toArray(Content.tocData)->Array.reduce(Dict.make(), (acc, next) => {
@@ -240,7 +234,6 @@ module Make = (Content: StaticContent) => {
       ?version,
       ?availableVersions,
       ?nextVersion,
-      ?activeToc,
       categories,
       ?components,
       ?theme,

@@ -16,20 +16,10 @@ module Toc = {
     }>,
   }>
 
-  type entry = {
-    header: string,
-    href: string,
-  }
-
-  type t = {
-    title: string,
-    entries: array<entry>,
-  }
-
   @react.component
-  let make = (~entries: array<entry>) =>
+  let make = (~entries: array<TableOfContents.entry>) =>
     <ul className="mt-3 py-1 mb-4 border-l border-fire-10">
-      {Array.map(entries, ({header, href}) =>
+      {Array.map(entries, ({header, href}) => {
         <li key=header className="pl-2 mt-2 first:mt-1">
           <Link.String
             to=href
@@ -39,7 +29,7 @@ module Toc = {
             React.string(header)}
           </Link.String>
         </li>
-      )->React.array}
+      })->React.array}
     </ul>
 }
 
@@ -61,7 +51,7 @@ module Sidebar = {
     }
     @react.component
     let make = (
-      ~getActiveToc: option<t => option<Toc.t>>=?,
+      ~getActiveToc: option<t => option<TableOfContents.t>>=?,
       ~isItemActive: t => bool=_nav => false,
       ~isHidden=false,
       ~items: array<t>,
@@ -122,18 +112,19 @@ module Sidebar = {
     ~toplevelNav=React.null,
     ~title as _: option<string>=?,
     ~preludeSection=React.null,
-    ~activeToc: option<Toc.t>=?,
+    ~activeToc: option<TableOfContents.t>=?,
     ~isOpen: bool,
     ~toggle: unit => unit,
   ) => {
     let isItemActive = (navItem: NavItem.t) => navItem.href === route
 
-    let getActiveToc = (navItem: NavItem.t) =>
+    let getActiveToc = (navItem: NavItem.t) => {
       if navItem.href === route {
         activeToc
       } else {
         None
       }
+    }
 
     <>
       <div
@@ -166,11 +157,11 @@ module Sidebar = {
  */
           <div className="mb-56">
             {categories
-            ->Array.map(category =>
+            ->Array.map(category => {
               <div key=category.name>
                 <Category getActiveToc isItemActive category />
               </div>
-            )
+            })
             ->React.array}
           </div>
         </aside>

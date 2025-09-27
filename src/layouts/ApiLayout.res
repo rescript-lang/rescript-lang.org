@@ -2,7 +2,6 @@
 let allApiVersions = Constants.allManualVersions
 
 module Sidebar = SidebarLayout.Sidebar
-module Toc = SidebarLayout.Toc
 
 module OldDocsWarning = {
   @react.component
@@ -69,7 +68,7 @@ let make = (
   ~categories: array<Sidebar.Category.t>,
   ~title="",
   ~version: option<string>=?,
-  ~activeToc: option<Toc.t>=?,
+  ~activeToc: option<TableOfContents.t>=?,
   ~components=ApiMarkdown.default,
   ~children,
 ) => {
@@ -137,7 +136,8 @@ let make = (
     theme=#Reason
     components
     sidebarState=(isSidebarOpen, setSidebarOpen)
-    sidebar>
+    sidebar
+  >
     children
   </SidebarLayout>
 }
