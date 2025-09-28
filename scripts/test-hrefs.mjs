@@ -7,12 +7,11 @@
  */
 
 import { config } from "dotenv";
+import fs from "fs";
 import glob from "glob";
 import path from "path";
-import fs from "fs";
-import urlModule from "url";
-import { URL } from "url";
-import { getAllPosts, blogPathToSlug } from "../src/common/BlogApi.mjs";
+import urlModule, { URL } from "url";
+import { blogPathToSlug, getAllPosts } from "../src/common/BlogApi.mjs";
 
 import { defaultProcessor } from "./markdown.js";
 
@@ -39,8 +38,8 @@ const mapBlogFilePath = (path) => {
   return path;
 };
 
-// Static files are located in /public/static/img/somefile.png
-// within markdown files they are referenced as /static/img/somefile.png
+// Static files are located in /public/img/somefile.png
+// within markdown files they are referenced as /img/somefile.png
 const mapStaticFilePath = (path) => {
   return path.replace("./public", "");
 };
@@ -272,9 +271,7 @@ const main = () => {
 
   // We need to capture all files independently from the test file glob
   const pageMapFiles = glob.sync("./{pages,_blogposts}/**/*.{js,mdx}", { cwd });
-  const staticFiles = glob.sync("./public/static/**/*.{svg,png,woff2}", {
-    cwd,
-  });
+  const staticFiles = glob.sync("./public/**/*.{svg,png,woff2}", { cwd });
 
   const allFiles = pageMapFiles.concat(staticFiles);
 

@@ -1,14 +1,15 @@
-module Link = Next.Link
+module Link = ReactRouter.Link
 
 let link = "no-underline block hover:cursor-pointer hover:text-fire-30 mb-px"
 let activeLink = "font-medium text-fire-30 border-b border-fire"
 
-let linkOrActiveLink = (~target, ~route) => target === route ? activeLink : link
+let linkOrActiveLink = (~target: Path.t, ~route: Path.t) => target === route ? activeLink : link
 
-let linkOrActiveLinkSubroute = (~target, ~route) =>
-  String.startsWith(route, target) ? activeLink : link
+let linkOrActiveLinkSubroute = (~target: Path.t, ~route: Path.t) =>
+  String.startsWith((route :> string), (target :> string)) ? activeLink : link
 
-let isActiveLink = (~includes: string, ~excludes: option<string>=?, ~route: string) => {
+let isActiveLink = (~includes: string, ~excludes: option<string>=?, ~route: Path.t) => {
+  let route = (route :> string)
   // includes means we want the lnk to be active if it contains the expected text
   let includes = route->String.includes(includes)
   // excludes allows us to not have links be active even if they do have the includes text
@@ -19,35 +20,37 @@ let isActiveLink = (~includes: string, ~excludes: option<string>=?, ~route: stri
   includes && !excludes ? activeLink : link
 }
 
-let isDocRoute = (~route) =>
+let isDocRoute = (~route: Path.t) => {
+  let route = (route :> string)
   route->String.includes("/docs/") || route->String.includes("/syntax-lookup")
+}
 
-let isDocRouteActive = (~route) => isDocRoute(~route) ? activeLink : link
+let isDocRouteActive = (~route: Path.t) => isDocRoute(~route) ? activeLink : link
 
 module MobileNav = {
   @react.component
-  let make = (~route: string) => {
+  let make = (~route: Path.t) => {
     let base = "font-normal mx-4 py-5 text-gray-40 border-b border-gray-80"
     let extLink = "block hover:cursor-pointer hover:text-white text-gray-60"
     <div className="border-gray-80 border-tn">
       <ul>
         <li className=base>
-          <Link href="/try" className={linkOrActiveLink(~target="/try", ~route)}>
+          <Link to=#"/try" className={linkOrActiveLink(~target=#"/try", ~route)}>
             {React.string("Playground")}
           </Link>
         </li>
         <li className=base>
-          <Link href="/blog" className={linkOrActiveLinkSubroute(~target="/blog", ~route)}>
+          <Link to=#"/blog" className={linkOrActiveLinkSubroute(~target=#"/blog", ~route)}>
             {React.string("Blog")}
           </Link>
         </li>
         <li className=base>
-          <Link href="/community" className={linkOrActiveLink(~target="/community", ~route)}>
+          <Link to=#"/community" className={linkOrActiveLink(~target=#"/community", ~route)}>
             {React.string("Community")}
           </Link>
         </li>
         <li className=base>
-          <Link href="/packages" className={linkOrActiveLink(~target="/packages", ~route)}>
+          <Link to=#"/packages" className={linkOrActiveLink(~target=#"/packages", ~route)}>
             {React.string("Packages")}
           </Link>
         </li>
@@ -79,11 +82,8 @@ module MobileNav = {
 /* isOverlayOpen: if the mobile sidebar is toggled open */
 @react.component
 let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) => unit) => {
-  let router = Next.Router.useRouter()
-  let route = router.route
-
-  let version = Url.getVersionFromStorage(Manual)->Option.getOr(Constants.versions.latest)
-  let reactVersion = Url.getVersionFromStorage(React)->Option.getOr(Constants.latestReactVersion)
+  let location = ReactRouter.useLocation()
+  let route = location.pathname
 
   let toggleOverlay = () => {
     setOverlayOpen(prev => !prev)
@@ -94,48 +94,54 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
   <>
     <header
       id="header"
-      className={fixedNavClassName ++ " items-center z-50 w-full transition duration-300 ease-out group-[.nav-disappear]:-translate-y-16 md:group-[.nav-disappear]:-translate-y-0 min-w-[20rem]"}>
+      className={fixedNavClassName ++ " items-center z-50 w-full transition duration-300 ease-out group-[.nav-disappear]:-translate-y-16 md:group-[.nav-disappear]:-translate-y-0 min-w-[20rem]"}
+    >
       <nav className="px-4 flex xs:justify-center bg-gray-90 shadow h-16 text-white-80 text-14">
         <div className="flex justify-between items-center h-full w-full max-w-1280">
           <div className="h-8 w-8 lg:h-10 lg:w-32">
             <a
               href="/"
-              className="block hover:cursor-pointer w-full h-full flex justify-center items-center font-bold">
-              <img src="/static/nav-logo@2x.png" className="lg:hidden" />
-              <img src="/static/nav-logo-full@2x.png" className="hidden lg:block" />
+              className="block hover:cursor-pointer w-full h-full flex justify-center items-center font-bold"
+            >
+              <img src="/nav-logo@2x.png" className="lg:hidden" />
+              <img src="/nav-logo-full@2x.png" className="hidden lg:block" />
             </a>
           </div>
 
           /* Desktop horizontal navigation */
           <div
-            className="flex items-center xs:justify-between w-full bg-gray-90 sm:h-auto sm:relative">
+            className="flex items-center xs:justify-between w-full bg-gray-90 sm:h-auto sm:relative"
+          >
             <div className="flex ml-10 space-x-5 w-full text-gray-40 max-w-104">
-              <Link
-                href={`/docs/manual/${version}/introduction`} className={isDocRouteActive(~route)}>
+              <Link to=#"/docs/manual/introduction" className={isDocRouteActive(~route)}>
                 {React.string("Docs")}
               </Link>
 
               <Link
-                href="/try"
-                className={"hidden xs:block " ++ linkOrActiveLink(~target="/try", ~route)}>
+                to=#"/try"
+                className={"hidden xs:block " ++ linkOrActiveLink(~target=#"/try", ~route)}
+              >
                 {React.string("Playground")}
               </Link>
 
               <Link
-                href="/blog"
-                className={"hidden xs:block " ++ linkOrActiveLinkSubroute(~target="/blog", ~route)}>
+                to=#"/blog"
+                className={"hidden xs:block " ++ linkOrActiveLinkSubroute(~target=#"/blog", ~route)}
+              >
                 {React.string("Blog")}
               </Link>
 
               <Link
-                href="/community/overview"
-                className={"hidden xs:block " ++ linkOrActiveLink(~target="/community", ~route)}>
+                to=#"/community/overview"
+                className={"hidden xs:block " ++ linkOrActiveLink(~target=#"/community", ~route)}
+              >
                 {React.string("Community")}
               </Link>
 
               <Link
-                href="/packages"
-                className={"hidden xs:block " ++ linkOrActiveLink(~target="/packages", ~route)}>
+                to=#"/packages"
+                className={"hidden xs:block " ++ linkOrActiveLink(~target=#"/packages", ~route)}
+              >
                 {React.string("Packages")}
               </Link>
             </div>
@@ -165,7 +171,8 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
           onClick={evt => {
             ReactEvent.Mouse.preventDefault(evt)
             toggleOverlay()
-          }}>
+          }}
+        >
           <Icon.DrawerDots
             className={"h-1 w-auto block " ++ (isOverlayOpen ? "text-fire" : "text-gray-60")}
           />
@@ -175,7 +182,8 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
         <div
           className={(
             isOverlayOpen ? "flex" : "hidden"
-          ) ++ " top-16 sm:hidden flex-col fixed top-0 left-0 h-full w-full z-50 sm:w-9/12 bg-gray-100 sm:h-auto sm:flex sm:relative sm:flex-row sm:justify-between"}>
+          ) ++ " top-16 sm:hidden flex-col fixed top-0 left-0 h-full w-full z-50 sm:w-9/12 bg-gray-100 sm:h-auto sm:flex sm:relative sm:flex-row sm:justify-between"}
+        >
           <MobileNav route />
         </div>
       </nav>
@@ -183,26 +191,27 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
       {isDocRoute(~route)
         ? <nav
             id="docs-subnav"
-            className="bg-white z-50 px-4 w-full h-12 shadow text-gray-60 text-12 md:text-14 transition duration-300 ease-out group-[.nav-disappear]:-translate-y-32 md:group-[.nav-disappear]:-translate-y-0">
+            className="bg-white z-50 px-4 w-full h-12 shadow text-gray-60 text-12 md:text-14 transition duration-300 ease-out group-[.nav-disappear]:-translate-y-32 md:group-[.nav-disappear]:-translate-y-0"
+          >
             <div className="flex gap-6 lg:gap-10 items-center h-full w-full max-w-1280 m-auto">
               <Link
-                href={`/docs/manual/${version}/introduction`}
-                className={isActiveLink(~includes="/docs/manual/", ~excludes="/api", ~route)}>
+                to=#"/docs/manual/introduction"
+                className={isActiveLink(~includes="/docs/manual/", ~excludes="/api", ~route)}
+              >
                 {React.string("Language Manual")}
               </Link>
-              <Link
-                href={`/docs/manual/${version}/api`}
-                className={isActiveLink(~includes="/api", ~route)}>
+              <Link to=#"/docs/manual/api" className={isActiveLink(~includes="/api", ~route)}>
                 {React.string("API")}
               </Link>
               <Link
-                href={`/syntax-lookup`}
-                className={isActiveLink(~includes="/syntax-lookup", ~route)}>
+                to=#"/syntax-lookup" className={isActiveLink(~includes="/syntax-lookup", ~route)}
+              >
                 {React.string("Syntax Lookup")}
               </Link>
               <Link
-                href={`/docs/react/${reactVersion}/introduction`}
-                className={isActiveLink(~includes="/docs/react/", ~route)}>
+                to=#"/docs/react/introduction"
+                className={isActiveLink(~includes="/docs/react/", ~route)}
+              >
                 {React.string("React")}
               </Link>
             </div>

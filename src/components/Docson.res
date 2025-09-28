@@ -22,7 +22,7 @@ let make = (~tag) => {
       ->Promise.then(schema => {
         let _ = switch element.current->Nullable.toOption {
         | Some(_el) =>
-          setTemplateBaseUrl(docson, "/static/docson")
+          setTemplateBaseUrl(docson, "/docson")
 
           doc("docson-root", schema, None, segment)
 

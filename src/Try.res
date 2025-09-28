@@ -32,9 +32,7 @@ let default = props => {
 
   <>
     <Meta
-      title="ReScript Playground"
-      description="Try ReScript in the browser"
-      ogImage="/static/og/try.png"
+      title="ReScript Playground" description="Try ReScript in the browser" ogImage="/og/try.png"
     />
     <Next.Head>
       <style> {React.string(`body { background-color: #010427; }`)} </style>

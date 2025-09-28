@@ -32,6 +32,7 @@ module Fs = {
   @module("fs") external existsSync: string => bool = "existsSync"
   @module("fs") external mkdirSync: string => unit = "mkdirSync"
   @module("fs") external statSync: string => {.."isDirectory": unit => bool} = "statSync"
+  @module("node:fs/promises") external readFile: (string, string) => promise<string> = "readFile"
 }
 
 module Buffer = {

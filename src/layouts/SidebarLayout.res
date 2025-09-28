@@ -4,7 +4,7 @@
     in other API related layouts, such as the Markdown representation
     or the Sidebar component.
  */
-module Link = Next.Link
+module Link = ReactRouter.Link
 
 module Toc = {
   type raw = Dict.t<{
@@ -12,33 +12,24 @@ module Toc = {
     "category": Nullable.t<string>,
     "headers": array<{
       "name": string,
-      "href": string,
+      "href": Path.t,
     }>,
   }>
 
-  type entry = {
-    header: string,
-    href: string,
-  }
-
-  type t = {
-    title: string,
-    entries: array<entry>,
-  }
-
   @react.component
-  let make = (~entries: array<entry>) =>
+  let make = (~entries: array<TableOfContents.entry>) =>
     <ul className="mt-3 py-1 mb-4 border-l border-fire-10">
-      {Array.map(entries, ({header, href}) =>
+      {Array.map(entries, ({header, href}) => {
         <li key=header className="pl-2 mt-2 first:mt-1">
-          <Link
-            href
-            className="font-normal block text-14 text-gray-40 leading-tight hover:text-gray-80">
+          <Link.String
+            to=href
+            className="font-normal block text-14 text-gray-40 leading-tight hover:text-gray-80"
+          >
             {//links, nested
             React.string(header)}
-          </Link>
+          </Link.String>
         </li>
-      )->React.array}
+      })->React.array}
     </ul>
 }
 
@@ -56,11 +47,11 @@ module Sidebar = {
     // Navigation point information
     type t = {
       name: string,
-      href: string,
+      href: Path.t,
     }
     @react.component
     let make = (
-      ~getActiveToc: option<t => option<Toc.t>>=?,
+      ~getActiveToc: option<t => option<TableOfContents.t>>=?,
       ~isItemActive: t => bool=_nav => false,
       ~isHidden=false,
       ~items: array<t>,
@@ -79,9 +70,10 @@ module Sidebar = {
 
           <li key=m.name className={hidden ++ " mt-1 leading-4"}>
             <Link
-              href=m.href
+              to=m.href
               className={"truncate block py-1 md:h-auto tracking-tight text-gray-60 rounded-sm hover:bg-gray-20 hover:-ml-2 hover:py-1 hover:pl-2 " ++
-              active}>
+              active}
+            >
               {React.string(m.name)}
             </Link>
             {switch activeToc {
@@ -116,38 +108,42 @@ module Sidebar = {
   @react.component
   let make = (
     ~categories: array<Category.t>,
-    ~route: string,
+    ~route: Path.t,
     ~toplevelNav=React.null,
     ~title as _: option<string>=?,
     ~preludeSection=React.null,
-    ~activeToc: option<Toc.t>=?,
+    ~activeToc: option<TableOfContents.t>=?,
     ~isOpen: bool,
     ~toggle: unit => unit,
   ) => {
     let isItemActive = (navItem: NavItem.t) => navItem.href === route
 
-    let getActiveToc = (navItem: NavItem.t) =>
+    let getActiveToc = (navItem: NavItem.t) => {
       if navItem.href === route {
         activeToc
       } else {
         None
       }
+    }
 
     <>
       <div
         id="sidebar"
         className={(
           isOpen ? "fixed w-full left-0 h-full z-20 min-w-320" : "hidden "
-        ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible bg-white mt-28 md:mt-0"}>
+        ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible bg-white mt-28 md:mt-0"}
+      >
         <aside
           id="sidebar-content"
-          className="relative top-0 px-4 w-full block md:pt-10 md:top-28 md:sticky border-r border-gray-20 overflow-y-auto pb-24 h-auto max-h-[calc(100vh-7rem)]">
+          className="relative top-0 px-4 w-full block md:pt-10 md:top-28 md:sticky border-r border-gray-20 overflow-y-auto pb-24 h-auto max-h-[calc(100vh-7rem)]"
+        >
           <button
             onClick={evt => {
               ReactEvent.Mouse.preventDefault(evt)
               toggle()
             }}
-            className="md:hidden h-16 flex pt-2 right-4 absolute">
+            className="md:hidden h-16 flex pt-2 right-4 absolute"
+          >
             <Icon.Close />
           </button>
           <div className="flex justify-between">
@@ -161,11 +157,11 @@ module Sidebar = {
  */
           <div className="mb-56">
             {categories
-            ->Array.map(category =>
+            ->Array.map(category => {
               <div key=category.name>
                 <Category getActiveToc isItemActive category />
               </div>
-            )
+            })
             ->React.array}
           </div>
         </aside>
@@ -182,7 +178,9 @@ module BreadCrumbs = {
         let item = if i === List.length(crumbs) - 1 {
           <span key={Int.toString(i)}> {React.string(crumb.name)} </span>
         } else {
-          <Link key={Int.toString(i)} href=crumb.href> {React.string(crumb.name)} </Link>
+          <Link.String key={Int.toString(i)} to=crumb.href>
+            {React.string(crumb.name)}
+          </Link.String>
         }
         if i > 0 {
           <span key={Int.toString(i)}>
@@ -202,7 +200,7 @@ module MobileDrawerButton = {
   @react.component
   let make = (~hidden: bool, ~onClick) =>
     <button className={(hidden ? "hidden " : "") ++ "md:hidden mr-3"} onMouseDown=onClick>
-      <img className="h-4" src="/static/ic_sidebar_drawer.svg" />
+      <img className="h-4" src="/ic_sidebar_drawer.svg" />
     </button>
 }
 
@@ -222,8 +220,7 @@ let make = (
 ) => {
   let (isNavOpen, setNavOpen) = React.useState(() => false)
 
-  let router = Next.Router.useRouter()
-  let version = Url.parse(router.route).version
+  let location = ReactRouter.useLocation()
 
   let theme = ColorTheme.toCN(theme)
 
@@ -241,20 +238,22 @@ let make = (
   }
 
   React.useEffect(() => {
-    open Next.Router.Events
-    let {Next.Router.events: events} = router
+    // TODO RR7: figure out how to watch for route changes
+    // open Next.Router.Events
+    // let {Next.Router.events: events} = router
 
-    let onChangeComplete = _url => setSidebarOpen(_ => false)
+    // let onChangeComplete = _url => setSidebarOpen(_ => false)
 
-    events->on(#routeChangeComplete(onChangeComplete))
-    events->on(#hashChangeComplete(onChangeComplete))
+    // events->on(#routeChangeComplete(onChangeComplete))
+    // events->on(#hashChangeComplete(onChangeComplete))
 
-    Some(
-      () => {
-        events->off(#routeChangeComplete(onChangeComplete))
-        events->off(#hashChangeComplete(onChangeComplete))
-      },
-    )
+    // Some(
+    //   () => {
+    //     events->off(#routeChangeComplete(onChangeComplete))
+    //     events->off(#hashChangeComplete(onChangeComplete))
+    //   },
+    // )
+    None
   }, [])
 
   let handleDrawerButtonClick = React.useCallback(evt => {
@@ -274,14 +273,15 @@ let make = (
   | Some(categories) =>
     let items = categories->Array.flatMap(c => c.items)
 
-    switch items->Array.findIndex(item => item.href === router.route) {
+    switch items->Array.findIndex(item => item.href === location.pathname) {
     | -1 => React.null
     | i =>
       let previous = switch items->Array.get(i - 1) {
       | Some({name, href}) =>
         <Link
-          href
-          className={"flex items-center text-fire hover:text-fire-70 border-2 border-red-300 rounded py-1.5 px-3"}>
+          to=href
+          className={"flex items-center text-fire hover:text-fire-70 border-2 border-red-300 rounded py-1.5 px-3"}
+        >
           <Icon.ArrowRight className={"rotate-180 mr-2"} />
           {React.string(name)}
         </Link>
@@ -290,8 +290,9 @@ let make = (
       let next = switch items->Array.get(i + 1) {
       | Some({name, href}) =>
         <Link
-          href
-          className={"flex items-center text-fire hover:text-fire-70 ml-auto border-2 border-red-300 rounded py-1.5 px-3"}>
+          to=href
+          className={"flex items-center text-fire hover:text-fire-70 ml-auto border-2 border-red-300 rounded py-1.5 px-3"}
+        >
           {React.string(name)}
           <Icon.ArrowRight className={"ml-2"} />
         </Link>
@@ -306,8 +307,8 @@ let make = (
   }
 
   <>
-    <Meta title=metaTitle version />
-    <EnableCollapsibleNavbar isEnabled={!isSidebarOpen && !isNavOpen}>
+    <Meta title=metaTitle />
+    <EnableCollapsibleNavbar isEnabled={isSidebarOpen && isNavOpen}>
       <div className={"mt-16 min-w-320 " ++ theme}>
         <div className="w-full">
           <Navigation isOverlayOpen=isNavOpen setOverlayOpen=setNavOpen />
@@ -317,10 +318,12 @@ let make = (
               <main className="px-4 w-full pt-20 md:ml-12 lg:mr-8 mb-32 md:max-w-576 lg:max-w-740">
                 //width of the right content part
                 <div
-                  className={"z-10 fixed border-b shadow top-[112px] left-0 pl-4 bg-white w-full py-4 md:relative md:border-none md:shadow-none md:p-0 md:top-auto flex items-center transition duration-300 ease-out group-[.nav-disappear]:-translate-y-64 md:group-[.nav-disappear]:-translate-y-0"}>
+                  className={"z-10 fixed border-b shadow top-[112px] left-0 pl-4 bg-white w-full py-4 md:relative md:border-none md:shadow-none md:p-0 md:top-auto flex items-center transition duration-300 ease-out group-[.nav-disappear]:-translate-y-64 md:group-[.nav-disappear]:-translate-y-0"}
+                >
                   <MobileDrawerButton hidden=isNavOpen onClick={handleDrawerButtonClick} />
                   <div
-                    className="truncate overflow-x-auto touch-scroll flex items-center space-x-4 md:justify-between mr-4 w-full">
+                    className="truncate overflow-x-auto touch-scroll flex items-center space-x-4 md:justify-between mr-4 w-full"
+                  >
                     breadcrumbs
                     editLinkEl
                   </div>

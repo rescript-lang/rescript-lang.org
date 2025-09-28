@@ -1,7 +1,7 @@
-@import "./_hljs.css" layer(base);
 @import "./_markdown.css" layer(base);
 @import "./_fonts.css" layer(base);
 @import "./_docsearch.css" layer(base);
+
 
 @import "tailwindcss";
 
@@ -164,6 +164,7 @@
   --shadow-sm: 0 0.5px 0.5px 0 rgba(0, 0, 0, 0.05);
 
   @keyframes pulse {
+
     0%,
     100% {
       opacity: 1;
@@ -184,6 +185,7 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
+
   *,
   ::after,
   ::before,
@@ -295,7 +297,7 @@
     /* Chrome/Safari/Webkit */
   }
 
-  a > code {
+  a>code {
     @apply text-fire;
   }
 }
@@ -352,14 +354,14 @@
 }
 
 .cm-s-material .CodeMirror-line::selection,
-.cm-s-material .CodeMirror-line > span::selection,
-.cm-s-material .CodeMirror-line > span > span::selection {
+.cm-s-material .CodeMirror-line>span::selection,
+.cm-s-material .CodeMirror-line>span>span::selection {
   background: rgba(128, 203, 196, 0.2);
 }
 
 .cm-s-material .CodeMirror-line::-moz-selection,
-.cm-s-material .CodeMirror-line > span::-moz-selection,
-.cm-s-material .CodeMirror-line > span > span::-moz-selection {
+.cm-s-material .CodeMirror-line>span::-moz-selection,
+.cm-s-material .CodeMirror-line>span>span::-moz-selection {
   background: rgba(128, 203, 196, 0.2);
 }
 

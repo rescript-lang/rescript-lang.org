@@ -1,0 +1,3 @@
+let default = () => {
+  <div />
+}

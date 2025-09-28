@@ -108,7 +108,7 @@ let attachCompilerAndLibraries = async (~baseUrl, ~version, ~libraries: array<st
   let compilerUrl = CdnMeta.getCompilerUrl(baseUrl, version)
 
   // Useful for debugging our local build
-  /* let compilerUrl = "/static/linked-bs-bundle.js"; */
+  /* let compilerUrl = "/linked-bs-bundle.js"; */
 
   switch await LoadScript.loadScriptPromise(compilerUrl) {
   | Error(_) => Error([`Could not load compiler from url ${compilerUrl}`])

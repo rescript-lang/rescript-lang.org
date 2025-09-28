@@ -177,7 +177,8 @@ module Card = {
           <button
             ?onMouseDown
             className="hover:pointer px-2 rounded-lg text-white bg-fire-70 text-14"
-            key={keyword}>
+            key={keyword}
+          >
             {React.string(keyword)}
           </button>
         })->React.array}
@@ -248,7 +249,8 @@ module InfoSidebar = {
               setFilter(prev => {
                 {...prev, Filter.includeOfficial: !filter.includeOfficial}
               })
-            }}>
+            }}
+          >
             {React.string("Official")}
           </Toggle>
           <Toggle
@@ -257,7 +259,8 @@ module InfoSidebar = {
               setFilter(prev => {
                 {...prev, Filter.includeCommunity: !filter.includeCommunity}
               })
-            }}>
+            }}
+          >
             {React.string("Community")}
           </Toggle>
           // <Toggle
@@ -275,7 +278,8 @@ module InfoSidebar = {
               setFilter(prev => {
                 {...prev, Filter.includeOutdated: !filter.includeOutdated}
               })
-            }}>
+            }}
+          >
             {React.string("Outdated")}
           </Toggle>
         </div>
@@ -283,9 +287,9 @@ module InfoSidebar = {
       <div>
         <h2 className=h2> {React.string("Guidelines")} </h2>
         <ul className="space-y-4">
-          <Next.Link href="/docs/guidelines/publishing-packages" className=link>
+          <ReactRouter.Link to=#"/docs/guidelines/publishing-packages" className=link>
             {React.string("Publishing ReScript npm packages")}
-          </Next.Link>
+          </ReactRouter.Link>
           /* <li> */
           /* <Next.Link href="/docs/guidelines/writing-bindings"  className=link> */
           /* {React.string("Writing Bindings & Libraries")} */
@@ -306,7 +310,7 @@ type state =
   | All
   | Filtered(string) // search term
 
-let default = (props: props) => {
+let make = (props: props) => {
   open Markdown
 
   let (state, setState) = React.useState(_ => All)
@@ -395,7 +399,8 @@ let default = (props: props) => {
     </Category>
   }
 
-  let router = Next.Router.useRouter()
+  let location = ReactRouter.useLocation()
+  let (searchParams, setSearchParams) = ReactRouter.useSearchParams()
 
   // On first render, the router query is undefined so we set a flag.
   let firstRenderDone = React.useRef(false)
@@ -407,16 +412,19 @@ let default = (props: props) => {
 
   // On second render, this hook runs one more time to actually trigger the search.
   React.useEffect(() => {
-    router.query->Dict.get("search")->Option.forEach(onValueChange)
+    // TODO RR7: test this
+
+    // TODO RR7: this is broken
+    let _ = searchParams["search"]->Option.map(onValueChange)
+
+    // location.search->Option.forEach(onValueChange)
+
+    // router.query->Dict.get("search")->Option.forEach(onValueChange)
 
     None
   }, [firstRenderDone.current])
 
-  let updateQuery = value =>
-    router->Next.Router.replaceObj({
-      pathname: router.pathname,
-      query: value === "" ? Dict.make() : Dict.fromArray([("search", value)]),
-    })
+  let updateQuery = value => setSearchParams({"search": value})
 
   // When the search term changes, update the router query accordingly.
   React.useEffect(() => {
@@ -440,7 +448,8 @@ let default = (props: props) => {
         <Navigation isOverlayOpen setOverlayOpen />
         <div className="flex overflow-hidden">
           <div
-            className="flex justify-between min-w-320 px-4 pt-16 lg:align-center w-full lg:px-8 pb-48">
+            className="flex justify-between min-w-320 px-4 pt-16 lg:align-center w-full lg:px-8 pb-48"
+          >
             <MdxProvider components=MarkdownComponents.default>
               <main className="max-w-1280 w-full flex justify-center">
                 <div className="w-full max-w-176.25">

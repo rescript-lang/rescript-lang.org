@@ -46,21 +46,6 @@ module GetStaticPaths = {
   type t<'params> = unit => promise<return<'params>>
 }
 
-module Link = {
-  @module("next/link") @react.component
-  external make: (
-    ~href: string,
-    ~_as: string=?,
-    ~prefetch: bool=?,
-    ~replace: bool=?,
-    ~shallow: bool=?,
-    ~passHref: bool=?,
-    ~children: React.element,
-    ~className: string=?,
-    ~target: string=?,
-  ) => React.element = "default"
-}
-
 module Router = {
   /*
       Make sure to only register events via a useEffect hook!

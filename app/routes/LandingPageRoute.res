@@ -1,0 +1,5 @@
+let default = () => {
+  <LandingPageLayout>
+    <></>
+  </LandingPageLayout>
+}

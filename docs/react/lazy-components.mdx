@@ -1,0 +1,44 @@
+---
+title: Lazy Components
+description: "Details on how to use the React.lazy_ API to dynamically import components"
+canonical: "/docs/react/latest/lazy-components"
+---
+
+# Lazy Components
+
+<Intro>
+
+It's good practice to delay loading the JavaScript required to render components you're not actually showing yet. This helps with performance and makes your application load faster.
+
+React ships with an [API for dynamically loading components](https://react.dev/reference/react/lazy#lazy). In this little guide we'll show you how to dynamically load React components in ReScript.
+
+</Intro>
+
+> **Note:** This section requires the latest [@rescript/react](https://github.com/rescript-lang/rescript-react) bindings to be installed (_0.12.0-alpha.2 and above_).
+
+ReScript comes with APIs for doing dynamic imports both for single values and for entire modules. These APIs make dynamically importing React components easy.
+
+Let's look at a small example. First we'll define a simple component:
+
+```res example
+// Title.res
+@react.component
+let make = (~text) => {
+  <div className="title">{text->React.string}</div>
+}
+```
+
+Now we can dynamically import the `<Title/>` component by passing the result of our dynamic import to `React.lazy_`:
+
+```rescript
+// SomeOtherFile.res
+module LazyTitle = {
+  let make = React.lazy_(() => import(Title.make))
+}
+
+let titleJsx = <LazyTitle text="Hello!" />
+```
+
+That's all the code we need! The new `<LazyTitle />` component behaves exactly the same as the wrapped `<Title />` component, but will be lazy loaded via React's built-in lazy mechanism.
+
+> You can read more about `import` and dynamic import in ReScript in [this part of the documentation](/docs/manual/latest/import-from-export-to-js#dynamic-import).
