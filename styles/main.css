@@ -552,3 +552,11 @@
   right: 0;
   width: 100%;
 }
+
+
+
+/* This has to stay at the end! */
+/* This is to prevent FOUC (flash of unstyled content) */
+html {
+  opacity: 1;
+}

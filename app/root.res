@@ -30,6 +30,10 @@ let default = () => {
   let (isOverlayOpen, setOverlayOpen) = React.useState(_ => false)
   <html>
     <head>
+      // This is to prevent FOUC (flash of unstyled content)
+      // This line has to be above everything else
+      <style> {React.string("html{opacity: 0;}")} </style>
+
       <link rel="icon" href="data:image/x-icon;base64,AA" />
       <link rel="preload" href="../styles/main.css" type_="text/css" />
       <link rel="stylesheet" href="../styles/main.css" />
