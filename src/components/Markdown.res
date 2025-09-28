@@ -138,9 +138,6 @@ module H2 = {
   @react.component
   let make = (~id, ~children) => {
     let title = childrenToString(children)->String.toLowerCase->String.replaceAll(" ", "-")
-
-    Console.log(title)
-
     <>
       // Here we know that children is always a string (## headline)
       <h2 id className="group mt-16 mb-3 hl-3 scroll-mt-32">

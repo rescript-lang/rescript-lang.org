@@ -116,8 +116,6 @@ let make = (
       }}
     </div>
 
-  Console.log2("activeToc", activeToc)
-
   let sidebar =
     <Sidebar isOpen=isSidebarOpen toggle=toggleSidebar preludeSection ?activeToc categories route />
 

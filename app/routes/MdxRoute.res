@@ -47,10 +47,14 @@ let components = {
   "Warn": Markdown.Warn.make,
 }
 
+// the loadAllMdx function logs out all of the file contents as it reads them, which is noisy and not useful.
+// We can suppress that logging with this helper function.
+let allMdx = await Shims.runWithoutLogging(() => loadAllMdx())
+
 let loader: Loader.t<loaderData> = async ({request}) => {
   let mdx = await loadMdx(request)
 
-  let fileContents = await (await loadAllMdx(~filterByPaths=["docs"]))
+  let fileContents = await allMdx
   ->Array.filter(mdx => (mdx.path :> string)->String.includes("docs/manual/introduction"))
   ->Array.get(0)
   ->Option.map(mdx => mdx.path)
@@ -93,8 +97,6 @@ let default = () => {
   let attributes = useMdxAttributes()
 
   let {categories, entries} = useLoaderData()
-
-  Console.log(entries)
 
   let metaTitleCategory =
     (pathname :> string)->String.includes("docs/manual")
