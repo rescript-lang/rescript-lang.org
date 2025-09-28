@@ -1,4 +1,5 @@
 %%raw(`
+  import "../styles/main.css";
   import "../styles/_hljs.css";
   import "../styles/utils.css";
 
@@ -35,8 +36,6 @@ let default = () => {
       <style> {React.string("html{opacity: 0;}")} </style>
 
       <link rel="icon" href="data:image/x-icon;base64,AA" />
-      <link rel="preload" href="../styles/main.css" type_="text/css" />
-      <link rel="stylesheet" href="../styles/main.css" />
     </head>
     <body>
       <Navigation isOverlayOpen setOverlayOpen />
