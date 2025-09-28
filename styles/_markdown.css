@@ -58,7 +58,7 @@
       a {
         @apply underline text-current;
 
-        &::hover {
+        &:hover {
           @apply no-underline text-current text-gray-70;
         }
       }

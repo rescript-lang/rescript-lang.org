@@ -1,6 +1,5 @@
 %%raw(`
   import "../styles/_hljs.css";
-  import "../styles/main.css";
   import "../styles/utils.css";
 
   import hljs from 'highlight.js/lib/core';
@@ -32,6 +31,8 @@ let default = () => {
   <html>
     <head>
       <link rel="icon" href="data:image/x-icon;base64,AA" />
+      <link rel="preload" href="../styles/main.css" type_="text/css" />
+      <link rel="stylesheet" href="../styles/main.css" />
     </head>
     <body>
       <Navigation isOverlayOpen setOverlayOpen />
