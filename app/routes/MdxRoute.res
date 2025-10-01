@@ -1,11 +1,6 @@
 open ReactRouter
 open Mdx
 
-module Sidebar = SidebarLayout.Sidebar
-
-module NavItem = Sidebar.NavItem
-module Category = Sidebar.Category
-
 type loaderData = {
   ...Mdx.t,
   categories: array<SidebarLayout.Sidebar.Category.t>,
@@ -103,10 +98,17 @@ let default = () => {
       ? "ReScript Language Manual"
       : "Some other page"
 
-  <div>
+  if (
+    (pathname :> string)->String.includes("docs/manual") ||
+      (pathname :> string)->String.includes("docs/react")
+  ) {
     <DocsLayout metaTitleCategory categories activeToc={title: "Introduction", entries}>
       <div className="markdown-body"> {component()} </div>
     </DocsLayout>
-  </div>
+  } else {
+    // TODO Handle blog pages
+    React.null
+  }
+
   // </ManualDocsLayout.V1200Layout>
 }
