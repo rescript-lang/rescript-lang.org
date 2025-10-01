@@ -6,31 +6,6 @@
 // https://adamwathan.me/2019/10/17/persistent-layout-patterns-in-nextjs/
 
 // Register all the highlightjs stuff for the whole application
-%%raw(`
-  import hljs from 'highlight.js/lib/core'
-  import javascript from 'highlight.js/lib/languages/javascript'
-  import css from 'highlight.js/lib/languages/css'
-  import ocaml from 'highlight.js/lib/languages/ocaml'
-  import reason from 'plugins/reason-highlightjs'
-  import rescript from 'highlightjs-rescript'
-  import bash from 'highlight.js/lib/languages/bash'
-  import json from 'highlight.js/lib/languages/json'
-  import html from 'highlight.js/lib/languages/xml'
-  import text from 'highlight.js/lib/languages/plaintext'
-  import diff from 'highlight.js/lib/languages/diff'
-
-  hljs.registerLanguage('reason', reason)
-  hljs.registerLanguage('rescript', rescript)
-  hljs.registerLanguage('javascript', javascript)
-  hljs.registerLanguage('css', css)
-  hljs.registerLanguage('ts', javascript)
-  hljs.registerLanguage('ocaml', ocaml)
-  hljs.registerLanguage('sh', bash)
-  hljs.registerLanguage('json', json)
-  hljs.registerLanguage('text', text)
-  hljs.registerLanguage('html', html)
-  hljs.registerLanguage('diff', diff)
-`)
 
 type pageComponent = React.component<{.}>
 type pageProps = {.}
@@ -64,8 +39,6 @@ let make = (props: props): React.element => {
         | (1, _) => <ApiOverviewLayout.Docs version> content </ApiOverviewLayout.Docs>
         | _ => content
         }
-      | ("v8.0.0" | "v9.0.0" | "v10.0.0") as version =>
-        <ApiOverviewLayoutLegacy version> content </ApiOverviewLayoutLegacy>
       | _ => content
       }
     | _ =>

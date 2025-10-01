@@ -10,6 +10,8 @@ module Section = {
   }
 }
 
+open ReactRouter
+
 @react.component
 let make = () => {
   let linkClass = "hover:underline hover:pointer"
@@ -18,22 +20,23 @@ let make = () => {
 
   <footer className="flex justify-center border-t border-gray-10">
     <div
-      className="flex flex-col md:flex-row justify-between max-w-1280 w-full px-8 py-16 text-gray-80 ">
+      className="flex flex-col md:flex-row justify-between max-w-1280 w-full px-8 py-16 text-gray-80 "
+    >
       <div>
-        <img className="w-40 mb-5" src="/static/rescript_logo_black.svg" />
+        <img className="w-40 mb-5" src="/rescript_logo_black.svg" />
         <div className="text-16">
           <p> {React.string(`© ${copyrightYear} The ReScript Project`)} </p>
         </div>
       </div>
       <div
-        className="flex flex-col space-y-16 md:flex-row mt-16 md:mt-0 md:ml-16 md:space-y-0 md:space-x-16">
+        className="flex flex-col space-y-16 md:flex-row mt-16 md:mt-0 md:ml-16 md:space-y-0 md:space-x-16"
+      >
         <Section title="About">
           <ul className="text-16 text-gray-80-tr space-y-2">
             <li>
-              <Next.Link href="/community" className={linkClass}>
-                {React.string("Community")}
-              </Next.Link>
+              <Link to=#"/community" className={linkClass}> {React.string("Community")} </Link>
             </li>
+
             <li>
               <a href="https://rescript-association.org" className=linkClass>
                 {React.string("ReScript Association")}

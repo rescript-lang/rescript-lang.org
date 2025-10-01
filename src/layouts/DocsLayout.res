@@ -48,40 +48,40 @@ let makeBreadcrumbs = (~basePath: string, route: string): list<Url.breadcrumb> =
 
 @react.component
 let make = (
+  ~activeToc: option<TableOfContents.t>=?,
   ~breadcrumbs: option<list<Url.breadcrumb>>=?,
   ~metaTitleCategory: string, // e.g. Introduction | My Meta Title Category
   ~frontmatter=?,
   ~version: option<string>=?,
   ~availableVersions: option<array<(string, string)>>=?,
   ~nextVersion: option<(string, string)>=?,
-  ~activeToc: option<SidebarLayout.Toc.t>=?,
   ~categories: array<Category.t>,
   ~components=MarkdownComponents.default,
   ~theme=#Reason,
   ~children,
 ) => {
-  let router = Next.Router.useRouter()
-  let route = router.route
+  let {pathname: route} = ReactRouter.useLocation()
 
   let (isSidebarOpen, setSidebarOpen) = React.useState(_ => false)
   let toggleSidebar = () => setSidebarOpen(prev => !prev)
 
   React.useEffect(() => {
-    open Next.Router.Events
-    let {Next.Router.events: events} = router
-
-    let onChangeComplete = _url => setSidebarOpen(_ => false)
-
-    events->on(#routeChangeComplete(onChangeComplete))
-    events->on(#hashChangeComplete(onChangeComplete))
-
-    Some(
-      () => {
-        events->off(#routeChangeComplete(onChangeComplete))
-        events->off(#hashChangeComplete(onChangeComplete))
-      },
-    )
+    // TODO: make this work for React Router
+    // open Next.Router.Events
+    // let {Next.Router.events: events} = router
+    // let onChangeComplete = _url => setSidebarOpen(_ => false)
+    // events->on(#routeChangeComplete(onChangeComplete))
+    // events->on(#hashChangeComplete(onChangeComplete))
+    // Some(
+    //   () => {
+    //     events->off(#routeChangeComplete(onChangeComplete))
+    //     events->off(#hashChangeComplete(onChangeComplete))
+    //   },
+    // )
+    None
   }, [])
+
+  let navigate = ReactRouter.useNavigate()
 
   let preludeSection =
     <div className="flex flex-col justify-between text-fire font-medium items-baseline">
@@ -93,7 +93,7 @@ let make = (
             open Url
             ReactEvent.Form.preventDefault(evt)
             let version = (evt->ReactEvent.Form.target)["value"]
-            let url = Url.parse(route)
+            let url = Url.parse((route :> string))
             WebAPI.Storage.setItem(
               localStorage,
               ~key=switch metaTitleCategory {
@@ -107,7 +107,7 @@ let make = (
               "/" ++
               (Array.join(url.base, "/") ++
               ("/" ++ (version ++ ("/" ++ Array.join(url.pagepath, "/")))))
-            router->Next.Router.push(targetUrl)
+            navigate(targetUrl)
           }
           <VersionSelect onChange version availableVersions ?nextVersion />
         | None => <span className="font-mono text-14"> {React.string(version)} </span>
@@ -135,7 +135,8 @@ let make = (
         }
         metaTitle ++ (" | " ++ metaTitleCategory)
       }
-      let meta = <Meta title ?description ?canonical version=Url.parse(router.route).version />
+      let meta =
+        <Meta title ?description ?canonical /* version=Url.parse(router.route).version */ />
 
       let ghEditHref = switch canonical {
       | Some(canonical) =>
@@ -156,7 +157,8 @@ let make = (
     sidebar
     categories
     ?breadcrumbs
-    ?editHref>
+    ?editHref
+  >
     metaElement
     children
   </SidebarLayout>
@@ -177,7 +179,6 @@ module Make = (Content: StaticContent) => {
     ~version: option<string>=?,
     ~availableVersions: option<array<(string, string)>>=?,
     ~nextVersion: option<(string, string)>=?,
-    /* ~activeToc: option<SidebarLayout.Toc.t>=?, */
     ~components: option<MarkdownComponents.t>=?,
     ~theme: option<ColorTheme.t>=?,
     ~children: React.element,
@@ -192,17 +193,9 @@ module Make = (Content: StaticContent) => {
       Option.map(breadcrumbs, bc => List.concat(bc, list{{Url.name: title, href: route}}))
     })
 
-    let activeToc: option<SidebarLayout.Toc.t> = {
-      open Option
-      Dict.get(Content.tocData, route)->map(data => {
-        let title = data["title"]
-        let entries = Array.map(data["headers"], header => {
-          SidebarLayout.Toc.header: header["name"],
-          href: "#" ++ header["href"],
-        })
-        {SidebarLayout.Toc.title, entries}
-      })
-    }
+    let {toc} = TableOfContents.Context.useTocContext()
+
+    let activeToc = toc
 
     let categories = {
       let groups = Dict.toArray(Content.tocData)->Array.reduce(Dict.make(), (acc, next) => {
@@ -224,8 +217,9 @@ module Make = (Content: StaticContent) => {
         {
           name,
           items: Array.map(values, ((href, value)) => {
+            // TODO: this probably doesn't work as expected
             NavItem.name: value["title"],
-            href,
+            href: (value["headers"]->Array.getUnsafe(0))["href"],
           }),
         }
       })
@@ -238,7 +232,6 @@ module Make = (Content: StaticContent) => {
       ?version,
       ?availableVersions,
       ?nextVersion,
-      ?activeToc,
       categories,
       ?components,
       ?theme,

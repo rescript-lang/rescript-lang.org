@@ -90,13 +90,17 @@ module RightSidebar = {
 module SidebarTree = {
   @react.component
   let make = (~isOpen: bool, ~toggle: unit => unit, ~node: node, ~items: array<item>) => {
-    let router = Next.Router.useRouter()
-    let url = router.route->Url.parse
-    let version = url->Url.getVersionString
+    // let router = Next.Router.useRouter() // Remove Next.js router usage if not needed
+    open ReactRouter
+
+    // Use ReactRouter's useLocation if needed, or refactor to not use router
+    // let location = ReactRouter.useLocation()
+    // let url = ""
+    // let url = location.pathname->Url.parse
 
     let moduleRoute =
-      WebAPI.URL.make(~url="file://" ++ router.asPath).pathname
-      ->String.replace(`/docs/manual/${version}/api/`, "")
+      WebAPI.URL.make(~url="file://" ++ "" /* TODO: location.pathname */).pathname
+      ->String.replace(`/docs/manual/api/`, "")
       ->String.split("/")
 
     let summaryClassName = "truncate py-1 md:h-auto tracking-tight text-gray-60 font-medium text-14 rounded-sm hover:bg-gray-20 hover:-ml-2 hover:py-1 hover:pl-2 "
@@ -132,9 +136,9 @@ module SidebarTree = {
 
         <details key={href} open_>
           <summary className={summaryClassName ++ classNameActive}>
-            <Next.Link className={"inline-block w-10/12"} href>
+            <Link.String className={"inline-block w-10/12"} to=href>
               {node.name->React.string}
-            </Next.Link>
+            </Link.String>
           </summary>
           tocModule
           {if hasChildren {
@@ -148,19 +152,20 @@ module SidebarTree = {
           }}
         </details>
       | false =>
-        <li className={"list-none mt-1 leading-4"} key={href}>
+        <li className="list-none mt-1 leading-4" key=href>
           <summary className={summaryClassName ++ classNameActive}>
-            <Next.Link className={"block"} href> {node.name->React.string} </Next.Link>
+            <Link.String className={"block"} to=href> {node.name->React.string} </Link.String>
           </summary>
           tocModule
         </li>
       }
     }
 
-    let url =
-      router.asPath
-      ->Url.parse
-      ->Some
+    // TODO
+    let url = None
+    // location.pathname
+    // ->Url.parse
+    // ->Some
 
     let preludeSection =
       <div className="flex justify-between text-fire font-medium items-baseline">
@@ -171,7 +176,8 @@ module SidebarTree = {
             ReactEvent.Form.preventDefault(evt)
             let version = (evt->ReactEvent.Form.target)["value"]
             WebAPI.Storage.setItem(localStorage, ~key=(Manual :> string), ~value=version)
-            let url = Url.parse(router.asPath)
+            let url = Url.parse("" /* TODO: location.pathname */)
+
             switch url.pagepath[1] {
             | Some("core") | Some("stdlib") =>
               if version < "v12.0.0" {
@@ -186,7 +192,7 @@ module SidebarTree = {
               "/" ++
               (Array.join(url.base, "/") ++
               ("/" ++ (version ++ ("/" ++ Array.join(url.pagepath, "/")))))
-            router->Next.Router.push(targetUrl)
+            ReactRouter.navigate(targetUrl)
           }
           let version = url->Url.getVersionString
 
@@ -224,12 +230,12 @@ module SidebarTree = {
           <div className="hl-overline block text-gray-80 mt-5 mb-2">
             {"Overview"->React.string}
           </div>
-          <Next.Link
+          <Link.String
             className={"block " ++
             summaryClassName ++ (moduleRoute->Array.length == 1 ? classNameActive : "")}
-            href={node.path->Array.join("/")}>
+            to={node.path->Array.join("/")}>
             {node.name->React.string}
-          </Next.Link>
+          </Link.String>
           {moduleRoute->Array.length === 1 ? subMenu : React.null}
         </div>
         <div className="hl-overline text-gray-80 mt-5 mb-2"> {"submodules"->React.string} </div>
@@ -372,7 +378,9 @@ let default = (props: props) => {
 
   let prefix = {Url.name: "API", href: "/docs/manual/" ++ (version ++ "/api")}
 
-  let breadcrumbs = ApiLayout.makeBreadcrumbs(~prefix, router.asPath)
+  let {pathname: route} = ReactRouter.useLocation()
+
+  let breadcrumbs = ApiLayout.makeBreadcrumbs(~prefix, route)
 
   <SidebarLayout
     breadcrumbs={list{

@@ -1,4 +1,4 @@
-module Link = Next.Link
+module Link = ReactRouter.Link
 
 module NavItem = SidebarLayout.Sidebar.NavItem
 module Category = SidebarLayout.Sidebar.Category

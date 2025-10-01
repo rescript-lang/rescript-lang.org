@@ -1,0 +1,1338 @@
+[
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/2025-04-11-introducing-unified-operators.mdx",
+    "slug": "2025-04-11-introducing-unified-operators",
+    "author": "rescript-team",
+    "date": "2025-04-11",
+    "title": "Rethinking Operators",
+    "badge": "roadmap",
+    "description": "Discover how unified operators in ReScript v12 simplify arithmetic, reduce syntax noise — plus, a glimpse into the future roadmap.\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/2025-03-17-retreats.mdx",
+    "slug": "2025-03-17-retreats",
+    "author": "rescript-association",
+    "date": "2025-03-17",
+    "previewImg": "/blog/rescript_retreat_2024.jpg",
+    "articleImg": "/blog/rescript_retreat_2024.jpg",
+    "title": "ReScript Retreat",
+    "description": "Accelerating ReScript development through meeting in-person.\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/2025-03-05-what-can-i-do-with-rescript.mdx",
+    "slug": "2025-03-05-what-can-i-do-with-rescript",
+    "author": "josh-derocher-vlk",
+    "date": "2025-03-05",
+    "title": "What can I do with ReScript?",
+    "badge": "community",
+    "description": "Can I use Vite, or Next.js? Is it only for React? Can I use Node or Deno?\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/2024-02-01-release-11-1-0.mdx",
+    "slug": "2024-02-01-release-11-1-0",
+    "author": "rescript-team",
+    "date": "2024-04-19",
+    "previewImg": "/blog/compiler_release_11_1.jpg",
+    "title": "ReScript 11.1",
+    "badge": "release",
+    "description": "Unleashing ReScript from React\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/2024-01-11-release-11-0-0.mdx",
+    "slug": "2024-01-11-release-11-0-0",
+    "author": "rescript-team",
+    "date": "2024-01-11",
+    "previewImg": "/blog/compiler_release_11_0.jpg",
+    "title": "ReScript 11.0",
+    "badge": "release",
+    "description": "The ReScript developer experience now goes up to eleven!\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/2023-09-18-uncurried-mode.mdx",
+    "slug": "2023-09-18-uncurried-mode",
+    "author": "rescript-team",
+    "date": "2023-09-18",
+    "title": "Uncurried Mode",
+    "badge": "roadmap",
+    "description": "A tour of new capabilities coming to ReScript v11\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/2023-06-05-first-class-dynamic-import-support.mdx",
+    "slug": "2023-06-05-first-class-dynamic-import-support",
+    "author": "rescript-team",
+    "date": "2023-06-05",
+    "title": "First-class Dynamic Import Support",
+    "badge": "roadmap",
+    "description": "A tour of new capabilities coming to ReScript v11\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/2023-05-17-enhanced-ergonomics-for-record-types.mdx",
+    "slug": "2023-05-17-enhanced-ergonomics-for-record-types",
+    "author": "rescript-team",
+    "date": "2023-05-17",
+    "title": "Enhanced Ergonomics for Record Types",
+    "badge": "roadmap",
+    "description": "A tour of new capabilities coming to ReScript v11\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/2023-04-17-improving-interop.mdx",
+    "slug": "2023-04-17-improving-interop",
+    "author": "rescript-team",
+    "date": "2023-04-17",
+    "title": "Better interop with customizable variants",
+    "badge": "roadmap",
+    "description": "A tour of new capabilities coming in ReScript v11\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/2023-02-02-release-10-1.mdx",
+    "slug": "2023-02-02-release-10-1",
+    "author": "rescript-team",
+    "date": "2023-02-02",
+    "title": "ReScript 10.1",
+    "badge": "release",
+    "description": "Async/await & better Promise support, JSX v4, and more!\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/2022-08-25-release-10-0-0.mdx",
+    "slug": "2022-08-25-release-10-0-0",
+    "author": "rescript-team",
+    "date": "2022-08-25",
+    "previewImg": "static/blog/grid_0.jpeg",
+    "title": "ReScript 10.0",
+    "badge": "release",
+    "description": "The first community powered release.\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/2021-06-25-roadmap-2021-and-new-landing-page.mdx",
+    "slug": "2021-06-25-roadmap-2021-and-new-landing-page",
+    "author": "rescript-team",
+    "date": "2021-06-25",
+    "title": "Roadmap 2021 & New Landing Page",
+    "badge": "roadmap",
+    "description": "Announcing our roadmap for 2021 / 2022, release cycle plans and new landing page.\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/2021-05-07-release-9-1.mdx",
+    "slug": "2021-05-07-release-9-1",
+    "author": "rescript-team",
+    "date": "2021-05-07",
+    "previewImg": "/blog/compiler_release_9_1.jpg",
+    "title": "ReScript 9.1",
+    "badge": "release",
+    "description": "Featuring a new npm package, a CLI revamp, polymorphic variant interop and object cleanup.\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/2021-03-03-rescript-association-rebranding.mdx",
+    "slug": "2021-03-03-rescript-association-rebranding",
+    "author": "rescript-association",
+    "date": "2021-03-03",
+    "previewImg": "/blog/rescript_assoc_rename_preview.jpg",
+    "title": "The ReScript Association",
+    "description": "After the rebranding of ReScript, its Reason Association has now followed through to become the ReScript Association.\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/2021-02-09-release-9-0.mdx",
+    "slug": "2021-02-09-release-9-0",
+    "author": "hongbo",
+    "date": "2021-02-09",
+    "previewImg": "/blog/compiler_release_9_0.jpg",
+    "title": "ReScript 9.0",
+    "badge": "release",
+    "description": "Featuring a new external stdlib configuration, some syntax improvements and a small breaking change for nested records.\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/2020-12-07-release-8-4.mdx",
+    "slug": "2020-12-07-release-8-4",
+    "author": "hongbo",
+    "date": "2020-12-07",
+    "previewImg": null,
+    "badge": "release",
+    "title": "ReScript 8.4",
+    "description": "bsb improvements\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/2020-11-26-editor-support-release-1-0.mdx",
+    "slug": "2020-11-26-editor-support-release-1-0",
+    "author": "rescript-team",
+    "date": "2020-11-26",
+    "previewImg": "/blog/editor_support_preview.jpg",
+    "articleImg": "/blog/editor_support_article.jpg",
+    "badge": "release",
+    "title": "Editor Plugin for VSCode and Vim Officially Released!",
+    "description": "Type hints, jump to definition, error diagnostics, and more.\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/2020-11-17-editor-support-custom-operators-and-more.mdx",
+    "slug": "2020-11-17-editor-support-custom-operators-and-more",
+    "author": "maxim",
+    "date": "2020-11-17",
+    "previewImg": null,
+    "badge": "roadmap",
+    "title": "Editor Support, Custom Operators and More",
+    "description": "Update on what we're doing around the end of 2020 and early next year.\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/2020-09-25-release-8-3.mdx",
+    "slug": "2020-09-25-release-8-3",
+    "author": "hongbo",
+    "date": "2020-09-25",
+    "previewImg": null,
+    "title": "What's new in ReScript 8.3 (Part 1)",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/2020-09-25-release-8-3-2.mdx",
+    "slug": "2020-09-25-release-8-3-2",
+    "author": "hongbo",
+    "date": "2020-09-26",
+    "previewImg": null,
+    "title": "What's new in ReScript 8.3 (Part 2)",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/2020-08-28-new-rescript-logo.mdx",
+    "slug": "2020-08-28-new-rescript-logo",
+    "author": "made_by_betty",
+    "date": "2020-08-27",
+    "title": "A New Logo for ReScript",
+    "articleImg": "/blog/rescript-launch/ReScript-3.jpg",
+    "description": "Today, our resident designer Bettina is unveiling to us the fresh new ReScript branding we've been long waiting for. We hope you're as excited about the result as us!\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/2020-08-10-bucklescript-is-rebranding.mdx",
+    "slug": "2020-08-10-bucklescript-is-rebranding",
+    "author": "rescript-team",
+    "date": "2020-08-10",
+    "badge": "roadmap",
+    "title": "BuckleScript & Reason Rebranding",
+    "description": "A new unified experience for the platform"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2020-08-03-bucklescript-release-8-2.mdx",
+    "slug": "2020-08-03-bucklescript-release-8-2",
+    "author": "hongbo",
+    "date": "2020-08-03",
+    "badge": "release",
+    "title": "BuckleScript 8.2 released",
+    "description": "New release 8.2"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2020-07-28-string-literal-types-in-reason.mdx",
+    "slug": "2020-07-28-string-literal-types-in-reason",
+    "author": "hongbo",
+    "date": "2020-07-28",
+    "previewImg": null,
+    "title": "Introducing string literal types in BuckleScript version 8.2",
+    "description": "Highlights of our newest changes to the internal representation\nand how they will benefit our users.\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2020-07-17-bucklescript-release-8-1-1.mdx",
+    "slug": "2020-07-17-bucklescript-release-8-1-1",
+    "author": "chenglou",
+    "date": "2020-07-17",
+    "badge": "release",
+    "title": "BuckleScript 8.1.1 released",
+    "description": "New Syntax Tweaks, Formatter and Converter"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2020-07-06-a-note-on-bucklescripts-future-commitments.mdx",
+    "slug": "2020-07-06-a-note-on-bucklescripts-future-commitments",
+    "author": "chenglou",
+    "co-authors": [
+      "ryyppy"
+    ],
+    "date": "2020-07-06",
+    "title": "A Note on BuckleScript's New Syntax and Its Future Support Commitments",
+    "description": "This post clarifies the goals and commitments of the BuckleScript compiler toolchain\nand gives more context on what to expect in the future.\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2020-07-01-bucklescript-8-1-new-syntax.mdx",
+    "slug": "2020-07-01-bucklescript-8-1-new-syntax",
+    "author": "chenglou",
+    "date": "2020-07-01",
+    "badge": "release",
+    "title": "A New Syntax for BuckleScript",
+    "description": "First announcements on our latest efforts for a better syntax parser.\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2020-06-22-overview-of-new_encoding.mdx",
+    "slug": "2020-06-22-overview-of-new_encoding",
+    "author": "hongbo",
+    "date": "2020-06-22",
+    "previewImg": null,
+    "title": "Make generated JavaScript Inline Caching friendly using types in BuckleScript version 8",
+    "description": "Highlights of our newest changes to the internal representation\nand how they will benefit our users.\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2020-05-15-state-of-reasonml-org-2020-q2-pt4.mdx",
+    "slug": "2020-05-15-state-of-reasonml-org-2020-q2-pt4",
+    "author": "ryyppy",
+    "date": "2020-05-15",
+    "previewImg": "/blog/archive/state-of-reasonml-org-q2-2020.jpg",
+    "title": "State of reasonml.org 2020-Q2 / Pt. 4",
+    "description": "A report on recent achievements in the reasonml.org project.\nThis is the final part of the series about our vision of a more accessible Reason platform.\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2020-05-15-a-story-of-lazy-encoding.mdx",
+    "slug": "2020-05-15-a-story-of-lazy-encoding",
+    "author": "hongbo",
+    "date": "2020-05-15",
+    "previewImg": null,
+    "title": "New Lazy Encoding in BuckleScript",
+    "description": "Highlights of our newest changes to the internal representation of lazy values\nand how it will benefit our users.\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2020-05-12-state-of-reasonml-org-2020-q2-pt3.mdx",
+    "slug": "2020-05-12-state-of-reasonml-org-2020-q2-pt3",
+    "author": "ryyppy",
+    "date": "2020-05-12",
+    "previewImg": "/blog/archive/state-of-reasonml-org-q2-2020.jpg",
+    "title": "State of reasonml.org 2020-Q2 / Pt. 3",
+    "description": "A report on recent achievements in the reasonml.org project. In this part we\ntalk about upcoming tools and features.\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2020-05-11-state-of-reasonml-org-2020-q2-pt2.mdx",
+    "slug": "2020-05-11-state-of-reasonml-org-2020-q2-pt2",
+    "author": "ryyppy",
+    "date": "2020-05-11",
+    "previewImg": "/blog/archive/state-of-reasonml-org-q2-2020.jpg",
+    "articleImg": "/blog/archive/state-of-reasonml-2020-q2-pt2-articleimg.jpg",
+    "title": "State of reasonml.org 2020-Q2 / Pt. 2",
+    "description": "A report on recent achievements in the reasonml.org project. This part is all\nabout quality assurance and time commitment.\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2020-05-06-state-of-reasonml-org-2020-q2-pt1.mdx",
+    "slug": "2020-05-06-state-of-reasonml-org-2020-q2-pt1",
+    "author": "ryyppy",
+    "date": "2020-05-06",
+    "previewImg": "/blog/archive/state-of-reasonml-org-q2-2020.jpg",
+    "articleImg": "/blog/archive/state-of-reasonml-pt1-hero.jpg",
+    "title": "State of reasonml.org 2020-Q2 / Pt. 1",
+    "description": "A report on recent achievements in the reasonml.org project and what\nto expect in the future. The first part is an introduction to our project.\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2020-05-06-a-story-of-exception-encoding.mdx",
+    "slug": "2020-05-06-a-story-of-exception-encoding",
+    "author": "hongbo",
+    "date": "2020-05-06",
+    "previewImg": null,
+    "title": "New Exception Encoding in BuckleScript",
+    "description": "Highlights of our newest changes to the internal representation of exceptions\nand how it will provide better stacktraces to our users.\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2020-04-13-bucklescript-release-7-3.mdx",
+    "slug": "2020-04-13-bucklescript-release-7-3",
+    "author": "hongbo",
+    "date": "2020-04-13",
+    "badge": "release",
+    "title": "Announcing BuckleScript 7.3",
+    "description": "Featuring major improvements like Generalized Uncurry Convention Support and\nunit value to undefined compilation.\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2020-03-26-generalize-uncurry.mdx",
+    "slug": "2020-03-26-generalize-uncurry",
+    "author": "hongbo",
+    "date": "2020-03-26",
+    "previewImg": null,
+    "title": "Generalized Uncurry Support in 7.3",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2020-03-12-bucklescript-release-7-2.mdx",
+    "slug": "2020-03-12-bucklescript-release-7-2",
+    "author": "hongbo",
+    "date": "2020-03-12",
+    "previewImg": null,
+    "tags": [
+      "Release"
+    ],
+    "title": "Announcing BuckleScript 7.2",
+    "description": "This release will give us some small quality of life improvements for tool\nbuilders, better performance, and a new let %private modifier for hiding\nmodule functionality.\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2020-02-20-loading-stdlib-in-memory.mdx",
+    "slug": "2020-02-20-loading-stdlib-in-memory",
+    "author": "hongbo",
+    "date": "2020-02-20",
+    "previewImg": null,
+    "title": "Improving the Stdlib Loading mechanism",
+    "description": "We want to give you some insights on how we will improve the way BuckleScript\ncompiles and handles its stdlib modules.\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2020-02-07-union-types-in-bucklescript.mdx",
+    "slug": "2020-02-07-union-types-in-bucklescript",
+    "author": "hongbo",
+    "date": "2020-02-07",
+    "previewImg": null,
+    "title": "Union types in BuckleScript",
+    "description": "In our our 7.1.0 release we introduced the new [@unboxed] feature for better\nzero-cost interop with GADTs, Variants and single field records. Let's find\nout how this will help us expressing Union types with seamless interop!\n"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2020-02-04-bucklescript-release-7-1-0.mdx",
+    "slug": "2020-02-04-bucklescript-release-7-1-0",
+    "author": "hongbo",
+    "date": "2020-02-04",
+    "previewImg": null,
+    "tags": [
+      "Release"
+    ],
+    "title": "Announcing BuckleScript 7.1.0",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2019-12-20-bucklescript-release-7-0-2.mdx",
+    "slug": "2019-12-20-bucklescript-release-7-0-2",
+    "author": "hongbo",
+    "date": "2019-12-20",
+    "previewImg": null,
+    "badge": "release",
+    "title": "Announcing BuckleScript 7.0.2-dev.1",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2019-11-28-whats-new-in-7-pt2.mdx",
+    "slug": "2019-11-28-whats-new-in-7-pt2",
+    "author": "hongbo",
+    "date": "2019-11-28",
+    "previewImg": null,
+    "badge": "testing",
+    "title": "What's new in BuckleScript v7 (Part 2)",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2019-11-18-whats-new-in-7-pt1.mdx",
+    "slug": "2019-11-18-whats-new-in-7-pt1",
+    "author": "hongbo",
+    "date": "2019-11-18",
+    "previewImg": null,
+    "badge": "testing",
+    "title": "What's new in BuckleScript v7 (Part 1)",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2019-10-16-another-encoding.mdx",
+    "slug": "2019-10-16-another-encoding",
+    "author": "hongbo",
+    "date": "2019-10-16",
+    "previewImg": null,
+    "title": "Another way of encoding type identity for BuckleScript libraries without using big functor",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2019-09-23-bucklescript-release-5-2-0.mdx",
+    "slug": "2019-09-23-bucklescript-release-5-2-0",
+    "author": "hongbo",
+    "date": "2019-09-23",
+    "previewImg": null,
+    "badge": "release",
+    "title": "Announcing BuckleScript 5.2.0 / 6.2.0",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2019-08-12-bucklescript-release-5-1-0.mdx",
+    "slug": "2019-08-12-bucklescript-release-5-1-0",
+    "author": "hongbo",
+    "date": "2019-08-12",
+    "previewImg": null,
+    "badge": "release",
+    "title": "Announcing BuckleScript 5.1.0",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2019-06-26-bucklescript-release-5-0-5.mdx",
+    "slug": "2019-06-26-bucklescript-release-5-0-5",
+    "author": "hongbo",
+    "date": "2019-06-26",
+    "previewImg": null,
+    "badge": "release",
+    "title": "Announcing BuckleScript 5.0.5 and 6.0.2",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2019-05-21-ffi-overview.mdx",
+    "slug": "2019-05-21-ffi-overview",
+    "author": "hongbo",
+    "date": "2019-05-21",
+    "previewImg": null,
+    "title": "A High Level Overview of BuckleScript Interop with JS",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2019-04-22-bucklescript-release-5-0-4.mdx",
+    "slug": "2019-04-22-bucklescript-release-5-0-4",
+    "author": "hongbo",
+    "date": "2019-04-22",
+    "previewImg": null,
+    "title": "Architectural Changes in BuckleScript 5.0.4 and 6.0.1",
+    "badge": "release",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2019-04-09-bucklescript-release-5-0-1.mdx",
+    "slug": "2019-04-09-bucklescript-release-5-0-1",
+    "author": "hongbo",
+    "date": "2019-04-09",
+    "previewImg": null,
+    "badge": "testing",
+    "title": "Announcing BuckleScript 5.0.1",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2019-03-31-bucklescript-release-6-0.mdx",
+    "slug": "2019-03-31-bucklescript-release-6-0",
+    "author": "hongbo",
+    "date": "2019-03-31",
+    "previewImg": null,
+    "badge": "testing",
+    "title": "Announcing BuckleScript 6.0.0-dev.1",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2019-03-21-bucklescript-release-5-0.mdx",
+    "slug": "2019-03-21-bucklescript-release-5-0",
+    "author": "hongbo",
+    "date": "2019-03-21",
+    "previewImg": null,
+    "badge": "release",
+    "title": "Announcing BuckleScript 5.0",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2019-03-01-feature-preview-variadic.mdx",
+    "slug": "2019-03-01-feature-preview-variadic",
+    "author": "hongbo",
+    "date": "2019-03-01",
+    "previewImg": null,
+    "badge": "preview",
+    "title": "First-class bs.variadic Support in the Next Release",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2019-01-11-scalable.mdx",
+    "slug": "2019-01-11-scalable",
+    "author": "hongbo",
+    "date": "2019-01-11",
+    "previewImg": null,
+    "title": "In search of lightning feedback loop in a large codebase",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2019-01-07-bucklescript-release-4-0-17.mdx",
+    "slug": "2019-01-07-bucklescript-release-4-0-17",
+    "author": "hongbo",
+    "date": "2019-01-07",
+    "previewImg": null,
+    "badge": "release",
+    "title": "Announcing BuckleScript 4.0.17",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2018-12-05-bucklescript-release-4-0-8.mdx",
+    "slug": "2018-12-05-bucklescript-release-4-0-8",
+    "author": "hongbo",
+    "date": "2018-12-05",
+    "previewImg": null,
+    "badge": "release",
+    "title": "BuckleScript 4.0.8 (Part One)",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2018-11-19-bucklescript-roadmap-q3-4-2018.mdx",
+    "slug": "2018-11-19-bucklescript-roadmap-q3-4-2018",
+    "author": "hongbo",
+    "date": "2018-11-19",
+    "previewImg": null,
+    "badge": "roadmap",
+    "title": "BuckleScript Plans for the Second Half of 2018",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2018-11-13-arity-zero.mdx",
+    "slug": "2018-11-13-arity-zero",
+    "author": "hongbo",
+    "date": "2018-11-13",
+    "previewImg": null,
+    "title": "A Change of Undefined Behavior in BuckleScript 4.0.7",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2018-07-17-bucklescript-release-4-0-0-pt2.mdx",
+    "slug": "2018-07-17-bucklescript-release-4-0-0-pt2",
+    "author": "hongbo",
+    "date": "2018-07-17",
+    "previewImg": null,
+    "badge": "release",
+    "title": "Announcing BuckleScript 4.0 (Part Two)",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2018-07-17-bucklescript-release-4-0-0-pt1.mdx",
+    "slug": "2018-07-17-bucklescript-release-4-0-0-pt1",
+    "author": "hongbo",
+    "date": "2018-07-17",
+    "previewImg": null,
+    "badge": "release",
+    "title": "Announcing BuckleScript 4.0 (Part One)",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2018-05-23-bucklescript-release-3-1-4.mdx",
+    "slug": "2018-05-23-bucklescript-release-3-1-4",
+    "author": "hongbo",
+    "date": "2018-05-23",
+    "previewImg": null,
+    "badge": "release",
+    "title": "Announcing BuckleScript 3.1.4",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2018-05-21-bucklescript-release-3-1-0.mdx",
+    "slug": "2018-05-21-bucklescript-release-3-1-0",
+    "author": "hongbo",
+    "date": "2018-05-21",
+    "previewImg": null,
+    "badge": "release",
+    "title": "Announcing BuckleScript 3.1",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2018-04-16-bucklescript-release-3-0-0.mdx",
+    "slug": "2018-04-16-bucklescript-release-3-0-0",
+    "author": "hongbo",
+    "date": "2018-04-16",
+    "previewImg": null,
+    "badge": "release",
+    "title": "Announcing BuckleScript 3.0",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2018-03-13-a-small-step-for-bucklescript.mdx",
+    "slug": "2018-03-13-a-small-step-for-bucklescript",
+    "author": "hongbo",
+    "date": "2018-03-13",
+    "previewImg": null,
+    "title": "A Small Step for BuckleScript...",
+    "description": "...and a big one for the community!"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2017-10-09-bucklescript-release-1-7-5.mdx",
+    "slug": "2017-10-09-bucklescript-release-1-7-5",
+    "author": "hongbo",
+    "date": "2017-10-09",
+    "previewImg": null,
+    "badge": "release",
+    "title": "Announcing BuckleScript 1.7.5",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2017-10-08-bucklescript-release-1-7-4.mdx",
+    "slug": "2017-10-08-bucklescript-release-1-7-4",
+    "author": "hongbo",
+    "date": "2017-10-08",
+    "previewImg": null,
+    "badge": "release",
+    "title": "Announcing BuckleScript 1.7.4",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2017-10-07-bucklescript-release-1-7-0.mdx",
+    "slug": "2017-10-07-bucklescript-release-1-7-0",
+    "author": "hongbo",
+    "date": "2017-10-07",
+    "previewImg": null,
+    "badge": "release",
+    "title": "Announcing BuckleScript 1.7.0",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2017-10-06-bucklescript-release-1-5-2.mdx",
+    "slug": "2017-10-06-bucklescript-release-1-5-2",
+    "author": "hongbo",
+    "date": "2017-10-06",
+    "previewImg": null,
+    "badge": "release",
+    "title": "Announcing BuckleScript 1.5.2",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2017-10-05-bucklescript-release-1-5-1.mdx",
+    "slug": "2017-10-05-bucklescript-release-1-5-1",
+    "author": "hongbo",
+    "date": "2017-10-05",
+    "previewImg": null,
+    "badge": "release",
+    "title": "Announcing BuckleScript 1.5.1",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2017-10-04-bucklescript-release-1-5-0.mdx",
+    "slug": "2017-10-04-bucklescript-release-1-5-0",
+    "author": "hongbo",
+    "date": "2017-10-04",
+    "previewImg": null,
+    "badge": "release",
+    "title": "Announcing BuckleScript 1.5.0",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2017-10-03-bucklescript-release-1-4-3.mdx",
+    "slug": "2017-10-03-bucklescript-release-1-4-3",
+    "author": "hongbo",
+    "date": "2017-10-03",
+    "previewImg": null,
+    "badge": "release",
+    "title": "Announcing BuckleScript 1.4.3",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2017-10-02-bucklescript-release-1-4-2.mdx",
+    "slug": "2017-10-02-bucklescript-release-1-4-2",
+    "author": "hongbo",
+    "date": "2017-10-02",
+    "previewImg": null,
+    "badge": "release",
+    "title": "Announcing BuckleScript 1.4.2",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2017-10-01-bucklescript-release-1-0.mdx",
+    "slug": "2017-10-01-bucklescript-release-1-0",
+    "author": "hongbo",
+    "date": "2017-10-01",
+    "previewImg": null,
+    "badge": "release",
+    "title": "Bloomberg announces BuckleScript 1.0",
+    "description": ""
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/react/styling.mdx",
+    "slug": "styling",
+    "title": "Styling",
+    "description": "Styling in ReScript & React",
+    "canonical": "/docs/react/latest/styling"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/react/server-components.mdx",
+    "slug": "server-components",
+    "title": "Server Components",
+    "description": "Creating React components",
+    "canonical": "/docs/react/latest/server-components"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/react/router.mdx",
+    "slug": "router",
+    "title": "Router",
+    "description": "Basic concepts for navigation and routing in ReScript & React",
+    "canonical": "/docs/react/latest/router"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/react/rendering-elements.mdx",
+    "slug": "rendering-elements",
+    "title": "Rendering Elements",
+    "description": "How to render React elements to the DOM",
+    "canonical": "/docs/react/latest/rendering-elements"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/react/refs-and-the-dom.mdx",
+    "slug": "refs-and-the-dom",
+    "title": "Refs and the DOM",
+    "description": "Using Refs and DOM elements in ReScript and React",
+    "canonical": "/docs/react/latest/refs-and-the-dom"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/react/migrate-react.mdx",
+    "slug": "migrate-react",
+    "title": "Migrate from JSX v3",
+    "description": "Migrate from JSX v3",
+    "canonical": "/docs/react/latest/migrate-react"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/react/memo.mdx",
+    "slug": "memo",
+    "title": "memo",
+    "description": "Using React.memo",
+    "canonical": "/docs/react/latest/memo"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/react/lazy-components.mdx",
+    "slug": "lazy-components",
+    "title": "Lazy Components",
+    "description": "Details on how to use the React.lazy_ API to dynamically import components",
+    "canonical": "/docs/react/latest/lazy-components"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/react/introduction.mdx",
+    "slug": "introduction",
+    "title": "Introduction",
+    "description": "Introduction to ReScript & ReactJS",
+    "canonical": "/docs/react/latest/introduction"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/react/installation.mdx",
+    "slug": "installation",
+    "title": "Installation",
+    "description": "Installation and Setup",
+    "canonical": "/docs/react/latest/installation"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/react/import-export-reactjs.mdx",
+    "slug": "import-export-reactjs",
+    "title": "Import / Export ReactJS",
+    "description": "Reusing existing React components",
+    "canonical": "/docs/react/latest/import-export-reactjs"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/react/hooks-state.mdx",
+    "slug": "hooks-state",
+    "title": "useState Hook",
+    "description": "Details about the useState React hook in ReScript",
+    "canonical": "/docs/react/latest/hooks-state"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/react/hooks-ref.mdx",
+    "slug": "hooks-ref",
+    "title": "useRef Hook",
+    "description": "Details about the useRef React hook in ReScript",
+    "canonical": "/docs/react/latest/hooks-ref"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/react/hooks-reducer.mdx",
+    "slug": "hooks-reducer",
+    "title": "useReducer Hook",
+    "description": "Details about the useReducer React hook in ReScript",
+    "canonical": "/docs/react/latest/hooks-reducer"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/react/hooks-overview.mdx",
+    "slug": "hooks-overview",
+    "title": "Hooks & State Management Overview",
+    "description": "Overview state management and hooks in ReScript and React",
+    "canonical": "/docs/react/latest/hooks-overview"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/react/hooks-effect.mdx",
+    "slug": "hooks-effect",
+    "title": "useEffect Hook",
+    "description": "Details about the useEffect React hook in ReScript",
+    "canonical": "/docs/react/latest/hooks-effect"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/react/hooks-custom.mdx",
+    "slug": "hooks-custom",
+    "title": "Build A Custom Hook",
+    "description": "How to build your own hooks in ReScript & React",
+    "canonical": "/docs/react/latest/hooks-custom"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/react/hooks-context.mdx",
+    "slug": "hooks-context",
+    "title": "useContext Hook",
+    "description": "Details about the useContext React hook in ReScript",
+    "canonical": "/docs/react/latest/hooks-context"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/react/forwarding-refs.mdx",
+    "slug": "forwarding-refs",
+    "title": "Forwarding Refs",
+    "description": "Forwarding Ref values in ReScript and React",
+    "canonical": "/docs/react/latest/forwarding-refs"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/react/extensions-of-props.mdx",
+    "slug": "extensions-of-props",
+    "title": "Extensions of props",
+    "description": "Extensions of props in ReScript and React",
+    "canonical": "/docs/react/latest/spread-props"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/react/events.mdx",
+    "slug": "events",
+    "title": "Events",
+    "description": "Event handlers for React elements",
+    "canonical": "/docs/react/latest/events"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/react/elements-and-jsx.mdx",
+    "slug": "elements-and-jsx",
+    "title": "Elements & JSX",
+    "description": "Basic concepts for React elements and how to use them in JSX",
+    "canonical": "/docs/react/latest/elements-and-jsx"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/react/context.mdx",
+    "slug": "context",
+    "title": "Context",
+    "description": "Details about Context in ReScript and React",
+    "canonical": "/docs/react/latest/context"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/react/components-and-props.mdx",
+    "slug": "components-and-props",
+    "title": "Components and Props",
+    "description": "Basic concepts for components and props in ReScript & React",
+    "canonical": "/docs/react/latest/components-and-props"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/react/beyond-jsx.mdx",
+    "slug": "beyond-jsx",
+    "title": "Beyond JSX",
+    "description": "Details on how to use ReScript and React without JSX",
+    "canonical": "/docs/react/latest/beyond-jsx"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/react/arrays-and-keys.mdx",
+    "slug": "arrays-and-keys",
+    "title": "Arrays and Keys",
+    "description": "Rendering arrays and handling keys in ReScript and React",
+    "canonical": "/docs/react/latest/arrays-and-keys"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/warning-numbers.mdx",
+    "slug": "warning-numbers",
+    "title": "Warning Numbers",
+    "description": "Available compiler warning numbers in ReScript",
+    "canonical": "/docs/manual/v12.0.0/warning-numbers"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/variant.mdx",
+    "slug": "variant",
+    "title": "Variant",
+    "description": "Variant data structures in ReScript",
+    "canonical": "/docs/manual/v12.0.0/variant"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/use-illegal-identifier-names.mdx",
+    "slug": "use-illegal-identifier-names",
+    "title": "Use Illegal Identifier Names",
+    "description": "Handling (JS) naming collisions in ReScript",
+    "canonical": "/docs/manual/v12.0.0/use-illegal-identifier-names"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/typescript-integration.mdx",
+    "slug": "typescript-integration",
+    "title": "TypeScript",
+    "description": "GenType - Interoperability between ReScript and TypeScript",
+    "canonical": "/docs/manual/v12.0.0/typescript-integration"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/type.mdx",
+    "slug": "type",
+    "title": "Type",
+    "description": "Types and type definitions in ReScript",
+    "canonical": "/docs/manual/v12.0.0/type"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/tuple.mdx",
+    "slug": "tuple",
+    "title": "Tuple",
+    "description": "Tuple types and values in ReScript",
+    "canonical": "/docs/manual/v12.0.0/tuple"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/try.mdx",
+    "slug": "try",
+    "title": "Try",
+    "description": "Try ReScript via Command Line",
+    "canonical": "/docs/manual/v12.0.0/try"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/tagged-templates.mdx",
+    "slug": "tagged-templates",
+    "title": "Tagged templates",
+    "description": "Using tagged templates in ReScript",
+    "canonical": "/docs/manual/v12.0.0/tagged-templates"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/shared-data-types.mdx",
+    "slug": "shared-data-types",
+    "title": "Shared Data Types",
+    "description": "Data types that share runtime presentation between JS and ReScript",
+    "canonical": "/docs/manual/v12.0.0/shared-data-types"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/scoped-polymorphic-types.mdx",
+    "slug": "scoped-polymorphic-types",
+    "title": "Scoped Polymorphic Types",
+    "description": "Scoped Polymorphic Types in ReScript",
+    "canonical": "/docs/manual/v12.0.0/scoped-polymorphic-types"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/reserved-keywords.mdx",
+    "slug": "reserved-keywords",
+    "title": "Reserved Keywords",
+    "description": "All reserved keywords in ReScript",
+    "canonical": "/docs/manual/v12.0.0/reserved-keywords"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/record.mdx",
+    "slug": "record",
+    "title": "Record",
+    "description": "Record types in ReScript",
+    "canonical": "/docs/manual/v12.0.0/record"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/promise.mdx",
+    "slug": "promise",
+    "title": "Promises",
+    "description": "JS Promise handling in ReScript",
+    "canonical": "/docs/manual/v12.0.0/promise"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/project-structure.mdx",
+    "slug": "project-structure",
+    "title": "Project Structure",
+    "description": "Notes on project structure and other rough ReScript guidelines",
+    "canonical": "/docs/manual/v12.0.0/project-structure"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/primitive-types.mdx",
+    "slug": "primitive-types",
+    "title": "Primitive Types",
+    "description": "Primitive Data Types in ReScript",
+    "canonical": "/docs/manual/v12.0.0/primitive-types"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/polymorphic-variant.mdx",
+    "slug": "polymorphic-variant",
+    "title": "Polymorphic Variant",
+    "description": "The Polymorphic Variant data structure in ReScript",
+    "canonical": "/docs/manual/v12.0.0/polymorphic-variant"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/pipe.mdx",
+    "slug": "pipe",
+    "title": "Pipe",
+    "description": "The Pipe operator (->)",
+    "canonical": "/docs/manual/v12.0.0/pipe"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/pattern-matching-destructuring.mdx",
+    "slug": "pattern-matching-destructuring",
+    "title": "Pattern Matching / Destructuring",
+    "description": "Pattern matching and destructuring complex data structures in ReScript",
+    "canonical": "/docs/manual/v12.0.0/pattern-matching-destructuring"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/overview.mdx",
+    "slug": "overview",
+    "title": "Overview",
+    "metaTitle": "Language Features Overview",
+    "description": "A quick overview on ReScript's syntax",
+    "canonical": "/docs/manual/v12.0.0/overview"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/object.mdx",
+    "slug": "object",
+    "title": "Object",
+    "description": "Interoping with JS objects in ReScript",
+    "canonical": "/docs/manual/v12.0.0/object"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/null-undefined-option.mdx",
+    "slug": "null-undefined-option",
+    "title": "Null, Undefined and Option",
+    "description": "JS interop with nullable and optional values in ReScript",
+    "canonical": "/docs/manual/v12.0.0/null-undefined-option"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/mutation.mdx",
+    "slug": "mutation",
+    "title": "Mutation",
+    "description": "Imperative and mutative programming capabilities in ReScript",
+    "canonical": "/docs/manual/v12.0.0/mutation"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/module.mdx",
+    "slug": "module",
+    "title": "Module",
+    "description": "ReScript modules, module signatures and interface files",
+    "canonical": "/docs/manual/v12.0.0/module"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/migrate-to-v11.mdx",
+    "slug": "migrate-to-v11",
+    "title": "Migrate to v11",
+    "description": "Instructions on upgrading to ReScript 11",
+    "canonical": "/docs/manual/v12.0.0/migrate-to-v11"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/libraries.mdx",
+    "slug": "libraries",
+    "title": "Libraries & Publishing",
+    "description": "Install & publish ReScript packages",
+    "canonical": "/docs/manual/v12.0.0/libraries"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/let-binding.mdx",
+    "slug": "let-binding",
+    "title": "Let Binding",
+    "description": "Let binding syntax for binding to values in ReScript",
+    "canonical": "/docs/manual/v12.0.0/let-binding"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/lazy-values.mdx",
+    "slug": "lazy-values",
+    "title": "Lazy Value",
+    "description": "Data type for deferred computation in ReScript",
+    "canonical": "/docs/manual/v12.0.0/lazy-values"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/jsx.mdx",
+    "slug": "jsx",
+    "title": "JSX",
+    "description": "JSX syntax in ReScript and React",
+    "canonical": "/docs/manual/v12.0.0/jsx"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/json.mdx",
+    "slug": "json",
+    "title": "JSON",
+    "description": "Interacting with JSON in ReScript",
+    "canonical": "/docs/manual/v12.0.0/json"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/introduction.mdx",
+    "slug": "introduction",
+    "title": "Introduction",
+    "description": "Introduction to the ReScript programming language",
+    "category": "manual",
+    "section": "overview",
+    "order": 1
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/interop-with-js-build-systems.mdx",
+    "slug": "interop-with-js-build-systems",
+    "title": "Interop with JS Build Systems",
+    "description": "Documentation on how to interact with existing JS build systems",
+    "canonical": "/docs/manual/v12.0.0/interop-with-js-build-systems"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/interop-cheatsheet.mdx",
+    "slug": "interop-cheatsheet",
+    "title": "Interop Cheatsheet",
+    "description": "Cheatsheet for various interop scenarios in ReScript",
+    "canonical": "/docs/manual/v12.0.0/interop-cheatsheet"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/installation.mdx",
+    "slug": "installation",
+    "title": "Installation",
+    "description": "ReScript installation and setup instructions",
+    "canonical": "/docs/manual/v12.0.0/installation"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/inlining-constants.mdx",
+    "slug": "inlining-constants",
+    "title": "Inlining Constants",
+    "description": "Inlining constants",
+    "canonical": "/docs/manual/v12.0.0/inlining-constants"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/import-from-export-to-js.mdx",
+    "slug": "import-from-export-to-js",
+    "title": "Import from / Export to JS",
+    "description": "Importing / exporting JS module content in ReScript",
+    "canonical": "/docs/manual/v12.0.0/import-from-export-to-js"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/import-export.mdx",
+    "slug": "import-export",
+    "title": "Import & Export",
+    "description": "Importing / exporting in ReScript modules",
+    "canonical": "/docs/manual/v12.0.0/import-export"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/generate-converters-accessors.mdx",
+    "slug": "generate-converters-accessors",
+    "title": "Generate Converters & Helpers",
+    "description": "All about the @deriving decorator, and how to generate code from types",
+    "canonical": "/docs/manual/v12.0.0/generate-converters-accessors"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/function.mdx",
+    "slug": "function",
+    "title": "Function",
+    "description": "Function syntax in ReScript",
+    "canonical": "/docs/manual/v12.0.0/function"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/external.mdx",
+    "slug": "external",
+    "title": "External (Bind to Any JS Library)",
+    "description": "The external keyword",
+    "canonical": "/docs/manual/v12.0.0/external"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/extensible-variant.mdx",
+    "slug": "extensible-variant",
+    "title": "Extensible Variant",
+    "description": "Extensible Variants in ReScript",
+    "canonical": "/docs/manual/v12.0.0/extensible-variant"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/exception.mdx",
+    "slug": "exception",
+    "title": "Exception",
+    "description": "Exceptions and exception handling in ReScript",
+    "canonical": "/docs/manual/v12.0.0/exception"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/equality-comparison.mdx",
+    "slug": "equality-comparison",
+    "title": "Equality and Comparison",
+    "description": "Handling equality and comparison checks",
+    "canonical": "/docs/manual/v12.0.0/equality-comparison"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/embed-raw-javascript.mdx",
+    "slug": "embed-raw-javascript",
+    "title": "Embed Raw JavaScript",
+    "description": "Utility syntax to for raw JS usage in ReScript",
+    "canonical": "/docs/manual/v12.0.0/embed-raw-javascript"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/editor-plugins.mdx",
+    "slug": "editor-plugins",
+    "title": "Editor",
+    "metaTitle": "Editor",
+    "description": "Documentation about ReScript editor plugins and code analysis",
+    "canonical": "/docs/manual/v12.0.0/editor-plugins"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/editor-code-analysis.mdx",
+    "slug": "editor-code-analysis",
+    "title": "Dead Code Analysis in ReScript",
+    "metaTitle": "Dead Code Analysis in ReScript",
+    "description": "Documentation about ReScript editor plugins and code analysis",
+    "canonical": "/docs/manual/v12.0.0/editor-plugins"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/dict.mdx",
+    "slug": "dict",
+    "title": "Dictionary",
+    "description": "Dictionary data structure in ReScript",
+    "canonical": "/docs/manual/v12.0.0/dict"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/converting-from-js.mdx",
+    "slug": "converting-from-js",
+    "title": "Converting from JS",
+    "description": "How to convert to ReScript with an existing JS codebase",
+    "canonical": "/docs/manual/v12.0.0/converting-from-js"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/control-flow.mdx",
+    "slug": "control-flow",
+    "title": "If-Else & Loops",
+    "description": "If, else, ternary, for, and while",
+    "canonical": "/docs/manual/v12.0.0/control-flow"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/build-pinned-dependencies.mdx",
+    "slug": "build-pinned-dependencies",
+    "title": "Pinned Dependencies",
+    "metaTitle": "Pinned Dependencies",
+    "description": "Handling multiple packages within one ReScript project with pinned dependencies",
+    "canonical": "/docs/manual/v12.0.0/build-pinned-dependencies"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/build-performance.mdx",
+    "slug": "build-performance",
+    "title": "Performance",
+    "metaTitle": "Build Performance",
+    "description": "ReScript build performance and measuring tools",
+    "canonical": "/docs/manual/v12.0.0/build-performance"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/build-overview.mdx",
+    "slug": "build-overview",
+    "title": "Overview",
+    "metaTitle": "Build System Overview",
+    "description": "Documentation about the ReScript build system and its toolchain",
+    "canonical": "/docs/manual/v12.0.0/build-overview"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/build-external-stdlib.mdx",
+    "slug": "build-external-stdlib",
+    "title": "External Stdlib",
+    "metaTitle": "External Stdlib",
+    "description": "Configuring an external ReScript stdlib package",
+    "canonical": "/docs/manual/v12.0.0/build-external-stdlib"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/build-configuration.mdx",
+    "slug": "build-configuration",
+    "title": "Configuration",
+    "metaTitle": "Build System Configuration",
+    "description": "Details about the configuration of the ReScript build system (rescript.json)",
+    "canonical": "/docs/manual/v12.0.0/build-configuration"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/build-configuration-schema.mdx",
+    "slug": "build-configuration-schema",
+    "title": "Configuration Schema",
+    "metaTitle": "Build System Configuration Schema",
+    "description": "Schema exploration widget for the ReScript configuration file",
+    "canonical": "/docs/manual/v12.0.0/build-configuration-schema"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/browser-support-polyfills.mdx",
+    "slug": "browser-support-polyfills",
+    "title": "Browser Support & Polyfills",
+    "description": "Note on browser support in ReScript",
+    "canonical": "/docs/manual/v12.0.0/browser-support-polyfills"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/bind-to-js-object.mdx",
+    "slug": "bind-to-js-object",
+    "title": "Bind to JS Object",
+    "description": "Interop with JS objects in ReScript",
+    "canonical": "/docs/manual/v12.0.0/bind-to-js-object"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/bind-to-js-function.mdx",
+    "slug": "bind-to-js-function",
+    "title": "Bind to JS Function",
+    "description": "JS interop with functions in ReScript",
+    "canonical": "/docs/manual/v12.0.0/bind-to-js-function"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/bind-to-global-js-values.mdx",
+    "slug": "bind-to-global-js-values",
+    "title": "Bind to Global JS Values",
+    "description": "JS interop with global JS values in ReScript",
+    "canonical": "/docs/manual/v12.0.0/bind-to-global-js-values"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/attribute.mdx",
+    "slug": "attribute",
+    "title": "Attribute (Decorator)",
+    "description": "Annotations in ReScript",
+    "canonical": "/docs/manual/v12.0.0/attribute"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/async-await.mdx",
+    "slug": "async-await",
+    "title": "Async / Await",
+    "description": "Async / await for asynchronous operations",
+    "canonical": "/docs/manual/v12.0.0/async-await"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/array-and-list.mdx",
+    "slug": "array-and-list",
+    "title": "Array & List",
+    "description": "Arrays and List data structures",
+    "canonical": "/docs/manual/v12.0.0/array-and-list"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/manual/api.mdx",
+    "slug": "api"
+  },
+  {
+    "path": "/home/josh/Dev/rescript-lang.org/docs/guidelines/publishing-packages.mdx",
+    "slug": "publishing-packages",
+    "title": "Publishing ReScript packages",
+    "description": "Guidelines on publishing ReScript bindings and libraries to our Package Index",
+    "canonical": "/guidelines/publishing-npm-packages"
+  }
+]

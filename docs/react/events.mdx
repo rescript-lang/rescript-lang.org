@@ -1,0 +1,37 @@
+---
+title: Events
+description: "Event handlers for React elements"
+canonical: "/docs/react/latest/events"
+---
+
+# Events
+
+React lets you add event handlers to your JSX. Event handlers are your own functions that will be triggered in response to interactions like clicking, hovering, focusing form inputs, and so on.
+
+## Capture the input value onChange
+
+Depending on the event handler, the callback function will have a different type.
+Due to the dynamic nature of JavaScript, we cannot anticipate the target type on the event.
+So, we need a leap of faith to grab the input value as string.
+
+```res example
+module App = {
+  @react.component
+  let make = () => {
+    let (value, setValue) = React.useState(_ => "")
+
+    <form>
+      <input
+        type_="text"
+        defaultValue={value}
+        onChange={(ev: JsxEvent.Form.t) => {
+          let target = JsxEvent.Form.target(ev)
+          let value: string = target["value"]
+          setValue(_prevValue => value)
+        }}
+      />
+      <p style={{color:"red"}}>{React.string(value)}</p>
+    </form>
+  }
+}
+```

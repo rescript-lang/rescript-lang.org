@@ -44,7 +44,7 @@ module LinkCards = {
       {resources
       ->Array.map(link =>
         switch link.image {
-        | "" => {...link, image: "/static/Art-3-rescript-launch.jpg"}
+        | "" => {...link, image: "/Art-3-rescript-launch.jpg"}
         | _ => link
         }
       )

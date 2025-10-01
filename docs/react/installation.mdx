@@ -1,0 +1,72 @@
+---
+title: Installation
+description: "Installation and Setup"
+canonical: "/docs/react/latest/installation"
+category: "manual"
+---
+
+# Installation
+
+**Requirements:**
+
+- `rescript@11.0` or later
+- `react@18.0.0` or later
+
+Add the following dependency to your ReScript project (in case you don't have any project yet, check out the [installation instructions](/docs/manual/latest/installation)):
+
+```
+npm install @rescript/react
+```
+
+Then add the following setting to your existing `rescript.json`:
+
+```json
+{
+  "jsx": { "version": 4 },
+  "bs-dependencies": ["@rescript/react"]
+}
+```
+
+**Note:** In case your dependencies are not compatible with version 4 of the ReScript JSX transformation yet, you can use v3 in the same project. Check out the details in [Migrate from v3](/docs/react/latest/migrate-react).
+
+To test your setup, create a new `.res` file in your source directory and add the following code:
+
+```res
+// src/Test.res
+@react.component
+let make = () => {
+  <div> {React.string("Hello World")} </div>
+}
+```
+
+Now run `npx rescript` and you should see a successful build.
+
+## Exposed Modules
+
+After a successful installation, `@rescript/react` will make the following modules available in your project's global scope:
+
+- `React`: Bindings to React
+- `ReactDOM`: Bindings to the ReactDOM
+- `ReactDOMServer`: Bindings to the ReactDOMServer
+- `ReactEvent`: Bindings to React's synthetic events
+- `ReactDOMStyle`: Bindings to the inline style API
+- `RescriptReactRouter`: A simple, yet fully featured router with minimal memory allocations
+- `RescriptReactErrorBoundary`: A component which handles errors thrown in its child components gracefully
+
+## Automatic vs. Classic Mode
+
+By default, JSX v4 uses the new JSX runtime (`react/jsx-runtime`) introduced in React 17. This is called "automatic mode", and can also be specified explicitly like this:
+
+```json
+{
+  "jsx": { "version": 4, "mode": "automatic" }
+}
+```
+
+To keep using the legacy `React.createElement` API (like with JSX v3), you can activate classic mode instead:
+
+```json
+{
+  "jsx": { "version": 4, "mode": "classic" }
+}
+```
