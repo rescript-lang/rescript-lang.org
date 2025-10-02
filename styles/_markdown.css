@@ -73,19 +73,3 @@
     }
   }
 }
-
-.markdown-table {
-  @apply overflow-x-auto mt-10 mb-16;
-
-  /* table {
-    @apply
-  } */
-
-  td {
-    @apply border-b border-gray-20 py-3 pr-8;
-  }
-
-  th {
-    @apply py-2 pr-8 text-12 text-gray-60 uppercase font-medium tracking-wide text-left border-b-2 border-gray-20;
-  }
-}
