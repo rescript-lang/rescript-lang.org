@@ -90,7 +90,7 @@ module Mdx = {
     category?: string,
     description?: string,
     order?: int,
-    path: Path.t,
+    path: string,
     section?: string,
     slug: string,
     title: string,

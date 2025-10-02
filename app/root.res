@@ -33,7 +33,7 @@ let default = () => {
     <head>
       // This is to prevent FOUC (flash of unstyled content)
       // This line has to be above everything else
-      <style> {React.string("html{opacity: 0;}")} </style>
+      // <style> {React.string("html{opacity: 0;}")} </style>
 
       <link rel="icon" href="data:image/x-icon;base64,AA" />
     </head>

@@ -137,9 +137,16 @@ module H1 = {
 module H2 = {
   @react.component
   let make = (~id, ~children) => {
-    let title = childrenToString(children)->String.toLowerCase->String.replaceAll(" ", "-")
+    // Children may not be a string
+    // TODO: RR7 - this can be improved, but I need to figure out what the other possible types are
+    let title = {
+      try {
+        childrenToString(children)->String.toLowerCase->String.replaceAll(" ", "-")
+      } catch {
+      | _ => ""
+      }
+    }
     <>
-      // Here we know that children is always a string (## headline)
       <h2 id className="group mt-16 mb-3 hl-3 scroll-mt-32">
         children
         <span className="ml-2">

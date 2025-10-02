@@ -42,15 +42,72 @@ let components = {
   "Warn": Markdown.Warn.make,
 }
 
-// the loadAllMdx function logs out all of the file contents as it reads them, which is noisy and not useful.
+// The loadAllMdx function logs out all of the file contents as it reads them, which is noisy and not useful.
 // We can suppress that logging with this helper function.
 let allMdx = await Shims.runWithoutLogging(() => loadAllMdx())
 
+let sortSection = mdxPages =>
+  Array.toSorted(mdxPages, (a: Mdx.attributes, b: Mdx.attributes) =>
+    switch (a.order, b.order) {
+    | (Some(a), Some(b)) => a > b ? 1.0 : -1.0
+    | _ => -1.0
+    }
+  )
+
+let groupBySection = mdxPages =>
+  Array.reduce(mdxPages, (Dict.make() :> Dict.t<array<Mdx.attributes>>), (acc, item) => {
+    let section = item.section->Option.flatMap(Dict.get(acc, _))
+    switch section {
+    // If the section already exists, add this item to it
+    | Some(section) => section->Array.push(item)
+    // otherwise create a new section with this item
+    | None => item.section->Option.forEach(section => acc->Dict.set(section, [item]))
+    }
+    acc
+  })
+
+let convertToNavItems = items =>
+  Array.map(items, (item): SidebarLayout.Sidebar.NavItem.t => {
+    {
+      name: item.title,
+      href: item.canonical, // TODO: RR7 - canonical works for now, but we should make this more robust so that it's not required
+    }
+  })
+
+let filterMdxPages = (mdxPages, path) =>
+  Array.filter(mdxPages, mdx => (mdx.path :> string)->String.includes(path))
+
+// These are the pages for the language manual, sorted by their "order" field in the frontmatter
+let manualTableOfContents = () => {
+  let groups =
+    allMdx
+    ->filterMdxPages("docs/manual")
+    ->groupBySection
+    ->Dict.mapValues(values => values->sortSection->convertToNavItems)
+
+  // Console.log(groups)
+
+  // these are the categories that appear in the sidebar
+  let categories: array<SidebarLayout.Sidebar.Category.t> = [
+    {name: "Overview", items: groups->Dict.getUnsafe("Overview")},
+    {name: "Guides", items: groups->Dict.getUnsafe("Guides")},
+    {name: "Language Features", items: groups->Dict.getUnsafe("Language Features")},
+    {name: "JavaScript Interop", items: groups->Dict.getUnsafe("JavaScript Interop")},
+    {name: "Build System", items: groups->Dict.getUnsafe("Build System")},
+    {name: "Advanced Features", items: groups->Dict.getUnsafe("Advanced Features")},
+  ]
+  categories
+}
+
 let loader: Loader.t<loaderData> = async ({request}) => {
+  let {pathname} = WebAPI.URL.make(~url=request.url)
+
   let mdx = await loadMdx(request)
 
+  let categories = manualTableOfContents()
+
   let fileContents = await allMdx
-  ->Array.filter(mdx => (mdx.path :> string)->String.includes("docs/manual/introduction"))
+  ->Array.filter(mdx => (mdx.path :> string)->String.includes(pathname))
   ->Array.get(0)
   ->Option.map(mdx => mdx.path)
   ->Option.map(path => Node.Fs.readFile((path :> string), "utf-8"))
@@ -70,18 +127,13 @@ let loader: Loader.t<loaderData> = async ({request}) => {
       header,
       href: (url :> string),
     })
-    ->Array.slice(~start=2) // skip first two entries which are "Introduction" and "Getting Started"
+    ->Array.slice(~start=2) // skip first two entries which are the document entry and the H1 title for the page, we just want the h2 sections
 
   let res: loaderData = {
     __raw: mdx.__raw,
     attributes: mdx.attributes,
     entries,
-    categories: [
-      {
-        name: "overview",
-        items: [{name: "Introduction", href: #"/docs/manual/introduction"}],
-      },
-    ],
+    categories,
   }
   res
 }
