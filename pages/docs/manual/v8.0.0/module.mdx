@@ -31,6 +31,7 @@ module School = {
     };
 };
 ```
+
 ```ml
 module School = struct
   type profession = Teacher | Director
@@ -42,6 +43,7 @@ module School = struct
     | Director -> "A director"
 end
 ```
+
 ```js
 function getProfession(person) {
   if (person) {
@@ -52,8 +54,8 @@ function getProfession(person) {
 }
 
 var School = {
-  person1: /* Teacher */0,
-  getProfession: getProfession
+  person1: /* Teacher */ 0,
+  getProfession: getProfession,
 };
 ```
 
@@ -68,12 +70,14 @@ using the `.` notation. This demonstrates modules' utility for namespacing.
 let anotherPerson: School.profession = School.Teacher;
 Js.log(School.getProfession(anotherPerson)); /* "A teacher" */
 ```
+
 ```ml
 let anotherPerson: School.profession = School.Teacher
 Js.log (School.getProfession anotherPerson) (* "A teacher" *)
 ```
+
 ```js
-var anotherPerson = /* Teacher */0;
+var anotherPerson = /* Teacher */ 0;
 console.log("A teacher");
 ```
 
@@ -92,6 +96,7 @@ module MyModule = {
 
 let message = MyModule.NestedModule.message;
 ```
+
 ```ml
 module MyModule = struct
   module NestedModule = struct
@@ -101,13 +106,14 @@ end
 
 let message = MyModule.NestedModule.message
 ```
+
 ```js
 var NestedModule = {
-  message: message
+  message: message,
 };
 
 var MyModule = {
-  NestedModule: NestedModule
+  NestedModule: NestedModule,
 };
 
 var message = MyModule.NestedModule.message;
@@ -125,9 +131,11 @@ module's name. Instead of writing:
 ```re
 let p = School.getProfession(School.person1);
 ```
+
 ```ml
 let p = School.getProfession School.person1
 ```
+
 ```js
 var p = School.getProfession(School.person1);
 ```
@@ -142,10 +150,12 @@ We can write:
 open School;
 let p = getProfession(person1);
 ```
+
 ```ml
 open School
 let p = getProfession person1
 ```
+
 ```js
 var p = School.getProfession(School.person1);
 ```
@@ -165,12 +175,14 @@ let p = {
 };
 /* School's content isn't visible here anymore */
 ```
+
 ```ml
 let p =
   let open School in
   getProfession person1
 (* School's content isn't visible here anymore *)
 ```
+
 ```js
 var p = School.getProfession(School.person1);
 ```
@@ -199,6 +211,7 @@ module ActualComponent = {
   let render = () => defaultGreeting ++ " " ++ getAudience(~excited=true);
 };
 ```
+
 ```ml
 module BaseComponent = struct
   let defaultGreeting = "Hello"
@@ -213,6 +226,7 @@ module ActualComponent = struct
   let render () = defaultGreeting ^ " " ^ (getAudience ~excited:true)
 end
 ```
+
 ```js
 function getAudience(excited) {
   if (excited) {
@@ -224,7 +238,7 @@ function getAudience(excited) {
 
 var BaseComponent = {
   defaultGreeting: "Hello",
-  getAudience: getAudience
+  getAudience: getAudience,
 };
 
 var defaultGreeting = "Hey";
@@ -236,7 +250,7 @@ function render(param) {
 var ActualComponent = {
   getAudience: getAudience,
   defaultGreeting: defaultGreeting,
-  render: render
+  render: render,
 };
 ```
 
@@ -271,6 +285,7 @@ module type EstablishmentType = {
   let getProfession: profession => string;
 };
 ```
+
 ```ml
 (* Picking up previous section's example *)
 module type EstablishmentType  = sig
@@ -278,6 +293,7 @@ module type EstablishmentType  = sig
   val getProfession: profession -> string
 end
 ```
+
 ```js
 // Empty output
 ```
@@ -322,6 +338,7 @@ module Company: EstablishmentType = {
   let person2 = ...
 };
 ```
+
 ```ml
 module Company: EstablishmentType = struct
   type profession = CEO | Designer | Engineer | ...
@@ -331,6 +348,7 @@ module Company: EstablishmentType = struct
   let person2 = ...
 end
 ```
+
 ```js
 function getProfession(person) {
   ...
@@ -371,6 +389,7 @@ module type ActualComponent = {
   let render: unit => string;
 };
 ```
+
 ```ml
 module type BaseComponent = sig
   val defaultGreeting: string
@@ -383,6 +402,7 @@ module type ActualComponent = sig
   val render: unit -> string
 end
 ```
+
 ```js
 // Empty output
 ```
@@ -404,12 +424,14 @@ module type MyList = {
   let myListFun: list('a) => list('a);
 };
 ```
+
 ```ml
 module type MyList = sig
   include module type of List
   val myListFun: 'a list -> 'a list
 end
 ```
+
 ```js
 // Empty output
 ```
@@ -431,11 +453,13 @@ in the ecosystem to also document the public API of their corresponding modules.
 type state = int;
 let render = (str) => str;
 ```
+
 ```ml
 (* file React.ml (implementation. Compiles to module React) *)
 type state = int
 let render str = str
 ```
+
 ```js
 function render(str) {
   return str;
@@ -451,6 +475,7 @@ function render(str) {
 type state = int;
 let render: string => string;
 ```
+
 ```ml
 (* file React.mli (interface. Compiles to the signature of React.re) *)
 type state = int
@@ -463,7 +488,7 @@ val render: str -> str
 
 Modules can be passed to functions! It would be the equivalent of passing a file
 as a first-class item. However, modules are at a different "layer" of the
-language than other common concepts, so we can't pass them to *regular*
+language than other common concepts, so we can't pass them to _regular_
 functions. Instead, we pass them to special functions called "functors".
 
 The syntax for defining and using functors is very much like the syntax
@@ -471,7 +496,7 @@ for defining and using regular functions. The primary differences are:
 
 - Functors use the `module` keyword instead of `let`.
 - Functors take modules as arguments and return a module.
-- Functors *require* annotating arguments.
+- Functors _require_ annotating arguments.
 - Functors must start with a capital letter (just like modules/signatures).
 
 Here's an example `MakeSet` functor, that takes in a module of the type
@@ -501,6 +526,7 @@ module MakeSet = (Item: Comparable) => {
     };
 };
 ```
+
 ```ml
 module type Comparable = sig
   type t
@@ -519,13 +545,14 @@ module MakeSet (Item: Comparable) = struct
       newItem::currentSet (* prepend to the set and return it *)
 end
 ```
+
 ```js
 var List = require("./stdlib/list.js");
 
 function MakeSet(Item) {
-  var add = function(currentSet, newItem) {
+  var add = function (currentSet, newItem) {
     if (
-      List.exists(function(x) {
+      List.exists(function (x) {
         return Item.equal(x, newItem);
       }, currentSet)
     ) {
@@ -561,6 +588,7 @@ module IntPair = {
 /* IntPair abides by the Comparable signature required by MakeSet */
 module SetOfIntPairs = MakeSet(IntPair);
 ```
+
 ```ml
 module IntPair = struct
   type t = int * int
@@ -571,6 +599,7 @@ end
 (* IntPair abides by the Comparable signature required by MakeSet *)
 module SetOfIntPairs = MakeSet(IntPair)
 ```
+
 ```js
 function equal(param, param$1) {
   if (param[0] === param$1[0]) {
@@ -621,6 +650,7 @@ module MakeSet: MakeSetType = (Item: Comparable) => {
   ...
 };
 ```
+
 ```ml
 module type Comparable = ...
 
@@ -634,6 +664,7 @@ module MakeSet: MakeSetType = functor (Item: Comparable) -> struct
   ...
 end
 ```
+
 ```js
 // Empty output
 ```

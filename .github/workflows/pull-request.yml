@@ -12,6 +12,7 @@ jobs:
       - run: npm ci
       - run: npx rescript
       - run: npm test
+      - run: npm run ci:format
 
       - name: Format check
         run: npx rescript format -check -all

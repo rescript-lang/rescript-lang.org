@@ -207,7 +207,7 @@ module SidebarTree = {
       ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 md:h-auto md:relative overflow-y-visible bg-white"}>
       <aside
         id="sidebar-content"
-        className="relative top-0 px-4 w-full block md:top-[7rem] md:pt-10 md:sticky border-r border-gray-20 overflow-y-auto pb-24 h-[calc(100vh-7rem)]">
+        className="relative top-0 px-4 w-full block md:top-28 md:pt-10 md:sticky border-r border-gray-20 overflow-y-auto pb-24 h-[calc(100vh-7rem)]">
         <div className="flex justify-between">
           <div className="w-3/4 md:w-full"> React.null </div>
           <button
@@ -290,7 +290,7 @@ module DocstringsStylize = {
       [Rehype.WithOptions([Plugin(Rehype.slug), SlugOption({prefix: slugPrefix ++ "-"})])]->Some
 
     let content = switch docstrings->Array.length > 1 {
-    | true => docstrings->Array.sliceToEnd(~start=1)
+    | true => docstrings->Array.slice(~start=1)
     | false => docstrings
     }->Array.join("\n")
 
@@ -350,7 +350,7 @@ let default = (props: props) => {
   | Ok({module_: {items}}) if Array.length(items) > 0 =>
     <div className="hidden xl:block lg:w-1/5 md:h-auto md:relative overflow-y-visible bg-white">
       <aside
-        className="relative top-0 pl-4 w-full block md:top-[7rem] md:pt-4 md:sticky border-l border-gray-20 overflow-y-auto pb-24 h-[calc(100vh-7rem)]">
+        className="relative top-0 pl-4 w-full block md:top-28 md:pt-4 md:sticky border-l border-gray-20 overflow-y-auto pb-24 h-[calc(100vh-7rem)]">
         <div className="hl-overline block text-gray-80 mt-16 mb-2">
           {"Types and values"->React.string}
         </div>

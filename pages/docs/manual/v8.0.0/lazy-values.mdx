@@ -37,6 +37,7 @@ Lazy.force(getFiles)->Js.log;
 // The second call will just return the already calculated files
 Lazy.force(getFiles)->Js.log;
 ```
+
 ```ml
 (* We only want getFiles to read the file system once, *)
 (* so we wrap it in a lazy value *)
@@ -51,6 +52,7 @@ let () = (Lazy.force getFiles) |. Js.log
 (* The second call will just return the already calculated files *)
 let () = (Lazy.force getFiles) |. Js.log
 ```
+
 ```js
 var Fs = require("fs");
 var CamlinternalLazy = require("./stdlib/camlinternalLazy.js");
@@ -82,6 +84,7 @@ let getFiles = () => {
 // Here we wrap our function in the lazy value
 let lazyGetFiles = Lazy.from_fun(getFiles);
 ```
+
 ```ml
 (* Example for wrapping a function with 0 parameters *)
 let getFiles () =
@@ -90,6 +93,7 @@ let getFiles () =
 (* Here we wrap our function in the lazy value *)
 let lazyGetFiles = Lazy.from_fun getFiles
 ```
+
 ```js
 var Fs = require("fs");
 var Lazy = require("./stdlib/lazy.js");
@@ -115,6 +119,7 @@ let doesFileExist = name => {
 // since we can't use Lazy.from_fun
 let lazyDoesFileExist = lazy(doesFileExist("blog.re"));
 ```
+
 ```ml
 (* Example for wrapping a function with parameters *)
 let doesFileExist name =
@@ -124,6 +129,7 @@ let doesFileExist name =
 (* since we can't use Lazy.from_fun *)
 let lazyDoesFileExist = lazy(doesFileExist "blog.re")
 ```
+
 ```js
 var Fs = require("fs");
 var Caml_option = require("./stdlib/caml_option.js");
@@ -132,7 +138,7 @@ function doesFileExist(name) {
   return Caml_option.undefined_to_opt(
     Fs.readdirSync("./pages").find(function (s) {
       return name === s;
-    })
+    }),
   );
 }
 
@@ -160,12 +166,14 @@ let computation = lazy(1);
 // Returns 1
 Lazy.force(computation);
 ```
+
 ```ml
 let computation = lazy 1;
 
 (* Returns 1 *)
 Lazy.force computation
 ```
+
 ```js
 var CamlinternalLazy = require("./stdlib/camlinternalLazy.js");
 
@@ -192,6 +200,7 @@ switch computation {
 | _ => Js.log("not ok")
 };
 ```
+
 ```ml
 (* Extract a lazy value via pattern matching *)
 let computation = lazy "computed"
@@ -200,6 +209,7 @@ let () = match computation with
 | lazy "computed" -> Js.log "ok"
 | _ -> Js.log "not ok"
 ```
+
 ```js
 var CamlinternalLazy = require("./stdlib/camlinternalLazy.js");
 
@@ -230,12 +240,14 @@ let lazy(word) = lazy("hello");
 // Output: "hello"
 Js.log(word);
 ```
+
 ```ml
 let lazy word = lazy "hello"
 
 (* Output: "hello" *)
 Js.log word
 ```
+
 ```js
 var CamlinternalLazy = require("./stdlib/camlinternalLazy.js");
 
@@ -262,6 +274,7 @@ let (lazy(word1), lazy(word2)) = lazyValues;
 Js.log2(word1, word2);
 let lazy(word) = lazy("hello");
 ```
+
 ```ml
 (* Destructing a tuple *)
 let lazyValues = (lazy "hello", lazy "world")
@@ -271,6 +284,7 @@ let (lazy word1, lazy word2) = lazyValues
 Js.log2(word1, word2)
 let lazy word = lazy "hello"
 ```
+
 ```js
 var CamlinternalLazy = require("./stdlib/camlinternalLazy.js");
 
@@ -320,11 +334,13 @@ try (Lazy.force(readFile)) {
 | Not_found => Js.log("No file")
 };
 ```
+
 ```ml
 let readFile = lazy (raise Not_found)
 let () = try Lazy.force readFile with
 | Not_found -> Js.log "No file"
 ```
+
 ```js
 var CamlinternalLazy = require("./stdlib/camlinternalLazy.js");
 var Caml_js_exceptions = require("./stdlib/caml_js_exceptions.js");

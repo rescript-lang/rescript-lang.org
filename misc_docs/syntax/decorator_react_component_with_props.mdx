@@ -9,9 +9,8 @@ category: "decorators"
 The `@react.componentWithProps` decorator is used to annotate functions that are [React](/docs/react/latest/elements-and-jsx) components which take in a record type as prop.
 This decorator will ensure your component gets an uppercased name.
 
-
 > **Note**
-> The `@react.componentWithProps` decorator requires the [react-jsx or jsx config](/docs/react/latest/installation) to be set in your `rescript.json` to enable the required React transformations. 
+> The `@react.componentWithProps` decorator requires the [react-jsx or jsx config](/docs/react/latest/installation) to be set in your `rescript.json` to enable the required React transformations.
 
 ### Example
 
@@ -35,12 +34,12 @@ import * as JsxRuntime from "react/jsx-runtime";
 
 function Playground$Hey(props) {
   return JsxRuntime.jsx("button", {
-    children: "Hello " + props.name + "!"
+    children: "Hello " + props.name + "!",
   });
 }
 
 let Hey = {
-  make: Playground$Hey
+  make: Playground$Hey,
 };
 ```
 
@@ -48,4 +47,4 @@ let Hey = {
 
 ### References
 
-* [React Components](/docs/react/latest/components-and-props)
+- [React Components](/docs/react/latest/components-and-props)

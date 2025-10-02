@@ -6,53 +6,82 @@ Category: functional
 
 // Note: Extracted and adapted from the reason-highlightjs package:
 // https://github.com/reasonml-editor/reason-highlightjs
-export default function(hljs) {
-  function orReValues(ops){
+export default function (hljs) {
+  function orReValues(ops) {
     return ops
-    .map(function(op) {
-      return op
-        .split('')
-        .map(function(char) {
-          return '\\' + char;
-        })
-        .join('');
-    })
-    .join('|');
+      .map(function (op) {
+        return op
+          .split("")
+          .map(function (char) {
+            return "\\" + char;
+          })
+          .join("");
+      })
+      .join("|");
   }
 
   // eh why is the $ here
-  var RE_IDENT = '~?[a-z$_][0-9a-zA-Z$_]*';
-  var RE_ATTRIBUTE = '[A-Za-z_][A-Za-z0-9_\\.]*';
-  var RE_MODULE_IDENT = '[A-Z$_][0-9a-zA-Z$_]*';
-  var RE_CONSTRUCTOR = '([A-Z][0-9a-zA-Z$_]*)|(`[a-zA-Z][0-9a-zA-Z$_]*)';
+  var RE_IDENT = "~?[a-z$_][0-9a-zA-Z$_]*";
+  var RE_ATTRIBUTE = "[A-Za-z_][A-Za-z0-9_\\.]*";
+  var RE_MODULE_IDENT = "[A-Z$_][0-9a-zA-Z$_]*";
+  var RE_CONSTRUCTOR = "([A-Z][0-9a-zA-Z$_]*)|(`[a-zA-Z][0-9a-zA-Z$_]*)";
 
-  var RE_PARAM_TYPEPARAM = '\'?[a-z$_][0-9a-z$_]*';
-  var RE_PARAM_TYPE = '\s*:\s*[a-z$_][0-9a-z$_]*(\(\s*(' + RE_PARAM_TYPEPARAM + '\s*(,' + RE_PARAM_TYPEPARAM + ')*)?\s*\))?';
-  var RE_PARAM = RE_IDENT + '(' + RE_PARAM_TYPE + ')?(' + RE_PARAM_TYPE + ')?';
-  var RE_OPERATOR = "(" + orReValues(['->', '||', '&&', '++', '**', '+.', '+', '-.', '-', '*.', '*', '/.', '/', '...', '|>', '===', '==', '^', ':=', '!']) + ")";
+  var RE_PARAM_TYPEPARAM = "'?[a-z$_][0-9a-z$_]*";
+  var RE_PARAM_TYPE =
+    "\s*:\s*[a-z$_][0-9a-z$_]*(\(\s*(" +
+    RE_PARAM_TYPEPARAM +
+    "\s*(," +
+    RE_PARAM_TYPEPARAM +
+    ")*)?\s*\))?";
+  var RE_PARAM = RE_IDENT + "(" + RE_PARAM_TYPE + ")?(" + RE_PARAM_TYPE + ")?";
+  var RE_OPERATOR =
+    "(" +
+    orReValues([
+      "->",
+      "||",
+      "&&",
+      "++",
+      "**",
+      "+.",
+      "+",
+      "-.",
+      "-",
+      "*.",
+      "*",
+      "/.",
+      "/",
+      "...",
+      "|>",
+      "===",
+      "==",
+      "^",
+      ":=",
+      "!",
+    ]) +
+    ")";
 
   var KEYWORDS = {
     /* https://github.com/facebook/reason/blob/79e67d5334ef181fdb54bd57bd9e7729f9fe46e7/src/reason-parser/reason_lexer.mll#L94-L154 */
     keyword:
-      'and as assert begin class constraint done downto exception external fun ' +
-      'esfun function functor include inherit initializer lazy let pub mutable new nonrec ' +
-      'object of open or pri rec then to type val virtual ' +
-      'try catch finally do else for if switch while import library export ' +
-      'module in raise',
+      "and as assert begin class constraint done downto exception external fun " +
+      "esfun function functor include inherit initializer lazy let pub mutable new nonrec " +
+      "object of open or pri rec then to type val virtual " +
+      "try catch finally do else for if switch while import library export " +
+      "module in raise",
     // not reliable
     // built_in:
     //   'array bool bytes char exn|5 float int int32 int64 list lazy_t|5 nativeint|5 ref string unit',
-    literal:
-      'true false'
+    literal: "true false",
   };
 
-  const RE_NUMBER = '\\b(0[xX][a-fA-F0-9_]+[Lln]?|' +
-    '0[oO][0-7_]+[Lln]?|' +
-    '0[bB][01_]+[Lln]?|' +
-    '[0-9][0-9_]*([Lln]|(\\.[0-9_]*)?([eE][-+]?[0-9_]+)?)?)';
+  const RE_NUMBER =
+    "\\b(0[xX][a-fA-F0-9_]+[Lln]?|" +
+    "0[oO][0-7_]+[Lln]?|" +
+    "0[bB][01_]+[Lln]?|" +
+    "[0-9][0-9_]*([Lln]|(\\.[0-9_]*)?([eE][-+]?[0-9_]+)?)?)";
 
   const STRING_MODE = {
-    className: 'string',
+    className: "string",
     variants: [
       {
         begin: '"',
@@ -61,68 +90,68 @@ export default function(hljs) {
       },
       // {foo|bla|foo}
       {
-        begin: '\\{(' + RE_IDENT + ')?\\|',
-        end: '\\|(' + RE_IDENT + ')?\\}',
+        begin: "\\{(" + RE_IDENT + ")?\\|",
+        end: "\\|(" + RE_IDENT + ")?\\}",
       },
-    ]
+    ],
   };
 
   const CHARACTER_MODE = {
-    className: 'character',
-    begin: '\'(\\\\[^\']+|[^\'])\'',
-    illegal: '\\n',
-    relevance: 0
+    className: "character",
+    begin: "'(\\\\[^']+|[^'])'",
+    illegal: "\\n",
+    relevance: 0,
   };
 
   const NUMBER_MODE = {
-    className: 'number',
+    className: "number",
     relevance: 0,
     variants: [
       {
-        begin: RE_NUMBER
+        begin: RE_NUMBER,
       },
       {
-        begin: '\\(\\-' + RE_NUMBER + '\\)'
-      }
-    ]
+        begin: "\\(\\-" + RE_NUMBER + "\\)",
+      },
+    ],
   };
 
   const OPERATOR_MODE = {
-    className: 'operator',
+    className: "operator",
     relevance: 0,
-    begin: RE_OPERATOR
+    begin: RE_OPERATOR,
   };
 
   // as in variant constructor
   const CONSTRUCTOR_MODE = {
-    className: 'constructor',
-    begin: '\\b' + RE_CONSTRUCTOR,
-    illegal: '\\n',
+    className: "constructor",
+    begin: "\\b" + RE_CONSTRUCTOR,
+    illegal: "\\n",
     keywords: KEYWORDS,
   };
 
   const ARRAY_MODES = {
-    className: 'literal',
+    className: "literal",
     variants: [
       {
-        begin: '\\[\\|',
+        begin: "\\[\\|",
       },
       {
-        begin: '\\|\\]',
+        begin: "\\|\\]",
       },
-    ]
+    ],
   };
 
   const LIST_MODES = {
-    className: 'literal',
+    className: "literal",
     variants: [
       {
-        begin: '\\[',
+        begin: "\\[",
       },
       {
-        begin: '\\]',
+        begin: "\\]",
       },
-    ]
+    ],
   };
 
   const MODULE_ACCESS_MODE = {
@@ -131,9 +160,9 @@ export default function(hljs) {
     contains: [
       {
         begin: RE_MODULE_IDENT,
-        className: 'module-identifier',
+        className: "module-identifier",
       },
-    ]
+    ],
   };
 
   const JSX_MODE = {
@@ -152,20 +181,20 @@ export default function(hljs) {
         contains: [
           {
             begin: RE_MODULE_IDENT,
-            className: 'module-identifier',
+            className: "module-identifier",
           },
-        ]
+        ],
       },
       {
         begin: "<",
         contains: [
           {
             begin: RE_MODULE_IDENT,
-            className: 'module-identifier',
+            className: "module-identifier",
           },
-        ]
+        ],
       },
-    ]
+    ],
   };
 
   // Foo.Bar.Baz where Baz is actually a module, not a constructor
@@ -183,13 +212,13 @@ export default function(hljs) {
           {
             begin: RE_MODULE_IDENT,
             className: "module-identifier",
-          }
-        ]
+          },
+        ],
       },
-    ]
+    ],
   };
   const ATTRIBUTE_MODE = {
-    className: 'attribute',
+    className: "attribute",
     variants: [
       {
         begin: "\\[@",
@@ -227,16 +256,14 @@ export default function(hljs) {
           },
         ],
       },
-    ]
+    ],
   };
 
   // all the modes below are mutually recursive
   let OPEN_OR_INCLUDE_MODULE_MODE = {
     begin: "\\b(open|include)\\s*",
     keywords: KEYWORDS,
-    contains: [
-      MODULE_ACCESS_ENDS_WITH_MODULE,
-    ]
+    contains: [MODULE_ACCESS_ENDS_WITH_MODULE],
   };
   let MODULE_MODE = {
     begin: "\\s*\\{\\s*",
@@ -244,7 +271,7 @@ export default function(hljs) {
     keywords: KEYWORDS,
     // most of the order here is important
     contains: [
-      hljs.COMMENT('/\\*', '\\*/', { illegal: '^(\\#,\\/\\/)' }),
+      hljs.COMMENT("/\\*", "\\*/", { illegal: "^(\\#,\\/\\/)" }),
       hljs.C_LINE_COMMENT_MODE,
       // there's also a block mode technically, but for our purpose, a module {}
       // and a block {} can be considered the same for highlighting
@@ -259,7 +286,7 @@ export default function(hljs) {
       OPEN_OR_INCLUDE_MODULE_MODE,
       MODULE_ACCESS_MODE,
       CONSTRUCTOR_MODE,
-    ]
+    ],
   };
   const MODULE_DECLARATION_MODE = {
     begin: "\\bmodule\\s+(type\\s+)?(of\\s+)?",
@@ -279,7 +306,7 @@ export default function(hljs) {
             begin: RE_MODULE_IDENT,
             className: "module-identifier",
           },
-          MODULE_MODE
+          MODULE_MODE,
         ],
       },
       // then the = part and the right hand side
@@ -308,29 +335,28 @@ export default function(hljs) {
                   MODULE_MODE,
                   {
                     begin: "\\s*,\\s*",
-                  }
-                ]
+                  },
+                ],
               },
               MODULE_MODE,
-            ]
+            ],
           },
           MODULE_MODE,
           {
-            begin: "\\s*=>\\s*"
-          }
-        ]
+            begin: "\\s*=>\\s*",
+          },
+        ],
       },
-    ]
+    ],
   };
   MODULE_MODE.contains.unshift(MODULE_DECLARATION_MODE);
-  OPEN_OR_INCLUDE_MODULE_MODE.contains.push(MODULE_MODE)
+  OPEN_OR_INCLUDE_MODULE_MODE.contains.push(MODULE_MODE);
 
   return {
-    aliases: ['re', 'reasonml', 'rei'],
+    aliases: ["re", "reasonml", "rei"],
     keywords: KEYWORDS,
-    illegal: '(:\\-|:=|\\${|\\+=)',
+    illegal: "(:\\-|:=|\\${|\\+=)",
     // lol beautiful
     contains: MODULE_MODE.contains,
   };
 }
-

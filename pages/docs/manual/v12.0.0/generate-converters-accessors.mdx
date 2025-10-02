@@ -2,11 +2,14 @@
 title: "Generate Converters & Helpers"
 description: "All about the @deriving decorator, and how to generate code from types"
 canonical: "/docs/manual/v12.0.0/generate-converters-accessors"
+section: "JavaScript Interop"
+order: 12
 ---
 
 # Generate Converters & Helpers
 
 **Note**: if you're looking for:
+
 - `@deriving(jsConverter)` for records
 - `@deriving({jsConverter: newType})` for records
 - `@deriving(abstract)` for records
@@ -42,14 +45,14 @@ type action =
 
 ```js
 function submit(param_0) {
-  return /* Submit */[param_0];
+  return /* Submit */ [param_0];
 }
 
-var click = /* Click */0;
+var click = /* Click */ 0;
 
-var cancel = /* Cancel */1;
+var cancel = /* Cancel */ 1;
 
-exports.click  = click;
+exports.click = click;
 exports.submit = submit;
 exports.cancel = cancel;
 ```
@@ -59,6 +62,7 @@ exports.cancel = cancel;
 Variants constructors with payloads generate functions, payload-less constructors generate plain integers (the internal representation of variants).
 
 **Note**:
+
 - The generated accessors are lower-cased.
 - You can now use these helpers on the JavaScript side! But don't rely on their actual values please.
 
@@ -78,7 +82,6 @@ Please note that in case you just want to _pipe a payload into a constructor_, y
 ## Generate Field Accessors for Records
 
 Use `@deriving(accessors)` on a record type to create accessors for its record field names.
-
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -101,11 +104,11 @@ function name(param) {
 
 var pets = [
   {
-    name: "bob"
+    name: "bob",
   },
   {
-    name: "bob2"
-  }
+    name: "bob2",
+  },
 ];
 
 console.log(Belt_Array.map(pets, name).join("&"));

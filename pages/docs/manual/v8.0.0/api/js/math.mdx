@@ -6,7 +6,7 @@ Provide utilities for JS Math. Note: The constants `_E`, `_LN10`, `_LN2`, `_LOG1
 
 </Intro>
 
-## _E
+## \_E
 
 ```re sig
 let _E: float;
@@ -14,7 +14,7 @@ let _E: float;
 
 Euler's number; ≈ 2.718281828459045. See [`Math.E`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/E) on MDN.
 
-## _LN2
+## \_LN2
 
 ```re sig
 let _LN2: float;
@@ -22,7 +22,7 @@ let _LN2: float;
 
 Natural logarithm of 2; ≈ 0.6931471805599453. See [`Math.LN2`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/LN2) on MDN.
 
-## _LN10
+## \_LN10
 
 ```re sig
 let _LN10: float;
@@ -30,7 +30,7 @@ let _LN10: float;
 
 Natural logarithm of 10; ≈ 2.302585092994046. See [`Math.LN10`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/LN10) on MDN.
 
-## _LOG2E
+## \_LOG2E
 
 ```re sig
 let _LOG2E: float;
@@ -38,7 +38,7 @@ let _LOG2E: float;
 
 Base 2 logarithm of E; ≈ 1.4426950408889634. See [`Math.LOG2E`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/LOG2E) on MDN.
 
-## _LOG10E
+## \_LOG10E
 
 ```re sig
 let _LOG10E: float;
@@ -46,7 +46,7 @@ let _LOG10E: float;
 
 Base 10 logarithm of E; ≈ 0.4342944819032518. See [`Math.LOG10E`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/LOG10E) on MDN.
 
-## _PI
+## \_PI
 
 ```re sig
 let _PI: float;
@@ -54,7 +54,7 @@ let _PI: float;
 
 Pi - ratio of the circumference to the diameter of a circle; ≈ 3.141592653589793. See [`Math.PI`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/PI) on MDN.
 
-## _SQRT1_2
+## \_SQRT1_2
 
 ```re sig
 let _SQRT1_2: float;
@@ -62,7 +62,7 @@ let _SQRT1_2: float;
 
 Square root of 1/2; ≈ 0.7071067811865476. See [`Math.SQRT1_2`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/SQRT1_2) on MDN.
 
-## _SQRT2
+## \_SQRT2
 
 ```re sig
 let _SQRT2: float;
@@ -140,7 +140,7 @@ Hyperbolic arctangent (in radians) of argument; returns `NaN` if the argument is
 let atan2: (~y: float, ~x: float, unit) => float;
 ```
 
-Returns the angle (in radians) of the quotient `y /. x`. It is also the angle between the *x*-axis and point (*x*, *y*). See [`Math.atan2`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2) on MDN.
+Returns the angle (in radians) of the quotient `y /. x`. It is also the angle between the _x_-axis and point (_x_, _y_). See [`Math.atan2`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2) on MDN.
 
 ```re example
 Js.Math.atan2(~y=0.0, ~x=10.0, ()) == 0.0 ;
@@ -178,6 +178,7 @@ Js.Math.unsafe_ceil_int(1.0e15); // result is outside range of int datatype
 ```re sig
 let unsafe_ceil: float => int;
 ```
+
 Deprecated; please use [`unsafe_ceil_int`](#unsafe_ceil_int) instead.
 
 ## ceil_int
@@ -255,7 +256,7 @@ Hyperbolic cosine of argument, which must be specified in radians. See [`Math.co
 let exp: float => float;
 ```
 
-Natural exponentional; returns *e* (the base of natural logarithms) to the power of the given argument. See [`Math.exp`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/exp) on MDN.
+Natural exponentional; returns _e_ (the base of natural logarithms) to the power of the given argument. See [`Math.exp`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/exp) on MDN.
 
 ## expm1
 
@@ -263,7 +264,7 @@ Natural exponentional; returns *e* (the base of natural logarithms) to the power
 let expm1: float => float;
 ```
 
-Returns *e* (the base of natural logarithms) to the power of the given argument minus 1. See [`Math.expm1`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/expm1) on MDN.
+Returns _e_ (the base of natural logarithms) to the power of the given argument minus 1. See [`Math.expm1`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/expm1) on MDN.
 
 ## unsafe_floor_int
 
@@ -326,6 +327,7 @@ Js.Math.floor_float(3.0) == 3.0;
 Js.Math.floor_float(-3.1) == -4.0;
 Js.Math.floor_float(2_150_000_000.3) == 2_150_000_000.0;
 ```
+
 ## fround
 
 ```re sig
@@ -373,7 +375,7 @@ let imul: (int, int) => int;
 let log: float => float;
 ```
 
-Returns the natural logarithm of its argument; this is the number *x* such that *e*<sup>*x*</sup> equals the argument. Returns `NaN` for negative arguments. See [`Math.log`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log) on MDN.
+Returns the natural logarithm of its argument; this is the number _x_ such that _e_<sup>_x_</sup> equals the argument. Returns `NaN` for negative arguments. See [`Math.log`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log) on MDN.
 
 ```re example
 Js.Math.log(Js.Math._E) == 1.0;
@@ -421,14 +423,13 @@ Js.Math.log2(0.125) == -3.0;
 Js.Math.log2(Js.Math._SQRT2) == 0.5000000000000001; // due to precision
 ```
 
-
 ## max_int
 
 ```re sig
 let max_int: (int, int) => int;
 ```
 
-Returns the maximum of its two integer arguments.  See [`Math.max`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/max) on MDN.
+Returns the maximum of its two integer arguments. See [`Math.max`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/max) on MDN.
 
 ## maxMany_int
 
@@ -436,7 +437,7 @@ Returns the maximum of its two integer arguments.  See [`Math.max`](https://deve
 let maxMany_int: array(int) => int;
 ```
 
-Returns the maximum of the integers in the given array.  See [`Math.max`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/max) on MDN.
+Returns the maximum of the integers in the given array. See [`Math.max`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/max) on MDN.
 
 ## max_float
 
@@ -462,7 +463,6 @@ let min_int: (int, int) => int;
 
 Returns the minimum of its two integer arguments. See [`Math.min`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/min) on MDN.
 
-
 ## minMany_int
 
 ```re sig
@@ -487,7 +487,6 @@ let minMany_float: array(float) => float;
 
 Returns the minimum of the floating point values in the given array. See [`Math.min`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/min) on MDN.
 
-
 ## pow_int
 
 ```re sig
@@ -497,9 +496,8 @@ let pow_int: (~base: int, ~exp: int) => int;
 Raises the given base to the given exponent. (Arguments and result are integers.) See [`Math.pow`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/pow) on MDN.
 
 ```re example
-Js.Math.pow_int(~base=3, ~exp=4) == 81; 
+Js.Math.pow_int(~base=3, ~exp=4) == 81;
 ```
-
 
 ## pow_float
 
@@ -539,7 +537,7 @@ A call to `random_int(minVal, maxVal)` returns a random number in the half-close
 let unsafe_round: float => int;
 ```
 
-Rounds its argument to nearest integer. For numbers with a fractional portion of exactly 0.5, the argument is rounded to the next integer in the direction of positive infinity.  This function may return values not representable by `int`, whose range is -2147483648 to 2147483647. This is because, in JavaScript, there are only 64-bit floating point numbers, which can represent integers in the range ±(2<sup>53</sup>-1) exactly. See [`Math.round`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round) on MDN.
+Rounds its argument to nearest integer. For numbers with a fractional portion of exactly 0.5, the argument is rounded to the next integer in the direction of positive infinity. This function may return values not representable by `int`, whose range is -2147483648 to 2147483647. This is because, in JavaScript, there are only 64-bit floating point numbers, which can represent integers in the range ±(2<sup>53</sup>-1) exactly. See [`Math.round`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round) on MDN.
 
 ```re example
 Js.Math.unsafe_round(3.7) == 4;
@@ -555,7 +553,6 @@ let round: float => float;
 
 Rounds to nearest integral value (expressed as a float). See [`Math.round`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round) on MDN.
 
-
 ## sign_int
 
 ```re sig
@@ -569,6 +566,7 @@ Returns the sign of its integer argument: -1 if negative, 0 if zero, 1 if positi
 ```re sig
 let sign_float: float => float;
 ```
+
 Returns the sign of its float argument: -1.0 if negative, 0.0 if zero, 1.0 if positive. See [`Math.sign`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sign) on MDN.
 
 ## sin

@@ -1,15 +1,6 @@
 {
-  "Overview": [
-    "introduction",
-    "installation",
-    "editor-plugins",
-    "llms"
-  ],
-  "Guides": [
-    "converting-from-js",
-    "editor-code-analysis",
-    "project-structure"
-  ],
+  "Overview": ["introduction", "installation", "editor-plugins", "llms"],
+  "Guides": ["converting-from-js", "editor-code-analysis", "project-structure"],
   "JavaScript Interop": [
     "interop-cheatsheet",
     "embed-raw-javascript",
@@ -69,6 +60,8 @@
   ],
   "Advanced Features": [
     "extensible-variant",
-    "scoped-polymorphic-types"
+    "scoped-polymorphic-types",
+    "module-functions",
+    "generalized-algebraic-data-types"
   ]
 }

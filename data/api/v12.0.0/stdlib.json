@@ -2619,7 +2619,7 @@
         "docstrings": [
           "`fromBuffer` creates a `BigUint64Array` from an `ArrayBuffer.t`. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigUint64Array/BigUint64Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBuffer: ArrayBuffer.t => t"
+        "signature": "let fromBuffer: (ArrayBuffer.t, ~byteOffset: int=?, ~length: int=?) => t"
       },
       {
         "id": "Stdlib.BigUint64Array.fromBufferToEnd",
@@ -2628,7 +2628,8 @@
         "docstrings": [
           "`fromBufferToEnd` creates a `BigUint64Array` from an `ArrayBuffer.t`, starting at a particular offset and continuing through to the end. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigUint64Array/BigUint64Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t"
+        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.BigUint64Array.fromBufferWithRange",
@@ -2637,7 +2638,8 @@
         "docstrings": [
           "`fromBufferWithRange` creates a `BigUint64Array` from an `ArrayBuffer.t`, starting at a particular offset and consuming `length` **bytes**. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigUint64Array/BigUint64Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t"
+        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.BigUint64Array.fromLength",
@@ -2655,7 +2657,7 @@
         "docstrings": [
           "`fromArrayLikeOrIterable` creates a `BigUint64Array` from an array-like or iterable object. See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterable: 'a => t"
+        "signature": "let fromArrayLikeOrIterable: ('a, ~map: ('b, int) => bigint=?) => t"
       },
       {
         "id": "Stdlib.BigUint64Array.fromArrayLikeOrIterableWithMap",
@@ -2664,7 +2666,8 @@
         "docstrings": [
           "`fromArrayLikeOrIterableWithMap` creates a `BigUint64Array` from an array-like or iterable object and applies the mapping function to each item. The mapping function expects (value, index). See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => bigint) => t"
+        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => bigint) => t",
+        "deprecated": "Use `fromArrayLikeOrIterable` instead"
       },
       {
         "id": "Stdlib.BigUint64Array.ignore",
@@ -2707,7 +2710,7 @@
         "docstrings": [
           "`fromBuffer` creates a `BigInt64Array` from an `ArrayBuffer.t`. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt64Array/BigInt64Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBuffer: ArrayBuffer.t => t"
+        "signature": "let fromBuffer: (ArrayBuffer.t, ~byteOffset: int=?, ~length: int=?) => t"
       },
       {
         "id": "Stdlib.BigInt64Array.fromBufferToEnd",
@@ -2716,7 +2719,8 @@
         "docstrings": [
           "`fromBufferToEnd` creates a `BigInt64Array` from an `ArrayBuffer.t`, starting at a particular offset and continuing through to the end. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt64Array/BigInt64Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t"
+        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.BigInt64Array.fromBufferWithRange",
@@ -2725,7 +2729,8 @@
         "docstrings": [
           "`fromBufferWithRange` creates a `BigInt64Array` from an `ArrayBuffer.t`, starting at a particular offset and consuming `length` **bytes**. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt64Array/BigInt64Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t"
+        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.BigInt64Array.fromLength",
@@ -2743,7 +2748,7 @@
         "docstrings": [
           "`fromArrayLikeOrIterable` creates a `BigInt64Array` from an array-like or iterable object. See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterable: 'a => t"
+        "signature": "let fromArrayLikeOrIterable: ('a, ~map: ('b, int) => bigint=?) => t"
       },
       {
         "id": "Stdlib.BigInt64Array.fromArrayLikeOrIterableWithMap",
@@ -2752,7 +2757,8 @@
         "docstrings": [
           "`fromArrayLikeOrIterableWithMap` creates a `BigInt64Array` from an array-like or iterable object and applies the mapping function to each item. The mapping function expects (value, index). See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => bigint) => t"
+        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => bigint) => t",
+        "deprecated": "Use `fromArrayLikeOrIterable` instead"
       },
       {
         "id": "Stdlib.BigInt64Array.ignore",
@@ -2795,7 +2801,7 @@
         "docstrings": [
           "`fromBuffer` creates a `Uint8ClampedArray` from an `ArrayBuffer.t`. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray/Uint8ClampedArray)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBuffer: ArrayBuffer.t => t"
+        "signature": "let fromBuffer: (ArrayBuffer.t, ~byteOffset: int=?, ~length: int=?) => t"
       },
       {
         "id": "Stdlib.Uint8ClampedArray.fromBufferToEnd",
@@ -2804,7 +2810,8 @@
         "docstrings": [
           "`fromBufferToEnd` creates a `Uint8ClampedArray` from an `ArrayBuffer.t`, starting at a particular offset and continuing through to the end. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray/Uint8ClampedArray)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t"
+        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Uint8ClampedArray.fromBufferWithRange",
@@ -2813,7 +2820,8 @@
         "docstrings": [
           "`fromBufferWithRange` creates a `Uint8ClampedArray` from an `ArrayBuffer.t`, starting at a particular offset and consuming `length` **bytes**. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray/Uint8ClampedArray)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t"
+        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Uint8ClampedArray.fromLength",
@@ -2831,7 +2839,7 @@
         "docstrings": [
           "`fromArrayLikeOrIterable` creates a `Uint8ClampedArray` from an array-like or iterable object. See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterable: 'a => t"
+        "signature": "let fromArrayLikeOrIterable: ('a, ~map: ('b, int) => int=?) => t"
       },
       {
         "id": "Stdlib.Uint8ClampedArray.fromArrayLikeOrIterableWithMap",
@@ -2840,7 +2848,8 @@
         "docstrings": [
           "`fromArrayLikeOrIterableWithMap` creates a `Uint8ClampedArray` from an array-like or iterable object and applies the mapping function to each item. The mapping function expects (value, index). See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t"
+        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t",
+        "deprecated": "Use `fromArrayLikeOrIterable` instead"
       },
       {
         "id": "Stdlib.Uint8ClampedArray.ignore",
@@ -2883,7 +2892,7 @@
         "docstrings": [
           "`fromBuffer` creates a `Uint32Array` from an `ArrayBuffer.t`. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array/Uint32Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBuffer: ArrayBuffer.t => t"
+        "signature": "let fromBuffer: (ArrayBuffer.t, ~byteOffset: int=?, ~length: int=?) => t"
       },
       {
         "id": "Stdlib.Uint32Array.fromBufferToEnd",
@@ -2892,7 +2901,8 @@
         "docstrings": [
           "`fromBufferToEnd` creates a `Uint32Array` from an `ArrayBuffer.t`, starting at a particular offset and continuing through to the end. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array/Uint32Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t"
+        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Uint32Array.fromBufferWithRange",
@@ -2901,7 +2911,8 @@
         "docstrings": [
           "`fromBufferWithRange` creates a `Uint32Array` from an `ArrayBuffer.t`, starting at a particular offset and consuming `length` **bytes**. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array/Uint32Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t"
+        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Uint32Array.fromLength",
@@ -2919,7 +2930,7 @@
         "docstrings": [
           "`fromArrayLikeOrIterable` creates a `Uint32Array` from an array-like or iterable object. See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterable: 'a => t"
+        "signature": "let fromArrayLikeOrIterable: ('a, ~map: ('b, int) => int=?) => t"
       },
       {
         "id": "Stdlib.Uint32Array.fromArrayLikeOrIterableWithMap",
@@ -2928,7 +2939,8 @@
         "docstrings": [
           "`fromArrayLikeOrIterableWithMap` creates a `Uint32Array` from an array-like or iterable object and applies the mapping function to each item. The mapping function expects (value, index). See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t"
+        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t",
+        "deprecated": "Use `fromArrayLikeOrIterable` instead"
       },
       {
         "id": "Stdlib.Uint32Array.ignore",
@@ -2971,7 +2983,7 @@
         "docstrings": [
           "`fromBuffer` creates a `Uint16Array` from an `ArrayBuffer.t`. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array/Uint16Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBuffer: ArrayBuffer.t => t"
+        "signature": "let fromBuffer: (ArrayBuffer.t, ~byteOffset: int=?, ~length: int=?) => t"
       },
       {
         "id": "Stdlib.Uint16Array.fromBufferToEnd",
@@ -2980,7 +2992,8 @@
         "docstrings": [
           "`fromBufferToEnd` creates a `Uint16Array` from an `ArrayBuffer.t`, starting at a particular offset and continuing through to the end. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array/Uint16Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t"
+        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Uint16Array.fromBufferWithRange",
@@ -2989,7 +3002,8 @@
         "docstrings": [
           "`fromBufferWithRange` creates a `Uint16Array` from an `ArrayBuffer.t`, starting at a particular offset and consuming `length` **bytes**. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array/Uint16Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t"
+        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Uint16Array.fromLength",
@@ -3007,7 +3021,7 @@
         "docstrings": [
           "`fromArrayLikeOrIterable` creates a `Uint16Array` from an array-like or iterable object. See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterable: 'a => t"
+        "signature": "let fromArrayLikeOrIterable: ('a, ~map: ('b, int) => int=?) => t"
       },
       {
         "id": "Stdlib.Uint16Array.fromArrayLikeOrIterableWithMap",
@@ -3016,7 +3030,8 @@
         "docstrings": [
           "`fromArrayLikeOrIterableWithMap` creates a `Uint16Array` from an array-like or iterable object and applies the mapping function to each item. The mapping function expects (value, index). See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t"
+        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t",
+        "deprecated": "Use `fromArrayLikeOrIterable` instead"
       },
       {
         "id": "Stdlib.Uint16Array.ignore",
@@ -3059,7 +3074,7 @@
         "docstrings": [
           "`fromBuffer` creates a `Uint8Array` from an `ArrayBuffer.t`. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/Uint8Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBuffer: ArrayBuffer.t => t"
+        "signature": "let fromBuffer: (ArrayBuffer.t, ~byteOffset: int=?, ~length: int=?) => t"
       },
       {
         "id": "Stdlib.Uint8Array.fromBufferToEnd",
@@ -3068,7 +3083,8 @@
         "docstrings": [
           "`fromBufferToEnd` creates a `Uint8Array` from an `ArrayBuffer.t`, starting at a particular offset and continuing through to the end. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/Uint8Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t"
+        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Uint8Array.fromBufferWithRange",
@@ -3077,7 +3093,8 @@
         "docstrings": [
           "`fromBufferWithRange` creates a `Uint8Array` from an `ArrayBuffer.t`, starting at a particular offset and consuming `length` **bytes**. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/Uint8Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t"
+        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Uint8Array.fromLength",
@@ -3095,7 +3112,7 @@
         "docstrings": [
           "`fromArrayLikeOrIterable` creates a `Uint8Array` from an array-like or iterable object. See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterable: 'a => t"
+        "signature": "let fromArrayLikeOrIterable: ('a, ~map: ('b, int) => int=?) => t"
       },
       {
         "id": "Stdlib.Uint8Array.fromArrayLikeOrIterableWithMap",
@@ -3104,7 +3121,8 @@
         "docstrings": [
           "`fromArrayLikeOrIterableWithMap` creates a `Uint8Array` from an array-like or iterable object and applies the mapping function to each item. The mapping function expects (value, index). See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t"
+        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t",
+        "deprecated": "Use `fromArrayLikeOrIterable` instead"
       },
       {
         "id": "Stdlib.Uint8Array.ignore",
@@ -3147,7 +3165,7 @@
         "docstrings": [
           "`fromBuffer` creates a `Int32Array` from an `ArrayBuffer.t`. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array/Int32Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBuffer: ArrayBuffer.t => t"
+        "signature": "let fromBuffer: (ArrayBuffer.t, ~byteOffset: int=?, ~length: int=?) => t"
       },
       {
         "id": "Stdlib.Int32Array.fromBufferToEnd",
@@ -3156,7 +3174,8 @@
         "docstrings": [
           "`fromBufferToEnd` creates a `Int32Array` from an `ArrayBuffer.t`, starting at a particular offset and continuing through to the end. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array/Int32Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t"
+        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Int32Array.fromBufferWithRange",
@@ -3165,7 +3184,8 @@
         "docstrings": [
           "`fromBufferWithRange` creates a `Int32Array` from an `ArrayBuffer.t`, starting at a particular offset and consuming `length` **bytes**. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array/Int32Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t"
+        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Int32Array.fromLength",
@@ -3183,7 +3203,7 @@
         "docstrings": [
           "`fromArrayLikeOrIterable` creates a `Int32Array` from an array-like or iterable object. See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterable: 'a => t"
+        "signature": "let fromArrayLikeOrIterable: ('a, ~map: ('b, int) => int=?) => t"
       },
       {
         "id": "Stdlib.Int32Array.fromArrayLikeOrIterableWithMap",
@@ -3192,7 +3212,8 @@
         "docstrings": [
           "`fromArrayLikeOrIterableWithMap` creates a `Int32Array` from an array-like or iterable object and applies the mapping function to each item. The mapping function expects (value, index). See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t"
+        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t",
+        "deprecated": "Use `fromArrayLikeOrIterable` instead"
       },
       {
         "id": "Stdlib.Int32Array.ignore",
@@ -3235,7 +3256,7 @@
         "docstrings": [
           "`fromBuffer` creates a `Int16Array` from an `ArrayBuffer.t`. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array/Int16Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBuffer: ArrayBuffer.t => t"
+        "signature": "let fromBuffer: (ArrayBuffer.t, ~byteOffset: int=?, ~length: int=?) => t"
       },
       {
         "id": "Stdlib.Int16Array.fromBufferToEnd",
@@ -3244,7 +3265,8 @@
         "docstrings": [
           "`fromBufferToEnd` creates a `Int16Array` from an `ArrayBuffer.t`, starting at a particular offset and continuing through to the end. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array/Int16Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t"
+        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Int16Array.fromBufferWithRange",
@@ -3253,7 +3275,8 @@
         "docstrings": [
           "`fromBufferWithRange` creates a `Int16Array` from an `ArrayBuffer.t`, starting at a particular offset and consuming `length` **bytes**. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array/Int16Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t"
+        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Int16Array.fromLength",
@@ -3271,7 +3294,7 @@
         "docstrings": [
           "`fromArrayLikeOrIterable` creates a `Int16Array` from an array-like or iterable object. See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterable: 'a => t"
+        "signature": "let fromArrayLikeOrIterable: ('a, ~map: ('b, int) => int=?) => t"
       },
       {
         "id": "Stdlib.Int16Array.fromArrayLikeOrIterableWithMap",
@@ -3280,7 +3303,8 @@
         "docstrings": [
           "`fromArrayLikeOrIterableWithMap` creates a `Int16Array` from an array-like or iterable object and applies the mapping function to each item. The mapping function expects (value, index). See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t"
+        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t",
+        "deprecated": "Use `fromArrayLikeOrIterable` instead"
       },
       {
         "id": "Stdlib.Int16Array.ignore",
@@ -3323,7 +3347,7 @@
         "docstrings": [
           "`fromBuffer` creates a `Int8Array` from an `ArrayBuffer.t`. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array/Int8Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBuffer: ArrayBuffer.t => t"
+        "signature": "let fromBuffer: (ArrayBuffer.t, ~byteOffset: int=?, ~length: int=?) => t"
       },
       {
         "id": "Stdlib.Int8Array.fromBufferToEnd",
@@ -3332,7 +3356,8 @@
         "docstrings": [
           "`fromBufferToEnd` creates a `Int8Array` from an `ArrayBuffer.t`, starting at a particular offset and continuing through to the end. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array/Int8Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t"
+        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Int8Array.fromBufferWithRange",
@@ -3341,7 +3366,8 @@
         "docstrings": [
           "`fromBufferWithRange` creates a `Int8Array` from an `ArrayBuffer.t`, starting at a particular offset and consuming `length` **bytes**. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array/Int8Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t"
+        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Int8Array.fromLength",
@@ -3359,7 +3385,7 @@
         "docstrings": [
           "`fromArrayLikeOrIterable` creates a `Int8Array` from an array-like or iterable object. See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterable: 'a => t"
+        "signature": "let fromArrayLikeOrIterable: ('a, ~map: ('b, int) => int=?) => t"
       },
       {
         "id": "Stdlib.Int8Array.fromArrayLikeOrIterableWithMap",
@@ -3368,7 +3394,8 @@
         "docstrings": [
           "`fromArrayLikeOrIterableWithMap` creates a `Int8Array` from an array-like or iterable object and applies the mapping function to each item. The mapping function expects (value, index). See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t"
+        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => int) => t",
+        "deprecated": "Use `fromArrayLikeOrIterable` instead"
       },
       {
         "id": "Stdlib.Int8Array.ignore",
@@ -3411,7 +3438,7 @@
         "docstrings": [
           "`fromBuffer` creates a `Float64Array` from an `ArrayBuffer.t`. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array/Float64Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBuffer: ArrayBuffer.t => t"
+        "signature": "let fromBuffer: (ArrayBuffer.t, ~byteOffset: int=?, ~length: int=?) => t"
       },
       {
         "id": "Stdlib.Float64Array.fromBufferToEnd",
@@ -3420,7 +3447,8 @@
         "docstrings": [
           "`fromBufferToEnd` creates a `Float64Array` from an `ArrayBuffer.t`, starting at a particular offset and continuing through to the end. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array/Float64Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t"
+        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Float64Array.fromBufferWithRange",
@@ -3429,7 +3457,8 @@
         "docstrings": [
           "`fromBufferWithRange` creates a `Float64Array` from an `ArrayBuffer.t`, starting at a particular offset and consuming `length` **bytes**. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array/Float64Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t"
+        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Float64Array.fromLength",
@@ -3447,7 +3476,7 @@
         "docstrings": [
           "`fromArrayLikeOrIterable` creates a `Float64Array` from an array-like or iterable object. See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterable: 'a => t"
+        "signature": "let fromArrayLikeOrIterable: ('a, ~map: ('b, int) => float=?) => t"
       },
       {
         "id": "Stdlib.Float64Array.fromArrayLikeOrIterableWithMap",
@@ -3456,7 +3485,8 @@
         "docstrings": [
           "`fromArrayLikeOrIterableWithMap` creates a `Float64Array` from an array-like or iterable object and applies the mapping function to each item. The mapping function expects (value, index). See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => float) => t"
+        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => float) => t",
+        "deprecated": "Use `fromArrayLikeOrIterable` instead"
       },
       {
         "id": "Stdlib.Float64Array.ignore",
@@ -3499,7 +3529,7 @@
         "docstrings": [
           "`fromBuffer` creates a `Float32Array` from an `ArrayBuffer.t`. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array/Float32Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBuffer: ArrayBuffer.t => t"
+        "signature": "let fromBuffer: (ArrayBuffer.t, ~byteOffset: int=?, ~length: int=?) => t"
       },
       {
         "id": "Stdlib.Float32Array.fromBufferToEnd",
@@ -3508,7 +3538,8 @@
         "docstrings": [
           "`fromBufferToEnd` creates a `Float32Array` from an `ArrayBuffer.t`, starting at a particular offset and continuing through to the end. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array/Float32Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t"
+        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Float32Array.fromBufferWithRange",
@@ -3517,7 +3548,8 @@
         "docstrings": [
           "`fromBufferWithRange` creates a `Float32Array` from an `ArrayBuffer.t`, starting at a particular offset and consuming `length` **bytes**. See [TypedArray constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array/Float32Array)\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds."
         ],
-        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t"
+        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.Float32Array.fromLength",
@@ -3535,7 +3567,7 @@
         "docstrings": [
           "`fromArrayLikeOrIterable` creates a `Float32Array` from an array-like or iterable object. See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterable: 'a => t"
+        "signature": "let fromArrayLikeOrIterable: ('a, ~map: ('b, int) => float=?) => t"
       },
       {
         "id": "Stdlib.Float32Array.fromArrayLikeOrIterableWithMap",
@@ -3544,7 +3576,8 @@
         "docstrings": [
           "`fromArrayLikeOrIterableWithMap` creates a `Float32Array` from an array-like or iterable object and applies the mapping function to each item. The mapping function expects (value, index). See [TypedArray.from on MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from)"
         ],
-        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => float) => t"
+        "signature": "let fromArrayLikeOrIterableWithMap: ('a, ('b, int) => float) => t",
+        "deprecated": "Use `fromArrayLikeOrIterable` instead"
       },
       {
         "id": "Stdlib.Float32Array.ignore",
@@ -3637,14 +3670,15 @@
         "kind": "value",
         "name": "copyWithinToEnd",
         "docstrings": [],
-        "signature": "let copyWithinToEnd: (t<'a>, ~target: int, ~start: int) => array<'a>"
+        "signature": "let copyWithinToEnd: (t<'a>, ~target: int, ~start: int) => array<'a>",
+        "deprecated": "Use `copyWithin` instead"
       },
       {
         "id": "Stdlib.TypedArray.copyWithin",
         "kind": "value",
         "name": "copyWithin",
         "docstrings": [],
-        "signature": "let copyWithin: (t<'a>, ~target: int, ~start: int, ~end: int) => array<'a>"
+        "signature": "let copyWithin: (t<'a>, ~target: int, ~start: int, ~end: int=?) => array<'a>"
       },
       {
         "id": "Stdlib.TypedArray.fillAll",
@@ -3658,14 +3692,15 @@
         "kind": "value",
         "name": "fillToEnd",
         "docstrings": [],
-        "signature": "let fillToEnd: (t<'a>, 'a, ~start: int) => t<'a>"
+        "signature": "let fillToEnd: (t<'a>, 'a, ~start: int) => t<'a>",
+        "deprecated": "Use `fill` instead"
       },
       {
         "id": "Stdlib.TypedArray.fill",
         "kind": "value",
         "name": "fill",
         "docstrings": [],
-        "signature": "let fill: (t<'a>, 'a, ~start: int, ~end: int) => t<'a>"
+        "signature": "let fill: (t<'a>, 'a, ~start: int, ~end: int=?) => t<'a>"
       },
       {
         "id": "Stdlib.TypedArray.reverse",
@@ -3749,14 +3784,15 @@
         "kind": "value",
         "name": "slice",
         "docstrings": [],
-        "signature": "let slice: (t<'a>, ~start: int, ~end: int) => t<'a>"
+        "signature": "let slice: (t<'a>, ~start: int, ~end: int=?) => t<'a>"
       },
       {
         "id": "Stdlib.TypedArray.sliceToEnd",
         "kind": "value",
         "name": "sliceToEnd",
         "docstrings": [],
-        "signature": "let sliceToEnd: (t<'a>, ~start: int) => t<'a>"
+        "signature": "let sliceToEnd: (t<'a>, ~start: int) => t<'a>",
+        "deprecated": "Use `slice` instead"
       },
       {
         "id": "Stdlib.TypedArray.copy",
@@ -3770,14 +3806,15 @@
         "kind": "value",
         "name": "subarray",
         "docstrings": [],
-        "signature": "let subarray: (t<'a>, ~start: int, ~end: int) => t<'a>"
+        "signature": "let subarray: (t<'a>, ~start: int, ~end: int=?) => t<'a>"
       },
       {
         "id": "Stdlib.TypedArray.subarrayToEnd",
         "kind": "value",
         "name": "subarrayToEnd",
         "docstrings": [],
-        "signature": "let subarrayToEnd: (t<'a>, ~start: int) => t<'a>"
+        "signature": "let subarrayToEnd: (t<'a>, ~start: int) => t<'a>",
+        "deprecated": "Use `subarray` instead"
       },
       {
         "id": "Stdlib.TypedArray.toString",
@@ -4115,6 +4152,15 @@
         "signature": "let size: t<'a> => int"
       },
       {
+        "id": "Stdlib.Set.isEmpty",
+        "kind": "value",
+        "name": "isEmpty",
+        "docstrings": [
+          "`isEmpty(set)` returns `true` if the set has no values, `false` otherwise.\n\n## Examples\n```rescript\nlet emptySet = Set.make()\nemptySet->Set.isEmpty->assertEqual(true)\n\nlet set = Set.make()\nset->Set.add(\"someValue\")\nset->Set.isEmpty->assertEqual(false)\n\n// After clearing the set\nset->Set.clear\nset->Set.isEmpty->assertEqual(true)\n```"
+        ],
+        "signature": "let isEmpty: t<'a> => bool"
+      },
+      {
         "id": "Stdlib.Set.clear",
         "kind": "value",
         "name": "clear",
@@ -4360,6 +4406,15 @@
           "Returns the size, the number of key/value pairs, of the map.\n\n## Examples\n```rescript\nlet map = Map.make()\n\nmap->Map.set(\"someKey\", \"someValue\")\n\nlet size = map->Map.size // 1\n```"
         ],
         "signature": "let size: t<'k, 'v> => int"
+      },
+      {
+        "id": "Stdlib.Map.isEmpty",
+        "kind": "value",
+        "name": "isEmpty",
+        "docstrings": [
+          "`isEmpty(map)` returns `true` if the map has no key/value pairs, `false` otherwise.\n\n## Examples\n```rescript\nlet emptyMap = Map.make()\nemptyMap->Map.isEmpty->assertEqual(true)\n\nlet map = Map.make()\nmap->Map.set(\"someKey\", \"someValue\")\nmap->Map.isEmpty->assertEqual(false)\n\n// After clearing the map\nmap->Map.clear\nmap->Map.isEmpty->assertEqual(true)\n```"
+        ],
+        "signature": "let isEmpty: t<'k, 'v> => bool"
       },
       {
         "id": "Stdlib.Map.clear",
@@ -5013,9 +5068,18 @@
         "kind": "value",
         "name": "charCodeAt",
         "docstrings": [
-          "`charCodeAt(str, index)` returns the character code at position `index` in\nstring `str` the result is in the range 0-65535, unlike `codePointAt`, so it\nwill not work correctly for characters with code points greater than or equal\nto 0x10000. The return type is `float` because this function returns NaN if\n`index` is less than zero or greater than the length of the string.\nSee [`String.charCodeAt`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt) on MDN.\n\n## Examples\n\n```rescript\nString.charCodeAt(`😺`, 0) == 0xd83d->Int.toFloat\nString.codePointAt(`😺`, 0) == Some(0x1f63a)\n```"
+          "`charCodeAt(str, index)` returns the character code at position `index` in\nstring `str` the result is in the range 0-65535, unlike `codePointAt`, so it\nwill not work correctly for characters with code points greater than or equal\nto 0x10000.\nSee [`String.charCodeAt`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt) on MDN.\n\n## Examples\n\n```rescript\nString.charCodeAt(`😺`, 0) == Some(0xd83d)\nString.charCodeAt(\"\", 0) == None\nString.codePointAt(`😺`, 0) == Some(0x1f63a)\n```"
         ],
-        "signature": "let charCodeAt: (string, int) => float"
+        "signature": "let charCodeAt: (string, int) => option<int>"
+      },
+      {
+        "id": "Stdlib.String.charCodeAtUnsafe",
+        "kind": "value",
+        "name": "charCodeAtUnsafe",
+        "docstrings": [
+          "`charCodeAtUnsafe(str, index)` returns the character code at position `index` in\nstring `str` the result is in the range 0-65535, unlike `codePointAt`, so it\nwill not work correctly for characters with code points greater than or equal\nto 0x10000.\nBeware: If the index is out of range, it will return `NaN` which is not actually a valid int.\nSee [`String.charCodeAt`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt) on MDN.\n\n## Examples\n\n```rescript\nString.charCodeAtUnsafe(`😺`, 0) == 0xd83d\nString.codePointAt(`😺`, 0) == Some(0x1f63a)\n```"
+        ],
+        "signature": "let charCodeAtUnsafe: (string, int) => int"
       },
       {
         "id": "Stdlib.String.codePointAt",
@@ -5308,13 +5372,31 @@
         "signature": "let searchOpt: (string, RegExp.t) => option<int>"
       },
       {
+        "id": "Stdlib.String.isEmpty",
+        "kind": "value",
+        "name": "isEmpty",
+        "docstrings": [
+          "`isEmpty(str)` returns `true` if the string is empty (has zero length), \n`false` otherwise.\n\n## Examples\n\n```rescript\nString.isEmpty(\"\") == true\nString.isEmpty(\"hello\") == false\nString.isEmpty(\"  \") == false\n```"
+        ],
+        "signature": "let isEmpty: string => bool"
+      },
+      {
+        "id": "Stdlib.String.capitalize",
+        "kind": "value",
+        "name": "capitalize",
+        "docstrings": [
+          "`capitalize(str)` returns a new string with the first character converted to \nuppercase and the remaining characters unchanged. If the string is empty, \nreturns the empty string.\n\n## Examples\n\n```rescript\nString.capitalize(\"hello\") == \"Hello\"\nString.capitalize(\"HELLO\") == \"HELLO\"\nString.capitalize(\"hello world\") == \"Hello world\"\nString.capitalize(\"\") == \"\"\n```"
+        ],
+        "signature": "let capitalize: string => string"
+      },
+      {
         "id": "Stdlib.String.slice",
         "kind": "value",
         "name": "slice",
         "docstrings": [
-          "`slice(str, ~start, ~end)` returns the substring of `str` starting at\ncharacter `start` up to but not including `end`.\n- If either `start` or `end` is negative, then it is evaluated as\n  `length(str - start)` or `length(str - end)`.\n- If `end` is greater than the length of `str`, then it is treated as\n  `length(str)`.\n- If `start` is greater than `end`, slice returns the empty string.\n  See [`String.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice) on MDN.\n\n## Examples\n\n```rescript\nString.slice(\"abcdefg\", ~start=2, ~end=5) == \"cde\"\nString.slice(\"abcdefg\", ~start=2, ~end=9) == \"cdefg\"\nString.slice(\"abcdefg\", ~start=-4, ~end=-2) == \"de\"\nString.slice(\"abcdefg\", ~start=5, ~end=1) == \"\"\n```"
+          "`slice(str, ~start, ~end)` returns the substring of `str` starting at\ncharacter `start` up to but not including `end`.\n- If either `start` or `end` is negative, then it is evaluated as\n  `length(str - start)` or `length(str - end)`.\n- If `end` is greater than the length of `str`, then it is treated as\n  `length(str)`.\n- If `start` is greater than `end`, slice returns the empty string.\n  See [`String.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice) on MDN.\n\n## Examples\n\n```rescript\nString.slice(\"abcdefg\", ~start=2, ~end=5) == \"cde\"\nString.slice(\"abcdefg\", ~start=2, ~end=9) == \"cdefg\"\nString.slice(\"abcdefg\", ~start=-4, ~end=-2) == \"de\"\nString.slice(\"abcdefg\", ~start=5, ~end=1) == \"\"\nString.slice(\"abcdefg\", ~start=2) == \"cdefg\"\nString.slice(\"Hello World\", ~start=6) == \"World\"\n```"
         ],
-        "signature": "let slice: (string, ~start: int, ~end: int) => string"
+        "signature": "let slice: (string, ~start: int, ~end: int=?) => string"
       },
       {
         "id": "Stdlib.String.sliceToEnd",
@@ -5323,7 +5405,8 @@
         "docstrings": [
           "`sliceToEnd(str, ~start)` returns the substring of `str` starting at character\n`start` to the end of the string.\n- If `start` is negative, then it is evaluated as `length(str - start)`.\n- If `start` is greater than the length of `str`, then sliceToEnd returns the empty string.\n  See [`String.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice) on MDN.\n\n## Examples\n\n```rescript\nString.sliceToEnd(\"abcdefg\", ~start=4) == \"efg\"\nString.sliceToEnd(\"abcdefg\", ~start=-2) == \"fg\"\nString.sliceToEnd(\"abcdefg\", ~start=7) == \"\"\n```"
         ],
-        "signature": "let sliceToEnd: (string, ~start: int) => string"
+        "signature": "let sliceToEnd: (string, ~start: int) => string",
+        "deprecated": "Use `slice` instead"
       },
       {
         "id": "Stdlib.String.split",
@@ -5384,9 +5467,9 @@
         "kind": "value",
         "name": "substring",
         "docstrings": [
-          "`substring(str, ~start, ~end)` returns characters `start` up to but not\nincluding end from `str`.\n- If `start` is less than zero, it is treated as zero.\n- If `end` is zero or negative, the empty string is returned.\n- If `start` is greater than `end`, the `start` and `end` points are swapped.\n  See [`String.substring`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substring) on MDN.\n\n## Examples\n\n```rescript\nString.substring(\"playground\", ~start=3, ~end=6) == \"ygr\"\nString.substring(\"playground\", ~start=6, ~end=3) == \"ygr\"\nString.substring(\"playground\", ~start=4, ~end=12) == \"ground\"\n```"
+          "`substring(str, ~start, ~end)` returns characters `start` up to but not\nincluding end from `str`.\n- If `start` is less than zero, it is treated as zero.\n- If `end` is zero or negative, the empty string is returned.\n- If `start` is greater than `end`, the `start` and `end` points are swapped.\n  See [`String.substring`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substring) on MDN.\n\n## Examples\n\n```rescript\nString.substring(\"playground\", ~start=3, ~end=6) == \"ygr\"\nString.substring(\"playground\", ~start=6, ~end=3) == \"ygr\"\nString.substring(\"playground\", ~start=4, ~end=12) == \"ground\"\nString.substring(\"playground\", ~start=4) == \"ground\"\nString.substring(\"Hello World\", ~start=6) == \"World\"\n```"
         ],
-        "signature": "let substring: (string, ~start: int, ~end: int) => string"
+        "signature": "let substring: (string, ~start: int, ~end: int=?) => string"
       },
       {
         "id": "Stdlib.String.substringToEnd",
@@ -5395,7 +5478,8 @@
         "docstrings": [
           "`substringToEnd(str, ~start)` returns the substring of `str` from position\n`start` to the end.\n- If `start` is less than or equal to zero, the entire string is returned.\n- If `start` is greater than or equal to the length of `str`, the empty string\n  is returned.\n  See [`String.substring`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substring) on MDN.\n\n## Examples\n\n```rescript\nString.substringToEnd(\"playground\", ~start=4) == \"ground\"\nString.substringToEnd(\"playground\", ~start=-3) == \"playground\"\nString.substringToEnd(\"playground\", ~start=12) == \"\"\n```"
         ],
-        "signature": "let substringToEnd: (string, ~start: int) => string"
+        "signature": "let substringToEnd: (string, ~start: int) => string",
+        "deprecated": "Use `substring` instead"
       },
       {
         "id": "Stdlib.String.toLowerCase",
@@ -5526,9 +5610,9 @@
         "kind": "value",
         "name": "getExn",
         "docstrings": [
-          "`getExn(res)`: when `res` is `Ok(n)`, returns `n` when `res` is `Error(m)`, raise an exception\n\n  ```res example\n  Result.getExn(Result.Ok(42)) == 42\n  \n  switch Result.getExn(Error(\"Invalid data\")) {\n  | exception Not_found => assert(true)\n  | _ => assert(false)\n  }\n  ```"
+          "`getExn(res, ~message=?)` returns `n` if `res` is `Ok(n)`, otherwise throws an exception with the message provided, or a generic message if no message was provided.\n\n  ```res example\n  Result.getExn(Result.Ok(42)) == 42\n  \n  switch Result.getExn(Error(\"Invalid data\")) {\n  | exception _ => true\n  | _ => false\n  } == true\n\n  switch Result.getExn(Error(\"Invalid data\"), ~message=\"was Error!\") {\n  | exception _ => true // Throws a JsError with the message \"was Error!\"\n  | _ => false\n  } == true\n  ```"
         ],
-        "signature": "let getExn: result<'a, 'b> => 'a",
+        "signature": "let getExn: (result<'a, 'b>, ~message: string=?) => 'a",
         "deprecated": "Use 'getOrThrow' instead"
       },
       {
@@ -5536,9 +5620,9 @@
         "kind": "value",
         "name": "getOrThrow",
         "docstrings": [
-          "`getOrThrow(res)`: when `res` is `Ok(n)`, returns `n` when `res` is `Error(m)`, raise an exception\n\n  ```res example\n  Result.getOrThrow(Result.Ok(42)) == 42\n  \n  switch Result.getOrThrow(Error(\"Invalid data\")) {\n  | exception Not_found => assert(true)\n  | _ => assert(false)\n  }\n  ```"
+          "`getOrThrow(res, ~message=?)` returns `n` if `res` is `Ok(n)`, otherwise throws an exception with the message provided, or a generic message if no message was provided.\n\n  ```res example\n  Result.getOrThrow(Result.Ok(42)) == 42\n  \n  switch Result.getOrThrow(Error(\"Invalid data\")) {\n  | exception _ => true\n  | _ => false\n  } == true\n\n  switch Result.getOrThrow(Error(\"Invalid data\"), ~message=\"was Error!\") {\n  | exception _ => true // Throws a JsError with the message \"was Error!\"\n  | _ => false\n  } == true\n  ```"
         ],
-        "signature": "let getOrThrow: result<'a, 'b> => 'a"
+        "signature": "let getOrThrow: (result<'a, 'b>, ~message: string=?) => 'a"
       },
       {
         "id": "Stdlib.Result.mapOr",
@@ -5642,7 +5726,7 @@
         "kind": "value",
         "name": "mapError",
         "docstrings": [
-          "`mapError(r, f)` generates a new `result` by applying the function `f` to the `Error` value. If the source is `Ok`, return it as-is.\n\n## Examples\n\n```rescript\nlet format = n => `Error code: ${n->Int.toString}`\nResult.mapError(Error(14), format) // Error(\"Error code: 14\")\nResult.mapError(Ok(\"abc\"), format) // Ok(\"abc\")\n```"
+          "`mapError(r, f)` generates a new `result` by applying the function `f` to the `Error` value. If the source is `Ok`, return it as-is.\n\n## Examples\n\n```rescript\nlet format = n => `Error code: ${n->Int.toString}`\nResult.mapError(Error(14), format) == Error(\"Error code: 14\")\nResult.mapError(Ok(\"abc\"), format) == Ok(\"abc\")\n```"
         ],
         "signature": "let mapError: (result<'a, 'b>, 'b => 'c) => result<'a, 'c>"
       },
@@ -5651,7 +5735,7 @@
         "kind": "value",
         "name": "all",
         "docstrings": [
-          "`all(results)` returns a result of array if all options are Ok, otherwise returns Error.\n## Examples\n```rescript\nResult.all([Ok(1), Ok(2), Ok(3)]) // Ok([1, 2, 3])\nResult.all([Ok(1), Error(1)]) // Error(1)\n```"
+          "`all(results)` returns a result of array if all options are Ok, otherwise returns Error.\n## Examples\n```rescript\nResult.all([Ok(1), Ok(2), Ok(3)]) == Ok([1, 2, 3])\nResult.all([Ok(1), Error(1)]) == Error(1)\n```"
         ],
         "signature": "let all: array<result<'a, 'b>> => result<array<'a>, 'b>"
       },
@@ -5708,6 +5792,42 @@
           "`ignore(result)` ignores the provided result and returns unit.\n\n  This helper is useful when you want to discard a value (for example, the result of an operation with side effects)\n  without having to store or process it further."
         ],
         "signature": "let ignore: result<'res, 'err> => unit"
+      },
+      {
+        "id": "Stdlib.Result.mapOkAsync",
+        "kind": "value",
+        "name": "mapOkAsync",
+        "docstrings": [
+          "`mapOkAsync(res, f)`: Asynchronously maps over the Ok value of a Result. When `res` is `Ok(n)`, \napplies the async function `f` to `n` and wraps the result in `Ok`. \nWhen `res` is `Error`, returns the error unchanged.\n\n## Examples\n\n```rescript\n  let square = x => x * x\n\n  let result1 = await Result.mapOkAsync(Promise.resolve(Ok(4)), square)\n  result1 == Ok(16)\n\n  let result2 = await Result.mapOkAsync(\n    Promise.resolve(Error(\"invalid\")),\n    square,\n  )\n  result2 == Error(\"invalid\")\n```"
+        ],
+        "signature": "let mapOkAsync: (\n  promise<result<'ok, 'error>>,\n  'ok => 'mappedOk,\n) => promise<result<'mappedOk, 'error>>"
+      },
+      {
+        "id": "Stdlib.Result.mapErrorAsync",
+        "kind": "value",
+        "name": "mapErrorAsync",
+        "docstrings": [
+          "`mapErrorAsync(res, f)`: Asynchronously maps over the Error value of a Result. When `res` is `Error(e)`, \napplies the async function `f` to `e` and wraps the result in `Error`. \nWhen `res` is `Ok`, returns the ok value unchanged.\n\n## Examples\n\n```rescript\nlet formatError = e => `Error: ${e}`\n\nlet result1 = await Result.mapErrorAsync(Promise.resolve(Ok(42)), formatError)\nresult1 == Ok(42)\n\nlet result2 = await Result.mapErrorAsync(Promise.resolve(Error(\"invalid\")), formatError)\nresult2 == Error(\"Error: invalid\")\n```"
+        ],
+        "signature": "let mapErrorAsync: (\n  promise<result<'ok, 'error>>,\n  'error => 'mappedError,\n) => promise<result<'ok, 'mappedError>>"
+      },
+      {
+        "id": "Stdlib.Result.flatMapOkAsync",
+        "kind": "value",
+        "name": "flatMapOkAsync",
+        "docstrings": [
+          "`flatMapOkAsync(res, f)`: Asynchronously flat-maps over the Ok value of a Result. When `res` is `Ok(n)`, \napplies the async function `f` to `n` which returns a Promise of a Result. \nWhen `res` is `Error`, returns the error unchanged.\n\n## Examples\n\n```rescript\nlet asyncValidate = async x =>\n  if x > 0 {\n    Ok(x * 2)\n  } else {\n    Error(\"Must be positive\")\n  }\n\nlet result1 = await Result.flatMapOkAsync(Promise.resolve(Ok(5)), asyncValidate)\nresult1 == Ok(10)\n\nlet result2 = await Result.flatMapOkAsync(\n  Promise.resolve(Error(\"Already failed\")),\n  asyncValidate,\n)\nresult2 == Error(\"Already failed\")\n```"
+        ],
+        "signature": "let flatMapOkAsync: (\n  promise<result<'ok, 'error>>,\n  'ok => promise<result<'mappedOk, 'error>>,\n) => promise<result<'mappedOk, 'error>>"
+      },
+      {
+        "id": "Stdlib.Result.flatMapErrorAsync",
+        "kind": "value",
+        "name": "flatMapErrorAsync",
+        "docstrings": [
+          "`flatMapErrorAsync(res, f)`: Asynchronously flat-maps over the Error value of a Result. When `res` is `Error(e)`, \napplies the async function `f` to `e` which returns a Promise of a Result. \nWhen `res` is `Ok`, returns the ok value unchanged.\n\n## Examples\n\n```rescript\nlet asyncRecover = async error =>\n  if error === \"timeout\" {\n    Ok(\"default\")\n  } else {\n    Error(error)\n  }\n\nlet result1 = await Result.flatMapErrorAsync(\n  Promise.resolve(Error(\"timeout\")),\n  asyncRecover,\n)\nresult1 == Ok(\"default\")\n\nlet result2 = await Result.flatMapErrorAsync(\n  Promise.resolve(Ok(\"default\")),\n  asyncRecover,\n)\nresult2 == Ok(\"default\")\n```"
+        ],
+        "signature": "let flatMapErrorAsync: (\n  promise<result<'ok, 'error>>,\n  'error => promise<result<'ok, 'mappedError>>,\n) => promise<result<'ok, 'mappedError>>"
       }
     ]
   },
@@ -5745,6 +5865,15 @@
         ],
         "signature": "let fromStringWithFlags: (string, ~flags: string) => t",
         "deprecated": "Use `fromString` instead"
+      },
+      {
+        "id": "Stdlib.RegExp.escape",
+        "kind": "value",
+        "name": "escape",
+        "docstrings": [
+          "`escape(string)` escapes any potential regex syntax characters in a string.\n\nSee [`RegExp.escape`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/escape) on MDN.\n\n## Examples\n```rescript\nlet literal = \"foo[bar]\"\nlet regexp = literal->RegExp.escape->RegExp.fromString\nregexp->RegExp.test(\"foo[bar]\") == true\n```\n\n## Remark\n\nSince May 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers."
+        ],
+        "signature": "let escape: string => string"
       },
       {
         "id": "Stdlib.RegExp.test",
@@ -6282,7 +6411,7 @@
         "kind": "value",
         "name": "getExn",
         "docstrings": [
-          "`getExn(opt, ~message=?)` returns `value` if `opt` is `Some(value)`, otherwise raises an exception with the message provided, or a generic message if no message was provided.\n\n```rescript\nOption.getExn(Some(3)) == 3\n\nswitch Option.getExn(None) {\n| exception _ => assert(true)\n| _ => assert(false)\n}\n\nswitch Option.getExn(None, ~message=\"was None!\") {\n| exception _ => assert(true) // Raises an Error with the message \"was None!\"\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises an error if `opt` is `None`"
+          "`getExn(opt, ~message=?)` returns `value` if `opt` is `Some(value)`, otherwise throws an exception with the message provided, or a generic message if no message was provided.\n\n```rescript\nOption.getExn(Some(3)) == 3\n\nswitch Option.getExn(None) {\n| exception _ => assert(true)\n| _ => assert(false)\n}\n\nswitch Option.getExn(None, ~message=\"was None!\") {\n| exception _ => assert(true) // Throws a JsError with the message \"was None!\"\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Throws an error if `opt` is `None`"
         ],
         "signature": "let getExn: (option<'a>, ~message: string=?) => 'a",
         "deprecated": "Use `getOrThrow` instead"
@@ -6292,7 +6421,7 @@
         "kind": "value",
         "name": "getOrThrow",
         "docstrings": [
-          "`getOrThrow(opt, ~message=?)` returns `value` if `opt` is `Some(value)`, otherwise raises an exception with the message provided, or a generic message if no message was provided.\n\n```rescript\nOption.getOrThrow(Some(3)) == 3\n\nswitch Option.getOrThrow(None) {\n| exception _ => assert(true)\n| _ => assert(false)\n}\n\nswitch Option.getOrThrow(None, ~message=\"was None!\") {\n| exception _ => assert(true) // Raises an Error with the message \"was None!\"\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises an error if `opt` is `None`"
+          "`getOrThrow(opt, ~message=?)` returns `value` if `opt` is `Some(value)`, otherwise throws an exception with the message provided, or a generic message if no message was provided.\n\n```rescript\nOption.getOrThrow(Some(3)) == 3\n\nswitch Option.getOrThrow(None) {\n| exception _ => assert(true)\n| _ => assert(false)\n}\n\nswitch Option.getOrThrow(None, ~message=\"was None!\") {\n| exception _ => assert(true) // Throws a JsError with the message \"was None!\"\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Throws an error if `opt` is `None`"
         ],
         "signature": "let getOrThrow: (option<'a>, ~message: string=?) => 'a"
       },
@@ -8736,7 +8865,7 @@
         "kind": "value",
         "name": "isNaN",
         "docstrings": [
-          "`isNaN(v)` tests if the given `v` is `NaN`.\nSee [`NaN`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN) on MDN.\n\n## Examples\n\n```rescript\nFloat.isNaN(3.0) // false\nFloat.isNaN(Float.Constants.nan) // true\n```"
+          "`isNaN(v)` tests if the given `v` is `NaN`.\nSee [`isNaN`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isNaN) on MDN.\n\n## Examples\n\n```rescript\nFloat.isNaN(3.0) // false\nFloat.isNaN(Float.Constants.nan) // true\n```"
         ],
         "signature": "let isNaN: float => bool"
       },
@@ -9278,6 +9407,24 @@
           "`keysToArray(dictionary)` returns an array of all the keys of the dictionary.\n\n## Examples\n```rescript\nlet dict = Dict.make()\ndict->Dict.set(\"someKey\", 1)\ndict->Dict.set(\"someKey2\", 2)\nlet keys = dict->Dict.keysToArray\nConsole.log(keys) // Logs `[\"someKey\", \"someKey2\"]` to the console\n```"
         ],
         "signature": "let keysToArray: dict<'a> => array<string>"
+      },
+      {
+        "id": "Stdlib.Dict.size",
+        "kind": "value",
+        "name": "size",
+        "docstrings": [
+          "`size(dictionary)` returns the number of key/value pairs in the dictionary.\n\n## Examples\n```rescript\nlet dict = Dict.make()\ndict->Dict.size->assertEqual(0)\n\ndict->Dict.set(\"someKey\", 1)\ndict->Dict.set(\"someKey2\", 2)\ndict->Dict.size->assertEqual(2)\n\n// After deleting a key\ndict->Dict.delete(\"someKey\")\ndict->Dict.size->assertEqual(1)\n```"
+        ],
+        "signature": "let size: dict<'a> => int"
+      },
+      {
+        "id": "Stdlib.Dict.isEmpty",
+        "kind": "value",
+        "name": "isEmpty",
+        "docstrings": [
+          "`isEmpty(dictionary)` returns `true` if the dictionary is empty (has no key/value pairs), `false` otherwise.\n\n## Examples\n```rescript\nlet emptyDict = Dict.make()\nemptyDict->Dict.isEmpty->assertEqual(true)\n\nlet dict = Dict.make()\ndict->Dict.set(\"someKey\", 1)\ndict->Dict.isEmpty->assertEqual(false)\n\n// After clearing all keys\ndict->Dict.delete(\"someKey\")\ndict->Dict.isEmpty->assertEqual(true)\n```"
+        ],
+        "signature": "let isEmpty: dict<'a> => bool"
       },
       {
         "id": "Stdlib.Dict.valuesToArray",
@@ -10076,203 +10223,279 @@
   "stdlib/dataview": {
     "id": "Stdlib.DataView",
     "name": "DataView",
-    "docstrings": [],
+    "docstrings": [
+      "Functions for interacting with DataView.\n\nSee [`DataView`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView) on MDN."
+    ],
     "items": [
       {
         "id": "Stdlib.DataView.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [],
+        "docstrings": [
+          "Type representing a DataView."
+        ],
         "signature": "type t"
       },
       {
         "id": "Stdlib.DataView.fromBuffer",
         "kind": "value",
         "name": "fromBuffer",
-        "docstrings": [],
-        "signature": "let fromBuffer: ArrayBuffer.t => t"
+        "docstrings": [
+          "`fromBuffer(buffer)` creates a DataView for the entire ArrayBuffer.\n\nSee [`DataView`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView) on MDN.\n\n## Examples\n\n```rescript\nDataView.fromBuffer(ArrayBuffer.make(16))\nDataView.fromBuffer(ArrayBuffer.make(16), ~byteOffset=4)\nDataView.fromBuffer(ArrayBuffer.make(16), ~byteOffset=4, ~length=8)\n```"
+        ],
+        "signature": "let fromBuffer: (ArrayBuffer.t, ~byteOffset: int=?, ~length: int=?) => t"
       },
       {
         "id": "Stdlib.DataView.fromBufferToEnd",
         "kind": "value",
         "name": "fromBufferToEnd",
-        "docstrings": [],
-        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t"
+        "docstrings": [
+          "`fromBufferToEnd(buffer, ~byteOffset)` creates a DataView starting at a given byte offset. See [`DataView`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView) on MDN.\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds.\n\n## Examples\n\n```rescript\nDataView.fromBufferToEnd(buffer, ~byteOffset=4)\n```"
+        ],
+        "signature": "let fromBufferToEnd: (ArrayBuffer.t, ~byteOffset: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.DataView.fromBufferWithRange",
         "kind": "value",
         "name": "fromBufferWithRange",
-        "docstrings": [],
-        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t"
+        "docstrings": [
+          "`fromBufferWithRange(buffer, ~byteOffset, ~length)` creates a DataView for a specific byte range.\n\nSee [`DataView`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView) on MDN.\n\n**Note:** This is a potentially unsafe operation. Ensure the buffer is large enough and only accessed within its bounds.\n\n## Examples\n\n```rescript\nDataView.fromBufferWithRange(ArrayBuffer.make(16), ~byteOffset=2, ~length=8)\n```"
+        ],
+        "signature": "let fromBufferWithRange: (ArrayBuffer.t, ~byteOffset: int, ~length: int) => t",
+        "deprecated": "Use `fromBuffer` instead"
       },
       {
         "id": "Stdlib.DataView.buffer",
         "kind": "value",
         "name": "buffer",
-        "docstrings": [],
+        "docstrings": [
+          "`buffer(dataView)` returns the underlying ArrayBuffer referenced by this DataView.\n\nSee [`DataView.buffer`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/buffer) on MDN.\n\n## Examples\n\n```rescript\nlet array_buffer = ArrayBuffer.make(16)\nlet dv = DataView.fromBuffer(array_buffer)\nDataView.buffer(dv) == array_buffer\n```"
+        ],
         "signature": "let buffer: t => ArrayBuffer.t"
       },
       {
         "id": "Stdlib.DataView.byteLength",
         "kind": "value",
         "name": "byteLength",
-        "docstrings": [],
+        "docstrings": [
+          "`byteLength(dataView)` returns the length (in bytes) of this DataView.\n\nSee [`DataView.byteLength`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/byteLength) on MDN.\n\n## Examples\n\n```rescript\nlet array_buffer = ArrayBuffer.make(16)\nlet dv = DataView.fromBuffer(array_buffer)\nDataView.byteLength(dv) == 16\n```"
+        ],
         "signature": "let byteLength: t => int"
       },
       {
         "id": "Stdlib.DataView.byteOffset",
         "kind": "value",
         "name": "byteOffset",
-        "docstrings": [],
+        "docstrings": [
+          "`byteOffset(dataView)` returns the byte offset of this DataView from the start of its ArrayBuffer.\n\nSee [`DataView.byteOffset`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/byteOffset) on MDN.\n\n## Examples\n\n```rescript\nlet array_buffer = ArrayBuffer.make(16)\nlet dv = DataView.fromBuffer(array_buffer, ~byteOffset=4)\nDataView.byteOffset(dv) == 4\n```"
+        ],
         "signature": "let byteOffset: t => int"
       },
       {
         "id": "Stdlib.DataView.getInt8",
         "kind": "value",
         "name": "getInt8",
-        "docstrings": [],
+        "docstrings": [
+          "`getInt8(dataView, offset)` reads an 8-bit signed integer at the specified byte offset.\n\nSee [`DataView.getInt8`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getInt8) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\ndv->DataView.setInt8(0, -12)\nDataView.getInt8(dv, 0) == -12\n```"
+        ],
         "signature": "let getInt8: (t, int) => int"
       },
       {
         "id": "Stdlib.DataView.getUint8",
         "kind": "value",
         "name": "getUint8",
-        "docstrings": [],
+        "docstrings": [
+          "`getUint8(dataView, offset)` reads an 8-bit unsigned integer at the specified byte offset.\n\nSee [`DataView.getUint8`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getUint8) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\ndv->DataView.setUint8(1, 255)\nDataView.getUint8(dv, 1) == 255\n```"
+        ],
         "signature": "let getUint8: (t, int) => int"
       },
       {
         "id": "Stdlib.DataView.getInt16",
         "kind": "value",
         "name": "getInt16",
-        "docstrings": [],
-        "signature": "let getInt16: (t, int) => int"
+        "docstrings": [
+          "`getInt16(dataView, offset, ~littleEndian=?)` reads a 16-bit signed integer at the specified byte offset, with optional endianness.\n\nSee [`DataView.getInt16`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getInt16) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\ndv->DataView.setInt16(0, -1234)\ndv->DataView.setInt16(2, -1234, ~littleEndian=true)\nDataView.getInt16(dv, 0) == -1234\nDataView.getInt16(dv, 2, ~littleEndian=true) == -1234\n```"
+        ],
+        "signature": "let getInt16: (t, int, ~littleEndian: bool=?) => int"
       },
       {
         "id": "Stdlib.DataView.getUint16",
         "kind": "value",
         "name": "getUint16",
-        "docstrings": [],
-        "signature": "let getUint16: (t, int) => int"
+        "docstrings": [
+          "`getUint16(dataView, offset, ~littleEndian=?)` reads a 16-bit unsigned integer at the specified byte offset, with optional endianness.\n\nSee [`DataView.getUint16`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getUint16) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\ndv->DataView.setUint16(0, 1234)\ndv->DataView.setUint16(2, 1234, ~littleEndian=true)\nDataView.getUint16(dv, 0) == 1234\nDataView.getUint16(dv, 2, ~littleEndian=true) == 1234\n```"
+        ],
+        "signature": "let getUint16: (t, int, ~littleEndian: bool=?) => int"
       },
       {
         "id": "Stdlib.DataView.getInt32",
         "kind": "value",
         "name": "getInt32",
-        "docstrings": [],
-        "signature": "let getInt32: (t, int) => int"
+        "docstrings": [
+          "`getInt32(dataView, offset, ~littleEndian=?)` reads a 32-bit signed integer at the specified byte offset, with optional endianness.\n\nSee [`DataView.getInt32`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getInt32) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\ndv->DataView.setInt32(0, -123456)\ndv->DataView.setInt32(4, -123456, ~littleEndian=true)\nDataView.getInt32(dv, 0) == -123456\nDataView.getInt32(dv, 4, ~littleEndian=true) == -123456\n```"
+        ],
+        "signature": "let getInt32: (t, int, ~littleEndian: bool=?) => int"
       },
       {
         "id": "Stdlib.DataView.getUint32",
         "kind": "value",
         "name": "getUint32",
-        "docstrings": [],
-        "signature": "let getUint32: (t, int) => int"
+        "docstrings": [
+          "`getUint32(dataView, offset, ~littleEndian=?)` reads a 32-bit unsigned integer at the specified byte offset, with optional endianness.\n\nSee [`DataView.getUint32`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getUint32) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\ndv->DataView.setUint32(0, 123456)\ndv->DataView.setUint32(4, 123456, ~littleEndian=true)\nDataView.getUint32(dv, 0) == 123456\nDataView.getUint32(dv, 4, ~littleEndian=true) == 123456\n```"
+        ],
+        "signature": "let getUint32: (t, int, ~littleEndian: bool=?) => int"
+      },
+      {
+        "id": "Stdlib.DataView.getFloat16",
+        "kind": "value",
+        "name": "getFloat16",
+        "docstrings": [
+          "`getFloat16(dataView, offset, ~littleEndian=?)` reads a 16-bit floating point number (if supported) at the specified byte offset, with optional endianness.\n\nSee [`DataView.getFloat16`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getFloat16) on MDN.\n\n## Examples\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\ndv->DataView.setFloat16(0, 1.5)\ndv->DataView.setFloat16(2, 1.5, ~littleEndian=true)\nDataView.getFloat16(dv, 0) == 1.5\nDataView.getFloat16(dv, 2, ~littleEndian=true) == 1.5\n```"
+        ],
+        "signature": "let getFloat16: (t, int, ~littleEndian: bool=?) => float"
       },
       {
         "id": "Stdlib.DataView.getFloat32",
         "kind": "value",
         "name": "getFloat32",
-        "docstrings": [],
-        "signature": "let getFloat32: (t, int) => float"
+        "docstrings": [
+          "`getFloat32(dataView, offset, ~littleEndian=?)` reads a 32-bit floating point number at the specified byte offset, with optional endianness.\n\nSee [`DataView.getFloat32`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getFloat32) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\ndv->DataView.setFloat32(0, 3.14)\ndv->DataView.setFloat32(4, 3.14, ~littleEndian=true)\n// DataView.getFloat32(dv, 0) == 3.14\n// DataView.getFloat32(dv, 4, ~littleEndian=true) == 3.14\n```"
+        ],
+        "signature": "let getFloat32: (t, int, ~littleEndian: bool=?) => float"
       },
       {
         "id": "Stdlib.DataView.getFloat64",
         "kind": "value",
         "name": "getFloat64",
-        "docstrings": [],
-        "signature": "let getFloat64: (t, int) => float"
+        "docstrings": [
+          "`getFloat64(dataView, offset, ~littleEndian=?)` reads a 64-bit floating point number at the specified byte offset, with optional endianness.\n\nSee [`DataView.getFloat64`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getFloat64) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\ndv->DataView.setFloat64(0, 6.28)\ndv->DataView.setFloat64(8, 6.28, ~littleEndian=true)\nDataView.getFloat64(dv, 0) == 6.28\nDataView.getFloat64(dv, 8, ~littleEndian=true) == 6.28\n```"
+        ],
+        "signature": "let getFloat64: (t, int, ~littleEndian: bool=?) => float"
       },
       {
         "id": "Stdlib.DataView.getBigInt64",
         "kind": "value",
         "name": "getBigInt64",
-        "docstrings": [],
-        "signature": "let getBigInt64: (t, int) => bigint"
+        "docstrings": [
+          "`getBigInt64(dataView, offset, ~littleEndian=?)` reads a 64-bit signed integer (BigInt) at the specified byte offset, with optional endianness.\n\nSee [`DataView.getBigInt64`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getBigInt64) on MDN.\n\n## Examples\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\ndv->DataView.setBigInt64(0, -123456789n)\ndv->DataView.setBigInt64(8, -123456789n, ~littleEndian=true)\nDataView.getBigInt64(dv, 0) == -123456789n\nDataView.getBigInt64(dv, 8, ~littleEndian=true) == -123456789n\n```"
+        ],
+        "signature": "let getBigInt64: (t, int, ~littleEndian: bool=?) => bigint"
       },
       {
         "id": "Stdlib.DataView.getBigUint64",
         "kind": "value",
         "name": "getBigUint64",
-        "docstrings": [],
-        "signature": "let getBigUint64: (t, int) => bigint"
+        "docstrings": [
+          "`getBigUint64(dataView, offset, ~littleEndian=?)` reads a 64-bit unsigned integer (BigInt) at the specified byte offset, with optional endianness.\n\nSee [`DataView.getBigUint64`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getBigUint64) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\ndv->DataView.setBigUint64(0, 123456789n)\ndv->DataView.setBigUint64(8, 123456789n, ~littleEndian=true)\nDataView.getBigUint64(dv, 0) == 123456789n\nDataView.getBigUint64(dv, 8, ~littleEndian=true) == 123456789n\n```"
+        ],
+        "signature": "let getBigUint64: (t, int, ~littleEndian: bool=?) => bigint"
       },
       {
         "id": "Stdlib.DataView.setInt8",
         "kind": "value",
         "name": "setInt8",
-        "docstrings": [],
+        "docstrings": [
+          "`setInt8(dataView, offset, value)` writes an 8-bit signed integer at the specified byte offset.\n\nSee [`DataView.setInt8`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setInt8) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\nDataView.setInt8(dv, 0, -12)\ndv->DataView.getInt8(0) == -12\n```"
+        ],
         "signature": "let setInt8: (t, int, int) => unit"
       },
       {
         "id": "Stdlib.DataView.setUint8",
         "kind": "value",
         "name": "setUint8",
-        "docstrings": [],
+        "docstrings": [
+          "`setUint8(dataView, offset, value)` writes an 8-bit unsigned integer at the specified byte offset.\n\nSee [`DataView.setUint8`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setUint8) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\nDataView.setUint8(dv, 0, 255)\ndv->DataView.getUint8(0) == 255\n```"
+        ],
         "signature": "let setUint8: (t, int, int) => unit"
       },
       {
         "id": "Stdlib.DataView.setInt16",
         "kind": "value",
         "name": "setInt16",
-        "docstrings": [],
-        "signature": "let setInt16: (t, int, int) => unit"
+        "docstrings": [
+          "`setInt16(dataView, offset, value, ~littleEndian=?)` writes a 16-bit signed integer at the specified byte offset, with optional endianness.\n\nSee [`DataView.setInt16`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setInt16) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\nDataView.setInt16(dv, 0, -1234)\nDataView.setInt16(dv, 2, -1234, ~littleEndian=true)\ndv->DataView.getInt16(0) == -1234\ndv->DataView.getInt16(2, ~littleEndian=true) == -1234\n```"
+        ],
+        "signature": "let setInt16: (t, int, int, ~littleEndian: bool=?) => unit"
       },
       {
         "id": "Stdlib.DataView.setUint16",
         "kind": "value",
         "name": "setUint16",
-        "docstrings": [],
-        "signature": "let setUint16: (t, int, int) => unit"
+        "docstrings": [
+          "`setUint16(dataView, offset, value, ~littleEndian=?)` writes a 16-bit unsigned integer at the specified byte offset, with optional endianness.\n\nSee [`DataView.setUint16`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setUint16) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\nDataView.setUint16(dv, 0, 1234)\nDataView.setUint16(dv, 2, 1234, ~littleEndian=true)\ndv->DataView.getUint16(0) == 1234\ndv->DataView.getUint16(2, ~littleEndian=true) == 1234\n```"
+        ],
+        "signature": "let setUint16: (t, int, int, ~littleEndian: bool=?) => unit"
       },
       {
         "id": "Stdlib.DataView.setInt32",
         "kind": "value",
         "name": "setInt32",
-        "docstrings": [],
-        "signature": "let setInt32: (t, int, int) => unit"
+        "docstrings": [
+          "`setInt32(dataView, offset, value, ~littleEndian=?)` writes a 32-bit signed integer at the specified byte offset, with optional endianness.\n\nSee [`DataView.setInt32`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setInt32) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\nDataView.setInt32(dv, 0, -123456)\nDataView.setInt32(dv, 4, -123456, ~littleEndian=true)\ndv->DataView.getInt32(0) == -123456\ndv->DataView.getInt32(4, ~littleEndian=true) == -123456\n```"
+        ],
+        "signature": "let setInt32: (t, int, int, ~littleEndian: bool=?) => unit"
       },
       {
         "id": "Stdlib.DataView.setUint32",
         "kind": "value",
         "name": "setUint32",
-        "docstrings": [],
-        "signature": "let setUint32: (t, int, int) => unit"
+        "docstrings": [
+          "`setUint32(dataView, offset, value, ~littleEndian=?)` writes a 32-bit unsigned integer at the specified byte offset, with optional endianness.\n\nSee [`DataView.setUint32`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setUint32) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\nDataView.setUint32(dv, 0, 123456)\nDataView.setUint32(dv, 4, 123456, ~littleEndian=true)\ndv->DataView.getUint32(0) == 123456\ndv->DataView.getUint32(4, ~littleEndian=true) == 123456\n```"
+        ],
+        "signature": "let setUint32: (t, int, int, ~littleEndian: bool=?) => unit"
+      },
+      {
+        "id": "Stdlib.DataView.setFloat16",
+        "kind": "value",
+        "name": "setFloat16",
+        "docstrings": [
+          "`setFloat16(dataView, offset, value, ~littleEndian=?)` writes a 16-bit floating point number (if supported) at the specified byte offset, with optional endianness.\n\nSee [`DataView.setFloat16`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setFloat16) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\nDataView.setFloat16(dv, 0, 1.5)\nDataView.setFloat16(dv, 2, 1.5, ~littleEndian=true)\ndv->DataView.getFloat16(0) == 1.5\ndv->DataView.getFloat16(2, ~littleEndian=true) == 1.5\n```"
+        ],
+        "signature": "let setFloat16: (t, int, float, ~littleEndian: bool=?) => unit"
       },
       {
         "id": "Stdlib.DataView.setFloat32",
         "kind": "value",
         "name": "setFloat32",
-        "docstrings": [],
-        "signature": "let setFloat32: (t, int, float) => unit"
+        "docstrings": [
+          "`setFloat32(dataView, offset, value, ~littleEndian=?)` writes a 32-bit floating point number at the specified byte offset, with optional endianness.\n\nSee [`DataView.setFloat32`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setFloat32) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\nDataView.setFloat32(dv, 0, 3.14)\nDataView.setFloat32(dv, 4, 3.14, ~littleEndian=true)\n// dv->DataView.getFloat32(0) == 3.14\n// dv->DataView.getFloat32(4, ~littleEndian=true) == 3.14\n```"
+        ],
+        "signature": "let setFloat32: (t, int, float, ~littleEndian: bool=?) => unit"
       },
       {
         "id": "Stdlib.DataView.setFloat64",
         "kind": "value",
         "name": "setFloat64",
-        "docstrings": [],
-        "signature": "let setFloat64: (t, int, float) => unit"
+        "docstrings": [
+          "`setFloat64(dataView, offset, value, ~littleEndian=?)` writes a 64-bit floating point number at the specified byte offset, with optional endianness.\n\nSee [`DataView.setFloat64`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setFloat64) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\nDataView.setFloat64(dv, 0, 6.28)\nDataView.setFloat64(dv, 8, 6.28, ~littleEndian=true)\ndv->DataView.getFloat64(0) == 6.28\ndv->DataView.getFloat64(8, ~littleEndian=true) == 6.28\n```"
+        ],
+        "signature": "let setFloat64: (t, int, float, ~littleEndian: bool=?) => unit"
       },
       {
         "id": "Stdlib.DataView.setBigInt64",
         "kind": "value",
         "name": "setBigInt64",
-        "docstrings": [],
-        "signature": "let setBigInt64: (t, int, bigint) => unit"
+        "docstrings": [
+          "`setBigInt64(dataView, offset, value, ~littleEndian=?)` writes a 64-bit signed integer (BigInt) at the specified byte offset, with optional endianness.\n\nSee [`DataView.setBigInt64`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setBigInt64) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\nDataView.setBigInt64(dv, 0, -123456789n)\nDataView.setBigInt64(dv, 8, -123456789n, ~littleEndian=true)\ndv->DataView.getBigInt64(0) == -123456789n\ndv->DataView.getBigInt64(8, ~littleEndian=true) == -123456789n\n```"
+        ],
+        "signature": "let setBigInt64: (t, int, bigint, ~littleEndian: bool=?) => unit"
       },
       {
         "id": "Stdlib.DataView.setBigUint64",
         "kind": "value",
         "name": "setBigUint64",
-        "docstrings": [],
-        "signature": "let setBigUint64: (t, int, bigint) => unit"
+        "docstrings": [
+          "`setBigUint64(dataView, offset, value, ~littleEndian=?)` writes a 64-bit unsigned integer (BigInt) at the specified byte offset, with optional endianness.\n\nSee [`DataView.setBigUint64`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setBigUint64) on MDN.\n\n## Examples\n\n```rescript\nlet dv = DataView.fromBuffer(ArrayBuffer.make(16))\nDataView.setBigUint64(dv, 0, 123456789n)\nDataView.setBigUint64(dv, 8, 123456789n, ~littleEndian=true)\ndv->DataView.getBigUint64(0) == 123456789n\ndv->DataView.getBigUint64(8, ~littleEndian=true) == 123456789n\n```"
+        ],
+        "signature": "let setBigUint64: (t, int, bigint, ~littleEndian: bool=?) => unit"
       },
       {
         "id": "Stdlib.DataView.ignore",
         "kind": "value",
         "name": "ignore",
         "docstrings": [
-          "`ignore(dataView)` ignores the provided dataView and returns unit.\n\n  This helper is useful when you want to discard a value (for example, the result of an operation with side effects)\n  without having to store or process it further."
+          "`ignore(dataView)` ignores the provided DataView and returns unit.\n\nThis helper is useful when you want to discard a value (for example, the result of an operation with side effects) without having to store or process it further."
         ],
         "signature": "let ignore: t => unit"
       }
@@ -11256,25 +11479,38 @@
         "signature": "let length: array<'a> => int"
       },
       {
+        "id": "Stdlib.Array.isEmpty",
+        "kind": "value",
+        "name": "isEmpty",
+        "docstrings": [
+          "`isEmpty(array)` returns `true` if the array is empty (has length 0), `false` otherwise.\n\n## Examples\n\n```rescript\n[]->Array.isEmpty->assertEqual(true)\n[1, 2, 3]->Array.isEmpty->assertEqual(false)\n\nlet emptyArray = []\nemptyArray->Array.isEmpty->assertEqual(true)\n\nlet nonEmptyArray = [\"hello\"]\nnonEmptyArray->Array.isEmpty->assertEqual(false)\n```"
+        ],
+        "signature": "let isEmpty: array<'a> => bool"
+      },
+      {
         "id": "Stdlib.Array.copyAllWithin",
         "kind": "value",
         "name": "copyAllWithin",
         "docstrings": [],
-        "signature": "let copyAllWithin: (array<'a>, ~target: int) => array<'a>"
+        "signature": "let copyAllWithin: (array<'a>, ~target: int) => array<'a>",
+        "deprecated": "Use `copyWithin` instead"
       },
       {
         "id": "Stdlib.Array.copyWithinToEnd",
         "kind": "value",
         "name": "copyWithinToEnd",
         "docstrings": [],
-        "signature": "let copyWithinToEnd: (array<'a>, ~target: int, ~start: int) => array<'a>"
+        "signature": "let copyWithinToEnd: (array<'a>, ~target: int, ~start: int) => array<'a>",
+        "deprecated": "Use `copyWithin` instead"
       },
       {
         "id": "Stdlib.Array.copyWithin",
         "kind": "value",
         "name": "copyWithin",
-        "docstrings": [],
-        "signature": "let copyWithin: (\n  array<'a>,\n  ~target: int,\n  ~start: int,\n  ~end: int,\n) => array<'a>"
+        "docstrings": [
+          "`copyWithin(array, ~target, ~start, ~end)` copies the sequence of array elements within the array to the position starting at `target`. The copy is taken from the index positions `start` to `end`.\n\nBeware this will *mutate* the array.\n\nSee [`Array.copyWithin`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin) on MDN.\n\n## Examples\n\n```rescript\nlet myArray = [1, 2, 3, 4, 5]\nmyArray->Array.copyWithin(~target=0, ~start=3) == [4, 5, 3, 4, 5]\n\nlet myArray = [1, 2, 3, 4, 5]\nmyArray->Array.copyWithin(~target=1, ~start=3, ~end=4) == [1, 4, 3, 4, 5]\n```"
+        ],
+        "signature": "let copyWithin: (\n  array<'a>,\n  ~target: int,\n  ~start: int,\n  ~end: int=?,\n) => array<'a>"
       },
       {
         "id": "Stdlib.Array.fillAll",
@@ -11283,7 +11519,8 @@
         "docstrings": [
           "`fillAll(array, value)` fills the entire `array` with `value`.\n\nBeware this will *mutate* the array.\n\nSee [`Array.fill`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill) on MDN.\n\n## Examples\n\n```rescript\nlet myArray = [1, 2, 3, 4]\nmyArray->Array.fillAll(9)\nmyArray == [9, 9, 9, 9]\n```"
         ],
-        "signature": "let fillAll: (array<'a>, 'a) => unit"
+        "signature": "let fillAll: (array<'a>, 'a) => unit",
+        "deprecated": "Use `fill` instead"
       },
       {
         "id": "Stdlib.Array.fillToEnd",
@@ -11292,16 +11529,17 @@
         "docstrings": [
           "`fillToEnd(array, value, ~start)` fills `array` with `value` from the `start` index.\n\nBeware this will *mutate* the array.\n\nSee [`Array.fill`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill) on MDN.\n\n## Examples\n\n```rescript\nlet myArray = [1, 2, 3, 4]\nmyArray->Array.fillToEnd(9, ~start=1)\nmyArray == [1, 9, 9, 9]\n```"
         ],
-        "signature": "let fillToEnd: (array<'a>, 'a, ~start: int) => unit"
+        "signature": "let fillToEnd: (array<'a>, 'a, ~start: int) => unit",
+        "deprecated": "Use `fill` instead"
       },
       {
         "id": "Stdlib.Array.fill",
         "kind": "value",
         "name": "fill",
         "docstrings": [
-          "`fill(array, value, ~start, ~end)` fills `array` with `value` from `start` to `end`.\n\nBeware this will *mutate* the array.\n\nSee [`Array.fill`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill) on MDN.\n\n## Examples\n\n```rescript\nlet myArray = [1, 2, 3, 4]\n\nmyArray->Array.fill(9, ~start=1, ~end=3)\n\nmyArray == [1, 9, 9, 4]\n```"
+          "`fill(array, value, ~start, ~end)` fills `array` with `value` from `start` to `end`.\n\nBeware this will *mutate* the array.\n\nSee [`Array.fill`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill) on MDN.\n\n## Examples\n\n```rescript\nlet myArray = [1, 2, 3, 4]\n\nmyArray->Array.fill(9)\nmyArray == [9, 9, 9, 9]\n\nmyArray->Array.fill(0, ~start=1)\nmyArray == [9, 0, 0, 0]\n\nmyArray->Array.fill(5, ~start=1, ~end=3)\nmyArray == [9, 5, 5, 0]\n```"
         ],
-        "signature": "let fill: (array<'a>, 'a, ~start: int, ~end: int) => unit"
+        "signature": "let fill: (array<'a>, 'a, ~start: int=?, ~end: int=?) => unit"
       },
       {
         "id": "Stdlib.Array.pop",
@@ -11455,9 +11693,9 @@
         "kind": "value",
         "name": "indexOf",
         "docstrings": [
-          "`indexOf(array, item)` returns the index of the provided `item` in `array`. Uses [strict check for equality](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Strict_equality) when comparing items.\n\nReturns `-1` if the item doesn not exist. Check out `Array.indexOfOpt` for a version that returns `None` instead of `-1` if the item does not exist.\n\nSee [`Array.indexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf) on MDN.\n\n## Examples\n\n```rescript\n[1, 2]->Array.indexOf(2) == 1\n[1, 2]->Array.indexOf(3) == -1\n\n[{\"language\": \"ReScript\"}]->Array.indexOf({\"language\": \"ReScript\"}) == -1 // -1, because of strict equality\n```"
+          "`indexOf(array, item, ~from)` returns the index of the provided `item` in `array`, starting the search at `from`. Uses [strict check for equality](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Strict_equality) when comparing items.\n\nReturns `-1` if the item isn't found. Check out `Array.indexOfOpt` for a version that returns `None` instead of `-1` if the item does not exist.\n\nSee [`Array.indexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf) on MDN.\n\n## Examples\n\n```rescript\n[1, 2]->Array.indexOf(2) == 1\n[1, 2]->Array.indexOf(3) == -1\n[1, 2, 1, 2]->Array.indexOf(2, ~from=2) == 3\n\n[{\"language\": \"ReScript\"}]->Array.indexOf({\"language\": \"ReScript\"}) == -1 // -1, because of strict equality\n```"
         ],
-        "signature": "let indexOf: (array<'a>, 'a) => int"
+        "signature": "let indexOf: (array<'a>, 'a, ~from: int=?) => int"
       },
       {
         "id": "Stdlib.Array.indexOfOpt",
@@ -11473,7 +11711,8 @@
         "kind": "value",
         "name": "indexOfFrom",
         "docstrings": [],
-        "signature": "let indexOfFrom: (array<'a>, 'a, int) => int"
+        "signature": "let indexOfFrom: (array<'a>, 'a, int) => int",
+        "deprecated": "Use `indexOf` instead"
       },
       {
         "id": "Stdlib.Array.join",
@@ -11517,8 +11756,10 @@
         "id": "Stdlib.Array.lastIndexOf",
         "kind": "value",
         "name": "lastIndexOf",
-        "docstrings": [],
-        "signature": "let lastIndexOf: (array<'a>, 'a) => int"
+        "docstrings": [
+          "`lastIndexOf(array, item, ~from)` returns the last index of the provided `item` in `array`, searching backwards from `from`. Uses [strict check for equality](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Strict_equality) when comparing items.\n\nReturns `-1` if the item isn't found. Check out `Array.lastIndexOfOpt` for a version that returns `None` instead of `-1` if the item does not exist.\n\nSee [`Array.lastIndexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf) on MDN.\n\n## Examples\n\n```rescript\n[1, 2, 1, 2]->Array.lastIndexOf(2) == 3\n[1, 2]->Array.lastIndexOf(3) == -1\n[1, 2, 1, 2]->Array.lastIndexOf(2, ~from=2) == 1\n\n[{\"language\": \"ReScript\"}]->Array.lastIndexOf({\"language\": \"ReScript\"}) == -1 // -1, because of strict equality\n```"
+        ],
+        "signature": "let lastIndexOf: (array<'a>, 'a, ~from: int=?) => int"
       },
       {
         "id": "Stdlib.Array.lastIndexOfOpt",
@@ -11532,16 +11773,17 @@
         "kind": "value",
         "name": "lastIndexOfFrom",
         "docstrings": [],
-        "signature": "let lastIndexOfFrom: (array<'a>, 'a, int) => int"
+        "signature": "let lastIndexOfFrom: (array<'a>, 'a, int) => int",
+        "deprecated": "Use `lastIndexOf` instead"
       },
       {
         "id": "Stdlib.Array.slice",
         "kind": "value",
         "name": "slice",
         "docstrings": [
-          "`slice(array, ~start, ~end)` creates a new array of items copied from `array` from `start` until (but not including) `end`.\n\nSee [`Array.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice) on MDN.\n\n## Examples\n\n```rescript\n[1, 2, 3, 4]->Array.slice(~start=1, ~end=3) == [2, 3]\n```"
+          "`slice(array, ~start, ~end)` creates a new array of items copied from `array` from `start` until (but not including) `end`.\n\nSee [`Array.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice) on MDN.\n\n## Examples\n\n```rescript\n[1, 2, 3, 4]->Array.slice(~start=1, ~end=3) == [2, 3]\n[1, 2, 3, 4]->Array.slice(~start=1) == [2, 3, 4]\n[1, 2, 3, 4]->Array.slice == [1, 2, 3, 4]\n```"
         ],
-        "signature": "let slice: (array<'a>, ~start: int, ~end: int) => array<'a>"
+        "signature": "let slice: (array<'a>, ~start: int=?, ~end: int=?) => array<'a>"
       },
       {
         "id": "Stdlib.Array.sliceToEnd",
@@ -11550,7 +11792,8 @@
         "docstrings": [
           "`sliceToEnd(array, start)` creates a new array from `array`, with all items from `array` starting from `start`.\n\nSee [`Array.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice) on MDN.\n\n## Examples\n\n```rescript\n[1, 2, 3, 4]->Array.sliceToEnd(~start=1) == [2, 3, 4]\n```"
         ],
-        "signature": "let sliceToEnd: (array<'a>, ~start: int) => array<'a>"
+        "signature": "let sliceToEnd: (array<'a>, ~start: int) => array<'a>",
+        "deprecated": "Use `slice` instead"
       },
       {
         "id": "Stdlib.Array.copy",
@@ -11726,7 +11969,7 @@
         "kind": "value",
         "name": "reduce",
         "docstrings": [
-          "`reduce(xs, init, fn)`\n\nApplies `fn` to each element of `xs` from beginning to end. Function `fn` has two parameters: the item from the list and an “accumulator”; which starts with a value of `init`. `reduce` returns the final value of the accumulator.\n\n## Examples\n\n```rescript\nArray.reduce([2, 3, 4], 1, (a, b) => a + b) == 10\n\nArray.reduce([\"a\", \"b\", \"c\", \"d\"], \"\", (a, b) => a ++ b) == \"abcd\"\n\n[1, 2, 3]->Array.reduce(list{}, List.add) == list{3, 2, 1}\n\nArray.reduce([], list{}, List.add) == list{}\n```"
+          "`reduce(xs, init, fn)`\n\nApplies `fn` to each element of `xs` from beginning to end. Function `fn` has two parameters: the item from the list and an \"accumulator\"; which starts with a value of `init`. `reduce` returns the final value of the accumulator.\n\n## Examples\n\n```rescript\nArray.reduce([2, 3, 4], 1, (a, b) => a + b) == 10\n\nArray.reduce([\"a\", \"b\", \"c\", \"d\"], \"\", (a, b) => a ++ b) == \"abcd\"\n\n[1, 2, 3]->Array.reduce(list{}, List.add) == list{3, 2, 1}\n\nArray.reduce([], list{}, List.add) == list{}\n```"
         ],
         "signature": "let reduce: (array<'a>, 'b, ('b, 'a) => 'b) => 'b"
       },
@@ -11735,7 +11978,7 @@
         "kind": "value",
         "name": "reduceWithIndex",
         "docstrings": [
-          "`reduceWithIndex(x, init, fn)`\n\nApplies `fn` to each element of `xs` from beginning to end. Function `fn` has three parameters: the item from the array and an “accumulator”, which starts with a value of `init` and the index of each element. `reduceWithIndex` returns the final value of the accumulator.\n\n## Examples\n\n```rescript\nArray.reduceWithIndex([1, 2, 3, 4], 0, (acc, x, i) => acc + x + i) == 16\n\nArray.reduceWithIndex([1, 2, 3], list{}, (acc, v, i) => list{v + i, ...acc}) == list{5, 3, 1}\n\nArray.reduceWithIndex([], list{}, (acc, v, i) => list{v + i, ...acc}) == list{}\n```"
+          "`reduceWithIndex(x, init, fn)`\n\nApplies `fn` to each element of `xs` from beginning to end. Function `fn` has three parameters: the item from the array and an \"accumulator\", which starts with a value of `init` and the index of each element. `reduceWithIndex` returns the final value of the accumulator.\n\n## Examples\n\n```rescript\nArray.reduceWithIndex([1, 2, 3, 4], 0, (acc, x, i) => acc + x + i) == 16\n\nArray.reduceWithIndex([1, 2, 3], list{}, (acc, v, i) => list{v + i, ...acc}) == list{5, 3, 1}\n\nArray.reduceWithIndex([], list{}, (acc, v, i) => list{v + i, ...acc}) == list{}\n```"
         ],
         "signature": "let reduceWithIndex: (array<'a>, 'b, ('b, 'a, int) => 'b) => 'b"
       },
@@ -11877,6 +12120,15 @@
           "`filterMap(array, fn)`\n\nCalls `fn` for each element and returns a new array containing results of the `fn` calls which are not `None`.\n\n## Examples\n\n```rescript\n[\"Hello\", \"Hi\", \"Good bye\"]->Array.filterMap(item =>\n  switch item {\n  | \"Hello\" => Some(item->String.length)\n  | _ => None\n  }\n) == [5]\n\n[1, 2, 3, 4, 5, 6]->Array.filterMap(n => mod(n, 2) == 0 ? Some(n * n) : None) == [4, 16, 36]\n\nArray.filterMap([1, 2, 3, 4, 5, 6], _ => None) == []\n\nArray.filterMap([], n => mod(n, 2) == 0 ? Some(n * n) : None) == []\n```"
         ],
         "signature": "let filterMap: (array<'a>, 'a => option<'b>) => array<'b>"
+      },
+      {
+        "id": "Stdlib.Array.filterMapWithIndex",
+        "kind": "value",
+        "name": "filterMapWithIndex",
+        "docstrings": [
+          "`filterMapWithIndex(array, fn)`\n\nCalls `fn` for each element and returns a new array containing results of the `fn` calls which are not `None`.\n\n## Examples\n\n```rescript\n[\"Hello\", \"Hi\", \"Good bye\"]->Array.filterMapWithIndex((item, index) =>\n  switch item {\n  | \"Hello\" => Some(index)\n  | _ => None\n  }\n) == [0]\n```"
+        ],
+        "signature": "let filterMapWithIndex: (array<'a>, ('a, int) => option<'b>) => array<'b>"
       },
       {
         "id": "Stdlib.Array.keepSome",

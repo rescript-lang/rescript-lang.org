@@ -19,12 +19,16 @@ module Lang: {
 }
 
 module Version: {
+  type numbered =
+    | @as(1) V1
+    | @as(2) V2
+    | @as(3) V3
+    | @as(4) V4
+    | @as(5) V5
+    | @as(6) V6
+
   type t =
-    | V1
-    | V2
-    | V3
-    | V4
-    | V5
+    | ...numbered
     | UnknownVersion(string)
 
   // Helps finding the right API version
@@ -35,6 +39,8 @@ module Version: {
   let defaultTargetLang: Lang.t
 
   let availableLanguages: t => array<Lang.t>
+
+  let isMinimumVersion: (t, numbered) => bool
 }
 
 module LocMsg: {
@@ -158,11 +164,14 @@ module ConversionResult: {
 
 module Config: {
   type t = {
-    module_system: string,
-    warn_flags: string,
+    @as("module_system") moduleSystem: string,
+    @as("warn_flags") warnFlags: string,
     /** Only available in apiVersion > 3 (= ReScript 11+) */
     uncurried?: bool,
-    open_modules?: array<string>,
+    @as("open_modules") openModules?: array<string>,
+    /** Only available in apiVersion >= 6 (= ReScript 12+) */
+    @as("experimental_features") experimentalFeatures?: array<string>,
+    @as("jsx_preserve_mode") jsxPreserveMode?: bool,
   }
 }
 
@@ -201,7 +210,7 @@ module Compiler: {
 
   let setWarnFlags: (t, string) => bool
   let setOpenModules: (t, array<string>) => bool
-  let setConfig: (t, Config.t) => unit
+  let setConfig: (t, Config.t, Version.t) => unit
 
   // General format function
   let convertSyntax: (~fromLang: Lang.t, ~toLang: Lang.t, ~code: string, t) => ConversionResult.t

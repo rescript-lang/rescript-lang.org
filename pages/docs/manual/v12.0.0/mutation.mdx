@@ -2,6 +2,8 @@
 title: "Mutation"
 description: "Imperative and mutative programming capabilities in ReScript"
 canonical: "/docs/manual/v12.0.0/mutation"
+section: "Language Features"
+order: 17
 ---
 
 # Mutation
@@ -17,9 +19,10 @@ Let-bindings are immutable, but you can wrap it with a `ref`, exposed as a recor
 ```res prelude
 let myValue = ref(5)
 ```
+
 ```js
 var myValue = {
-  contents: 5
+  contents: 5,
 };
 ```
 
@@ -34,6 +37,7 @@ You can get the actual value of a `ref` box through accessing its `contents` fie
 ```res example
 let five = myValue.contents // 5
 ```
+
 ```js
 var five = myValue.contents;
 ```
@@ -47,6 +51,7 @@ Assign a new value to `myValue` like so:
 ```res example
 myValue.contents = 6
 ```
+
 ```js
 myValue.contents = 6;
 ```
@@ -60,6 +65,7 @@ We provide a syntax sugar for this:
 ```res example
 myValue := 6
 ```
+
 ```js
 myValue.contents = 6;
 ```

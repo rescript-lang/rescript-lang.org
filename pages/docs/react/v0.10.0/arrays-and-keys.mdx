@@ -77,7 +77,7 @@ module Blog = {
           <p>{React.string(post.content)}</p>
         </div>
     });
-      
+
       <div>
       {sidebar}
       <hr />
@@ -93,7 +93,6 @@ let posts = [
 
 let blog = <Blog posts/>
 ```
-
 
 ## Rendering `list` Values
 
@@ -124,4 +123,3 @@ let make = () => {
 We use `Belt.List.toArray` to convert our list to an array before creating our `array<React.element>`. Please note that using `list` has performance impact due to extra conversion costs.
 
 99% of the time you'll want to use arrays (seamless interop, faster JS code), but in some cases it might make sense to use a `list` to leverage advanced pattern matching features etc.
-

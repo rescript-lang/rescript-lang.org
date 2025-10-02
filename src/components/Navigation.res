@@ -47,6 +47,11 @@ module MobileNav = {
           </Link>
         </li>
         <li className=base>
+          <Link href="/packages" className={linkOrActiveLink(~target="/packages", ~route)}>
+            {React.string("Packages")}
+          </Link>
+        </li>
+        <li className=base>
           <a href=Constants.xHref rel="noopener noreferrer" className=extLink>
             {React.string("X")}
           </a>
@@ -84,12 +89,12 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
     setOverlayOpen(prev => !prev)
   }
 
-  let fixedNav = fixed ? "fixed top-0" : "relative"
+  let fixedNavClassName = fixed ? "fixed top-0" : "relative"
 
   <>
     <header
       id="header"
-      className={fixedNav ++ " items-center z-50 w-full transition duration-300 ease-out group-[.nav-disappear]:-translate-y-16 md:group-[.nav-disappear]:transform-none min-w-[20rem]"}>
+      className={fixedNavClassName ++ " items-center z-50 w-full transition duration-300 ease-out group-[.nav-disappear]:-translate-y-16 md:group-[.nav-disappear]:-translate-y-0 min-w-[20rem]"}>
       <nav className="px-4 flex xs:justify-center bg-gray-90 shadow h-16 text-white-80 text-14">
         <div className="flex justify-between items-center h-full w-full max-w-1280">
           <div className="h-8 w-8 lg:h-10 lg:w-32">
@@ -104,7 +109,7 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
           /* Desktop horizontal navigation */
           <div
             className="flex items-center xs:justify-between w-full bg-gray-90 sm:h-auto sm:relative">
-            <div className="flex ml-10 space-x-5 w-full text-gray-40 max-w-[26rem]">
+            <div className="flex ml-10 space-x-5 w-full text-gray-40 max-w-104">
               <Link
                 href={`/docs/manual/${version}/introduction`} className={isDocRouteActive(~route)}>
                 {React.string("Docs")}
@@ -115,15 +120,23 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
                 className={"hidden xs:block " ++ linkOrActiveLink(~target="/try", ~route)}>
                 {React.string("Playground")}
               </Link>
+
               <Link
                 href="/blog"
                 className={"hidden xs:block " ++ linkOrActiveLinkSubroute(~target="/blog", ~route)}>
                 {React.string("Blog")}
               </Link>
+
               <Link
                 href="/community/overview"
                 className={"hidden xs:block " ++ linkOrActiveLink(~target="/community", ~route)}>
                 {React.string("Community")}
+              </Link>
+
+              <Link
+                href="/packages"
+                className={"hidden xs:block " ++ linkOrActiveLink(~target="/packages", ~route)}>
+                {React.string("Packages")}
               </Link>
             </div>
             <div className="md:flex flex items-center text-gray-60">
@@ -162,7 +175,7 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
         <div
           className={(
             isOverlayOpen ? "flex" : "hidden"
-          ) ++ " top-[4rem] sm:hidden flex-col fixed top-0 left-0 h-full w-full z-50 sm:w-9/12 bg-gray-100 sm:h-auto sm:flex sm:relative sm:flex-row sm:justify-between"}>
+          ) ++ " top-16 sm:hidden flex-col fixed top-0 left-0 h-full w-full z-50 sm:w-9/12 bg-gray-100 sm:h-auto sm:flex sm:relative sm:flex-row sm:justify-between"}>
           <MobileNav route />
         </div>
       </nav>
@@ -170,9 +183,8 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
       {isDocRoute(~route)
         ? <nav
             id="docs-subnav"
-            className="bg-white z-50 px-4 w-full h-12 shadow text-gray-60 text-12 md:text-14 transition duration-300 ease-out group-[.nav-disappear]:-translate-y-32 md:group-[.nav-disappear]:transform-none">
-            <div
-              className="pl-30 flex gap-6 lg:gap-10 items-center h-full w-full max-w-1280 m-auto">
+            className="bg-white z-50 px-4 w-full h-12 shadow text-gray-60 text-12 md:text-14 transition duration-300 ease-out group-[.nav-disappear]:-translate-y-32 md:group-[.nav-disappear]:-translate-y-0">
+            <div className="flex gap-6 lg:gap-10 items-center h-full w-full max-w-1280 m-auto">
               <Link
                 href={`/docs/manual/${version}/introduction`}
                 className={isActiveLink(~includes="/docs/manual/", ~excludes="/api", ~route)}>

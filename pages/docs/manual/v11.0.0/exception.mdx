@@ -17,16 +17,19 @@ exception InputClosed(string)
 // later on
 raise(InputClosed("The stream has closed!"))
 ```
+
 ```js
 import * as Caml_exceptions from "./stdlib/caml_exceptions.js";
 
-var InputClosed = /* @__PURE__ */Caml_exceptions.create("Playground.InputClosed");
+var InputClosed = /* @__PURE__ */ Caml_exceptions.create(
+  "Playground.InputClosed",
+);
 
 throw {
-      RE_EXN_ID: InputClosed,
-      _1: "The stream has closed!",
-      Error: new Error()
-    };
+  RE_EXN_ID: InputClosed,
+  _1: "The stream has closed!",
+  Error: new Error(),
+};
 ```
 
 </CodeTab>
@@ -55,6 +58,7 @@ let result =
   | Not_found => 0 // Default value if getItem throws
   }
 ```
+
 ```js
 import * as Caml_js_exceptions from "./stdlib/caml_js_exceptions.js";
 
@@ -63,17 +67,16 @@ function getItem(item) {
     return 1;
   }
   throw {
-        RE_EXN_ID: "Not_found",
-        Error: new Error()
-      };
+    RE_EXN_ID: "Not_found",
+    Error: new Error(),
+  };
 }
 
 var result;
 
 try {
   result = getItem(2);
-}
-catch (raw_exn){
+} catch (raw_exn) {
   var exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
   if (exn.RE_EXN_ID === "Not_found") {
     result = 0;
@@ -97,6 +100,7 @@ switch list{1, 2, 3}->List.getExn(4) {
 | exception Not_found => Console.log("No such item found!")
 }
 ```
+
 ```js
 import * as Core__List from "./stdlib/core__List.js";
 import * as Caml_js_exceptions from "./stdlib/caml_js_exceptions.js";
@@ -106,19 +110,21 @@ var exit = 0;
 var item;
 
 try {
-  item = Core__List.getExn({
-        hd: 1,
+  item = Core__List.getExn(
+    {
+      hd: 1,
+      tl: {
+        hd: 2,
         tl: {
-          hd: 2,
-          tl: {
-            hd: 3,
-            tl: /* [] */0
-          }
-        }
-      }, 4);
+          hd: 3,
+          tl: /* [] */ 0,
+        },
+      },
+    },
+    4,
+  );
   exit = 1;
-}
-catch (raw_exn){
+} catch (raw_exn) {
   var exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
   if (exn.RE_EXN_ID === "Not_found") {
     console.log("No such item found!");
@@ -151,7 +157,8 @@ let divide = (a, b) =>
 try divide(2, 0)->Console.log catch {
 | Invalid_argument(msg) => Console.log(msg) // Denominator is zero
 }
-```
+
+````
 
 ```js
 import * as Caml_int32 from "./stdlib/caml_int32.js";
@@ -179,7 +186,7 @@ catch (raw_msg){
     throw msg;
   }
 }
-```
+````
 
 </CodeTab>
 
@@ -272,7 +279,6 @@ catch (raw_loc){
 Exception raised to signal that the given arguments do not make sense. This
 exception takes a string as an argument.
 
-
 <CodeTab labels={["ReScript", "JS Output"]}>
 ```res example
 let isValidEmail = email => {
@@ -285,14 +291,14 @@ let isValidEmail = email => {
   }
 }
 
-
 let isValid = try isValidEmail("rescript.org") catch {
 | Failure(msg) => {
-    Console.error(msg)
-    false
-  }
+Console.error(msg)
+false
 }
-```
+}
+
+````
 
 ```js
 import * as Caml_js_exceptions from "./stdlib/caml_js_exceptions.js";
@@ -324,14 +330,13 @@ catch (raw_msg){
     throw msg;
   }
 }
-```
+````
 
 </CodeTab>
 
 ### `Division_by_zero`
 
 Exception raised by integer division and remainder operations when their second argument is zero.
-
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 ```res example
@@ -341,7 +346,8 @@ let result = try Some(10 / 0) catch {
 }
 
 Console.log(result) // None
-```
+
+````
 
 ```js
 import * as Caml_int32 from "./stdlib/caml_int32.js";
@@ -362,7 +368,7 @@ catch (raw_exn){
 }
 
 console.log(result);
-```
+````
 
 </CodeTab>
 
@@ -370,22 +376,21 @@ console.log(result);
 
 To distinguish between JavaScript exceptions and ReScript exceptions, ReScript namespaces JS exceptions under the `Exn.Error(payload)` variant. To catch an exception thrown from the JS side:
 
-
 Throw an exception from JS:
 
 ```js
 // Example.js
 
 exports.someJsFunctionThatThrows = () => {
-    throw new Error("A Glitch in the Matrix!");
-}
+  throw new Error("A Glitch in the Matrix!");
+};
 ```
 
 Then catch it from ReScript:
 
 ```res
 // import the method in Example.js
-@module("./Example") 
+@module("./Example")
 external someJsFunctionThatThrows: () => unit = "someJsFunctionThatThrows"
 
 try {
@@ -413,6 +418,7 @@ let myTest = () => {
   Exn.raiseError("Hello!")
 }
 ```
+
 ```js
 var Js_exn = require("./stdlib/js_exn.js");
 
@@ -428,9 +434,9 @@ Then you can catch it from the JS side:
 ```js
 // after importing `myTest`...
 try {
-  myTest()
+  myTest();
 } catch (e) {
-  console.log(e.message) // "Hello!"
+  console.log(e.message); // "Hello!"
 }
 ```
 
@@ -447,6 +453,7 @@ let myTest = () => {
   raise(BadArgument({myMessage: "Oops!"}))
 }
 ```
+
 ```js
 var Caml_exceptions = require("./stdlib/caml_exceptions.js");
 
@@ -456,7 +463,7 @@ function myTest() {
   throw {
     RE_EXN_ID: BadArgument,
     myMessage: "Oops!",
-    Error: new Error()
+    Error: new Error(),
   };
 }
 ```
@@ -468,10 +475,10 @@ Then, in your JS:
 ```js
 // after importing `myTest`...
 try {
-  myTest()
+  myTest();
 } catch (e) {
-  console.log(e.myMessage) // "Oops!"
-  console.log(e.Error.stack) // the stack trace
+  console.log(e.myMessage); // "Oops!"
+  console.log(e.Error.stack); // the stack trace
 }
 ```
 

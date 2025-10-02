@@ -141,7 +141,7 @@ module Sidebar = {
         ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible bg-white mt-28 md:mt-0"}>
         <aside
           id="sidebar-content"
-          className="relative top-0 px-4 w-full block md:pt-10 md:top-[7rem] md:sticky border-r border-gray-20 overflow-y-auto pb-24 h-auto max-h-[calc(100vh-7rem)]">
+          className="relative top-0 px-4 w-full block md:pt-10 md:top-28 md:sticky border-r border-gray-20 overflow-y-auto pb-24 h-auto max-h-[calc(100vh-7rem)]">
           <button
             onClick={evt => {
               ReactEvent.Mouse.preventDefault(evt)
@@ -317,7 +317,7 @@ let make = (
               <main className="px-4 w-full pt-20 md:ml-12 lg:mr-8 mb-32 md:max-w-576 lg:max-w-740">
                 //width of the right content part
                 <div
-                  className={"z-10 fixed border-b shadow top-[112px] left-0 pl-4 bg-white w-full py-4 md:relative md:border-none md:shadow-none md:p-0 md:top-auto flex items-center transition duration-300 ease-out group-[.nav-disappear]:-translate-y-64 md:group-[.nav-disappear]:transform-none"}>
+                  className={"z-10 fixed border-b shadow top-[112px] left-0 pl-4 bg-white w-full py-4 md:relative md:border-none md:shadow-none md:p-0 md:top-auto flex items-center transition duration-300 ease-out group-[.nav-disappear]:-translate-y-64 md:group-[.nav-disappear]:-translate-y-0"}>
                   <MobileDrawerButton hidden=isNavOpen onClick={handleDrawerButtonClick} />
                   <div
                     className="truncate overflow-x-auto touch-scroll flex items-center space-x-4 md:justify-between mr-4 w-full">

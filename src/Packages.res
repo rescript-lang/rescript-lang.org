@@ -14,8 +14,6 @@ type urlResource = {
   official: bool,
 }
 
-external unsafeToUrlResource: JSON.t => array<urlResource> = "%identity"
-
 type npmPackage = {
   name: string,
   version: string,
@@ -31,13 +29,12 @@ type npmPackage = {
 let packageAllowList: array<string> = []
 
 module Resource = {
-  type t = Npm(npmPackage) | Url(urlResource) | Outdated(npmPackage)
+  type t = Npm(npmPackage) | Outdated(npmPackage)
 
   let getId = (res: t) => {
     switch res {
     | Npm({name})
-    | Outdated({name})
-    | Url({name}) => name
+    | Outdated({name}) => name
     }
   }
 
@@ -56,7 +53,6 @@ module Resource = {
       } else {
         false
       }
-    | Url(_) => false
     }
   }
 
@@ -78,8 +74,7 @@ module Resource = {
   let isOfficial = (res: t) => {
     switch res {
     | Npm(pkg) | Outdated(pkg) =>
-      pkg.name === "rescript" || pkg.name->String.startsWith("@rescript/") || pkg.name === "gentype"
-    | Url(urlRes) => urlRes.official
+      pkg.name === "rescript" || pkg.name->String.startsWith("@rescript/")
     }
   }
 
@@ -103,41 +98,21 @@ module Resource = {
     ->Array.toSorted((a, b) => Float.compare(a["item"].searchScore, b["item"].searchScore))
   }
 
-  let applyUrlResourceSearch = (urls: array<urlResource>, pattern: string): array<
-    Fuse.match<urlResource>,
-  > => {
-    let fuseOpts = Fuse.Options.t(
-      ~shouldSort=true,
-      ~includeScore=true,
-      ~threshold=0.2,
-      ~ignoreLocation=true,
-      ~minMatchCharLength=1,
-      ~keys=["name", "keywords"],
-      (),
-    )
-
-    let fuser = Fuse.make(urls, fuseOpts)
-
-    fuser->Fuse.search(pattern)
-  }
-
   let applySearch = (resources: array<t>, pattern: string): array<t> => {
-    let (allNpms, allUrls, allOutDated) = Array.reduce(resources, ([], [], []), (acc, next) => {
-      let (npms, resources, outdated) = acc
+    let (allNpms, allOutDated) = Array.reduce(resources, ([], []), (acc, next) => {
+      let (npms, outdated) = acc
 
       switch next {
       | Npm(pkg) => Array.push(npms, pkg)->ignore
-      | Url(res) => Array.push(resources, res)->ignore
       | Outdated(pkg) => Array.push(outdated, pkg)->ignore
       }
-      (npms, resources, outdated)
+      (npms, outdated)
     })
 
     let filteredNpm = applyNpmSearch(allNpms, pattern)->Array.map(m => Npm(m["item"]))
-    let filteredUrls = applyUrlResourceSearch(allUrls, pattern)->Array.map(m => Url(m["item"]))
     let filteredOutdated = applyNpmSearch(allOutDated, pattern)->Array.map(m => Outdated(m["item"]))
 
-    Belt.Array.concatMany([filteredNpm, filteredUrls, filteredOutdated])
+    Belt.Array.concatMany([filteredNpm, filteredOutdated])
   }
 }
 
@@ -146,10 +121,6 @@ module Card = {
   let make = (~value: Resource.t, ~onKeywordSelect: option<string => unit>=?) => {
     let icon = switch value {
     | Npm(_) | Outdated(_) => <Icon.Npm className="w-8 opacity-50" />
-    | Url(_) =>
-      <span>
-        <Icon.Hyperlink className="w-8 opacity-50" />
-      </span>
     }
     let linkBox = switch value {
     | Npm(pkg) | Outdated(pkg) =>
@@ -173,18 +144,15 @@ module Card = {
         <a className="hover:text-fire" href={pkg.npmHref}> {React.string("NPM")} </a>
         {repoEl}
       </div>
-    | Url(_) => React.null
     }
 
     let titleHref = switch value {
     | Npm(pkg) | Outdated(pkg) => pkg.repositoryHref->Null.toOption->Option.getOr(pkg.npmHref)
-    | Url(res) => res.urlHref
     }
 
     let (title, description, keywords) = switch value {
     | Npm({name, description, keywords})
-    | Outdated({name, description, keywords})
-    | Url({name, description, keywords}) => (name, description, keywords)
+    | Outdated({name, description, keywords}) => (name, description, keywords)
     }
 
     <div className="bg-gray-5-tr py-6 rounded-lg p-4">
@@ -246,7 +214,6 @@ module Filter = {
     includeOfficial: bool,
     includeCommunity: bool,
     includeNpm: bool,
-    includeUrlResource: bool,
     includeOutdated: bool,
   }
 }
@@ -293,24 +260,15 @@ module InfoSidebar = {
             }}>
             {React.string("Community")}
           </Toggle>
-          <Toggle
-            enabled={filter.includeNpm}
-            toggle={() => {
-              setFilter(prev => {
-                {...prev, Filter.includeNpm: !filter.includeNpm}
-              })
-            }}>
-            {React.string("NPM package")}
-          </Toggle>
-          <Toggle
-            enabled={filter.includeUrlResource}
-            toggle={() => {
-              setFilter(prev => {
-                {...prev, Filter.includeUrlResource: !filter.includeUrlResource}
-              })
-            }}>
-            {React.string("URL resources")}
-          </Toggle>
+          // <Toggle
+          //   enabled={filter.includeNpm}
+          //   toggle={() => {
+          //     setFilter(prev => {
+          //       {...prev, Filter.includeNpm: !filter.includeNpm}
+          //     })
+          //   }}>
+          //   {React.string("NPM package")}
+          // </Toggle>
           <Toggle
             enabled={filter.includeOutdated}
             toggle={() => {
@@ -341,7 +299,6 @@ module InfoSidebar = {
 
 type props = {
   packages: array<npmPackage>,
-  urlResources: array<urlResource>,
   unmaintained: array<npmPackage>,
 }
 
@@ -359,15 +316,13 @@ let default = (props: props) => {
     includeOfficial: true,
     includeCommunity: true,
     includeNpm: true,
-    includeUrlResource: true,
     includeOutdated: false,
   })
 
   let allResources = {
     let npms = props.packages->Array.map(pkg => Resource.Npm(pkg))
-    let urls = props.urlResources->Array.map(res => Resource.Url(res))
     let outdated = props.unmaintained->Array.map(pkg => Resource.Outdated(pkg))
-    Belt.Array.concatMany([npms, urls, outdated])
+    Belt.Array.concatMany([npms, outdated])
   }
 
   let resources = switch state {
@@ -397,7 +352,6 @@ let default = (props: props) => {
     let (official, community) = acc
     let isResourceIncluded = switch next {
     | Npm(_) => filter.includeNpm
-    | Url(_) => filter.includeUrlResource
     | Outdated(_) => filter.includeOutdated && filter.includeNpm
     }
     if !isResourceIncluded {
@@ -489,7 +443,7 @@ let default = (props: props) => {
             className="flex justify-between min-w-320 px-4 pt-16 lg:align-center w-full lg:px-8 pb-48">
             <MdxProvider components=MarkdownComponents.default>
               <main className="max-w-1280 w-full flex justify-center">
-                <div className="w-full max-w-[44.0625rem]">
+                <div className="w-full max-w-176.25">
                   <H1> {React.string("Libraries & Bindings")} </H1>
                   <SearchBox
                     placeholder="Enter a search term, name, keyword, etc"
@@ -614,18 +568,10 @@ let getStaticProps: Next.GetStaticProps.t<props, unit> = async _ctx => {
       }
     })
 
-  let index_data_dir = Node.Path.join2(Node.Process.cwd(), "./data")
-  let urlResources =
-    Node.Path.join2(index_data_dir, "packages_url_resources.json")
-    ->Node.Fs.readFileSync
-    ->JSON.parseOrThrow
-    ->unsafeToUrlResource
-
   {
     "props": {
       packages: pkges,
       unmaintained,
-      urlResources,
     },
   }
 }

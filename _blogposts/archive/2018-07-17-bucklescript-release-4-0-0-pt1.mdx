@@ -9,7 +9,7 @@ description: |
 
 ## Newest Changes
 
-`bs-platform` 4.0.0 is released! It has some  nice features that we want to
+`bs-platform` 4.0.0 is released! It has some nice features that we want to
 share with you, a more detailed list of changes is available
 [here](https://github.com/BuckleScript/bucklescript/blob/master/Changes.md#400)
 
@@ -67,6 +67,7 @@ import {createElement} form "react" ; // not es6 compliant
 import {createElement} from "node_modules/react/index" // not es6 compilant
 import {createElement} from "./node_modules/react/index.js" // correct es6 module
 ```
+
 - ES6 modules does not allow an indirection, by introducing our own NodeJS module loader, we have an indirection and more meta-data about each module, so that we can do more reflection work in the future.
 
 Loading in clean state without packing seems to introduce some redundant work,

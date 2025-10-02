@@ -2,6 +2,8 @@
 title: "Bind to Global JS Values"
 description: "JS interop with global JS values in ReScript"
 canonical: "/docs/manual/v12.0.0/bind-to-global-js-values"
+section: "JavaScript Interop"
+order: 8
 ---
 
 # Bind to Global JS Values
@@ -16,6 +18,7 @@ Some JS values, like `setTimeout`, live in the global scope. You can bind to the
 @val external setTimeout: (unit => unit, int) => float = "setTimeout"
 @val external clearTimeout: float => unit = "clearTimeout"
 ```
+
 ```js
 // Empty output
 ```
@@ -46,6 +49,7 @@ type timerId
 let id = setTimeout(() => Console.log("hello"), 100)
 clearTimeout(id)
 ```
+
 ```js
 var id = setTimeout(function (param) {
   console.log("hello");
@@ -70,6 +74,7 @@ If you want to bind to a value inside a global module, e.g. `Math.random`, attac
 @scope("Math") @val external random: unit => float = "random"
 let someNumber = random()
 ```
+
 ```js
 var someNumber = Math.random();
 ```
@@ -84,6 +89,7 @@ you can bind to an arbitrarily deep object by passing a tuple to `scope`:
 @val @scope(("window", "location", "ancestorOrigins"))
 external length: int = "length"
 ```
+
 ```js
 // Empty output
 ```
@@ -106,6 +112,7 @@ switch %external(__DEV__) {
 | None => Console.log("production mode")
 }
 ```
+
 ```js
 var match = typeof __DEV__ === "undefined" ? undefined : __DEV__;
 
@@ -130,8 +137,9 @@ switch %external(__filename) {
 | None => Console.log("non-node environment")
 };
 ```
+
 ```js
-var match = typeof (__filename) === "undefined" ? undefined : (__filename);
+var match = typeof __filename === "undefined" ? undefined : __filename;
 
 if (match !== undefined) {
   console.log(match);

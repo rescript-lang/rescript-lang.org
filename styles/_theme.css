@@ -1,11 +1,11 @@
 /* purgecss start ignore */
 .theme-reason {
-  --color-text-primary-dark: theme('colors.fire.DEFAULT');
-  --color-text-primary: theme('colors.fire.DEFAULT');
-  --color-text-primary-light: theme('colors.fire.DEFAULT');
-  --color-text-primary-80: theme('colors.fire.90');
-  --color-text-primary-40: theme('colors.fire.50');
-  --color-text-primary-15: theme('colors.fire.10');
+  --color-text-primary-dark: theme("colors.fire.DEFAULT");
+  --color-text-primary: theme("colors.fire.DEFAULT");
+  --color-text-primary-light: theme("colors.fire.DEFAULT");
+  --color-text-primary-80: theme("colors.fire.90");
+  --color-text-primary-40: theme("colors.fire.50");
+  --color-text-primary-15: theme("colors.fire.10");
 }
 
 .list-fire li::before {

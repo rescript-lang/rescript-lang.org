@@ -38,7 +38,8 @@
   "Advanced Features": [
     "extensible-variant",
     "scoped-polymorphic-types",
-    "module-functions"
+    "module-functions",
+    "generalized-algebraic-data-types"
   ],
   "JavaScript Interop": [
     "interop-cheatsheet",
@@ -67,13 +68,6 @@
     "build-performance",
     "warning-numbers"
   ],
-  "Guides": [
-    "converting-from-js"
-  ],
-  "Extra": [
-    "newcomer-examples",
-    "project-structure",
-    "faq",
-    "llms"
-  ]
+  "Guides": ["converting-from-js"],
+  "Extra": ["newcomer-examples", "project-structure", "faq", "llms"]
 }

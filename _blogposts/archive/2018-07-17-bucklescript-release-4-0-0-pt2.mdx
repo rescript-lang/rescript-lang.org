@@ -24,13 +24,13 @@ a special boxed representation is used.
 
 The construction of new values `Some(-)`, and pattern matching `| Some(-) =>
 ...`, perform some case analysis to decide when to box or unbox values. In the
-absence of nested optionals, the result of both operations will *always* be the
+absence of nested optionals, the result of both operations will _always_ be the
 indentity.
 
 Because of that, it's possible to use type-based optimization to avoid
-performing case analysis in the first place.  So while the generic function
-```(x) => Some(x)``` will generate code to check wheter `x` should be boxed,
-the more type-specific function ```(x:int) => Some(x)``` is just compiled as
+performing case analysis in the first place. So while the generic function
+`(x) => Some(x)` will generate code to check wheter `x` should be boxed,
+the more type-specific function `(x:int) => Some(x)` is just compiled as
 the identity function, as it's clear from the type that no boxing is required.
 
 For a high-level formalization of the boxing and unboxing operations, as well

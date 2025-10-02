@@ -1,6 +1,15 @@
 ---
 id: "type-coercion"
-keywords: ["operator", "type", "coercion", "polymorphic", "variant", "polyvar", "object"]
+keywords:
+  [
+    "operator",
+    "type",
+    "coercion",
+    "polymorphic",
+    "variant",
+    "polyvar",
+    "object",
+  ]
 name: ":>"
 summary: "This is the `type coercion` operator."
 category: "operators"
@@ -9,6 +18,7 @@ category: "operators"
 The `:>` operator may be used to convert a polymorphic variant to a `string` or `int`, or convert an [object](/docs/manual/latest/object) to a type with a subset of its fields.
 
 _Since ReScript `11.0.0`_ coercion also works for converting
+
 - from `int` to `float`
 - from record to record with the same field(s) or when record A is a subtype of record B
 - from `@unboxed` variant with only strings to `string`
@@ -118,10 +128,9 @@ var y = x;
 
 </CodeTab>
 
-
 ### References
 
-* [Int-to-Float Coercion](/docs/manual/latest/primitive-types#int-to-float-coercion)
-* [Variant Coercion](/docs/manual/latest/variant#coercion)
-* [Polymorphic Variant Coercion](/docs/manual/latest/polymorphic-variant#coercion)
-* [Record Type Coercion](/docs/manual/latest/record#record-type-coercion)
+- [Int-to-Float Coercion](/docs/manual/latest/primitive-types#int-to-float-coercion)
+- [Variant Coercion](/docs/manual/latest/variant#coercion)
+- [Polymorphic Variant Coercion](/docs/manual/latest/polymorphic-variant#coercion)
+- [Record Type Coercion](/docs/manual/latest/record#record-type-coercion)

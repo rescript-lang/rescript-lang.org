@@ -48,7 +48,7 @@
   background-color: rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(0px);
   cursor: inherit !important;
-  transition: all .05s ease;
+  transition: all 0.05s ease;
   @apply fixed top-0 left-0 flex flex-col;
 }
 
@@ -68,10 +68,10 @@
 }
 
 .DocSearch-Modal {
-  @apply relative min-h-0 mx-auto bg-white w-full flex flex-col shadow-lg max-w-screen-md rounded-lg;
+  @apply relative min-h-0 mx-auto bg-white w-full flex flex-col shadow-lg max-w-(--breakpoint-md) rounded-lg;
   transform: scale(0.95);
   opacity: 0;
-  transition: all .2s ease;
+  transition: all 0.2s ease;
 }
 
 .DocSearch--active {
@@ -93,7 +93,7 @@
 }
 
 .DocSearch-Input {
-  @apply h-14 w-full appearance-none focus:outline-none bg-transparent border-none flex-1 text-14 px-4;
+  @apply h-14 w-full appearance-none focus:outline-hidden bg-transparent border-none flex-1 text-14 px-4;
 }
 
 .DocSearch-Input::placeholder {
@@ -213,11 +213,11 @@
   @apply text-gray-40 opacity-50 stroke-2 w-5 h-7;
 }
 
-.DocSearch-Hit[aria-selected='true'] a {
+.DocSearch-Hit[aria-selected="true"] a {
   @apply bg-gray-20;
 }
 
-.DocSearch-Hit[aria-selected='true'] mark {
+.DocSearch-Hit[aria-selected="true"] mark {
   text-decoration: none;
 }
 
@@ -250,7 +250,7 @@ svg.DocSearch-Hit-Select-Icon {
   display: none;
 }
 
-.DocSearch-Hit[aria-selected='true'] .DocSearch-Hit-Select-Icon {
+.DocSearch-Hit[aria-selected="true"] .DocSearch-Hit-Select-Icon {
   display: block;
 }
 
@@ -260,7 +260,7 @@ svg.DocSearch-Hit-Select-Icon {
 }
 
 .DocSearch-Hit-content-wrapper {
-  @apply flex flex-auto flex-col justify-center whitespace-nowrap overflow-ellipsis relative font-medium pl-4 pr-4 overflow-hidden;
+  @apply flex flex-auto flex-col justify-center whitespace-nowrap text-ellipsis relative font-medium pl-4 pr-4 overflow-hidden;
 }
 
 .DocSearch-Hit-title {
@@ -271,13 +271,13 @@ svg.DocSearch-Hit-Select-Icon {
   @apply text-12;
 }
 
-.DocSearch-Hit[aria-selected='true'] .DocSearch-Hit-title,
-.DocSearch-Hit[aria-selected='true'] mark,
-.DocSearch-Hit[aria-selected='true'] .DocSearch-Hit-text,
-.DocSearch-Hit[aria-selected='true'] .DocSearch-Hit-path,
-.DocSearch-Hit[aria-selected='true'] .DocSearch-Hit-icon,
-.DocSearch-Hit[aria-selected='true'] .DocSearch-Hit-action,
-.DocSearch-Hit[aria-selected='true'] .DocSearch-Hit-Tree {
+.DocSearch-Hit[aria-selected="true"] .DocSearch-Hit-title,
+.DocSearch-Hit[aria-selected="true"] mark,
+.DocSearch-Hit[aria-selected="true"] .DocSearch-Hit-text,
+.DocSearch-Hit[aria-selected="true"] .DocSearch-Hit-path,
+.DocSearch-Hit[aria-selected="true"] .DocSearch-Hit-icon,
+.DocSearch-Hit[aria-selected="true"] .DocSearch-Hit-action,
+.DocSearch-Hit[aria-selected="true"] .DocSearch-Hit-Tree {
   color: none;
 }
 

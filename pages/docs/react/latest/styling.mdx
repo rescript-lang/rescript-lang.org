@@ -2,6 +2,8 @@
 title: Styling
 description: "Styling in ReScript & React"
 canonical: "/docs/react/latest/styling"
+section: "Main Concepts"
+order: 9
 ---
 
 # Styling
@@ -114,7 +116,7 @@ let make = (~active: bool) => {
     "text-red-600"
   }
 
-  <div className={`border-1 border-black ${activeClass}`}>
+  <div className={`border border-black ${activeClass}`}>
     {React.string("Hello World")}
   </div>
 }

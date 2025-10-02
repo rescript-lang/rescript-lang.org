@@ -6,7 +6,7 @@ summary: "This is the `@string` decorator."
 category: "decorators"
 ---
 
-The `@string` decorator can be used with [polymorphic variants](/docs/manual/latest/polymorphic-variant) and the `@as` decorator on *externals* to modify the string values used for the variants in the compiled JavaScript.
+The `@string` decorator can be used with [polymorphic variants](/docs/manual/latest/polymorphic-variant) and the `@as` decorator on _externals_ to modify the string values used for the variants in the compiled JavaScript.
 
 ### Example
 
@@ -16,7 +16,7 @@ The `@string` decorator can be used with [polymorphic variants](/docs/manual/lat
 @val external setStatus: @string[
   @as("NOT_STARTED") #NotStarted |
   @as("STARTED") #Started |
-  @as("DONE") #Done 
+  @as("DONE") #Done
 ] => unit = "setStatus"
 
 setStatus(#NotStarted)
@@ -30,4 +30,4 @@ setStatus("NOT_STARTED");
 
 ### References
 
-* [Constrain Arguments Better](/docs/manual/latest/bind-to-js-function#constrain-arguments-better)
+- [Constrain Arguments Better](/docs/manual/latest/bind-to-js-function#constrain-arguments-better)

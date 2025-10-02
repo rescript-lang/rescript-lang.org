@@ -2,6 +2,8 @@
 title: "TypeScript"
 description: "GenType - Interoperability between ReScript and TypeScript"
 canonical: "/docs/manual/v12.0.0/typescript-integration"
+section: "JavaScript Interop"
+order: 15
 ---
 
 # ReScript & TypeScript
@@ -68,9 +70,8 @@ import * as ColorJS from "./Color.res.js";
 
 export type color = "Red" | "Blue";
 
-export const printColorMessage: (
-  color: color
-) => void = ColorJS.printColorMessage as any;
+export const printColorMessage: (color: color) => void =
+  ColorJS.printColorMessage as any;
 ```
 
 genType automatically maps the `color` variant to TS via a string union type `"Red" | "Blue"`.
@@ -87,7 +88,7 @@ printColorMessage("Red", "Hello, genType!");
 
 ## Exporting an entire module
 
-_Since ReScript `11.0.0`_ modules can be annotated with `@genType` as well. In that case, all types and values of the module will be converted to TS types. Example: 
+_Since ReScript `11.0.0`_ modules can be annotated with `@genType` as well. In that case, all types and values of the module will be converted to TS types. Example:
 
 <CodeTab labels={["ReScript", "TypeScript Output"]}>
 
@@ -109,17 +110,17 @@ module Size = {
 ```
 
 ```ts
-import * as MyCompBS__Es6Import from './MyComp.res';
+import * as MyCompBS__Es6Import from "./MyComp.res";
 const MyCompBS: any = MyCompBS__Es6Import;
 
 export type Size_t = "Small" | "Medium" | "Large";
 
-export const Size_getNum: (size:Size_t) => number = MyCompBS.Size.getNum;
+export const Size_getNum: (size: Size_t) => number = MyCompBS.Size.getNum;
 
-export const Size: { getNum: (size:Size_t) => number } = MyCompBS.Size
+export const Size: { getNum: (size: Size_t) => number } = MyCompBS.Size;
 ```
-</CodeTab>
 
+</CodeTab>
 
 ## Setup
 
@@ -214,13 +215,13 @@ These features are for experimentation only. They could be changed/removed any t
 
 - Export object and record types as interfaces. To activate, add `"exportInterfaces": true` to the configuration. The types are also renamed from `name` to `Iname`.
 
-
 ## Shims
 
 A shim is a TS file that provides user-provided definitions for library types.
 
 Required only if one needs to export certain basic ReScript data types to JS when one cannot modify the sources to add annotations (e.g. exporting ReScript lists), and if the types are not first-classed in genType.
-  - Example: `Array<string>` with format: `"RescriptModule=JavaScriptModule"`
+
+- Example: `Array<string>` with format: `"RescriptModule=JavaScriptModule"`
 
 Configure your shim files within `"gentypeconfig"` in your [`rescript.json`]:
 
@@ -232,12 +233,12 @@ Configure your shim files within `"gentypeconfig"` in your [`rescript.json`]:
       "ReactEvent": "ReactEvent",
       "RescriptPervasives": "RescriptPervasives",
       "ReasonReact": "ReactShim"
-    },
-  },
+    }
+  }
 }
 ```
 
-and add relevant `.shim.ts` files in a directory which is visible by ReScript e.g. 
+and add relevant `.shim.ts` files in a directory which is visible by ReScript e.g.
 
 ```
 ├── rescript.json

@@ -1,9 +1,5 @@
 {
-  "Overview": [
-    "introduction",
-    "installation",
-    "migrate-react"
-  ],
+  "Overview": ["introduction", "installation", "migrate-react"],
   "Main Concepts": [
     "elements-and-jsx",
     "rendering-elements",
@@ -23,12 +19,6 @@
     "hooks-ref",
     "hooks-custom"
   ],
-  "Guides": [
-    "beyond-jsx",
-    "forwarding-refs",
-    "extensions-of-props"
-  ],
-  "Extra": [
-    "llms"
-  ]
+  "Guides": ["beyond-jsx", "forwarding-refs", "extensions-of-props"],
+  "Extra": ["llms"]
 }

@@ -8,14 +8,6 @@
     "node": ">=20"
   },
   "type": "module",
-  "postcss": {
-    "plugins": {
-      "postcss-import": {},
-      "tailwindcss/nesting": "postcss-nesting",
-      "tailwindcss": {},
-      "autoprefixer": {}
-    }
-  },
   "dependencies": {
     "@babel/generator": "^7.24.7",
     "@babel/parser": "^7.24.7",
@@ -24,20 +16,18 @@
     "@headlessui/react": "^2.2.4",
     "@mdx-js/loader": "^3.1.0",
     "@rescript/react": "^0.14.0-rc.1",
-    "@rescript/webapi": "^0.1.0-experimental-03eae8b",
+    "@rescript/webapi": "^0.1.0-experimental-0b87498",
     "codemirror": "^5.54.0",
     "docson": "^2.1.0",
     "escodegen": "^2.1.0",
     "eslint-config-next": "^13.1.1",
     "fuse.js": "^6.4.3",
-    "gentype": "^3.44.0",
     "glob": "^7.1.4",
     "highlight.js": "^11.9.0",
     "highlightjs-rescript": "^0.2.2",
     "lz-string": "^1.4.4",
-    "next": "^15.0.0",
+    "next": "^15.4.7",
     "next-mdx-remote": "^5.0.0",
-    "prettier": "^1.18.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-markdown": "^10.1.0",
@@ -51,7 +41,7 @@
     "remark-rehype": "^11.1.1",
     "remark-stringify": "^11.0.0",
     "request": "^2.88.0",
-    "rescript": "^12.0.0-alpha.14",
+    "rescript": "^12.0.0-beta.6",
     "stringify-object": "^3.3.0",
     "unified": "^11.0.5",
     "vfile-matter": "^5.0.0"
@@ -65,10 +55,14 @@
     "update-index": "npm run generate-llms && node scripts/extract-indices.mjs && node scripts/extract-tocs.mjs && node scripts/extract-syntax.mjs && node scripts/generate_feed.mjs > public/blog/feed.xml",
     "sync-bundles": "node scripts/sync-playground-bundles.mjs",
     "generate-llms": "node scripts/generate_llms.mjs",
-    "generate-resources": "node scripts/generate_resources.mjs"
+    "generate-resources": "node scripts/generate_resources.mjs",
+    "format": "prettier . --write --experimental-cli && rescript format",
+    "ci:format": "prettier . --check --experimental-cli"
   },
   "devDependencies": {
     "@mdx-js/react": "^2.3.0",
+    "@prettier/plugin-oxc": "^0.0.4",
+    "@tailwindcss/postcss": "^4.1.11",
     "autoprefixer": "^10.4.14",
     "cssnano": "^6.0.1",
     "dotenv": "^16.4.7",
@@ -77,8 +71,9 @@
     "postcss": "^8.4.27",
     "postcss-cli": "^8.3.0",
     "postcss-nesting": "^12.1.1",
+    "prettier": "^3.6.2",
     "reanalyze": "^2.16.0",
     "simple-functional-loader": "^1.2.1",
-    "tailwindcss": "^3.3.3"
+    "tailwindcss": "^4"
   }
 }

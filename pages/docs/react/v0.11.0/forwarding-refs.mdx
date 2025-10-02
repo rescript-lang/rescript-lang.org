@@ -75,7 +75,6 @@ let make = () => {
 
 We use the `ReactDOM.domRef` type to represent our `inputRef`. We pass our ref in the exact same manner as we'd do a DOM `ref` attribute (`<input ref={ReactDOM.Ref.domRef(myRef)} />`).
 
-
 ## [Discouraged] React.forwardRef
 
 **Note:** We discourage this method since it will likely go away at some point, and doesn't yield any obvious advantages over the previously mentioned ref prop passing.
@@ -136,12 +135,12 @@ var make = React.forwardRef(function (props, ref) {
         ref == null ? undefined : Caml_option.some(ref),
         function (prim) {
           return prim;
-        }
+        },
       ),
       className: props.className,
       type: "text",
     }),
-    props.children
+    props.children,
   );
 });
 
@@ -156,7 +155,7 @@ function App(props) {
       Caml_option.nullable_to_opt(input.current),
       function (input) {
         input.focus();
-      }
+      },
     );
   };
   return React.createElement(
@@ -169,10 +168,10 @@ function App(props) {
         {
           onClick: onClick,
         },
-        "Click to focus"
+        "Click to focus",
       ),
       ref: input,
-    })
+    }),
   );
 }
 ```

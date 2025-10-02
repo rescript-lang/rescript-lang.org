@@ -2,6 +2,8 @@
 title: "Polymorphic Variant"
 description: "The Polymorphic Variant data structure in ReScript"
 canonical: "/docs/manual/v12.0.0/polymorphic-variant"
+section: "Language Features"
+order: 10
 ---
 
 # Polymorphic Variant
@@ -126,15 +128,12 @@ let him: account = #Facebook("Josh", 26)
 ```js
 var me = {
   NAME: "Instagram",
-  VAL: "Jenny"
+  VAL: "Jenny",
 };
 
 var him = {
   NAME: "Facebook",
-  VAL: [
-    "Josh",
-    26
-  ]
+  VAL: ["Josh", 26],
 };
 ```
 
@@ -297,7 +296,6 @@ export const myDirection = Direction.Up
 
 For this particular example, we can also inline poly variant type definitions to design the type for the imported `myDirection` value:
 
-
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
@@ -412,14 +410,17 @@ One might think that polymorphic variants are superior to regular [variants](./v
 
 - Due to their "structural" nature, poly variant's type errors might be more confusing. If you accidentally write `#blur` instead of `#blue`, ReScript will still error but can't indicate the correct source as easily. Regular variants' source of truth is the type definition, so the error can't go wrong.
 - It's also harder to refactor poly variants. Consider this:
+
   ```res
   let myFruit = #Apple
   let mySecondFruit = #Apple
   let myCompany = #Apple
   ```
+
   Refactoring the first one to `#Orange` doesn't mean we should refactor the third one. Therefore, the editor plugin can't touch the second one either. Regular variant doesn't have such problem, as these 2 values presumably come from different variant type definitions.
 
 - You might lose some nice pattern match checks from the compiler:
+
   ```res
   let myColor = #red
 
@@ -428,6 +429,7 @@ One might think that polymorphic variants are superior to regular [variants](./v
   | #blue => Console.log("Hello blue!")
   }
   ```
+
   Because there's no poly variant definition, it's hard to know whether the `#blue` case can be safely removed.
 
 In most scenarios, we'd recommend to use regular variants over polymorphic variants, especially when you are writing plain ReScript code. In case you want to write zero-cost interop bindings or generate clean JS output, poly variants are oftentimes a better option.
