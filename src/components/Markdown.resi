@@ -174,3 +174,8 @@ module Video: {
 /* Sets our preferred branded styles
    We most likely will never need a different ~components
    option on our website. */
+
+module MarkdownTable: {
+  @react.component
+  let make: (~children: string) => React.element
+}

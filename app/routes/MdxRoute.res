@@ -40,6 +40,7 @@ let components = {
   "UrlBox": Markdown.UrlBox.make,
   "Video": Markdown.Video.make,
   "Warn": Markdown.Warn.make,
+  "MarkdownTable": Markdown.MarkdownTable.make,
 }
 
 // The loadAllMdx function logs out all of the file contents as it reads them, which is noisy and not useful.
