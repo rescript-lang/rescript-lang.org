@@ -112,7 +112,7 @@ try (foo()) { | exn => throw(exn) }
 ```
 
 - Uses of e.g. `List.head` are interpreted as belonging to the standard library. If you re-define `List` in the local scope, the analysis it will think it's dealing with `List` from the standard library.
-- There is no special support for functors.
+- There is no special support for module functions.
 
 ### Guide
 
