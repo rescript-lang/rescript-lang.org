@@ -20,7 +20,8 @@
     "generate-llms": "node scripts/generate_llms.mjs",
     "generate-resources": "node scripts/generate_resources.mjs",
     "format": "prettier . --write --experimental-cli && rescript format",
-    "ci:format": "prettier . --check --experimental-cli"
+    "ci:format": "prettier . --check --experimental-cli",
+    "preview": "npm run build && static-server build/client"
   },
   "dependencies": {
     "@babel/generator": "^7.24.7",
@@ -29,6 +30,7 @@
     "@docsearch/react": "^3.9.0",
     "@headlessui/react": "^2.2.4",
     "@mdx-js/loader": "^3.1.0",
+    "@node-cli/static-server": "^3.1.4",
     "@react-router/node": "^7.8.1",
     "@rescript/react": "^0.14.0-rc.1",
     "@rescript/webapi": "^0.1.0-experimental-ae90e53",
@@ -86,7 +88,6 @@
     "prettier": "^3.6.2",
     "reanalyze": "^2.16.0",
     "simple-functional-loader": "^1.2.1",
-    "srv-cli": "^0.4.1",
     "tailwindcss": "^4",
     "vite": "^7.0.6"
   }
