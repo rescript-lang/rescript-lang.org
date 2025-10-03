@@ -192,7 +192,7 @@
         "kind": "value",
         "name": "assertEqual",
         "docstrings": [
-          "`assertEqual(a, b)` check if `a` is equal `b`. If not raise a panic exception\n\n## Examples\n\n```rescript\nlist{1, 2}->List.tailExn == list{2}\n```"
+          "`assertEqual(a, b)` check if `a` is equal `b`. If not throw a panic exception\n\n## Examples\n\n```rescript\nlist{1, 2}->List.tailExn == list{2}\n```"
         ],
         "signature": "let assertEqual: ('a, 'a) => unit"
       },
@@ -614,7 +614,7 @@
         "kind": "value",
         "name": "pow",
         "docstrings": [
-          "`pow(a, ~exp)` raises the given base `a` to the given exponent `exp`.\nSee [`Math.pow`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/pow) on MDN.\n\n  ## Examples\n\n  ```rescript\n  Math.Int.pow(2, ~exp=4) == 16\n  Math.Int.pow(3, ~exp=4) == 81\n  ```"
+          "`pow(a, ~exp)` throws the given base `a` to the given exponent `exp`.\nSee [`Math.pow`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/pow) on MDN.\n\n  ## Examples\n\n  ```rescript\n  Math.Int.pow(2, ~exp=4) == 16\n  Math.Int.pow(3, ~exp=4) == 81\n  ```"
         ],
         "signature": "let pow: (int, ~exp: int) => int"
       },
@@ -5699,18 +5699,18 @@
         "kind": "value",
         "name": "equal",
         "docstrings": [
-          "`equal(res1, res2, f)`: Determine if two `Result` variables are equal with\nrespect to an equality function. If `res1` and `res2` are of the form `Ok(n)`\nand `Ok(m)`, return the result of `f(n, m)`. If one of `res1` and `res2` are of\nthe form `Error(e)`, return false If both `res1` and `res2` are of the form\n`Error(e)`, return true\n\n## Examples\n\n```rescript\nlet good1 = Ok(42)\n\nlet good2 = Ok(32)\n\nlet bad1 = Error(\"invalid\")\n\nlet bad2 = Error(\"really invalid\")\n\nlet mod10equal = (a, b) => mod(a, 10) === mod(b, 10)\n\nResult.equal(good1, good2, mod10equal) == true\n\nResult.equal(good1, bad1, mod10equal) == false\n\nResult.equal(bad2, good2, mod10equal) == false\n\nResult.equal(bad1, bad2, mod10equal) == true\n```"
+          "`equal(res1, res2, eqOk, eqError)`: Determine if two `Result` variables are equal with\nrespect to equality functions. If `res1` and `res2` are of the form `Ok(n)`\nand `Ok(m)`, return the result of `eqOk(n, m)`. If one of `res1` and `res2` are of\nthe form `Error(e)`, return false If both `res1` and `res2` are of the form\n`Error(e)`, return the result of `eqError(e1, e2)`.\n\n## Examples\n\n```rescript\nlet good1 = Ok(42)\n\nlet good2 = Ok(32)\n\nlet bad1 = Error(\"invalid\")\n\nlet bad2 = Error(\"really invalid\")\n\nlet mod10equal = (a, b) => mod(a, 10) === mod(b, 10)\n\nResult.equal(good1, good2, mod10equal, String.equal) == true\n\nResult.equal(good1, bad1, mod10equal, String.equal) == false\n\nResult.equal(bad2, good2, mod10equal, String.equal) == false\n\nResult.equal(bad1, bad2, mod10equal, String.equal) == false\n```"
         ],
-        "signature": "let equal: (result<'a, 'c>, result<'b, 'd>, ('a, 'b) => bool) => bool"
+        "signature": "let equal: (\n  result<'a, 'c>,\n  result<'b, 'd>,\n  ('a, 'b) => bool,\n  ('c, 'd) => bool,\n) => bool"
       },
       {
         "id": "Stdlib.Result.compare",
         "kind": "value",
         "name": "compare",
         "docstrings": [
-          "`compare(res1, res2, f)`: Compare two `Result` variables with respect to a\ncomparison function. The comparison function returns -1. if the first variable\nis \"less than\" the second, 0. if the two variables are equal, and 1. if the first\nis \"greater than\" the second.\n\nIf `res1` and `res2` are of the form `Ok(n)` and `Ok(m)`, return the result of\n`f(n, m)`. If `res1` is of the form `Error(e)` and `res2` of the form `Ok(n)`,\nreturn -1. (nothing is less than something) If `res1` is of the form `Ok(n)` and\n`res2` of the form `Error(e)`, return 1. (something is greater than nothing) If\nboth `res1` and `res2` are of the form `Error(e)`, return 0. (equal)\n\n## Examples\n\n```rescript\nlet good1 = Ok(59)\n\nlet good2 = Ok(37)\n\nlet bad1 = Error(\"invalid\")\n\nlet bad2 = Error(\"really invalid\")\n\nlet mod10cmp = (a, b) => Int.compare(mod(a, 10), mod(b, 10))\n\nResult.compare(Ok(39), Ok(57), mod10cmp) == 1.\n\nResult.compare(Ok(57), Ok(39), mod10cmp) == -1.\n\nResult.compare(Ok(39), Error(\"y\"), mod10cmp) == 1.\n\nResult.compare(Error(\"x\"), Ok(57), mod10cmp) == -1.\n\nResult.compare(Error(\"x\"), Error(\"y\"), mod10cmp) == 0.\n```"
+          "`compare(res1, res2, cmpOk, cmpError)`: Compare two `Result` variables with respect to a\ncomparison function. The comparison function returns -1. if the first variable\nis \"less than\" the second, 0. if the two variables are equal, and 1. if the first\nis \"greater than\" the second.\n\nIf `res1` and `res2` are of the form `Ok(n)` and `Ok(m)`, return the result of\n`cmpOk(n, m)`. If `res1` is of the form `Error(e)` and `res2` of the form `Ok(n)`,\nreturn -1. (nothing is less than something) If `res1` is of the form `Ok(n)` and\n`res2` is of the form `Error(e)`, return 1. (something is greater than nothing) If\nboth `res1` and `res2` are of the form `Error(e)`, return cmpError(e1, e2).\n\n## Examples\n\n```rescript\nlet good1 = Ok(59)\n\nlet good2 = Ok(37)\n\nlet bad1 = Error(\"invalid\")\n\nlet bad2 = Error(\"really invalid\")\n\nlet mod10cmp = (a, b) => Int.compare(mod(a, 10), mod(b, 10))\n\nResult.compare(Ok(39), Ok(57), mod10cmp, String.compare) == 1.\n\nResult.compare(Ok(57), Ok(39), mod10cmp, String.compare) == -1.\n\nResult.compare(Ok(39), Error(\"y\"), mod10cmp, String.compare) == 1.\n\nResult.compare(Error(\"x\"), Ok(57), mod10cmp, String.compare) == -1.\n\nResult.compare(Error(\"x\"), Error(\"y\"), mod10cmp, String.compare) == -1.\n```"
         ],
-        "signature": "let compare: (\n  result<'a, 'c>,\n  result<'b, 'd>,\n  ('a, 'b) => Ordering.t,\n) => Ordering.t"
+        "signature": "let compare: (\n  result<'a, 'c>,\n  result<'b, 'd>,\n  ('a, 'b) => Ordering.t,\n  ('c, 'd) => Ordering.t,\n) => Ordering.t"
       },
       {
         "id": "Stdlib.Result.forEach",
@@ -6216,7 +6216,7 @@
         "kind": "value",
         "name": "done",
         "docstrings": [
-          "`done(p)` is a safe way to ignore a promise. If a value is anything else than a\npromise, it will raise a type error."
+          "`done(p)` is a safe way to ignore a promise. If a value is anything else than a\npromise, it will throw a type error."
         ],
         "signature": "let done: promise<'a> => unit",
         "deprecated": "Please use `Promise.ignore` instead"
@@ -6904,7 +6904,7 @@
         "kind": "value",
         "name": "getExn",
         "docstrings": [
-          "`getExn(value)` raises an exception if `null` or `undefined`, otherwise returns the value.\n\n```rescript\nswitch Nullable.getExn(%raw(\"'Hello'\")) {\n| exception Invalid_argument(_) => assert(false)\n| value => value == \"Hello\"\n}\n\nswitch Nullable.getExn(%raw(\"null\")) {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n\nswitch Nullable.getExn(%raw(\"undefined\")) {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises `Invalid_argument` if `value` is `null` or `undefined`"
+          "`getExn(value)` throws an exception if `null` or `undefined`, otherwise returns the value.\n\n```rescript\nswitch Nullable.getExn(%raw(\"'Hello'\")) {\n| exception Invalid_argument(_) => assert(false)\n| value => value == \"Hello\"\n}\n\nswitch Nullable.getExn(%raw(\"null\")) {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n\nswitch Nullable.getExn(%raw(\"undefined\")) {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Throws `Invalid_argument` if `value` is `null` or `undefined`"
         ],
         "signature": "let getExn: t<'a> => 'a",
         "deprecated": "Use `getOrThrow` instead"
@@ -6914,7 +6914,7 @@
         "kind": "value",
         "name": "getOrThrow",
         "docstrings": [
-          "`getOrThrow(value)` raises an exception if `null` or `undefined`, otherwise returns the value.\n\n```rescript\nswitch Nullable.getOrThrow(%raw(\"'Hello'\")) {\n| exception Invalid_argument(_) => assert(false)\n| value => value == \"Hello\"\n}\n\nswitch Nullable.getOrThrow(%raw(\"null\")) {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n\nswitch Nullable.getOrThrow(%raw(\"undefined\")) {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises `Invalid_argument` if `value` is `null` or `undefined`"
+          "`getOrThrow(value)` throws an exception if `null` or `undefined`, otherwise returns the value.\n\n```rescript\nswitch Nullable.getOrThrow(%raw(\"'Hello'\")) {\n| exception Invalid_argument(_) => assert(false)\n| value => value == \"Hello\"\n}\n\nswitch Nullable.getOrThrow(%raw(\"null\")) {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n\nswitch Nullable.getOrThrow(%raw(\"undefined\")) {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Throws `Invalid_argument` if `value` is `null` or `undefined`"
         ],
         "signature": "let getOrThrow: t<'a> => 'a"
       },
@@ -6923,7 +6923,7 @@
         "kind": "value",
         "name": "getUnsafe",
         "docstrings": [
-          "`getUnsafe(value)` returns `value`.\n\n## Examples\n\n```rescript\nNullable.getUnsafe(Nullable.make(3)) == 3\nNullable.getUnsafe(Nullable.null) // Raises an error\n```\n\n## Important\n\n- This is an unsafe operation, it assumes `value` is not `null` or `undefined`."
+          "`getUnsafe(value)` returns `value`.\n\n## Examples\n\n```rescript\nNullable.getUnsafe(Nullable.make(3)) == 3\nNullable.getUnsafe(Nullable.null) // Throws an error\n```\n\n## Important\n\n- This is an unsafe operation, it assumes `value` is not `null` or `undefined`."
         ],
         "signature": "let getUnsafe: t<'a> => 'a"
       },
@@ -7083,7 +7083,7 @@
         "kind": "value",
         "name": "getExn",
         "docstrings": [
-          "`getExn(value)` raises an exception if `null`, otherwise returns the value.\n\n```rescript\nNull.getExn(Null.make(3)) == 3\n\nswitch Null.getExn(%raw(\"'ReScript'\")) {\n| exception Invalid_argument(_) => assert(false)\n| value => value == \"ReScript\"\n}\n\nswitch Null.getExn(%raw(\"null\")) {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises `Invalid_argument` if `value` is `null`"
+          "`getExn(value)` throws an exception if `null`, otherwise returns the value.\n\n```rescript\nNull.getExn(Null.make(3)) == 3\n\nswitch Null.getExn(%raw(\"'ReScript'\")) {\n| exception Invalid_argument(_) => assert(false)\n| value => value == \"ReScript\"\n}\n\nswitch Null.getExn(%raw(\"null\")) {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Throws `Invalid_argument` if `value` is `null`"
         ],
         "signature": "let getExn: t<'a> => 'a",
         "deprecated": "Use `getOrThrow` instead"
@@ -7093,7 +7093,7 @@
         "kind": "value",
         "name": "getOrThrow",
         "docstrings": [
-          "`getOrThrow(value)` raises an exception if `null`, otherwise returns the value.\n\n```rescript\nNull.getOrThrow(Null.make(3)) == 3\n\nswitch Null.getOrThrow(%raw(\"'ReScript'\")) {\n| exception Invalid_argument(_) => assert(false)\n| value => value == \"ReScript\"\n}\n\nswitch Null.getOrThrow(%raw(\"null\")) {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises `Invalid_argument` if `value` is `null`"
+          "`getOrThrow(value)` throws an exception if `null`, otherwise returns the value.\n\n```rescript\nNull.getOrThrow(Null.make(3)) == 3\n\nswitch Null.getOrThrow(%raw(\"'ReScript'\")) {\n| exception Invalid_argument(_) => assert(false)\n| value => value == \"ReScript\"\n}\n\nswitch Null.getOrThrow(%raw(\"null\")) {\n| exception Invalid_argument(_) => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Throws `Invalid_argument` if `value` is `null`"
         ],
         "signature": "let getOrThrow: t<'a> => 'a"
       },
@@ -7102,7 +7102,7 @@
         "kind": "value",
         "name": "getUnsafe",
         "docstrings": [
-          "`getUnsafe(value)` returns `value`.\n\n## Examples\n\n```rescript\nNull.getUnsafe(Null.make(3)) == 3\nNull.getUnsafe(Null.null) // Raises an error\n```\n\n## Important\n\n- This is an unsafe operation, it assumes `value` is not `null`."
+          "`getUnsafe(value)` returns `value`.\n\n## Examples\n\n```rescript\nNull.getUnsafe(Null.make(3)) == 3\nNull.getUnsafe(Null.null) // Throws an error\n```\n\n## Important\n\n- This is an unsafe operation, it assumes `value` is not `null`."
         ],
         "signature": "let getUnsafe: t<'a> => 'a"
       },
@@ -7407,7 +7407,7 @@
         "kind": "value",
         "name": "pow",
         "docstrings": [
-          "`pow(a, ~exp)` raises the given base `a` to the given exponent `exp`.\nSee [`Math.pow`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/pow) on MDN.\n\n## Examples\n\n```rescript\nMath.pow(2.0, ~exp=4.0) == 16.0\nMath.pow(3.0, ~exp=4.0) == 81.0\n```"
+          "`pow(a, ~exp)` throws the given base `a` to the given exponent `exp`.\nSee [`Math.pow`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/pow) on MDN.\n\n## Examples\n\n```rescript\nMath.pow(2.0, ~exp=4.0) == 16.0\nMath.pow(3.0, ~exp=4.0) == 81.0\n```"
         ],
         "signature": "let pow: (float, ~exp: float) => float"
       },
@@ -7540,7 +7540,7 @@
         "kind": "value",
         "name": "headExn",
         "docstrings": [
-          "`headExn(list)` same as [`head`](#head).\n\n## Examples\n\n```rescript\nList.headExn(list{1, 2, 3}) == 1\n\nswitch List.headExn(list{}) {\n| exception Not_found => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises an Error if list is empty."
+          "`headExn(list)` same as [`head`](#head).\n\n## Examples\n\n```rescript\nList.headExn(list{1, 2, 3}) == 1\n\nswitch List.headExn(list{}) {\n| exception Not_found => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Throws an Error if list is empty."
         ],
         "signature": "let headExn: list<'a> => 'a",
         "deprecated": "Use `headOrThrow` instead"
@@ -7550,7 +7550,7 @@
         "kind": "value",
         "name": "headOrThrow",
         "docstrings": [
-          "`headOrThrow(list)` same as [`head`](#head).\n\n## Examples\n\n```rescript\nList.headOrThrow(list{1, 2, 3}) == 1\n\nswitch List.headOrThrow(list{}) {\n| exception Not_found => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises an Error if list is empty."
+          "`headOrThrow(list)` same as [`head`](#head).\n\n## Examples\n\n```rescript\nList.headOrThrow(list{1, 2, 3}) == 1\n\nswitch List.headOrThrow(list{}) {\n| exception Not_found => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Throws an Error if list is empty."
         ],
         "signature": "let headOrThrow: list<'a> => 'a"
       },
@@ -7568,7 +7568,7 @@
         "kind": "value",
         "name": "tailExn",
         "docstrings": [
-          "`tailExn(list)` same as [`tail`](#tail).\n\n## Examples\n\n```rescript\nList.tailExn(list{1, 2, 3}) == list{2, 3}\n\nswitch List.tailExn(list{}) {\n| exception Not_found => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises an Error if list is empty."
+          "`tailExn(list)` same as [`tail`](#tail).\n\n## Examples\n\n```rescript\nList.tailExn(list{1, 2, 3}) == list{2, 3}\n\nswitch List.tailExn(list{}) {\n| exception Not_found => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Throws an Error if list is empty."
         ],
         "signature": "let tailExn: list<'a> => list<'a>",
         "deprecated": "Use `tailOrThrow` instead"
@@ -7578,7 +7578,7 @@
         "kind": "value",
         "name": "tailOrThrow",
         "docstrings": [
-          "`tailOrThrow(list)` same as [`tail`](#tail).\n\n## Examples\n\n```rescript\nList.tailOrThrow(list{1, 2, 3}) == list{2, 3}\n\nswitch List.tailOrThrow(list{}) {\n| exception Not_found => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises an Error if list is empty."
+          "`tailOrThrow(list)` same as [`tail`](#tail).\n\n## Examples\n\n```rescript\nList.tailOrThrow(list{1, 2, 3}) == list{2, 3}\n\nswitch List.tailOrThrow(list{}) {\n| exception Not_found => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Throws an Error if list is empty."
         ],
         "signature": "let tailOrThrow: list<'a> => list<'a>"
       },
@@ -7605,7 +7605,7 @@
         "kind": "value",
         "name": "getExn",
         "docstrings": [
-          "`getExn(list, index)` same as [`get`](#get).\n\n## Examples\n\n```rescript\nlet abc = list{\"A\", \"B\", \"C\"}\n\nabc->List.getExn(1) == \"B\"\n\nswitch abc->List.getExn(4) {\n| exception Not_found => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises an Error if `index` is larger than the length of list."
+          "`getExn(list, index)` same as [`get`](#get).\n\n## Examples\n\n```rescript\nlet abc = list{\"A\", \"B\", \"C\"}\n\nabc->List.getExn(1) == \"B\"\n\nswitch abc->List.getExn(4) {\n| exception Not_found => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Throws an Error if `index` is larger than the length of list."
         ],
         "signature": "let getExn: (list<'a>, int) => 'a",
         "deprecated": "Use `getOrThrow` instead"
@@ -7615,7 +7615,7 @@
         "kind": "value",
         "name": "getOrThrow",
         "docstrings": [
-          "`getOrThrow(list, index)` same as [`get`](#get).\n\n## Examples\n\n```rescript\nlet abc = list{\"A\", \"B\", \"C\"}\n\nabc->List.getOrThrow(1) == \"B\"\n\nswitch abc->List.getOrThrow(4) {\n| exception Not_found => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises an Error if `index` is larger than the length of list."
+          "`getOrThrow(list, index)` same as [`get`](#get).\n\n## Examples\n\n```rescript\nlet abc = list{\"A\", \"B\", \"C\"}\n\nabc->List.getOrThrow(1) == \"B\"\n\nswitch abc->List.getOrThrow(4) {\n| exception Not_found => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Throws an Error if `index` is larger than the length of list."
         ],
         "signature": "let getOrThrow: (list<'a>, int) => 'a"
       },
@@ -8070,7 +8070,7 @@
         "kind": "type",
         "name": "t",
         "docstrings": [
-          "The type of a lazy value.  `Lazy.t<'a>` represents a lazy value\n    that will eventually yield a value of type `'a` when accessed.\n    The value is computed only once, and the result is cached for\n    subsequent accesses.  If the computation raises an exception,\n    the same exception is raised again on subsequent accesses."
+          "The type of a lazy value.  `Lazy.t<'a>` represents a lazy value\n    that will eventually yield a value of type `'a` when accessed.\n    The value is computed only once, and the result is cached for\n    subsequent accesses.  If the computation throws an exception,\n    the same exception is thrown again on subsequent accesses."
         ],
         "signature": "type t<+'a>"
       },
@@ -8088,7 +8088,7 @@
         "kind": "value",
         "name": "get",
         "docstrings": [
-          "`Lazy.get(x)` forces the suspension `x` and returns its result.\n    If `x` has already been forced, `Lazy.get(x)` returns the\n    same value again without recomputing it.  If it raised an\n    exception, the same exception is raised again.\n    Raise `Undefined` if the forcing of `x` tries to force `x`  itself\n    recursively.  This is a runtime error."
+          "`Lazy.get(x)` forces the suspension `x` and returns its result.\n    If `x` has already been forced, `Lazy.get(x)` returns the\n    same value again without recomputing it.  If it threw an\n    exception, the same exception is thrown again.\n    Throw `Undefined` if the forcing of `x` tries to force `x`  itself\n    recursively.  This is a runtime error."
         ],
         "signature": "let get: t<'a> => 'a"
       },
@@ -8097,7 +8097,7 @@
         "kind": "value",
         "name": "isEvaluated",
         "docstrings": [
-          "`Lazy.isEvaluated(x)` returns `true` if the suspension `x` has\n    already been forced and did not raise an exception.  Otherwise, \n    it returns `false`.  This is useful for checking if a lazy value\n    has been computed before accessing it.\n\n    ## Examples\n    ```rescript \n    let lazyValue = Lazy.make(() => {\n      // Some expensive computation\n      Console.log(\"Computing...\")\n      42\n    })\n    Lazy.isEvaluated(lazyValue)->assertEqual(false)\n    lazyValue->Lazy.get->assertEqual(42)\n    lazyValue->Lazy.isEvaluated->assertEqual(true)\n    ```"
+          "`Lazy.isEvaluated(x)` returns `true` if the suspension `x` has\n    already been forced and did not throw an exception.  Otherwise, \n    it returns `false`.  This is useful for checking if a lazy value\n    has been computed before accessing it.\n\n    ## Examples\n    ```rescript \n    let lazyValue = Lazy.make(() => {\n      // Some expensive computation\n      Console.log(\"Computing...\")\n      42\n    })\n    Lazy.isEvaluated(lazyValue)->assertEqual(false)\n    lazyValue->Lazy.get->assertEqual(42)\n    lazyValue->Lazy.isEvaluated->assertEqual(true)\n    ```"
         ],
         "signature": "let isEvaluated: t<'a> => bool"
       },
@@ -8106,7 +8106,7 @@
         "kind": "value",
         "name": "force",
         "docstrings": [
-          "`force(x)` forces the suspension `x` and returns its result.\n    If `x` has already been forced, `Lazy.force(x)` returns the\n    same value again without recomputing it.  If it raised an exception,\n    the same exception is raised again.\n    Raise `Undefined` if the forcing of `x` tries to force `x` itself\n    recursively."
+          "`force(x)` forces the suspension `x` and returns its result.\n    If `x` has already been forced, `Lazy.force(x)` returns the\n    same value again without recomputing it.  If it threw an exception,\n    the same exception is thrown again.\n    Throw `Undefined` if the forcing of `x` tries to force `x` itself\n    recursively."
         ],
         "signature": "let force: t<'a> => 'a",
         "deprecated": "Use `Lazy.get` instead"
@@ -8116,7 +8116,7 @@
         "kind": "value",
         "name": "force_val",
         "docstrings": [
-          "`force_val(x)` forces the suspension `x` and returns its\n    result.  If `x` has already been forced, `force_val(x)`\n    returns the same value again without recomputing it.\n    Raise `Undefined` if the forcing of `x` tries to force `x` itself\n    recursively.\n    If the computation of `x` raises an exception, it is unspecified\n    whether `force_val(x)` raises the same exception or `Undefined`."
+          "`force_val(x)` forces the suspension `x` and returns its\n    result.  If `x` has already been forced, `force_val(x)`\n    returns the same value again without recomputing it.\n    Throw `Undefined` if the forcing of `x` tries to force `x` itself\n    recursively.\n    If the computation of `x` throws an exception, it is unspecified\n    whether `force_val(x)` throws the same exception or `Undefined`."
         ],
         "signature": "let force_val: t<'a> => 'a",
         "deprecated": "Use `Lazy.get` instead"
@@ -8146,7 +8146,7 @@
         "kind": "value",
         "name": "is_val",
         "docstrings": [
-          "`is_val(x)` returns `true` if `x has already been forced and\n    did not raise an exception."
+          "`is_val(x)` returns `true` if `x has already been forced and\n    did not throw an exception."
         ],
         "signature": "let is_val: t<'a> => bool",
         "deprecated": "Use `Lazy.isEvaluated` instead"
@@ -8181,7 +8181,7 @@
         "kind": "value",
         "name": "parseOrThrow",
         "docstrings": [
-          "`parseOrThrow(string, ~reviver=?)`\n\nParses a JSON string or throws a JavaScript exception (SyntaxError), if the string isn't valid.\nThe reviver describes how the value should be transformed. It is a function which receives a key and a value.\nIt returns a JSON type.\n\n## Examples\n```rescript\ntry {\n  let _ = JSON.parseOrThrow(`{\"foo\":\"bar\",\"hello\":\"world\"}`)\n  // { foo: 'bar', hello: 'world' }\n\n  let _ = JSON.parseOrThrow(\"\")\n  // error\n} catch {\n| JsExn(_) => Console.log(\"error\")\n}\n\nlet reviver = (_, value: JSON.t) =>\n  switch value {\n  | String(string) => string->String.toUpperCase->JSON.Encode.string\n  | Number(number) => (number *. 2.0)->JSON.Encode.float\n  | _ => value\n  }\n\nlet jsonString = `{\"hello\":\"world\",\"someNumber\":21}`\n\ntry {\n  JSON.parseOrThrow(jsonString, ~reviver)->Console.log\n  // { hello: 'WORLD', someNumber: 42 }\n\n  JSON.parseOrThrow(\"\", ~reviver)->Console.log\n  // error\n} catch {\n| JsExn(_) => Console.log(\"error\")\n}\n```\n\n## Exceptions\n\n- Raises a SyntaxError (Exn.t) if the string isn't valid JSON."
+          "`parseOrThrow(string, ~reviver=?)`\n\nParses a JSON string or throws a JavaScript exception (SyntaxError), if the string isn't valid.\nThe reviver describes how the value should be transformed. It is a function which receives a key and a value.\nIt returns a JSON type.\n\n## Examples\n```rescript\ntry {\n  let _ = JSON.parseOrThrow(`{\"foo\":\"bar\",\"hello\":\"world\"}`)\n  // { foo: 'bar', hello: 'world' }\n\n  let _ = JSON.parseOrThrow(\"\")\n  // error\n} catch {\n| JsExn(_) => Console.log(\"error\")\n}\n\nlet reviver = (_, value: JSON.t) =>\n  switch value {\n  | String(string) => string->String.toUpperCase->JSON.Encode.string\n  | Number(number) => (number *. 2.0)->JSON.Encode.float\n  | _ => value\n  }\n\nlet jsonString = `{\"hello\":\"world\",\"someNumber\":21}`\n\ntry {\n  JSON.parseOrThrow(jsonString, ~reviver)->Console.log\n  // { hello: 'WORLD', someNumber: 42 }\n\n  JSON.parseOrThrow(\"\", ~reviver)->Console.log\n  // error\n} catch {\n| JsExn(_) => Console.log(\"error\")\n}\n```\n\n## Exceptions\n\n- Throws a SyntaxError (Exn.t) if the string isn't valid JSON."
         ],
         "signature": "let parseOrThrow: (string, ~reviver: (string, t) => t=?) => t"
       },
@@ -8190,7 +8190,7 @@
         "kind": "value",
         "name": "parseExn",
         "docstrings": [
-          "`parseExn(string, ~reviver=?)`\n\nParses a JSON string or throws a JavaScript exception (SyntaxError), if the string isn't valid.\nThe reviver describes how the value should be transformed. It is a function which receives a key and a value.\nIt returns a JSON type.\n\n## Examples\n```rescript\ntry {\n  let _ = JSON.parseExn(`{\"foo\":\"bar\",\"hello\":\"world\"}`)\n  // { foo: 'bar', hello: 'world' }\n\n  let _ = JSON.parseExn(\"\")\n  // error\n} catch {\n| JsExn(_) => Console.log(\"error\")\n}\n\nlet reviver = (_, value: JSON.t) =>\n  switch value {\n  | String(string) => string->String.toUpperCase->JSON.Encode.string\n  | Number(number) => (number *. 2.0)->JSON.Encode.float\n  | _ => value\n  }\n\nlet jsonString = `{\"hello\":\"world\",\"someNumber\":21}`\n\ntry {\n  JSON.parseExn(jsonString, ~reviver)->Console.log\n  // { hello: 'WORLD', someNumber: 42 }\n\n  JSON.parseExn(\"\", ~reviver)->Console.log\n  // error\n} catch {\n| JsExn(_) => Console.log(\"error\")\n}\n```\n\n## Exceptions\n\n- Raises a SyntaxError (Exn.t) if the string isn't valid JSON."
+          "`parseExn(string, ~reviver=?)`\n\nParses a JSON string or throws a JavaScript exception (SyntaxError), if the string isn't valid.\nThe reviver describes how the value should be transformed. It is a function which receives a key and a value.\nIt returns a JSON type.\n\n## Examples\n```rescript\ntry {\n  let _ = JSON.parseExn(`{\"foo\":\"bar\",\"hello\":\"world\"}`)\n  // { foo: 'bar', hello: 'world' }\n\n  let _ = JSON.parseExn(\"\")\n  // error\n} catch {\n| JsExn(_) => Console.log(\"error\")\n}\n\nlet reviver = (_, value: JSON.t) =>\n  switch value {\n  | String(string) => string->String.toUpperCase->JSON.Encode.string\n  | Number(number) => (number *. 2.0)->JSON.Encode.float\n  | _ => value\n  }\n\nlet jsonString = `{\"hello\":\"world\",\"someNumber\":21}`\n\ntry {\n  JSON.parseExn(jsonString, ~reviver)->Console.log\n  // { hello: 'WORLD', someNumber: 42 }\n\n  JSON.parseExn(\"\", ~reviver)->Console.log\n  // error\n} catch {\n| JsExn(_) => Console.log(\"error\")\n}\n```\n\n## Exceptions\n\n- Throws a SyntaxError (Exn.t) if the string isn't valid JSON."
         ],
         "signature": "let parseExn: (string, ~reviver: (string, t) => t=?) => t",
         "deprecated": "Use `parseOrThrow` instead"
@@ -8200,7 +8200,7 @@
         "kind": "value",
         "name": "parseExnWithReviver",
         "docstrings": [
-          "`parseExnWithReviver(string, reviver)`\n\nParses a JSON string or throws a JavaScript exception (SyntaxError), if the string isn't valid.\nThe reviver describes how the value should be transformed. It is a function which receives a key and a value.\nIt returns a JSON type.\n\n## Examples\n```rescript\nlet reviver = (_, value: JSON.t) =>\n  switch value {\n  | String(string) => string->String.toUpperCase->JSON.Encode.string\n  | Number(number) => (number *. 2.0)->JSON.Encode.float\n  | _ => value\n  }\n\nlet jsonString = `{\"hello\":\"world\",\"someNumber\":21}`\n\nJSON.parseExnWithReviver(jsonString, reviver)->Console.log\n// { hello: 'WORLD', someNumber: 42 }\n\ntry {\n  JSON.parseExnWithReviver(\"\", reviver)->Console.log\n  // error\n} catch {\n| JsExn(_) => Console.log(\"error\")\n}\n```\n\n## Exceptions\n\n- Raises a SyntaxError if the string is not a valid JSON."
+          "`parseExnWithReviver(string, reviver)`\n\nParses a JSON string or throws a JavaScript exception (SyntaxError), if the string isn't valid.\nThe reviver describes how the value should be transformed. It is a function which receives a key and a value.\nIt returns a JSON type.\n\n## Examples\n```rescript\nlet reviver = (_, value: JSON.t) =>\n  switch value {\n  | String(string) => string->String.toUpperCase->JSON.Encode.string\n  | Number(number) => (number *. 2.0)->JSON.Encode.float\n  | _ => value\n  }\n\nlet jsonString = `{\"hello\":\"world\",\"someNumber\":21}`\n\nJSON.parseExnWithReviver(jsonString, reviver)->Console.log\n// { hello: 'WORLD', someNumber: 42 }\n\ntry {\n  JSON.parseExnWithReviver(\"\", reviver)->Console.log\n  // error\n} catch {\n| JsExn(_) => Console.log(\"error\")\n}\n```\n\n## Exceptions\n\n- Throws a SyntaxError if the string is not a valid JSON."
         ],
         "signature": "let parseExnWithReviver: (string, (string, t) => t) => t",
         "deprecated": "Use `parseOrThrow` with optional parameter instead"
@@ -8269,7 +8269,7 @@
         "kind": "value",
         "name": "stringifyAny",
         "docstrings": [
-          "`stringifyAny(any, ~replacer=?, ~space=?)`\n\nConverts any type to a JSON string.\nThe replacer describes how the value should be transformed. It is a function which receives a key and a value.\nStringifying a function or `undefined` will return `None`.\nIf the value contains circular references or `BigInt`s, the function will throw a JavaScript exception (TypeError).\nIf you want to stringify a JSON object, use `JSON.stringify` instead.\n\n## Examples\n\n```rescript\nlet dict = Dict.fromArray([\n  (\"foo\", JSON.Encode.string(\"bar\")),\n  (\"hello\", JSON.Encode.string(\"world\")),\n  (\"someNumber\", JSON.Encode.int(42)),\n])\n\ndict\n->JSON.stringifyAny\n->Option.getUnsafe == `{\"foo\":\"bar\",\"hello\":\"world\",\"someNumber\":42}`\n\ndict\n->JSON.stringifyAny(~space=2)\n->Option.getUnsafe == `{\n  \"foo\": \"bar\",\n  \"hello\": \"world\",\n  \"someNumber\": 42\n}`\n\ndict\n->JSON.stringifyAny(~replacer=Keys([\"foo\", \"someNumber\"]))\n->Option.getUnsafe == `{\"foo\":\"bar\",\"someNumber\":42}`\n\nlet replacer = JSON.Replacer(\n  (_, value) => {\n    let decodedValue = value->JSON.Decode.string\n\n    switch decodedValue {\n    | Some(string) => string->String.toUpperCase->JSON.Encode.string\n    | None => value\n    }\n  },\n)\n\ndict\n->JSON.stringifyAny(~replacer)\n->Option.getUnsafe == `{\"foo\":\"BAR\",\"hello\":\"WORLD\",\"someNumber\":42}`\n\nJSON.stringifyAny(() => \"hello world\") == None\n\n// Raise a exception\nswitch BigInt.fromInt(0)->JSON.stringifyAny {\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises a TypeError if the value contains circular references.\n- Raises a TypeError if the value contains `BigInt`s."
+          "`stringifyAny(any, ~replacer=?, ~space=?)`\n\nConverts any type to a JSON string.\nThe replacer describes how the value should be transformed. It is a function which receives a key and a value.\nStringifying a function or `undefined` will return `None`.\nIf the value contains circular references or `BigInt`s, the function will throw a JavaScript exception (TypeError).\nIf you want to stringify a JSON object, use `JSON.stringify` instead.\n\n## Examples\n\n```rescript\nlet dict = Dict.fromArray([\n  (\"foo\", JSON.Encode.string(\"bar\")),\n  (\"hello\", JSON.Encode.string(\"world\")),\n  (\"someNumber\", JSON.Encode.int(42)),\n])\n\ndict\n->JSON.stringifyAny\n->Option.getUnsafe == `{\"foo\":\"bar\",\"hello\":\"world\",\"someNumber\":42}`\n\ndict\n->JSON.stringifyAny(~space=2)\n->Option.getUnsafe == `{\n  \"foo\": \"bar\",\n  \"hello\": \"world\",\n  \"someNumber\": 42\n}`\n\ndict\n->JSON.stringifyAny(~replacer=Keys([\"foo\", \"someNumber\"]))\n->Option.getUnsafe == `{\"foo\":\"bar\",\"someNumber\":42}`\n\nlet replacer = JSON.Replacer(\n  (_, value) => {\n    let decodedValue = value->JSON.Decode.string\n\n    switch decodedValue {\n    | Some(string) => string->String.toUpperCase->JSON.Encode.string\n    | None => value\n    }\n  },\n)\n\ndict\n->JSON.stringifyAny(~replacer)\n->Option.getUnsafe == `{\"foo\":\"BAR\",\"hello\":\"WORLD\",\"someNumber\":42}`\n\nJSON.stringifyAny(() => \"hello world\") == None\n\n// Throw a exception\nswitch BigInt.fromInt(0)->JSON.stringifyAny {\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Throws a TypeError if the value contains circular references.\n- Throws a TypeError if the value contains `BigInt`s."
         ],
         "signature": "let stringifyAny: ('a, ~replacer: replacer=?, ~space: int=?) => option<string>"
       },
@@ -8278,7 +8278,7 @@
         "kind": "value",
         "name": "stringifyAnyWithIndent",
         "docstrings": [
-          "`stringifyAnyWithIndent(any, indentation)`\n\nConverts any type to a JSON string. The output will be indented.\nStringifying a function or `undefined` will return `None`.\nIf the value contains circular references or `BigInt`s, the function will throw a JavaScript exception (TypeError).\nIf you want to stringify a JSON object, use `JSON.stringifyWithIndent` instead.\n\n## Examples\n\n```rescript\nlet dict = Dict.fromArray([\n  (\"foo\", JSON.Encode.string(\"bar\")),\n  (\"hello\", JSON.Encode.string(\"world\")),\n  (\"someNumber\", JSON.Encode.int(42)),\n])\n\ndict\n->JSON.stringifyAnyWithIndent(2)\n->Option.getUnsafe == `{\n  \"foo\": \"bar\",\n  \"hello\": \"world\",\n  \"someNumber\": 42\n}`\n\nJSON.stringifyAny(() => \"hello world\") == None\n\nswitch BigInt.fromInt(0)->JSON.stringifyAny {\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises a TypeError if the value contains circular references.\n- Raises a TypeError if the value contains `BigInt`s."
+          "`stringifyAnyWithIndent(any, indentation)`\n\nConverts any type to a JSON string. The output will be indented.\nStringifying a function or `undefined` will return `None`.\nIf the value contains circular references or `BigInt`s, the function will throw a JavaScript exception (TypeError).\nIf you want to stringify a JSON object, use `JSON.stringifyWithIndent` instead.\n\n## Examples\n\n```rescript\nlet dict = Dict.fromArray([\n  (\"foo\", JSON.Encode.string(\"bar\")),\n  (\"hello\", JSON.Encode.string(\"world\")),\n  (\"someNumber\", JSON.Encode.int(42)),\n])\n\ndict\n->JSON.stringifyAnyWithIndent(2)\n->Option.getUnsafe == `{\n  \"foo\": \"bar\",\n  \"hello\": \"world\",\n  \"someNumber\": 42\n}`\n\nJSON.stringifyAny(() => \"hello world\") == None\n\nswitch BigInt.fromInt(0)->JSON.stringifyAny {\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Throws a TypeError if the value contains circular references.\n- Throws a TypeError if the value contains `BigInt`s."
         ],
         "signature": "let stringifyAnyWithIndent: ('a, int) => option<string>",
         "deprecated": "Use `stringifyAny` with optional parameter instead"
@@ -8288,7 +8288,7 @@
         "kind": "value",
         "name": "stringifyAnyWithReplacer",
         "docstrings": [
-          "`stringifyAnyWithReplacer(json, replacer)`\n\nConverts any type to a JSON string.\nThe replacer describes how the value should be transformed. It is a function which receives a key and a value.\nStringifying a function or `undefined` will return `None`.\nIf the value contains circular references or `BigInt`s, the function will throw a JavaScript exception (TypeError).\nIf you want to stringify a JSON object, use `JSON.stringifyWithReplacer` instead.\n\n## Examples\n```rescript\nlet dict = Dict.fromArray([\n  (\"foo\", JSON.Encode.string(\"bar\")),\n  (\"hello\", JSON.Encode.string(\"world\")),\n  (\"someNumber\", JSON.Encode.int(42)),\n])\n\nlet replacer = (_, value) => {\n  let decodedValue = value->JSON.Decode.string\n\n  switch decodedValue {\n  | Some(string) => string->String.toUpperCase->JSON.Encode.string\n  | None => value\n  }\n}\n\ndict\n->JSON.stringifyAnyWithReplacer(replacer)\n->Option.getUnsafe == `{\"foo\":\"BAR\",\"hello\":\"WORLD\",\"someNumber\":42}`\n\nJSON.stringifyAny(() => \"hello world\") == None\n\nswitch BigInt.fromInt(0)->JSON.stringifyAny {\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises a TypeError if the value contains circular references.\n- Raises a TypeError if the value contains `BigInt`s."
+          "`stringifyAnyWithReplacer(json, replacer)`\n\nConverts any type to a JSON string.\nThe replacer describes how the value should be transformed. It is a function which receives a key and a value.\nStringifying a function or `undefined` will return `None`.\nIf the value contains circular references or `BigInt`s, the function will throw a JavaScript exception (TypeError).\nIf you want to stringify a JSON object, use `JSON.stringifyWithReplacer` instead.\n\n## Examples\n```rescript\nlet dict = Dict.fromArray([\n  (\"foo\", JSON.Encode.string(\"bar\")),\n  (\"hello\", JSON.Encode.string(\"world\")),\n  (\"someNumber\", JSON.Encode.int(42)),\n])\n\nlet replacer = (_, value) => {\n  let decodedValue = value->JSON.Decode.string\n\n  switch decodedValue {\n  | Some(string) => string->String.toUpperCase->JSON.Encode.string\n  | None => value\n  }\n}\n\ndict\n->JSON.stringifyAnyWithReplacer(replacer)\n->Option.getUnsafe == `{\"foo\":\"BAR\",\"hello\":\"WORLD\",\"someNumber\":42}`\n\nJSON.stringifyAny(() => \"hello world\") == None\n\nswitch BigInt.fromInt(0)->JSON.stringifyAny {\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Throws a TypeError if the value contains circular references.\n- Throws a TypeError if the value contains `BigInt`s."
         ],
         "signature": "let stringifyAnyWithReplacer: ('a, (string, t) => t) => option<string>",
         "deprecated": "Use `stringifyAny` with optional parameter instead"
@@ -8298,7 +8298,7 @@
         "kind": "value",
         "name": "stringifyAnyWithReplacerAndIndent",
         "docstrings": [
-          "`stringifyAnyWithReplacerAndIndent(json, replacer, indentation)`\n\nConverts any type to a JSON string. The output will be indented.\nThe replacer describes how the value should be transformed. It is a function which receives a key and a value.\nStringifying a function or `undefined` will return `None`.\nIf the value contains circular references or `BigInt`s, the function will throw a JavaScript exception (TypeError).\nIf you want to stringify a JSON object, use `JSON.stringifyWithReplacerAndIndent` instead.\n\n## Examples\n\n```rescript\nlet dict = Dict.fromArray([\n  (\"foo\", JSON.Encode.string(\"bar\")),\n  (\"hello\", JSON.Encode.string(\"world\")),\n  (\"someNumber\", JSON.Encode.int(42)),\n])\n\nlet replacer = (_, value) => {\n  let decodedValue = value->JSON.Decode.string\n\n  switch decodedValue {\n  | Some(string) => string->String.toUpperCase->JSON.Encode.string\n  | None => value\n  }\n}\n\ndict\n->JSON.stringifyAnyWithReplacer(replacer)\n->Option.getUnsafe == `{\"foo\":\"BAR\",\"hello\":\"WORLD\",\"someNumber\":42}`\n\nJSON.stringifyAny(() => \"hello world\") == None\n\nswitch BigInt.fromInt(0)->JSON.stringifyAny {\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises a TypeError if the value contains circular references.\n- Raises a TypeError if the value contains `BigInt`s."
+          "`stringifyAnyWithReplacerAndIndent(json, replacer, indentation)`\n\nConverts any type to a JSON string. The output will be indented.\nThe replacer describes how the value should be transformed. It is a function which receives a key and a value.\nStringifying a function or `undefined` will return `None`.\nIf the value contains circular references or `BigInt`s, the function will throw a JavaScript exception (TypeError).\nIf you want to stringify a JSON object, use `JSON.stringifyWithReplacerAndIndent` instead.\n\n## Examples\n\n```rescript\nlet dict = Dict.fromArray([\n  (\"foo\", JSON.Encode.string(\"bar\")),\n  (\"hello\", JSON.Encode.string(\"world\")),\n  (\"someNumber\", JSON.Encode.int(42)),\n])\n\nlet replacer = (_, value) => {\n  let decodedValue = value->JSON.Decode.string\n\n  switch decodedValue {\n  | Some(string) => string->String.toUpperCase->JSON.Encode.string\n  | None => value\n  }\n}\n\ndict\n->JSON.stringifyAnyWithReplacer(replacer)\n->Option.getUnsafe == `{\"foo\":\"BAR\",\"hello\":\"WORLD\",\"someNumber\":42}`\n\nJSON.stringifyAny(() => \"hello world\") == None\n\nswitch BigInt.fromInt(0)->JSON.stringifyAny {\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Throws a TypeError if the value contains circular references.\n- Throws a TypeError if the value contains `BigInt`s."
         ],
         "signature": "let stringifyAnyWithReplacerAndIndent: ('a, (string, t) => t, int) => option<string>",
         "deprecated": "Use `stringifyAny` with optional parameters instead"
@@ -8308,7 +8308,7 @@
         "kind": "value",
         "name": "stringifyAnyWithFilter",
         "docstrings": [
-          "`stringifyAnyWithFilter(json, filter)`\n\nConverts any type to a JSON string.\nThe filter is an array of keys, which should be included in the output.\nStringifying a function or `undefined` will return `None`.\nIf the value contains circular references or `BigInt`s, the function will throw a JavaScript exception (TypeError).\nIf you want to stringify a JSON object, use `JSON.stringifyWithFilter` instead.\n\n## Examples\n\n```rescript\nlet dict = Dict.fromArray([\n  (\"foo\", JSON.Encode.string(\"bar\")),\n  (\"hello\", JSON.Encode.string(\"world\")),\n  (\"someNumber\", JSON.Encode.int(42)),\n])\n\ndict->JSON.stringifyAnyWithFilter([\"foo\", \"someNumber\"]) == `{\"foo\":\"bar\",\"someNumber\":42}`\n\nJSON.stringifyAny(() => \"hello world\") == None\n\nswitch BigInt.fromInt(0)->JSON.stringifyAny {\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises a TypeError if the value contains circular references.\n- Raises a TypeError if the value contains `BigInt`s."
+          "`stringifyAnyWithFilter(json, filter)`\n\nConverts any type to a JSON string.\nThe filter is an array of keys, which should be included in the output.\nStringifying a function or `undefined` will return `None`.\nIf the value contains circular references or `BigInt`s, the function will throw a JavaScript exception (TypeError).\nIf you want to stringify a JSON object, use `JSON.stringifyWithFilter` instead.\n\n## Examples\n\n```rescript\nlet dict = Dict.fromArray([\n  (\"foo\", JSON.Encode.string(\"bar\")),\n  (\"hello\", JSON.Encode.string(\"world\")),\n  (\"someNumber\", JSON.Encode.int(42)),\n])\n\ndict->JSON.stringifyAnyWithFilter([\"foo\", \"someNumber\"]) == `{\"foo\":\"bar\",\"someNumber\":42}`\n\nJSON.stringifyAny(() => \"hello world\") == None\n\nswitch BigInt.fromInt(0)->JSON.stringifyAny {\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Throws a TypeError if the value contains circular references.\n- Throws a TypeError if the value contains `BigInt`s."
         ],
         "signature": "let stringifyAnyWithFilter: ('a, array<string>) => string",
         "deprecated": "Use `stringifyAny` with optional parameter instead"
@@ -8318,7 +8318,7 @@
         "kind": "value",
         "name": "stringifyAnyWithFilterAndIndent",
         "docstrings": [
-          "`stringifyAnyWithFilterAndIndent(json, filter, indentation)`\n\nConverts any type to a JSON string. The output will be indented.\nThe filter is an array of keys, which should be included in the output.\nStringifying a function or `undefined` will return `None`.\nIf the value contains circular references or `BigInt`s, the function will throw a JavaScript exception (TypeError).\nIf you want to stringify a JSON object, use `JSON.stringifyWithFilterAndIndent` instead.\n\n## Examples\n\n```rescript\nlet dict = Dict.fromArray([\n  (\"foo\", JSON.Encode.string(\"bar\")),\n  (\"hello\", JSON.Encode.string(\"world\")),\n  (\"someNumber\", JSON.Encode.int(42)),\n])\n\ndict\n->JSON.stringifyAny\n->Option.getUnsafe == `{\"foo\":\"bar\",\"hello\":\"world\",\"someNumber\":42}`\n\ndict\n->JSON.stringifyAny(~space=2)\n->Option.getUnsafe == `{\n  \"foo\": \"bar\",\n  \"hello\": \"world\",\n  \"someNumber\": 42\n}`\n\ndict\n->JSON.stringifyAny(~replacer=Keys([\"foo\", \"someNumber\"]))\n->Option.getUnsafe == `{\"foo\":\"bar\",\"someNumber\":42}`\n\nJSON.stringifyAny(() => \"hello world\") == None\n\nswitch BigInt.fromInt(0)->JSON.stringifyAny {\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Raises a TypeError if the value contains circular references.\n- Raises a TypeError if the value contains `BigInt`s."
+          "`stringifyAnyWithFilterAndIndent(json, filter, indentation)`\n\nConverts any type to a JSON string. The output will be indented.\nThe filter is an array of keys, which should be included in the output.\nStringifying a function or `undefined` will return `None`.\nIf the value contains circular references or `BigInt`s, the function will throw a JavaScript exception (TypeError).\nIf you want to stringify a JSON object, use `JSON.stringifyWithFilterAndIndent` instead.\n\n## Examples\n\n```rescript\nlet dict = Dict.fromArray([\n  (\"foo\", JSON.Encode.string(\"bar\")),\n  (\"hello\", JSON.Encode.string(\"world\")),\n  (\"someNumber\", JSON.Encode.int(42)),\n])\n\ndict\n->JSON.stringifyAny\n->Option.getUnsafe == `{\"foo\":\"bar\",\"hello\":\"world\",\"someNumber\":42}`\n\ndict\n->JSON.stringifyAny(~space=2)\n->Option.getUnsafe == `{\n  \"foo\": \"bar\",\n  \"hello\": \"world\",\n  \"someNumber\": 42\n}`\n\ndict\n->JSON.stringifyAny(~replacer=Keys([\"foo\", \"someNumber\"]))\n->Option.getUnsafe == `{\"foo\":\"bar\",\"someNumber\":42}`\n\nJSON.stringifyAny(() => \"hello world\") == None\n\nswitch BigInt.fromInt(0)->JSON.stringifyAny {\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```\n\n## Exceptions\n\n- Throws a TypeError if the value contains circular references.\n- Throws a TypeError if the value contains `BigInt`s."
         ],
         "signature": "let stringifyAnyWithFilterAndIndent: ('a, array<string>, int) => string",
         "deprecated": "Use `stringifyAny` with optional parameters instead"
@@ -8729,7 +8729,7 @@
         "kind": "value",
         "name": "range",
         "docstrings": [
-          "`range(start, end, ~options=?)` returns an int array of the sequence of integers in the\nrange `[start, end)`. That is, including `start` but excluding `end`.\n\nIf `step` is not set and `start < end`, the sequence will be increasing in steps of 1.\n\nIf `step` is not set and `start > end`, the sequence will be decreasing in steps of -1.\n\nIf `step` is set, the sequence will increase or decrease by that amount for each\nstep. If `start < end` and `step` is negative, or vice versa, an empty array is\nreturned since the sequence would otherwise never reach or exceed the end value\nand hence be infinite. If `step` is `0` and `start !=` end, a `RangeError` is\nraised as the sequence would never reach or exceed the end value and hence be\ninfinite.\n\nIf `inclusive` is set to `true`, the sequence will include `end` if `step` is\nset such that the sequence includes it.\n\n## Examples\n\n```rescript\nInt.range(3, 6) == [3, 4, 5]\nInt.range(-3, -1) == [-3, -2]\nInt.range(3, 1) == [3, 2]\nInt.range(3, 7, ~options={step: 2}) == [3, 5]\nInt.range(3, 7, ~options={step: 2, inclusive: true}) == [3, 5, 7]\nInt.range(3, 6, ~options={step: -2}) // RangeError\n```\n\n## Exceptions\n\n- Raises `RangeError` if `step == 0 && start != end`."
+          "`range(start, end, ~options=?)` returns an int array of the sequence of integers in the\nrange `[start, end)`. That is, including `start` but excluding `end`.\n\nIf `step` is not set and `start < end`, the sequence will be increasing in steps of 1.\n\nIf `step` is not set and `start > end`, the sequence will be decreasing in steps of -1.\n\nIf `step` is set, the sequence will increase or decrease by that amount for each\nstep. If `start < end` and `step` is negative, or vice versa, an empty array is\nreturned since the sequence would otherwise never reach or exceed the end value\nand hence be infinite. If `step` is `0` and `start !=` end, a `RangeError` is\nthrown as the sequence would never reach or exceed the end value and hence be\ninfinite.\n\nIf `inclusive` is set to `true`, the sequence will include `end` if `step` is\nset such that the sequence includes it.\n\n## Examples\n\n```rescript\nInt.range(3, 6) == [3, 4, 5]\nInt.range(-3, -1) == [-3, -2]\nInt.range(3, 1) == [3, 2]\nInt.range(3, 7, ~options={step: 2}) == [3, 5]\nInt.range(3, 7, ~options={step: 2, inclusive: true}) == [3, 5, 7]\nInt.range(3, 6, ~options={step: -2}) // RangeError\n```\n\n## Exceptions\n\n- Raises `RangeError` if `step == 0 && start != end`."
         ],
         "signature": "let range: (int, int, ~options: rangeOptions=?) => array<int>"
       },
@@ -9147,7 +9147,7 @@
         "kind": "value",
         "name": "throw",
         "docstrings": [
-          "Raises the given exception, terminating execution unless caught by a surrounding try/catch block.\n\n## Examples\n\n```rescript\nlet error = Error.make(\"Everything is upside down.\")\n\nif 5 > 10 {\n  Error.throw(error)\n} else {\n  Console.log(\"Phew, sanity still rules.\")\n}\n```"
+          "Throws the given exception, terminating execution unless caught by a surrounding try/catch block.\n\n## Examples\n\n```rescript\nlet error = Error.make(\"Everything is upside down.\")\n\nif 5 > 10 {\n  Error.throw(error)\n} else {\n  Console.log(\"Phew, sanity still rules.\")\n}\n```"
         ],
         "signature": "let throw: t => 'a",
         "deprecated": "Use `JsError.throw` instead"
@@ -9157,7 +9157,7 @@
         "kind": "value",
         "name": "panic",
         "docstrings": [
-          "Raises a panic exception with the given message.\n\nA panic exception is a native JavaScript exception that is not intended to be caught and\nhandled. Compared to a ReScript exception this will give a better stack trace and\ndebugging experience.\n\n## Examples\n\n```rescript\ntry {\n  Error.panic(\"Uh oh. This was unexpected!\")\n} catch {\n| Exn.Error(obj) =>\n  switch Exn.message(obj) {\n  | Some(m) => assert(m == \"Panic! Uh oh. This was unexpected!\")\n  | None => assert(false)\n  }\n| _ => assert(false)\n}\n```"
+          "Throws a panic exception with the given message.\n\nA panic exception is a native JavaScript exception that is not intended to be caught and\nhandled. Compared to a ReScript exception this will give a better stack trace and\ndebugging experience.\n\n## Examples\n\n```rescript\ntry {\n  Error.panic(\"Uh oh. This was unexpected!\")\n} catch {\n| Exn.Error(obj) =>\n  switch Exn.message(obj) {\n  | Some(m) => assert(m == \"Panic! Uh oh. This was unexpected!\")\n  | None => assert(false)\n  }\n| _ => assert(false)\n}\n```"
         ],
         "signature": "let panic: string => 'a",
         "deprecated": "Use `JsError.panic` instead"

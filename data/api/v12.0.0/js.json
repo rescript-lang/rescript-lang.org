@@ -894,7 +894,7 @@
         "kind": "value",
         "name": "fromBufferOffset",
         "docstrings": [
-          "**raise** Js.Exn.Error raise Js exception\n\n  **param** offset is in bytes"
+          "**throw** Js.Exn.Error throw Js exception\n\n  **param** offset is in bytes"
         ],
         "signature": "let fromBufferOffset: (array_buffer, int) => t"
       },
@@ -903,7 +903,7 @@
         "kind": "value",
         "name": "fromBufferRange",
         "docstrings": [
-          "**raise** Js.Exn.Error raises Js exception\n\n  **param** offset is in bytes, length in elements"
+          "**throw** Js.Exn.Error throws Js exception\n\n  **param** offset is in bytes, length in elements"
         ],
         "signature": "let fromBufferRange: (array_buffer, ~offset: int, ~length: int) => t"
       },
@@ -1326,7 +1326,7 @@
         "kind": "value",
         "name": "fromBufferOffset",
         "docstrings": [
-          "**raise** Js.Exn.Error raise Js exception\n\n  **param** offset is in bytes"
+          "**throw** Js.Exn.Error throw Js exception\n\n  **param** offset is in bytes"
         ],
         "signature": "let fromBufferOffset: (array_buffer, int) => t"
       },
@@ -1335,7 +1335,7 @@
         "kind": "value",
         "name": "fromBufferRange",
         "docstrings": [
-          "**raise** Js.Exn.Error raises Js exception\n\n  **param** offset is in bytes, length in elements"
+          "**throw** Js.Exn.Error throws Js exception\n\n  **param** offset is in bytes, length in elements"
         ],
         "signature": "let fromBufferRange: (array_buffer, ~offset: int, ~length: int) => t"
       },
@@ -1758,7 +1758,7 @@
         "kind": "value",
         "name": "fromBufferOffset",
         "docstrings": [
-          "**raise** Js.Exn.Error raise Js exception\n\n  **param** offset is in bytes"
+          "**throw** Js.Exn.Error throw Js exception\n\n  **param** offset is in bytes"
         ],
         "signature": "let fromBufferOffset: (array_buffer, int) => t"
       },
@@ -1767,7 +1767,7 @@
         "kind": "value",
         "name": "fromBufferRange",
         "docstrings": [
-          "**raise** Js.Exn.Error raises Js exception\n\n  **param** offset is in bytes, length in elements"
+          "**throw** Js.Exn.Error throws Js exception\n\n  **param** offset is in bytes, length in elements"
         ],
         "signature": "let fromBufferRange: (array_buffer, ~offset: int, ~length: int) => t"
       },
@@ -2190,7 +2190,7 @@
         "kind": "value",
         "name": "fromBufferOffset",
         "docstrings": [
-          "**raise** Js.Exn.Error raise Js exception\n\n  **param** offset is in bytes"
+          "**throw** Js.Exn.Error throw Js exception\n\n  **param** offset is in bytes"
         ],
         "signature": "let fromBufferOffset: (array_buffer, int) => t"
       },
@@ -2199,7 +2199,7 @@
         "kind": "value",
         "name": "fromBufferRange",
         "docstrings": [
-          "**raise** Js.Exn.Error raises Js exception\n\n  **param** offset is in bytes, length in elements"
+          "**throw** Js.Exn.Error throws Js exception\n\n  **param** offset is in bytes, length in elements"
         ],
         "signature": "let fromBufferRange: (array_buffer, ~offset: int, ~length: int) => t"
       },
@@ -2622,7 +2622,7 @@
         "kind": "value",
         "name": "fromBufferOffset",
         "docstrings": [
-          "**raise** Js.Exn.Error raise Js exception\n\n  **param** offset is in bytes"
+          "**throw** Js.Exn.Error throw Js exception\n\n  **param** offset is in bytes"
         ],
         "signature": "let fromBufferOffset: (array_buffer, int) => t"
       },
@@ -2631,7 +2631,7 @@
         "kind": "value",
         "name": "fromBufferRange",
         "docstrings": [
-          "**raise** Js.Exn.Error raises Js exception\n\n  **param** offset is in bytes, length in elements"
+          "**throw** Js.Exn.Error throws Js exception\n\n  **param** offset is in bytes, length in elements"
         ],
         "signature": "let fromBufferRange: (array_buffer, ~offset: int, ~length: int) => t"
       },
@@ -3054,7 +3054,7 @@
         "kind": "value",
         "name": "fromBufferOffset",
         "docstrings": [
-          "**raise** Js.Exn.Error raise Js exception\n\n  **param** offset is in bytes"
+          "**throw** Js.Exn.Error throw Js exception\n\n  **param** offset is in bytes"
         ],
         "signature": "let fromBufferOffset: (array_buffer, int) => t"
       },
@@ -3063,7 +3063,7 @@
         "kind": "value",
         "name": "fromBufferRange",
         "docstrings": [
-          "**raise** Js.Exn.Error raises Js exception\n\n  **param** offset is in bytes, length in elements"
+          "**throw** Js.Exn.Error throws Js exception\n\n  **param** offset is in bytes, length in elements"
         ],
         "signature": "let fromBufferRange: (array_buffer, ~offset: int, ~length: int) => t"
       },
@@ -3486,7 +3486,7 @@
         "kind": "value",
         "name": "fromBufferOffset",
         "docstrings": [
-          "**raise** Js.Exn.Error raise Js exception\n\n  **param** offset is in bytes"
+          "**throw** Js.Exn.Error throw Js exception\n\n  **param** offset is in bytes"
         ],
         "signature": "let fromBufferOffset: (array_buffer, int) => t"
       },
@@ -3495,7 +3495,7 @@
         "kind": "value",
         "name": "fromBufferRange",
         "docstrings": [
-          "**raise** Js.Exn.Error raises Js exception\n\n  **param** offset is in bytes, length in elements"
+          "**throw** Js.Exn.Error throws Js exception\n\n  **param** offset is in bytes, length in elements"
         ],
         "signature": "let fromBufferRange: (array_buffer, ~offset: int, ~length: int) => t"
       },
@@ -3918,7 +3918,7 @@
         "kind": "value",
         "name": "fromBufferOffset",
         "docstrings": [
-          "**raise** Js.Exn.Error raise Js exception\n\n  **param** offset is in bytes"
+          "**throw** Js.Exn.Error throw Js exception\n\n  **param** offset is in bytes"
         ],
         "signature": "let fromBufferOffset: (array_buffer, int) => t"
       },
@@ -3927,7 +3927,7 @@
         "kind": "value",
         "name": "fromBufferRange",
         "docstrings": [
-          "**raise** Js.Exn.Error raises Js exception\n\n  **param** offset is in bytes, length in elements"
+          "**throw** Js.Exn.Error throws Js exception\n\n  **param** offset is in bytes, length in elements"
         ],
         "signature": "let fromBufferRange: (array_buffer, ~offset: int, ~length: int) => t"
       },
@@ -4350,7 +4350,7 @@
         "kind": "value",
         "name": "fromBufferOffset",
         "docstrings": [
-          "**raise** Js.Exn.Error raise Js exception\n\n  **param** offset is in bytes"
+          "**throw** Js.Exn.Error throw Js exception\n\n  **param** offset is in bytes"
         ],
         "signature": "let fromBufferOffset: (array_buffer, int) => t"
       },
@@ -4359,7 +4359,7 @@
         "kind": "value",
         "name": "fromBufferRange",
         "docstrings": [
-          "**raise** Js.Exn.Error raises Js exception\n\n  **param** offset is in bytes, length in elements"
+          "**throw** Js.Exn.Error throws Js exception\n\n  **param** offset is in bytes, length in elements"
         ],
         "signature": "let fromBufferRange: (array_buffer, ~offset: int, ~length: int) => t"
       },
@@ -4811,7 +4811,7 @@
         "kind": "value",
         "name": "fromBufferOffset",
         "docstrings": [
-          "**raise** Js.Exn.Error raise Js exception\n\n  **param** offset is in bytes"
+          "**throw** Js.Exn.Error throw Js exception\n\n  **param** offset is in bytes"
         ],
         "signature": "let fromBufferOffset: (array_buffer, int) => t"
       },
@@ -4820,7 +4820,7 @@
         "kind": "value",
         "name": "fromBufferRange",
         "docstrings": [
-          "**raise** Js.Exn.Error raises Js exception\n\n  **param** offset is in bytes, length in elements"
+          "**throw** Js.Exn.Error throws Js exception\n\n  **param** offset is in bytes, length in elements"
         ],
         "signature": "let fromBufferRange: (array_buffer, ~offset: int, ~length: int) => t"
       },
@@ -4981,7 +4981,7 @@
         "kind": "value",
         "name": "fromBufferOffset",
         "docstrings": [
-          "**raise** Js.Exn.Error raise Js exception\n\n  **param** offset is in bytes"
+          "**throw** Js.Exn.Error throw Js exception\n\n  **param** offset is in bytes"
         ],
         "signature": "let fromBufferOffset: (array_buffer, int) => t"
       },
@@ -4990,7 +4990,7 @@
         "kind": "value",
         "name": "fromBufferRange",
         "docstrings": [
-          "**raise** Js.Exn.Error raises Js exception\n\n  **param** offset is in bytes, length in elements"
+          "**throw** Js.Exn.Error throws Js exception\n\n  **param** offset is in bytes, length in elements"
         ],
         "signature": "let fromBufferRange: (array_buffer, ~offset: int, ~length: int) => t"
       },
@@ -5145,7 +5145,7 @@
         "kind": "value",
         "name": "fromBufferOffset",
         "docstrings": [
-          "**raise** Js.Exn.Error raise Js exception\n\n  **param** offset is in bytes"
+          "**throw** Js.Exn.Error throw Js exception\n\n  **param** offset is in bytes"
         ],
         "signature": "let fromBufferOffset: (array_buffer, int) => t"
       },
@@ -5154,7 +5154,7 @@
         "kind": "value",
         "name": "fromBufferRange",
         "docstrings": [
-          "**raise** Js.Exn.Error raises Js exception\n\n  **param** offset is in bytes, length in elements"
+          "**throw** Js.Exn.Error throws Js exception\n\n  **param** offset is in bytes, length in elements"
         ],
         "signature": "let fromBufferRange: (array_buffer, ~offset: int, ~length: int) => t"
       },
@@ -5299,7 +5299,7 @@
         "kind": "value",
         "name": "fromBufferOffset",
         "docstrings": [
-          "**raise** Js.Exn.Error raise Js exception\n\n  **param** offset is in bytes"
+          "**throw** Js.Exn.Error throw Js exception\n\n  **param** offset is in bytes"
         ],
         "signature": "let fromBufferOffset: (array_buffer, int) => t"
       },
@@ -5308,7 +5308,7 @@
         "kind": "value",
         "name": "fromBufferRange",
         "docstrings": [
-          "**raise** Js.Exn.Error raises Js exception\n\n  **param** offset is in bytes, length in elements"
+          "**throw** Js.Exn.Error throws Js exception\n\n  **param** offset is in bytes, length in elements"
         ],
         "signature": "let fromBufferRange: (array_buffer, ~offset: int, ~length: int) => t"
       },
@@ -5463,7 +5463,7 @@
         "kind": "value",
         "name": "fromBufferOffset",
         "docstrings": [
-          "**raise** Js.Exn.Error raise Js exception\n\n  **param** offset is in bytes"
+          "**throw** Js.Exn.Error throw Js exception\n\n  **param** offset is in bytes"
         ],
         "signature": "let fromBufferOffset: (array_buffer, int) => t"
       },
@@ -5472,7 +5472,7 @@
         "kind": "value",
         "name": "fromBufferRange",
         "docstrings": [
-          "**raise** Js.Exn.Error raises Js exception\n\n  **param** offset is in bytes, length in elements"
+          "**throw** Js.Exn.Error throws Js exception\n\n  **param** offset is in bytes, length in elements"
         ],
         "signature": "let fromBufferRange: (array_buffer, ~offset: int, ~length: int) => t"
       },
@@ -5611,7 +5611,7 @@
         "kind": "value",
         "name": "fromBufferOffset",
         "docstrings": [
-          "**raise** Js.Exn.Error raise Js exception\n\n  **param** offset is in bytes"
+          "**throw** Js.Exn.Error throw Js exception\n\n  **param** offset is in bytes"
         ],
         "signature": "let fromBufferOffset: (array_buffer, int) => t"
       },
@@ -5620,7 +5620,7 @@
         "kind": "value",
         "name": "fromBufferRange",
         "docstrings": [
-          "**raise** Js.Exn.Error raises Js exception\n\n  **param** offset is in bytes, length in elements"
+          "**throw** Js.Exn.Error throws Js exception\n\n  **param** offset is in bytes, length in elements"
         ],
         "signature": "let fromBufferRange: (array_buffer, ~offset: int, ~length: int) => t"
       },
@@ -5759,7 +5759,7 @@
         "kind": "value",
         "name": "fromBufferOffset",
         "docstrings": [
-          "**raise** Js.Exn.Error raise Js exception\n\n  **param** offset is in bytes"
+          "**throw** Js.Exn.Error throw Js exception\n\n  **param** offset is in bytes"
         ],
         "signature": "let fromBufferOffset: (array_buffer, int) => t"
       },
@@ -5768,7 +5768,7 @@
         "kind": "value",
         "name": "fromBufferRange",
         "docstrings": [
-          "**raise** Js.Exn.Error raises Js exception\n\n  **param** offset is in bytes, length in elements"
+          "**throw** Js.Exn.Error throws Js exception\n\n  **param** offset is in bytes, length in elements"
         ],
         "signature": "let fromBufferRange: (array_buffer, ~offset: int, ~length: int) => t"
       },
@@ -5907,7 +5907,7 @@
         "kind": "value",
         "name": "fromBufferOffset",
         "docstrings": [
-          "**raise** Js.Exn.Error raise Js exception\n\n  **param** offset is in bytes"
+          "**throw** Js.Exn.Error throw Js exception\n\n  **param** offset is in bytes"
         ],
         "signature": "let fromBufferOffset: (array_buffer, int) => t"
       },
@@ -5916,7 +5916,7 @@
         "kind": "value",
         "name": "fromBufferRange",
         "docstrings": [
-          "**raise** Js.Exn.Error raises Js exception\n\n  **param** offset is in bytes, length in elements"
+          "**throw** Js.Exn.Error throws Js exception\n\n  **param** offset is in bytes, length in elements"
         ],
         "signature": "let fromBufferRange: (array_buffer, ~offset: int, ~length: int) => t"
       },
@@ -6055,7 +6055,7 @@
         "kind": "value",
         "name": "fromBufferOffset",
         "docstrings": [
-          "raise Js.Exn.Error raise Js exception\n\n  param offset is in bytes"
+          "throw Js.Exn.Error throw Js exception\n\n  param offset is in bytes"
         ],
         "signature": "let fromBufferOffset: (array_buffer, int) => t"
       },
@@ -6064,7 +6064,7 @@
         "kind": "value",
         "name": "fromBufferRange",
         "docstrings": [
-          "raise Js.Exn.Error raises Js exception\n\n  param offset is in bytes, length in elements"
+          "throw Js.Exn.Error throws Js exception\n\n  param offset is in bytes, length in elements"
         ],
         "signature": "let fromBufferRange: (array_buffer, ~offset: int, ~length: int) => t"
       },
@@ -6784,7 +6784,7 @@
         "kind": "value",
         "name": "toExponential",
         "docstrings": [
-          "Formats an `int` using exponential (scientific) notation.\nReturns a `string` representing the given value in exponential notation.\nRaises `RangeError` if digits is not in the range \\[0, 20\\] (inclusive).\n\nSee [`toExponential`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toExponential) on MDN.\n\n## Examples\n\n```rescript\n/* prints \"7.7e+1\" */\nJs.log(Js.Int.toExponential(77))\n```"
+          "Formats an `int` using exponential (scientific) notation.\nReturns a `string` representing the given value in exponential notation.\nThrows `RangeError` if digits is not in the range \\[0, 20\\] (inclusive).\n\nSee [`toExponential`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toExponential) on MDN.\n\n## Examples\n\n```rescript\n/* prints \"7.7e+1\" */\nJs.log(Js.Int.toExponential(77))\n```"
         ],
         "signature": "let toExponential: int => string"
       },
@@ -6793,7 +6793,7 @@
         "kind": "value",
         "name": "toExponentialWithPrecision",
         "docstrings": [
-          "Formats an `int` using exponential (scientific) notation.\n`digits` specifies how many digits should appear after the decimal point. The value must be in the range \\[0, 20\\] (inclusive).\n\nReturns a `string` representing the given value in exponential notation.\n\nThe output will be rounded or padded with zeroes if necessary.\nRaises `RangeError` if `digits` is not in the range \\[0, 20\\] (inclusive).\n\nSee [`toExponential`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toExponential) on MDN.\n\n## Examples\n\n```rescript\n/* prints \"7.70e+1\" */\nJs.log(Js.Int.toExponentialWithPrecision(77, ~digits=2))\n\n/* prints \"5.68e+3\" */\nJs.log(Js.Int.toExponentialWithPrecision(5678, ~digits=2))\n```"
+          "Formats an `int` using exponential (scientific) notation.\n`digits` specifies how many digits should appear after the decimal point. The value must be in the range \\[0, 20\\] (inclusive).\n\nReturns a `string` representing the given value in exponential notation.\n\nThe output will be rounded or padded with zeroes if necessary.\nThrows `RangeError` if `digits` is not in the range \\[0, 20\\] (inclusive).\n\nSee [`toExponential`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toExponential) on MDN.\n\n## Examples\n\n```rescript\n/* prints \"7.70e+1\" */\nJs.log(Js.Int.toExponentialWithPrecision(77, ~digits=2))\n\n/* prints \"5.68e+3\" */\nJs.log(Js.Int.toExponentialWithPrecision(5678, ~digits=2))\n```"
         ],
         "signature": "let toExponentialWithPrecision: (int, ~digits: int) => string"
       },
@@ -6802,7 +6802,7 @@
         "kind": "value",
         "name": "toPrecision",
         "docstrings": [
-          "Formats an `int` using some fairly arbitrary rules.\nReturns a `string` representing the given value in fixed-point (usually).\n\n`toPrecision` differs from `toFixed` in that the former will format the number with full precision, while the latter will not output any digits after the decimal point.\nRaises `RangeError` if `digits` is not in the range accepted by this function.\n\nSee [`toPrecision`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision) on MDN.\n\n## Examples\n\n```rescript\n/* prints \"123456789\" */\nJs.log(Js.Int.toPrecision(123456789))\n```"
+          "Formats an `int` using some fairly arbitrary rules.\nReturns a `string` representing the given value in fixed-point (usually).\n\n`toPrecision` differs from `toFixed` in that the former will format the number with full precision, while the latter will not output any digits after the decimal point.\nThrows `RangeError` if `digits` is not in the range accepted by this function.\n\nSee [`toPrecision`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision) on MDN.\n\n## Examples\n\n```rescript\n/* prints \"123456789\" */\nJs.log(Js.Int.toPrecision(123456789))\n```"
         ],
         "signature": "let toPrecision: int => string"
       },
@@ -6811,7 +6811,7 @@
         "kind": "value",
         "name": "toPrecisionWithPrecision",
         "docstrings": [
-          "Formats an `int` using some fairly arbitrary rules.\n`digits` specifies how many digits should appear in total. The value must between 0 and some arbitrary number that's hopefully at least larger than 20 (for Node it's 21. Why? Who knows).\n\nReturns a `string` representing the given value in fixed-point or scientific notation.\n\nThe output will be rounded or padded with zeroes if necessary.\n\n`toPrecisionWithPrecision` differs from `toFixedWithPrecision` in that the former will count all digits against the precision, while the latter will count only the digits after the decimal point.\n`toPrecisionWithPrecision` will also use scientific notation if the specified precision is less than the number of digits before the decimal point.\nRaises `RangeError` if `digits` is not in the range accepted by this function.\n\n\nSee [`toPrecision`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision) on MDN.\n\n## Examples\n\n```rescript\n/* prints \"1.2e+8\" */\nJs.log(Js.Int.toPrecisionWithPrecision(123456789, ~digits=2))\n\n/* prints \"0.0\" */\nJs.log(Js.Int.toPrecisionWithPrecision(0, ~digits=2))\n```"
+          "Formats an `int` using some fairly arbitrary rules.\n`digits` specifies how many digits should appear in total. The value must between 0 and some arbitrary number that's hopefully at least larger than 20 (for Node it's 21. Why? Who knows).\n\nReturns a `string` representing the given value in fixed-point or scientific notation.\n\nThe output will be rounded or padded with zeroes if necessary.\n\n`toPrecisionWithPrecision` differs from `toFixedWithPrecision` in that the former will count all digits against the precision, while the latter will count only the digits after the decimal point.\n`toPrecisionWithPrecision` will also use scientific notation if the specified precision is less than the number of digits before the decimal point.\nThrows `RangeError` if `digits` is not in the range accepted by this function.\n\n\nSee [`toPrecision`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision) on MDN.\n\n## Examples\n\n```rescript\n/* prints \"1.2e+8\" */\nJs.log(Js.Int.toPrecisionWithPrecision(123456789, ~digits=2))\n\n/* prints \"0.0\" */\nJs.log(Js.Int.toPrecisionWithPrecision(0, ~digits=2))\n```"
         ],
         "signature": "let toPrecisionWithPrecision: (int, ~digits: int) => string"
       },
@@ -6829,7 +6829,7 @@
         "kind": "value",
         "name": "toStringWithRadix",
         "docstrings": [
-          "Formats an `int` as a `string`. `radix` specifies the radix base to use for the\nformatted number. The value must be in the range \\[2, 36\\] (inclusive). Returns\na `string` representing the given value in fixed-point (usually). Raises\n`RangeError` if `radix` is not in the range \\[2, 36\\] (inclusive).\n\n\nSee [`toString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toString) on MDN.\n\n## Examples\n\n```rescript\n/* prints \"110\" */\nJs.log(Js.Int.toStringWithRadix(6, ~radix=2))\n\n/* prints \"deadbeef\" */\nJs.log(Js.Int.toStringWithRadix(3735928559, ~radix=16))\n\n/* prints \"2n9c\" */\nJs.log(Js.Int.toStringWithRadix(123456, ~radix=36))\n```"
+          "Formats an `int` as a `string`. `radix` specifies the radix base to use for the\nformatted number. The value must be in the range \\[2, 36\\] (inclusive). Returns\na `string` representing the given value in fixed-point (usually). Throws\n`RangeError` if `radix` is not in the range \\[2, 36\\] (inclusive).\n\n\nSee [`toString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toString) on MDN.\n\n## Examples\n\n```rescript\n/* prints \"110\" */\nJs.log(Js.Int.toStringWithRadix(6, ~radix=2))\n\n/* prints \"deadbeef\" */\nJs.log(Js.Int.toStringWithRadix(3735928559, ~radix=16))\n\n/* prints \"2n9c\" */\nJs.log(Js.Int.toStringWithRadix(123456, ~radix=36))\n```"
         ],
         "signature": "let toStringWithRadix: (int, ~radix: int) => string"
       },
@@ -6903,7 +6903,7 @@
         "kind": "value",
         "name": "toExponential",
         "docstrings": [
-          "Formats a `float` using exponential (scientific) notation. Return a\n`string` representing the given value in exponential notation. Raise\nRangeError if digits is not in the range \\[0, 20\\] (inclusive). See [`toExponential`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toExponential) on MDN.\n\n## Examples\n\n```rescript\n/* prints \"7.71234e+1\" */\nJs.Float.toExponential(77.1234)->Js.log\n\n/* prints \"7.7e+1\" */\nJs.Float.toExponential(77.)->Js.log\n```"
+          "Formats a `float` using exponential (scientific) notation. Return a\n`string` representing the given value in exponential notation. Throw\nRangeError if digits is not in the range \\[0, 20\\] (inclusive). See [`toExponential`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toExponential) on MDN.\n\n## Examples\n\n```rescript\n/* prints \"7.71234e+1\" */\nJs.Float.toExponential(77.1234)->Js.log\n\n/* prints \"7.7e+1\" */\nJs.Float.toExponential(77.)->Js.log\n```"
         ],
         "signature": "let toExponential: float => string"
       },
@@ -6912,7 +6912,7 @@
         "kind": "value",
         "name": "toExponentialWithPrecision",
         "docstrings": [
-          "Formats a `float` using exponential (scientific) notation. `digits` specifies\nhow many digits should appear after the decimal point. The value must be in\nthe range \\[0, 20\\] (inclusive). Return a `string` representing the given value\nin exponential notation. The output will be rounded or padded with zeroes if\nnecessary. Raise RangeError if `digits` is not in the range \\[0, 20\\] (inclusive).\nSee [`toExponential`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toExponential) on MDN.\n\n## Examples\n\n```rescript\n/* prints \"7.71e+1\" */\nJs.Float.toExponentialWithPrecision(77.1234, ~digits=2)->Js.log\n```"
+          "Formats a `float` using exponential (scientific) notation. `digits` specifies\nhow many digits should appear after the decimal point. The value must be in\nthe range \\[0, 20\\] (inclusive). Return a `string` representing the given value\nin exponential notation. The output will be rounded or padded with zeroes if\nnecessary. Throw RangeError if `digits` is not in the range \\[0, 20\\] (inclusive).\nSee [`toExponential`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toExponential) on MDN.\n\n## Examples\n\n```rescript\n/* prints \"7.71e+1\" */\nJs.Float.toExponentialWithPrecision(77.1234, ~digits=2)->Js.log\n```"
         ],
         "signature": "let toExponentialWithPrecision: (float, ~digits: int) => string"
       },
@@ -6921,7 +6921,7 @@
         "kind": "value",
         "name": "toFixed",
         "docstrings": [
-          "Formats a `float` using fixed point notation. Return a `string` representing the\ngiven value in fixed-point notation (usually). Raise RangeError if digits is not\nin the range \\[0, 20\\] (inclusive). See [`toFixed`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed) on MDN.\n\n## Examples\n\n```rescript\n/* prints \"12346\" (note the rounding) */\nJs.Float.toFixed(12345.6789)->Js.log\n\n/* print \"1.2e+21\" */\nJs.Float.toFixed(1.2e21)->Js.log\n```"
+          "Formats a `float` using fixed point notation. Return a `string` representing the\ngiven value in fixed-point notation (usually). Throw RangeError if digits is not\nin the range \\[0, 20\\] (inclusive). See [`toFixed`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed) on MDN.\n\n## Examples\n\n```rescript\n/* prints \"12346\" (note the rounding) */\nJs.Float.toFixed(12345.6789)->Js.log\n\n/* print \"1.2e+21\" */\nJs.Float.toFixed(1.2e21)->Js.log\n```"
         ],
         "signature": "let toFixed: float => string"
       },
@@ -6930,7 +6930,7 @@
         "kind": "value",
         "name": "toFixedWithPrecision",
         "docstrings": [
-          "Formats a `float` using fixed point notation. `digits` specifies how many digits\nshould appear after the decimal point. The value must be in the range \\[0, 20\\]\n(inclusive). Defaults to `0`. Return a `string` representing the given value in\nfixed-point notation (usually). See [`toFixed`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed) on MDN.\n\nThe output will be rounded or padded with zeroes if necessary.\n\nRaise RangeError if digits is not in the range \\[0, 20\\] (inclusive)\n\n## Examples\n\n```rescript\n/* prints \"12345.7\" (note the rounding) */\nJs.Float.toFixedWithPrecision(12345.6789, ~digits=1)->Js.log\n\n/* prints \"0.00\" (note the added zeroes) */\nJs.Float.toFixedWithPrecision(0., ~digits=2)->Js.log\n```"
+          "Formats a `float` using fixed point notation. `digits` specifies how many digits\nshould appear after the decimal point. The value must be in the range \\[0, 20\\]\n(inclusive). Defaults to `0`. Return a `string` representing the given value in\nfixed-point notation (usually). See [`toFixed`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed) on MDN.\n\nThe output will be rounded or padded with zeroes if necessary.\n\nThrow RangeError if digits is not in the range \\[0, 20\\] (inclusive)\n\n## Examples\n\n```rescript\n/* prints \"12345.7\" (note the rounding) */\nJs.Float.toFixedWithPrecision(12345.6789, ~digits=1)->Js.log\n\n/* prints \"0.00\" (note the added zeroes) */\nJs.Float.toFixedWithPrecision(0., ~digits=2)->Js.log\n```"
         ],
         "signature": "let toFixedWithPrecision: (float, ~digits: int) => string"
       },
@@ -6939,7 +6939,7 @@
         "kind": "value",
         "name": "toPrecision",
         "docstrings": [
-          "Formats a `float` using some fairly arbitrary rules. Return a `string`\nrepresenting the given value in fixed-point (usually). `toPrecision` differs\nfrom `Js.Float.toFixed` in that the former will format the number with full\nprecision, while the latter will not output any digits after the decimal point.\nSee [`toPrecision`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision) on MDN.\n\nRaise RangeError if digits is not in the range accepted by this function (what do you mean \"vague\"?)\n\n## Examples\n\n```rescript\n/* prints \"12345.6789\" */\nJs.Float.toPrecision(12345.6789)->Js.log\n\n/* print \"1.2e+21\" */\nJs.Float.toPrecision(1.2e21)->Js.log\n```"
+          "Formats a `float` using some fairly arbitrary rules. Return a `string`\nrepresenting the given value in fixed-point (usually). `toPrecision` differs\nfrom `Js.Float.toFixed` in that the former will format the number with full\nprecision, while the latter will not output any digits after the decimal point.\nSee [`toPrecision`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision) on MDN.\n\nThrow RangeError if digits is not in the range accepted by this function (what do you mean \"vague\"?)\n\n## Examples\n\n```rescript\n/* prints \"12345.6789\" */\nJs.Float.toPrecision(12345.6789)->Js.log\n\n/* print \"1.2e+21\" */\nJs.Float.toPrecision(1.2e21)->Js.log\n```"
         ],
         "signature": "let toPrecision: float => string"
       },
@@ -6948,7 +6948,7 @@
         "kind": "value",
         "name": "toPrecisionWithPrecision",
         "docstrings": [
-          "Formats a `float` using some fairly arbitrary rules. `digits` specifies how many\ndigits should appear in total. The value must between 0 and some arbitrary number\nthat's hopefully at least larger than 20 (for Node it's 21. Why? Who knows).\nSee [`toPrecision`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision) on MDN.\n\nReturn a `string` representing the given value in fixed-point or scientific\nnotation. The output will be rounded or padded with zeroes if necessary.\n\n`toPrecisionWithPrecision` differs from `toFixedWithPrecision` in that the former\nwill count all digits against the precision, while the latter will count only\nthe digits after the decimal point. `toPrecisionWithPrecision` will also use\nscientific notation if the specified precision is less than the number for digits\nbefore the decimal point.\n\nRaise RangeError if digits is not in the range accepted by this function (what do you mean \"vague\"?)\n\n## Examples\n\n```rescript\n/* prints \"1e+4\" */\nJs.Float.toPrecisionWithPrecision(12345.6789, ~digits=1)->Js.log\n\n/* prints \"0.0\" */\nJs.Float.toPrecisionWithPrecision(0., ~digits=2)->Js.log\n```"
+          "Formats a `float` using some fairly arbitrary rules. `digits` specifies how many\ndigits should appear in total. The value must between 0 and some arbitrary number\nthat's hopefully at least larger than 20 (for Node it's 21. Why? Who knows).\nSee [`toPrecision`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision) on MDN.\n\nReturn a `string` representing the given value in fixed-point or scientific\nnotation. The output will be rounded or padded with zeroes if necessary.\n\n`toPrecisionWithPrecision` differs from `toFixedWithPrecision` in that the former\nwill count all digits against the precision, while the latter will count only\nthe digits after the decimal point. `toPrecisionWithPrecision` will also use\nscientific notation if the specified precision is less than the number for digits\nbefore the decimal point.\n\nThrow RangeError if digits is not in the range accepted by this function (what do you mean \"vague\"?)\n\n## Examples\n\n```rescript\n/* prints \"1e+4\" */\nJs.Float.toPrecisionWithPrecision(12345.6789, ~digits=1)->Js.log\n\n/* prints \"0.0\" */\nJs.Float.toPrecisionWithPrecision(0., ~digits=2)->Js.log\n```"
         ],
         "signature": "let toPrecisionWithPrecision: (float, ~digits: int) => string"
       },
@@ -6966,7 +6966,7 @@
         "kind": "value",
         "name": "toStringWithRadix",
         "docstrings": [
-          "Formats a `float` as a string. `radix` specifies the radix base to use for the\nformatted number. The value must be in the range \\[2, 36\\] (inclusive). Return a\n`string` representing the given value in fixed-point (usually). See [`toString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toString) on MDN.\n\nRaise RangeError if radix is not in the range \\[2, 36\\] (inclusive)\n\n## Examples\n\n```rescript\n/* prints \"110\" */\nJs.Float.toStringWithRadix(6., ~radix=2)->Js.log\n\n/* prints \"11.001000111101011100001010001111010111000010100011111\" */\nJs.Float.toStringWithRadix(3.14, ~radix=2)->Js.log\n\n/* prints \"deadbeef\" */\nJs.Float.toStringWithRadix(3735928559., ~radix=16)->Js.log\n\n/* prints \"3f.gez4w97ry0a18ymf6qadcxr\" */\nJs.Float.toStringWithRadix(123.456, ~radix=36)->Js.log\n```"
+          "Formats a `float` as a string. `radix` specifies the radix base to use for the\nformatted number. The value must be in the range \\[2, 36\\] (inclusive). Return a\n`string` representing the given value in fixed-point (usually). See [`toString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toString) on MDN.\n\nThrow RangeError if radix is not in the range \\[2, 36\\] (inclusive)\n\n## Examples\n\n```rescript\n/* prints \"110\" */\nJs.Float.toStringWithRadix(6., ~radix=2)->Js.log\n\n/* prints \"11.001000111101011100001010001111010111000010100011111\" */\nJs.Float.toStringWithRadix(3.14, ~radix=2)->Js.log\n\n/* prints \"deadbeef\" */\nJs.Float.toStringWithRadix(3735928559., ~radix=16)->Js.log\n\n/* prints \"3f.gez4w97ry0a18ymf6qadcxr\" */\nJs.Float.toStringWithRadix(123.456, ~radix=36)->Js.log\n```"
         ],
         "signature": "let toStringWithRadix: (float, ~radix: int) => string"
       },
@@ -7597,7 +7597,7 @@
         "kind": "value",
         "name": "pow_int",
         "docstrings": [
-          "Raises the given base to the given exponent. (Arguments and result are\nintegers.) See\n[`Math.pow`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/pow)\non MDN.\n\n## Examples\n\n```rescript\nJs.Math.pow_int(~base=3, ~exp=4) == 81\n```"
+          "Throws the given base to the given exponent. (Arguments and result are\nintegers.) See\n[`Math.pow`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/pow)\non MDN.\n\n## Examples\n\n```rescript\nJs.Math.pow_int(~base=3, ~exp=4) == 81\n```"
         ],
         "signature": "let pow_int: (~base: int, ~exp: int) => int",
         "deprecated": "use `pow_float` instead, the return type may be not int"
@@ -7607,7 +7607,7 @@
         "kind": "value",
         "name": "pow_float",
         "docstrings": [
-          "Raises the given base to the given exponent. (Arguments and result are\nfloats.) Returns `NaN` if the result would be imaginary. See\n[`Math.pow`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/pow)\non MDN.\n\n## Examples\n\n```rescript\nJs.Math.pow_float(~base=3.0, ~exp=4.0) == 81.0\nJs.Math.pow_float(~base=4.0, ~exp=-2.0) == 0.0625\nJs.Math.pow_float(~base=625.0, ~exp=0.5) == 25.0\nJs.Math.pow_float(~base=625.0, ~exp=-0.5) == 0.04\nJs.Float.isNaN(Js.Math.pow_float(~base=-2.0, ~exp=0.5)) == true\n```"
+          "Throws the given base to the given exponent. (Arguments and result are\nfloats.) Returns `NaN` if the result would be imaginary. See\n[`Math.pow`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/pow)\non MDN.\n\n## Examples\n\n```rescript\nJs.Math.pow_float(~base=3.0, ~exp=4.0) == 81.0\nJs.Math.pow_float(~base=4.0, ~exp=-2.0) == 0.0625\nJs.Math.pow_float(~base=625.0, ~exp=0.5) == 25.0\nJs.Math.pow_float(~base=625.0, ~exp=-0.5) == 0.04\nJs.Float.isNaN(Js.Math.pow_float(~base=-2.0, ~exp=0.5)) == true\n```"
         ],
         "signature": "let pow_float: (~base: float, ~exp: float) => float"
       },
@@ -7919,7 +7919,7 @@
         "kind": "value",
         "name": "parseExn",
         "docstrings": [
-          "`parseExn(s)` parses the `string` `s` into a JSON data structure.\nReturns a JSON data structure.\nRaises `SyntaxError` if the given string is not a valid JSON. Note: `SyntaxError` is a JavaScript exception.\n\nSee [`parse`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse) on MDN.\n\n## Examples\n\n```rescript\n/* parse a simple JSON string */\n\nlet json = try Js.Json.parseExn(` \"hello\" `) catch {\n| _ => failwith(\"Error parsing JSON string\")\n}\n\nswitch Js.Json.classify(json) {\n| Js.Json.JSONString(value) => Js.log(value)\n| _ => failwith(\"Expected a string\")\n}\n```\n\n```rescript\n/* parse a complex JSON string */\n\nlet getIds = s => {\n  let json = try Js.Json.parseExn(s) catch {\n  | _ => failwith(\"Error parsing JSON string\")\n  }\n\n  switch Js.Json.classify(json) {\n  | Js.Json.JSONObject(value) =>\n    /* In this branch, compiler infer value : Js.Json.t dict */\n    switch Js.Dict.get(value, \"ids\") {\n    | Some(ids) =>\n      switch Js.Json.classify(ids) {\n      | Js.Json.JSONArray(ids) => /* In this branch compiler infer ids : Js.Json.t array */\n        ids\n      | _ => failwith(\"Expected an array\")\n      }\n    | None => failwith(\"Expected an `ids` property\")\n    }\n  | _ => failwith(\"Expected an object\")\n  }\n}\n\n/* prints `1, 2, 3` */\nJs.log(getIds(` { \"ids\" : [1, 2, 3 ] } `))\n```"
+          "`parseExn(s)` parses the `string` `s` into a JSON data structure.\nReturns a JSON data structure.\nThrows `SyntaxError` if the given string is not a valid JSON. Note: `SyntaxError` is a JavaScript exception.\n\nSee [`parse`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse) on MDN.\n\n## Examples\n\n```rescript\n/* parse a simple JSON string */\n\nlet json = try Js.Json.parseExn(` \"hello\" `) catch {\n| _ => failwith(\"Error parsing JSON string\")\n}\n\nswitch Js.Json.classify(json) {\n| Js.Json.JSONString(value) => Js.log(value)\n| _ => failwith(\"Expected a string\")\n}\n```\n\n```rescript\n/* parse a complex JSON string */\n\nlet getIds = s => {\n  let json = try Js.Json.parseExn(s) catch {\n  | _ => failwith(\"Error parsing JSON string\")\n  }\n\n  switch Js.Json.classify(json) {\n  | Js.Json.JSONObject(value) =>\n    /* In this branch, compiler infer value : Js.Json.t dict */\n    switch Js.Dict.get(value, \"ids\") {\n    | Some(ids) =>\n      switch Js.Json.classify(ids) {\n      | Js.Json.JSONArray(ids) => /* In this branch compiler infer ids : Js.Json.t array */\n        ids\n      | _ => failwith(\"Expected an array\")\n      }\n    | None => failwith(\"Expected an `ids` property\")\n    }\n  | _ => failwith(\"Expected an object\")\n  }\n}\n\n/* prints `1, 2, 3` */\nJs.log(getIds(` { \"ids\" : [1, 2, 3 ] } `))\n```"
         ],
         "signature": "let parseExn: string => t"
       },
@@ -7964,7 +7964,7 @@
         "kind": "value",
         "name": "serializeExn",
         "docstrings": [
-          "It will raise in such situations:\n- The object can not be serlialized to a JSON\n- There are cycles\n- Some JS engines can not stringify deeply nested json objects"
+          "It will throw in such situations:\n- The object can not be serlialized to a JSON\n- There are cycles\n- Some JS engines can not stringify deeply nested json objects"
         ],
         "signature": "let serializeExn: 'a => string"
       }
@@ -9423,7 +9423,7 @@
         "kind": "value",
         "name": "fromCodePoint",
         "docstrings": [
-          "`fromCodePoint(n)` creates a `string` containing the character corresponding to\nthat numeric code point. If the number is not a valid code point, it raises\n`RangeError`. Thus, `fromCodePoint(0x1F63A)` will produce a correct value,\nunlike `fromCharCode(0x1F63A)`, and `fromCodePoint(-5)` will raise a\n`RangeError`.\n\nSee [`String.fromCodePoint`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCodePoint)\non MDN.\n\n## Examples\n\n```rescript\nJs.String2.fromCodePoint(65) == \"A\"\nJs.String2.fromCodePoint(0x3c8) == `ψ`\nJs.String2.fromCodePoint(0xd55c) == `한`\nJs.String2.fromCodePoint(0x1f63a) == `😺`\n```"
+          "`fromCodePoint(n)` creates a `string` containing the character corresponding to\nthat numeric code point. If the number is not a valid code point, it throws\n`RangeError`. Thus, `fromCodePoint(0x1F63A)` will produce a correct value,\nunlike `fromCharCode(0x1F63A)`, and `fromCodePoint(-5)` will throw a\n`RangeError`.\n\nSee [`String.fromCodePoint`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCodePoint)\non MDN.\n\n## Examples\n\n```rescript\nJs.String2.fromCodePoint(65) == \"A\"\nJs.String2.fromCodePoint(0x3c8) == `ψ`\nJs.String2.fromCodePoint(0xd55c) == `한`\nJs.String2.fromCodePoint(0x1f63a) == `😺`\n```"
         ],
         "signature": "let fromCodePoint: int => t"
       },
@@ -9612,7 +9612,7 @@
         "kind": "value",
         "name": "repeat",
         "docstrings": [
-          "`repeat(str, n)` returns a `string` that consists of `n` repetitions of `str`.\nRaises `RangeError` if `n` is negative.\n\nSee [`String.repeat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/repeat)\non MDN.\n\n## Examples\n\n```rescript\nJs.String2.repeat(\"ha\", 3) == \"hahaha\"\nJs.String2.repeat(\"empty\", 0) == \"\"\n```"
+          "`repeat(str, n)` returns a `string` that consists of `n` repetitions of `str`.\nThrows `RangeError` if `n` is negative.\n\nSee [`String.repeat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/repeat)\non MDN.\n\n## Examples\n\n```rescript\nJs.String2.repeat(\"ha\", 3) == \"hahaha\"\nJs.String2.repeat(\"empty\", 0) == \"\"\n```"
         ],
         "signature": "let repeat: (t, int) => t"
       },
@@ -9908,7 +9908,7 @@
         "kind": "value",
         "name": "fromCodePoint",
         "docstrings": [
-          "`fromCodePoint(n)` creates a `string` containing the character corresponding to\nthat numeric code point. If the number is not a valid code point, it raises\n`RangeError`.Thus, `fromCodePoint(0x1F63A)` will produce a correct value,\nunlike `fromCharCode(0x1F63A)`, and `fromCodePoint(-5)` will raise a\n`RangeError`.\n\nSee [`String.fromCodePoint`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCodePoint)\non MDN.\n\n## Examples\n\n```rescript\nJs.String2.fromCodePoint(65) == \"A\"\nJs.String2.fromCodePoint(0x3c8) == `ψ`\nJs.String2.fromCodePoint(0xd55c) == `한`\nJs.String2.fromCodePoint(0x1f63a) == `😺`\n```"
+          "`fromCodePoint(n)` creates a `string` containing the character corresponding to\nthat numeric code point. If the number is not a valid code point, it throws\n`RangeError`.Thus, `fromCodePoint(0x1F63A)` will produce a correct value,\nunlike `fromCharCode(0x1F63A)`, and `fromCodePoint(-5)` will throw a\n`RangeError`.\n\nSee [`String.fromCodePoint`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCodePoint)\non MDN.\n\n## Examples\n\n```rescript\nJs.String2.fromCodePoint(65) == \"A\"\nJs.String2.fromCodePoint(0x3c8) == `ψ`\nJs.String2.fromCodePoint(0xd55c) == `한`\nJs.String2.fromCodePoint(0x1f63a) == `😺`\n```"
         ],
         "signature": "let fromCodePoint: int => t"
       },

@@ -3,7 +3,7 @@
     "id": "Belt",
     "name": "Belt",
     "docstrings": [
-      "The ReScript standard library.\n\nBelt is currently mostly covering collection types. It has no string or date functions yet, although Belt.String is in the works. In the meantime, use [Js.String](js/string) for string functions and [Js.Date](js/date) for date functions.\n\n## Motivation\n\nBelt provides:\n\n- The **highest quality** immutable data structures in JavaScript.\n- Safety by default: A Belt function will never throw exceptions, unless it is\n  indicated explicitly in the function name (suffix \"Exn\").\n- Better performance and smaller code size running on the JS platform.\n- Ready for [Tree Shaking](https://webpack.js.org/guides/tree-shaking/).\n\n## Usage\n\nTo use modules from Belt, either refer to them by their fully qualified name (`Belt.List`, `Belt.Array` etc.) or open the `Belt` module by putting\n\n## Examples\n\n```rescript\nopen Belt\n```\n\nat the top of your source files. After opening Belt this way, `Array` will refer to `Belt.Array`, `List` will refer to `Belt.List` etc. in the subsequent code.\n\nIf you want to open Belt globally for all files in your project instead, you can put\n\n```json\n{\n  \"compiler-flags\": [\"-open Belt\"]\n}\n```\n\ninto your `rescript.json`.\n\n**Note**: this is the **only** `open` we encourage.\n\nExample usage:\n\n## Examples\n\n```rescript\nlet someNumbers = [1, 1, 4, 2, 3, 6, 3, 4, 2]\n\nlet greaterThan2UniqueAndSorted =\n  someNumbers\n  ->Belt.Array.keep(x => x > 2)\n  // convert to and from set to make values unique\n  ->Belt.Set.Int.fromArray\n  ->Belt.Set.Int.toArray // output is already sorted\n\nJs.log2(\"result\", greaterThan2UniqueAndSorted)\n```\n\n## Specialized Collections\n\nFor collections types like set or map, Belt provides both a generic module as well as specialized, more efficient implementations for string and int keys.\n\nFor example, Belt has the following set modules:\n\n- [Belt.Set](belt/set)\n- [Belt.Set.Int](belt/set/int)\n- [Belt.Set.String](belt/set/string)\n\n## Implementation Details\n\n### Array access runtime safety\n\nOne common confusion comes from the way Belt handles array access. It differs from than the default standard library's.\n\n## Examples\n\n```rescript\nlet letters = [\"a\", \"b\", \"c\"]\nlet a = letters[0] // a == \"a\"\nlet capitalA = Js.String.toUpperCase(a)\nlet k = letters[10] // Raises an exception! The 10th index doesn't exist.\n```\n\nBecause Belt avoids exceptions and returns `options` instead, this code behaves differently:\n\n## Examples\n\n```rescript\nopen Belt\nlet letters = [\"a\", \"b\", \"c\"]\nlet a = letters[0] // a == Some(\"a\")\nlet captialA = Js.String.toUpperCase(a) // Type error! This code will not compile.\nlet k = letters[10] // k == None\n```\n\nAlthough we've fixed the problem where `k` raises an exception, we now have a type error when trying to capitalize `a`. There are a few things going on here:\n\n- Reason transforms array index access to the function `Array.get`. So `letters[0]` is the same as `Array.get(letters, 0)`.\n- The compiler uses whichever `Array` module is in scope. If you `open Belt`, then it uses `Belt.Array`.\n- `Belt.Array.get` returns values wrapped in options, so `letters[0] == Some(\"a\")`.\n\nFortunately, this is easy to fix:\n\n## Examples\n\n```rescript\nopen Belt\nlet letters = [\"a\", \"b\", \"c\"]\nlet a = letters[0]\n\n// Use a switch statement:\nlet capitalA = switch a {\n| Some(a) => Some(Js.String.toUpperCase(a))\n| None => None\n}\n\nlet k = letters[10] // k == None\n```\n\nWith that little bit of tweaking, our code now compiles successfully and is 100% free of runtime errors\\!\n\n### A Special Encoding for Collection Safety\n\nWhen we create a collection library for a custom data type we need a way to provide a comparator function. Take Set for example, suppose its element type is a pair of ints, it needs a custom compare function that takes two tuples and returns their order. The Set could not just be typed as Set.t (int \\* int) , its customized compare function needs to manifest itself in the signature, otherwise, if the user creates another customized compare function, the two collection could mix which would result in runtime error.\n\nWe use a phantom type to solve the problem:\n\n## Examples\n\n```rescript\nmodule Comparable1 = Belt.Id.MakeComparable({\n  type t = (int, int)\n  let cmp = ((a0, a1), (b0, b1)) =>\n    switch Pervasives.compare(a0, b0) {\n    | 0 => Pervasives.compare(a1, b1)\n    | c => c\n    }\n})\n\nlet mySet1 = Belt.Set.make(~id=module(Comparable1))\n\nmodule Comparable2 = Belt.Id.MakeComparable({\n  type t = (int, int)\n  let cmp = ((a0, a1), (b0, b1)) =>\n    switch Pervasives.compare(a0, b0) {\n    | 0 => Pervasives.compare(a1, b1)\n    | c => c\n    }\n})\n\nlet mySet2 = Belt.Set.make(~id=module(Comparable2))\n```\n\nHere, the compiler would infer `mySet1` and `mySet2` having different type, so e.g. a `merge` operation that tries to merge these two sets will correctly fail.\n\n## Examples\n\n```rescript\nlet mySet1: t<(int, int), Comparable1.identity> = %todo\nlet mySet2: t<(int, int), Comparable2.identity> = %todo\n```\n\n`Comparable1.identity` and `Comparable2.identity` are not the same using our encoding scheme."
+      "The ReScript standard library.\n\nBelt is currently mostly covering collection types. It has no string or date functions yet, although Belt.String is in the works. In the meantime, use [Js.String](js/string) for string functions and [Js.Date](js/date) for date functions.\n\n## Motivation\n\nBelt provides:\n\n- The **highest quality** immutable data structures in JavaScript.\n- Safety by default: A Belt function will never throw exceptions, unless it is\n  indicated explicitly in the function name (suffix \"Exn\").\n- Better performance and smaller code size running on the JS platform.\n- Ready for [Tree Shaking](https://webpack.js.org/guides/tree-shaking/).\n\n## Usage\n\nTo use modules from Belt, either refer to them by their fully qualified name (`Belt.List`, `Belt.Array` etc.) or open the `Belt` module by putting\n\n## Examples\n\n```rescript\nopen Belt\n```\n\nat the top of your source files. After opening Belt this way, `Array` will refer to `Belt.Array`, `List` will refer to `Belt.List` etc. in the subsequent code.\n\nIf you want to open Belt globally for all files in your project instead, you can put\n\n```json\n{\n  \"compiler-flags\": [\"-open Belt\"]\n}\n```\n\ninto your `rescript.json`.\n\n**Note**: this is the **only** `open` we encourage.\n\nExample usage:\n\n## Examples\n\n```rescript\nlet someNumbers = [1, 1, 4, 2, 3, 6, 3, 4, 2]\n\nlet greaterThan2UniqueAndSorted =\n  someNumbers\n  ->Belt.Array.keep(x => x > 2)\n  // convert to and from set to make values unique\n  ->Belt.Set.Int.fromArray\n  ->Belt.Set.Int.toArray // output is already sorted\n\nJs.log2(\"result\", greaterThan2UniqueAndSorted)\n```\n\n## Specialized Collections\n\nFor collections types like set or map, Belt provides both a generic module as well as specialized, more efficient implementations for string and int keys.\n\nFor example, Belt has the following set modules:\n\n- [Belt.Set](belt/set)\n- [Belt.Set.Int](belt/set/int)\n- [Belt.Set.String](belt/set/string)\n\n## Implementation Details\n\n### Array access runtime safety\n\nOne common confusion comes from the way Belt handles array access. It differs from than the default standard library's.\n\n## Examples\n\n```rescript\nlet letters = [\"a\", \"b\", \"c\"]\nlet a = letters[0] // a == \"a\"\nlet capitalA = Js.String.toUpperCase(a)\nlet k = letters[10] // Throws an exception! The 10th index doesn't exist.\n```\n\nBecause Belt avoids exceptions and returns `options` instead, this code behaves differently:\n\n## Examples\n\n```rescript\nopen Belt\nlet letters = [\"a\", \"b\", \"c\"]\nlet a = letters[0] // a == Some(\"a\")\nlet captialA = Js.String.toUpperCase(a) // Type error! This code will not compile.\nlet k = letters[10] // k == None\n```\n\nAlthough we've fixed the problem where `k` throws an exception, we now have a type error when trying to capitalize `a`. There are a few things going on here:\n\n- Reason transforms array index access to the function `Array.get`. So `letters[0]` is the same as `Array.get(letters, 0)`.\n- The compiler uses whichever `Array` module is in scope. If you `open Belt`, then it uses `Belt.Array`.\n- `Belt.Array.get` returns values wrapped in options, so `letters[0] == Some(\"a\")`.\n\nFortunately, this is easy to fix:\n\n## Examples\n\n```rescript\nopen Belt\nlet letters = [\"a\", \"b\", \"c\"]\nlet a = letters[0]\n\n// Use a switch statement:\nlet capitalA = switch a {\n| Some(a) => Some(Js.String.toUpperCase(a))\n| None => None\n}\n\nlet k = letters[10] // k == None\n```\n\nWith that little bit of tweaking, our code now compiles successfully and is 100% free of runtime errors\\!\n\n### A Special Encoding for Collection Safety\n\nWhen we create a collection library for a custom data type we need a way to provide a comparator function. Take Set for example, suppose its element type is a pair of ints, it needs a custom compare function that takes two tuples and returns their order. The Set could not just be typed as Set.t (int \\* int) , its customized compare function needs to manifest itself in the signature, otherwise, if the user creates another customized compare function, the two collection could mix which would result in runtime error.\n\nWe use a phantom type to solve the problem:\n\n## Examples\n\n```rescript\nmodule Comparable1 = Belt.Id.MakeComparable({\n  type t = (int, int)\n  let cmp = ((a0, a1), (b0, b1)) =>\n    switch Pervasives.compare(a0, b0) {\n    | 0 => Pervasives.compare(a1, b1)\n    | c => c\n    }\n})\n\nlet mySet1 = Belt.Set.make(~id=module(Comparable1))\n\nmodule Comparable2 = Belt.Id.MakeComparable({\n  type t = (int, int)\n  let cmp = ((a0, a1), (b0, b1)) =>\n    switch Pervasives.compare(a0, b0) {\n    | 0 => Pervasives.compare(a1, b1)\n    | c => c\n    }\n})\n\nlet mySet2 = Belt.Set.make(~id=module(Comparable2))\n```\n\nHere, the compiler would infer `mySet1` and `mySet2` having different type, so e.g. a `merge` operation that tries to merge these two sets will correctly fail.\n\n## Examples\n\n```rescript\nlet mySet1: t<(int, int), Comparable1.identity> = %todo\nlet mySet2: t<(int, int), Comparable2.identity> = %todo\n```\n\n`Comparable1.identity` and `Comparable2.identity` are not the same using our encoding scheme."
     ],
     "items": []
   },
@@ -952,7 +952,7 @@
         "kind": "value",
         "name": "checkInvariantInternal",
         "docstrings": [
-          "**raise** when invariant is not held"
+          "**throw** when invariant is not held"
         ],
         "signature": "let checkInvariantInternal: t<'a> => unit"
       },
@@ -1321,7 +1321,7 @@
         "kind": "value",
         "name": "checkInvariantInternal",
         "docstrings": [
-          "**raise** when invariant is not held"
+          "**Throw** when invariant is not held"
         ],
         "signature": "let checkInvariantInternal: t<'a> => unit"
       },
@@ -1748,7 +1748,7 @@
         "kind": "value",
         "name": "checkInvariantInternal",
         "docstrings": [
-          "**raise** when invariant is not held"
+          "**throw** when invariant is not held"
         ],
         "signature": "let checkInvariantInternal: t => unit"
       }
@@ -2103,7 +2103,7 @@
         "kind": "value",
         "name": "checkInvariantInternal",
         "docstrings": [
-          "**raise** when invariant is not held"
+          "**throw** when invariant is not held"
         ],
         "signature": "let checkInvariantInternal: t => unit"
       }
@@ -2850,7 +2850,7 @@
         "kind": "value",
         "name": "checkInvariantInternal",
         "docstrings": [
-          "**raise** when invariant is not held"
+          "**throw** when invariant is not held"
         ],
         "signature": "let checkInvariantInternal: t<'a> => unit"
       },
@@ -3296,7 +3296,7 @@
         "kind": "value",
         "name": "checkInvariantInternal",
         "docstrings": [
-          "**raise** when invariant is not held"
+          "**throw** when invariant is not held"
         ],
         "signature": "let checkInvariantInternal: t<'a> => unit"
       },
@@ -3792,7 +3792,7 @@
         "kind": "value",
         "name": "getExn",
         "docstrings": [
-          "Same as [get](#get) but raise when element does not exist."
+          "Same as [get](#get) but throw when element does not exist."
         ],
         "signature": "let getExn: (t<'value, 'id>, 'value, ~cmp: cmp<'value, 'id>) => 'value"
       },
@@ -3801,7 +3801,7 @@
         "kind": "value",
         "name": "getOrThrow",
         "docstrings": [
-          "Same as [get](#get) but raise when element does not exist."
+          "Same as [get](#get) but throw when element does not exist."
         ],
         "signature": "let getOrThrow: (t<'value, 'id>, 'value, ~cmp: cmp<'value, 'id>) => 'value"
       },
@@ -3819,7 +3819,7 @@
         "kind": "value",
         "name": "checkInvariantInternal",
         "docstrings": [
-          "**raise** when invariant is not held"
+          "**throw** when invariant is not held"
         ],
         "signature": "let checkInvariantInternal: t<'a, 'b> => unit"
       }
@@ -4161,7 +4161,7 @@
         "kind": "value",
         "name": "checkInvariantInternal",
         "docstrings": [
-          "**raise** when invariant is not held"
+          "**throw** when invariant is not held"
         ],
         "signature": "let checkInvariantInternal: t => unit"
       }
@@ -4503,7 +4503,7 @@
         "kind": "value",
         "name": "checkInvariantInternal",
         "docstrings": [
-          "**raise** when invariant is not held"
+          "**throw** when invariant is not held"
         ],
         "signature": "let checkInvariantInternal: t => unit"
       }
@@ -4989,7 +4989,7 @@
         "kind": "value",
         "name": "getExn",
         "docstrings": [
-          "`getExn(res)`: when `res` is `Ok(n)`, returns `n` when `res` is `Error(m)`, raise an exception\n\n## Examples\n\n```rescript\nBelt.Result.Ok(42)->Belt.Result.getExn == 42\n\nswitch Belt.Result.getExn(Belt.Result.Error(\"Invalid data\")) {\n// raise a exception\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
+          "`getExn(res)`: when `res` is `Ok(n)`, returns `n` when `res` is `Error(m)`, throw an exception\n\n## Examples\n\n```rescript\nBelt.Result.Ok(42)->Belt.Result.getExn == 42\n\nswitch Belt.Result.getExn(Belt.Result.Error(\"Invalid data\")) {\n// throw a exception\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
         ],
         "signature": "let getExn: t<'a, 'b> => 'a"
       },
@@ -4998,7 +4998,7 @@
         "kind": "value",
         "name": "getOrThrow",
         "docstrings": [
-          "`getOrThrow(res)`: when `res` is `Ok(n)`, returns `n` when `res` is `Error(m)`, raise an exception\n\n## Examples\n\n```rescript\nBelt.Result.Ok(42)->Belt.Result.getOrThrow == 42\n\nswitch Belt.Result.getOrThrow(Belt.Result.Error(\"Invalid data\")) {\n// raise a exception\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
+          "`getOrThrow(res)`: when `res` is `Ok(n)`, returns `n` when `res` is `Error(m)`, throw an exception\n\n## Examples\n\n```rescript\nBelt.Result.Ok(42)->Belt.Result.getOrThrow == 42\n\nswitch Belt.Result.getOrThrow(Belt.Result.Error(\"Invalid data\")) {\n// throw a exception\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
         ],
         "signature": "let getOrThrow: t<'a, 'b> => 'a"
       },
@@ -5167,7 +5167,7 @@
         "kind": "value",
         "name": "getExn",
         "docstrings": [
-          "Raises an Error in case `None` is provided. Use with care.\n\n## Examples\n\n```rescript\nSome(3)->Belt.Option.getExn == 3\n\nswitch Belt.Option.getExn(None) {\n// Raises an exception\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
+          "Throws an Error in case `None` is provided. Use with care.\n\n## Examples\n\n```rescript\nSome(3)->Belt.Option.getExn == 3\n\nswitch Belt.Option.getExn(None) {\n// Throws an exception\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
         ],
         "signature": "let getExn: option<'a> => 'a"
       },
@@ -5176,7 +5176,7 @@
         "kind": "value",
         "name": "getOrThrow",
         "docstrings": [
-          "Raises an Error in case `None` is provided. Use with care.\n\n## Examples\n\n```rescript\nSome(3)->Belt.Option.getOrThrow == 3\n\nswitch Belt.Option.getOrThrow(None) {\n// Raises an exception\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
+          "Throws an Error in case `None` is provided. Use with care.\n\n## Examples\n\n```rescript\nSome(3)->Belt.Option.getOrThrow == 3\n\nswitch Belt.Option.getOrThrow(None) {\n// Throws an exception\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
         ],
         "signature": "let getOrThrow: option<'a> => 'a"
       },
@@ -5991,7 +5991,7 @@
         "kind": "value",
         "name": "checkInvariantInternal",
         "docstrings": [
-          "Raise when invariant is not held."
+          "Throw when invariant is not held."
         ],
         "signature": "let checkInvariantInternal: t<'a, 'b, 'c> => unit"
       },
@@ -6450,7 +6450,7 @@
         "kind": "value",
         "name": "getExn",
         "docstrings": [
-          "Same as `Belt.MutableSet.get` but raise when element does not exist."
+          "Same as `Belt.MutableSet.get` but throw when element does not exist."
         ],
         "signature": "let getExn: (t<'value, 'id>, 'value) => 'value"
       },
@@ -6459,7 +6459,7 @@
         "kind": "value",
         "name": "getOrThrow",
         "docstrings": [
-          "Same as `Belt.MutableSet.get` but raise when element does not exist."
+          "Same as `Belt.MutableSet.get` but throw when element does not exist."
         ],
         "signature": "let getOrThrow: (t<'value, 'id>, 'value) => 'value"
       },
@@ -6477,7 +6477,7 @@
         "kind": "value",
         "name": "checkInvariantInternal",
         "docstrings": [
-          "**raise** when invariant is not held"
+          "**throw** when invariant is not held"
         ],
         "signature": "let checkInvariantInternal: t<'a, 'b> => unit"
       }
@@ -6813,7 +6813,7 @@
         "kind": "value",
         "name": "getExn",
         "docstrings": [
-          "`getExn(s, k)`\n\nSee `Belt.Map.get`\n\nraise when `k` not exist"
+          "`getExn(s, k)`\n\nSee `Belt.Map.get`\n\nthrow when `k` not exist"
         ],
         "signature": "let getExn: (t<'k, 'v, 'id>, 'k) => 'v"
       },
@@ -6822,7 +6822,7 @@
         "kind": "value",
         "name": "getOrThrow",
         "docstrings": [
-          "`getOrThrow(s, k)`\n\nSee `Belt.Map.get`\n\nraise when `k` not exist"
+          "`getOrThrow(s, k)`\n\nSee `Belt.Map.get`\n\nthrow when `k` not exist"
         ],
         "signature": "let getOrThrow: (t<'k, 'v, 'id>, 'k) => 'v"
       },
@@ -7005,7 +7005,7 @@
         "kind": "value",
         "name": "checkInvariantInternal",
         "docstrings": [
-          "**raise** when invariant is not held"
+          "**throw** when invariant is not held"
         ],
         "signature": "let checkInvariantInternal: t<'a, 'b, 'c> => unit"
       }
@@ -7362,7 +7362,7 @@
         "kind": "value",
         "name": "getExn",
         "docstrings": [
-          "Same as [get](#get) but raise when element does not exist."
+          "Same as [get](#get) but throw when element does not exist."
         ],
         "signature": "let getExn: (t<'value, 'id>, 'value) => 'value"
       },
@@ -7371,7 +7371,7 @@
         "kind": "value",
         "name": "getOrThrow",
         "docstrings": [
-          "Same as [get](#get) but raise when element does not exist."
+          "Same as [get](#get) but throw when element does not exist."
         ],
         "signature": "let getOrThrow: (t<'value, 'id>, 'value) => 'value"
       },
@@ -7389,7 +7389,7 @@
         "kind": "value",
         "name": "checkInvariantInternal",
         "docstrings": [
-          "**raise** when invariant is not held"
+          "**throw** when invariant is not held"
         ],
         "signature": "let checkInvariantInternal: t<'a, 'b> => unit"
       },
@@ -7566,7 +7566,7 @@
         "kind": "value",
         "name": "headExn",
         "docstrings": [
-          "Same as `Belt.List.head` but raises an exception if `someList` is empty. Use\nwith care.\n\n## Examples\n\n```rescript\nBelt.List.headExn(list{1, 2, 3}) == 1\n\nswitch Belt.List.headExn(list{}) {\n// Raises an Error\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
+          "Same as `Belt.List.head` but throws an exception if `someList` is empty. Use\nwith care.\n\n## Examples\n\n```rescript\nBelt.List.headExn(list{1, 2, 3}) == 1\n\nswitch Belt.List.headExn(list{}) {\n// Throws an Error\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
         ],
         "signature": "let headExn: t<'a> => 'a"
       },
@@ -7575,7 +7575,7 @@
         "kind": "value",
         "name": "headOrThrow",
         "docstrings": [
-          "Same as `Belt.List.head` but raises an exception if `someList` is empty. Use\nwith care.\n\n## Examples\n\n```rescript\nBelt.List.headOrThrow(list{1, 2, 3}) == 1\n\nswitch Belt.List.headOrThrow(list{}) {\n// Raises an Error\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
+          "Same as `Belt.List.head` but throws an exception if `someList` is empty. Use\nwith care.\n\n## Examples\n\n```rescript\nBelt.List.headOrThrow(list{1, 2, 3}) == 1\n\nswitch Belt.List.headOrThrow(list{}) {\n// Throws an Error\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
         ],
         "signature": "let headOrThrow: t<'a> => 'a"
       },
@@ -7593,7 +7593,7 @@
         "kind": "value",
         "name": "tailExn",
         "docstrings": [
-          "Same as `Belt.List.tail` but raises an exception if `someList` is empty. Use\nwith care.\n\n## Examples\n\n```rescript\nBelt.List.tailExn(list{1, 2, 3}) == list{2, 3}\n\nswitch Belt.List.tailExn(list{}) {\n// Raises an Error\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
+          "Same as `Belt.List.tail` but throws an exception if `someList` is empty. Use\nwith care.\n\n## Examples\n\n```rescript\nBelt.List.tailExn(list{1, 2, 3}) == list{2, 3}\n\nswitch Belt.List.tailExn(list{}) {\n// Throws an Error\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
         ],
         "signature": "let tailExn: t<'a> => t<'a>"
       },
@@ -7602,7 +7602,7 @@
         "kind": "value",
         "name": "tailOrThrow",
         "docstrings": [
-          "Same as `Belt.List.tail` but raises an exception if `someList` is empty. Use\nwith care.\n\n## Examples\n\n```rescript\nBelt.List.tailOrThrow(list{1, 2, 3}) == list{2, 3}\n\nswitch Belt.List.tailOrThrow(list{}) {\n// Raises an Error\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
+          "Same as `Belt.List.tail` but throws an exception if `someList` is empty. Use\nwith care.\n\n## Examples\n\n```rescript\nBelt.List.tailOrThrow(list{1, 2, 3}) == list{2, 3}\n\nswitch Belt.List.tailOrThrow(list{}) {\n// Throws an Error\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
         ],
         "signature": "let tailOrThrow: t<'a> => t<'a>"
       },
@@ -7629,7 +7629,7 @@
         "kind": "value",
         "name": "getExn",
         "docstrings": [
-          "Same as `Belt.List.get` but raises an exception if `index` is larger than the\nlength. Use with care.\n\n## Examples\n\n```rescript\nlet abc = list{\"A\", \"B\", \"C\"}\n\nabc->Belt.List.getExn(1) == \"B\"\n\nswitch abc->Belt.List.getExn(4) {\n// Raises an Error\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
+          "Same as `Belt.List.get` but throws an exception if `index` is larger than the\nlength. Use with care.\n\n## Examples\n\n```rescript\nlet abc = list{\"A\", \"B\", \"C\"}\n\nabc->Belt.List.getExn(1) == \"B\"\n\nswitch abc->Belt.List.getExn(4) {\n// Throws an Error\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
         ],
         "signature": "let getExn: (t<'a>, int) => 'a"
       },
@@ -7638,7 +7638,7 @@
         "kind": "value",
         "name": "getOrThrow",
         "docstrings": [
-          "Same as `Belt.List.get` but raises an exception if `index` is larger than the\nlength. Use with care.\n\n## Examples\n\n```rescript\nlet abc = list{\"A\", \"B\", \"C\"}\n\nabc->Belt.List.getOrThrow(1) == \"B\"\n\nswitch abc->Belt.List.getOrThrow(4) {\n// Raises an Error\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
+          "Same as `Belt.List.get` but throws an exception if `index` is larger than the\nlength. Use with care.\n\n## Examples\n\n```rescript\nlet abc = list{\"A\", \"B\", \"C\"}\n\nabc->Belt.List.getOrThrow(1) == \"B\"\n\nswitch abc->Belt.List.getOrThrow(4) {\n// Throws an Error\n| exception _ => assert(true)\n| _ => assert(false)\n}\n```"
         ],
         "signature": "let getOrThrow: (t<'a>, int) => 'a"
       },
@@ -8598,7 +8598,7 @@
         "kind": "value",
         "name": "peekExn",
         "docstrings": [
-          "`peekExn(q)` raises an exception if `q` is empty."
+          "`peekExn(q)` throws an exception if `q` is empty."
         ],
         "signature": "let peekExn: t<'a> => 'a"
       },
@@ -8607,7 +8607,7 @@
         "kind": "value",
         "name": "peekOrThrow",
         "docstrings": [
-          "`peekOrThrow(q)` raises an exception if `q` is empty."
+          "`peekOrThrow(q)` throws an exception if `q` is empty."
         ],
         "signature": "let peekOrThrow: t<'a> => 'a"
       },
@@ -8634,7 +8634,7 @@
         "kind": "value",
         "name": "popExn",
         "docstrings": [
-          "`popExn(q)` raise an exception if q is empty."
+          "`popExn(q)` throw an exception if q is empty."
         ],
         "signature": "let popExn: t<'a> => 'a"
       },
@@ -8643,7 +8643,7 @@
         "kind": "value",
         "name": "popOrThrow",
         "docstrings": [
-          "`popOrThrow(q)` raise an exception if q is empty."
+          "`popOrThrow(q)` throw an exception if q is empty."
         ],
         "signature": "let popOrThrow: t<'a> => 'a"
       },
@@ -8923,7 +8923,7 @@
         "kind": "value",
         "name": "getExn",
         "docstrings": [
-          "Raise an exception if `i` is out of range.\nOtherwise return the value at index `i` in `arr`."
+          "Throw an exception if `i` is out of range.\nOtherwise return the value at index `i` in `arr`."
         ],
         "signature": "let getExn: (t<'a>, int) => 'a"
       },
@@ -8932,7 +8932,7 @@
         "kind": "value",
         "name": "getOrThrow",
         "docstrings": [
-          "Raise an exception if `i` is out of range.\nOtherwise return the value at index `i` in `arr`."
+          "Throw an exception if `i` is out of range.\nOtherwise return the value at index `i` in `arr`."
         ],
         "signature": "let getOrThrow: (t<'a>, int) => 'a"
       },
@@ -8968,7 +8968,7 @@
         "kind": "value",
         "name": "setExn",
         "docstrings": [
-          "`setExn(arr, i, x)` raise an exception if `i` is out of range."
+          "`setExn(arr, i, x)` throw an exception if `i` is out of range."
         ],
         "signature": "let setExn: (t<'a>, int, 'a) => unit"
       },
@@ -8977,7 +8977,7 @@
         "kind": "value",
         "name": "setOrThrow",
         "docstrings": [
-          "`setOrThrow(arr, i, x)` raise an exception if `i` is out of range."
+          "`setOrThrow(arr, i, x)` throw an exception if `i` is out of range."
         ],
         "signature": "let setOrThrow: (t<'a>, int, 'a) => unit"
       },
@@ -9589,7 +9589,7 @@
         "kind": "value",
         "name": "truncateToLengthUnsafe",
         "docstrings": [
-          "Unsafe `truncateToLengthUnsafe(xs, n)` sets length of array `xs` to `n`. If `n`\nis greater than the length of `xs`; the extra elements are set to `Js.Null_undefined.null`.\nIf `n` is less than zero; raises a `RangeError`.\n\n## Examples\n\n```rescript\nlet arr = [\"ant\", \"bee\", \"cat\", \"dog\", \"elk\"]\n\nBelt.Array.truncateToLengthUnsafe(arr, 3)\n\narr == [\"ant\", \"bee\", \"cat\"]\n```"
+          "Unsafe `truncateToLengthUnsafe(xs, n)` sets length of array `xs` to `n`. If `n`\nis greater than the length of `xs`; the extra elements are set to `Js.Null_undefined.null`.\nIf `n` is less than zero; throws a `RangeError`.\n\n## Examples\n\n```rescript\nlet arr = [\"ant\", \"bee\", \"cat\", \"dog\", \"elk\"]\n\nBelt.Array.truncateToLengthUnsafe(arr, 3)\n\narr == [\"ant\", \"bee\", \"cat\"]\n```"
         ],
         "signature": "let truncateToLengthUnsafe: (t<'a>, int) => unit"
       },
