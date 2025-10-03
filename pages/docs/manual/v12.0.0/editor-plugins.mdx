@@ -104,7 +104,7 @@ let stringMake3 = @doesNotThrow String.make(12, ' ')
 
 #### Limitations
 
-- The libraries currently modeled are limited to `Array`, `Buffer`, `Bytes`, `Char`, `Filename`, `Hashtbl`, `List`, `Pervasives`, `Str`, `String` from the standard library, and `bs-json`, and `Json` from `Js`. Models are currently vendored in the analysis, and are easy to add (see [`src/ExnLib.ml`](src/ExnLib.ml))
+- The libraries currently modeled are limited to the standard library, Belt and Js modules. Models are currently vendored in the analysis, and are easy to add (see [`analysis/reanalyze/src/ExnLib.ml`](https://github.com/rescript-lang/rescript/blob/master/analysis/reanalyze/src/ExnLib.ml))
 - Generic exceptions are not understood by the analysis. For example `exn` is not recognized below (only concrete exceptions are):
 
 ```rescript
