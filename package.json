@@ -86,6 +86,7 @@
     "prettier": "^3.6.2",
     "reanalyze": "^2.16.0",
     "simple-functional-loader": "^1.2.1",
+    "srv-cli": "^0.4.1",
     "tailwindcss": "^4",
     "vite": "^7.0.6"
   }
