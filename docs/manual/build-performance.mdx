@@ -21,8 +21,6 @@ Sometime your build can be slow due to some confused infra setups. We provide an
 
 Run the above command at your ReScript project's root; it'll spit out a JSON file you can drag and drop into `chrome://tracing`.
 
-import Image from "src/components/Image";
-
 <Image
   withShadow={true}
   src="/static/img/bstracing.png"
@@ -53,7 +51,7 @@ Cleaning the artifacts should be instantaneous.
 
 We've stress-tested `rescript.exe` on a big project of 10,000 files (2 directories, 5000 files each, first 5000 no dependencies, last 5000 10 dependencies on files from the former directory) using https://github.com/rescript-lang/build-benchmark, on a Retina Macbook Pro Early 2015 (3.1 GHz Intel Core i7).
 
-<!-- TODO: better repro -->
+{/* TODO: better repro */}
 
 - No-op build of 10k files: `800ms` (the minimum amount of time required to check the mtimes of 10k files).
 - Clean build: \<3 minutes.

@@ -99,43 +99,87 @@ let manualTableOfContents = () => {
   categories
 }
 
+let apiTableOfContents = () => {
+  let groups =
+    allMdx
+    ->filterMdxPages("docs/manual/api")
+    ->groupBySection
+    ->Dict.mapValues(values => values->sortSection->convertToNavItems)
+
+  // Console.log(groups)
+
+  // these are the categories that appear in the sidebar
+  let categories: array<SidebarLayout.Sidebar.Category.t> = [
+    {name: "Overview", items: groups->Dict.get("Overview")->Option.getOr([])},
+    {
+      name: "Additional Libraries",
+      items: groups->Dict.get("Additional Libraries")->Option.getOr([]),
+    },
+  ]
+  categories
+}
+
 let loader: Loader.t<loaderData> = async ({request}) => {
   let {pathname} = WebAPI.URL.make(~url=request.url)
-
+  Console.log(pathname)
   let mdx = await loadMdx(request)
 
-  let categories = manualTableOfContents()
+  // TODO: actually render the blog pages
+  if pathname->String.includes("blog") {
+    let res: loaderData = {
+      __raw: mdx.__raw,
+      attributes: mdx.attributes,
+      entries: [],
+      categories: [],
+    }
 
-  let fileContents = await allMdx
-  ->Array.filter(mdx => (mdx.path :> string)->String.includes(pathname))
-  ->Array.get(0)
-  ->Option.map(mdx => mdx.path)
-  ->Option.map(path => Node.Fs.readFile((path :> string), "utf-8"))
-  ->Option.getOrThrow
+    res
+  } else {
+    let categories = {
+      if pathname->String.includes("docs/manual/api") {
+        Console.log(apiTableOfContents())
+        []
+      } else if pathname->String.includes("docs/manual") {
+        manualTableOfContents()
+      } else {
+        []
+      }
+    }
 
-  let markdownTree = Mdast.fromMarkdown(fileContents)
-  let tocResult = Mdast.toc(markdownTree, {maxDepth: 2})
+    // TODO: this can be optionally called if we need markdown
+    // TODO: extract this out into a separate function
+    let fileContents = await allMdx
+    ->Array.filter(mdx => (mdx.path :> string)->String.includes(pathname))
+    ->Array.get(0)
+    ->Option.map(mdx => mdx.path)
+    ->Option.map(path => Node.Fs.readFile((path :> string), "utf-8"))
+    ->Option.getOrThrow
 
-  let headers = Js.Dict.empty()
+    let markdownTree = Mdast.fromMarkdown(fileContents)
+    let tocResult = Mdast.toc(markdownTree, {maxDepth: 2})
 
-  Mdast.reduceHeaders(tocResult.map, headers)
+    let headers = Js.Dict.empty()
 
-  let entries =
-    headers
-    ->Dict.toArray
-    ->Array.map(((header, url)): TableOfContents.entry => {
-      header,
-      href: (url :> string),
-    })
-    ->Array.slice(~start=2) // skip first two entries which are the document entry and the H1 title for the page, we just want the h2 sections
+    Mdast.reduceHeaders(tocResult.map, headers)
 
-  let res: loaderData = {
-    __raw: mdx.__raw,
-    attributes: mdx.attributes,
-    entries,
-    categories,
+    let entries =
+      headers
+      ->Dict.toArray
+      ->Array.map(((header, url)): TableOfContents.entry => {
+        header,
+        href: (url :> string),
+      })
+      ->Array.slice(~start=2) // skip first two entries which are the document entry and the H1 title for the page, we just want the h2 sections
+
+    let res: loaderData = {
+      __raw: mdx.__raw,
+      attributes: mdx.attributes,
+      entries,
+      categories,
+    }
+
+    res
   }
-  res
 }
 
 let default = () => {
