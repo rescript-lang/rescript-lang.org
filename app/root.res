@@ -31,20 +31,7 @@ let default = () => {
   let (isOverlayOpen, setOverlayOpen) = React.useState(_ => false)
   <html>
     <head>
-      // TODO RR7: I think this fixes the issues?
       <Links />
-
-      // This is to prevent FOUC (flash of unstyled content)
-      // This line has to be above everything else
-      // <style> {React.string("html{opacity: 0;}")} </style>
-      // TODO RR7: https://vite.dev/guide/assets.html#importing-asset-as-url
-      // I shoould be able to get this to work
-
-      // todo RR7: I need to figure out css and how to not have it reload all the time
-
-      // <link rel="stylesheet" href="./styles/main.css" />
-      // <link rel="stylesheet" href="./styles/utils.css" />
-      // <link rel="stylesheet" href="./styles/_hljs.css" />
       <link rel="icon" href="data:image/x-icon;base64,AA" />
     </head>
     <body>
