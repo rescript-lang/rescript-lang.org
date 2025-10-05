@@ -122,7 +122,7 @@ let apiTableOfContents = () => {
 let loader: Loader.t<loaderData> = async ({request}) => {
   let {pathname} = WebAPI.URL.make(~url=request.url)
   Console.log(pathname)
-  let mdx = await loadMdx(request)
+  let mdx = await loadMdx(request, ~options={remarkPlugins: [Mdx.gfm]})
 
   // TODO: actually render the blog pages
   if pathname->String.includes("blog") {

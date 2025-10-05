@@ -44,6 +44,8 @@
     "highlightjs-rescript": "^0.2.2",
     "isbot": "^5",
     "lz-string": "^1.4.4",
+    "mdast-util-from-markdown": "^2.0.2",
+    "mdast-util-toc": "^7.1.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-markdown": "^10.1.0",

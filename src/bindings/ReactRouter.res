@@ -109,8 +109,12 @@ module Mdx = {
   @module("react-router-mdx/server")
   external routes: string => array<Routes.t> = "routes"
 
+  type remarkPlugin
+
+  type loadMdxOptions = {remarkPlugins?: array<remarkPlugin>}
+
   @module("react-router-mdx/server")
-  external loadMdx: FetchAPI.request => promise<t> = "loadMdx"
+  external loadMdx: (FetchAPI.request, ~options: loadMdxOptions=?) => promise<t> = "loadMdx"
 
   @module("react-router-mdx/client")
   external useMdxAttributes: unit => attributes = "useMdxAttributes"
@@ -124,4 +128,7 @@ module Mdx = {
 
   @module("react-router-mdx/client")
   external useMdxFiles: unit => {..} = "useMdxFiles"
+
+  @module("remark-gfm")
+  external gfm: remarkPlugin = "default"
 }
