@@ -1,0 +1,214 @@
+---
+title: "Setting up a monorepo"
+metaTitle: "Setting up a monorepo"
+description: "Setting up a monorepo"
+canonical: "/docs/manual/v12.0.0/build-monorepo-setup"
+---
+
+# Setting up a monorepo with ReScript
+
+**Since 12.0**
+
+> A monorepo is a single repository containing multiple separate projects, with clear relationships between them.
+
+ReScript 12.0 introduces improved support for native monorepos through the new "Rewatch" build system. This guide walks you through the setup process.
+
+**Note:** This feature requires the new build system and is **not compatible** with `rescript-legacy`.
+
+## Project Structure
+
+A ReScript monorepo requires a `rescript.json` file at the repository root, plus a `rescript.json` file in each sub-project directory.
+Basically, the monorepo contains a root package that manages all local dependencies. Building the root package will build all its dependencies.
+
+**Important:** You also need a node_modules monorepo setup with symlinks. In practice, if you want a ReScript monorepo, you will also need an npm/yarn/pnpm/bun monorepo.
+
+A typical structure looks like this:
+
+```
+my-monorepo/
+├── rescript.json
+├── package.json
+├── node_modules/
+│   ├── package-1/ # symlinked
+│   ├── package-2/ # symlinked
+├── packages/
+│   ├── package-1/
+│   │   ├── rescript.json
+│   │   ├── package.json
+│   │   ├── src/
+│   ├── package-2/
+│   │   ├── rescript.json
+│   │   ├── package.json
+│   │   ├── src/
+│   ├── ...
+```
+
+## Root `rescript.json` Configuration
+
+The root `rescript.json` manages the monorepo by listing its packages.
+
+```json
+{
+  "name": "my-monorepo",
+  "dependencies": ["package-1", "package-2"],
+  "package-specs": {
+    "module": "esmodule",
+    "in-source": true
+  },
+  "suffix": ".res.mjs",
+  "bsc-flags": []
+}
+```
+
+The `"dependencies"` array lists the names of your packages, which must match the `"name"` fields in their respective sub-rescript.json files.
+When you build a package in ReScript, it will use the `"package-specs"` and `"suffix"` settings from the root package.
+Therefore, it is recommended to place these settings in the root `rescript.json` file and avoid specifying them in local package `rescript.json` files.
+
+**Settings from different config files:** When Rewatch builds a package within a monorepo setup, it uses these settings from the root rescript.json:
+
+- `"jsx"` (jsx_args, jsx_module_args, jsx_mode_args, jsx_preserve_args)
+- `"experimental"` (experimental_features_args)
+- `"package-specs"` (used for implementation_args)
+- `"suffix"` (used for package output)
+
+These settings come from the package's own rescript.json:
+
+- `"sources"` (determines which files to compile)
+- `"dependencies"` (package dependencies)
+- `"warnings"` (warning_args)
+- `"compiler-flags"` (bsc_flags)
+
+When the root package is built, Rewatch will look for the dependencies inside the `my-monorepo/node_modules` folder.
+It is expected that `package-1` and `package-2` are available there via a symlink system provided by your node_modules package manager.
+
+Note that your root rescript.json is allowed to have a `"sources"` setting.
+These files will be compiled as expected.
+
+## Package `rescript.json` Configuration
+
+Each nested rescript.json sets up a specific package.
+
+`packages/package-1/rescript.json`:
+
+```json
+{
+  "name": "package-1",
+  "sources": ["src"],
+  "dependencies": [],
+  "compiler-flags": ["-open Foobar"]
+}
+```
+
+`packages/package-2/rescript.json`:
+
+```json
+{
+  "name": "package-2",
+  "sources": ["src"],
+  "dependencies": ["package-1"],
+  "warnings": {
+    "number": "-27"
+  }
+}
+```
+
+In `package-1`, we show how to use special compiler flags.
+In `package-2`, we show how to disable warning 27 (unused variable).
+In both cases, the settings only apply to the package where they are specified.
+Defining these in the root rescript.json will not affect the packages.
+There is no inheritance system.
+
+Also note the dependencies array in `package-2`, which allows that package to depend on `package-1` within the monorepo.
+
+## Building the monorepo
+
+From the root directory, you can run all ReScript commands:
+
+```bash
+# Build all packages
+rescript build
+
+# Clean all packages
+rescript clean
+
+# Format all packages
+rescript format
+```
+
+### Building individual packages
+
+You can also run ReScript commands on individual packages instead of the entire monorepo. This is useful when you only want to work on one package.
+
+```bash
+# Build from the package directory
+cd packages/package-3
+rescript build
+rescript clean
+rescript format
+
+# Or run from the root directory
+rescript build packages/package-3
+rescript clean packages/package-3
+rescript format packages/package-3
+```
+
+When building a single package, ReScript will use the settings from the root rescript.json as explained in the [Root rescript.json Configuration](#root-rescriptjson-configuration) section above.
+
+### Building without a root rescript.json
+
+If your node_modules monorepo is set up with symlinks, you can build packages even without a root rescript.json:
+
+```
+my-monorepo/
+├──node_modules/
+│   ├── package-1/ # symlinked
+│   ├── package-2/ # symlinked
+├── package.json
+├── packages/
+│   ├── package-1/
+│   │   ├── rescript.json
+│   │   ├── package.json
+│   │   ├── src/
+│   ├── package-2/
+│   │   ├── rescript.json
+│   │   ├── package.json
+│   │   ├── src/
+│   ├── ...
+```
+
+Building `package-2` (which depends on `package-1`) will search up the folder structure to find `package-1`.
+
+Example:
+
+```bash
+rescript build ./packages/package-2
+```
+
+Internally, Rewatch will look for:
+
+- 🔴 `my-monorepo/packages/package-2/node_modules/package-1`
+- 🔴 `my-monorepo/packages/node_modules/package-1`
+- ✅ `my-monorepo/node_modules/package-1`
+
+This only happens as a last resort if `package-1` is not listed as a (dev-)dependency in a parent `rescript.json`.
+
+## Troubleshooting
+
+If you're having issues with your monorepo setup, you can use the `-v` flag during build to see what Rewatch detected as the project context:
+
+```bash
+rescript build -v
+```
+
+This will show you detailed information about how Rewatch is interpreting your project structure and which configuration files it's using.
+
+## Recommendation
+
+**The ReScript team strongly recommends using a root `rescript.json` file when setting up monorepos.** While it's technically possible to build packages without one (as shown in the section above), having a root configuration file provides several benefits:
+
+- **Consistent settings** across all packages (jsx, experimental features, package-specs, suffix)
+- **Simplified dependency management** through the root dependencies array
+- **Better developer experience** with unified build commands from the root
+- **Easier maintenance** and configuration updates across the entire monorepo
+
+The root `rescript.json` approach is the intended and supported way to work with ReScript monorepos.

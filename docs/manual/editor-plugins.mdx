@@ -40,7 +40,79 @@ The code analysis provides extra checks for your ReScript project, such as detec
 ### Configuration
 
 Add a `reanalyze` section to your `rescript.json` to control what the analyzer checks or ignores. You’ll get autocomplete for config options in the editor.  
-More details: [reanalyze config docs](https://github.com/rescript-association/reanalyze#configuration-via-bsconfigjson)
+More details: [reanalyze config docs](https://github.com/rescript-associlangation/reanalyze#configuration-via-bsconfigjson)
+
+### Exception analysis
+
+The exception analysis is designed to keep track statically of the exceptions that might be thrown at runtime. It works by issuing warnings and recognizing annotations. Warnings are issued whenever an exception is thrown and not immediately caught. Annotations are used to push warnings from he local point where the exception is thrown, to the outside context: callers of the current function.
+Nested functions need to be annotated separately.
+
+Instructions on how to run the exception analysis using the `-exception` and `-exception-cmt` command-line arguments, or how to add `"analysis": ["exception"]` in `rescript.json` are contained in the [reanalyze config docs](https://github.com/rescript-associlangation/reanalyze#configuration-via-bsconfigjson).
+
+Here's an example, where the analysis reports a warning any time an exception is thrown, and not caught:
+
+```rescript
+let throws = () => throw(Not_found)
+```
+
+reports:
+
+```sh
+
+  Exception Analysis
+  File "A.res", line 1, characters 4-10
+  throws might throw Not_found (A.res:1:19) and is not annotated with @throws(Not_found)
+```
+
+No warning is reported when a `@throws` annotation is added:
+
+```rescript
+@throws(Not_found)
+let throws = () => throw(Not_found)
+```
+
+When a function throws multiple exceptions, a tuple annotation is used:
+
+```rescript
+exception A
+exception B
+
+@throws([A, B])
+let twoExceptions = (x, y) => {
+  if (x) {
+    throw(A)
+  }
+  if (y) {
+    throw(B)
+  }
+}
+```
+
+It is possible to silence the analysis by adding a `@doesNotThrow` annotation:
+
+```rescript
+@throws(Invalid_argument)
+let stringMake1 = String.make(12, ' ')
+
+// Silence only the make function
+let stringMake2 = (@doesNotThrow String.make)(12, ' ')
+
+// Silence the entire call (including arguments to make)
+let stringMake3 = @doesNotThrow String.make(12, ' ')
+
+```
+
+#### Limitations
+
+- The libraries currently modeled are limited to the standard library, Belt and Js modules. Models are currently vendored in the analysis, and are easy to add (see [`analysis/reanalyze/src/ExnLib.ml`](https://github.com/rescript-lang/rescript/blob/master/analysis/reanalyze/src/ExnLib.ml))
+- Generic exceptions are not understood by the analysis. For example `exn` is not recognized below (only concrete exceptions are):
+
+```rescript
+try (foo()) { | exn => throw(exn) }
+```
+
+- Uses of e.g. `List.head` are interpreted as belonging to the standard library. If you re-define `List` in the local scope, the analysis it will think it's dealing with `List` from the standard library.
+- There is no special support for module functions.
 
 ### Guide
 

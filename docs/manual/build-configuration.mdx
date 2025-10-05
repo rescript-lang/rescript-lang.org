@@ -87,12 +87,6 @@ List of ReScript dependencies. Just like `package.json`'s dependencies, they'll 
 
 Note that only sources marked with `"type":"dev"` will be able to resolve modules from `bs-dev-dependencies`.
 
-## pinned-dependencies
-
-**Since 8.4**: List of pinned dependencies. A pinned dependency will always be rebuilt whenever you build a toplevel package (e.g. your main app) with `rescript`.
-
-This is useful for working on multiple independent ReScript packages simultaneously. More usage details can be found in our dedicated [pinned dependencies](./build-pinned-dependencies) page.
-
 ## external-stdlib
 
 **Since 9.0**: This setting allows depending on an externally built stdlib package (instead of a locally built stdlib runtime). Useful for shipping packages that are only consumed in JS or TS without any dependencies to the ReScript development toolchain.
