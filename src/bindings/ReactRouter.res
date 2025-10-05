@@ -26,6 +26,11 @@ module Outlet = {
   external make: unit => React.element = "Outlet"
 }
 
+module Links = {
+  @module("react-router") @react.component
+  external make: unit => React.element = "Links"
+}
+
 module Scripts = {
   @module("react-router") @react.component
   external make: unit => React.element = "Scripts"

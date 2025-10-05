@@ -19,9 +19,9 @@ let renderHLJS = (~highlightedLines=[], ~darkmode=false, ~code: string, ~lang: s
     ->Array.mapWithIndex((line, i) =>
       if Array.find(highlightedLines, lnum => lnum === i + 1) !== None {
         let content = line === "" ? "&nbsp;" : line
-        "<span class=\"inline-block\">" ++ (content ++ "</span>")
+        "<span className=\"inline-block\">" ++ (content ++ "</span>")
       } else {
-        "<span class=\"inline-block text-inherit opacity-50\">" ++ (line ++ "</span>")
+        "<span className=\"inline-block text-inherit opacity-50\">" ++ (line ++ "</span>")
       }
     )
     ->Array.join("\n")
