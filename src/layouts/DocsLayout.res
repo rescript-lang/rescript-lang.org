@@ -183,15 +183,17 @@ module Make = (Content: StaticContent) => {
     ~theme: option<ColorTheme.t>=?,
     ~children: React.element,
   ) => {
-    let router = Next.Router.useRouter()
-    let route = router.route
+    // TODO RR7 - make this work for React Router
+
+    // let router = Next.Router.useRouter()
+    // let route = router.route
 
     // Extend breadcrumbs with document title
-    let breadcrumbs = Dict.get(Content.tocData, route)->Option.mapOr(breadcrumbs, data => {
-      let title = data["title"]
+    // let breadcrumbs = Dict.get(Content.tocData, route)->Option.mapOr(breadcrumbs, data => {
+    //   let title = data["title"]
 
-      Option.map(breadcrumbs, bc => List.concat(bc, list{{Url.name: title, href: route}}))
-    })
+    //   Option.map(breadcrumbs, bc => List.concat(bc, list{{Url.name: title, href: route}}))
+    // })
 
     let {toc} = TableOfContents.Context.useTocContext()
 

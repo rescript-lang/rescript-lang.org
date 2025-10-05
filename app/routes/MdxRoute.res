@@ -30,6 +30,7 @@ let components = {
   "table": Markdown.Table.make,
   "th": Markdown.Th.make,
   "thead": Markdown.Thead.make,
+  "td": Markdown.Td.make,
   "ul": Markdown.Ul.make,
   // These are custom components we provide
   "Cite": Markdown.Cite.make,
