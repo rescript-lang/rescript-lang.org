@@ -105,7 +105,8 @@ module Tag = {
        py-1 px-3 rounded text-16
       ${deprecated
           ? "hover:bg-gray-30 bg-gray-50 text-gray-80 line-through"
-          : "hover:bg-fire hover:text-white bg-fire-5 text-fire"}`}>
+          : "hover:bg-fire hover:text-white bg-fire-5 text-fire"}`}
+    >
       {React.string(text)}
     </span>
   }
@@ -176,7 +177,7 @@ let decode = (json: JSON.t) => {
   }
 }
 
-let default = (props: props) => {
+let make = (props: props) => {
   let {mdxSources} = props
 
   let allItems = mdxSources->Array.map(mdxSource => {

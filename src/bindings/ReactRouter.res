@@ -26,6 +26,11 @@ module Outlet = {
   external make: unit => React.element = "Outlet"
 }
 
+module Meta = {
+  @module("react-router") @react.component
+  external make: unit => React.element = "Meta"
+}
+
 module Links = {
   @module("react-router") @react.component
   external make: unit => React.element = "Links"
@@ -94,6 +99,7 @@ module Mdx = {
     canonical: Path.t,
     category?: string,
     description?: string,
+    metaTitle?: string,
     order?: int,
     path: string,
     section?: string,

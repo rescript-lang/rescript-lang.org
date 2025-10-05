@@ -100,6 +100,25 @@ let manualTableOfContents = () => {
   categories
 }
 
+let reactTableOfContents = () => {
+  let groups =
+    allMdx
+    ->filterMdxPages("docs/react")
+    ->groupBySection
+    ->Dict.mapValues(values => values->sortSection->convertToNavItems)
+
+  // Console.log(groups)
+
+  // these are the categories that appear in the sidebar
+  let categories: array<SidebarLayout.Sidebar.Category.t> = [
+    {name: "Overview", items: groups->Dict.getUnsafe("Overview")},
+  ]
+
+  Console.log(categories)
+
+  categories
+}
+
 let apiTableOfContents = () => {
   let groups =
     allMdx
@@ -139,10 +158,13 @@ let loader: Loader.t<loaderData> = async ({request}) => {
     let categories = {
       if pathname->String.includes("docs/manual/api") {
         Console.log(apiTableOfContents())
-        []
+        apiTableOfContents()
       } else if pathname->String.includes("docs/manual") {
         manualTableOfContents()
+      } else if pathname->String.includes("docs/react") {
+        reactTableOfContents()
       } else {
+        // TODO RR7 add react docs
         []
       }
     }
@@ -194,18 +216,21 @@ let default = () => {
     (pathname :> string)->String.includes("docs/manual")
       ? "ReScript Language Manual"
       : "Some other page"
-
-  if (
-    (pathname :> string)->String.includes("docs/manual") ||
-      (pathname :> string)->String.includes("docs/react")
-  ) {
-    <DocsLayout metaTitleCategory categories activeToc={title: "Introduction", entries}>
-      <div className="markdown-body"> {component()} </div>
-    </DocsLayout>
-  } else {
-    // TODO Handle blog pages
-    React.null
-  }
+  <>
+    <title> {React.string(attributes.metaTitle->Option.getOr(attributes.title))} </title>
+    <meta name="description" content={attributes.description->Option.getOr("")} />
+    {if (
+      (pathname :> string)->String.includes("docs/manual") ||
+        (pathname :> string)->String.includes("docs/react")
+    ) {
+      <DocsLayout metaTitleCategory categories activeToc={title: "Introduction", entries}>
+        <div className="markdown-body"> {component()} </div>
+      </DocsLayout>
+    } else {
+      // TODO Handle blog pages
+      React.null
+    }}
+  </>
 
   // </ManualDocsLayout.V1200Layout>
 }

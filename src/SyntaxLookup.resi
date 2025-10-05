@@ -1,5 +1,6 @@
 type props
 type params
 
-let default: props => React.element
+// TODO RR7 pass the props correctly
+let make: props => React.element
 let getStaticProps: Next.GetStaticProps.t<props, params>

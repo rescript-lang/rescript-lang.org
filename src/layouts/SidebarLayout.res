@@ -273,6 +273,8 @@ let make = (
   | Some(categories) =>
     let items = categories->Array.flatMap(c => c.items)
 
+    Console.log(items)
+
     switch items->Array.findIndex(item => item.href === location.pathname) {
     | -1 => React.null
     | i =>

@@ -32,6 +32,7 @@ let default = () => {
   <html>
     <head>
       <Links />
+      <Meta />
       <link rel="icon" href="data:image/x-icon;base64,AA" />
     </head>
     <body>
