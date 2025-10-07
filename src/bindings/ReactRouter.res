@@ -26,6 +26,11 @@ module Outlet = {
   external make: unit => React.element = "Outlet"
 }
 
+module ScrollRestoration = {
+  @module("react-router") @react.component
+  external make: unit => React.element = "ScrollRestoration"
+}
+
 module Meta = {
   @module("react-router") @react.component
   external make: unit => React.element = "Meta"
@@ -48,6 +53,7 @@ module Link = {
     ~className: string=?,
     ~target: string=?,
     ~to: Path.t,
+    ~preventScrollReset: bool=?,
   ) => React.element = "Link"
 
   module Path = {
@@ -61,6 +67,7 @@ module Link = {
       ~target: string=?,
       ~id: string=?,
       ~to: to,
+      ~preventScrollReset: bool=?,
     ) => React.element = "Link"
   }
 
@@ -72,6 +79,7 @@ module Link = {
       ~className: string=?,
       ~target: string=?,
       ~to: string,
+      ~preventScrollReset: bool=?,
     ) => React.element = "Link"
   }
 }

@@ -32,6 +32,7 @@ module Toc = {
             onClick={_evt => scrollToAnchor(href)}
             to=href
             className="font-normal block text-14 text-gray-40 leading-tight hover:text-gray-80"
+            preventScrollReset=true
           >
             {//links, nested
             React.string(header)}

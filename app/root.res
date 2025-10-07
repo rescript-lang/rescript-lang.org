@@ -38,6 +38,7 @@ let default = () => {
     <body>
       <Navigation isOverlayOpen setOverlayOpen />
       <Outlet />
+      <ScrollRestoration />
       <Scripts />
     </body>
   </html>
