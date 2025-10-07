@@ -2,6 +2,8 @@
 title: Refs and the DOM
 description: "Using Refs and DOM elements in ReScript and React"
 canonical: "/docs/react/latest/refs-and-the-dom"
+section: "Main Concepts"
+order: 6
 ---
 
 # Refs and the DOM
@@ -52,7 +54,7 @@ let make = () => {
 }
 ```
 
-The example above defines a binding `clicks` of type `React.ref(int)`. Note how changing the value `clicks.current` doesn't trigger any re-rendering of the component.
+The example above defines a binding `clicks` of type `React.ref<int>`. Note how changing the value `clicks.current` doesn't trigger any re-rendering of the component.
 
 ## Accessing Refs
 

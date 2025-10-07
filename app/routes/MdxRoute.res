@@ -107,11 +107,12 @@ let reactTableOfContents = () => {
     ->groupBySection
     ->Dict.mapValues(values => values->sortSection->convertToNavItems)
 
-  // Console.log(groups)
+  Console.log(groups)
 
   // these are the categories that appear in the sidebar
   let categories: array<SidebarLayout.Sidebar.Category.t> = [
     {name: "Overview", items: groups->Dict.getUnsafe("Overview")},
+    // {name: "Main concepts", items: groups->Dict.getUnsafe("Main concepts")},
   ]
 
   Console.log(categories)
@@ -164,7 +165,6 @@ let loader: Loader.t<loaderData> = async ({request}) => {
       } else if pathname->String.includes("docs/react") {
         reactTableOfContents()
       } else {
-        // TODO RR7 add react docs
         []
       }
     }
