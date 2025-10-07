@@ -36,7 +36,7 @@ let make = (props: props): React.element => {
       switch url->Url.getVersionString {
       | ("v11.0.0" | "v12.0.0") as version =>
         switch (Array.length(pagepath), pagepath[1]) {
-        | (1, _) => <ApiOverviewLayout.Docs version> content </ApiOverviewLayout.Docs>
+        | (1, _) => <ApiOverviewLayout.Docs> content </ApiOverviewLayout.Docs>
         | _ => content
         }
       | _ => content

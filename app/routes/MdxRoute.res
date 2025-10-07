@@ -130,24 +130,6 @@ let reactTableOfContents = () => {
   categories
 }
 
-let apiTableOfContents = () => {
-  let groups =
-    allMdx
-    ->filterMdxPages("docs/manual/api")
-    ->groupBySection
-    ->Dict.mapValues(values => values->sortSection->convertToNavItems("/docs/manual/api"))
-
-  // these are the categories that appear in the sidebar
-  let categories: array<SidebarLayout.Sidebar.Category.t> = [
-    {name: "Overview", items: groups->Dict.get("Overview")->Option.getOr([])},
-    {
-      name: "Additional Libraries",
-      items: groups->Dict.get("Additional Libraries")->Option.getOr([]),
-    },
-  ]
-  categories
-}
-
 let loader: Loader.t<loaderData> = async ({request}) => {
   let {pathname} = WebAPI.URL.make(~url=request.url)
 
@@ -165,8 +147,8 @@ let loader: Loader.t<loaderData> = async ({request}) => {
     res
   } else {
     let categories = {
-      if pathname->String.includes("docs/manual/api") {
-        apiTableOfContents()
+      if pathname == "/docs/manual/api" {
+        []
       } else if pathname->String.includes("docs/manual") {
         manualTableOfContents()
       } else if pathname->String.includes("docs/react") {
@@ -226,7 +208,9 @@ let default = () => {
   <>
     <title> {React.string(attributes.metaTitle->Option.getOr(attributes.title))} </title>
     <meta name="description" content={attributes.description->Option.getOr("")} />
-    {if (
+    {if (pathname :> string) == "/docs/manual/api" {
+      <ApiOverviewLayout.Docs> {component()} </ApiOverviewLayout.Docs>
+    } else if (
       (pathname :> string)->String.includes("docs/manual") ||
         (pathname :> string)->String.includes("docs/react")
     ) {

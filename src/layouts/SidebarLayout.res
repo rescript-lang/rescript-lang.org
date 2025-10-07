@@ -24,9 +24,6 @@ module Toc = {
   let make = (~entries: array<TableOfContents.entry>) =>
     <ul className="mt-3 py-1 mb-4 border-l border-fire-10">
       {Array.map(entries, ({header, href}) => {
-        // let href =
-        //   // href->String.split("#")->Array.at(1)->Option.map(h => "#" ++ h)->Option.getOr("#")
-
         <li key=header className="pl-2 mt-2 first:mt-1">
           <Link.String
             onClick={_evt => scrollToAnchor(href)}
@@ -34,8 +31,7 @@ module Toc = {
             className="font-normal block text-14 text-gray-40 leading-tight hover:text-gray-80"
             preventScrollReset=true
           >
-            {//links, nested
-            React.string(header)}
+            {React.string(header)}
           </Link.String>
         </li>
       })->React.array}

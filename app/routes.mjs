@@ -18,6 +18,9 @@ let $$default = Belt_Array.concatMany([
     Routes.route("docs/manual/api/stdlib", "./routes/ApiRoute.mjs", {
       id: "api-stdlib"
     }),
+    Routes.route("docs/manual/api/stdlib/bigint", "./routes/ApiRoute.mjs", {
+      id: "api-stdlib-bigint"
+    }),
     Routes.route("docs/manual/api/introduction", "./routes/ApiRoute.mjs", {
       id: "api-intro"
     }),
