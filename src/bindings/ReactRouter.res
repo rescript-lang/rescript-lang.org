@@ -51,18 +51,23 @@ module Link = {
   ) => React.element = "Link"
 
   module Path = {
+    type to = {hash?: string, pathname?: Path.t, search?: string}
+
     @module("react-router") @react.component
     external make: (
+      ~onClick: ReactEvent.Mouse.t => unit=?,
       ~children: React.element=?,
       ~className: string=?,
       ~target: string=?,
-      ~to: path,
+      ~id: string=?,
+      ~to: to,
     ) => React.element = "Link"
   }
 
   module String = {
     @module("react-router") @react.component
     external make: (
+      ~onClick: ReactEvent.Mouse.t => unit=?,
       ~children: React.element=?,
       ~className: string=?,
       ~target: string=?,

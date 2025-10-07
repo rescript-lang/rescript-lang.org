@@ -33,7 +33,7 @@ let default = () => {
     <head>
       <Links />
       <Meta />
-      <link rel="icon" href="data:image/x-icon;base64,AA" />
+      <link rel="icon" href="/favicon.ico" />
     </head>
     <body>
       <Navigation isOverlayOpen setOverlayOpen />

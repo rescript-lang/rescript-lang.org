@@ -1,5 +1,3 @@
-module Head = Next.Head
-
 /*
     canonical: Set a canonical URL pointing to the original content.
  */

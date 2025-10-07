@@ -67,16 +67,28 @@ let groupBySection = mdxPages =>
     acc
   })
 
-let convertToNavItems = items =>
+let convertToNavItems = (items, rootPath) =>
   Array.map(items, (item): SidebarLayout.Sidebar.NavItem.t => {
     {
       name: item.title,
-      href: item.canonical, // TODO: RR7 - canonical works for now, but we should make this more robust so that it's not required
+      href: `${rootPath}/${item.slug}`,
     }
   })
 
 let filterMdxPages = (mdxPages, path) =>
   Array.filter(mdxPages, mdx => (mdx.path :> string)->String.includes(path))
+
+let getGroup = (groups, groupName): SidebarLayout.Sidebar.Category.t => {
+  {
+    name: groupName,
+    items: groups
+    ->Dict.get(groupName)
+    ->Option.getOr([]),
+  }
+}
+
+let getAllGroups = (groups, groupNames): array<SidebarLayout.Sidebar.Category.t> =>
+  groupNames->Array.map(item => getGroup(groups, item))
 
 // These are the pages for the language manual, sorted by their "order" field in the frontmatter
 let manualTableOfContents = () => {
@@ -84,19 +96,21 @@ let manualTableOfContents = () => {
     allMdx
     ->filterMdxPages("docs/manual")
     ->groupBySection
-    ->Dict.mapValues(values => values->sortSection->convertToNavItems)
-
-  // Console.log(groups)
+    ->Dict.mapValues(values => values->sortSection->convertToNavItems("/docs/manual"))
 
   // these are the categories that appear in the sidebar
-  let categories: array<SidebarLayout.Sidebar.Category.t> = [
-    {name: "Overview", items: groups->Dict.getUnsafe("Overview")},
-    {name: "Guides", items: groups->Dict.getUnsafe("Guides")},
-    {name: "Language Features", items: groups->Dict.getUnsafe("Language Features")},
-    {name: "JavaScript Interop", items: groups->Dict.getUnsafe("JavaScript Interop")},
-    {name: "Build System", items: groups->Dict.getUnsafe("Build System")},
-    {name: "Advanced Features", items: groups->Dict.getUnsafe("Advanced Features")},
-  ]
+  let categories: array<SidebarLayout.Sidebar.Category.t> = getAllGroups(
+    groups,
+    [
+      "Overview",
+      "Guides",
+      "Language Features",
+      "JavaScript Interop",
+      "Build System",
+      "Advanced Features",
+    ],
+  )
+
   categories
 }
 
@@ -105,17 +119,13 @@ let reactTableOfContents = () => {
     allMdx
     ->filterMdxPages("docs/react")
     ->groupBySection
-    ->Dict.mapValues(values => values->sortSection->convertToNavItems)
-
-  Console.log(groups)
+    ->Dict.mapValues(values => values->sortSection->convertToNavItems("/docs/react"))
 
   // these are the categories that appear in the sidebar
-  let categories: array<SidebarLayout.Sidebar.Category.t> = [
-    {name: "Overview", items: groups->Dict.getUnsafe("Overview")},
-    // {name: "Main concepts", items: groups->Dict.getUnsafe("Main concepts")},
-  ]
-
-  Console.log(categories)
+  let categories: array<SidebarLayout.Sidebar.Category.t> = getAllGroups(
+    groups,
+    ["Overview", "Main Concepts", "Hooks & State Management", "Guides", "Extra"],
+  )
 
   categories
 }
@@ -125,9 +135,7 @@ let apiTableOfContents = () => {
     allMdx
     ->filterMdxPages("docs/manual/api")
     ->groupBySection
-    ->Dict.mapValues(values => values->sortSection->convertToNavItems)
-
-  // Console.log(groups)
+    ->Dict.mapValues(values => values->sortSection->convertToNavItems("/docs/manual/api"))
 
   // these are the categories that appear in the sidebar
   let categories: array<SidebarLayout.Sidebar.Category.t> = [
@@ -142,7 +150,7 @@ let apiTableOfContents = () => {
 
 let loader: Loader.t<loaderData> = async ({request}) => {
   let {pathname} = WebAPI.URL.make(~url=request.url)
-  Console.log(pathname)
+
   let mdx = await loadMdx(request, ~options={remarkPlugins: [Mdx.gfm]})
 
   // TODO: actually render the blog pages
@@ -158,7 +166,6 @@ let loader: Loader.t<loaderData> = async ({request}) => {
   } else {
     let categories = {
       if pathname->String.includes("docs/manual/api") {
-        Console.log(apiTableOfContents())
         apiTableOfContents()
       } else if pathname->String.includes("docs/manual") {
         manualTableOfContents()

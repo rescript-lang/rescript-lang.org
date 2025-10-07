@@ -14,7 +14,7 @@ module Sidebar: {
   module NavItem: {
     type t = {
       name: string,
-      href: Path.t,
+      href: string,
     }
     @react.component
     let make: (

@@ -6,6 +6,10 @@
  */
 module Link = ReactRouter.Link
 
+let scrollToAnchor = (hash: string) => {
+  WebAPI.Document.getElementById(document, hash)->WebAPI.Element.scrollIntoView_alignToTop
+}
+
 module Toc = {
   type raw = Dict.t<{
     "title": string,
@@ -20,8 +24,12 @@ module Toc = {
   let make = (~entries: array<TableOfContents.entry>) =>
     <ul className="mt-3 py-1 mb-4 border-l border-fire-10">
       {Array.map(entries, ({header, href}) => {
+        // let href =
+        //   // href->String.split("#")->Array.at(1)->Option.map(h => "#" ++ h)->Option.getOr("#")
+
         <li key=header className="pl-2 mt-2 first:mt-1">
           <Link.String
+            onClick={_evt => scrollToAnchor(href)}
             to=href
             className="font-normal block text-14 text-gray-40 leading-tight hover:text-gray-80"
           >
@@ -47,7 +55,7 @@ module Sidebar = {
     // Navigation point information
     type t = {
       name: string,
-      href: Path.t,
+      href: string,
     }
     @react.component
     let make = (
@@ -69,13 +77,13 @@ module Sidebar = {
           }
 
           <li key=m.name className={hidden ++ " mt-1 leading-4"}>
-            <Link
+            <Link.String
               to=m.href
               className={"truncate block py-1 md:h-auto tracking-tight text-gray-60 rounded-sm hover:bg-gray-20 hover:-ml-2 hover:py-1 hover:pl-2 " ++
               active}
             >
               {React.string(m.name)}
-            </Link>
+            </Link.String>
             {switch activeToc {
             | Some({entries}) =>
               if Array.length(entries) === 0 {
@@ -116,10 +124,10 @@ module Sidebar = {
     ~isOpen: bool,
     ~toggle: unit => unit,
   ) => {
-    let isItemActive = (navItem: NavItem.t) => navItem.href === route
+    let isItemActive = (navItem: NavItem.t) => navItem.href === (route :> string)
 
     let getActiveToc = (navItem: NavItem.t) => {
-      if navItem.href === route {
+      if navItem.href === (route :> string) {
         activeToc
       } else {
         None
@@ -269,35 +277,34 @@ let make = (
   | None => React.null
   }
 
+  // TODO: RR7 figure this out
   let pagination = switch categories {
   | Some(categories) =>
     let items = categories->Array.flatMap(c => c.items)
 
-    Console.log(items)
-
-    switch items->Array.findIndex(item => item.href === location.pathname) {
+    switch items->Array.findIndex(item => item.href === (location.pathname :> string)) {
     | -1 => React.null
     | i =>
       let previous = switch items->Array.get(i - 1) {
       | Some({name, href}) =>
-        <Link
+        <Link.String
           to=href
           className={"flex items-center text-fire hover:text-fire-70 border-2 border-red-300 rounded py-1.5 px-3"}
         >
           <Icon.ArrowRight className={"rotate-180 mr-2"} />
           {React.string(name)}
-        </Link>
+        </Link.String>
       | None => React.null
       }
       let next = switch items->Array.get(i + 1) {
       | Some({name, href}) =>
-        <Link
+        <Link.String
           to=href
           className={"flex items-center text-fire hover:text-fire-70 ml-auto border-2 border-red-300 rounded py-1.5 px-3"}
         >
           {React.string(name)}
           <Icon.ArrowRight className={"ml-2"} />
-        </Link>
+        </Link.String>
       | None => React.null
       }
       <div className={"flex justify-between mt-9"}>

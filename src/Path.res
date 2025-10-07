@@ -88,8 +88,8 @@ type t = [
 #"/docs/react/router" |
 #"/docs/react/rendering-elements" |
 #"/docs/react/refs-and-the-dom" |
-#"/docs/react/migrate-react" |
 #"/docs/react/memo" |
+#"/docs/react/llms" |
 #"/docs/react/lazy-components" |
 #"/docs/react/introduction" |
 #"/docs/react/installation" |
@@ -159,9 +159,9 @@ type t = [
 #"/docs/manual/dict" |
 #"/docs/manual/converting-from-js" |
 #"/docs/manual/control-flow" |
-#"/docs/manual/build-pinned-dependencies" |
 #"/docs/manual/build-performance" |
 #"/docs/manual/build-overview" |
+#"/docs/manual/build-monorepo-setup" |
 #"/docs/manual/build-external-stdlib" |
 #"/docs/manual/build-configuration" |
 #"/docs/manual/build-configuration-schema" |

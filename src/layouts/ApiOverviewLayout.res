@@ -1,21 +1,22 @@
 module Sidebar = SidebarLayout.Sidebar
 
-let makeCategories: string => array<Sidebar.Category.t> = version => [
-  {
-    name: "Overview",
-    items: [
-      {name: "Introduction", href: #"/docs/manual/api"},
-      {name: "Stdlib", href: #"/docs/manual/api/stdlib"},
-    ],
-  },
-  {
-    name: "Additional Libraries",
-    items: [
-      {name: "Belt", href: #"/docs/manual/api/belt"},
-      {name: "Dom", href: #"/docs/manual/api/dom"},
-    ],
-  },
-]
+// TODO RR7 - do I need this?
+// let makeCategories: string => array<Sidebar.Category.t> = version => [
+//   {
+//     name: "Overview",
+//     items: [
+//       {name: "Introduction", href: #"/docs/manual/api"},
+//       {name: "Stdlib", href: #"/docs/manual/api/stdlib"},
+//     ],
+//   },
+//   {
+//     name: "Additional Libraries",
+//     items: [
+//       {name: "Belt", href: #"/docs/manual/api/belt"},
+//       {name: "Dom", href: #"/docs/manual/api/dom"},
+//     ],
+//   },
+// ]
 
 /* Used for API docs (structured data) */
 module Docs = {
@@ -23,7 +24,9 @@ module Docs = {
   let make = (~version, ~components=ApiMarkdown.default, ~children) => {
     let {pathname: route} = ReactRouter.useLocation()
 
-    let categories = makeCategories(version)
+    let categories = []
+    // TODO RR7 - do I need this?
+    // makeCategories(version)
 
     let breadcrumbs = list{
       {Url.name: "Docs", href: `/docs/manual/${version}/introduction`},

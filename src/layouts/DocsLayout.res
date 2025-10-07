@@ -221,7 +221,7 @@ module Make = (Content: StaticContent) => {
           items: Array.map(values, ((href, value)) => {
             // TODO: this probably doesn't work as expected
             NavItem.name: value["title"],
-            href: (value["headers"]->Array.getUnsafe(0))["href"],
+            href: ((value["headers"]->Array.getUnsafe(0))["href"] :> string),
           }),
         }
       })

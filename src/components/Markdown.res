@@ -118,12 +118,14 @@ module Anchor = {
     <span className="inline group relative" title>
       <a
         title
-        className="invisible text-gray-60 opacity-50 hover:opacity-100 hover:text-gray-60 hover:cursor-pointer group-hover:visible"
+        // TODO RR7: the scroll margin might need some tweaking for media breakpoints
+        className="scroll-mt-30 invisible text-gray-60 opacity-50 hover:opacity-100 hover:text-gray-60 hover:cursor-pointer group-hover:visible"
         href={"#" ++ id}
+        id={"#" ++ id}
       >
         <Icon.Hyperlink className="inline-block align-middle text-gray-40" />
       </a>
-      <a className="absolute -top-28" id />
+      // <a className="absolute -top-28" id />
     </span>
   }
 }
@@ -131,7 +133,7 @@ module Anchor = {
 
 module H1 = {
   @react.component
-  let make = (~children) => <h1 className="hl-1 mb-6 "> children </h1>
+  let make = (~children) => <h1 className="hl-1 mb-6 scroll-mt-0"> children </h1>
 }
 
 module H2 = {
@@ -141,7 +143,10 @@ module H2 = {
     // TODO: RR7 - this can be improved, but I need to figure out what the other possible types are
     let title = {
       try {
-        childrenToString(children)->String.toLowerCase->String.replaceAll(" ", "-")
+        childrenToString(children)
+        ->String.toLowerCase
+        ->String.replaceAll(" ", "-")
+        ->String.replaceAll(".", "")
       } catch {
       | _ => ""
       }
