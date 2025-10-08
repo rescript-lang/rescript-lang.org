@@ -13,6 +13,7 @@ type field = {
   optional: bool,
   deprecated: Null.t<string>,
 }
+
 type constructor = {
   name: string,
   docstrings: array<string>,
@@ -55,7 +56,8 @@ module RightSidebar = {
         let deprecatedIcon = switch deprecated->Null.toOption {
         | Some(_) =>
           <div
-            className={`bg-orange-100 min-w-[20px] min-h-[20px] w-5 h-5 mr-3 flex justify-center items-center rounded-xl ml-auto`}>
+            className={`bg-orange-100 min-w-[20px] min-h-[20px] w-5 h-5 mr-3 flex justify-center items-center rounded-xl ml-auto`}
+          >
             <span className={"text-[10px] text-orange-400"}> {"D"->React.string} </span>
           </div>->Some
         | None => None
@@ -66,9 +68,11 @@ module RightSidebar = {
             <a
               title
               className="flex items-center w-full font-normal text-14 text-gray-40 leading-tight hover:text-gray-80"
-              href>
+              href
+            >
               <div
-                className={`${bgColor} min-w-[20px] min-h-[20px] w-5 h-5 mr-3 flex justify-center items-center rounded-xl`}>
+                className={`${bgColor} min-w-[20px] min-h-[20px] w-5 h-5 mr-3 flex justify-center items-center rounded-xl`}
+              >
                 <span className={"text-[10px] font-normal " ++ textColor}>
                   {icon->React.string}
                 </span>
@@ -90,13 +94,21 @@ module RightSidebar = {
 module SidebarTree = {
   @react.component
   let make = (~isOpen: bool, ~toggle: unit => unit, ~node: node, ~items: array<item>) => {
-    let router = Next.Router.useRouter()
-    let url = router.route->Url.parse
-    let version = url->Url.getVersionString
+    // let router = Next.Router.useRouter() // Remove Next.js router usage if not needed
+    open ReactRouter
+
+    let location = useLocation()
+
+    Console.log(location)
+
+    // Use ReactRouter's useLocation if needed, or refactor to not use router
+    // let location = ReactRouter.useLocation()
+    // let url = ""
+    // let url = location.pathname->Url.parse
 
     let moduleRoute =
-      WebAPI.URL.make(~url="file://" ++ router.asPath).pathname
-      ->String.replace(`/docs/manual/${version}/api/`, "")
+      (location.pathname :> string)
+      ->String.replace(`/docs/manual/api/`, "")
       ->String.split("/")
 
     let summaryClassName = "truncate py-1 md:h-auto tracking-tight text-gray-60 font-medium text-14 rounded-sm hover:bg-gray-20 hover:-ml-2 hover:py-1 hover:pl-2 "
@@ -132,9 +144,9 @@ module SidebarTree = {
 
         <details key={href} open_>
           <summary className={summaryClassName ++ classNameActive}>
-            <Next.Link className={"inline-block w-10/12"} href>
+            <Link.String className={"inline-block w-10/12"} to=href>
               {node.name->React.string}
-            </Next.Link>
+            </Link.String>
           </summary>
           tocModule
           {if hasChildren {
@@ -148,19 +160,20 @@ module SidebarTree = {
           }}
         </details>
       | false =>
-        <li className={"list-none mt-1 leading-4"} key={href}>
+        <li className="list-none mt-1 leading-4" key=href>
           <summary className={summaryClassName ++ classNameActive}>
-            <Next.Link className={"block"} href> {node.name->React.string} </Next.Link>
+            <Link.String className={"block"} to=href> {node.name->React.string} </Link.String>
           </summary>
           tocModule
         </li>
       }
     }
 
-    let url =
-      router.asPath
-      ->Url.parse
-      ->Some
+    // TODO
+    let url = None
+    // location.pathname
+    // ->Url.parse
+    // ->Some
 
     let preludeSection =
       <div className="flex justify-between text-fire font-medium items-baseline">
@@ -171,7 +184,8 @@ module SidebarTree = {
             ReactEvent.Form.preventDefault(evt)
             let version = (evt->ReactEvent.Form.target)["value"]
             WebAPI.Storage.setItem(localStorage, ~key=(Manual :> string), ~value=version)
-            let url = Url.parse(router.asPath)
+            let url = Url.parse("" /* TODO: location.pathname */)
+
             switch url.pagepath[1] {
             | Some("core") | Some("stdlib") =>
               if version < "v12.0.0" {
@@ -186,7 +200,7 @@ module SidebarTree = {
               "/" ++
               (Array.join(url.base, "/") ++
               ("/" ++ (version ++ ("/" ++ Array.join(url.pagepath, "/")))))
-            router->Next.Router.push(targetUrl)
+            ReactRouter.navigate(targetUrl)
           }
           let version = url->Url.getVersionString
 
@@ -204,10 +218,12 @@ module SidebarTree = {
     <div
       className={(
         isOpen ? "fixed w-full left-0 h-full z-20 min-w-320" : "hidden "
-      ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 md:h-auto md:relative overflow-y-visible bg-white"}>
+      ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 md:h-auto md:relative overflow-y-visible bg-white"}
+    >
       <aside
         id="sidebar-content"
-        className="relative top-0 px-4 w-full block md:top-28 md:pt-10 md:sticky border-r border-gray-20 overflow-y-auto pb-24 h-[calc(100vh-7rem)]">
+        className="relative top-0 px-4 w-full block md:top-28 md:pt-10 md:sticky border-r border-gray-20 overflow-y-auto pb-24 h-[calc(100vh-7rem)]"
+      >
         <div className="flex justify-between">
           <div className="w-3/4 md:w-full"> React.null </div>
           <button
@@ -215,7 +231,8 @@ module SidebarTree = {
               ReactEvent.Mouse.preventDefault(evt)
               toggle()
             }}
-            className="md:hidden h-16">
+            className="md:hidden h-16"
+          >
             <Icon.Close />
           </button>
         </div>
@@ -224,12 +241,13 @@ module SidebarTree = {
           <div className="hl-overline block text-gray-80 mt-5 mb-2">
             {"Overview"->React.string}
           </div>
-          <Next.Link
+          <Link.String
             className={"block " ++
             summaryClassName ++ (moduleRoute->Array.length == 1 ? classNameActive : "")}
-            href={node.path->Array.join("/")}>
+            to={node.path->Array.join("/")}
+          >
             {node.name->React.string}
-          </Next.Link>
+          </Link.String>
           {moduleRoute->Array.length === 1 ? subMenu : React.null}
         </div>
         <div className="hl-overline text-gray-80 mt-5 mb-2"> {"submodules"->React.string} </div>
@@ -300,10 +318,10 @@ module DocstringsStylize = {
   }
 }
 
-let default = (props: props) => {
+let make = (props: props) => {
   let (isSidebarOpen, setSidebarOpen) = React.useState(_ => false)
   let toggleSidebar = () => setSidebarOpen(prev => !prev)
-  let router = Next.Router.useRouter()
+  // let router = Next.Router.useRouter()
 
   let title = switch props {
   | Ok({module_: {id}}) => id
@@ -350,7 +368,8 @@ let default = (props: props) => {
   | Ok({module_: {items}}) if Array.length(items) > 0 =>
     <div className="hidden xl:block lg:w-1/5 md:h-auto md:relative overflow-y-visible bg-white">
       <aside
-        className="relative top-0 pl-4 w-full block md:top-28 md:pt-4 md:sticky border-l border-gray-20 overflow-y-auto pb-24 h-[calc(100vh-7rem)]">
+        className="relative top-0 pl-4 w-full block md:top-28 md:pt-4 md:sticky border-l border-gray-20 overflow-y-auto pb-24 h-[calc(100vh-7rem)]"
+      >
         <div className="hl-overline block text-gray-80 mt-16 mb-2">
           {"Types and values"->React.string}
         </div>
@@ -362,7 +381,7 @@ let default = (props: props) => {
   | _ => React.null
   }
 
-  let version = Url.parse(router.asPath)->Url.getVersionString
+  // let version = Url.parse(router.asPath)->Url.getVersionString
 
   let sidebar = switch props {
   | Ok({toctree, module_: {items}}) =>
@@ -370,21 +389,21 @@ let default = (props: props) => {
   | Error(_) => React.null
   }
 
-  let prefix = {Url.name: "API", href: "/docs/manual/" ++ (version ++ "/api")}
+  let prefix = {Url.name: "API", href: "/docs/manual/api"}
 
-  let breadcrumbs = ApiLayout.makeBreadcrumbs(~prefix, router.asPath)
+  let {pathname: route} = ReactRouter.useLocation()
+
+  let breadcrumbs = ApiLayout.makeBreadcrumbs(~prefix, route)
 
   <SidebarLayout
-    breadcrumbs={list{
-      {Url.name: "Docs", href: "/docs/manual/" ++ version ++ "/introduction"},
-      ...breadcrumbs,
-    }}
+    breadcrumbs={list{{Url.name: "Docs", href: "/docs/manual/introduction"}, ...breadcrumbs}}
     metaTitle={title ++ " | ReScript API"}
     theme=#Reason
     components=ApiMarkdown.default
     sidebarState=(isSidebarOpen, setSidebarOpen)
     sidebar
-    rightSidebar>
+    rightSidebar
+  >
     children
   </SidebarLayout>
 }
@@ -397,137 +416,134 @@ module Data = {
 
   let dir = Node.Path.resolve("data", "api")
 
-  let getVersion = (~version: string, ~moduleName: string) => {
+  let getVersion = (~moduleName: string) => {
     open Node
 
-    let pathModule = Path.join([dir, version, `${moduleName}.json`])
+    let pathModule = Path.join([dir, `${moduleName}.json`])
 
-    let moduleContent = Fs.readFileSync(pathModule)->JSON.parseOrThrow
+    let moduleContent = Fs.readFileSync("docs/api/stdlib.json")->JSON.parseOrThrow
 
     let content = switch moduleContent {
     | Object(dict) => dict->Some
     | _ => None
     }
 
-    let toctree = switch Path.join([dir, version, "toc_tree.json"])
-    ->Fs.readFileSync
-    ->JSON.parseOrThrow {
-    | Object(dict) => dict->Some
-    | _ => None
-    }
+    // let toctree = switch Path.join([dir, "toc_tree.json"])
+    // ->Fs.readFileSync
+    // ->JSON.parseOrThrow {
+    // | Object(dict) => dict->Some
+    // | _ => None
+    // }
 
-    switch (content, toctree) {
-    | (Some(content), Some(toctree)) => Some({mainModule: content, tree: toctree})
+    switch content {
+    | Some(content) => Some({mainModule: content, tree: Dict.make()})
     | _ => None
     }
   }
 }
 
-let processStaticProps = (~slug: array<string>, ~version: string) => {
+let processStaticProps = (~slug: array<string>) => {
   let moduleName = slug->Belt.Array.getExn(0)
-  let content = Data.getVersion(~version, ~moduleName)
-
   let modulePath = slug->Array.join("/")
 
+  let content =
+    Data.getVersion(~moduleName)
+    ->Option.map(data => data.mainModule)
+    ->Option.flatMap(Dict.get(_, modulePath))
+
+  let _content = content
+
+  // Console.log(content)
+
   switch content {
-  | Some({mainModule, tree}) =>
-    switch mainModule->Dict.get(modulePath) {
-    | Some(json) =>
-      let {items, docstrings, deprecated, name} = Docgen.decodeFromJson(json)
-      let id = switch json {
-      | Object(dict) =>
-        switch Dict.get(dict, "id") {
-        | Some(String(s)) => s
-        | _ => ""
-        }
+  | Some(json) =>
+    let {items, docstrings, deprecated, name} = Docgen.decodeFromJson(json)
+
+    let id = switch json {
+    | Object(dict) =>
+      switch Dict.get(dict, "id") {
+      | Some(String(s)) => s
       | _ => ""
       }
+    | _ => ""
+    }
 
-      let items = items->Array.map(item =>
-        switch item {
-        | Docgen.Value({id, docstrings, signature, name, ?deprecated}) =>
-          Value({
-            id,
-            docstrings,
-            signature,
-            name,
-            deprecated: deprecated->Null.fromOption,
-          })
-        | Type({id, docstrings, signature, name, ?deprecated, ?detail}) =>
-          let detail = switch detail {
-          | Some(kind) =>
-            switch kind {
-            | Docgen.Record({items}) =>
-              let items = items->Array.map(({
+    let items = items->Array.map(item =>
+      switch item {
+      | Docgen.Value({id, docstrings, signature, name, ?deprecated}) =>
+        Value({
+          id,
+          docstrings,
+          signature,
+          name,
+          deprecated: deprecated->Null.fromOption,
+        })
+      | Type({id, docstrings, signature, name, ?deprecated, ?detail}) =>
+        let detail = switch detail {
+        | Some(kind) =>
+          switch kind {
+          | Docgen.Record({items}) =>
+            let items = items->Array.map(({name, docstrings, signature, optional, ?deprecated}) => {
+              {
                 name,
                 docstrings,
                 signature,
                 optional,
-                ?deprecated,
-              }) => {
-                {
-                  name,
-                  docstrings,
-                  signature,
-                  optional,
-                  deprecated: deprecated->Null.fromOption,
-                }
-              })
-              Record({items: items})->Null.make
-            | Variant({items}) =>
-              let items = items->Array.map(({name, docstrings, signature, ?deprecated}) => {
-                {
-                  name,
-                  docstrings,
-                  signature,
-                  deprecated: deprecated->Null.fromOption,
-                }
-              })
+                deprecated: deprecated->Null.fromOption,
+              }
+            })
+            Record({items: items})->Null.make
+          | Variant({items}) =>
+            let items = items->Array.map(({name, docstrings, signature, ?deprecated}) => {
+              {
+                name,
+                docstrings,
+                signature,
+                deprecated: deprecated->Null.fromOption,
+              }
+            })
 
-              Variant({items: items})->Null.make
-            | Signature(_) => Null.null
-            }
-          | None => Null.null
+            Variant({items: items})->Null.make
+          | Signature(_) => Null.null
           }
-          Type({
-            id,
-            docstrings,
-            signature,
-            name,
-            deprecated: deprecated->Null.fromOption,
-            detail,
-          })
-        | _ => assert(false)
+        | None => Null.null
         }
-      )
-      let module_ = {
-        id,
-        name,
-        docstrings,
-        deprecated: deprecated->Null.fromOption,
-        items,
+        Type({
+          id,
+          docstrings,
+          signature,
+          name,
+          deprecated: deprecated->Null.fromOption,
+          detail,
+        })
+      | _ => assert(false)
       }
-
-      let toctree = tree->Dict.get(moduleName)
-
-      switch toctree {
-      | Some(toctree) => Ok({module_, toctree: (Obj.magic(toctree): node)})
-      | None => Error(`Failed to find toctree to ${modulePath}`)
-      }
-
-    | None => Error(`Failed to get key for ${modulePath}`)
+    )
+    let module_ = {
+      id,
+      name,
+      docstrings,
+      deprecated: deprecated->Null.fromOption,
+      items,
     }
-  | None => Error(`Failed to get API Data for version ${version} and module ${moduleName}`)
+
+    Ok({module_, toctree: Obj.magic({name: "root", path: [], children: []})})
+  // let toctree = tree->Dict.get(moduleName)
+
+  // switch toctree {
+  // | Some(toctree) => Ok({module_, toctree: (Obj.magic(toctree): node)})
+  // | None => Error(`Failed to find toctree to ${modulePath}`)
+  // }
+
+  | None => Error(`Failed to get API Data for module ${moduleName}`)
+  // Error(`Failed to get key for ${modulePath}`)
+
+  // Error(`Failed to get API Data for module ${moduleName}`)
   }
 }
 
-let getStaticPropsByVersion = async (ctx: {"params": params, "version": string}) => {
-  let params = ctx["params"]
-  let version = ctx["version"]
-
-  let slug = params.slug
-
-  let result = processStaticProps(~slug, ~version)
+let getStaticProps = async slug => {
+  let result = processStaticProps(~slug)
 
   {"props": result}
 }

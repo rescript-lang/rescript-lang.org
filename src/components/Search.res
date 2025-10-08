@@ -29,12 +29,12 @@ let hit = ({hit, children}: DocSearch.hitComponent) => {
   | _ => ""
   }
 
-  <Next.Link href={hit.url} className="flex flex-col w-full">
+  <ReactRouter.Link.String to=hit.url className="flex flex-col w-full">
     <span className="text-gray-60 captions px-4 pt-3 pb-1 block">
       {description->React.string}
     </span>
     children
-  </Next.Link>
+  </ReactRouter.Link.String>
 }
 
 let transformItems = (items: DocSearch.transformItems) => {
@@ -54,9 +54,9 @@ let transformItems = (items: DocSearch.transformItems) => {
 @react.component
 let make = () => {
   let (state, setState) = React.useState(_ => Inactive)
-  let router = Next.Router.useRouter()
+  let location = ReactRouter.useLocation()
 
-  let version = Url.parse(router.route)->Url.getVersionString
+  let version = Url.parse((location.pathname :> string))->Url.getVersionString
 
   let handleCloseModal = () => {
     let () = switch WebAPI.Document.querySelector(document, ".DocSearch-Modal") {

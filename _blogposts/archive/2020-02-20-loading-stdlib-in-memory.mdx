@@ -10,7 +10,7 @@ description: |
 
 ## Loading stdlib from memory
 
-<!-- Do you mean "external files" instead of "external file system"? In Linux world, a file system is means something like EXT4 or btrfs -->
+  // {/* Do you mean "external files" instead of "external file system"? In Linux world, a file system is means something like EXT4 or btrfs */}
 
 In the next release, we are going to load stdlib from memory instead of from
 external files, which will make the BuckleScript toolchain more accessible and
@@ -61,7 +61,7 @@ file system.
 
 ## What are the benefits?
 
-<!-- In the phrase "we can make it installable", what does "it" refer to? -->
+{/* In the phrase "we can make it installable", what does "it" refer to? */}
 
 ### More accessiblity.
 
@@ -71,7 +71,7 @@ subtle interaction with [yarn
 reinstall](https://github.com/BuckleScript/bucklescript/issues/2799) is also
 solved once and for all.
 
-<!-- instead of "between compiler and stdlib version schemes", perhaps say "for aligning compiler and stdlib version schemes" -->
+{/* instead of "between compiler and stdlib version schemes", perhaps say "for aligning compiler and stdlib version schemes" */}
 
 ### Easy separation between compiler and JS artifacts
 
@@ -89,9 +89,9 @@ now!
 Depending on your network speed, the installation is reduced from 15
 seconds to 3 seconds. Reinstallation is almost a no-op now.
 
-<!-- TODO: collect data points later -->
+{/* TODO: collect data points later */}
 
-<!-- I'm not sure what you mean by "compiling a single file to a string" -->
+{/* I'm not sure what you mean by "compiling a single file to a string" */}
 
 ### JS playground is easier to build
 

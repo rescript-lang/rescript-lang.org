@@ -1,6 +1,8 @@
 // This file was automatically converted to ReScript from 'Markdown.re'
 // Check the output and make sure to delete the original file
 
+external childrenToString: React.element => string = "%identity"
+
 module P = {
   @react.component
   let make = (~children) =>
@@ -42,10 +44,11 @@ module Warn = {
 module UrlBox = {
   open! Mdx.MdxChildren
 
-  let imgEl = <img src="/static/hyperlink.svg" className="mr-2 inline-block" />
+  let imgEl = <img src="/hyperlink.svg" className="mr-2 inline-block" />
 
   @react.component
-  let make = (~text: string, ~href: string, ~children: Mdx.MdxChildren.t) => {
+  let // TODO: can this href be a Path.t somehow?
+  make = (~text: string, ~href: string, ~children: Mdx.MdxChildren.t) => {
     let content = switch classify(children) {
     | String(str) =>
       <p>
@@ -92,10 +95,10 @@ module UrlBox = {
         <Icon.ArrowRight className="ml-1" />
       </a>
     } else {
-      <Next.Link href className="flex items-center">
+      <ReactRouter.Link.String to=href className="flex items-center">
         {React.string(text)}
         <Icon.ArrowRight className="ml-1" />
-      </Next.Link>
+      </ReactRouter.Link.String>
     }
     <div className="md-url-box text-16 border-l-2 border-gray-60 my-6 py-6 pl-8 pr-10 bg-gray-5">
       content
@@ -111,14 +114,18 @@ module Anchor = {
   // function
 
   @react.component
-  let make = (~id: string) => {
-    <span className="inline group relative">
+  let make = (~id: string, ~title: string) => {
+    <span className="inline group relative" title>
       <a
-        className="invisible text-gray-60 opacity-50 hover:opacity-100 hover:text-gray-60 hover:cursor-pointer group-hover:visible"
-        href={"#" ++ id}>
+        title
+        // TODO RR7: the scroll margin might need some tweaking for media breakpoints
+        className="scroll-mt-30 invisible text-gray-60 opacity-50 hover:opacity-100 hover:text-gray-60 hover:cursor-pointer group-hover:visible"
+        href={"#" ++ id}
+        id={"#" ++ id}
+      >
         <Icon.Hyperlink className="inline-block align-middle text-gray-40" />
       </a>
-      <a className="absolute -top-28" id />
+      // <a className="absolute -top-28" id />
     </span>
   }
 }
@@ -126,55 +133,75 @@ module Anchor = {
 
 module H1 = {
   @react.component
-  let make = (~children) => <h1 className="hl-1 mb-6 "> children </h1>
+  let make = (~children) => <h1 className="hl-1 mb-6 scroll-mt-0"> children </h1>
 }
 
 module H2 = {
   @react.component
-  let make = (~id, ~children) => <>
-    // Here we know that children is always a string (## headline)
-    <h2 id className="group mt-16 mb-3 hl-3 scroll-mt-32">
-      children
-      <span className="ml-2">
-        <Anchor id />
-      </span>
-    </h2>
-  </>
+  let make = (~id, ~children) => {
+    // Children may not be a string
+    // TODO: RR7 - this can be improved, but I need to figure out what the other possible types are
+    let title = {
+      try {
+        childrenToString(children)
+        ->String.toLowerCase
+        ->String.replaceAll(" ", "-")
+        ->String.replaceAll(".", "")
+      } catch {
+      | _ => ""
+      }
+    }
+    <>
+      <h2 id className="group mt-16 mb-3 hl-3 scroll-mt-32">
+        children
+        <span className="ml-2">
+          <Anchor title={title} id={title} />
+        </span>
+      </h2>
+    </>
+  }
 }
 
 module H3 = {
   @react.component
-  let make = (~id, ~children) =>
+  let make = (~id, ~children) => {
+    let title = childrenToString(children)
     <h3 id className="group mt-8 mb-4 hl-4 scroll-mt-32">
       children
       <span className="ml-2">
-        <Anchor id />
+        <Anchor title={title} id={title->encodeURIComponent} />
       </span>
     </h3>
+  }
 }
 
 module H4 = {
   @react.component
-  let make = (~id, ~children) =>
+  let make = (~id, ~children) => {
+    let title = childrenToString(children)
     <h4 id className="group mt-8 hl-5 scroll-mt-32">
       children
       <span className="ml-2">
-        <Anchor id />
+        <Anchor title={title} id={title->encodeURIComponent} />
       </span>
     </h4>
+  }
 }
 
 module H5 = {
   @react.component
-  let make = (~id, ~children) =>
+  let make = (~id, ~children) => {
+    let title = childrenToString(children)
     <h5
       id
-      className="group mt-12 mb-3 text-12 leading-2 font-sans font-semibold uppercase tracking-wide text-gray-80">
+      className="group mt-12 mb-3 text-12 leading-2 font-sans font-semibold uppercase tracking-wide text-gray-80"
+    >
       children
       <span className="ml-2">
-        <Anchor id />
+        <Anchor title={title} id={title->encodeURIComponent} />
       </span>
     </h5>
+  }
 }
 
 module Pre = {
@@ -186,7 +213,8 @@ module InlineCode = {
   @react.component
   let make = (~children) =>
     <code
-      className="md-inline-code px-2 py-0.5  text-gray-60 font-mono rounded-sm bg-gray-10-tr border border-gray-90/5">
+      className="md-inline-code px-2 py-0.5  text-gray-60 font-mono rounded-sm bg-gray-10-tr border border-gray-90/5"
+    >
       children
     </code>
 }
@@ -195,7 +223,7 @@ module Table = {
   @react.component
   let make = (~children) =>
     <div className="overflow-x-auto mt-10 mb-16">
-      <table className="md-table"> children </table>
+      <table> children </table>
     </div>
 }
 
@@ -208,7 +236,8 @@ module Th = {
   @react.component
   let make = (~children) =>
     <th
-      className="py-2 pr-8 text-12 text-gray-60 uppercase font-medium tracking-wide text-left border-b-2 border-gray-20">
+      className="py-2 pr-8 text-12 text-gray-60 uppercase font-medium tracking-wide text-left border-b-2 border-gray-20"
+    >
       children
     </th>
 }
@@ -377,9 +406,9 @@ module A = {
       | [pathname] => String.replaceRegExp(pathname, regex, "")
       | _ => href
       }
-      <Next.Link href className="no-underline text-fire hover:underline" ?target>
+      <ReactRouter.Link.String to=href className="no-underline text-fire hover:underline" ?target>
         children
-      </Next.Link>
+      </ReactRouter.Link.String>
     }
 }
 

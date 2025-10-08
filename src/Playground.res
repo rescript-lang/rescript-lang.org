@@ -1,13 +1,3 @@
-%%raw(`
-if (typeof window !== "undefined" && typeof window.navigator !== "undefined") {
-  require("codemirror/mode/javascript/javascript");
-  require("codemirror/keymap/vim");
-  require("codemirror/addon/scroll/simplescrollbars");
-  require("plugins/cm-rescript-mode");
-  require("plugins/cm-reason-mode");
-}
-`)
-
 open CompilerManagerHook
 module Api = RescriptCompilerApi
 
