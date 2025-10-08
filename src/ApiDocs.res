@@ -97,13 +97,17 @@ module SidebarTree = {
     // let router = Next.Router.useRouter() // Remove Next.js router usage if not needed
     open ReactRouter
 
+    let location = useLocation()
+
+    Console.log(location)
+
     // Use ReactRouter's useLocation if needed, or refactor to not use router
     // let location = ReactRouter.useLocation()
     // let url = ""
     // let url = location.pathname->Url.parse
 
     let moduleRoute =
-      WebAPI.URL.make(~url="file://" ++ "" /* TODO: location.pathname */).pathname
+      (location.pathname :> string)
       ->String.replace(`/docs/manual/api/`, "")
       ->String.split("/")
 
@@ -456,15 +460,10 @@ let processStaticProps = (~slug: array<string>) => {
     let {items, docstrings, deprecated, name} = Docgen.decodeFromJson(json)
 
     let id = switch json {
-    | Object(dict) => {
-        Console.log(dict)
-        switch Dict.get(dict, "id") {
-        | Some(String(s)) => {
-            Console.log2(100, s)
-            s
-          }
-        | _ => ""
-        }
+    | Object(dict) =>
+      switch Dict.get(dict, "id") {
+      | Some(String(s)) => s
+      | _ => ""
       }
     | _ => ""
     }
