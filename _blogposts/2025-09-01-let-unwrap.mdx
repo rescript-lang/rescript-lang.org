@@ -1,6 +1,7 @@
 ---
 author: rescript-team
-date: "2025-09-01"
+date: "2025-10-14"
+previewImg: /static/blog/rescript-12-let-unwrap.jpg
 badge: roadmap
 title: let?
 description: |
@@ -55,6 +56,7 @@ Let's rewrite the above example again with our new syntax:
 let getUser = async (id) => {
   let? Ok(user)  = await fetchUser(id)
   let? Ok(decodedUser) = decodeUser(user)
+  Console.log(`Got user ${decodedUser.name}!`)
   let? Ok() = await ensureUserActive(decodedUser)
   Ok(decodedUser)
 }
@@ -96,9 +98,93 @@ let? Ok(user)  = await fetchUser("1")
 //   ^^^^^^^ ERROR: `let?` is not allowed for top-level bindings.
 ```
 
-<!-- TODO: demonstrate error handling with polymorphic variants a little more -->
+### A full example with error handling
 
-### How to enable it
+<CodeTab labels={["ReScript", "JS Output"]} experiments="LetUnwrap">
+
+```rescript
+type user = {
+  id: string,
+  name: string,
+  token: string,
+}
+
+external fetchUser: string => promise<
+  result<JSON.t, [> #NetworkError | #UserNotFound | #Unauthorized]>,
+> = "fetchUser"
+
+external decodeUser: JSON.t => result<user, [> #DecodeError]> = "decodeUser"
+
+external ensureUserActive: user => promise<result<unit, [> #UserNotActive]>> =
+  "ensureUserActive"
+
+let getUser = async id => {
+  let? Ok(user) = await fetchUser(id)
+  let? Ok(decodedUser) = decodeUser(user)
+  Console.log(`Got user ${decodedUser.name}!`)
+  let? Ok() = await ensureUserActive(decodedUser)
+  Ok(decodedUser)
+}
+
+// ERROR!
+// You forgot to handle a possible case here, for example: 
+//  | Error(#Unauthorized | #UserNotFound | #DecodeError | #UserNotActive)
+let main = async () => {
+  switch await getUser("123") {
+  | Ok(user) => Console.log(user)
+  | Error(#NetworkError) => Console.error("Uh-oh, network error...")
+  }
+}
+```
+
+```js
+async function getUser(id) {
+  let e = await fetchUser(id);
+  if (e.TAG !== "Ok") {
+    return e;
+  }
+  let e$1 = decodeUser(e._0);
+  if (e$1.TAG !== "Ok") {
+    return e$1;
+  }
+  let decodedUser = e$1._0;
+  console.log(`Got user ` + decodedUser.name + `!`);
+  let e$2 = await ensureUserActive(decodedUser);
+  if (e$2.TAG === "Ok") {
+    return {
+      TAG: "Ok",
+      _0: decodedUser
+    };
+  } else {
+    return e$2;
+  }
+}
+
+async function main() {
+  let user = await getUser("123");
+  if (user.TAG === "Ok") {
+    console.log(user._0);
+    return;
+  }
+  if (user._0 === "NetworkError") {
+    console.error("Uh-oh, network error...");
+    return;
+  }
+  throw {
+    RE_EXN_ID: "Match_failure",
+    _1: [
+      "playground.res",
+      28,
+      2
+    ],
+    Error: new Error()
+  };
+}
+```
+
+</CodeTab>
+
+## Experimental features
 
 We have added an **experimental-features infrastructure** to the toolchain. If you use the new build system that comes with ReScript 12 by default, you can enable it in `rescript.json` like so:
 
