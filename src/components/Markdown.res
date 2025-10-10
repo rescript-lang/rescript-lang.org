@@ -287,7 +287,11 @@ module CodeTab = {
       return element.props.metastring;
     }")
   @react.component
-  let make = (~children: Mdx.MdxChildren.t, ~labels: array<string>=[]) => {
+  let make = (
+    ~children: Mdx.MdxChildren.t,
+    ~labels: array<string>=[],
+    ~experiments: option<string>=?,
+  ) => {
     let mdxElements = switch Mdx.MdxChildren.classify(children) {
     | Array(mdxElements) => mdxElements
     | Element(el) => [el]
@@ -315,6 +319,7 @@ module CodeTab = {
           code,
           label,
           highlightedLines: Some(Code.parseNumericRangeMeta(metastring)),
+          experiments,
         }
         Array.push(acc, tab)->ignore
 

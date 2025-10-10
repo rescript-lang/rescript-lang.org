@@ -13,6 +13,7 @@ module Toggle: {
     label: option<string>,
     lang: option<string>,
     code: string,
+    experiments: option<string>,
   }
 
   @react.component
