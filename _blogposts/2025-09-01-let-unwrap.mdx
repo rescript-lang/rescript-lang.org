@@ -4,12 +4,12 @@ date: "2025-09-01"
 badge: roadmap
 title: let?
 description: |
-  A new let-unwrap syntax just landed in ReScript. Experimental! 
+  A new let-unwrap syntax just landed in ReScript. Experimental!
 ---
 
 After long discussions we finally decided on an unwrap syntax for both the `option` and `result` types that we are happy with and that still matches the explicitness of ReScript we all like.
 
-`let?` or `let-unwrap` is a tiny syntax that unwraps `result`/`option` values and *early-returns* on `Error`/`None`. It’s explicitly **experimental** and **disabled by default** behind a new "experimental features" gate. See below how to enable it.
+`let?` or `let-unwrap` is a tiny syntax that unwraps `result`/`option` values and _early-returns_ on `Error`/`None`. It’s explicitly **experimental** and **disabled by default** behind a new "experimental features" gate. See below how to enable it.
 
 Before showing off this new feauture, let's explore why it is useful. Consider a chain of `async` functions that are dependent on the result of the previous one. The naive way to write this in modern ReScript with `async`/`await` is to just `switch` on the results.
 
@@ -29,9 +29,10 @@ let getUser = async id =>
   }
 ```
 
-Two observations: 
-  1. with every `switch` expression, this function gets nested deeper.
-  2. The `Error` branch of every `switch` is just an identity mapper (neither wrapper nor contents change).
+Two observations:
+
+1. with every `switch` expression, this function gets nested deeper.
+2. The `Error` branch of every `switch` is just an identity mapper (neither wrapper nor contents change).
 
 The only alternative in ReScript was always to use some specialized methods:
 
@@ -65,7 +66,7 @@ With `let?`, we can now safely focus on the the happy-path in the scope of the f
 
 This desugars to a **sequence** of early-returns that you’d otherwise write by hand, so there’s **no extra runtime cost** and it plays nicely with `async/await` as the example above suggests.
 
-Of course, it also works for `option` with `Some(...)`. 
+Of course, it also works for `option` with `Some(...)`.
 
 ```rescript
 let getActiveUser = user => {
@@ -74,7 +75,7 @@ let getActiveUser = user => {
 }
 ```
 
-It also works with the unhappy path, with `Error(...)` or  `None` as the main type and `Ok(...)` or `Some(...)` as the implicitly mapped types.
+It also works with the unhappy path, with `Error(...)` or `None` as the main type and `Ok(...)` or `Some(...)` as the implicitly mapped types.
 
 ```rescript
 let getNoUser = user => {
@@ -88,11 +89,11 @@ let decodeUserWithHumanReadableError = user => {
 }
 ```
 
-Beware it targets built-ins only, namely `result` and `option`. Custom variants still need `switch`. And it is for block or local bindings only; top-level usage is rejected. 
+Beware it targets built-ins only, namely `result` and `option`. Custom variants still need `switch`. And it is for block or local bindings only; top-level usage is rejected.
 
 ```rescript
 let? Ok(user)  = await fetchUser("1")
-//   ^^^^^^^ ERROR: `let?` is not allowed for top-level bindings. 
+//   ^^^^^^^ ERROR: `let?` is not allowed for top-level bindings.
 ```
 
 <!-- TODO: demonstrate error handling with polymorphic variants a little more -->
@@ -120,5 +121,3 @@ If you still use the legacy build system, enable it with the compiler flag `-ena
 We would love to hear your thoughts about this feature in the [forum](https://forum.rescript-lang.org/). Please try it out and tell us what you think!
 
 Happy hacking!
-
-
