@@ -4,16 +4,12 @@ date: "2025-09-01"
 badge: roadmap
 title: let?
 description: |
-  A new let-unwrap syntax just landed in ReScript.
+  A new let-unwrap syntax just landed in ReScript. Experimental! 
 ---
 
 After long discussions we finally decided on an unwrap syntax for both the `option` and `result` types that we are happy with and that still matches the explicitness of ReScript we all like.
 
-# What is it exactly?
-
-`let?` or `let-unwrap` is a tiny syntax that unwraps `result`/`option` values and *early-returns* on `Error`/`None`. It’s explicitly **experimental** and **disabled by default** behind a new “experimental features” gate.
-
-### Example
+`let?` or `let-unwrap` is a tiny syntax that unwraps `result`/`option` values and *early-returns* on `Error`/`None`. It’s explicitly **experimental** and **disabled by default** behind a new "experimental features" gate. See below how to enable it.
 
 Before showing off this new feauture, let's explore why it is useful. Consider a chain of `async` functions that are dependent on the result of the previous one. The naive way to write this in modern ReScript with `async`/`await` is to just `switch` on the results.
 
@@ -35,26 +31,24 @@ let getUser = async id =>
 
 Two observations: 
   1. with every `switch` expression, this function gets nested deeper.
-  2. The `Error` branch of every `switch` is just an identity mapper (neither wrapper nor contents change)
+  2. The `Error` branch of every `switch` is just an identity mapper (neither wrapper nor contents change).
 
-This means even though `async`/`await` syntax is available in ReScript for some time now, it is also understandable that people created their own `ResultPromise` libraries to handle such things with less lines of code, e.g.:
+The only alternative in ReScript was always to use some specialized methods:
 
 ```res
-module ResultPromise = {
-  let flatMapOk = async (p: promise<'res>, f) =>
-    switch await p {
-    | Ok(x) => await f(x)
-    | Error(_) as res => res
-    }
-}
-
 let getUserPromises = id =>
   fetchUser(id)
-  ->ResultPromise.flatMapOk(user => Promise.resolve(user->decodeUser))
-  ->ResultPromise.flatMapOk(decodedUser => ensureUserActive(decodedUser))
+  ->Result.flatMapOkAsync(user => Promise.resolve(user->decodeUser))
+  ->Result.flatMapOkAsync(decodedUser => ensureUserActive(decodedUser))
 ```
 
-While this is much shorter, it is also harder to understand because we have two wrapper types here, `promise` and `result`. And we have to wrap the non-async type in a `Promise.resolve` in order to stay on the same type level.
+**Note**: `Result.flatMapOkAsync` among some other async result helper functions are brand new in ReScript 12 as well!
+
+This is arguably better, more concise, but also harder to understand because we have two wrapper types here, `promise` and `result`. And we have to wrap the non-async type in a `Promise.resolve` in order to stay on the same type level. Also we are giving up on our precious `async`/`await` syntax here.
+
+## Introducing `let?`
+
+Let's rewrite the above example again with our new syntax:
 
 ```rescript
 let getUser = async (id) => {
@@ -64,19 +58,67 @@ let getUser = async (id) => {
   Ok(decodedUser)
 }
 ```
-With the new `let-unwrap` syntax, `let?` in short, we now have to follow the happy-path (in the scope of the function). And it's immediately clear that `fetchUser` is an `async` function while `decodeUser` is not. There is no nesting as the `Error` is automatically mapped. But be assured the error case is also handled as the type checker will complain when you don't handle the `Error` returned by the `getUser` function.
+
+This strikes a balance between conciseness and simplicity that we really think fits ReScript well.
+
+With `let?`, we can now safely focus on the the happy-path in the scope of the function. There is no nesting as the `Error` is automatically mapped. But be assured the error case is also handled as the type checker will complain when you don't handle the `Error` returned by the `getUser` function.
+
+This desugars to a **sequence** of early-returns that you’d otherwise write by hand, so there’s **no extra runtime cost** and it plays nicely with `async/await` as the example above suggests.
+
+Of course, it also works for `option` with `Some(...)`. 
+
+```rescript
+let getActiveUser = user => {
+  let? Some(name) = activeUsers->Array.get(user)
+  Some({name, active: true})
+}
+```
+
+It also works with the unhappy path, with `Error(...)` or  `None` as the main type and `Ok(...)` or `Some(...)` as the implicitly mapped types.
+
+```rescript
+let getNoUser = user => {
+  let? None = activeUsers->Array.get(user)
+  Some("No user for you!")
+}
+
+let decodeUserWithHumanReadableError = user => {
+  let? Error(_e) = decodeUser(user)
+  Error("This could not be decoded!")
+}
+```
+
+Beware it targets built-ins only, namely `result` and `option`. Custom variants still need `switch`. And it is for block or local bindings only; top-level usage is rejected. 
+
+```rescript
+let? Ok(user)  = await fetchUser("1")
+//   ^^^^^^^ ERROR: `let?` is not allowed for top-level bindings. 
+```
 
 <!-- TODO: demonstrate error handling with polymorphic variants a little more -->
 
-This desugars to a **sequence** of `switch`/early-returns that you’d otherwise write by hand, so there’s **no extra runtime cost** and it plays nicely with `async/await`. Same idea works for `option` with `Some(...)` (and the PR also extends support so the left pattern can be `Error(...)`/`None`, not just `Ok(...)`/`Some(...)`).
+### How to enable it
 
-Beware it targets built-ins only: `result` and `option`. (Custom variants still need `switch`.) And it is for block or local bindings only; top-level usage is rejected. 
-Compiled JS code is the straightforward if/return form (i.e., “zero cost”). 
+We have added an **experimental-features infrastructure** to the toolchain. If you use the new build system that comes with ReScript 12 by default, you can enable it in `rescript.json` like so:
 
-### How to enable it (experimental)
+```json
+{
+  "experimental-features": {
+    "letUnwrap": true
+  }
+}
+```
 
-We have added an **experimental-features infrastructure** to the toolchain. The corresponding compiler flag is `-enable-experimental`. This means you can enable `let?` in your `rescript.json`s `compiler-flags` and it forwards the feature to the compiler. 
+If you still use the legacy build system, enable it with the compiler flag `-enable-experimental`:
 
-This is purely a syntactical change so performance is not affected.
+```json
+{
+  "compiler-flags": ["-enable-experimental", "LetUnwrap"]
+}
+```
+
+We would love to hear your thoughts about this feature in the [forum](https://forum.rescript-lang.org/). Please try it out and tell us what you think!
+
+Happy hacking!
 
 
