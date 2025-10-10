@@ -157,6 +157,7 @@ module Toggle = {
     label: option<string>,
     lang: option<string>,
     code: string,
+    experiments: option<string>,
   }
 
   @react.component
@@ -243,7 +244,12 @@ module Toggle = {
         let playgroundLinkButton =
           tab->isReScript
             ? <Next.Link
-                href={`/try?code=${LzString.compressToEncodedURIComponent(tab.code)}}`}
+                href={`/try?code=${LzString.compressToEncodedURIComponent(
+                    tab.code,
+                  )}&experiments=${switch tab.experiments {
+                  | Some(experiments) => experiments
+                  | None => ""
+                  }}`}
                 target="_blank">
                 // ICON Link to PLAYGROUND
                 <Icon.ExternalLink
