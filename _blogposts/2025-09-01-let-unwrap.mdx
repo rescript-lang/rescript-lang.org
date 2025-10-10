@@ -127,7 +127,7 @@ let getUser = async id => {
 }
 
 // ERROR!
-// You forgot to handle a possible case here, for example: 
+// You forgot to handle a possible case here, for example:
 //  | Error(#Unauthorized | #UserNotFound | #DecodeError | #UserNotActive)
 let main = async () => {
   switch await getUser("123") {
@@ -153,7 +153,7 @@ async function getUser(id) {
   if (e$2.TAG === "Ok") {
     return {
       TAG: "Ok",
-      _0: decodedUser
+      _0: decodedUser,
     };
   } else {
     return e$2;
@@ -172,12 +172,8 @@ async function main() {
   }
   throw {
     RE_EXN_ID: "Match_failure",
-    _1: [
-      "playground.res",
-      28,
-      2
-    ],
-    Error: new Error()
+    _1: ["playground.res", 28, 2],
+    Error: new Error(),
   };
 }
 ```
