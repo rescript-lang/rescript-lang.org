@@ -119,8 +119,8 @@ let createEditor = %raw(`
     const { vim } = require("@replit/codemirror-vim");
     
     // Import custom language modes
-    const { rescriptLanguage } = require("plugins/cm6-rescript-mode");
-    const { reasonLanguage } = require("plugins/cm6-reason-mode");
+    const { rescriptLanguage } = require("../plugins/cm6-rescript-mode");
+    const { reasonLanguage } = require("../plugins/cm6-reason-mode");
     
     // Setup language based on mode
     let language;
@@ -136,6 +136,7 @@ let createEditor = %raw(`
     const languageConf = new Compartment();
     const readOnlyConf = new Compartment();
     const keymapConf = new Compartment();
+    const lintConf = new Compartment();
     
     // Basic extensions
     const extensions = [
@@ -181,18 +182,36 @@ let createEditor = %raw(`
       }));
     }
     
-    // Add linter for errors
-    if (errors && errors.length > 0) {
-      extensions.push(linter((view) => {
-        return errors.map(err => ({
-          from: view.state.doc.line(err.row).from + err.column,
-          to: view.state.doc.line(err.endRow).from + err.endColumn,
-          severity: err.kind === 0 ? "error" : "warning",
-          message: err.text
-        }));
-      }));
-      extensions.push(lintGutter());
-    }
+    // Add linter for errors - dynamic linter that can be updated
+    const createLinter = (errorsArray) => {
+      if (!errorsArray || errorsArray.length === 0) {
+        return [];
+      }
+      return linter((view) => {
+        return errorsArray.map(err => {
+          try {
+            const doc = view.state.doc;
+            // Validate line numbers (1-based to 0-based conversion)
+            const fromLine = Math.max(1, Math.min(err.row, doc.lines));
+            const toLine = Math.max(1, Math.min(err.endRow, doc.lines));
+            
+            return {
+              from: doc.line(fromLine).from + err.column,
+              to: doc.line(toLine).from + err.endColumn,
+              severity: err.kind === 0 ? "error" : "warning",
+              message: err.text
+            };
+          } catch (e) {
+            // Handle any edge cases gracefully
+            console.warn("Error creating lint marker:", e);
+            return null;
+          }
+        }).filter(Boolean);
+      });
+    };
+    
+    extensions.push(lintConf.of(createLinter(errors)));
+    extensions.push(lintGutter());
     
     // Create editor
     const state = EditorState.create({
@@ -220,6 +239,8 @@ let createEditor = %raw(`
       languageConf,
       readOnlyConf,
       keymapConf,
+      lintConf,
+      createLinter,
       setValue(value) {
         view.dispatch({
           changes: {from: 0, to: view.state.doc.length, insert: value}
@@ -251,6 +272,11 @@ let createEditor = %raw(`
         view.dispatch({
           effects: keymapConf.reconfigure(keymap.of(newKeymapValue))
         });
+      },
+      setErrors(newErrors) {
+        view.dispatch({
+          effects: lintConf.reconfigure(createLinter(newErrors))
+        });
       }
     };
   }
@@ -265,13 +291,16 @@ let make = (
   ~className: option<string>=?,
   ~style: option<ReactDOM.Style.t>=?,
   ~onChange: option<string => unit>=?,
+  // Note: onMarkerFocus/onMarkerFocusLeave are kept for backward compatibility but not yet implemented in v6
+  // These callbacks were used in v5 for hovering over error markers
   ~onMarkerFocus as _: option<((int, int)) => unit>=?,
   ~onMarkerFocusLeave as _: option<((int, int)) => unit>=?,
   ~value: string,
   ~mode: string,
   ~readOnly=false,
   ~lineNumbers=true,
-  ~scrollbarStyle="native",
+  // Note: scrollbarStyle is deprecated in CodeMirror 6 but kept for backward compatibility (ignored)
+  ~scrollbarStyle as _=?,
   ~keyMap=KeyMap.Default,
   ~lineWrapping=false,
 ): React.element => {
@@ -330,6 +359,15 @@ let make = (
     }
     None
   }, [mode])
+  
+  // Update errors when they change
+  React.useEffect(() => {
+    switch editorRef.current {
+    | Some(_editor) => %raw(`_editor.setErrors`)(errors)
+    | None => ()
+    }
+    None
+  }, [errors])
 
   <div ?className ?style ref={ReactDOM.Ref.domRef((Obj.magic(containerRef): React.ref<Nullable.t<Dom.element>>))} />
 }
