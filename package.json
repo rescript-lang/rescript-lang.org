@@ -27,7 +27,6 @@
     "@replit/codemirror-vim": "^6.3.0",
     "@rescript/react": "^0.14.0-rc.1",
     "@rescript/webapi": "^0.1.0-experimental-0b87498",
-    "codemirror": "^5.54.0",
     "docson": "^2.1.0",
     "escodegen": "^2.1.0",
     "eslint-config-next": "^13.1.1",
