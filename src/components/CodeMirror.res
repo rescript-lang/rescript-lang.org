@@ -192,6 +192,7 @@ let createEditor = %raw(`
           try {
             const doc = view.state.doc;
             // Error row/endRow are 1-based (same as CodeMirror 5)
+            // Error column/endColumn are 0-based (same as CodeMirror 5)
             // Validate line numbers are within document bounds
             const fromLine = Math.max(1, Math.min(err.row, doc.lines));
             const toLine = Math.max(1, Math.min(err.endRow, doc.lines));
@@ -200,7 +201,7 @@ let createEditor = %raw(`
             const startLine = doc.line(fromLine);
             const endLine = doc.line(toLine);
             
-            // Validate column positions are within line bounds
+            // Validate column positions (0-based) are within line bounds
             const fromCol = Math.max(0, Math.min(err.column, startLine.length));
             const toCol = Math.max(0, Math.min(err.endColumn, endLine.length));
             
