@@ -6,7 +6,7 @@ import { StreamLanguage } from "@codemirror/language";
 const reasonLanguage = StreamLanguage.define({
   name: "reason",
   startState: () => ({ tokenize: null, context: [] }),
-  
+
   token(stream, state) {
     // Handle whitespace
     if (stream.eatSpace()) return null;
@@ -28,7 +28,11 @@ const reasonLanguage = StreamLanguage.define({
     }
 
     // Handle character literals
-    if (stream.match(/'(?:[^'\\]|\\(?:[nrt0'"]|x[\da-fA-F]{2}|u\{[\da-fA-F]{6}\}))'/)) {
+    if (
+      stream.match(
+        /'(?:[^'\\]|\\(?:[nrt0'"]|x[\da-fA-F]{2}|u\{[\da-fA-F]{6}\}))'/,
+      )
+    ) {
       return "string-2";
     }
 
@@ -38,7 +42,11 @@ const reasonLanguage = StreamLanguage.define({
     }
 
     // Handle numbers
-    if (stream.match(/^(?:(?:[0-9][0-9_]*)(?:(?:[Ee][+-]?[0-9_]+)|\.[0-9_]+(?:[Ee][+-]?[0-9_]+)?)(?:f32|f64)?)|(?:0(?:b[01_]+|(?:o[0-7_]+)|(?:x[0-9a-fA-F_]+))|(?:[0-9][0-9_]*))(?:u8|u16|u32|u64|i8|i16|i32|i64|isize|usize)?/)) {
+    if (
+      stream.match(
+        /^(?:(?:[0-9][0-9_]*)(?:(?:[Ee][+-]?[0-9_]+)|\.[0-9_]+(?:[Ee][+-]?[0-9_]+)?)(?:f32|f64)?)|(?:0(?:b[01_]+|(?:o[0-7_]+)|(?:x[0-9a-fA-F_]+))|(?:[0-9][0-9_]*))(?:u8|u16|u32|u64|i8|i16|i32|i64|isize|usize)?/,
+      )
+    ) {
       return "number";
     }
 
@@ -49,7 +57,11 @@ const reasonLanguage = StreamLanguage.define({
     }
 
     // Handle keywords
-    if (stream.match(/^(?:switch|module|as|do|else|external|for|if|in|loop|mod|pub|ref|type|while|open|open\!)\b/)) {
+    if (
+      stream.match(
+        /^(?:switch|module|as|do|else|external|for|if|in|loop|mod|pub|ref|type|while|open|open\!)\b/,
+      )
+    ) {
       return "keyword";
     }
 
@@ -98,7 +110,7 @@ const reasonLanguage = StreamLanguage.define({
     stream.next();
     return null;
   },
-  
+
   tokenTable: {
     comment: "comment",
     string: "string",
@@ -110,8 +122,8 @@ const reasonLanguage = StreamLanguage.define({
     namespace: "namespace",
     typeName: "typeName",
     operator: "operator",
-    variableName: "variableName"
-  }
+    variableName: "variableName",
+  },
 });
 
 function tokenString(stream, state) {

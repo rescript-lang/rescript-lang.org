@@ -6,7 +6,7 @@ import { StreamLanguage } from "@codemirror/language";
 const rescriptLanguage = StreamLanguage.define({
   name: "rescript",
   startState: () => ({ tokenize: null, context: [] }),
-  
+
   token(stream, state) {
     // Handle whitespace
     if (stream.eatSpace()) return null;
@@ -26,7 +26,7 @@ const rescriptLanguage = StreamLanguage.define({
       state.tokenize = tokenString;
       return state.tokenize(stream, state);
     }
-    
+
     // Handle template/interpolation strings
     if (stream.match(/^b?`/)) {
       state.tokenize = tokenTemplateString;
@@ -34,7 +34,11 @@ const rescriptLanguage = StreamLanguage.define({
     }
 
     // Handle character literals
-    if (stream.match(/'(?:[^'\\]|\\(?:[nrt0'"]|x[\da-fA-F]{2}|u\{[\da-fA-F]{6}\}))'/)) {
+    if (
+      stream.match(
+        /'(?:[^'\\]|\\(?:[nrt0'"]|x[\da-fA-F]{2}|u\{[\da-fA-F]{6}\}))'/,
+      )
+    ) {
       return "string-2";
     }
 
@@ -44,7 +48,11 @@ const rescriptLanguage = StreamLanguage.define({
     }
 
     // Handle numbers
-    if (stream.match(/^(?:(?:[0-9][0-9_]*)(?:(?:[Ee][+-]?[0-9_]+)|\.[0-9_]+(?:[Ee][+-]?[0-9_]+)?)(?:f32|f64)?)|(?:0(?:b[01_]+|(?:o[0-7_]+)|(?:x[0-9a-fA-F_]+))|(?:[0-9][0-9_]*))(?:u8|u16|u32|u64|i8|i16|i32|i64|isize|usize)?/)) {
+    if (
+      stream.match(
+        /^(?:(?:[0-9][0-9_]*)(?:(?:[Ee][+-]?[0-9_]+)|\.[0-9_]+(?:[Ee][+-]?[0-9_]+)?)(?:f32|f64)?)|(?:0(?:b[01_]+|(?:o[0-7_]+)|(?:x[0-9a-fA-F_]+))|(?:[0-9][0-9_]*))(?:u8|u16|u32|u64|i8|i16|i32|i64|isize|usize)?/,
+      )
+    ) {
       return "number";
     }
 
@@ -55,7 +63,11 @@ const rescriptLanguage = StreamLanguage.define({
     }
 
     // Handle keywords
-    if (stream.match(/^(?:and|as|assert|catch|async|await|constraint|downto|else|exception|export|external|false|for|if|import|in|include|lazy|let|module|mutable|of|open|private|switch|to|true|try|type|when|while|with\!)\b/)) {
+    if (
+      stream.match(
+        /^(?:and|as|assert|catch|async|await|constraint|downto|else|exception|export|external|false|for|if|import|in|include|lazy|let|module|mutable|of|open|private|switch|to|true|try|type|when|while|with\!)\b/,
+      )
+    ) {
       return "keyword";
     }
 
@@ -108,7 +120,7 @@ const rescriptLanguage = StreamLanguage.define({
     stream.next();
     return null;
   },
-  
+
   tokenTable: {
     comment: "comment",
     string: "string",
@@ -121,8 +133,8 @@ const rescriptLanguage = StreamLanguage.define({
     typeName: "typeName",
     meta: "meta",
     operator: "operator",
-    variableName: "variableName"
-  }
+    variableName: "variableName",
+  },
 });
 
 function tokenString(stream, state) {
