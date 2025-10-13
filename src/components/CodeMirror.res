@@ -322,7 +322,7 @@ let make = (
   React.useEffect(() => {
     switch containerRef.current->Nullable.toOption {
     | Some(parent) =>
-      let editor = %raw(`createEditor`)({
+      let editor = createEditor({
         "parent": parent,
         "initialValue": value,
         "mode": mode,
@@ -341,7 +341,8 @@ let make = (
 
       Some(
         () => {
-          %raw(`editor.destroy()`)
+          let destroy = %raw(`function(ed) { ed.destroy(); }`)
+          destroy(editor)
         },
       )
     | None => None
@@ -352,9 +353,11 @@ let make = (
   React.useEffect(() => {
     switch editorRef.current {
     | Some(_editor) =>
-      let currentValue = %raw(`_editor.getValue()`)
+      let getValue = %raw(`function(ed) { return ed.getValue(); }`)
+      let setValue = %raw(`function(ed, val) { ed.setValue(val); }`)
+      let currentValue = getValue(_editor)
       if currentValue !== value {
-        %raw(`_editor.setValue`)(value)
+        setValue(_editor, value)
       }
     | None => ()
     }
@@ -364,20 +367,28 @@ let make = (
   // Update mode when it changes
   React.useEffect(() => {
     switch editorRef.current {
-    | Some(_editor) => %raw(`_editor.setMode`)(mode)
+    | Some(_editor) =>
+      let setMode = %raw(`function(ed, m) { ed.setMode(m); }`)
+      setMode(_editor, mode)
     | None => ()
     }
     None
   }, [mode])
-  
+
   // Update errors when they change
   React.useEffect(() => {
     switch editorRef.current {
-    | Some(_editor) => %raw(`_editor.setErrors`)(errors)
+    | Some(_editor) =>
+      let setErrors = %raw(`function(ed, errs) { ed.setErrors(errs); }`)
+      setErrors(_editor, errors)
     | None => ()
     }
     None
   }, [errors])
 
-  <div ?className ?style ref={ReactDOM.Ref.domRef((Obj.magic(containerRef): React.ref<Nullable.t<Dom.element>>))} />
+  <div
+    ?className
+    ?style
+    ref={ReactDOM.Ref.domRef((Obj.magic(containerRef): React.ref<Nullable.t<Dom.element>>))}
+  />
 }
