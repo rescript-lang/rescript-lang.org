@@ -14,6 +14,8 @@ After long discussions we finally decided on an unwrap syntax for both the `opti
 
 Before showing off this new feauture, let's explore why it is useful. Consider a chain of `async` functions that are dependent on the result of the previous one. The naive way to write this in modern ReScript with `async`/`await` is to just `switch` on the results.
 
+**Note**: While we are cautiously optimistic with this implementation of `let?`, we still consider it experimental and thus hide it behind a compiler flag that the user explicitly needs to activate. It might change so use at your own risk.
+
 ```res
 let getUser = async id =>
   switch await fetchUser(id) {
@@ -52,9 +54,9 @@ This is arguably better, more concise, but also harder to understand because we 
 function getUserPromises(id) {
   return Stdlib_Result.flatMapOkAsync(
     Stdlib_Result.flatMapOkAsync(fetchUser(id), (user) =>
-      Promise.resolve(decodeUser(user))
+      Promise.resolve(decodeUser(user)),
     ),
-    ensureUserActive
+    ensureUserActive,
   );
 }
 ```
@@ -92,7 +94,6 @@ async function getUserNestedSwitches(id) {
   }
 }
 ```
-
 
 ## Introducing `let?`
 
