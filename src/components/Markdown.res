@@ -1,7 +1,16 @@
 // This file was automatically converted to ReScript from 'Markdown.re'
 // Check the output and make sure to delete the original file
 
-external childrenToString: React.element => string = "%identity"
+// type el = {@as("type") _type?: string}
+
+// external elementObject: React.element => el = "%identity"
+
+let childrenToString = element => {
+  JSON.stringifyAny(ReactDOMServer.renderToStaticMarkup(element))
+  ->Option.getOr("")
+  ->String.replaceRegExp(/<[^>]+>/g, "")
+  ->String.replaceRegExp(/([\r\n]+ +)+/g, "")
+}
 
 module P = {
   @react.component
@@ -143,10 +152,7 @@ module H2 = {
     // TODO: RR7 - this can be improved, but I need to figure out what the other possible types are
     let title = {
       try {
-        childrenToString(children)
-        ->String.toLowerCase
-        ->String.replaceAll(" ", "-")
-        ->String.replaceAll(".", "")
+        childrenToString(children)->Url.normalizeAnchor
       } catch {
       | _ => ""
       }

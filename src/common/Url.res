@@ -105,3 +105,13 @@ let getVersionString = url =>
 let normalizePath = string => {
   string->String.replaceRegExp(/\/$/, "")->String.toLocaleLowerCase
 }
+
+let normalizeAnchor = string => {
+  string
+  ->String.replaceRegExp(/<[^>]+>/g, "")
+  ->String.replaceRegExp(/([\r\n]+ +)+/g, "")
+  ->String.replaceAll(" ", "-")
+  ->String.replaceAll("_", "-")
+  ->String.replaceAllRegExp(/[^a-zA-Z0-9-]/g, "")
+  ->String.toLocaleLowerCase
+}

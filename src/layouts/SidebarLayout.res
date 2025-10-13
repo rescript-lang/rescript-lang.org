@@ -24,14 +24,18 @@ module Toc = {
   let make = (~entries: array<TableOfContents.entry>) =>
     <ul className="mt-3 py-1 mb-4 border-l border-fire-10">
       {Array.map(entries, ({header, href}) => {
-        <li key=header className="pl-2 mt-2 first:mt-1">
+        <li key=header className="pl-2 mt-2 first:mt-1" dataTestId=header>
           <Link.String
             onClick={_evt => scrollToAnchor(href)}
-            to=href
+            to={"#" ++ href->Url.normalizeAnchor}
             className="font-normal block text-14 text-gray-40 leading-tight hover:text-gray-80"
             preventScrollReset=true
           >
-            {React.string(header)}
+            {React.string(
+              header
+              ->String.replaceRegExp(/<[^>]+>/g, "")
+              ->String.replaceRegExp(/([\r\n]+ +)+/g, ""),
+            )}
           </Link.String>
         </li>
       })->React.array}
