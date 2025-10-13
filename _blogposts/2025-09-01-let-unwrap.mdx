@@ -35,7 +35,7 @@ Two observations:
 1. with every `switch` expression, this function gets nested deeper.
 2. The `Error` branch of every `switch` is just an identity mapper (neither wrapper nor contents change).
 
-The only alternative in ReScript was always to use some specialized methods:
+The only alternative in ReScript was always to use some specialized functions:
 
 ```res
 let getUserPromises = id =>
@@ -46,11 +46,59 @@ let getUserPromises = id =>
 
 **Note**: `Result.flatMapOkAsync` among some other async result helper functions are brand new in ReScript 12 as well!
 
-This is arguably better, more concise, but also harder to understand because we have two wrapper types here, `promise` and `result`. And we have to wrap the non-async type in a `Promise.resolve` in order to stay on the same type level. Also we are giving up on our precious `async`/`await` syntax here.
+This is arguably better, more concise, but also harder to understand because we have two wrapper types here, `promise` and `result`. And we have to wrap the non-async type in a `Promise.resolve` in order to stay on the same type level. Also we are giving up on our precious `async`/`await` syntax here. Furthermore, those functions result in two more function calls.
+
+```js
+function getUserPromises(id) {
+  return Stdlib_Result.flatMapOkAsync(
+    Stdlib_Result.flatMapOkAsync(fetchUser(id), (user) =>
+      Promise.resolve(decodeUser(user))
+    ),
+    ensureUserActive
+  );
+}
+```
+
+Let's have a look at the generated JS from the initial example in comparison:
+
+```js
+async function getUserNestedSwitches(id) {
+  let error = await fetchUser(id);
+  if (error.TAG !== "Ok") {
+    return {
+      TAG: "Error",
+      _0: error._0,
+    };
+  }
+  let error$1 = decodeUser(error._0);
+  if (error$1.TAG !== "Ok") {
+    return {
+      TAG: "Error",
+      _0: error$1._0,
+    };
+  }
+  let decodedUser = error$1._0;
+  let error$2 = await ensureUserActive(decodedUser);
+  if (error$2.TAG === "Ok") {
+    return {
+      TAG: "Ok",
+      _0: decodedUser,
+    };
+  } else {
+    return {
+      TAG: "Error",
+      _0: error$2._0,
+    };
+  }
+}
+```
+
 
 ## Introducing `let?`
 
 Let's rewrite the above example again with our new syntax:
+
+<CodeTab labels={["ReScript", "JS Output"]} experiments="LetUnwrap">
 
 ```rescript
 let getUser = async (id) => {
@@ -62,11 +110,37 @@ let getUser = async (id) => {
 }
 ```
 
+```js
+async function getUser(id) {
+  let e = await fetchUser(id);
+  if (e.TAG !== "Ok") {
+    return e;
+  }
+  let e$1 = decodeUser(e._0);
+  if (e$1.TAG !== "Ok") {
+    return e$1;
+  }
+  let decodedUser = e$1._0;
+  console.log(`Got user ` + decodedUser.name + `!`);
+  let e$2 = await ensureUserActive(decodedUser);
+  if (e$2.TAG === "Ok") {
+    return {
+      TAG: "Ok",
+      _0: decodedUser,
+    };
+  } else {
+    return e$2;
+  }
+}
+```
+
+</CodeTab>
+
 This strikes a balance between conciseness and simplicity that we really think fits ReScript well.
 
 With `let?`, we can now safely focus on the the happy-path in the scope of the function. There is no nesting as the `Error` is automatically mapped. But be assured the error case is also handled as the type checker will complain when you don't handle the `Error` returned by the `getUser` function.
 
-This desugars to a **sequence** of early-returns that you’d otherwise write by hand, so there’s **no extra runtime cost** and it plays nicely with `async/await` as the example above suggests.
+This desugars to a **sequence** of early-returns that you’d otherwise write by hand, so there’s **no extra runtime cost** and it plays nicely with `async/await` as the example above suggests. Check the `JS Output` tab to see for yourself!
 
 Of course, it also works for `option` with `Some(...)`.
 
@@ -97,6 +171,8 @@ Beware it targets built-ins only, namely `result` and `option`. Custom variants 
 let? Ok(user)  = await fetchUser("1")
 //   ^^^^^^^ ERROR: `let?` is not allowed for top-level bindings.
 ```
+
+**Note**: `result` and `option` types cannot be mixed in a `let?` function!
 
 ### A full example with error handling
 
