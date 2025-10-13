@@ -1,5 +1,7 @@
 module Docgen = RescriptTools.Docgen
 
+let apiDocsRootPath = "/docs/manual/api"
+
 type rec node = {
   name: string,
   path: array<string>,
@@ -99,24 +101,24 @@ module SidebarTree = {
 
     let location = useLocation()
 
-    Console.log(location)
-
     // Use ReactRouter's useLocation if needed, or refactor to not use router
     // let location = ReactRouter.useLocation()
     // let url = ""
     // let url = location.pathname->Url.parse
 
-    let moduleRoute =
-      (location.pathname :> string)
-      ->String.replace(`/docs/manual/api/`, "")
-      ->String.split("/")
+    // let moduleRoute =
+    //   (location.pathname :> string)
+    //   ->String.replace(`/docs/manual/api/`, "")
+    //   ->String.split("/")
+
+    // Console.log2("moduleRoute", moduleRoute)
 
     let summaryClassName = "truncate py-1 md:h-auto tracking-tight text-gray-60 font-medium text-14 rounded-sm hover:bg-gray-20 hover:-ml-2 hover:py-1 hover:pl-2 "
     let classNameActive = " bg-fire-5 text-red-500 -ml-2 pl-2 font-medium hover:bg-fire-70"
 
     let subMenu = switch items->Array.length > 0 {
     | true =>
-      <div className={"xl:hidden ml-5"}>
+      <div className={"xl:hidden ml-5"} dataTestId={`submenu-${node.name}`}>
         <ul className={"list-none py-0.5"}>
           <RightSidebar items />
         </ul>
@@ -125,32 +127,44 @@ module SidebarTree = {
     }
 
     let rec renderNode = node => {
-      let isCurrentRoute = Array.join(moduleRoute, "/") === Array.join(node.path, "/")
+      // this value is the relative path to this module, e.g. "/array" or "/int"
+      let relativePath = node.path->Array.join("/")
+
+      // This is the full path to this module, e.g. "/docs/manual/api/stdlib/array" or "/docs/manual/api/stdlib/int"
+      // TODO: get the "stdlib" part dynamically based on docs page, probably as a prop from the loader?s
+      let fullPath = apiDocsRootPath ++ "/stdlib/" ++ relativePath
+
+      // Console.log3(node, fullPath, location.pathname)
+
+      let isCurrentRoute = fullPath == (location.pathname :> string)
 
       let classNameActive = isCurrentRoute ? classNameActive : ""
 
       let hasChildren = node.children->Array.length > 0
-      let href = node.path->Array.join("/")
+
+      // TODO RR7 - this doesnt seem to work
+      let href = node.path->Array.slice(~start=1, ~end=Array.length(node.path) - 1)->Array.join("/")
 
       let tocModule = isCurrentRoute ? subMenu : React.null
 
       switch hasChildren {
       | true =>
-        let open_ =
-          href ===
-            moduleRoute
-            ->Array.slice(~start=0, ~end=Array.length(moduleRoute) - 1)
-            ->Array.join("/")
+        let open_ = isCurrentRoute
+        // href === apiDocsRootPath ++ moduleRoute->Array.join("/")
 
-        <details key={href} open_>
-          <summary className={summaryClassName ++ classNameActive}>
-            <Link.String className={"inline-block w-10/12"} to=href>
+        <details
+          key={href} open_ dataTestId={`has-children-${node.name}-${isCurrentRoute->Bool.toString}`}
+        >
+          <summary className={summaryClassName ++ classNameActive} dataTestId={`${href}`}>
+            <Link.String className={"inline-block w-10/12"} to={fullPath}>
               {node.name->React.string}
             </Link.String>
           </summary>
           tocModule
+          // TODO: won't this always be false?
           {if hasChildren {
             <ul className={"ml-5"}>
+              // TODO RR7 - fix this, I think i am recursively rendering stuff
               {node.children
               ->Array.map(renderNode)
               ->React.array}
@@ -160,17 +174,20 @@ module SidebarTree = {
           }}
         </details>
       | false =>
-        <li className="list-none mt-1 leading-4" key=href>
+        <li className="list-none mt-1 leading-4" key=href dataTestId={`no-children-${node.name}`}>
           <summary className={summaryClassName ++ classNameActive}>
-            <Link.String className={"block"} to=href> {node.name->React.string} </Link.String>
+            <Link.String className={"block"} to=fullPath> {node.name->React.string} </Link.String>
           </summary>
           tocModule
         </li>
       }
     }
 
-    // TODO
-    let url = None
+    let moduleRoute = []
+
+    let {pathname} = ReactRouter.useLocation()
+    // TODO RR7 - make sure this works
+    let url = (pathname :> string)->Url.parse->Some
     // location.pathname
     // ->Url.parse
     // ->Some
@@ -364,6 +381,7 @@ let make = (props: props) => {
     }
   }
 
+  // TODO RR7: Is this used anywhere?
   let rightSidebar = switch props {
   | Ok({module_: {items}}) if Array.length(items) > 0 =>
     <div className="hidden xl:block lg:w-1/5 md:h-auto md:relative overflow-y-visible bg-white">
