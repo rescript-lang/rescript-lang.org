@@ -101,3 +101,7 @@ let getVersionString = url =>
   | Latest | NoVersion => Constants.versions.latest
   | Version(version) => version
   }
+
+let normalizePath = string => {
+  string->String.replaceRegExp(/\/$/, "")->String.toLocaleLowerCase
+}

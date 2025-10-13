@@ -109,7 +109,7 @@ let make = (
               ("/" ++ (version ++ ("/" ++ Array.join(url.pagepath, "/")))))
             navigate(targetUrl)
           }
-          <VersionSelect onChange version availableVersions ?nextVersion />
+          <VersionSelect version={"v12"} availableVersions=["v12", "pre v12"] />
         | None => <span className="font-mono text-14"> {React.string(version)} </span>
         }
       | None => React.null

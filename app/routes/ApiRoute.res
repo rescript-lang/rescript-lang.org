@@ -12,15 +12,88 @@ let rec rawApiItemToNode = (apiItem: apiItem): ApiDocs.node => {
   {
     name: apiItem.name,
     path: apiItem.id
-    ->String.toLowerCase
     ->String.split(".")
-    ->Array.filter(segment => segment !== "stdlib"),
-    children: apiItem.items->Option.map(Array.map(_, rawApiItemToNode))->Option.getOr([]),
+    ->Array.filter(segment => segment !== "Stdlib" && segment !== "Belt" && segment !== "Js"),
+    children: apiItem.items
+    ->Option.map(items =>
+      Array.filter(items, item =>
+        item.id
+        ->String.split(".")
+        ->Array.length > 3
+      )->Array.map(rawApiItemToNode)
+    )
+    ->Option.getOr([]),
   }
 }
 
 @scope("JSON") @val
 external parseApi: string => Dict.t<apiItem> = "parse"
+
+let groupItems = apiDocs => {
+  let parsedItems =
+    apiDocs
+    ->Dict.keysToArray
+    ->Array.map(key => Dict.getUnsafe(apiDocs, key))
+    ->Array.map(rawApiItemToNode)
+
+  // Root items are the main submodules like Array, String, etc
+  let rootItems = []
+
+  // Child items are submodules to root items, such as Error.URIError, Error.TypeError, etc
+  let childItems = []
+
+  // a few children have their own children, e.g. Intl.NumberFormat
+  // If we ever get 4 children deep this will need to be refactored
+  let childrenOfChildren = []
+
+  parsedItems->Array.forEach(node => {
+    if node.path->Array.length < 2 {
+      rootItems->Array.push(node)
+    } else if node.path->Array.length > 2 {
+      childrenOfChildren->Array.push(node)
+    } else {
+      childItems->Array.push(node)
+    }
+  })
+
+  // attach the child items to their respective parents
+  childItems->Array.forEach(node => {
+    let parent = node.path[0]
+    switch parent {
+    | Some(parent) =>
+      rootItems
+      ->Array.find(item => item.name === parent)
+      ->Option.forEach(parentNode => {
+        parentNode.children->Array.push({...node, children: []})
+      })
+    | None => ()
+    }
+  })
+
+  // attach the children of children to their respective parents
+  childrenOfChildren->Array.forEach(node => {
+    let parent = node.path[1]
+
+    parent->Option.forEach(parentName => {
+      let parentNode =
+        rootItems->Array.find(item => item.children->Array.some(node => node.name === parentName))
+
+      // TODO: this can probably be refactored
+      parentNode->Option.forEach(
+        parentNode =>
+          parentNode.children->Array.forEach(
+            child => {
+              if child.name === parentName {
+                child.children->Array.push({...node, children: []})
+              }
+            },
+          ),
+      )
+    })
+  })
+
+  rootItems
+}
 
 let loader: ReactRouter.Loader.t<loaderData> = async args => {
   let path =
@@ -32,16 +105,17 @@ let loader: ReactRouter.Loader.t<loaderData> = async args => {
 
   let stdlibToc = apiDocs->Dict.get("stdlib")
 
-  let toctree =
-    apiDocs
-    ->Dict.keysToArray
-    ->Array.map(key => Dict.getUnsafe(apiDocs, key))
-    ->Array.map(rawApiItemToNode)
+  let toctree = groupItems(apiDocs)
 
   let data = {
     // TODO RR7: refactor this function to only return the module and not the toctree
     // or move the toc logic to this function
-    await ApiDocs.getStaticProps(path)
+    // TODO move the loader function to its own file
+    try {
+      await ApiDocs.getStaticProps(path)
+    } catch {
+    | err => {"props": Error(JSON.stringifyAny(err)->Option.getOr("Error loading API data"))}
+    }
   }
 
   data["props"]->Result.map((item): ApiDocs.api => {

@@ -553,6 +553,55 @@
   width: 100%;
 }
 
+.wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+[popover] {
+  inset: unset;
+  width: 100%;
+  height: auto;
+  /* padding: 0; */
+  background: transparent;
+  border: none;
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  pointer-events: none;
+
+  overlay: none;
+  /* this alone would do the trick, but its not supported yet in all major browsers*/
+}
+
+.menu {
+  visibility: hidden;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  opacity: 0;
+  transition: visibility 0s ease, opacity 0.3s ease, transform 0.3s ease
+}
+
+[popover]:popover-open~.menu {
+  opacity: 1;
+  visibility: visible;
+}
+
+.trigger {
+  svg {
+    display: inline-block;
+    height: 0.75rem;
+    width: 0.75rem;
+    transform: rotate(0);
+  }
+}
+
+[popover]:popover-open~.trigger {
+  svg {
+    transform: rotate(180deg);
+  }
+}
 
 
 /* This has to stay at the end! */

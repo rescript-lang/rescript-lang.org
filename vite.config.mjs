@@ -9,7 +9,13 @@ export default defineConfig({
       ssr: true,
     }),
   ],
+  build: {
+    sourcemap: true
+  },
   css: {
     transformer: 'lightningcss',
+  },
+  optimizeDeps: {
+    exclude: ["node_modules/.vite"]
   }
 });

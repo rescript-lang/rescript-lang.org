@@ -115,9 +115,7 @@ let make = (
             ("/" ++ (version ++ ("/" ++ Array.join(url.pagepath, "/")))))
           navigate(targetUrl)
         }
-        <VersionSelect
-          onChange version availableVersions=allApiVersions nextVersion=?Constants.nextVersion
-        />
+        <VersionSelect version={"v12"} availableVersions=["v12", "pre v12"] />
       | None => React.null
       }}
     </div>

@@ -30,3 +30,5 @@ type storageKey =
 let getVersionFromStorage: storageKey => option<string>
 
 let getVersionString: t => string
+
+let normalizePath: string => string

@@ -96,22 +96,17 @@ module RightSidebar = {
 module SidebarTree = {
   @react.component
   let make = (~isOpen: bool, ~toggle: unit => unit, ~node: node, ~items: array<item>) => {
-    // let router = Next.Router.useRouter() // Remove Next.js router usage if not needed
     open ReactRouter
 
     let location = useLocation()
 
-    // Use ReactRouter's useLocation if needed, or refactor to not use router
-    // let location = ReactRouter.useLocation()
-    // let url = ""
-    // let url = location.pathname->Url.parse
+    let moduleRoute = `${apiDocsRootPath}/${(location.pathname :> string)
+      ->String.replace(`/docs/manual/api/`, "")
+      ->String.split("/")
+      ->Array.get(0)
+      ->Option.getOr("stdlib")}`
 
-    // let moduleRoute =
-    //   (location.pathname :> string)
-    //   ->String.replace(`/docs/manual/api/`, "")
-    //   ->String.split("/")
-
-    // Console.log2("moduleRoute", moduleRoute)
+    let isCurrentlyAtRoot = (location.pathname :> string) == moduleRoute
 
     let summaryClassName = "truncate py-1 md:h-auto tracking-tight text-gray-60 font-medium text-14 rounded-sm hover:bg-gray-20 hover:-ml-2 hover:py-1 hover:pl-2 "
     let classNameActive = " bg-fire-5 text-red-500 -ml-2 pl-2 font-medium hover:bg-fire-70"
@@ -128,13 +123,15 @@ module SidebarTree = {
 
     let rec renderNode = node => {
       // this value is the relative path to this module, e.g. "/array" or "/int"
-      let relativePath = node.path->Array.join("/")
+      let relativePath = node.path->Array.join("/")->Url.normalizePath
 
       // This is the full path to this module, e.g. "/docs/manual/api/stdlib/array" or "/docs/manual/api/stdlib/int"
-      // TODO: get the "stdlib" part dynamically based on docs page, probably as a prop from the loader?s
-      let fullPath = apiDocsRootPath ++ "/stdlib/" ++ relativePath
+      let fullPath = `${moduleRoute}/${relativePath}`->Url.normalizePath
 
-      // Console.log3(node, fullPath, location.pathname)
+      let parentPath = switch node.path->Array.join("/")->Url.normalizePath {
+      | "" => None
+      | path => Some(path)
+      }
 
       let isCurrentRoute = fullPath == (location.pathname :> string)
 
@@ -142,29 +139,28 @@ module SidebarTree = {
 
       let hasChildren = node.children->Array.length > 0
 
-      // TODO RR7 - this doesnt seem to work
-      let href = node.path->Array.slice(~start=1, ~end=Array.length(node.path) - 1)->Array.join("/")
-
       let tocModule = isCurrentRoute ? subMenu : React.null
 
       switch hasChildren {
       | true =>
-        let open_ = isCurrentRoute
-        // href === apiDocsRootPath ++ moduleRoute->Array.join("/")
+        let open_ = (location.pathname :> string)->String.includes(fullPath)
 
         <details
-          key={href} open_ dataTestId={`has-children-${node.name}-${isCurrentRoute->Bool.toString}`}
+          key={node.name}
+          open_
+          dataTestId={`has-children-${node.name->String.toLowerCase}-${isCurrentRoute->Bool.toString}`}
         >
-          <summary className={summaryClassName ++ classNameActive} dataTestId={`${href}`}>
+          <summary
+            className={summaryClassName ++ classNameActive}
+            dataTestId={`${node.name}-is-current-${isCurrentRoute->Bool.toString}`}
+          >
             <Link.String className={"inline-block w-10/12"} to={fullPath}>
               {node.name->React.string}
             </Link.String>
           </summary>
           tocModule
-          // TODO: won't this always be false?
           {if hasChildren {
             <ul className={"ml-5"}>
-              // TODO RR7 - fix this, I think i am recursively rendering stuff
               {node.children
               ->Array.map(renderNode)
               ->React.array}
@@ -174,7 +170,9 @@ module SidebarTree = {
           }}
         </details>
       | false =>
-        <li className="list-none mt-1 leading-4" key=href dataTestId={`no-children-${node.name}`}>
+        <li
+          className="list-none mt-1 leading-4" key=node.name dataTestId={`no-children-${node.name}`}
+        >
           <summary className={summaryClassName ++ classNameActive}>
             <Link.String className={"block"} to=fullPath> {node.name->React.string} </Link.String>
           </summary>
@@ -183,50 +181,19 @@ module SidebarTree = {
       }
     }
 
-    let moduleRoute = []
-
     let {pathname} = ReactRouter.useLocation()
-    // TODO RR7 - make sure this works
+
     let url = (pathname :> string)->Url.parse->Some
-    // location.pathname
-    // ->Url.parse
-    // ->Some
+
+    let onChange = evt => ()
 
     let preludeSection =
       <div className="flex justify-between text-fire font-medium items-baseline">
         {switch url {
         | Some(url) =>
-          let onChange = evt => {
-            open Url
-            ReactEvent.Form.preventDefault(evt)
-            let version = (evt->ReactEvent.Form.target)["value"]
-            WebAPI.Storage.setItem(localStorage, ~key=(Manual :> string), ~value=version)
-            let url = Url.parse("" /* TODO: location.pathname */)
-
-            switch url.pagepath[1] {
-            | Some("core") | Some("stdlib") =>
-              if version < "v12.0.0" {
-                url.pagepath[1] = "core"
-              } else {
-                url.pagepath[1] = "stdlib"
-              }
-            | _ => ()
-            }
-
-            let targetUrl =
-              "/" ++
-              (Array.join(url.base, "/") ++
-              ("/" ++ (version ++ ("/" ++ Array.join(url.pagepath, "/")))))
-            ReactRouter.navigate(targetUrl)
-          }
           let version = url->Url.getVersionString
 
-          <VersionSelect
-            onChange
-            version
-            availableVersions=Constants.stdlibVersions
-            nextVersion=?Constants.nextVersion
-          />
+          <VersionSelect version={"v12"} availableVersions=["v12", "older versions"] />
 
         | None => React.null
         }}
@@ -253,19 +220,20 @@ module SidebarTree = {
             <Icon.Close />
           </button>
         </div>
-        preludeSection
+        // TODO rr7: add some type of version select here?
+        // Do we want to use the existing one with the dropdown, or do something new?
+        {preludeSection}
         <div className="my-10">
-          <div className="hl-overline block text-gray-80 mt-5 mb-2">
+          <div className="hl-overline block text-gray-80 mt-5 mb-2" dataTestId="overview">
             {"Overview"->React.string}
           </div>
           <Link.String
-            className={"block " ++
-            summaryClassName ++ (moduleRoute->Array.length == 1 ? classNameActive : "")}
-            to={node.path->Array.join("/")}
+            className={"block " ++ summaryClassName ++ (isCurrentlyAtRoot ? classNameActive : "")}
+            to={moduleRoute}
           >
             {node.name->React.string}
           </Link.String>
-          {moduleRoute->Array.length === 1 ? subMenu : React.null}
+          {isCurrentlyAtRoot ? subMenu : React.null}
         </div>
         <div className="hl-overline text-gray-80 mt-5 mb-2"> {"submodules"->React.string} </div>
         {node.children
@@ -336,9 +304,9 @@ module DocstringsStylize = {
 }
 
 let make = (props: props) => {
-  let (isSidebarOpen, setSidebarOpen) = React.useState(_ => false)
+  let (isSidebarOpen, setSidebarOpen) = React.useState(_ => true)
+
   let toggleSidebar = () => setSidebarOpen(prev => !prev)
-  // let router = Next.Router.useRouter()
 
   let title = switch props {
   | Ok({module_: {id}}) => id
@@ -381,7 +349,7 @@ let make = (props: props) => {
     }
   }
 
-  // TODO RR7: Is this used anywhere?
+  // This is the sidebar on the right side of the page for desktops showing types and values
   let rightSidebar = switch props {
   | Ok({module_: {items}}) if Array.length(items) > 0 =>
     <div className="hidden xl:block lg:w-1/5 md:h-auto md:relative overflow-y-visible bg-white">
@@ -399,12 +367,14 @@ let make = (props: props) => {
   | _ => React.null
   }
 
-  // let version = Url.parse(router.asPath)->Url.getVersionString
-
+  // This is the inline sidebar on the left for mobile and tablet
   let sidebar = switch props {
   | Ok({toctree, module_: {items}}) =>
     <SidebarTree isOpen=isSidebarOpen toggle=toggleSidebar node={toctree} items />
-  | Error(_) => React.null
+  | Error(_) => {
+      Console.error("Error loading API data")
+      React.null
+    }
   }
 
   let prefix = {Url.name: "API", href: "/docs/manual/api"}
@@ -432,7 +402,12 @@ module Data = {
     tree: Dict.t<JSON.t>,
   }
 
-  let dir = Node.Path.resolve("data", "api")
+  // This is called on in the client for some reason?
+  let dir = try {
+    Node.Path.resolve("data", "api")
+  } catch {
+  | _ => ""
+  }
 
   let getVersion = (~moduleName: string) => {
     open Node
@@ -446,13 +421,6 @@ module Data = {
     | _ => None
     }
 
-    // let toctree = switch Path.join([dir, "toc_tree.json"])
-    // ->Fs.readFileSync
-    // ->JSON.parseOrThrow {
-    // | Object(dict) => dict->Some
-    // | _ => None
-    // }
-
     switch content {
     | Some(content) => Some({mainModule: content, tree: Dict.make()})
     | _ => None
@@ -465,6 +433,7 @@ let processStaticProps = (~slug: array<string>) => {
   let modulePath = slug->Array.join("/")
 
   let content =
+    // TODO rr7 rename this to getByModuleName
     Data.getVersion(~moduleName)
     ->Option.map(data => data.mainModule)
     ->Option.flatMap(Dict.get(_, modulePath))
@@ -562,6 +531,8 @@ let processStaticProps = (~slug: array<string>) => {
 
 let getStaticProps = async slug => {
   let result = processStaticProps(~slug)
+
+  // Node.Fs.writeFileSync("./props.json", JSON.stringifyAny(result)->Option.getOrThrow)
 
   {"props": result}
 }

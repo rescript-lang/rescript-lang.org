@@ -1,12 +1,6 @@
 module SectionHeader: {
   @react.component
-  let make: (~value: string) => React.element
+  let make: (~value: string) => Jsx.element
 }
-
 @react.component
-let make: (
-  ~onChange: ReactEvent.Form.t => unit,
-  ~version: string,
-  ~nextVersion: (string, string)=?,
-  ~availableVersions: array<(string, string)>,
-) => React.element
+let make: (~version: string, ~availableVersions: array<string>) => Jsx.element
