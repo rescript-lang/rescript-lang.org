@@ -89,208 +89,417 @@ module HoverHint = {
   }
 }
 
-// Raw JavaScript to create and manage CodeMirror 6 editor
-let createEditor = %raw(`
-  function(config) {
-    const {
-      parent,
-      initialValue,
-      mode,
-      readOnly,
-      lineNumbers,
-      lineWrapping,
-      keyMap,
-      onChange,
-      errors,
-      hoverHints,
-      minHeight,
-      maxHeight
-    } = config;
-    
-    // Import CodeMirror 6 modules
-    const { EditorView, lineNumbers: lineNumbersExt, highlightActiveLine, highlightActiveLineGutter, drawSelection, dropCursor, keymap } = require("@codemirror/view");
-    const { EditorState, Compartment } = require("@codemirror/state");
-    const { defaultKeymap, historyKeymap, history } = require("@codemirror/commands");
-    const { searchKeymap, highlightSelectionMatches } = require("@codemirror/search");
-    const { syntaxHighlighting, defaultHighlightStyle, HighlightStyle, bracketMatching } = require("@codemirror/language");
-    const { tags } = require("@lezer/highlight");
-    const { linter, lintGutter } = require("@codemirror/lint");
-    const { javascript } = require("@codemirror/lang-javascript");
-    const { vim } = require("@replit/codemirror-vim");
-    
-    // Import custom language modes
-    const { rescriptLanguage } = require("../plugins/cm6-rescript-mode");
-    const { reasonLanguage } = require("../plugins/cm6-reason-mode");
-    
-    // Setup language based on mode
-    let language;
-    if (mode === "rescript") {
-      language = rescriptLanguage;
-    } else if (mode === "reason") {
-      language = reasonLanguage;
-    } else {
-      language = javascript();
-    }
-    
-    // Setup compartments for dynamic config
-    const languageConf = new Compartment();
-    const readOnlyConf = new Compartment();
-    const keymapConf = new Compartment();
-    const lintConf = new Compartment();
-    
-    // Basic extensions
-    const extensions = [
-      languageConf.of(language),
-      history(),
-      drawSelection(),
-      dropCursor(),
-      bracketMatching(),
-      highlightSelectionMatches(),
-      syntaxHighlighting(defaultHighlightStyle, {fallback: true}),
-    ];
-    
-    // Add optional extensions
-    if (lineNumbers) {
-      extensions.push(lineNumbersExt());
-      extensions.push(highlightActiveLineGutter());
-    }
-    
-    if (!readOnly) {
-      extensions.push(highlightActiveLine());
-    }
-    
-    if (lineWrapping) {
-      extensions.push(EditorView.lineWrapping);
-    }
-    
-    // Add readonly conf
-    extensions.push(readOnlyConf.of(EditorState.readOnly.of(readOnly)));
-    
-    // Add keymap
-    let keymapValue = keyMap === "vim" 
-      ? [vim(), ...defaultKeymap, ...historyKeymap, ...searchKeymap]
-      : [...defaultKeymap, ...historyKeymap, ...searchKeymap];
-    extensions.push(keymapConf.of(keymap.of(keymapValue)));
-    
-    // Add change listener
-    if (onChange) {
-      extensions.push(EditorView.updateListener.of((update) => {
-        if (update.docChanged) {
-          const newValue = update.state.doc.toString();
-          onChange(newValue);
-        }
-      }));
-    }
-    
-    // Add linter for errors - dynamic linter that can be updated
-    const createLinter = (errorsArray) => {
-      if (!errorsArray || errorsArray.length === 0) {
-        return [];
-      }
-      return linter((view) => {
-        return errorsArray.map(err => {
-          try {
-            const doc = view.state.doc;
-            // Error row/endRow are 1-based (same as CodeMirror 5)
-            // Error column/endColumn are 0-based (same as CodeMirror 5)
-            // Validate line numbers are within document bounds
-            const fromLine = Math.max(1, Math.min(err.row, doc.lines));
-            const toLine = Math.max(1, Math.min(err.endRow, doc.lines));
-            
-            // Get line objects
-            const startLine = doc.line(fromLine);
-            const endLine = doc.line(toLine);
-            
-            // Validate column positions (0-based) are within line bounds
-            const fromCol = Math.max(0, Math.min(err.column, startLine.length));
-            const toCol = Math.max(0, Math.min(err.endColumn, endLine.length));
-            
-            return {
-              from: startLine.from + fromCol,
-              to: endLine.from + toCol,
-              severity: err.kind === 0 ? "error" : "warning",
-              message: err.text
-            };
-          } catch (e) {
-            // Handle any edge cases gracefully
-            console.warn("Error creating lint marker:", e);
-            return null;
-          }
-        }).filter(Boolean);
-      });
-    };
-    
-    extensions.push(lintConf.of(createLinter(errors)));
-    extensions.push(lintGutter());
-    
-    // Create editor
-    const state = EditorState.create({
-      doc: initialValue || "",
-      extensions
-    });
-    
-    const view = new EditorView({
-      state,
-      parent
-    });
-    
-    // Apply custom styling
-    if (minHeight) {
-      view.dom.style.minHeight = minHeight;
-    }
-    if (maxHeight) {
-      view.dom.style.maxHeight = maxHeight;
-      view.dom.style.overflow = "auto";
-    }
-    
-    // Return object with methods
-    return {
-      view,
-      languageConf,
-      readOnlyConf,
-      keymapConf,
-      lintConf,
-      createLinter,
-      setValue(value) {
-        view.dispatch({
-          changes: {from: 0, to: view.state.doc.length, insert: value}
-        });
-      },
-      getValue() {
-        return view.state.doc.toString();
-      },
-      destroy() {
-        view.destroy();
-      },
-      setMode(newMode) {
-        let newLang;
-        if (newMode === "rescript") {
-          newLang = rescriptLanguage;
-        } else if (newMode === "reason") {
-          newLang = reasonLanguage;
-        } else {
-          newLang = javascript();
-        }
-        view.dispatch({
-          effects: languageConf.reconfigure(newLang)
-        });
-      },
-      setKeyMap(newKeyMap) {
-        const newKeymapValue = newKeyMap === "vim"
-          ? [vim(), ...defaultKeymap, ...historyKeymap, ...searchKeymap]
-          : [...defaultKeymap, ...historyKeymap, ...searchKeymap];
-        view.dispatch({
-          effects: keymapConf.reconfigure(keymap.of(newKeymapValue))
-        });
-      },
-      setErrors(newErrors) {
-        view.dispatch({
-          effects: lintConf.reconfigure(createLinter(newErrors))
-        });
-      }
-    };
+// CodeMirror 6 bindings
+module CM6 = {
+  type extension
+  type editorState
+  type editorView
+  type compartment
+  type effect
+  type transaction
+  type languageSupport
+  type keymapSpec
+
+  module Text = {
+    type t
+    type line
+    @send external toString: t => string = "toString"
+    @get external lines: t => int = "lines"
+    @send external line: (t, int) => line = "line"
+    @get external lineFrom: line => int = "from"
+    @get external lineLength: line => int = "length"
   }
-`)
+
+  module EditorState = {
+    @module("@codemirror/state") @scope("EditorState")
+    external create: {"doc": string, "extensions": array<extension>} => editorState = "create"
+
+    @module("@codemirror/state") @scope("EditorState") @val
+    external readOnly: {"of": bool => extension} = "readOnly"
+
+    @get external doc: editorState => Text.t = "doc"
+  }
+
+  module Compartment = {
+    @module("@codemirror/state") @new
+    external make: unit => compartment = "Compartment"
+
+    @send external of_: (compartment, extension) => extension = "of"
+    @send external reconfigure: (compartment, extension) => effect = "reconfigure"
+  }
+
+  module EditorView = {
+    @module("@codemirror/view") @new
+    external create: {"state": editorState, "parent": WebAPI.DOMAPI.element} => editorView =
+      "EditorView"
+
+    @send external destroy: editorView => unit = "destroy"
+    @get external state: editorView => editorState = "state"
+    @get external dom: editorView => WebAPI.DOMAPI.htmlElement = "dom"
+
+    @send
+    external dispatch: (
+      editorView,
+      {"changes": {"from": int, "to": int, "insert": string}},
+    ) => unit = "dispatch"
+
+    @send
+    external dispatchEffects: (editorView, {"effects": effect}) => unit = "dispatch"
+
+    @module("@codemirror/view") @scope("EditorView") @val
+    external lineWrapping: extension = "lineWrapping"
+
+    @module("@codemirror/view")
+    external lineNumbers: unit => extension = "lineNumbers"
+
+    @module("@codemirror/view")
+    external highlightActiveLine: unit => extension = "highlightActiveLine"
+
+    @module("@codemirror/view")
+    external highlightActiveLineGutter: unit => extension = "highlightActiveLineGutter"
+
+    @module("@codemirror/view")
+    external drawSelection: unit => extension = "drawSelection"
+
+    @module("@codemirror/view")
+    external dropCursor: unit => extension = "dropCursor"
+
+    module UpdateListener = {
+      type update
+      @get external view: update => editorView = "view"
+      @get external docChanged: update => bool = "docChanged"
+
+      @module("@codemirror/view") @scope("EditorView")
+      external of_: (update => unit) => extension = "updateListener"
+    }
+  }
+
+  module Commands = {
+    @module("@codemirror/commands")
+    external history: unit => extension = "history"
+
+    @module("@codemirror/commands") @val
+    external defaultKeymap: array<keymapSpec> = "defaultKeymap"
+
+    @module("@codemirror/commands") @val
+    external historyKeymap: array<keymapSpec> = "historyKeymap"
+  }
+
+  module Search = {
+    @module("@codemirror/search") @val
+    external searchKeymap: array<keymapSpec> = "searchKeymap"
+
+    @module("@codemirror/search")
+    external highlightSelectionMatches: unit => extension = "highlightSelectionMatches"
+  }
+
+  module Language = {
+    @module("@codemirror/language")
+    external bracketMatching: unit => extension = "bracketMatching"
+
+    @module("@codemirror/language")
+    external syntaxHighlighting: (extension, {"fallback": bool}) => extension = "syntaxHighlighting"
+
+    @module("@lezer/highlight") @val
+    external defaultHighlightStyle: extension = "defaultHighlightStyle"
+  }
+
+  module Keymap = {
+    @module("@codemirror/state")
+    external of_: array<keymapSpec> => extension = "keymap"
+  }
+
+  module Lint = {
+    type diagnostic = {
+      from: int,
+      to: int,
+      severity: string,
+      message: string,
+    }
+
+    type linterSource = editorView => array<diagnostic>
+
+    @module("@codemirror/lint")
+    external linter: linterSource => extension = "linter"
+
+    @module("@codemirror/lint")
+    external lintGutter: unit => extension = "lintGutter"
+  }
+
+  module JavaScript = {
+    @module("@codemirror/lang-javascript")
+    external javascript: unit => languageSupport = "javascript"
+  }
+
+  module Vim = {
+    @module("@replit/codemirror-vim")
+    external vim: unit => extension = "vim"
+  }
+
+  module CustomLanguages = {
+    @module("../plugins/cm6-rescript-mode") @val
+    external rescriptLanguage: languageSupport = "rescriptLanguage"
+
+    @module("../plugins/cm6-reason-mode") @val
+    external reasonLanguage: languageSupport = "reasonLanguage"
+  }
+}
+
+type editorInstance = {
+  view: CM6.editorView,
+  languageConf: CM6.compartment,
+  readOnlyConf: CM6.compartment,
+  keymapConf: CM6.compartment,
+  lintConf: CM6.compartment,
+}
+
+type editorConfig = {
+  parent: WebAPI.DOMAPI.element,
+  initialValue: string,
+  mode: string,
+  readOnly: bool,
+  lineNumbers: bool,
+  lineWrapping: bool,
+  keyMap: string,
+  onChange: option<string => unit>,
+  errors: array<Error.t>,
+  hoverHints: array<HoverHint.t>,
+  minHeight: option<string>,
+  maxHeight: option<string>,
+}
+
+let createLinterExtension = (errors: array<Error.t>, lintConf: CM6.compartment): CM6.extension => {
+  let linterSource = (view: CM6.editorView): array<CM6.Lint.diagnostic> => {
+    if Array.length(errors) === 0 {
+      []
+    } else {
+      let doc = CM6.EditorView.state(view)->CM6.EditorState.doc
+      let diagnostics = []
+
+      Array.forEach(errors, err => {
+        try {
+          // Error row/endRow are 1-based (same as CodeMirror 5)
+          // Error column/endColumn are 0-based (same as CodeMirror 5)
+          let fromLine = Math.Int.max(1, Math.Int.min(err.row, CM6.Text.lines(doc)))
+          let toLine = Math.Int.max(1, Math.Int.min(err.endRow, CM6.Text.lines(doc)))
+
+          let startLine = CM6.Text.line(doc, fromLine)
+          let endLine = CM6.Text.line(doc, toLine)
+
+          let fromCol = Math.Int.max(0, Math.Int.min(err.column, CM6.Text.lineLength(startLine)))
+          let toCol = Math.Int.max(0, Math.Int.min(err.endColumn, CM6.Text.lineLength(endLine)))
+
+          let diagnostic = {
+            CM6.Lint.from: CM6.Text.lineFrom(startLine) + fromCol,
+            to: CM6.Text.lineFrom(endLine) + toCol,
+            severity: err.kind === #Error ? "error" : "warning",
+            message: err.text,
+          }
+
+          Array.push(diagnostics, diagnostic)->ignore
+        } catch {
+        | _ => Console.warn("Error creating lint marker")
+        }
+      })
+
+      diagnostics
+    }
+  }
+
+  CM6.Compartment.of_(lintConf, CM6.Lint.linter(linterSource))
+}
+
+let createEditor = (config: editorConfig): editorInstance => {
+  // Setup language based on mode
+  let language = switch config.mode {
+  | "rescript" => CM6.CustomLanguages.rescriptLanguage
+  | "reason" => CM6.CustomLanguages.reasonLanguage
+  | _ => CM6.JavaScript.javascript()
+  }
+
+  // Setup compartments for dynamic config
+  let languageConf = CM6.Compartment.make()
+  let readOnlyConf = CM6.Compartment.make()
+  let keymapConf = CM6.Compartment.make()
+  let lintConf = CM6.Compartment.make()
+
+  // Basic extensions
+  let extensions = [
+    CM6.Compartment.of_(languageConf, (Obj.magic(language): CM6.extension)),
+    CM6.Commands.history(),
+    CM6.EditorView.drawSelection(),
+    CM6.EditorView.dropCursor(),
+    CM6.Language.bracketMatching(),
+    CM6.Search.highlightSelectionMatches(),
+    CM6.Language.syntaxHighlighting(CM6.Language.defaultHighlightStyle, {"fallback": true}),
+  ]
+
+  // Add optional extensions
+  if config.lineNumbers {
+    Array.push(extensions, CM6.EditorView.lineNumbers())->ignore
+    Array.push(extensions, CM6.EditorView.highlightActiveLineGutter())->ignore
+  }
+
+  if !config.readOnly {
+    Array.push(extensions, CM6.EditorView.highlightActiveLine())->ignore
+  }
+
+  if config.lineWrapping {
+    Array.push(extensions, CM6.EditorView.lineWrapping)->ignore
+  }
+
+  // Add readonly conf
+  Array.push(
+    extensions,
+    CM6.Compartment.of_(readOnlyConf, CM6.EditorState.readOnly["of"](config.readOnly)),
+  )->ignore
+
+  // Add keymap
+  let keymapExtension = if config.keyMap === "vim" {
+    let vimExt = CM6.Vim.vim()
+    let defaultKeymapExt = CM6.Keymap.of_(CM6.Commands.defaultKeymap)
+    let historyKeymapExt = CM6.Keymap.of_(CM6.Commands.historyKeymap)
+    let searchKeymapExt = CM6.Keymap.of_(CM6.Search.searchKeymap)
+    // Return vim extension combined with keymap extensions
+    // We need to wrap them in an array and convert to extension
+    let combined = Array.concat([vimExt], [defaultKeymapExt, historyKeymapExt, searchKeymapExt])
+    (Obj.magic(combined): CM6.extension)
+  } else {
+    let defaultKeymapExt = CM6.Keymap.of_(CM6.Commands.defaultKeymap)
+    let historyKeymapExt = CM6.Keymap.of_(CM6.Commands.historyKeymap)
+    let searchKeymapExt = CM6.Keymap.of_(CM6.Search.searchKeymap)
+    // Return combined keymap extensions
+    let combined = [defaultKeymapExt, historyKeymapExt, searchKeymapExt]
+    (Obj.magic(combined): CM6.extension)
+  }
+  Array.push(extensions, CM6.Compartment.of_(keymapConf, keymapExtension))->ignore
+
+  // Add change listener
+  switch config.onChange {
+  | Some(onChange) =>
+    let updateListener = CM6.EditorView.UpdateListener.of_(update => {
+      if CM6.EditorView.UpdateListener.docChanged(update) {
+        let view = CM6.EditorView.UpdateListener.view(update)
+        let newValue = CM6.EditorView.state(view)->CM6.EditorState.doc->CM6.Text.toString
+        onChange(newValue)
+      }
+    })
+    Array.push(extensions, updateListener)->ignore
+  | None => ()
+  }
+
+  // Add linter for errors
+  Array.push(extensions, createLinterExtension(config.errors, lintConf))->ignore
+  Array.push(extensions, CM6.Lint.lintGutter())->ignore
+
+  // Create editor
+  let state = CM6.EditorState.create({
+    "doc": config.initialValue,
+    "extensions": extensions,
+  })
+
+  let view = CM6.EditorView.create({
+    "state": state,
+    "parent": config.parent,
+  })
+
+  // Apply custom styling
+  let dom = CM6.EditorView.dom(view)
+  switch config.minHeight {
+  | Some(minHeight) => dom.style.minHeight = minHeight
+  | None => ()
+  }
+  switch config.maxHeight {
+  | Some(maxHeight) =>
+    dom.style.maxHeight = maxHeight
+    dom.style.overflow = "auto"
+  | None => ()
+  }
+
+  {
+    view,
+    languageConf,
+    readOnlyConf,
+    keymapConf,
+    lintConf,
+  }
+}
+
+let editorSetValue = (instance: editorInstance, value: string): unit => {
+  let doc = CM6.EditorView.state(instance.view)->CM6.EditorState.doc
+  CM6.EditorView.dispatch(
+    instance.view,
+    {
+      "changes": {
+        "from": 0,
+        "to": CM6.Text.toString(doc)->String.length,
+        "insert": value,
+      },
+    },
+  )
+}
+
+let editorGetValue = (instance: editorInstance): string => {
+  CM6.EditorView.state(instance.view)->CM6.EditorState.doc->CM6.Text.toString
+}
+
+let editorDestroy = (instance: editorInstance): unit => {
+  CM6.EditorView.destroy(instance.view)
+}
+
+let editorSetMode = (instance: editorInstance, mode: string): unit => {
+  let language = switch mode {
+  | "rescript" => CM6.CustomLanguages.rescriptLanguage
+  | "reason" => CM6.CustomLanguages.reasonLanguage
+  | _ => CM6.JavaScript.javascript()
+  }
+
+  CM6.EditorView.dispatchEffects(
+    instance.view,
+    {
+      "effects": CM6.Compartment.reconfigure(
+        instance.languageConf,
+        (Obj.magic(language): CM6.extension),
+      ),
+    },
+  )
+}
+
+let editorSetKeyMap = (instance: editorInstance, keyMap: string): unit => {
+  let keymapExtension = if keyMap === "vim" {
+    let vimExt = CM6.Vim.vim()
+    let defaultKeymapExt = CM6.Keymap.of_(CM6.Commands.defaultKeymap)
+    let historyKeymapExt = CM6.Keymap.of_(CM6.Commands.historyKeymap)
+    let searchKeymapExt = CM6.Keymap.of_(CM6.Search.searchKeymap)
+    let combined = Array.concat([vimExt], [defaultKeymapExt, historyKeymapExt, searchKeymapExt])
+    (Obj.magic(combined): CM6.extension)
+  } else {
+    let defaultKeymapExt = CM6.Keymap.of_(CM6.Commands.defaultKeymap)
+    let historyKeymapExt = CM6.Keymap.of_(CM6.Commands.historyKeymap)
+    let searchKeymapExt = CM6.Keymap.of_(CM6.Search.searchKeymap)
+    let combined = [defaultKeymapExt, historyKeymapExt, searchKeymapExt]
+    (Obj.magic(combined): CM6.extension)
+  }
+
+  CM6.EditorView.dispatchEffects(
+    instance.view,
+    {
+      "effects": CM6.Compartment.reconfigure(instance.keymapConf, keymapExtension),
+    },
+  )
+}
+
+let editorSetErrors = (instance: editorInstance, errors: array<Error.t>): unit => {
+  CM6.EditorView.dispatchEffects(
+    instance.view,
+    {
+      "effects": CM6.Compartment.reconfigure(
+        instance.lintConf,
+        createLinterExtension(errors, instance.lintConf),
+      ),
+    },
+  )
+}
 
 @react.component
 let make = (
@@ -315,36 +524,32 @@ let make = (
   ~lineWrapping=false,
 ): React.element => {
   let containerRef = React.useRef(Nullable.null)
-  let editorRef: React.ref<option<'a>> = React.useRef(None)
+  let editorRef: React.ref<option<editorInstance>> = React.useRef(None)
   let _windowWidth = useWindowWidth()
 
   // Initialize editor
   React.useEffect(() => {
     switch containerRef.current->Nullable.toOption {
     | Some(parent) =>
-      let editor = createEditor({
-        "parent": parent,
-        "initialValue": value,
-        "mode": mode,
-        "readOnly": readOnly,
-        "lineNumbers": lineNumbers,
-        "lineWrapping": lineWrapping,
-        "keyMap": KeyMap.toString(keyMap),
-        "onChange": onChange,
-        "errors": errors,
-        "hoverHints": hoverHints,
-        "minHeight": minHeight,
-        "maxHeight": maxHeight,
-      })
+      let config: editorConfig = {
+        parent,
+        initialValue: value,
+        mode,
+        readOnly,
+        lineNumbers,
+        lineWrapping,
+        keyMap: KeyMap.toString(keyMap),
+        onChange,
+        errors,
+        hoverHints,
+        minHeight,
+        maxHeight,
+      }
 
+      let editor = createEditor(config)
       editorRef.current = Some(editor)
 
-      Some(
-        () => {
-          let destroy = %raw(`function(ed) { ed.destroy(); }`)
-          destroy(editor)
-        },
-      )
+      Some(() => editorDestroy(editor))
     | None => None
     }
   }, [keyMap])
@@ -352,12 +557,10 @@ let make = (
   // Update value when it changes externally
   React.useEffect(() => {
     switch editorRef.current {
-    | Some(_editor) =>
-      let getValue = %raw(`function(ed) { return ed.getValue(); }`)
-      let setValue = %raw(`function(ed, val) { ed.setValue(val); }`)
-      let currentValue = getValue(_editor)
+    | Some(editor) =>
+      let currentValue = editorGetValue(editor)
       if currentValue !== value {
-        setValue(_editor, value)
+        editorSetValue(editor, value)
       }
     | None => ()
     }
@@ -367,9 +570,7 @@ let make = (
   // Update mode when it changes
   React.useEffect(() => {
     switch editorRef.current {
-    | Some(_editor) =>
-      let setMode = %raw(`function(ed, m) { ed.setMode(m); }`)
-      setMode(_editor, mode)
+    | Some(editor) => editorSetMode(editor, mode)
     | None => ()
     }
     None
@@ -378,9 +579,7 @@ let make = (
   // Update errors when they change
   React.useEffect(() => {
     switch editorRef.current {
-    | Some(_editor) =>
-      let setErrors = %raw(`function(ed, errs) { ed.setErrors(errs); }`)
-      setErrors(_editor, errors)
+    | Some(editor) => editorSetErrors(editor, errors)
     | None => ()
     }
     None
