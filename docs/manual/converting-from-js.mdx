@@ -164,7 +164,7 @@ Format the code: `./node_modules/.bin/rescript format src/Main.res`.
 
 We have a type error: "The record field student can't be found". That's fine! **Always ensure your code is syntactically valid first**. Fixing type errors comes later.
 
-## Step 4: Add `external`s, Fix Types
+## Step 4: Add externals, Fix Types
 
 The previous type error is caused by `payload`'s record declaration (which supposedly contains the field `student`) not being found. Since we're trying to convert as quickly as possible, let's use our [object](object) feature to avoid needing type declaration ceremonies:
 
