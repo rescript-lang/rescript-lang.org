@@ -21,7 +21,7 @@ let default = [
   route("try", "./routes/TryRoute.mjs"),
   route("community", "./routes/CommunityRoute.mjs"),
   route("community/overview", "./routes/CommunityRoute.mjs", ~options={id: "overview"}),
-  route("syntax-lookup", "./routes/SyntaxLookupRoute.mjs"),
+  route("syntax-lookup", "./routes/SyntaxLookupRoute.mjs", ~options={id: "syntax-lookup"}),
   route("blog", "./routes/BlogRoute.mjs"),
   // TODO RR7 get the api index to work with the same template
   // route("docs/manual/api", "./routes/ApiRoute.mjs", ~options={id: "api-index"}),
