@@ -1,16 +1,6 @@
 // This file was automatically converted to ReScript from 'Markdown.re'
 // Check the output and make sure to delete the original file
-
-// type el = {@as("type") _type?: string}
-
-// external elementObject: React.element => el = "%identity"
-
-let childrenToString = element => {
-  JSON.stringifyAny(ReactDOMServer.renderToStaticMarkup(element))
-  ->Option.getOr("")
-  ->String.replaceRegExp(/<[^>]+>/g, "")
-  ->String.replaceRegExp(/([\r\n]+ +)+/g, "")
-}
+external childrenToString: React.element => string = "%identity"
 
 module P = {
   @react.component

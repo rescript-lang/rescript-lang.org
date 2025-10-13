@@ -4,14 +4,17 @@
 
   ol {
     li {
-      counter-increment: li;
+      list-style-type: decimal;
 
       &::before {
-        content: counter(li) ".";
-        @apply absolute font-semibold;
+        @apply font-bold;
       }
+
     }
+
+
   }
+
 
   ul {
     @apply mb-0;

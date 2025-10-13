@@ -85,35 +85,7 @@ let make = (
 
   let preludeSection =
     <div className="flex flex-col justify-between text-fire font-medium items-baseline">
-      {switch version {
-      | Some(version) =>
-        switch availableVersions {
-        | Some(availableVersions) =>
-          let onChange = evt => {
-            open Url
-            ReactEvent.Form.preventDefault(evt)
-            let version = (evt->ReactEvent.Form.target)["value"]
-            let url = Url.parse((route :> string))
-            WebAPI.Storage.setItem(
-              localStorage,
-              ~key=switch metaTitleCategory {
-              | "React" => (React :> string)
-              | _ => (Manual :> string)
-              },
-              ~value=version,
-            )
-
-            let targetUrl =
-              "/" ++
-              (Array.join(url.base, "/") ++
-              ("/" ++ (version ++ ("/" ++ Array.join(url.pagepath, "/")))))
-            navigate(targetUrl)
-          }
-          <VersionSelect version={"v12"} availableVersions=["v12", "pre v12"] />
-        | None => <span className="font-mono text-14"> {React.string(version)} </span>
-        }
-      | None => React.null
-      }}
+      <VersionSelect version={"v12"} availableVersions=["v12", "pre v12"] />
     </div>
 
   let sidebar =

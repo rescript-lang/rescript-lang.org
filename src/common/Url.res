@@ -112,6 +112,7 @@ let normalizeAnchor = string => {
   ->String.replaceRegExp(/([\r\n]+ +)+/g, "")
   ->String.replaceAll(" ", "-")
   ->String.replaceAll("_", "-")
+  ->String.replaceAll("&", "")
   ->String.replaceAllRegExp(/[^a-zA-Z0-9-]/g, "")
   ->String.toLocaleLowerCase
 }
