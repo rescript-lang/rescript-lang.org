@@ -64,7 +64,7 @@ function getUserPromises(id) {
 Let's have a look at the generated JS from the initial example in comparison:
 
 ```js
-async function getUserNestedSwitches(id) {
+async function getUser(id) {
   let error = await fetchUser(id);
   if (error.TAG !== "Ok") {
     return {
@@ -95,6 +95,8 @@ async function getUserNestedSwitches(id) {
 }
 ```
 
+As you can see, there is no extra calls to the standard library, but it's a little verbose.
+
 ## Introducing `let?`
 
 Let's rewrite the above example again with our new syntax:
@@ -105,7 +107,6 @@ Let's rewrite the above example again with our new syntax:
 let getUser = async (id) => {
   let? Ok(user)  = await fetchUser(id)
   let? Ok(decodedUser) = decodeUser(user)
-  Console.log(`Got user ${decodedUser.name}!`)
   let? Ok() = await ensureUserActive(decodedUser)
   Ok(decodedUser)
 }
@@ -122,7 +123,6 @@ async function getUser(id) {
     return e$1;
   }
   let decodedUser = e$1._0;
-  console.log(`Got user ` + decodedUser.name + `!`);
   let e$2 = await ensureUserActive(decodedUser);
   if (e$2.TAG === "Ok") {
     return {
@@ -137,7 +137,7 @@ async function getUser(id) {
 
 </CodeTab>
 
-This strikes a balance between conciseness and simplicity that we really think fits ReScript well.
+This strikes a balance between conciseness and simplicity that we really think fits ReScript well. Also the emitted JS is more concise than the initial example because we got rid of the manual error mapping.
 
 With `let?`, we can now safely focus on the the happy-path in the scope of the function. There is no nesting as the `Error` is automatically mapped. But be assured the error case is also handled as the type checker will complain when you don't handle the `Error` returned by the `getUser` function.
 
