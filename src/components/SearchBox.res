@@ -78,10 +78,12 @@ let make = (
     onBlur
     className={(
       state === Active ? "border-fire" : "border-fire-30"
-    ) ++ " flex items-center border rounded-lg py-4 px-5"}>
+    ) ++ " flex items-center border rounded-lg py-4 px-5"}
+  >
     <Icon.MagnifierGlass
       className={(state === Active ? "text-fire" : "text-fire-70") ++ " w-4 h-4"}
     />
+    // TODO RR7: deleting input stops working with one character left...
     <input
       value
       ref={ReactDOM.Ref.domRef((Obj.magic(textInput): React.ref<Nullable.t<Dom.element>>))}
@@ -92,7 +94,11 @@ let make = (
       className="text-16 outline-hidden ml-4 w-full"
       type_="text"
     />
-    <button onFocus className={value === "" ? "hidden" : "block"} onMouseDown=onMouseDownClear>
+    <button
+      onFocus
+      className={"value" /* TODO */ === "" ? "hidden" : "block"}
+      onMouseDown=onMouseDownClear
+    >
       <Icon.Close className="w-4 h-4 text-fire" />
     </button>
   </div>

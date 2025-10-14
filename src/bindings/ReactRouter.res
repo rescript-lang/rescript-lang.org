@@ -1,7 +1,9 @@
 open WebAPI
 
+type navigateOptions = {replace?: bool}
+
 @module("react-router-dom")
-external navigate: string => unit = "navigate"
+external navigate: (string, ~options: navigateOptions=?) => unit = "navigate"
 
 // https://api.reactrouter.com/v7/functions/react_router.useNavigate.html
 @module("react-router")
@@ -136,10 +138,15 @@ module Mdx = {
     canonical: Path.t,
     category?: string,
     description?: string,
+    id?: string,
+    keywords?: array<string>,
+    name?: string,
     metaTitle?: string,
     order?: int,
     path: string,
     section?: string,
+    summary?: string,
+    status?: string,
     slug: string,
     title: string,
   }

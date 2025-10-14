@@ -99,8 +99,13 @@ let getAnchor = path => {
 
 module Tag = {
   @react.component
-  let make = (~deprecated: bool, ~text: string) => {
+  let make = (~deprecated: bool, ~text: string, ~id: string) => {
+    let navigate = ReactRouter.useNavigate()
+    let onClick = evt => {
+      navigate("#" ++ id)
+    }
     <span
+      onClick
       className={`
        py-1 px-3 rounded text-16
       ${deprecated
@@ -132,6 +137,7 @@ module DetailBox = {
 
     <div>
       <div className="text-24 border-b border-gray-40 pb-4 mb-4 font-semibold"> summaryEl </div>
+      // TODO: get the actual children
       <div className="mt-16"> children </div>
     </div>
   }
@@ -144,7 +150,6 @@ type state =
 
 let scrollToTop = () => WebAPI.Window.scrollTo(window, ~options={left: 0.0, top: 0.0})
 
-type props = {mdxSources: array<MdxRemote.output>}
 type params = {slug: string}
 
 let decode = (json: JSON.t) => {
@@ -177,21 +182,39 @@ let decode = (json: JSON.t) => {
   }
 }
 
-let make = (props: props) => {
-  let {mdxSources} = props
+type item = {
+  id: string,
+  keywords: array<string>,
+  name: string,
+  summary: string,
+  category: Category.t,
+  children: React.element,
+  status: Status.t,
+}
 
+@react.component
+let make = (~mdxSources: array<item>) => {
   let allItems = mdxSources->Array.map(mdxSource => {
-    let {id, keywords, category, summary, name, status} = decode(mdxSource.frontmatter)
+    let {id, keywords, category, summary, name, status} = mdxSource
 
-    let children =
-      <MdxRemote
-        frontmatter={mdxSource.frontmatter}
-        compiledSource={mdxSource.compiledSource}
-        scope={mdxSource.scope}
-        components={MarkdownComponents.default}
-      />
+    // TODO: children?
+    // let children =
+    //   <MdxRemote
+    //     frontmatter={mdxSource.frontmatter}
+    //     compiledSource={mdxSource.compiledSource}
+    //     scope={mdxSource.scope}
+    //     components={MarkdownComponents.default}
+    //   />
 
-    {Item.id, keywords, category, summary, name, status, children}
+    {
+      Item.id,
+      keywords,
+      category,
+      summary,
+      name,
+      status,
+      children: <div> {React.string("Hello!")} </div>,
+    }
   })
 
   let fuseOpts = Fuse.Options.t(
@@ -210,9 +233,13 @@ let make = (props: props) => {
   let location = ReactRouter.useLocation()
   let (state, setState) = React.useState(_ => ShowAll)
 
-  let findItemById = id => allItems->Array.find(item => item.id === id)
+  let findItemById = id => allItems->Array.find(item => "#" ++ item.id === id)
 
-  let findItemByExactName = name => allItems->Array.find(item => item.name === name)
+  let findItemByExactName = name => {
+    allItems->Array.find(item => {
+      item.name === name
+    })
+  }
 
   let searchItems = value =>
     fuse
@@ -221,13 +248,15 @@ let make = (props: props) => {
       m["item"]
     })
 
+  let navigate = ReactRouter.useNavigate()
+
   // This effect is responsible for updating the view state when the router anchor changes.
   // This effect is triggered when:
   // [A] The page first loads.
   // [B] The search box is cleared.
   // [C] The search box value exactly matches an item name.
   React.useEffect(() => {
-    switch getAnchor((location.pathname :> string)) {
+    switch location.hash {
     | None => setState(_ => ShowAll)
     | Some(anchor) =>
       switch findItemById(anchor) {
@@ -239,7 +268,7 @@ let make = (props: props) => {
       }
     }
     None
-  }, [location.pathname])
+  }, [location.hash])
 
   // onSearchValueChange() is called when:
   // [A] The search value changes.
@@ -252,7 +281,7 @@ let make = (props: props) => {
   // [3] Search does not match an item - immediately update the view state to show filtered items.
   let onSearchValueChange = value => {
     switch value {
-    | "" => ReactRouter.navigate("/syntax-lookup")
+    | "" => navigate("/syntax-lookup")
     | value =>
       switch findItemByExactName(value) {
       | None => {
@@ -318,7 +347,7 @@ let make = (props: props) => {
               onSearchValueChange(item.name)
             }
             <span className="mr-2 mb-2 cursor-pointer" onMouseDown key=item.name>
-              <Tag text={item.name} deprecated={item.status == Deprecated} />
+              <Tag text={item.name} deprecated={item.status == Deprecated} id=item.id />
             </span>
           })
         let el =
@@ -391,21 +420,4 @@ let make = (props: props) => {
       </div>
     </div>
   </>
-}
-
-let getStaticProps: Next.GetStaticProps.t<props, params> = async _ctx => {
-  let dir = Node.Path.resolve("misc_docs", "syntax")
-
-  let allFiles = Node.Fs.readdirSync(dir)->Array.map(async file => {
-    let fullPath = Node.Path.join2(dir, file)
-    let source = fullPath->Node.Fs.readFileSync
-    await MdxRemote.serialize(
-      source,
-      {parseFrontmatter: true, mdxOptions: MdxRemote.defaultMdxOptions},
-    )
-  })
-
-  let mdxSources = await Promise.all(allFiles)
-
-  {"props": {mdxSources: mdxSources}}
 }
