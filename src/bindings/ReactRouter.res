@@ -108,7 +108,31 @@ module Routes = {
 }
 
 module Mdx = {
+  type social = X(string) | Bluesky(string)
+
+  type author = {
+    username: string,
+    fullname: string,
+    role: string,
+    imgUrl: string,
+    social: social,
+  }
+
+  type badge =
+    | Release
+    | Testing
+    | Preview
+    | Roadmap
+    | Community
+
   type attributes = {
+    archived: Nullable.t<bool>,
+    author: string,
+    co_authors: array<author>,
+    date: DateStr.t,
+    previewImg: Null.t<string>,
+    articleImg: Null.t<string>,
+    badge: Nullable.t<string>,
     canonical: Path.t,
     category?: string,
     description?: string,

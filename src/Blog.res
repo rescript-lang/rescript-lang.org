@@ -207,11 +207,8 @@ module FeatureCard = {
 
 type params = {slug: string}
 
-type props = {posts: array<BlogApi.post>, category: category}
-
-let default = (props: props): React.element => {
-  let {posts, category} = props
-
+@react.component
+let make = (~posts: array<BlogApi.post>, ~category: category): React.element => {
   let content = if Array.length(posts) === 0 {
     /* <div> {React.string("Currently no posts available")} </div>; */
     <div className="mt-8">
@@ -301,20 +298,20 @@ let default = (props: props): React.element => {
   </>
 }
 
-let getStaticProps_All: Next.GetStaticProps.t<props, params> = async _ctx => {
-  let props = {
-    posts: BlogApi.getLivePosts(),
-    category: All,
-  }
+// let getStaticProps_All: Next.GetStaticProps.t<props, params> = async _ctx => {
+//   let props = {
+//     posts: BlogApi.getLivePosts(),
+//     category: All,
+//   }
 
-  {"props": props}
-}
+//   {"props": props}
+// }
 
-let getStaticProps_Archived: Next.GetStaticProps.t<props, params> = async _ctx => {
-  let props = {
-    posts: BlogApi.getArchivedPosts(),
-    category: Archived,
-  }
+// let getStaticProps_Archived: Next.GetStaticProps.t<props, params> = async _ctx => {
+//   let props = {
+//     posts: BlogApi.getArchivedPosts(),
+//     category: Archived,
+//   }
 
-  {"props": props}
-}
+//   {"props": props}
+// }
