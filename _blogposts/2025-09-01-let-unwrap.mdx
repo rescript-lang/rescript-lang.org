@@ -259,7 +259,7 @@ async function main() {
 
 ## Experimental features
 
-We have added an **experimental-features infrastructure** to the toolchain. If you use the new build system that comes with ReScript 12 by default, you can enable it in `rescript.json` like so:
+We have added an `experimental-features` infrastructure to the toolchain. If you use the new build system that comes with ReScript 12 by default, you can enable it in `rescript.json` like so:
 
 ```json
 {
@@ -277,6 +277,8 @@ If you still use the legacy build system, enable it with the compiler flag `-ena
 }
 ```
 
-We would love to hear your thoughts about this feature in the [forum](https://forum.rescript-lang.org/). Please try it out and tell us what you think!
+Both `experimental-feautures` and `let?` are available in [ReScript 12.0.0-beta.9](https://github.com/rescript-lang/rescript/blob/master/CHANGELOG.md#1200-beta9) or later. Bear in mind `let?` is subject to change or might even be removed entirely if it can be superseded by something else.
+
+We would love to hear your thoughts about these features in the [forum](https://forum.rescript-lang.org/). Please try it out and tell us what you think!
 
 Happy hacking!
