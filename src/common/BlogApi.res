@@ -149,7 +149,7 @@ module RssFeed = {
       getAllPosts()
       ->Array.map(post => {
         let fm = post.frontmatter
-        let description = Null.toOption(fm.description)->Option.getOr("")
+        let description = fm.description->Nullable.getOr("")
         {
           title: fm.title,
           href: baseUrl ++ "/blog/" ++ blogPathToSlug(post.path),

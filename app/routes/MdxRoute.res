@@ -214,8 +214,8 @@ let default = () => {
       ? "ReScript Language Manual"
       : "Some other page"
   <>
-    <title> {React.string(attributes.metaTitle->Option.getOr(attributes.title))} </title>
-    <meta name="description" content={attributes.description->Option.getOr("")} />
+    <title> {React.string(attributes.metaTitle->Nullable.getOr(attributes.title))} </title>
+    <meta name="description" content={attributes.description->Nullable.getOr("")} />
     {if (pathname :> string) == "/docs/manual/api" {
       <ApiOverviewLayout.Docs> {component()} </ApiOverviewLayout.Docs>
     } else if (

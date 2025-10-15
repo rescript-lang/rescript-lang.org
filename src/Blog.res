@@ -105,9 +105,9 @@ module BlogCard = {
         </Link.String>
       </div>
       <div className="px-2">
-        //   <Link to=Url(`/blog/${slug}`)>
-        //     <h2 className="hl-4"> {React.string(title)} </h2>
-        //   </Link>
+        <Link.String to={`/blog/${slug}`}>
+          <h2 className="hl-4"> {React.string(title)} </h2>
+        </Link.String>
         <div className="captions text-gray-40 pt-1">
           {switch category {
           | Some(category) =>
@@ -154,6 +154,7 @@ module FeatureCard = {
             </div>
           | None => React.null
           }}
+
           {
             let className = "absolute top-0 h-full w-full object-cover"
             switch previewImg {
@@ -197,9 +198,9 @@ module FeatureCard = {
             <p className="body-md text-gray-70"> {React.string(firstParagraph)} </p>
           </div>
         </div>
-        // <Link to=Url(`/blog/${slug}`)>
-        //   <Button> {React.string("Read Article")} </Button>
-        // </Link>
+        <Link.String to={`/blog/${slug}`}>
+          <Button> {React.string("Read Article")} </Button>
+        </Link.String>
       </div>
     </section>
   }
@@ -225,11 +226,11 @@ let make = (~posts: array<BlogApi.post>, ~category: category): React.element => 
       let featureBox =
         <div className="w-full mb-24 lg:px-8 xl:px-0">
           <FeatureCard
-            previewImg=?{first.frontmatter.previewImg->Null.toOption}
+            previewImg=?{first.frontmatter.previewImg->Nullable.toOption}
             title=first.frontmatter.title
-            badge=?{first.frontmatter.badge->Null.toOption}
+            badge=?{first.frontmatter.badge->Nullable.toOption}
             author=first.frontmatter.author
-            firstParagraph=?{first.frontmatter.description->Null.toOption}
+            firstParagraph=?{first.frontmatter.description->Nullable.toOption}
             date={first.frontmatter.date->DateStr.toDate}
             slug={BlogApi.blogPathToSlug(first.path)}
           />
@@ -242,16 +243,17 @@ let make = (~posts: array<BlogApi.post>, ~category: category): React.element => 
           className="px-4 md:px-8 xl:px-0 grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-20 gap-y-12 md:gap-y-24 w-full"
         >
           {Array.map(rest, post => {
-            let badge = post.frontmatter.badge->Null.toOption
+            let badge = post.frontmatter.badge->Nullable.toOption
 
             <BlogCard
               key={post.path}
-              previewImg=?{post.frontmatter.previewImg->Null.toOption}
+              previewImg=?{post.frontmatter.previewImg->Nullable.toOption}
               title=post.frontmatter.title
               author=post.frontmatter.author
               ?badge
               date={post.frontmatter.date->DateStr.toDate}
-              slug={BlogApi.blogPathToSlug(post.path)}
+              // TODO RR7 format blog urls
+              slug={`/${encodeURI(post.frontmatter.title)}`}
             />
           })->React.array}
         </div>
@@ -262,7 +264,6 @@ let make = (~posts: array<BlogApi.post>, ~category: category): React.element => 
         postsBox
       </>
     }
-
     <>
       <div className="hidden sm:flex justify-center ">
         <div className="my-16 w-full max-w-48">
@@ -297,15 +298,6 @@ let make = (~posts: array<BlogApi.post>, ~category: category): React.element => 
     </div>
   </>
 }
-
-// let getStaticProps_All: Next.GetStaticProps.t<props, params> = async _ctx => {
-//   let props = {
-//     posts: BlogApi.getLivePosts(),
-//     category: All,
-//   }
-
-//   {"props": props}
-// }
 
 // let getStaticProps_Archived: Next.GetStaticProps.t<props, params> = async _ctx => {
 //   let props = {

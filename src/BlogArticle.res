@@ -44,7 +44,8 @@ module AuthorBox = {
           | Bluesky(handle) => "https://bsky.app/profile/" ++ handle
           }}
           className="hover:text-gray-80"
-          rel="noopener noreferrer">
+          rel="noopener noreferrer"
+        >
           {React.string(author.fullname)}
         </a>
         <div className="text-gray-60"> {React.string(author.role)} </div>
@@ -148,8 +149,8 @@ let default = (props: props) => {
       <Meta
         siteName="ReScript Blog"
         title={title ++ " | ReScript Blog"}
-        description=?{description->Null.toOption}
-        ogImage={previewImg->Null.toOption->Option.getOr(Blog.defaultPreviewImg)}
+        description=?{description->Nullable.toOption}
+        ogImage={previewImg->Nullable.toOption->Option.getOr(Blog.defaultPreviewImg)}
       />
       <div className="mb-10 md:mb-20">
         <BlogHeader
@@ -157,8 +158,8 @@ let default = (props: props) => {
           author
           co_authors
           title
-          description={description->Null.toOption}
-          articleImg={articleImg->Null.toOption}
+          description={description->Nullable.toOption}
+          articleImg={articleImg->Nullable.toOption}
         />
       </div>
       <div className="flex justify-center">

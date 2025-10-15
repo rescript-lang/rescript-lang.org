@@ -97,7 +97,7 @@
     "slug": "2022-08-25-release-10-0-0",
     "author": "rescript-team",
     "date": "2022-08-25",
-    "previewImg": "static/blog/grid_0.jpeg",
+    "previewImg": "/blog/grid_0.jpeg",
     "title": "ReScript 10.0",
     "badge": "release",
     "description": "The first community powered release.\n"
