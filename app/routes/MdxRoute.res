@@ -178,7 +178,7 @@ let loader: Loader.t<loaderData> = async ({request}) => {
     let markdownTree = Mdast.fromMarkdown(fileContents)
     let tocResult = Mdast.toc(markdownTree, {maxDepth: 2})
 
-    let headers = Js.Dict.empty()
+    let headers = Dict.make()
 
     Mdast.reduceHeaders(tocResult.map, headers)
 

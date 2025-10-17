@@ -62,7 +62,8 @@ module V1200 = {
       availableVersions=Constants.allManualVersions
       nextVersion=?Constants.nextVersion
       ?frontmatter
-      breadcrumbs>
+      breadcrumbs
+    >
       {version === Constants.versions.next ? warnBanner : React.null}
       children
     </V1200Layout>
@@ -88,7 +89,8 @@ module V1100 = {
       availableVersions=Constants.allManualVersions
       nextVersion=?Constants.nextVersion
       ?frontmatter
-      breadcrumbs>
+      breadcrumbs
+    >
       children
     </V1100Layout>
   }
@@ -128,7 +130,8 @@ module V1000 = {
       availableVersions=Constants.allManualVersions
       nextVersion=?Constants.nextVersion
       ?frontmatter
-      breadcrumbs>
+      breadcrumbs
+    >
       children
     </V1000Layout>
   }
@@ -170,7 +173,8 @@ module V900 = {
       availableVersions=Constants.allManualVersions
       nextVersion=?Constants.nextVersion
       ?frontmatter
-      breadcrumbs>
+      breadcrumbs
+    >
       children
     </V900Layout>
   }
@@ -244,7 +248,8 @@ module V800 = {
       availableVersions=Constants.allManualVersions
       nextVersion=?Constants.nextVersion
       ?frontmatter
-      breadcrumbs>
+      breadcrumbs
+    >
       warnBanner
       children
     </V800Layout>

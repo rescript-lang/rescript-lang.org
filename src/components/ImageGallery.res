@@ -78,7 +78,8 @@ let make = (
         enterTo="opacity-100"
         leave="transition-opacity duration-1000"
         leaveFrom="opacity-100"
-        leaveTo="opacity-0">
+        leaveTo="opacity-0"
+      >
         <img className=imgClassName src loading=?imgLoading />
       </HeadlessUI.Transition>
     </div>

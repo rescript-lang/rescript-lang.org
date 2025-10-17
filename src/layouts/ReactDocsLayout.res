@@ -45,7 +45,8 @@ module Latest = {
       availableVersions=Constants.allReactVersions
       version
       breadcrumbs
-      ?frontmatter>
+      ?frontmatter
+    >
       children
     </LatestLayout>
   }
@@ -75,7 +76,8 @@ module V0110 = {
       availableVersions=Constants.allReactVersions
       version
       breadcrumbs
-      ?frontmatter>
+      ?frontmatter
+    >
       children
     </V0110Layout>
   }
@@ -105,7 +107,8 @@ module V0100 = {
       availableVersions=Constants.allReactVersions
       version
       breadcrumbs
-      ?frontmatter>
+      ?frontmatter
+    >
       children
     </V0100Layout>
   }

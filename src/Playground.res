@@ -47,7 +47,8 @@ module DropdownSelect = {
       name
       value
       disabled
-      onChange>
+      onChange
+    >
       children
     </select>
   }
@@ -63,7 +64,8 @@ module SelectionOption = {
         "bg-gray-80 opacity-50 hover:opacity-80"
       }}
       onClick
-      disabled>
+      disabled
+    >
       {React.string(label)}
     </button>
   }
@@ -605,7 +607,8 @@ module WarningFlagsWidget = {
         ?onMouseEnter
         ?onMouseLeave
         className={color ++ " hover:cursor-default text-16 inline-block border border-gray-40 rounded-full px-2 mr-1"}
-        key={Int.toString(i) ++ flag}>
+        key={Int.toString(i) ++ flag}
+      >
         {React.string(full)}
       </span>
     })->React.array
@@ -762,7 +765,8 @@ module WarningFlagsWidget = {
       Option.map(suggestions, elements =>
         <div
           ref={ReactDOM.Ref.domRef((Obj.magic(listboxRef): React.ref<Nullable.t<Dom.element>>))}
-          className="p-2 absolute overflow-auto z-50 border-b rounded border-l border-r block w-full bg-gray-100 max-h-60">
+          className="p-2 absolute overflow-auto z-50 border-b rounded border-l border-r block w-full bg-gray-100 max-h-60"
+        >
           elements
         </div>
       )->Option.getOr(React.null)
@@ -803,7 +807,8 @@ module WarningFlagsWidget = {
         onClick
         onFocus
         tabIndex=0
-        className="focus:outline-hidden self-start focus:ring-3 hover:cursor-pointer hover:bg-gray-40 p-2 rounded-full">
+        className="focus:outline-hidden self-start focus:ring-3 hover:cursor-pointer hover:bg-gray-40 p-2 rounded-full"
+      >
         <Icon.Close />
       </button>
     }
@@ -935,7 +940,8 @@ module Settings = {
               WebAPI.Storage.setItem(localStorage, ~key=(Url.Playground :> string), ~value=id)
             | None => ()
             }
-          }}>
+          }}
+        >
           {
             let (experimentalVersions, stableVersions) = readyState.versions->Array.reduce(
               ([], []),
@@ -1085,7 +1091,8 @@ module Settings = {
         <div className=titleClass>
           {React.string("Warning Flags")}
           <button
-            onClick=onWarningFlagsResetClick className={"ml-6 text-12 " ++ Text.Link.standalone}>
+            onClick=onWarningFlagsResetClick className={"ml-6 text-12 " ++ Text.Link.standalone}
+          >
             {React.string("[reset]")}
           </button>
         </div>
@@ -1104,7 +1111,8 @@ module ControlPanel = {
     let make = (~children, ~onClick=?) =>
       <button
         ?onClick
-        className="inline-block text-sky hover:cursor-pointer hover:bg-sky hover:text-white-80-tr rounded border active:bg-sky-70 border-sky-70 px-2 py-1 ">
+        className="inline-block text-sky hover:cursor-pointer hover:bg-sky hover:text-white-80-tr rounded border active:bg-sky-70 border-sky-70 px-2 py-1 "
+      >
         children
       </button>
   }
@@ -1164,7 +1172,8 @@ module ControlPanel = {
       <>
         <button
           onClick
-          className={className ++ " w-40 transition-all duration-500 ease-in-out inline-block hover:cursor-pointer hover:text-white-80 text-white rounded border px-2 py-1 "}>
+          className={className ++ " w-40 transition-all duration-500 ease-in-out inline-block hover:cursor-pointer hover:text-white-80 text-white rounded border px-2 py-1 "}
+        >
           {React.string(text)}
         </button>
       </>
@@ -1240,7 +1249,8 @@ module ControlPanel = {
             | _ => ()
             }
             dispatch(ToggleAutoRun)
-          }}>
+          }}
+        >
           {React.string("Auto-run")}
         </ToggleButton>
         <Button onClick={_ => runCode()}> {React.string(runButtonText)} </Button>
@@ -1909,13 +1919,15 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     />
     <div
       className={`flex ${layout == Column ? "flex-col" : "flex-row"}`}
-      ref={ReactDOM.Ref.domRef((Obj.magic(panelRef): React.ref<Nullable.t<Dom.element>>))}>
+      ref={ReactDOM.Ref.domRef((Obj.magic(panelRef): React.ref<Nullable.t<Dom.element>>))}
+    >
       // Left Panel
       <div
         ref={ReactDOM.Ref.domRef((Obj.magic(leftPanelRef): React.ref<Nullable.t<Dom.element>>))}
         className={`${layout == Column ? "h-2/4" : "h-full!"} ${layout == Column
             ? "w-full"
-            : "w-[50%]"}`}>
+            : "w-[50%]"}`}
+      >
         <CodeMirror
           className="bg-gray-100 h-full"
           mode
@@ -1950,7 +1962,8 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
             : "cursor-col-resize"}`}
         onMouseDown={onMouseDown}
         onTouchStart={onTouchStart}
-        onTouchEnd={onMouseUp}>
+        onTouchEnd={onMouseUp}
+      >
         <span className={`m-0.5 ${layout == Column ? "rotate-90" : ""}`}>
           {React.string("⣿")}
         </span>
@@ -1960,13 +1973,15 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
         ref={ReactDOM.Ref.domRef((Obj.magic(rightPanelRef): React.ref<Nullable.t<Dom.element>>))}
         className={`${layout == Column ? "h-6/15" : "h-inherit!"} ${layout == Column
             ? "w-full"
-            : "w-[50%]"}`}>
+            : "w-[50%]"}`}
+      >
         <div className={"flex flex-wrap justify-between w-full " ++ (disabled ? "opacity-50" : "")}>
           {React.array(headers)}
         </div>
         <div
           ref={ReactDOM.Ref.domRef((Obj.magic(subPanelRef): React.ref<Nullable.t<Dom.element>>))}
-          className="overflow-auto">
+          className="overflow-auto"
+        >
           <OutputPanel
             currentTab compilerDispatch compilerState editorCode keyMapState={(keyMap, setKeyMap)}
           />

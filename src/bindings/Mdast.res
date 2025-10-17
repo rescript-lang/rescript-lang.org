@@ -29,7 +29,7 @@ type tocOptions = {maxDepth?: int}
 @module("mdast-util-toc")
 external toc: (tree, tocOptions) => result = "toc"
 
-let rec reduceHeaders = (list: listContent, links: Js.Dict.t<Path.t>) => {
+let rec reduceHeaders = (list: listContent, links: dict<Path.t>) => {
   if list._type == Link {
     let child = list.children->Option.flatMap(children => children[0])
     switch (list.url, child) {

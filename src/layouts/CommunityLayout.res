@@ -8,7 +8,8 @@ let make = (~frontmatter=?, ~components=MarkdownComponents.default, ~children) =
   let breadcrumbs = list{{Url.name: "Community", href: "/community"}}
 
   <CommunityLayout
-    theme=#Reason components metaTitleCategory="ReScript Community" breadcrumbs ?frontmatter>
+    theme=#Reason components metaTitleCategory="ReScript Community" breadcrumbs ?frontmatter
+  >
     children
   </CommunityLayout>
 }
