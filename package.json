@@ -57,7 +57,7 @@
     "generate-llms": "node scripts/generate_llms.mjs",
     "generate-resources": "node scripts/generate_resources.mjs",
     "format": "prettier . --write --experimental-cli && rescript format",
-    "ci:format": "prettier . --check --experimental-cli"
+    "ci:format": "prettier . --check --experimental-cli && rescript format --check"
   },
   "devDependencies": {
     "@mdx-js/react": "^2.3.0",
