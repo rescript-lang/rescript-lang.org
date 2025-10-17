@@ -1,0 +1,291 @@
+---
+author: rescript-team
+date: "2025-10-14"
+previewImg: /static/blog/rescript-12-let-unwrap.jpg
+badge: roadmap
+title: "Experimental Feature: let?"
+description: |
+  A new let-unwrap syntax just landed in ReScript. Experimental!
+---
+
+After long discussions we finally decided on an unwrap syntax for both the `option` and `result` types that we are happy with and that still matches the explicitness of ReScript we all like.
+
+`let?` or `let-unwrap` is a tiny syntax that unwraps `result`/`option` values and _early-returns_ on `Error`/`None`. It’s explicitly **experimental** and **disabled by default** behind a new "experimental features" gate. See below how to enable it.
+
+Before showing off this new feauture, let's explore why it is useful. Consider a chain of `async` functions that are dependent on the result of the previous one. The naive way to write this in modern ReScript with `async`/`await` is to just `switch` on the results.
+
+**Note**: While we are cautiously optimistic with this implementation of `let?`, we still consider it experimental and thus hide it behind a compiler flag that the user explicitly needs to activate. It might change so use at your own risk.
+
+```res prelude
+type user = { id: string, name: string, token: string}
+external fetchUser: string => promise<result<JSON.t, [> #NetworkError | #UserNotFound | #Unauthorized]>> = "fetchUser"
+external decodeUser: JSON.t => result<user, [> #DecodeError]> = "decodeUser"
+external ensureUserActive: user => promise<result<unit, [> #UserNotActive]>> = "ensureUserActive"
+```
+
+```res
+let getUser = async id =>
+  switch await fetchUser(id) {
+  | Error(error) => Error(error)
+  | Ok(res) =>
+    switch await decodeUser(res) {
+    | Error(error) => Error(error)
+    | Ok(decodedUser) =>
+      switch await ensureUserActive(decodedUser) {
+      | Error(error) => Error(error)
+      | Ok() => Ok(decodedUser)
+      }
+    }
+  }
+```
+
+Two observations:
+
+1. with every `switch` expression, this function gets nested deeper.
+2. The `Error` branch of every `switch` is just an identity mapper (neither wrapper nor contents change).
+
+The only alternative in ReScript was always to use some specialized functions:
+
+```res
+let getUser = id =>
+  fetchUser(id)
+  ->Result.flatMapOkAsync(user => Promise.resolve(user->decodeUser))
+  ->Result.flatMapOkAsync(decodedUser => ensureUserActive(decodedUser))
+```
+
+**Note**: `Result.flatMapOkAsync` among some other async result helper functions are brand new in ReScript 12 as well!
+
+This is arguably better, more concise, but also harder to understand because we have two wrapper types here, `promise` and `result`. And we have to wrap the non-async type in a `Promise.resolve` in order to stay on the same type level. Also we are giving up on our precious `async`/`await` syntax here. Furthermore, those functions result in two more function calls.
+
+```js
+function getUser(id) {
+  return Stdlib_Result.flatMapOkAsync(
+    Stdlib_Result.flatMapOkAsync(fetchUser(id), (user) =>
+      Promise.resolve(decodeUser(user)),
+    ),
+    ensureUserActive,
+  );
+}
+```
+
+Let's have a look at the generated JS from the initial example in comparison:
+
+```js
+async function getUser(id) {
+  let error = await fetchUser(id);
+  if (error.TAG !== "Ok") {
+    return {
+      TAG: "Error",
+      _0: error._0,
+    };
+  }
+  let error$1 = decodeUser(error._0);
+  if (error$1.TAG !== "Ok") {
+    return {
+      TAG: "Error",
+      _0: error$1._0,
+    };
+  }
+  let decodedUser = error$1._0;
+  let error$2 = await ensureUserActive(decodedUser);
+  if (error$2.TAG === "Ok") {
+    return {
+      TAG: "Ok",
+      _0: decodedUser,
+    };
+  } else {
+    return {
+      TAG: "Error",
+      _0: error$2._0,
+    };
+  }
+}
+```
+
+As you can see, there is no extra calls to the standard library, but it's a little verbose.
+
+## Introducing `let?`
+
+Let's rewrite the above example again with our new syntax:
+
+<CodeTab labels={["ReScript", "JS Output"]} experiments="LetUnwrap" version="12.0.0-rc.1">
+
+```rescript
+let getUser = async (id) => {
+  let? Ok(user)  = await fetchUser(id)
+  let? Ok(decodedUser) = decodeUser(user)
+  let? Ok() = await ensureUserActive(decodedUser)
+  Ok(decodedUser)
+}
+```
+
+```js
+async function getUser(id) {
+  let e = await fetchUser(id);
+  if (e.TAG !== "Ok") {
+    return e;
+  }
+  let e$1 = decodeUser(e._0);
+  if (e$1.TAG !== "Ok") {
+    return e$1;
+  }
+  let decodedUser = e$1._0;
+  let e$2 = await ensureUserActive(decodedUser);
+  if (e$2.TAG === "Ok") {
+    return {
+      TAG: "Ok",
+      _0: decodedUser,
+    };
+  } else {
+    return e$2;
+  }
+}
+```
+
+</CodeTab>
+
+This strikes a balance between conciseness and simplicity that we really think fits ReScript well. Also the emitted JS is more concise than the initial example because we got rid of the manual error mapping.
+
+With `let?`, we can now safely focus on the the happy-path in the scope of the function. There is no nesting as the `Error` is automatically mapped. But be assured the error case is also handled as the type checker will complain when you don't handle the `Error` returned by the `getUser` function.
+
+This desugars to a **sequence** of early-returns that you’d otherwise write by hand, so there’s **no extra runtime cost** and it plays nicely with `async/await` as the example above suggests. Check the `JS Output` tab to see for yourself!
+
+Of course, it also works for `option` with `Some(...)`.
+
+```rescript
+let getActiveUser = user => {
+  let? Some(name) = activeUsers->Array.get(user)
+  Some({name, active: true})
+}
+```
+
+It also works with the unhappy path, with `Error(...)` or `None` as the main type and `Ok(...)` or `Some(...)` as the implicitly mapped types.
+
+```rescript
+let getNoUser = user => {
+  let? None = activeUsers->Array.get(user)
+  Some("No user for you!")
+}
+
+let decodeUserWithHumanReadableError = user => {
+  let? Error(_e) = decodeUser(user)
+  Error("This could not be decoded!")
+}
+```
+
+Beware it targets built-ins only, namely `result` and `option`. Custom variants still need `switch`. And it is for block or local bindings only; top-level usage is rejected.
+
+```rescript
+let? Ok(user)  = await fetchUser("1")
+//   ^^^^^^^ ERROR: `let?` is not allowed for top-level bindings.
+```
+
+**Note**: `result` and `option` types cannot be mixed in a `let?` function!
+
+### A full example with error handling
+
+<CodeTab labels={["ReScript", "JS Output"]} experiments="LetUnwrap" version="12.0.0-rc.1">
+
+```rescript
+type user = {
+  id: string,
+  name: string,
+  token: string,
+}
+
+external fetchUser: string => promise<
+  result<JSON.t, [> #NetworkError | #UserNotFound | #Unauthorized]>,
+> = "fetchUser"
+
+external decodeUser: JSON.t => result<user, [> #DecodeError]> = "decodeUser"
+
+external ensureUserActive: user => promise<result<unit, [> #UserNotActive]>> =
+  "ensureUserActive"
+
+let getUser = async id => {
+  let? Ok(user) = await fetchUser(id)
+  let? Ok(decodedUser) = decodeUser(user)
+  Console.log(`Got user ${decodedUser.name}!`)
+  let? Ok() = await ensureUserActive(decodedUser)
+  Ok(decodedUser)
+}
+
+// ERROR!
+// You forgot to handle a possible case here, for example:
+//  | Error(#Unauthorized | #UserNotFound | #DecodeError | #UserNotActive)
+let main = async () => {
+  switch await getUser("123") {
+  | Ok(user) => Console.log(user)
+  | Error(#NetworkError) => Console.error("Uh-oh, network error...")
+  }
+}
+```
+
+```js
+async function getUser(id) {
+  let e = await fetchUser(id);
+  if (e.TAG !== "Ok") {
+    return e;
+  }
+  let e$1 = decodeUser(e._0);
+  if (e$1.TAG !== "Ok") {
+    return e$1;
+  }
+  let decodedUser = e$1._0;
+  console.log(`Got user ` + decodedUser.name + `!`);
+  let e$2 = await ensureUserActive(decodedUser);
+  if (e$2.TAG === "Ok") {
+    return {
+      TAG: "Ok",
+      _0: decodedUser,
+    };
+  } else {
+    return e$2;
+  }
+}
+
+async function main() {
+  let user = await getUser("123");
+  if (user.TAG === "Ok") {
+    console.log(user._0);
+    return;
+  }
+  if (user._0 === "NetworkError") {
+    console.error("Uh-oh, network error...");
+    return;
+  }
+  throw {
+    RE_EXN_ID: "Match_failure",
+    _1: ["playground.res", 28, 2],
+    Error: new Error(),
+  };
+}
+```
+
+</CodeTab>
+
+## Experimental features
+
+We have added an `experimental-features` infrastructure to the toolchain. If you use the new build system that comes with ReScript 12 by default, you can enable it in `rescript.json` like so:
+
+```json
+{
+  "experimental-features": {
+    "letUnwrap": true
+  }
+}
+```
+
+If you still use the legacy build system, enable it with the compiler flag `-enable-experimental`:
+
+```json
+{
+  "compiler-flags": ["-enable-experimental", "LetUnwrap"]
+}
+```
+
+Both `experimental-feautures` and `let?` are available in [ReScript 12.0.0-beta.9](https://github.com/rescript-lang/rescript/blob/master/CHANGELOG.md#1200-beta9) or later. Bear in mind `let?` is subject to change or might even be removed entirely if it can be superseded by something else.
+
+We would love to hear your thoughts about these features in the [forum](https://forum.rescript-lang.org/). Please try it out and tell us what you think!
+
+Happy hacking!

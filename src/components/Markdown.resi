@@ -99,7 +99,12 @@ module Code: {
 
 module CodeTab: {
   @react.component
-  let make: (~children: Mdx.MdxChildren.t, ~labels: array<string>=?) => React.element
+  let make: (
+    ~children: Mdx.MdxChildren.t,
+    ~labels: array<string>=?,
+    ~experiments: string=?,
+    ~version: string=?,
+  ) => React.element
 }
 
 module Blockquote: {
