@@ -286,11 +286,15 @@ module CodeTab = {
       }
       return element.props.metastring;
     }")
+
+  let preludeRegex = RegExp.fromString(`#/prelude="([^"]*)"/`, ~flags="g")
+
   @react.component
   let make = (
     ~children: Mdx.MdxChildren.t,
     ~labels: array<string>=[],
     ~experiments: option<string>=?,
+    ~version: option<string>=?,
   ) => {
     let mdxElements = switch Mdx.MdxChildren.classify(children) {
     | Array(mdxElements) => mdxElements
@@ -306,6 +310,12 @@ module CodeTab = {
         let className = Mdx.getMdxClassName(codeEl)->Option.getOr("")
 
         let metastring = getMdxMetastring(codeEl)->Option.getOr("")
+        Js.log2("metastring", metastring)
+
+        let prelude = switch RegExp.exec(preludeRegex, metastring) {
+        | Some([_, Some(p)]) => p
+        | _ => ""
+        }
 
         let lang = switch String.split(className, "-") {
         | ["language", lang] => Some(lang)
@@ -313,6 +323,13 @@ module CodeTab = {
         }
 
         let code = String.make(Mdx.MdxChildren.getMdxChildren(codeEl))
+
+        let code = if prelude->String.trim === "" {
+          code
+        } else {
+          prelude ++ "\n" ++ code
+        }
+
         let label = labels[i]
         let tab = {
           CodeExample.Toggle.lang,
@@ -320,6 +337,7 @@ module CodeTab = {
           label,
           highlightedLines: Some(Code.parseNumericRangeMeta(metastring)),
           experiments,
+          version,
         }
         Array.push(acc, tab)->ignore
 

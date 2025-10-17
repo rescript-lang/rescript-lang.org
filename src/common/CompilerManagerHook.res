@@ -200,6 +200,9 @@ type queryParams =
   | @as("experiments") Experiments
   | @as("code") Code
 
+let createQuerystring = (params: array<(queryParams, string)>) =>
+  params->Array.map(((key, value)) => (key :> string) + "=" + value)->Array.join("&")
+
 let createUrl = (pathName, ready) => {
   let params = switch ready.targetLang {
   | Res => []
@@ -221,10 +224,7 @@ let createUrl = (pathName, ready) => {
   // Put code last as it is the longest param.
   Array.push(params, (Code, ready.code->LzString.compressToEncodedURIComponent))
 
-  let querystring =
-    params->Array.map(((key, value)) => (key :> string) ++ "=" ++ value)->Array.join("&")
-  let url = pathName ++ "?" ++ querystring
-  url
+  pathName + "?" + params->createQuerystring
 }
 
 let defaultModuleSystem = "esmodule"

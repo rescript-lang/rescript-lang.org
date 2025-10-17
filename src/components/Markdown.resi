@@ -103,6 +103,7 @@ module CodeTab: {
     ~children: Mdx.MdxChildren.t,
     ~labels: array<string>=?,
     ~experiments: string=?,
+    ~version: string=?,
   ) => React.element
 }
 
