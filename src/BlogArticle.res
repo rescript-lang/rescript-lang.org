@@ -23,7 +23,12 @@ module Params = {
   type t = {slug: string}
 }
 
-type props = {mdxSource: MdxRemote.output, isArchived: bool, path: string}
+type props = {
+  children: React.element,
+  isArchived: bool,
+  path: string,
+  frontmatter: BlogFrontmatter.t,
+}
 
 module Line = {
   @react.component
@@ -68,6 +73,8 @@ module BlogHeader = {
     let date = DateStr.toDate(date)
 
     let authors = Array.concat([author], co_authors)
+
+    Console.log2("authors", authors)
 
     <div className="flex flex-col items-center">
       <div className="w-full max-w-740">
@@ -114,18 +121,8 @@ module BlogHeader = {
   }
 }
 
-let default = (props: props) => {
-  let {mdxSource, isArchived, path} = props
-
-  let children =
-    <MdxRemote
-      frontmatter={mdxSource.frontmatter}
-      compiledSource={mdxSource.compiledSource}
-      scope={mdxSource.scope}
-      components={MarkdownComponents.default}
-    />
-
-  let fm = mdxSource.frontmatter->BlogFrontmatter.decode
+let make = (props: props) => {
+  let {children, isArchived, path, frontmatter} = props
 
   let archivedNote = isArchived
     ? {
@@ -143,8 +140,9 @@ let default = (props: props) => {
       }
     : React.null
 
-  let content = switch fm {
-  | Ok({date, author, co_authors, title, description, articleImg, previewImg}) =>
+  let {date, author, co_authors, title, description, articleImg, previewImg} = frontmatter
+
+  <MainLayout>
     <div className="w-full">
       <Meta
         siteName="ReScript Blog"
@@ -182,60 +180,5 @@ let default = (props: props) => {
         </div>
       </div>
     </div>
-
-  | Error(msg) =>
-    <div>
-      <Markdown.Warn>
-        <h2 className="font-bold text-gray-80 text-24 mb-2">
-          {React.string("Could not parse file '_blogposts/" ++ (path ++ ".mdx'"))}
-        </h2>
-        <p>
-          {React.string("The content of this blog post will be displayed as soon as all
-            required frontmatter data has been added.")}
-        </p>
-        <p className="font-bold mt-4"> {React.string("Errors:")} </p>
-        {React.string(msg)}
-      </Markdown.Warn>
-    </div>
-  }
-  <MainLayout> content </MainLayout>
-}
-
-let getStaticProps: Next.GetStaticProps.t<props, Params.t> = async ctx => {
-  open Next.GetStaticProps
-  let {params} = ctx
-
-  let path = switch BlogApi.getAllPosts()->Array.find(({path}) =>
-    BlogApi.blogPathToSlug(path) == params.slug
-  ) {
-  | None => params.slug
-  | Some({path}) => path
-  }
-
-  let filePath = Node.Path.resolve("_blogposts", path)
-
-  let isArchived = String.startsWith(path, "archive/")
-
-  let source = filePath->Node.Fs.readFileSync
-
-  let mdxSource = await MdxRemote.serialize(
-    source,
-    {parseFrontmatter: true, mdxOptions: MdxRemote.defaultMdxOptions},
-  )
-
-  let props = {mdxSource, isArchived, path}
-
-  {"props": props}
-}
-
-let getStaticPaths: Next.GetStaticPaths.t<Params.t> = async () => {
-  open Next.GetStaticPaths
-
-  let paths = BlogApi.getAllPosts()->Array.map(postData => {
-    params: {
-      Params.slug: BlogApi.blogPathToSlug(postData.path),
-    },
-  })
-
-  {paths, fallback: false}
+  </MainLayout>
 }

@@ -2,9 +2,11 @@ module Params: {
   type t = {slug: string}
 }
 
-type props = {mdxSource: MdxRemote.output, isArchived: bool, path: string}
+type props = {
+  children: React.element,
+  isArchived: bool,
+  path: string,
+  frontmatter: BlogFrontmatter.t,
+}
 
-let default: props => React.element
-
-let getStaticProps: Next.GetStaticProps.t<props, Params.t>
-let getStaticPaths: Next.GetStaticPaths.t<Params.t>
+let make: props => React.element

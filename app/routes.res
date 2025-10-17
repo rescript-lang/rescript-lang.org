@@ -1,5 +1,5 @@
 open ReactRouter.Routes
-open ReactRouter.Mdx
+open Mdx
 
 let stdlibPaths = {
   let rawFile = await Node.Fs.readFile("./docs/api/stdlib.json", "utf-8")
@@ -30,5 +30,5 @@ let default = [
   route("docs/manual/api/belt", "./routes/ApiRoute.mjs", ~options={id: "api-belt"}),
   route("docs/manual/api/dom", "./routes/ApiRoute.mjs", ~options={id: "api-dom"}),
   ...stdlibRoutes,
-  ...routes("./routes/MdxRoute.mjs"),
+  ...mdxRoutes("./routes/MdxRoute.mjs"),
 ]

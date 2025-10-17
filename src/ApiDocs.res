@@ -440,8 +440,6 @@ let processStaticProps = (~slug: array<string>) => {
 
   let _content = content
 
-  // Console.log(content)
-
   switch content {
   | Some(json) =>
     let {items, docstrings, deprecated, name} = Docgen.decodeFromJson(json)

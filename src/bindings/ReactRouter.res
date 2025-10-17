@@ -107,78 +107,7 @@ module Routes = {
 
   @module("@react-router/dev/routes")
   external layout: (string, array<t>) => t = "layout"
-}
-
-module Mdx = {
-  type social = X(string) | Bluesky(string)
-
-  type author = {
-    username: string,
-    fullname: string,
-    role: string,
-    imgUrl: string,
-    social: social,
-  }
-
-  type badge =
-    | Release
-    | Testing
-    | Preview
-    | Roadmap
-    | Community
-
-  type attributes = {
-    archived: Nullable.t<bool>,
-    author: string,
-    co_authors: array<author>,
-    date: DateStr.t,
-    previewImg: Nullable.t<string>,
-    articleImg: Nullable.t<string>,
-    badge: Nullable.t<string>,
-    canonical: Path.t,
-    category?: string,
-    id?: string,
-    keywords?: array<string>,
-    name?: string,
-    description: Nullable.t<string>,
-    metaTitle: Nullable.t<string>,
-    order?: int,
-    path: string,
-    section?: string,
-    summary?: string,
-    status?: string,
-    slug: string,
-    title: string,
-  }
-
-  type t = {
-    __raw: string,
-    attributes: attributes,
-  }
 
   @module("react-router-mdx/server")
-  external routes: string => array<Routes.t> = "routes"
-
-  type remarkPlugin
-
-  type loadMdxOptions = {remarkPlugins?: array<remarkPlugin>}
-
-  @module("react-router-mdx/server")
-  external loadMdx: (FetchAPI.request, ~options: loadMdxOptions=?) => promise<t> = "loadMdx"
-
-  @module("react-router-mdx/client")
-  external useMdxAttributes: unit => attributes = "useMdxAttributes"
-
-  @module("react-router-mdx/client")
-  external useMdxComponent: (~components: {..}=?) => Jsx.component<'a> = "useMdxComponent"
-
-  @module("react-router-mdx/server")
-  external loadAllMdx: (~filterByPaths: array<string>=?) => promise<array<attributes>> =
-    "loadAllMdx"
-
-  @module("react-router-mdx/client")
-  external useMdxFiles: unit => {..} = "useMdxFiles"
-
-  @module("remark-gfm")
-  external gfm: remarkPlugin = "default"
+  external mdxRoutes: string => array<t> = "routes"
 }

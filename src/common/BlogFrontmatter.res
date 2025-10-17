@@ -101,7 +101,6 @@ type t = {
   title: string,
   badge: Nullable.t<Badge.t>,
   description: Nullable.t<string>,
-  slug: string,
 }
 
 let decodeBadge = (str: string): Badge.t =>
@@ -172,7 +171,6 @@ let decode = (json: JSON.t): result<t, string> => {
       title,
       badge,
       description,
-      slug: "/", // TODO RR7 - fix this to be the actual slug
     })
   | exception AuthorNotFound(str) => Error(str)
   | _ => Error(`Failed to decode: ${JSON.stringify(json)}`)

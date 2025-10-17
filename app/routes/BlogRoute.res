@@ -1,7 +1,7 @@
 type loaderData = {posts: array<BlogApi.post>, category: Blog.category}
 
 let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
-  let posts: array<BlogApi.post> = BlogLoader.posts()
+  let posts: array<BlogApi.post> = MdxRoute.posts()
   let data = {posts, category: All}
   data
 }

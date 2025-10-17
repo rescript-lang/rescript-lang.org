@@ -5,6 +5,7 @@ type loaderData = {
   ...Mdx.t,
   categories: array<SidebarLayout.Sidebar.Category.t>,
   entries: array<TableOfContents.entry>,
+  blogPost?: BlogApi.post,
 }
 
 /**
@@ -43,30 +44,6 @@ let components = {
   "Warn": Markdown.Warn.make,
 }
 
-// The loadAllMdx function logs out all of the file contents as it reads them, which is noisy and not useful.
-// We can suppress that logging with this helper function.
-let allMdx = await Shims.runWithoutLogging(() => loadAllMdx())
-
-let sortSection = mdxPages =>
-  Array.toSorted(mdxPages, (a: Mdx.attributes, b: Mdx.attributes) =>
-    switch (a.order, b.order) {
-    | (Some(a), Some(b)) => a > b ? 1.0 : -1.0
-    | _ => -1.0
-    }
-  )
-
-let groupBySection = mdxPages =>
-  Array.reduce(mdxPages, (Dict.make() :> Dict.t<array<Mdx.attributes>>), (acc, item) => {
-    let section = item.section->Option.flatMap(Dict.get(acc, _))
-    switch section {
-    // If the section already exists, add this item to it
-    | Some(section) => section->Array.push(item)
-    // otherwise create a new section with this item
-    | None => item.section->Option.forEach(section => acc->Dict.set(section, [item]))
-    }
-    acc
-  })
-
 let convertToNavItems = (items, rootPath) =>
   Array.map(items, (item): SidebarLayout.Sidebar.NavItem.t => {
     {
@@ -74,9 +51,6 @@ let convertToNavItems = (items, rootPath) =>
       href: `${rootPath}/${item.slug}`,
     }
   })
-
-let filterMdxPages = (mdxPages, path) =>
-  Array.filter(mdxPages, mdx => (mdx.path :> string)->String.includes(path))
 
 let getGroup = (groups, groupName): SidebarLayout.Sidebar.Category.t => {
   {
@@ -134,6 +108,8 @@ let reactTableOfContents = () => {
   categories
 }
 
+let posts = () => allMdx->filterMdxPages("blog")->Array.map(BlogLoader.transform)
+
 let loader: Loader.t<loaderData> = async ({request}) => {
   let {pathname} = WebAPI.URL.make(~url=request.url)
 
@@ -143,13 +119,12 @@ let loader: Loader.t<loaderData> = async ({request}) => {
   if pathname->String.includes("blog") {
     let posts = blogPosts()
 
-    Console.log2("posts", posts)
-
     let res: loaderData = {
       __raw: mdx.__raw,
       attributes: mdx.attributes,
       entries: [],
       categories: [],
+      blogPost: mdx.attributes->BlogLoader.transform,
     }
 
     res
@@ -207,8 +182,11 @@ let default = () => {
   let component = useMdxComponent(~components)
   let attributes = useMdxAttributes()
 
-  let {categories, entries} = useLoaderData()
+  let loaderData: loaderData = useLoaderData()
 
+  let {entries, categories} = loaderData
+
+  // TODO: get actual meta categories working
   let metaTitleCategory =
     (pathname :> string)->String.includes("docs/manual")
       ? "ReScript Language Manual"
@@ -226,8 +204,13 @@ let default = () => {
         <div className="markdown-body"> {component()} </div>
       </DocsLayout>
     } else {
-      // TODO Handle blog pages
-      React.null
+      switch loaderData.blogPost {
+      | Some({frontmatter, archived, path}) => {
+          Console.log(frontmatter)
+          <BlogArticle frontmatter isArchived=archived path> {component()} </BlogArticle>
+        }
+      | None => React.null // TODO: RR7 show an error
+      }
     }}
   </>
 
