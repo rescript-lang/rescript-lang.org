@@ -72,4 +72,6 @@ let useCompilerManager: (
   unit,
 ) => (state, action => unit)
 
+let createQuerystring: array<(queryParams, string)> => string
+
 let createUrl: (string, ready) => string

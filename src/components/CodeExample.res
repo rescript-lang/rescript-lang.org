@@ -158,6 +158,7 @@ module Toggle = {
     lang: option<string>,
     code: string,
     experiments: option<string>,
+    version: option<string>,
   }
 
   @react.component
@@ -243,19 +244,24 @@ module Toggle = {
       | Some(tab) =>
         let playgroundLinkButton =
           tab->isReScript
-            ? <Next.Link
-                href={`/try?code=${LzString.compressToEncodedURIComponent(
-                    tab.code,
-                  )}&experiments=${switch tab.experiments {
-                  | Some(experiments) => experiments
-                  | None => ""
-                  }}`}
-                target="_blank">
-                // ICON Link to PLAYGROUND
-                <Icon.ExternalLink
-                  className="text-gray-30 mt-px hover:cursor-pointer hover:text-gray-60 hover:bg-gray-30 w-6 h-6 p-1 rounded transition-all duration-300 ease-in-out"
-                />
-              </Next.Link>
+            ? {
+                let params = []
+                tab.version->Option.forEach(version =>
+                  params->Array.push((CompilerManagerHook.Version, "v" ++ version))
+                )
+                tab.experiments->Option.forEach(experiments =>
+                  params->Array.push((CompilerManagerHook.Experiments, experiments))
+                )
+                params->Array.push((Code, tab.code->LzString.compressToEncodedURIComponent))
+
+                <Next.Link
+                  href={`/try?${params->CompilerManagerHook.createQuerystring}`} target="_blank">
+                  // ICON Link to PLAYGROUND
+                  <Icon.ExternalLink
+                    className="text-gray-30 mt-px hover:cursor-pointer hover:text-gray-60 hover:bg-gray-30 w-6 h-6 p-1 rounded transition-all duration-300 ease-in-out"
+                  />
+                </Next.Link>
+              }
             : React.null
 
         let copyButton = <CopyButton code={tab.code} />

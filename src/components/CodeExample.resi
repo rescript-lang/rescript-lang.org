@@ -14,6 +14,7 @@ module Toggle: {
     lang: option<string>,
     code: string,
     experiments: option<string>,
+    version: option<string>,
   }
 
   @react.component

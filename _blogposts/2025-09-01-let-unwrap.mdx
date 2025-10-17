@@ -16,6 +16,13 @@ Before showing off this new feauture, let's explore why it is useful. Consider a
 
 **Note**: While we are cautiously optimistic with this implementation of `let?`, we still consider it experimental and thus hide it behind a compiler flag that the user explicitly needs to activate. It might change so use at your own risk.
 
+```res prelude
+type user = { id: string, name: string, token: string}
+external fetchUser: string => promise<result<JSON.t, [> #NetworkError | #UserNotFound | #Unauthorized]>> = "fetchUser"
+external decodeUser: JSON.t => result<user, [> #DecodeError]> = "decodeUser"
+external ensureUserActive: user => promise<result<unit, [> #UserNotActive]>> = "ensureUserActive"
+```
+
 ```res
 let getUser = async id =>
   switch await fetchUser(id) {
@@ -40,7 +47,7 @@ Two observations:
 The only alternative in ReScript was always to use some specialized functions:
 
 ```res
-let getUserPromises = id =>
+let getUser = id =>
   fetchUser(id)
   ->Result.flatMapOkAsync(user => Promise.resolve(user->decodeUser))
   ->Result.flatMapOkAsync(decodedUser => ensureUserActive(decodedUser))
@@ -51,7 +58,7 @@ let getUserPromises = id =>
 This is arguably better, more concise, but also harder to understand because we have two wrapper types here, `promise` and `result`. And we have to wrap the non-async type in a `Promise.resolve` in order to stay on the same type level. Also we are giving up on our precious `async`/`await` syntax here. Furthermore, those functions result in two more function calls.
 
 ```js
-function getUserPromises(id) {
+function getUser(id) {
   return Stdlib_Result.flatMapOkAsync(
     Stdlib_Result.flatMapOkAsync(fetchUser(id), (user) =>
       Promise.resolve(decodeUser(user)),
@@ -101,7 +108,7 @@ As you can see, there is no extra calls to the standard library, but it's a litt
 
 Let's rewrite the above example again with our new syntax:
 
-<CodeTab labels={["ReScript", "JS Output"]} experiments="LetUnwrap">
+<CodeTab labels={["ReScript", "JS Output"]} experiments="LetUnwrap" version="12.0.0-rc.1">
 
 ```rescript
 let getUser = async (id) => {
@@ -177,7 +184,7 @@ let? Ok(user)  = await fetchUser("1")
 
 ### A full example with error handling
 
-<CodeTab labels={["ReScript", "JS Output"]} experiments="LetUnwrap">
+<CodeTab labels={["ReScript", "JS Output"]} experiments="LetUnwrap" version="12.0.0-rc.1">
 
 ```rescript
 type user = {
