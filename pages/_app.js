@@ -1,4 +1,3 @@
-import "codemirror/lib/codemirror.css";
 import "styles/docson.css";
 import "styles/main.css";
 import "styles/utils.css";
