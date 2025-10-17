@@ -11435,7 +11435,7 @@
         "kind": "value",
         "name": "land",
         "docstrings": [
-          "`land(a, b)` calculates the bitwise AND of two bigints.\n\n**Deprecated:** Use `&` operator or `bitwiseAnd` instead.\n\n## Examples\n\n```rescript\nBigInt.land(7n, 4n) == 4n\n```"
+          "`land(a, b)` calculates the bitwise AND of two bigints.\n\n**Deprecated:** Use `&&&` operator or `bitwiseAnd` instead.\n\n## Examples\n\n```rescript\nBigInt.land(7n, 4n) == 4n\n```"
         ],
         "signature": "let land: (bigint, bigint) => bigint",
         "deprecated": ""
@@ -11445,7 +11445,7 @@
         "kind": "value",
         "name": "lor",
         "docstrings": [
-          "`lor(a, b)` calculates the bitwise OR of two bigints.\n\n**Deprecated:** Use `bitwiseOr` instead.\n\n## Examples\n\n```rescript\nBigInt.lor(7n, 4n) == 7n\n```"
+          "`lor(a, b)` calculates the bitwise OR of two bigints.\n\n**Deprecated:** Use `|||` operator or `bitwiseOr` instead.\n\n## Examples\n\n```rescript\nBigInt.lor(7n, 4n) == 7n\n```"
         ],
         "signature": "let lor: (bigint, bigint) => bigint",
         "deprecated": ""
@@ -11455,7 +11455,7 @@
         "kind": "value",
         "name": "lxor",
         "docstrings": [
-          "`lxor(a, b)` calculates the bitwise XOR of two bigints.\n\n**Deprecated:** Use `^` operator or `bitwiseXor` instead.\n\n## Examples\n\n```rescript\nBigInt.lxor(7n, 4n) == 3n\n```"
+          "`lxor(a, b)` calculates the bitwise XOR of two bigints.\n\n**Deprecated:** Use `^^^` operator or `bitwiseXor` instead.\n\n## Examples\n\n```rescript\nBigInt.lxor(7n, 4n) == 3n\n```"
         ],
         "signature": "let lxor: (bigint, bigint) => bigint",
         "deprecated": ""
@@ -11465,7 +11465,7 @@
         "kind": "value",
         "name": "lnot",
         "docstrings": [
-          "`lnot(bigint)` calculates the bitwise NOT of a bigint.\n\n**Deprecated:** Use `~` operator or `bitwiseNot` instead.\n\n## Examples\n\n```rescript\nBigInt.lnot(2n) == -3n\n```"
+          "`lnot(bigint)` calculates the bitwise NOT of a bigint.\n\n**Deprecated:** Use `~~~` operator or `bitwiseNot` instead.\n\n## Examples\n\n```rescript\nBigInt.lnot(2n) == -3n\n```"
         ],
         "signature": "let lnot: bigint => bigint",
         "deprecated": ""
