@@ -2,7 +2,7 @@ import * as fs from "node:fs";
 import { init } from "react-router-mdx/server";
 
 
-const mdx = init({ paths: ["_blogposts", "docs"], aliases: ["blog", "docs"] });
+const mdx = init({ paths: ["_blogposts", "docs", "community"], aliases: ["blog", "docs", "community"] });
 
 const { stdlibPaths } = await import("./app/routes.mjs");
 

@@ -24,10 +24,6 @@ let $$default = Belt_Array.concatMany([
     Routes.index("./routes/LandingPageRoute.mjs"),
     Routes.route("packages", "./routes/PackagesRoute.mjs"),
     Routes.route("try", "./routes/TryRoute.mjs"),
-    Routes.route("community", "./routes/CommunityRoute.mjs"),
-    Routes.route("community/overview", "./routes/CommunityRoute.mjs", {
-      id: "overview"
-    }),
     Routes.route("syntax-lookup", "./routes/SyntaxLookupRoute.mjs", {
       id: "syntax-lookup"
     }),

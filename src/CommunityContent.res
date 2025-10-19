@@ -5,9 +5,6 @@ type link = {
   image: string,
 }
 
-@module("../data/resources.json")
-external resources: array<link> = "default"
-
 let simplifyUrl = url =>
   url
   ->String.replace("https://", "")
@@ -39,9 +36,10 @@ module LinkCard = {
 
 module LinkCards = {
   @react.component
-  let make = () => {
+  let make = (~resources) => {
     <div className="grid lg:grid-cols-2 gap-6">
       {resources
+      ->Option.getOr([])
       ->Array.map(link =>
         switch link.image {
         | "" => {...link, image: "/Art-3-rescript-launch.jpg"}
@@ -55,7 +53,7 @@ module LinkCards = {
 }
 
 @react.component
-let make = () => {
+let make = (~resources) => {
   <div>
     <h1 className="hl-1 mb-6"> {"Community Content"->React.string} </h1>
     <p className="md-p md:leading-5 tracking-[-0.015em] text-gray-80 md:text-16 mb-16">
@@ -65,7 +63,7 @@ let make = () => {
       <br />
       {React.string("If you have a resource you'd like to share, please feel free to submit a PR!")}
     </p>
-    <LinkCards />
+    <LinkCards resources />
   </div>
 }
 

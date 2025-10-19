@@ -6,6 +6,7 @@ type loaderData = {
   categories: array<SidebarLayout.Sidebar.Category.t>,
   entries: array<TableOfContents.entry>,
   blogPost?: BlogApi.post,
+  resources?: array<CommunityContent.link>,
 }
 
 /**
@@ -42,6 +43,7 @@ let components = {
   "UrlBox": Markdown.UrlBox.make,
   "Video": Markdown.Video.make,
   "Warn": Markdown.Warn.make,
+  "CommunityContent": CommunityContent.make,
 }
 
 let convertToNavItems = (items, rootPath) =>
@@ -112,6 +114,22 @@ let reactTableOfContents = async () => {
   categories
 }
 
+let communityTableOfContents = async () => {
+  let groups =
+    (await allMdx())
+    ->filterMdxPages("community")
+    ->groupBySection
+    ->Dict.mapValues(values => values->sortSection->convertToNavItems("/community"))
+
+  // these are the categories that appear in the sidebar
+  let categories: array<SidebarLayout.Sidebar.Category.t> = getAllGroups(groups, ["Resources"])
+
+  categories
+}
+
+@module("../../data/resources.json")
+external resources: array<CommunityContent.link> = "default"
+
 let loader: Loader.t<loaderData> = async ({request}) => {
   let {pathname} = WebAPI.URL.make(~url=request.url)
 
@@ -138,6 +156,8 @@ let loader: Loader.t<loaderData> = async ({request}) => {
         await manualTableOfContents()
       } else if pathname->String.includes("docs/react") {
         await reactTableOfContents()
+      } else if pathname->String.includes("community") {
+        await communityTableOfContents()
       } else {
         []
       }
@@ -173,6 +193,7 @@ let loader: Loader.t<loaderData> = async ({request}) => {
       attributes: mdx.attributes,
       entries,
       categories,
+      resources,
     }
 
     res
@@ -205,11 +226,18 @@ let default = () => {
       <DocsLayout metaTitleCategory categories activeToc={title: "Introduction", entries}>
         <div className="markdown-body"> {component()} </div>
       </DocsLayout>
+    } else if (pathname :> string)->String.includes("community") {
+      let resources = loaderData.resources->Option.getOr([])
+      <div>
+        <SidebarLayout.Sidebar
+          categories={categories} isOpen={true} route={pathname} toggle={() => ()}
+        />
+        <div className="markdown-body"> {component()} </div>
+      </div>
     } else {
       switch loaderData.blogPost {
-      | Some({frontmatter, archived, path}) => <BlogArticle frontmatter isArchived=archived path>
-          {component()}
-        </BlogArticle>
+      | Some({frontmatter, archived, path}) =>
+        <BlogArticle frontmatter isArchived=archived path> {component()} </BlogArticle>
       | None => React.null // TODO: RR7 show an error
       }
     }}
