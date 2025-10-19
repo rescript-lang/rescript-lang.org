@@ -18,7 +18,6 @@ type badge =
   | Community
 
 type attributes = {
-  archived: Nullable.t<bool>,
   author: string,
   co_authors: Nullable.t<array<author>>,
   date: DateStr.t,

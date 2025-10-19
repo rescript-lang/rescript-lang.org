@@ -31,7 +31,12 @@ let $$default = Belt_Array.concatMany([
     Routes.route("syntax-lookup", "./routes/SyntaxLookupRoute.mjs", {
       id: "syntax-lookup"
     }),
-    Routes.route("blog", "./routes/BlogRoute.mjs"),
+    Routes.route("blog", "./routes/BlogRoute.mjs", {
+      id: "blog-index"
+    }),
+    Routes.route("blog/archived", "./routes/BlogRoute.mjs", {
+      id: "blog-archived"
+    }),
     Routes.route("docs/manual/api/stdlib", "./routes/ApiRoute.mjs", {
       id: "api-stdlib"
     }),

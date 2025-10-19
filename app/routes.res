@@ -1,5 +1,4 @@
 open ReactRouter.Routes
-open Mdx
 
 let stdlibPaths = {
   let rawFile = await Node.Fs.readFile("./docs/api/stdlib.json", "utf-8")
@@ -22,7 +21,8 @@ let default = [
   route("community", "./routes/CommunityRoute.mjs"),
   route("community/overview", "./routes/CommunityRoute.mjs", ~options={id: "overview"}),
   route("syntax-lookup", "./routes/SyntaxLookupRoute.mjs", ~options={id: "syntax-lookup"}),
-  route("blog", "./routes/BlogRoute.mjs"),
+  route("blog", "./routes/BlogRoute.mjs", ~options={id: "blog-index"}),
+  route("blog/archived", "./routes/BlogRoute.mjs", ~options={id: "blog-archived"}),
   // TODO RR7 get the api index to work with the same template
   // route("docs/manual/api", "./routes/ApiRoute.mjs", ~options={id: "api-index"}),
   route("docs/manual/api/stdlib", "./routes/ApiRoute.mjs", ~options={id: "api-stdlib"}),

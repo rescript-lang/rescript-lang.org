@@ -1,22 +1,3 @@
-/*
-      This module is responsible for statically prerendering each individual blog post.
- General concepts:
-      -----------------------
-      - We use webpack's "require" mechanic to reuse the MDX pipeline for rendering
-      - Frontmatter is being parsed and attached as an attribute to the resulting component function via plugins/mdx-loader
-      - We generate a list of static paths for each blog post via the BlogApi module (using fs)
-      - The contents of this file is being reexported by /pages/blog/[slug].js
-
-
-      A Note on Performance:
-      -----------------------
-      Luckily, since pages are prerendered, we don't need to worry about
-      increased bundle sizes due to the `require` with path interpolation. It
-      might cause longer builds though, so we might need to refactor as soon as
-      builds are taking too long.  I think we will be fine for now.
-  Link to NextJS discussion: https://github.com/zeit/next.js/discussions/11728#discussioncomment-3501
- */
-
 let middleDotSpacer = " " ++ (String.fromCharCode(183) ++ " ")
 
 module Params = {
@@ -170,11 +151,10 @@ let make = (props: props) => {
               <div className="text-24 sm:text-32 text-center text-gray-80 font-medium">
                 {React.string("Want to read more?")}
               </div>
-              // <ReactRouter.Link
-              //   to={("/blog" :> ReactRouter.Link.to)} className="text-fire hover:text-fire-70">
-              //   {React.string("Back to Overview")}
-              //   <Icon.ArrowRight className="ml-2 inline-block" />
-              // </ReactRouter.Link>
+              <ReactRouter.Link to=#"/blog" className="text-fire hover:text-fire-70">
+                {React.string("Back to Overview")}
+                <Icon.ArrowRight className="ml-2 inline-block" />
+              </ReactRouter.Link>
             </div>
           </div>
         </div>
