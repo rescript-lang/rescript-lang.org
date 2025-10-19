@@ -46,9 +46,13 @@ let components = {
 
 let convertToNavItems = (items, rootPath) =>
   Array.map(items, (item): SidebarLayout.Sidebar.NavItem.t => {
+    let href = switch item.slug {
+    | Some(slug) => `${rootPath}/${slug}`
+    | None => rootPath
+    }
     {
       name: item.title,
-      href: `${rootPath}/${item.slug}`,
+      href,
     }
   })
 
@@ -64,14 +68,14 @@ let getGroup = (groups, groupName): SidebarLayout.Sidebar.Category.t => {
 let getAllGroups = (groups, groupNames): array<SidebarLayout.Sidebar.Category.t> =>
   groupNames->Array.map(item => getGroup(groups, item))
 
-let blogPosts = () => {
-  allMdx->filterMdxPages("blog")
+let blogPosts = async () => {
+  (await allMdx())->filterMdxPages("blog")
 }
 
 // These are the pages for the language manual, sorted by their "order" field in the frontmatter
-let manualTableOfContents = () => {
+let manualTableOfContents = async () => {
   let groups =
-    allMdx
+    (await allMdx())
     ->filterMdxPages("docs/manual")
     ->groupBySection
     ->Dict.mapValues(values => values->sortSection->convertToNavItems("/docs/manual"))
@@ -92,9 +96,9 @@ let manualTableOfContents = () => {
   categories
 }
 
-let reactTableOfContents = () => {
+let reactTableOfContents = async () => {
   let groups =
-    allMdx
+    (await allMdx())
     ->filterMdxPages("docs/react")
     ->groupBySection
     ->Dict.mapValues(values => values->sortSection->convertToNavItems("/docs/react"))
@@ -107,8 +111,6 @@ let reactTableOfContents = () => {
 
   categories
 }
-
-let posts = () => allMdx->filterMdxPages("blog")->Array.map(BlogLoader.transform)
 
 let loader: Loader.t<loaderData> = async ({request}) => {
   let {pathname} = WebAPI.URL.make(~url=request.url)
@@ -133,9 +135,9 @@ let loader: Loader.t<loaderData> = async ({request}) => {
       if pathname == "/docs/manual/api" {
         []
       } else if pathname->String.includes("docs/manual") {
-        manualTableOfContents()
+        await manualTableOfContents()
       } else if pathname->String.includes("docs/react") {
-        reactTableOfContents()
+        await reactTableOfContents()
       } else {
         []
       }
@@ -143,7 +145,7 @@ let loader: Loader.t<loaderData> = async ({request}) => {
 
     // TODO: this can be optionally called if we need markdown
     // TODO: extract this out into a separate function
-    let fileContents = await allMdx
+    let fileContents = await (await allMdx())
     ->Array.filter(mdx => (mdx.path :> string)->String.includes(pathname))
     ->Array.get(0)
     ->Option.map(mdx => mdx.path)
@@ -205,10 +207,9 @@ let default = () => {
       </DocsLayout>
     } else {
       switch loaderData.blogPost {
-      | Some({frontmatter, archived, path}) => {
-          Console.log(frontmatter)
-          <BlogArticle frontmatter isArchived=archived path> {component()} </BlogArticle>
-        }
+      | Some({frontmatter, archived, path}) => <BlogArticle frontmatter isArchived=archived path>
+          {component()}
+        </BlogArticle>
       | None => React.null // TODO: RR7 show an error
       }
     }}

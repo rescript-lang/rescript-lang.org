@@ -27,7 +27,7 @@ module Warn: {
 
 module UrlBox: {
   @react.component
-  let make: (~text: string, ~href: string, ~children: Mdx.MdxChildren.t) => React.element
+  let make: (~text: string, ~href: string, ~children: MdxLegacy.MdxChildren.t) => React.element
 }
 
 // Used for creating invisible, hoverable <a> anchors for url linking
@@ -93,13 +93,13 @@ module Code: {
   let make: (
     ~className: string=?,
     ~metastring: option<string>,
-    ~children: Mdx.Components.unknown,
+    ~children: MdxLegacy.Components.unknown,
   ) => React.element
 }
 
 module CodeTab: {
   @react.component
-  let make: (~children: Mdx.MdxChildren.t, ~labels: array<string>=?) => React.element
+  let make: (~children: MdxLegacy.MdxChildren.t, ~labels: array<string>=?) => React.element
 }
 
 module Blockquote: {

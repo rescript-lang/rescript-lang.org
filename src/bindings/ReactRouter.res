@@ -1,5 +1,3 @@
-open WebAPI
-
 type navigateOptions = {replace?: bool}
 
 @module("react-router-dom")

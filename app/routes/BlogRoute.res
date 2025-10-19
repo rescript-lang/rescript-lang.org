@@ -2,7 +2,10 @@ type loaderData = {posts: array<BlogApi.post>, category: Blog.category}
 
 let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
   let showArchived = request.url->String.includes("archived")
-  let posts: array<BlogApi.post> = MdxRoute.posts()->Array.filter(post => {
+  let posts = async () =>
+    (await Mdx.allMdx())->Mdx.filterMdxPages("blog")->Array.map(BlogLoader.transform)
+
+  let posts: array<BlogApi.post> = (await posts())->Array.filter(post => {
     post.archived == showArchived
   })
   let data = {posts, category: All}

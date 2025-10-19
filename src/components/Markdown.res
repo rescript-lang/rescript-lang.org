@@ -41,13 +41,13 @@ module Warn = {
 }
 
 module UrlBox = {
-  open! Mdx.MdxChildren
+  open! MdxLegacy.MdxChildren
 
   let imgEl = <img src="/hyperlink.svg" className="mr-2 inline-block" />
 
   @react.component
   let // TODO: can this href be a Path.t somehow?
-  make = (~text: string, ~href: string, ~children: Mdx.MdxChildren.t) => {
+  make = (~text: string, ~href: string, ~children: MdxLegacy.MdxChildren.t) => {
     let content = switch classify(children) {
     | String(str) =>
       <p>
@@ -73,7 +73,7 @@ module UrlBox = {
             {headChildren->toReactElement}
           </P>
           {if length > 1 {
-            arr->Array.slice(~start=1, ~end=length)->Mdx.arrToReactElement
+            arr->Array.slice(~start=1, ~end=length)->MdxLegacy.arrToReactElement
           } else {
             React.null
           }}
@@ -248,7 +248,7 @@ module Code = {
   external parseNumericRange: string => array<int> = "parsePart"
 
   // TODO: Might be refactorable with the new @unboxed feature
-  type unknown = Mdx.Components.unknown
+  type unknown = MdxLegacy.Components.unknown
 
   external unknownAsString: unknown => string = "%identity"
 
@@ -305,26 +305,26 @@ module Code = {
 }
 
 module CodeTab = {
-  let getMdxMetastring: Mdx.mdxComponent => option<string> = %raw("element => {
+  let getMdxMetastring: MdxLegacy.mdxComponent => option<string> = %raw("element => {
       if(element == null || element.props == null) {
         return;
       }
       return element.props.metastring;
     }")
   @react.component
-  let make = (~children: Mdx.MdxChildren.t, ~labels: array<string>=[]) => {
-    let mdxElements = switch Mdx.MdxChildren.classify(children) {
+  let make = (~children: MdxLegacy.MdxChildren.t, ~labels: array<string>=[]) => {
+    let mdxElements = switch MdxLegacy.MdxChildren.classify(children) {
     | Array(mdxElements) => mdxElements
     | Element(el) => [el]
     | _ => []
     }
 
     let tabs = Array.reduceWithIndex(mdxElements, [], (acc, mdxElement, i) => {
-      let child = mdxElement->Mdx.MdxChildren.getMdxChildren->Mdx.MdxChildren.classify
+      let child = mdxElement->MdxLegacy.MdxChildren.getMdxChildren->MdxLegacy.MdxChildren.classify
 
       switch child {
       | Element(codeEl) =>
-        let className = Mdx.getMdxClassName(codeEl)->Option.getOr("")
+        let className = MdxLegacy.getMdxClassName(codeEl)->Option.getOr("")
 
         let metastring = getMdxMetastring(codeEl)->Option.getOr("")
 
@@ -333,7 +333,7 @@ module CodeTab = {
         | _ => None
         }
 
-        let code = String.make(Mdx.MdxChildren.getMdxChildren(codeEl))
+        let code = String.make(MdxLegacy.MdxChildren.getMdxChildren(codeEl))
         let label = labels[i]
         let tab = {
           CodeExample.Toggle.lang,
@@ -447,14 +447,14 @@ module Li = {
       let first = Belt.Array.getExn(head, 0)
 
       switch {
-        open Mdx
+        open MdxLegacy
         last->fromReactElement->getMdxType
       } {
       | "ul"
       | "li"
       | "pre" =>
         switch {
-          open Mdx
+          open MdxLegacy
           first->fromReactElement->getMdxType
         } {
         | "p" =>
@@ -476,7 +476,7 @@ module Li = {
     } else {
       switch {
         /* Unknown Scenario */
-        open Mdx
+        open MdxLegacy
         children->fromReactElement->getMdxType
       } {
       | "pre" => children

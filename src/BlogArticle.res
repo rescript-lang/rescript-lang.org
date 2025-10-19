@@ -55,8 +55,6 @@ module BlogHeader = {
 
     let authors = Array.concat([author], co_authors)
 
-    Console.log2("authors", authors)
-
     <div className="flex flex-col items-center">
       <div className="w-full max-w-740">
         <div className="text-gray-60 body-sm mb-5">

@@ -1,8 +1,13 @@
 let transform = (mdx: Mdx.attributes): BlogApi.post => {
   // Archived posts are those in the archived folder
-  let archived = mdx.path->String.includes("/archived")
+  let archived = switch mdx.slug {
+      // The path isn't included in the mdx attributes when we are rending a post vs listing them
+  | Some(slug) => slug->String.includes("/archived/")
+  | None => false
+  }
   {
-    path: mdx.slug,
+    // The path isn't included in the mdx attributes when we are rending a post vs listing them
+    path: mdx.slug->Option.getOr("/blog"),
     archived,
     frontmatter: {
       author: BlogFrontmatter.authors

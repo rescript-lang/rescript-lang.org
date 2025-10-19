@@ -36,7 +36,7 @@ type attributes = {
   section?: string,
   summary?: string,
   status?: string,
-  slug: string,
+  slug?: string,
   title: string,
 }
 
@@ -69,7 +69,7 @@ external gfm: remarkPlugin = "default"
 
 // The loadAllMdx function logs out all of the file contents as it reads them, which is noisy and not useful.
 // We can suppress that logging with this helper function.
-let allMdx = await Shims.runWithoutLogging(() => loadAllMdx())
+let allMdx = async () => await Shims.runWithoutLogging(() => loadAllMdx())
 
 let sortSection = mdxPages =>
   Array.toSorted(mdxPages, (a: attributes, b: attributes) =>
@@ -93,77 +93,4 @@ let groupBySection = mdxPages =>
 
 let filterMdxPages = (mdxPages, path) =>
   Array.filter(mdxPages, mdx => (mdx.path :> string)->String.includes(path))
-
-/*
-  Abstract type for representing mdx
-  components mostly passed as children to
-  the component context API
- */
-/**
- * The code below is from Next's markdown, and I am not sure it is needed anymore.
- TODO: RR7
- */
-type mdxComponent
-
-external fromReactElement: React.element => mdxComponent = "%identity"
-
-external arrToReactElement: array<mdxComponent> => React.element = "%identity"
-
-let getMdxClassName: mdxComponent => option<string> = %raw("element => {
-      if(element == null || element.props == null) {
-        return;
-      }
-      return element.props.className;
-    }")
-
-let getMdxType: mdxComponent => string = %raw("element => {
-      if(element == null || element.props == null) {
-        return 'unknown';
-      }
-      return element.props.mdxType;
-    }")
-
-module MdxChildren = {
-  type unknown
-
-  type t
-
-  type case =
-    | String(string)
-    | Element(mdxComponent)
-    | Array(array<mdxComponent>)
-    | Unknown(unknown)
-
-  let classify = (v: t): case =>
-    if %raw(`function (a) { return  a instanceof Array}`)(v) {
-      Array((Obj.magic(v): array<mdxComponent>))
-    } else if typeof(v) == #string {
-      String((Obj.magic(v): string))
-    } else if typeof(v) == #object {
-      Element((Obj.magic(v): mdxComponent))
-    } else {
-      Unknown((Obj.magic(v): unknown))
-    }
-
-  external toReactElement: t => React.element = "%identity"
-
-  // Sometimes an mdxComponent element can be a string
-  // which means it doesn't have any children.
-  // We will return the element as its own child then
-  let getMdxChildren: mdxComponent => t = %raw("element => {
-      if(typeof element === 'string') {
-        return element;
-      }
-      if(element == null || element.props == null || element.props.children == null) {
-        return;
-      }
-      return element.props.children;
-    }")
-}
-
-module Components = {
-  // Used for reflection based logic in
-  // components such as `code` or `ul`
-  // with runtime reflection
-  type unknown
-}
+  
