@@ -501,6 +501,14 @@ let parsePkgs = data => {
           ->Resource.filterKeywords
           ->Resource.uniqueKeywords
 
+        // Convert a repository url from SSH to HTTPS.
+        let repositoryHref = switch repositoryHref {
+        | href if String.startsWith(href, "git+ssh") => String.replace(href, "git+ssh:", "https:")
+        | href if String.startsWith(href, "git+") => String.replace(href, "git+", "")
+        | href if String.startsWith(href, "git:") => String.replace(href, "git:", "https:")
+        | href => href
+        }
+
         Some({
           name,
           version,
