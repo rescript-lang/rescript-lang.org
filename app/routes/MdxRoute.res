@@ -266,7 +266,7 @@ let default = () => {
         activeToc={title: "Introduction", entries}
         breadcrumbs=?loaderData.breadcrumbs
       >
-        <di1v className="markdown-body"> {component()} </di1v>
+        <div className="markdown-body pt-20 md:pt-0"> {component()} </div>
       </DocsLayout>
     } else if (pathname :> string)->String.includes("community") {
       <div>

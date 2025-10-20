@@ -9,7 +9,9 @@ let transform = (mdx: Mdx.attributes): BlogApi.post => {
   }
 
   {
-    path: mdx.slug->Option.getOr("/blog"),
+    path: mdx.slug
+    ->Option.map(slug => archived ? "archived/" ++ slug : slug)
+    ->Option.getOr("/blog"),
     archived,
     frontmatter: {
       author: BlogFrontmatter.authors

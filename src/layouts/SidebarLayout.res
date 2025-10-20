@@ -140,7 +140,7 @@ module Sidebar = {
         id="sidebar"
         className={(
           isOpen ? "fixed w-full left-0 h-full z-20 min-w-320" : "hidden "
-        ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible bg-white mt-28 md:mt-0"}
+        ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible bg-white mt-28 md:mt-0 min-w-48"}
       >
         <aside
           id="sidebar-content"
@@ -343,7 +343,7 @@ let make = (
         <div className="w-full">
           <Navigation isOverlayOpen=isNavOpen setOverlayOpen=setNavOpen />
           <div className="flex lg:justify-center">
-            <div className="flex w-full max-w-1280 md:mx-16 md:mt-16">
+            <div className="flex w-full max-w-1280 md:mx-10 md:mt-16">
               sidebar
               <main className="px-4 w-full pt-4 md:ml-12 lg:mr-8 mb-32 md:max-w-576 lg:max-w-740">
                 //width of the right content part
@@ -359,7 +359,7 @@ let make = (
                   </div>
                 </div>
                 <div
-                  className={hasBreadcrumbs ? "mt-10" : "mt-6 md:-mt-4"}
+                  className={hasBreadcrumbs ? "mt-20 md:mt-10" : "mt-6 md:-mt-4"}
                   dataTestId="side-layout-children"
                 >
                   children
