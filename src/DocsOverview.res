@@ -16,8 +16,8 @@ module Card = {
 
 @react.component
 let default = (~showVersionSelect=true) => {
-  let router = Next.Router.useRouter()
-  let url = router.route->Url.parse
+  let {pathname} = ReactRouter.useLocation()
+  let url = (pathname :> string)->Url.parse
 
   let version = url->Url.getVersionString
 

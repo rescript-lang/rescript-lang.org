@@ -26,8 +26,8 @@ module V1200Layout = DocsLayout.Make({
 module V1200 = {
   @react.component
   let make = (~frontmatter=?, ~components=MarkdownComponents.default, ~children) => {
-    let router = Next.Router.useRouter()
-    let url = router.route->Url.parse
+    let {pathname} = ReactRouter.useLocation()
+    let url = (pathname :> string)->Url.parse
     let version = url->Url.getVersionString
 
     let breadcrumbs = list{
@@ -73,8 +73,9 @@ module V1200 = {
 module V1100 = {
   @react.component
   let make = (~frontmatter=?, ~components=MarkdownComponents.default, ~children) => {
-    let router = Next.Router.useRouter()
-    let version = router.route->Url.parse->Url.getVersionString
+    let {pathname} = ReactRouter.useLocation()
+    let url = (pathname :> string)->Url.parse
+    let version = url->Url.getVersionString
 
     let breadcrumbs = list{
       {Url.name: "Docs", href: "/docs/" ++ version},
@@ -99,10 +100,8 @@ module V1100 = {
 module V1000 = {
   @react.component
   let make = (~frontmatter=?, ~components=MarkdownComponents.default, ~children) => {
-    let router = Next.Router.useRouter()
-    let route = router.route
-
-    let url = route->Url.parse
+    let {pathname} = ReactRouter.useLocation()
+    let url = (pathname :> string)->Url.parse
 
     let version = url->Url.getVersionString
 
@@ -144,10 +143,8 @@ module V900 = {
     ~components=MarkdownComponents.default,
     ~children,
   ) => {
-    let router = Next.Router.useRouter()
-    let route = router.route
-
-    let url = route->Url.parse
+    let {pathname} = ReactRouter.useLocation()
+    let url = (pathname :> string)->Url.parse
 
     let version = url->Url.getVersionString
 
@@ -183,10 +180,8 @@ module V900 = {
 module V800 = {
   @react.component
   let make = (~frontmatter=?, ~components=MarkdownComponents.default, ~children) => {
-    let router = Next.Router.useRouter()
-    let route = router.route
-
-    let url = route->Url.parse
+    let {pathname} = ReactRouter.useLocation()
+    let url = (pathname :> string)->Url.parse
 
     let version = url->Url.getVersionString
 

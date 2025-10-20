@@ -1,4 +1,55 @@
-@react.component
+type props = {
+  bundleBaseUrl: string,
+  versions: array<string>,
+}
+
+let loader = async () => {
+  let (bundleBaseUrl, versionsBaseUrl) = switch (
+    Node.Process.Env.playgroundBundleEndpoint,
+    Node.Process.Env.nodeEnv,
+  ) {
+  | (Some(baseUrl), _) => (baseUrl, baseUrl)
+  | (None, "development") => {
+      // Use remote bundles in dev
+      let baseUrl = "https://cdn.rescript-lang.org"
+      (baseUrl, baseUrl)
+    }
+  | (None, _) => (
+      // Use same-origin requests for the bundle
+      "/playground-bundles",
+      // There is no version endpoint in the build phase
+      "https://cdn.rescript-lang.org",
+    )
+  }
+
+  let versions = {
+    let response = await fetch(versionsBaseUrl + "/playground-bundles/versions.json")
+    let json = await WebAPI.Response.json(response)
+    json
+    ->JSON.Decode.array
+    ->Option.getOrThrow
+    ->Array.map(json => json->JSON.Decode.string->Option.getOrThrow)
+  }
+
+  {
+    bundleBaseUrl,
+    versions,
+  }
+}
+
+module ClientOnly = {
+  @react.component
+  let make = (~bundleBaseUrl, ~versions) => {
+    <React.Suspense>
+      <LazyPlayground bundleBaseUrl versions />
+    </React.Suspense>
+  }
+}
+
 let default = () => {
-  <div></div>
+  let {bundleBaseUrl, versions} = ReactRouter.useLoaderData()
+
+  <div className="text-gray-40 text-14 overflow-scroll">
+    <ClientOnly bundleBaseUrl versions />
+  </div>
 }

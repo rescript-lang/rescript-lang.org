@@ -46,58 +46,6 @@ module GetStaticPaths = {
   type t<'params> = unit => promise<return<'params>>
 }
 
-module Router = {
-  /*
-      Make sure to only register events via a useEffect hook!
- */
-  module Events = {
-    type t
-
-    @send
-    external on: (
-      t,
-      @string
-      [
-        | #routeChangeStart(string => unit)
-        | #routeChangeComplete(string => unit)
-        | #hashChangeComplete(string => unit)
-      ],
-    ) => unit = "on"
-
-    @send
-    external off: (
-      t,
-      @string
-      [
-        | #routeChangeStart(string => unit)
-        | #routeChangeComplete(string => unit)
-        | #hashChangeComplete(string => unit)
-      ],
-    ) => unit = "off"
-  }
-
-  type router = {
-    route: string,
-    asPath: string,
-    events: Events.t,
-    pathname: string,
-    query: Dict.t<string>,
-  }
-
-  type pathObj = {
-    pathname: string,
-    query: Dict.t<string>,
-  }
-
-  @send external push: (router, string) => unit = "push"
-  @send external pushObj: (router, pathObj) => unit = "push"
-
-  @module("next/router") external useRouter: unit => router = "useRouter"
-
-  @send external replace: (router, string) => unit = "replace"
-  @send external replaceObj: (router, pathObj) => unit = "replace"
-}
-
 module Head = {
   @module("next/head") @react.component
   external make: (~children: React.element) => React.element = "default"

@@ -1503,7 +1503,7 @@ let initialReContent = `Js.log("Hello Reason 3.6!");`
 
 @react.component
 let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
-  let router = Next.Router.useRouter()
+  let (searchParams, setSearchParams) = ReactRouter.useSearchParams()
 
   let versions =
     versions
@@ -1523,7 +1523,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   | [v] => Some(v) // only single version available. maybe local dev.
   | versions => {
       let lastStableVersion = versions->Array.find(version => version.preRelease->Option.isNone)
-      switch Dict.get(router.query, (CompilerManagerHook.Version :> string)) {
+      switch searchParams->Object.get((CompilerManagerHook.Version :> string)) {
       | Some(version) => version->Semver.parse
       | None =>
         switch Url.getVersionFromStorage(Playground) {
@@ -1534,20 +1534,20 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     }
   }
 
-  let initialLang = switch Dict.get(router.query, (CompilerManagerHook.Ext :> string)) {
+  let initialLang = switch searchParams->Object.get((CompilerManagerHook.Ext :> string)) {
   | Some("re") => Api.Lang.Reason
   | _ => Api.Lang.Res
   }
 
-  let initialModuleSystem = Dict.get(router.query, (Module :> string))
-  let initialJsxPreserveMode = Dict.get(router.query, (JsxPreserve :> string))->Option.isSome
+  let initialModuleSystem = searchParams->Object.get((Module :> string))
+  let initialJsxPreserveMode = searchParams->Object.get((JsxPreserve :> string))->Option.isSome
 
   let initialExperimentalFeatures =
-    Dict.get(router.query, (Experiments :> string))->Option.mapOr([], str =>
-      str->String.split(",")->Array.map(String.trim)
-    )
+    searchParams
+    ->Object.get((Experiments :> string))
+    ->Option.mapOr([], str => str->String.split(",")->Array.map(String.trim))
 
-  let initialContent = switch (Dict.get(router.query, (Code :> string)), initialLang) {
+  let initialContent = switch (searchParams->Object.get((Code :> string)), initialLang) {
   | (Some(compressedCode), _) => LzString.decompressToEncodedURIComponent(compressedCode)
   | (None, Reason) => initialReContent
   | (None, Res) =>
@@ -1597,7 +1597,11 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
    we take any success results and set the editor code to the new formatted code */
   switch compilerState {
   | Ready({result: FinalResult.Nothing} as ready) =>
-    compilerDispatch(CompileCode(ready.targetLang, editorCode.current))
+    try {
+      compilerDispatch(CompileCode(ready.targetLang, editorCode.current))
+    } catch {
+    | err => Console.error(err)
+    }
   | Ready({result: FinalResult.Conv(Api.ConversionResult.Success({code}))}) =>
     editorCode.current = code
   | _ => ()
@@ -1617,7 +1621,12 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   React.useEffect(() => {
     timeoutCompile.current = () =>
       switch compilerState {
-      | Ready(ready) => compilerDispatch(CompileCode(ready.targetLang, editorCode.current))
+      | Ready(ready) =>
+        try {
+          compilerDispatch(CompileCode(ready.targetLang, editorCode.current))
+        } catch {
+        | err => Console.error(err)
+        }
       | _ => ()
       }
 

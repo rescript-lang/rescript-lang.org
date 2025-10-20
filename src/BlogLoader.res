@@ -2,7 +2,12 @@ let transform = (mdx: Mdx.attributes): BlogApi.post => {
   // Archived posts are those in the archived folder
 
   // The path isn't included when we are rending a post vs listing them
-  let archived = mdx.path->String.includes("/archived/")
+  let archived = try {
+    mdx.path->String.includes("/archived/")
+  } catch {
+  | _ => false
+  }
+
   {
     path: mdx.slug->Option.getOr("/blog"),
     archived,

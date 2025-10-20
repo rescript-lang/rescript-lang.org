@@ -252,7 +252,7 @@ let useCompilerManager = (
   (),
 ) => {
   let (state, setState) = React.useState(_ => Init)
-  let router = Next.Router.useRouter()
+  let {pathname} = ReactRouter.useLocation()
 
   // Dispatch method for the public interface
   let dispatch = (action: action): unit => {
@@ -575,50 +575,50 @@ let useCompilerManager = (
           | _ => Ready(ready)
           }
         )
-      | Executing({state, jsCode}) =>
-        open Babel
+      | Executing({state, jsCode}) => ()
+      // open Babel
 
-        let ast = Parser.parse(jsCode, {sourceType: "module"})
-        let {entryPointExists, code, imports} = PlaygroundValidator.validate(ast)
-        let imports = imports->Dict.mapValues(path => {
-          let filename = path->String.slice(~start=9) // the part after "./stdlib/"
-          let filename = switch state.selected.id {
-          | {major: 12, minor: 0, patch: 0, preRelease: Some(Alpha(alpha))} if alpha < 8 =>
-            let filename = if filename->String.startsWith("core__") {
-              filename->String.slice(~start=6)
-            } else {
-              filename
-            }
-            capitalizeFirstLetter(filename)
-          | {major} if major < 12 && filename->String.startsWith("core__") =>
-            capitalizeFirstLetter(filename)
-          | _ => filename
-          }
-          let compilerVersion = switch state.selected.id {
-          | {major: 12, minor: 0, patch: 0, preRelease: Some(Alpha(alpha))} if alpha < 9 => {
-              Semver.major: 12,
-              minor: 0,
-              patch: 0,
-              preRelease: Some(Alpha(9)),
-            }
-          | {major, minor} if (major === 11 && minor < 2) || major < 11 => {
-              major: 11,
-              minor: 2,
-              patch: 0,
-              preRelease: Some(Beta(2)),
-            }
-          | version => version
-          }
-          CdnMeta.getStdlibRuntimeUrl(bundleBaseUrl, compilerVersion, filename)
-        })
+      // let ast = Parser.parse(jsCode, {sourceType: "module"})
+      // let {entryPointExists, code, imports} = PlaygroundValidator.validate(ast)
+      // let imports = imports->Dict.mapValues(path => {
+      //   let filename = path->String.slice(~start=9) // the part after "./stdlib/"
+      //   let filename = switch state.selected.id {
+      //   | {major: 12, minor: 0, patch: 0, preRelease: Some(Alpha(alpha))} if alpha < 8 =>
+      //     let filename = if filename->String.startsWith("core__") {
+      //       filename->String.slice(~start=6)
+      //     } else {
+      //       filename
+      //     }
+      //     capitalizeFirstLetter(filename)
+      //   | {major} if major < 12 && filename->String.startsWith("core__") =>
+      //     capitalizeFirstLetter(filename)
+      //   | _ => filename
+      //   }
+      //   let compilerVersion = switch state.selected.id {
+      //   | {major: 12, minor: 0, patch: 0, preRelease: Some(Alpha(alpha))} if alpha < 9 => {
+      //       Semver.major: 12,
+      //       minor: 0,
+      //       patch: 0,
+      //       preRelease: Some(Alpha(9)),
+      //     }
+      //   | {major, minor} if (major === 11 && minor < 2) || major < 11 => {
+      //       major: 11,
+      //       minor: 2,
+      //       patch: 0,
+      //       preRelease: Some(Beta(2)),
+      //     }
+      //   | version => version
+      //   }
+      //   CdnMeta.getStdlibRuntimeUrl(bundleBaseUrl, compilerVersion, filename)
+      // })
 
-        entryPointExists
-          ? code->wrapReactApp->EvalIFrame.sendOutput(imports)
-          : EvalIFrame.sendOutput(code, imports)
-        setState(_ => Ready({...state, logs: [], validReactCode: entryPointExists}))
+      // entryPointExists
+      //   ? code->wrapReactApp->EvalIFrame.sendOutput(imports)
+      //   : EvalIFrame.sendOutput(code, imports)
+      // setState(_ => Ready({...state, logs: [], validReactCode: entryPointExists}))
       | SetupFailed(_) => ()
       | Ready(ready) =>
-        let url = createUrl(router.route, ready)
+        let url = createUrl((pathname :> string), ready)
         WebAPI.History.replaceState(history, ~data=JSON.Null, ~unused="", ~url)
       }
     }
@@ -634,7 +634,7 @@ let useCompilerManager = (
     initialExperimentalFeatures,
     initialLang,
     versions,
-    router.route,
+    pathname,
   ))
 
   (state, dispatch)

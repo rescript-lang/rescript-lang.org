@@ -22,9 +22,8 @@ module V0110Layout = DocsLayout.Make({
 module Latest = {
   @react.component
   let make = (~frontmatter=?, ~components=MarkdownComponents.default, ~children) => {
-    let router = Next.Router.useRouter()
-    let route = router.route
-    let url = route->Url.parse
+    let {pathname} = ReactRouter.useLocation()
+    let url = (pathname :> string)->Url.parse
 
     let version = switch url.version {
     | Version(version) => version
@@ -55,9 +54,8 @@ module Latest = {
 module V0110 = {
   @react.component
   let make = (~frontmatter=?, ~components=MarkdownComponents.default, ~children) => {
-    let router = Next.Router.useRouter()
-    let route = router.route
-    let url = route->Url.parse
+    let {pathname} = ReactRouter.useLocation()
+    let url = (pathname :> string)->Url.parse
 
     let version = switch url.version {
     | Version(version) => version
@@ -86,9 +84,8 @@ module V0110 = {
 module V0100 = {
   @react.component
   let make = (~frontmatter=?, ~components=MarkdownComponents.default, ~children) => {
-    let router = Next.Router.useRouter()
-    let route = router.route
-    let url = route->Url.parse
+    let {pathname} = ReactRouter.useLocation()
+    let url = (pathname :> string)->Url.parse
 
     let version = switch url.version {
     | Version(version) => version

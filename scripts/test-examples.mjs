@@ -130,7 +130,7 @@ fs.writeFileSync(tempFileName, "");
 let success = true;
 
 glob
-  .sync(__dirname + "/../pages/docs/{manual/latest,react/latest}/**/*.mdx")
+  .sync(__dirname + "/../docs/{manual,react}/**/*.mdx")
   .forEach((file) => {
     let content = fs.readFileSync(file, { encoding: "utf-8" });
     let parsedResult = parseFile(content);
