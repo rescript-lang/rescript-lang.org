@@ -44,9 +44,9 @@
     "@mdx-js/loader": "^3.1.0",
     "@node-cli/static-server": "^3.1.4",
     "@react-router/node": "^7.8.1",
+    "@replit/codemirror-vim": "^6.3.0",
     "@rescript/react": "^0.14.0-rc.1",
     "@rescript/webapi": "^0.1.0-experimental-29db5f4",
-    "@replit/codemirror-vim": "^6.3.0",
     "docson": "^2.1.0",
     "escodegen": "^2.1.0",
     "eslint-config-next": "^13.1.1",
@@ -90,6 +90,7 @@
     "prettier": "^3.6.2",
     "reanalyze": "^2.16.0",
     "tailwindcss": "^4",
-    "vite": "^7.0.6"
+    "vite": "^7.0.6",
+    "vite-plugin-env-compatible": "^2.0.1"
   }
 }
