@@ -40,7 +40,7 @@ let loader = async () => {
 module ClientOnly = {
   @react.component
   let make = (~bundleBaseUrl, ~versions) => {
-    <React.Suspense>
+    <React.Suspense fallback={<div className="h-full bg-gray-100  min-h-screen" />}>
       <LazyPlayground bundleBaseUrl versions />
     </React.Suspense>
   }
@@ -49,7 +49,5 @@ module ClientOnly = {
 let default = () => {
   let {bundleBaseUrl, versions} = ReactRouter.useLoaderData()
 
-  <div className="text-gray-40 text-14 overflow-scroll">
-    <ClientOnly bundleBaseUrl versions />
-  </div>
+  <ClientOnly bundleBaseUrl versions />
 }

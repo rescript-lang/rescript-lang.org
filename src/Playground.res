@@ -6,6 +6,32 @@ module Api = RescriptCompilerApi
 type layout = Column | Row
 type tab = JavaScript | Output | Problems | Settings
 
+%%raw(`
+  import "../styles/main.css";
+  import "../styles/_hljs.css";
+  import "../styles/utils.css";
+
+  import hljs from 'highlight.js/lib/core';
+  import bash from 'highlight.js/lib/languages/bash';
+  import css from 'highlight.js/lib/languages/css';
+  import diff from 'highlight.js/lib/languages/diff';
+  import javascript from 'highlight.js/lib/languages/javascript';
+  import json from 'highlight.js/lib/languages/json';
+  import text from 'highlight.js/lib/languages/plaintext';
+  import html from 'highlight.js/lib/languages/xml';
+  import rescript from 'highlightjs-rescript';
+
+  hljs.registerLanguage('rescript', rescript)
+  hljs.registerLanguage('javascript', javascript)
+  hljs.registerLanguage('css', css)
+  hljs.registerLanguage('ts', javascript)
+  hljs.registerLanguage('sh', bash)
+  hljs.registerLanguage('json', json)
+  hljs.registerLanguage('text', text)
+  hljs.registerLanguage('html', html)
+  hljs.registerLanguage('diff', diff)
+`)
+
 module JsxCompilation = {
   type t =
     | Plain
@@ -1242,7 +1268,7 @@ module ControlPanel = {
         }
       }
 
-      <div className="flex flex-row gap-x-2">
+      <div className="flex flex-row gap-x-2" dataTestId="control-panel">
         <ToggleButton
           checked=autoRun
           onChange={_ => {
@@ -1577,10 +1603,12 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   )
 
   let (keyMap, setKeyMap) = React.useState(() => {
-    Dom.Storage2.localStorage
-    ->Dom.Storage2.getItem("vimMode")
-    ->Option.map(CodeMirror.KeyMap.fromString)
-    ->Option.getOr(CodeMirror.KeyMap.Default)
+    CodeMirror.KeyMap.Default
+
+    // Dom.Storage2.localStorage
+    // ->Dom.Storage2.getItem("vimMode")
+    // ->Option.map(CodeMirror.KeyMap.fromString)
+    // ->Option.getOr(CodeMirror.KeyMap.Default)
   })
 
   React.useEffect1(() => {
@@ -1920,7 +1948,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     <button key={Int.toString(i)} onClick className disabled> {title} </button>
   })
 
-  <main className={"flex flex-col bg-gray-100 overflow-hidden"}>
+  <main className={"flex flex-col bg-gray-100  text-gray-40 text-14 overflow-scroll mt-16"}>
     <ControlPanel
       actionIndicatorKey={Int.toString(actionCount)}
       state=compilerState
@@ -1967,7 +1995,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
       <div
         ref={ReactDOM.Ref.domRef((Obj.magic(separatorRef): React.ref<Nullable.t<Dom.element>>))}
         // TODO: touch-none not applied
-        className={`flex items-center justify-center touch-none select-none bg-gray-70 opacity-30 hover:opacity-50 rounded-lg ${layout ==
+        className={`flex items-center justify-center touch-none select-none bg-gray-70 opacity-30 hover:opacity-50 rounded-lg h-full ${layout ==
             Column
             ? "cursor-row-resize"
             : "cursor-col-resize"}`}

@@ -619,6 +619,7 @@ let useCompilerManager = (
       | SetupFailed(_) => ()
       | Ready(ready) =>
         let url = createUrl((pathname :> string), ready)
+        Console.log2("Updated URL: ", url)
         WebAPI.History.replaceState(history, ~data=JSON.Null, ~unused="", ~url)
       }
     }
