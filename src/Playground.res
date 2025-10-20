@@ -1,3 +1,5 @@
+// CodeMirror 6 - no longer need these requires since we import directly in the component
+
 open CompilerManagerHook
 module Api = RescriptCompilerApi
 
