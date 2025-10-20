@@ -134,7 +134,6 @@ let loader: Loader.t<loaderData> = async ({request}) => {
 
   let mdx = await loadMdx(request, ~options={remarkPlugins: [Mdx.gfm]})
 
-  // TODO: actually render the blog pages
   if pathname->String.includes("blog") {
     let posts = blogPosts()
 
@@ -179,8 +178,8 @@ let loader: Loader.t<loaderData> = async ({request}) => {
       }
     }
 
-    // TODO: this can be optionally called if we need markdown
-    // TODO: extract this out into a separate function
+    // TODO POST RR7: extract this out into a separate function
+    // it can probably be cached or something
     let fileContents = await (await allMdx())
     ->Array.filter(mdx => (mdx.path :> string)->String.includes(pathname))
     ->Array.get(0)
@@ -244,7 +243,7 @@ let default = () => {
 
   let {entries, categories} = loaderData
 
-  // TODO: get actual meta categories working
+  // TODO RR7: get actual meta categories working
   let metaTitleCategory =
     (pathname :> string)->String.includes("docs/manual")
       ? "ReScript Language Manual"

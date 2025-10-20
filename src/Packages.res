@@ -410,20 +410,6 @@ let make = (props: props) => {
     None
   }, [])
 
-  // On second render, this hook runs one more time to actually trigger the search.
-  React.useEffect(() => {
-    // TODO RR7: test this
-
-    // TODO RR7: this is broken
-    let _ = searchParams["search"]->Option.map(onValueChange)
-
-    // location.search->Option.forEach(onValueChange)
-
-    // router.query->Dict.get("search")->Option.forEach(onValueChange)
-
-    None
-  }, [firstRenderDone.current])
-
   let updateQuery = value => setSearchParams({"search": value})
 
   // When the search term changes, update the router query accordingly.

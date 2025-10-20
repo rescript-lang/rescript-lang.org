@@ -78,7 +78,7 @@ let groupItems = apiDocs => {
       let parentNode =
         rootItems->Array.find(item => item.children->Array.some(node => node.name === parentName))
 
-      // TODO: this can probably be refactored
+      // TODO POST RR7: this can probably be refactored
       parentNode->Option.forEach(
         parentNode =>
           parentNode.children->Array.forEach(
@@ -108,7 +108,7 @@ let loader: ReactRouter.Loader.t<loaderData> = async args => {
   let toctree = groupItems(apiDocs)
 
   let data = {
-    // TODO RR7: refactor this function to only return the module and not the toctree
+    // TODO POST RR7: refactor this function to only return the module and not the toctree
     // or move the toc logic to this function
     // TODO move the loader function to its own file
     try {

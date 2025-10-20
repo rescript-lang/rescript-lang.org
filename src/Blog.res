@@ -1,18 +1,3 @@
-/*
- TODO: The way the blog works right now is very rough.
- We don't do any webpack magic to extract content, title preview or frontmatter, and
- don't do any pagination... for now it's not really needed I guess, it would
- still be good to rethink the ways the blog works in a later point of time.
-
- Docusaurus does a lot of webpack / remark magic in that regard. For my taste,
- it does too much, but here's a link to draw some inspiration from:
-
- https://github.com/facebook/docusaurus/tree/master/packages/docusaurus-plugin-content-blog/src
-
- Features like RSS feed etc might be nice, but I guess it's not a core feature
- we need right away.
- */
-
 module Link = ReactRouter.Link
 
 let defaultPreviewImg = "/Art-3-rescript-launch.jpg"

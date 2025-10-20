@@ -424,7 +424,7 @@ let processStaticProps = (~slug: array<string>) => {
   let modulePath = slug->Array.join("/")
 
   let content =
-    // TODO rr7 rename this to getByModuleName
+    // TODO post RR7: rename this to getByModuleName
     Data.getVersion(~moduleName)
     ->Option.map(data => data.mainModule)
     ->Option.flatMap(Dict.get(_, modulePath))
