@@ -21,7 +21,7 @@ let categories: array<Sidebar.Category.t> = [
 /* Used for API docs (structured data) */
 module Docs = {
   @react.component
-  let make = (~components=ApiMarkdown.default, ~children) => {
+  let make = (~children) => {
     let {pathname: route} = ReactRouter.useLocation()
 
     let breadcrumbs = list{
@@ -29,6 +29,31 @@ module Docs = {
       {name: "API", href: `/docs/manual/api`},
     }
 
-    <ApiLayout breadcrumbs categories components> children </ApiLayout>
+    let (isSidebarOpen, setSidebarOpen) = React.useState(_ => false)
+
+    let preludeSection =
+      <div className="flex flex-col justify-between text-fire font-medium items-baseline">
+        <VersionSelect />
+      </div>
+
+    let sidebar =
+      <Sidebar
+        isOpen=isSidebarOpen
+        toggle={() => setSidebarOpen(prev => !prev)}
+        preludeSection
+        categories
+        route
+      />
+
+    <SidebarLayout
+      breadcrumbs
+      categories
+      metaTitle="API"
+      sidebarState=(isSidebarOpen, setSidebarOpen)
+      theme={#Js}
+      sidebar
+    >
+      children
+    </SidebarLayout>
   }
 }

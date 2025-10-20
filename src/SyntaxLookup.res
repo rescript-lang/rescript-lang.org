@@ -383,11 +383,9 @@ let make = (
         <Navigation isOverlayOpen setOverlayOpen />
         <div className="flex xs:justify-center overflow-hidden pb-48">
           <main className="mt-24 min-w-320 lg:align-center w-full px-4 md:px-8 max-w-1280">
-            <MdxProvider components=MarkdownComponents.default>
-              <div className="flex justify-center">
-                <div className="max-w-740 w-full"> content </div>
-              </div>
-            </MdxProvider>
+            <div className="flex justify-center">
+              <div className="max-w-740 w-full"> content </div>
+            </div>
           </main>
         </div>
         <Footer />

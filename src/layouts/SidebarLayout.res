@@ -144,7 +144,7 @@ module Sidebar = {
       >
         <aside
           id="sidebar-content"
-          className="h-100 relative top-0 px-4 w-full block md:top-28 md:sticky border-r border-gray-20 overflow-y-auto pb-24 max-h-[calc(100vh-7rem)]"
+          className="h-full relative top-0 px-4 w-full block md:top-28 md:sticky border-r border-gray-20 overflow-y-auto pb-24 max-h-[calc(100vh-7rem)]"
         >
           <button
             onClick={evt => {
@@ -183,7 +183,25 @@ module Sidebar = {
 
 module BreadCrumbs = {
   @react.component
-  let make = (~crumbs: list<Url.breadcrumb>) =>
+  let make = (~crumbs: list<Url.breadcrumb>) => {
+    let {pathname} = ReactRouter.useLocation()
+
+    let lastSegment =
+      (pathname :> string)
+      ->String.split("/")
+      ->Array.filter(segment =>
+        segment !== "docs" && segment !== "manual" && segment !== "react" && segment !== "api"
+      )
+      ->Array.last
+
+    let crumbs = switch lastSegment {
+    | Some(lastSegment) =>
+      crumbs->List.concat(list{
+        {Url.name: lastSegment->String.capitalize, href: (pathname :> string)},
+      })
+    | None => crumbs
+    }
+
     <div className="w-full captions overflow-x-auto text-gray-60">
       {List.mapWithIndex(crumbs, (crumb, i) => {
         let item = if i === List.length(crumbs) - 1 {
@@ -205,6 +223,7 @@ module BreadCrumbs = {
       ->List.toArray
       ->React.array}
     </div>
+  }
 }
 
 module MobileDrawerButton = {
@@ -324,9 +343,9 @@ let make = (
         <div className="w-full">
           <Navigation isOverlayOpen=isNavOpen setOverlayOpen=setNavOpen />
           <div className="flex lg:justify-center">
-            <div className="flex w-full max-w-1280 md:mx-8">
+            <div className="flex w-full max-w-1280 md:mx-16 md:mt-16">
               sidebar
-              <main className="px-4 w-full pt-20 md:ml-12 lg:mr-8 mb-32 md:max-w-576 lg:max-w-740">
+              <main className="px-4 w-full pt-4 md:ml-12 lg:mr-8 mb-32 md:max-w-576 lg:max-w-740">
                 //width of the right content part
                 <div
                   className={"z-10 fixed border-b shadow top-[112px] left-0 pl-4 bg-white w-full py-4 md:relative md:border-none md:shadow-none md:p-0 md:top-auto flex items-center transition duration-300 ease-out group-[.nav-disappear]:-translate-y-64 md:group-[.nav-disappear]:-translate-y-0"}

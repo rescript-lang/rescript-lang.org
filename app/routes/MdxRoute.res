@@ -8,6 +8,7 @@ type loaderData = {
   blogPost?: BlogApi.post,
   mdxSources?: array<SyntaxLookup.item>,
   activeSyntaxItem?: SyntaxLookup.item,
+  breadcrumbs?: list<Url.breadcrumb>,
 }
 
 /**
@@ -205,11 +206,31 @@ let loader: Loader.t<loaderData> = async ({request}) => {
       })
       ->Array.slice(~start=2) // skip first two entries which are the document entry and the H1 title for the page, we just want the h2 sections
 
+    let breadcrumbs =
+      pathname->String.includes("docs/manual")
+        ? Some(list{
+            {Url.name: "Docs", href: "/docs/"},
+            {
+              Url.name: "Language Manual",
+              href: "/docs/manual/" ++ "introduction",
+            },
+          })
+        : pathname->String.includes("docs/react")
+        ? Some(list{
+          {Url.name: "Docs", href: "/docs/"},
+          {
+            Url.name: "rescript-react",
+            href: "/docs/react/" ++ "introduction",
+          },
+        })
+        : None
+
     let res: loaderData = {
       __raw: mdx.__raw,
       attributes: mdx.attributes,
       entries,
       categories,
+      ?breadcrumbs,
     }
 
     res
@@ -239,7 +260,12 @@ let default = () => {
       (pathname :> string)->String.includes("docs/manual") ||
         (pathname :> string)->String.includes("docs/react")
     ) {
-      <DocsLayout metaTitleCategory categories activeToc={title: "Introduction", entries}>
+      <DocsLayout
+        metaTitleCategory
+        categories
+        activeToc={title: "Introduction", entries}
+        breadcrumbs=?loaderData.breadcrumbs
+      >
         <di1v className="markdown-body"> {component()} </di1v>
       </DocsLayout>
     } else if (pathname :> string)->String.includes("community") {

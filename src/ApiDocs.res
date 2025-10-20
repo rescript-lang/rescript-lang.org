@@ -189,24 +189,18 @@ module SidebarTree = {
 
     let preludeSection =
       <div className="flex justify-between text-fire font-medium items-baseline">
-        {switch url {
-        | Some(url) =>
-          let version = url->Url.getVersionString
-
-          <VersionSelect version={"v12"} availableVersions=["v12", "older versions"] />
-
-        | None => React.null
-        }}
+        <VersionSelect />
       </div>
 
     <div
+      id="sidebar"
       className={(
         isOpen ? "fixed w-full left-0 h-full z-20 min-w-320" : "hidden "
-      ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 md:h-auto md:relative overflow-y-visible bg-white"}
+      ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible bg-white mt-28 md:mt-0"}
     >
       <aside
-        id="sidebar-content"
-        className="relative top-0 px-4 w-full block md:top-28 md:pt-10 md:sticky border-r border-gray-20 overflow-y-auto pb-24 h-[calc(100vh-7rem)]"
+        id="sidebar-content-api-docs"
+        className="w-80 h-full relative top-12 px-4 w-full block md:top-28 md:sticky border-r border-gray-20 overflow-y-auto pb-24 max-h-[calc(100vh-7rem)]"
       >
         <div className="flex justify-between">
           <div className="w-3/4 md:w-full"> React.null </div>
@@ -220,8 +214,6 @@ module SidebarTree = {
             <Icon.Close />
           </button>
         </div>
-        // TODO rr7: add some type of version select here?
-        // Do we want to use the existing one with the dropdown, or do something new?
         {preludeSection}
         <div className="my-10">
           <div className="hl-overline block text-gray-80 mt-5 mb-2" dataTestId="overview">
@@ -354,7 +346,7 @@ let make = (props: props) => {
   | Ok({module_: {items}}) if Array.length(items) > 0 =>
     <div className="hidden xl:block lg:w-1/5 md:h-auto md:relative overflow-y-visible bg-white">
       <aside
-        className="relative top-0 pl-4 w-full block md:top-28 md:pt-4 md:sticky border-l border-gray-20 overflow-y-auto pb-24 h-[calc(100vh-7rem)]"
+        className="relative pl-4 w-full block md:top-28 md:pt-4 md:sticky border-l border-gray-20 overflow-y-auto pb-24 h-[calc(100vh-7rem)]"
       >
         <div className="hl-overline block text-gray-80 mt-16 mb-2">
           {"Types and values"->React.string}

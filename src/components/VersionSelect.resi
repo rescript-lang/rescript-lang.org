@@ -3,4 +3,4 @@ module SectionHeader: {
   let make: (~value: string) => Jsx.element
 }
 @react.component
-let make: (~version: string, ~availableVersions: array<string>) => Jsx.element
+let make: unit => Jsx.element

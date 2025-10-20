@@ -694,22 +694,20 @@ let make = (~components=MarkdownComponents.default, ~children) => {
         <div className="absolute w-full top-16">
           <div className="relative overflow-hidden pb-32">
             <main className="mt-10 min-w-320 lg:align-center w-full">
-              <MdxProvider components>
-                <div className="">
-                  <div className="w-full">
-                    <div className="mt-16 md:mt-32 lg:mt-40 mb-12">
-                      <Intro />
-                    </div>
-                    <PlaygroundHero />
-                    <QuickInstall />
-                    <MainUSP />
-                    <OtherSellingPoints />
-                    <TrustedBy />
-                    <CuratedResources />
-                    children
+              <div className="">
+                <div className="w-full">
+                  <div className="mt-16 md:mt-32 lg:mt-40 mb-12">
+                    <Intro />
                   </div>
+                  <PlaygroundHero />
+                  <QuickInstall />
+                  <MainUSP />
+                  <OtherSellingPoints />
+                  <TrustedBy />
+                  <CuratedResources />
+                  children
                 </div>
-              </MdxProvider>
+              </div>
             </main>
           </div>
           <Footer />

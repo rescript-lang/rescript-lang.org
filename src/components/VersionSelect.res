@@ -18,18 +18,20 @@ module SectionHeader = {
     <option disabled=true key=value className="py-4"> {React.string(value)} </option>
 }
 
+// This is the current version
+let version = "v12"
+
 @react.component
-let make = (~version: string, ~availableVersions: array<string>) => {
+let make = () => {
   let children = Array.map(olderVersions, ver => {
     <a className="py-0.5 block hover:underline" key=ver.label href=ver.link>
       {React.string(ver.label)}
     </a>
   })
-  // TODO: RR7 this margin is wrong
-  <div className="wrapper mt-4">
+  <div className="wrapper mt-4 block w-full" dataTestId="version-select">
     <div id="older-versions" popover=Auto />
     <button
-      className="trigger text-12 border border-gray-20 bg-gray-10 text-gray-80 inline-block rounded px-4 py-1 font-semibold"
+      className="trigger text-12 border border-gray-20 bg-gray-10 text-gray-80 inline-block rounded px-4 py-1 font-semibold whitespace-nowrap"
       name="versionSelection"
       value=version
       popoverTarget="older-versions"

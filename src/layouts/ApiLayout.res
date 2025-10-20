@@ -69,7 +69,6 @@ let make = (
   ~title="",
   ~version: option<string>=?,
   ~activeToc: option<TableOfContents.t>=?,
-  ~components=ApiMarkdown.default,
   ~children,
 ) => {
   let {pathname: route} = ReactRouter.useLocation()
@@ -115,7 +114,7 @@ let make = (
             ("/" ++ (version ++ ("/" ++ Array.join(url.pagepath, "/")))))
           navigate(targetUrl)
         }
-        <VersionSelect version={"v12"} availableVersions=["v12", "pre v12"] />
+        <VersionSelect />
       | None => React.null
       }}
     </div>

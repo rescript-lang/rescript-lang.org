@@ -85,7 +85,7 @@ let make = (
 
   let preludeSection =
     <div className="flex flex-col justify-between text-fire font-medium items-baseline">
-      <VersionSelect version={"v12"} availableVersions=["v12", "pre v12"] />
+      <VersionSelect />
     </div>
 
   let sidebar =
