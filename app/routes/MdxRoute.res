@@ -6,6 +6,8 @@ type loaderData = {
   categories: array<SidebarLayout.Sidebar.Category.t>,
   entries: array<TableOfContents.entry>,
   blogPost?: BlogApi.post,
+  mdxSources?: array<SyntaxLookup.item>,
+  activeSyntaxItem?: SyntaxLookup.item,
 }
 
 /**
@@ -144,7 +146,24 @@ let loader: Loader.t<loaderData> = async ({request}) => {
       categories: [],
       blogPost: mdx.attributes->BlogLoader.transform,
     }
+    res
+  } else if pathname->String.includes("syntax-lookup") {
+    let mdxSources =
+      (await allMdx())
+      ->Array.filter(page => page.path->String.includes("syntax-lookup"))
+      ->Array.map(SyntaxLookupRoute.convert)
 
+    let activeSyntaxItem =
+      mdxSources->Array.find(item => item.id == mdx.attributes.id->Option.getOrThrow)
+
+    let res: loaderData = {
+      __raw: mdx.__raw,
+      attributes: mdx.attributes,
+      entries: [],
+      categories: [],
+      mdxSources,
+      ?activeSyntaxItem,
+    }
     res
   } else {
     let categories = {
@@ -229,11 +248,19 @@ let default = () => {
           <div className="markdown-body"> {component()} </div>
         </CommunityLayout>
       </div>
-    } else {
+    } else if (pathname :> string)->String.includes("blog") {
       switch loaderData.blogPost {
       | Some({frontmatter, archived, path}) =>
         <BlogArticle frontmatter isArchived=archived path> {component()} </BlogArticle>
       | None => React.null // TODO: RR7 show an error
+      }
+    } else {
+      switch loaderData.mdxSources {
+      | Some(mdxSources) =>
+        <SyntaxLookup mdxSources activeItem=?loaderData.activeSyntaxItem>
+          {component()}
+        </SyntaxLookup>
+      | None => React.null
       }
     }}
   </>

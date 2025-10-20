@@ -72,6 +72,7 @@ module Item = {
     category: Category.t,
     children: React.element,
     status: Status.t,
+    href: string,
   }
 
   let compare = (a, b) =>
@@ -90,22 +91,12 @@ type itemInfo = {
   status: Status.t,
 }
 
-let getAnchor = path => {
-  switch String.split(path, "#") {
-  | [_, anchor] => Some(anchor)
-  | _ => None
-  }
-}
-
 module Tag = {
   @react.component
-  let make = (~deprecated: bool, ~text: string, ~id: string) => {
-    let navigate = ReactRouter.useNavigate()
-    let onClick = evt => {
-      navigate("#" ++ id)
-    }
-    <span
-      onClick
+  let make = (~deprecated: bool, ~text: string, ~id: string, ~href) => {
+    // Console.log(id)
+    <ReactRouter.Link.String
+      to={"/syntax-lookup/" ++ href}
       className={`
        py-1 px-3 rounded text-16
       ${deprecated
@@ -113,7 +104,7 @@ module Tag = {
           : "hover:bg-fire hover:text-white bg-fire-5 text-fire"}`}
     >
       {React.string(text)}
-    </span>
+    </ReactRouter.Link.String>
   }
 }
 
@@ -137,8 +128,7 @@ module DetailBox = {
 
     <div>
       <div className="text-24 border-b border-gray-40 pb-4 mb-4 font-semibold"> summaryEl </div>
-      // TODO: get the actual children
-      <div className="mt-16"> children </div>
+      <div className="mt-16 markdown-body"> children </div>
     </div>
   }
 }
@@ -190,21 +180,17 @@ type item = {
   category: Category.t,
   children: React.element,
   status: Status.t,
+  href: string,
 }
 
 @react.component
-let make = (~mdxSources: array<item>) => {
+let make = (
+  ~mdxSources: array<item>,
+  ~children: option<React.element>=React.null,
+  ~activeItem: option<item>=?,
+) => {
   let allItems = mdxSources->Array.map(mdxSource => {
-    let {id, keywords, category, summary, name, status} = mdxSource
-
-    // TODO: children?
-    // let children =
-    //   <MdxRemote
-    //     frontmatter={mdxSource.frontmatter}
-    //     compiledSource={mdxSource.compiledSource}
-    //     scope={mdxSource.scope}
-    //     components={MarkdownComponents.default}
-    //   />
+    let {id, keywords, category, summary, name, status, href} = mdxSource
 
     {
       Item.id,
@@ -213,7 +199,8 @@ let make = (~mdxSources: array<item>) => {
       summary,
       name,
       status,
-      children: <div> {React.string("Hello!")} </div>,
+      children,
+      href,
     }
   })
 
@@ -231,7 +218,12 @@ let make = (~mdxSources: array<item>) => {
   let fuse: Fuse.t<Item.t> = Fuse.make(allItems, fuseOpts)
 
   let location = ReactRouter.useLocation()
-  let (state, setState) = React.useState(_ => ShowAll)
+  let (state, setState) = React.useState(_ => {
+    switch activeItem {
+    | Some(item) => ShowDetails((item :> Item.t))
+    | None => ShowAll
+    }
+  })
 
   let findItemById = id => allItems->Array.find(item => "#" ++ item.id === id)
 
@@ -249,26 +241,6 @@ let make = (~mdxSources: array<item>) => {
     })
 
   let navigate = ReactRouter.useNavigate()
-
-  // This effect is responsible for updating the view state when the router anchor changes.
-  // This effect is triggered when:
-  // [A] The page first loads.
-  // [B] The search box is cleared.
-  // [C] The search box value exactly matches an item name.
-  React.useEffect(() => {
-    switch location.hash {
-    | None => setState(_ => ShowAll)
-    | Some(anchor) =>
-      switch findItemById(anchor) {
-      | None => setState(_ => ShowAll)
-      | Some(item) => {
-          setState(_ => ShowDetails(item))
-          scrollToTop()
-        }
-      }
-    }
-    None
-  }, [location.hash])
 
   // onSearchValueChange() is called when:
   // [A] The search value changes.
@@ -288,7 +260,7 @@ let make = (~mdxSources: array<item>) => {
           let filtered = searchItems(value)
           setState(_ => ShowFiltered(value, filtered))
         }
-      | Some(item) => ReactRouter.navigate("/syntax-lookup#" ++ item.id)
+      | Some(item) => ReactRouter.navigate("/syntax-lookup/" ++ item.id)
       }
     }
   }
@@ -298,7 +270,7 @@ let make = (~mdxSources: array<item>) => {
   | ShowAll => React.null
   | ShowDetails(item) =>
     <div className="mb-16">
-      <DetailBox summary={item.summary}> item.children </DetailBox>
+      <DetailBox summary={item.summary}> children </DetailBox>
     </div>
   }
 
@@ -347,7 +319,9 @@ let make = (~mdxSources: array<item>) => {
               onSearchValueChange(item.name)
             }
             <span className="mr-2 mb-2 cursor-pointer" onMouseDown key=item.name>
-              <Tag text={item.name} deprecated={item.status == Deprecated} id=item.id />
+              <Tag
+                text={item.name} deprecated={item.status == Deprecated} id=item.id href=item.href
+              />
             </span>
           })
         let el =

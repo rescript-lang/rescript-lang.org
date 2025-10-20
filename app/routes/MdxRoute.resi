@@ -3,6 +3,8 @@ type loaderData = {
   categories: array<SidebarLayout.Sidebar.Category.t>,
   entries: array<TableOfContents.entry>,
   blogPost?: BlogApi.post,
+  mdxSources?: array<SyntaxLookup.item>,
+  activeSyntaxItem?: SyntaxLookup.item,
 }
 
 let loader: ReactRouter.Loader.t<loaderData>
