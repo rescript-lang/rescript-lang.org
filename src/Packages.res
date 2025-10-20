@@ -527,7 +527,7 @@ let parsePkgs = data => {
   }
 }
 
-let getStaticProps: Next.GetStaticProps.t<props, unit> = async _ctx => {
+let getStaticProps = async (): props => {
   let baseUrl = "https://registry.npmjs.org/-/v1/search?text=keywords:rescript&size=250&maintenance=1.0&popularity=0.5&quality=0.9"
 
   let (one, two, three) = await Promise.all3((
@@ -576,11 +576,19 @@ let getStaticProps: Next.GetStaticProps.t<props, unit> = async _ctx => {
         true
       }
     })
+    ->Array.map(pkg => {
+      // Git urls are often prefixed with "+git", which isn't a valid browser url.
+      let repositoryHref = pkg.repositoryHref->Null.map(href => {
+        href->String.replaceAll("git+", "")
+      })
+      {
+        ...pkg,
+        repositoryHref,
+      }
+    })
 
   {
-    "props": {
-      packages: pkges,
-      unmaintained,
-    },
+    packages: pkges,
+    unmaintained,
   }
 }

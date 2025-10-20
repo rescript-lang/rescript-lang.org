@@ -1,3 +1,10 @@
+let loader = async () => {
+  let props = await Packages.getStaticProps()
+
+  props
+}
+
 let default = () => {
-  <Packages packages=[] unmaintained=[] />
+  let props = ReactRouter.useLoaderData()
+  <Packages {...props} />
 }

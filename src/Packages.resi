@@ -24,4 +24,4 @@ type props = {
 
 let make: props => React.element
 
-let getStaticProps: Next.GetStaticProps.t<props, unit>
+let getStaticProps: unit => promise<props>
