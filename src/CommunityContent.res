@@ -1,10 +1,3 @@
-type link = {
-  url: string,
-  title: string,
-  description: string,
-  image: string,
-}
-
 let simplifyUrl = url =>
   url
   ->String.replace("https://", "")
@@ -13,6 +6,7 @@ let simplifyUrl = url =>
   ->Array.at(0)
 
 module LinkCard = {
+  open CommunityResources
   @react.component
   let make = (~link, ~index) => {
     let loading = switch index {
@@ -36,10 +30,9 @@ module LinkCard = {
 
 module LinkCards = {
   @react.component
-  let make = (~resources) => {
+  let make = () => {
     <div className="grid lg:grid-cols-2 gap-6">
-      {resources
-      ->Option.getOr([])
+      {CommunityResources.resources
       ->Array.map(link =>
         switch link.image {
         | "" => {...link, image: "/Art-3-rescript-launch.jpg"}
@@ -53,7 +46,7 @@ module LinkCards = {
 }
 
 @react.component
-let make = (~resources) => {
+let make = () => {
   <div>
     <h1 className="hl-1 mb-6"> {"Community Content"->React.string} </h1>
     <p className="md-p md:leading-5 tracking-[-0.015em] text-gray-80 md:text-16 mb-16">
@@ -63,7 +56,7 @@ let make = (~resources) => {
       <br />
       {React.string("If you have a resource you'd like to share, please feel free to submit a PR!")}
     </p>
-    <LinkCards resources />
+    <LinkCards />
   </div>
 }
 

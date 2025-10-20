@@ -25,7 +25,8 @@ let make = (~version: string, ~availableVersions: array<string>) => {
       {React.string(ver.label)}
     </a>
   })
-  <div className="wrapper">
+  // TODO: RR7 this margin is wrong
+  <div className="wrapper mt-4">
     <div id="older-versions" popover=Auto />
     <button
       className="trigger text-12 border border-gray-20 bg-gray-10 text-gray-80 inline-block rounded px-4 py-1 font-semibold"

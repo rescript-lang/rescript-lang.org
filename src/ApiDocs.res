@@ -387,7 +387,6 @@ let make = (props: props) => {
     breadcrumbs={list{{Url.name: "Docs", href: "/docs/manual/introduction"}, ...breadcrumbs}}
     metaTitle={title ++ " | ReScript API"}
     theme=#Reason
-    components=ApiMarkdown.default
     sidebarState=(isSidebarOpen, setSidebarOpen)
     sidebar
     rightSidebar

@@ -6,7 +6,6 @@ type loaderData = {
   categories: array<SidebarLayout.Sidebar.Category.t>,
   entries: array<TableOfContents.entry>,
   blogPost?: BlogApi.post,
-  resources?: array<CommunityContent.link>,
 }
 
 /**
@@ -121,14 +120,13 @@ let communityTableOfContents = async () => {
     ->groupBySection
     ->Dict.mapValues(values => values->sortSection->convertToNavItems("/community"))
 
+  Console.log(groups)
+
   // these are the categories that appear in the sidebar
   let categories: array<SidebarLayout.Sidebar.Category.t> = getAllGroups(groups, ["Resources"])
 
   categories
 }
-
-@module("../../data/resources.json")
-external resources: array<CommunityContent.link> = "default"
 
 let loader: Loader.t<loaderData> = async ({request}) => {
   let {pathname} = WebAPI.URL.make(~url=request.url)
@@ -193,7 +191,6 @@ let loader: Loader.t<loaderData> = async ({request}) => {
       attributes: mdx.attributes,
       entries,
       categories,
-      resources,
     }
 
     res
@@ -224,15 +221,13 @@ let default = () => {
         (pathname :> string)->String.includes("docs/react")
     ) {
       <DocsLayout metaTitleCategory categories activeToc={title: "Introduction", entries}>
-        <div className="markdown-body"> {component()} </div>
+        <di1v className="markdown-body"> {component()} </di1v>
       </DocsLayout>
     } else if (pathname :> string)->String.includes("community") {
-      let resources = loaderData.resources->Option.getOr([])
       <div>
-        <SidebarLayout.Sidebar
-          categories={categories} isOpen={true} route={pathname} toggle={() => ()}
-        />
-        <div className="markdown-body"> {component()} </div>
+        <CommunityLayout categories entries>
+          <div className="markdown-body"> {component()} </div>
+        </CommunityLayout>
       </div>
     } else {
       switch loaderData.blogPost {

@@ -132,7 +132,6 @@ let make = (
     ?breadcrumbs
     metaTitle={pageTitle ++ " | ReScript API"}
     theme=#Reason
-    components
     sidebarState=(isSidebarOpen, setSidebarOpen)
     sidebar
   >

@@ -55,7 +55,6 @@ module Sidebar: {
 let make: (
   ~metaTitle: string,
   ~theme: ColorTheme.t,
-  ~components: MarkdownComponents.t,
   ~editHref: string=?,
   // (Sidebar, toggleSidebar) ... for toggling sidebar in mobile view
   ~sidebarState: (bool, (bool => bool) => unit),

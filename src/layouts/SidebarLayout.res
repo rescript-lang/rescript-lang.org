@@ -144,7 +144,7 @@ module Sidebar = {
       >
         <aside
           id="sidebar-content"
-          className="relative top-0 px-4 w-full block md:pt-10 md:top-28 md:sticky border-r border-gray-20 overflow-y-auto pb-24 h-auto max-h-[calc(100vh-7rem)]"
+          className="h-100 relative top-0 px-4 w-full block md:top-28 md:sticky border-r border-gray-20 overflow-y-auto pb-24 max-h-[calc(100vh-7rem)]"
         >
           <button
             onClick={evt => {
@@ -155,9 +155,11 @@ module Sidebar = {
           >
             <Icon.Close />
           </button>
-          <div className="flex justify-between">
+          // TODO: conditionally render this
+          <div className="flex justify-between" dataTestId="sidebar-toplevel-nav">
             <div className="w-3/4 md:w-full"> toplevelNav </div>
           </div>
+
           preludeSection
 
           /* Firefox ignores padding in scroll containers, so we need margin
@@ -217,7 +219,6 @@ module MobileDrawerButton = {
 let make = (
   ~metaTitle: string,
   ~theme: ColorTheme.t,
-  ~components: MarkdownComponents.t,
   ~editHref: option<string>=?,
   ~sidebarState: (bool, (bool => bool) => unit),
   // (Sidebar, toggleSidebar) ... for toggling sidebar in mobile view
@@ -338,8 +339,11 @@ let make = (
                     editLinkEl
                   </div>
                 </div>
-                <div className={hasBreadcrumbs ? "mt-10" : "mt-6 md:-mt-4"}>
-                  <MdxProvider components> children </MdxProvider>
+                <div
+                  className={hasBreadcrumbs ? "mt-10" : "mt-6 md:-mt-4"}
+                  dataTestId="side-layout-children"
+                >
+                  children
                 </div>
                 pagination
               </main>

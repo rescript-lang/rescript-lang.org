@@ -124,7 +124,6 @@ let make = (
   <SidebarLayout
     metaTitle
     theme
-    components
     sidebarState=(isSidebarOpen, setSidebarOpen)
     sidebar
     categories

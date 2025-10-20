@@ -220,7 +220,7 @@ let make = (~posts: array<BlogApi.post>, ~category: category): React.element => 
     let result = switch Array.length(posts) {
     | 0 => <div> {React.string("No posts for this category available...")} </div>
     | _ =>
-      let first = Belt.Array.getExn(posts, 0)
+      let first = Array.getUnsafe(posts, 0)
       let rest = Array.slice(posts, ~start=1)
 
       let featureBox =
@@ -252,8 +252,7 @@ let make = (~posts: array<BlogApi.post>, ~category: category): React.element => 
               author=post.frontmatter.author
               ?badge
               date={post.frontmatter.date->DateStr.toDate}
-              // TODO RR7 format blog urls
-              slug={`/${encodeURI(post.frontmatter.title)}`}
+              slug={BlogApi.blogPathToSlug(post.path)}
             />
           })->React.array}
         </div>

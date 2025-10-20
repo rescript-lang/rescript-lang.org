@@ -8,7 +8,8 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
   let posts: array<BlogApi.post> = (await posts())->Array.filter(post => {
     post.archived == showArchived
   })
-  let data = {posts, category: All}
+  let data = {posts, category: showArchived ? Archived : All}
+
   data
 }
 

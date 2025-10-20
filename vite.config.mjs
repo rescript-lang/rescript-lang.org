@@ -17,5 +17,6 @@ export default defineConfig({
   },
   optimizeDeps: {
     exclude: ["node_modules/.vite"]
-  }
+  },
+  assetsInclude: ['**/resources.json']
 });
