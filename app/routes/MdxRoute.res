@@ -123,8 +123,6 @@ let communityTableOfContents = async () => {
     ->groupBySection
     ->Dict.mapValues(values => values->sortSection->convertToNavItems("/community"))
 
-  Console.log(groups)
-
   // these are the categories that appear in the sidebar
   let categories: array<SidebarLayout.Sidebar.Category.t> = getAllGroups(groups, ["Resources"])
 

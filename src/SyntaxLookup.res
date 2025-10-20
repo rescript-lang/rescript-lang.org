@@ -94,7 +94,6 @@ type itemInfo = {
 module Tag = {
   @react.component
   let make = (~deprecated: bool, ~text: string, ~id: string, ~href) => {
-    // Console.log(id)
     <ReactRouter.Link.String
       to={"/syntax-lookup/" ++ href}
       className={`

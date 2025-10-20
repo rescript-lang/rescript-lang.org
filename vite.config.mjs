@@ -6,13 +6,12 @@ import env from 'vite-plugin-env-compatible'
 export default defineConfig({
   plugins: [
     tailwindcss(),
-    reactRouter({
-      ssr: true,
-    }),
-    env({ prefix: 'PUBLIC_' })
+    reactRouter(),
+    env({ prefix: 'PUBLIC_' }) // this is to make it so babel doesn't break when trying to acess process.env in the client
   ],
   build: {
-    sourcemap: true
+    // Having these on helps with local development
+    sourcemap: process.env.NODE_ENV !== 'production',
   },
   css: {
     transformer: 'lightningcss',
