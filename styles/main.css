@@ -2,7 +2,6 @@
 @import "./_fonts.css" layer(base);
 @import "./_docsearch.css" layer(base);
 
-
 @import "tailwindcss";
 
 @source '../src/**/*.{mjs,js,res}';
@@ -164,7 +163,6 @@
   --shadow-sm: 0 0.5px 0.5px 0 rgba(0, 0, 0, 0.05);
 
   @keyframes pulse {
-
     0%,
     100% {
       opacity: 1;
@@ -185,7 +183,6 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
-
   *,
   ::after,
   ::before,
@@ -297,7 +294,7 @@
     /* Chrome/Safari/Webkit */
   }
 
-  a>code {
+  a > code {
     @apply text-fire;
   }
 }
@@ -354,14 +351,14 @@
 }
 
 .cm-s-material .CodeMirror-line::selection,
-.cm-s-material .CodeMirror-line>span::selection,
-.cm-s-material .CodeMirror-line>span>span::selection {
+.cm-s-material .CodeMirror-line > span::selection,
+.cm-s-material .CodeMirror-line > span > span::selection {
   background: rgba(128, 203, 196, 0.2);
 }
 
 .cm-s-material .CodeMirror-line::-moz-selection,
-.cm-s-material .CodeMirror-line>span::-moz-selection,
-.cm-s-material .CodeMirror-line>span>span::-moz-selection {
+.cm-s-material .CodeMirror-line > span::-moz-selection,
+.cm-s-material .CodeMirror-line > span > span::-moz-selection {
   background: rgba(128, 203, 196, 0.2);
 }
 
@@ -580,10 +577,13 @@
   left: 0;
   top: 100%;
   opacity: 0;
-  transition: visibility 0s ease, opacity 0.3s ease, transform 0.3s ease
+  transition:
+    visibility 0s ease,
+    opacity 0.3s ease,
+    transform 0.3s ease;
 }
 
-[popover]:popover-open~.menu {
+[popover]:popover-open ~ .menu {
   opacity: 1;
   visibility: visible;
 }
@@ -597,12 +597,11 @@
   }
 }
 
-[popover]:popover-open~.trigger {
+[popover]:popover-open ~ .trigger {
   svg {
     transform: rotate(180deg);
   }
 }
-
 
 /* This has to stay at the end! */
 /* This is to prevent FOUC (flash of unstyled content) */

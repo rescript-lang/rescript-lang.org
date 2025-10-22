@@ -1,1 +1,744 @@
-{"belt":{"name":"Belt","path":["belt"],"children":[{"name":"Float","path":["belt","float"],"children":[]},{"name":"Int","path":["belt","int"],"children":[]},{"name":"Result","path":["belt","result"],"children":[]},{"name":"Option","path":["belt","option"],"children":[]},{"name":"HashMap","path":["belt","hashmap"],"children":[{"name":"String","path":["belt","hashmap","string"],"children":[]},{"name":"Int","path":["belt","hashmap","int"],"children":[]}]},{"name":"HashSet","path":["belt","hashset"],"children":[{"name":"String","path":["belt","hashset","string"],"children":[]},{"name":"Int","path":["belt","hashset","int"],"children":[]}]},{"name":"MutableMap","path":["belt","mutablemap"],"children":[{"name":"String","path":["belt","mutablemap","string"],"children":[]},{"name":"Int","path":["belt","mutablemap","int"],"children":[]}]},{"name":"MutableSet","path":["belt","mutableset"],"children":[{"name":"String","path":["belt","mutableset","string"],"children":[]},{"name":"Int","path":["belt","mutableset","int"],"children":[]}]},{"name":"Map","path":["belt","map"],"children":[{"name":"Dict","path":["belt","map","dict"],"children":[]},{"name":"String","path":["belt","map","string"],"children":[]},{"name":"Int","path":["belt","map","int"],"children":[]}]},{"name":"Set","path":["belt","set"],"children":[{"name":"Dict","path":["belt","set","dict"],"children":[]},{"name":"String","path":["belt","set","string"],"children":[]},{"name":"Int","path":["belt","set","int"],"children":[]}]},{"name":"Range","path":["belt","range"],"children":[]},{"name":"List","path":["belt","list"],"children":[]},{"name":"MutableStack","path":["belt","mutablestack"],"children":[]},{"name":"MutableQueue","path":["belt","mutablequeue"],"children":[]},{"name":"SortArray","path":["belt","sortarray"],"children":[{"name":"String","path":["belt","sortarray","string"],"children":[]},{"name":"Int","path":["belt","sortarray","int"],"children":[]}]},{"name":"Array","path":["belt","array"],"children":[]},{"name":"Id","path":["belt","id"],"children":[{"name":"MakeHashable","path":["belt","id","makehashable"],"children":[]},{"name":"MakeHashableU","path":["belt","id","makehashableu"],"children":[]},{"name":"MakeComparable","path":["belt","id","makecomparable"],"children":[]},{"name":"MakeComparableU","path":["belt","id","makecomparableu"],"children":[]}]}]},"dom":{"name":"Dom","path":["dom"],"children":[{"name":"Storage2","path":["dom","storage2"],"children":[]},{"name":"Storage","path":["dom","storage"],"children":[]}]},"js":{"name":"Js","path":["js"],"children":[{"name":"WeakMap","path":["js","weakmap"],"children":[]},{"name":"Map","path":["js","map"],"children":[]},{"name":"WeakSet","path":["js","weakset"],"children":[]},{"name":"Set","path":["js","set"],"children":[]},{"name":"Console","path":["js","console"],"children":[]},{"name":"Result","path":["js","result"],"children":[]},{"name":"Option","path":["js","option"],"children":[]},{"name":"Blob","path":["js","blob"],"children":[]},{"name":"File","path":["js","file"],"children":[]},{"name":"BigInt","path":["js","bigint"],"children":[]},{"name":"Int","path":["js","int"],"children":[]},{"name":"Float","path":["js","float"],"children":[]},{"name":"Types","path":["js","types"],"children":[]},{"name":"TypedArray2","path":["js","typedarray2"],"children":[{"name":"DataView","path":["js","typedarray2","dataview"],"children":[]},{"name":"Float64Array","path":["js","typedarray2","float64array"],"children":[]},{"name":"Float32Array","path":["js","typedarray2","float32array"],"children":[]},{"name":"Uint32Array","path":["js","typedarray2","uint32array"],"children":[]},{"name":"Int32Array","path":["js","typedarray2","int32array"],"children":[]},{"name":"Uint16Array","path":["js","typedarray2","uint16array"],"children":[]},{"name":"Int16Array","path":["js","typedarray2","int16array"],"children":[]},{"name":"Uint8ClampedArray","path":["js","typedarray2","uint8clampedarray"],"children":[]},{"name":"Uint8Array","path":["js","typedarray2","uint8array"],"children":[]},{"name":"Int8Array","path":["js","typedarray2","int8array"],"children":[]},{"name":"ArrayBuffer","path":["js","typedarray2","arraybuffer"],"children":[]}]},{"name":"Typed_array","path":["js","typed_array"],"children":[{"name":"DataView","path":["js","typed_array","dataview"],"children":[]},{"name":"Float64_array","path":["js","typed_array","float64_array"],"children":[]},{"name":"Float64Array","path":["js","typed_array","float64array"],"children":[]},{"name":"Float32_array","path":["js","typed_array","float32_array"],"children":[]},{"name":"Float32Array","path":["js","typed_array","float32array"],"children":[]},{"name":"Uint32Array","path":["js","typed_array","uint32array"],"children":[]},{"name":"Int32_array","path":["js","typed_array","int32_array"],"children":[]},{"name":"Int32Array","path":["js","typed_array","int32array"],"children":[]},{"name":"Uint16Array","path":["js","typed_array","uint16array"],"children":[]},{"name":"Int16Array","path":["js","typed_array","int16array"],"children":[]},{"name":"Uint8ClampedArray","path":["js","typed_array","uint8clampedarray"],"children":[]},{"name":"Uint8Array","path":["js","typed_array","uint8array"],"children":[]},{"name":"Int8Array","path":["js","typed_array","int8array"],"children":[]},{"name":"S","path":["js","typed_array","s"],"children":[]},{"name":"ArrayBuffer","path":["js","typed_array","arraybuffer"],"children":[]},{"name":"Type","path":["js","typed_array","type"],"children":[]}]},{"name":"Obj","path":["js","obj"],"children":[]},{"name":"Math","path":["js","math"],"children":[]},{"name":"Json","path":["js","json"],"children":[{"name":"Kind","path":["js","json","kind"],"children":[]}]},{"name":"Global","path":["js","global"],"children":[]},{"name":"Dict","path":["js","dict"],"children":[]},{"name":"Date","path":["js","date"],"children":[]},{"name":"Promise2","path":["js","promise2"],"children":[]},{"name":"Promise","path":["js","promise"],"children":[]},{"name":"Re","path":["js","re"],"children":[]},{"name":"String2","path":["js","string2"],"children":[]},{"name":"String","path":["js","string"],"children":[]},{"name":"Array2","path":["js","array2"],"children":[]},{"name":"Array","path":["js","array"],"children":[]},{"name":"Exn","path":["js","exn"],"children":[]},{"name":"Null_undefined","path":["js","null_undefined"],"children":[]},{"name":"Nullable","path":["js","nullable"],"children":[]},{"name":"Undefined","path":["js","undefined"],"children":[]},{"name":"Null","path":["js","null"],"children":[]}]},"stdlib":{"name":"Stdlib","path":["stdlib"],"children":[{"name":"BigUint64Array","path":["stdlib","biguint64array"],"children":[{"name":"Constants","path":["stdlib","biguint64array","constants"],"children":[]}]},{"name":"BigInt64Array","path":["stdlib","bigint64array"],"children":[{"name":"Constants","path":["stdlib","bigint64array","constants"],"children":[]}]},{"name":"Uint8ClampedArray","path":["stdlib","uint8clampedarray"],"children":[{"name":"Constants","path":["stdlib","uint8clampedarray","constants"],"children":[]}]},{"name":"Uint32Array","path":["stdlib","uint32array"],"children":[{"name":"Constants","path":["stdlib","uint32array","constants"],"children":[]}]},{"name":"Uint16Array","path":["stdlib","uint16array"],"children":[{"name":"Constants","path":["stdlib","uint16array","constants"],"children":[]}]},{"name":"Uint8Array","path":["stdlib","uint8array"],"children":[{"name":"Constants","path":["stdlib","uint8array","constants"],"children":[]}]},{"name":"Int32Array","path":["stdlib","int32array"],"children":[{"name":"Constants","path":["stdlib","int32array","constants"],"children":[]}]},{"name":"Int16Array","path":["stdlib","int16array"],"children":[{"name":"Constants","path":["stdlib","int16array","constants"],"children":[]}]},{"name":"Int8Array","path":["stdlib","int8array"],"children":[{"name":"Constants","path":["stdlib","int8array","constants"],"children":[]}]},{"name":"Float64Array","path":["stdlib","float64array"],"children":[{"name":"Constants","path":["stdlib","float64array","constants"],"children":[]}]},{"name":"Float32Array","path":["stdlib","float32array"],"children":[{"name":"Constants","path":["stdlib","float32array","constants"],"children":[]}]},{"name":"TypedArray","path":["stdlib","typedarray"],"children":[]},{"name":"ArrayBuffer","path":["stdlib","arraybuffer"],"children":[]},{"name":"WeakSet","path":["stdlib","weakset"],"children":[]},{"name":"Set","path":["stdlib","set"],"children":[]},{"name":"WeakMap","path":["stdlib","weakmap"],"children":[]},{"name":"Map","path":["stdlib","map"],"children":[]},{"name":"AsyncIterator","path":["stdlib","asynciterator"],"children":[]},{"name":"Iterator","path":["stdlib","iterator"],"children":[]},{"name":"Type","path":["stdlib","type"],"children":[{"name":"Classify","path":["stdlib","type","classify"],"children":[]}]},{"name":"Symbol","path":["stdlib","symbol"],"children":[]},{"name":"String","path":["stdlib","string"],"children":[]},{"name":"Result","path":["stdlib","result"],"children":[]},{"name":"RegExp","path":["stdlib","regexp"],"children":[{"name":"Result","path":["stdlib","regexp","result"],"children":[]}]},{"name":"Promise","path":["stdlib","promise"],"children":[]},{"name":"Pair","path":["stdlib","pair"],"children":[]},{"name":"Ordering","path":["stdlib","ordering"],"children":[]},{"name":"Option","path":["stdlib","option"],"children":[]},{"name":"Object","path":["stdlib","object"],"children":[]},{"name":"Nullable","path":["stdlib","nullable"],"children":[]},{"name":"Null","path":["stdlib","null"],"children":[]},{"name":"Math","path":["stdlib","math"],"children":[{"name":"Int","path":["stdlib","math","int"],"children":[]},{"name":"Constants","path":["stdlib","math","constants"],"children":[]}]},{"name":"List","path":["stdlib","list"],"children":[]},{"name":"Lazy","path":["stdlib","lazy"],"children":[]},{"name":"JSON","path":["stdlib","json"],"children":[{"name":"Decode","path":["stdlib","json","decode"],"children":[]},{"name":"Encode","path":["stdlib","json","encode"],"children":[]},{"name":"Classify","path":["stdlib","json","classify"],"children":[]}]},{"name":"JsExn","path":["stdlib","jsexn"],"children":[]},{"name":"JsError","path":["stdlib","jserror"],"children":[{"name":"URIError","path":["stdlib","jserror","urierror"],"children":[]},{"name":"TypeError","path":["stdlib","jserror","typeerror"],"children":[]},{"name":"SyntaxError","path":["stdlib","jserror","syntaxerror"],"children":[]},{"name":"ReferenceError","path":["stdlib","jserror","referenceerror"],"children":[]},{"name":"RangeError","path":["stdlib","jserror","rangeerror"],"children":[]},{"name":"EvalError","path":["stdlib","jserror","evalerror"],"children":[]}]},{"name":"Intl","path":["stdlib","intl"],"children":[{"name":"Segments","path":["stdlib","intl","segments"],"children":[]},{"name":"Segmenter","path":["stdlib","intl","segmenter"],"children":[]},{"name":"RelativeTimeFormat","path":["stdlib","intl","relativetimeformat"],"children":[]},{"name":"PluralRules","path":["stdlib","intl","pluralrules"],"children":[]},{"name":"NumberFormat","path":["stdlib","intl","numberformat"],"children":[{"name":"Grouping","path":["stdlib","intl","numberformat","grouping"],"children":[]}]},{"name":"Locale","path":["stdlib","intl","locale"],"children":[]},{"name":"ListFormat","path":["stdlib","intl","listformat"],"children":[]},{"name":"DateTimeFormat","path":["stdlib","intl","datetimeformat"],"children":[]},{"name":"Collator","path":["stdlib","intl","collator"],"children":[]},{"name":"Common","path":["stdlib","intl","common"],"children":[]}]},{"name":"Int","path":["stdlib","int"],"children":[{"name":"Ref","path":["stdlib","int","ref"],"children":[]},{"name":"Bitwise","path":["stdlib","int","bitwise"],"children":[]},{"name":"Constants","path":["stdlib","int","constants"],"children":[]}]},{"name":"Float","path":["stdlib","float"],"children":[{"name":"Constants","path":["stdlib","float","constants"],"children":[]}]},{"name":"Error","path":["stdlib","error"],"children":[{"name":"URIError","path":["stdlib","error","urierror"],"children":[]},{"name":"TypeError","path":["stdlib","error","typeerror"],"children":[]},{"name":"SyntaxError","path":["stdlib","error","syntaxerror"],"children":[]},{"name":"ReferenceError","path":["stdlib","error","referenceerror"],"children":[]},{"name":"RangeError","path":["stdlib","error","rangeerror"],"children":[]},{"name":"EvalError","path":["stdlib","error","evalerror"],"children":[]}]},{"name":"Exn","path":["stdlib","exn"],"children":[]},{"name":"Dict","path":["stdlib","dict"],"children":[]},{"name":"Date","path":["stdlib","date"],"children":[{"name":"UTC","path":["stdlib","date","utc"],"children":[]}]},{"name":"DataView","path":["stdlib","dataview"],"children":[]},{"name":"Console","path":["stdlib","console"],"children":[]},{"name":"Bool","path":["stdlib","bool"],"children":[]},{"name":"BigInt","path":["stdlib","bigint"],"children":[]},{"name":"Array","path":["stdlib","array"],"children":[]},{"name":"IntervalId","path":["stdlib","intervalid"],"children":[]},{"name":"TimeoutId","path":["stdlib","timeoutid"],"children":[]}]}}
+{
+  "belt": {
+    "name": "Belt",
+    "path": ["belt"],
+    "children": [
+      { "name": "Float", "path": ["belt", "float"], "children": [] },
+      { "name": "Int", "path": ["belt", "int"], "children": [] },
+      { "name": "Result", "path": ["belt", "result"], "children": [] },
+      { "name": "Option", "path": ["belt", "option"], "children": [] },
+      {
+        "name": "HashMap",
+        "path": ["belt", "hashmap"],
+        "children": [
+          {
+            "name": "String",
+            "path": ["belt", "hashmap", "string"],
+            "children": []
+          },
+          { "name": "Int", "path": ["belt", "hashmap", "int"], "children": [] }
+        ]
+      },
+      {
+        "name": "HashSet",
+        "path": ["belt", "hashset"],
+        "children": [
+          {
+            "name": "String",
+            "path": ["belt", "hashset", "string"],
+            "children": []
+          },
+          { "name": "Int", "path": ["belt", "hashset", "int"], "children": [] }
+        ]
+      },
+      {
+        "name": "MutableMap",
+        "path": ["belt", "mutablemap"],
+        "children": [
+          {
+            "name": "String",
+            "path": ["belt", "mutablemap", "string"],
+            "children": []
+          },
+          {
+            "name": "Int",
+            "path": ["belt", "mutablemap", "int"],
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "MutableSet",
+        "path": ["belt", "mutableset"],
+        "children": [
+          {
+            "name": "String",
+            "path": ["belt", "mutableset", "string"],
+            "children": []
+          },
+          {
+            "name": "Int",
+            "path": ["belt", "mutableset", "int"],
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Map",
+        "path": ["belt", "map"],
+        "children": [
+          { "name": "Dict", "path": ["belt", "map", "dict"], "children": [] },
+          {
+            "name": "String",
+            "path": ["belt", "map", "string"],
+            "children": []
+          },
+          { "name": "Int", "path": ["belt", "map", "int"], "children": [] }
+        ]
+      },
+      {
+        "name": "Set",
+        "path": ["belt", "set"],
+        "children": [
+          { "name": "Dict", "path": ["belt", "set", "dict"], "children": [] },
+          {
+            "name": "String",
+            "path": ["belt", "set", "string"],
+            "children": []
+          },
+          { "name": "Int", "path": ["belt", "set", "int"], "children": [] }
+        ]
+      },
+      { "name": "Range", "path": ["belt", "range"], "children": [] },
+      { "name": "List", "path": ["belt", "list"], "children": [] },
+      {
+        "name": "MutableStack",
+        "path": ["belt", "mutablestack"],
+        "children": []
+      },
+      {
+        "name": "MutableQueue",
+        "path": ["belt", "mutablequeue"],
+        "children": []
+      },
+      {
+        "name": "SortArray",
+        "path": ["belt", "sortarray"],
+        "children": [
+          {
+            "name": "String",
+            "path": ["belt", "sortarray", "string"],
+            "children": []
+          },
+          {
+            "name": "Int",
+            "path": ["belt", "sortarray", "int"],
+            "children": []
+          }
+        ]
+      },
+      { "name": "Array", "path": ["belt", "array"], "children": [] },
+      {
+        "name": "Id",
+        "path": ["belt", "id"],
+        "children": [
+          {
+            "name": "MakeHashable",
+            "path": ["belt", "id", "makehashable"],
+            "children": []
+          },
+          {
+            "name": "MakeHashableU",
+            "path": ["belt", "id", "makehashableu"],
+            "children": []
+          },
+          {
+            "name": "MakeComparable",
+            "path": ["belt", "id", "makecomparable"],
+            "children": []
+          },
+          {
+            "name": "MakeComparableU",
+            "path": ["belt", "id", "makecomparableu"],
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  "dom": {
+    "name": "Dom",
+    "path": ["dom"],
+    "children": [
+      { "name": "Storage2", "path": ["dom", "storage2"], "children": [] },
+      { "name": "Storage", "path": ["dom", "storage"], "children": [] }
+    ]
+  },
+  "js": {
+    "name": "Js",
+    "path": ["js"],
+    "children": [
+      { "name": "WeakMap", "path": ["js", "weakmap"], "children": [] },
+      { "name": "Map", "path": ["js", "map"], "children": [] },
+      { "name": "WeakSet", "path": ["js", "weakset"], "children": [] },
+      { "name": "Set", "path": ["js", "set"], "children": [] },
+      { "name": "Console", "path": ["js", "console"], "children": [] },
+      { "name": "Result", "path": ["js", "result"], "children": [] },
+      { "name": "Option", "path": ["js", "option"], "children": [] },
+      { "name": "Blob", "path": ["js", "blob"], "children": [] },
+      { "name": "File", "path": ["js", "file"], "children": [] },
+      { "name": "BigInt", "path": ["js", "bigint"], "children": [] },
+      { "name": "Int", "path": ["js", "int"], "children": [] },
+      { "name": "Float", "path": ["js", "float"], "children": [] },
+      { "name": "Types", "path": ["js", "types"], "children": [] },
+      {
+        "name": "TypedArray2",
+        "path": ["js", "typedarray2"],
+        "children": [
+          {
+            "name": "DataView",
+            "path": ["js", "typedarray2", "dataview"],
+            "children": []
+          },
+          {
+            "name": "Float64Array",
+            "path": ["js", "typedarray2", "float64array"],
+            "children": []
+          },
+          {
+            "name": "Float32Array",
+            "path": ["js", "typedarray2", "float32array"],
+            "children": []
+          },
+          {
+            "name": "Uint32Array",
+            "path": ["js", "typedarray2", "uint32array"],
+            "children": []
+          },
+          {
+            "name": "Int32Array",
+            "path": ["js", "typedarray2", "int32array"],
+            "children": []
+          },
+          {
+            "name": "Uint16Array",
+            "path": ["js", "typedarray2", "uint16array"],
+            "children": []
+          },
+          {
+            "name": "Int16Array",
+            "path": ["js", "typedarray2", "int16array"],
+            "children": []
+          },
+          {
+            "name": "Uint8ClampedArray",
+            "path": ["js", "typedarray2", "uint8clampedarray"],
+            "children": []
+          },
+          {
+            "name": "Uint8Array",
+            "path": ["js", "typedarray2", "uint8array"],
+            "children": []
+          },
+          {
+            "name": "Int8Array",
+            "path": ["js", "typedarray2", "int8array"],
+            "children": []
+          },
+          {
+            "name": "ArrayBuffer",
+            "path": ["js", "typedarray2", "arraybuffer"],
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Typed_array",
+        "path": ["js", "typed_array"],
+        "children": [
+          {
+            "name": "DataView",
+            "path": ["js", "typed_array", "dataview"],
+            "children": []
+          },
+          {
+            "name": "Float64_array",
+            "path": ["js", "typed_array", "float64_array"],
+            "children": []
+          },
+          {
+            "name": "Float64Array",
+            "path": ["js", "typed_array", "float64array"],
+            "children": []
+          },
+          {
+            "name": "Float32_array",
+            "path": ["js", "typed_array", "float32_array"],
+            "children": []
+          },
+          {
+            "name": "Float32Array",
+            "path": ["js", "typed_array", "float32array"],
+            "children": []
+          },
+          {
+            "name": "Uint32Array",
+            "path": ["js", "typed_array", "uint32array"],
+            "children": []
+          },
+          {
+            "name": "Int32_array",
+            "path": ["js", "typed_array", "int32_array"],
+            "children": []
+          },
+          {
+            "name": "Int32Array",
+            "path": ["js", "typed_array", "int32array"],
+            "children": []
+          },
+          {
+            "name": "Uint16Array",
+            "path": ["js", "typed_array", "uint16array"],
+            "children": []
+          },
+          {
+            "name": "Int16Array",
+            "path": ["js", "typed_array", "int16array"],
+            "children": []
+          },
+          {
+            "name": "Uint8ClampedArray",
+            "path": ["js", "typed_array", "uint8clampedarray"],
+            "children": []
+          },
+          {
+            "name": "Uint8Array",
+            "path": ["js", "typed_array", "uint8array"],
+            "children": []
+          },
+          {
+            "name": "Int8Array",
+            "path": ["js", "typed_array", "int8array"],
+            "children": []
+          },
+          { "name": "S", "path": ["js", "typed_array", "s"], "children": [] },
+          {
+            "name": "ArrayBuffer",
+            "path": ["js", "typed_array", "arraybuffer"],
+            "children": []
+          },
+          {
+            "name": "Type",
+            "path": ["js", "typed_array", "type"],
+            "children": []
+          }
+        ]
+      },
+      { "name": "Obj", "path": ["js", "obj"], "children": [] },
+      { "name": "Math", "path": ["js", "math"], "children": [] },
+      {
+        "name": "Json",
+        "path": ["js", "json"],
+        "children": [
+          { "name": "Kind", "path": ["js", "json", "kind"], "children": [] }
+        ]
+      },
+      { "name": "Global", "path": ["js", "global"], "children": [] },
+      { "name": "Dict", "path": ["js", "dict"], "children": [] },
+      { "name": "Date", "path": ["js", "date"], "children": [] },
+      { "name": "Promise2", "path": ["js", "promise2"], "children": [] },
+      { "name": "Promise", "path": ["js", "promise"], "children": [] },
+      { "name": "Re", "path": ["js", "re"], "children": [] },
+      { "name": "String2", "path": ["js", "string2"], "children": [] },
+      { "name": "String", "path": ["js", "string"], "children": [] },
+      { "name": "Array2", "path": ["js", "array2"], "children": [] },
+      { "name": "Array", "path": ["js", "array"], "children": [] },
+      { "name": "Exn", "path": ["js", "exn"], "children": [] },
+      {
+        "name": "Null_undefined",
+        "path": ["js", "null_undefined"],
+        "children": []
+      },
+      { "name": "Nullable", "path": ["js", "nullable"], "children": [] },
+      { "name": "Undefined", "path": ["js", "undefined"], "children": [] },
+      { "name": "Null", "path": ["js", "null"], "children": [] }
+    ]
+  },
+  "stdlib": {
+    "name": "Stdlib",
+    "path": ["stdlib"],
+    "children": [
+      {
+        "name": "BigUint64Array",
+        "path": ["stdlib", "biguint64array"],
+        "children": [
+          {
+            "name": "Constants",
+            "path": ["stdlib", "biguint64array", "constants"],
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "BigInt64Array",
+        "path": ["stdlib", "bigint64array"],
+        "children": [
+          {
+            "name": "Constants",
+            "path": ["stdlib", "bigint64array", "constants"],
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Uint8ClampedArray",
+        "path": ["stdlib", "uint8clampedarray"],
+        "children": [
+          {
+            "name": "Constants",
+            "path": ["stdlib", "uint8clampedarray", "constants"],
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Uint32Array",
+        "path": ["stdlib", "uint32array"],
+        "children": [
+          {
+            "name": "Constants",
+            "path": ["stdlib", "uint32array", "constants"],
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Uint16Array",
+        "path": ["stdlib", "uint16array"],
+        "children": [
+          {
+            "name": "Constants",
+            "path": ["stdlib", "uint16array", "constants"],
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Uint8Array",
+        "path": ["stdlib", "uint8array"],
+        "children": [
+          {
+            "name": "Constants",
+            "path": ["stdlib", "uint8array", "constants"],
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Int32Array",
+        "path": ["stdlib", "int32array"],
+        "children": [
+          {
+            "name": "Constants",
+            "path": ["stdlib", "int32array", "constants"],
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Int16Array",
+        "path": ["stdlib", "int16array"],
+        "children": [
+          {
+            "name": "Constants",
+            "path": ["stdlib", "int16array", "constants"],
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Int8Array",
+        "path": ["stdlib", "int8array"],
+        "children": [
+          {
+            "name": "Constants",
+            "path": ["stdlib", "int8array", "constants"],
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Float64Array",
+        "path": ["stdlib", "float64array"],
+        "children": [
+          {
+            "name": "Constants",
+            "path": ["stdlib", "float64array", "constants"],
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Float32Array",
+        "path": ["stdlib", "float32array"],
+        "children": [
+          {
+            "name": "Constants",
+            "path": ["stdlib", "float32array", "constants"],
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "TypedArray",
+        "path": ["stdlib", "typedarray"],
+        "children": []
+      },
+      {
+        "name": "ArrayBuffer",
+        "path": ["stdlib", "arraybuffer"],
+        "children": []
+      },
+      { "name": "WeakSet", "path": ["stdlib", "weakset"], "children": [] },
+      { "name": "Set", "path": ["stdlib", "set"], "children": [] },
+      { "name": "WeakMap", "path": ["stdlib", "weakmap"], "children": [] },
+      { "name": "Map", "path": ["stdlib", "map"], "children": [] },
+      {
+        "name": "AsyncIterator",
+        "path": ["stdlib", "asynciterator"],
+        "children": []
+      },
+      { "name": "Iterator", "path": ["stdlib", "iterator"], "children": [] },
+      {
+        "name": "Type",
+        "path": ["stdlib", "type"],
+        "children": [
+          {
+            "name": "Classify",
+            "path": ["stdlib", "type", "classify"],
+            "children": []
+          }
+        ]
+      },
+      { "name": "Symbol", "path": ["stdlib", "symbol"], "children": [] },
+      { "name": "String", "path": ["stdlib", "string"], "children": [] },
+      { "name": "Result", "path": ["stdlib", "result"], "children": [] },
+      {
+        "name": "RegExp",
+        "path": ["stdlib", "regexp"],
+        "children": [
+          {
+            "name": "Result",
+            "path": ["stdlib", "regexp", "result"],
+            "children": []
+          }
+        ]
+      },
+      { "name": "Promise", "path": ["stdlib", "promise"], "children": [] },
+      { "name": "Pair", "path": ["stdlib", "pair"], "children": [] },
+      { "name": "Ordering", "path": ["stdlib", "ordering"], "children": [] },
+      { "name": "Option", "path": ["stdlib", "option"], "children": [] },
+      { "name": "Object", "path": ["stdlib", "object"], "children": [] },
+      { "name": "Nullable", "path": ["stdlib", "nullable"], "children": [] },
+      { "name": "Null", "path": ["stdlib", "null"], "children": [] },
+      {
+        "name": "Math",
+        "path": ["stdlib", "math"],
+        "children": [
+          { "name": "Int", "path": ["stdlib", "math", "int"], "children": [] },
+          {
+            "name": "Constants",
+            "path": ["stdlib", "math", "constants"],
+            "children": []
+          }
+        ]
+      },
+      { "name": "List", "path": ["stdlib", "list"], "children": [] },
+      { "name": "Lazy", "path": ["stdlib", "lazy"], "children": [] },
+      {
+        "name": "JSON",
+        "path": ["stdlib", "json"],
+        "children": [
+          {
+            "name": "Decode",
+            "path": ["stdlib", "json", "decode"],
+            "children": []
+          },
+          {
+            "name": "Encode",
+            "path": ["stdlib", "json", "encode"],
+            "children": []
+          },
+          {
+            "name": "Classify",
+            "path": ["stdlib", "json", "classify"],
+            "children": []
+          }
+        ]
+      },
+      { "name": "JsExn", "path": ["stdlib", "jsexn"], "children": [] },
+      {
+        "name": "JsError",
+        "path": ["stdlib", "jserror"],
+        "children": [
+          {
+            "name": "URIError",
+            "path": ["stdlib", "jserror", "urierror"],
+            "children": []
+          },
+          {
+            "name": "TypeError",
+            "path": ["stdlib", "jserror", "typeerror"],
+            "children": []
+          },
+          {
+            "name": "SyntaxError",
+            "path": ["stdlib", "jserror", "syntaxerror"],
+            "children": []
+          },
+          {
+            "name": "ReferenceError",
+            "path": ["stdlib", "jserror", "referenceerror"],
+            "children": []
+          },
+          {
+            "name": "RangeError",
+            "path": ["stdlib", "jserror", "rangeerror"],
+            "children": []
+          },
+          {
+            "name": "EvalError",
+            "path": ["stdlib", "jserror", "evalerror"],
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Intl",
+        "path": ["stdlib", "intl"],
+        "children": [
+          {
+            "name": "Segments",
+            "path": ["stdlib", "intl", "segments"],
+            "children": []
+          },
+          {
+            "name": "Segmenter",
+            "path": ["stdlib", "intl", "segmenter"],
+            "children": []
+          },
+          {
+            "name": "RelativeTimeFormat",
+            "path": ["stdlib", "intl", "relativetimeformat"],
+            "children": []
+          },
+          {
+            "name": "PluralRules",
+            "path": ["stdlib", "intl", "pluralrules"],
+            "children": []
+          },
+          {
+            "name": "NumberFormat",
+            "path": ["stdlib", "intl", "numberformat"],
+            "children": [
+              {
+                "name": "Grouping",
+                "path": ["stdlib", "intl", "numberformat", "grouping"],
+                "children": []
+              }
+            ]
+          },
+          {
+            "name": "Locale",
+            "path": ["stdlib", "intl", "locale"],
+            "children": []
+          },
+          {
+            "name": "ListFormat",
+            "path": ["stdlib", "intl", "listformat"],
+            "children": []
+          },
+          {
+            "name": "DateTimeFormat",
+            "path": ["stdlib", "intl", "datetimeformat"],
+            "children": []
+          },
+          {
+            "name": "Collator",
+            "path": ["stdlib", "intl", "collator"],
+            "children": []
+          },
+          {
+            "name": "Common",
+            "path": ["stdlib", "intl", "common"],
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Int",
+        "path": ["stdlib", "int"],
+        "children": [
+          { "name": "Ref", "path": ["stdlib", "int", "ref"], "children": [] },
+          {
+            "name": "Bitwise",
+            "path": ["stdlib", "int", "bitwise"],
+            "children": []
+          },
+          {
+            "name": "Constants",
+            "path": ["stdlib", "int", "constants"],
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Float",
+        "path": ["stdlib", "float"],
+        "children": [
+          {
+            "name": "Constants",
+            "path": ["stdlib", "float", "constants"],
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Error",
+        "path": ["stdlib", "error"],
+        "children": [
+          {
+            "name": "URIError",
+            "path": ["stdlib", "error", "urierror"],
+            "children": []
+          },
+          {
+            "name": "TypeError",
+            "path": ["stdlib", "error", "typeerror"],
+            "children": []
+          },
+          {
+            "name": "SyntaxError",
+            "path": ["stdlib", "error", "syntaxerror"],
+            "children": []
+          },
+          {
+            "name": "ReferenceError",
+            "path": ["stdlib", "error", "referenceerror"],
+            "children": []
+          },
+          {
+            "name": "RangeError",
+            "path": ["stdlib", "error", "rangeerror"],
+            "children": []
+          },
+          {
+            "name": "EvalError",
+            "path": ["stdlib", "error", "evalerror"],
+            "children": []
+          }
+        ]
+      },
+      { "name": "Exn", "path": ["stdlib", "exn"], "children": [] },
+      { "name": "Dict", "path": ["stdlib", "dict"], "children": [] },
+      {
+        "name": "Date",
+        "path": ["stdlib", "date"],
+        "children": [
+          { "name": "UTC", "path": ["stdlib", "date", "utc"], "children": [] }
+        ]
+      },
+      { "name": "DataView", "path": ["stdlib", "dataview"], "children": [] },
+      { "name": "Console", "path": ["stdlib", "console"], "children": [] },
+      { "name": "Bool", "path": ["stdlib", "bool"], "children": [] },
+      { "name": "BigInt", "path": ["stdlib", "bigint"], "children": [] },
+      { "name": "Array", "path": ["stdlib", "array"], "children": [] },
+      {
+        "name": "IntervalId",
+        "path": ["stdlib", "intervalid"],
+        "children": []
+      },
+      { "name": "TimeoutId", "path": ["stdlib", "timeoutid"], "children": [] }
+    ]
+  }
+}

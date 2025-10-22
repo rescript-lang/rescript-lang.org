@@ -1,7 +1,6 @@
 /* Markdown related stuff */
 /* Sometimes we cannot circumvent the cascade, especially for nested lists */
 .markdown-body {
-
   ol {
     li {
       list-style-type: decimal;
@@ -9,12 +8,8 @@
       &::before {
         @apply font-bold;
       }
-
     }
-
-
   }
-
 
   ul {
     @apply mb-0;
@@ -49,7 +44,7 @@
     }
   }
 
-  p+p {
+  p + p {
     @apply mt-6;
   }
 
@@ -75,5 +70,4 @@
       }
     }
   }
-
 }

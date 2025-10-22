@@ -93,4 +93,3 @@ let groupBySection = mdxPages =>
 
 let filterMdxPages = (mdxPages, path) =>
   Array.filter(mdxPages, mdx => (mdx.path :> string)->String.includes(path))
-  

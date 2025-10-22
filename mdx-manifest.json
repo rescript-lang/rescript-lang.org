@@ -238,9 +238,7 @@
     "path": "/home/josh/Dev/rescript-lang.org/_blogposts/archive/2020-07-06-a-note-on-bucklescripts-future-commitments.mdx",
     "slug": "2020-07-06-a-note-on-bucklescripts-future-commitments",
     "author": "chenglou",
-    "co-authors": [
-      "ryyppy"
-    ],
+    "co-authors": ["ryyppy"],
     "date": "2020-07-06",
     "title": "A Note on BuckleScript's New Syntax and Its Future Support Commitments",
     "description": "This post clarifies the goals and commitments of the BuckleScript compiler toolchain\nand gives more context on what to expect in the future.\n"
@@ -343,9 +341,7 @@
     "author": "hongbo",
     "date": "2020-03-12",
     "previewImg": null,
-    "tags": [
-      "Release"
-    ],
+    "tags": ["Release"],
     "title": "Announcing BuckleScript 7.2",
     "description": "This release will give us some small quality of life improvements for tool\nbuilders, better performance, and a new let %private modifier for hiding\nmodule functionality.\n"
   },
@@ -373,9 +369,7 @@
     "author": "hongbo",
     "date": "2020-02-04",
     "previewImg": null,
-    "tags": [
-      "Release"
-    ],
+    "tags": ["Release"],
     "title": "Announcing BuckleScript 7.1.0",
     "description": ""
   },

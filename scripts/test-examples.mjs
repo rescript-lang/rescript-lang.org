@@ -129,40 +129,38 @@ fs.writeFileSync(tempFileName, "");
 
 let success = true;
 
-glob
-  .sync(__dirname + "/../docs/{manual,react}/**/*.mdx")
-  .forEach((file) => {
-    let content = fs.readFileSync(file, { encoding: "utf-8" });
-    let parsedResult = parseFile(content);
-    if (parsedResult != null) {
-      fs.writeFileSync(tempFileName, parsedResult);
-      try {
-        // -109 for suppressing `Toplevel expression is expected to have unit type.`
-        // Most doc snippets do e.g. `Belt.Array.length(["test"])`, which triggers this
-        child_process.execFileSync(
-          bsc,
-          [
-            tempFileName,
-            "-I",
-            rescriptCoreCompiled,
-            "-I",
-            rescriptReactCompiled,
-            "-bs-jsx",
-            "4",
-            "-w",
-            "-109",
-            "-uncurried",
-            "-open",
-            "RescriptCore",
-          ],
-          { stdio: "pipe" },
-        );
-      } catch (e) {
-        process.stdout.write(postprocessOutput(file, e));
-        success = false;
-      }
+glob.sync(__dirname + "/../docs/{manual,react}/**/*.mdx").forEach((file) => {
+  let content = fs.readFileSync(file, { encoding: "utf-8" });
+  let parsedResult = parseFile(content);
+  if (parsedResult != null) {
+    fs.writeFileSync(tempFileName, parsedResult);
+    try {
+      // -109 for suppressing `Toplevel expression is expected to have unit type.`
+      // Most doc snippets do e.g. `Belt.Array.length(["test"])`, which triggers this
+      child_process.execFileSync(
+        bsc,
+        [
+          tempFileName,
+          "-I",
+          rescriptCoreCompiled,
+          "-I",
+          rescriptReactCompiled,
+          "-bs-jsx",
+          "4",
+          "-w",
+          "-109",
+          "-uncurried",
+          "-open",
+          "RescriptCore",
+        ],
+        { stdio: "pipe" },
+      );
+    } catch (e) {
+      process.stdout.write(postprocessOutput(file, e));
+      success = false;
     }
-  });
+  }
+});
 
 fs.unlinkSync(tempFileName);
 process.exit(success ? 0 : 1);

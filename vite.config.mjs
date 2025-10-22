@@ -1,23 +1,23 @@
 import { reactRouter } from "@react-router/dev/vite";
-import tailwindcss from '@tailwindcss/vite';
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
-import env from 'vite-plugin-env-compatible'
+import env from "vite-plugin-env-compatible";
 
 export default defineConfig({
   plugins: [
     tailwindcss(),
     reactRouter(),
-    env({ prefix: 'PUBLIC_' }) // this is to make it so babel doesn't break when trying to acess process.env in the client
+    env({ prefix: "PUBLIC_" }), // this is to make it so babel doesn't break when trying to acess process.env in the client
   ],
   build: {
     // Having these on helps with local development
-    sourcemap: process.env.NODE_ENV !== 'production',
+    sourcemap: process.env.NODE_ENV !== "production",
   },
   css: {
-    transformer: 'lightningcss',
+    transformer: "lightningcss",
   },
   optimizeDeps: {
-    exclude: ["node_modules/.vite"]
+    exclude: ["node_modules/.vite"],
   },
-  assetsInclude: ['**/resources.json']
+  assetsInclude: ["**/resources.json"],
 });
