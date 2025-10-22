@@ -12,6 +12,7 @@
     "dev": "react-router dev",
     "res:watch": "rescript watch",
     "res:clean": "rescript clean",
+    "res:build": "rescript build",
     "build": "rescript build && react-router build",
     "test": "echo \"No tests specified\" && exit 0",
     "reanalyze": "reanalyze -all-cmt .",
