@@ -1,5 +1,3 @@
-%%raw(`import "../../styles/_hljs.css";`)
-
 let langShortname = (lang: string) =>
   switch lang {
   | "ocaml" => "ml"
