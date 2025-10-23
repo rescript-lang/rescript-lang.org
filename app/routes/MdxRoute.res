@@ -46,6 +46,7 @@ let components = {
   "Video": Markdown.Video.make,
   "Warn": Markdown.Warn.make,
   "CommunityContent": CommunityContent.make,
+  "WarningTable": WarningTable.make,
 }
 
 let convertToNavItems = (items, rootPath) =>
