@@ -44,7 +44,7 @@ module DropdownSelect = {
   let make = (~onChange, ~name, ~value, ~disabled=false, ~children) => {
     let opacity = disabled ? " opacity-50" : ""
     <select
-      className={"text-14 bg-transparent border border-gray-80 inline-block rounded px-4 py-1 font-semibold" ++
+      className={"text-14 bg-gray-100 border border-gray-80 inline-block rounded px-4 py-1 font-semibold" ++
       opacity}
       name
       value
