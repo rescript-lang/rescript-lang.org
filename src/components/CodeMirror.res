@@ -96,13 +96,9 @@ module CM6 = {
   type editorView
   type compartment
   type effect
-
+  type transaction
+  type languageSupport
   type keymapSpec
-
-  module Extension = {
-    type t = extension
-    external fromArray: array<t> => t = "%identity"
-  }
 
   module Text = {
     type t
@@ -115,42 +111,40 @@ module CM6 = {
   }
 
   module EditorState = {
-    type createConfig = {doc: string, extensions: array<extension>}
-
     @module("@codemirror/state") @scope("EditorState")
-    external create: createConfig => editorState = "create"
+    external create: {"doc": string, "extensions": array<extension>} => editorState = "create"
 
-    module ReadOnly = {
-      @module("@codemirror/state") @scope(("EditorState", "readOnly")) @val
-      external of_: bool => extension = "of"
-    }
+    @module("@codemirror/state") @scope("EditorState") @val
+    external readOnly: {"of": bool => extension} = "readOnly"
+
     @get external doc: editorState => Text.t = "doc"
   }
 
   module Compartment = {
     @module("@codemirror/state") @new
-    external create: unit => compartment = "Compartment"
-    @send external make: (compartment, extension) => extension = "of"
+    external make: unit => compartment = "Compartment"
+
+    @send external of_: (compartment, extension) => extension = "of"
     @send external reconfigure: (compartment, extension) => effect = "reconfigure"
   }
 
   module EditorView = {
-    type createConfig = {state: editorState, parent: WebAPI.DOMAPI.element}
     @module("@codemirror/view") @new
-    external create: createConfig => editorView = "EditorView"
+    external create: {"state": editorState, "parent": WebAPI.DOMAPI.element} => editorView =
+      "EditorView"
 
     @send external destroy: editorView => unit = "destroy"
     @get external state: editorView => editorState = "state"
     @get external dom: editorView => WebAPI.DOMAPI.htmlElement = "dom"
 
-    type change = {from: int, to: int, insert: string}
-    type dispatchArg = {changes: change}
     @send
-    external dispatch: (editorView, dispatchArg) => unit = "dispatch"
+    external dispatch: (
+      editorView,
+      {"changes": {"from": int, "to": int, "insert": string}},
+    ) => unit = "dispatch"
 
-    type dispatchEffectsArg = {effects: effect}
     @send
-    external dispatchEffects: (editorView, dispatchEffectsArg) => unit = "dispatch"
+    external dispatchEffects: (editorView, {"effects": effect}) => unit = "dispatch"
 
     @module("@codemirror/view") @scope("EditorView") @val
     external lineWrapping: extension = "lineWrapping"
@@ -175,8 +169,8 @@ module CM6 = {
       @get external view: update => editorView = "view"
       @get external docChanged: update => bool = "docChanged"
 
-      @module("@codemirror/view") @scope(("EditorView", "updateListener"))
-      external of_: (update => unit) => extension = "of"
+      @module("@codemirror/view") @scope("EditorView")
+      external of_: (update => unit) => extension = "updateListener"
     }
   }
 
@@ -203,18 +197,16 @@ module CM6 = {
     @module("@codemirror/language")
     external bracketMatching: unit => extension = "bracketMatching"
 
-    type syntaxConfig = {fallback: bool}
-
     @module("@codemirror/language")
-    external syntaxHighlighting: (extension, syntaxConfig) => extension = "syntaxHighlighting"
+    external syntaxHighlighting: (extension, {"fallback": bool}) => extension = "syntaxHighlighting"
 
-    @module("@codemirror/language") @val
+    @module("@lezer/highlight") @val
     external defaultHighlightStyle: extension = "defaultHighlightStyle"
   }
 
   module Keymap = {
-    @module("@codemirror/view") @scope("keymap") @val
-    external of_: array<keymapSpec> => extension = "of"
+    @module("@codemirror/state")
+    external of_: array<keymapSpec> => extension = "keymap"
   }
 
   module Lint = {
@@ -236,7 +228,7 @@ module CM6 = {
 
   module JavaScript = {
     @module("@codemirror/lang-javascript")
-    external javascript: unit => extension = "javascript"
+    external javascript: unit => languageSupport = "javascript"
   }
 
   module Vim = {
@@ -245,11 +237,11 @@ module CM6 = {
   }
 
   module CustomLanguages = {
-    @module("../../plugins/cm6-rescript-mode.js") @val
-    external rescriptLanguage: extension = "rescriptLanguage"
+    @module("../plugins/cm6-rescript-mode") @val
+    external rescriptLanguage: languageSupport = "rescriptLanguage"
 
-    @module("../../plugins/cm6-reason-mode.js") @val
-    external reasonLanguage: extension = "reasonLanguage"
+    @module("../plugins/cm6-reason-mode") @val
+    external reasonLanguage: languageSupport = "reasonLanguage"
   }
 }
 
@@ -276,7 +268,7 @@ type editorConfig = {
   maxHeight: option<string>,
 }
 
-let createLinterExtension = (errors: array<Error.t>): CM6.extension => {
+let createLinterExtension = (errors: array<Error.t>, lintConf: CM6.compartment): CM6.extension => {
   let linterSource = (view: CM6.editorView): array<CM6.Lint.diagnostic> => {
     if Array.length(errors) === 0 {
       []
@@ -304,7 +296,7 @@ let createLinterExtension = (errors: array<Error.t>): CM6.extension => {
             message: err.text,
           }
 
-          Array.push(diagnostics, diagnostic)
+          Array.push(diagnostics, diagnostic)->ignore
         } catch {
         | _ => Console.warn("Error creating lint marker")
         }
@@ -314,7 +306,7 @@ let createLinterExtension = (errors: array<Error.t>): CM6.extension => {
     }
   }
 
-  CM6.Lint.linter(linterSource)
+  CM6.Compartment.of_(lintConf, CM6.Lint.linter(linterSource))
 }
 
 let createEditor = (config: editorConfig): editorInstance => {
@@ -326,41 +318,41 @@ let createEditor = (config: editorConfig): editorInstance => {
   }
 
   // Setup compartments for dynamic config
-  let languageConf = CM6.Compartment.create()
-  let readOnlyConf = CM6.Compartment.create()
-  let keymapConf = CM6.Compartment.create()
-  let lintConf = CM6.Compartment.create()
+  let languageConf = CM6.Compartment.make()
+  let readOnlyConf = CM6.Compartment.make()
+  let keymapConf = CM6.Compartment.make()
+  let lintConf = CM6.Compartment.make()
 
   // Basic extensions
   let extensions = [
-    CM6.Compartment.make(languageConf, (language: CM6.extension)),
+    CM6.Compartment.of_(languageConf, (Obj.magic(language): CM6.extension)),
     CM6.Commands.history(),
     CM6.EditorView.drawSelection(),
     CM6.EditorView.dropCursor(),
     CM6.Language.bracketMatching(),
     CM6.Search.highlightSelectionMatches(),
-    CM6.Language.syntaxHighlighting(CM6.Language.defaultHighlightStyle, {fallback: true}),
+    CM6.Language.syntaxHighlighting(CM6.Language.defaultHighlightStyle, {"fallback": true}),
   ]
 
   // Add optional extensions
   if config.lineNumbers {
-    Array.push(extensions, CM6.EditorView.lineNumbers())
-    Array.push(extensions, CM6.EditorView.highlightActiveLineGutter())
+    Array.push(extensions, CM6.EditorView.lineNumbers())->ignore
+    Array.push(extensions, CM6.EditorView.highlightActiveLineGutter())->ignore
   }
 
   if !config.readOnly {
-    Array.push(extensions, CM6.EditorView.highlightActiveLine())
+    Array.push(extensions, CM6.EditorView.highlightActiveLine())->ignore
   }
 
   if config.lineWrapping {
-    Array.push(extensions, CM6.EditorView.lineWrapping)
+    Array.push(extensions, CM6.EditorView.lineWrapping)->ignore
   }
 
   // Add readonly conf
   Array.push(
     extensions,
-    CM6.Compartment.make(readOnlyConf, CM6.EditorState.ReadOnly.of_(config.readOnly)),
-  )
+    CM6.Compartment.of_(readOnlyConf, CM6.EditorState.readOnly["of"](config.readOnly)),
+  )->ignore
 
   // Add keymap
   let keymapExtension = if config.keyMap === "vim" {
@@ -370,16 +362,17 @@ let createEditor = (config: editorConfig): editorInstance => {
     let searchKeymapExt = CM6.Keymap.of_(CM6.Search.searchKeymap)
     // Return vim extension combined with keymap extensions
     // We need to wrap them in an array and convert to extension
-    /* combine extensions into a JS array value */
-    [vimExt, defaultKeymapExt, historyKeymapExt, searchKeymapExt]->CM6.Extension.fromArray
+    let combined = Array.concat([vimExt], [defaultKeymapExt, historyKeymapExt, searchKeymapExt])
+    (Obj.magic(combined): CM6.extension)
   } else {
     let defaultKeymapExt = CM6.Keymap.of_(CM6.Commands.defaultKeymap)
     let historyKeymapExt = CM6.Keymap.of_(CM6.Commands.historyKeymap)
     let searchKeymapExt = CM6.Keymap.of_(CM6.Search.searchKeymap)
-    // Return combined keymap extensions as a JS array
-    [defaultKeymapExt, historyKeymapExt, searchKeymapExt]->CM6.Extension.fromArray
+    // Return combined keymap extensions
+    let combined = [defaultKeymapExt, historyKeymapExt, searchKeymapExt]
+    (Obj.magic(combined): CM6.extension)
   }
-  Array.push(extensions, CM6.Compartment.make(keymapConf, keymapExtension))
+  Array.push(extensions, CM6.Compartment.of_(keymapConf, keymapExtension))->ignore
 
   // Add change listener
   switch config.onChange {
@@ -391,18 +384,24 @@ let createEditor = (config: editorConfig): editorInstance => {
         onChange(newValue)
       }
     })
-    Array.push(extensions, updateListener)
+    Array.push(extensions, updateListener)->ignore
   | None => ()
   }
 
-  // Add linter for errors (wrap the raw linter extension in the compartment)
-  Array.push(extensions, CM6.Compartment.make(lintConf, createLinterExtension(config.errors)))
-  Array.push(extensions, CM6.Lint.lintGutter())
+  // Add linter for errors
+  Array.push(extensions, createLinterExtension(config.errors, lintConf))->ignore
+  Array.push(extensions, CM6.Lint.lintGutter())->ignore
 
   // Create editor
-  let state = CM6.EditorState.create({doc: config.initialValue, extensions})
+  let state = CM6.EditorState.create({
+    "doc": config.initialValue,
+    "extensions": extensions,
+  })
 
-  let view = CM6.EditorView.create({state, parent: config.parent})
+  let view = CM6.EditorView.create({
+    "state": state,
+    "parent": config.parent,
+  })
 
   // Apply custom styling
   let dom = CM6.EditorView.dom(view)
@@ -430,7 +429,13 @@ let editorSetValue = (instance: editorInstance, value: string): unit => {
   let doc = CM6.EditorView.state(instance.view)->CM6.EditorState.doc
   CM6.EditorView.dispatch(
     instance.view,
-    {changes: {from: 0, to: CM6.Text.toString(doc)->String.length, insert: value}},
+    {
+      "changes": {
+        "from": 0,
+        "to": CM6.Text.toString(doc)->String.length,
+        "insert": value,
+      },
+    },
   )
 }
 
@@ -451,7 +456,36 @@ let editorSetMode = (instance: editorInstance, mode: string): unit => {
 
   CM6.EditorView.dispatchEffects(
     instance.view,
-    {effects: CM6.Compartment.reconfigure(instance.languageConf, (language: CM6.extension))},
+    {
+      "effects": CM6.Compartment.reconfigure(
+        instance.languageConf,
+        (Obj.magic(language): CM6.extension),
+      ),
+    },
+  )
+}
+
+let editorSetKeyMap = (instance: editorInstance, keyMap: string): unit => {
+  let keymapExtension = if keyMap === "vim" {
+    let vimExt = CM6.Vim.vim()
+    let defaultKeymapExt = CM6.Keymap.of_(CM6.Commands.defaultKeymap)
+    let historyKeymapExt = CM6.Keymap.of_(CM6.Commands.historyKeymap)
+    let searchKeymapExt = CM6.Keymap.of_(CM6.Search.searchKeymap)
+    let combined = Array.concat([vimExt], [defaultKeymapExt, historyKeymapExt, searchKeymapExt])
+    (Obj.magic(combined): CM6.extension)
+  } else {
+    let defaultKeymapExt = CM6.Keymap.of_(CM6.Commands.defaultKeymap)
+    let historyKeymapExt = CM6.Keymap.of_(CM6.Commands.historyKeymap)
+    let searchKeymapExt = CM6.Keymap.of_(CM6.Search.searchKeymap)
+    let combined = [defaultKeymapExt, historyKeymapExt, searchKeymapExt]
+    (Obj.magic(combined): CM6.extension)
+  }
+
+  CM6.EditorView.dispatchEffects(
+    instance.view,
+    {
+      "effects": CM6.Compartment.reconfigure(instance.keymapConf, keymapExtension),
+    },
   )
 }
 
@@ -459,7 +493,10 @@ let editorSetErrors = (instance: editorInstance, errors: array<Error.t>): unit =
   CM6.EditorView.dispatchEffects(
     instance.view,
     {
-      effects: CM6.Compartment.reconfigure(instance.lintConf, createLinterExtension(errors)),
+      "effects": CM6.Compartment.reconfigure(
+        instance.lintConf,
+        createLinterExtension(errors, instance.lintConf),
+      ),
     },
   )
 }
