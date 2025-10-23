@@ -254,7 +254,9 @@ let default = () => {
     <title> {React.string(attributes.metaTitle->Nullable.getOr(attributes.title))} </title>
     <meta name="description" content={attributes.description->Nullable.getOr("")} />
     {if (pathname :> string) == "/docs/manual/api" {
-      <ApiOverviewLayout.Docs> {component()} </ApiOverviewLayout.Docs>
+      <ApiOverviewLayout.Docs>
+        <div className="markdown-body"> {component()} </div>
+      </ApiOverviewLayout.Docs>
     } else if (
       (pathname :> string)->String.includes("docs/manual") ||
         (pathname :> string)->String.includes("docs/react")
