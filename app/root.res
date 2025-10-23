@@ -1,8 +1,13 @@
-%%raw(`
-  import "../styles/main.css";
-  import "../styles/_hljs.css";
-  import "../styles/utils.css";
+@module("../styles/main.css?url")
+external mainCss: string = "default"
 
+@module("../styles/_hljs.css?url")
+external hljsCss: string = "default"
+
+@module("../styles/utils.css?url")
+external utilsCss: string = "default"
+
+%%raw(`
   import hljs from 'highlight.js/lib/core';
   import bash from 'highlight.js/lib/languages/bash';
   import css from 'highlight.js/lib/languages/css';
@@ -31,8 +36,12 @@ let default = () => {
   let (isOverlayOpen, setOverlayOpen) = React.useState(_ => false)
   <html>
     <head>
+      <link rel="stylesheet" href={mainCss} />
+
       <Links />
       <Meta />
+      <link rel="stylesheet" href={hljsCss} />
+      <link rel="stylesheet" href={utilsCss} />
       <link rel="icon" href="/favicon.ico" />
       <meta charSet="UTF-8" />
     </head>

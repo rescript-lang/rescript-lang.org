@@ -8,6 +8,10 @@
     This file is providing the core functionality and logic of our CodeMirror instances.
  */
 
+// TODO: post RR7: figure out how to do this inside of rescript
+// Import CodeMirror setup to ensure modes are loaded
+%%raw(`import "./CodeMirrorSetup.js"`)
+
 module KeyMap = {
   type t = Default | Vim
   let toString = (keyMap: t) =>
@@ -546,6 +550,7 @@ let make = // props relevant for the react wrapper
   ~keyMap=KeyMap.Default,
   ~lineWrapping=false,
 ): React.element => {
+  Console.debug("staring codemirror")
   let inputElement = React.useRef(Nullable.null)
   let cmRef: React.ref<option<CM.t>> = React.useRef(None)
   let cmStateRef = React.useRef({marked: [], hoverHints})
@@ -553,7 +558,14 @@ let make = // props relevant for the react wrapper
   let windowWidth = useWindowWidth()
   let (onMouseOver, onMouseOut, onMouseMove) = useHoverTooltip(~cmStateRef, ~cmRef, ())
 
+  Console.debug2("Rendering Codemirror with value:", value)
+
   React.useEffect(() => {
+    switch inputElement.current->Nullable.toOption {
+    | Some(el) => Console.debug2("Codemirror input element", el)
+    | None => Console.debug("Codemirror input element is null")
+    }
+
     switch inputElement.current->Nullable.toOption {
     | Some(input) =>
       let options = {
@@ -567,6 +579,9 @@ let make = // props relevant for the react wrapper
         scrollbarStyle,
         keyMap: KeyMap.toString(keyMap),
       }
+
+      Console.debug2("options", options)
+
       let cm = CM.fromTextArea(input, options)
 
       Option.forEach(minHeight, minHeight => {
@@ -593,6 +608,8 @@ let make = // props relevant for the react wrapper
       wrapper->CM.onMouseMove(onMouseMove)
 
       cmRef.current = Some(cm)
+
+      Console.debug2("Codemirror instance", cm)
 
       let cleanup = () => {
         /* Console.log2("cleanup", options->CM.Options.mode); */
