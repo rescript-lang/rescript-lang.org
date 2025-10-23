@@ -1,7 +1,16 @@
+@module("./styles/main.css?url")
+external mainCss: string = "default"
+
+@module("./styles/utils.css?url")
+external utilsCss: string = "default"
+
+@module("./styles/_hljs.css?url")
+external hljsCss: string = "default"
+// import "../styles/main.css";
+// import "../styles/_hljs.css";
+// import "../styles/utils.css";
+
 %%raw(`
-  import "../styles/main.css";
-  import "../styles/_hljs.css";
-  import "../styles/utils.css";
 
   import hljs from 'highlight.js/lib/core';
   import bash from 'highlight.js/lib/languages/bash';
@@ -34,6 +43,9 @@ let default = () => {
       <Links />
       <Meta />
       <link rel="icon" href="/favicon.ico" />
+      <link rel="stylesheet" href={mainCss} />
+      <link rel="stylesheet" href={utilsCss} />
+      <link rel="stylesheet" href={hljsCss} />
       <meta charSet="UTF-8" />
     </head>
     <body>
