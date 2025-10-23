@@ -30,6 +30,10 @@ let make = (~tag) => {
         }
         Promise.resolve()
       })
+      ->Promise.catch(err => {
+        Console.error2("Failed to load docson schema", err)
+        Promise.resolve()
+      })
 
     None
   }, [])
