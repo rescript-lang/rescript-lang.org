@@ -7,6 +7,9 @@ type t
 @module("docson") @scope("default")
 external doc: (string, JSON.t, option<string>, string) => unit = "doc"
 
+@module("../../styles/docson.css?url")
+external docsonCss: string = "default"
+
 @react.component
 let make = (~tag) => {
   let element = React.useRef(Nullable.null)
@@ -37,5 +40,8 @@ let make = (~tag) => {
 
     None
   }, [])
-  <div ref={ReactDOM.Ref.domRef(element)} id="docson-root" />
+  <>
+    <link rel="stylesheet" href={docsonCss} />
+    <div ref={ReactDOM.Ref.domRef(element)} id="docson-root" />
+  </>
 }
