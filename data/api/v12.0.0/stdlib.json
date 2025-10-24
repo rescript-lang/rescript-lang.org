@@ -168,7 +168,9 @@
         "id": "Stdlib.globalThis",
         "kind": "value",
         "name": "globalThis",
-        "docstrings": [],
+        "docstrings": [
+          "`globalThis` gives you the host global object (`window` in browsers, `global` in Node, etc.).\nYou can reach shared globals from any runtime without special checks.\n\n## Examples\n\n**Note:** These are demonstrative examples. In real code, prefer writing your own type-safe bindings.\nSee [`Bind to Global JS Values`](https://rescript-lang.org/docs/manual/v12.0.0/bind-to-global-js-values).\n\n\n```rescript\ntypeof(globalThis[\"setTimeout\"]) == #function\n\nglobalThis[\"myAppName\"] = \"SuperApp\";\nglobalThis[\"myAppName\"] == \"SuperApp\"\n```"
+        ],
         "signature": "let globalThis: {..}"
       },
       {
@@ -184,7 +186,9 @@
         "id": "Stdlib.panic",
         "kind": "value",
         "name": "panic",
-        "docstrings": [],
+        "docstrings": [
+          "`panic(message)` throws a JavaScript `Error` prefixed with `Panic!`.\nCall it when something went wrong and the program should stop right away.\n\n## Examples\n\n```rescript\nlet caught = try panic(\"Invariant violated\") catch {\n| JsExn(err) => JsExn.message(err)->Option.getOrThrow\n}\n\ncaught == \"Panic! Invariant violated\"\n```"
+        ],
         "signature": "let panic: string => 'a"
       },
       {
@@ -200,21 +204,27 @@
         "id": "Stdlib.null",
         "kind": "value",
         "name": "null",
-        "docstrings": [],
+        "docstrings": [
+          "`null` returns the JavaScript `null` value as a `nullable<'a>`.\nUse the `Nullable` helpers to convert it into an `option` or to read the value.\n\n## Examples\n\n```rescript\nnull->Nullable.toOption == None\n```"
+        ],
         "signature": "let null: nullable<'a>"
       },
       {
         "id": "Stdlib.undefined",
         "kind": "value",
         "name": "undefined",
-        "docstrings": [],
+        "docstrings": [
+          "`undefined` returns the JavaScript `undefined` value as a `nullable<'a>`.\nUse the `Nullable` helpers to convert it into an `option` or to read the value.\n\n## Examples\n\n```rescript\nundefined->Nullable.toOption == None\n```"
+        ],
         "signature": "let undefined: nullable<'a>"
       },
       {
         "id": "Stdlib.typeof",
         "kind": "value",
         "name": "typeof",
-        "docstrings": [],
+        "docstrings": [
+          "`typeof(value)` exposes JavaScript's `typeof` operator and returns a `Type.t` enum.\nIt helps you inspect values that come from JavaScript APIs.\n\n## Examples\n\n```rescript\ntypeof(1) == #number\ntypeof(\"a\") == #string\n```"
+        ],
         "signature": "let typeof: 'a => Type.t"
       }
     ]
@@ -3714,70 +3724,90 @@
         "id": "Stdlib.TypedArray.get",
         "kind": "value",
         "name": "get",
-        "docstrings": [],
+        "docstrings": [
+          "`get(typedArray, index)` returns the element at `index` of `typedArray`.\nReturns `None` if the index does not exist in the typed array. Equivalent to doing `typedArray[index]` in JavaScript.\n\n## Examples\n\n```rescript\nlet view = Int32Array.fromArray([1, 2, 3])\nTypedArray.get(view, 0) == Some(1)\nTypedArray.get(view, 10) == None\n```"
+        ],
         "signature": "let get: (t<'a>, int) => option<'a>"
       },
       {
         "id": "Stdlib.TypedArray.set",
         "kind": "value",
         "name": "set",
-        "docstrings": [],
+        "docstrings": [
+          "`set(typedArray, index, item)` sets the provided `item` at `index` of `typedArray`.\n\nBeware this will *mutate* the array.\n\n## Examples\n\n```rescript\nlet view = Int32Array.fromArray([1, 2])\nTypedArray.set(view, 1, 5)\nTypedArray.get(view, 1) == Some(5)\n```"
+        ],
         "signature": "let set: (t<'a>, int, 'a) => unit"
       },
       {
         "id": "Stdlib.TypedArray.buffer",
         "kind": "value",
         "name": "buffer",
-        "docstrings": [],
+        "docstrings": [
+          "`buffer(typedArray)` returns the underlying `ArrayBuffer` backing this view.\n\nSee [`TypedArray.prototype.buffer`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/buffer) on MDN."
+        ],
         "signature": "let buffer: t<'a> => ArrayBuffer.t"
       },
       {
         "id": "Stdlib.TypedArray.byteLength",
         "kind": "value",
         "name": "byteLength",
-        "docstrings": [],
+        "docstrings": [
+          "`byteLength(typedArray)` returns the length in bytes of the view.\n\nSee [`TypedArray.prototype.byteLength`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/byteLength) on MDN.\n\n## Examples\n\n```rescript\nlet view = Int32Array.fromArray([1, 2])\nTypedArray.byteLength(view) == 8\n```"
+        ],
         "signature": "let byteLength: t<'a> => int"
       },
       {
         "id": "Stdlib.TypedArray.byteOffset",
         "kind": "value",
         "name": "byteOffset",
-        "docstrings": [],
+        "docstrings": [
+          "`byteOffset(typedArray)` returns the offset in bytes from the start of the buffer.\n\nSee [`TypedArray.prototype.byteOffset`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/byteOffset) on MDN."
+        ],
         "signature": "let byteOffset: t<'a> => int"
       },
       {
         "id": "Stdlib.TypedArray.setArray",
         "kind": "value",
         "name": "setArray",
-        "docstrings": [],
+        "docstrings": [
+          "`setArray(target, source)` copies the values from `source` into `target`, mutating it.\n\nSee [`TypedArray.prototype.set`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/set) on MDN.\n\n## Examples\n\n```rescript\nlet view = Int32Array.fromArray([0, 0])\nTypedArray.setArray(view, [1, 2])\nTypedArray.toString(view) == \"1,2\"\n```"
+        ],
         "signature": "let setArray: (t<'a>, array<'a>) => unit"
       },
       {
         "id": "Stdlib.TypedArray.setArrayFrom",
         "kind": "value",
         "name": "setArrayFrom",
-        "docstrings": [],
+        "docstrings": [
+          "`setArrayFrom(target, source, index)` copies `source` into `target` starting at `index`.\n\nSee [`TypedArray.prototype.set`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/set) on MDN.\n\n## Examples\n\n```rescript\nlet view = Int32Array.fromArray([0, 0, 0])\nTypedArray.setArrayFrom(view, [5, 6], 1)\nTypedArray.toString(view) == \"0,5,6\"\n```"
+        ],
         "signature": "let setArrayFrom: (t<'a>, array<'a>, int) => unit"
       },
       {
         "id": "Stdlib.TypedArray.length",
         "kind": "value",
         "name": "length",
-        "docstrings": [],
+        "docstrings": [
+          "`length(typedArray)` returns the number of elements.\n\nSee [`TypedArray.prototype.length`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/length) on MDN.\n\n## Examples\n\n```rescript\nlet view = Int32Array.fromArray([1, 2, 3])\nTypedArray.length(view) == 3\n```"
+        ],
         "signature": "let length: t<'a> => int"
       },
       {
         "id": "Stdlib.TypedArray.copyAllWithin",
         "kind": "value",
         "name": "copyAllWithin",
-        "docstrings": [],
+        "docstrings": [
+          "`copyAllWithin(typedArray, ~target)` copies values starting at index `0` over the positions beginning at `target`.\n\nBeware this will *mutate* the typed array.\n\nSee [`TypedArray.prototype.copyWithin`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/copyWithin) on MDN.\n\n## Examples\n\n```rescript\nlet view = Int32Array.fromArray([10, 20, 30])\nlet _ = TypedArray.copyAllWithin(view, ~target=1)\nTypedArray.toString(view) == \"10,10,20\"\n```"
+        ],
         "signature": "let copyAllWithin: (t<'a>, ~target: int) => array<'a>"
       },
       {
         "id": "Stdlib.TypedArray.copyWithinToEnd",
         "kind": "value",
         "name": "copyWithinToEnd",
-        "docstrings": [],
+        "docstrings": [
+          "`copyWithinToEnd(typedArray, ~target, ~start)` copies values from `start` through the end of the view into the range beginning at `target`.\n\nBeware this will *mutate* the typed array.\n\nSee [`TypedArray.prototype.copyWithin`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/copyWithin) on MDN.\n\n## Examples\n\n```rescript\nlet view = Int32Array.fromArray([1, 2, 3, 4])\nlet _ = TypedArray.copyWithinToEnd(view, ~target=0, ~start=2)\nTypedArray.toString(view) == \"3,4,3,4\"\n```"
+        ],
         "signature": "let copyWithinToEnd: (t<'a>, ~target: int, ~start: int) => array<'a>",
         "deprecated": ""
       },
@@ -3785,21 +3815,27 @@
         "id": "Stdlib.TypedArray.copyWithin",
         "kind": "value",
         "name": "copyWithin",
-        "docstrings": [],
+        "docstrings": [
+          "`copyWithin(typedArray, ~target, ~start, ~end)` copies the section `[start, end)` onto the range beginning at `target`.\n\nBeware this will *mutate* the typed array.\n\nSee [`TypedArray.prototype.copyWithin`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/copyWithin) on MDN.\n\n## Examples\n\n```rescript\nlet view = Int32Array.fromArray([1, 2, 3, 4])\nlet _ = TypedArray.copyWithin(view, ~target=1, ~start=2, ~end=4)\nTypedArray.toString(view) == \"1,3,4,4\"\n```"
+        ],
         "signature": "let copyWithin: (t<'a>, ~target: int, ~start: int, ~end: int=?) => array<'a>"
       },
       {
         "id": "Stdlib.TypedArray.fillAll",
         "kind": "value",
         "name": "fillAll",
-        "docstrings": [],
+        "docstrings": [
+          "`fillAll(typedArray, value)` fills every element with `value`.\n\nBeware this will *mutate* the typed array.\n\nSee [`TypedArray.prototype.fill`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill) on MDN.\n\n## Examples\n\n```rescript\nlet view = Int32Array.fromArray([1, 2, 3])\nlet _ = TypedArray.fillAll(view, 9)\nTypedArray.toString(view) == \"9,9,9\"\n```"
+        ],
         "signature": "let fillAll: (t<'a>, 'a) => t<'a>"
       },
       {
         "id": "Stdlib.TypedArray.fillToEnd",
         "kind": "value",
         "name": "fillToEnd",
-        "docstrings": [],
+        "docstrings": [
+          "`fillToEnd(typedArray, value, ~start)` fills from `start` through the end with `value`.\n\nBeware this will *mutate* the typed array."
+        ],
         "signature": "let fillToEnd: (t<'a>, 'a, ~start: int) => t<'a>",
         "deprecated": ""
       },
@@ -3807,98 +3843,126 @@
         "id": "Stdlib.TypedArray.fill",
         "kind": "value",
         "name": "fill",
-        "docstrings": [],
+        "docstrings": [
+          "`fill(typedArray, value, ~start, ~end)` fills the half-open interval `[start, end)` with `value`.\n\nBeware this will *mutate* the typed array.\n\nSee [`TypedArray.prototype.fill`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill) on MDN.\n\n## Examples\n\n```rescript\nlet view = Int32Array.fromArray([1, 2, 3, 4])\nlet _ = TypedArray.fill(view, 0, ~start=1, ~end=3)\nTypedArray.toString(view) == \"1,0,0,4\"\n```"
+        ],
         "signature": "let fill: (t<'a>, 'a, ~start: int, ~end: int=?) => t<'a>"
       },
       {
         "id": "Stdlib.TypedArray.reverse",
         "kind": "value",
         "name": "reverse",
-        "docstrings": [],
+        "docstrings": [
+          "`reverse(typedArray)` reverses the elements of the view in place.\n\nBeware this will *mutate* the typed array.\n\nSee [`TypedArray.prototype.reverse`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/reverse) on MDN."
+        ],
         "signature": "let reverse: t<'a> => unit"
       },
       {
         "id": "Stdlib.TypedArray.toReversed",
         "kind": "value",
         "name": "toReversed",
-        "docstrings": [],
+        "docstrings": [
+          "`toReversed(typedArray)` returns a new typed array with the elements in reverse order, leaving the original untouched.\n\nSee [`TypedArray.prototype.toReversed`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/toReversed) on MDN.\n\n## Examples\n\n```rescript\nlet view = Int32Array.fromArray([1, 2, 3])\nlet reversed = TypedArray.toReversed(view)\nTypedArray.toString(reversed) == \"3,2,1\"\nTypedArray.toString(view) == \"1,2,3\"\n```"
+        ],
         "signature": "let toReversed: t<'a> => t<'a>"
       },
       {
         "id": "Stdlib.TypedArray.sort",
         "kind": "value",
         "name": "sort",
-        "docstrings": [],
+        "docstrings": [
+          "`sort(typedArray, comparator)` sorts the values in place using `comparator`.\n\nBeware this will *mutate* the typed array.\n\nSee [`TypedArray.prototype.sort`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/sort) on MDN."
+        ],
         "signature": "let sort: (t<'a>, ('a, 'a) => Ordering.t) => unit"
       },
       {
         "id": "Stdlib.TypedArray.toSorted",
         "kind": "value",
         "name": "toSorted",
-        "docstrings": [],
+        "docstrings": [
+          "`toSorted(typedArray, comparator)` returns a new typed array containing the sorted values, leaving the original untouched.\n\nSee [`TypedArray.prototype.toSorted`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/toSorted) on MDN.\n\n## Examples\n\n```rescript\nlet view = Int32Array.fromArray([3, 1, 2])\nlet sorted = TypedArray.toSorted(view, Int.compare)\nTypedArray.toString(sorted) == \"1,2,3\"\nTypedArray.toString(view) == \"3,1,2\"\n```"
+        ],
         "signature": "let toSorted: (t<'a>, ('a, 'a) => Ordering.t) => t<'a>"
       },
       {
         "id": "Stdlib.TypedArray.with",
         "kind": "value",
         "name": "with",
-        "docstrings": [],
+        "docstrings": [
+          "`with(typedArray, index, value)` returns a new typed array where the element at `index` is replaced with `value`.\n\nSee [`TypedArray.prototype.with`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/with) on MDN.\n\n## Examples\n\n```rescript\nlet view = Int32Array.fromArray([1, 2, 3])\nlet updated = TypedArray.with(view, 1, 10)\nTypedArray.toString(updated) == \"1,10,3\"\nTypedArray.toString(view) == \"1,2,3\"\n```"
+        ],
         "signature": "let with: (t<'a>, int, 'a) => t<'a>"
       },
       {
         "id": "Stdlib.TypedArray.includes",
         "kind": "value",
         "name": "includes",
-        "docstrings": [],
+        "docstrings": [
+          "`includes(typedArray, value)` returns `true` if `value` occurs in the typed array.\n\nSee [`TypedArray.prototype.includes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/includes) on MDN.\n\n## Examples\n\n```rescript\nlet view = Int32Array.fromArray([1, 2, 3])\nTypedArray.includes(view, 2) == true\nTypedArray.includes(view, 10) == false\n```"
+        ],
         "signature": "let includes: (t<'a>, 'a) => bool"
       },
       {
         "id": "Stdlib.TypedArray.indexOf",
         "kind": "value",
         "name": "indexOf",
-        "docstrings": [],
+        "docstrings": [
+          "`indexOf(typedArray, value)` returns the first index of `value`, or `-1` when not found.\n\nSee [`TypedArray.prototype.indexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/indexOf) on MDN."
+        ],
         "signature": "let indexOf: (t<'a>, 'a) => int"
       },
       {
         "id": "Stdlib.TypedArray.indexOfFrom",
         "kind": "value",
         "name": "indexOfFrom",
-        "docstrings": [],
+        "docstrings": [
+          "`indexOfFrom(typedArray, value, fromIndex)` searches for `value` starting at `fromIndex`."
+        ],
         "signature": "let indexOfFrom: (t<'a>, 'a, int) => int"
       },
       {
         "id": "Stdlib.TypedArray.joinWith",
         "kind": "value",
         "name": "joinWith",
-        "docstrings": [],
+        "docstrings": [
+          "`joinWith(typedArray, separator)` returns a string formed by the elements joined with `separator`.\n\nSee [`TypedArray.prototype.join`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/join) on MDN.\n\n## Examples\n\n```rescript\nlet view = Int32Array.fromArray([1, 2, 3])\nTypedArray.joinWith(view, \"-\") == \"1-2-3\"\n```"
+        ],
         "signature": "let joinWith: (t<'a>, string) => string"
       },
       {
         "id": "Stdlib.TypedArray.lastIndexOf",
         "kind": "value",
         "name": "lastIndexOf",
-        "docstrings": [],
+        "docstrings": [
+          "`lastIndexOf(typedArray, value)` returns the last index of `value`, or `-1` if not found.\n\nSee [`TypedArray.prototype.lastIndexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/lastIndexOf) on MDN."
+        ],
         "signature": "let lastIndexOf: (t<'a>, 'a) => int"
       },
       {
         "id": "Stdlib.TypedArray.lastIndexOfFrom",
         "kind": "value",
         "name": "lastIndexOfFrom",
-        "docstrings": [],
+        "docstrings": [
+          "`lastIndexOfFrom(typedArray, value, fromIndex)` searches backwards starting at `fromIndex`."
+        ],
         "signature": "let lastIndexOfFrom: (t<'a>, 'a, int) => int"
       },
       {
         "id": "Stdlib.TypedArray.slice",
         "kind": "value",
         "name": "slice",
-        "docstrings": [],
+        "docstrings": [
+          "`slice(typedArray, ~start, ~end)` returns a new typed array containing the elements in `[start, end)`.\n\nSee [`TypedArray.prototype.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/slice) on MDN."
+        ],
         "signature": "let slice: (t<'a>, ~start: int, ~end: int=?) => t<'a>"
       },
       {
         "id": "Stdlib.TypedArray.sliceToEnd",
         "kind": "value",
         "name": "sliceToEnd",
-        "docstrings": [],
+        "docstrings": [
+          "`sliceToEnd(typedArray, ~start)` returns the elements from `start` through the end in a new typed array."
+        ],
         "signature": "let sliceToEnd: (t<'a>, ~start: int) => t<'a>",
         "deprecated": ""
       },
@@ -3906,21 +3970,27 @@
         "id": "Stdlib.TypedArray.copy",
         "kind": "value",
         "name": "copy",
-        "docstrings": [],
+        "docstrings": [
+          "`copy(typedArray)` produces a shallow copy of the typed array."
+        ],
         "signature": "let copy: t<'a> => t<'a>"
       },
       {
         "id": "Stdlib.TypedArray.subarray",
         "kind": "value",
         "name": "subarray",
-        "docstrings": [],
+        "docstrings": [
+          "`subarray(typedArray, ~start, ~end)` returns a new view referencing the same buffer over `[start, end)`.\n\nSee [`TypedArray.prototype.subarray`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/subarray) on MDN."
+        ],
         "signature": "let subarray: (t<'a>, ~start: int, ~end: int=?) => t<'a>"
       },
       {
         "id": "Stdlib.TypedArray.subarrayToEnd",
         "kind": "value",
         "name": "subarrayToEnd",
-        "docstrings": [],
+        "docstrings": [
+          "`subarrayToEnd(typedArray, ~start)` returns a new view from `start` to the end of the buffer."
+        ],
         "signature": "let subarrayToEnd: (t<'a>, ~start: int) => t<'a>",
         "deprecated": ""
       },
@@ -3928,168 +3998,216 @@
         "id": "Stdlib.TypedArray.toString",
         "kind": "value",
         "name": "toString",
-        "docstrings": [],
+        "docstrings": [
+          "`toString(typedArray)` returns a comma-separated string of the elements.\n\nSee [`TypedArray.prototype.toString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/toString) on MDN.\n\n## Examples\n\n```rescript\nInt32Array.fromArray([1, 2])->TypedArray.toString == \"1,2\"\n```"
+        ],
         "signature": "let toString: t<'a> => string"
       },
       {
         "id": "Stdlib.TypedArray.toLocaleString",
         "kind": "value",
         "name": "toLocaleString",
-        "docstrings": [],
+        "docstrings": [
+          "`toLocaleString(typedArray)` concatenates the elements using locale-aware formatting.\n\nSee [`TypedArray.prototype.toLocaleString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/toLocaleString) on MDN."
+        ],
         "signature": "let toLocaleString: t<'a> => string"
       },
       {
         "id": "Stdlib.TypedArray.every",
         "kind": "value",
         "name": "every",
-        "docstrings": [],
+        "docstrings": [
+          "`every(typedArray, predicate)` returns `true` if `predicate` returns `true` for every element.\n\nSee [`TypedArray.prototype.every`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/every) on MDN."
+        ],
         "signature": "let every: (t<'a>, 'a => bool) => bool"
       },
       {
         "id": "Stdlib.TypedArray.everyWithIndex",
         "kind": "value",
         "name": "everyWithIndex",
-        "docstrings": [],
+        "docstrings": [
+          "`everyWithIndex(typedArray, checker)` is like `every` but provides the element index to `checker`."
+        ],
         "signature": "let everyWithIndex: (t<'a>, ('a, int) => bool) => bool"
       },
       {
         "id": "Stdlib.TypedArray.filter",
         "kind": "value",
         "name": "filter",
-        "docstrings": [],
+        "docstrings": [
+          "`filter(typedArray, predicate)` returns a new typed array containing only elements that satisfy `predicate`.\n\nSee [`TypedArray.prototype.filter`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/filter) on MDN."
+        ],
         "signature": "let filter: (t<'a>, 'a => bool) => t<'a>"
       },
       {
         "id": "Stdlib.TypedArray.filterWithIndex",
         "kind": "value",
         "name": "filterWithIndex",
-        "docstrings": [],
+        "docstrings": [
+          "`filterWithIndex(typedArray, predicate)` behaves like `filter` but also passes the index to `predicate`."
+        ],
         "signature": "let filterWithIndex: (t<'a>, ('a, int) => bool) => t<'a>"
       },
       {
         "id": "Stdlib.TypedArray.find",
         "kind": "value",
         "name": "find",
-        "docstrings": [],
+        "docstrings": [
+          "`find(typedArray, predicate)` returns the first element that satisfies `predicate`, or `None` if nothing matches.\n\nSee [`TypedArray.prototype.find`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/find) on MDN."
+        ],
         "signature": "let find: (t<'a>, 'a => bool) => option<'a>"
       },
       {
         "id": "Stdlib.TypedArray.findWithIndex",
         "kind": "value",
         "name": "findWithIndex",
-        "docstrings": [],
+        "docstrings": [
+          "`findWithIndex(typedArray, predicate)` behaves like `find`, but `predicate` also receives the index."
+        ],
         "signature": "let findWithIndex: (t<'a>, ('a, int) => bool) => option<'a>"
       },
       {
         "id": "Stdlib.TypedArray.findLast",
         "kind": "value",
         "name": "findLast",
-        "docstrings": [],
+        "docstrings": [
+          "`findLast(typedArray, predicate)` returns the last element that satisfies `predicate`.\n\nSee [`TypedArray.prototype.findLast`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/findLast) on MDN."
+        ],
         "signature": "let findLast: (t<'a>, 'a => bool) => option<'a>"
       },
       {
         "id": "Stdlib.TypedArray.findLastWithIndex",
         "kind": "value",
         "name": "findLastWithIndex",
-        "docstrings": [],
+        "docstrings": [
+          "`findLastWithIndex(typedArray, predicate)` is the indexed variant of `findLast`."
+        ],
         "signature": "let findLastWithIndex: (t<'a>, ('a, int) => bool) => option<'a>"
       },
       {
         "id": "Stdlib.TypedArray.findIndex",
         "kind": "value",
         "name": "findIndex",
-        "docstrings": [],
+        "docstrings": [
+          "`findIndex(typedArray, predicate)` returns the index of the first element that satisfies `predicate`, or `-1` if none do.\n\nSee [`TypedArray.prototype.findIndex`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/findIndex) on MDN."
+        ],
         "signature": "let findIndex: (t<'a>, 'a => bool) => int"
       },
       {
         "id": "Stdlib.TypedArray.findIndexWithIndex",
         "kind": "value",
         "name": "findIndexWithIndex",
-        "docstrings": [],
+        "docstrings": [
+          "`findIndexWithIndex(typedArray, predicate)` is the indexed variant of `findIndex`."
+        ],
         "signature": "let findIndexWithIndex: (t<'a>, ('a, int) => bool) => int"
       },
       {
         "id": "Stdlib.TypedArray.findLastIndex",
         "kind": "value",
         "name": "findLastIndex",
-        "docstrings": [],
+        "docstrings": [
+          "`findLastIndex(typedArray, predicate)` returns the index of the last matching element, or `-1` if none do.\n\nSee [`TypedArray.prototype.findLastIndex`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/findLastIndex) on MDN."
+        ],
         "signature": "let findLastIndex: (t<'a>, 'a => bool) => int"
       },
       {
         "id": "Stdlib.TypedArray.findLastIndexWithIndex",
         "kind": "value",
         "name": "findLastIndexWithIndex",
-        "docstrings": [],
+        "docstrings": [
+          "`findLastIndexWithIndex(typedArray, predicate)` is the indexed variant of `findLastIndex`."
+        ],
         "signature": "let findLastIndexWithIndex: (t<'a>, ('a, int) => bool) => int"
       },
       {
         "id": "Stdlib.TypedArray.forEach",
         "kind": "value",
         "name": "forEach",
-        "docstrings": [],
+        "docstrings": [
+          "`forEach(typedArray, f)` runs `f` for every element in order.\n\nSee [`TypedArray.prototype.forEach`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/forEach) on MDN."
+        ],
         "signature": "let forEach: (t<'a>, 'a => unit) => unit"
       },
       {
         "id": "Stdlib.TypedArray.forEachWithIndex",
         "kind": "value",
         "name": "forEachWithIndex",
-        "docstrings": [],
+        "docstrings": [
+          "`forEachWithIndex(typedArray, f)` runs `f` for every element, also providing the index."
+        ],
         "signature": "let forEachWithIndex: (t<'a>, ('a, int) => unit) => unit"
       },
       {
         "id": "Stdlib.TypedArray.map",
         "kind": "value",
         "name": "map",
-        "docstrings": [],
+        "docstrings": [
+          "`map(typedArray, f)` returns a new typed array whose elements are produced by applying `f` to each element.\n\nSee [`TypedArray.prototype.map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/map) on MDN."
+        ],
         "signature": "let map: (t<'a>, 'a => 'b) => t<'b>"
       },
       {
         "id": "Stdlib.TypedArray.mapWithIndex",
         "kind": "value",
         "name": "mapWithIndex",
-        "docstrings": [],
+        "docstrings": [
+          "`mapWithIndex(typedArray, f)` behaves like `map`, but `f` also receives the index."
+        ],
         "signature": "let mapWithIndex: (t<'a>, ('a, int) => 'b) => t<'b>"
       },
       {
         "id": "Stdlib.TypedArray.reduce",
         "kind": "value",
         "name": "reduce",
-        "docstrings": [],
+        "docstrings": [
+          "`reduce(typedArray, reducer, initial)` combines the elements from left to right using `reducer`.\n\nSee [`TypedArray.prototype.reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/reduce) on MDN."
+        ],
         "signature": "let reduce: (t<'a>, ('b, 'a) => 'b, 'b) => 'b"
       },
       {
         "id": "Stdlib.TypedArray.reduceWithIndex",
         "kind": "value",
         "name": "reduceWithIndex",
-        "docstrings": [],
+        "docstrings": [
+          "`reduceWithIndex(typedArray, reducer, initial)` is the indexed variant of `reduce`."
+        ],
         "signature": "let reduceWithIndex: (t<'a>, ('b, 'a, int) => 'b, 'b) => 'b"
       },
       {
         "id": "Stdlib.TypedArray.reduceRight",
         "kind": "value",
         "name": "reduceRight",
-        "docstrings": [],
+        "docstrings": [
+          "`reduceRight(typedArray, reducer, initial)` is like `reduce` but processes the elements from right to left.\n\nSee [`TypedArray.prototype.reduceRight`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/reduceRight) on MDN."
+        ],
         "signature": "let reduceRight: (t<'a>, ('b, 'a) => 'b, 'b) => 'b"
       },
       {
         "id": "Stdlib.TypedArray.reduceRightWithIndex",
         "kind": "value",
         "name": "reduceRightWithIndex",
-        "docstrings": [],
+        "docstrings": [
+          "`reduceRightWithIndex(typedArray, reducer, initial)` is the indexed variant of `reduceRight`."
+        ],
         "signature": "let reduceRightWithIndex: (t<'a>, ('b, 'a, int) => 'b, 'b) => 'b"
       },
       {
         "id": "Stdlib.TypedArray.some",
         "kind": "value",
         "name": "some",
-        "docstrings": [],
+        "docstrings": [
+          "`some(typedArray, predicate)` returns `true` if `predicate` returns `true` for at least one element.\n\nSee [`TypedArray.prototype.some`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/some) on MDN."
+        ],
         "signature": "let some: (t<'a>, 'a => bool) => bool"
       },
       {
         "id": "Stdlib.TypedArray.someWithIndex",
         "kind": "value",
         "name": "someWithIndex",
-        "docstrings": [],
+        "docstrings": [
+          "`someWithIndex(typedArray, predicate)` behaves like `some`, but `predicate` also receives the element index."
+        ],
         "signature": "let someWithIndex: (t<'a>, ('a, int) => bool) => bool"
       },
       {
@@ -4159,41 +4277,53 @@
   "stdlib/weakset": {
     "id": "Stdlib.WeakSet",
     "name": "WeakSet",
-    "docstrings": [],
+    "docstrings": [
+      "Bindings to JavaScript's `WeakSet`.\n\nWeak sets store references to objects without preventing those objects from being garbage collected."
+    ],
     "items": [
       {
         "id": "Stdlib.WeakSet.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [],
+        "docstrings": [
+          "Mutable weak set storing object references of type `'a`."
+        ],
         "signature": "type t<'a>"
       },
       {
         "id": "Stdlib.WeakSet.make",
         "kind": "value",
         "name": "make",
-        "docstrings": [],
+        "docstrings": [
+          "Creates an empty weak set.\n\nSee [`WeakSet`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet) on MDN.\n\n## Examples\n\n```rescript\nlet visited = WeakSet.make()\nWeakSet.has(visited, Object.make()) == false\n```"
+        ],
         "signature": "let make: unit => t<'a>"
       },
       {
         "id": "Stdlib.WeakSet.add",
         "kind": "value",
         "name": "add",
-        "docstrings": [],
+        "docstrings": [
+          "`add(set, value)` inserts `value` into the weak set and returns the set for chaining.\n\nSee [`WeakSet.prototype.add`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet/add) on MDN.\n\n## Examples\n\n```rescript\nlet set = WeakSet.make()\nlet node = Object.make()\nWeakSet.add(set, node)\nWeakSet.has(set, node) == true\n```"
+        ],
         "signature": "let add: (t<'a>, 'a) => t<'a>"
       },
       {
         "id": "Stdlib.WeakSet.delete",
         "kind": "value",
         "name": "delete",
-        "docstrings": [],
+        "docstrings": [
+          "`delete(set, value)` removes `value` and returns `true` if an entry existed.\n\nSee [`WeakSet.prototype.delete`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet/delete) on MDN.\n\n## Examples\n\n```rescript\nlet set = WeakSet.make()\nlet node = Object.make()\nlet _ = WeakSet.add(set, node)\nWeakSet.delete(set, node) == true\nWeakSet.delete(set, node) == false\n```"
+        ],
         "signature": "let delete: (t<'a>, 'a) => bool"
       },
       {
         "id": "Stdlib.WeakSet.has",
         "kind": "value",
         "name": "has",
-        "docstrings": [],
+        "docstrings": [
+          "`has(set, value)` checks whether `value` exists in the weak set.\n\nSee [`WeakSet.prototype.has`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet/has) on MDN.\n\n## Examples\n\n```rescript\nlet set = WeakSet.make()\nlet node = Object.make()\nWeakSet.has(set, node) == false\nlet _ = WeakSet.add(set, node)\nWeakSet.has(set, node) == true\n```"
+        ],
         "signature": "let has: (t<'a>, 'a) => bool"
       },
       {
@@ -4408,48 +4538,62 @@
   "stdlib/weakmap": {
     "id": "Stdlib.WeakMap",
     "name": "WeakMap",
-    "docstrings": [],
+    "docstrings": [
+      "Bindings to JavaScript's `WeakMap`.\n\nWeak maps keep key/value pairs where keys must be objects and the references do not prevent garbage collection."
+    ],
     "items": [
       {
         "id": "Stdlib.WeakMap.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [],
+        "docstrings": [
+          "Mutable weak map storing values of type `'v` with object keys `'k`."
+        ],
         "signature": "type t<'k, 'v>"
       },
       {
         "id": "Stdlib.WeakMap.make",
         "kind": "value",
         "name": "make",
-        "docstrings": [],
+        "docstrings": [
+          "Creates an empty weak map.\n\nSee [`WeakMap`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap) on MDN.\n\n## Examples\n\n```rescript\nlet cache = WeakMap.make()\nWeakMap.get(cache, Object.make()) == None\n```"
+        ],
         "signature": "let make: unit => t<'k, 'v>"
       },
       {
         "id": "Stdlib.WeakMap.get",
         "kind": "value",
         "name": "get",
-        "docstrings": [],
+        "docstrings": [
+          "`get(map, key)` returns `Some(value)` when `key` exists, otherwise `None`.\n\nSee [`WeakMap.prototype.get`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap/get) on MDN.\n\n## Examples\n\n```rescript\nlet cache = WeakMap.make()\nlet key = Object.make()\nWeakMap.get(cache, key) == None\nlet _ = WeakMap.set(cache, key, \"user\")\nWeakMap.get(cache, key) == Some(\"user\")\n```"
+        ],
         "signature": "let get: (t<'k, 'v>, 'k) => option<'v>"
       },
       {
         "id": "Stdlib.WeakMap.has",
         "kind": "value",
         "name": "has",
-        "docstrings": [],
+        "docstrings": [
+          "`has(map, key)` checks whether `key` exists in the weak map.\n\nSee [`WeakMap.prototype.has`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap/has) on MDN.\n\n## Examples\n\n```rescript\nlet cache = WeakMap.make()\nlet key = Object.make()\nWeakMap.has(cache, key) == false\nlet _ = WeakMap.set(cache, key, ())\nWeakMap.has(cache, key) == true\n```"
+        ],
         "signature": "let has: (t<'k, 'v>, 'k) => bool"
       },
       {
         "id": "Stdlib.WeakMap.set",
         "kind": "value",
         "name": "set",
-        "docstrings": [],
+        "docstrings": [
+          "`set(map, key, value)` stores `value` for `key` and returns the map for chaining.\n\nSee [`WeakMap.prototype.set`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap/set) on MDN.\n\n## Examples\n\n```rescript\nlet cache = WeakMap.make()\nlet key = Object.make()\nlet _ = WeakMap.set(cache, key, 42)\nWeakMap.get(cache, key) == Some(42)\n```"
+        ],
         "signature": "let set: (t<'k, 'v>, 'k, 'v) => t<'k, 'v>"
       },
       {
         "id": "Stdlib.WeakMap.delete",
         "kind": "value",
         "name": "delete",
-        "docstrings": [],
+        "docstrings": [
+          "`delete(map, key)` removes `key` and returns `true` if an entry existed.\n\nSee [`WeakMap.prototype.delete`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap/delete) on MDN.\n\n## Examples\n\n```rescript\nlet cache = WeakMap.make()\nlet key = Object.make()\nWeakMap.delete(cache, key) == false\nlet _ = WeakMap.set(cache, key, 1)\nWeakMap.delete(cache, key) == true\n```"
+        ],
         "signature": "let delete: (t<'k, 'v>, 'k) => bool"
       },
       {
@@ -4958,91 +5102,117 @@
         "id": "Stdlib.Symbol.asyncIterator",
         "kind": "value",
         "name": "asyncIterator",
-        "docstrings": [],
+        "docstrings": [
+          "`asyncIterator` is the well-known symbol used by asynchronous iterables.\n\nSee [`Symbol.asyncIterator`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/asyncIterator) on MDN."
+        ],
         "signature": "let asyncIterator: t"
       },
       {
         "id": "Stdlib.Symbol.hasInstance",
         "kind": "value",
         "name": "hasInstance",
-        "docstrings": [],
+        "docstrings": [
+          "`hasInstance` is used by custom `instanceof` checks.\n\nSee [`Symbol.hasInstance`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/hasInstance) on MDN."
+        ],
         "signature": "let hasInstance: t"
       },
       {
         "id": "Stdlib.Symbol.isConcatSpreadable",
         "kind": "value",
         "name": "isConcatSpreadable",
-        "docstrings": [],
+        "docstrings": [
+          "`isConcatSpreadable` controls whether objects are flattened when passed to `Array.concat`.\n\nSee [`Symbol.isConcatSpreadable`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/isConcatSpreadable) on MDN."
+        ],
         "signature": "let isConcatSpreadable: t"
       },
       {
         "id": "Stdlib.Symbol.iterator",
         "kind": "value",
         "name": "iterator",
-        "docstrings": [],
+        "docstrings": [
+          "`iterator` is returned by objects that can be iterated with `for..of`.\n\nSee [`Symbol.iterator`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/iterator) on MDN."
+        ],
         "signature": "let iterator: t"
       },
       {
         "id": "Stdlib.Symbol.match",
         "kind": "value",
         "name": "match",
-        "docstrings": [],
+        "docstrings": [
+          "`match` customises how values respond to `String.prototype.match`.\n\nSee [`Symbol.match`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/match) on MDN."
+        ],
         "signature": "let match: t"
       },
       {
         "id": "Stdlib.Symbol.matchAll",
         "kind": "value",
         "name": "matchAll",
-        "docstrings": [],
+        "docstrings": [
+          "`matchAll` customises how values respond to `String.prototype.matchAll`.\n\nSee [`Symbol.matchAll`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/matchAll) on MDN."
+        ],
         "signature": "let matchAll: t"
       },
       {
         "id": "Stdlib.Symbol.replace",
         "kind": "value",
         "name": "replace",
-        "docstrings": [],
+        "docstrings": [
+          "`replace` customises how values respond to `String.prototype.replace`.\n\nSee [`Symbol.replace`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/replace) on MDN."
+        ],
         "signature": "let replace: t"
       },
       {
         "id": "Stdlib.Symbol.search",
         "kind": "value",
         "name": "search",
-        "docstrings": [],
+        "docstrings": [
+          "`search` customises how values respond to `String.prototype.search`.\n\nSee [`Symbol.search`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/search) on MDN."
+        ],
         "signature": "let search: t"
       },
       {
         "id": "Stdlib.Symbol.species",
         "kind": "value",
         "name": "species",
-        "docstrings": [],
+        "docstrings": [
+          "`species` lets constructors return a different derived constructor when methods create new instances.\n\nSee [`Symbol.species`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/species) on MDN."
+        ],
         "signature": "let species: t"
       },
       {
         "id": "Stdlib.Symbol.split",
         "kind": "value",
         "name": "split",
-        "docstrings": [],
+        "docstrings": [
+          "`split` customises how values respond to `String.prototype.split`.\n\nSee [`Symbol.split`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/split) on MDN."
+        ],
         "signature": "let split: t"
       },
       {
         "id": "Stdlib.Symbol.toPrimitive",
         "kind": "value",
         "name": "toPrimitive",
-        "docstrings": [],
+        "docstrings": [
+          "`toPrimitive` customises how objects convert to primitive values.\n\nSee [`Symbol.toPrimitive`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toPrimitive) on MDN."
+        ],
         "signature": "let toPrimitive: t"
       },
       {
         "id": "Stdlib.Symbol.toStringTag",
         "kind": "value",
         "name": "toStringTag",
-        "docstrings": [],
+        "docstrings": [
+          "`toStringTag` customises the default tag shown by `Object.prototype.toString`.\n\nSee [`Symbol.toStringTag`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toStringTag) on MDN."
+        ],
         "signature": "let toStringTag: t"
       },
       {
         "id": "Stdlib.Symbol.unscopables",
         "kind": "value",
         "name": "unscopables",
-        "docstrings": [],
+        "docstrings": [
+          "`unscopables` marks properties that should be skipped by `with`.\n\nSee [`Symbol.unscopables`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/unscopables) on MDN."
+        ],
         "signature": "let unscopables: t"
       },
       {
@@ -6410,7 +6580,9 @@
         "id": "Stdlib.Ordering.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [],
+        "docstrings": [
+          "Ordering values represent the result of a comparison: `less`, `equal`, or `greater`."
+        ],
         "signature": "type t = float"
       },
       {
@@ -6438,35 +6610,45 @@
         "id": "Stdlib.Ordering.isLess",
         "kind": "value",
         "name": "isLess",
-        "docstrings": [],
+        "docstrings": [
+          "`isLess(ordering)` returns `true` when `ordering` equals `Ordering.less`.\n\n## Examples\n\n```rescript\nOrdering.isLess(Ordering.less) == true\nOrdering.isLess(Ordering.equal) == false\n```"
+        ],
         "signature": "let isLess: float => bool"
       },
       {
         "id": "Stdlib.Ordering.isEqual",
         "kind": "value",
         "name": "isEqual",
-        "docstrings": [],
+        "docstrings": [
+          "`isEqual(ordering)` returns `true` when `ordering` equals `Ordering.equal`.\n\n## Examples\n\n```rescript\nOrdering.isEqual(Ordering.equal) == true\nOrdering.isEqual(Ordering.greater) == false\n```"
+        ],
         "signature": "let isEqual: float => bool"
       },
       {
         "id": "Stdlib.Ordering.isGreater",
         "kind": "value",
         "name": "isGreater",
-        "docstrings": [],
+        "docstrings": [
+          "`isGreater(ordering)` returns `true` when `ordering` equals `Ordering.greater`.\n\n## Examples\n\n```rescript\nOrdering.isGreater(Ordering.greater) == true\nOrdering.isGreater(Ordering.less) == false\n```"
+        ],
         "signature": "let isGreater: float => bool"
       },
       {
         "id": "Stdlib.Ordering.invert",
         "kind": "value",
         "name": "invert",
-        "docstrings": [],
+        "docstrings": [
+          "`invert(ordering)` flips the ordering result (less becomes greater and vice versa).\n\n## Examples\n\n```rescript\nOrdering.invert(Ordering.less) == Ordering.greater\nOrdering.invert(Ordering.equal) == Ordering.equal\n```"
+        ],
         "signature": "let invert: float => float"
       },
       {
         "id": "Stdlib.Ordering.fromInt",
         "kind": "value",
         "name": "fromInt",
-        "docstrings": [],
+        "docstrings": [
+          "`fromInt(n)` converts an integer comparison result into an ordering.\n\n## Examples\n\n```rescript\nOrdering.fromInt(-5) == Ordering.less\nOrdering.fromInt(0) == Ordering.equal\nOrdering.fromInt(3) == Ordering.greater\n```"
+        ],
         "signature": "let fromInt: int => float"
       },
       {
@@ -6740,21 +6922,27 @@
         "id": "Stdlib.Object.createWithProperties",
         "kind": "value",
         "name": "createWithProperties",
-        "docstrings": [],
+        "docstrings": [
+          "`createWithProperties(proto, descriptors)` creates a new object that delegates to `proto` and defines additional properties using descriptor objects.\n\nSee [`Object.create`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create) on MDN.\n\n## Examples\n\n```rescript\nlet proto = {\"kind\": \"fruit\"}\nlet obj = Object.createWithProperties(proto, {\"name\": {\"value\": \"banana\"}})\nobj->Object.get(\"name\") == Some(\"banana\")\nobj->Object.get(\"kind\") == Some(\"fruit\")\n```"
+        ],
         "signature": "let createWithProperties: ({..}, {..}) => {..}"
       },
       {
         "id": "Stdlib.Object.createWithNull",
         "kind": "value",
         "name": "createWithNull",
-        "docstrings": [],
+        "docstrings": [
+          "`createWithNull()` creates an object with a `null` prototype (no inherited properties).\n\nSee [`Object.create`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create) on MDN.\n\n## Examples\n\n```rescript\nlet obj = Object.createWithNull()\nobj->Object.get(\"toString\") == None\n```"
+        ],
         "signature": "let createWithNull: unit => {..}"
       },
       {
         "id": "Stdlib.Object.createWithNullAndProperties",
         "kind": "value",
         "name": "createWithNullAndProperties",
-        "docstrings": [],
+        "docstrings": [
+          "`createWithNullAndProperties(descriptors)` creates an object with a `null` prototype and defines properties using descriptor objects.\n\nSee [`Object.create`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create) on MDN.\n\n## Examples\n\n```rescript\nlet obj = Object.createWithNullAndProperties({\"name\": {\"value\": \"banana\"}})\nobj->Object.get(\"name\") == Some(\"banana\")\nobj->Object.get(\"toString\") == None\n```"
+        ],
         "signature": "let createWithNullAndProperties: {..} => {..}"
       },
       {
@@ -6779,7 +6967,9 @@
         "id": "Stdlib.Object.copy",
         "kind": "value",
         "name": "copy",
-        "docstrings": [],
+        "docstrings": [
+          "`copy(object)` creates a shallow copy of `object`.\n\nSee [`Object.assign`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign) on MDN.\n\n## Examples\n\n```rescript\nlet original = {\"name\": \"banana\"}\nlet cloned = Object.copy(original)\ncloned->Object.get(\"name\") == Some(\"banana\")\nObject.is(original, cloned) == false\n```"
+        ],
         "signature": "let copy: ({..} as 'a) => 'a"
       },
       {
@@ -6796,7 +6986,7 @@
         "kind": "value",
         "name": "getSymbol",
         "docstrings": [
-          "`getSymbol` gets the value of a property by symbol. Returns `None` if the property does not exist or has the value `undefined`. Otherwise returns `Some`, including if the value is `null`.\n\n## Examples\n\n```rescript\nlet fruit = Symbol.make(\"fruit\")\nlet x = Object.make()\nx->Object.setSymbol(fruit, \"banana\")\nx->Object.getSymbol(fruit) // Some(\"banana\")\n```"
+          "`getSymbol` gets the value of a property by symbol. Returns `None` if the property does not exist or has the value `undefined`. Otherwise returns `Some`, including if the value is `null`.\n\n## Examples\n\n```rescript\nlet fruit = Symbol.make(\"fruit\")\nlet x = Object.make()\nx->Object.setSymbol(fruit, \"banana\")\nx->Object.getSymbol(fruit) == Some(\"banana\")\n```"
         ],
         "signature": "let getSymbol: ({..}, Symbol.t) => option<'a>"
       },
@@ -6804,7 +6994,9 @@
         "id": "Stdlib.Object.getSymbolUnsafe",
         "kind": "value",
         "name": "getSymbolUnsafe",
-        "docstrings": [],
+        "docstrings": [
+          "`getSymbolUnsafe(object, key)` reads the value stored under the symbol `key` without any optional check.\n\nSee [`Symbol`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol) on MDN.\n\n## Examples\n\n```rescript\nlet key = Symbol.make(\"meta\")\nlet obj = Object.make()\nobj->Object.setSymbol(key, \"hello\")\nObject.getSymbolUnsafe(obj, key) == \"hello\"\n```"
+        ],
         "signature": "let getSymbolUnsafe: ({..}, Symbol.t) => 'a"
       },
       {
@@ -6820,7 +7012,9 @@
         "id": "Stdlib.Object.setSymbol",
         "kind": "value",
         "name": "setSymbol",
-        "docstrings": [],
+        "docstrings": [
+          "`setSymbol(object, key, value)` stores `value` under the symbol `key` on `object`.\n\nBeware this will *mutate* the object.\n\nSee [`Symbol`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol) on MDN.\n\n## Examples\n\n```rescript\nlet key = Symbol.make(\"count\")\nlet obj = Object.make()\nobj->Object.setSymbol(key, 5)\nObject.getSymbol(obj, key) == Some(5)\n```"
+        ],
         "signature": "let setSymbol: ({..}, Symbol.t, 'a) => unit"
       },
       {
@@ -9449,7 +9643,7 @@
         "kind": "value",
         "name": "get",
         "docstrings": [
-          "Returns the value at the provided key, if it exists. Returns an option.\n\n## Examples\n```rescript\nlet dict = dict{\"someKey\": \"someValue\"}\n\nswitch dict->Dict.get(\"someKey\") {\n| None => Console.log(\"Nope, didn't have the key.\")\n| Some(value) => Console.log(value)\n}\n```"
+          "Returns the value at the provided key, if it exists. Returns an option.\n\n## Examples\n```rescript\nlet dict = dict{\"someKey\": \"someValue\"}\n\nswitch dict->Dict.get(\"someKey\") {\n| None => Console.log(\"Nope, didn't have the key.\")\n| Some(value) => Console.log(value)\n}\n```\n\n## Alternative: Pattern Matching with `dict{}`\n\nFor nested dictionary access, consider using the more concise `dict{}` pattern matching syntax:\n\n```rescript\n// More concise approach using pattern matching\nlet decodeImageUrl = (json: JSON.t) => {\n  switch json {\n  | JSON.Object(dict{\"data\": JSON.Object(dict{\"image_url\": JSON.String(url)})}) => Some(url)\n  | _ => None\n  }\n}\n\n// Alternative using Dict.get\nlet decodeImageUrl = (json: JSON.t) => {\n  switch json {\n  | JSON.Object(obj) =>\n    switch Dict.get(obj, \"data\") {\n    | Some(JSON.Object(data)) =>\n      switch Dict.get(data, \"image_url\") {\n      | Some(JSON.String(url)) => Some(url)\n      | _ => None\n      }\n    | _ => None\n    }\n  | _ => None\n  }\n}\n```"
         ],
         "signature": "let get: (dict<'a>, string) => option<'a>"
       },
@@ -11528,14 +11722,18 @@
         "id": "Stdlib.Array.fromArrayLike",
         "kind": "value",
         "name": "fromArrayLike",
-        "docstrings": [],
+        "docstrings": [
+          "`fromArrayLike(source)` converts an array-like value (anything with indexed items and a `length`) into a regular array.\n\nSee [`Array.from`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from) on MDN.\n\n## Examples\n\n```rescript\nlet source: Array.arrayLike<int> = %raw(`{0: 10, 1: 20, length: 2}`)\nArray.fromArrayLike(source) == [10, 20]\n```"
+        ],
         "signature": "let fromArrayLike: arrayLike<'a> => array<'a>"
       },
       {
         "id": "Stdlib.Array.fromArrayLikeWithMap",
         "kind": "value",
         "name": "fromArrayLikeWithMap",
-        "docstrings": [],
+        "docstrings": [
+          "`fromArrayLikeWithMap(source, map)` converts an array-like value into an array and applies `map` to every element.\n\nSee [`Array.from`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from) on MDN.\n\n## Examples\n\n```rescript\nlet source: Array.arrayLike<int> = %raw(`{0: 1, 1: 2, length: 2}`)\nArray.fromArrayLikeWithMap(source, x => x * 10) == [10, 20]\n```"
+        ],
         "signature": "let fromArrayLikeWithMap: (arrayLike<'a>, 'a => 'b) => array<'b>"
       },
       {
@@ -11569,21 +11767,27 @@
         "id": "Stdlib.Array.equal",
         "kind": "value",
         "name": "equal",
-        "docstrings": [],
+        "docstrings": [
+          "`equal(left, right, predicate)` checks if the two arrays contain the same elements according to the equality `predicate`.\n\n## Examples\n\n```rescript\nArray.equal([1, 2, 3], [1, 2, 3], Int.equal) == true\nArray.equal([1, 2, 3], [1, 3, 2], Int.equal) == false\n```"
+        ],
         "signature": "let equal: (array<'a>, array<'a>, ('a, 'a) => bool) => bool"
       },
       {
         "id": "Stdlib.Array.compare",
         "kind": "value",
         "name": "compare",
-        "docstrings": [],
+        "docstrings": [
+          "`compare(left, right, comparator)` compares two arrays element by element using `comparator` and returns an `Ordering`.\n\n## Examples\n\n```rescript\nArray.compare([1, 3], [1, 2], Int.compare) == Ordering.greater\nArray.compare([1, 2], [1, 2], Int.compare) == Ordering.equal\n```"
+        ],
         "signature": "let compare: (array<'a>, array<'a>, ('a, 'a) => Ordering.t) => Ordering.t"
       },
       {
         "id": "Stdlib.Array.isArray",
         "kind": "value",
         "name": "isArray",
-        "docstrings": [],
+        "docstrings": [
+          "`isArray(value)` returns `true` when `value` is a JavaScript array and `false` otherwise.\n\nSee [`Array.isArray`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray) on MDN.\n\n## Examples\n\n```rescript\nArray.isArray([1, 2, 3]) == true\nArray.isArray(\"not an array\") == false\n```"
+        ],
         "signature": "let isArray: 'a => bool"
       },
       {
@@ -11729,14 +11933,18 @@
         "id": "Stdlib.Array.splice",
         "kind": "value",
         "name": "splice",
-        "docstrings": [],
+        "docstrings": [
+          "`splice(array, ~start, ~remove, ~insert)` removes `remove` items starting at `start` and inserts the values from `insert`.\n\nBeware this will *mutate* the array.\n\nSee [`Array.splice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice) on MDN.\n\n## Examples\n\n```rescript\nlet items = [\"a\", \"b\", \"c\"]\nitems->Array.splice(~start=1, ~remove=1, ~insert=[\"x\"])\nitems == [\"a\", \"x\", \"c\"]\n```"
+        ],
         "signature": "let splice: (\n  array<'a>,\n  ~start: int,\n  ~remove: int,\n  ~insert: array<'a>,\n) => unit"
       },
       {
         "id": "Stdlib.Array.toSpliced",
         "kind": "value",
         "name": "toSpliced",
-        "docstrings": [],
+        "docstrings": [
+          "`toSpliced(array, ~start, ~remove, ~insert)` returns a new array with the same edits that `splice` would perform, leaving the original unchanged.\n\nSee [`Array.toSpliced`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toSpliced) on MDN.\n\n## Examples\n\n```rescript\nlet original = [1, 2, 3]\nlet updated = original->Array.toSpliced(~start=1, ~remove=1, ~insert=[10])\nupdated == [1, 10, 3]\noriginal == [1, 2, 3]\n```"
+        ],
         "signature": "let toSpliced: (\n  array<'a>,\n  ~start: int,\n  ~remove: int,\n  ~insert: array<'a>,\n) => array<'a>"
       },
       {
@@ -11752,7 +11960,9 @@
         "id": "Stdlib.Array.with",
         "kind": "value",
         "name": "with",
-        "docstrings": [],
+        "docstrings": [
+          "`with(array, index, value)` returns a copy of `array` where the element at `index` is replaced with `value`.\n\nSee [`Array.with`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/with) on MDN.\n\n## Examples\n\n```rescript\nlet original = [\"a\", \"b\", \"c\"]\nlet replaced = original->Array.with(1, \"x\")\nreplaced == [\"a\", \"x\", \"c\"]\noriginal == [\"a\", \"b\", \"c\"]\n```"
+        ],
         "signature": "let with: (array<'a>, int, 'a) => array<'a>"
       },
       {
@@ -11938,7 +12148,9 @@
         "id": "Stdlib.Array.toLocaleString",
         "kind": "value",
         "name": "toLocaleString",
-        "docstrings": [],
+        "docstrings": [
+          "`toLocaleString(array)` converts each element to a locale-aware string and joins them with commas.\n\nSee [`Array.toLocaleString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toLocaleString) on MDN.\n\n## Examples\n\n```rescript\n[\"apple\", \"banana\"]->Array.toLocaleString == \"apple,banana\"\n```"
+        ],
         "signature": "let toLocaleString: array<'a> => string"
       },
       {
@@ -12161,21 +12373,27 @@
         "id": "Stdlib.Array.getSymbol",
         "kind": "value",
         "name": "getSymbol",
-        "docstrings": [],
+        "docstrings": [
+          "`getSymbol(array, key)` retrieves the value stored under the symbol `key`, if present.\n\nSee [`Symbol`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol) on MDN for more details about symbol keys.\n\n## Examples\n\n```rescript\nlet key = Symbol.make(\"meta\")\nlet items = []\nitems->Array.setSymbol(key, \"hello\")\nArray.getSymbol(items, key) == Some(\"hello\")\n```"
+        ],
         "signature": "let getSymbol: (array<'a>, Symbol.t) => option<'b>"
       },
       {
         "id": "Stdlib.Array.getSymbolUnsafe",
         "kind": "value",
         "name": "getSymbolUnsafe",
-        "docstrings": [],
+        "docstrings": [
+          "`getSymbolUnsafe(array, key)` retrieves the value stored under the symbol `key` without any safety checks.\n\nSee [`Symbol`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol) on MDN.\n\n## Examples\n\n```rescript\nlet key = Symbol.make(\"meta\")\nlet items = []\nitems->Array.setSymbol(key, \"hello\")\nArray.getSymbolUnsafe(items, key) == \"hello\"\n```"
+        ],
         "signature": "let getSymbolUnsafe: (array<'a>, Symbol.t) => 'b"
       },
       {
         "id": "Stdlib.Array.setSymbol",
         "kind": "value",
         "name": "setSymbol",
-        "docstrings": [],
+        "docstrings": [
+          "`setSymbol(array, key, value)` stores `value` under the symbol `key` on `array`.\n\nBeware this will *mutate* the array.\n\nSee [`Symbol`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol) on MDN.\n\n## Examples\n\n```rescript\nlet key = Symbol.make(\"count\")\nlet items = []\nitems->Array.setSymbol(key, 5)\nArray.getSymbol(items, key) == Some(5)\n```"
+        ],
         "signature": "let setSymbol: (array<'a>, Symbol.t, 'b) => unit"
       },
       {
