@@ -45,7 +45,10 @@ module MobileNav = {
           </Link>
         </li>
         <li className=base>
-          <Link to=#"/community" className={linkOrActiveLink(~target=#"/community", ~route)}>
+          <Link
+            to=#"/community/overview"
+            className={linkOrActiveLink(~target=#"/community/overview", ~route)}
+          >
             {React.string("Community")}
           </Link>
         </li>
@@ -133,7 +136,8 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
 
               <Link
                 to=#"/community/overview"
-                className={"hidden xs:block " ++ linkOrActiveLink(~target=#"/community", ~route)}
+                className={"hidden xs:block " ++
+                linkOrActiveLink(~target=#"/community/overview", ~route)}
               >
                 {React.string("Community")}
               </Link>
