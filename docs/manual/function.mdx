@@ -474,7 +474,7 @@ let somethingThatMightThrow = async () => throw(SomeReScriptException)
 let someAsyncFn = async () => {
   switch await somethingThatMightThrow() {
   | data => Some(data)
-  | exception JsError(_) => None
+  | exception JsExn(_) => None
   | exception SomeReScriptException => None
   }
 }

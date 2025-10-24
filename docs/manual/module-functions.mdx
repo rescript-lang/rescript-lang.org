@@ -36,15 +36,15 @@ module Next = {
 }
 
 module Component: {
-@react.component
-let make: unit => Jsx.element
+  @react.component
+  let make: unit => Jsx.element
 } = {
 // Create a module that matches the module type expected by Next.MakeParams
 module P = {
-type t = {
-tag: string,
-item: string,
-}
+  type t = {
+    tag: string,
+    item: string,
+  }
 }
 
 // Create a new module using the Params module we created and the Next.MakeParams module function
@@ -52,16 +52,17 @@ module Params = Next.MakeParams(P)
 
 @react.component
 let make = () => {
+
 // Use the functions, values, or types created by the module function
 let params = Params.useParams()
 
-<div>
-<p>
-{React.string("Tag: " ++ params.tag /_ params is fully typed! _/)}
-</p>
-<p> {React.string("Item: " ++ params.item)} </p>
-</div>
-}
+  <div>
+    <p>
+      {React.string("Tag: " ++ params.tag /* params is fully typed! */)}
+    </p>
+    <p> {React.string("Item: " ++ params.item)} </p>
+  </div>
+  }
 }
 
 ````

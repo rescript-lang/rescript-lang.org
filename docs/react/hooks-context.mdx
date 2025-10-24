@@ -49,9 +49,9 @@ module ThemedButton = {
     | "light" | _ => ("#000000", "#eeeeee")
     }
 
-    let style = ReactDOMStyle.make(~color, ~backgroundColor, ())
-
-    <button style> {React.string("I am a styled button!")} </button>
+    <button style={{color, backgroundColor}}>
+      {React.string("I am a styled button!")}
+    </button>
   }
 }
 

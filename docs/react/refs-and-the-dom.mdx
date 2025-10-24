@@ -202,6 +202,7 @@ let make = () => {
   let textInput = React.useRef(Nullable.null)
   let setTextInputRef = element => {
     textInput.current = element
+    None
   }
 
   let focusTextInput = _ => {
@@ -269,7 +270,10 @@ module CustomTextInput = {
 @react.component
 let make = () => {
   let textInput = React.useRef(Nullable.null)
-  let setInputRef = element => { textInput.current = element}
+  let setInputRef = element => { 
+    textInput.current = element
+    None
+  }
 
   <CustomTextInput setInputRef/>
 }

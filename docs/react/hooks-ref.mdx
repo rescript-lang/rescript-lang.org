@@ -113,6 +113,7 @@ let make = () => {
   let textInput = React.useRef(Nullable.null)
   let setTextInputRef = element => {
     textInput.current = element;
+    None
   }
 
   let focusTextInput = _ => {

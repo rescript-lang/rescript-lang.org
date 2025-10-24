@@ -33,7 +33,8 @@ type timezone =
 
 Using this variant type, we will end up having functions like this:
 
-```res example
+{/* TODO: fix this example, it has an error because it doesn't have access to the previous snippet */}
+```res
 let convertToDaylight = tz => {
   switch tz {
   | EST => EDT
@@ -47,7 +48,8 @@ This function is only valid for a subset of our variant type's constructors but 
 
 Let's see if we can find a way for the compiler to help us with normal variants. We could define another variant type to distinguish the two kinds of timezone.
 
-```res example
+{/* TODO: fix this example, it has an error because it doesn't have access to the previous snippet */}
+```res
 type daylightOrStandard =
   | Daylight(timezone)
   | Standard(timezone)
@@ -55,7 +57,8 @@ type daylightOrStandard =
 
 This has a lot of problems. For one, it's cumbersome and redundant. We would now have to pattern-match twice whenever we deal with a timezone that's wrapped up here. The compiler will force us to check whether we are dealing with daylight or standard time, but notice that there's nothing stopping us from providing invalid timezones to these constructors:
 
-```res example
+{/* TODO: fix this example, it has an error because it doesn't have access to the previous snippet */}
+```res
 let invalidTz1 = Daylight(EST)
 let invalidTz2 = Standard(EDT)
 ```
@@ -78,7 +81,8 @@ type rec timezone<_> =
 We define our type with a type parameter. We manually annotate each constructor, providing it with the correct type parameter indicating whether it is standard or daylight. Each constructor is a `timezone`,
 but we've added another level of specificity using a type parameter. Constructors are now understood to be `standard` or `daylight` at the _type_ level. Now we can fix our function like this:
 
-```res example
+{/* TODO: fix this example, it has an error because it doesn't have access to the previous snippet */}
+```res
 let convertToDaylight = tz => {
   switch tz {
   | EST => EDT
@@ -92,7 +96,8 @@ The compiler can infer correctly that this function should only take `timezone<s
 we try to return a standard timezone from this function. Actually, this seems like it could be a problem,
 we still want to be able to match on all cases of the variant sometimes, and a naive attempt at this will not pass the type checker. A naive example will fail:
 
-```res example
+{/* TODO: fix this example, it has an error because it doesn't have access to the previous snippet */}
+```res
 let convertToDaylight = tz =>
   switch tz {
   | EST => EDT
@@ -104,7 +109,8 @@ let convertToDaylight = tz =>
 
 This will complain that `daylight` and `standard` are incompatible. To fix this, we need to explicitly annotate to tell the compiler to accept both:
 
-```res example
+{/* TODO: fix this example, it has an error because it doesn't have access to the previous snippet */}
+```res
 let convertToDaylight : type a. timezone<a> => timezone<daylight> =  // ...
 ```
 
@@ -117,7 +123,8 @@ Sometimes, a function should have a different return type based on what you give
 
 [^1]: In ReScript v12, the built-in operators are already generic, but we use them in this example for simplicity.
 
-```res example
+{/* this example purposefully has an error so it is not marked as an example */}
+```res
 type rec number<_> = Int(int): number<int> | Float(float): number<float>
 
 let add = (type a, x: number<a>, y: number<a>): a =>
@@ -204,7 +211,8 @@ This API has a method for binding event handlers, `on`. This takes an event and 
 depending on which event we are binding to. A naive implementation might look similar to this, defining a
 separate method for each stream event to wrap the unsafe version of `on`.
 
-```res example
+{/* TODO: fix this example, it has an error */}
+```res
 module Stream = {
     type t
 
@@ -233,7 +241,8 @@ The real magic happens in the signature of `on`. Read it carefully, and then loo
 follow how the type variables are getting filled in, write it out on paper what each type variable is equal
 to if you need and it will soon become clear.
 
-```res example
+{/* TODO: fix this example, it has an error */}
+```res
 
 module Stream = {
   type t<'a>

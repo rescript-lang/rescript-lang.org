@@ -215,7 +215,7 @@ let fetchData = async () => {
       Console.log("user 2 mail: " ++ user2Mail)
     }
 
-  | exception JsError(err) => Console.log2("Some error occurred", err)
+  | exception JsExn(err) => Console.log2("Some error occurred", err)
   }
 }
 ```

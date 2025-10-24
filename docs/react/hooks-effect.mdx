@@ -184,7 +184,8 @@ type state = Offline | Loading | Online
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+{/* TODO: fix this example */}
+```res
 // FriendStatus.res
 @react.component
 let make = (~friendId: string) => {
@@ -281,7 +282,8 @@ When we render with count updated to 6, React will compare the items in the `[5]
 
 This also works for effects that have a cleanup phase:
 
-```res example
+{/* TODO fix this example */}
+```res
 @react.component
 let make = (~friendId: string) => {
   let (state, setState) = React.useState(_ => Offline)

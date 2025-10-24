@@ -18,27 +18,11 @@ If they work in JS then they almost certainly work in ReScript. In the next few 
 
 ## Inline Styles
 
-This is the most basic form of styling, coming straight from the 90s. You can apply a `style` attribute to any DOM element with our `ReactDOM.Style.make` API:
+This is the most basic form of styling, coming straight from the 90s. You can apply a `style` attribute to any DOM element using the `style` prop.
 
 ```res example
-<div style={ReactDOM.Style.make(~color="#444444", ~fontSize="68px", ())} />
-```
-
-It's a [labeled](/docs/manual/latest/function#labeled-arguments) (therefore typed) function call that maps to the familiar style object `{color: '#444444', fontSize: '68px'}`. For every CSS attribute in the CSS specfication, there is a camelCased label in our `make` function.
-
-**Note** that `make` returns an opaque `ReactDOM.Style.t` type that you can't read into. We also expose a `ReactDOM.Style.combine` that takes in two `style`s and combine them.
-
-### Escape Hatch: `unsafeAddProp`
-
-The above `Style.make` API will safely type check every style field! However, we might have missed some more esoteric fields. If that's the case, the type system will tell you that the field you're trying to add doesn't exist. To remediate this, we're exposing a `ReactDOM.Style.unsafeAddProp` to dangerously add a field to a style:
-
-```res example
-let style =
-  ReactDOM.Style.make(
-    ~color="red",
-    ~padding="10px",
-    (),
-  )->ReactDOM.Style.unsafeAddProp("-webkit-animation-name", "moveit")
+let make = () =>
+  <div style={{ color: "#444444", fontSize: "68px"}} />
 ```
 
 ## Global CSS
@@ -173,7 +157,7 @@ Please note that this approach will not check for invalid css attribute names. I
 @module("@emotion/css") external css: ReactDOM.Style.t => string = "css"
 
 // Usage is slightly different (and probably less ergonomic)
-let container = ReactDOM.Style.make(~padding="20px", ())->css;
+let container = {padding: "20px"}->css
 
 let app = <div
   className={container}
