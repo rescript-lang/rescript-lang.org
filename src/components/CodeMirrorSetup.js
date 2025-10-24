@@ -1,7 +1,7 @@
 // CodeMirror setup and mode imports
 import CodeMirror from "codemirror";
 
-import "codemirror/lib/codemirror.css"
+import "codemirror/lib/codemirror.css";
 
 // Import required modes and addons
 import "codemirror/mode/javascript/javascript";
@@ -13,7 +13,7 @@ import "codemirror/keymap/vim";
 
 // Make sure CodeMirror is available globally
 if (typeof window !== "undefined") {
-    window.CodeMirror = CodeMirror;
+  window.CodeMirror = CodeMirror;
 }
 
 export default CodeMirror;

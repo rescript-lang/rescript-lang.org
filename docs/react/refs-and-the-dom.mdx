@@ -270,7 +270,7 @@ module CustomTextInput = {
 @react.component
 let make = () => {
   let textInput = React.useRef(Nullable.null)
-  let setInputRef = element => { 
+  let setInputRef = element => {
     textInput.current = element
     None
   }

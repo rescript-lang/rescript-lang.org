@@ -11,7 +11,6 @@ const __dirname =
 let tempFileName = path.join(__dirname, "../temp/src/", "_tempFile.res");
 let tempFileNameRegex = /_tempFile\.res/g;
 
-
 let parseFile = (content) => {
   if (!/```res (example|prelude|sig)/.test(content)) {
     return;
@@ -47,7 +46,6 @@ let parseFile = (content) => {
     .join("\n");
 };
 
-
 // TODO post RR7: revisit this
 // let postprocessOutput = (file, error) => {
 //   return error.stderr
@@ -74,7 +72,6 @@ let parseFile = (content) => {
 
 console.log("Running tests...");
 
-
 let rescriptJson = `{
     "name": "temp",
     "namespace": false,
@@ -92,7 +89,7 @@ let rescriptJson = `{
             "dir": "src"
         }
     ]
-}`
+}`;
 
 fs.mkdirSync(path.join(__dirname, "../temp/src/"), { recursive: true });
 fs.writeFileSync(path.join(__dirname, "../temp/rescript.json"), rescriptJson);
@@ -106,13 +103,12 @@ glob.sync(__dirname + "/../docs/{manual,react}/**/*.mdx").forEach((file) => {
   if (parsedResult != null) {
     fs.writeFileSync(tempFileName, parsedResult);
     try {
-      console.log("testing examples in", file)
+      console.log("testing examples in", file);
       // -109 for suppressing `Toplevel expression is expected to have unit type.`
       // Most doc snippets do e.g. `Belt.Array.length(["test"])`, which triggers this
-      child_process.execSync(
-        "npm exec rescript build ./temp -- --quiet",
-        { stdio: "inherit" },
-      );
+      child_process.execSync("npm exec rescript build ./temp -- --quiet", {
+        stdio: "inherit",
+      });
     } catch (e) {
       // process.stdout.write(postprocessOutput(file, e));
       success = false;
@@ -122,5 +118,3 @@ glob.sync(__dirname + "/../docs/{manual,react}/**/*.mdx").forEach((file) => {
 
 fs.unlinkSync(tempFileName);
 process.exit(success ? 0 : 1);
-
-

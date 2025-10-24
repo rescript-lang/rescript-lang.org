@@ -34,6 +34,7 @@ type timezone =
 Using this variant type, we will end up having functions like this:
 
 {/* TODO: fix this example, it has an error because it doesn't have access to the previous snippet */}
+
 ```res
 let convertToDaylight = tz => {
   switch tz {
@@ -49,6 +50,7 @@ This function is only valid for a subset of our variant type's constructors but 
 Let's see if we can find a way for the compiler to help us with normal variants. We could define another variant type to distinguish the two kinds of timezone.
 
 {/* TODO: fix this example, it has an error because it doesn't have access to the previous snippet */}
+
 ```res
 type daylightOrStandard =
   | Daylight(timezone)
@@ -58,6 +60,7 @@ type daylightOrStandard =
 This has a lot of problems. For one, it's cumbersome and redundant. We would now have to pattern-match twice whenever we deal with a timezone that's wrapped up here. The compiler will force us to check whether we are dealing with daylight or standard time, but notice that there's nothing stopping us from providing invalid timezones to these constructors:
 
 {/* TODO: fix this example, it has an error because it doesn't have access to the previous snippet */}
+
 ```res
 let invalidTz1 = Daylight(EST)
 let invalidTz2 = Standard(EDT)
@@ -82,6 +85,7 @@ We define our type with a type parameter. We manually annotate each constructor,
 but we've added another level of specificity using a type parameter. Constructors are now understood to be `standard` or `daylight` at the _type_ level. Now we can fix our function like this:
 
 {/* TODO: fix this example, it has an error because it doesn't have access to the previous snippet */}
+
 ```res
 let convertToDaylight = tz => {
   switch tz {
@@ -97,6 +101,7 @@ we try to return a standard timezone from this function. Actually, this seems li
 we still want to be able to match on all cases of the variant sometimes, and a naive attempt at this will not pass the type checker. A naive example will fail:
 
 {/* TODO: fix this example, it has an error because it doesn't have access to the previous snippet */}
+
 ```res
 let convertToDaylight = tz =>
   switch tz {
@@ -110,6 +115,7 @@ let convertToDaylight = tz =>
 This will complain that `daylight` and `standard` are incompatible. To fix this, we need to explicitly annotate to tell the compiler to accept both:
 
 {/* TODO: fix this example, it has an error because it doesn't have access to the previous snippet */}
+
 ```res
 let convertToDaylight : type a. timezone<a> => timezone<daylight> =  // ...
 ```
@@ -124,6 +130,7 @@ Sometimes, a function should have a different return type based on what you give
 [^1]: In ReScript v12, the built-in operators are already generic, but we use them in this example for simplicity.
 
 {/* this example purposefully has an error so it is not marked as an example */}
+
 ```res
 type rec number<_> = Int(int): number<int> | Float(float): number<float>
 
@@ -212,6 +219,7 @@ depending on which event we are binding to. A naive implementation might look si
 separate method for each stream event to wrap the unsafe version of `on`.
 
 {/* TODO: fix this example, it has an error */}
+
 ```res
 module Stream = {
     type t
@@ -242,6 +250,7 @@ follow how the type variables are getting filled in, write it out on paper what 
 to if you need and it will soon become clear.
 
 {/* TODO: fix this example, it has an error */}
+
 ```res
 
 module Stream = {
