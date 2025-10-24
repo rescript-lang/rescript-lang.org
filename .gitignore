@@ -41,4 +41,4 @@ build
 .react-router
 
 app/**/*.mjs
-!shims.mjs
+!_shims.mjs

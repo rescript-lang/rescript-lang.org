@@ -1,1 +1,46 @@
 data/api/**/*.json
+
+.DS_Store
+*.swp
+*.swo
+
+# Generated via update-index script
+public/blog/feed.xml
+
+node_modules/
+.next/
+out/
+index_data/*.json
+
+# Generated via test examples script
+_tempFile.cmi
+_tempFile.cmj
+_tempFile.cmt
+_tempFile.res
+temp
+
+.bsb.lock
+.merlin
+lib/
+
+.vercel
+
+src/**/*.mjs
+scripts/gendocs.mjs
+scripts/generate_*.mjs
+
+# Generated via generate-llms script
+public/llms/manual/**/llm*.txt
+public/llms/react/**/llm*.txt
+pages/docs/**/**/llms.mdx
+
+public/playground-bundles/
+!public/_redirects
+
+
+dist
+build
+.react-router
+
+app/**/*.mjs
+!_shims.mjs
