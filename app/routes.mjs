@@ -47,7 +47,8 @@ let $$default = Belt_Array.concatMany([
     })
   ],
   stdlibRoutes,
-  Server.routes("./routes/MdxRoute.mjs")
+  Server.routes("./routes/MdxRoute.mjs"),
+  [Routes.route("*", "./routes/NotFoundRoute.mjs")]
 ]);
 
 export {

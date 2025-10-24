@@ -27,4 +27,5 @@ let default = [
   route("docs/manual/api/dom", "./routes/ApiRoute.mjs", ~options={id: "api-dom"}),
   ...stdlibRoutes,
   ...mdxRoutes("./routes/MdxRoute.mjs"),
+  route("*", "./routes/NotFoundRoute.mjs"),
 ]
