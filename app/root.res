@@ -36,6 +36,7 @@ let default = () => {
   let (isOverlayOpen, setOverlayOpen) = React.useState(_ => false)
   <html>
     <head>
+      <style> {React.string("html {opacity:0;}")} </style>
       <link rel="preconnect" href={mainCss} />
       <link rel="stylesheet" href={mainCss} />
 
