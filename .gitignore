@@ -33,7 +33,7 @@ public/llms/react/**/llm*.txt
 pages/docs/**/**/llms.mdx
 
 public/playground-bundles/
-public/_redirects
+!public/_redirects
 
 
 dist
