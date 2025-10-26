@@ -47,7 +47,8 @@ let components = {
   "Warn": Markdown.Warn.make,
   "CommunityContent": CommunityContent.make,
   "WarningTable": WarningTable.make,
-  "Docson": Docson.make,
+  "Docson": DocsonLazy.make,
+  "Suspense": React.Suspense.make,
 }
 
 let convertToNavItems = (items, rootPath) =>

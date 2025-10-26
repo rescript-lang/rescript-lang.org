@@ -49,6 +49,7 @@ let make = (
 
     let full = (ctrlKey ? "CTRL+" : "") ++ key
 
+    // TODO RR7 test keyboard input
     switch full {
     | "Escape" => onClear()
     | "Tab" =>
@@ -67,7 +68,6 @@ let make = (
   }
 
   let onChange = evt => {
-    ReactEvent.Form.preventDefault(evt)
     let value = ReactEvent.Form.target(evt)["value"]
     onValueChange(value)
   }
@@ -83,7 +83,6 @@ let make = (
     <Icon.MagnifierGlass
       className={(state === Active ? "text-fire" : "text-fire-70") ++ " w-4 h-4"}
     />
-    // TODO RR7: deleting input stops working with one character left...
     <input
       value
       ref={ReactDOM.Ref.domRef((Obj.magic(textInput): React.ref<Nullable.t<Dom.element>>))}
@@ -94,11 +93,7 @@ let make = (
       className="text-16 outline-hidden ml-4 w-full"
       type_="text"
     />
-    <button
-      onFocus
-      className={"value" /* TODO */ === "" ? "hidden" : "block"}
-      onMouseDown=onMouseDownClear
-    >
+    <button onFocus className={value === "" ? "hidden" : "block"} onMouseDown=onMouseDownClear>
       <Icon.Close className="w-4 h-4 text-fire" />
     </button>
   </div>

@@ -251,15 +251,18 @@ let make = (
   // [2] Search exactly matches an item - trigger a route change, and allow the EFFECT to update the view state.
   // [3] Search does not match an item - immediately update the view state to show filtered items.
   let onSearchValueChange = value => {
+    Console.log2("value changed", value)
     switch value {
-    | "" => navigate("/syntax-lookup")
+    | "" =>
+      setState(_ => ShowAll)
+      navigate("/syntax-lookup")
     | value =>
       switch findItemByExactName(value) {
       | None => {
           let filtered = searchItems(value)
           setState(_ => ShowFiltered(value, filtered))
         }
-      | Some(item) => ReactRouter.navigate("/syntax-lookup/" ++ item.id)
+      | Some(item) => navigate("/syntax-lookup/" ++ item.id)
       }
     }
   }
@@ -333,11 +336,13 @@ let make = (
     })
   }
 
-  let (searchValue, completionItems) = switch state {
-  | ShowFiltered(search, items) => (search, items)
-  | ShowAll => ("", allItems)
-  | ShowDetails(item) => (item.name, [item])
-  }
+  let (searchValue, completionItems) = React.useMemo(() =>
+    switch state {
+    | ShowFiltered(search, items) => (search, items)
+    | ShowAll => ("", allItems)
+    | ShowDetails(item) => (item.name, [item])
+    }
+  , [state])
 
   let onSearchClear = () => {
     onSearchValueChange("")
