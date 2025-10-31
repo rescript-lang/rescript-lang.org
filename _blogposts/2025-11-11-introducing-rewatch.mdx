@@ -84,11 +84,32 @@ The rewrite also opens doors for future improvements that require tight integrat
 
 ReWatch takes a fundamentally different approach to building your code. At its core is a sophisticated understanding of what actually needs to be rebuilt when files change. Let's break down how it works.
 
-### Understanding CMI Files: The Foundation
+### How ReScript Compilation Works
 
-Before we dive into ReWatch's innovations, it's worth understanding a key concept: CMI files.
+Before diving into ReWatch's optimizations, it helps to understand ReScript's compilation model, which differs from many other languages.
 
-**CMI stands for Compiled Module Interface.** When the compiler processes your ReScript code, it generates several output files:
+**ReScript compiles one file at a time, in complete isolation.** When you compile `Button.res`, the compiler doesn't maintain any shared state with other modules. Each file produces its own self-contained set of artifacts: the JavaScript output (`.mjs`), the module interface (`.cmi`), the typed tree (`.cmt`), and optimization metadata (`.cmj`). There's no separate linking phase like in C/C++, and no whole-program analysis like in many bundlers.
+
+Compilation happens in two phases: first, the file is parsed into an abstract syntax tree, then that tree is type-checked and compiled to JavaScript. This two-phase approach gives ReWatch fine-grained control over what work to skip. If a file hasn't changed at all, both phases can be skipped. If a dependency's public interface didn't change (even though the file was modified), dependent modules can skip recompilation entirely.
+
+Additionally, ReScript's module system enforces a strict constraint: **dependency cycles aren't allowed.** You can't have Module A depending on Module B while Module B also depends on Module A. This means the module graph is always a DAG (Directed Acyclic Graph).
+
+Think of it this way: most languages compile like cooking a complex dish where all ingredients affect each other. ReScript compiles like an assembly line where each station produces a complete, independent part. This makes it straightforward to parallelize, cache, and optimize.
+
+**Why this matters for build performance:**
+
+- **Perfect caching:** Since files compile independently with no global state, cached artifacts are always safe to reuse
+- **Trivial parallelization:** No coordination needed between parallel compilations since they don't share state
+- **Precise incremental rebuilds:** Changes propagate predictably through the DAG with clear stopping points
+- **Foundation for future optimizations:** This model enables possibilities like distributed compilation and build caching across CI runs
+
+**The trade-off:** This approach limits some whole-program optimizations, but the gains in predictability and speed are substantial. More importantly, this clean, constrained model is exactly what makes ReWatch's sophisticated optimizations possible. The CMI hash checking, wave-based compilation, and early termination strategies all build on these fundamental properties.
+
+### Understanding CMI Files
+
+Now that we understand ReScript's compilation model, let's look at a specific artifact that's central to ReWatch's optimizations: the CMI file.
+
+**CMI stands for Compiled Module Interface.** As mentioned, when the compiler processes your ReScript code, it generates several output files:
 
 ```
 Button.res  (your source code)
