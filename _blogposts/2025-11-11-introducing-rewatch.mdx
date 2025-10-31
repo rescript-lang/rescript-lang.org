@@ -65,7 +65,9 @@ Every ReScript-specific concept had to be translated into Ninja's generic model.
 
 ### A Purpose-Built Solution
 
-ReWatch is written specifically for ReScript, in Rust, with native understanding of ReScript's compilation model. There's no translation layer. The build system directly understands:
+ReWatch started at [Walnut](https://walnut.io), where [Jaap Frolich](https://github.com/jfrolich) and [Roland Peelen](https://github.com/rolandpeelen) built it to solve real problems they were facing with large ReScript codebases. It's now part of the official ReScript compiler distribution.
+
+Written specifically for ReScript, in Rust, ReWatch has native understanding of ReScript's compilation model. There's no translation layer. The build system directly understands:
 
 - ReScript's compilation phases (parsing, type checking, code generation)
 - The meaning and role of CMI, CMT, and CMJ files
@@ -306,6 +308,8 @@ The default `rescript` command now uses ReWatch. If you've been using `rescript 
 ReWatch represents a significant leap forward for ReScript's build tooling. The intelligent dependency tracking means less waiting and more building. The proper monorepo support means it scales with your project structure. The performance improvements are most noticeable where they matter most: during iterative development.
 
 These improvements come from fundamental changes in how the build system understands and processes your code. By tracking interface stability rather than just file changes, ReWatch does less work while being smarter about what actually needs rebuilding.
+
+We're grateful to Jaap Frolich and Roland Peelen for creating ReWatch and to Walnut for supporting its development. Their work solving real-world problems has resulted in a build system that benefits the entire ReScript community.
 
 If you're upgrading to ReScript 12, you'll get ReWatch automatically. We're excited to hear how it works for your projects. As always, feedback and bug reports are welcome. You can reach us through the forum or on GitHub.
 
