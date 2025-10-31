@@ -33,6 +33,51 @@ As codebases grew, especially in monorepo setups with multiple packages, the old
 
 These weren't just minor inconveniences. They were real productivity drains that got worse as projects scaled.
 
+## Why a Complete Rewrite?
+
+To understand why ReWatch represents such a significant improvement, it helps to understand what the old build system actually was.
+
+### The Legacy Architecture: bsb + Ninja
+
+The previous build system, bsb (BuckleScript Build), was actually a wrapper around Ninja, a generic build system originally created by Google for building Chrome. The workflow looked like this:
+
+1. bsb scans your ReScript source files
+2. Generates a `build.ninja` file describing all compilation rules
+3. Ninja reads this file and executes the builds in parallel
+4. Ninja tracks dependencies based on file timestamps
+
+Ninja was chosen because it provided battle-tested parallelization out of the box. It worked well for getting ReScript off the ground. But there was a fundamental mismatch.
+
+### The Impedance Mismatch
+
+Ninja was designed for C++ compilation. It thinks in terms of files, timestamps, and simple command execution. It has no concept of modules, types, or interfaces.
+
+ReScript compilation, however, needs to understand:
+
+- Module interfaces versus implementations
+- Type-level changes versus implementation changes
+- Cross-module optimization opportunities
+- Monorepo package boundaries
+
+This mismatch meant that Ninja could only make decisions based on "file X changed, rebuild dependents." It couldn't look inside a module to see if only internal code changed. It had no awareness of ReScript's type system or module semantics.
+
+Every ReScript-specific concept had to be translated into Ninja's generic model. This translation layer added complexity and, more importantly, limited what optimizations were possible. You can't do CMI hash checking when your build system doesn't know what a CMI file is.
+
+### A Purpose-Built Solution
+
+ReWatch is written specifically for ReScript, in Rust, with native understanding of ReScript's compilation model. There's no translation layer. The build system directly understands:
+
+- ReScript's compilation phases (parsing, type checking, code generation)
+- The meaning and role of CMI, CMT, and CMJ files
+- Module dependency graphs and package boundaries
+- When type changes require cascading rebuilds
+
+This deep integration enables optimizations that were simply impossible with a generic build system. The CMI hash checking we'll discuss next is a perfect example: it requires the build system to understand what module interfaces are and how to detect when they've changed in meaningful ways.
+
+Think of it this way: using Ninja for ReScript was like using a generic task runner for webpack's job. It works, but a tool designed specifically for the task can do things the generic tool never could.
+
+The rewrite also opens doors for future improvements that require tight integration between the build system and the compiler: incremental type checking, distributed build caching, and better language server integration.
+
 ## The Intelligence Behind ReWatch
 
 ReWatch takes a fundamentally different approach to building your code. At its core is a sophisticated understanding of what actually needs to be rebuilt when files change. Let's break down how it works.
