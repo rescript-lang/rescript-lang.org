@@ -46,9 +46,10 @@ Before we dive into ReWatch's innovations, it's worth understanding a key concep
 ```
 Button.res  (your source code)
   ↓ compiler
-├─ Button.mjs     # JavaScript code that runs in the browser
-├─ Button.cmi     # The module's public interface
-└─ Button.cmj     # Compiled module with implementation details
+├─ Button.mjs     # JavaScript output
+├─ Button.cmi     # Module's public API signature
+├─ Button.cmt     # Typed AST
+└─ Button.cmj     # Optimization metadata
 ```
 
 Think of the `.cmi` file as a contract or a table of contents for your module. It describes what other modules can see and import from your module. It contains your type definitions and function signatures, but only the public ones.
