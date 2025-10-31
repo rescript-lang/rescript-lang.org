@@ -237,15 +237,32 @@ The small cost of copying files upfront is paid back many times over through fas
 
 ### Wave-Based Parallel Compilation
 
-ReWatch compiles your modules in dependency-order waves, with parallel processing within each wave.
+ReWatch organizes compilation into waves based on dependency order. Think of it like an assembly line where some stations can run in parallel while others must wait for earlier stations to complete.
 
-Here's how it works: modules with no pending dependencies compile first, in parallel. As they complete, the next wave of modules (whose dependencies are now satisfied) begins compiling. This continues until all modules are built.
+Here's a concrete example. Imagine this dependency structure:
 
-Combined with the CMI hash checking, this means:
+```
+    A
+   ╱ ╲
+  B   C
+  │   │
+  D   E
+   ╲ ╱
+    F
+```
 
-- Maximum parallelism within each wave
-- Waves can terminate early if interface stability is detected
-- No wasted work on modules that don't need rebuilding
+ReWatch processes this in waves:
+
+**Wave 1:** Compile A (no dependencies)  
+**Wave 2:** Compile B and C in parallel (both depend only on A, which is done)  
+**Wave 3:** Compile D and E in parallel (their dependencies are satisfied)  
+**Wave 4:** Compile F (waits for both D and E)
+
+The key insight: within each wave, all modules compile simultaneously. ReWatch identifies which modules are ready (all their dependencies are compiled) and processes them together.
+
+Combined with CMI hash checking, this becomes even more powerful. If module A's interface doesn't change, modules B and C might skip actual compilation even though they're queued in Wave 2. They pass through the wave without doing unnecessary work.
+
+This approach emerged naturally from solving the problem of "how do we compile as much as possible at once while respecting dependencies?" The solution turns out to be a classic computer science algorithm: [Kahn's algorithm](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm) for topological sorting. The beauty is that it's simply the optimal way to solve the problem, discovered independently by addressing the real-world constraints of module compilation.
 
 ### Proper Monorepo Support
 
