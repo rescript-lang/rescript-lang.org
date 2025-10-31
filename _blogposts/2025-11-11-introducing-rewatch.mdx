@@ -71,6 +71,7 @@ let defaultSize = Medium
 ```
 
 The `.cmi` file for this module will contain:
+
 - The `size` type definition
 - The signature of `make`
 - The type of `defaultSize`
@@ -84,6 +85,7 @@ But it won't contain `internalHelper` because it's marked as [`%%private`](https
 ReWatch uses CMI files to make intelligent decisions about what needs recompiling. Here's how:
 
 When you change a file, ReWatch:
+
 1. Computes a hash of the current `.cmi` file (before compilation)
 2. Compiles the changed module
 3. Computes a hash of the new `.cmi` file (after compilation)
@@ -103,7 +105,7 @@ let make = (~size, ~onClick) => {
 let getClassName = (size) => {
   switch size {
   | Small => "btn-sm"
-  | Medium => "btn-md" 
+  | Medium => "btn-md"
   | Large => "btn-lg"
   }
 }
@@ -127,12 +129,14 @@ let getClassName = (size) => {
 The internal implementation changed, but the public API (the `make` function signature) stayed the same. The `.cmi` file is identical before and after.
 
 **With the old build system:**
+
 - Button.res changes → recompile Button
 - Check all dependents of Button → recompile them too
 - Check all their dependents → recompile those as well
 - Result: potentially dozens of modules recompiled
 
 **With ReWatch:**
+
 - Button.res changes → recompile Button
 - Check Button.cmi hash → unchanged
 - Skip recompiling dependents
@@ -175,6 +179,7 @@ ReWatch employs another clever optimization for module resolution. When building
 Think of it like organizing a library. The old approach was like having books scattered across multiple rooms and floors. To find a specific book, you'd need to check each room. ReWatch's approach is like putting all the books in one room. Finding what you need is instant.
 
 **Why this matters:**
+
 - Module lookup becomes a single directory operation
 - The filesystem cache is more effective when files are adjacent
 - Cross-package references are as fast as local references
@@ -189,6 +194,7 @@ ReWatch compiles your modules in dependency-order waves, with parallel processin
 Here's how it works: modules with no pending dependencies compile first, in parallel. As they complete, the next wave of modules (whose dependencies are now satisfied) begins compiling. This continues until all modules are built.
 
 Combined with the CMI hash checking, this means:
+
 - Maximum parallelism within each wave
 - Waves can terminate early if interface stability is detected
 - No wasted work on modules that don't need rebuilding
