@@ -1,0 +1,260 @@
+---
+author: rescript-team
+date: "2025-11-11"
+badge: roadmap
+title: "ReWatch: A Smarter Build System for ReScript"
+description: |
+  ReScript 12 introduces ReWatch, a new build system that brings intelligent dependency tracking, faster incremental builds, and proper monorepo support.
+---
+
+## Introduction
+
+ReScript 12 comes with a completely new build system. Internally, we call it ReWatch, though you won't need to invoke it by name (it's now the default when you run `rescript build`). If you've been working with ReScript for a while, you'll know the previous build system (internally called bsb) as a reliable workhorse. But as projects grew larger and monorepos became more common, its limitations became increasingly apparent.
+
+ReWatch addresses these limitations head-on. It brings smarter compilation, significantly faster incremental builds, and proper support for modern development workflows. Let's explore what makes it better.
+
+## Problems We Solved
+
+### Incomplete File Watching in Monorepos
+
+The old build system had trouble tracking file changes across multiple packages in a monorepo. Developers would make changes in one package, but the build system wouldn't always pick them up correctly. This led to stale builds and the dreaded "it works on my machine" moments that could only be fixed with a clean rebuild.
+
+You can see this issue discussed in detail [here](https://github.com/rescript-lang/rescript-lang.org/issues/1090#issuecomment-3361543242).
+
+### Unnecessary Cascade Recompilations
+
+Here's a scenario you might recognize: you add a private helper function to a utility module. The function is completely internal, not exported, and doesn't change any public APIs. Yet the build system recompiles not just that module, but every module that depends on it, and every module that depends on those modules, and so on.
+
+In a large codebase, this could mean recompiling dozens or even hundreds of modules for a change that only affected one file's internal implementation. The wait times added up, breaking the flow of development.
+
+### Slower Builds as Projects Grew
+
+As codebases grew, especially in monorepo setups with multiple packages, the old build system struggled to keep up. The module resolution had to search through many directories, and the dependency tracking wasn't sophisticated enough to avoid unnecessary work.
+
+These weren't just minor inconveniences. They were real productivity drains that got worse as projects scaled.
+
+## The Intelligence Behind ReWatch
+
+ReWatch takes a fundamentally different approach to building your code. At its core is a sophisticated understanding of what actually needs to be rebuilt when files change. Let's break down how it works.
+
+### Understanding CMI Files: The Foundation
+
+Before we dive into ReWatch's innovations, it's worth understanding a key concept: CMI files.
+
+**CMI stands for Compiled Module Interface.** When the compiler processes your ReScript code, it generates several output files:
+
+```
+Button.res  (your source code)
+  ↓ compiler
+├─ Button.mjs     # JavaScript code that runs in the browser
+├─ Button.cmi     # The module's public interface
+└─ Button.cmj     # Compiled module with implementation details
+```
+
+Think of the `.cmi` file as a contract or a table of contents for your module. It describes what other modules can see and import from your module. It contains your type definitions and function signatures, but only the public ones.
+
+Here's a concrete example:
+
+```rescript
+// Button.res
+type size = Small | Medium | Large
+
+let make = (~size: size, ~onClick) => {
+  // component implementation
+}
+
+let defaultSize = Medium
+
+%%private(let internalHelper = () => {
+  // some internal logic
+})
+```
+
+The `.cmi` file for this module will contain:
+- The `size` type definition
+- The signature of `make`
+- The type of `defaultSize`
+
+But it won't contain `internalHelper` because it's marked as [`%%private`](https://rescript-lang.org/syntax-lookup#private-let), making it truly internal to the module.
+
+**This distinction is crucial for build performance.** If you change `internalHelper`, the `.cmi` file stays exactly the same because the public interface didn't change. But if you add a parameter to `make` or change the `size` type, the `.cmi` file changes because the public contract changed.
+
+### Smart Dependency Tracking Through Interface Stability
+
+ReWatch uses CMI files to make intelligent decisions about what needs recompiling. Here's how:
+
+When you change a file, ReWatch:
+1. Computes a hash of the current `.cmi` file (before compilation)
+2. Compiles the changed module
+3. Computes a hash of the new `.cmi` file (after compilation)
+4. Compares the two hashes
+
+If the hashes match, the module's public interface hasn't changed. ReWatch then knows it can skip recompiling dependent modules.
+
+Let's see this in action. Imagine you refactor the internal implementation of a `getClassName` helper in your Button component:
+
+```rescript
+// Button.res - BEFORE
+let make = (~size, ~onClick) => {
+  let className = getClassName(size)
+  // render button
+}
+
+let getClassName = (size) => {
+  switch size {
+  | Small => "btn-sm"
+  | Medium => "btn-md" 
+  | Large => "btn-lg"
+  }
+}
+```
+
+You decide to refactor `getClassName` to use a map:
+
+```rescript
+// Button.res - AFTER
+let make = (~size, ~onClick) => {
+  let className = getClassName(size)
+  // render button
+}
+
+let getClassName = (size) => {
+  // New implementation using a map
+  sizeMap->Map.get(size)->Option.getOr("btn-md")
+}
+```
+
+The internal implementation changed, but the public API (the `make` function signature) stayed the same. The `.cmi` file is identical before and after.
+
+**With the old build system:**
+- Button.res changes → recompile Button
+- Check all dependents of Button → recompile them too
+- Check all their dependents → recompile those as well
+- Result: potentially dozens of modules recompiled
+
+**With ReWatch:**
+- Button.res changes → recompile Button
+- Check Button.cmi hash → unchanged
+- Skip recompiling dependents
+- Result: one module recompiled
+
+This is the key innovation. ReWatch doesn't just track which modules depend on each other. It understands when those dependencies actually matter.
+
+### When Recompilation is Necessary
+
+Of course, when you do change a public interface, ReWatch correctly identifies all affected modules:
+
+```rescript
+// Button.res - Adding a new parameter
+let make = (~size, ~onClick, ~disabled=false) => {
+  // ...
+}
+```
+
+Now the `.cmi` file changes because the function signature changed. ReWatch detects this and recompiles all modules that use `Button.make`. This is the correct behaviour, but it only happens when truly necessary.
+
+### Explicit Interface Files for Maximum Control
+
+If you want even more control over your module's public interface, you can use explicit `.resi` files:
+
+```rescript
+// Button.resi
+type size = Small | Medium | Large
+let make: (~size: size, ~onClick: unit => unit) => Jsx.element
+let defaultSize: size
+```
+
+With an explicit interface file, the `.cmi` is generated from the `.resi` file. Any changes to `Button.res` that don't affect the `.resi` contract will never trigger dependent recompilations. This gives you maximum build performance for frequently-changed modules.
+
+**Bonus for React developers:** Using `.resi` files for your React components has another benefit. During development, when you modify the component's internal implementation without changing the interface, React's [Fast Refresh](https://www.gatsbyjs.com/docs/reference/local-development/fast-refresh/) can preserve component state more reliably. Combined with ReWatch's intelligent rebuilding, this makes for an exceptionally smooth development experience.
+
+### Faster Module Resolution with Flat Directory Layout
+
+ReWatch employs another clever optimization for module resolution. When building your project, it copies all source files to a flat directory structure at `lib/ocaml/`. Instead of maintaining the original nested directory structure, every module ends up in one place.
+
+Think of it like organizing a library. The old approach was like having books scattered across multiple rooms and floors. To find a specific book, you'd need to check each room. ReWatch's approach is like putting all the books in one room. Finding what you need is instant.
+
+**Why this matters:**
+- Module lookup becomes a single directory operation
+- The filesystem cache is more effective when files are adjacent
+- Cross-package references are as fast as local references
+- The compiler spends less time searching and more time compiling
+
+The small cost of copying files upfront is paid back many times over through faster compilation.
+
+### Wave-Based Parallel Compilation
+
+ReWatch compiles your modules in dependency-order waves, with parallel processing within each wave.
+
+Here's how it works: modules with no pending dependencies compile first, in parallel. As they complete, the next wave of modules (whose dependencies are now satisfied) begins compiling. This continues until all modules are built.
+
+Combined with the CMI hash checking, this means:
+- Maximum parallelism within each wave
+- Waves can terminate early if interface stability is detected
+- No wasted work on modules that don't need rebuilding
+
+### Proper Monorepo Support
+
+ReWatch was designed from the ground up with monorepos in mind. File watching works correctly across all packages, detecting changes wherever they occur. The formatter is also properly integrated, working seamlessly across the entire monorepo structure.
+
+These aren't just nice-to-haves. For teams working with multiple packages, proper monorepo support means the build system finally works the way you'd expect.
+
+## What This Means for Your Workflow
+
+The techniques described above work together to create a build system that feels fundamentally different in practice. The most common operations during development (refactoring internal logic, fixing bugs, tweaking implementations) typically result in sub-second rebuilds. Less common operations that truly do require cascade recompilations (API changes, type modifications) benefit from parallel compilation and better module resolution.
+
+There's a threshold in human perception where interactions that complete in under 2 seconds feel instant. ReWatch aims to keep most of your development builds under this threshold, keeping you in flow rather than waiting for compilation.
+
+## Package Manager Compatibility
+
+ReWatch works with the major package managers: npm, yarn, pnpm, deno, and bun.
+
+**Note on Bun:** Recent versions of Bun (1.3+) default to "isolated" mode for monorepo installations, which can cause issues with ReWatch. If you're using Bun, you'll need to configure it to use hoisted mode by adding this to your `bunfig.toml`:
+
+```toml
+[install]
+linker = "hoisted"
+```
+
+We're continuing to test compatibility across different environments and configurations. If you encounter issues with any package manager, please report them so we can address them.
+
+## Using the Legacy Build System
+
+For projects that need it, the legacy bsb build system remains available through the `rescript-legacy` command. This is a separate binary, not a subcommand.
+
+```bash
+# Build your project
+rescript-legacy build
+
+# Build with watch mode
+rescript-legacy build -w
+
+# Clean build artifacts
+rescript-legacy clean
+```
+
+You can add these to your `package.json` scripts:
+
+```json
+{
+  "scripts": {
+    "build": "rescript-legacy build",
+    "watch": "rescript-legacy build -w",
+    "clean": "rescript-legacy clean"
+  }
+}
+```
+
+The legacy system might be needed temporarily for compatibility with specific tooling or during migration. However, we strongly encourage moving to ReWatch to take advantage of the performance improvements and better monorepo support.
+
+The default `rescript` command now uses ReWatch. If you've been using `rescript build` or `rescript -w`, they'll automatically use the new system.
+
+## Conclusion
+
+ReWatch represents a significant leap forward for ReScript's build tooling. The intelligent dependency tracking means less waiting and more building. The proper monorepo support means it scales with your project structure. The performance improvements are most noticeable where they matter most: during iterative development.
+
+These improvements come from fundamental changes in how the build system understands and processes your code. By tracking interface stability rather than just file changes, ReWatch does less work while being smarter about what actually needs rebuilding.
+
+If you're upgrading to ReScript 12, you'll get ReWatch automatically. We're excited to hear how it works for your projects. As always, feedback and bug reports are welcome. You can reach us through the forum or on GitHub.
+
+Happy building!
