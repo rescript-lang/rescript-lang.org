@@ -210,9 +210,15 @@ This approach emerged naturally from solving the problem of maximizing parallel 
 
 ### Proper Monorepo Support
 
-The build system was designed from the ground up with monorepos in mind. File watching works correctly across all packages, detecting changes wherever they occur. The formatter is also properly integrated, working seamlessly across the entire monorepo structure.
+The build system was designed from the ground up with monorepos in mind. It automatically detects the parent-child relationship between your monorepo root and its packages by examining `rescript.json` files and package dependencies.
 
-For teams working with multiple packages, these features are essential rather than optional. The build system now handles monorepos as intended.
+This detection means commands work intuitively wherever you run them:
+
+- **Building from the root** builds all local packages
+- **Building from a child package** builds just that package, with full knowledge of the parent for resolving dependencies
+- **Clean and format commands** follow the same pattern: operate on all packages from the root, or on a single package from a child
+
+File watching works correctly across all packages, detecting changes wherever they occur. This works with npm workspaces, yarn workspaces, pnpm, and other package managers that use symlinking for local dependencies.
 
 ## A Unified Developer Experience
 
