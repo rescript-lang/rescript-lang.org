@@ -297,7 +297,7 @@ These aren't just nice-to-haves. For teams working with multiple packages, prope
 
 The techniques described above work together to create a build system that feels fundamentally different in practice. The most common operations during development (refactoring internal logic, fixing bugs, tweaking implementations) typically result in sub-second rebuilds. Less common operations that truly do require cascade recompilations (API changes, type modifications) benefit from parallel compilation and better module resolution.
 
-There's a threshold in human perception where interactions that complete in under 2 seconds feel instant. ReWatch aims to keep most of your development builds under this threshold, keeping you in flow rather than waiting for compilation.
+ReWatch aims to keep most development builds fast enough that they don't interrupt your flow. When builds complete quickly, you stay focused on the problem you're solving rather than context-switching while waiting for compilation.
 
 ## Package Manager Compatibility
 
