@@ -2,16 +2,16 @@
 author: rescript-team
 date: "2025-11-11"
 badge: roadmap
-title: "Rewatch: A Smarter Build System for ReScript"
+title: "A Smarter Build System for ReScript"
 description: |
-  ReScript 12 introduces Rewatch, a new build system that brings intelligent dependency tracking, faster incremental builds, and proper monorepo support.
+  ReScript 12 introduces a completely new build system that brings intelligent dependency tracking, faster incremental builds, and proper monorepo support.
 ---
 
 ## Introduction
 
 ReScript 12 comes with a completely new build system. Internally, we call it Rewatch, though you won't need to invoke it by name (it's now the default when you run `rescript build`). If you've been working with ReScript for a while, you'll know the previous build system (internally called bsb) as a reliable workhorse. But as projects grew larger and monorepos became more common, its limitations became increasingly apparent.
 
-Rewatch addresses these limitations head-on. It brings smarter compilation, significantly faster incremental builds, and proper support for modern development workflows. Let's explore what makes it better.
+The new system addresses these limitations head-on. It brings smarter compilation, significantly faster incremental builds, and proper support for modern development workflows. Let's explore what makes it better.
 
 ## Problems We Solved
 
@@ -35,13 +35,13 @@ These weren't just minor inconveniences. They were real productivity drains that
 
 ## Why a Complete Rewrite?
 
-To understand why Rewatch represents such a significant improvement, it helps to understand what the old build system actually was.
+To understand why the new build system represents such a significant improvement, it helps to understand what the old build system actually was.
 
-### The Legacy Architecture: bsb + Ninja
+### The Legacy Architecture: Ninja-Based
 
 The previous build system, bsb (BuckleScript Build), was actually a wrapper around Ninja, a generic build system originally created by Google for building Chrome. The workflow looked like this:
 
-1. bsb scans your ReScript source files
+1. The build system scans your ReScript source files
 2. Generates a `build.ninja` file describing all compilation rules
 3. Ninja reads this file and executes the builds in parallel
 4. Ninja tracks dependencies based on file timestamps
@@ -67,7 +67,7 @@ Every ReScript-specific concept had to be translated into Ninja's generic model.
 
 Rewatch started at [Walnut](https://walnut.io), where [Jaap Frolich](https://github.com/jfrolich) and [Roland Peelen](https://github.com/rolandpeelen) built it to solve real problems they were facing with large ReScript codebases. It's now part of the official ReScript compiler distribution.
 
-Written specifically for ReScript, in Rust, Rewatch has native understanding of ReScript's compilation model. There's no translation layer. The build system directly understands:
+Written specifically for ReScript, in Rust, the new build system has native understanding of ReScript's compilation model. There's no translation layer. It directly understands:
 
 - ReScript's compilation phases (parsing, type checking, code generation)
 - The meaning and role of CMI, CMT, and CMJ files
@@ -80,17 +80,17 @@ Think of it this way: using Ninja for ReScript was like using a generic task run
 
 The rewrite also opens doors for future improvements that require tight integration between the build system and the compiler: incremental type checking, distributed build caching, and better language server integration.
 
-## The Intelligence Behind Rewatch
+## The Intelligence Behind the New Build System
 
-Rewatch takes a fundamentally different approach to building your code. At its core is a sophisticated understanding of what actually needs to be rebuilt when files change. Let's break down how it works.
+The new build system takes a fundamentally different approach to building your code. At its core is a sophisticated understanding of what actually needs to be rebuilt when files change. Let's break down how it works.
 
 ### How ReScript Compilation Works
 
-Before diving into Rewatch's optimizations, it helps to understand ReScript's compilation model, which differs from many other languages.
+Before diving into the optimizations, it helps to understand ReScript's compilation model, which differs from many other languages.
 
 **ReScript compiles one file at a time, in complete isolation.** When you compile `Button.res`, the compiler doesn't maintain any shared state with other modules. Each file produces its own self-contained set of artifacts: the JavaScript output (`.mjs`), the module interface (`.cmi`), the typed tree (`.cmt`), and optimization metadata (`.cmj`). There's no separate linking phase like in C/C++, and no whole-program analysis like in many bundlers.
 
-Compilation happens in two phases: first, the file is parsed into an abstract syntax tree, then that tree is type-checked and compiled to JavaScript. This two-phase approach gives Rewatch fine-grained control over what work to skip. If a file hasn't changed at all, both phases can be skipped. If a dependency's public interface didn't change (even though the file was modified), dependent modules can skip recompilation entirely.
+Compilation happens in two phases: first, the file is parsed into an abstract syntax tree, then that tree is type-checked and compiled to JavaScript. This two-phase approach gives the build system fine-grained control over what work to skip. If a file hasn't changed at all, both phases can be skipped. If a dependency's public interface didn't change (even though the file was modified), dependent modules can skip recompilation entirely.
 
 Additionally, ReScript's module system enforces a strict constraint: **dependency cycles aren't allowed.** You can't have Module A depending on Module B while Module B also depends on Module A. This means the module graph is always a DAG (Directed Acyclic Graph).
 
@@ -103,11 +103,11 @@ Think of it this way: most languages compile like cooking a complex dish where a
 - **Precise incremental rebuilds:** Changes propagate predictably through the DAG with clear stopping points
 - **Foundation for future optimizations:** This model enables possibilities like distributed compilation and build caching across CI runs
 
-**The trade-off:** This approach limits some whole-program optimizations, but the gains in predictability and speed are substantial. More importantly, this clean, constrained model is exactly what makes Rewatch's sophisticated optimizations possible. The CMI hash checking, wave-based compilation, and early termination strategies all build on these fundamental properties.
+**The trade-off:** This approach limits some whole-program optimizations, but the gains in predictability and speed are substantial. More importantly, this clean, constrained model is exactly what makes the sophisticated optimizations possible. The CMI hash checking, wave-based compilation, and early termination strategies all build on these fundamental properties.
 
 ### Understanding CMI Files
 
-Now that we understand ReScript's compilation model, let's look at a specific artifact that's central to Rewatch's optimizations: the CMI file.
+Now that we understand ReScript's compilation model, let's look at a specific artifact that's central to the build system's optimizations: the CMI file.
 
 **CMI stands for Compiled Module Interface.** As mentioned, when the compiler processes your ReScript code, it generates several output files:
 
@@ -151,16 +151,16 @@ But it won't contain `internalHelper` because it's marked as [`%%private`](https
 
 ### Smart Dependency Tracking Through Interface Stability
 
-Rewatch uses CMI files to make intelligent decisions about what needs recompiling. Here's how:
+The build system uses CMI files to make intelligent decisions about what needs recompiling. Here's how:
 
-When you change a file, Rewatch:
+When you change a file, the build system:
 
 1. Computes a hash of the current `.cmi` file (before compilation)
 2. Compiles the changed module
 3. Computes a hash of the new `.cmi` file (after compilation)
 4. Compares the two hashes
 
-If the hashes match, the module's public interface hasn't changed. Rewatch then knows it can skip recompiling dependent modules.
+If the hashes match, the module's public interface hasn't changed, and dependent modules can skip recompilation.
 
 Let's see this in action. Imagine you refactor the internal implementation of a `getClassName` helper in your Button component:
 
@@ -204,18 +204,18 @@ The internal implementation changed, but the public API (the `make` function sig
 - Check all their dependents → recompile those as well
 - Result: potentially dozens of modules recompiled
 
-**With Rewatch:**
+**With the new build system:**
 
 - Button.res changes → recompile Button
 - Check Button.cmi hash → unchanged
 - Skip recompiling dependents
 - Result: one module recompiled
 
-This is the key innovation. Rewatch doesn't just track which modules depend on each other. It understands when those dependencies actually matter.
+This is the key innovation. The new system doesn't just track which modules depend on each other. It understands when those dependencies actually matter.
 
 ### When Recompilation is Necessary
 
-Of course, when you do change a public interface, Rewatch correctly identifies all affected modules:
+Of course, when you do change a public interface, the build system correctly identifies all affected modules:
 
 ```rescript
 // Button.res - Adding a new parameter
@@ -224,7 +224,7 @@ let make = (~size, ~onClick, ~disabled=false) => {
 }
 ```
 
-Now the `.cmi` file changes because the function signature changed. Rewatch detects this and recompiles all modules that use `Button.make`. This is the correct behaviour, but it only happens when truly necessary.
+Now the `.cmi` file changes because the function signature changed. The build system detects this and recompiles all modules that use `Button.make`. This is the correct behaviour, but it only happens when truly necessary.
 
 ### Explicit Interface Files for Maximum Control
 
@@ -239,13 +239,13 @@ let defaultSize: size
 
 With an explicit interface file, the `.cmi` is generated from the `.resi` file. Any changes to `Button.res` that don't affect the `.resi` contract will never trigger dependent recompilations. This gives you maximum build performance for frequently-changed modules.
 
-**Bonus for React developers:** Using `.resi` files for your React components has another benefit. During development, when you modify the component's internal implementation without changing the interface, React's [Fast Refresh](https://www.gatsbyjs.com/docs/reference/local-development/fast-refresh/) can preserve component state more reliably. Combined with Rewatch's intelligent rebuilding, this makes for an exceptionally smooth development experience.
+**Bonus for React developers:** Using `.resi` files for your React components has another benefit. During development, when you modify the component's internal implementation without changing the interface, React's [Fast Refresh](https://www.gatsbyjs.com/docs/reference/local-development/fast-refresh/) can preserve component state more reliably. Combined with intelligent rebuilding, this makes for an exceptionally smooth development experience.
 
 ### Faster Module Resolution with Flat Directory Layout
 
-Rewatch employs another clever optimization for module resolution. When building your project, it copies all source files to a flat directory structure in the build output. Instead of maintaining the original nested directory structure, every module ends up in one place.
+The build system employs another clever optimization for module resolution. When building your project, it copies all source files to a flat directory structure in the build output. Instead of maintaining the original nested directory structure, every module ends up in one place.
 
-Think of it like organizing a library. The old approach was like having books scattered across multiple rooms and floors. To find a specific book, you'd need to check each room. Rewatch's approach is like putting all the books in one room. Finding what you need is instant.
+Think of it like organizing a library. The old approach was like having books scattered across multiple rooms and floors. To find a specific book, you'd need to check each room. The new approach is like putting all the books in one room. Finding what you need is instant.
 
 **Why this matters:**
 
@@ -256,11 +256,11 @@ Think of it like organizing a library. The old approach was like having books sc
 
 The small cost of copying files upfront is paid back many times over through faster compilation.
 
-Note that filesystems can struggle when there are too many files in a single directory. Since Rewatch controls the output layout, it can transparently shard files into subdirectories as a future optimization if needed, without any changes required from users.
+Note that filesystems can struggle when there are too many files in a single directory. Since the build system controls the output layout, it can transparently shard files into subdirectories as a future optimization if needed, without any changes required from users.
 
 ### Wave-Based Parallel Compilation
 
-Rewatch organizes compilation into waves based on dependency order. Think of it like an assembly line where some stations can run in parallel while others must wait for earlier stations to complete.
+Compilation is organized into waves based on dependency order. Think of it like an assembly line where some stations can run in parallel while others must wait for earlier stations to complete.
 
 Here's a concrete example. Imagine this dependency structure:
 
@@ -274,14 +274,14 @@ Here's a concrete example. Imagine this dependency structure:
     F
 ```
 
-Rewatch processes this in waves:
+This is processed in waves:
 
 **Wave 1:** Compile A (no dependencies)  
 **Wave 2:** Compile B and C in parallel (both depend only on A, which is done)  
 **Wave 3:** Compile D and E in parallel (their dependencies are satisfied)  
 **Wave 4:** Compile F (waits for both D and E)
 
-The key insight: within each wave, all modules compile simultaneously. Rewatch identifies which modules are ready (all their dependencies are compiled) and processes them together.
+The key insight: within each wave, all modules compile simultaneously. The build system identifies which modules are ready (all their dependencies are compiled) and processes them together.
 
 Combined with CMI hash checking, this becomes even more powerful. If module A's interface doesn't change, modules B and C might skip actual compilation even though they're queued in Wave 2. They pass through the wave without doing unnecessary work.
 
@@ -289,7 +289,7 @@ This approach emerged naturally from solving the problem of "how do we compile a
 
 ### Proper Monorepo Support
 
-Rewatch was designed from the ground up with monorepos in mind. File watching works correctly across all packages, detecting changes wherever they occur. The formatter is also properly integrated, working seamlessly across the entire monorepo structure.
+The build system was designed from the ground up with monorepos in mind. File watching works correctly across all packages, detecting changes wherever they occur. The formatter is also properly integrated, working seamlessly across the entire monorepo structure.
 
 These aren't just nice-to-haves. For teams working with multiple packages, proper monorepo support means the build system finally works the way you'd expect.
 
@@ -297,13 +297,13 @@ These aren't just nice-to-haves. For teams working with multiple packages, prope
 
 The techniques described above work together to create a build system that feels fundamentally different in practice. The most common operations during development (refactoring internal logic, fixing bugs, tweaking implementations) typically result in sub-second rebuilds. Less common operations that truly do require cascade recompilations (API changes, type modifications) benefit from parallel compilation and better module resolution.
 
-Rewatch aims to keep most development builds fast enough that they don't interrupt your flow. When builds complete quickly, you stay focused on the problem you're solving rather than context-switching while waiting for compilation.
+Builds are fast enough that they don't interrupt your flow. When builds complete quickly, you stay focused on the problem you're solving rather than context-switching while waiting for compilation.
 
 ## Package Manager Compatibility
 
-Rewatch works with the major package managers: npm, yarn, pnpm, deno, and bun.
+The build system works with the major package managers: npm, yarn, pnpm, deno, and bun.
 
-**Note on Bun:** Recent versions of Bun (1.3+) default to "isolated" mode for monorepo installations, which can cause issues with Rewatch. If you're using Bun, you'll need to configure it to use hoisted mode by adding this to your `bunfig.toml`:
+**Note on Bun:** Recent versions of Bun (1.3+) default to "isolated" mode for monorepo installations, which can cause issues. If you're using Bun, you'll need to configure it to use hoisted mode by adding this to your `bunfig.toml`:
 
 ```toml
 [install]
@@ -314,7 +314,7 @@ We're continuing to test compatibility across different environments and configu
 
 ## Using the Legacy Build System
 
-For projects that need it, the legacy bsb build system remains available throughout the v12 release cycle through the `rescript-legacy` command. This is a separate binary, not a subcommand. We expect to remove the legacy build system in v13, so we encourage migrating to Rewatch when possible.
+For projects that need it, the legacy build system remains available throughout the v12 release cycle through the `rescript-legacy` command. This is a separate binary, not a subcommand. We expect to remove it in v13, so we encourage migrating to the new system when possible.
 
 ```bash
 # Build your project
@@ -339,20 +339,20 @@ You can add these to your `package.json` scripts:
 }
 ```
 
-The legacy system might be needed temporarily for compatibility with specific tooling or during migration. However, we strongly encourage moving to Rewatch to take advantage of the performance improvements and better monorepo support.
+The legacy system might be needed temporarily for compatibility with specific tooling or during migration. However, we strongly encourage moving to the new build system to take advantage of the performance improvements and better monorepo support.
 
-The default `rescript` command now uses Rewatch. If you've been using `rescript build` or `rescript -w`, they'll automatically use the new system.
+The default `rescript` command now uses the new build system. If you've been using `rescript build` or `rescript -w`, they'll automatically use it.
 
 ## Conclusion
 
-Rewatch represents a significant leap forward for ReScript's build tooling. The intelligent dependency tracking means less waiting and more building. The proper monorepo support means it scales with your project structure. The performance improvements are most noticeable where they matter most: during iterative development.
+The new build system represents a significant leap forward for ReScript's build tooling. The intelligent dependency tracking means less waiting and more building. The proper monorepo support means it scales with your project structure. The performance improvements are most noticeable where they matter most: during iterative development.
 
-These improvements come from fundamental changes in how the build system understands and processes your code. By tracking interface stability rather than just file changes, Rewatch does less work while being smarter about what actually needs rebuilding.
+These improvements come from fundamental changes in how the build system understands and processes your code. By tracking interface stability rather than just file changes, it does less work while being smarter about what actually needs rebuilding.
 
 ## Acknowledgments
 
 Our deep appreciation goes to Jaap Frolich and Roland Peelen for creating Rewatch. What started as solving their own build challenges at Walnut has become a fundamental improvement for the entire ReScript community. The research and engineering effort they invested in understanding compiler internals and reimagining dependency tracking has made a real difference for every ReScript developer. Thank you to Walnut for supporting this work and sharing it with the community.
 
-If you're upgrading to ReScript 12, you'll get Rewatch automatically. We're excited to hear how it works for your projects. As always, feedback and bug reports are welcome. You can reach us through the forum or on GitHub.
+If you're upgrading to ReScript 12, you'll get the new build system automatically. We're excited to hear how it works for your projects. As always, feedback and bug reports are welcome. You can reach us through the forum or on GitHub.
 
 Happy building!
