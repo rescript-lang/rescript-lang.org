@@ -256,6 +256,8 @@ Think of it like organizing a library. The old approach was like having books sc
 
 The small cost of copying files upfront is paid back many times over through faster compilation.
 
+Note that filesystems can struggle when there are too many files in a single directory. Since ReWatch controls the output layout, it can transparently shard files into subdirectories as a future optimization if needed, without any changes required from users.
+
 ### Wave-Based Parallel Compilation
 
 ReWatch organizes compilation into waves based on dependency order. Think of it like an assembly line where some stations can run in parallel while others must wait for earlier stations to complete.
