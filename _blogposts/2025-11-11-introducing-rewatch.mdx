@@ -243,7 +243,7 @@ With an explicit interface file, the `.cmi` is generated from the `.resi` file. 
 
 ### Faster Module Resolution with Flat Directory Layout
 
-ReWatch employs another clever optimization for module resolution. When building your project, it copies all source files to a flat directory structure at `lib/ocaml/`. Instead of maintaining the original nested directory structure, every module ends up in one place.
+ReWatch employs another clever optimization for module resolution. When building your project, it copies all source files to a flat directory structure in the build output. Instead of maintaining the original nested directory structure, every module ends up in one place.
 
 Think of it like organizing a library. The old approach was like having books scattered across multiple rooms and floors. To find a specific book, you'd need to check each room. ReWatch's approach is like putting all the books in one room. Finding what you need is instant.
 
