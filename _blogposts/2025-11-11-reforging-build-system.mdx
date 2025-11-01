@@ -114,7 +114,7 @@ Button.res  (your source code)
 ├─ Button.mjs     # JavaScript output
 ├─ Button.cmi     # Module's public API signature
 ├─ Button.cmt     # Typed AST
-└─ Button.cmj     # Optimization metadata
+└─ Button.cmj     # Optimization metadata (function arity, cross-module inlining)
 ```
 
 The `.cmi` file is automatically generated for every module. It acts as a contract or table of contents that describes what other modules can see and import from your module. It contains your type definitions and function signatures, but only the public ones.
@@ -160,7 +160,9 @@ But it will not contain `internalHelper` because it is not listed in the `.resi`
 
 ### Hash-Based Interface Stability Detection
 
-To detect whether a module's interface has changed, the build system computes a hash of the `.cmi` file before and after compilation. If the hashes match, dependent modules can skip recompilation. The previous system used timestamp-based detection through Ninja's `restat` feature, which worked well for single packages but was less reliable in monorepo scenarios. The explicit hash-based approach provides consistent behaviour across package boundaries.
+To detect whether a module's interface has changed, the build system computes a hash of the `.cmi` file before and after compilation. If the hashes match, dependent modules can skip recompilation.
+
+The previous system used timestamp-based detection through Ninja's `restat` feature, which worked well for single packages. While both approaches aim to avoid unnecessary recompilation, the explicit hash-based method provides more predictable behaviour, especially when dealing with timestamp issues across filesystems or in containerized environments. It also provides consistent behaviour across package boundaries in monorepos.
 
 ### Faster Module Resolution with Flat Directory Layout
 
