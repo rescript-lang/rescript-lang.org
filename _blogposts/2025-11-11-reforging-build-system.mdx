@@ -122,7 +122,14 @@ Button.res  (your source code)
 
 Think of the `.cmi` file as a contract or a table of contents for your module. It describes what other modules can see and import from your module. It contains your type definitions and function signatures, but only the public ones.
 
-Here's a concrete example:
+Here's a concrete example with an explicit [interface file](/docs/manual/v12.0.0/module#signatures):
+
+```rescript
+// Button.resi
+type size = Small | Medium | Large
+let make: (~size: size, ~onClick: unit => unit) => Jsx.element
+let defaultSize: size
+```
 
 ```rescript
 // Button.res
@@ -134,9 +141,10 @@ let make = (~size: size, ~onClick) => {
 
 let defaultSize = Medium
 
-%%private(let internalHelper = () => {
+// Not in interface file - this is private
+let internalHelper = () => {
   // some internal logic
-})
+}
 ```
 
 The `.cmi` file for this module will contain:
@@ -145,7 +153,7 @@ The `.cmi` file for this module will contain:
 - The signature of `make`
 - The type of `defaultSize`
 
-But it won't contain `internalHelper` because it's marked as [`%%private`](https://rescript-lang.org/syntax-lookup#private-let), making it truly internal to the module.
+But it won't contain `internalHelper` because it's not listed in the `.resi` file, making it truly internal to the module.
 
 **This distinction is crucial for build performance.** If you change `internalHelper`, the `.cmi` file stays exactly the same because the public interface didn't change. But if you add a parameter to `make` or change the `size` type, the `.cmi` file changes because the public contract changed.
 
@@ -292,6 +300,34 @@ This approach emerged naturally from solving the problem of "how do we compile a
 The build system was designed from the ground up with monorepos in mind. File watching works correctly across all packages, detecting changes wherever they occur. The formatter is also properly integrated, working seamlessly across the entire monorepo structure.
 
 These aren't just nice-to-haves. For teams working with multiple packages, proper monorepo support means the build system finally works the way you'd expect.
+
+## A Unified Developer Experience
+
+Beyond the build performance improvements, ReScript 12 brings a completely redesigned command-line interface. The old toolchain was a collection of separate pieces: a JavaScript wrapper that called a build orchestrator (written in OCaml), which generated files for Ninja (written in C++), which finally invoked the compiler. Each layer had its own argument parsing, error handling, and conventions.
+
+The new system consolidates everything into one cohesive tool with a consistent interface:
+
+```bash
+rescript              # Defaults to build
+rescript build        # Explicit build
+rescript watch        # Build + watch mode
+rescript clean        # Clean artifacts
+rescript format       # Format code
+```
+
+### What This Means in Practice
+
+**Smart defaults:** Running `rescript` without arguments does what you expect—it builds your project. No need to remember subcommands for the most common operation.
+
+**Consistent experience:** All commands follow the same patterns, share the same help system, and use consistent flags. Gone are the days of wondering "which flags work with which command?"
+
+**Better error messages:** Instead of cryptic multi-layer errors that could come from the JavaScript wrapper, the build system, Ninja, or the compiler, you now get clear, contextual error messages that tell you what went wrong and how to fix it.
+
+**Reliable process handling:** Pressing Ctrl+C in watch mode always cleans up properly. No more zombie processes or stale lock files that require manual cleanup.
+
+**Integrated formatting:** The formatter is now fully integrated into the main CLI. You can format your entire project, specific files, or use it in check mode for CI—all with parallel processing for speed.
+
+The old toolchain was like carrying separate tools for different tasks. Each worked, but you had to remember which tool for which job, and they didn't always work well together. The new CLI is like a Swiss Army knife: one tool, everything you need, designed to work as a cohesive whole.
 
 ## What This Means for Your Workflow
 
