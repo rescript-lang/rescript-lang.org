@@ -1,4 +1,3 @@
-open ReactRouter
 open Mdx
 
 type loaderData = {
@@ -133,7 +132,7 @@ let communityTableOfContents = async () => {
   categories
 }
 
-let loader: Loader.t<loaderData> = async ({request}) => {
+let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
   let {pathname} = WebAPI.URL.make(~url=request.url)
 
   let mdx = await loadMdx(request, ~options={remarkPlugins: [Mdx.gfm]})
@@ -264,39 +263,41 @@ let loader: Loader.t<loaderData> = async ({request}) => {
 }
 
 let default = () => {
-  let {pathname} = useLocation()
+  let {pathname} = ReactRouter.useLocation()
   let component = useMdxComponent(~components)
   let attributes = useMdxAttributes()
 
-  let loaderData: loaderData = useLoaderData()
+  let loaderData: loaderData = ReactRouter.useLoaderData()
 
   let {entries, categories, title} = loaderData
 
   <>
-    {title != "" ? <title> {React.string(title)} </title> : React.null}
-    <meta name="description" content={attributes.description->Nullable.getOr("")} />
     {if (pathname :> string) == "/docs/manual/api" {
-      <ApiOverviewLayout.Docs>
-        <div className="markdown-body"> {component()} </div>
-      </ApiOverviewLayout.Docs>
+      <>
+        <Meta title=title description={attributes.description->Nullable.getOr("ReScript API")} />
+        <ApiOverviewLayout.Docs>
+          <div className="markdown-body"> {component()} </div>
+        </ApiOverviewLayout.Docs>
+      </>
     } else if (
       (pathname :> string)->String.includes("docs/manual") ||
         (pathname :> string)->String.includes("docs/react")
     ) {
-      <DocsLayout
-        categories
-        activeToc={title: "Introduction", entries}
-        breadcrumbs=?loaderData.breadcrumbs
-        editHref={`https://github.com/rescript-lang/rescript-lang.org/blob/master/pages${attributes.path}.mdx`}
-      >
-        <div className="markdown-body pt-20 md:pt-0"> {component()} </div>
-      </DocsLayout>
+      <>
+        <Meta title=title description={attributes.description->Nullable.getOr("")} />
+        <DocsLayout
+          categories
+          activeToc={title: "Introduction", entries}
+          breadcrumbs=?loaderData.breadcrumbs
+          editHref={`https://github.com/rescript-lang/rescript-lang.org/blob/master/pages${attributes.path}.mdx`}
+        >
+          <div className="markdown-body pt-20 md:pt-0"> {component()} </div>
+        </DocsLayout>
+      </>
     } else if (pathname :> string)->String.includes("community") {
-      <div>
-        <CommunityLayout categories entries>
-          <div className="markdown-body"> {component()} </div>
-        </CommunityLayout>
-      </div>
+      <CommunityLayout categories entries>
+        <div className="markdown-body"> {component()} </div>
+      </CommunityLayout>
     } else if (pathname :> string)->String.includes("blog") {
       switch loaderData.blogPost {
       | Some({frontmatter, archived, path}) =>
@@ -307,13 +308,13 @@ let default = () => {
       switch loaderData.mdxSources {
       | Some(mdxSources) =>
         <>
-          <title>
-            {React.string(
-              `${loaderData.activeSyntaxItem
-                ->Option.map(item => item.name)
-                ->Option.getOr("Syntax Lookup")} | ReScript API`,
-            )}
-          </title>
+          <Meta
+            title={loaderData.activeSyntaxItem
+            ->Option.map(item => item.name)
+            ->Option.getOr("Syntax Lookup | ReScript API")}
+            description={attributes.description->Nullable.getOr("")}
+          />
+
           <SyntaxLookup mdxSources activeItem=?loaderData.activeSyntaxItem>
             {component()}
           </SyntaxLookup>
@@ -322,6 +323,4 @@ let default = () => {
       }
     }}
   </>
-
-  // </ManualDocsLayout.V1200Layout>
 }

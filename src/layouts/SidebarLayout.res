@@ -336,7 +336,6 @@ let make = (
   }
 
   <>
-    <Meta title="" />
     <EnableCollapsibleNavbar isEnabled={isSidebarOpen && isNavOpen}>
       <div className={"mt-16 min-w-320 " ++ theme}>
         <div className="w-full">

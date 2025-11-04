@@ -49,7 +49,10 @@ module ClientOnly = {
 let default = () => {
   let {bundleBaseUrl, versions} = ReactRouter.useLoaderData()
   <>
-    <title> {React.string("ReScript Playground")} </title>
+    <Meta
+      title="ReScript Playground" description="Try ReScript in the browser" ogImage="/og/try.png"
+    />
+
     <ClientOnly bundleBaseUrl versions />
   </>
 }

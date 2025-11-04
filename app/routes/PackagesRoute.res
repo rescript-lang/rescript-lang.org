@@ -7,7 +7,11 @@ let loader = async () => {
 let default = () => {
   let props = ReactRouter.useLoaderData()
   <>
-    <title> {React.string("Package Index | ReScript Documentation")} </title>
+    <Meta
+      ogSiteName="ReScript Packages"
+      title="Package Index | ReScript Documentation"
+      description="Official and unofficial resources, libraries and bindings for ReScript"
+    />
     <Packages {...props} />
   </>
 }

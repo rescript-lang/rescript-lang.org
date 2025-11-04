@@ -9,6 +9,7 @@ module Unsafe: {
 module String: {
   let camelCase: string => string
   let capitalize: string => string
+  let capitalizeSentence: string => string
 }
 
 module Date: {

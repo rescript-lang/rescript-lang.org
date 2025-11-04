@@ -17,14 +17,15 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
 let default = () => {
   let {posts, category} = ReactRouter.useLoaderData()
   <>
-    <title>
-      {React.string(
-        `${switch category {
-          | All => "All Posts"
-          | Archived => "Archived Posts"
-          }} | ReScript Blog`,
-      )}
-    </title>
+    <Meta
+      siteName="ReScript Blog"
+      title={`${switch category {
+        | All => "All Posts"
+        | Archived => "Archived Posts"
+        }} | ReScript Blog`}
+      description="News, Announcements, Release Notes and more"
+    />
+
     <Blog posts category />
   </>
 }

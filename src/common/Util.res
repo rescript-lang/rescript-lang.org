@@ -1,44 +1,3 @@
-/**
-module Debounce = {
-  // See: https://davidwalsh.name/javascript-debounce-function
-  let debounce = (~wait, fn) => {
-    let timeout = ref(None)
-
-    () => {
-      let unset = () => timeout := None
-
-      switch timeout.contents {
-      | Some(id) => Js.Global.clearTimeout(id)
-      | None => fn()
-      }
-      timeout := Some(Js.Global.setTimeout(unset, wait))
-    }
-  }
-
-  let debounce3 = (~wait, ~immediate=false, fn) => {
-    let timeout = ref(None)
-
-    (a1, a2, a3) => {
-      let unset = () => {
-        timeout := None
-        immediate ? fn(a1, a2, a3) : ()
-      }
-
-      switch timeout.contents {
-      | Some(id) => Js.Global.clearTimeout(id)
-      | None => fn(a1, a2, a3)
-      }
-      timeout := Some(Js.Global.setTimeout(unset, wait))
-
-      if immediate && timeout.contents === None {
-        fn(a1, a2, a3)
-      } else {
-        ()
-      }
-    }
-  }
-}
-**/
 module Unsafe = {
   external elementAsString: React.element => string = "%identity"
 }
@@ -51,9 +10,16 @@ module String = {
   let capitalize: string => string = %raw("str => {
       return str && str.charAt(0).toUpperCase() + str.substring(1);
     }")
+
+  let capitalizeSentence = str =>
+    str
+    ->String.split(" ")
+    ->Array.map(str => str->String.length > 2 ? str->String.capitalize : str)
+    ->Array.join(" ")
 }
 
 module Url = {
+  // TODO: convert to ReScript
   let isAbsolute: string => bool = %raw(`
     function(str) {
       var r = new RegExp('^(?:[a-z]+:)?//', 'i');
@@ -63,7 +29,7 @@ module Url = {
       }
       return false;
     }
-  `) //', 'i');
+  `)
 }
 
 module Date = {

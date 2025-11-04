@@ -1,6 +1,5 @@
 module Sidebar = SidebarLayout.Sidebar
 
-// TODO RR7 - do I need this?
 let categories: array<Sidebar.Category.t> = [
   {
     name: "Overview",
@@ -46,12 +45,7 @@ module Docs = {
       />
 
     <SidebarLayout
-      breadcrumbs
-      categories
-      // metaTitle="API"
-      sidebarState=(isSidebarOpen, setSidebarOpen)
-      theme={#Js}
-      sidebar
+      breadcrumbs categories sidebarState=(isSidebarOpen, setSidebarOpen) theme={#Js} sidebar
     >
       children
     </SidebarLayout>

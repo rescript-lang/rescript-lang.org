@@ -9,7 +9,7 @@ let make = (
   ~canonical=?,
   ~title=?,
   ~ogLocale="en_US",
-  ~ogSiteName=?,
+  ~ogSiteName=siteName,
   ~ogDescription=description,
   ~ogTitle=?,
   ~ogImage="/Art-3-rescript-launch.jpg",
@@ -21,11 +21,6 @@ let make = (
   | None
   | Some("") => siteName
   | Some(title) => title
-  }
-
-  let ogSiteName = switch ogSiteName {
-  | Some(ogSiteName) => ogSiteName
-  | None => siteName
   }
 
   let ogTitle = switch ogTitle {
@@ -67,14 +62,8 @@ let make = (
     <meta key="twitter:card" name="twitter:card" content="summary_large_image" />
     <link rel="alternate" type_="application/rss+xml" title="ReScript Blog" href="/blog/feed.xml" />
     // Docsearch meta tags
-    <meta
-      name="docsearch:version"
-      content={switch version {
-      | Some(Version(v)) => v
-      | Some(Latest) => Constants.versions.latest
-      | Some(Next) => Constants.versions.next
-      | _ => Constants.versions.latest
-      }}
-    />
+    <meta name="docsearch:version" content="v12" />
+    // Robots meta tag
+    <meta name="robots" content="index, follow" />
   </>
 }

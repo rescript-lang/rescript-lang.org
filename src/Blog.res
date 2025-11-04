@@ -196,7 +196,6 @@ type params = {slug: string}
 @react.component
 let make = (~posts: array<BlogApi.post>, ~category: category): React.element => {
   let content = if Array.length(posts) === 0 {
-    /* <div> {React.string("Currently no posts available")} </div>; */
     <div className="mt-8">
       <Markdown.H1> {React.string("Blog not yet available")} </Markdown.H1>
       <Markdown.Warn> {React.string("This blog is currently in the works.")} </Markdown.Warn>
@@ -259,12 +258,8 @@ let make = (~posts: array<BlogApi.post>, ~category: category): React.element => 
   }
 
   let (isOverlayOpen, setOverlayOpen) = React.useState(() => false)
-  let title = "Blog | ReScript Documentation"
 
   <>
-    <Meta
-      siteName="ReScript Blog" title description="News, Announcements, Release Notes and more"
-    />
     <div className="mt-16 pt-2">
       <div className="text-gray-80 text-18">
         <div className="flex justify-center overflow-hidden">
