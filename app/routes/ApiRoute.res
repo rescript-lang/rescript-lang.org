@@ -132,5 +132,17 @@ let loader: ReactRouter.Loader.t<loaderData> = async args => {
 
 let default = () => {
   let loaderData: loaderData = ReactRouter.useLoaderData()
-  <ApiDocs {...loaderData} />
+  let {pathname} = ReactRouter.useLocation()
+
+  let segments = (pathname :> string)->String.split("/")
+  let title = switch (segments[4], segments[5]) {
+  | (Some(x), Some(y)) => `${x->String.capitalize}.${y->String.capitalize} | ReScript API`
+  | (Some(x), None) => `${x->String.capitalize} | ReScript API`
+  | _ => "ReScript API"
+  }
+
+  <>
+    <title> {React.string(title)} </title>
+    <ApiDocs {...loaderData} />
+  </>
 }

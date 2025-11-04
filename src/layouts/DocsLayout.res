@@ -1,30 +1,10 @@
 // This module is used for all plain prose text related
-// Docs, mostly /docs/manual/latest and similar sections
+// Docs, mostly /docs/manual and similar sections
 
 module Sidebar = SidebarLayout.Sidebar
 
 module NavItem = Sidebar.NavItem
 module Category = Sidebar.Category
-
-/*
-let makeBreadcrumbsFromPaths = (~basePath: string, paths: array<string>): list<Url.breadcrumb> => {
-  let (_, rest) = Belt.Array.reduce(paths, (basePath, []), (acc, path) => {
-    let (baseHref, ret) = acc
-
-    let href = baseHref ++ ("/" ++ path)
-
-    Js.Array2.push(
-      ret,
-      {
-        open Url
-        {name: prettyString(path), href: href}
-      },
-    )->ignore
-    (href, ret)
-  })
-  rest->Belt.List.fromArray
-}
-*/
 
 let makeBreadcrumbs = (~basePath: string, route: string): list<Url.breadcrumb> => {
   let url = route->Url.parse
@@ -48,9 +28,9 @@ let makeBreadcrumbs = (~basePath: string, route: string): list<Url.breadcrumb> =
 
 @react.component
 let make = (
+  ~editHref: option<string>=?,
   ~activeToc: option<TableOfContents.t>=?,
   ~breadcrumbs: option<list<Url.breadcrumb>>=?,
-  ~metaTitleCategory: string, // e.g. Introduction | My Meta Title Category
   ~frontmatter=?,
   ~version: option<string>=?,
   ~availableVersions: option<array<(string, string)>>=?,
@@ -65,22 +45,6 @@ let make = (
   let (isSidebarOpen, setSidebarOpen) = React.useState(_ => false)
   let toggleSidebar = () => setSidebarOpen(prev => !prev)
 
-  React.useEffect(() => {
-    // TODO: make this work for React Router
-    // open Next.Router.Events
-    // let {Next.Router.events: events} = router
-    // let onChangeComplete = _url => setSidebarOpen(_ => false)
-    // events->on(#routeChangeComplete(onChangeComplete))
-    // events->on(#hashChangeComplete(onChangeComplete))
-    // Some(
-    //   () => {
-    //     events->off(#routeChangeComplete(onChangeComplete))
-    //     events->off(#hashChangeComplete(onChangeComplete))
-    //   },
-    // )
-    None
-  }, [])
-
   let navigate = ReactRouter.useNavigate()
 
   let preludeSection =
@@ -91,46 +55,9 @@ let make = (
   let sidebar =
     <Sidebar isOpen=isSidebarOpen toggle=toggleSidebar preludeSection ?activeToc categories route />
 
-  let metaTitle = metaTitleCategory ++ (" | " ++ "ReScript Documentation")
-
-  let (metaElement, editHref) = switch frontmatter {
-  | Some(frontmatter) =>
-    switch DocFrontmatter.decode(frontmatter) {
-    | Some(fm) =>
-      let canonical = Null.toOption(fm.canonical)
-      let description = Null.toOption(fm.description)
-      let title = {
-        // We will prefer an existing metaTitle over just a title
-        let metaTitle = switch Null.toOption(fm.metaTitle) {
-        | Some(metaTitle) => metaTitle
-        | None => fm.title
-        }
-        metaTitle ++ (" | " ++ metaTitleCategory)
-      }
-      let meta =
-        <Meta title ?description ?canonical /* version=Url.parse(router.route).version */ />
-
-      let ghEditHref = switch canonical {
-      | Some(canonical) =>
-        `https://github.com/rescript-lang/rescript-lang.org/blob/master/pages${canonical}.mdx`->Some
-      | None => None
-      }
-      (meta, ghEditHref)
-    | None => (React.null, None)
-    }
-  | None => (React.null, None)
-  }
-
   <SidebarLayout
-    metaTitle
-    theme
-    sidebarState=(isSidebarOpen, setSidebarOpen)
-    sidebar
-    categories
-    ?breadcrumbs
-    ?editHref
+    theme sidebarState=(isSidebarOpen, setSidebarOpen) sidebar categories ?breadcrumbs ?editHref
   >
-    metaElement
     children
   </SidebarLayout>
 }
@@ -145,7 +72,6 @@ module Make = (Content: StaticContent) => {
   let make = (
     // base breadcrumbs without the very last element (the currently shown document)
     ~breadcrumbs: option<list<Url.breadcrumb>>=?,
-    ~metaTitleCategory: string,
     ~frontmatter=?,
     ~version: option<string>=?,
     ~availableVersions: option<array<(string, string)>>=?,
@@ -154,18 +80,6 @@ module Make = (Content: StaticContent) => {
     ~theme: option<ColorTheme.t>=?,
     ~children: React.element,
   ) => {
-    // TODO RR7 - make this work for React Router
-
-    // let router = Next.Router.useRouter()
-    // let route = router.route
-
-    // Extend breadcrumbs with document title
-    // let breadcrumbs = Dict.get(Content.tocData, route)->Option.mapOr(breadcrumbs, data => {
-    //   let title = data["title"]
-
-    //   Option.map(breadcrumbs, bc => List.concat(bc, list{{Url.name: title, href: route}}))
-    // })
-
     let {toc} = TableOfContents.Context.useTocContext()
 
     let activeToc = toc
@@ -200,8 +114,7 @@ module Make = (Content: StaticContent) => {
 
     make({
       ?breadcrumbs,
-      metaTitleCategory,
-      ?frontmatter,
+      frontmatter,
       ?version,
       ?availableVersions,
       ?nextVersion,

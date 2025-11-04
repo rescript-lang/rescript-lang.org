@@ -48,6 +48,8 @@ module ClientOnly = {
 
 let default = () => {
   let {bundleBaseUrl, versions} = ReactRouter.useLoaderData()
-
-  <ClientOnly bundleBaseUrl versions />
+  <>
+    <title> {React.string("ReScript Playground")} </title>
+    <ClientOnly bundleBaseUrl versions />
+  </>
 }

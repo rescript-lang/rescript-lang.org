@@ -6,6 +6,7 @@ type loaderData = {
   mdxSources?: array<SyntaxLookup.item>,
   activeSyntaxItem?: SyntaxLookup.item,
   breadcrumbs?: list<Url.breadcrumb>,
+  title: string,
 }
 
 let loader: ReactRouter.Loader.t<loaderData>

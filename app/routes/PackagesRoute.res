@@ -6,5 +6,8 @@ let loader = async () => {
 
 let default = () => {
   let props = ReactRouter.useLoaderData()
-  <Packages {...props} />
+  <>
+    <title> {React.string("Package Index | ReScript Documentation")} </title>
+    <Packages {...props} />
+  </>
 }

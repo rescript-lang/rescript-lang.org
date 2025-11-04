@@ -377,7 +377,7 @@ let make = (props: props) => {
 
   <SidebarLayout
     breadcrumbs={list{{Url.name: "Docs", href: "/docs/manual/introduction"}, ...breadcrumbs}}
-    metaTitle={title ++ " | ReScript API"}
+    // metaTitle={title ++ " | ReScript API"}
     theme=#Reason
     sidebarState=(isSidebarOpen, setSidebarOpen)
     sidebar

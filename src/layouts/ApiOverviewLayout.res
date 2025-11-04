@@ -48,7 +48,7 @@ module Docs = {
     <SidebarLayout
       breadcrumbs
       categories
-      metaTitle="API"
+      // metaTitle="API"
       sidebarState=(isSidebarOpen, setSidebarOpen)
       theme={#Js}
       sidebar

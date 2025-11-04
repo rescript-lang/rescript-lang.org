@@ -53,7 +53,6 @@ module Sidebar: {
 
 @react.component
 let make: (
-  ~metaTitle: string,
   ~theme: ColorTheme.t,
   ~editHref: string=?,
   // (Sidebar, toggleSidebar) ... for toggling sidebar in mobile view

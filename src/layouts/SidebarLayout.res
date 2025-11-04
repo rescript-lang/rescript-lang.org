@@ -236,7 +236,6 @@ module MobileDrawerButton = {
 
 @react.component
 let make = (
-  ~metaTitle: string,
   ~theme: ColorTheme.t,
   ~editHref: option<string>=?,
   ~sidebarState: (bool, (bool => bool) => unit),
@@ -337,7 +336,7 @@ let make = (
   }
 
   <>
-    <Meta title=metaTitle />
+    <Meta title="" />
     <EnableCollapsibleNavbar isEnabled={isSidebarOpen && isNavOpen}>
       <div className={"mt-16 min-w-320 " ++ theme}>
         <div className="w-full">

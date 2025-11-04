@@ -16,5 +16,15 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
 @react.component
 let default = () => {
   let {posts, category} = ReactRouter.useLoaderData()
-  <Blog posts category />
+  <>
+    <title>
+      {React.string(
+        `${switch category {
+          | All => "All Posts"
+          | Archived => "Archived Posts"
+          }} | ReScript Blog`,
+      )}
+    </title>
+    <Blog posts category />
+  </>
 }

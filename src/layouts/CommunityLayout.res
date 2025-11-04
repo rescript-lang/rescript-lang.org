@@ -16,7 +16,7 @@ let make = (~children, ~categories, ~entries) => {
     />}
     sidebarState=(isSidebarOpen, setSidebarOpen)
     theme=#Reason
-    metaTitle="ReScript Community"
+    // metaTitle="ReScript Community"
     breadcrumbs
   >
     children

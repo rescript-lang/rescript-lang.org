@@ -129,7 +129,7 @@ let make = (
   }
   <SidebarLayout
     ?breadcrumbs
-    metaTitle={pageTitle ++ " | ReScript API"}
+    // metaTitle={pageTitle ++ " | ReScript API"}
     theme=#Reason
     sidebarState=(isSidebarOpen, setSidebarOpen)
     sidebar

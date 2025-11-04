@@ -9,6 +9,7 @@ type loaderData = {
   mdxSources?: array<SyntaxLookup.item>,
   activeSyntaxItem?: SyntaxLookup.item,
   breadcrumbs?: list<Url.breadcrumb>,
+  title: string,
 }
 
 /**
@@ -146,6 +147,7 @@ let loader: Loader.t<loaderData> = async ({request}) => {
       entries: [],
       categories: [],
       blogPost: mdx.attributes->BlogLoader.transform,
+      title: `${mdx.attributes.title} | ReScript Blog`,
     }
     res
   } else if pathname->String.includes("syntax-lookup") {
@@ -164,6 +166,7 @@ let loader: Loader.t<loaderData> = async ({request}) => {
       categories: [],
       mdxSources,
       ?activeSyntaxItem,
+      title: mdx.attributes.title, // TODO RR7: check if this is correct
     }
     res
   } else {
@@ -225,14 +228,37 @@ let loader: Loader.t<loaderData> = async ({request}) => {
         })
         : None
 
+    let metaTitleCategory = {
+      let path = (pathname :> string)
+      let title = if path->String.includes("docs/react") {
+        "ReScript React"
+      } else if path->String.includes("docs/manual/api") {
+        "ReScript API"
+      } else if path->String.includes("docs/manual") {
+        "ReScript Language Manual"
+      } else if path->String.includes("community") {
+        "ReScript Community"
+      } else {
+        "ReScript"
+      }
+
+      title
+    }
+
+    let title = if pathname == "/docs/manual/api" {
+      "API"
+    } else {
+      mdx.attributes.title
+    }
+
     let res: loaderData = {
       __raw: mdx.__raw,
       attributes: mdx.attributes,
       entries,
       categories,
       ?breadcrumbs,
+      title: `${title} | ${metaTitleCategory}`,
     }
-
     res
   }
 }
@@ -244,15 +270,10 @@ let default = () => {
 
   let loaderData: loaderData = useLoaderData()
 
-  let {entries, categories} = loaderData
+  let {entries, categories, title} = loaderData
 
-  // TODO RR7: get actual meta categories working
-  let metaTitleCategory =
-    (pathname :> string)->String.includes("docs/manual")
-      ? "ReScript Language Manual"
-      : "Some other page"
   <>
-    <title> {React.string(attributes.metaTitle->Nullable.getOr(attributes.title))} </title>
+    {title != "" ? <title> {React.string(title)} </title> : React.null}
     <meta name="description" content={attributes.description->Nullable.getOr("")} />
     {if (pathname :> string) == "/docs/manual/api" {
       <ApiOverviewLayout.Docs>
@@ -263,10 +284,10 @@ let default = () => {
         (pathname :> string)->String.includes("docs/react")
     ) {
       <DocsLayout
-        metaTitleCategory
         categories
         activeToc={title: "Introduction", entries}
         breadcrumbs=?loaderData.breadcrumbs
+        editHref={`https://github.com/rescript-lang/rescript-lang.org/blob/master/pages${attributes.path}.mdx`}
       >
         <div className="markdown-body pt-20 md:pt-0"> {component()} </div>
       </DocsLayout>
@@ -285,9 +306,18 @@ let default = () => {
     } else {
       switch loaderData.mdxSources {
       | Some(mdxSources) =>
-        <SyntaxLookup mdxSources activeItem=?loaderData.activeSyntaxItem>
-          {component()}
-        </SyntaxLookup>
+        <>
+          <title>
+            {React.string(
+              `${loaderData.activeSyntaxItem
+                ->Option.map(item => item.name)
+                ->Option.getOr("Syntax Lookup")} | ReScript API`,
+            )}
+          </title>
+          <SyntaxLookup mdxSources activeItem=?loaderData.activeSyntaxItem>
+            {component()}
+          </SyntaxLookup>
+        </>
       | None => React.null
       }
     }}
