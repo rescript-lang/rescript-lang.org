@@ -41,7 +41,7 @@ module ClientOnly = {
   @react.component
   let make = (~bundleBaseUrl, ~versions) => {
     <React.Suspense fallback={<div className="h-full bg-gray-100  min-h-screen" />}>
-      <LazyPlayground bundleBaseUrl versions />
+      <PlaygroundLazy bundleBaseUrl versions />
     </React.Suspense>
   }
 }
