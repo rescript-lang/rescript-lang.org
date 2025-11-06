@@ -10,6 +10,11 @@ let scrollToAnchor = (hash: string) => {
   WebAPI.Document.getElementById(document, hash)->WebAPI.Element.scrollIntoView_alignToTop
 }
 
+let isDocRoute = (~route: Path.t) => {
+  let route = (route :> string)
+  route->String.includes("/docs/") || route->String.includes("/syntax-lookup")
+}
+
 module Toc = {
   type raw = Dict.t<{
     "title": string,
@@ -334,7 +339,9 @@ let make = (
             //width of the right content part
             <div
               id="mobile-navbar"
-              className={"z-10 fixed border-b shadow top-[112px] left-0 pl-4 bg-white w-full py-4 md:relative md:border-none md:shadow-none md:p-0 md:top-auto flex items-center transition duration-300 ease-out group-[.nav-disappear]:-translate-y-64 md:group-[.nav-disappear]:-translate-y-0"}
+              className={`z-10 fixed border-b shadow ${isDocRoute(~route=pathname)
+                  ? "top-[112px]"
+                  : "top-[64px]"} left-0 pl-4 bg-white w-full py-4 md:relative md:border-none md:shadow-none md:p-0 md:top-auto flex items-center transition duration-300 ease-out group-[.nav-disappear]:-translate-y-64 md:group-[.nav-disappear]:-translate-y-0`}
             >
               <MobileDrawerButton hidden=isNavOpen onClick={handleDrawerButtonClick} />
               <div

@@ -84,10 +84,6 @@ let blogPosts = async () => {
 let manualTableOfContents = async () => {
   let groups =
     (await allMdx())
-    ->Array.map(item => {
-      Console.log(item.path)
-      item
-    })
     ->filterMdxPages("docs/manual")
     ->groupBySection
     ->Dict.mapValues(values => values->sortSection->convertToNavItems("/docs/manual"))
@@ -284,8 +280,6 @@ let default = () => {
   let loaderData: loaderData = ReactRouter.useLoaderData()
 
   let {entries, categories, title} = loaderData
-
-  Console.log2("Rendering MdxRoute for path:", attributes)
 
   <>
     {if (pathname :> string) == "/docs/manual/api" {

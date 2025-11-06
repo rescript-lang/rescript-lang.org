@@ -2,8 +2,6 @@
 let make = (~children, ~categories, ~entries) => {
   let {pathname} = ReactRouter.useLocation()
 
-  Console.log((pathname :> string)->String.split("/"))
-
   let activePage =
     (pathname :> string)
     ->String.split("/")
