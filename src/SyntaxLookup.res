@@ -188,7 +188,6 @@ let make = (
 ) => {
   let allItems = mdxSources->Array.map(mdxSource => {
     let {id, keywords, category, summary, name, status, href} = mdxSource
-
     {
       Item.id,
       keywords,
@@ -213,7 +212,6 @@ let make = (
 
   let fuse: Fuse.t<Item.t> = Fuse.make(allItems, fuseOpts)
 
-  let location = ReactRouter.useLocation()
   let (state, setState) = React.useState(_ => {
     switch activeItem {
     | Some(item) => ShowDetails((item :> Item.t))
@@ -238,6 +236,8 @@ let make = (
 
   let navigate = ReactRouter.useNavigate()
 
+  let {pathname} = ReactRouter.useLocation()
+
   // onSearchValueChange() is called when:
   // [A] The search value changes.
   // [B] The search is cleared.
@@ -248,7 +248,6 @@ let make = (
   // [2] Search exactly matches an item - trigger a route change, and allow the EFFECT to update the view state.
   // [3] Search does not match an item - immediately update the view state to show filtered items.
   let onSearchValueChange = value => {
-    Console.log2("value changed", value)
     switch value {
     | "" =>
       setState(_ => ShowAll)
@@ -259,7 +258,14 @@ let make = (
           let filtered = searchItems(value)
           setState(_ => ShowFiltered(value, filtered))
         }
-      | Some(item) => navigate("/syntax-lookup/" ++ item.id)
+      | Some(item) => {
+          let target = "/syntax-lookup/" ++ item.href
+
+          // This makes sure we don't double navigate
+          if (pathname :> string) != target {
+            navigate(target)
+          }
+        }
       }
     }
   }
