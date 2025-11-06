@@ -45,3 +45,17 @@ module Date = {
     dateTimeFormat("en-US", {"month": "short", "day": "numeric", "year": "numeric"})->format(date)
   }
 }
+
+/**
+ * 防抖
+ * @param fn the func to debounce
+ * @param delay milliseconds
+ * @returns new debounced function
+ */
+let debounce = (fn: unit => unit, delay: int) => {
+  let timer = ref(None)
+  () => {
+    timer.contents->Option.forEach(clearTimeout)
+    timer := Some(setTimeout(~handler=fn, ~timeout=delay))
+  }
+}

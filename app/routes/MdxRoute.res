@@ -289,7 +289,8 @@ let default = () => {
           categories
           activeToc={title: "Introduction", entries}
           breadcrumbs=?loaderData.breadcrumbs
-          editHref={`https://github.com/rescript-lang/rescript-lang.org/blob/master/pages${attributes.path}.mdx`}
+          // TODO RR7: this probably needs to get the relative path
+          editHref={`https://github.com/rescript-lang/rescript-lang.org/blob/master/pages/${attributes.path}.mdx`}
         >
           <div className="markdown-body pt-20 md:pt-0"> {component()} </div>
         </DocsLayout>
@@ -302,7 +303,7 @@ let default = () => {
       switch loaderData.blogPost {
       | Some({frontmatter, archived, path}) =>
         <BlogArticle frontmatter isArchived=archived path> {component()} </BlogArticle>
-      | None => React.null // TODO: RR7 show an error
+      | None => React.null // TODO: Post RR7 show an error?
       }
     } else {
       switch loaderData.mdxSources {

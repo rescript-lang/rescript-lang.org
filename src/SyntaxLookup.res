@@ -70,7 +70,6 @@ module Item = {
     name: string,
     summary: string,
     category: Category.t,
-    children: React.element,
     status: Status.t,
     href: string,
   }
@@ -177,7 +176,6 @@ type item = {
   name: string,
   summary: string,
   category: Category.t,
-  children: React.element,
   status: Status.t,
   href: string,
 }
@@ -198,7 +196,6 @@ let make = (
       summary,
       name,
       status,
-      children,
       href,
     }
   })
@@ -384,7 +381,7 @@ let make = (
     />
     <div className="mt-4 xs:mt-16">
       <div className="text-gray-80">
-        <Navigation isOverlayOpen setOverlayOpen />
+        // <Navigation isOverlayOpen setOverlayOpen />
         <div className="flex xs:justify-center overflow-hidden pb-48">
           <main className="mt-24 min-w-320 lg:align-center w-full px-4 md:px-8 max-w-1280">
             <div className="flex justify-center">

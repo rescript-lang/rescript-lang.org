@@ -34,6 +34,8 @@ open ReactRouter
 @react.component
 let default = () => {
   let (isOverlayOpen, setOverlayOpen) = React.useState(_ => false)
+  let (isScrollLockEnabled, setIsScrollLockEnabled) = React.useState(_ => false)
+
   <html>
     <head>
       <style> {React.string("html {opacity:0;}")} </style>
@@ -51,11 +53,15 @@ let default = () => {
       />
       <meta charSet="UTF-8" />
     </head>
-    <body>
-      <Navigation isOverlayOpen setOverlayOpen />
-      <Outlet />
-      <ScrollRestoration />
-      <Scripts />
+    <body className={isScrollLockEnabled ? "overflow-hidden" : ""}>
+      <ScrollLockContext.Provider lockState=(isScrollLockEnabled, setIsScrollLockEnabled)>
+        <EnableCollapsibleNavbar isEnabled={!isOverlayOpen}>
+          <Navigation isOverlayOpen setOverlayOpen />
+          <Outlet />
+          <ScrollRestoration />
+          <Scripts />
+        </EnableCollapsibleNavbar>
+      </ScrollLockContext.Provider>
     </body>
   </html>
 }

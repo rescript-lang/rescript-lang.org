@@ -88,8 +88,11 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
   let location = ReactRouter.useLocation()
   let route = location.pathname
 
+  let (isLocked, toggleScrollLock) = ScrollLockContext.useScrollLock()
+
   let toggleOverlay = () => {
     setOverlayOpen(prev => !prev)
+    toggleScrollLock(prev => !prev)
   }
 
   let fixedNavClassName = fixed ? "fixed top-0" : "relative"
@@ -99,7 +102,10 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
       id="header"
       className={fixedNavClassName ++ " items-center z-50 w-full transition duration-300 ease-out group-[.nav-disappear]:-translate-y-16 md:group-[.nav-disappear]:-translate-y-0 min-w-[20rem]"}
     >
-      <nav className="px-4 flex xs:justify-center bg-gray-90 shadow h-16 text-white-80 text-14">
+      <nav
+        className="px-4 flex xs:justify-center bg-gray-90 shadow h-16 text-white-80 text-14"
+        id="main-navbar"
+      >
         <div className="flex justify-between items-center h-full w-full max-w-1280">
           <div className="h-8 w-8 lg:h-10 lg:w-32">
             <a
@@ -171,6 +177,7 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
 
         /* Burger Button */
         <button
+          id="burger-button"
           className="h-full px-4 xs:hidden flex items-center hover:text-white"
           onClick={evt => {
             ReactEvent.Mouse.preventDefault(evt)
@@ -184,6 +191,7 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
 
         /* Mobile overlay */
         <div
+          id="mobile-overlay"
           className={(
             isOverlayOpen ? "flex" : "hidden"
           ) ++ " top-16 sm:hidden flex-col fixed top-0 left-0 h-full w-full z-50 sm:w-9/12 bg-gray-100 sm:h-auto sm:flex sm:relative sm:flex-row sm:justify-between"}
@@ -194,8 +202,8 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
       // This is a subnav for documentation pages
       {isDocRoute(~route)
         ? <nav
-            id="docs-subnav"
-            className="bg-white z-50 px-4 w-full h-12 shadow text-gray-60 text-12 md:text-14 transition duration-300 ease-out group-[.nav-disappear]:-translate-y-32 md:group-[.nav-disappear]:-translate-y-0"
+            id="doc-navbar"
+            className="bg-white z-50 px-4 w-full h-12 shadow text-gray-60 text-12 md:text-14 transition duration-300 ease-out group-[.nav-disappear]:-translate-y-32 md:group-[.nav-disappear]:translate-y-0"
           >
             <div className="flex gap-6 lg:gap-10 items-center h-full w-full max-w-1280 m-auto">
               <Link

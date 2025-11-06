@@ -155,7 +155,6 @@ module Sidebar = {
           >
             <Icon.Close />
           </button>
-          // TODO: conditionally render this
           <div className="flex justify-between" dataTestId="sidebar-toplevel-nav">
             <div className="w-3/4 md:w-full"> toplevelNav </div>
           </div>
@@ -229,7 +228,7 @@ module BreadCrumbs = {
 module MobileDrawerButton = {
   @react.component
   let make = (~hidden: bool, ~onClick) =>
-    <button className={(hidden ? "hidden " : "") ++ "md:hidden mr-3"} onMouseDown=onClick>
+    <button className={(hidden ? "hidden " : "") ++ "md:hidden mr-3"} onClick=onClick>
       <img className="h-4" src="/ic_sidebar_drawer.svg" />
     </button>
 }
@@ -260,29 +259,20 @@ let make = (
   let breadcrumbs = breadcrumbs->Option.mapOr(React.null, crumbs => <BreadCrumbs crumbs />)
 
   let (isSidebarOpen, setSidebarOpen) = sidebarState
+  let (isLocked, toggleScrollLock) = ScrollLockContext.useScrollLock()
 
   let toggleSidebar = () => {
     setSidebarOpen(prev => !prev)
+    toggleScrollLock(prev => !prev)
   }
 
+  let {pathname} = ReactRouter.useLocation()
+
   React.useEffect(() => {
-    // TODO RR7: figure out how to watch for route changes
-    // open Next.Router.Events
-    // let {Next.Router.events: events} = router
-
-    // let onChangeComplete = _url => setSidebarOpen(_ => false)
-
-    // events->on(#routeChangeComplete(onChangeComplete))
-    // events->on(#hashChangeComplete(onChangeComplete))
-
-    // Some(
-    //   () => {
-    //     events->off(#routeChangeComplete(onChangeComplete))
-    //     events->off(#hashChangeComplete(onChangeComplete))
-    //   },
-    // )
+    setSidebarOpen(_ => false)
+    setNavOpen(_ => false)
     None
-  }, [])
+  }, [pathname])
 
   let handleDrawerButtonClick = React.useCallback(evt => {
     ReactEvent.Mouse.preventDefault(evt)
@@ -335,44 +325,40 @@ let make = (
   | None => React.null
   }
 
-  <>
-    <EnableCollapsibleNavbar isEnabled={isSidebarOpen && isNavOpen}>
-      <div className={"mt-16 min-w-320 " ++ theme}>
-        <div className="w-full">
-          <Navigation isOverlayOpen=isNavOpen setOverlayOpen=setNavOpen />
-          <div className="flex lg:justify-center">
-            <div className="flex w-full max-w-1280 md:mx-10 md:mt-16">
-              sidebar
-              <main className="px-4 w-full pt-4 md:ml-12 lg:mr-8 mb-32 md:max-w-576 lg:max-w-740">
-                //width of the right content part
-                <div
-                  className={"z-10 fixed border-b shadow top-[112px] left-0 pl-4 bg-white w-full py-4 md:relative md:border-none md:shadow-none md:p-0 md:top-auto flex items-center transition duration-300 ease-out group-[.nav-disappear]:-translate-y-64 md:group-[.nav-disappear]:-translate-y-0"}
-                >
-                  <MobileDrawerButton hidden=isNavOpen onClick={handleDrawerButtonClick} />
-                  <div
-                    className="truncate overflow-x-auto touch-scroll flex items-center space-x-4 md:justify-between mr-4 w-full"
-                  >
-                    breadcrumbs
-                    editLinkEl
-                  </div>
-                </div>
-                <div
-                  className={hasBreadcrumbs ? "mt-20 md:mt-10" : "mt-6 md:-mt-4"}
-                  dataTestId="side-layout-children"
-                >
-                  children
-                </div>
-                pagination
-              </main>
-              {switch rightSidebar {
-              | Some(ele) => ele
-              | None => React.null
-              }}
+  <div className={"mt-16 min-w-320 " ++ theme}>
+    <div className="w-full">
+      <div className="flex lg:justify-center">
+        <div className="flex w-full max-w-1280 md:mx-10 md:mt-16">
+          sidebar
+          <main className="px-4 w-full pt-4 md:ml-12 lg:mr-8 mb-32 md:max-w-576 lg:max-w-740">
+            //width of the right content part
+            <div
+              id="mobile-navbar"
+              className={"z-10 fixed border-b shadow top-[112px] left-0 pl-4 bg-white w-full py-4 md:relative md:border-none md:shadow-none md:p-0 md:top-auto flex items-center transition duration-300 ease-out group-[.nav-disappear]:-translate-y-64 md:group-[.nav-disappear]:-translate-y-0"}
+            >
+              <MobileDrawerButton hidden=isNavOpen onClick={handleDrawerButtonClick} />
+              <div
+                className="truncate overflow-x-auto touch-scroll flex items-center space-x-4 md:justify-between mr-4 w-full"
+              >
+                breadcrumbs
+                editLinkEl
+              </div>
             </div>
-          </div>
+            <div
+              className={hasBreadcrumbs ? "mt-20 md:mt-10" : "mt-6 md:-mt-4"}
+              dataTestId="side-layout-children"
+            >
+              children
+            </div>
+            pagination
+          </main>
+          {switch rightSidebar {
+          | Some(ele) => ele
+          | None => React.null
+          }}
         </div>
-        <Footer />
       </div>
-    </EnableCollapsibleNavbar>
-  </>
+    </div>
+    <Footer />
+  </div>
 }
