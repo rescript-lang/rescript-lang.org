@@ -1588,14 +1588,19 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     (),
   )
 
-  let (keyMap, setKeyMap) = React.useState(() => {
-    Dom.Storage2.localStorage
-    ->Dom.Storage2.getItem("vimMode")
-    ->Option.map(CodeMirror.KeyMap.fromString)
-    ->Option.getOr(CodeMirror.KeyMap.Default)
-  })
+  let (keyMap, setKeyMap) = React.useState(() => CodeMirror.KeyMap.Default)
 
-  React.useEffect1(() => {
+  React.useEffect(() => {
+    setKeyMap(_ =>
+      Dom.Storage2.localStorage
+      ->Dom.Storage2.getItem("vimMode")
+      ->Option.map(CodeMirror.KeyMap.fromString)
+      ->Option.getOr(CodeMirror.KeyMap.Default)
+    )
+    None
+  }, [])
+
+  React.useEffect(() => {
     Dom.Storage2.localStorage->Dom.Storage2.setItem("vimMode", CodeMirror.KeyMap.toString(keyMap))
     None
   }, [keyMap])
@@ -1647,7 +1652,12 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     None
   }, (compilerState, compilerDispatch))
 
-  let (layout, setLayout) = React.useState(_ => window.innerWidth < breakingPoint ? Column : Row)
+  let (layout, setLayout) = React.useState(() => Row)
+
+  React.useEffect(() => {
+    setLayout(_ => window.innerWidth < breakingPoint ? Column : Row)
+    None
+  }, [])
 
   let isDragging = React.useRef(false)
 

@@ -2,6 +2,7 @@
 // Adapted from the CodeMirror 5 version
 
 import { StreamLanguage } from "@codemirror/language";
+import { tags as t } from "@lezer/highlight";
 
 const rescriptLanguage = StreamLanguage.define({
   name: "rescript",
@@ -83,7 +84,7 @@ const rescriptLanguage = StreamLanguage.define({
 
     // Handle booleans
     if (stream.match(/^(?:true|false)\b/)) {
-      return "builtin";
+      return "bool";
     }
 
     // Handle module references
@@ -122,18 +123,18 @@ const rescriptLanguage = StreamLanguage.define({
   },
 
   tokenTable: {
-    comment: "comment",
-    string: "string",
-    "string-2": "string",
-    number: "number",
-    keyword: "keyword",
-    atom: "atom",
-    builtin: "builtin",
-    namespace: "namespace",
-    typeName: "typeName",
-    meta: "meta",
-    operator: "operator",
-    variableName: "variableName",
+    comment: t.comment,
+    string: t.string,
+    "string-2": t.string,
+    number: t.number,
+    keyword: t.keyword,
+    atom: t.atom,
+    bool: t.bool,
+    namespace: t.namespace,
+    typeName: t.typeName,
+    meta: t.meta,
+    operator: t.operator,
+    variableName: t.variableName,
   },
 });
 
