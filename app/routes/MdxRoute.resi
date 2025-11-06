@@ -7,6 +7,7 @@ type loaderData = {
   activeSyntaxItem?: SyntaxLookup.item,
   breadcrumbs?: list<Url.breadcrumb>,
   title: string,
+  filePath: option<string>,
 }
 
 let loader: ReactRouter.Loader.t<loaderData>

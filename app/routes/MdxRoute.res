@@ -9,6 +9,7 @@ type loaderData = {
   activeSyntaxItem?: SyntaxLookup.item,
   breadcrumbs?: list<Url.breadcrumb>,
   title: string,
+  filePath: option<string>,
 }
 
 /**
@@ -83,6 +84,10 @@ let blogPosts = async () => {
 let manualTableOfContents = async () => {
   let groups =
     (await allMdx())
+    ->Array.map(item => {
+      Console.log(item.path)
+      item
+    })
     ->filterMdxPages("docs/manual")
     ->groupBySection
     ->Dict.mapValues(values => values->sortSection->convertToNavItems("/docs/manual"))
@@ -147,6 +152,7 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
       categories: [],
       blogPost: mdx.attributes->BlogLoader.transform,
       title: `${mdx.attributes.title} | ReScript Blog`,
+      filePath: None,
     }
     res
   } else if pathname->String.includes("syntax-lookup") {
@@ -166,6 +172,7 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
       mdxSources,
       ?activeSyntaxItem,
       title: mdx.attributes.title, // TODO RR7: check if this is correct
+      filePath: None,
     }
     res
   } else {
@@ -183,12 +190,18 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
       }
     }
 
+    let filePath = ref(None)
+
     // TODO POST RR7: extract this out into a separate function
     // it can probably be cached or something
     let fileContents = await (await allMdx())
     ->Array.filter(mdx => (mdx.path :> string)->String.includes(pathname))
     ->Array.get(0)
-    ->Option.map(mdx => mdx.path)
+    ->Option.map(mdx => {
+      filePath :=
+        Some(mdx.path->String.slice(~start=mdx.path->String.indexOf("rescript-lang.org/") + 17)) // remove the filesystem path to get the relative path to the files in the repo
+      mdx.path
+    })
     ->Option.map(path => Node.Fs.readFile((path :> string), "utf-8"))
     ->Option.getOrThrow
 
@@ -257,6 +270,7 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
       categories,
       ?breadcrumbs,
       title: `${title} | ${metaTitleCategory}`,
+      filePath: filePath.contents,
     }
     res
   }
@@ -270,6 +284,8 @@ let default = () => {
   let loaderData: loaderData = ReactRouter.useLoaderData()
 
   let {entries, categories, title} = loaderData
+
+  Console.log2("Rendering MdxRoute for path:", attributes)
 
   <>
     {if (pathname :> string) == "/docs/manual/api" {
@@ -289,8 +305,7 @@ let default = () => {
           categories
           activeToc={title: "Introduction", entries}
           breadcrumbs=?loaderData.breadcrumbs
-          // TODO RR7: this probably needs to get the relative path
-          editHref={`https://github.com/rescript-lang/rescript-lang.org/blob/master/pages/${attributes.path}.mdx`}
+          editHref={`https://github.com/rescript-lang/rescript-lang.org/blob/master${loaderData.filePath->Option.getOrThrow}`}
         >
           <div className="markdown-body pt-20 md:pt-0"> {component()} </div>
         </DocsLayout>
