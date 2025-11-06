@@ -49,7 +49,6 @@ let make = (
 
     let full = (ctrlKey ? "CTRL+" : "") ++ key
 
-    // TODO RR7 test keyboard input
     switch full {
     | "Escape" => onClear()
     | "Tab" =>

@@ -76,25 +76,6 @@ let make = (
   let (isSidebarOpen, setSidebarOpen) = React.useState(_ => false)
   let toggleSidebar = () => setSidebarOpen(prev => !prev)
 
-  React.useEffect(() => {
-    // TODO: replicate this for React Router
-    // open Next.Router.Events
-    // let {Next.Router.events: events} = router
-
-    // let onChangeComplete = _url => setSidebarOpen(_ => false)
-
-    // events->on(#routeChangeComplete(onChangeComplete))
-    // events->on(#hashChangeComplete(onChangeComplete))
-
-    // Some(
-    //   () => {
-    //     events->off(#routeChangeComplete(onChangeComplete))
-    //     events->off(#hashChangeComplete(onChangeComplete))
-    //   },
-    // )
-    None
-  }, [])
-
   let navigate = ReactRouter.useNavigate()
 
   let preludeSection =

@@ -292,7 +292,6 @@ let make = (
   | None => React.null
   }
 
-  // TODO: RR7 figure this out
   let pagination = switch categories {
   | Some(categories) =>
     let items = categories->Array.flatMap(c => c.items)

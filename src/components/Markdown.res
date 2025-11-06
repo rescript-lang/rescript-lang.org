@@ -46,8 +46,7 @@ module UrlBox = {
   let imgEl = <img src="/hyperlink.svg" className="mr-2 inline-block" />
 
   @react.component
-  let // TODO: can this href be a Path.t somehow?
-  make = (~text: string, ~href: string, ~children: MdxLegacy.MdxChildren.t) => {
+  let make = (~text: string, ~href: string, ~children: MdxLegacy.MdxChildren.t) => {
     let content = switch classify(children) {
     | String(str) =>
       <p>
@@ -117,14 +116,12 @@ module Anchor = {
     <span className="inline group relative" title>
       <a
         title
-        // TODO RR7: the scroll margin might need some tweaking for media breakpoints
         className="scroll-mt-30 invisible text-gray-60 opacity-50 hover:opacity-100 hover:text-gray-60 hover:cursor-pointer group-hover:visible"
         href={"#" ++ id}
         id={"#" ++ id}
       >
         <Icon.Hyperlink className="inline-block align-middle text-gray-40" />
       </a>
-      // <a className="absolute -top-28" id />
     </span>
   }
 }
@@ -139,7 +136,6 @@ module H2 = {
   @react.component
   let make = (~id, ~children) => {
     // Children may not be a string
-    // TODO: RR7 - this can be improved, but I need to figure out what the other possible types are
     let title = {
       try {
         childrenToString(children)->Url.normalizeAnchor

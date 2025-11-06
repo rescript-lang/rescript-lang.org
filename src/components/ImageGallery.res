@@ -65,8 +65,6 @@ let make = (
       }
     })
   }
-  // TODO - Replace this with just using tailwind show and transitions?
-  // It's causing a hydration mismatch
   <div className>
     <div className="w-full" onClick>
       <HeadlessUI.Transition

@@ -110,7 +110,6 @@ let loader: ReactRouter.Loader.t<loaderData> = async args => {
   let data = {
     // TODO POST RR7: refactor this function to only return the module and not the toctree
     // or move the toc logic to this function
-    // TODO move the loader function to its own file
     try {
       await ApiDocs.getStaticProps(path)
     } catch {

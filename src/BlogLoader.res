@@ -14,7 +14,14 @@ let transform = (mdx: Mdx.attributes): BlogApi.post => {
     frontmatter: {
       author: BlogFrontmatter.authors
       ->Array.find(author => author.username->String.includes(mdx.author))
-      ->Option.getOrThrow, // TODO: this is probably unsafe and needs to be fixed
+      ->Option.getOr({
+        // Fallback to the ReScript Team if we can't find a matching author
+        username: "rescript-team",
+        fullname: "ReScript Team",
+        role: "Core Development",
+        imgUrl: "https://pbs.twimg.com/profile_images/1358354824660541440/YMKNWE1V_400x400.png",
+        social: X("rescriptlang"),
+      }),
       co_authors: (mdx.co_authors->Nullable.getOr([]) :> array<BlogFrontmatter.author>),
       date: mdx.date,
       previewImg: mdx.previewImg,
