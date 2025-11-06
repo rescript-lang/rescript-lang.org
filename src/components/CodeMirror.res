@@ -550,7 +550,6 @@ let make = // props relevant for the react wrapper
   ~keyMap=KeyMap.Default,
   ~lineWrapping=false,
 ): React.element => {
-  Console.debug("staring codemirror")
   let inputElement = React.useRef(Nullable.null)
   let cmRef: React.ref<option<CM.t>> = React.useRef(None)
   let cmStateRef = React.useRef({marked: [], hoverHints})

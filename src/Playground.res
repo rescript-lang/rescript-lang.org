@@ -1,5 +1,3 @@
-// CodeMirror 6 - no longer need these requires since we import directly in the component
-
 open CompilerManagerHook
 module Api = RescriptCompilerApi
 
@@ -1577,12 +1575,10 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   )
 
   let (keyMap, setKeyMap) = React.useState(() => {
-    CodeMirror.KeyMap.Default
-
-    // Dom.Storage2.localStorage
-    // ->Dom.Storage2.getItem("vimMode")
-    // ->Option.map(CodeMirror.KeyMap.fromString)
-    // ->Option.getOr(CodeMirror.KeyMap.Default)
+    Dom.Storage2.localStorage
+    ->Dom.Storage2.getItem("vimMode")
+    ->Option.map(CodeMirror.KeyMap.fromString)
+    ->Option.getOr(CodeMirror.KeyMap.Default)
   })
 
   React.useEffect1(() => {

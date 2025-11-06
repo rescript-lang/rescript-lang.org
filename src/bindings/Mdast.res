@@ -33,12 +33,7 @@ let rec reduceHeaders = (list: listContent, links: dict<Path.t>) => {
   if list._type == Link {
     let child = list.children->Option.flatMap(children => children[0])
     switch (list.url, child) {
-    | (Some(url), Some(child)) => {
-        if child.value->String.includes("title:") {
-          ()
-        }
-        links->Dict.set(child.value, url)
-      }
+    | (Some(url), Some(child)) => links->Dict.set(child.value, url)
     | (_, _) => ()
     }
   } else {

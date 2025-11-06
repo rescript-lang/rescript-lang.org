@@ -154,7 +154,11 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
   } else if pathname->String.includes("syntax-lookup") {
     let mdxSources =
       (await allMdx())
-      ->Array.filter(page => page.path->String.includes("syntax-lookup"))
+      ->Array.filter(page =>
+        page.path
+        ->Option.map(String.includes(_, "syntax-lookup"))
+        ->Option.getOr(false)
+      )
       ->Array.map(SyntaxLookupRoute.convert)
 
     let activeSyntaxItem =
@@ -191,14 +195,17 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
     // TODO POST RR7: extract this out into a separate function
     // it can probably be cached or something
     let fileContents = await (await allMdx())
-    ->Array.filter(mdx => (mdx.path :> string)->String.includes(pathname))
+    ->Array.filter(mdx => mdx.path->Option.map(String.includes(_, pathname))->Option.getOr(false))
     ->Array.get(0)
-    ->Option.map(mdx => {
+    ->Option.flatMap(mdx => {
       filePath :=
-        Some(mdx.path->String.slice(~start=mdx.path->String.indexOf("rescript-lang.org/") + 17)) // remove the filesystem path to get the relative path to the files in the repo
+        mdx.path->Option.map(mdxPath =>
+          String.slice(mdxPath, ~start=mdxPath->String.indexOf("rescript-lang.org/") + 17)
+        )
+      // remove the filesystem path to get the relative path to the files in the repo
       mdx.path
     })
-    ->Option.map(path => Node.Fs.readFile((path :> string), "utf-8"))
+    ->Option.map(path => Node.Fs.readFile(path, "utf-8"))
     ->Option.getOrThrow
 
     let markdownTree = Mdast.fromMarkdown(fileContents)

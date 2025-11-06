@@ -39,6 +39,7 @@ public/playground-bundles/
 dist
 build
 .react-router
+mdx-manifest.json
 
 app/**/*.mjs
 !_shims.mjs

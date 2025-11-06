@@ -20,7 +20,9 @@ let loader: Loader.t<loaderData> = async ({request}) => {
 
   let mdxSources =
     allMdx
-    ->Array.filter(page => page.path->String.includes("syntax-lookup"))
+    ->Array.filter(page =>
+      page.path->Option.map(String.includes(_, "syntax-lookup"))->Option.getOr(false)
+    )
     ->Array.map(convert)
 
   {

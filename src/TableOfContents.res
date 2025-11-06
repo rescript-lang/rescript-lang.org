@@ -14,7 +14,7 @@ module Context = {
     entries: [],
   }
 
-  type c = {
+  type context = {
     toc: option<t>,
     addEntry: (string, string) => unit,
   }

@@ -377,7 +377,6 @@ let make = (props: props) => {
 
   <SidebarLayout
     breadcrumbs={list{{Url.name: "Docs", href: "/docs/manual/introduction"}, ...breadcrumbs}}
-    // metaTitle={title ++ " | ReScript API"}
     theme=#Reason
     sidebarState=(isSidebarOpen, setSidebarOpen)
     sidebar
@@ -393,7 +392,6 @@ module Data = {
     tree: Dict.t<JSON.t>,
   }
 
-  // This is called on in the client for some reason?
   let dir = try {
     Node.Path.resolve("data", "api")
   } catch {
@@ -504,24 +502,13 @@ let processStaticProps = (~slug: array<string>) => {
     }
 
     Ok({module_, toctree: Obj.magic({name: "root", path: [], children: []})})
-  // let toctree = tree->Dict.get(moduleName)
-
-  // switch toctree {
-  // | Some(toctree) => Ok({module_, toctree: (Obj.magic(toctree): node)})
-  // | None => Error(`Failed to find toctree to ${modulePath}`)
-  // }
 
   | None => Error(`Failed to get API Data for module ${moduleName}`)
-  // Error(`Failed to get key for ${modulePath}`)
-
-  // Error(`Failed to get API Data for module ${moduleName}`)
   }
 }
 
 let getStaticProps = async slug => {
   let result = processStaticProps(~slug)
-
-  // Node.Fs.writeFileSync("./props.json", JSON.stringifyAny(result)->Option.getOrThrow)
 
   {"props": result}
 }

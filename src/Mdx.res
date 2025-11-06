@@ -32,7 +32,7 @@ type attributes = {
   description: Nullable.t<string>,
   metaTitle: Nullable.t<string>,
   order?: int,
-  path: string,
+  path?: string,
   section?: string,
   summary?: string,
   status?: string,
@@ -92,4 +92,4 @@ let groupBySection = mdxPages =>
   })
 
 let filterMdxPages = (mdxPages, path) =>
-  Array.filter(mdxPages, mdx => (mdx.path :> string)->String.includes(path))
+  Array.filter(mdxPages, mdx => mdx.path->Option.map(String.includes(_, path))->Option.getOr(false))
