@@ -77,3 +77,47 @@ Note that the previous binding `five` stays `5`, since it got the underlying ite
 ## Tip & Tricks
 
 Before reaching for `ref`, know that you can achieve lightweight, local "mutations" through [overriding let bindings](let-binding.md#binding-shadowing).
+
+### Self-Referencing Assignments
+
+There are scenarios where using a mutable `ref` binding becomes necessary, particularly when dealing with self-referencing. This is common when working with functions that return a value and accept a callback that uses that return value. In such cases, you need to initialize a mutable `ref` binding and then assign to it. Here's an example:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+// hypothetic "showDialog" function shows the given `~content: JSX.element`
+// in the dialog. It returns a cleanup function that closes/removes the dialog.
+@val external showDialog: (~content: Jsx.element) => unit => unit = "showDialog"
+
+// We want render a "Close" button in the `~content` that will call the 
+// returned cleanup function when clicked. This requires a mutable binding.
+// First initialize it with a dummy function that has the same signature as
+// our cleanup function.
+let cleanupDialog = ref(() => ())
+
+// assign to the ref and self-refer to the value in the event handler
+cleanupDialog :=
+  showDialog(
+    ~content=<div>
+      <button onClick={_ => cleanupDialog.contents()}>
+        {React.string("Close")}
+      </button>
+    </div>,
+  )
+```
+```js
+var cleanupDialog = {
+  contents: (function () {})
+};
+
+cleanupDialog.contents = showDialog(JsxRuntime.jsx("div", {
+          children: JsxRuntime.jsx("button", {
+                children: "Close",
+                onClick: (function (param) {
+                    cleanupDialog.contents();
+                  })
+              })
+        }));
+```
+
+</CodeTab>
