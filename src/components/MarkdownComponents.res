@@ -20,7 +20,7 @@ type t = {
   @as("UrlBox")
   urlBox?: React.componentLike<UrlBox.props<string, string, Mdx.MdxChildren.t>, React.element>,
   @as("CodeTab")
-  codeTab?: CodeTab.props<Mdx.MdxChildren.t, array<string>> => React.element,
+  codeTab?: CodeTab.props<Mdx.MdxChildren.t, array<string>, string, string> => React.element,
   /* Common markdown elements */
   p?: P.props<React.element> => React.element,
   li?: Li.props<React.element> => React.element,
