@@ -145,7 +145,7 @@ module Sidebar = {
         id="sidebar"
         className={(
           isOpen ? "fixed w-full left-0 h-full z-20 min-w-320" : "hidden "
-        ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible bg-white mt-28 md:mt-0 min-w-48"}
+        ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible mt-10 pt-2 bg-white md:mt-0 min-w-48"}
       >
         <aside
           id="sidebar-content"
@@ -339,8 +339,8 @@ let make = (
             <div
               id="mobile-navbar"
               className={`z-10 fixed border-b shadow ${isDocRoute(~route=pathname)
-                  ? "top-[112px]"
-                  : "top-[64px]"} left-0 pl-4 bg-white w-full py-4 md:relative md:border-none md:shadow-none md:p-0 md:top-auto flex items-center transition duration-300 ease-out group-[.nav-disappear]:-translate-y-64 md:group-[.nav-disappear]:-translate-y-0`}
+                  ? "top-28"
+                  : "top-16"} left-0 pl-4 bg-white w-full py-4 md:relative md:border-none md:shadow-none md:p-0 md:top-auto flex items-center transition duration-300 ease-out group-[.nav-disappear]:-translate-y-64 md:group-[.nav-disappear]:-translate-y-0 z-25`}
             >
               <MobileDrawerButton hidden=isNavOpen onClick={handleDrawerButtonClick} />
               <div
