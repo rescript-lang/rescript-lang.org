@@ -196,11 +196,6 @@ These changes simplify future feature work and reduce maintenance overhead.
 The `rescript` npm package declares `"type": "module"` and ships ESM code across the CLI.
 Import statements replace CommonJS `require` usage, improving compatibility with contemporary bundlers and enabling better tree-shaking.
 
-### OCaml 5.3 toolchain
-
-The compiler and supporting tooling now build on OCaml 5.3.0.
-Contributors compiling ReScript from source will need the updated toolchain, and the upgrade brings performance and language runtime improvements from the upstream project.
-
 ### Platform-specific binaries
 
 Installer footprints shrink thanks to platform-specific binary packages such as `@rescript/darwin-arm64`, `@rescript/linux-x64`, and `@rescript/win32-x64`.
