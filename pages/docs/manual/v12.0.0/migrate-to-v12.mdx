@@ -14,6 +14,7 @@ canonical: "/docs/manual/v12.0.0/migrate-to-v12"
 - Uncurried mode must be enabled (i.e. you have not opted-out from it)
 - Your project must not contain any OCaml source code anymore, as support for `.ml` files is removed in this version. However there are ways to convert OCaml syntax with an older ReScript compiler version (see below).
 - The old configuration filename that was deprecated in v11, `bsconfig.json`, is removed. Rename it to `rescript.json`.
+- Minimum supported Node.js version is 20.0.0
 
 ### Standard library changes
 
@@ -41,17 +42,107 @@ Also remove auto opening of `RescriptCore`.
  }
 ```
 
+if you had `@rescript/std` installed, remove it as well:
+
+```shell
+npm uninstall @rescript/std
+```
+
+this is replaced by `@rescript/runtime`, which is a installed as a dependency of `rescript` now.
+
 ## Replacements
 
 Some typical name changes include:
 
 `Error.t` -> `JsError.t`
-`raise(` -> `throw(`
+`raise(MyException("error"))` -> `throw(MyException("error"))`
 `Js.Exn.Error` exception -> `JsExn`
 `Error.make` -> `JsExn.make`
 `Error.raise` -> `JsExn.raise`
 `Error.message` -> `JsExn.message`
+`Bool.fromStringExn("true")` -> `Bool.fromStringOrThrow("true")`
 `Int.Bitwise.lsl` -> `Int.shiftLeft`
+
+Tip: You can use the migration tool to automatically replace these with the new functions.
+
+```shell
+npx rescript-tools migrate-all <root>
+
+# preview the changes via
+rescript-tools migrate <file> [--stdout]
+```
+
+### Bitwise operations
+
+v11:
+
+```res
+let x = ~a        // bitwise NOT
+let y = a ^ b     // bitwise XOR
+let z = a & b     // bitwise AND
+let w = a | b     // bitwise OR
+```
+
+v12:
+
+```res
+let x = ~~~a      // bitwise NOT
+let y = a ^^^ b   // bitwise XOR
+let z = a &&& b   // bitwise AND
+let w = a ||| b   // bitwise OR
+```
+
+### JSX children spread
+
+v11:
+
+```res
+<div> ...children </div>
+```
+
+v12:
+
+```res
+<div> {...children} </div>
+```
+
+### Attributes
+
+v11:
+
+```res
+@bs.as("foo")
+@bs.send
+@bs.new
+@raises
+@genType.as
+```
+
+v12:
+
+```res
+@as("foo")
+@send
+@new
+@throws
+@as
+```
+
+- `@meth` and `@bs.send.pipe` are removed.
+
+### Assert
+
+v11:
+
+```res
+assert 1 == 2
+```
+
+v12:
+
+```res
+assert(1 == 2)  // Now a regular function call
+```
 
 ## Configuration
 
@@ -65,3 +156,33 @@ Rename `bsconfig.json` to `rescript.json` and update these configuration options
 
 - Set `version` to `4` (lower versions are not supported)
 - Remove `mode` option (automatically set to `automatic`)
+
+## Build System Changes
+
+The build system has been completely rewritten in v12.0.0.
+
+In v11, we had:
+
+```shell
+# build
+rescript build
+
+# watch build
+rescript build -w
+
+# format
+rescript format -all
+```
+
+in v12, this becomes:
+
+```shell
+# build
+rescript
+
+# watch build
+rescript watch
+
+# format
+rescript format
+```
