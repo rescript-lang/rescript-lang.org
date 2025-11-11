@@ -1,5 +1,11 @@
 {
-  "Overview": ["introduction", "installation", "editor-plugins", "llms"],
+  "Overview": [
+    "introduction",
+    "installation",
+    "migrate-to-v12",
+    "editor-plugins",
+    "llms"
+  ],
   "Guides": ["converting-from-js", "editor-code-analysis", "project-structure"],
   "JavaScript Interop": [
     "interop-cheatsheet",
