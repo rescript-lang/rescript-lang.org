@@ -15,6 +15,7 @@ ReScript functions are declared with an arrow and return an expression, just lik
 ```res prelude
 let greet = (name) => "Hello " ++ name
 ```
+
 ```js
 function greet(name) {
   return "Hello " + name;
@@ -30,6 +31,7 @@ This declares a function and assigns to it the name `greet`, which you can call 
 ```res example
 greet("world!") // "Hello world!"
 ```
+
 ```js
 greet("world!");
 ```
@@ -44,9 +46,10 @@ Multi-arguments functions have arguments separated by comma:
 let add = (x, y, z) => x + y + z
 add(1, 2, 3) // 6
 ```
+
 ```js
 function add(x, y, z) {
-  return (x + y | 0) + z | 0;
+  return (((x + y) | 0) + z) | 0;
 }
 ```
 
@@ -62,6 +65,7 @@ let greetMore = (name) => {
   part1 ++ " " ++ name
 }
 ```
+
 ```js
 function greetMore(name) {
   return "Hello " + name;
@@ -85,6 +89,7 @@ let addCoordinates = (x, y) => {
 // ...
 addCoordinates(5, 6) // which is x, which is y?
 ```
+
 ```js
 function addCoordinates(x, y) {
   // use x and y here
@@ -106,6 +111,7 @@ let addCoordinates = (~x, ~y) => {
 // ...
 addCoordinates(~x=5, ~y=6)
 ```
+
 ```js
 function addCoordinates(x, y) {
   // use x and y here
@@ -123,6 +129,7 @@ You can provide the arguments in **any order**:
 ```res
 addCoordinates(~y=6, ~x=5)
 ```
+
 ```js
 addCoordinates(5, 6);
 ```
@@ -142,6 +149,7 @@ let drawCircle = (~radius as r, ~color as c) => {
 
 drawCircle(~radius=10, ~color="red")
 ```
+
 ```js
 function drawCircle(r, c) {
   setColor(c);
@@ -164,6 +172,7 @@ let drawCircle = (~radius as r: int, ~color as c: string) => {
   // code here
 }
 ```
+
 ```js
 function drawCircle(r, c) {
   // code here
@@ -188,6 +197,7 @@ let drawCircle = (~color, ~radius=?) => {
   }
 }
 ```
+
 ```js
 var Caml_option = require("./stdlib/caml_option.js");
 
@@ -225,6 +235,7 @@ let drawCircle: (~color: color, ~radius: int=?) => unit =
     }
   }
 ```
+
 ```js
 function drawCircle(color, radius) {
   setColor(color);
@@ -257,12 +268,14 @@ let result =
   | Some(r) => drawCircle(~color, ~radius=r)
   }
 ```
+
 ```js
 var r = payloadRadius;
 
-var result = r !== undefined
-  ? drawCircle(color, Caml_option.valFromOption(r))
-  : drawCircle(color);
+var result =
+  r !== undefined
+    ? drawCircle(color, Caml_option.valFromOption(r))
+    : drawCircle(color);
 ```
 
 </CodeTab>
@@ -274,6 +287,7 @@ This quickly gets tedious. We provide a shortcut:
 ```res
 let result = drawCircle(~color, ~radius=?payloadRadius)
 ```
+
 ```js
 var result = drawCircle(1, undefined);
 ```
@@ -294,6 +308,7 @@ let drawCircle = (~radius=1, ~color) => {
   startAt(radius, radius)
 }
 ```
+
 ```js
 function drawCircle(radiusOpt, color) {
   var radius = radiusOpt !== undefined ? radiusOpt : 1;
@@ -313,12 +328,13 @@ ReScript chooses the sane default of preventing a function to be called recursiv
 ```res example
 let rec neverTerminate = () => neverTerminate()
 ```
+
 ```js
 function neverTerminate(_param) {
-  while(true) {
+  while (true) {
     _param = undefined;
-    continue ;
-  };
+    continue;
+  }
 }
 ```
 
@@ -337,9 +353,10 @@ let rec listHas = (list, item) =>
   | list{a, ...rest} => a === item || listHas(rest, item)
   }
 ```
+
 ```js
 function listHas(_list, item) {
-  while(true) {
+  while (true) {
     var list = _list;
     if (!list) {
       return false;
@@ -348,8 +365,8 @@ function listHas(_list, item) {
       return true;
     }
     _list = list.tl;
-    continue ;
-  };
+    continue;
+  }
 }
 ```
 
@@ -368,19 +385,20 @@ Mutually recursive functions start like a single recursive function using the
 let rec callSecond = () => callFirst()
 and callFirst = () => callSecond()
 ```
+
 ```js
 function callSecond(_param) {
-  while(true) {
+  while (true) {
     _param = undefined;
-    continue ;
-  };
+    continue;
+  }
 }
 
 function callFirst(_param) {
-  while(true) {
+  while (true) {
     _param = undefined;
-    continue ;
-  };
+    continue;
+  }
 }
 ```
 
@@ -390,7 +408,7 @@ function callFirst(_param) {
 
 **Since 11.0**
 
-To partially apply a function, use the explicit `...` syntax. 
+To partially apply a function, use the explicit `...` syntax.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 ```res
@@ -400,13 +418,14 @@ let addFive = add(5, ...)
 
 ```js
 function add(a, b) {
-  return a + b | 0;
+  return (a + b) | 0;
 }
 
 function addFive(extra) {
-  return 5 + extra | 0;
+  return (5 + extra) | 0;
 }
 ```
+
 </CodeTab>
 
 ## Async/Await
@@ -420,16 +439,18 @@ The output looks like idiomatic JS:
 let getUserName = async (userId) => userId
 
 let greetUser = async (userId) => {
-  let name = await getUserName(userId)  
+  let name = await getUserName(userId)
   "Hello " ++ name ++ "!"
 }
 ```
+
 ```js
 async function greetUser(userId) {
   var name = await getUserName(userId);
   return "Hello " + name + "!";
 }
 ```
+
 </CodeTab>
 
 The return type of `getUser` is inferred to be `promise<string>`.
@@ -456,30 +477,31 @@ let someAsyncFn = async () => {
   }
 }
 ```
+
 ```js
-var SomeReScriptException = /* @__PURE__ */Caml_exceptions.create("Example.SomeReScriptException");
+var SomeReScriptException = /* @__PURE__ */ Caml_exceptions.create(
+  "Example.SomeReScriptException",
+);
 
 async function someAsyncFn(param) {
   var data;
   try {
     data = await somethingThatMightThrow(undefined);
-  }
-  catch (raw_exn){
+  } catch (raw_exn) {
     var exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
     if (exn.RE_EXN_ID === "JsError") {
-      return ;
+      return;
     }
     if (exn.RE_EXN_ID === SomeReScriptException) {
-      return ;
+      return;
     }
     throw exn;
   }
   return data;
 }
 ```
+
 </CodeTab>
-
-
 
 ## The ignore() Function
 

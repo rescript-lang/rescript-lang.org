@@ -3,14 +3,20 @@ type mode =
   | AutoFadeTransition(int) //milliseconds
 
 @react.component
-let make = (~className="", ~imgClassName="", ~imgSrcs: array<string>, ~mode=NoAuto) => {
+let make = (
+  ~className="",
+  ~imgClassName="",
+  ~imgSrcs: array<string>,
+  ~imgLoading=?,
+  ~mode=NoAuto,
+) => {
   let (index, setIndex) = React.useState(_ => 0)
 
   React.useEffect(() => {
     switch mode {
     | NoAuto => None
     | AutoFadeTransition(ms) =>
-      let timerId = setInterval(() => {
+      let timerId = setInterval2(~handler=() => {
         setIndex(
           prev => {
             if prev === imgSrcs->Array.length - 1 {
@@ -20,7 +26,7 @@ let make = (~className="", ~imgClassName="", ~imgSrcs: array<string>, ~mode=NoAu
             }
           },
         )
-      }, ms)
+      }, ~timeout=ms)
 
       Some(
         () => {
@@ -44,7 +50,7 @@ let make = (~className="", ~imgClassName="", ~imgSrcs: array<string>, ~mode=NoAu
       setIndex(_ => i)
     }
     <div key={src} onClick className="group flex items-center hover:cursor-pointer h-8 w-8">
-      <div className={`h-[1px] group-hover:bg-gray-40 w-full ${bgColor}`} />
+      <div className={`h-px group-hover:bg-gray-40 w-full ${bgColor}`} />
     </div>
   })
 
@@ -72,7 +78,7 @@ let make = (~className="", ~imgClassName="", ~imgSrcs: array<string>, ~mode=NoAu
         leave="transition-opacity duration-1000"
         leaveFrom="opacity-100"
         leaveTo="opacity-0">
-        <img className=imgClassName src />
+        <img className=imgClassName src loading=?imgLoading />
       </HeadlessUI.Transition>
     </div>
     <div className="flex space-x-2 mt-4"> {lineEls->React.array} </div>

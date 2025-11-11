@@ -17,8 +17,8 @@ let make = (~tag) => {
     // The api for docson is a little bit funky, so you need to check out the source to understand what it's doing
     // See: https://github.com/lbovet/docson/blob/master/src/index.js
     let _ =
-      Webapi.Fetch.fetch(segment)
-      ->Promise.then(Webapi.Fetch.Response.json)
+      fetch(segment)
+      ->Promise.then(WebAPI.Response.json)
       ->Promise.then(schema => {
         let _ = switch element.current->Nullable.toOption {
         | Some(_el) =>

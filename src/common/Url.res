@@ -81,6 +81,20 @@ let parse = (route: string): t => {
   {fullpath, base, version, pagepath}
 }
 
+@unboxed
+type storageKey =
+  | @as("manual_version") Manual
+  | @as("react_version") React
+  | @as("playground_version") Playground
+
+let getVersionFromStorage = (key: storageKey) => {
+  try {
+    WebAPI.Storage.getItem(window.localStorage, (key :> string))->Null.toOption
+  } catch {
+  | JsExn(_) => None
+  }
+}
+
 let getVersionString = url =>
   switch url.version {
   | Next => Constants.versions.next

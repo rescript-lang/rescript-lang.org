@@ -1,9 +1,5 @@
 {
-  "Overview": [
-    "introduction",
-    "installation",
-    "migrate-react"
-  ],
+  "Overview": ["introduction", "installation", "migrate-react"],
   "Main Concepts": [
     "elements-and-jsx",
     "rendering-elements",
@@ -16,7 +12,8 @@
     "styling",
     "router",
     "lazy-components",
-    "import-export-reactjs"
+    "import-export-reactjs",
+    "server-components"
   ],
   "Hooks & State Management": [
     "hooks-overview",
@@ -27,12 +24,6 @@
     "hooks-ref",
     "hooks-custom"
   ],
-  "Guides": [
-    "beyond-jsx",
-    "forwarding-refs",
-    "extensions-of-props"
-  ],
-  "Extra": [
-    "llms"
-  ]
+  "Guides": ["beyond-jsx", "forwarding-refs", "extensions-of-props"],
+  "Extra": ["llms"]
 }

@@ -2,19 +2,21 @@
 title: Components and Props
 description: "Basic concepts for components and props in ReScript & React"
 canonical: "/docs/react/latest/components-and-props"
+section: "Main Concepts"
+order: 3
 ---
 
 # Components and Props
 
 <Intro>
 
-Components let you split the UI into independent, reusable pieces, and think about each piece in isolation. This page provides an introduction to the idea of components. 
+Components let you split the UI into independent, reusable pieces, and think about each piece in isolation. This page provides an introduction to the idea of components.
 
 </Intro>
 
 ## What is a Component?
 
-A React component is a function describing a UI element that receives a `props` object as a parameter (data describing the dynamic parts of the UI) and returns a `React.element`. 
+A React component is a function describing a UI element that receives a `props` object as a parameter (data describing the dynamic parts of the UI) and returns a `React.element`.
 
 The nice thing about this concept is that you can solely focus on the input and output. The component function receives some data and returns some opaque `React.element` that is managed by the React framework to render your UI.
 
@@ -35,12 +37,13 @@ let make = () => {
   </div>
 }
 ```
+
 ```js
 import * as React from "react";
 
 function Greeting(props) {
   return JsxRuntime.jsx("div", {
-    children: "Hello ReScripters!"
+    children: "Hello ReScripters!",
   });
 }
 
@@ -53,7 +56,7 @@ var make = Greeting;
 
 We've created a `Greeting.res` file that contains a `make` function that doesn't receive any props (the function doesn't receive any parameters), and returns a `React.element` that represents `<div> Hello ReScripters! </div>` in the rendered DOM.
 
-You can also see in the the JS output that the function we created was directly translated into the pure JS version of a ReactJS component. Note how a  `<div>` transforms into a `JsxRuntime.jsx("div",...)` call in JavaScript.
+You can also see in the the JS output that the function we created was directly translated into the pure JS version of a ReactJS component. Note how a `<div>` transforms into a `JsxRuntime.jsx("div",...)` call in JavaScript.
 
 ## Defining Props
 
@@ -73,12 +76,19 @@ let make = (~title: string, ~visitorCount: int, ~children: React.element) => {
   </div>
 }
 ```
+
 ```js
 import * as React from "react";
 
 function Article(props) {
   var visitorCountMsg = "You are visitor number: " + String(props.visitorCount);
-  return React.createElement("div", undefined, React.createElement("div", undefined, props.title), React.createElement("div", undefined, visitorCountMsg), props.children);
+  return React.createElement(
+    "div",
+    undefined,
+    React.createElement("div", undefined, props.title),
+    React.createElement("div", undefined, visitorCountMsg),
+    props.children,
+  );
 }
 
 var make = Article;
@@ -114,7 +124,7 @@ function Greeting(props) {
 
 </CodeTab>
 
-**Note:** The `@react.component` attribute implicitly adds the last `()` parameter to our `make` function for us (no need to do it ourselves). 
+**Note:** The `@react.component` attribute implicitly adds the last `()` parameter to our `make` function for us (no need to do it ourselves).
 
 In JSX, you can apply optional props with some special syntax:
 
@@ -141,7 +151,7 @@ let name = Some("Andrea")
 var name = "Andrea";
 
 React.createElement(Greeting, {
-  name: name
+  name: name,
 });
 ```
 
@@ -155,12 +165,11 @@ Check out the corresponding [Arrays and Keys](./arrays-and-keys) and [Forwarding
 
 ### Handling Invalid Prop Names (e.g. keywords)
 
-Prop names like `type` (as in `<input type="text" />`) aren't syntactically valid; `type` is a reserved keyword in ReScript. Use `<input type_="text" />` instead. 
+Prop names like `type` (as in `<input type="text" />`) aren't syntactically valid; `type` is a reserved keyword in ReScript. Use `<input type_="text" />` instead.
 
 For `aria-*` use camelCasing, e.g., `ariaLabel`. For DOM components, we'll translate it to `aria-label` under the hood.
 
 For `data-*` this is a bit trickier; words with `-` in them aren't valid in ReScript. When you do want to write them, e.g., `<div data-name="click me" />`, check out the [React.cloneElement](./elements-and-jsx#cloning-elements) or [React.createDOMElementVariadic](./elements-and-jsx#creating-dom-elements) section.
-
 
 ## Children Props
 
@@ -197,13 +206,17 @@ function MyList(props) {
 }
 
 var MyList = {
-  make: MyList
+  make: MyList,
 };
 
-React.createElement(MyList, {
-    children: null
-  }, React.createElement("li", undefined, "Item 1"),
-    React.createElement("li", undefined, "Item 2"));
+React.createElement(
+  MyList,
+  {
+    children: null,
+  },
+  React.createElement("li", undefined, "Item 1"),
+  React.createElement("li", undefined, "Item 2"),
+);
 ```
 
 </CodeTab>
@@ -273,7 +286,6 @@ The best way to approach this kind of issue is by using props instead of childre
 
 **The best use-case for `children` is to pass down `React.element`s without any semantic order or implementation details!**
 
-
 ## @react decorators
 
 You might've wondered what `@react.component` actually does.
@@ -325,10 +337,7 @@ import * as JsxRuntime from "react/jsx-runtime";
 
 function Counter(props) {
   return JsxRuntime.jsxs("h1", {
-    children: [
-      props.title,
-      props.count
-    ]
+    children: [props.title, props.count],
   });
 }
 
@@ -339,10 +348,9 @@ let make = Counter;
 
 ## Props & Type Inference
 
-The ReScript type system is really good at inferring the prop types just by looking at its prop usage. 
+The ReScript type system is really good at inferring the prop types just by looking at its prop usage.
 
 For simple cases, well-scoped usage, or experimentation, it's still fine to omit type annotations:
-
 
 ```res example
 // Button.res
@@ -376,12 +384,17 @@ let make = () => {
   </div>
 }
 ```
+
 ```js
 var React = require("react");
-var Greeting = require("./Greeting.js")
+var Greeting = require("./Greeting.js");
 
 function App(Props) {
-  return React.createElement("div", undefined, React.createElement(Greeting.make, {}));
+  return React.createElement(
+    "div",
+    undefined,
+    React.createElement(Greeting.make, {}),
+  );
 }
 
 var make = App;
@@ -390,7 +403,6 @@ var make = App;
 </CodeTab>
 
 **Note:** React components are capitalized; primitive DOM elements like `div` or `button` are uncapitalized. More infos on the JSX specifics and code transformations can be found in our [JSX language manual section](/docs/manual/latest/jsx#capitalized-tag).
-
 
 ### Handwritten Components
 
@@ -403,8 +415,8 @@ For example:
 ```res example
 module Link = {
   type props = {href: string, children: React.element};
-  
-  let make = (props: props) => { 
+
+  let make = (props: props) => {
     <a href={props.href}>
      {props.children}
     </a>
@@ -413,13 +425,10 @@ module Link = {
 
 <Link href="/docs"> {React.string("Docs")} </Link>
 ```
+
 ```js
 function make(props) {
-  return React.createElement(
-    "a",
-    { href: props.href },
-    props.children
-  );
+  return React.createElement("a", { href: props.href }, props.children);
 }
 
 var Link = {
@@ -436,10 +445,9 @@ React.createElement(make, {
 
 More details on the `@react.component` decorator and its generated interface can be found in our [Beyond JSX](./beyond-jsx) page.
 
-
 ## Submodule Components
 
-We can also represent React components as submodules, which makes it very convenient to build more complex UI without the need to create multiple files for each composite component (that's probably only used by the parent component anyways): 
+We can also represent React components as submodules, which makes it very convenient to build more complex UI without the need to create multiple files for each composite component (that's probably only used by the parent component anyways):
 
 ```res example
 // src/Button.res
@@ -461,7 +469,6 @@ let make = (~children) => {
 
 The `Button.res` file defined above is now containing a `Label` component, that can also be used by other components, either by writing the fully qualified module name (`<Button.Label title="My Button"/>`) or by using a module alias to shortcut the full qualifier:
 
-
 ```res
 module Label = Button.Label
 
@@ -471,7 +478,6 @@ let content = <Label title="Test"/>
 ## Component Naming
 
 Because components are actually a pair of functions, they have to belong to a module to be used in JSX. It makes sense to use these modules for identification purposes as well. `@react.component` or `@react.componentWithProps` automatically adds the name for you based on the module you are in.
-
 
 ```res
 // File.res
@@ -492,7 +498,6 @@ module Nested = {
 ```
 
 If you need a dynamic name for higher-order components or you would like to set your own name you can use `React.setDisplayName(make, "NameThatShouldBeInDevTools")`.
-
 
 ## Tips & Tricks
 

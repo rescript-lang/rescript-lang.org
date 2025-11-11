@@ -14,8 +14,6 @@ type urlResource = {
   official: bool,
 }
 
-external unsafeToUrlResource: JSON.t => array<urlResource> = "%identity"
-
 type npmPackage = {
   name: string,
   version: string,
@@ -31,13 +29,12 @@ type npmPackage = {
 let packageAllowList: array<string> = []
 
 module Resource = {
-  type t = Npm(npmPackage) | Url(urlResource) | Outdated(npmPackage)
+  type t = Npm(npmPackage) | Outdated(npmPackage)
 
   let getId = (res: t) => {
     switch res {
     | Npm({name})
-    | Outdated({name})
-    | Url({name}) => name
+    | Outdated({name}) => name
     }
   }
 
@@ -56,7 +53,6 @@ module Resource = {
       } else {
         false
       }
-    | Url(_) => false
     }
   }
 
@@ -73,13 +69,12 @@ module Resource = {
     })
   }
 
-  let uniqueKeywords: array<string> => array<string> = %raw(`(keywords) => [...new Set(keywords)]`)
+  let uniqueKeywords = arr => arr->Set.fromArray->Set.toArray
 
   let isOfficial = (res: t) => {
     switch res {
     | Npm(pkg) | Outdated(pkg) =>
-      pkg.name === "rescript" || pkg.name->String.startsWith("@rescript/") || pkg.name === "gentype"
-    | Url(urlRes) => urlRes.official
+      pkg.name === "rescript" || pkg.name->String.startsWith("@rescript/")
     }
   }
 
@@ -103,41 +98,21 @@ module Resource = {
     ->Array.toSorted((a, b) => Float.compare(a["item"].searchScore, b["item"].searchScore))
   }
 
-  let applyUrlResourceSearch = (urls: array<urlResource>, pattern: string): array<
-    Fuse.match<urlResource>,
-  > => {
-    let fuseOpts = Fuse.Options.t(
-      ~shouldSort=true,
-      ~includeScore=true,
-      ~threshold=0.2,
-      ~ignoreLocation=true,
-      ~minMatchCharLength=1,
-      ~keys=["name", "keywords"],
-      (),
-    )
-
-    let fuser = Fuse.make(urls, fuseOpts)
-
-    fuser->Fuse.search(pattern)
-  }
-
   let applySearch = (resources: array<t>, pattern: string): array<t> => {
-    let (allNpms, allUrls, allOutDated) = Array.reduce(resources, ([], [], []), (acc, next) => {
-      let (npms, resources, outdated) = acc
+    let (allNpms, allOutDated) = Array.reduce(resources, ([], []), (acc, next) => {
+      let (npms, outdated) = acc
 
       switch next {
       | Npm(pkg) => Array.push(npms, pkg)->ignore
-      | Url(res) => Array.push(resources, res)->ignore
       | Outdated(pkg) => Array.push(outdated, pkg)->ignore
       }
-      (npms, resources, outdated)
+      (npms, outdated)
     })
 
     let filteredNpm = applyNpmSearch(allNpms, pattern)->Array.map(m => Npm(m["item"]))
-    let filteredUrls = applyUrlResourceSearch(allUrls, pattern)->Array.map(m => Url(m["item"]))
     let filteredOutdated = applyNpmSearch(allOutDated, pattern)->Array.map(m => Outdated(m["item"]))
 
-    Belt.Array.concatMany([filteredNpm, filteredUrls, filteredOutdated])
+    Belt.Array.concatMany([filteredNpm, filteredOutdated])
   }
 }
 
@@ -146,10 +121,6 @@ module Card = {
   let make = (~value: Resource.t, ~onKeywordSelect: option<string => unit>=?) => {
     let icon = switch value {
     | Npm(_) | Outdated(_) => <Icon.Npm className="w-8 opacity-50" />
-    | Url(_) =>
-      <span>
-        <Icon.Hyperlink className="w-8 opacity-50" />
-      </span>
     }
     let linkBox = switch value {
     | Npm(pkg) | Outdated(pkg) =>
@@ -173,18 +144,15 @@ module Card = {
         <a className="hover:text-fire" href={pkg.npmHref}> {React.string("NPM")} </a>
         {repoEl}
       </div>
-    | Url(_) => React.null
     }
 
     let titleHref = switch value {
     | Npm(pkg) | Outdated(pkg) => pkg.repositoryHref->Null.toOption->Option.getOr(pkg.npmHref)
-    | Url(res) => res.urlHref
     }
 
     let (title, description, keywords) = switch value {
     | Npm({name, description, keywords})
-    | Outdated({name, description, keywords})
-    | Url({name, description, keywords}) => (name, description, keywords)
+    | Outdated({name, description, keywords}) => (name, description, keywords)
     }
 
     <div className="bg-gray-5-tr py-6 rounded-lg p-4">
@@ -246,7 +214,6 @@ module Filter = {
     includeOfficial: bool,
     includeCommunity: bool,
     includeNpm: bool,
-    includeUrlResource: bool,
     includeOutdated: bool,
   }
 }
@@ -293,24 +260,15 @@ module InfoSidebar = {
             }}>
             {React.string("Community")}
           </Toggle>
-          <Toggle
-            enabled={filter.includeNpm}
-            toggle={() => {
-              setFilter(prev => {
-                {...prev, Filter.includeNpm: !filter.includeNpm}
-              })
-            }}>
-            {React.string("NPM package")}
-          </Toggle>
-          <Toggle
-            enabled={filter.includeUrlResource}
-            toggle={() => {
-              setFilter(prev => {
-                {...prev, Filter.includeUrlResource: !filter.includeUrlResource}
-              })
-            }}>
-            {React.string("URL resources")}
-          </Toggle>
+          // <Toggle
+          //   enabled={filter.includeNpm}
+          //   toggle={() => {
+          //     setFilter(prev => {
+          //       {...prev, Filter.includeNpm: !filter.includeNpm}
+          //     })
+          //   }}>
+          //   {React.string("NPM package")}
+          // </Toggle>
           <Toggle
             enabled={filter.includeOutdated}
             toggle={() => {
@@ -340,23 +298,13 @@ module InfoSidebar = {
 }
 
 type props = {
-  "packages": array<npmPackage>,
-  "urlResources": array<urlResource>,
-  "unmaintained": array<npmPackage>,
+  packages: array<npmPackage>,
+  unmaintained: array<npmPackage>,
 }
 
 type state =
   | All
   | Filtered(string) // search term
-
-let scrollToTop: unit => unit = %raw(`function() {
-  window.scroll({
-    top: 0,
-    left: 0,
-    behavior: 'smooth'
-  });
-}
-`)
 
 let default = (props: props) => {
   open Markdown
@@ -368,15 +316,13 @@ let default = (props: props) => {
     includeOfficial: true,
     includeCommunity: true,
     includeNpm: true,
-    includeUrlResource: true,
     includeOutdated: false,
   })
 
   let allResources = {
-    let npms = props["packages"]->Array.map(pkg => Resource.Npm(pkg))
-    let urls = props["urlResources"]->Array.map(res => Resource.Url(res))
-    let outdated = props["unmaintained"]->Array.map(pkg => Resource.Outdated(pkg))
-    Belt.Array.concatMany([npms, urls, outdated])
+    let npms = props.packages->Array.map(pkg => Resource.Npm(pkg))
+    let outdated = props.unmaintained->Array.map(pkg => Resource.Outdated(pkg))
+    Belt.Array.concatMany([npms, outdated])
   }
 
   let resources = switch state {
@@ -406,7 +352,6 @@ let default = (props: props) => {
     let (official, community) = acc
     let isResourceIncluded = switch next {
     | Npm(_) => filter.includeNpm
-    | Url(_) => filter.includeUrlResource
     | Outdated(_) => filter.includeOutdated && filter.includeNpm
     }
     if !isResourceIncluded {
@@ -420,7 +365,7 @@ let default = (props: props) => {
   })
 
   let onKeywordSelect = keyword => {
-    scrollToTop()
+    WebAPI.Window.scrollTo(window, ~options={left: 0.0, top: 0.0, behavior: Smooth})
     setState(_ => {
       Filtered(keyword)
     })
@@ -498,7 +443,7 @@ let default = (props: props) => {
             className="flex justify-between min-w-320 px-4 pt-16 lg:align-center w-full lg:px-8 pb-48">
             <MdxProvider components=MarkdownComponents.default>
               <main className="max-w-1280 w-full flex justify-center">
-                <div style={ReactDOM.Style.make(~maxWidth="44.0625rem", ())} className="w-full">
+                <div className="w-full max-w-176.25">
                   <H1> {React.string("Libraries & Bindings")} </H1>
                   <SearchBox
                     placeholder="Enter a search term, name, keyword, etc"
@@ -524,91 +469,117 @@ let default = (props: props) => {
   </>
 }
 
-type npmData = {
-  "objects": array<{
-    "searchScore": float,
-    "score": {
-      "final": float,
-      "detail": {"quality": float, "popularity": float, "maintenance": float},
-    },
-    "package": {
-      "name": string,
-      "keywords": array<string>,
-      "description": option<string>,
-      "version": string,
-      "links": {"npm": string, "repository": option<string>},
-    },
-  }>,
+let parsePkgs = data => {
+  open JSON
+
+  switch data {
+  | Object(dict{"objects": Array(arr)}) =>
+    arr->Array.filterMap(pkg => {
+      switch pkg {
+      | Object(dict{
+          "searchScore": Number(searchScore),
+          "score": Object(dict{"detail": Object(dict{"maintenance": Number(maintenanceScore)})}),
+          "package": Object(dict{
+            "name": String(name),
+            "keywords": Array(keywords),
+            "version": String(version),
+            "description": ?Some(String(description)),
+            "links": Object(dict{
+              "npm": String(npmHref),
+              "repository": ?Some(String(repositoryHref)),
+            }),
+          }),
+        }) =>
+        let keywords =
+          keywords
+          ->Array.filterMap(k => {
+            switch k {
+            | String(k) => Some(k)
+            | _ => None
+            }
+          })
+          ->Resource.filterKeywords
+          ->Resource.uniqueKeywords
+
+        // Convert a repository url from SSH to HTTPS.
+        let repositoryHref = switch repositoryHref {
+        | href if String.startsWith(href, "git+ssh") => String.replace(href, "git+ssh:", "https:")
+        | href if String.startsWith(href, "git+") => String.replace(href, "git+", "")
+        | href if String.startsWith(href, "git:") => String.replace(href, "git:", "https:")
+        | href => href
+        }
+
+        Some({
+          name,
+          version,
+          keywords,
+          description,
+          repositoryHref: repositoryHref->Null.make,
+          npmHref,
+          searchScore,
+          maintenanceScore,
+        })
+      | _ => None
+      }
+    })
+  | _ => []
+  }
 }
-
-module Response = {
-  type t
-  @send external json: t => promise<npmData> = "json"
-}
-
-@val external fetchNpmPackages: string => promise<Response.t> = "fetch"
-
-let parsePkgs = data =>
-  Array.map(data["objects"], item => {
-    let pkg = item["package"]
-    {
-      name: pkg["name"],
-      version: pkg["version"],
-      keywords: Resource.filterKeywords(pkg["keywords"])->Resource.uniqueKeywords,
-      description: Option.getOr(pkg["description"], ""),
-      repositoryHref: Null.fromOption(pkg["links"]["repository"]),
-      npmHref: pkg["links"]["npm"],
-      searchScore: item["searchScore"],
-      maintenanceScore: item["score"]["detail"]["maintenance"],
-    }
-  })
 
 let getStaticProps: Next.GetStaticProps.t<props, unit> = async _ctx => {
   let baseUrl = "https://registry.npmjs.org/-/v1/search?text=keywords:rescript&size=250&maintenance=1.0&popularity=0.5&quality=0.9"
 
   let (one, two, three) = await Promise.all3((
-    fetchNpmPackages(baseUrl),
-    fetchNpmPackages(baseUrl ++ "&from=250"),
-    fetchNpmPackages(baseUrl ++ "&from=500"),
+    fetch(baseUrl),
+    fetch(baseUrl ++ "&from=250"),
+    fetch(baseUrl ++ "&from=500"),
   ))
 
+  let responseToOption = async response => {
+    try {
+      let json = await response->WebAPI.Response.json
+      Some(json)
+    } catch {
+    | _ =>
+      Console.error2("Failed to parse response", response)
+      None
+    }
+  }
+
   let (data1, data2, data3) = await Promise.all3((
-    one->Response.json,
-    two->Response.json,
-    three->Response.json,
+    one->responseToOption,
+    two->responseToOption,
+    three->responseToOption,
   ))
 
   let unmaintained = []
 
   let pkges =
-    parsePkgs(data1)
-    ->Array.concat(parsePkgs(data2))
-    ->Array.concat(parsePkgs(data3))
+    [data1, data2, data3]
+    ->Array.filterMap(d =>
+      switch d {
+      | Some(d) => Some(parsePkgs(d))
+      | None => None
+      }
+    )
+    ->Array.flat
     ->Array.filter(pkg => {
       if packageAllowList->Array.includes(pkg.name) {
         true
       } else if pkg.name->String.includes("reason") {
         false
       } else if pkg.maintenanceScore < 0.3 {
-        let _ = unmaintained->Array.push(pkg)
+        unmaintained->Array.push(pkg)
         false
       } else {
         true
       }
     })
 
-  let index_data_dir = Node.Path.join2(Node.Process.cwd(), "./data")
-  let urlResources =
-    Node.Path.join2(index_data_dir, "packages_url_resources.json")
-    ->Node.Fs.readFileSync
-    ->JSON.parseExn
-    ->unsafeToUrlResource
-
   {
     "props": {
-      "packages": pkges,
-      "unmaintained": unmaintained,
-      "urlResources": urlResources,
+      packages: pkges,
+      unmaintained,
     },
   }
 }

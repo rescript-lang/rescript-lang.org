@@ -2,6 +2,8 @@
 title: Rendering Elements
 description: "How to render React elements to the DOM"
 canonical: "/docs/react/latest/rendering-elements"
+section: "Main Concepts"
+order: 2
 ---
 
 # Rendering Elements
@@ -25,7 +27,7 @@ Unlike browser DOM elements, React elements are plain objects, and are cheap to 
 Let's assume we've got an HTML file that contains a `div` like this:
 
 ```html
-<div id="root"/>
+<div id="root" />
 ```
 
 We call this a “root” DOM node because everything inside it will be managed by React DOM.
@@ -33,6 +35,7 @@ We call this a “root” DOM node because everything inside it will be managed 
 Plain React applications usually have a single root DOM node. If you are integrating React into an existing app, you may have as many isolated root DOM nodes as you like.
 
 To render our React application into the `root` div, we need to do two things:
+
 - Find our DOM node with `ReactDOM.querySelector`
 - Render our React element to our queried `Dom.element` with `ReactDOM.render`
 
@@ -51,6 +54,7 @@ switch ReactDOM.querySelector("#root") {
 | None => ()
 }
 ```
+
 ```js
 var root = document.querySelector("#root");
 

@@ -45,7 +45,7 @@ fix the build issue before benchmarking
     time = {
       real: parseFloat(match[1]),
       user: parseFloat(match[2]),
-      sys: parseFloat(match[3])
+      sys: parseFloat(match[3]),
     };
   }
 
@@ -53,7 +53,7 @@ fix the build issue before benchmarking
 };
 
 const getFileMetrics = () => {
-  const paths = bsconfig.sources.map(source => {
+  const paths = bsconfig.sources.map((source) => {
     if (typeof source === "string") {
       return source;
     }
@@ -75,7 +75,7 @@ const getFileMetrics = () => {
     blankLines: out.ReasonML.blank,
     commentLines: out.ReasonML.comment,
     codeLines: out.ReasonML.code,
-    totalLines: out.header.n_lines
+    totalLines: out.header.n_lines,
   };
 };
 
@@ -103,14 +103,13 @@ function main() {
     fileMetrics,
     buildTime,
     results: {
-      locPerSec
-    }
+      locPerSec,
+    },
   };
 
   if (asJson) {
     console.log(JSON.stringify(result, null, 2));
   }
-
 
   // TODO: maybe add human readable format as an option?
 }

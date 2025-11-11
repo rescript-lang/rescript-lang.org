@@ -46,7 +46,7 @@ let makeBreadcrumbs = (~prefix: Url.breadcrumb, route: string): list<Url.breadcr
   let url = route->Url.parse
 
   let (_, rest) = // Strip the "api" part of the url before creating the rest of the breadcrumbs
-  Array.sliceToEnd(url.pagepath, ~start=1)->Array.reduce((prefix.href, []), (acc, path) => {
+  Array.slice(url.pagepath, ~start=1)->Array.reduce((prefix.href, []), (acc, path) => {
     let (baseHref, ret) = acc
 
     let href = baseHref ++ ("/" ++ path)
@@ -98,7 +98,6 @@ let make = (
 
   let preludeSection =
     <div className="flex justify-between text-fire font-medium items-baseline">
-      {React.string(title)}
       {switch version {
       | Some(version) =>
         let onChange = evt => {
@@ -106,6 +105,7 @@ let make = (
           ReactEvent.Form.preventDefault(evt)
           let version = (evt->ReactEvent.Form.target)["value"]
           let url = Url.parse(route)
+          WebAPI.Storage.setItem(localStorage, ~key=(Url.Manual :> string), ~value=version)
 
           let targetUrl =
             "/" ++

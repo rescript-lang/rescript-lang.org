@@ -18,7 +18,6 @@ bs-platform@6.1.0-dev.6`).
 A detailed list of changes is available
 [here](https://github.com/BuckleScript/bucklescript/blob/master/Changes.md#510)
 
-
 Some feature enhancements are described as follows:
 
 ## Introducing `bsc` to public
@@ -81,12 +80,11 @@ can be loaded into chrome via `chrome://tracing`.
 
 Below is a profile image that shows the tracing graph for a large project:
 
-<img src="https://bucklescript.github.io/img/profile-1.png"/>
+<img src="https://bucklescript.github.io/img/profile-1.png" />
 
 And you can zoom-in to see more details:
 
-<img src="https://bucklescript.github.io/img/profile-2.png"/>
-
+<img src="https://bucklescript.github.io/img/profile-2.png" />
 
 ## Support of ppx with arguments
 
@@ -95,20 +93,20 @@ We extended the schema to support ppx with arguments:
 ```json
 {
   "ppx-specs": {
-      "type": "array",
-      "items": {
-          "oneOf" : [
-              {
-                  "type": "string" // single command
-              },
-              {
-                  "type" : "array", // command with args
-                  "items": {
-                      "type" : "string"
-                  }
-              }
-          ]
-      }
+    "type": "array",
+    "items": {
+      "oneOf": [
+        {
+          "type": "string" // single command
+        },
+        {
+          "type": "array", // command with args
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
+    }
   }
 }
 ```
@@ -126,14 +124,14 @@ Yes, performance is increased with each release!
 Quite a lot of work was spent in house-keeping this release. We changed the
 internal data representation to a more compact format. Here is the result of
 using `bstracing` to show a comparison of clean building a large project around
-(2 * 5 * 5 * 5 * 5 = 1250 files):
+(2 _ 5 _ 5 _ 5 _ 5 = 1250 files):
 
 Version 5.0.6 (around 4.8s)
 
-<img src="https://bucklescript.github.io/img/profile-5.png"/>
+<img src="https://bucklescript.github.io/img/profile-5.png" />
 
 Version 5.1.0 (around 4.2s)
 
-<img src="https://bucklescript.github.io/img/profile-4.png"/>
+<img src="https://bucklescript.github.io/img/profile-4.png" />
 
 Happy hacking!

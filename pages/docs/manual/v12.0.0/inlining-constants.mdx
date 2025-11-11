@@ -2,6 +2,8 @@
 title: "Inlining Constants"
 description: "Inlining constants"
 canonical: "/docs/manual/v12.0.0/inlining-constants"
+section: "JavaScript Interop"
+order: 10
 ---
 
 # Inlining Constants
@@ -9,16 +11,16 @@ canonical: "/docs/manual/v12.0.0/inlining-constants"
 Sometimes, in the JavaScript output, you might want a certain value to be forcefully inlined. For example:
 
 ```js
-if (process.env.mode === 'development') {
-  console.log("Dev-only code here!")
+if (process.env.mode === "development") {
+  console.log("Dev-only code here!");
 }
 ```
 
 The reason is that your JavaScript bundler (e.g. Webpack) might turn that into:
 
 ```js
-if ('production' === 'development') {
-  console.log("Dev-only code here!")
+if ("production" === "development") {
+  console.log("Dev-only code here!");
 }
 ```
 
@@ -37,6 +39,7 @@ if (process["env"]["mode"] === mode) {
   Console.log("Dev-only code here!")
 }
 ```
+
 ```js
 var mode = "development";
 
@@ -61,6 +64,7 @@ if (process["env"]["mode"] === mode) {
   Console.log("Dev-only code here!")
 }
 ```
+
 ```js
 if (process.env.mode === "development") {
   console.log("Dev-only code here!");

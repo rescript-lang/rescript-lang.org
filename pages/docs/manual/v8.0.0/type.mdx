@@ -7,6 +7,7 @@ canonical: "/docs/manual/latest/type"
 # Type
 
 Types are the highlight of ReScript! They are:
+
 - **Strong**. A type can't change into another type. In JavaScript, your variable's type might change when the code runs (aka at runtime). E.g. a `number` variable might change into a `string` sometimes. This is an anti-feature; it makes the code much harder to understand when reading or debugging.
 - **Static**. ReScript types are erased after compilation and don't exist at runtime. Never worry about your types dragging down performance. You don't need type info during runtime; we report all the information (especially all the type errors) during compile time. Catch the bugs earlier!
 - **Sound**. This is our biggest differentiator versus many other typed languages that compile to JavaScript. Our type system is guaranteed to **never** be wrong. Most type systems make a guess at the type of a value and show you a type in your editor that's sometime incorrect. We don't do that. We believe that a type system that is sometime incorrect can end up being dangerous due to expectation mismatches.
@@ -25,14 +26,16 @@ This let-binding doesn't contain any written type:
 let score = 10;
 let add = (a, b) => a + b;
 ```
+
 ```ml
 let score = 10
 let add a b = a + b
 ```
+
 ```js
 var score = 10;
 function add(a, b) {
-  return a + b | 0;
+  return (a + b) | 0;
 }
 ```
 
@@ -49,9 +52,11 @@ But you can also optionally write down the type, aka annotate your value:
 ```re
 let score: int = 10;
 ```
+
 ```ml
 let score: int = 10
 ```
+
 ```js
 var score = 10;
 ```
@@ -71,6 +76,7 @@ let myInt = (5: int) + (4: int);
 let add = (x: int, y: int) : int => x + y;
 let drawCircle = (~radius as r: int): circleType => /* code here */;
 ```
+
 ```ml
 let myInt = 5
 let myInt: int = 5
@@ -78,10 +84,11 @@ let myInt = (5 : int) + (4 : int)
 let add (x : int) (y : int) = (x + y : int)
 let drawCircle ~radius:(r : int) : circleType = (* code here *)
 ```
+
 ```js
 var myInt = 9;
 function add(x, y) {
-  return x + y | 0;
+  return (x + y) | 0;
 }
 function drawCircle(r) {
   /* code here */
@@ -102,10 +109,12 @@ You can refer to a type by a different name. They'll be equivalent:
 type scoreType = int;
 let x: scoreType = 10;
 ```
+
 ```ml
 type scoreType = int
 let x: scoreType = 10
 ```
+
 ```js
 var x = 10;
 ```
@@ -128,6 +137,7 @@ type floatCoordinates = (float, float, float);
 let a: intCoordinates = (10, 20, 20);
 let b: floatCoordinates = (10.5, 20.5, 20.5);
 ```
+
 ```ml
 (* this is a tuple of 3 items, explained next *)
 type intCoordinates = (int, int, int)
@@ -136,6 +146,7 @@ type floatCoordinates = (float, float, float)
 let a: intCoordinates = (10, 20, 20)
 let b: floatCoordinates = (10.5, 20.5, 20.5)
 ```
+
 ```js
 var a = [10, 20, 20];
 var b = [10.5, 20.5, 20.5];
@@ -153,12 +164,14 @@ type coordinates('a) = ('a, 'a, 'a);
 let a: coordinates(int) = (10, 20, 20);
 let b: coordinates(float) = (10.5, 20.5, 20.5);
 ```
+
 ```ml
 type 'a coordinates = ('a * 'a * 'a)
 
 let a: int coordinates = (10, 20, 20)
 let b: float coordinates = (10.5, 20.5, 20.5)
 ```
+
 ```js
 var a = [10, 20, 20];
 var b = [10.5, 20.5, 20.5];
@@ -173,9 +186,11 @@ Note that the above codes are just contrived examples for illustration purposes.
 ```re
 let buddy = (10, 20, 20);
 ```
+
 ```ml
 let buddy = (10, 20, 20)
 ```
+
 ```js
 var buddy = [10, 20, 20];
 ```
@@ -192,10 +207,12 @@ Type arguments appear in many places. Our `array('a)` type is such a type that r
 // inferred as `array(string)`
 let greetings = [|"hello", "world", "how are you"|];
 ```
+
 ```ml
 (* inferred as `string array` *)
 let greetings = [|"hello"; "world"; "how are you"|]
 ```
+
 ```js
 var greetings = ["hello", "world", "how are you"];
 ```
@@ -225,6 +242,7 @@ let payloadResults: myPayloadResults(string) = [|
   Error("Something wrong happened!")
 |];
 ```
+
 ```ml
 type ('a, 'b) result =
   | Ok of 'a
@@ -242,20 +260,21 @@ let payloadResults: string myPayloadResults = [|
   Error("Something wrong happaned!");
 |]
 ```
+
 ```js
 var payloadResults = [
   {
-    TAG: /* Ok */0,
-    _0: {data: "hi"}
+    TAG: /* Ok */ 0,
+    _0: { data: "hi" },
   },
   {
-    TAG: /* Ok */0,
-    _0: {data: "bye"}
+    TAG: /* Ok */ 0,
+    _0: { data: "bye" },
   },
   {
-    TAG: /* Error */1,
-    _0: "Something wrong happened!"
-  }
+    TAG: /* Error */ 1,
+    _0: "Something wrong happened!",
+  },
 ];
 ```
 
@@ -273,12 +292,14 @@ type person = {
   friends: array(person)
 }
 ```
+
 ```ml
 type person = {
   name: string;
   friends: person array;
 }
 ```
+
 ```js
 // Empty output
 ```
@@ -297,10 +318,12 @@ Types can also be _mutually_ recursive through `and`:
 type student = {taughtBy: teacher}
 and teacher = {students: array(student)};
 ```
+
 ```ml
 type student = {taughtBy: teacher}
 and teacher = {students: student array}
 ```
+
 ```js
 // Empty output
 ```
@@ -316,9 +339,11 @@ ReScript's type system is robust and does not allow dangerous, unsafe stuff like
 ```re
 external myShadyConversion: myType1 => myType2 = "%identity";
 ```
+
 ```ml
 external myShadyConversion: myType1 -> myType2 = "%identity"
 ```
+
 ```js
 // Empty output
 ```
@@ -334,11 +359,13 @@ external convertToFloat : int => float = "%identity";
 let age = 10;
 let gpa = 2.1 +. convertToFloat(age);
 ```
+
 ```ml
 external convertToFloat : int -> float = "%identity"
 let age = 10
 let gpa = 2.1 +. (convertToFloat age)
 ```
+
 ```js
 var age = 10;
 var gpa = 2.1 + 10;

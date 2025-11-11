@@ -30,11 +30,13 @@ type person = {
   "name": string
 };
 ```
+
 ```re
 type person = <
   age :int;
   name :string> Js.t
 ```
+
 ```js
 // Empty output
 ```
@@ -55,16 +57,18 @@ let me = {
   "name": "Big ReScript"
 };
 ```
+
 ```ml
 let me = [%bs.obj {
   age = 5;
   name = "Big ReScript";
 }]
 ```
+
 ```js
 var me = {
-  "age": 5,
-  "name": "Big ReScript"
+  age: 5,
+  name: "Big ReScript",
 };
 ```
 
@@ -84,6 +88,7 @@ let me = {
   "age": "hello!" // age is a string. No error.
 };
 ```
+
 ```ml
 type person = <
   age :int
@@ -93,9 +98,10 @@ let me = [%bs.obj {
   age = "hello!" (* age is a string. No error. *)
 }]
 ```
+
 ```js
 var me = {
-  "age": "hello!"
+  age: "hello!",
 };
 ```
 
@@ -110,6 +116,7 @@ let me: person = {
   "age": "hello!"
 }
 ```
+
 ```ml
 let me: person = [%bs.obj {
   age = "hello!"
@@ -127,9 +134,11 @@ Now the type system will error properly.
 ```re
 let age = me##age;
 ```
+
 ```ml
 let age = me##age
 ```
+
 ```js
 var age = me["age"];
 ```
@@ -151,6 +160,7 @@ type student = {
 
 student1##name = "Mary";
 ```
+
 ```ml
 type student = <
   age: int [@bs.set];
@@ -160,6 +170,7 @@ external student1: student = "student1" [@@bs.module "MyJSFile"]
 
 student1##name = "Mary"
 ```
+
 ```js
 var MyJSFile = require("MyJSFile");
 MyJSFile.student1.name = "Mary";
@@ -189,6 +200,7 @@ let loc = document##location;
 // set a property
 document##location##href = "rescript-lang.org";
 ```
+
 ```ml
 // The type of document is just some random type 'a
 // that we won't bother to specify
@@ -205,8 +217,9 @@ let loc = document##location
 // set a property
 document##location##href = "rescript-lang.org"
 ```
+
 ```js
-document.addEventListener("mouseup", function(_event) {
+document.addEventListener("mouseup", function (_event) {
   console.log("clicked!");
 });
 var loc = document.location;

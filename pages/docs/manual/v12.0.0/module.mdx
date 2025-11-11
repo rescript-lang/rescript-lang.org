@@ -2,6 +2,8 @@
 title: "Module"
 description: "ReScript modules, module signatures and interface files"
 canonical: "/docs/manual/v12.0.0/module"
+section: "Language Features"
+order: 24
 ---
 
 # Module
@@ -31,6 +33,7 @@ module School = {
     }
 }
 ```
+
 ```js
 function getProfession(person) {
   if (person) {
@@ -41,8 +44,8 @@ function getProfession(person) {
 }
 
 var School = {
-  person1: /* Teacher */0,
-  getProfession: getProfession
+  person1: /* Teacher */ 0,
+  getProfession: getProfession,
 };
 ```
 
@@ -57,8 +60,9 @@ using the `.` notation. This demonstrates modules' utility for namespacing.
 let anotherPerson: School.profession = School.Teacher
 Console.log(School.getProfession(anotherPerson)) /* "A teacher" */
 ```
+
 ```js
-var anotherPerson = /* Teacher */0;
+var anotherPerson = /* Teacher */ 0;
 console.log("A teacher");
 ```
 
@@ -77,13 +81,14 @@ module MyModule = {
 
 let message = MyModule.NestedModule.message
 ```
+
 ```js
 var NestedModule = {
-  message: message
+  message: message,
 };
 
 var MyModule = {
-  NestedModule: NestedModule
+  NestedModule: NestedModule,
 };
 
 var message = MyModule.NestedModule.message;
@@ -101,6 +106,7 @@ module's name. Instead of writing:
 ```res
 let p = School.getProfession(School.person1)
 ```
+
 ```js
 var p = School.getProfession(School.person1);
 ```
@@ -115,6 +121,7 @@ We can write:
 open School
 let p = getProfession(person1)
 ```
+
 ```js
 var p = School.getProfession(School.person1);
 ```
@@ -134,6 +141,7 @@ let p = {
 }
 /* School's content isn't visible here anymore */
 ```
+
 ```js
 var p = School.getProfession(School.person1);
 ```
@@ -185,7 +193,7 @@ var user2 = "Franz";
 
 var User = {
   user1: user1,
-  user2: user2
+  user2: user2,
 };
 ```
 
@@ -215,6 +223,7 @@ module ActualComponent = {
   let render = () => defaultGreeting ++ " " ++ getAudience(~excited=true)
 }
 ```
+
 ```js
 function getAudience(excited) {
   if (excited) {
@@ -226,7 +235,7 @@ function getAudience(excited) {
 
 var BaseComponent = {
   defaultGreeting: "Hello",
-  getAudience: getAudience
+  getAudience: getAudience,
 };
 
 var defaultGreeting = "Hey";
@@ -238,7 +247,7 @@ function render(param) {
 var ActualComponent = {
   getAudience: getAudience,
   defaultGreeting: defaultGreeting,
-  render: render
+  render: render,
 };
 ```
 
@@ -273,6 +282,7 @@ module type EstablishmentType = {
   let getProfession: profession => string
 }
 ```
+
 ```js
 // Empty output
 ```
@@ -317,6 +327,7 @@ module Company: EstablishmentType = {
   let person2 = ...
 }
 ```
+
 ```js
 function getProfession(person) {
   ...
@@ -357,6 +368,7 @@ module type ActualComponent = {
   let render: unit => string
 }
 ```
+
 ```js
 // Empty output
 ```
@@ -378,6 +390,7 @@ module type MyList = {
   let myListFun: list<'a> => list<'a>
 }
 ```
+
 ```js
 // Empty output
 ```
@@ -399,6 +412,7 @@ in the ecosystem to also document the public API of their corresponding modules.
 type state = int
 let render = (str) => str
 ```
+
 ```js
 function render(str) {
   return str;
@@ -417,7 +431,7 @@ let render: string => string
 
 Modules can be passed to functions! It would be the equivalent of passing a file
 as a first-class item. However, modules are at a different "layer" of the
-language than other common concepts, so we can't pass them to *regular*
+language than other common concepts, so we can't pass them to _regular_
 functions. Instead, we pass them to special functions called "functors".
 
 The syntax for defining and using functors is very much like the syntax
@@ -425,7 +439,7 @@ for defining and using regular functions. The primary differences are:
 
 - Functors use the `module` keyword instead of `let`.
 - Functors take modules as arguments and return a module.
-- Functors *require* annotating arguments.
+- Functors _require_ annotating arguments.
 - Functors must start with a capital letter (just like modules/signatures).
 
 Here's an example `MakeSet` functor, that takes in a module of the type
@@ -455,13 +469,14 @@ module MakeSet = (Item: Comparable) => {
     }
 }
 ```
+
 ```js
 var List = require("./stdlib/list.js");
 
 function MakeSet(Item) {
-  var add = function(currentSet, newItem) {
+  var add = function (currentSet, newItem) {
     if (
-      List.exists(function(x) {
+      List.exists(function (x) {
         return Item.equal(x, newItem);
       }, currentSet)
     ) {
@@ -497,6 +512,7 @@ module IntPair = {
 /* IntPair abides by the Comparable signature required by MakeSet */
 module SetOfIntPairs = MakeSet(IntPair)
 ```
+
 ```js
 function equal(param, param$1) {
   if (param[0] === param$1[0]) {
@@ -547,6 +563,7 @@ module MakeSet: MakeSetType = (Item: Comparable) => {
   ...
 }
 ```
+
 ```js
 // Empty output
 ```

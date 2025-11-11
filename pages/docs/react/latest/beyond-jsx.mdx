@@ -2,6 +2,8 @@
 title: Beyond JSX
 description: "Details on how to use ReScript and React without JSX"
 canonical: "/docs/react/latest/beyond-jsx"
+section: "Guides"
+order: 1
 ---
 
 # Beyond JSX
@@ -18,7 +20,7 @@ JSX is a syntax sugar that allows us to use React components in an HTML like man
 
 ## Component Types
 
-A plain React component is defined as a `('props) => React.element` function. You can also express a component more efficiently with our shorthand type `React.component<'props>`. 
+A plain React component is defined as a `('props) => React.element` function. You can also express a component more efficiently with our shorthand type `React.component<'props>`.
 
 Here are some examples on how to define your own component types (often useful when interoping with existing JS code, or passing around components):
 
@@ -32,6 +34,7 @@ type friendComp = friend => React.element
 type props = {padding: string, children: React.element}
 type containerComp = React.component<props>
 ```
+
 The types above are pretty low level (basically the JS representation of a React component), but since ReScript React has its own ways of defining React components in a more language specific way, let's have a closer look on the anatomy of such a construct.
 
 ## JSX Component Interface
@@ -66,6 +69,7 @@ module Friend = {
   }
 }
 ```
+
 ```res example
 module Friend = {
   type props<'name, 'children> = {
@@ -78,18 +82,16 @@ module Friend = {
   }
 }
 ```
+
 ```js
 function Playground$Friend(props) {
   return JsxRuntime.jsxs("div", {
-              children: [
-                props.name,
-                props.children
-              ]
-            });
+    children: [props.name, props.children],
+  });
 }
 
 var Friend = {
-  make: Playground$Friend
+  make: Playground$Friend,
 };
 ```
 
@@ -103,7 +105,6 @@ In the expanded output:
 ### Special Case React.forwardRef
 
 The `@react.component` decorator also works for `React.forwardRef` calls:
-
 
 <CodeTab labels={["Decorated", "Expanded"]}>
 
@@ -140,13 +141,14 @@ So now that we know how the ReScript React component transformation works, let's
 
 ## JSX Under the Hood
 
-Whenever we are using JSX with a custom component ("capitalized JSX"), we are actually using `React.createElement` to create a new element. Here is an example of a React component without children: 
+Whenever we are using JSX with a custom component ("capitalized JSX"), we are actually using `React.createElement` to create a new element. Here is an example of a React component without children:
 
 <CodeTab labels={["JSX", "Without JSX", "JS Output"]}>
 
 ```res example
 let _ = <Friend name="Fred" age=20 />
 ```
+
 ```res example
 // classic
 React.createElement(Friend.make, {name: "Fred", age:20})
@@ -154,6 +156,7 @@ React.createElement(Friend.make, {name: "Fred", age:20})
 // automatic
 React.jsx(Friend.make, {name: "Fred", age: 20})
 ```
+
 ```js
 JsxRuntime.jsx(Playground$Friend, { name: "Fred", age: 20 });
 ```
@@ -194,10 +197,9 @@ JsxRuntime.jsx(Container, { width: 200, children: null }, "Hello", "World");
 
 Note that the `children: React.null` field has no relevance since React will only care about the children array passed as a third argument.
 
-
 ### Dom Elements
 
-"Uncapitalized JSX" expressions are treated as DOM elements and will be converted to `ReactDOM.createDOMElementVariadic` calls: 
+"Uncapitalized JSX" expressions are treated as DOM elements and will be converted to `ReactDOM.createDOMElementVariadic` calls:
 
 <CodeTab labels={["JSX", "Without JSX", "JS Output"]}>
 
@@ -243,15 +245,19 @@ ReactDOM.jsx("div", {title: "test", children: ?ReactDOM.someElement(ReactDOM.jsx
 
 ```js
 JsxRuntime.jsx("div", {
-      children: JsxRuntime.jsx("span", {}),
-      title: "test"
-    });
+  children: JsxRuntime.jsx("span", {}),
+  title: "test",
+});
 ```
 
 ```js
-React.createElement("div", {
-      title: "test"
-    }, React.createElement("span", undefined));
+React.createElement(
+  "div",
+  {
+    title: "test",
+  },
+  React.createElement("span", undefined),
+);
 ```
 
 </CodeTab>

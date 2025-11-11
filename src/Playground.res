@@ -1,6 +1,7 @@
 %%raw(`
 if (typeof window !== "undefined" && typeof window.navigator !== "undefined") {
   require("codemirror/mode/javascript/javascript");
+  require("codemirror/keymap/vim");
   require("codemirror/addon/scroll/simplescrollbars");
   require("plugins/cm-rescript-mode");
   require("plugins/cm-reason-mode");
@@ -12,6 +13,38 @@ module Api = RescriptCompilerApi
 
 type layout = Column | Row
 type tab = JavaScript | Output | Problems | Settings
+
+module JsxCompilation = {
+  type t =
+    | Plain
+    | PreserveJsx
+
+  let getLabel = (mode: t): string =>
+    switch mode {
+    | Plain => "Plain JS functions"
+    | PreserveJsx => "Preserve JSX"
+    }
+
+  let toBool = (mode: t): bool =>
+    switch mode {
+    | Plain => false
+    | PreserveJsx => true
+    }
+
+  let fromBool = (bool): t => bool ? PreserveJsx : Plain
+}
+
+module ExperimentalFeatures = {
+  type t = LetUnwrap
+
+  let getLabel = (feature: t): string =>
+    switch feature {
+    | LetUnwrap => "let?"
+    }
+
+  let list = [LetUnwrap]
+}
+
 let breakingPoint = 1024
 
 module DropdownSelect = {
@@ -30,23 +63,23 @@ module DropdownSelect = {
   }
 }
 
-module ToggleSelection = {
-  module SelectionOption = {
-    @react.component
-    let make = (~label, ~isActive, ~disabled, ~onClick) => {
-      <button
-        className={"mr-1 px-2 py-1 rounded inline-block " ++ if isActive {
-          "bg-fire text-white font-bold"
-        } else {
-          "bg-gray-80 opacity-50 hover:opacity-80"
-        }}
-        onClick
-        disabled>
-        {React.string(label)}
-      </button>
-    }
+module SelectionOption = {
+  @react.component
+  let make = (~label, ~isActive, ~disabled, ~onClick) => {
+    <button
+      className={"mr-1 px-2 py-1 rounded inline-block " ++ if isActive {
+        "bg-fire text-white font-bold"
+      } else {
+        "bg-gray-80 opacity-50 hover:opacity-80"
+      }}
+      onClick
+      disabled>
+      {React.string(label)}
+    </button>
   }
+}
 
+module ToggleSelection = {
   @react.component
   let make = (
     ~onChange: 'a => unit,
@@ -352,30 +385,20 @@ module ResultPane = {
 }
 
 module WarningFlagsWidget = {
-  @set external _scrollTop: (Dom.element, int) => unit = "scrollTop"
-  @send external focus: Dom.element => unit = "focus"
-
-  @send external blur: Dom.element => unit = "blur"
-
-  @get external scrollHeight: Dom.element => int = "scrollHeight"
-  @get external clientHeight: Dom.element => int = "clientHeight"
-  @get external scrollTop: Dom.element => int = "scrollTop"
-  @get external offsetTop: Dom.element => int = "offsetTop"
-  @get external offsetHeight: Dom.element => int = "offsetHeight"
-
-  @set external setScrollTop: (Dom.element, int) => unit = "scrollTop"
-
   // Inspired by MUI (who got inspired by WAI best practise examples)
   // https://github.com/mui-org/material-ui/blob/next/packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js#L327
-  let scrollToElement = (~parent: Dom.element, element: Dom.element): unit =>
-    if parent->scrollHeight > parent->clientHeight {
-      let scrollBottom = parent->clientHeight + parent->scrollTop
-      let elementBottom = element->offsetTop + element->offsetHeight
+  let scrollToElement = (
+    ~parent: WebAPI.DOMAPI.htmlElement,
+    element: WebAPI.DOMAPI.htmlElement,
+  ): unit =>
+    if parent.scrollHeight > parent.clientHeight {
+      let scrollBottom = parent.clientHeight + Float.toInt(parent.scrollTop)
+      let elementBottom = element.offsetTop + element.offsetHeight
 
       if elementBottom > scrollBottom {
-        parent->setScrollTop(elementBottom - parent->clientHeight)
-      } else if element->offsetTop - element->offsetHeight < parent->scrollTop {
-        parent->setScrollTop(element->offsetTop - element->offsetHeight)
+        parent.scrollTop = Float.fromInt(elementBottom - parent.clientHeight)
+      } else if element.offsetTop - element.offsetHeight < Float.toInt(parent.scrollTop) {
+        parent.scrollTop = Float.fromInt(element.offsetTop - element.offsetHeight)
       }
     }
 
@@ -527,9 +550,11 @@ module WarningFlagsWidget = {
     // Used for the text input
     let inputRef = React.useRef(Nullable.null)
 
-    let focusInput = () => inputRef.current->Nullable.forEach(el => el->focus)
+    let focusInput = () =>
+      inputRef.current->Nullable.forEach(el => WebAPI.HTMLInputElement.focus(el))
 
-    let blurInput = () => inputRef.current->Nullable.forEach(el => el->blur)
+    let blurInput = () =>
+      inputRef.current->Nullable.forEach(el => WebAPI.HTMLInputElement.focus(el))
 
     let chips = Array.mapWithIndex(flags, (token, i) => {
       let {WarningFlagDescription.Parser.flag: flag, enabled} = token
@@ -696,8 +721,9 @@ module WarningFlagsWidget = {
               let parent = listboxRef.current->Nullable.toOption
 
               switch (parent, el) {
-              | (Some(parent), Some(el)) => scrollToElement(~parent, el)
-              | _ => ()
+              | (Some(parent), Some(el)) =>
+                Some(() => scrollToElement(~parent, (Obj.magic(el): WebAPI.DOMAPI.htmlElement)))
+              | _ => None
               }
             })->Some
           } else {
@@ -745,9 +771,8 @@ module WarningFlagsWidget = {
     let suggestionBox =
       Option.map(suggestions, elements =>
         <div
-          ref={ReactDOM.Ref.domRef(listboxRef)}
-          className="p-2 absolute overflow-auto z-50 border-b rounded border-l border-r block w-full bg-gray-100"
-          style={ReactDOM.Style.make(~maxHeight="15rem", ())}>
+          ref={ReactDOM.Ref.domRef((Obj.magic(listboxRef): React.ref<Nullable.t<Dom.element>>))}
+          className="p-2 absolute overflow-auto z-50 border-b rounded border-l border-r block w-full bg-gray-100 max-h-60">
           elements
         </div>
       )->Option.getOr(React.null)
@@ -788,7 +813,7 @@ module WarningFlagsWidget = {
         onClick
         onFocus
         tabIndex=0
-        className="focus:outline-none self-start focus:ring hover:cursor-pointer hover:bg-gray-40 p-2 rounded-full">
+        className="focus:outline-hidden self-start focus:ring-3 hover:cursor-pointer hover:bg-gray-40 p-2 rounded-full">
         <Icon.Close />
       </button>
     }
@@ -817,8 +842,8 @@ module WarningFlagsWidget = {
           chips
           <section className="mt-3">
             <input
-              ref={ReactDOM.Ref.domRef(inputRef)}
-              className="inline-block p-1 max-w-20 outline-none bg-gray-90 placeholder-gray-20 placeholder-opacity-50"
+              ref={ReactDOM.Ref.domRef((Obj.magic(inputRef): React.ref<Nullable.t<Dom.element>>))}
+              className="inline-block p-1 max-w-20 outline-hidden bg-gray-90 placeholder-gray-20/50"
               placeholder="Flags"
               type_="text"
               tabIndex=0
@@ -847,8 +872,10 @@ module Settings = {
     ~setConfig: Api.Config.t => unit,
     ~editorCode: React.ref<string>,
     ~config: Api.Config.t,
+    ~keyMapState: (CodeMirror.KeyMap.t, (CodeMirror.KeyMap.t => CodeMirror.KeyMap.t) => unit),
   ) => {
-    let {Api.Config.warn_flags: warn_flags} = config
+    let {Api.Config.warnFlags: warnFlags} = config
+    let (keyMap, setKeyMap) = keyMapState
 
     let availableTargetLangs = Api.Version.availableLanguages(readyState.selected.apiVersion)
 
@@ -862,22 +889,41 @@ module Settings = {
         }
       let config = {
         ...config,
-        warn_flags: flags->normalizeEmptyFlags->WarningFlagDescription.Parser.tokensToString,
+        warnFlags: flags->normalizeEmptyFlags->WarningFlagDescription.Parser.tokensToString,
       }
       setConfig(config)
     }
 
-    let onModuleSystemUpdate = module_system => {
-      let config = {...config, module_system}
+    let onModuleSystemUpdate = moduleSystem => {
+      let config = {...config, moduleSystem}
       setConfig(config)
     }
 
-    let warnFlagTokens = WarningFlagDescription.Parser.parse(warn_flags)->Result.getOr([])
+    let onJsxPreserveModeUpdate = compilation => {
+      let jsxPreserveMode = JsxCompilation.toBool(compilation)
+      let config = {...config, jsxPreserveMode}
+      setConfig(config)
+    }
+
+    let onExperimentalFeaturesUpdate = feature => {
+      let features = config.experimentalFeatures->Option.getOr([])
+
+      let experimentalFeatures = if features->Array.includes(feature) {
+        features->Array.filter(x => x !== feature)
+      } else {
+        [...features, feature]
+      }
+
+      let config = {...config, experimentalFeatures}
+      setConfig(config)
+    }
+
+    let warnFlagTokens = WarningFlagDescription.Parser.parse(warnFlags)->Result.getOr([])
 
     let onWarningFlagsResetClick = _evt => {
       setConfig({
         ...config,
-        warn_flags: "+a-4-9-20-40-41-42-50-61-102-109",
+        warnFlags: "+a-4-9-20-40-41-42-50-61-102-109",
       })
     }
 
@@ -894,7 +940,9 @@ module Settings = {
             ReactEvent.Form.preventDefault(evt)
             let id: string = (evt->ReactEvent.Form.target)["value"]
             switch id->Semver.parse {
-            | Some(v) => onCompilerSelect(v)
+            | Some(v) =>
+              onCompilerSelect(v)
+              WebAPI.Storage.setItem(localStorage, ~key=(Url.Playground :> string), ~value=id)
             | None => ()
             }
           }}>
@@ -916,28 +964,30 @@ module Settings = {
               {switch experimentalVersions {
               | [] => React.null
               | experimentalVersions =>
-                let versionByOrder = experimentalVersions->Belt.SortArray.stableSortBy((a, b) => {
-                  let cmp = ({Semver.major: major, minor, patch, preRelease}) => {
-                    let preRelease = switch preRelease {
-                    | Some(preRelease) =>
-                      switch preRelease {
-                      | Dev(id) => 0 + id
-                      | Alpha(id) => 10 + id
-                      | Beta(id) => 20 + id
-                      | Rc(id) => 30 + id
+                let versionByOrder = experimentalVersions->Array.toSorted((b, a) => {
+                  if a.major != b.major {
+                    a.major - b.major
+                  } else if a.minor != b.minor {
+                    a.minor - b.minor
+                  } else if a.patch != b.patch {
+                    a.patch - b.patch
+                  } else {
+                    switch (a.preRelease, b.preRelease)->Option.all2 {
+                    | Some((prereleaseA, prereleaseB)) =>
+                      switch (prereleaseA, prereleaseB) {
+                      | (Rc(rcA), Rc(rcB)) => rcA - rcB
+                      | (Rc(rcA), _) => rcA
+                      | (Beta(betaA), Beta(betaB)) => betaA - betaB
+                      | (Beta(betaA), _) => betaA
+                      | (Alpha(alphaA), Alpha(alphaB)) => alphaA - alphaB
+                      | (Alpha(alphaA), _) => alphaA
+                      | (Dev(devA), Dev(devB)) => devA - devB
+                      | (Dev(devA), _) => devA
                       }
+
                     | None => 0
                     }
-                    let number =
-                      [major, minor, patch]
-                      ->Array.map(v => v->Int.toString)
-                      ->Array.join("")
-                      ->Int.fromString
-                      ->Option.getOr(0)
-
-                    number + preRelease
-                  }
-                  cmp(b) - cmp(a)
+                  }->Float.fromInt
                 })
                 <>
                   <VersionSelect.SectionHeader value=Constants.dropdownLabelNext />
@@ -980,14 +1030,59 @@ module Settings = {
         React.null
       }}
       <div className="mt-6">
+        <div className=titleClass> {React.string("Use Vim Keymap")} </div>
+        <ToggleSelection
+          values=[CodeMirror.KeyMap.Default, CodeMirror.KeyMap.Vim]
+          toLabel={enabled =>
+            switch enabled {
+            | CodeMirror.KeyMap.Vim => "On"
+            | CodeMirror.KeyMap.Default => "Off"
+            }}
+          selected=keyMap
+          onChange={value => setKeyMap(_ => value)}
+        />
+      </div>
+      <div className="mt-6">
         <div className=titleClass> {React.string("Module-System")} </div>
         <ToggleSelection
           values=["commonjs", "esmodule"]
           toLabel={value => value}
-          selected=config.module_system
+          selected=config.moduleSystem
           onChange=onModuleSystemUpdate
         />
       </div>
+      {readyState.selected.apiVersion->RescriptCompilerApi.Version.isMinimumVersion(V6)
+        ? <>
+            <div className="mt-6">
+              <div className=titleClass> {React.string("JSX")} </div>
+              <ToggleSelection
+                values=[JsxCompilation.Plain, PreserveJsx]
+                toLabel=JsxCompilation.getLabel
+                selected={config.jsxPreserveMode->Option.getOr(false)->JsxCompilation.fromBool}
+                onChange=onJsxPreserveModeUpdate
+              />
+            </div>
+            <div className="mt-6">
+              <div className=titleClass> {React.string("Experimental Features")} </div>
+              {ExperimentalFeatures.list
+              ->Array.map(feature => {
+                let key = (feature :> string)
+
+                <SelectionOption
+                  key
+                  disabled=false
+                  label={feature->ExperimentalFeatures.getLabel}
+                  isActive={config.experimentalFeatures
+                  ->Option.getOr([])
+                  ->Array.includes(key)}
+                  onClick={_evt => onExperimentalFeaturesUpdate(key)}
+                />
+              })
+              ->React.array}
+            </div>
+          </>
+        : React.null}
+
       <div className="mt-6">
         <div className=titleClass> {React.string("Loaded Libraries")} </div>
         <ul>
@@ -1005,7 +1100,7 @@ module Settings = {
           </button>
         </div>
         <div className="flex justify-end" />
-        <div style={ReactDOM.Style.make(~maxWidth="40rem", ())}>
+        <div className="max-w-md">
           <WarningFlagsWidget onUpdate=onWarningFlagsUpdate flags=warnFlagTokens />
         </div>
       </div>
@@ -1065,7 +1160,7 @@ module ControlPanel = {
 
       let onClick = evt => {
         ReactEvent.Mouse.preventDefault(evt)
-        let ret = copyToClipboard(Webapi.Window.Location.href)
+        let ret = copyToClipboard(window.location.href)
         if ret {
           setState(_ => CopySuccess)
         }
@@ -1130,12 +1225,12 @@ module ControlPanel = {
       }
 
       React.useEffect(() => {
-        Webapi.Window.addEventListener("keydown", onKeyDown)
-        Some(() => Webapi.Window.removeEventListener("keydown", onKeyDown))
+        WebAPI.Window.addEventListener(window, Keydown, onKeyDown)
+        Some(() => WebAPI.Window.removeEventListener(window, Keydown, onKeyDown))
       }, [])
 
       let runButtonText = {
-        let userAgent = Webapi.Window.Navigator.userAgent
+        let userAgent = window.navigator.userAgent
         let run = "Run"
         if userAgent->String.includes("iPhone") || userAgent->String.includes("Android") {
           run
@@ -1187,6 +1282,7 @@ module OutputPanel = {
     ~compilerDispatch,
     ~compilerState: CompilerManagerHook.state,
     ~editorCode: React.ref<string>,
+    ~keyMapState: (CodeMirror.KeyMap.t, (CodeMirror.KeyMap.t => CodeMirror.KeyMap.t) => unit),
     ~currentTab: tab,
   ) => {
     let output =
@@ -1227,7 +1323,9 @@ module OutputPanel = {
       let config = ready.selected.config
       let setConfig = config => compilerDispatch(UpdateConfig(config))
 
-      <Settings readyState=ready dispatch=compilerDispatch editorCode setConfig config />
+      <Settings
+        readyState=ready dispatch=compilerDispatch editorCode setConfig config keyMapState
+      />
     | SetupFailed(msg) => <div> {React.string("Setup failed: " ++ msg)} </div>
     | Init => <div> {React.string("Initalizing Playground...")} </div>
     }
@@ -1404,7 +1502,7 @@ module App = {
 let initialReContent = `Js.log("Hello Reason 3.6!");`
 
 @react.component
-let make = (~versions: array<string>) => {
+let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   let router = Next.Router.useRouter()
 
   let versions =
@@ -1421,21 +1519,35 @@ let make = (~versions: array<string>) => {
       cmp(b) - cmp(a)
     })
 
-  let lastStableVersion = versions->Array.find(version => version.preRelease->Option.isNone)
-
-  let initialVersion = switch Dict.get(router.query, "version") {
-  | Some(version) => version->Semver.parse
-  | None => lastStableVersion
+  let initialVersion = switch versions {
+  | [v] => Some(v) // only single version available. maybe local dev.
+  | versions => {
+      let lastStableVersion = versions->Array.find(version => version.preRelease->Option.isNone)
+      switch Dict.get(router.query, (CompilerManagerHook.Version :> string)) {
+      | Some(version) => version->Semver.parse
+      | None =>
+        switch Url.getVersionFromStorage(Playground) {
+        | Some(v) => v->Semver.parse
+        | None => lastStableVersion
+        }
+      }
+    }
   }
 
-  let initialLang = switch Dict.get(router.query, "ext") {
+  let initialLang = switch Dict.get(router.query, (CompilerManagerHook.Ext :> string)) {
   | Some("re") => Api.Lang.Reason
   | _ => Api.Lang.Res
   }
 
-  let initialModuleSystem = Dict.get(router.query, "module")
+  let initialModuleSystem = Dict.get(router.query, (Module :> string))
+  let initialJsxPreserveMode = Dict.get(router.query, (JsxPreserve :> string))->Option.isSome
 
-  let initialContent = switch (Dict.get(router.query, "code"), initialLang) {
+  let initialExperimentalFeatures =
+    Dict.get(router.query, (Experiments :> string))->Option.mapOr([], str =>
+      str->String.split(",")->Array.map(String.trim)
+    )
+
+  let initialContent = switch (Dict.get(router.query, (Code :> string)), initialLang) {
   | (Some(compressedCode), _) => LzString.decompressToEncodedURIComponent(compressedCode)
   | (None, Reason) => initialReContent
   | (None, Res) =>
@@ -1451,13 +1563,28 @@ let make = (~versions: array<string>) => {
   let (actionCount, setActionCount) = React.useState(_ => 0)
   let onAction = _ => setActionCount(prev => prev > 1000000 ? 0 : prev + 1)
   let (compilerState, compilerDispatch) = useCompilerManager(
+    ~bundleBaseUrl,
     ~initialVersion?,
     ~initialModuleSystem?,
+    ~initialJsxPreserveMode,
+    ~initialExperimentalFeatures,
     ~initialLang,
     ~onAction,
     ~versions,
     (),
   )
+
+  let (keyMap, setKeyMap) = React.useState(() => {
+    Dom.Storage2.localStorage
+    ->Dom.Storage2.getItem("vimMode")
+    ->Option.map(CodeMirror.KeyMap.fromString)
+    ->Option.getOr(CodeMirror.KeyMap.Default)
+  })
+
+  React.useEffect1(() => {
+    Dom.Storage2.localStorage->Dom.Storage2.setItem("vimMode", CodeMirror.KeyMap.toString(keyMap))
+    None
+  }, [keyMap])
 
   // The user can focus an error / warning on a specific line & column
   // which is stored in this ref and triggered by hover / click states
@@ -1497,9 +1624,7 @@ let make = (~versions: array<string>) => {
     None
   }, (compilerState, compilerDispatch))
 
-  let (layout, setLayout) = React.useState(_ =>
-    Webapi.Window.innerWidth < breakingPoint ? Column : Row
-  )
+  let (layout, setLayout) = React.useState(_ => window.innerWidth < breakingPoint ? Column : Row)
 
   let isDragging = React.useRef(false)
 
@@ -1511,26 +1636,34 @@ let make = (~versions: array<string>) => {
   let subPanelRef = React.useRef(Nullable.null)
 
   let onResize = () => {
-    let newLayout = Webapi.Window.innerWidth < breakingPoint ? Column : Row
+    let newLayout = window.innerWidth < breakingPoint ? Column : Row
     setLayout(_ => newLayout)
     switch panelRef.current->Nullable.toOption {
     | Some(element) =>
-      let offsetTop = Webapi.Element.getBoundingClientRect(element)["top"]
-      Webapi.Element.Style.height(element, `calc(100vh - ${offsetTop->Float.toString}px)`)
+      let offsetTop = WebAPI.Element.getBoundingClientRect(element).top
+      WebAPI.Element.setAttribute(
+        element,
+        ~qualifiedName="style",
+        ~value=`height: calc(100vh - ${offsetTop->Float.toString}px)`,
+      )
     | None => ()
     }
 
     switch subPanelRef.current->Nullable.toOption {
     | Some(element) =>
-      let offsetTop = Webapi.Element.getBoundingClientRect(element)["top"]
-      Webapi.Element.Style.height(element, `calc(100vh - ${offsetTop->Float.toString}px)`)
+      let offsetTop = WebAPI.Element.getBoundingClientRect(element).top
+      WebAPI.Element.setAttribute(
+        element,
+        ~qualifiedName="style",
+        ~value=`height: calc(100vh - ${offsetTop->Float.toString}px)`,
+      )
     | None => ()
     }
   }
 
   React.useEffect(() => {
-    Webapi.Window.addEventListener("resize", onResize)
-    Some(() => Webapi.Window.removeEventListener("resize", onResize))
+    WebAPI.Window.addEventListener(window, Resize, onResize)
+    Some(() => WebAPI.Window.removeEventListener(window, Resize, onResize))
   }, [])
 
   // To force CodeMirror render scrollbar on first render
@@ -1553,30 +1686,50 @@ let make = (~versions: array<string>) => {
           subPanelRef.current->Nullable.toOption,
         ) {
         | (Some(panelElement), Some(leftElement), Some(rightElement), Some(subElement)) =>
-          let rectPanel = Webapi.Element.getBoundingClientRect(panelElement)
+          let rectPanel = WebAPI.Element.getBoundingClientRect(panelElement)
 
           // Update OutputPanel height
-          let offsetTop = Webapi.Element.getBoundingClientRect(subElement)["top"]
-          Webapi.Element.Style.height(subElement, `calc(100vh - ${offsetTop->Float.toString}px)`)
+          let offsetTop = WebAPI.Element.getBoundingClientRect(subElement).top
+          WebAPI.Element.setAttribute(
+            subElement,
+            ~qualifiedName="style",
+            ~value=`height: calc(100vh - ${offsetTop->Float.toString}px)`,
+          )
 
           switch layout {
           | Row =>
-            let delta = Int.toFloat(position) -. rectPanel["left"]
+            let delta = Int.toFloat(position) -. rectPanel.left
 
-            let leftWidth = delta /. rectPanel["width"] *. 100.0
-            let rightWidth = (rectPanel["width"] -. delta) /. rectPanel["width"] *. 100.0
+            let leftWidth = delta /. rectPanel.width *. 100.0
+            let rightWidth = (rectPanel.width -. delta) /. rectPanel.width *. 100.0
 
-            Webapi.Element.Style.width(leftElement, `${leftWidth->Float.toString}%`)
-            Webapi.Element.Style.width(rightElement, `${rightWidth->Float.toString}%`)
+            WebAPI.Element.setAttribute(
+              leftElement,
+              ~qualifiedName="style",
+              ~value=`width: ${leftWidth->Float.toString}%`,
+            )
+            WebAPI.Element.setAttribute(
+              rightElement,
+              ~qualifiedName="style",
+              ~value=`width: ${rightWidth->Float.toString}%`,
+            )
 
           | Column =>
-            let delta = Int.toFloat(position) -. rectPanel["top"]
+            let delta = Int.toFloat(position) -. rectPanel.top
 
-            let topHeight = delta /. rectPanel["height"] *. 100.
-            let bottomHeight = (rectPanel["height"] -. delta) /. rectPanel["height"] *. 100.
+            let topHeight = delta /. rectPanel.height *. 100.
+            let bottomHeight = (rectPanel.height -. delta) /. rectPanel.height *. 100.
 
-            Webapi.Element.Style.height(leftElement, `${topHeight->Float.toString}%`)
-            Webapi.Element.Style.height(rightElement, `${bottomHeight->Float.toString}%`)
+            WebAPI.Element.setAttribute(
+              leftElement,
+              ~qualifiedName="style",
+              ~value=`height: ${topHeight->Float.toString}%`,
+            )
+            WebAPI.Element.setAttribute(
+              rightElement,
+              ~qualifiedName="style",
+              ~value=`height: ${bottomHeight->Float.toString}%`,
+            )
           }
         | _ => ()
         }
@@ -1595,15 +1748,15 @@ let make = (~versions: array<string>) => {
       onMove(position)
     }
 
-    Webapi.Window.addEventListener("mousemove", onMouseMove)
-    Webapi.Window.addEventListener("touchmove", onTouchMove)
-    Webapi.Window.addEventListener("mouseup", onMouseUp)
+    WebAPI.Window.addEventListener(window, Mousemove, onMouseMove)
+    WebAPI.Window.addEventListener(window, Touchmove, onTouchMove)
+    WebAPI.Window.addEventListener(window, Mouseup, onMouseUp)
 
     Some(
       () => {
-        Webapi.Window.removeEventListener("mousemove", onMouseMove)
-        Webapi.Window.removeEventListener("touchmove", onTouchMove)
-        Webapi.Window.removeEventListener("mouseup", onMouseUp)
+        WebAPI.Window.removeEventListener(window, Mousemove, onMouseMove)
+        WebAPI.Window.removeEventListener(window, Touchmove, onTouchMove)
+        WebAPI.Window.removeEventListener(window, Mouseup, onMouseUp)
       },
     )
   }, [layout])
@@ -1677,7 +1830,7 @@ let make = (~versions: array<string>) => {
   let disabled = false
 
   let makeTabClass = active => {
-    let activeClass = active ? "text-white !border-sky-70 font-medium hover:cursor-default" : ""
+    let activeClass = active ? "text-white border-sky-70! font-medium hover:cursor-default" : ""
 
     "flex-1 items-center p-4 border-t-4 border-transparent " ++ activeClass
   }
@@ -1766,12 +1919,13 @@ let make = (~versions: array<string>) => {
     />
     <div
       className={`flex ${layout == Column ? "flex-col" : "flex-row"}`}
-      ref={ReactDOM.Ref.domRef(panelRef)}>
+      ref={ReactDOM.Ref.domRef((Obj.magic(panelRef): React.ref<Nullable.t<Dom.element>>))}>
       // Left Panel
       <div
-        ref={ReactDOM.Ref.domRef(leftPanelRef)}
-        style={ReactDOM.Style.make(~width=layout == Column ? "100%" : "50%", ())}
-        className={`${layout == Column ? "h-2/4" : "!h-full"}`}>
+        ref={ReactDOM.Ref.domRef((Obj.magic(leftPanelRef): React.ref<Nullable.t<Dom.element>>))}
+        className={`${layout == Column ? "h-2/4" : "h-full!"} ${layout == Column
+            ? "w-full"
+            : "w-[50%]"}`}>
         <CodeMirror
           className="bg-gray-100 h-full"
           mode
@@ -1785,22 +1939,25 @@ let make = (~versions: array<string>) => {
             | None => ()
             | Some(timer) => clearTimeout(timer)
             }
-            let timer = setTimeout(() => {
+            let timer = setTimeout(~handler=() => {
               timeoutCompile.current()
               typingTimer.current = None
-            }, 100)
+            }, ~timeout=100)
             typingTimer.current = Some(timer)
           }}
           onMarkerFocus={rowCol => setFocusedRowCol(_prev => Some(rowCol))}
           onMarkerFocusLeave={_ => setFocusedRowCol(_ => None)}
+          keyMap
         />
       </div>
       // Separator
       <div
-        ref={ReactDOM.Ref.domRef(separatorRef)}
-        style={ReactDOM.Style.make(~cursor=layout == Column ? "row-resize" : "col-resize", ())}
+        ref={ReactDOM.Ref.domRef((Obj.magic(separatorRef): React.ref<Nullable.t<Dom.element>>))}
         // TODO: touch-none not applied
-        className={`flex items-center justify-center touch-none select-none bg-gray-70 opacity-30 hover:opacity-50 rounded-lg`}
+        className={`flex items-center justify-center touch-none select-none bg-gray-70 opacity-30 hover:opacity-50 rounded-lg ${layout ==
+            Column
+            ? "cursor-row-resize"
+            : "cursor-col-resize"}`}
         onMouseDown={onMouseDown}
         onTouchStart={onTouchStart}
         onTouchEnd={onMouseUp}>
@@ -1810,14 +1967,19 @@ let make = (~versions: array<string>) => {
       </div>
       // Right Panel
       <div
-        ref={ReactDOM.Ref.domRef(rightPanelRef)}
-        style={ReactDOM.Style.make(~width=layout == Column ? "100%" : "50%", ())}
-        className={`${layout == Column ? "h-6/15" : "!h-inherit"}`}>
+        ref={ReactDOM.Ref.domRef((Obj.magic(rightPanelRef): React.ref<Nullable.t<Dom.element>>))}
+        className={`${layout == Column ? "h-6/15" : "h-inherit!"} ${layout == Column
+            ? "w-full"
+            : "w-[50%]"}`}>
         <div className={"flex flex-wrap justify-between w-full " ++ (disabled ? "opacity-50" : "")}>
           {React.array(headers)}
         </div>
-        <div ref={ReactDOM.Ref.domRef(subPanelRef)} className="overflow-auto">
-          <OutputPanel currentTab compilerDispatch compilerState editorCode />
+        <div
+          ref={ReactDOM.Ref.domRef((Obj.magic(subPanelRef): React.ref<Nullable.t<Dom.element>>))}
+          className="overflow-auto">
+          <OutputPanel
+            currentTab compilerDispatch compilerState editorCode keyMapState={(keyMap, setKeyMap)}
+          />
         </div>
       </div>
     </div>

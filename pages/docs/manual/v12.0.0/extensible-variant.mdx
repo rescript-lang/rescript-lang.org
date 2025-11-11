@@ -2,6 +2,8 @@
 title: "Extensible Variant"
 description: "Extensible Variants in ReScript"
 canonical: "/docs/manual/v12.0.0/extensible-variant"
+section: "Advanced Features"
+order: 1
 ---
 
 # Extensible Variant
@@ -21,6 +23,7 @@ type t +=
   | Point(float, float)
   | Line(float, float, float, float)
 ```
+
 ```js
 var Caml_exceptions = require("./stdlib/caml_exceptions.js");
 
@@ -33,17 +36,15 @@ var Line = Caml_exceptions.create("Playground.Line");
 
 </CodeTab>
 
-The `..` in the type declaration above defines an extensible variant `type t`. The `+=` operator is then used to add constructors to the given type. 
+The `..` in the type declaration above defines an extensible variant `type t`. The `+=` operator is then used to add constructors to the given type.
 
 **Note:** Don't forget the leading `type` keyword when using the `+=` operator!
 
 ## Pattern Matching Caveats
 
-Extensible variants are open-ended, so the compiler will not be able to exhaustively pattern match all available cases. You will always need to provide a default `_` case for every `switch` expression. 
-
+Extensible variants are open-ended, so the compiler will not be able to exhaustively pattern match all available cases. You will always need to provide a default `_` case for every `switch` expression.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
-
 
 ```res
 let print = v =>
@@ -54,6 +55,7 @@ let print = v =>
   | _ => Console.log("Other")
   }
 ```
+
 ```js
 function print(v) {
   if (v.RE_EXN_ID === Point) {
@@ -62,7 +64,7 @@ function print(v) {
     console.log("Line", [v._1, v._2, v._3, v._4]);
   } else {
     console.log("Other");
-  } 
+  }
 }
 ```
 

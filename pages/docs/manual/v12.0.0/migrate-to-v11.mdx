@@ -1,0 +1,131 @@
+---
+title: "Migrate to v11"
+description: "Instructions on upgrading to ReScript 11"
+canonical: "/docs/manual/v12.0.0/migrate-to-v11"
+---
+
+# Migrate to ReScript 11
+
+## Foreword
+
+The ReScript community is proud to introduce ReScript V11 which comes with a ton of new features but also removes a lot of bulk.
+A migration to it can be very straightforward, but it can also take some time, depending on your code style or what dependencies you use.
+
+Please have a look at the full [set of breaking changes](#list-of-all-breaking-changes) below to be able to decide whether this is a task you want to undertake. There is also the possibilty to [opt-out of uncurried mode](#minimal-migration) for now, which is probably the most fundamental change of this release. That and other new and notable features are discussed in the following blogposts:
+
+- [Better interop with customizable variants](/blog/improving-interop)
+- [Enhanced Ergonomics for Record Types](/blog/enhanced-ergonomics-for-record-types)
+- [First-class Dynamic Import Support](/blog/first-class-dynamic-import-support)
+- [Uncurried Mode](/blog/uncurried-mode)
+
+## Recommended Migration
+
+### Uncurried Mode
+
+For uncurried mode to take effect in ReScript 11 there is nothing to configure, it is activated by default.
+
+### Adapt suffix
+
+ReScript 11 now allows having arbitrary suffixes in the generated JavaScript files. However, it is still recommended to stick to using `.res.js`, `.res.mjs` or `.res.cjs`. For more information, read the Build System Configuration about [suffixes](/docs/manual/next/build-configuration#suffix).
+
+### rescript.json
+
+The old configuration filename `bsconfig.json` is deprecated. Rename `bsconfig.json` to `rescript.json` to get rid of the deprecation warning.
+
+### ReScript Core standard library
+
+[ReScript Core](https://github.com/rescript-association/rescript-core) is ReScript's new standard library. It replaces the complete `Js` module as well as some of the more frequently used modules from `Belt` and is recommended to use with uncurried mode.
+
+It will be integrated into the compiler in a future version. In ReScript 11, it still needs to be installed manually:
+
+```console
+$ npm install @rescript/core
+```
+
+Then add `@rescript/core` to your `rescript.json`'s dependencies:
+
+```diff
+ {
+   "bs-dependencies": [
++    "@rescript/core"
+   ]
+ }
+```
+
+Open it so it's available in the global scope.
+
+```diff
+ {
+   "bsc-flags": [
++    "-open RescriptCore",
+   ]
+ }
+```
+
+One major change to be aware of is that array access now returns an `option`.
+
+```res
+let firstItem = myArray[0] // Some("hello")
+```
+
+If you would like to not use an `option`, you can use [`Array.getUnsafe`](api/core/array#value-getUnsafe).
+
+For a detailed explanation on migration to ReScript Core, please refer to its [migration guide](https://github.com/rescript-association/rescript-core#migration). A semi-automated script is available as well.
+
+See ReScript Core API docs [here](api/core).
+
+### Removed bindings
+
+Many Node bindings have been removed from the compiler. Please use [rescript-nodejs](https://github.com/TheSpyder/rescript-nodejs) instead or write your own local bindings.
+
+## Minimal Migration
+
+This guide describes the things to do at least to migrate to ReScript 11.
+
+### Disable uncurried mode
+
+If you use currying extensively and don't want to bother with adapting your code, or have dependencies that just don't work with uncurried mode yet, just set it to false in your `rescript.json`.
+
+```json
+{
+  "uncurried": false
+}
+```
+
+For more information, read the Build System Configuration about [uncurried](/docs/manual/next/build-configuration#uncurried).
+
+## List of all breaking changes
+
+Below is an excerpt from the compiler changelog about all the breaking changes of ReScript 11.
+
+### Language and Compiler
+
+- Add smart printer for pipe chains. https://github.com/rescript-lang/rescript-compiler/pull/6411 (the formatter will reformat existing code in certain cases)
+- Parse `assert` as a regular function. `assert` is no longer a unary expression. Example: before `assert 1 == 2` is parsed as `(assert 1) == 2`, now it is parsed as `assert(1 == 2)`. https://github.com/rescript-lang/rescript-compiler/pull/6180
+- Remove support for the legacy Reason syntax. Existing Reason code can be converted to ReScript syntax using ReScript 9 as follows:
+  - `npx rescript@9 convert <reason files>`
+- Curried after uncurried is not fused anymore: `(. x) => y => 3` is not equivalent to `(. x, y) => 3` anymore. It's instead equivalent to `(. x) => { y => 3 }`.
+  Also, `(. int) => string => bool` is not equivalen to `(. int, string) => bool` anymore.
+  These are only breaking changes for unformatted code.
+- Exponentiation operator `**` is now right-associative. `2. ** 3. ** 2.` now compile to `Math.pow(2, Math.pow(3, 2))` and not anymore `Math.pow(Math.pow(2, 3), 2)`. Parentheses can be used to change precedence.
+- Stop mangling object field names. If you had objects with field names containing "\_\_" or leading "\_", they won't be mangled in the compiled JavaScript and represented as it is without changes. https://github.com/rescript-lang/rescript-compiler/pull/6354
+- `$$default` is no longer exported from the generated JavaScript when using default exports. https://github.com/rescript-lang/rescript-compiler/pull/6328
+- `-bs-super-errors` flag has been deprecated along with Super_errors. https://github.com/rescript-lang/rescript-compiler/pull/6243
+- Remove unsafe `` j`$(a)$(b)` `` interpolation deprecated in compiler version 10 https://github.com/rescript-lang/rescript-compiler/pull/6068
+- `@deriving(jsConverter)` not supported anymore for variant types https://github.com/rescript-lang/rescript-compiler/pull/6088
+- New representation for variants, where the tag is a string instead of a number. https://github.com/rescript-lang/rescript-compiler/pull/6088
+
+### Compiler Libraries
+
+- Fixed name collision between the newly defined Js.Json.t and the variant constructor in the existing Js.Json.kind type. To address this, the usage of the existing Js.Json.kind type can be updated to Js.Json.Kind.t. https://github.com/rescript-lang/rescript-compiler/pull/6317
+- Remove rudimentary node bindings and undocumented `%node` extension. https://github.com/rescript-lang/rescript-compiler/pull/6285
+- `@rescript/react` >= 0.12.0-alpha.2 is now required because of the React.fragment's children type fix. https://github.com/rescript-lang/rescript-compiler/pull/6238
+- Remove deprecated module `Printexc`
+
+### Build System and Tools
+
+- Update watcher rules to recompile only on config and `*.res`/`*.resi`/`*.ml`/`.mli` file changes. Solves the issue of unnecessary recompiles on `.css`, `.ts`, and other unrelated file changes. https://github.com/rescript-lang/rescript-compiler/pull/6420
+- Made pinned dependencies transitive: if _a_ is a pinned dependency of _b_ and _b_ is a pinned dependency of _c_, then _a_ is implicitly a pinned dependency of _c_. This change is only breaking if your build process assumes non-transitivity.
+- Remove obsolete built-in project templates and the "rescript init" functionality. This is replaced by [create-rescript-app](https://github.com/rescript-lang/create-rescript-app) which is maintained separately.
+- Do not attempt to build ReScript from source on npm postinstall for platforms without prebuilt binaries anymore.
+- GenType: removed support for `@genType.as` for records and variants which has become unnecessary. Use the language's `@as` instead to channge the runtime representation without requiring any runtime conversion during FFI. https://github.com/rescript-lang/rescript-compiler/pull/6099 https://github.com/rescript-lang/rescript-compiler/pull/6101

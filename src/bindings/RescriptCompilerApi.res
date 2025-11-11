@@ -18,22 +18,26 @@ module Lang = {
     }
 
   let decode = (json): t => {
-    open! Json.Decode
-    switch string(json) {
-    | "re" => Reason
-    | "res" => Res
-    | other => raise(DecodeError(`Unknown language "${other}"`))
+    open JSON
+    switch json {
+    | String("re") => Reason
+    | String("res") => Res
+    | other => throw(Failure(`Unknown language "${other->stringify}". ${__LOC__}`))
     }
   }
 }
 
 module Version = {
+  type numbered =
+    | @as(1) V1
+    | @as(2) V2
+    | @as(3) V3
+    | @as(4) V4
+    | @as(5) V5
+    | @as(6) V6
+
   type t =
-    | V1
-    | V2
-    | V3
-    | V4
-    | V5
+    | ...numbered
     | UnknownVersion(string)
 
   // Helps finding the right API version
@@ -57,6 +61,7 @@ module Version = {
     | list{"3"} => V3
     | list{"4"} => V4
     | list{"5"} => V5
+    | list{"6"} => V6
     | _ => UnknownVersion(apiVersion)
     }
 
@@ -67,6 +72,7 @@ module Version = {
     | V3 => "3.0"
     | V4 => "4.0"
     | V5 => "5.0"
+    | V6 => "6.0"
     | UnknownVersion(version) => version
     }
 
@@ -75,8 +81,14 @@ module Version = {
   let availableLanguages = t =>
     switch t {
     | V1 => [Lang.Reason, Res]
-    | V2 | V3 | V4 | V5 => [Lang.Res]
+    | V2 | V3 | V4 | V5 | V6 => [Lang.Res]
     | UnknownVersion(_) => [Res]
+    }
+
+  let isMinimumVersion = (version: t, minimum: numbered) =>
+    switch version {
+    | ...numbered as version => version >= minimum
+    | UnknownVersion(_) => false
     }
 }
 
@@ -91,14 +103,24 @@ module LocMsg = {
   }
 
   let decode = (json): t => {
-    open Json.Decode
-    {
-      fullMsg: json->field("fullMsg", string, _),
-      shortMsg: json->field("shortMsg", string, _),
-      row: json->field("row", int, _),
-      column: json->field("column", int, _),
-      endRow: json->field("endRow", int, _),
-      endColumn: json->field("endColumn", int, _),
+    open JSON
+    switch json {
+    | Object(dict{
+        "fullMsg": String(fullMsg),
+        "shortMsg": String(shortMsg),
+        "row": Number(row),
+        "column": Number(column),
+        "endRow": Number(endRow),
+        "endColumn": Number(endColumn),
+      }) => {
+        fullMsg,
+        shortMsg,
+        row: row->Float.toInt,
+        column: column->Float.toInt,
+        endRow: endRow->Float.toInt,
+        endColumn: endColumn->Float.toInt,
+      }
+    | _ => throw(Failure(`Failed to decode LocMsg. ${__LOC__}`))
     }
   }
 
@@ -143,12 +165,18 @@ module Warning = {
     | WarnErr({warnNumber: int, details: LocMsg.t}) // Describes an erronous warning
 
   let decode = (json): t => {
-    open! Json.Decode
-
-    let warnNumber = field("warnNumber", int, json)
+    open JSON
+    let warnNumber = switch json {
+    | Object(dict{"warnNumber": Number(warnNumber)}) => warnNumber->Float.toInt
+    | _ => throw(Failure(`Failed to decode warn number. ${__LOC__}`))
+    }
     let details = LocMsg.decode(json)
 
-    field("isError", bool, json) ? WarnErr({warnNumber, details}) : Warn({warnNumber, details})
+    switch json {
+    | Object(dict{"isError": Boolean(isError)}) =>
+      isError ? WarnErr({warnNumber, details}) : Warn({warnNumber, details})
+    | _ => throw(Failure(`Failed to decode warnings. ${__LOC__}`))
+    }
   }
 
   // Useful for showing errors in a more compact format
@@ -178,11 +206,14 @@ module WarningFlag = {
   }
 
   let decode = (json): t => {
-    open Json.Decode
-    {
-      msg: field("msg", string, json),
-      warn_flags: field("warn_flags", string, json),
-      warn_error_flags: field("warn_error_flags", string, json),
+    open JSON
+    switch json {
+    | Object(dict{
+        "msg": String(msg),
+        "warn_flags": String(warn_flags),
+        "warn_error_flags": String(warn_error_flags),
+      }) => {msg, warn_flags, warn_error_flags}
+    | _ => throw(Failure(`Failed to decode WarningFlag. ${__LOC__}`))
     }
   }
 }
@@ -206,27 +237,37 @@ module TypeHint = {
     | CoreType(data)
 
   let decodePosition = json => {
-    open Json.Decode
-    {
-      line: field("line", int, json),
-      col: field("col", int, json),
+    open JSON
+    switch json {
+    | Object(dict{"line": Number(line), "col": Number(col)}) => {
+        line: line->Float.toInt,
+        col: col->Float.toInt,
+      }
+    | _ => throw(Failure(`Failed to decode position. ${__LOC__}`))
     }
   }
 
   let decode = (json): t => {
-    open Json.Decode
-    let data = {
-      start: field("start", decodePosition, json),
-      end: field("end", decodePosition, json),
-      hint: field("hint", string, json),
+    open JSON
+    let data = switch json {
+    | Object(dict{"start": startPosition, "end": endPosition, "hint": String(hint)}) => {
+        start: decodePosition(startPosition),
+        end: decodePosition(endPosition),
+        hint,
+      }
+    | _ => throw(Failure(`Failed to decode type hint position. ${__LOC__}`))
     }
 
-    switch field("kind", string, json) {
-    | "expression" => Expression(data)
-    | "type_declaration" => TypeDeclaration(data)
-    | "binding" => Binding(data)
-    | "core_type" => CoreType(data)
-    | other => raise(DecodeError(`Unknown kind "${other}" type hint`))
+    switch json {
+    | Object(dict{"kind": String(kind)}) =>
+      switch kind {
+      | "expression" => Expression(data)
+      | "type_declaration" => TypeDeclaration(data)
+      | "binding" => Binding(data)
+      | "core_type" => CoreType(data)
+      | other => throw(Failure(`Unknown kind "${other}" type hint. ${__LOC__}`))
+      }
+    | _ => throw(Failure(`Failed to decode type hint kind. ${__LOC__}`))
     }
   }
 }
@@ -242,12 +283,17 @@ module CompileSuccess = {
   }
 
   let decode = (~time: float, json): t => {
-    open Json.Decode
-    {
-      jsCode: field("js_code", string, json),
-      warnings: field("warnings", array(Warning.decode, ...), json),
-      typeHints: withDefault([], field("type_hints", array(TypeHint.decode, ...), ...), json),
-      time,
+    open JSON
+    switch json {
+    | Object(dict{
+        "js_code": String(jsCode),
+        "warnings": Array(warnings),
+        "type_hints": Array(typeHints),
+      }) =>
+      let warnings = warnings->Array.map(Warning.decode)
+      let typeHints = typeHints->Array.map(TypeHint.decode)
+      {jsCode, warnings, typeHints, time}
+    | _ => throw(Failure(`Failed to decode CompileSuccess. ${__LOC__}`))
     }
   }
 }
@@ -260,11 +306,14 @@ module ConvertSuccess = {
   }
 
   let decode = (json): t => {
-    open Json.Decode
-    {
-      code: field("code", string, json),
-      fromLang: field("fromLang", Lang.decode, json),
-      toLang: field("toLang", Lang.decode, json),
+    open JSON
+    switch json {
+    | Object(dict{"code": String(code), "fromLang": fromLang, "toLang": toLang}) => {
+        code,
+        fromLang: fromLang->Lang.decode,
+        toLang: toLang->Lang.decode,
+      }
+    | _ => throw(Failure(`Failed to decode ConvertSuccess. ${__LOC__}`))
     }
   }
 }
@@ -278,28 +327,31 @@ module CompileFail = {
     | OtherErr(array<LocMsg.t>)
 
   let decode = (json): t => {
-    open! Json.Decode
-
-    switch field("type", string, json) {
-    | "syntax_error" =>
-      let locMsgs = field("errors", array(LocMsg.decode, ...), json)
+    open JSON
+    switch json {
+    | Object(dict{"type": String("syntax_error"), "errors": Array(errors)}) =>
+      let locMsgs = errors->Array.map(LocMsg.decode)
       // TODO: There seems to be a bug in the ReScript bundle that reports
       //       back multiple LocMsgs of the same value
       locMsgs->LocMsg.dedupe->SyntaxErr
-    | "type_error" =>
-      let locMsgs = field("errors", array(LocMsg.decode, ...), json)
+    | Object(dict{"type": String("type_error"), "errors": Array(errors)}) =>
+      let locMsgs = errors->Array.map(LocMsg.decode)
       TypecheckErr(locMsgs)
-    | "warning_error" =>
-      let warnings = field("errors", array(Warning.decode, ...), json)
+    | Object(dict{"type": String("warning_error"), "errors": Array(warnings)}) =>
+      let warnings = warnings->Array.map(Warning.decode)
       WarningErr(warnings)
-    | "other_error" =>
-      let locMsgs = field("errors", array(LocMsg.decode, ...), json)
+    | Object(dict{"type": String("other_error"), "errors": Array(errors)}) =>
+      let locMsgs = errors->Array.map(LocMsg.decode)
       OtherErr(locMsgs)
-
-    | "warning_flag_error" =>
-      let warningFlag = WarningFlag.decode(json)
-      WarningFlagErr(warningFlag)
-    | other => raise(DecodeError(`Unknown type "${other}" in CompileFail result`))
+    | Object(dict{"type": String("warning_flag_error")}) => WarningFlagErr(WarningFlag.decode(json))
+    | Object(dict{"type": String(other)}) =>
+      throw(Failure(`Unknown type "${other}" in CompileFail result. ${__LOC__}`))
+    | _ =>
+      throw(
+        Failure(
+          `Failed to decode CompileFail. ${__LOC__}. Could not decode \`${json->JSON.stringify}\``,
+        ),
+      )
     }
   }
 }
@@ -313,14 +365,12 @@ module CompilationResult = {
 
   // TODO: We might change this specific api completely before launching
   let decode = (~time: float, json: JSON.t): t => {
-    open! Json.Decode
-
-    try switch field("type", string, json) {
-    | "success" => Success(CompileSuccess.decode(~time, json))
-    | "unexpected_error" => UnexpectedError(field("msg", string, json))
-    | _ => Fail(CompileFail.decode(json))
-    } catch {
-    | DecodeError(errMsg) => Unknown(errMsg, json)
+    open JSON
+    switch json {
+    | Object(dict{"type": String("success")}) => Success(CompileSuccess.decode(~time, json))
+    | Object(dict{"type": String("unexpected_error"), "msg": String(msg)}) => UnexpectedError(msg)
+    | Object(dict{"type": String(_)}) => Fail(CompileFail.decode(json))
+    | _ => throw(Failure(`Failed to decode CompilationResult. ${__LOC__}`))
     }
   }
 }
@@ -333,26 +383,33 @@ module ConversionResult = {
     | Unknown(string, JSON.t)
 
   let decode = (~fromLang: Lang.t, ~toLang: Lang.t, json): t => {
-    open! Json.Decode
-    try switch field("type", string, json) {
-    | "success" => Success(ConvertSuccess.decode(json))
-    | "unexpected_error" => UnexpectedError(field("msg", string, json))
-    | "syntax_error" =>
-      let locMsgs = field("errors", array(LocMsg.decode, ...), json)
+    open JSON
+    switch json {
+    | Object(dict{"type": String("success")}) => Success(ConvertSuccess.decode(json))
+    | Object(dict{"type": String("unexpected_error"), "msg": String(msg)}) => UnexpectedError(msg)
+    | Object(dict{"type": String("syntax_error"), "errors": Array(errors)}) =>
+      let locMsgs = errors->Array.map(LocMsg.decode)
       Fail({fromLang, toLang, details: locMsgs})
-    | other => Unknown(`Unknown conversion result type "${other}"`, json)
-    } catch {
-    | DecodeError(errMsg) => Unknown(errMsg, json)
+    | Object(dict{"type": String(other)}) =>
+      Unknown(`Unknown conversion result type "${other}"`, json)
+    | _ =>
+      throw(
+        Failure(
+          `Failed to decode ConversionResult. ${__LOC__}. Could not decode \`${json->JSON.stringify}\``,
+        ),
+      )
     }
   }
 }
 
 module Config = {
   type t = {
-    module_system: string,
-    warn_flags: string,
+    @as("module_system") moduleSystem: string,
+    @as("warn_flags") warnFlags: string,
     uncurried?: bool,
-    open_modules?: array<string>,
+    @as("open_modules") openModules?: array<string>,
+    @as("experimental_features") experimentalFeatures?: array<string>,
+    @as("jsx_preserve_mode") jsxPreserveMode?: bool,
   }
 }
 
@@ -426,17 +483,31 @@ module Compiler = {
 
   @send external setOpenModules: (t, array<string>) => bool = "setOpenModules"
 
-  let setConfig = (t: t, config: Config.t): unit => {
-    let moduleSystem = switch config.module_system {
+  @send external setExperimentalFeatures: (t, array<string>) => bool = "setExperimentalFeatures"
+
+  @send external setJsxPreserveMode: (t, bool) => bool = "setJsxPreserveMode"
+
+  let setConfig = (t: t, config: Config.t, version: Version.t): unit => {
+    let moduleSystem = switch config.moduleSystem {
     | "commonjs" => #nodejs->Some
     | "esmodule" => #es6->Some
     | _ => None
     }
 
     Option.forEach(moduleSystem, moduleSystem => t->setModuleSystem(moduleSystem)->ignore)
-    Option.forEach(config.open_modules, modules => t->setOpenModules(modules)->ignore)
 
-    t->setWarnFlags(config.warn_flags)->ignore
+    if version->Version.isMinimumVersion(V4) {
+      Option.forEach(config.openModules, modules => t->setOpenModules(modules)->ignore)
+    }
+
+    if version->Version.isMinimumVersion(V6) {
+      Option.forEach(config.experimentalFeatures, features =>
+        t->setExperimentalFeatures(features)->ignore
+      )
+      Option.forEach(config.jsxPreserveMode, toggle => t->setJsxPreserveMode(toggle)->ignore)
+    }
+
+    t->setWarnFlags(config.warnFlags)->ignore
   }
 
   @send
@@ -452,8 +523,8 @@ module Compiler = {
       ~fromLang,
       ~toLang,
     ) catch {
-    | Exn.Error(obj) =>
-      switch Exn.message(obj) {
+    | JsExn(obj) =>
+      switch JsExn.message(obj) {
       | Some(m) => ConversionResult.UnexpectedError(m)
       | None => UnexpectedError("")
       }

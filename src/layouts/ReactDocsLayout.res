@@ -36,7 +36,6 @@ module Latest = {
       {name: "rescript-react", href: "/docs/react/" ++ (version ++ "/introduction")},
     }
 
-    let title = "rescript-react"
     let version = "latest"
 
     <LatestLayout
@@ -45,7 +44,6 @@ module Latest = {
       metaTitleCategory="React"
       availableVersions=Constants.allReactVersions
       version
-      title
       breadcrumbs
       ?frontmatter>
       children
@@ -70,15 +68,12 @@ module V0110 = {
       {name: "rescript-react", href: "/docs/react/" ++ (version ++ "/introduction")},
     }
 
-    let title = "rescript-react"
-
     <V0110Layout
       theme=#Reason
       components
       metaTitleCategory="React"
       availableVersions=Constants.allReactVersions
       version
-      title
       breadcrumbs
       ?frontmatter>
       children
@@ -103,15 +98,12 @@ module V0100 = {
       {name: "rescript-react", href: "/docs/react/" ++ (version ++ "/introduction")},
     }
 
-    let title = "rescript-react"
-
     <V0100Layout
       theme=#Reason
       components
       metaTitleCategory="React"
       availableVersions=Constants.allReactVersions
       version
-      title
       breadcrumbs
       ?frontmatter>
       children

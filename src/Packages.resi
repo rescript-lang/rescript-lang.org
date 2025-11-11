@@ -18,9 +18,8 @@ type npmPackage = {
 }
 
 type props = {
-  "packages": array<npmPackage>,
-  "urlResources": array<urlResource>,
-  "unmaintained": array<npmPackage>,
+  packages: array<npmPackage>,
+  unmaintained: array<npmPackage>,
 }
 
 let default: props => React.element

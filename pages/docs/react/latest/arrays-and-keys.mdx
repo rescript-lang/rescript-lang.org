@@ -2,6 +2,8 @@
 title: Arrays and Keys
 description: "Rendering arrays and handling keys in ReScript and React"
 canonical: "/docs/react/latest/arrays-and-keys"
+section: "Main Concepts"
+order: 4
 ---
 
 # Arrays and Keys
@@ -38,21 +40,25 @@ function Playground(props) {
   var todos = [
     {
       id: "todo1",
-      text: "Todo 1"
+      text: "Todo 1",
     },
     {
       id: "todo2",
-      text: "Todo 2"
-    }
+      text: "Todo 2",
+    },
   ];
   var items = todos.map(function (todo) {
-        return JsxRuntime.jsx("li", {
-                    children: todo.text
-                  }, todo.id);
-      });
+    return JsxRuntime.jsx(
+      "li",
+      {
+        children: todo.text,
+      },
+      todo.id,
+    );
+  });
   return JsxRuntime.jsx("ul", {
-              children: items
-            });
+    children: items,
+  });
 }
 ```
 
@@ -73,19 +79,17 @@ let items = Array.map(numbers, (number) => {
 ```
 
 ```js
-var numbers = [
-  1,
-  2,
-  3,
-  4,
-  5
-];
+var numbers = [1, 2, 3, 4, 5];
 
 var items = numbers.map(function (number) {
-      return JsxRuntime.jsx("li", {
-                  children: number
-                }, number.toString());
-    });
+  return JsxRuntime.jsx(
+    "li",
+    {
+      children: number,
+    },
+    number.toString(),
+  );
+});
 ```
 
 </CodeTab>
@@ -111,19 +115,23 @@ let items = Array.map(todos, todo => {
 var todos = [
   {
     id: "todo1",
-    text: "Todo 1"
+    text: "Todo 1",
   },
   {
     id: "todo2",
-    text: "Todo 2"
-  }
+    text: "Todo 2",
+  },
 ];
 
 var items = todos.map(function (todo) {
-      return JsxRuntime.jsx("li", {
-                  children: todo.text
-                }, todo.id);
-    });
+  return JsxRuntime.jsx(
+    "li",
+    {
+      children: todo.text,
+    },
+    todo.id,
+  );
+});
 ```
 
 </CodeTab>
@@ -143,14 +151,17 @@ let items = Array.mapWithIndex(todos, (todo, i) => {
 
 ```js
 var items = todos.map(function (todo, i) {
-      return JsxRuntime.jsx("li", {
-                  children: todo.text
-                }, i.toString());
-    });
+  return JsxRuntime.jsx(
+    "li",
+    {
+      children: todo.text,
+    },
+    i.toString(),
+  );
+});
 ```
 
 </CodeTab>
-
 
 ### Keys Must Only Be Unique Among Siblings
 
@@ -206,57 +217,60 @@ let blog = <Blog posts />
 function Playground$Blog(props) {
   var posts = props.posts;
   var sidebar = JsxRuntime.jsx("ul", {
-        children: posts.map(function (post) {
-              return JsxRuntime.jsx("li", {
-                          children: post.title
-                        }, post.id);
-            })
-      });
+    children: posts.map(function (post) {
+      return JsxRuntime.jsx(
+        "li",
+        {
+          children: post.title,
+        },
+        post.id,
+      );
+    }),
+  });
   var content = posts.map(function (post) {
-        return JsxRuntime.jsxs("div", {
-                    children: [
-                      JsxRuntime.jsx("h3", {
-                            children: post.title
-                          }),
-                      JsxRuntime.jsx("p", {
-                            children: post.content
-                          })
-                    ]
-                  }, post.id);
-      });
+    return JsxRuntime.jsxs(
+      "div",
+      {
+        children: [
+          JsxRuntime.jsx("h3", {
+            children: post.title,
+          }),
+          JsxRuntime.jsx("p", {
+            children: post.content,
+          }),
+        ],
+      },
+      post.id,
+    );
+  });
   return JsxRuntime.jsxs("div", {
-              children: [
-                sidebar,
-                JsxRuntime.jsx("hr", {}),
-                content
-              ]
-            });
+    children: [sidebar, JsxRuntime.jsx("hr", {}), content],
+  });
 }
 
 var Blog = {
-  make: Playground$Blog
+  make: Playground$Blog,
 };
 
 var posts = [
   {
     id: "1",
     title: "Hello World",
-    content: "Welcome to learning ReScript & React!"
+    content: "Welcome to learning ReScript & React!",
   },
   {
     id: "2",
     title: "Installation",
-    content: "You can install reason-react from npm."
-  }
+    content: "You can install reason-react from npm.",
+  },
 ];
 
 var blog = JsxRuntime.jsx(Playground$Blog, {
-      posts: posts
-    });
+  posts: posts,
+});
 ```
 
 </CodeTab>
-
 
 ## Rendering `list` Values
 
@@ -289,25 +303,29 @@ let make = () => {
 ```js
 function Playground(props) {
   var items = Core__List.toArray({
-          hd: {
-            id: "todo1",
-            text: "Todo 1"
-          },
-          tl: {
-            hd: {
-              id: "todo2",
-              text: "Todo 2"
-            },
-            tl: /* [] */0
-          }
-        }).map(function (todo) {
-        return JsxRuntime.jsx("li", {
-                    children: todo.text
-                  }, todo.id);
-      });
+    hd: {
+      id: "todo1",
+      text: "Todo 1",
+    },
+    tl: {
+      hd: {
+        id: "todo2",
+        text: "Todo 2",
+      },
+      tl: /* [] */ 0,
+    },
+  }).map(function (todo) {
+    return JsxRuntime.jsx(
+      "li",
+      {
+        children: todo.text,
+      },
+      todo.id,
+    );
+  });
   return JsxRuntime.jsx("div", {
-              children: items
-            });
+    children: items,
+  });
 }
 ```
 
@@ -316,4 +334,3 @@ function Playground(props) {
 We use `List.toArray` to convert our list to an array before creating our `array<React.element>`. Please note that using `list` has performance impact due to extra conversion costs.
 
 99% of the time you'll want to use arrays (seamless interop, faster JS code), but in some cases it might make sense to use a `list` to leverage advanced pattern matching features etc.
-

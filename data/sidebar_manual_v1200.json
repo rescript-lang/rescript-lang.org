@@ -1,15 +1,6 @@
 {
-  "Overview": [
-    "introduction",
-    "installation",
-    "editor-plugins",
-    "llms"
-  ],
-  "Guides": [
-    "converting-from-js",
-    "editor-code-analysis",
-    "project-structure"
-  ],
+  "Overview": ["introduction", "installation", "editor-plugins", "llms"],
+  "Guides": ["converting-from-js", "editor-code-analysis", "project-structure"],
   "JavaScript Interop": [
     "interop-cheatsheet",
     "embed-raw-javascript",
@@ -62,13 +53,15 @@
     "build-configuration",
     "build-configuration-schema",
     "build-external-stdlib",
-    "build-pinned-dependencies",
+    "build-monorepo-setup",
     "interop-with-js-build-systems",
     "build-performance",
     "warning-numbers"
   ],
   "Advanced Features": [
     "extensible-variant",
-    "scoped-polymorphic-types"
+    "scoped-polymorphic-types",
+    "module-functions",
+    "generalized-algebraic-data-types"
   ]
 }

@@ -17,11 +17,13 @@ We represent the existence and nonexistence of a value by wrapping it with the `
 ```re
 type option('a) = None | Some('a);
 ```
+
 type 'a option = | None | Some of 'a
-```
+
+````
 ```js
 // Empty output
-```
+````
 
 </CodeTab>
 
@@ -38,9 +40,11 @@ Here's a normal value:
 ```re
 let licenseNumber = 5;
 ```
+
 ```ml
 let licenseNumber = 5
 ```
+
 ```js
 var licenseNumber = 5;
 ```
@@ -59,6 +63,7 @@ let licenseNumber =
     None;
   };
 ```
+
 ```ml
 let licenseNumber =
   if personHasACar then
@@ -66,6 +71,7 @@ let licenseNumber =
   else
     None
 ```
+
 ```js
 var licenseNumber = personHasACar ? 5 : undefined;
 ```
@@ -84,6 +90,7 @@ switch (licenseNumber) {
   Js.log("The person's license number is " ++ Js.Int.toString(number));
 };
 ```
+
 ```ml
 let () = match licenseNumber with
 | None ->
@@ -91,6 +98,7 @@ let () = match licenseNumber with
 | Some number ->
   Js.log ("The person's license number is " ^ (Js.Int.toString number))
 ```
+
 ```js
 var number = licenseNumber;
 
@@ -114,9 +122,11 @@ The `option` type is common enough that we special-case it when compiling to Jav
 ```re
 let x = Some(5);
 ```
+
 ```ml
 let x = Some 5
 ```
+
 ```js
 var x = 5;
 ```
@@ -130,9 +140,11 @@ simply compiles down to `5`, and
 ```re
 let x = None;
 ```
+
 ```ml
 let x = None
 ```
+
 ```js
 var x;
 ```
@@ -150,9 +162,11 @@ The option-to-undefined translation isn't perfect, because on our side, `option`
 ```re
 let x = Some(Some(Some(5)));
 ```
+
 ```ml
 let x = Some (Some (Some 5))
 ```
+
 ```js
 var x = 5;
 ```
@@ -166,9 +180,11 @@ This still compiles to `5`, but this gets troublesome:
 ```re
 let x = Some(None);
 ```
+
 ```ml
 let x = Some None
 ```
+
 ```js
 var Caml_option = require("./stdlib/caml_option.js");
 
@@ -203,9 +219,11 @@ If you're receiving, for example, a JS string that can be `null` and `undefined`
 ```re
 [@bs.module "MyConstant"] external myId: Js.Nullable.t(string) = "myId";
 ```
+
 ```ml
 external myId: string Js.Nullable.t = "myId" [@@bs.module "MyConstant"]
 ```
+
 ```js
 // Empty output
 ```
@@ -222,12 +240,14 @@ let personId: Js.Nullable.t(string) = Js.Nullable.return("abc123");
 
 let result = validate(personId);
 ```
+
 ```ml
 external validate: string Js.Nullable.t -> bool = "validate" [@@bs.module "MyIdValidator"]
 let personId: string Js.Nullable.t = Js.Nullable.return "abc123"
 
 let result = validate personId
 ```
+
 ```js
 var MyIdValidator = require("MyIdValidator");
 var personId = "abc123";

@@ -3,6 +3,8 @@ title: "Configuration Schema"
 metaTitle: "Build System Configuration Schema"
 description: "Schema exploration widget for the ReScript configuration file"
 canonical: "/docs/manual/v12.0.0/build-configuration-schema"
+section: "Build System"
+order: 3
 ---
 
 import dynamic from "next/dynamic";
@@ -15,7 +17,7 @@ export const Docson = dynamic(
   {
     ssr: false,
     loading: () => <div> Loading... </div>,
-  }
+  },
 );
 
 export default function BuildConfigurationSchemaPage() {

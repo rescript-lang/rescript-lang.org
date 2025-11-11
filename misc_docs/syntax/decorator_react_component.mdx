@@ -10,9 +10,8 @@ The `@react.component` decorator is used to annotate functions that are [React](
 
 You will need this decorator whenever you want to use a ReScript / React component in ReScript JSX expressions.
 
-
 > **Note**
-> The `@react.component` decorator requires the [react-jsx or jsx config](/docs/react/latest/installation) to be set in your `rescript.json` to enable the required React transformations. 
+> The `@react.component` decorator requires the [react-jsx or jsx config](/docs/react/latest/installation) to be set in your `rescript.json` to enable the required React transformations.
 
 ### Example
 
@@ -30,8 +29,8 @@ import * as JsxRuntime from "react/jsx-runtime";
 
 function Playground(props) {
   return JsxRuntime.jsx("button", {
-              children: "Hello " + props.name + "!"
-            });
+    children: "Hello " + props.name + "!",
+  });
 }
 
 var make = Playground;
@@ -41,4 +40,4 @@ var make = Playground;
 
 ### References
 
-* [React Components](/docs/react/latest/components-and-props)
+- [React Components](/docs/react/latest/components-and-props)

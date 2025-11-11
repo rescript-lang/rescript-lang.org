@@ -3,10 +3,10 @@ module Intro = {
   let make = () => {
     <section className="flex justify-center">
       <div className="max-w-1060 flex flex-col items-center px-5 sm:px-8 lg:box-content">
-        <h1 className="hl-title text-center max-w-[53rem]">
+        <h1 className="hl-title text-center max-w-212">
           {React.string("Fast, Simple, Fully Typed JavaScript from the Future")}
         </h1>
-        <h2 className="body-lg text-center text-gray-60 my-4 max-w-[40rem]">
+        <h2 className="body-lg text-center text-gray-60 my-4 max-w-md">
           {React.string(`ReScript is a robustly typed language that compiles to efficient
             and human-readable JavaScript. It comes with a lightning fast
             compiler toolchain that scales to any codebase size.`)}
@@ -98,6 +98,7 @@ export {
               </pre>
             </div>
           </div>
+
           /* ---Link to Playground--- */
           <div>
             <Next.Link
@@ -109,9 +110,7 @@ export {
           //
           <div className="hidden md:block">
             <img
-              className="absolute z-0 left-0 top-0 -ml-10 -mt-6"
-              src="/static/lp/grid.svg"
-              style={ReactDOM.Style.make(~height="24rem", ~width="24rem", ())}
+              className="absolute z-0 left-0 top-0 -ml-10 -mt-6 h-96 w-96" src="/static/lp/grid.svg"
             />
             <img
               className="absolute z-0 left-0 top-0 -ml-10 mt-10" src="/static/lp/illu_left.png"
@@ -119,9 +118,8 @@ export {
           </div>
           <div className="hidden md:block">
             <img
-              className="absolute z-0 right-0 bottom-0 -mb-10 mt-24 -mr-10"
+              className="absolute z-0 right-0 bottom-0 -mb-10 mt-24 -mr-10 h-96 w-96"
               src="/static/lp/grid.svg"
-              style={ReactDOM.Style.make(~height="24rem", ~width="24rem", ())}
             />
             <img
               className="absolute z-3 right-0 bottom-0 -mr-2 mb-10" src="/static/lp/illu_right.png"
@@ -183,31 +181,30 @@ module QuickInstall = {
       React.useEffect(() => {
         switch state {
         | Copied =>
-          open Webapi
-          let buttonEl = Nullable.toOption(buttonRef.current)->Option.getExn
+          let buttonEl = Nullable.toOption(buttonRef.current)->Option.getOrThrow
 
           // Note on this imperative DOM nonsense:
           // For Tailwind transitions to behave correctly, we need to first paint the DOM element in the tree,
           // and in the next tick, add the opacity-100 class, so the transition animation actually takes place.
           // If we don't do that, the banner will essentially pop up without any animation
-          let bannerEl = Document.createElement("div")
-          bannerEl->Element.setClassName("foobar opacity-0 absolute top-0 mt-4 -mr-1 px-2 rounded right-0
+          let bannerEl = WebAPI.Document.createElement(document, "div")
+          bannerEl.className = "foobar opacity-0 absolute top-0 mt-4 -mr-1 px-2 rounded right-0
             bg-turtle text-gray-80-tr body-sm
-            transition-all duration-500 ease-in-out ")
-          let textNode = Document.createTextNode("Copied!")
+            transition-all duration-500 ease-in-out "
+          let textNode = WebAPI.Document.createTextNode(document, "Copied!")
 
-          bannerEl->Element.appendChild(textNode)
-          buttonEl->Element.appendChild(bannerEl)
+          WebAPI.Element.appendChild(bannerEl, textNode)->ignore
+          WebAPI.Element.appendChild(buttonEl, bannerEl)->ignore
 
-          let nextFrameId = requestAnimationFrame(() => {
-            bannerEl->Element.classList->ClassList.toggle("opacity-0")
-            bannerEl->Element.classList->ClassList.toggle("opacity-100")
+          let nextFrameId = WebAPI.Window.requestAnimationFrame(window, _ => {
+            WebAPI.DOMTokenList.toggle(bannerEl.classList, ~token="opacity-0")->ignore
+            WebAPI.DOMTokenList.toggle(bannerEl.classList, ~token="opacity-100")->ignore
           })
 
-          let timeoutId = setTimeout(() => {
-            buttonEl->Element.removeChild(bannerEl)
+          let timeoutId = setTimeout(~handler=() => {
+            buttonEl->WebAPI.Element.removeChild(bannerEl)->ignore
             setState(_ => Init)
-          }, 2000)
+          }, ~timeout=2000)
 
           Some(
             () => {
@@ -220,7 +217,7 @@ module QuickInstall = {
       }, [state])
 
       <button
-        ref={ReactDOM.Ref.domRef(buttonRef)}
+        ref={ReactDOM.Ref.domRef((Obj.magic(buttonRef): React.ref<Nullable.t<Dom.element>>))}
         disabled={state === Copied}
         className="relative h-10 w-10 flex justify-center items-center "
         onClick>
@@ -232,7 +229,7 @@ module QuickInstall = {
   module Instructions = {
     let copyBox = text => {
       <div
-        className="flex justify-between items-center pl-6 pr-3 py-3 w-full bg-gray-10 border border-gray-20 rounded max-w-[25rem]">
+        className="flex justify-between items-center pl-6 pr-3 py-3 w-full bg-gray-10 border border-gray-20 rounded max-w-400">
         <span className="font-mono text-14  text-gray-70"> {React.string(text)} </span>
         <CopyButton code=text />
       </div>
@@ -260,7 +257,7 @@ module QuickInstall = {
     <section className="my-32 sm:px-4 sm:flex sm:justify-center">
       <div className="max-w-1060 flex flex-col w-full px-5 md:px-8 lg:px-8 lg:box-content ">
         //---Textblock on the left side---
-        <div className="relative max-w-[28rem]">
+        <div className="relative max-w-112">
           <p
             className="relative z-1 space-y-12 text-gray-80 font-semibold text-24 md:text-32 leading-2">
             <span className="bg-fire-5 rounded-lg border border-fire-10 p-1 ">
@@ -272,11 +269,10 @@ module QuickInstall = {
         //spacing between columns
         <div className="w-full mt-12 md:flex flex-col lg:flex-row md:justify-between ">
           <p
-            className="relative z-1 text-gray-80 font-semibold text-24 md:text-32 leading-2 max-w-[32rem]">
+            className="relative z-1 text-gray-80 font-semibold text-24 md:text-32 leading-2 max-w-lg">
             {React.string(`ReScript is used to ship and maintain mission-critical products with good UI and UX.`)}
           </p>
-          <div
-            className="mt-16 lg:mt-0 self-end" style={ReactDOM.Style.make(~maxWidth="25rem", ())}>
+          <div className="mt-16 lg:mt-0 self-end max-w-400">
             <Instructions />
           </div>
         </div>
@@ -318,7 +314,7 @@ module MainUSP = {
         // Content
         <div
           className="relative max-w-1060 z-3 flex flex-wrap justify-center lg:justify-between pb-16 pt-20 md:pb-20 md:pt-32 lg:pb-40 md:space-x-4 w-full">
-          <div className="max-w-[24rem] flex flex-col justify-center mb-6 lg:mb-2">
+          <div className="max-w-96 flex flex-col justify-center mb-6 lg:mb-2">
             <div className="hl-overline text-gray-20 mb-4"> {React.string(caption)} </div>
             <h3 className="text-gray-10 mb-4 hl-2 font-semibold"> title </h3>
             <div className="flex">
@@ -328,17 +324,11 @@ module MainUSP = {
           //image (right)
           <div className="relative mt-10 lg:mt-0">
             <div
-              className="relative w-full z-2 bg-gray-90 rounded-lg flex md:mt-0 items-center justify-center rounded-lg"
-              style={ReactDOM.Style.make(
-                ~maxWidth="35rem",
-                ~boxShadow="0px 4px 55px 0px rgba(230,72,79,0.10)",
-                (),
-              )}>
+              className="relative w-full z-2 bg-gray-90 flex md:mt-0 items-center justify-center rounded-lg max-w-140 shadow-[0px_4px_55px_0px_rgba(230,72,79,0.10)]">
               media
             </div>
             <img
-              className="absolute z-1 bottom-0 right-0 -mb-12 -mr-12"
-              style={ReactDOM.Style.make(~maxWidth="20rem", ())}
+              className="absolute z-1 bottom-0 right-0 -mb-12 -mr-12 max-w-[20rem]"
               src="/static/lp/grid2.svg"
             />
           </div>
@@ -391,7 +381,7 @@ module MainUSP = {
     <Item
       caption="A robust type system"
       title={<span
-        className="text-transparent bg-clip-text bg-gradient-to-r from-berry-dark-50 to-fire-50">
+        className="text-transparent bg-clip-text bg-linear-to-r from-berry-dark-50 to-fire-50">
         {React.string("Type Better")}
       </span>}
       media={<video
@@ -427,9 +417,7 @@ module MainUSP = {
 
   @react.component
   let make = () => {
-    <section
-      className="w-full bg-gray-90 overflow-hidden"
-      style={ReactDOM.Style.make(~minHeight="37rem", ())}>
+    <section className="w-full bg-gray-90 overflow-hidden min-h-148">
       item1
       item2
       item3
@@ -455,6 +443,7 @@ module OtherSellingPoints = {
               "/static/lp/community-2.jpg",
               "/static/lp/community-1.jpg",
             ]}
+            imgLoading=#lazy
           />
           <h3 className="hl-3 text-gray-20 mt-4 mb-2">
             {React.string(`A community of programmers who value getting things done`)}
@@ -529,7 +518,7 @@ module TrustedBy = {
           | Logo({name, path, url}) => (
               name,
               <a href=url rel="noopener noreferrer">
-                <img className="hover:opacity-75 max-w-sm h-12" src=path />
+                <img className="hover:opacity-75 max-w-sm h-12" src=path loading=#lazy />
               </a>,
             )
           }
@@ -541,9 +530,7 @@ module TrustedBy = {
         href="https://github.com/rescript-lang/rescript-lang.org/blob/master/src/common/OurUsers.res">
         <Button> {React.string("Add Your Logo")} </Button>
       </a>
-      <div
-        className="self-start mt-10 max-w-320 overflow-hidden opacity-50"
-        style={ReactDOM.Style.make(~maxHeight="6rem", ())}>
+      <div className="self-start mt-10 max-w-320 overflow-hidden opacity-50 max-h-24">
         <img className="w-full h-full" src="/static/lp/grid.svg" />
       </div>
     </section>
@@ -599,7 +586,7 @@ module CuratedResources = {
       imgSrc: "/static/vitejs_starter_logo.svg",
       title: <>
         <div> {React.string("ReScript & ")} </div>
-        <div style={ReactDOM.Style.make(~color="#6571FB", ())}> {React.string("ViteJS")} </div>
+        <div className="text-[#6571FB]"> {React.string("ViteJS")} </div>
       </>,
       descr: "Get started with ViteJS and ReScript.",
       href: "https://github.com/rescript-lang/create-rescript-app/blob/master/templates/rescript-template-vite/README.md",
@@ -629,12 +616,12 @@ module CuratedResources = {
         <h2 className="hl-1 text-gray-20 text-center"> {React.string("Curated resources")} </h2>
       </div>
       <div className="px-5 md:px-8 max-w-1280 mx-auto my-20">
-        <div
-          className="body-lg text-center z-2 relative text-gray-40 max-w-[12rem] mx-auto bg-gray-100">
+        <div className="body-lg text-center z-2 relative text-gray-40 max-w-48 mx-auto bg-gray-100">
           {React.string("Guides and Docs")}
         </div>
         <hr className="bg-gray-80 h-px border-0 relative top-[-12px]" />
       </div>
+
       //divider
 
       //container for guides
@@ -647,7 +634,7 @@ module CuratedResources = {
               key={Int.toString(i)}
               href={card.href}
               className="hover:bg-gray-80 bg-gray-90 px-4 md:px-8 pb-0 md:pb-8 relative rounded-xl md:min-w-[196px]">
-              <img className="h-[53px] absolute mt-6" src=card.imgSrc />
+              <img className="h-[53px] absolute mt-6" src=card.imgSrc loading=#lazy />
               <h5 className="text-gray-10 hl-4 mt-32 h-12"> {card.title} </h5>
               <div className="text-gray-40 mt-2 mb-8 body-sm"> {React.string(card.descr)} </div>
             </Next.Link>
@@ -656,8 +643,7 @@ module CuratedResources = {
         </div>
         //Container for templates
         <div className="px-5 md:px-8 max-w-1280 mx-auto my-20">
-          <div
-            className="body-lg text-center z-2 relative text-gray-40 w-[8rem] mx-auto bg-gray-100">
+          <div className="body-lg text-center z-2 relative text-gray-40 w-32 mx-auto bg-gray-100">
             {React.string("Templates")}
           </div>
           <hr className="bg-gray-80 h-px border-0 relative top-[-12px]" />
@@ -670,7 +656,7 @@ module CuratedResources = {
               key={Int.toString(i)}
               href={card.href}
               className="hover:bg-gray-80 bg-gray-90 px-5 pb-8 relative rounded-xl min-w-[200px]">
-              <img className="h-12 absolute mt-5" src=card.imgSrc />
+              <img className="h-12 absolute mt-5" src=card.imgSrc loading=#lazy />
               <h5 className="text-gray-10 hl-4 mt-32 h-12"> {card.title} </h5>
               <div className="text-gray-40 mt-4 body-sm"> {React.string(card.descr)} </div>
             </a>

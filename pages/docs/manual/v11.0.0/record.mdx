@@ -23,6 +23,7 @@ type person = {
   name: string,
 }
 ```
+
 ```js
 // Empty output
 ```
@@ -41,10 +42,11 @@ let me = {
   name: "Big ReScript"
 }
 ```
+
 ```js
 var me = {
   age: 5,
-  name: "Big ReScript"
+  name: "Big ReScript",
 };
 ```
 
@@ -60,6 +62,7 @@ The type is found by looking above the `me` value. **Note**: if the type instead
 // School.res
 type person = {age: int, name: string}
 ```
+
 ```js
 // Empty output
 ```
@@ -75,14 +78,15 @@ let me: School.person = {age: 20, name: "Big ReScript"}
 /* or */
 let me2 = {School.age: 20, name: "Big ReScript"}
 ```
+
 ```js
 var me = {
   age: 20,
-  name: "Big ReScript"
+  name: "Big ReScript",
 };
 var me2 = {
   age: 20,
-  name: "Big ReScript"
+  name: "Big ReScript",
 };
 ```
 
@@ -99,6 +103,7 @@ Use the familiar dot notation:
 ```res example
 let name = me.name
 ```
+
 ```js
 var name = "Big ReScript";
 ```
@@ -114,10 +119,11 @@ New records can be created from old records with the `...` spread operator. The 
 ```res example
 let meNextYear = {...me, age: me.age + 1}
 ```
+
 ```js
 var meNextYear = {
   age: 21,
-  name: "Big ReScript"
+  name: "Big ReScript",
 };
 ```
 
@@ -140,13 +146,14 @@ type person = {
 let baby = {name: "Baby ReScript", age: 5}
 baby.age = baby.age + 1 // `baby.age` is now 6. Happy birthday!
 ```
+
 ```js
 var baby = {
   name: "Baby ReScript",
-  age: 5
+  age: 5,
 };
 
-baby.age = baby.age + 1 | 0;
+baby.age = (baby.age + 1) | 0;
 ```
 
 </CodeTab>
@@ -158,6 +165,7 @@ Fields not marked with `mutable` in the type declaration cannot be mutated.
 ReScript records compile to straightforward JavaScript objects; see the various JS output tabs above.
 
 ## Optional Record Fields
+
 ReScript [`v10`](/blog/release-10-0-0#experimental-optional-record-fields) introduced optional record fields. This means that you can define fields that can be omitted when creating the record. It looks like this:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
@@ -168,6 +176,7 @@ type person = {
   name?: string
 }
 ```
+
 ```js
 // Empty output
 ```
@@ -177,6 +186,7 @@ type person = {
 Notice how `name` has a suffixed `?`. That means that the field itself is _optional_.
 
 ### Creation
+
 You can omit any optional fields when creating a record. Not setting an optional field will default the field's value to `None`:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
@@ -196,14 +206,15 @@ let friend = {
   age: 7
 }
 ```
+
 ```js
 var me = {
   age: 5,
-  name: "Big ReScript"
+  name: "Big ReScript",
 };
 
 var friend = {
-  age: 7
+  age: 7,
 };
 ```
 
@@ -212,6 +223,7 @@ var friend = {
 This has consequences for pattern matching, which we'll expand a bit on soon.
 
 ## Immutable Update
+
 Updating an optional field via an immutable update above lets you set that field value without needing to care whether it's optional or not.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
@@ -232,12 +244,13 @@ let withoutName = {
   name: "New Name"
 }
 ```
+
 ```js
 import * as Caml_obj from "./stdlib/caml_obj.js";
 
 var me = {
   age: 123,
-  name: "Hello"
+  name: "Hello",
 };
 
 var newrecord = Caml_obj.obj_dup(me);
@@ -248,7 +261,6 @@ var withoutName = newrecord;
 ```
 
 </CodeTab>
-
 
 However, if you want to set the field to an optional value, you prefix that value with `?`:
 
@@ -272,12 +284,13 @@ let withoutName = {
   name: ?maybeName
 }
 ```
+
 ```js
 import * as Caml_obj from "./stdlib/caml_obj.js";
 
 var me = {
   age: 123,
-  name: "Hello"
+  name: "Hello",
 };
 
 var maybeName = "My Name";
@@ -294,6 +307,7 @@ var withoutName = newrecord;
 You can unset an optional field's value via that same mechanism by setting it to `?None`.
 
 ### Pattern Matching on Optional Fields
+
 [Pattern matching](pattern-matching-destructuring), one of ReScript's most important features, has two caveats when you deal with optional fields.
 
 When matching on the value directly, it's an `option`. Example:
@@ -316,6 +330,7 @@ let isRescript = switch me.name {
 | Some(_) | None => false
 }
 ```
+
 ```js
 var isRescript;
 
@@ -323,7 +338,7 @@ isRescript = "Hello" === "ReScript" ? true : false;
 
 var me = {
   age: 123,
-  name: "Hello"
+  name: "Hello",
 };
 ```
 
@@ -350,6 +365,7 @@ let isRescript = switch me {
 }
 
 ```
+
 ```js
 var isRescript;
 
@@ -357,7 +373,7 @@ isRescript = "Hello" === "ReScript" ? true : false;
 
 var me = {
   age: 123,
-  name: "Hello"
+  name: "Hello",
 };
 ```
 
@@ -383,12 +399,13 @@ let nameWasSet = switch me {
 | {name: ?Some(_)} => true
 }
 ```
+
 ```js
 var nameWasSet = true;
 
 var me = {
   age: 123,
-  name: "Hello"
+  name: "Hello",
 };
 ```
 
@@ -513,6 +530,7 @@ let name = nameFromB(a :> b)
 ## Tips & Tricks
 
 ### Record Types Are Found By Field Name
+
 With records, you **cannot** say "I'd like this function to take any record type, as long as they have the field `age`". The following **won't work as intended**:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
@@ -523,6 +541,7 @@ type monster = {age: int, hasTentacles: bool}
 
 let getAge = (entity) => entity.age
 ```
+
 ```js
 function getAge(entity) {
   return entity.age;
@@ -544,7 +563,8 @@ getAge(me) // type error!
 The type system will complain that `me` is a `person`, and that `getAge` only works on `monster`. If you need such capability, use ReScript objects, described [here](object.md).
 
 ### Optional Fields in Records Can Be Useful for Bindings
-Many JavaScript APIs tend to have large configuration objects that can be a bit annoying to model as records, since you previously always needed to specify all record fields when creating a record. 
+
+Many JavaScript APIs tend to have large configuration objects that can be a bit annoying to model as records, since you previously always needed to specify all record fields when creating a record.
 
 Optional record fields, introduced in [`v10`](/blog/release-10-0-0#experimental-optional-record-fields), is intended to help with this. Optional fields will let you avoid having to specify all fields, and let you just specify the one's you care about. A significant improvement in ergonomics for bindings and other APIs with for example large configuration objects.
 
@@ -554,4 +574,3 @@ After reading the constraints in the previous sections, and if you're coming fro
 
 1. The truth is that most of the times in your app, your data's shape is actually fixed, and if it's not, it can potentially be better represented as a combination of variant (introduced next) + record instead.
 2. Since a record type is resolved through finding that single explicit type declaration (we call this "nominal typing"), the type error messages end up better than the counterpart ("structural typing", like for tuples). This makes refactoring easier; changing a record type's fields naturally allows the compiler to know that it's still the same record, just misused in some places. Otherwise, under structural typing, it might get hard to tell whether the definition site or the usage site is wrong.
-

@@ -1,3 +1,9 @@
+module KeyMap: {
+  type t = Default | Vim
+  let toString: t => string
+  let fromString: string => t
+}
+
 module Error: {
   type kind = [#Error | #Warning]
 
@@ -36,6 +42,7 @@ module CM: {
       lineWrapping?: bool,
       fixedGutter?: bool,
       scrollbarStyle?: string,
+      keyMap?: string,
     }
   }
 }
@@ -59,5 +66,6 @@ let make: (
   ~readOnly: bool=?,
   ~lineNumbers: bool=?,
   ~scrollbarStyle: string=?,
+  ~keyMap: KeyMap.t=?,
   ~lineWrapping: bool=?,
 ) => React.element

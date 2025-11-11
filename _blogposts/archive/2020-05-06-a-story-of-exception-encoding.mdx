@@ -77,7 +77,7 @@ exception A of { x : int , y : string}
 exception B
 ```
 
-`exception A` is encoded as an array of 3 slots. The first slot is a block by itself (called an *identity block*), while the second slot is for field x and the third slot for field y.
+`exception A` is encoded as an array of 3 slots. The first slot is a block by itself (called an _identity block_), while the second slot is for field x and the third slot for field y.
 
 `exception B` is just the identity block.
 
@@ -99,23 +99,24 @@ The two values will be compiled into
 {RE_EXN_ID : "A/uuid", x : 1, y : "x" }
 {RE_EXN_ID : "B/uuid"}
 ```
+
 As you can see, all exceptions (no matter with or without payload) share the same encoding.
 
 What will happen when you raise an exception?
 
 ```reason
 raise (A {x : 1 , y : "x"})
-````
+```
 
 It generates following JS:
 
 ```js
-throw {RE_EXN_ID: "A/uuid", x : 1 , y : "x", Error : new Error ()}
+throw { RE_EXN_ID: "A/uuid", x: 1, y: "x", Error: new Error() };
 ```
 
 The output above shows that we are now able to attach the stacktrace as an `Error` attribute very easily, since every exception is now an object instead of an array. Really cool!
 
-It's important to note that a stacktrace will only be attached *when you raise an exception*. In other words, the stacktrace will not be attached just by creating an exception (which is different to JS'es `new Error()` behavior).
+It's important to note that a stacktrace will only be attached _when you raise an exception_. In other words, the stacktrace will not be attached just by creating an exception (which is different to JS'es `new Error()` behavior).
 
 ## What does that mean for JS interop?
 
@@ -140,11 +141,10 @@ The `obj` value in the `Js.Exn.Error` branch is an opaque type to maintain type 
 
 - Please note that it's not allowed to rely on the key name `RE_EXN_ID`. It's an implementation detail which will probably be changed into a symbol in the future.
 
-- Don't over-use exceptions, remember exceptions should only be used in exceptional cases like division by zero. Whenever you  try to express erroneous results, use the `result` or `option` type instead.
+- Don't over-use exceptions, remember exceptions should only be used in exceptional cases like division by zero. Whenever you try to express erroneous results, use the `result` or `option` type instead.
 
 ## Bonus
 
 Now with our new exception encoding in place, a hidden feature called [extensible variant](https://caml.inria.fr/pub/docs/manual-ocaml/extensiblevariants.html) suddenly got way more interesting as well. Practically speaking, native exceptions are actually a special form of an extensible variant, so both are benefiting from the same representation changes!
-
 
 Happy hacking and we would like your feedback!

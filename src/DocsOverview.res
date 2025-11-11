@@ -1,8 +1,7 @@
 module Card = {
   @react.component
   let make = (~title: string, ~hrefs: array<(string, string)>) => {
-    let style = ReactDOM.Style.make(~maxWidth="21rem", ())
-    <div style className="border border-gray-10 bg-gray-5 px-5 py-8 rounded-lg">
+    <div className="max-w-84 border border-gray-10 bg-gray-5 px-5 py-8 rounded-lg">
       <h2 className="font-bold text-24 mb-4"> {React.string(title)} </h2>
       <ul>
         {Array.map(hrefs, ((text, href)) =>
@@ -31,35 +30,8 @@ let default = (~showVersionSelect=true) => {
     ("Reanalyze", "https://github.com/rescript-lang/reanalyze"),
   ]
 
-  let versionSelect = if showVersionSelect {
-    let onChange = evt => {
-      open Url
-      ReactEvent.Form.preventDefault(evt)
-      let version = (evt->ReactEvent.Form.target)["value"]
-      let url = Url.parse(router.route)
-
-      let targetUrl =
-        "/" ++
-        (Array.join(url.base, "/") ++
-        ("/" ++ (version ++ ("/" ++ Array.join(url.pagepath, "/")))))
-      router->Next.Router.push(targetUrl)
-    }
-
-    <div className="text-fire">
-      <VersionSelect
-        availableVersions=Constants.allManualVersions
-        nextVersion=?Constants.nextVersion
-        onChange
-        version
-      />
-    </div>
-  } else {
-    React.null
-  }
-
   <>
     <div>
-      versionSelect
       <div className="mb-6" />
       <Markdown.H1> {React.string("Docs")} </Markdown.H1>
     </div>

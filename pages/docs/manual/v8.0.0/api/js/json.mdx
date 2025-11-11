@@ -41,7 +41,6 @@ type tagged_t =
   | JSONArray(array(t));
 ```
 
-
 ## classify
 
 ```re sig
@@ -136,7 +135,7 @@ let boolean: bool => t;
 
 `boolean(b)` makes a JSON boolean of the `bool` `b`.
 
-## object_
+## object\_
 
 ```re sig
 let object_: Js_dict.t(t) => t;
@@ -182,7 +181,7 @@ let booleanArray: array(bool) => t;
 let objectArray: array(Js_dict.t(t)) => t;
 ```
 
-`objectArray(a) makes a JSON array of the `JsDict.t` array `a`.
+`objectArray(a) makes a JSON array of the `JsDict.t`array`a`.
 
 ## parseExn
 
@@ -302,17 +301,3 @@ let stringifyAny: 'a => option(string);
 /* prints `["foo", "bar"]` */
 Js.log(Js.Json.stringifyAny([|"foo", "bar"|]));
 ```
-
-
-
-
-
-
-
-
-
-
-  
-
-  
- 

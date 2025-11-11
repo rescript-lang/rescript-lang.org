@@ -25,9 +25,15 @@ let nextVersion =
     ? None
     : Some(versions.next, versions.next->Semver.tryGetMajorString)
 
-let coreVersions = [latestVersion]
+let stdlibVersions =
+  versions.latest === "v11.0.0" ? [latestVersion] : [("v11.0.0", "v11"), latestVersion]
 
-let allReactVersions = [("latest", "v0.12.0"), ("v0.11.0", "v0.11.0"), ("v0.10.0", "v0.10.0")]
+let latestReactVersion = "latest"
+let allReactVersions = [
+  ("latest", latestReactVersion),
+  ("v0.11.0", "v0.11.0"),
+  ("v0.10.0", "v0.10.0"),
+]
 
 let dropdownLabelNext = "--- Next ---"
 let dropdownLabelReleased = "--- Released ---"

@@ -2,6 +2,8 @@
 title: memo
 description: "Using React.memo"
 canonical: "/docs/react/latest/memo"
+section: "Main Concepts"
+order: 8
 ---
 
 # memo
@@ -11,7 +13,10 @@ canonical: "/docs/react/latest/memo"
 Wrap a component in memo to get a memoized version of that component.
 This memoized version of your component will usually not be re-rendered when its parent component is re-rendered as long as its props have not changed.
 
-<small>But React may still re-render it: memoization is a performance optimization, not a guarantee.</small>
+<small>
+  But React may still re-render it: memoization is a performance optimization,
+  not a guarantee.
+</small>
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -31,14 +36,10 @@ import * as React from "react";
 import * as JsxRuntime from "react/jsx-runtime";
 
 var make = React.memo(function (props) {
-      return JsxRuntime.jsxs("div", {
-                  children: [
-                    props.a,
-                    JsxRuntime.jsx("br", {}),
-                    props.b
-                  ]
-                });
-    });
+  return JsxRuntime.jsxs("div", {
+    children: [props.a, JsxRuntime.jsx("br", {}), props.b],
+  });
+});
 ```
 
 </CodeTab>
@@ -76,21 +77,20 @@ import * as JsxRuntime from "react/jsx-runtime";
 function Playground(props) {
   var onClick = props.onClick;
   return JsxRuntime.jsx("button", {
-              children: "My button",
-              disabled: props.disabled,
-              onClick: (function (ev) {
-                  onClick((ev.preventDefault(), undefined));
-                })
-            });
+    children: "My button",
+    disabled: props.disabled,
+    onClick: function (ev) {
+      onClick((ev.preventDefault(), undefined));
+    },
+  });
 }
 
-var make = React.memo(Playground, (function (p1, p2) {
-        return p1.disabled === p2.disabled;
-      }));
+var make = React.memo(Playground, function (p1, p2) {
+  return p1.disabled === p2.disabled;
+});
 ```
 
 </CodeTab>
-
 
 Another approach is to use a custom prop type and remove the `@react.component` annotation.
 
@@ -116,18 +116,21 @@ let make = React.memoCustomCompareProps(
 import * as React from "react";
 import * as JsxRuntime from "react/jsx-runtime";
 
-var make = React.memo((function (param) {
-        var onClick = param.onClick;
-        return JsxRuntime.jsx("button", {
-                    children: "My button",
-                    disabled: param.disabled,
-                    onClick: (function (ev) {
-                        onClick(ev);
-                      })
-                  });
-      }), (function (p1, p2) {
-        return p1.disabled === p2.disabled;
-      }));
+var make = React.memo(
+  function (param) {
+    var onClick = param.onClick;
+    return JsxRuntime.jsx("button", {
+      children: "My button",
+      disabled: param.disabled,
+      onClick: function (ev) {
+        onClick(ev);
+      },
+    });
+  },
+  function (p1, p2) {
+    return p1.disabled === p2.disabled;
+  },
+);
 ```
 
 </CodeTab>

@@ -28,6 +28,7 @@ let result =
   | Not_found => 0 // Default value if getItem throws
   }
 ```
+
 ```js
 function getItem(items) {
   if (callSomeFunctionThatThrows()) {
@@ -35,7 +36,7 @@ function getItem(items) {
   }
   throw {
     RE_EXN_ID: "Not_found",
-    Error: new Error()
+    Error: new Error(),
   };
 }
 
@@ -67,18 +68,18 @@ switch List.find(i => i === theItem, myItems) {
 | exception Not_found => Js.log("No such item found!")
 }
 ```
+
 ```js
 var exit = 0;
 
 var item;
 
 try {
-  item = List.find(function(i) {
+  item = List.find(function (i) {
     return i === theItem;
   }, myItems);
   exit = 1;
-}
-catch (raw_exn){
+} catch (raw_exn) {
   var exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
   if (exn.RE_EXN_ID === "Not_found") {
     console.log("No such item found!");
@@ -103,6 +104,7 @@ exception InputClosed(string)
 // later on
 raise(InputClosed("The stream has closed!"))
 ```
+
 ```js
 var Caml_exceptions = require("./stdlib/caml_exceptions.js");
 
@@ -111,7 +113,7 @@ var InputClosed = Caml_exceptions.create("MyFile.InputClosed");
 throw {
   RE_EXN_ID: InputClosed,
   _1: "The stream has closed!",
-  Error: new Error()
+  Error: new Error(),
 };
 ```
 
@@ -134,6 +136,7 @@ try {
   }
 }
 ```
+
 ```js
 var Js_exn = require("./stdlib/js_exn.js");
 var Caml_js_exceptions = require("./stdlib/caml_js_exceptions.js");
@@ -168,6 +171,7 @@ let myTest = () => {
   Js.Exn.raiseError("Hello!")
 }
 ```
+
 ```js
 var Js_exn = require("./stdlib/js_exn.js");
 
@@ -183,9 +187,9 @@ Then you can catch it from the JS side:
 ```js
 // after importing `myTest`...
 try {
-  myTest()
+  myTest();
 } catch (e) {
-  console.log(e.message) // "Hello!"
+  console.log(e.message); // "Hello!"
 }
 ```
 
@@ -202,6 +206,7 @@ let myTest = () => {
   raise(BadArgument({myMessage: "Oops!"}))
 }
 ```
+
 ```js
 var Caml_exceptions = require("./stdlib/caml_exceptions.js");
 
@@ -211,7 +216,7 @@ function myTest() {
   throw {
     RE_EXN_ID: BadArgument,
     myMessage: "Oops!",
-    Error: new Error()
+    Error: new Error(),
   };
 }
 ```
@@ -223,10 +228,10 @@ Then, in your JS:
 ```js
 // after importing `myTest`...
 try {
-  myTest()
+  myTest();
 } catch (e) {
-  console.log(e.myMessage) // "Oops!"
-  console.log(e.Error.stack) // the stack trace
+  console.log(e.myMessage); // "Oops!"
+  console.log(e.Error.stack); // the stack trace
 }
 ```
 
@@ -251,6 +256,7 @@ try {
 | Js.Exn.Error(obj) => ... // catch the JS exception
 }
 ```
+
 ```js
 var Js_exn = require("./stdlib/js_exn.js");
 var Caml_js_exceptions = require("./stdlib/caml_js_exceptions.js");

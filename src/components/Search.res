@@ -2,35 +2,14 @@ let apiKey = "a2485ef172b8cd82a2dfa498d551399b"
 let indexName = "rescript-lang"
 let appId = "S32LNEY41T"
 
-@val @scope("document")
-external activeElement: option<Dom.element> = "activeElement"
-
-type keyboardEventLike = {key: string, ctrlKey: bool, metaKey: bool}
-@val @scope("window")
-external addKeyboardEventListener: (string, keyboardEventLike => unit) => unit = "addEventListener"
-
-@val @scope("window")
-external removeKeyboardEventListener: (string, keyboardEventLike => unit) => unit =
-  "addEventListener"
-
-type window
-@val external window: window = "window"
-@get external scrollY: window => int = "scrollY"
-
-@send
-external keyboardEventPreventDefault: keyboardEventLike => unit = "preventDefault"
-
-@get external tagName: Dom.element => string = "tagName"
-@get external isContentEditable: Dom.element => bool = "isContentEditable"
-
 type state = Active | Inactive
 
 let hit = ({hit, children}: DocSearch.hitComponent) => {
-  let toTitle = str => str->String.charAt(0)->String.toUpperCase ++ String.sliceToEnd(str, ~start=1)
+  let toTitle = str => str->String.charAt(0)->String.toUpperCase ++ String.slice(str, ~start=1)
 
   let description = switch hit.url
   ->String.split("/")
-  ->Array.sliceToEnd(~start=1)
+  ->Array.slice(~start=1)
   ->List.fromArray {
   | list{"blog" as r | "community" as r, ..._} => r->toTitle
   | list{"docs", doc, version, ...rest} =>
@@ -60,7 +39,7 @@ let hit = ({hit, children}: DocSearch.hitComponent) => {
 
 let transformItems = (items: DocSearch.transformItems) => {
   items->Array.filterMap(item => {
-    let url = try Webapi.URL.make(item.url)->Some catch {
+    let url = try WebAPI.URL.make(~url=item.url)->Some catch {
     | Exn.Error(obj) =>
       Console.error2(`Failed to parse URL ${item.url}`, obj)
       None
@@ -80,38 +59,38 @@ let make = () => {
   let version = Url.parse(router.route)->Url.getVersionString
 
   let handleCloseModal = () => {
-    let () = switch ReactDOM.querySelector(".DocSearch-Modal") {
-    | Some(modal) =>
-      switch ReactDOM.querySelector("body") {
-      | Some(body) =>
-        open Webapi
-        body->Element.classList->ClassList.remove("DocSearch--active")
-        modal->Element.addEventListener("transitionend", () => {
+    let () = switch WebAPI.Document.querySelector(document, ".DocSearch-Modal") {
+    | Value(modal) =>
+      switch WebAPI.Document.querySelector(document, "body") {
+      | Value(body) =>
+        WebAPI.DOMTokenList.remove(body.classList, "DocSearch--active")
+        modal->WebAPI.Element.addEventListener(Transitionend, () => {
           setState(_ => Inactive)
         })
-      | None => setState(_ => Inactive)
+      | Null => setState(_ => Inactive)
       }
-    | None => ()
+    | Null => ()
     }
   }
 
   React.useEffect(() => {
-    let isEditableTag = el =>
-      switch el->tagName {
+    let isEditableTag = (el: WebAPI.DOMAPI.element) =>
+      switch el.tagName {
       | "TEXTAREA" | "SELECT" | "INPUT" => true
       | _ => false
       }
 
-    let focusSearch = e => {
-      switch activeElement {
-      | Some(el) if el->isEditableTag || el->isContentEditable => ()
+    let focusSearch = (e: WebAPI.UIEventsAPI.keyboardEvent) => {
+      switch document.activeElement {
+      | Value(el)
+        if el->isEditableTag || (Obj.magic(el): WebAPI.DOMAPI.htmlElement).isContentEditable => ()
       | _ =>
         setState(_ => Active)
-        e->keyboardEventPreventDefault
+        WebAPI.KeyboardEvent.preventDefault(e)
       }
     }
 
-    let handleGlobalKeyDown = e => {
+    let handleGlobalKeyDown = (e: WebAPI.UIEventsAPI.keyboardEvent) => {
       switch e.key {
       | "/" => focusSearch(e)
       | "k" if e.ctrlKey || e.metaKey => focusSearch(e)
@@ -119,8 +98,8 @@ let make = () => {
       | _ => ()
       }
     }
-    addKeyboardEventListener("keydown", handleGlobalKeyDown)
-    Some(() => removeKeyboardEventListener("keydown", handleGlobalKeyDown))
+    WebAPI.Window.addEventListener(window, Keydown, handleGlobalKeyDown)
+    Some(() => WebAPI.Window.removeEventListener(window, Keydown, handleGlobalKeyDown))
   }, [setState])
 
   let onClick = _ => {
@@ -146,7 +125,7 @@ let make = () => {
             indexName
             onClose
             searchParameters={facetFilters: ["version:" ++ version]}
-            initialScrollY={window->scrollY}
+            initialScrollY={window.scrollY->Float.toInt}
             transformItems={transformItems}
             hitComponent=hit
           />,

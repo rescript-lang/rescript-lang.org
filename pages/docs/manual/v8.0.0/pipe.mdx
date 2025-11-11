@@ -15,9 +15,11 @@ Why would you use it? Imagine you have the following:
 ```re
 validateAge(getAge(parseData(person)));
 ```
+
 ```ml
 validateAge (getAge (parseData person))
 ```
+
 ```js
 validateAge(getAge(parseData(person)));
 ```
@@ -34,12 +36,14 @@ person
   ->getAge
   ->validateAge;
 ```
+
 ```ml
 person
   |. parseData
   |. getAge
   |. validateAge
 ```
+
 ```js
 validateAge(getAge(parseData(person)));
 ```
@@ -55,9 +59,11 @@ Basically, `parseData(person)` is transformed into `person->parseData`, and `get
 ```re
 a(one, two, three);
 ```
+
 ```ml
 a one two three
 ```
+
 ```js
 a(one, two, three);
 ```
@@ -71,9 +77,11 @@ is the same as
 ```re
 one->a(two, three);
 ```
+
 ```ml
 one |. a two three
 ```
+
 ```js
 a(one, two, three);
 ```
@@ -115,6 +123,7 @@ type request;
 [@bs.send] external setWaitDuration: (request, int) => request = "setWaitDuration";
 [@bs.send] external send: request => unit = "send";
 ```
+
 ```ml
 external map: 'a array -> ('a -> 'b) -> 'b array = "map" [@@bs.send]
 external filter: 'a array -> ('a -> bool) -> 'a array = "filter" [@@bs.send]
@@ -124,6 +133,7 @@ external asyncRequest: unit -> request = "asyncRequest" [@@bs.val]
 external setWaitDuration: request -> int -> request = "setWaitDuration" [@@bs.send]
 external send: request -> unit = "send" [@@bs.send]
 ```
+
 ```js
 // Empty output
 ```
@@ -142,6 +152,7 @@ let result = Js.Array2.filter(
 
 send(setWaitDuration(asyncRequest(), 4000));
 ```
+
 ```ml
 let result = Js.Array2.filter
   (Js.Array2.map [|1; 2; 3|] (fun a -> a + 1))
@@ -149,12 +160,15 @@ let result = Js.Array2.filter
 
 let () = send (setWaitDuration (asyncRequest ()) 4000)
 ```
+
 ```js
-var result = [1, 2, 3].map(function(a) {
-  return a + 1 | 0;
-}).filter(function(a) {
-  return a % 2 === 0;
-});
+var result = [1, 2, 3]
+  .map(function (a) {
+    return (a + 1) | 0;
+  })
+  .filter(function (a) {
+    return a % 2 === 0;
+  });
 
 asyncRequest().setWaitDuration(4000).send();
 ```
@@ -172,6 +186,7 @@ let result = [|1, 2, 3|]
 
 asyncRequest()->setWaitDuration(4000)->send
 ```
+
 ```ml
 let result = [|1; 2; 3|]
   |. map(fun a -> a + 1)
@@ -179,12 +194,15 @@ let result = [|1; 2; 3|]
 
 asyncRequest()->setWaitDuration(4000)->send
 ```
+
 ```js
-var result = [1, 2, 3].map(function(a) {
-  return a + 1 | 0;
-}).filter(function(a) {
-  return a % 2 === 0;
-});
+var result = [1, 2, 3]
+  .map(function (a) {
+    return (a + 1) | 0;
+  })
+  .filter(function (a) {
+    return a % 2 === 0;
+  });
 
 asyncRequest().setWaitDuration(4000).send();
 ```
@@ -200,9 +218,11 @@ You can pipe into a variant's constructor as if it was a function:
 ```re
 let result = name->preprocess->Some;
 ```
+
 ```ml
 let result = name |. preprocess |. Some
 ```
+
 ```js
 var result = preprocess(name);
 ```
@@ -216,9 +236,11 @@ We turn this into:
 ```re
 let result = Some(preprocess(name));
 ```
+
 ```ml
 let result = Some (preprocess name)
 ```
+
 ```js
 var result = preprocess(name);
 ```
@@ -237,6 +259,7 @@ A placeholder is written as an underscore and it tells ReScript that you want to
 let addTo7 = (x) => add3(3, x, 4);
 let addTo7 = add3(3, _, 4);
 ```
+
 ```ml
 (* doesn't exist in old ML syntax *)
 ```
@@ -253,10 +276,12 @@ Let's say you have a function `namePerson`, which takes a `person` then a `name`
 makePerson(~age=47, ())
   ->namePerson("Jane");
 ```
+
 ```ml
 makePerson ~age=47 ()
   |. namePerson("Jane")
 ```
+
 ```js
 namePerson(makePerson(47), "Jane");
 ```
@@ -271,9 +296,11 @@ If you have a name that you want to apply to a person object, you can use a plac
 getName(input)
   ->namePerson(personDetails, _);
 ```
+
 ```ml
 (* doesn't exist in old ML syntax *)
 ```
+
 ```js
 var __x = getName(input);
 namePerson(personDetails, __x);
@@ -289,9 +316,11 @@ This allows you to pipe into any positional argument. It also works for named ar
 getName(input)
   ->namePerson(~person=personDetails, ~name=_);
 ```
+
 ```ml
 (* doesn't exist in old ML syntax *)
 ```
+
 ```js
 var __x = getName(input);
 namePerson(personDetails, __x);

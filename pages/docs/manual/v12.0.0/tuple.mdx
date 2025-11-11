@@ -2,6 +2,8 @@
 title: "Tuple"
 description: "Tuple types and values in ReScript"
 canonical: "/docs/manual/v12.0.0/tuple"
+section: "Language Features"
+order: 5
 ---
 
 # Tuple
@@ -19,6 +21,7 @@ Tuples are a ReScript-specific data structure that don't exist in JavaScript. Th
 let ageAndName = (24, "Lil' ReScript")
 let my3dCoordinates = (20.0, 30.5, 100.0)
 ```
+
 ```js
 var ageAndName = [24, "Lil' ReScript"];
 var my3dCoordinates = [20.0, 30.5, 100.0];
@@ -36,10 +39,12 @@ let ageAndName: (int, string) = (24, "Lil' ReScript")
 type coord3d = (float, float, float)
 let my3dCoordinates: coord3d = (20.0, 30.5, 100.0)
 ```
+
 ```js
 var ageAndName = [24, "Lil' ReScript"];
 var my3dCoordinates = [20.0, 30.5, 100.0];
 ```
+
 </CodeTab>
 
 **Note**: there's no tuple of size 1. You'd just use the value itself.
@@ -53,6 +58,7 @@ To get a specific member of a tuple, destructure it:
 ```res example
 let (_, y, _) = my3dCoordinates // now you've retrieved y
 ```
+
 ```js
 var y = 30.5;
 ```
@@ -70,6 +76,7 @@ let coordinates1 = (10, 20, 30)
 let (c1x, _, _) = coordinates1
 let coordinates2 = (c1x + 50, 20, 30)
 ```
+
 ```js
 var coordinates1 = [10, 20, 30];
 var c1x = 10;
@@ -91,6 +98,7 @@ let getCenterCoordinates = () => {
   (x, y)
 }
 ```
+
 ```js
 function getCenterCoordinates(param) {
   var x = doSomeOperationsHere(undefined);

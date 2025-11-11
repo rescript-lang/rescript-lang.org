@@ -26,7 +26,10 @@ let make = (
       <>
         <SectionHeader value=Constants.dropdownLabelNext />
         <option className="py-4" key=value value> {React.string(label)} </option>
-        <SectionHeader value=Constants.dropdownLabelReleased />
+        {switch availableVersions {
+        | [] => React.null
+        | _ => <SectionHeader value=Constants.dropdownLabelReleased />
+        }}
       </>
     }}
     {React.array(children)}

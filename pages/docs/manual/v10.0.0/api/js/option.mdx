@@ -17,6 +17,7 @@ type t<'a> = option<'a>
 ```res sig
 let some: 'a => option<'a>
 ```
+
 Wraps the given value in `Some()`
 
 ```res example
@@ -72,10 +73,10 @@ The first argument to `equal` is an uncurried function `eq()` that takes two arg
 
 If the second and third arguments are of the form:
 
-* `Some(v1)` and `Some(v2)`: returns `eq(v1, v2)`
-* `Some(v1)` and `None`: returns `false`
-* `None` and `Some(v2)`: returns `false`
-* `None` and `None`: returns `true`
+- `Some(v1)` and `Some(v2)`: returns `eq(v1, v2)`
+- `Some(v1)` and `None`: returns `false`
+- `None` and `Some(v2)`: returns `false`
+- `None` and `None`: returns `true`
 
 ```res example
 let clockEqual = (. a, b) => mod(a, 12) == mod(b, 12)

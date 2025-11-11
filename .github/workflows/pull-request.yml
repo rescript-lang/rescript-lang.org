@@ -7,11 +7,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: ".node-version"
           cache: npm
       - run: npm ci
       - run: npx rescript
       - run: npm test
-
-      - name: Format check
-        run: npx rescript format -check -all
+      - run: npm run ci:format

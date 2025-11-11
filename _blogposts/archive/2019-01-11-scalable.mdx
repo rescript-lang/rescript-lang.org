@@ -104,7 +104,7 @@ file, BuckleScript designs the data structure of `.cmj` in a way that the
 content of `.cmj` is seldom changed. (Let's say its probability is 0.05 which
 is rare in cases when the arity of a function changed)
 
-If neither `.cmj` nor `.cmi`  gets changed, the scheduler would stop
+If neither `.cmj` nor `.cmi` gets changed, the scheduler would stop
 propagation.
 
 Suppose the `.cmj` file is still changed (P = 0.05), A's dependency B would get
@@ -134,7 +134,6 @@ since interface's dependency chain is completely decoupled from
 implementation's dependency, actually it used to be a subset of
 implementation's dependency chain, so only a subset of its dependencies will
 get compiled. We will see a concrete an example later.
-
 
 ## A fast scheduler
 
@@ -166,9 +165,9 @@ build.ninja instructions, check stats of artifacts and do the scheduling.
 
 Instead of making a long-lived compiler, we propose to have a long-lived
 scheduler. The complexity of a scheduler is significantly lower than a
-compiler.  Having an in-memory scheduler will help reducing redundant work such
+compiler. Having an in-memory scheduler will help reducing redundant work such
 as parsing build.ninja instructions which is around of size 2M for 10k files.
-With the integration of  watch mode, it does not need stat all artifacts each
+With the integration of watch mode, it does not need stat all artifacts each
 time, this should help increase the scalability of scheduler to 100K files or
 even more.
 
@@ -178,11 +177,11 @@ Our synthetic bench is borrowed from
 [OMake](http://blog.camlcity.org/blog/omake1.html) and public available
 [here](https://github.com/bucklescript/bsb-bench).
 
->The benchmark has these characteristics: The task is to build n^2 libraries
->with n^2 modules each (for a given small number n), and the dependencies
->between the modules are created in a way so that we can stress both the
->dependency analyzer of the build utility and the ability to run commands in
->parallel.
+> The benchmark has these characteristics: The task is to build n^2 libraries
+> with n^2 modules each (for a given small number n), and the dependencies
+> between the modules are created in a way so that we can stress both the
+> dependency analyzer of the build utility and the ability to run commands in
+> parallel.
 
 We modified the benchmark to add interface file for each implementation file.
 
@@ -195,28 +194,27 @@ The test is running against `n = 3,5,7,9`, where the source code size would be
 Below is what we get for a cold build from scratch:
 
 | Source size | Clean build (ms) |
-|-------------|------------------|
-| 0162        |     684          |
-| 1250        |    5,100         |
-| 4802        |   24,112         |
-| 13122       |  125,248         |
+| ----------- | ---------------- |
+| 0162        | 684              |
+| 1250        | 5,100            |
+| 4802        | 24,112           |
+| 13122       | 125,248          |
 
-| Source size | Nop build (ms)   | Touching root module (m_1_1_1_1.ml) | Touching (m_1_1_1.mli)|
-|-------------|------------------|-------------------------------------|-----------------------|
-| 0162        |     16           |            59                       |   54                  |
-| 1250        |     79           |           120                       |  133                  |
-| 4802        |     266          |           369                       |  367                  |
-| 13122       |     728          |           963                       |  962                  |
+| Source size | Nop build (ms) | Touching root module (m_1_1_1_1.ml) | Touching (m_1_1_1.mli) |
+| ----------- | -------------- | ----------------------------------- | ---------------------- |
+| 0162        | 16             | 59                                  | 54                     |
+| 1250        | 79             | 120                                 | 133                    |
+| 4802        | 266            | 369                                 | 367                    |
+| 13122       | 728            | 963                                 | 962                    |
 
 We can see from the table as size grows, the time spent in edit-build cycle shifts from compilation to the scheduler, this is due to the fact that Ninja scheduler does not save the work for each test.
 
-
-| Source size | Adding value to root module (m_1_1_1_1.ml) | Changing root interface|
-|-------------|--------------------------------------------|------------------------|
-| 0162        |                             56             |   70                   |
-| 1250        |                             131            |   155                  |
-| 4802        |                             370            |  428                   |
-| 13122       |                            969             |  991                   |
+| Source size | Adding value to root module (m_1_1_1_1.ml) | Changing root interface |
+| ----------- | ------------------------------------------ | ----------------------- |
+| 0162        | 56                                         | 70                      |
+| 1250        | 131                                        | 155                     |
+| 4802        | 370                                        | 428                     |
+| 13122       | 969                                        | 991                     |
 
 The verbose build log for adding values on source of size `13122` is as below:
 

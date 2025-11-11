@@ -5,43 +5,48 @@ type t = {
 }
 
 /**
- This function uses JSDOM to fetch a webpage and extract the meta tags from it. 
+ This function uses JSDOM to fetch a webpage and extract the meta tags from it.
  JSDOM is required since this runs on Node.
  */
 let extractMetaTags = async (url: string) => {
-  open Webapi
   try {
-    let response = await Fetch.fetch(url)
+    let response = await fetch(url)
 
-    let html = await response->Fetch.Response.text
+    let html = await response->WebAPI.Response.text
     let dom = Jsdom.make(html)
     let document = dom.window.document
 
-    let metaTags =
-      document
-      ->Document.querySelectorAll("meta")
-      ->Array.fromArrayLike
-      ->Array.reduce(Dict.fromArray([]), (tags, meta) => {
-        let name = meta->Element.getAttribute("name")->Nullable.toOption
-        let property = meta->Element.getAttribute("property")->Nullable.toOption
-        let itemprop = meta->Element.getAttribute("itemprop")->Nullable.toOption
+    let nodeList = document->WebAPI.Document.querySelectorAll("meta")
 
-        let name = switch (name, property, itemprop) {
-        | (Some(name), _, _) => Some(name)
-        | (_, Some(property), _) => Some(property)
-        | (_, _, Some(itemprop)) => Some(itemprop)
-        | _ => None
-        }
+    let elements = []
 
-        let content = meta->Element.getAttribute("content")->Nullable.toOption
+    for i in 0 to nodeList.length {
+      let node = WebAPI.NodeList.item(nodeList, i)
+      // cast Node elements to Element
+      elements->Array.push((Obj.magic(node): WebAPI.DOMAPI.element))
+    }
 
-        switch (name, content) {
-        | (Some(name), Some(content)) => tags->Dict.set(name, content)
-        | _ => ()
-        }
+    let metaTags = elements->Array.reduce(Dict.fromArray([]), (tags, meta) => {
+      let name = meta->WebAPI.Element.getAttribute("name")
+      let property = meta->WebAPI.Element.getAttribute("property")
+      let itemprop = meta->WebAPI.Element.getAttribute("itemprop")
 
-        tags
-      })
+      let name = switch (name, property, itemprop) {
+      | (Value(name), _, _) => Some(name)
+      | (_, Value(property), _) => Some(property)
+      | (_, _, Value(itemprop)) => Some(itemprop)
+      | _ => None
+      }
+
+      let content = meta->WebAPI.Element.getAttribute("content")
+
+      switch (name, content) {
+      | (Some(name), Value(content)) => tags->Dict.set(name, content)
+      | _ => ()
+      }
+
+      tags
+    })
 
     let title = metaTags->Dict.get("og:title")
     let description = metaTags->Dict.get("og:description")

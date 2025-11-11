@@ -3,6 +3,8 @@ title: "Configuration"
 metaTitle: "Build System Configuration"
 description: "Details about the configuration of the ReScript build system (rescript.json)"
 canonical: "/docs/manual/v12.0.0/build-configuration"
+section: "Build System"
+order: 2
 ---
 
 # Configuration
@@ -85,12 +87,6 @@ List of ReScript dependencies. Just like `package.json`'s dependencies, they'll 
 
 Note that only sources marked with `"type":"dev"` will be able to resolve modules from `bs-dev-dependencies`.
 
-## pinned-dependencies
-
-**Since 8.4**: List of pinned dependencies. A pinned dependency will always be rebuilt whenever you build a toplevel package (e.g. your main app) with `rescript`.
-
-This is useful for working on multiple independent ReScript packages simultaneously. More usage details can be found in our dedicated [pinned dependencies](./build-pinned-dependencies) page.
-
 ## external-stdlib
 
 **Since 9.0**: This setting allows depending on an externally built stdlib package (instead of a locally built stdlib runtime). Useful for shipping packages that are only consumed in JS or TS without any dependencies to the ReScript development toolchain.
@@ -119,6 +115,24 @@ Note that the path resolution for the command (`node` in this case) is done so:
 - `myCommand` is just called as `myCommand`, aka a globally available executable. But note that ReScript doesn't read into your shell's environment, so if you put e.g. `node`, it won't find it unless you specify an absolute path. Alternatively, add `#!/usr/local/bin/node` to the top of your script to directly call it without prepending `node`.
 
 The command itself is called from inside `lib/bs`.
+
+## jsx
+
+Controls how the compiler emits JSX and which runtime (if any) it delegates to. A minimal configuration looks like this:
+
+```json
+{
+  "jsx": {
+    "version": 4
+  }
+}
+```
+
+- `version`: JSX transform version. `4` enables the React 17+ transform and is the current and only supported option in v12.
+- `module`: Override the target module that receives JSX calls. Useful for [generic JSX transforms](./jsx#generic-jsx-transform-jsx-beyond-react-experimental); omit it when using the built-in React runtime.
+- `preserve`: When `true`, the compiler re-emits JSX syntax in the generated JavaScript so bundlers or other tooling can take over the transform later. The regenerated JSX might differ slightly from the original source but stays semantically equivalent. See [Preserve mode](./jsx#preserve-mode) for details.
+
+All fields are optional; unspecified fields fall back to the defaults mentioned above. Combine them as needed for your project's JSX runtime.
 
 ## package-specs
 

@@ -4,6 +4,7 @@ let make: (
   ~code: string,
   ~showLabel: bool=?,
   ~lang: string=?,
+  ~showCopyButton: bool=?,
 ) => React.element
 
 module Toggle: {

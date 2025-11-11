@@ -69,23 +69,24 @@ let srcDoc = `
     </html>
   `
 
-type message = {
-  code: string,
-  imports: Dict.t<string>,
-}
-
 let sendOutput = (code, imports) => {
-  open Webapi
-
-  let frame = Document.document->Element.getElementById("iframe-eval")
+  let frame = document->WebAPI.Document.querySelector("#iframe-eval")
 
   switch frame {
   | Value(element) =>
-    switch element->Element.contentWindow {
-    | Some(win) => win->Element.postMessageAny({code, imports}, ~targetOrigin="*")
-    | None => Console.error("contentWindow not found")
+    let element: WebAPI.DOMAPI.htmliFrameElement = element->Obj.magic
+    switch element.contentWindow {
+    | Value({window}) =>
+      let message = JSON.Object(
+        dict{
+          "code": JSON.String(code),
+          "imports": JSON.Object(imports->Dict.mapValues(v => JSON.String(v))),
+        },
+      )
+      window->WebAPI.Window.postMessage(~message, ~targetOrigin="*")
+    | Null => Console.error("contentWindow not found")
     }
-  | Null | Undefined => Console.error("iframe not found")
+  | Null => Console.error("iframe not found")
   }
 }
 

@@ -2,6 +2,8 @@
 title: "Exception"
 description: "Exceptions and exception handling in ReScript"
 canonical: "/docs/manual/v12.0.0/exception"
+section: "Language Features"
+order: 19
 ---
 
 # Exception
@@ -17,15 +19,18 @@ exception InputClosed(string)
 // later on
 throw(InputClosed("The stream has closed!"))
 ```
+
 ```js
 import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js";
 
-let InputClosed = /* @__PURE__ */Primitive_exceptions.create("Playground.InputClosed");
+let InputClosed = /* @__PURE__ */ Primitive_exceptions.create(
+  "Playground.InputClosed",
+);
 
 throw {
   RE_EXN_ID: InputClosed,
   _1: "The stream has closed!",
-  Error: new Error()
+  Error: new Error(),
 };
 ```
 
@@ -55,6 +60,7 @@ let result =
   | Not_found => 0 // Default value if getItem throws
   }
 ```
+
 ```js
 import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js";
 
@@ -64,7 +70,7 @@ function getItem(item) {
   }
   throw {
     RE_EXN_ID: "Not_found",
-    Error: new Error()
+    Error: new Error(),
   };
 }
 
@@ -96,6 +102,7 @@ switch list{1, 2, 3}->List.getExn(4) {
 | exception Not_found => Console.log("No such item found!")
 }
 ```
+
 ```js
 import * as Stdlib_List from "./stdlib/Stdlib_List.js";
 import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js";
@@ -105,16 +112,19 @@ let exit = 0;
 let item;
 
 try {
-  item = Stdlib_List.getExn({
-    hd: 1,
-    tl: {
-      hd: 2,
+  item = Stdlib_List.getExn(
+    {
+      hd: 1,
       tl: {
-        hd: 3,
-        tl: /* [] */0
-      }
-    }
-  }, 4);
+        hd: 2,
+        tl: {
+          hd: 3,
+          tl: /* [] */ 0,
+        },
+      },
+    },
+    4,
+  );
   exit = 1;
 } catch (raw_exn) {
   let exn = Primitive_exceptions.internalToException(raw_exn);
@@ -149,7 +159,8 @@ let divide = (a, b) =>
 try divide(2, 0)->Console.log catch {
 | Invalid_argument(msg) => Console.log(msg) // Denominator is zero
 }
-```
+
+````
 
 ```js
 import * as Primitive_int from "./stdlib/Primitive_int.js";
@@ -176,7 +187,7 @@ try {
     throw msg;
   }
 }
-```
+````
 
 </CodeTab>
 
@@ -212,29 +223,18 @@ function decodeUser(json) {
     let match = json["name"];
     let match$1 = json["age"];
     if (typeof match === "string" && typeof match$1 === "number") {
-      return [
-        match,
-        match$1 | 0
-      ];
+      return [match, match$1 | 0];
     }
     throw {
       RE_EXN_ID: "Assert_failure",
-      _1: [
-        "playground.res",
-        6,
-        11
-      ],
-      Error: new Error()
+      _1: ["playground.res", 6, 11],
+      Error: new Error(),
     };
   }
   throw {
     RE_EXN_ID: "Assert_failure",
-    _1: [
-      "playground.res",
-      8,
-      9
-    ],
-    Error: new Error()
+    _1: ["playground.res", 8, 9],
+    Error: new Error(),
   };
 }
 
@@ -257,7 +257,6 @@ try {
 Exception thrown to signal that the given arguments do not make sense. This
 exception takes a string as an argument.
 
-
 <CodeTab labels={["ReScript", "JS Output"]}>
 ```res example
 let isValidEmail = email => {
@@ -270,14 +269,14 @@ let isValidEmail = email => {
   }
 }
 
-
 let isValid = try isValidEmail("rescript.org") catch {
 | Failure(msg) => {
-    Console.error(msg)
-    false
-  }
+Console.error(msg)
+false
 }
-```
+}
+
+````
 
 ```js
 import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js";
@@ -308,14 +307,13 @@ try {
     throw msg;
   }
 }
-```
+````
 
 </CodeTab>
 
 ### `Division_by_zero`
 
 Exception thrown by integer division and remainder operations when their second argument is zero.
-
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 ```res example
@@ -325,7 +323,8 @@ let result = try Some(10 / 0) catch {
 }
 
 Console.log(result) // None
-```
+
+````
 
 ```js
 import * as Primitive_int from "./stdlib/Primitive_int.js";
@@ -345,7 +344,7 @@ try {
 }
 
 console.log(result);
-```
+````
 
 </CodeTab>
 
@@ -353,22 +352,21 @@ console.log(result);
 
 To distinguish between JavaScript exceptions and ReScript exceptions, ReScript namespaces JS exceptions under the `JsExn(payload)` variant. To catch an exception thrown from the JS side:
 
-
 Throw an exception from JS:
 
 ```js
 // Example.js
 
 exports.someJsFunctionThatThrows = () => {
-    throw new Error("A Glitch in the Matrix!");
-}
+  throw new Error("A Glitch in the Matrix!");
+};
 ```
 
 Then catch it from ReScript:
 
 ```res
 // import the method in Example.js
-@module("./Example") 
+@module("./Example")
 external someJsFunctionThatThrows: () => unit = "someJsFunctionThatThrows"
 
 try {
@@ -399,6 +397,7 @@ let myTest = () => {
   JsError.throwWithMessage("Hello!")
 }
 ```
+
 ```js
 import * as Stdlib_JsError from "./stdlib/Stdlib_JsError.js";
 
@@ -414,9 +413,9 @@ Then you can catch it from the JS side:
 ```js
 // after importing `myTest`...
 try {
-  myTest()
+  myTest();
 } catch (e) {
-  console.log(e.message) // "Hello!"
+  console.log(e.message); // "Hello!"
 }
 ```
 
@@ -431,6 +430,7 @@ let myTest = () => {
   JsExn.throw("some non-error value!")
 }
 ```
+
 ```js
 function myTest() {
   throw "some non-error value!";
@@ -444,9 +444,9 @@ Then you can catch it from the JS side:
 ```js
 // after importing `myTest`...
 try {
-  myTest()
+  myTest();
 } catch (message) {
-  console.log(message) // "Hello!"
+  console.log(message); // "Hello!"
 }
 ```
 
@@ -463,16 +463,19 @@ let myTest = () => {
   throw(BadArgument({myMessage: "Oops!"}))
 }
 ```
+
 ```js
 import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js";
 
-let BadArgument = /* @__PURE__ */Primitive_exceptions.create("Playground.BadArgument");
+let BadArgument = /* @__PURE__ */ Primitive_exceptions.create(
+  "Playground.BadArgument",
+);
 
 function myTest() {
   throw {
     RE_EXN_ID: BadArgument,
     myMessage: "Oops!",
-    Error: new Error()
+    Error: new Error(),
   };
 }
 ```
@@ -484,10 +487,10 @@ Then, in your JS:
 ```js
 // after importing `myTest`...
 try {
-  myTest()
+  myTest();
 } catch (e) {
-  console.log(e.myMessage) // "Oops!"
-  console.log(e.Error.stack) // the stack trace
+  console.log(e.myMessage); // "Oops!"
+  console.log(e.Error.stack); // the stack trace
 }
 ```
 

@@ -110,7 +110,7 @@ let decodeBadge = (str: string): Badge.t =>
   | "preview" => Preview
   | "roadmap" => Roadmap
   | "community" => Community
-  | str => raise(Json.Decode.DecodeError(`Unknown category "${str}"`))
+  | str => throw(Failure(`Unknown category "${str}"`))
   }
 
 exception AuthorNotFound(string)
@@ -118,35 +118,61 @@ exception AuthorNotFound(string)
 let decodeAuthor = (~fieldName: string, ~authors, username) =>
   switch Array.find(authors, a => a.username === username) {
   | Some(author) => author
-  | None => raise(AuthorNotFound(`Couldn't find author "${username}" in field ${fieldName}`))
+  | None => throw(AuthorNotFound(`Couldn't find author "${username}" in field ${fieldName}`))
   }
 
-let authorDecoder = (~fieldName: string, ~authors) => {
-  open Json.Decode
-
-  let multiple = j => array(string, j)->Array.map(a => decodeAuthor(~fieldName, ~authors, a))
-
-  let single = j => [string(j)->decodeAuthor(~fieldName, ~authors)]
-
-  either(single, multiple)
-}
-
 let decode = (json: JSON.t): result<t, string> => {
-  open Json.Decode
-  switch {
-    author: json->(field("author", string, _))->decodeAuthor(~fieldName="author", ~authors),
-    co_authors: json
-    ->(optional(field("co-authors", authorDecoder(~fieldName="co-authors", ~authors), ...), _))
-    ->Option.getOr([]),
-    date: json->(field("date", string, _))->DateStr.fromString,
-    badge: json->(optional(j => field("badge", string, j)->decodeBadge, _))->Null.fromOption,
-    previewImg: json->(optional(field("previewImg", string, ...), _))->Null.fromOption,
-    articleImg: json->(optional(field("articleImg", string, ...), _))->Null.fromOption,
-    title: json->field("title", string, _),
-    description: json->nullable(field("description", string, ...), _),
-  } {
-  | fm => Ok(fm)
-  | exception DecodeError(str) => Error(str)
+  open JSON
+  switch json {
+  | Object(dict{
+      "author": String(author),
+      "co_authors": ?co_authors,
+      "date": String(date),
+      "badge": ?badge,
+      "previewImg": ?previewImg,
+      "articleImg": ?articleImg,
+      "title": String(title),
+      "description": ?description,
+    }) =>
+    let author = decodeAuthor(~fieldName="author", ~authors, author)
+    let co_authors = switch co_authors {
+    | Some(Array(co_authors)) =>
+      co_authors->Array.filterMap(a =>
+        switch a {
+        | String(a) => decodeAuthor(~fieldName="co-authors", ~authors, a)->Some
+        | _ => None
+        }
+      )
+    | _ => []
+    }
+    let date = date->DateStr.fromString
+    let badge = switch badge {
+    | Some(String(badge)) => badge->decodeBadge->Null.Value
+    | _ => Null
+    }
+    let previewImg = switch previewImg {
+    | Some(String(previewImg)) => previewImg->Null.Value
+    | _ => Null
+    }
+    let articleImg = switch articleImg {
+    | Some(String(articleImg)) => articleImg->Null.Value
+    | _ => Null
+    }
+    let description = switch description {
+    | Some(String(description)) => description->Null.Value
+    | _ => Null
+    }
+    Ok({
+      author,
+      co_authors,
+      date,
+      previewImg,
+      articleImg,
+      title,
+      badge,
+      description,
+    })
   | exception AuthorNotFound(str) => Error(str)
+  | _ => Error(`Failed to decode: ${JSON.stringify(json)}`)
   }
 }

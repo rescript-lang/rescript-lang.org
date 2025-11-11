@@ -17,12 +17,12 @@ The `@warning` decorator is used to modify the enabled compiler warnings for typ
 @warning("-27")
 let deepClone = (obj: 'a): 'a => %raw(`
   JSON.parse(JSON.stringify(obj))
-`); 
+`);
 ```
 
 ```js
 function deepClone(obj) {
-  return (JSON.parse(JSON.stringify(obj)));
+  return JSON.parse(JSON.stringify(obj));
 }
 ```
 
@@ -30,4 +30,4 @@ function deepClone(obj) {
 
 ### References
 
-* [Warning Numbers](/docs/manual/latest/warning-numbers)
+- [Warning Numbers](/docs/manual/latest/warning-numbers)
