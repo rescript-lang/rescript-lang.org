@@ -15,7 +15,21 @@ tmp = typeof json === "object" && json !== null && !Array.isArray(json) ? Object
 
 let stdlibPaths = tmp.map(key => "docs/manual/api/" + key).filter(path => path !== "docs/manual/api/stdlib");
 
+let rawFile$1 = await Promises.readFile("./docs/api/belt.json", "utf-8");
+
+let json$1 = JSON.parse(rawFile$1);
+
+let tmp$1;
+
+tmp$1 = typeof json$1 === "object" && json$1 !== null && !Array.isArray(json$1) ? Object.keys(json$1) : [];
+
+let beltPaths = tmp$1.map(key => "docs/manual/api/" + key).filter(path => path !== "docs/manual/api/belt");
+
 let stdlibRoutes = stdlibPaths.map(path => Routes.route(path, "./routes/ApiRoute.mjs", {
+  id: path
+}));
+
+let beltRoutes = beltPaths.map(path => Routes.route(path, "./routes/ApiRoute.mjs", {
   id: path
 }));
 
@@ -47,13 +61,16 @@ let $$default = Belt_Array.concatMany([
     })
   ],
   stdlibRoutes,
+  beltRoutes,
   Server.routes("./routes/MdxRoute.mjs"),
   [Routes.route("*", "./routes/NotFoundRoute.mjs")]
 ]);
 
 export {
   stdlibPaths,
+  beltPaths,
   stdlibRoutes,
+  beltRoutes,
   $$default as default,
 }
 /* rawFile Not a pure module */

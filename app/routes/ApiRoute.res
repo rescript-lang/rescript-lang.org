@@ -13,7 +13,9 @@ let rec rawApiItemToNode = (apiItem: apiItem): ApiDocs.node => {
     name: apiItem.name,
     path: apiItem.id
     ->String.split(".")
-    ->Array.filter(segment => segment !== "Stdlib" && segment !== "Belt" && segment !== "Js"),
+    ->Array.filter(segment =>
+      segment !== "Stdlib" && segment !== "Belt" && segment !== "Js" && segment !== "Dom"
+    ),
     children: apiItem.items
     ->Option.map(items =>
       Array.filter(items, item =>
@@ -101,9 +103,15 @@ let loader: ReactRouter.Loader.t<loaderData> = async args => {
     ->String.replace("/docs/manual/api/", "")
     ->String.split("/")
 
-  let apiDocs = parseApi(await Node.Fs.readFile("./docs/api/stdlib.json", "utf-8"))
+  let basePath = path[0]->Option.getUnsafe
 
-  let stdlibToc = apiDocs->Dict.get("stdlib")
+  let apiDocs = switch basePath {
+  | "belt" => parseApi(await Node.Fs.readFile("./docs/api/belt.json", "utf-8"))
+  | "dom" => parseApi(await Node.Fs.readFile("./docs/api/dom.json", "utf-8"))
+  | _ => parseApi(await Node.Fs.readFile("./docs/api/stdlib.json", "utf-8"))
+  }
+
+  let stdlibToc = apiDocs->Dict.get(basePath)
 
   let toctree = groupItems(apiDocs)
 
@@ -121,7 +129,7 @@ let loader: ReactRouter.Loader.t<loaderData> = async args => {
     {
       module_: item.module_,
       toctree: {
-        name: "Stdlib",
+        name: basePath->String.capitalize,
         path: [],
         children: toctree,
       },

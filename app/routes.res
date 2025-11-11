@@ -11,8 +11,22 @@ let stdlibPaths = {
   ->Array.filter(path => path !== "docs/manual/api/stdlib")
 }
 
+let beltPaths = {
+  let rawFile = await Node.Fs.readFile("./docs/api/belt.json", "utf-8")
+  let json = JSON.parseOrThrow(rawFile)
+  switch json {
+  | Object(json) => Dict.keysToArray(json)
+  | _ => []
+  }
+  ->Array.map(key => "docs/manual/api/" ++ key)
+  ->Array.filter(path => path !== "docs/manual/api/belt")
+}
+
 let stdlibRoutes =
   stdlibPaths->Array.map(path => route(path, "./routes/ApiRoute.mjs", ~options={id: path}))
+
+let beltRoutes =
+  beltPaths->Array.map(path => route(path, "./routes/ApiRoute.mjs", ~options={id: path}))
 
 let default = [
   index("./routes/LandingPageRoute.mjs"),
@@ -26,6 +40,7 @@ let default = [
   route("docs/manual/api/belt", "./routes/ApiRoute.mjs", ~options={id: "api-belt"}),
   route("docs/manual/api/dom", "./routes/ApiRoute.mjs", ~options={id: "api-dom"}),
   ...stdlibRoutes,
+  ...beltRoutes,
   ...mdxRoutes("./routes/MdxRoute.mjs"),
   route("*", "./routes/NotFoundRoute.mjs"),
 ]

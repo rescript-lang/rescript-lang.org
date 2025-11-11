@@ -230,6 +230,7 @@ module SidebarTree = {
         <div className="hl-overline text-gray-80 mt-5 mb-2"> {"submodules"->React.string} </div>
         {node.children
         ->Array.toSorted((v1, v2) => String.compare(v1.name, v2.name))
+        ->Array.filter(child => child.name !== node.name)
         ->Array.map(renderNode)
         ->React.array}
       </aside>
@@ -403,7 +404,7 @@ module Data = {
 
     let pathModule = Path.join([dir, `${moduleName}.json`])
 
-    let moduleContent = Fs.readFileSync("docs/api/stdlib.json")->JSON.parseOrThrow
+    let moduleContent = Fs.readFileSync(`docs/api/${moduleName}.json`)->JSON.parseOrThrow
 
     let content = switch moduleContent {
     | Object(dict) => dict->Some
@@ -424,8 +425,15 @@ let processStaticProps = (~slug: array<string>) => {
   let content =
     // TODO post RR7: rename this to getByModuleName
     Data.getVersion(~moduleName)
-    ->Option.map(data => data.mainModule)
+    ->Option.map(data => {
+      let x = data.mainModule
+      Console.log(modulePath)
+      Console.log(x->Dict.keysToArray)
+      x
+    })
     ->Option.flatMap(Dict.get(_, modulePath))
+
+  // Console.log(content)
 
   let _content = content
 
