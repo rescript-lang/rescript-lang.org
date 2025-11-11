@@ -46,12 +46,22 @@ Also remove auto opening of `RescriptCore`.
 Some typical name changes include:
 
 `Error.t` -> `JsError.t`
-`raise(` ->  `throw(`
+`raise(` -> `throw(`
 `Js.Exn.Error` exception -> `JsExn`
 `Error.make` -> `JsExn.make`
 `Error.raise` -> `JsExn.raise`
-`Error.message` -> `JsExn.message` 
- `Int.Bitwise.lsl` -> `Int.shiftLeft`
+`Error.message` -> `JsExn.message`
+`Int.Bitwise.lsl` -> `Int.shiftLeft`
 
+## Configuration
 
+Rename `bsconfig.json` to `rescript.json` and update these configuration options:
 
+- `bs-dependencies` → `dependencies`
+- `bs-dev-dependencies` → `dev-dependencies`
+- `bsc-flags` → `compiler-flags`
+
+### jsx
+
+- Set `version` to `4` (lower versions are not supported)
+- Remove `mode` option (automatically set to `automatic`)
