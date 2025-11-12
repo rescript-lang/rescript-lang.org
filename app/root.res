@@ -13,6 +13,7 @@ external utilsCss: string = "default"
   import css from 'highlight.js/lib/languages/css';
   import diff from 'highlight.js/lib/languages/diff';
   import javascript from 'highlight.js/lib/languages/javascript';
+  import typescript from 'highlight.js/lib/languages/typescript';
   import json from 'highlight.js/lib/languages/json';
   import text from 'highlight.js/lib/languages/plaintext';
   import html from 'highlight.js/lib/languages/xml';
@@ -21,12 +22,13 @@ external utilsCss: string = "default"
   hljs.registerLanguage('rescript', rescript)
   hljs.registerLanguage('javascript', javascript)
   hljs.registerLanguage('css', css)
-  hljs.registerLanguage('ts', javascript)
+  hljs.registerLanguage('ts', typescript)
   hljs.registerLanguage('sh', bash)
   hljs.registerLanguage('json', json)
   hljs.registerLanguage('text', text)
   hljs.registerLanguage('html', html)
   hljs.registerLanguage('diff', diff)
+  hljs.registerLanguage('typescript', typescript)
 `)
 
 open ReactRouter

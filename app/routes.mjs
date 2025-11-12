@@ -5,7 +5,7 @@ import * as Promises from "node:fs/promises";
 import * as Server from "react-router-mdx/server";
 import * as Routes from "@react-router/dev/routes";
 
-let rawFile = await Promises.readFile("./docs/api/stdlib.json", "utf-8");
+let rawFile = await Promises.readFile("./markdown-pages/docs/api/stdlib.json", "utf-8");
 
 let json = JSON.parse(rawFile);
 
@@ -15,7 +15,7 @@ tmp = typeof json === "object" && json !== null && !Array.isArray(json) ? Object
 
 let stdlibPaths = tmp.map(key => "docs/manual/api/" + key).filter(path => path !== "docs/manual/api/stdlib");
 
-let rawFile$1 = await Promises.readFile("./docs/api/belt.json", "utf-8");
+let rawFile$1 = await Promises.readFile("./markdown-pages/docs/api/belt.json", "utf-8");
 
 let json$1 = JSON.parse(rawFile$1);
 

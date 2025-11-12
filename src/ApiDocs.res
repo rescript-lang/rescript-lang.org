@@ -404,7 +404,7 @@ module Data = {
 
     let pathModule = Path.join([dir, `${moduleName}.json`])
 
-    let moduleContent = Fs.readFileSync(`docs/api/${moduleName}.json`)->JSON.parseOrThrow
+    let moduleContent = Fs.readFileSync(`markdown-pages/docs/api/${moduleName}.json`)->JSON.parseOrThrow
 
     let content = switch moduleContent {
     | Object(dict) => dict->Some
@@ -433,7 +433,6 @@ let processStaticProps = (~slug: array<string>) => {
     })
     ->Option.flatMap(Dict.get(_, modulePath))
 
-  // Console.log(content)
 
   let _content = content
 
@@ -519,40 +518,4 @@ let getStaticProps = async slug => {
   let result = processStaticProps(~slug)
 
   {"props": result}
-}
-
-let getStaticPathsByVersion = async (~version: string) => {
-  open Node
-
-  let pathDir = Path.join([Data.dir, version])
-
-  let slugs =
-    pathDir
-    ->Fs.readdirSync
-    ->Array.reduce([], (acc, file) => {
-      switch file == "toc_tree.json" {
-      | true => acc
-      | false =>
-        let paths = switch Path.join2(pathDir, file)
-        ->Fs.readFileSync
-        ->JSON.parseOrThrow {
-        | Object(dict) =>
-          dict
-          ->Dict.keysToArray
-          ->Array.map(modPath => modPath->String.split("/"))
-        | _ => acc
-        }
-        Array.concat(acc, paths)
-      }
-    })
-
-  let paths = slugs->Array.map(slug =>
-    {
-      "params": {
-        "slug": slug,
-      },
-    }
-  )
-
-  {"paths": paths, "fallback": false}
 }
