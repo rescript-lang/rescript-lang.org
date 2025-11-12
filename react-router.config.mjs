@@ -2,7 +2,12 @@ import * as fs from "node:fs";
 import { init } from "react-router-mdx/server";
 
 const mdx = init({
-  paths: ["markdown-pages/blogposts", "markdown-pages/docs", "markdown-pages/community", "markdown-pages/syntax-lookup"],
+  paths: [
+    "markdown-pages/blogposts",
+    "markdown-pages/docs",
+    "markdown-pages/community",
+    "markdown-pages/syntax-lookup",
+  ],
   aliases: ["blog", "docs", "community", "syntax-lookup"],
 });
 

@@ -404,7 +404,8 @@ module Data = {
 
     let pathModule = Path.join([dir, `${moduleName}.json`])
 
-    let moduleContent = Fs.readFileSync(`markdown-pages/docs/api/${moduleName}.json`)->JSON.parseOrThrow
+    let moduleContent =
+      Fs.readFileSync(`markdown-pages/docs/api/${moduleName}.json`)->JSON.parseOrThrow
 
     let content = switch moduleContent {
     | Object(dict) => dict->Some
@@ -427,7 +428,6 @@ let processStaticProps = (~slug: array<string>) => {
     Data.getVersion(~moduleName)
     ->Option.map(data => data.mainModule)
     ->Option.flatMap(Dict.get(_, modulePath))
-
 
   let _content = content
 

@@ -97,24 +97,26 @@ fs.writeFileSync(tempFileName, "");
 
 let success = true;
 
-glob.sync(__dirname + "/../markdown-pages/docs/{manual,react}/**/*.mdx").forEach((file) => {
-  let content = fs.readFileSync(file, { encoding: "utf-8" });
-  let parsedResult = parseFile(content);
-  if (parsedResult != null) {
-    fs.writeFileSync(tempFileName, parsedResult);
-    try {
-      console.log("testing examples in", file);
-      // -109 for suppressing `Toplevel expression is expected to have unit type.`
-      // Most doc snippets do e.g. `Belt.Array.length(["test"])`, which triggers this
-      child_process.execSync("npm exec rescript build ./temp -- --quiet", {
-        stdio: "inherit",
-      });
-    } catch (e) {
-      // process.stdout.write(postprocessOutput(file, e));
-      success = false;
+glob
+  .sync(__dirname + "/../markdown-pages/docs/{manual,react}/**/*.mdx")
+  .forEach((file) => {
+    let content = fs.readFileSync(file, { encoding: "utf-8" });
+    let parsedResult = parseFile(content);
+    if (parsedResult != null) {
+      fs.writeFileSync(tempFileName, parsedResult);
+      try {
+        console.log("testing examples in", file);
+        // -109 for suppressing `Toplevel expression is expected to have unit type.`
+        // Most doc snippets do e.g. `Belt.Array.length(["test"])`, which triggers this
+        child_process.execSync("npm exec rescript build ./temp -- --quiet", {
+          stdio: "inherit",
+        });
+      } catch (e) {
+        // process.stdout.write(postprocessOutput(file, e));
+        success = false;
+      }
     }
-  }
-});
+  });
 
 fs.unlinkSync(tempFileName);
 process.exit(success ? 0 : 1);
