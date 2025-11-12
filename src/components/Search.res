@@ -84,10 +84,6 @@ let transformItems = (items: DocSearch.transformItems) => {
     | _ => 0. // both same API status - maintain original order
     }
   })
-  ->Array.map(item => {
-    Console.log(("final item", item))
-    item
-  })
 }
 
 @react.component
