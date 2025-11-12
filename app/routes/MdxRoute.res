@@ -305,7 +305,21 @@ let default = () => {
         <DocsLayout
           categories
           activeToc={title: "Introduction", entries}
-          breadcrumbs=?loaderData.breadcrumbs
+          breadcrumbs=?{loaderData.breadcrumbs->Option.map(crumbs =>
+            List.mapWithIndex(crumbs, (item, index) => {
+              if index === 0 {
+                if (pathname :> string)->String.includes("docs/manual") {
+                  {...item, href: "/docs/manual/introduction"}
+                } else if (pathname :> string)->String.includes("docs/react") {
+                  {...item, href: "/docs/react/introduction"}
+                } else {
+                  item
+                }
+              } else {
+                item
+              }
+            })
+          )}
           editHref={`https://github.com/rescript-lang/rescript-lang.org/blob/master${loaderData.filePath->Option.getOrThrow}`}
         >
           <div className="markdown-body"> {component()} </div>

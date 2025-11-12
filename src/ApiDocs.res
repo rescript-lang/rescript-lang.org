@@ -377,7 +377,7 @@ let make = (props: props) => {
   let breadcrumbs = ApiLayout.makeBreadcrumbs(~prefix, route)
 
   <SidebarLayout
-    breadcrumbs={list{{Url.name: "Docs", href: "/docs/manual/introduction"}, ...breadcrumbs}}
+    breadcrumbs={list{{Url.name: "Docs", href: "/docs/manual/api"}, ...breadcrumbs}}
     theme=#Reason
     sidebarState=(isSidebarOpen, setSidebarOpen)
     sidebar

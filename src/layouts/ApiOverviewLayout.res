@@ -24,7 +24,7 @@ module Docs = {
     let {pathname: route} = ReactRouter.useLocation()
 
     let breadcrumbs = list{
-      {Url.name: "Docs", href: `/docs/manual/introduction`},
+      {Url.name: "Docs", href: `/docs/manual/api`},
       {name: "API", href: `/docs/manual/api`},
     }
 
