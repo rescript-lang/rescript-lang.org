@@ -106,9 +106,9 @@ let loader: ReactRouter.Loader.t<loaderData> = async args => {
   let basePath = path[0]->Option.getUnsafe
 
   let apiDocs = switch basePath {
-  | "belt" => parseApi(await Node.Fs.readFile("./docs/api/belt.json", "utf-8"))
-  | "dom" => parseApi(await Node.Fs.readFile("./docs/api/dom.json", "utf-8"))
-  | _ => parseApi(await Node.Fs.readFile("./docs/api/stdlib.json", "utf-8"))
+  | "belt" => parseApi(await Node.Fs.readFile("./markdown-pages/docs/api/belt.json", "utf-8"))
+  | "dom" => parseApi(await Node.Fs.readFile("./markdown-pages/docs/api/dom.json", "utf-8"))
+  | _ => parseApi(await Node.Fs.readFile("./markdown-pages/docs/api/stdlib.json", "utf-8"))
   }
 
   let stdlibToc = apiDocs->Dict.get(basePath)

@@ -1,7 +1,7 @@
 open ReactRouter.Routes
 
 let stdlibPaths = {
-  let rawFile = await Node.Fs.readFile("./docs/api/stdlib.json", "utf-8")
+  let rawFile = await Node.Fs.readFile("./markdown-pages/docs/api/stdlib.json", "utf-8")
   let json = JSON.parseOrThrow(rawFile)
   switch json {
   | Object(json) => Dict.keysToArray(json)
@@ -12,7 +12,7 @@ let stdlibPaths = {
 }
 
 let beltPaths = {
-  let rawFile = await Node.Fs.readFile("./docs/api/belt.json", "utf-8")
+  let rawFile = await Node.Fs.readFile("./markdown-pages/docs/api/belt.json", "utf-8")
   let json = JSON.parseOrThrow(rawFile)
   switch json {
   | Object(json) => Dict.keysToArray(json)
