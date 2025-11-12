@@ -425,12 +425,7 @@ let processStaticProps = (~slug: array<string>) => {
   let content =
     // TODO post RR7: rename this to getByModuleName
     Data.getVersion(~moduleName)
-    ->Option.map(data => {
-      let x = data.mainModule
-      Console.log(modulePath)
-      Console.log(x->Dict.keysToArray)
-      x
-    })
+    ->Option.map(data => data.mainModule)
     ->Option.flatMap(Dict.get(_, modulePath))
 
 
