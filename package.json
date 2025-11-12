@@ -28,7 +28,7 @@
     "@babel/generator": "^7.24.7",
     "@babel/parser": "^7.24.7",
     "@babel/traverse": "^7.24.7",
-    "@docsearch/react": "^3.9.0",
+    "@docsearch/react": "^4.3.1",
     "@headlessui/react": "^2.2.4",
     "@node-cli/static-server": "^3.1.4",
     "@react-router/node": "^7.8.1",

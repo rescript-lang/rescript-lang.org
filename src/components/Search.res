@@ -29,8 +29,18 @@ let hit = ({hit, children}: DocSearch.hitComponent) => {
   | _ => ""
   }
 
+  let isDeprecated = hit.deprecated->Option.isSome
+  let deprecatedBadge = isDeprecated
+    ? <span
+        className="inline-flex items-center px-2 py-1 text-xs font-medium text-orange-600 bg-orange-100 rounded-full mr-2"
+      >
+        {"Deprecated"->React.string}
+      </span>
+    : React.null
+
   <ReactRouter.Link.String to=hit.url className="flex flex-col w-full">
-    <span className="text-gray-60 captions px-4 pt-3 pb-1 block">
+    <span className="text-gray-60 captions px-4 pt-3 pb-1 flex items-center">
+      {deprecatedBadge}
       {description->React.string}
     </span>
     children
@@ -38,16 +48,45 @@ let hit = ({hit, children}: DocSearch.hitComponent) => {
 }
 
 let transformItems = (items: DocSearch.transformItems) => {
-  items->Array.filterMap(item => {
+  items
+  ->Array.filterMap(item => {
     let url = try WebAPI.URL.make(~url=item.url)->Some catch {
     | Exn.Error(obj) =>
       Console.error2(`Failed to parse URL ${item.url}`, obj)
       None
     }
     switch url {
-    | Some({pathname, hash}) => {...item, url: pathname ++ hash}->Some
+    | Some({pathname, hash}) =>
+      RegExp.test(/v(8|9|10|11)\./, pathname)
+        ? None
+        : Some({
+            ...item,
+            deprecated: pathname->String.includes("api/js") || pathname->String.includes("api/core")
+              ? Some("Deprecated")
+              : None,
+            url: pathname->String.replace("/v12.0.0/", "/") ++ hash,
+          })
     | None => None
     }
+  })
+  // Sort deprecated items to the end
+  ->Array.toSorted((a, b) => {
+    switch (a.deprecated, b.deprecated) {
+    | (Some(_), None) => 1. // a is deprecated, b is not - put a after b
+    | (None, Some(_)) => -1. // a is not deprecated, b is - put a before b
+    | _ => 0.
+    }
+  })
+  ->Array.toSorted((a, b) => {
+    switch (a.url->String.includes("api/stdlib"), b.url->String.includes("api/stdlib")) {
+    | (true, false) => -1. // a is a stdlib doc, b is not - put a before b
+    | (false, true) => 1. // a is not a stdlib doc, b is - put a after b
+    | _ => 0. // both same API status - maintain original order
+    }
+  })
+  ->Array.map(item => {
+    Console.log(("final item", item))
+    item
   })
 }
 
@@ -55,8 +94,6 @@ let transformItems = (items: DocSearch.transformItems) => {
 let make = () => {
   let (state, setState) = React.useState(_ => Inactive)
   let location = ReactRouter.useLocation()
-
-  let version = Url.parse((location.pathname :> string))->Url.getVersionString
 
   let handleCloseModal = () => {
     let () = switch WebAPI.Document.querySelector(document, ".DocSearch-Modal") {
@@ -124,7 +161,6 @@ let make = () => {
             appId
             indexName
             onClose
-            searchParameters={facetFilters: ["version:" ++ version]}
             initialScrollY={window.scrollY->Float.toInt}
             transformItems={transformItems}
             hitComponent=hit
