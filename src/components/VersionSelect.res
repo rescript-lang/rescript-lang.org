@@ -28,7 +28,7 @@ let make = () => {
       {React.string(ver.label)}
     </a>
   })
-  <div className="wrapper mt-4 block w-full" dataTestId="version-select">
+  <div className="wrapper block w-full" dataTestId="version-select">
     <div id="older-versions" popover=Auto />
     <button
       className="trigger text-12 border border-gray-20 bg-gray-10 text-gray-80 inline-block rounded px-4 py-1 font-semibold whitespace-nowrap"

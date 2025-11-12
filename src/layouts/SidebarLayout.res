@@ -132,6 +132,23 @@ module Sidebar = {
   ) => {
     let isItemActive = (navItem: NavItem.t) => navItem.href === (route :> string)
 
+    // the height of the navbars above is fluid across pages, and it's easy to get it wrong
+    // so we calculate it dynamically here
+    let sidebarTopOffset = isOpen
+      ? {
+          let mobileNavbarHeight =
+            Nullable.make(document->WebAPI.Document.getElementById("mobile-navbar"))
+            ->Nullable.map(el => el.clientHeight)
+            ->Nullable.getOr(0)
+          let docNavbarHeight =
+            Nullable.make(document->WebAPI.Document.getElementById("doc-navbar"))
+            ->Nullable.map(el => el.clientHeight)
+            ->Nullable.getOr(0)
+
+          mobileNavbarHeight + docNavbarHeight + 8
+        }
+      : 0
+
     let getActiveToc = (navItem: NavItem.t) => {
       if navItem.href === (route :> string) {
         activeToc
@@ -142,10 +159,13 @@ module Sidebar = {
 
     <>
       <div
+        style={{
+          paddingTop: `${sidebarTopOffset->Int.toString}px`,
+        }}
         id="sidebar"
         className={(
           isOpen ? "fixed w-full left-0 h-full z-20 min-w-320" : "hidden "
-        ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible mt-10 pt-2 bg-white md:mt-0 min-w-48"}
+        ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible pt-2 bg-white md:mt-0 min-w-48"}
       >
         <aside
           id="sidebar-content"
@@ -351,7 +371,7 @@ let make = (
               </div>
             </div>
             <div
-              className={hasBreadcrumbs ? "mt-20 md:mt-10" : "mt-6 md:-mt-4"}
+              className={hasBreadcrumbs ? "mt-28 md:mt-10" : "mt-6 md:-mt-4"}
               dataTestId="side-layout-children"
             >
               children

@@ -159,7 +159,7 @@ module Table = {
 module Close = {
   @react.component
   let make = (~className: string="") =>
-    <svg className={"fill-current " ++ className} width="12.728" height="12.728">
+    <svg className={"fill-current " ++ className} width="16" height="16">
       <path d="M12.728 11.313l-1.414 1.414L0 1.414 1.414-.001z" />
       <path d="M11.314 0l1.414 1.414L1.415 12.728 0 11.314z" />
     </svg>

@@ -308,7 +308,7 @@ let default = () => {
           breadcrumbs=?loaderData.breadcrumbs
           editHref={`https://github.com/rescript-lang/rescript-lang.org/blob/master${loaderData.filePath->Option.getOrThrow}`}
         >
-          <div className="markdown-body pt-20 md:pt-0"> {component()} </div>
+          <div className="markdown-body"> {component()} </div>
         </DocsLayout>
       </>
     } else if (pathname :> string)->String.includes("community") {

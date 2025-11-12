@@ -196,25 +196,25 @@ module SidebarTree = {
       id="sidebar"
       className={(
         isOpen ? "fixed w-full left-0 h-full z-20 min-w-320" : "hidden "
-      ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible bg-white mt-28 md:mt-0"}
+      ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible bg-white mt-16 md:mt-0"}
     >
       <aside
         id="sidebar-content-api-docs"
         className="w-80 h-full relative top-12 px-4 w-full block md:top-28 md:sticky border-r border-gray-20 overflow-y-auto pb-24 max-h-[calc(100vh-7rem)]"
       >
-        <div className="flex justify-between">
-          <div className="w-3/4 md:w-full"> React.null </div>
+        <div className="flex justify-between items-center">
+          {preludeSection}
           <button
             onClick={evt => {
               ReactEvent.Mouse.preventDefault(evt)
               toggle()
             }}
-            className="md:hidden h-16"
+            className="md:hidden h-auto"
           >
             <Icon.Close />
           </button>
         </div>
-        {preludeSection}
+
         <div className="my-10">
           <div className="hl-overline block text-gray-80 mt-5 mb-2" dataTestId="overview">
             {"Overview"->React.string}
