@@ -17,6 +17,7 @@ external utilsCss: string = "default"
   import json from 'highlight.js/lib/languages/json';
   import text from 'highlight.js/lib/languages/plaintext';
   import html from 'highlight.js/lib/languages/xml';
+  import toml from 'highlight.js/lib/languages/ini';
   import rescript from 'highlightjs-rescript';
 
   hljs.registerLanguage('rescript', rescript)
@@ -24,6 +25,8 @@ external utilsCss: string = "default"
   hljs.registerLanguage('css', css)
   hljs.registerLanguage('ts', typescript)
   hljs.registerLanguage('sh', bash)
+  hljs.registerLanguage('bash', bash)
+  hljs.registerLanguage('toml', toml)
   hljs.registerLanguage('json', json)
   hljs.registerLanguage('text', text)
   hljs.registerLanguage('html', html)

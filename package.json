@@ -38,7 +38,7 @@
     "docson": "^2.1.0",
     "fuse.js": "^6.4.3",
     "glob": "^7.1.4",
-    "highlight.js": "^11.9.0",
+    "highlight.js": "^11.11.1",
     "highlightjs-rescript": "^0.2.2",
     "isbot": "^5",
     "lz-string": "^1.4.4",
