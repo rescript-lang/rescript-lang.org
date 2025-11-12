@@ -9,7 +9,7 @@
   },
   "type": "module",
   "scripts": {
-    "dev": "react-router dev",
+    "dev": "react-router dev --host",
     "res:watch": "rescript watch",
     "res:clean": "rescript clean",
     "res:build": "rescript build",
