@@ -23,7 +23,9 @@ ReScript supports the JSX syntax, with some slight differences compared to the o
 ```
 
 ```js
-React.createElement(MyComponent, {
+import * as JsxRuntime from "react/jsx-runtime";
+
+JsxRuntime.jsx(MyComponent, {
   name: "ReScript",
 });
 ```
@@ -35,11 +37,13 @@ becomes
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-MyComponent.createElement(~name="ReScript", ~children=list{}, ())
+React.jsx(MyComponent.make, {name: {"ReScript"}})
 ```
 
 ```js
-React.createElement(MyComponent, {
+import * as JsxRuntime from "react/jsx-runtime";
+
+JsxRuntime.jsx(MyComponent, {
   name: "ReScript",
 });
 ```
@@ -55,14 +59,12 @@ React.createElement(MyComponent, {
 ```
 
 ```js
-React.createElement(
-  "div",
-  {
-    onClick: handler,
-  },
-  child1,
-  child2,
-);
+import * as JsxRuntime from "react/jsx-runtime";
+
+JsxRuntime.jsxs("div", {
+  children: [child1, child2],
+  onClick: handler,
+});
 ```
 
 </CodeTab>
@@ -72,18 +74,16 @@ becomes
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-div(~onClick=handler, ~children=list{child1, child2}, ())
+ReactDOM.jsxs("div", {onClick: {handler}, children: React.array([child1, child2])})
 ```
 
 ```js
-React.createElement(
-  "div",
-  {
-    onClick: handler,
-  },
-  child1,
-  child2,
-);
+import * as JsxRuntime from "react/jsx-runtime";
+
+JsxRuntime.jsxs("div", {
+  children: [child1, child2],
+  onClick: handler,
+});
 ```
 
 </CodeTab>
@@ -97,7 +97,11 @@ React.createElement(
 ```
 
 ```js
-React.createElement(React.Fragment, undefined, child1, child2);
+import * as JsxRuntime from "react/jsx-runtime";
+
+JsxRuntime.jsxs(JsxRuntime.Fragment, {
+  children: [child1, child2],
+});
 ```
 
 </CodeTab>
@@ -107,11 +111,15 @@ becomes
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-list{child1, child2}
+React.jsxs(React.jsxFragment, {children: React.array([child1, child2])})
 ```
 
 ```js
-React.createElement(React.Fragment, undefined, child1, child2);
+import * as JsxRuntime from "react/jsx-runtime";
+
+JsxRuntime.jsxs(JsxRuntime.Fragment, {
+  children: [child1, child2],
+});
 ```
 
 </CodeTab>
@@ -125,7 +133,11 @@ React.createElement(React.Fragment, undefined, child1, child2);
 ```
 
 ```js
-React.createElement(MyComponent, { children: null }, child1, child2);
+import * as JsxRuntime from "react/jsx-runtime";
+
+JsxRuntime.jsxs(MyComponent, {
+  children: [child1, child2],
+});
 ```
 
 </CodeTab>
@@ -135,23 +147,22 @@ This is the syntax for passing a list of two items, `child1` and `child2`, to th
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-MyComponent.createElement(~children=list{child1, child2}, ())
+React.jsxs(MyComponent.make, {children: React.array([child1, child2])})
 ```
 
 ```js
-React.createElement(
-  MyComponent.make,
-  MyComponent.makeProps(null, undefined),
-  child1,
-  child2,
-);
+import * as JsxRuntime from "react/jsx-runtime";
+
+JsxRuntime.jsxs(MyComponent, {
+  children: [child1, child2],
+});
 ```
 
 </CodeTab>
 
 **Note** again that this isn't the transform for ReScriptReact; ReScriptReact turns the final list into an array. But the idea still applies.
 
-So naturally, `<MyComponent> myChild </MyComponent>` is transformed to `MyComponent.createElement(~children=list{myChild}, ())`. I.e. whatever you do, the arguments passed to the children position will be wrapped in a list.
+So naturally, `<MyComponent> myChild </MyComponent>` is transformed to `React.jsx(MyComponent.make, {children: myChild})`. I.e. whatever you do, the arguments passed to the children position will be wrapped in a list.
 
 ## Usage
 
@@ -173,8 +184,12 @@ Here's a JSX tag that shows most of the features.
 ```
 
 ```js
-React.createElement(MyComponent, {
-  children: React.createElement("div", undefined, "hello"),
+import * as JsxRuntime from "react/jsx-runtime";
+
+JsxRuntime.jsx(Playground$MyComponent, {
+  children: JsxRuntime.jsx("div", {
+    children: "hello",
+  }),
   booleanAttribute: true,
   stringAttribute: "string",
   intAttribute: 1,
@@ -205,7 +220,9 @@ JSX props spread is supported now, but in a stricter way than in JS.
 ```
 
 ```js
-React.createElement(Comp, {
+import * as JsxRuntime from "react/jsx-runtime";
+
+JsxRuntime.jsx(Comp.make, {
   a: "a",
   b: "b",
 });
@@ -246,9 +263,11 @@ JSX supports punning. `<input checked />` is just a shorthand for `<input checke
 ```
 
 ```js
-React.createElement(MyComponent, {
-  isLoading: true,
+import * as JsxRuntime from "react/jsx-runtime";
+
+JsxRuntime.jsx(MyComponent, {
   text: text,
+  isLoading: true,
   onClick: onClick,
 });
 ```
@@ -276,7 +295,9 @@ such props in your custom `JsxDOM.domProps` type ([see generic JSX transform](#g
 ```
 
 ```js
-React.createElement("model-viewer", {
+import * as JsxRuntime from "react/jsx-runtime";
+
+JsxRuntime.jsx("model-viewer", {
   "touch-actions": "pan-y",
   src: src,
 });
@@ -437,3 +458,37 @@ To enable this, you need to configure the `jsx` `module` in your `rescript.json`
 ```
 
 _value "Preact" is the name of the module that implements the generic JSX transform._
+
+## Preserve mode
+
+**Since 12.0**
+
+JSX Preserve Mode keeps JSX syntax in the compiled JavaScript output instead of transforming it to `JsxRuntime.jsx` calls. This lets bundlers (ESBuild, SWC, Next.js) or React Server Components handle JSX transformation.
+
+### Configuration
+
+```json
+{
+  "jsx": {
+    "version": 4,
+    "preserve": true
+  }
+}
+```
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let c1 = <div className="foo"> {React.string("Hello")} </div>
+let c2 = <MyComponent text="hey" isLoading=true onClick />
+```
+
+```js
+let c1 = <div className={"foo"}>{"Hello"}</div>;
+
+let c2 = <MyComponent.make text={"hey"} isLoading={true} onClick={onClick} />;
+```
+
+</CodeTab>
+
+Note that the JSX output is functional but not always the most aesthetically pleasing.
