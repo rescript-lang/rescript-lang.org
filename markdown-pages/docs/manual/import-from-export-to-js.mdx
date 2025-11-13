@@ -8,9 +8,9 @@ order: 7
 
 # Import from/Export to JS
 
-You've seen how ReScript's idiomatic [Import & Export](import-export.md) works. This section describes how we work with importing stuff from JavaScript and exporting stuff for JavaScript consumption.
+You've seen how ReScript's idiomatic [Import & Export](import-export) works. This section describes how we work with importing stuff from JavaScript and exporting stuff for JavaScript consumption.
 
-If you're looking for react-specific interop guidance, check out the [React JS Interop guide](../../react/latest/import-export-reactjs.mdx).
+If you're looking for react-specific interop guidance, check out the [React JS Interop guide](../../react/latest/import-export-reactjs).
 
 **Note**: due to JS ecosystem's module compatibility issues, our advice of keeping your ReScript file's compiled JS output open in a tab applies here **more than ever**, as you don't want to subtly output the wrong JS module import/export code, on top of having to deal with Babel/Webpack/Jest/Node's CommonJS \<-> JavaScript module compatibility shims.
 
@@ -29,7 +29,7 @@ The format is [configurable in via `rescript.json`](build-configuration.md#packa
 
 ### Import a JavaScript Module's Named Export
 
-Use the `module` [external](external.md):
+Use the `module` [external](external):
 
 <CodeTab labels={["ReScript", "JS Output (Module)", "JS Output (CommonJS)"]}>
 
@@ -209,7 +209,7 @@ async function main() {
 
 ### Export a Named Value
 
-As mentioned in ReScript's idiomatic [Import & Export](import-export.md), every let binding and module is exported by default to other ReScript modules (unless you use a `.resi` [interface file](module#signatures)). If you open up the compiled JS file, you'll see that these values can also directly be used by a _JavaScript_ file too.
+As mentioned in ReScript's idiomatic [Import & Export](import-export), every let binding and module is exported by default to other ReScript modules (unless you use a `.resi` [interface file](module#signatures)). If you open up the compiled JS file, you'll see that these values can also directly be used by a _JavaScript_ file too.
 
 ### Export a `default` Value
 
