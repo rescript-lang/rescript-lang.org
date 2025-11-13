@@ -2,7 +2,7 @@
 
 type t = {
   compressToEncodedURIComponent: string => string,
-  decompressToEncodedURIComponent: string => string,
+  decompressFromEncodedURIComponent: string => string,
 }
 
 @module("lz-string")

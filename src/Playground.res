@@ -1523,9 +1523,11 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   | [v] => Some(v) // only single version available. maybe local dev.
   | versions => {
       let lastStableVersion = versions->Array.find(version => version.preRelease->Option.isNone)
-      switch searchParams->Object.get((CompilerManagerHook.Version :> string)) {
-      | Some(version) => version->Semver.parse
-      | None =>
+      switch Nullable.make(
+        searchParams->WebAPI.URLSearchParams.get((CompilerManagerHook.Version :> string)),
+      ) {
+      | Nullable.Value(version) => version->Semver.parse
+      | _ =>
         switch Url.getVersionFromStorage(Playground) {
         | Some(v) => v->Semver.parse
         | None => lastStableVersion
@@ -1534,23 +1536,37 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     }
   }
 
-  let initialLang = switch searchParams->Object.get((CompilerManagerHook.Ext :> string)) {
-  | Some("re") => Api.Lang.Reason
+  Console.log(("searchParams", searchParams))
+
+  let initialLang = switch Nullable.make(
+    searchParams->WebAPI.URLSearchParams.get((CompilerManagerHook.Ext :> string)),
+  ) {
+  | Nullable.Value("re") => Api.Lang.Reason
   | _ => Api.Lang.Res
   }
 
-  let initialModuleSystem = searchParams->Object.get((Module :> string))
-  let initialJsxPreserveMode = searchParams->Object.get((JsxPreserve :> string))->Option.isSome
+  let initialModuleSystem =
+    Nullable.make(searchParams->WebAPI.URLSearchParams.get((Module :> string)))->Nullable.toOption
+
+  let initialJsxPreserveMode = !(
+    Nullable.make(
+      searchParams->WebAPI.URLSearchParams.get((JsxPreserve :> string)),
+    )->Nullable.isNullable
+  )
 
   let initialExperimentalFeatures =
-    searchParams
-    ->Object.get((Experiments :> string))
-    ->Option.mapOr([], str => str->String.split(",")->Array.map(String.trim))
+    Nullable.make(
+      searchParams->WebAPI.URLSearchParams.get((Experiments :> string)),
+    )->Nullable.mapOr([], str => str->String.split(",")->Array.map(String.trim))
 
-  let initialContent = switch (searchParams->Object.get((Code :> string)), initialLang) {
-  | (Some(compressedCode), _) => LzString.lzString.decompressToEncodedURIComponent(compressedCode)
-  | (None, Reason) => initialReContent
-  | (None, Res) =>
+  let initialContent = switch (
+    Nullable.make(searchParams->WebAPI.URLSearchParams.get((Code :> string))),
+    initialLang,
+  ) {
+  | (Nullable.Value(compressedCode), _) =>
+    LzString.lzString.decompressFromEncodedURIComponent(compressedCode)
+  | (_, Reason) => initialReContent
+  | (_, Res) =>
     switch initialVersion {
     | Some({major: 10, minor}) if minor >= 1 => InitialContent.since_10_1
     | Some({major}) if major > 10 => InitialContent.since_11

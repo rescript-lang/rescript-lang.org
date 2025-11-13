@@ -557,8 +557,6 @@ let make = // props relevant for the react wrapper
   let windowWidth = useWindowWidth()
   let (onMouseOver, onMouseOut, onMouseMove) = useHoverTooltip(~cmStateRef, ~cmRef, ())
 
-  Console.debug2("Rendering Codemirror with value:", value)
-
   React.useEffect(() => {
     switch inputElement.current->Nullable.toOption {
     | Some(el) => Console.debug2("Codemirror input element", el)
@@ -578,8 +576,6 @@ let make = // props relevant for the react wrapper
         scrollbarStyle,
         keyMap: KeyMap.toString(keyMap),
       }
-
-      Console.debug2("options", options)
 
       let cm = CM.fromTextArea(input, options)
 
@@ -608,10 +604,7 @@ let make = // props relevant for the react wrapper
 
       cmRef.current = Some(cm)
 
-      Console.debug2("Codemirror instance", cm)
-
       let cleanup = () => {
-        /* Console.log2("cleanup", options->CM.Options.mode); */
         CM.offMouseOver(wrapper, onMouseOver)
         CM.offMouseOut(wrapper, onMouseOut)
         CM.offMouseMove(wrapper, onMouseMove)

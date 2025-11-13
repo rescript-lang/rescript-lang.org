@@ -8,7 +8,7 @@ external navigate: (string, ~options: navigateOptions=?) => unit = "navigate"
 external useNavigate: unit => string => unit = "useNavigate"
 
 @module("react-router")
-external useSearchParams: unit => ({..}, {..} => unit) = "useSearchParams"
+external useSearchParams: unit => (WebAPI.URLAPI.urlSearchParams, {..} => unit) = "useSearchParams"
 
 @module("react-router")
 external useLoaderData: unit => 'a = "useLoaderData"
