@@ -43,7 +43,8 @@ module Url = {
       href->Stdlib.String.includes("community") ||
       href->Stdlib.String.includes("blog") ||
       href->Stdlib.String.includes("try") ||
-      href->Stdlib.String.includes("/llms/")
+      href->Stdlib.String.includes("/llms/") ||
+      href->Stdlib.String.startsWith("#")
     ) {
       href
     } else {
