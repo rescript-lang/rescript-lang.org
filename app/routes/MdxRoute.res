@@ -320,7 +320,7 @@ let default = () => {
               }
             })
           )}
-          editHref={`https://github.com/rescript-lang/rescript-lang.org/blob/${Env.github_branch}${loaderData.filePath->Option.getOrThrow}`}
+          editHref={`https://github.com/rescript-lang/rescript-lang.org/blob/master${loaderData.filePath->Option.getOrThrow}`}
         >
           <div className="markdown-body"> {component()} </div>
         </DocsLayout>
