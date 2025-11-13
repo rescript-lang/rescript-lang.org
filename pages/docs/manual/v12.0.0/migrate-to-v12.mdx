@@ -215,3 +215,50 @@ npm run convert-ml
 ```
 
 This setup is an escape hatch. It keeps legacy generators like `atdgen` working but it also forces you to maintain two compiler versions. Whenever possible migrate such things to modern ReScript tooling such as [Sury](https://github.com/DZakh/sury/).
+
+## List of all breaking changes
+
+Below is a consolidated excerpt of all the breaking changes from the compiler changelog.
+
+### Language & syntax
+
+- Tag functions named `j` or `js` are no longer reserved, so add your own implementation whenever a tagged template expects them. https://github.com/rescript-lang/rescript-compiler/pull/6817
+- `lazy` syntax was removed; use the `Lazy` module or `React.lazy_` instead. https://github.com/rescript-lang/rescript-compiler/pull/6342
+- All legacy `@bs.*` attributes (e.g. `@bs.as`, `@bs.send`) and `@bs.open` were removed; use their prefix-free successors (`@as`, `@send`, `@open`, …). https://github.com/rescript-lang/rescript-compiler/pull/6643 https://github.com/rescript-lang/rescript-compiler/pull/6629
+- `@bs.send.pipe` was removed, together with the helper functions in `Js_typed_array` that relied on it; rewrite bindings to use explicit piping. https://github.com/rescript-lang/rescript-compiler/pull/6858 https://github.com/rescript-lang/rescript-compiler/pull/6891
+- OCaml `.ml` files are no longer supported anywhere: `.ml` parsing/formatting went away and the `rescript convert` CLI was removed, so convert legacy files to `.res` before upgrading. https://github.com/rescript-lang/rescript-compiler/pull/6848 https://github.com/rescript-lang/rescript-compiler/pull/6852 https://github.com/rescript-lang/rescript-compiler/pull/6860
+- The `%time` extension and the `caml_external_polyfill` module were deleted. https://github.com/rescript-lang/rescript-compiler/pull/6924 https://github.com/rescript-lang/rescript-compiler/pull/6925
+- Some global names and old keywords are no longer automatically prefixed during JS emission; update any code that was relying on the mangled names. https://github.com/rescript-lang/rescript-compiler/pull/6831
+- JSX v3 and the `-bs-jsx-mode` option were removed and JSX children spreads are no longer valid; JSX v4 semantics are now the only supported mode. https://github.com/rescript-lang/rescript-compiler/pull/7072 https://github.com/rescript-lang/rescript/pull/7327 https://github.com/rescript-lang/rescript/pull/7869
+- Bitwise operators switched to the F#-style spellings `~~~`, `^^^`, `&&&`, `|||`; the previous `~`, `^`, `&`, `|` tokens are no longer accepted. https://github.com/rescript-lang/rescript/pull/7894
+
+### Standard library & runtime
+
+- OCaml compatibility layers in the stdlib and primitives were removed/deprecated. https://github.com/rescript-lang/rescript-compiler/pull/6984
+- Deprecated modules `Js.Vector` and `Js.List` were deleted. https://github.com/rescript-lang/rescript-compiler/pull/6900
+- The legacy `js_cast.res` helpers disappeared; migrate to explicit externals. https://github.com/rescript-lang/rescript-compiler/pull/7075
+- `JsError` and related modules were renamed/cleaned up under `JsExn`. https://github.com/rescript-lang/rescript/pull/7408
+- `BigInt.fromFloat` now returns `option` and exposes `BigInt.fromFloatOrThrow`, and the `Exn`-suffixed helpers across `Bool`, `BigInt`, `JSON`, `Option`, `Null`, `Nullable`, `Result`, and `List` now end with `OrThrow`. https://github.com/rescript-lang/rescript/pull/7419 https://github.com/rescript-lang/rescript/pull/7518 https://github.com/rescript-lang/rescript/pull/7554
+- `Result.getOrThrow` throws a JS `Error` (instead of `Not_found`), and `Result.equal` / `Result.compare` now provide a comparison function for `Error` values. https://github.com/rescript-lang/rescript/pull/7630 https://github.com/rescript-lang/rescript/pull/7933
+- `Iterator.forEach` now emits `Iterator.prototype.forEach`. https://github.com/rescript-lang/rescript/pull/7506
+- `Date.make` uses `~day` instead of `~date`. https://github.com/rescript-lang/rescript/pull/7324
+- Plain `int` multiplication is implemented as a regular int32 operation instead of `Math.imul`. https://github.com/rescript-lang/rescript/pull/7358
+- The `List` API was cleaned up—several functions were renamed or removed (see the PR for the exact surface). https://github.com/rescript-lang/rescript/pull/7290
+- `String.getSymbol` / `String.setSymbol` were removed; only `String.getSymbolUnsafe` remains on strings. https://github.com/rescript-lang/rescript/pull/7571 https://github.com/rescript-lang/rescript/pull/7626
+- `String.charCodeAt` now returns `option<int>` and exposes `String.charCodeAtUnsafe` for unchecked access. https://github.com/rescript-lang/rescript/pull/7877
+- Runtime files now live in the `@rescript/runtime` package and the legacy `@rescript/std` package was removed, so ensure `@rescript/runtime` is installed wherever you depend on the compiler. https://github.com/rescript-lang/rescript/pull/7796 https://github.com/rescript-lang/rescript/pull/7811
+- `Intl.*.supportedLocalesOf` bindings now return `array<string>` and the non-portable `Intl.PluralRules.selectBigInt` / `selectRangeBigInt` were removed. https://github.com/rescript-lang/rescript/pull/7995
+
+### Build system & CLI
+
+- The new Rust-based `rewatch` build system now powers the `rescript` command. The old Ninja builder moved behind `rescript legacy`, the standalone `rewatch` command was removed, and `--compiler-args` became the `compiler-args` subcommand. https://github.com/rescript-lang/rescript/pull/7551 https://github.com/rescript-lang/rescript/pull/7593
+- The `rescript legacy` subcommand was removed in favor of a stand-alone `rescript-legacy` binary. https://github.com/rescript-lang/rescript/pull/7928
+- `rescript format` was reimplemented in Rust, its options now use the `--check` / `--stdin` long-form spelling, and the `--all` flag was removed because every tracked file (non-dev by default) is formatted automatically. https://github.com/rescript-lang/rescript/pull/7603 https://github.com/rescript-lang/rescript/pull/7752
+- The `rescript dump` command was removed; call `bsc` directly if you need to inspect `.cmi` files. https://github.com/rescript-lang/rescript/pull/7710
+- `rewatch` now builds packages marked with `"type": "dev"` (and their `dev-dependencies`) by default, and the CLI `--dev` flag no longer has any effect. https://github.com/rescript-lang/rescript/pull/7934
+
+### Configuration & platform
+
+- The minimum supported Node.js version is now 20. https://github.com/rescript-lang/rescript/pull/7354
+- The `experimental-features` key in `rescript.json` now uses kebab-case to match the other config fields. https://github.com/rescript-lang/rescript/pull/7891
+- The legacy `-bs-super-errors` flag was removed along with Super_errors. https://github.com/rescript-lang/rescript-compiler/pull/6814
