@@ -560,7 +560,7 @@ module CuratedResources = {
       imgSrc: "/ic_rescript_react@2x.png",
       title: React.string("ReScript + React"),
       descr: "First Class bindings for ReactJS used by production users all over the world.",
-      href: "/docs/react/latest/introduction",
+      href: "/docs/react/introduction",
     },
     {
       imgSrc: "/ic_manual@2x.png",

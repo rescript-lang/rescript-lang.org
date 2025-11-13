@@ -75,9 +75,9 @@ let createSmallFile = (content: string, filePath: string): unit => {
 
 let createLlmsFiles = (version: string, docsDirectory: string, llmsDirectory: string): unit => {
   let mdxFileTemplatePath = llmsDirectory->Node.Path.join2("template.mdx")
-  let mdxFilePath = docsDirectory->Node.Path.join2(version)->Node.Path.join2("llms.mdx")
+  let mdxFilePath = docsDirectory->Node.Path.join2("llms.mdx")
   let txtFileTemplatePath = llmsDirectory->Node.Path.join2("template.txt")
-  let txtFilePath = llmsDirectory->Node.Path.join2(version)->Node.Path.join2("llms.txt")
+  let txtFilePath = llmsDirectory->Node.Path.join2("llms.txt")
 
   Node.Fs.writeFileSync(
     mdxFilePath,
@@ -90,48 +90,39 @@ let createLlmsFiles = (version: string, docsDirectory: string, llmsDirectory: st
   )
 }
 
-let processVersions = (
-  versions: array<string>,
-  docsDirectory: string,
-  llmsDirectory: string,
-): unit => {
+let generateFile = (docsDirectory: string, llmsDirectory: string): unit => {
   let fullFileName = "llm-full.txt"
   let smallFileName = "llm-small.txt"
 
-  versions->Array.forEach(version => {
-    let versionDir = docsDirectory->Node.Path.join2(version)
-    let llmsDir = llmsDirectory->Node.Path.join2(version)
-    let fullFilePath = llmsDir->Node.Path.join2(fullFileName)
-    let smallFilePath = llmsDir->Node.Path.join2(smallFileName)
+  let versionDir = docsDirectory
+  let llmsDir = llmsDirectory
+  let fullFilePath = llmsDir->Node.Path.join2(fullFileName)
+  let smallFilePath = llmsDir->Node.Path.join2(smallFileName)
 
-    createDirectoryIfNotExists(llmsDir)
-    clearFile(fullFilePath)
-    clearFile(smallFilePath)
+  createDirectoryIfNotExists(llmsDir)
+  clearFile(fullFilePath)
+  clearFile(smallFilePath)
 
-    createLlmsFiles(version, docsDirectory, llmsDirectory)
+  createLlmsFiles("v12", docsDirectory, llmsDirectory)
 
-    versionDir
-    ->collectFiles
-    ->Array.forEach(filePath => {
-      if String.endsWith(filePath, ".mdx") {
-        let content = readMarkdownFile(filePath)
+  versionDir
+  ->collectFiles
+  ->Array.forEach(filePath => {
+    if String.endsWith(filePath, ".mdx") {
+      let content = readMarkdownFile(filePath)
 
-        content->createFullFile(fullFilePath)
+      content->createFullFile(fullFilePath)
 
-        content->createSmallFile(smallFilePath)
-      }
-    })
+      content->createSmallFile(smallFilePath)
+    }
   })
 }
 
-let manualVersions = ["v12.0.0", "v11.0.0"]
-let reactManualVersions = ["latest", "v0.10.0", "v0.11.0"]
-
-let manualDocsDirectory = "pages/docs/manual"
-let reactDocsDirectory = "pages/docs/react"
+let manualDocsDirectory = "markdown-pages/docs/manual"
+let reactDocsDirectory = "markdown-pages/docs/react"
 
 let manualLlmsDirectory = "public/llms/manual"
 let reactLlmsDirectory = "public/llms/react"
 
-processVersions(manualVersions, manualDocsDirectory, manualLlmsDirectory)
-processVersions(reactManualVersions, reactDocsDirectory, reactLlmsDirectory)
+generateFile(manualDocsDirectory, manualLlmsDirectory)
+generateFile(reactDocsDirectory, reactLlmsDirectory)

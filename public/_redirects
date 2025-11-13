@@ -3,7 +3,7 @@
 
 /docs/manual/v12.0.0/*  /docs/manual/:splat  308
 /docs/manual/next/*  /docs/manual/:splat  308
-/docs/react/latest/* /docs/react/:splat 308
+/docs/react/* /docs/react/:splat 308
 
 /llms/manual/*  /llms/manual/:splat  307
 /llms/manual/next/*  /llms/manual/:splat  307
