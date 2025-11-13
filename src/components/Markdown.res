@@ -498,6 +498,7 @@ module Image = {
     ~withShadow=false,
     ~caption: option<string>=?,
     ~externalLink: option<string>=?,
+    ~className: option<string>=?,
   ) => {
     let width = switch size {
     | #large => "w-full"
@@ -512,9 +513,14 @@ module Image = {
 
     let target = externalLink->Option.isSome ? Some("_blank") : None
 
-    <div className={`mt-8 mb-12 ${size === #large ? "md:-mx-16" : ""}`}>
+    let className = `${switch className {
+      | Some(cn) => " " ++ cn
+      | None => ""
+      }}`
+
+    <div className={`mt-8 mb-12 ${size === #large ? "md:-mx-16" : ""}${className}`}>
       <a href={externalLink->Option.getOr(src)} rel="noopener noreferrer" ?target>
-        <img className={width ++ " " ++ shadow} src />
+        <img className={`${width} ${shadow}`} src />
       </a>
       {switch caption {
       | None => React.null

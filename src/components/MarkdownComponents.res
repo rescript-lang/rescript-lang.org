@@ -12,7 +12,7 @@ type t = {
   intro?: React.componentLike<Intro.props<React.element>, React.element>,
   @as("Image")
   image?: React.componentLike<
-    Image.props<string, [#large | #small], bool, string, string>,
+    Image.props<string, [#large | #small], bool, string, string, string>,
     React.element,
   >,
   @as("Video")

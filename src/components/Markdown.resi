@@ -161,6 +161,7 @@ module Image: {
     ~withShadow: bool=?,
     ~caption: string=?,
     ~externalLink: string=?,
+    ~className: string=?,
   ) => React.element
 }
 
