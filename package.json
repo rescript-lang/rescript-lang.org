@@ -19,7 +19,6 @@
     "update-index": "npm run generate-llms  && node scripts/generate_feed.mjs > public/blog/feed.xml",
     "sync-bundles": "node scripts/sync-playground-bundles.mjs",
     "generate-llms": "node scripts/generate_llms.mjs",
-    "generate-resources": "node scripts/generate_resources.mjs",
     "format": "prettier . --write --experimental-cli && rescript format",
     "ci:format": "prettier . --check --experimental-cli",
     "preview": "npm run build && static-server build/client"
