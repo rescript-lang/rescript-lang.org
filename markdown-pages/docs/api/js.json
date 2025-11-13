@@ -10,9 +10,7 @@
         "id": "Js.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "JS object type"
-        ],
+        "docstrings": ["JS object type"],
         "signature": "type t<'a> = 'a\n  constraint 'a = {..}",
         "deprecated": "This has been deprecated and will be removed in v13. Use the `{..}` type directly instead."
       },
@@ -20,9 +18,7 @@
         "id": "Js.globalThis",
         "kind": "value",
         "name": "globalThis",
-        "docstrings": [
-          "JS global object reference"
-        ],
+        "docstrings": ["JS global object reference"],
         "signature": "let globalThis: t<{..}>",
         "deprecated": ""
       },
@@ -121,9 +117,7 @@
         "id": "Js.null",
         "kind": "value",
         "name": "null",
-        "docstrings": [
-          "The same as empty in `Js.Null`. Compiles to `null`."
-        ],
+        "docstrings": ["The same as empty in `Js.Null`. Compiles to `null`."],
         "signature": "let null: null<'a>",
         "deprecated": ""
       },
@@ -151,9 +145,7 @@
         "id": "Js.log",
         "kind": "value",
         "name": "log",
-        "docstrings": [
-          "Equivalent to console.log any value."
-        ],
+        "docstrings": ["Equivalent to console.log any value."],
         "signature": "let log: 'a => unit",
         "deprecated": ""
       },
@@ -527,9 +519,7 @@
         "id": "Js.TypedArray2.Float64Array.elt",
         "kind": "type",
         "name": "elt",
-        "docstrings": [
-          ""
-        ],
+        "docstrings": [""],
         "signature": "type elt = float"
       },
       {
@@ -737,9 +727,7 @@
         "id": "Js.TypedArray2.Float64Array.slice",
         "kind": "value",
         "name": "slice",
-        "docstrings": [
-          "`start` is inclusive, `end_` exclusive"
-        ],
+        "docstrings": ["`start` is inclusive, `end_` exclusive"],
         "signature": "let slice: (t, ~start: int, ~end_: int) => t",
         "deprecated": ""
       },
@@ -763,9 +751,7 @@
         "id": "Js.TypedArray2.Float64Array.subarray",
         "kind": "value",
         "name": "subarray",
-        "docstrings": [
-          "`start` is inclusive, `end_` exclusive"
-        ],
+        "docstrings": ["`start` is inclusive, `end_` exclusive"],
         "signature": "let subarray: (t, ~start: int, ~end_: int) => t",
         "deprecated": ""
       },
@@ -957,9 +943,7 @@
         "id": "Js.TypedArray2.Float64Array.fromBuffer",
         "kind": "value",
         "name": "fromBuffer",
-        "docstrings": [
-          "can throw"
-        ],
+        "docstrings": ["can throw"],
         "signature": "let fromBuffer: array_buffer => t",
         "deprecated": ""
       },
@@ -1010,9 +994,7 @@
         "id": "Js.TypedArray2.Float32Array.elt",
         "kind": "type",
         "name": "elt",
-        "docstrings": [
-          ""
-        ],
+        "docstrings": [""],
         "signature": "type elt = float"
       },
       {
@@ -1220,9 +1202,7 @@
         "id": "Js.TypedArray2.Float32Array.slice",
         "kind": "value",
         "name": "slice",
-        "docstrings": [
-          "`start` is inclusive, `end_` exclusive"
-        ],
+        "docstrings": ["`start` is inclusive, `end_` exclusive"],
         "signature": "let slice: (t, ~start: int, ~end_: int) => t",
         "deprecated": ""
       },
@@ -1246,9 +1226,7 @@
         "id": "Js.TypedArray2.Float32Array.subarray",
         "kind": "value",
         "name": "subarray",
-        "docstrings": [
-          "`start` is inclusive, `end_` exclusive"
-        ],
+        "docstrings": ["`start` is inclusive, `end_` exclusive"],
         "signature": "let subarray: (t, ~start: int, ~end_: int) => t",
         "deprecated": ""
       },
@@ -1440,9 +1418,7 @@
         "id": "Js.TypedArray2.Float32Array.fromBuffer",
         "kind": "value",
         "name": "fromBuffer",
-        "docstrings": [
-          "can throw"
-        ],
+        "docstrings": ["can throw"],
         "signature": "let fromBuffer: array_buffer => t",
         "deprecated": ""
       },
@@ -1493,9 +1469,7 @@
         "id": "Js.TypedArray2.Uint32Array.elt",
         "kind": "type",
         "name": "elt",
-        "docstrings": [
-          ""
-        ],
+        "docstrings": [""],
         "signature": "type elt = int"
       },
       {
@@ -1703,9 +1677,7 @@
         "id": "Js.TypedArray2.Uint32Array.slice",
         "kind": "value",
         "name": "slice",
-        "docstrings": [
-          "`start` is inclusive, `end_` exclusive"
-        ],
+        "docstrings": ["`start` is inclusive, `end_` exclusive"],
         "signature": "let slice: (t, ~start: int, ~end_: int) => t",
         "deprecated": ""
       },
@@ -1729,9 +1701,7 @@
         "id": "Js.TypedArray2.Uint32Array.subarray",
         "kind": "value",
         "name": "subarray",
-        "docstrings": [
-          "`start` is inclusive, `end_` exclusive"
-        ],
+        "docstrings": ["`start` is inclusive, `end_` exclusive"],
         "signature": "let subarray: (t, ~start: int, ~end_: int) => t",
         "deprecated": ""
       },
@@ -1923,9 +1893,7 @@
         "id": "Js.TypedArray2.Uint32Array.fromBuffer",
         "kind": "value",
         "name": "fromBuffer",
-        "docstrings": [
-          "can throw"
-        ],
+        "docstrings": ["can throw"],
         "signature": "let fromBuffer: array_buffer => t",
         "deprecated": ""
       },
@@ -1976,9 +1944,7 @@
         "id": "Js.TypedArray2.Int32Array.elt",
         "kind": "type",
         "name": "elt",
-        "docstrings": [
-          ""
-        ],
+        "docstrings": [""],
         "signature": "type elt = int"
       },
       {
@@ -2186,9 +2152,7 @@
         "id": "Js.TypedArray2.Int32Array.slice",
         "kind": "value",
         "name": "slice",
-        "docstrings": [
-          "`start` is inclusive, `end_` exclusive"
-        ],
+        "docstrings": ["`start` is inclusive, `end_` exclusive"],
         "signature": "let slice: (t, ~start: int, ~end_: int) => t",
         "deprecated": ""
       },
@@ -2212,9 +2176,7 @@
         "id": "Js.TypedArray2.Int32Array.subarray",
         "kind": "value",
         "name": "subarray",
-        "docstrings": [
-          "`start` is inclusive, `end_` exclusive"
-        ],
+        "docstrings": ["`start` is inclusive, `end_` exclusive"],
         "signature": "let subarray: (t, ~start: int, ~end_: int) => t",
         "deprecated": ""
       },
@@ -2406,9 +2368,7 @@
         "id": "Js.TypedArray2.Int32Array.fromBuffer",
         "kind": "value",
         "name": "fromBuffer",
-        "docstrings": [
-          "can throw"
-        ],
+        "docstrings": ["can throw"],
         "signature": "let fromBuffer: array_buffer => t",
         "deprecated": ""
       },
@@ -2459,9 +2419,7 @@
         "id": "Js.TypedArray2.Uint16Array.elt",
         "kind": "type",
         "name": "elt",
-        "docstrings": [
-          ""
-        ],
+        "docstrings": [""],
         "signature": "type elt = int"
       },
       {
@@ -2653,9 +2611,7 @@
         "id": "Js.TypedArray2.Uint16Array.slice",
         "kind": "value",
         "name": "slice",
-        "docstrings": [
-          "`start` is inclusive, `end_` exclusive"
-        ],
+        "docstrings": ["`start` is inclusive, `end_` exclusive"],
         "signature": "let slice: (t, ~start: int, ~end_: int) => t",
         "deprecated": ""
       },
@@ -2678,9 +2634,7 @@
         "id": "Js.TypedArray2.Uint16Array.subarray",
         "kind": "value",
         "name": "subarray",
-        "docstrings": [
-          "`start` is inclusive, `end_` exclusive"
-        ],
+        "docstrings": ["`start` is inclusive, `end_` exclusive"],
         "signature": "let subarray: (t, ~start: int, ~end_: int) => t",
         "deprecated": ""
       },
@@ -2854,9 +2808,7 @@
         "id": "Js.TypedArray2.Uint16Array.fromBuffer",
         "kind": "value",
         "name": "fromBuffer",
-        "docstrings": [
-          "can throw"
-        ],
+        "docstrings": ["can throw"],
         "signature": "let fromBuffer: array_buffer => t",
         "deprecated": ""
       },
@@ -2907,9 +2859,7 @@
         "id": "Js.TypedArray2.Int16Array.elt",
         "kind": "type",
         "name": "elt",
-        "docstrings": [
-          ""
-        ],
+        "docstrings": [""],
         "signature": "type elt = int"
       },
       {
@@ -3117,9 +3067,7 @@
         "id": "Js.TypedArray2.Int16Array.slice",
         "kind": "value",
         "name": "slice",
-        "docstrings": [
-          "`start` is inclusive, `end_` exclusive"
-        ],
+        "docstrings": ["`start` is inclusive, `end_` exclusive"],
         "signature": "let slice: (t, ~start: int, ~end_: int) => t",
         "deprecated": ""
       },
@@ -3143,9 +3091,7 @@
         "id": "Js.TypedArray2.Int16Array.subarray",
         "kind": "value",
         "name": "subarray",
-        "docstrings": [
-          "`start` is inclusive, `end_` exclusive"
-        ],
+        "docstrings": ["`start` is inclusive, `end_` exclusive"],
         "signature": "let subarray: (t, ~start: int, ~end_: int) => t",
         "deprecated": ""
       },
@@ -3335,9 +3281,7 @@
         "id": "Js.TypedArray2.Int16Array.fromBuffer",
         "kind": "value",
         "name": "fromBuffer",
-        "docstrings": [
-          "can throw"
-        ],
+        "docstrings": ["can throw"],
         "signature": "let fromBuffer: array_buffer => t"
       },
       {
@@ -3383,9 +3327,7 @@
         "id": "Js.TypedArray2.Uint8ClampedArray.elt",
         "kind": "type",
         "name": "elt",
-        "docstrings": [
-          ""
-        ],
+        "docstrings": [""],
         "signature": "type elt = int"
       },
       {
@@ -3592,9 +3534,7 @@
         "id": "Js.TypedArray2.Uint8ClampedArray.slice",
         "kind": "value",
         "name": "slice",
-        "docstrings": [
-          "`start` is inclusive, `end_` exclusive"
-        ],
+        "docstrings": ["`start` is inclusive, `end_` exclusive"],
         "signature": "let slice: (t, ~start: int, ~end_: int) => t",
         "deprecated": ""
       },
@@ -3618,9 +3558,7 @@
         "id": "Js.TypedArray2.Uint8ClampedArray.subarray",
         "kind": "value",
         "name": "subarray",
-        "docstrings": [
-          "`start` is inclusive, `end_` exclusive"
-        ],
+        "docstrings": ["`start` is inclusive, `end_` exclusive"],
         "signature": "let subarray: (t, ~start: int, ~end_: int) => t",
         "deprecated": ""
       },
@@ -3812,9 +3750,7 @@
         "id": "Js.TypedArray2.Uint8ClampedArray.fromBuffer",
         "kind": "value",
         "name": "fromBuffer",
-        "docstrings": [
-          "can throw"
-        ],
+        "docstrings": ["can throw"],
         "signature": "let fromBuffer: array_buffer => t"
       },
       {
@@ -3864,9 +3800,7 @@
         "id": "Js.TypedArray2.Uint8Array.elt",
         "kind": "type",
         "name": "elt",
-        "docstrings": [
-          ""
-        ],
+        "docstrings": [""],
         "signature": "type elt = int"
       },
       {
@@ -4073,9 +4007,7 @@
         "id": "Js.TypedArray2.Uint8Array.slice",
         "kind": "value",
         "name": "slice",
-        "docstrings": [
-          "`start` is inclusive, `end_` exclusive"
-        ],
+        "docstrings": ["`start` is inclusive, `end_` exclusive"],
         "signature": "let slice: (t, ~start: int, ~end_: int) => t",
         "deprecated": ""
       },
@@ -4099,9 +4031,7 @@
         "id": "Js.TypedArray2.Uint8Array.subarray",
         "kind": "value",
         "name": "subarray",
-        "docstrings": [
-          "`start` is inclusive, `end_` exclusive"
-        ],
+        "docstrings": ["`start` is inclusive, `end_` exclusive"],
         "signature": "let subarray: (t, ~start: int, ~end_: int) => t",
         "deprecated": ""
       },
@@ -4293,9 +4223,7 @@
         "id": "Js.TypedArray2.Uint8Array.fromBuffer",
         "kind": "value",
         "name": "fromBuffer",
-        "docstrings": [
-          "can throw"
-        ],
+        "docstrings": ["can throw"],
         "signature": "let fromBuffer: array_buffer => t"
       },
       {
@@ -4345,9 +4273,7 @@
         "id": "Js.TypedArray2.Int8Array.elt",
         "kind": "type",
         "name": "elt",
-        "docstrings": [
-          ""
-        ],
+        "docstrings": [""],
         "signature": "type elt = int"
       },
       {
@@ -4555,9 +4481,7 @@
         "id": "Js.TypedArray2.Int8Array.slice",
         "kind": "value",
         "name": "slice",
-        "docstrings": [
-          "`start` is inclusive, `end_` exclusive"
-        ],
+        "docstrings": ["`start` is inclusive, `end_` exclusive"],
         "signature": "let slice: (t, ~start: int, ~end_: int) => t",
         "deprecated": ""
       },
@@ -4581,9 +4505,7 @@
         "id": "Js.TypedArray2.Int8Array.subarray",
         "kind": "value",
         "name": "subarray",
-        "docstrings": [
-          "`start` is inclusive, `end_` exclusive"
-        ],
+        "docstrings": ["`start` is inclusive, `end_` exclusive"],
         "signature": "let subarray: (t, ~start: int, ~end_: int) => t",
         "deprecated": ""
       },
@@ -4775,9 +4697,7 @@
         "id": "Js.TypedArray2.Int8Array.fromBuffer",
         "kind": "value",
         "name": "fromBuffer",
-        "docstrings": [
-          "can throw"
-        ],
+        "docstrings": ["can throw"],
         "signature": "let fromBuffer: array_buffer => t"
       },
       {
@@ -4836,9 +4756,7 @@
         "id": "Js.TypedArray2.ArrayBuffer.make",
         "kind": "value",
         "name": "make",
-        "docstrings": [
-          "takes length. initializes elements to 0"
-        ],
+        "docstrings": ["takes length. initializes elements to 0"],
         "signature": "let make: int => t"
       },
       {
@@ -5142,9 +5060,7 @@
         "id": "Js.Typed_array.Float64Array.elt",
         "kind": "type",
         "name": "elt",
-        "docstrings": [
-          ""
-        ],
+        "docstrings": [""],
         "signature": "type elt = float"
       },
       {
@@ -5248,9 +5164,7 @@
         "id": "Js.Typed_array.Float64Array.fromBuffer",
         "kind": "value",
         "name": "fromBuffer",
-        "docstrings": [
-          "can throw"
-        ],
+        "docstrings": ["can throw"],
         "signature": "let fromBuffer: array_buffer => t",
         "deprecated": ""
       },
@@ -5323,9 +5237,7 @@
         "id": "Js.Typed_array.Float32Array.elt",
         "kind": "type",
         "name": "elt",
-        "docstrings": [
-          ""
-        ],
+        "docstrings": [""],
         "signature": "type elt = float"
       },
       {
@@ -5429,9 +5341,7 @@
         "id": "Js.Typed_array.Float32Array.fromBuffer",
         "kind": "value",
         "name": "fromBuffer",
-        "docstrings": [
-          "can throw"
-        ],
+        "docstrings": ["can throw"],
         "signature": "let fromBuffer: array_buffer => t",
         "deprecated": ""
       },
@@ -5498,9 +5408,7 @@
         "id": "Js.Typed_array.Uint32Array.elt",
         "kind": "type",
         "name": "elt",
-        "docstrings": [
-          ""
-        ],
+        "docstrings": [""],
         "signature": "type elt = int"
       },
       {
@@ -5604,9 +5512,7 @@
         "id": "Js.Typed_array.Uint32Array.fromBuffer",
         "kind": "value",
         "name": "fromBuffer",
-        "docstrings": [
-          "can throw"
-        ],
+        "docstrings": ["can throw"],
         "signature": "let fromBuffer: array_buffer => t",
         "deprecated": ""
       },
@@ -5663,9 +5569,7 @@
         "id": "Js.Typed_array.Int32Array.elt",
         "kind": "type",
         "name": "elt",
-        "docstrings": [
-          ""
-        ],
+        "docstrings": [""],
         "signature": "type elt = int"
       },
       {
@@ -5769,9 +5673,7 @@
         "id": "Js.Typed_array.Int32Array.fromBuffer",
         "kind": "value",
         "name": "fromBuffer",
-        "docstrings": [
-          "can throw"
-        ],
+        "docstrings": ["can throw"],
         "signature": "let fromBuffer: array_buffer => t",
         "deprecated": ""
       },
@@ -5838,9 +5740,7 @@
         "id": "Js.Typed_array.Uint16Array.elt",
         "kind": "type",
         "name": "elt",
-        "docstrings": [
-          ""
-        ],
+        "docstrings": [""],
         "signature": "type elt = int"
       },
       {
@@ -5944,9 +5844,7 @@
         "id": "Js.Typed_array.Uint16Array.fromBuffer",
         "kind": "value",
         "name": "fromBuffer",
-        "docstrings": [
-          "can throw"
-        ],
+        "docstrings": ["can throw"],
         "signature": "let fromBuffer: array_buffer => t",
         "deprecated": ""
       },
@@ -5997,9 +5895,7 @@
         "id": "Js.Typed_array.Int16Array.elt",
         "kind": "type",
         "name": "elt",
-        "docstrings": [
-          ""
-        ],
+        "docstrings": [""],
         "signature": "type elt = int"
       },
       {
@@ -6103,9 +5999,7 @@
         "id": "Js.Typed_array.Int16Array.fromBuffer",
         "kind": "value",
         "name": "fromBuffer",
-        "docstrings": [
-          "can throw"
-        ],
+        "docstrings": ["can throw"],
         "signature": "let fromBuffer: array_buffer => t",
         "deprecated": ""
       },
@@ -6156,9 +6050,7 @@
         "id": "Js.Typed_array.Uint8ClampedArray.elt",
         "kind": "type",
         "name": "elt",
-        "docstrings": [
-          ""
-        ],
+        "docstrings": [""],
         "signature": "type elt = int"
       },
       {
@@ -6262,9 +6154,7 @@
         "id": "Js.Typed_array.Uint8ClampedArray.fromBuffer",
         "kind": "value",
         "name": "fromBuffer",
-        "docstrings": [
-          "can throw"
-        ],
+        "docstrings": ["can throw"],
         "signature": "let fromBuffer: array_buffer => t"
       },
       {
@@ -6314,9 +6204,7 @@
         "id": "Js.Typed_array.Uint8Array.elt",
         "kind": "type",
         "name": "elt",
-        "docstrings": [
-          ""
-        ],
+        "docstrings": [""],
         "signature": "type elt = int"
       },
       {
@@ -6420,9 +6308,7 @@
         "id": "Js.Typed_array.Uint8Array.fromBuffer",
         "kind": "value",
         "name": "fromBuffer",
-        "docstrings": [
-          "can throw"
-        ],
+        "docstrings": ["can throw"],
         "signature": "let fromBuffer: array_buffer => t"
       },
       {
@@ -6472,9 +6358,7 @@
         "id": "Js.Typed_array.Int8Array.elt",
         "kind": "type",
         "name": "elt",
-        "docstrings": [
-          ""
-        ],
+        "docstrings": [""],
         "signature": "type elt = int"
       },
       {
@@ -6578,9 +6462,7 @@
         "id": "Js.Typed_array.Int8Array.fromBuffer",
         "kind": "value",
         "name": "fromBuffer",
-        "docstrings": [
-          "can throw"
-        ],
+        "docstrings": ["can throw"],
         "signature": "let fromBuffer: array_buffer => t"
       },
       {
@@ -6733,9 +6615,7 @@
         "id": "Js.Typed_array.ArrayBuffer.make",
         "kind": "value",
         "name": "make",
-        "docstrings": [
-          "takes length. initializes elements to 0"
-        ],
+        "docstrings": ["takes length. initializes elements to 0"],
         "signature": "let make: int => t"
       },
       {
@@ -6777,9 +6657,7 @@
         "id": "Js.Json.Kind.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Underlying type of a JSON value"
-        ],
+        "docstrings": ["Underlying type of a JSON value"],
         "signature": "type t<_> =\n  | String: t<Js_string.t>\n  | Number: t<float>\n  | Object: t<dict<json>>\n  | Array: t<array<json>>\n  | Boolean: t<bool>\n  | Null: t<Js_types.null_val>"
       }
     ]
@@ -6787,10 +6665,7 @@
   "js/weakmap": {
     "id": "Js.WeakMap",
     "name": "WeakMap",
-    "docstrings": [
-      "Provides bindings for ES6 WeakMap",
-      "ES6 WeakMap API"
-    ],
+    "docstrings": ["Provides bindings for ES6 WeakMap", "ES6 WeakMap API"],
     "items": [
       {
         "id": "Js.WeakMap.t",
@@ -6805,10 +6680,7 @@
   "js/map": {
     "id": "Js.Map",
     "name": "Map",
-    "docstrings": [
-      "Provides bindings for ES6 Map",
-      "ES6 Map API"
-    ],
+    "docstrings": ["Provides bindings for ES6 Map", "ES6 Map API"],
     "items": [
       {
         "id": "Js.Map.t",
@@ -6823,10 +6695,7 @@
   "js/weakset": {
     "id": "Js.WeakSet",
     "name": "WeakSet",
-    "docstrings": [
-      "Provides bindings for ES6 WeakSet",
-      "ES6 WeakSet API"
-    ],
+    "docstrings": ["Provides bindings for ES6 WeakSet", "ES6 WeakSet API"],
     "items": [
       {
         "id": "Js.WeakSet.t",
@@ -6841,10 +6710,7 @@
   "js/set": {
     "id": "Js.Set",
     "name": "Set",
-    "docstrings": [
-      "Provides bindings for ES6 Set",
-      "ES6 Set API"
-    ],
+    "docstrings": ["Provides bindings for ES6 Set", "ES6 Set API"],
     "items": [
       {
         "id": "Js.Set.t",
@@ -6859,9 +6725,7 @@
   "js/console": {
     "id": "Js.Console",
     "name": "Console",
-    "docstrings": [
-      "Provides bindings for console"
-    ],
+    "docstrings": ["Provides bindings for console"],
     "items": [
       {
         "id": "Js.Console.log",
@@ -7060,9 +6924,7 @@
   "js/result": {
     "id": "Js.Result",
     "name": "Result",
-    "docstrings": [
-      "Define the interface for result"
-    ],
+    "docstrings": ["Define the interface for result"],
     "items": [
       {
         "id": "Js.Result.t",
@@ -7077,9 +6939,7 @@
   "js/option": {
     "id": "Js.Option",
     "name": "Option",
-    "docstrings": [
-      "Provide utilities for option"
-    ],
+    "docstrings": ["Provide utilities for option"],
     "items": [
       {
         "id": "Js.Option.t",
@@ -7190,10 +7050,7 @@
   "js/blob": {
     "id": "Js.Blob",
     "name": "Blob",
-    "docstrings": [
-      "Provide utilities for Blob",
-      "JavaScript Blob API"
-    ],
+    "docstrings": ["Provide utilities for Blob", "JavaScript Blob API"],
     "items": [
       {
         "id": "Js.Blob.t",
@@ -7207,10 +7064,7 @@
   "js/file": {
     "id": "Js.File",
     "name": "File",
-    "docstrings": [
-      "Provide utilities for File",
-      "JavaScript File API"
-    ],
+    "docstrings": ["Provide utilities for File", "JavaScript File API"],
     "items": [
       {
         "id": "Js.File.t",
@@ -7224,10 +7078,7 @@
   "js/bigint": {
     "id": "Js.BigInt",
     "name": "BigInt",
-    "docstrings": [
-      "Provide utilities for bigint",
-      "JavaScript BigInt API"
-    ],
+    "docstrings": ["Provide utilities for bigint", "JavaScript BigInt API"],
     "items": [
       {
         "id": "Js.BigInt.fromStringExn",
@@ -7607,9 +7458,7 @@
         "id": "Js.Types.symbol",
         "kind": "type",
         "name": "symbol",
-        "docstrings": [
-          "Js symbol type (only available in ES6)"
-        ],
+        "docstrings": ["Js symbol type (only available in ES6)"],
         "signature": "type symbol = Symbol.t",
         "deprecated": ""
       },
@@ -7625,9 +7474,7 @@
         "id": "Js.Types.undefined_val",
         "kind": "type",
         "name": "undefined_val",
-        "docstrings": [
-          "This type has only one value `undefined`"
-        ],
+        "docstrings": ["This type has only one value `undefined`"],
         "signature": "type undefined_val",
         "deprecated": "This has been deprecated and will be removed in v13. Use functions and types from the `Type` module instead."
       },
@@ -7635,9 +7482,7 @@
         "id": "Js.Types.null_val",
         "kind": "type",
         "name": "null_val",
-        "docstrings": [
-          "This type has only one value `null`"
-        ],
+        "docstrings": ["This type has only one value `null`"],
         "signature": "type null_val",
         "deprecated": "This has been deprecated and will be removed in v13. Use functions and types from the `Type` module instead."
       },
@@ -7747,9 +7592,7 @@
         "id": "Js.Obj.empty",
         "kind": "value",
         "name": "empty",
-        "docstrings": [
-          "`empty()` returns the empty object `{}`"
-        ],
+        "docstrings": ["`empty()` returns the empty object `{}`"],
         "signature": "let empty: unit => {..}",
         "deprecated": ""
       },
@@ -8429,9 +8272,7 @@
         "id": "Js.Json.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "The JSON data structure"
-        ],
+        "docstrings": ["The JSON data structure"],
         "signature": "@unboxed\ntype t = JSON.t =\n  | Boolean(bool)\n  | @as(null) Null\n  | String(string)\n  | Number(float)\n  | Object(dict<t>)\n  | Array(array<t>)",
         "deprecated": ""
       },
@@ -8455,9 +8296,7 @@
         "id": "Js.Json.test",
         "kind": "value",
         "name": "test",
-        "docstrings": [
-          "`test(v, kind)` returns `true` if `v` is of `kind`."
-        ],
+        "docstrings": ["`test(v, kind)` returns `true` if `v` is of `kind`."],
         "signature": "let test: ('a, Kind.t<'b>) => bool",
         "deprecated": "This functionality has been deprecated and will be removed in v13."
       },
@@ -8525,9 +8364,7 @@
         "id": "Js.Json.null",
         "kind": "value",
         "name": "null",
-        "docstrings": [
-          "`null` is the singleton null JSON value."
-        ],
+        "docstrings": ["`null` is the singleton null JSON value."],
         "signature": "let null: t",
         "deprecated": ""
       },
@@ -8535,9 +8372,7 @@
         "id": "Js.Json.string",
         "kind": "value",
         "name": "string",
-        "docstrings": [
-          "`string(s)` makes a JSON string of the `string` `s`."
-        ],
+        "docstrings": ["`string(s)` makes a JSON string of the `string` `s`."],
         "signature": "let string: string => t",
         "deprecated": ""
       },
@@ -8545,9 +8380,7 @@
         "id": "Js.Json.number",
         "kind": "value",
         "name": "number",
-        "docstrings": [
-          "`number(n)` makes a JSON number of the `float` `n`."
-        ],
+        "docstrings": ["`number(n)` makes a JSON number of the `float` `n`."],
         "signature": "let number: float => t",
         "deprecated": ""
       },
@@ -8555,9 +8388,7 @@
         "id": "Js.Json.boolean",
         "kind": "value",
         "name": "boolean",
-        "docstrings": [
-          "`boolean(b)` makes a JSON boolean of the `bool` `b`."
-        ],
+        "docstrings": ["`boolean(b)` makes a JSON boolean of the `bool` `b`."],
         "signature": "let boolean: bool => t",
         "deprecated": ""
       },
@@ -8565,9 +8396,7 @@
         "id": "Js.Json.object_",
         "kind": "value",
         "name": "object_",
-        "docstrings": [
-          "`object_(dict)` makes a JSON object of the `dict`."
-        ],
+        "docstrings": ["`object_(dict)` makes a JSON object of the `dict`."],
         "signature": "let object_: dict<t> => t",
         "deprecated": ""
       },
@@ -8705,9 +8534,7 @@
         "id": "Js.Global.timeoutId",
         "kind": "type",
         "name": "timeoutId",
-        "docstrings": [
-          "Identify timeout started by `Js.Global.setTimeout`."
-        ],
+        "docstrings": ["Identify timeout started by `Js.Global.setTimeout`."],
         "signature": "type timeoutId = Global.timeoutId",
         "deprecated": ""
       },
@@ -8883,9 +8710,7 @@
         "id": "Js.Dict.empty",
         "kind": "value",
         "name": "empty",
-        "docstrings": [
-          "Returns an empty dictionary."
-        ],
+        "docstrings": ["Returns an empty dictionary."],
         "signature": "let empty: unit => t<'a>",
         "deprecated": ""
       },
@@ -8893,9 +8718,7 @@
         "id": "Js.Dict.unsafeDeleteKey",
         "kind": "value",
         "name": "unsafeDeleteKey",
-        "docstrings": [
-          "Experimental internal function"
-        ],
+        "docstrings": ["Experimental internal function"],
         "signature": "let unsafeDeleteKey: (t<string>, string) => unit",
         "deprecated": ""
       },
@@ -9657,9 +9480,7 @@
         "id": "Js.Date.setUTCTime",
         "kind": "value",
         "name": "setUTCTime",
-        "docstrings": [
-          "Same as [`setTime()`](#settime)."
-        ],
+        "docstrings": ["Same as [`setTime()`](#settime)."],
         "signature": "let setUTCTime: (t, float) => float",
         "deprecated": ""
       },
@@ -9782,9 +9603,7 @@
   "js/promise2": {
     "id": "Js.Promise2",
     "name": "Promise2",
-    "docstrings": [
-      "Provide bindings to JS Promise"
-    ],
+    "docstrings": ["Provide bindings to JS Promise"],
     "items": [
       {
         "id": "Js.Promise2.t",
@@ -9805,9 +9624,7 @@
         "id": "Js.Promise2.then",
         "kind": "value",
         "name": "then",
-        "docstrings": [
-          "Type-safe t-first then"
-        ],
+        "docstrings": ["Type-safe t-first then"],
         "signature": "let then: (promise<'a>, 'a => promise<'b>) => promise<'b>",
         "deprecated": ""
       },
@@ -9815,9 +9632,7 @@
         "id": "Js.Promise2.catch",
         "kind": "value",
         "name": "catch",
-        "docstrings": [
-          "Type-safe t-first catch"
-        ],
+        "docstrings": ["Type-safe t-first catch"],
         "signature": "let catch: (promise<'a>, error => promise<'a>) => promise<'a>",
         "deprecated": ""
       },
@@ -10051,9 +9866,7 @@
         "id": "Js.Re.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "The RegExp object."
-        ],
+        "docstrings": ["The RegExp object."],
         "signature": "type t = RegExp.t",
         "deprecated": ""
       },
@@ -10061,9 +9874,7 @@
         "id": "Js.Re.result",
         "kind": "type",
         "name": "result",
-        "docstrings": [
-          "The result of a executing a RegExp on a string."
-        ],
+        "docstrings": ["The result of a executing a RegExp on a string."],
         "signature": "type result"
       },
       {
@@ -10088,9 +9899,7 @@
         "id": "Js.Re.index",
         "kind": "value",
         "name": "index",
-        "docstrings": [
-          "0-based index of the match in the input string."
-        ],
+        "docstrings": ["0-based index of the match in the input string."],
         "signature": "let index: result => int",
         "deprecated": ""
       },
@@ -10098,9 +9907,7 @@
         "id": "Js.Re.input",
         "kind": "value",
         "name": "input",
-        "docstrings": [
-          "The original input string."
-        ],
+        "docstrings": ["The original input string."],
         "signature": "let input: result => string",
         "deprecated": ""
       },
@@ -10128,9 +9935,7 @@
         "id": "Js.Re.flags",
         "kind": "value",
         "name": "flags",
-        "docstrings": [
-          "Returns the enabled flags as a string."
-        ],
+        "docstrings": ["Returns the enabled flags as a string."],
         "signature": "let flags: t => string",
         "deprecated": ""
       },
@@ -10188,9 +9993,7 @@
         "id": "Js.Re.source",
         "kind": "value",
         "name": "source",
-        "docstrings": [
-          "Returns the pattern as a `string`."
-        ],
+        "docstrings": ["Returns the pattern as a `string`."],
         "signature": "let source: t => string",
         "deprecated": ""
       },
@@ -10777,10 +10580,7 @@
   "js/string": {
     "id": "Js.String",
     "name": "String",
-    "docstrings": [
-      "Provide bindings to JS string",
-      "JavaScript String API"
-    ],
+    "docstrings": ["Provide bindings to JS string", "JavaScript String API"],
     "items": [
       {
         "id": "Js.String.t",
@@ -11210,9 +11010,7 @@
         "id": "Js.Array2.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "The type used to describe a JavaScript array."
-        ],
+        "docstrings": ["The type used to describe a JavaScript array."],
         "signature": "type t<'a> = array<'a>",
         "deprecated": ""
       },
@@ -11798,9 +11596,7 @@
         "id": "Js.Array.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "The type used to describe a JavaScript array."
-        ],
+        "docstrings": ["The type used to describe a JavaScript array."],
         "signature": "type t<'a> = array<'a>",
         "deprecated": ""
       },
@@ -12258,9 +12054,7 @@
         "id": "Js.Exn.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Represents a JS exception"
-        ],
+        "docstrings": ["Represents a JS exception"],
         "signature": "type t",
         "deprecated": ""
       },
@@ -12318,9 +12112,7 @@
         "id": "Js.Exn.raiseError",
         "kind": "value",
         "name": "raiseError",
-        "docstrings": [
-          "Raise Js exception Error object with stacktrace"
-        ],
+        "docstrings": ["Raise Js exception Error object with stacktrace"],
         "signature": "let raiseError: string => 'a",
         "deprecated": ""
       },
@@ -12423,9 +12215,7 @@
         "id": "Js.Null_undefined.null",
         "kind": "value",
         "name": "null",
-        "docstrings": [
-          "The null value of type `Js.null_undefined<'a>`."
-        ],
+        "docstrings": ["The null value of type `Js.null_undefined<'a>`."],
         "signature": "let null: t<'a>",
         "deprecated": ""
       },
@@ -12433,9 +12223,7 @@
         "id": "Js.Null_undefined.undefined",
         "kind": "value",
         "name": "undefined",
-        "docstrings": [
-          "The undefined value of type `Js.null_undefined<'a>`."
-        ],
+        "docstrings": ["The undefined value of type `Js.null_undefined<'a>`."],
         "signature": "let undefined: t<'a>",
         "deprecated": ""
       },
@@ -12537,9 +12325,7 @@
         "id": "Js.Nullable.null",
         "kind": "value",
         "name": "null",
-        "docstrings": [
-          "The null value of type `Js.null_undefined<'a>`."
-        ],
+        "docstrings": ["The null value of type `Js.null_undefined<'a>`."],
         "signature": "let null: t<'a>",
         "deprecated": ""
       },
@@ -12547,9 +12333,7 @@
         "id": "Js.Nullable.undefined",
         "kind": "value",
         "name": "undefined",
-        "docstrings": [
-          "The undefined value of type `Js.null_undefined<'a>`."
-        ],
+        "docstrings": ["The undefined value of type `Js.null_undefined<'a>`."],
         "signature": "let undefined: t<'a>",
         "deprecated": ""
       },
@@ -12623,9 +12407,7 @@
         "id": "Js.Undefined.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Local alias for `Js.undefined<'a>`"
-        ],
+        "docstrings": ["Local alias for `Js.undefined<'a>`"],
         "signature": "type t<'a> = undefined<'a>",
         "deprecated": ""
       },
@@ -12663,9 +12445,7 @@
         "id": "Js.Undefined.empty",
         "kind": "value",
         "name": "empty",
-        "docstrings": [
-          "The empty value, `undefined`"
-        ],
+        "docstrings": ["The empty value, `undefined`"],
         "signature": "let empty: t<'a>",
         "deprecated": ""
       },
@@ -12783,9 +12563,7 @@
         "id": "Js.Null.empty",
         "kind": "value",
         "name": "empty",
-        "docstrings": [
-          "The empty value, `null`"
-        ],
+        "docstrings": ["The empty value, `null`"],
         "signature": "let empty: t<'a>",
         "deprecated": ""
       },
