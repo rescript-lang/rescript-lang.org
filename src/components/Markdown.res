@@ -120,7 +120,7 @@ module Anchor = {
         title
         className="scroll-mt-30 invisible text-gray-60 opacity-50 hover:opacity-100 hover:text-gray-60 hover:cursor-pointer group-hover:visible"
         href={"#" ++ id}
-        id={"#" ++ id}
+        id={id}
       >
         <Icon.Hyperlink className="inline-block align-middle text-gray-40" />
       </a>
