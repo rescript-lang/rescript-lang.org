@@ -126,50 +126,11 @@ compiles to `undefined`! If you've got e.g. a string in JavaScript that you know
 
 ### Caveat 1
 
-The option-to-undefined translation isn't perfect, because on our side, `option` values can be composed:
-
-<CodeTab labels={["ReScript", "JS Output"]}>
-
-```res example
-let x = Some(Some(Some(5)))
-```
-
-```js
-var x = 5;
-```
-
-</CodeTab>
-
-This still compiles to `5`, but this gets troublesome:
-
-<CodeTab labels={["ReScript", "JS Output"]}>
-
-```res example
-let x = Some(None)
-```
-
-```js
-var Caml_option = require("./stdlib/caml_option.js");
-
-var x = Caml_option.some(undefined);
-```
-
-(See output tab).
-
-</CodeTab>
-
-What's this `Caml_option.some` thing? Why can't this compile to `undefined`? Long story short, when dealing with a polymorphic `option` type (aka `option<'a>`, for any `'a`), many operations become tricky if we don't mark the value with some special annotation. If this doesn't make sense, don't worry; just remember the following rule:
-
-- **Never, EVER, pass a nested `option` value (e.g. `Some(Some(Some(5)))`) into the JS side.**
-- **Never, EVER, annotate a value coming from JS as `option<'a>`. Always give the concrete, non-polymorphic type.**
-
-### Caveat 2
-
 Unfortunately, lots of times, your JavaScript value might be _both_ `null` or `undefined`. In that case, you unfortunately can't type such value as e.g. `option<int>`, since our `option` type only checks for `undefined` and not `null` when dealing with a `None`.
 
 #### Solution: More Sophisticated `undefined` & `null` Interop
 
-To solve this, we provide access to more elaborate `null` and `undefined` helpers through the [`Nullable`](api/core/nullable) module. This somewhat works like an `option` type, but is different from it.
+To solve this, we provide access to more elaborate `null` and `undefined` helpers through the [`Nullable`](api/stdlib/nullable) module. This somewhat works like an `option` type, but is different from it.
 
 #### Examples
 

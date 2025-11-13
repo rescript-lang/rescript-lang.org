@@ -77,7 +77,7 @@ This is just like JavaScript's backtick string interpolation, except without nee
 
 ### Usage
 
-See the familiar `String` API in the [API docs](api/core/string). Since a ReScript string maps to a JavaScript string, you can mix & match the string operations in all standard libraries.
+See the familiar `String` API in the [API docs](api/stdlib/string). Since a ReScript string maps to a JavaScript string, you can mix & match the string operations in all standard libraries.
 
 ### Tips & Tricks
 
@@ -127,7 +127,7 @@ let r = /b/g;
 
 </CodeTab>
 
-A regular expression like the above has the type `RegExp.t`. The [RegExp](api/core/regexp) module contains the regular expression helpers you have seen in JS.
+A regular expression like the above has the type `RegExp.t`. The [RegExp](api/stdlib/regexp) module contains the regular expression helpers you have seen in JS.
 
 ## Boolean
 
@@ -146,7 +146,7 @@ ReScript's `true/false` compiles into a JavaScript `true/false`.
 
 ## Integers
 
-32-bits, truncated when necessary. We provide the usual operations on them: `+`, `-`, `*`, `/`, etc. See [Int](api/core/int) for helper functions.
+32-bits, truncated when necessary. We provide the usual operations on them: `+`, `-`, `*`, `/`, etc. See [Int](api/stdlib/int) for helper functions.
 
 **Be careful when you bind to JavaScript numbers!** Since ReScript integers have a much smaller range than JavaScript numbers, data might get lost when dealing with large numbers. In those cases it’s much safer to bind the numbers as **float**. Be extra mindful of this when binding to JavaScript Dates and their epoch time.
 
@@ -154,7 +154,7 @@ To improve readability, you may place underscores in the middle of numeric liter
 
 ## Floats
 
-Float requires other operators: `+.`, `-.`, `*.`, `/.`, etc. Like `0.5 +. 0.6`. See [Float](api/core/float) for helper functions.
+Float requires other operators: `+.`, `-.`, `*.`, `/.`, etc. Like `0.5 +. 0.6`. See [Float](api/stdlib/float) for helper functions.
 
 As with integers, you may use underscores within literals to improve readability.
 
@@ -179,7 +179,7 @@ var result = 1 + 2;
 **Since 11.1**
 
 For values which are too large to be represented by Int or Float, there is the `bigint` primitive type.
-We provide the usual operations on them: `+`, `-`, `*`, `/`, etc. See [BigInt](api/core/bigint) for helper functions.
+We provide the usual operations on them: `+`, `-`, `*`, `/`, etc. See [BigInt](api/stdlib/bigint) for helper functions.
 
 A `bigint` number is denoted by a trailing `n` like so: `42n`.
 

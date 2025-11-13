@@ -8,7 +8,7 @@ order: 8
 
 # Bind to Global JS Values
 
-**First**, make sure the value you'd like to model doesn't already exist in our [provided API](api/core).
+**First**, make sure the value you'd like to model doesn't already exist in our [provided API](api/stdlib).
 
 Some JS values, like `setTimeout`, live in the global scope. You can bind to them like so:
 
@@ -25,7 +25,7 @@ Some JS values, like `setTimeout`, live in the global scope. You can bind to the
 
 </CodeTab>
 
-(We already provide `setTimeout`, `clearTimeout` and others in the [Core API](api/core) module).
+(We already provide `setTimeout`, `clearTimeout` and others in the [Core API](api/stdlib) module).
 
 This binds to the JavaScript [`setTimeout`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrworkerGlobalScope/setTimeout) methods and the corresponding `clearTimeout`. The `external`'s type annotation specifies that `setTimeout`:
 

@@ -52,9 +52,9 @@ var tenthItem = myArray[10];
 
 </CodeTab>
 
-The behavior of returning an `option` is new to V11 when you have [Core](api/core) open.
+The behavior of returning an `option` is new to V11 when you have [Core](api/stdlib) open.
 It provides a safer way to access array items, which is especially useful when you're not sure if the index is out of bounds.
-If you would like to not use an `option`, you can use [`Array.getUnsafe`](api/core/array#value-getUnsafe).
+If you would like to not use an `option`, you can use [`Array.getUnsafe`](api/stdlib/array#value-getUnsafe).
 
 #### Update
 
@@ -153,7 +153,7 @@ You'd use list for its resizability, its fast prepend (adding at the head), and 
 
 Do **not** use list if you need to randomly access an item or insert at non-head position. Your code would end up obtuse and/or slow.
 
-The standard lib provides a [List module](api/core/list).
+The standard lib provides a [List module](api/stdlib/list).
 
 #### Immutable Prepend
 
