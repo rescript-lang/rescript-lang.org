@@ -4,8 +4,8 @@ external dev: bool = "import.meta.env.DEV"
 // Cloudflare deployment URL
 external deployment_url: option<string> = "import.meta.env.DEPLOYMENT_URL"
 
-// The current github branch
-external github_branch: option<string> = "import.meta.env.GITHUB_BRANCH"
+// The current github branch being used for cloudflare pages
+external github_branch: option<string> = "import.meta.env.CF_PAGES_BRANCH"
 let github_branch = switch github_branch {
 | Some(branch) => branch
 | None => "master"
