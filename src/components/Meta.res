@@ -15,7 +15,7 @@ let make = (
   ~ogImage="/Art-3-rescript-launch.jpg",
   ~version: option<Url.version>=?,
 ) => {
-  let ogImage = "https://rescript-lang.org" ++ ogImage
+  let ogImage = Env.root_url ++ ogImage
 
   let title = switch title {
   | None
