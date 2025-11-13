@@ -114,7 +114,7 @@ let reactTableOfContents = async () => {
   // these are the categories that appear in the sidebar
   let categories: array<SidebarLayout.Sidebar.Category.t> = getAllGroups(
     groups,
-    ["Overview", "Main Concepts", "Hooks & State Management", "Guides", "Extra"],
+    ["Overview", "Main Concepts", "Hooks & State Management", "Guides"],
   )
 
   categories

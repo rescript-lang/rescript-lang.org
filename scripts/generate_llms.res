@@ -53,11 +53,6 @@ let removeToDos = (content: string): string => {
   String.replaceRegExp(content, regex, "")
 }
 
-let fillContentWithVersion = (content: string, version: string): string => {
-  let regex = RegExp.fromString("<VERSION>", ~flags="g")
-  String.replaceRegExp(content, regex, version)
-}
-
 let createFullFile = (content: string, filePath: string): unit => {
   Node.Fs.appendFileSync(filePath, content ++ "\n", "utf8")
 }
@@ -79,22 +74,15 @@ let createLlmsFiles = (version: string, docsDirectory: string, llmsDirectory: st
   let txtFileTemplatePath = llmsDirectory->Node.Path.join2("template.txt")
   let txtFilePath = llmsDirectory->Node.Path.join2("llms.txt")
 
-  Node.Fs.writeFileSync(
-    mdxFilePath,
-    readMarkdownFile(mdxFileTemplatePath)->fillContentWithVersion(version),
-  )
+  Node.Fs.writeFileSync(mdxFilePath, readMarkdownFile(mdxFileTemplatePath))
 
-  Node.Fs.writeFileSync(
-    txtFilePath,
-    readMarkdownFile(txtFileTemplatePath)->fillContentWithVersion(version),
-  )
+  Node.Fs.writeFileSync(txtFilePath, readMarkdownFile(txtFileTemplatePath))
 }
 
 let generateFile = (docsDirectory: string, llmsDirectory: string): unit => {
   let fullFileName = "llm-full.txt"
   let smallFileName = "llm-small.txt"
 
-  let versionDir = docsDirectory
   let llmsDir = llmsDirectory
   let fullFilePath = llmsDir->Node.Path.join2(fullFileName)
   let smallFilePath = llmsDir->Node.Path.join2(smallFileName)
@@ -105,7 +93,7 @@ let generateFile = (docsDirectory: string, llmsDirectory: string): unit => {
 
   createLlmsFiles("v12", docsDirectory, llmsDirectory)
 
-  versionDir
+  docsDirectory
   ->collectFiles
   ->Array.forEach(filePath => {
     if String.endsWith(filePath, ".mdx") {

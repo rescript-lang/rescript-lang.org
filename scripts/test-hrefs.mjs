@@ -25,13 +25,13 @@ const __dirname =
   process.platform !== "win32" ? pathname : pathname.substring(1);
 
 const mapBlogFilePath = (path) => {
-  const match = path.match(/\.\/_blogposts\/(.*\.mdx)/);
+  const match = path.match(/\.\/blogposts\/(.*\.mdx)/);
 
   if (match) {
     let relPath = match[1];
     let data = getAllPosts().find(({ path }) => path === relPath);
     if (data != null) {
-      return `./pages/blog/${blogPathToSlug(data.path)}`;
+      return `./markdown-pages/blog/${blogPathToSlug(data.path)}`;
     }
     return path;
   }
@@ -45,7 +45,7 @@ const mapStaticFilePath = (path) => {
 };
 
 // Creates a lookup table of all available pages within the website
-// It will also automatically map urls for dedicated directorys (such as _blogposts)
+// It will also automatically map urls for dedicated directorys (such as markdown-pages/blogposts)
 // to the correct url
 // { key=url: value=original_filepath}
 const createPageIndex = (files) => {
@@ -53,9 +53,9 @@ const createPageIndex = (files) => {
     // We need to consider all the different file formats used in pages
     // Calculate the website url by stripping .re, .bs.js, .md(x), etc.
     let url;
-    if (path.startsWith("./_blogposts")) {
+    if (path.startsWith("./markdown-pages/blogposts")) {
       url = mapBlogFilePath(path);
-    } else if (path.startsWith("./public/static")) {
+    } else if (path.startsWith("./public/")) {
       url = mapStaticFilePath(path);
     } else {
       url = path;
