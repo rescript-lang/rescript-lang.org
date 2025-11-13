@@ -14,7 +14,7 @@ If you encounter any missing information or issues during migration, please [ope
 
 - ReScript V11 project.
 - Uncurried mode must be enabled (i.e. you have not opted-out from it)
-- Your project must not contain any OCaml source code anymore, as support for `.ml` files is removed in this version. However there are ways to convert OCaml syntax with an older ReScript compiler version (see below).
+- Your project must not contain any OCaml source code anymore, as support for `.ml` files is removed in this version. However there are ways to convert OCaml syntax with an older ReScript compiler version ([see below](#converting-generated-ml-files)).
 - The old configuration filename that was deprecated in v11, `bsconfig.json`, is removed. Rename it to `rescript.json`.
 - Minimum supported Node.js version is 20.0.0
 
@@ -188,3 +188,30 @@ rescript watch
 # format
 rescript format
 ```
+
+## Converting generated `.ml` files
+
+Some projects still rely on tools such as `atdgen` that emit OCaml `.ml` files. ReScript 12 cannot compile those files directly, so you must keep using ReScript 11 **only** to convert the generated `.ml` files back to `.res` files before you run the v12 build.
+
+1. Keep ReScript 12 as the sole compiler dependency in your main project (i.e. `devDependencies.rescript` stays at `^12.0.0`).
+
+2. Install ReScript 11 in a dedicated subfolder (so its binaries never replace the v12 ones in `node_modules/.bin`). A simple option is to store it under a subfolder, e.g. `tools` (if you're using workspaces, keep this folder out of the root workspace list so hoisting can't swap the v12 shims):
+
+`cd` into `tools` and run `npm create rescript-app` and select the basic template and a v11 version of ReScript. You can name it `rescript-11` for instance.
+
+3. `cd` back into the root of your project and add a helper script that references the compiler from that folder (adapt the path accordingly):
+
+   ```json
+   {
+     "scripts": {
+       "convert-ml": "tools/rescript-11/node_modules/.bin/rescript convert src/*.ml"
+     }
+   }
+   ```
+
+4. Execute the helper script to convert your `.ml` files to `.res` files: 
+```console
+npm run convert-ml
+```
+
+This setup is an escape hatch. It keeps legacy generators like `atdgen` working but it also forces you to maintain two compiler versions. Whenever possible migrate such things to modern ReScript tooling such as [Sury](https://github.com/DZakh/sury/).
