@@ -85,15 +85,17 @@ module UrlBox = {
       React.null
     }
 
-    // Next.Link doesn't allow any absolute URLs, so we need to render
-    // a plain <a> component when there is an absolute href
     let link = if Util.Url.isAbsolute(href) {
       <a href rel="noopener noreferrer" className="flex items-center">
         {React.string(text)}
         <Icon.ArrowRight className="ml-1" />
       </a>
     } else {
-      <ReactRouter.Link.String to=href className="flex items-center">
+      <ReactRouter.Link.String
+        to={Env.root_url ++ href->Util.String.leadingSlash}
+        className="flex items-center"
+        relative="path"
+      >
         {React.string(text)}
         <Icon.ArrowRight className="ml-1" />
       </ReactRouter.Link.String>
@@ -364,6 +366,8 @@ module Hr = {
 }
 
 /*
+// TODO: Post RR7 - this can probably be simplified  
+
     This will map either to an external link, or
     an anchor / reference link.
 
@@ -381,27 +385,25 @@ module Hr = {
  */
 module A = {
   @react.component
-  let make = (~href, ~target=?, ~children) =>
+  let make = (~href, ~target=?, ~children) => {
+    let {pathname} = ReactRouter.useLocation()
+
     // In case we are handling a relative URL, we will use the Next routing
     if Util.Url.isAbsolute(href) {
       <a href rel="noopener noreferrer" className="no-underline text-fire hover:underline" ?target>
         children
       </a>
     } else {
-      // We drop any .md / .mdx / .html extensions on every href...
-      // Ideally one would check if this link is relative first,
-      // but it's very unlikely we'd refer to an absolute URL ending
-      // with .md
-      let regex = /\.md(x)?|\.html$/
-      let href = switch String.split(href, "#") {
-      | [pathname, anchor] => String.replaceRegExp(pathname, regex, "") ++ ("#" ++ anchor)
-      | [pathname] => String.replaceRegExp(pathname, regex, "")
-      | _ => href
-      }
-      <ReactRouter.Link.String to=href className="no-underline text-fire hover:underline" ?target>
+      <ReactRouter.Link.String
+        relative="path"
+        to={Util.Url.createRelativePath((pathname :> string), href)}
+        className="no-underline text-fire hover:underline"
+        ?target
+      >
         children
       </ReactRouter.Link.String>
     }
+  }
 }
 
 module Ul = {

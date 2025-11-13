@@ -80,6 +80,7 @@ module Link = {
       ~target: string=?,
       ~to: string,
       ~preventScrollReset: bool=?,
+      ~relative: string=?,
     ) => React.element = "Link"
   }
 }

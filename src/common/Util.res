@@ -16,20 +16,41 @@ module String = {
     ->String.split(" ")
     ->Array.map(str => str->String.length > 2 ? str->String.capitalize : str)
     ->Array.join(" ")
+
+  let leadingSlash = str => str->String.startsWith("/") ? str : "/" ++ str
 }
 
 module Url = {
-  // TODO: convert to ReScript
-  let isAbsolute: string => bool = %raw(`
-    function(str) {
-      var r = new RegExp('^(?:[a-z]+:)?//', 'i');
-      if (r.test(str))
-      {
-        return true
-      }
-      return false;
+  let isAbsolute = (str: string): bool => {
+    let regex = /^(?:[a-z]+:)?\/\//i
+    regex->RegExp.test(str)
+  }
+
+  let getRootPath = path => {
+    if path->Stdlib.String.includes("docs/manual") {
+      "/docs/manual"
+    } else if path->Stdlib.String.includes("docs/react") {
+      "/docs/react"
+    } else {
+      ""
     }
-  `)
+  }
+
+  let createRelativePath = (currentPath, href) => {
+    if (
+      href->Stdlib.String.includes("docs/manual") ||
+      href->Stdlib.String.includes("docs/react") ||
+      href->Stdlib.String.includes("community") ||
+      href->Stdlib.String.includes("blog") ||
+      href->Stdlib.String.includes("try")
+    ) {
+      href
+    } else {
+      let rootPath = getRootPath(currentPath)
+      let href = href->Stdlib.String.replace("docs/manual", "")
+      (rootPath ++ href->String.leadingSlash)->Stdlib.String.replaceAll("//", "/")
+    }
+  }
 }
 
 module Date = {

@@ -374,7 +374,7 @@ module MainUSP = {
       down.`)}
         </p>
         <p className="mt-6">
-          // <ReactRouter.Link to={("/docs/manual/latest/build-performance" :> ReactRouter.Link.to)}>
+          // <ReactRouter.Link to={("/docs/manual/build-performance" :> ReactRouter.Link.to)}>
           //   <Button size={Button.Small} kind={Button.PrimaryBlue}>
           //     {React.string("Learn more")}
           //   </Button>
@@ -554,7 +554,7 @@ module CuratedResources = {
       imgSrc: "/ic_manual@2x.png",
       title: React.string("Language Manual"),
       descr: "Look up the basics: Reference for all our language features",
-      href: "/docs/manual/latest/introduction",
+      href: "/docs/manual/introduction",
     },
     {
       imgSrc: "/ic_rescript_react@2x.png",
@@ -566,13 +566,13 @@ module CuratedResources = {
       imgSrc: "/ic_manual@2x.png",
       title: React.string("Gradually Adopt ReScript"),
       descr: "Learn how to start using ReScript in your current projects. Try before you buy!",
-      href: "/docs/manual/latest/installation#integrate-into-an-existing-js-project",
+      href: "/docs/manual/installation#integrate-into-an-existing-js-project",
     },
     {
       imgSrc: "/ic_gentype@2x.png",
       title: React.string("TypeScript Integration"),
       descr: "Learn how to integrate ReScript in your existing TypeScript codebases.",
-      href: "/docs/manual/latest/typescript-integration",
+      href: "/docs/manual/typescript-integration",
     },
   ]
 

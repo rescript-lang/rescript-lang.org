@@ -65,7 +65,7 @@ We also focused a lot on early feedback from the community, so we regularly [pos
 
 The current [official BuckleScript's API docs](https://bucklescript.github.io/bucklescript/api/index_modules.html) aren't visually stunning, but they _are_ important for getting things done as a user. The docs are maintained within the BuckleScript repository, and there was no process to make sure the documentation site remained up to date with each BuckleScript release. It also presented a huge bottleneck for anyone hoping to contribute from the outside. So [Nik Graf](https://twitter.com/nikgraf) bit the bullet, did the massive amount of grunt work to extract all the available modules and function headers into hand curated markdown files, and organize them into easily-maintained documents from a technical writer's perspective.
 
-So we now have most of BuckleScript v7's [JS / Belt module](/docs/manual/latest/api/belt) documented.
+So we now have most of BuckleScript v7's [JS / Belt module](/docs/manual/api/belt) documented.
 
 We are now working on further automating the process for generating BuckleScript documentation by adding JSON export functionality to `odoc`. As soon as this is done, we will upstream our latest hand curated changes to the BuckleScript inline documentation and also give better guidance on contributing to the JS / Belt documentation in the source code as well.
 
@@ -79,7 +79,7 @@ Our goal is to have a properly curated, well structured and streamlined overview
   caption="First hand-sketches of the reasonml.org structure"
 />
 
-It didn't take long until we realized that we can't just keep the upstream version in its original form, so we started to make adaptations where it made sense. We also accepted new additions from the community, such as explanations about [function signatures on optional arguments](/docs/manual/latest/function#signatures-and-type-annotations) in the Reason manual, or a new decorator overview in the BuckleScript section.
+It didn't take long until we realized that we can't just keep the upstream version in its original form, so we started to make adaptations where it made sense. We also accepted new additions from the community, such as explanations about [function signatures on optional arguments](/docs/manual/function#signatures-and-type-annotations) in the Reason manual, or a new decorator overview in the BuckleScript section.
 
 That said, we do keep track of new changes on the upstream sources and cherry-pick changes if necessary. To make this process more transparent, we introduced a version table on our [startpage](/) to make it easier to see the latest cherry-pick commit for each resource (ReasonML, BuckleScript, etc.).
 

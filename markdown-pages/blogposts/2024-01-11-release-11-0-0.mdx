@@ -16,7 +16,7 @@ Use your favorite package manager to install the new compiler release, e.g.:
 npm install rescript@11
 ```
 
-To upgrade your project or to find out if there are any breaking changes that affect you, please follow the [migration guide](/docs/manual/latest/migrate-to-v11).
+To upgrade your project or to find out if there are any breaking changes that affect you, please follow the [migration guide](/docs/manual/migrate-to-v11).
 
 The complete list of changes can be found [here](https://github.com/rescript-lang/rescript/blob/v11.0.0/CHANGELOG.md). Let's have a look at the most notable improvements.
 
@@ -52,7 +52,7 @@ This release is also introducing uncurried mode, which is a new default mode tha
 
 [ReScript Core](https://github.com/rescript-lang/rescript-core) is ReScript's new standard library. It replaces the complete `Js` module as well as some of the more frequently used modules from `Belt` and is recommended to use with uncurried mode.
 
-The latest docs on [rescript-lang.org](/) already use it for the examples. Have a look at the new [RescriptCore API docs](/docs/manual/latest/api/core).
+The latest docs on [rescript-lang.org](/) already use it for the examples. Have a look at the new [RescriptCore API docs](/docs/manual/api/core).
 
 ## More Features
 
@@ -60,7 +60,7 @@ Furthermore, there are a lot of smaller improvements of which we want to state o
 
 ### More types eligible for type coercion
 
-The `:>` (type coercion) operator now supports a few more datatypes, check out its [Syntax Lookup](/syntax-lookup#type-coercion) page.
+The `:>` (type coercion) operator now supports a few more datatypes, check out its [Syntax Lookup](/syntax-lookup/type-coercion) page.
 
 ### Build System
 
@@ -90,7 +90,7 @@ It's now possible to have a module opened by default that is just part of the cu
 
 Previously, the ReScript binary was able to initialize new projects itself. But it was required to have a global npm install to use it. This functionality has been removed.
 
-Going forward, `create-rescript-app` is the new recommended way to setup a new project. It can even be used to quickly add ReScript to an existing project. Have a look at the updated [installation instructions](/docs/manual/latest/installation) for how to use it.
+Going forward, `create-rescript-app` is the new recommended way to setup a new project. It can even be used to quickly add ReScript to an existing project. Have a look at the updated [installation instructions](/docs/manual/installation) for how to use it.
 
 ### ReScript-React v0.12
 

@@ -5,7 +5,7 @@
 /docs/manual/next/*  /docs/manual/:splat  308
 /docs/react/latest/* /docs/react/:splat 308
 
-/llms/manual/latest/*  /llms/manual/:splat  307
+/llms/manual/*  /llms/manual/:splat  307
 /llms/manual/next/*  /llms/manual/:splat  307
 
 /docs/manual/v11.0.0/* https://v11.rescript-lang.org/docs/manual/v11.0.0/:splat 308

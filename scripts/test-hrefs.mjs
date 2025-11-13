@@ -140,7 +140,7 @@ const testFile = (pageMap, test) => {
 
   test.links.forEach((link) => {
     // Simulate the redirect of "latest" and "next" version aliases.
-    if (link.url.includes("/manual/latest/")) {
+    if (link.url.includes("/manual/")) {
       link.url = link.url.replace("/latest/", `/${latestVersion}/`);
     }
 
