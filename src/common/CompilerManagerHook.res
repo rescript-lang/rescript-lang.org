@@ -219,7 +219,7 @@ let createUrl = (pathName, ready) => {
   }
 
   // Put code last as it is the longest param.
-  Array.push(params, (Code, ready.code->LzString.compressToEncodedURIComponent))
+  Array.push(params, (Code, ready.code->LzString.lzString.compressToEncodedURIComponent))
 
   let querystring =
     params->Array.map(((key, value)) => (key :> string) ++ "=" ++ value)->Array.join("&")

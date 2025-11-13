@@ -41,7 +41,7 @@
     "highlight.js": "^11.11.1",
     "highlightjs-rescript": "^0.2.2",
     "isbot": "^5",
-    "lz-string": "^1.4.4",
+    "lz-string": "^1.5.0",
     "mdast-util-from-markdown": "^2.0.2",
     "mdast-util-toc": "^7.1.0",
     "react": "^19.1.0",

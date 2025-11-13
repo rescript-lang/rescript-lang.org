@@ -1548,7 +1548,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     ->Option.mapOr([], str => str->String.split(",")->Array.map(String.trim))
 
   let initialContent = switch (searchParams->Object.get((Code :> string)), initialLang) {
-  | (Some(compressedCode), _) => LzString.decompressToEncodedURIComponent(compressedCode)
+  | (Some(compressedCode), _) => LzString.lzString.decompressToEncodedURIComponent(compressedCode)
   | (None, Reason) => initialReContent
   | (None, Res) =>
     switch initialVersion {
