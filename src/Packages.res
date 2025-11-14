@@ -431,7 +431,6 @@ let make = (props: props) => {
     />
     <div className="mt-16 pt-2">
       <div className="text-gray-80 text-18">
-        // <Navigation isOverlayOpen setOverlayOpen />
         <div className="flex overflow-hidden">
           <div
             className="flex justify-between min-w-320 px-4 pt-16 lg:align-center w-full lg:px-8 pb-48"

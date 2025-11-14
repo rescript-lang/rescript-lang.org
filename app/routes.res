@@ -35,6 +35,7 @@ let default = [
   route("syntax-lookup", "./routes/SyntaxLookupRoute.mjs", ~options={id: "syntax-lookup"}),
   route("blog", "./routes/BlogRoute.mjs", ~options={id: "blog-index"}),
   route("blog/archived", "./routes/BlogRoute.mjs", ~options={id: "blog-archived"}),
+  route("docs", "./routes/DocsOverview.mjs", ~options={id: "docs-overview"}),
   route("docs/manual/api/stdlib", "./routes/ApiRoute.mjs", ~options={id: "api-stdlib"}),
   route("docs/manual/api/introduction", "./routes/ApiRoute.mjs", ~options={id: "api-intro"}),
   route("docs/manual/api/belt", "./routes/ApiRoute.mjs", ~options={id: "api-belt"}),

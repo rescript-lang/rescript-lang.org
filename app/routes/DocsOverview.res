@@ -5,7 +5,7 @@ module Card = {
       <h2 className="font-bold text-24 mb-4"> {React.string(title)} </h2>
       <ul>
         {Array.map(hrefs, ((text, href)) =>
-          <li key=text className="text-16 mb-1 last:mb-0">
+          <li key=text className="text-16 mb-1 last:mb-0 text-fire hover:underline">
             <ReactRouter.Link.String to=href> {React.string(text)} </ReactRouter.Link.String>
           </li>
         )->React.array}
@@ -30,15 +30,16 @@ let default = (~showVersionSelect=true) => {
     ("Reanalyze", "https://github.com/rescript-lang/reanalyze"),
   ]
 
-  <>
-    <div>
-      <div className="mb-6" />
+  <MainLayout>
+    <div className="max-w-740 w-full m-auto mt-16 md:mt-6">
+      // <div className="mb-6" />
       <Markdown.H1> {React.string("Docs")} </Markdown.H1>
+
+      <div className="grid grid-cols-1 xs:grid-cols-2 gap-8">
+        <Card title="Language Manual" hrefs=languageManual />
+        <Card title="Ecosystem" hrefs=ecosystem />
+        <Card title="Tools" hrefs=Constants.tools />
+      </div>
     </div>
-    <div className="grid grid-cols-1 xs:grid-cols-2 gap-8">
-      <Card title="Language Manual" hrefs=languageManual />
-      <Card title="Ecosystem" hrefs=ecosystem />
-      <Card title="Tools" hrefs=Constants.tools />
-    </div>
-  </>
+  </MainLayout>
 }

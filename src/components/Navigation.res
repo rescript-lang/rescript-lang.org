@@ -22,7 +22,7 @@ let isActiveLink = (~includes: string, ~excludes: option<string>=?, ~route: Path
 
 let isDocRoute = (~route: Path.t) => {
   let route = (route :> string)
-  route->String.includes("/docs/") || route->String.includes("/syntax-lookup")
+  route->String.includes("/docs/") || route->String.includes("/syntax-lookup") || route == "/docs"
 }
 
 let isDocRouteActive = (~route: Path.t) => isDocRoute(~route) ? activeLink : link
