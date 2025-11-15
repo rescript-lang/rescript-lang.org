@@ -1,0 +1,16 @@
+/community  /community/overview  308
+/bucklescript-rebranding  /blog/bucklescript-is-rebranding  308
+
+/docs/manual/v12.0.0/*  /docs/manual/:splat  308
+/docs/manual/next/*  /docs/manual/:splat  308
+/docs/react/latest/* /docs/react/:splat 308
+
+/llms/manual/latest/*  /llms/manual/:splat  307
+/llms/manual/next/*  /llms/manual/:splat  307
+
+/docs/manual/v11.0.0/* https://v11.rescript-lang.org/docs/manual/v11.0.0/:splat 308
+/docs/manual/v10.0.0/* https://v11.rescript-lang.org/docs/manual/v10.0.0/:splat 308
+/docs/manual/v9.0.0/* https://v11.rescript-lang.org/docs/manual/v9.0.0/:splat 308
+/docs/manual/v8.0.0/* https://v11.rescript-lang.org/docs/manual/v8.0.0/:splat 308
+/docs/react/v0.11.0/* https://v11.rescript-lang.org/docs/react/v0.11.0/:splat 308
+/docs/react/v0.10.0/* https://v11.rescript-lang.org/docs/react/v0.10.0/:splat 308

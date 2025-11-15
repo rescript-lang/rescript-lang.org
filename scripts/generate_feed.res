@@ -3,4 +3,4 @@ let content = {
   getLatest()->toXmlString
 }
 
-Console.log(content)
+Console.debug(content)

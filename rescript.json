@@ -8,6 +8,10 @@
   "compiler-flags": ["-open WebAPI.Global"],
   "sources": [
     {
+      "dir": "app",
+      "subdirs": true
+    },
+    {
       "dir": "src",
       "subdirs": true
     },
@@ -21,7 +25,8 @@
     "in-source": true
   },
   "warnings": {
-    "error": "+8"
+    "error": "+8",
+    "number": "-27-26"
   },
   "suffix": ".mjs",
   "gentypeconfig": {

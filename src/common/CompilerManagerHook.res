@@ -108,7 +108,7 @@ let attachCompilerAndLibraries = async (~baseUrl, ~version, ~libraries: array<st
   let compilerUrl = CdnMeta.getCompilerUrl(baseUrl, version)
 
   // Useful for debugging our local build
-  /* let compilerUrl = "/static/linked-bs-bundle.js"; */
+  /* let compilerUrl = "/linked-bs-bundle.js"; */
 
   switch await LoadScript.loadScriptPromise(compilerUrl) {
   | Error(_) => Error([`Could not load compiler from url ${compilerUrl}`])
@@ -219,7 +219,7 @@ let createUrl = (pathName, ready) => {
   }
 
   // Put code last as it is the longest param.
-  Array.push(params, (Code, ready.code->LzString.compressToEncodedURIComponent))
+  Array.push(params, (Code, ready.code->LzString.lzString.compressToEncodedURIComponent))
 
   let querystring =
     params->Array.map(((key, value)) => (key :> string) ++ "=" ++ value)->Array.join("&")
@@ -252,7 +252,7 @@ let useCompilerManager = (
   (),
 ) => {
   let (state, setState) = React.useState(_ => Init)
-  let router = Next.Router.useRouter()
+  let {pathname} = ReactRouter.useLocation()
 
   // Dispatch method for the public interface
   let dispatch = (action: action): unit => {
@@ -576,6 +576,7 @@ let useCompilerManager = (
           }
         )
       | Executing({state, jsCode}) =>
+        ()
         open Babel
 
         let ast = Parser.parse(jsCode, {sourceType: "module"})
@@ -618,7 +619,7 @@ let useCompilerManager = (
         setState(_ => Ready({...state, logs: [], validReactCode: entryPointExists}))
       | SetupFailed(_) => ()
       | Ready(ready) =>
-        let url = createUrl(router.route, ready)
+        let url = createUrl((pathname :> string), ready)
         WebAPI.History.replaceState(history, ~data=JSON.Null, ~unused="", ~url)
       }
     }
@@ -634,7 +635,7 @@ let useCompilerManager = (
     initialExperimentalFeatures,
     initialLang,
     versions,
-    router.route,
+    pathname,
   ))
 
   (state, dispatch)

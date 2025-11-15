@@ -1,0 +1,82 @@
+---
+author: hongbo
+date: "2018-11-19"
+previewImg:
+badge: roadmap
+title: BuckleScript Plans for the Second Half of 2018
+description: |
+---
+
+## Introduction
+
+In this article we will explain what we are doing now and what we plan to
+improve in next half (Dec-May), we would also like to hear your feedback so
+that we can adjust accordingly.
+
+Keep in mind that the development team is a very small team, so we have to
+prioritize things instead of working on every feature.
+
+## What we are doing
+
+In the last couple of month we are busy upgrading the OCaml compiler from
+4.02.3 to 4.06.1, the good news is that the upgrade is almost done.
+
+We plan to ship it soon by the end of this year, at the same time, we will
+still maintain the current version of the compiler until we feel the new
+compiler is as good as the old one.
+
+Note the upgrade is not easy work since the internals of OCaml compiler changed
+significantly in the last few years. Our upgrade strategy is also quite
+conservative, it works by conditional compilation so that the bsc compiler
+actually work with both versions, the benefit is that in this case, we are not
+in a messy state, the bug fix of bsc compiler can still benefit two branches.
+
+But the reward is also huge, there are a bunch of optimizations and nice
+features coming alone in the recent releases of the OCaml language, to name a
+few: `inline records`, `local exception` and `hex notation for floats` etc.
+More importantly, this is a great move to engage better with OCaml ecosystem:
+the previous old version compiler imposed some maintenance overhead for OCaml
+toolchain, we can make better use of OCaml toolchain after such upgrade.
+
+## What's next
+
+### Making better use of the new compiler internals
+
+The upgrade is divided into two stage, the first stage is focused on `no
+regression` so that we can ship it.
+
+Afterwards, we have plans to make better use of the more info rich IR in the
+new release. Thanks to the flambda introduced after OCaml 4.03, more
+information is passed down to the lambda IR where BuckleScript take from. For
+example, user can annotate functions inline or not with inline attribute, we
+can make better use of such information.
+
+In newer versions of OCaml compiler, the block and array is more distinguished
+we will investigate whether we can make use of it to provide better data
+representation for OCaml datatype.
+
+Another interesting direction is to see if we can encode module in a consistent
+style: as an JS dictionary for both global modules and local modules.
+
+### Improving the usability of BuckleScript toolchain
+
+BuckleScript is focused on making better use of JS ecosystem and provide
+values to ship JS code in production (produced by BuckleScript).
+
+{/* There are still bunch of things to address, most importantly */}
+
+#### Making Bucklescript toolchain more lightweight
+
+Currently it is still too heavy for users to provide JS libraries from
+BuckleScript, since clients need to install bs-platform which requires a lot of
+disk-space and native compilation in some platform. We will investigate if we
+can distribute the native compiler without using npm.
+
+Separate the compiler from stdlib may also help draw the contribution to the
+stdlib/belt library.
+
+#### Improving the usability of bsb
+
+Currently the bsb is restricted by the npm directory layout, the generated JS
+artifacts is also restricted by it, we will see if we can relocate the JS
+artifacts or provide more flexibility for users.

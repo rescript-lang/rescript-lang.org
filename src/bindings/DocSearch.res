@@ -27,6 +27,8 @@ type docSearchHit = {
   @as("type") type_: contentType,
   anchor: Nullable.t<string>,
   hierarchy: hierarchy,
+  // Additional field for deprecation information
+  deprecated: option<string>,
   // NOTE: docsearch need these two fields to highlight results
   _highlightResult: {.},
   _snippetResult: {.},

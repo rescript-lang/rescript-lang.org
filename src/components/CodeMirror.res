@@ -8,6 +8,10 @@
     This file is providing the core functionality and logic of our CodeMirror instances.
  */
 
+// TODO: post RR7: figure out how to do this inside of rescript
+// Import CodeMirror setup to ensure modes are loaded
+%%raw(`import "./CodeMirrorSetup.js"`)
+
 module KeyMap = {
   type t = Default | Vim
   let toString = (keyMap: t) =>
@@ -555,6 +559,11 @@ let make = // props relevant for the react wrapper
 
   React.useEffect(() => {
     switch inputElement.current->Nullable.toOption {
+    | Some(el) => Console.debug2("Codemirror input element", el)
+    | None => Console.debug("Codemirror input element is null")
+    }
+
+    switch inputElement.current->Nullable.toOption {
     | Some(input) =>
       let options = {
         CM.Options.theme: "material",
@@ -567,6 +576,7 @@ let make = // props relevant for the react wrapper
         scrollbarStyle,
         keyMap: KeyMap.toString(keyMap),
       }
+
       let cm = CM.fromTextArea(input, options)
 
       Option.forEach(minHeight, minHeight => {
@@ -595,7 +605,6 @@ let make = // props relevant for the react wrapper
       cmRef.current = Some(cm)
 
       let cleanup = () => {
-        /* Console.log2("cleanup", options->CM.Options.mode); */
         CM.offMouseOver(wrapper, onMouseOver)
         CM.offMouseOut(wrapper, onMouseOut)
         CM.offMouseMove(wrapper, onMouseMove)

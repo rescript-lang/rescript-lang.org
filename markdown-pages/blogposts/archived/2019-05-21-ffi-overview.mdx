@@ -1,0 +1,194 @@
+---
+author: hongbo
+date: "2019-05-21"
+previewImg:
+title: A High Level Overview of BuckleScript Interop with JS
+description: |
+---
+
+## JS Interop in BuckleScript
+
+When users start to use BuckleScript to develop applications targeting JS, they
+have to interop with various APIs provided by the JS platform.
+
+In theory, like [Elm](https://elm-lang.org/), BuckleScript could ship a
+comprehensive library which contains what most people would like to use daily.
+This, however, is particularly challenging, given that JS is running on so many
+platforms for example, [Electron](https://electronjs.org/),
+[Node](https://nodejs.org/) and the Browser, yet each platform is still
+evolving quickly. So we have to provide a mechanism to allow users to bind to
+the native JS API quickly in userland.
+
+There are lots of trade-off when designing such a FFI bridge between OCaml and
+the JavaScript API. Below, we list a few key items which we think have an
+important impact on our design.
+
+## Interop design constraints
+
+### BuckleScript is still OCaml / Reason
+
+We are not inventing a new language. In particular, we can not change the
+concrete syntax of OCaml. Luckily, OCaml introduced
+[attributes](https://caml.inria.fr/pub/docs/manual-ocaml/extn.html#sec260) and
+[extension nodes](https://caml.inria.fr/pub/docs/manual-ocaml/extn.html#sec262)
+since 4.02, which allows us to customize the language to a minor extent. To be
+a good citizen in the OCaml community, all attributes introduced by
+BuckleScript are prefixed with `bs`.
+
+### Bare metal efficiency should always be possible for experts in pure OCaml
+
+Efficiency is at the heart of BuckleScript's design philosophy, in terms of
+both compilation speed and runtime performance. While there were other strongly
+typed functional languages running on the JS platform before we made
+BuckleScript, one thing in particular that confused us was that in those
+languages, people have to write `native JS` to gain performance. Our goal is
+that when performance really matters, it is still possible for experts to write
+pure OCaml without digging into `native JS`, so users don't have to make a
+choice between performance and type safety.
+
+## Easy interop using raw JS
+
+BuckleScript allows users to insert raw JS using extension nodes directly.
+Please refer to the
+[documentation](https://bucklescript.github.io/docs/en/embed-raw-javascript)
+for details. Here we only talk about one of the most used styles: inserting raw
+JS code as a function.
+
+```reason
+let getSafe: (array(int), int) => int = [%raw
+  (a, b) => {|
+	if (b>=0 && b < a.length) {
+    	return a [b]
+     }
+     throw new Error("out of range")
+  |}
+];
+
+let v = [|1, 2, 3|]->getSafe(-1);
+```
+
+Here the raw extension node asks the user to list the parameters and function
+statement in raw JS syntax. The generated JS code is as follows:
+
+```js
+function getSafe(a, b) {
+  if (b >= 0 && b < a.length) {
+    return a[b];
+  }
+  throw new Error("out of range");
+}
+
+var v = getSafe(/* array */ [1, 2, 3], -1);
+```
+
+Inserting raw JS code as a function has several advantages:
+
+- It is relatively safe; there is no variable name polluting.
+- It is quite expressive since the user can express everything inside the function body.
+- The compiler still has some knowledge about the function, for example, its arity.
+
+Some advice about using this style:
+
+- Always annotate the raw function with explicit type annotation.
+- When annotating raw JS, you can use polymorphic types, but don’t create them when you don’t really need them. In general, non polymoprhic type is safer and more efficient.
+- Write a unit test for the function.
+
+Note that a nice thing about this mechanism is that no separate JS file is
+needed, so no change to the build system is necessary in most cases. By using
+this mechanism, BuckleScript users can already deal with most bindings.
+
+## Interop via attributes
+
+If you are a developer busy shipping, the mechanism above should cover almost
+everything you need. A minor disadvange of that mechanism is that it comes with
+a cost: a raw function can not be inlined since it is JavaScript, so the
+BuckleScript compiler does not have a deep knowledge about the function.
+
+To demonstrate interop via attributes, we are going to show a small example of
+binding to JS `date`. There are lots of advanced topics in the
+[documentation](https://bucklescript.github.io/docs/en/interop-overview); here
+we are only talking about one of the most-used methods for interop.
+
+The key idea is to bind your JS object as [an abstract data
+type](https://en.wikipedia.org/wiki/Abstract_data_type) where a data type is
+defined by its behavior from the point of view of a user of the data, instead
+of the data type’s concrete representations.
+
+```reason
+type date;
+
+[@bs.new]
+external fromFloat : float => date = "Date" ;
+[@bs.send]
+external getDate : date => float = "getDate" ;
+[@bs.send]
+external setDate : date => float => unit = "setDate";
+
+let date = fromFloat (10000.0);
+date->setDate (3.0);
+let d = date -> getDate;
+```
+
+The preceding code generates the following JS. As you can see, the binding
+itself is zero cost and serves as formal documentation.
+
+```js
+var date = new Date(10000);
+date.setDate(3);
+var d = date.getDate();
+```
+
+A typical workflow is that we create an abstract data type, create bindings for
+a “maker” using `bs.new`, and bind methods using `bs.send`.
+
+Thanks to native support of abstract data types in OCaml, the interop is easy
+to reason about.
+
+Some advice when using this style:
+
+- Again, you can use polymorphic types in your annotations, but don't create
+  polymorphic types when you don't need them.
+- Write a unit test for each external.
+
+As a comparison, we can create the same binding using `raw`:
+
+```reason
+type date;
+let fromFloat: float => date = [%raw d => {|return new Date(d)|}];
+let getDate: date => float = [%raw d => {|return d.getDate()|}];
+let setDate: (date, float) => unit = [%raw
+  (d, v) => {|
+   d.setDate(v);
+   return 0; // ocaml representation of unit
+|}
+];
+
+let date = fromFloat(10000.);
+date->setDate( 3.);
+let d = date->getDate;
+```
+
+The generated JS is as follows, and you can see the cost:
+
+```js
+function fromFloat(d) {
+  return new Date(d);
+}
+
+function getDate(d) {
+  return d.getDate();
+}
+
+function setDate(d, v) {
+  d.setDate(v);
+  return 0; // ocaml representation of unit
+}
+
+var date = fromFloat(10000);
+
+setDate(date, 3);
+
+var d = getDate(date);
+```
+
+{/* ,  and provide various methods over such abstract data type. */}

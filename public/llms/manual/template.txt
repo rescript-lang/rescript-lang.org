@@ -9,7 +9,7 @@
 
 ## Individual Package Documentation
 
-- [ReScript React documentation](https://rescript-lang.org/llms/react/latest/llms.txt): This is the developer documentation for ReScript React.
+- [ReScript React documentation](https://rescript-lang.org/llms/react/llms.txt): This is the developer documentation for ReScript React.
 
 ## Notes
 

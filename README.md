@@ -153,7 +153,7 @@ In case you are a blog author, please refer to our [guide on writing blog posts]
 In case your company is a user of ReScript and wants to be displayed on our front page ("Trusted by our users" section), do the following:
 
 - Get your logo as a black / white `.svg` version and use `#979AAD` as a fill color (check out the existing logos on our front page).
-- Put your logo into the [`public/static/lp`](./public/static/lp) folder; the file should be named after your company.
+- Put your logo into the [`app/public/lp`](./app/public/lp) folder; the file should be named after your company.
 - Open [src/common/OurUsers.res](./src/common/OurUsers.res) and add your info
 - Commit, push, and open a PR.
 

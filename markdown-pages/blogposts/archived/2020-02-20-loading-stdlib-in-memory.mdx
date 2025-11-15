@@ -1,0 +1,126 @@
+---
+author: hongbo
+date: "2020-02-20"
+previewImg:
+title: Improving the Stdlib Loading mechanism
+description: |
+  We want to give you some insights on how we will improve the way BuckleScript
+  compiles and handles its stdlib modules.
+---
+
+## Loading stdlib from memory
+
+// {/* Do you mean "external files" instead of "external file system"? In Linux world, a file system is means something like EXT4 or btrfs */}
+
+In the next release, we are going to load stdlib from memory instead of from
+external files, which will make the BuckleScript toolchain more accessible and
+performant.
+
+You can try it via `npm i bs-platform@7.2.0-dev.4`
+
+## How does it work
+
+When the compiler compiles a module `test.ml`, the module `Test` will import
+some modules from stdlib. This is inevitable since even basic operators in
+BuckleScript, for example `(+)`, are defined in the Pervasives module, which is
+part of the stdlib.
+
+Traditionally, the compiler will consult `Pervasives.cmi`, which is a binary
+artifact describing the interface of the Pervasives module and
+`Pervasives.cmj`, which is a binary artifact describing the implementation of
+the Pervasives module. `Pervasives.cm[ij]` and other modules in stdlib are
+shipped together with the compiler.
+
+**This traditional mode has some consequences:**
+
+- The compiler is not stand-alone and relocatable. Even if we have the compiler
+  prebuilt for different platforms, we still have to compile stdlib
+  post-installation. `postinstall` is supported by npm, but it has
+  [various](https://github.com/BuckleScript/bucklescript/issues/3213)
+  [issues](https://github.com/BuckleScript/bucklescript/issues/2799)
+  [against](https://github.com/BuckleScript/bucklescript/issues/3254) yarn.
+
+- It's hard to split the compiler from the generated stdlib JS artifacts. When
+  a BuckleScript user deploys apps depending on BuckleScript, in theory, the app
+  only needs to deploy those generated JS artifacts; the native binary is not
+  needed in production. However, the artifacts are still loaded since they are
+  bundled together. Allowing easy delivery of compiled code is one of the
+  community’s most desired [feature
+  requests](https://github.com/BuckleScript/bucklescript/issues/2772).
+
+In this release, we solve the problem by embedding the binary artifacts into
+the compiler directly and loading it on demand.
+
+To make this possible, we try to make the binary data platform agnostic and as
+compact as possible to avoid size bloating. The entrance of loading cmi/cmj has
+to be adapted to this new way.
+
+So whenever the compiler tries to load a module from stdlib, it will consult a
+lazy data structure in the compiler itself instead of consulting an external
+file system.
+
+## What are the benefits?
+
+{/* In the phrase "we can make it installable", what does "it" refer to? */}
+
+### More accessiblity.
+
+Package installation now becomes downloading for prebuilt platforms. In the
+future, we can make it installable from a system package manager as well. The
+subtle interaction with [yarn
+reinstall](https://github.com/BuckleScript/bucklescript/issues/2799) is also
+solved once and for all.
+
+{/* instead of "between compiler and stdlib version schemes", perhaps say "for aligning compiler and stdlib version schemes" */}
+
+### Easy separation between compiler and JS artifacts
+
+The compiler is just one relocatable file. This makes the separation between
+the compiler and generated JS artifacts easier. The remaining work is mostly to
+design a convention between compiler and stdlib version schemes.
+
+### Better compilation performance
+
+A large set of files is not loaded from the file system but rather from memory
+now!
+
+### Fast installation and reinstallation.
+
+Depending on your network speed, the installation is reduced from 15
+seconds to 3 seconds. Reinstallation is almost a no-op now.
+
+{/* TODO: collect data points later */}
+
+{/* I'm not sure what you mean by "compiling a single file to a string" */}
+
+### JS playground is easier to build
+
+We translate the compiler into JS so that
+developers can play with it in the browser. To make this happen, we used to
+fake the IO system; this not needed any more since no IO happens when compiling
+a single file to a string.
+
+## Some internal changes
+
+To make this happen, the layout of binaries has been changed to the following
+structure. It is **not recommended** that users depend on the layout, but [it
+happens](https://github.com/BuckleScript/bucklescript/pull/4170#issuecomment-586959464).
+Here is the new layout:
+
+```
+|-- bsb // node wrapper of bsb.exe
+|-- bsc // node wrapper of bsc.exe
+|
+|-- win32
+|     |-- bsb.exe
+|     |-- bsc.exe
+|
+|---darwin
+|     |-- bsb.exe
+|     |-- bsc.exe
+|
+|---linux
+|     |-- bsb.exe
+|     |-- bsc.exe
+
+```

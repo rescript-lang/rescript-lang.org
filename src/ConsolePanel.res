@@ -41,7 +41,8 @@ let make = (~logs, ~appendLog) => {
             | #log => ""
             | #warn => "text-orange"
             | #error => "text-fire"
-            }}>
+            }}
+          >
             {React.string(log)}
           </pre>
         })

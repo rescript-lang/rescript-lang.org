@@ -10,7 +10,8 @@ let make = (~children, ~isEnabled) => {
       | Up(_) => "group nav-appear"
 
       | Down(_) => "group nav-disappear"
-      }}>
+      }}
+    >
       children
     </div>
   } else {

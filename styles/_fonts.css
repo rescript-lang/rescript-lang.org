@@ -9,7 +9,7 @@ Example of using a google font as a self hosted .woff file
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: local('Source Sans Pro Regular'), local('SourceSansPro-Regular'), url(/static/fonts/source-sans-pro-regular.woff2) format('woff2');
+  src: local('Source Sans Pro Regular'), local('SourceSansPro-Regular'), url(/fonts/source-sans-pro-regular.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 */
@@ -30,7 +30,7 @@ $ pyftsubset <path_to_font> --unicodes="U+0000-00FF, U+0131, U+0152-0153, U+02BB
   src:
     local("Inter Bold"),
     local("Inter-Bold"),
-    url("/static/fonts/subset-Inter-Bold.woff2") format("woff2");
+    url("/fonts/subset-Inter-Bold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -46,7 +46,7 @@ $ pyftsubset <path_to_font> --unicodes="U+0000-00FF, U+0131, U+0152-0153, U+02BB
   src:
     local("Inter Italic"),
     local("Inter-Italic"),
-    url("/static/fonts/subset-Inter-Italic.woff2") format("woff2");
+    url("/fonts/subset-Inter-Italic.woff2") format("woff2");
   font-weight: 400;
   font-style: italic;
   font-display: swap;
@@ -62,7 +62,7 @@ $ pyftsubset <path_to_font> --unicodes="U+0000-00FF, U+0131, U+0152-0153, U+02BB
   src:
     local("Inter Medium"),
     local("Inter-Medium"),
-    url("/static/fonts/subset-Inter-Medium.woff2") format("woff2");
+    url("/fonts/subset-Inter-Medium.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -78,7 +78,7 @@ $ pyftsubset <path_to_font> --unicodes="U+0000-00FF, U+0131, U+0152-0153, U+02BB
   src:
     local("Inter Semi Bold"),
     local("Inter-SemiBold"),
-    url("/static/fonts/subset-Inter-SemiBold.woff2") format("woff2");
+    url("/fonts/subset-Inter-SemiBold.woff2") format("woff2");
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -94,7 +94,7 @@ $ pyftsubset <path_to_font> --unicodes="U+0000-00FF, U+0131, U+0152-0153, U+02BB
   src:
     local("Inter Regular"),
     local("Inter-Regular"),
-    url("/static/fonts/subset-Inter-Regular.woff2") format("woff2");
+    url("/fonts/subset-Inter-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -115,7 +115,7 @@ $ pyftsubset <path_to_font> --unicodes="U+0000-00FF, U+0131, U+0152-0153, U+02BB
   src:
     local("Roboto Mono"),
     local("RobotoMono-Regular"),
-    url(/static/fonts/roboto-mono-400.woff2) format("woff2");
+    url(/fonts/roboto-mono-400.woff2) format("woff2");
   unicode-range:
     U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
     U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF,
@@ -131,7 +131,7 @@ $ pyftsubset <path_to_font> --unicodes="U+0000-00FF, U+0131, U+0152-0153, U+02BB
   src:
     local("Roboto Mono Bold"),
     local("RobotoMono-Bold"),
-    url(/static/fonts/roboto-mono-700.woff2) format("woff2");
+    url(/fonts/roboto-mono-700.woff2) format("woff2");
   unicode-range:
     U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
     U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF,

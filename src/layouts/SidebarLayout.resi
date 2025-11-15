@@ -5,19 +5,9 @@ module Toc: {
     "category": Nullable.t<string>,
     "headers": array<{
       "name": string,
-      "href": string,
+      "href": Path.t,
     }>,
   }>
-
-  type entry = {
-    header: string,
-    href: string,
-  }
-
-  type t = {
-    title: string,
-    entries: array<entry>,
-  }
 }
 
 module Sidebar: {
@@ -28,7 +18,7 @@ module Sidebar: {
     }
     @react.component
     let make: (
-      ~getActiveToc: t => option<Toc.t>=?,
+      ~getActiveToc: t => option<TableOfContents.t>=?,
       ~isItemActive: t => bool=?,
       ~isHidden: bool=?,
       ~items: array<t>,
@@ -42,7 +32,7 @@ module Sidebar: {
 
     @react.component
     let make: (
-      ~getActiveToc: NavItem.t => option<Toc.t>=?,
+      ~getActiveToc: NavItem.t => option<TableOfContents.t>=?,
       ~isItemActive: NavItem.t => bool=?,
       ~category: t,
     ) => React.element
@@ -51,11 +41,11 @@ module Sidebar: {
   @react.component
   let make: (
     ~categories: array<Category.t>,
-    ~route: string,
+    ~route: Path.t,
     ~toplevelNav: React.element=?,
     ~title: string=?,
     ~preludeSection: React.element=?,
-    ~activeToc: Toc.t=?,
+    ~activeToc: TableOfContents.t=?,
     ~isOpen: bool,
     ~toggle: unit => unit,
   ) => React.element
@@ -63,9 +53,7 @@ module Sidebar: {
 
 @react.component
 let make: (
-  ~metaTitle: string,
   ~theme: ColorTheme.t,
-  ~components: MarkdownComponents.t,
   ~editHref: string=?,
   // (Sidebar, toggleSidebar) ... for toggling sidebar in mobile view
   ~sidebarState: (bool, (bool => bool) => unit),
