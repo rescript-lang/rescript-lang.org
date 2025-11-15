@@ -1536,8 +1536,6 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     }
   }
 
-  Console.log(("searchParams", searchParams))
-
   let initialLang = switch Nullable.make(
     searchParams->WebAPI.URLSearchParams.get((CompilerManagerHook.Ext :> string)),
   ) {
