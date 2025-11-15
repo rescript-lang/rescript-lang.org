@@ -44,3 +44,6 @@ build
 
 app/**/*.mjs
 !_shims.mjs
+
+# prettier refuses to not mess up the installation table
+markdown-pages/docs/manual/installation.mdx
