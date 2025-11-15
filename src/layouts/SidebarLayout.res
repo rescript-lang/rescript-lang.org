@@ -214,7 +214,11 @@ module BreadCrumbs = {
       (pathname :> string)
       ->String.split("/")
       ->Array.filter(segment =>
-        segment !== "docs" && segment !== "manual" && segment !== "react" && segment !== "api"
+        segment !== "docs" &&
+        segment !== "manual" &&
+        segment !== "react" &&
+        segment !== "api" &&
+        segment !== ""
       )
       ->Array.last
 

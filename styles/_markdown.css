@@ -65,8 +65,9 @@
 
   .install-list {
     li {
+      @apply !mb-0;
       ul {
-        @apply !mb-0;
+        @apply !mb-0 !ml-0;
       }
     }
   }
