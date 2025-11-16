@@ -1188,6 +1188,30 @@ module ControlPanel = {
     ~editorCode: React.ref<string>,
     ~setCurrentTab: (tab => tab) => unit,
   ) => {
+    React.useEffect(() => {
+      switch state {
+      | Ready(_)
+      | Compiling(_)
+      | Executing(_) =>
+        let onKeyDown = event => {
+          switch (
+            event->ReactEvent.Keyboard.metaKey || event->ReactEvent.Keyboard.ctrlKey,
+            event->ReactEvent.Keyboard.key,
+          ) {
+          | (true, "e") =>
+            event->ReactEvent.Keyboard.preventDefault
+            setCurrentTab(_ => Output)
+            dispatch(RunCode)
+          | _ => ()
+          }
+        }
+
+        WebAPI.Window.addEventListener(window, Keydown, onKeyDown)
+        Some(() => WebAPI.Window.removeEventListener(window, Keydown, onKeyDown))
+      | _ => None
+      }
+    }, (state, dispatch, setCurrentTab))
+
     let children = switch state {
     | Init => React.string("Initializing...")
     | SwitchingCompiler(_ready, _version) => React.string("Switching Compiler...")
@@ -1205,28 +1229,6 @@ module ControlPanel = {
       | Ready({autoRun: true}) => true
       | _ => false
       }
-
-      let runCode = () => {
-        setCurrentTab(_ => Output)
-        dispatch(RunCode)
-      }
-
-      let onKeyDown = event => {
-        switch (
-          event->ReactEvent.Keyboard.metaKey || event->ReactEvent.Keyboard.ctrlKey,
-          event->ReactEvent.Keyboard.key,
-        ) {
-        | (true, "e") =>
-          event->ReactEvent.Keyboard.preventDefault
-          runCode()
-        | _ => ()
-        }
-      }
-
-      React.useEffect(() => {
-        WebAPI.Window.addEventListener(window, Keydown, onKeyDown)
-        Some(() => WebAPI.Window.removeEventListener(window, Keydown, onKeyDown))
-      }, [])
 
       let runButtonText = {
         let userAgent = window.navigator.userAgent
@@ -1253,7 +1255,14 @@ module ControlPanel = {
         >
           {React.string("Auto-run")}
         </ToggleButton>
-        <Button onClick={_ => runCode()}> {React.string(runButtonText)} </Button>
+        <Button
+          onClick={_ => {
+            setCurrentTab(_ => Output)
+            dispatch(RunCode)
+          }}
+        >
+          {React.string(runButtonText)}
+        </Button>
         <Button onClick=onFormatClick> {React.string("Format")} </Button>
         <ShareButton actionIndicatorKey />
       </div>
