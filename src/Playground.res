@@ -1614,11 +1614,6 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     None
   }, [keyMap])
 
-  // The user can focus an error / warning on a specific line & column
-  // which is stored in this ref and triggered by hover / click states
-  // in the CodeMirror editor
-  let (_focusedRowCol, setFocusedRowCol) = React.useState(_ => None)
-
   let editorCode = React.useRef(initialContent)
 
   /* In case the compiler did some kind of syntax conversion / reformatting,
@@ -1989,8 +1984,6 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
             }, ~timeout=100)
             typingTimer.current = Some(timer)
           }}
-          onMarkerFocus={rowCol => setFocusedRowCol(_prev => Some(rowCol))}
-          onMarkerFocusLeave={_ => setFocusedRowCol(_ => None)}
           keyMap
         />
       </div>
