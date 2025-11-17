@@ -47,6 +47,8 @@ type t = {
 
 type remarkPlugin
 
+type tree
+
 type loadMdxOptions = {remarkPlugins?: array<remarkPlugin>}
 
 @module("react-router-mdx/server")
@@ -66,6 +68,12 @@ external useMdxFiles: unit => {..} = "useMdxFiles"
 
 @module("remark-gfm")
 external gfm: remarkPlugin = "default"
+
+@module("remark-validate-links")
+external validateLinks: remarkPlugin = "default"
+
+@module("remark-inline-links")
+external inlineLinks: remarkPlugin = "default"
 
 // The loadAllMdx function logs out all of the file contents as it reads them, which is noisy and not useful.
 // We can suppress that logging with this helper function.
@@ -93,3 +101,58 @@ let groupBySection = mdxPages =>
 
 let filterMdxPages = (mdxPages, path) =>
   Array.filter(mdxPages, mdx => mdx.path->Option.map(String.includes(_, path))->Option.getOr(false))
+
+@module("unist-util-visit") external visit: (tree, string, {..} => unit) => unit = "visit"
+
+let remarkReScriptPrelude = tree => {
+  let prelude = ref("")
+
+  visit(tree, "code", node =>
+    if node["lang"] === "res prelude" {
+      prelude := prelude.contents + "\n" + node["value"]
+    }
+  )
+
+  if prelude.contents->String.trim !== "" {
+    visit(tree, "code", node => {
+      if node["lang"] === "res" {
+        let metaString = switch node["meta"]->Nullable.make {
+        | Value(value) => value
+        | _ => ""
+        }
+
+        node["meta"] =
+          metaString +
+          JSON.stringifyAny(prelude.contents)->Option.mapOr("", prelude => " prelude=" + prelude)
+
+        Console.log2("⇢ Added meta to code block:", node["meta"])
+      }
+    })
+  }
+}
+
+let remarkLinkPlugin = tree => {
+  let prelude = ref("")
+
+  visit(tree, "link", node => {
+    if node["url"]->String.startsWith("http") {
+      ()
+    } else {
+      // Strip put any file extensions from internal links
+      node["url"] =
+        node["url"]
+        ->String.replace(".mdx", "")
+        ->String.replaceAll(".md", "")
+    }
+  })
+}
+
+external makePlugin: 'a => remarkPlugin = "%identity"
+
+let remarkReScriptPreludePlugin = makePlugin(_options =>
+  (tree, _vfile) => remarkReScriptPrelude(tree)
+)
+
+let remarkLinkPlugin = makePlugin(_options => (tree, _vfile) => remarkLinkPlugin(tree))
+
+let plugins = [gfm, remarkReScriptPreludePlugin, remarkLinkPlugin, inlineLinks]

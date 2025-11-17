@@ -136,7 +136,7 @@ let communityTableOfContents = async () => {
 let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
   let {pathname} = WebAPI.URL.make(~url=request.url)
 
-  let mdx = await loadMdx(request, ~options={remarkPlugins: [Mdx.gfm]})
+  let mdx = await loadMdx(request, ~options={remarkPlugins: Mdx.plugins})
 
   if pathname->String.includes("blog") {
     let posts = blogPosts()

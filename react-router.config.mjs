@@ -1,9 +1,10 @@
 import * as fs from "node:fs";
 import { init } from "react-router-mdx/server";
+import { Url } from "./src/common/Util.mjs";
 
 const mdx = init({
   paths: [
-    "markdown-pages/blogposts",
+    "markdown-pages/blog",
     "markdown-pages/docs",
     "markdown-pages/community",
     "markdown-pages/syntax-lookup",
@@ -19,7 +20,7 @@ export default {
   async prerender({ getStaticPaths }) {
     return [
       ...(await getStaticPaths()),
-      ...(await mdx.paths()),
+      ...(await mdx.paths()).map(path => path.includes("blog") ? Url.removeDatePrefix(path) : path),
       ...stdlibPaths,
     ];
   },

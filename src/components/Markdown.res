@@ -92,7 +92,8 @@ module UrlBox = {
       </a>
     } else {
       <ReactRouter.Link.String
-        to={Env.root_url ++ href->Util.String.leadingSlash}
+        // to={Env.root_url ++ href->Util.String.leadingSlash}
+        to=href
         className="flex items-center"
         relative="path"
       >
@@ -395,10 +396,7 @@ module A = {
       </a>
     } else {
       <ReactRouter.Link.String
-        relative="path"
-        to={Util.Url.createRelativePath((pathname :> string), href)}
-        className="no-underline text-fire hover:underline"
-        ?target
+        relative="path" to={href} className="no-underline text-fire hover:underline" ?target
       >
         children
       </ReactRouter.Link.String>

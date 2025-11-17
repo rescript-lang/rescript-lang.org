@@ -2,15 +2,15 @@
 // https://github.com/zeit/next.js/blob/canary/examples/blog-starter/lib/api.js
 
 /*
-    BlogApi gives access to the data within the markdown-pages/blogposts directory.
+    BlogApi gives access to the data within the markdown-pages/blog directory.
 
-    The markdown-pages/blogposts content is treated as a flat directory. There is a
+    The markdown-pages/blog content is treated as a flat directory. There is a
     set of whitelisted directories (for each category) to help declutter
     huge file masses.
 
-    Every filename within markdown-pages/blogposts must be unique, even when nested in
+    Every filename within markdown-pages/blog must be unique, even when nested in
     different directories. The filename will be sluggified, that means that e.g.
-    for the filepath "markdown-pages/blogposts/compiler/2021-03-12-my-post.mdx", slug = "my-post"
+    for the filepath "markdown-pages/blog/compiler/2021-03-12-my-post.mdx", slug = "my-post"
 
     The reason for the flat hierarchy is that we want to keep a flat URL
     hierarchy with `https://rescript-lang.org/blog/[some-slug]`, without carrying
@@ -38,7 +38,7 @@ let mdxFiles = dir => {
 }
 
 let getAllPosts = () => {
-  let postsDirectory = Node.Path.join2(Node.Process.cwd(), "markdown-pages/blogposts")
+  let postsDirectory = Node.Path.join2(Node.Process.cwd(), "markdown-pages/blog")
   let archivedPostsDirectory = Node.Path.join2(postsDirectory, "archived")
 
   let nonArchivedPosts = mdxFiles(postsDirectory)->Array.map(path => {
@@ -73,7 +73,7 @@ let getAllPosts = () => {
 }
 
 let getLivePosts = () => {
-  let postsDirectory = Node.Path.join2(Node.Process.cwd(), "markdown-pages/blogposts")
+  let postsDirectory = Node.Path.join2(Node.Process.cwd(), "markdown-pages/blog")
 
   let livePosts = mdxFiles(postsDirectory)->Array.map(path => {
     let {frontmatter} =
@@ -94,7 +94,7 @@ let getLivePosts = () => {
 }
 
 let getArchivedPosts = () => {
-  let postsDirectory = Node.Path.join2(Node.Process.cwd(), "markdown-pages/blogposts")
+  let postsDirectory = Node.Path.join2(Node.Process.cwd(), "markdown-pages/blog")
   let archivedPostsDirectory = Node.Path.join2(postsDirectory, "archived")
 
   let archivedPosts = mdxFiles(archivedPostsDirectory)->Array.map(path => {

@@ -3,7 +3,7 @@ import { init } from "react-router-mdx/server";
 
 init({
   paths: [
-    "markdown-pages/blogposts",
+    "markdown-pages/blog",
     "markdown-pages/docs",
     "markdown-pages/community",
     "markdown-pages/syntax-lookup",
