@@ -153,6 +153,9 @@ module CM6 = {
     external dispatchEffects: (editorView, dispatchEffectsArg) => unit = "dispatch"
 
     @module("@codemirror/view") @scope("EditorView") @val
+    external theme: {..} => extension = "theme"
+
+    @module("@codemirror/view") @scope("EditorView") @val
     external lineWrapping: extension = "lineWrapping"
 
     @module("@codemirror/view")
@@ -380,6 +383,7 @@ module CM6 = {
       module TagStyle = {
         type t = {
           tag: array<tag>,
+          class?: string,
           color?: string,
           fontStyle?: string,
           fontWeight?: string,
@@ -392,52 +396,39 @@ module CM6 = {
 
       let default = define([
         {
-          tag: [Tags.keyword],
-          color: "#708",
+          tag: [Tags.keyword, Tags.moduleKeyword, Tags.operator],
+          class: "text-berry-dark-50",
         },
         {
-          tag: [Tags.atom, Tags.bool, Tags.url, Tags.contentSeparator, Tags.labelName],
-          color: "#219",
+          tag: [
+            Tags.variableName,
+            Tags.definition(Tags.propertyName),
+            Tags.tagName,
+            Tags.labelName,
+            Tags.definition(Tags.variableName),
+            Tags.definition(Tags.typeName),
+          ],
+          class: "text-gray-30",
         },
         {
-          tag: [Tags.literal, Tags.inserted],
-          color: "#164",
+          tag: [Tags.bool, Tags.atom, Tags.typeName, Tags.special(Tags.tagName)],
+          class: "text-orange-dark",
         },
         {
-          tag: [Tags.string, Tags.special(Tags.string), Tags.deleted],
-          color: "#a11",
-        },
-        {
-          tag: [Tags.regexp, Tags.escape],
-          color: "#040",
-        },
-        {
-          tag: [Tags.definition(Tags.variableName)],
-          color: "#00f",
-        },
-        {
-          tag: [Tags.local(Tags.variableName)],
-          color: "#30a",
-        },
-        {
-          tag: [Tags.typeName, Tags.namespace],
-          color: "#085",
-        },
-        {
-          tag: [Tags.special(Tags.variableName), Tags.macroName],
-          color: "#256",
-        },
-        {
-          tag: [Tags.definition(Tags.propertyName)],
-          color: "#00c",
+          tag: [Tags.string, Tags.special(Tags.string), Tags.number],
+          class: "text-turtle-dark",
         },
         {
           tag: [Tags.comment],
-          color: "#940",
+          class: "text-gray-60",
         },
         {
-          tag: [Tags.invalid],
-          color: "#f00",
+          tag: [Tags.definition(Tags.namespace)],
+          class: "text-orange",
+        },
+        {
+          tag: [Tags.namespace, Tags.annotation],
+          class: "text-water-dark",
         },
       ])
     }
@@ -611,6 +602,16 @@ let createEditor = (config: editorConfig): editorInstance => {
   let extensions = [
     CM6.Compartment.make(languageConf, (language: CM6.extension)),
     CM6.Commands.history(),
+    CM6.EditorView.theme({
+      ".cm-content": {
+        "lineHeight": "1.5",
+      },
+      ".cm-line": {
+        "lineHeight": "1.5",
+      },
+      ".cm-gutters": {"backgroundColor": "inherit"},
+      ".cm-gutters.cm-gutters-before": {"border": "none"},
+    }),
     CM6.EditorView.drawSelection(),
     CM6.EditorView.dropCursor(),
     CM6.Language.bracketMatching(),
