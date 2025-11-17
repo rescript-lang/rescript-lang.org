@@ -20,7 +20,7 @@ A React component is a function describing a UI element that receives a `props` 
 
 The nice thing about this concept is that you can solely focus on the input and output. The component function receives some data and returns some opaque `React.element` that is managed by the React framework to render your UI.
 
-> If you want to know more about the low level details on how a component interface is implemented, refer to the [Beyond JSX](./beyond-jsx) page.
+> If you want to know more about the low level details on how a component interface is implemented, refer to the [Beyond JSX](./beyond-jsx.mdx) page.
 
 ## Component Example
 
@@ -60,7 +60,7 @@ You can also see in the the JS output that the function we created was directly 
 
 ## Defining Props
 
-In ReactJS, props are usually described as a single `props` record. In ReScript, we use [labeled arguments](/docs/manual/function#labeled-arguments) to define our props parameters instead. Here's an example:
+In ReactJS, props are usually described as a single `props` record. In ReScript, we use [labeled arguments](../../../docs/manual/function.mdx#labeled-arguments) to define our props parameters instead. Here's an example:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -161,7 +161,7 @@ React.createElement(Greeting, {
 
 You can't define any props called `key` or `ref`. React treats those props differently and the compiler will yield an error whenever you try to define a `~key` or `~ref` argument in your component function.
 
-Check out the corresponding [Arrays and Keys](./arrays-and-keys) and [Forwarding React Refs](./forwarding-refs) sections for more details.
+Check out the corresponding [Arrays and Keys](./arrays-and-keys.mdx) and [Forwarding React Refs](./forwarding-refs.mdx) sections for more details.
 
 ### Handling Invalid Prop Names (e.g. keywords)
 
@@ -169,7 +169,7 @@ Prop names like `type` (as in `<input type="text" />`) aren't syntactically vali
 
 For `aria-*` use camelCasing, e.g., `ariaLabel`. For DOM components, we'll translate it to `aria-label` under the hood.
 
-For `data-*` this is a bit trickier; words with `-` in them aren't valid in ReScript. When you do want to write them, e.g., `<div data-name="click me" />`, check out the [React.cloneElement](./elements-and-jsx#cloning-elements) or [React.createDOMElementVariadic](./elements-and-jsx#creating-dom-elements) section.
+For `data-*` this is a bit trickier; words with `-` in them aren't valid in ReScript. When you do want to write them, e.g., `<div data-name="click me" />`, check out the [React.cloneElement](./elements-and-jsx.mdx#cloning-elements) or [React.createDOMElementVariadic](./elements-and-jsx.mdx#creating-dom-elements) section.
 
 ## Children Props
 
@@ -443,7 +443,7 @@ React.createElement(make, {
 
 </CodeTab>
 
-More details on the `@react.component` decorator and its generated interface can be found in our [Beyond JSX](./beyond-jsx) page.
+More details on the `@react.component` decorator and its generated interface can be found in our [Beyond JSX](./beyond-jsx.mdx) page.
 
 ## Submodule Components
 

@@ -28,11 +28,11 @@ var match = React.useReducer(reducer, initialState);
 
 </CodeTab>
 
-An alternative to [useState](./hooks-state). Accepts a reducer of type `(state, action) => newState`, and returns the current `state` paired with a `dispatch` function `(action) => unit`.
+An alternative to [useState](./hooks-state.mdx). Accepts a reducer of type `(state, action) => newState`, and returns the current `state` paired with a `dispatch` function `(action) => unit`.
 
 `React.useReducer` is usually preferable to `useState` when you have complex state logic that involves multiple sub-values or when the next state depends on the previous one. `useReducer` also lets you optimize performance for components that trigger deep updates because you can pass dispatch down instead of callbacks.
 
-**Note:** You will notice that the action / reducer pattern works especially well in ReScript due to its [immutable records](/docs/manual/record), [variants](/docs/manual/variant) and [pattern matching](/docs/manual/pattern-matching-destructuring) features for easy expression of your action and state transitions.
+Learn more about [records](../../../docs/manual/record.mdx), [variants](../../../docs/manual/variant.mdx), and [pattern matching & destructuring](../../../docs/manual/pattern-matching-destructuring.mdx).
 
 ## Examples
 

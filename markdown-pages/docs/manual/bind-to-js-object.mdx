@@ -15,7 +15,7 @@ JavaScript objects are a combination of several use-cases:
 - As a class.
 - As a module to import/export.
 
-ReScript cleanly separates the binding methods for JS object based on these 4 use-cases. This page documents the first three. Binding to JS module objects is described in the [Import from/Export to JS](import-from-export-to-js) section.
+ReScript cleanly separates the binding methods for JS object based on these 4 use-cases. This page documents the first three. Binding to JS module objects is described in the [Import from/Export to JS](import-from-export-to-js.mdx) section.
 
 {/* TODO: mention scope here too? */}
 
@@ -47,7 +47,7 @@ var johnName = MySchool.john.name;
 
 </CodeTab>
 
-External is documented [here](external). `@module` is documented [here](import-from-export-to-js).
+External is documented [here](external.mdx). `@module` is documented [here](import-from-export-to-js.mdx).
 
 If you want or need to use different field names on the ReScript and the JavaScript side, you can use the `@as` decorator:
 
@@ -92,7 +92,7 @@ var value = [7, "baz"];
 
 ### Bind Using ReScript Object
 
-Alternatively, you can use [ReScript object](object) to model a JS object too:
+Alternatively, you can use [ReScript object](object.mdx) to model a JS object too:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 

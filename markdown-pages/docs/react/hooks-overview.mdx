@@ -80,7 +80,7 @@ Here we are using the `React.useState` Hook. We call it inside a component funct
 
 The only argument to `React.useState` is a function that returns the initial state (`_ => 0`). In the example above, it is 0 because our counter starts from zero. Note that your state can be any type you want and `ReScript` will make sure to infer the types for you (only make sure to return an initial state that matches your type). The initial state argument is only used during the first render.
 
-This was just a quick example on our first hook usage. We will go into more detail in a dedicated [useState](./hooks-state) section.
+This was just a quick example on our first hook usage. We will go into more detail in a dedicated [useState](./hooks-state.mdx) section.
 
 ## Available Hooks
 
@@ -88,18 +88,18 @@ This was just a quick example on our first hook usage. We will go into more deta
 
 ### Basic Hooks:
 
-- [useState](./hooks-state): Adds local state to your component
-- [useEffect](./hooks-effect): Runs side-effectual code within your component
-- [useContext](./hooks-context): Gives your component to a React Context value
+- [useState](./hooks-state.mdx): Adds local state to your component
+- [useEffect](./hooks-effect.mdx): Runs side-effectual code within your component
+- [useContext](./hooks-context.mdx): Gives your component to a React Context value
 
 ### Additional Hooks:
 
-- [useReducer](./hooks-reducer): An alternative to `useState`. Uses the state / action / reduce pattern.
-  {/* - [useCallback](./hooks-callback): Returns a memoized callback */}
-  {/* - [useMemo](./hooks-memo): Returns a memoized value */}
-- [useRef](./hooks-ref): Returns a mutable React-Ref value
-  {/* - [useImperativeHandle](./hooks-imperative-handle): Customizes the instance value that is exposed to parent components when using `ref` */}
-  {/* - [useLayoutEffect](./hooks-layout-effect): Identical to useEffect, but it fires synchronously after all DOM mutations. */}
+- [useReducer](./hooks-reducer.mdx): An alternative to `useState`. Uses the state / action / reduce pattern.
+  {/* - [useCallback](./hooks-callback.mdx): Returns a memoized callback */}
+  {/* - [useMemo](./hooks-memo.mdx): Returns a memoized value */}
+- [useRef](./hooks-ref.mdx): Returns a mutable React-Ref value
+  {/* - [useImperativeHandle](./hooks-imperative-handle.mdx): Customizes the instance value that is exposed to parent components when using `ref` */}
+  {/* - [useLayoutEffect](./hooks-layout-effect.mdx): Identical to useEffect, but it fires synchronously after all DOM mutations. */}
 
 ## Rules of Hooks
 
@@ -114,6 +114,6 @@ Hooks are just simple functions, but you need to follow _two rules_ when using t
 **Don't call Hooks from regular functions.** Instead, you can:
 
 - ✅ Call Hooks from React function components.
-- ✅ Call Hooks from custom Hooks (we’ll learn about them in our [custom hooks](./hooks-custom) section).
+- ✅ Call Hooks from custom Hooks (we'll learn about them in our [custom hooks](./hooks-custom.mdx) section).
 
 By following this rule, you ensure that all stateful logic in a component is clearly visible from its source code.

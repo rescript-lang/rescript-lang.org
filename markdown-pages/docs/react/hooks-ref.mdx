@@ -39,9 +39,9 @@ However, `useRef()` is useful for more than the ref attribute. It's handy for ke
 
 This works because `useRef()` creates a plain JavaScript object. The only difference between `useRef()` and creating a `{current: ...}` object yourself is that useRef will give you the same ref object on every render.
 
-Keep in mind that `useRef` doesn’t notify you when its content changes. Mutating the `.current` record field doesn’t cause a re-render. If you want to run some code when React attaches or detaches a ref to a DOM node, you may want to use a [callback ref](./refs-and-the-dom#callback-refs) instead.
+Keep in mind that `useRef` doesn't notify you when its content changes. Mutating the `.current` record field doesn't cause a re-render. If you want to run some code when React attaches or detaches a ref to a DOM node, you may want to use a [callback ref](./refs-and-the-dom.mdx#callback-refs) instead.
 
-More infos on direct DOM manipulation can be found in the [Refs and the DOM](./refs-and-the-dom) section.
+More infos on direct DOM manipulation can be found in the [Refs and the DOM](./refs-and-the-dom.mdx) section.
 
 ## Examples
 
@@ -99,7 +99,7 @@ function TextInputWithFocusButton(Props) {
 
 ### Using a Callback Ref
 
-Reusing the example from our [Refs and the DOM](./refs-and-the-dom#callback-refs) section:
+Reusing the example from our [Refs and the DOM](./refs-and-the-dom.mdx#callback-refs) section:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 

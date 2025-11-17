@@ -16,7 +16,7 @@ ReScript offers a unique project conversion methodology which:
 
 ## Step 1: Install ReScript
 
-Run `npm install rescript` on your project, then imitate our [New Project](installation#new-project) workflow by adding a `rescript.json` at the root. Then start `npx rescript -w`.
+Run `npm install rescript` on your project, then imitate our [New Project](./installation.mdx#new-project) workflow by adding a `rescript.json` at the root. Then start `npx rescript -w`.
 
 ## Step 2: Copy Paste the Entire JS File
 
@@ -36,7 +36,7 @@ function queryResult(usePayload, payload) {
 }
 ```
 
-First, copy the entire file content over to a new file called `src/Main.res` by using our [`%%raw` JS embedding trick](embed-raw-javascript):
+First, copy the entire file content over to a new file called `src/Main.res` by using our [`%%raw` JS embedding trick](./embed-raw-javascript.mdx):
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -166,7 +166,7 @@ We have a type error: "The record field student can't be found". That's fine! **
 
 ## Step 4: Add externals, Fix Types
 
-The previous type error is caused by `payload`'s record declaration (which supposedly contains the field `student`) not being found. Since we're trying to convert as quickly as possible, let's use our [object](object) feature to avoid needing type declaration ceremonies:
+The previous type error is caused by `payload`'s record declaration (which supposedly contains the field `student`) not being found. Since we're trying to convert as quickly as possible, let's use our [object](./object.mdx) feature to avoid needing type declaration ceremonies:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -192,7 +192,7 @@ let queryResult = (usePayload, payload) => {
 
 </CodeTab>
 
-Now this triggers the next type error, that `school` isn't found. Let's use [`external`](external) to bind to that module:
+Now this triggers the next type error, that `school` isn't found. Let's use [`external`](./external.mdx) to bind to that module:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -233,7 +233,7 @@ exports.queryResult = queryResult;
 
 </CodeTab>
 
-We hurrily typed `school` as a polymorphic `'whatever` and let its type be inferred by its usage below. The inference is technically correct, but within the context of bringing it a value from JavaScript, slightly dangerous. This is just the interop trick we've shown in the [`external`](external) page.
+We hurrily typed `school` as a polymorphic `'whatever` and let its type be inferred by its usage below. The inference is technically correct, but within the context of bringing it a value from JavaScript, slightly dangerous. This is just the interop trick we've shown in the [`external`](./external.mdx) page.
 
 Anyway, the file passes the type checker again. Check the `.res.js` output, diff with the original `.js`; we've now converted a file over to ReScript!
 
@@ -299,7 +299,7 @@ Check that the `.res.js` output didn't change. How rigidly to type your JavaScri
 
 ## Tips & Tricks
 
-In the same vein of idea, **resist the urge to write your own wrapper functions for the JS code you're converting**. Use [`external`s](external), which are guaranteed to be erased in the output. And avoid trying to take the occasion to convert JS data structures into ReScript-specific data structures like variant or list. **This isn't the time for that**.
+In the same vein of idea, **resist the urge to write your own wrapper functions for the JS code you're converting**. Use [`external`s](./external.mdx), which are guaranteed to be erased in the output. And avoid trying to take the occasion to convert JS data structures into ReScript-specific data structures like variant or list. **This isn't the time for that**.
 
 The moment you produce extra conversion code in the output, your skeptical teammate's mental model might switch from "I recognize this output" to "this conversion might be introducing more problems than it solves. Why are we testing ReScript again?". Then you've lost.
 
@@ -308,7 +308,7 @@ The moment you produce extra conversion code in the output, your skeptical teamm
 - Paste the JS code into a new ReScript file as embedded raw JS code.
 - Compile and keep the output file open. Check and diff against original JS file. Free regression tests.
 - Always make sure your file is syntactically valid. Don't worry about fixing types before that.
-- (Ab)use [object](object) accesses to quickly convert things over.
+- (Ab)use [object](./object.mdx) accesses to quickly convert things over.
 - Optionally clean up the types for robustness.
 - Don't go overboard and turn off your boss and fellow teammates.
 - Proudly display that you've conserved the semantics and performance characteristics during the conversion by showing your teammates the eerily familiar output.

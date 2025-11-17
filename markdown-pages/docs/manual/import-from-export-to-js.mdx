@@ -8,7 +8,7 @@ order: 7
 
 # Import from/Export to JS
 
-You've seen how ReScript's idiomatic [Import & Export](import-export) works. This section describes how we work with importing stuff from JavaScript and exporting stuff for JavaScript consumption.
+You've seen how ReScript's idiomatic [Import & Export](import-export.mdx) works. This section describes how we work with importing stuff from JavaScript and exporting stuff for JavaScript consumption.
 
 If you're looking for react-specific interop guidance, check out the [React JS Interop guide](../../react/import-export-reactjs).
 
@@ -29,7 +29,7 @@ The format is [configurable in via `rescript.json`](build-configuration.md#packa
 
 ### Import a JavaScript Module's Named Export
 
-Use the `module` [external](external):
+Use the `module` [external](external.mdx):
 
 <CodeTab labels={["ReScript", "JS Output (Module)", "JS Output (CommonJS)"]}>
 
@@ -209,7 +209,7 @@ async function main() {
 
 ### Export a Named Value
 
-As mentioned in ReScript's idiomatic [Import & Export](import-export), every let binding and module is exported by default to other ReScript modules (unless you use a `.resi` [interface file](module#signatures)). If you open up the compiled JS file, you'll see that these values can also directly be used by a _JavaScript_ file too.
+As mentioned in ReScript's idiomatic [Import & Export](import-export.mdx), every let binding and module is exported by default to other ReScript modules (unless you use a `.resi` [interface file](module.mdx#signatures)). If you open up the compiled JS file, you'll see that these values can also directly be used by a _JavaScript_ file too.
 
 ### Export a `default` Value
 

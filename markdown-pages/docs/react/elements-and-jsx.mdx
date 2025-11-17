@@ -58,7 +58,7 @@ let element = <div className="myElement"> greeting name </div>
 
 JSX is the main way to express your React application as a tree of elements.
 
-Sometimes, when doing a lot of interop with existing ReactJS codebases, you'll find yourself in a situation where you can't use JSX syntax due to syntactic restrictions. Check out the [Escape Hatches](#escape-hatches) chapter later on for workarounds.
+Sometimes, when doing a lot of interop with existing ReactJS codebases, you'll find yourself in a situation where you can't use JSX syntax due to syntactic restrictions. For a more detailed description of how those functions work, please refer to the [JSX](../../../docs/manual/jsx.mdx) documentation.
 
 ## Creating Elements
 
@@ -118,11 +118,11 @@ React.createElement("div", undefined, element);
 
 ## Escape Hatches
 
-**Note:** This chapter features low level APIs that are used by JSX itself, and should only be used whenever you hit certain JSX syntax limitations. More infos on the JSX internals can be found in our [Beyond JSX](./beyond-jsx) section.
+**Note:** This chapter features low level APIs that are used by JSX itself, and should only be used whenever you hit certain JSX syntax limitations. More infos on the JSX internals can be found in our [Beyond JSX](./beyond-jsx.mdx) section.
 
 ### Creating Elements from Component Functions
 
-**Note:** Details on components and props will be described in the [next chapter](./components-and-props).
+**Note:** To learn about the details on creating components, please look at the [Components and Props](./components-and-props.mdx) section.
 
 Sometimes it's necessary to pass around component functions to have more control over `React.element` creation. Use the `React.createElement` function to instantiate your elements:
 

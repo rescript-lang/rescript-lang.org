@@ -14,7 +14,7 @@ Refs provide a way to access DOM nodes or React elements created within your `ma
 
 </Intro>
 
-In the typical React dataflow, [props](./components-and-props) are the only way that parent components interact with their children. To modify a child, you re-render it with new props. However, there are a few cases where you need to imperatively modify a child outside of the typical dataflow. The child to be modified could be an `React.element`, or it could be a `Dom.element`. For both of these cases, React provides an escape hatch.
+In the typical React dataflow, [props](./components-and-props.mdx) are the only way that parent components interact with their children. To modify a child, you re-render it with new props. However, there are a few cases where you need to imperatively modify a child outside of the typical dataflow. The child to be modified could be an `React.element`, or it could be a `Dom.element`. For both of these cases, React provides an escape hatch.
 
 A `React.ref` is defined like this:
 
@@ -37,7 +37,7 @@ Avoid using refs for anything that can be done declaratively.
 
 ## Creating Refs
 
-A React ref is represented as a `React.ref('value)` type, a container managing a mutable value of type `'value`. You can create this kind of ref with the [React.useRef](./hooks-ref) hook:
+A React ref is represented as a `React.ref('value)` type, a container managing a mutable value of type `'value`. You can create this kind of ref with the [React.useRef](./hooks-ref.mdx) hook:
 
 ```res example
 @react.component
@@ -172,13 +172,13 @@ let make = () => {
 
 The snippet above will not compile and output an error that looks like this: `"Ref cannot be passed as a normal prop. Please use forwardRef API instead."`.
 
-As the error message implies, If you want to allow people to take a ref to your component function, you can use [ref forwarding](./forwarding-refs) (possibly in conjunction with useImperativeHandle) instead.
+As the error message implies, If you want to allow people to take a ref to your component function, you can use [ref forwarding](./forwarding-refs.mdx) (possibly in conjunction with useImperativeHandle) instead.
 
 ## Exposing DOM Refs to Parent Components
 
 In rare cases, you might want to have access to a child’s DOM node from a parent component. This is generally not recommended because it breaks component encapsulation, but it can occasionally be useful for triggering focus or measuring the size or position of a child DOM node.
 
-we recommend to use [ref forwarding](./forwarding-refs) for these cases. **Ref forwarding lets components opt into exposing any child component’s ref as their own**. You can find a detailed example of how to expose a child’s DOM node to a parent component in the ref forwarding documentation.
+we recommend to use [ref forwarding](./forwarding-refs.mdx) for these cases. **Ref forwarding lets components opt into exposing any child component's ref as their own**. You can find a detailed example of how to expose a child's DOM node to a parent component in the ref forwarding documentation.
 
 ## Callback Refs
 

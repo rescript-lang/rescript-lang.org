@@ -10,7 +10,7 @@ order: 14
 
 ReScript supports `if`, `else`, ternary expression (`a ? b : c`), `for` and `while`.
 
-ReScript also supports our famous pattern matching, which will be covered in [its own section](pattern-matching-destructuring)
+The `switch` pattern has a default case too, just like many other functional languages. Read more about [pattern-matching & destructuring](./pattern-matching-destructuring.mdx). there.
 
 ## If-Else & Ternary
 
@@ -94,7 +94,7 @@ var message = isMorning ? "Good morning!" : "Hello!";
 
 </CodeTab>
 
-**`if-else` and ternary are much less used** in ReScript than in other languages; [Pattern-matching](pattern-matching-destructuring) kills a whole category of code that previously required conditionals.
+**`if-else` and ternary are much less used** in ReScript than in other languages; [Pattern-matching](./pattern-matching-destructuring.mdx) kills a whole category of code that previously required conditionals.
 
 ## For Loops
 
@@ -190,7 +190,7 @@ while (testCondition) {
 
 ### Tips & Tricks
 
-There's no loop-breaking `break` keyword (nor early `return` from functions, for that matter) in ReScript. However, we can break out of a while loop easily through using a [mutable binding](mutation).
+There's no loop-breaking `break` keyword (nor early `return` from functions, for that matter) in ReScript. However, we can break out of a while loop easily through using a [mutable binding](./mutation.mdx).
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 

@@ -153,7 +153,7 @@ You'd use list for its resizability, its fast prepend (adding at the head), and 
 
 Do **not** use list if you need to randomly access an item or insert at non-head position. Your code would end up obtuse and/or slow.
 
-The standard lib provides a [List module](api/stdlib/list).
+For accessing deeper, see [destructuring](./pattern-matching-destructuring.mdx).
 
 #### Immutable Prepend
 
@@ -192,7 +192,7 @@ var anotherList = {
 
 #### Access
 
-`switch` (described in the [pattern matching section](pattern-matching-destructuring)) is usually used to access list items:
+`switch` (described in the [pattern matching section](pattern-matching-destructuring.mdx)) is usually used to access list items:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 

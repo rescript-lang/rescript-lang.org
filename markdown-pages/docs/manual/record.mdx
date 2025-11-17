@@ -395,7 +395,7 @@ You can unset an optional field's value via that same mechanism by setting it to
 
 ### Pattern Matching on Optional Fields
 
-[Pattern matching](pattern-matching-destructuring), one of ReScript's most important features, has two caveats when you deal with optional fields.
+[Pattern matching](pattern-matching-destructuring.mdx), one of ReScript's most important features, has two caveats when you deal with optional fields.
 
 When matching on the value directly, it's an `option`. Example:
 
@@ -647,7 +647,7 @@ getAge(kraken)
 getAge(me) // type error!
 ```
 
-The type system will complain that `me` is a `person`, and that `getAge` only works on `monster`. If you need such capability, use ReScript objects, described [here](object).
+The type system will complain that `me` is a `person`, and that `getAge` only works on `monster`. If you need such capability, use ReScript objects, described [here](object.mdx).
 
 ### Optional Fields in Records Can Be Useful for Bindings
 
