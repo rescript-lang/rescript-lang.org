@@ -41,14 +41,11 @@ let make: (
   ~className: string=?,
   ~style: ReactDOM.Style.t=?,
   ~onChange: string => unit=?,
-  ~onMarkerFocus: ((int, int)) => unit=?, // (row, column)
-  ~onMarkerFocusLeave: ((int, int)) => unit=?, // (row, column)
   ~value: string,
   // props for codemirror options
   ~mode: string,
   ~readOnly: bool=?,
   ~lineNumbers: bool=?,
-  ~scrollbarStyle: string=?,
   ~keyMap: KeyMap.t=?,
   ~lineWrapping: bool=?,
 ) => React.element
