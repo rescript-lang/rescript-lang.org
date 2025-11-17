@@ -404,11 +404,11 @@ module CM6 = {
           color: "#164",
         },
         {
-          tag: [Tags.string, Tags.deleted],
+          tag: [Tags.string, Tags.special(Tags.string), Tags.deleted],
           color: "#a11",
         },
         {
-          tag: [Tags.regexp, Tags.escape, Tags.special(Tags.string)],
+          tag: [Tags.regexp, Tags.escape],
           color: "#040",
         },
         {
