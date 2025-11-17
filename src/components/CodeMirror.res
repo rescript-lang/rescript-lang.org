@@ -452,9 +452,6 @@ module CM6 = {
     external syntaxHighlighting: (HighlightStyle.t, syntaxConfig) => extension =
       "syntaxHighlighting"
 
-    @module("@codemirror/language") @val
-    external defaultHighlightStyle: HighlightStyle.t = "defaultHighlightStyle"
-
     module LanguageSupport = {
       @new @module("@codemirror/language")
       external make: (t, ~support: array<extension>=?) => extension = "LanguageSupport"
@@ -468,7 +465,7 @@ module CM6 = {
       }
 
       @send
-      external configure: (t, Config.t) => t = "configure"
+      external _configure: (t, Config.t) => t = "configure"
     }
 
     module LRLanguage = {
@@ -752,16 +749,10 @@ let make = (
   ~className: option<string>=?,
   ~style: option<ReactDOM.Style.t>=?,
   ~onChange: option<string => unit>=?,
-  // Note: onMarkerFocus/onMarkerFocusLeave are kept for backward compatibility but not yet implemented in v6
-  // These callbacks were used in v5 for hovering over error markers
-  ~onMarkerFocus as _: option<((int, int)) => unit>=?,
-  ~onMarkerFocusLeave as _: option<((int, int)) => unit>=?,
   ~value: string,
   ~mode: string,
   ~readOnly=false,
   ~lineNumbers=true,
-  // Note: scrollbarStyle is deprecated in CodeMirror 6 but kept for backward compatibility (ignored)
-  ~scrollbarStyle as _=?,
   ~keyMap=KeyMap.Default,
   ~lineWrapping=false,
 ): React.element => {
