@@ -55,3 +55,4 @@ let editorSetKeyMap: (editorInstance, KeyMap.t) => unit
 let editorDestroy: editorInstance => unit
 let editorSetValue: (editorInstance, string) => unit
 let editorGetValue: editorInstance => string
+let editorSetHoverHints: (editorInstance, array<HoverHint.t>) => unit
