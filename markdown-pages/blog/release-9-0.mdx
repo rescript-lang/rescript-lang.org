@@ -20,7 +20,7 @@ Use `npm` to install the newest [9.0.1 release](https://www.npmjs.com/package/bs
 npm install bs-platform@9.0.1
 ```
 
-You can also try our new release in the [Online Playground](/try).
+You can also try our new release in the [Online Playground](https://rescript-lang.org/try).
 
 In this post we will highlight the most notable changes. The full changelog for this release can be found [here](https://github.com/rescript-lang/rescript/blob/master/Changes.md#90).
 
@@ -34,7 +34,7 @@ Our compiler comes with a set of stdlib modules (such as `Belt`, `Pervasives`, e
 
 In previous versions, users couldn't ship their compiled JS code without defining a `package.json` dependency on `bs-platform`. Whenever a ReScript developer wanted to publish a package just for pure JS consumption / lean container deployment, they were required to use a bundler to bundle up their library / stdlib code, which made things way more complex and harder to understand.
 
-To fix this problem, we introduced an `external-stdlib` configuration that allows specifying a pre-compiled stdlib npm package (`@rescript/std`). More details on how to use that feature can be found in our [External Stdlib](/docs/manual/build-external-stdlib) documentation.
+To fix this problem, we introduced an `external-stdlib` configuration that allows specifying a pre-compiled stdlib npm package (`@rescript/std`). More details on how to use that feature can be found in our [External Stdlib](../docs/manual/build-external-stdlib.mdx) documentation.
 
 ### Less Bundle Bloat when Adding ReScript
 
@@ -109,7 +109,7 @@ function is_space(param){
 
 ### `when` -> `if`
 
-Starting from 9.0, [`when` clauses](/docs/manual/pattern-matching-destructuring#when-clause) within a `switch` statement will automatically convert to the `if` keyword instead.
+Starting from 9.0, [`when` clauses](../docs/manual/pattern-matching-destructuring.mdx#when-clause) within a `switch` statement will automatically convert to the `if` keyword instead.
 
 <CodeTab labels={["New (9.0)", "Old (8.4)"]}>
 

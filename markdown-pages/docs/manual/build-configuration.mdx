@@ -11,7 +11,7 @@ order: 2
 
 `rescript.json` (or `bsconfig.json` in versions prior ReScript 11) is the single, mandatory build meta file needed for `rescript`.
 
-**The complete configuration schema is [here](./build-configuration-schema)**. We'll _non-exhaustively_ highlight the important parts in prose below.
+**The complete configuration schema is [here](./build-configuration-schema.mdx)**. We'll _non-exhaustively_ highlight the important parts in prose below.
 
 ## name, namespace
 
@@ -91,7 +91,7 @@ Note that only sources marked with `"type":"dev"` will be able to resolve module
 
 **Since 9.0**: This setting allows depending on an externally built stdlib package (instead of a locally built stdlib runtime). Useful for shipping packages that are only consumed in JS or TS without any dependencies to the ReScript development toolchain.
 
-More details can be found on our [external stdlib](./build-external-stdlib) page.
+More details can be found on our [external stdlib](./build-external-stdlib.mdx) page.
 
 ## js-post-build
 
@@ -129,8 +129,8 @@ Controls how the compiler emits JSX and which runtime (if any) it delegates to. 
 ```
 
 - `version`: JSX transform version. `4` enables the React 17+ transform and is the current and only supported option in v12.
-- `module`: Override the target module that receives JSX calls. Useful for [generic JSX transforms](./jsx#generic-jsx-transform-jsx-beyond-react-experimental); omit it when using the built-in React runtime.
-- `preserve`: When `true`, the compiler re-emits JSX syntax in the generated JavaScript so bundlers or other tooling can take over the transform later. The regenerated JSX might differ slightly from the original source but stays semantically equivalent. See [Preserve mode](./jsx#preserve-mode) for details.
+- `module`: Override the target module that receives JSX calls. Useful for [generic JSX transforms](./jsx.mdx#generic-jsx-transform-jsx-beyond-react-experimental); omit it when using the built-in React runtime.
+- `preserve`: When `true`, the compiler re-emits JSX syntax in the generated JavaScript so bundlers or other tooling can take over the transform later. The regenerated JSX might differ slightly from the original source but stays semantically equivalent. See [Preserve mode](./jsx.mdx#preserve-mode) for details.
 
 All fields are optional; unspecified fields fall back to the defaults mentioned above. Combine them as needed for your project's JSX runtime.
 
@@ -183,7 +183,7 @@ Generating JS files with the `.res.js` suffix means that, on the JS side, you ca
 }
 ```
 
-More details can be found in the [blogpost about "Uncurried Mode"](/blog/uncurried-mode).
+We've also published a blog post on the [transition to the new uncurried mode by default](../../blog/uncurried-mode.mdx).
 
 ## warnings
 
@@ -200,7 +200,7 @@ Selectively turn on/off certain warnings and/or turn them into hard errors. Exam
 
 Turn off warning `44` and `102` (polymorphic comparison). Turn warning `5` (partial application whose result has function type and is ignored) into a hard error.
 
-The warning numbers are shown in the build output when they're triggered. See [Warning Numbers](./warning-numbers) for the complete list.
+The warning numbers are shown in the build output when they're triggered. See [Warning Numbers](./warning-numbers.mdx) for the complete list.
 
 ## bsc-flags
 

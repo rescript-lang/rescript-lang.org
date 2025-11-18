@@ -41,7 +41,7 @@ type c = {
 }
 ```
 
-Read more about [record type spreads here](../../docs/manual/record.mdx#record-type-spread).
+Read more about [record type spreads here](../docs/manual/record.mdx#record-type-spread).
 
 ## Record immutable update
 
@@ -51,7 +51,7 @@ Spreads can be used for immutable updates of records:
 let meNextYear = {...me, age: me.age + 1}
 ```
 
-Read more about [record immutable updates here](../../docs/manual/record.mdx#immutable-update).
+Read more about [record immutable updates here](../docs/manual/record.mdx#immutable-update).
 
 ## Variant definitions
 
@@ -65,7 +65,7 @@ type b = | ...a | Four | Five
 // b is now One | Two | Three | Four | Five
 ```
 
-Read more about [variant type spreads](../../docs/manual/variant.mdx#variant-type-spreads) here.
+Read more about [variant type spreads](../docs/manual/variant.mdx#variant-type-spreads) here.
 
 ## Variant pattern matching
 
@@ -87,7 +87,7 @@ let isPet = (animal: animals) => {
 
 ```
 
-Read more about [variant type spreads in pattern matching](pattern-matching-destructuring.md#match-on-subtype-variants).
+Read more about [variant type spreads in pattern matching](../docs/manual/pattern-matching-destructuring.mdx#match-on-subtype-variants).
 
 ## Polymorphic variant pattern matching
 
@@ -110,7 +110,7 @@ switch myColor {
 }
 ```
 
-See [Pattern Matching / Destructuring](../../docs/manual/pattern-matching-destructuring.mdx) for more details.more details.
+See [Pattern Matching / Destructuring](../docs/manual/pattern-matching-destructuring.mdx) for more details.
 
 ## List immutable update
 
@@ -123,7 +123,7 @@ let prepended = list{1, ...someOtherList}
 let multiple = list{1, ...prepended, ...anotherList}
 ```
 
-Read more about [immutable list updates](array-and-list.md#immutable-prepend) here.
+Read more about [immutable list updates](../docs/manual/array-and-list.mdx#immutable-prepend) here.
 
 ## List pattern matching
 
@@ -142,7 +142,7 @@ let rec printStudents = (students) => {
 printStudents(list{"Jane", "Harvey", "Patrick"})
 ```
 
-Read more about [pattern matching on lists](pattern-matching-destructuring.md#match-on-list).
+Read more about [pattern matching on lists](../docs/manual/pattern-matching-destructuring.mdx#match-on-list).
 
 ## Array immutable update
 
@@ -155,7 +155,7 @@ let firstArray = [1, 2, 3]
 let secondArray = [...firstArray, 4, 5]
 ```
 
-Read more about [array spreads](array-and-list.md#array-spreads).
+Read more about [array spreads](../docs/manual/array-and-list.mdx#array-spreads).
 
 ## Partial application of functions
 
@@ -168,16 +168,16 @@ let add = (a, b) => a + b
 let addFive = add(5, ...)
 ```
 
-Read more about [partial application of functions](function.md#partial-application).
+Read more about [partial application of functions](../docs/manual/function.mdx#partial-application).
 
 ### References
 
-- [Record type spreads](../../docs/manual/record.mdx#record-type-spread)
-- [Record immutable updates](../../docs/manual/record.mdx#immutable-update)
-- [Variant type spreads](../../docs/manual/variant.mdx#variant-type-spreads)
-- [Variant type spreads in pattern matching](../../docs/manual/pattern-matching-destructuring.mdx#match-on-subtype-variants)
-- [Pattern matching and polymorphic variants](../../docs/manual/polymorphic-variant.mdx#combine-types-and-pattern-match)
-- [List immutable updates](../../docs/manual/array-and-list.mdx#immutable-prepend)
-- [List pattern matching](../../docs/manual/pattern-matching-destructuring.mdx#match-on-list)
-- [Array spreads](../../docs/manual/array-and-list.mdx#array-spreads)
-- [Partial application of functions](../../docs/manual/function.mdx#partial-application)
+- [Record type spreads](../docs/manual/record.mdx#record-type-spread)
+- [Record immutable updates](../docs/manual/record.mdx#immutable-update)
+- [Variant type spreads](../docs/manual/variant.mdx#variant-type-spreads)
+- [Variant type spreads in pattern matching](../docs/manual/pattern-matching-destructuring.mdx#match-on-subtype-variants)
+- [Pattern matching and polymorphic variants](../docs/manual/polymorphic-variant.mdx#combine-types-and-pattern-match)
+- [List immutable updates](../docs/manual/array-and-list.mdx#immutable-prepend)
+- [List pattern matching](../docs/manual/pattern-matching-destructuring.mdx#match-on-list)
+- [Array spreads](../docs/manual/array-and-list.mdx#array-spreads)
+- [Partial application of functions](../docs/manual/function.mdx#partial-application)

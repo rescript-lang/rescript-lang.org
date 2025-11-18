@@ -124,7 +124,7 @@ export const Size: { getNum: (size: Size_t) => number } = MyCompBS.Size;
 
 ## Setup
 
-Add a `gentypeconfig` section to your `rescript.json` (See [Configuration](/docs/manual/next/build-configuration#gentypeconfig) for details).
+Add a `gentypeconfig` section to your `rescript.json` (See [Configuration](./build-configuration.mdx#gentypeconfig) for details).
 
 Every `genType` powered project requires a configuration item `"gentypeconfig"` at top level in the project's `rescript.json`.
 
@@ -279,6 +279,6 @@ If any runtime code is required for interoperability with JavaScript / TypeScrip
 
 ## Limitations
 
-- **in-source = true**. Currently only supports ReScript projects with [in-source generation](/docs/manual/next/build-configuration#package-specs) and file suffixes that end on `.js`, like `.res.js` or `.bs.js`.
+- **in-source = true**. Currently only supports ReScript projects with [in-source generation](./build-configuration.mdx#package-specs) and file suffixes that end on `.js`, like `.res.js` or `.bs.js`.
 
-- **Limited namespace support**. Currently there's limited [namespace](/docs/manual/next/build-configuration#name-namespace) support, and only `namespace:true` is possible, not e.g. `namespace:"custom"`.
+- **Limited namespace support**. Currently there's limited [namespace](./build-configuration.mdx#name-namespace) support, and only `namespace:true` is possible, not e.g. `namespace:"custom"`.

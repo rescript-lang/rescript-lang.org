@@ -35,7 +35,7 @@ var areYouCrushingIt = "Yes";
 
 ## Variant Needs an Explicit Definition
 
-If the variant you're using is in a different file, bring it into scope like you'd do [for a record](record.mdx#record-needs-an-explicit-definition):
+If the variant you're using is in a different file, bring it into scope [record](./record.mdx) type
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -163,7 +163,7 @@ The output is slightly uglier and less performant than the former.
 
 ## Variant Type Spreads
 
-Just like [with records](record#record-type-spread), it's possible to use type spreads to create new variants from other variants:
+Just like [with records](./record.mdx#record-type-spread), it's possible to use type spreads to create new variants from other variants:
 
 ```rescript
 type a = One | Two | Three
@@ -786,11 +786,11 @@ Alternatively, define two `external`s that both compile to the same JS call:
 
 </CodeTab>
 
-ReScript also provides [a few other ways](bind-to-js-function.md#modeling-polymorphic-function) to do this.
+ReScript also provides [a few other ways](./bind-to-js-function.mdx#modeling-polymorphic-function) to do this.
 
 ### Variant Types Are Found By Field Name
 
-Please refer to this [record section](record#tips--tricks). Variants are the same: a function can't accept an arbitrary constructor shared by two different variants. Again, such feature exists; it's called a polymorphic variant. We'll talk about this in the future =).
+Please refer to this [record section](./record.mdx#tips--tricks). Variants are the same: a function can't accept an arbitrary constructor shared by two different variants. Again, such feature exists; it's called a polymorphic variant. We'll talk about this in the future =).
 
 ## Design Decisions
 

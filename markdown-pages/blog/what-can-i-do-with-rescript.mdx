@@ -7,7 +7,7 @@ description: |
   Can I use Vite, or Next.js? Is it only for React? Can I use Node or Deno?
 ---
 
-You've taken a look and ReScript and you want to try it out, but how do you get started? There's the [installation](/docs/manual/installation) page in the docs,
+You've taken a look and ReScript and you want to try it out, but how do you get started? There's the [installation](../docs/manual/installation.mdx) page in the docs,
 which is great if you want to set up a new React app using [create-rescript-app](https://github.com/rescript-lang/create-rescript-app). There's instructions on how to add it to an existing project or set it up manually.
 But that doesn't really answer the question "Can I use this with X?".
 
@@ -25,14 +25,14 @@ Console.log("Hello")
 Just run `node index.res.js` and you'll see "Hello" logged to the console. You can import compiled ReScript into any project that could import JavaScript.
 If you can use `.js` or `.mjs` files, you can use ReScript. This does mean that languages with different file formats like Vue or Svelte require you to import the compiled JavaScript instead of writing it directly in the `.vue` or `.svelte` files.
 
-Real world projects are more than JavaScript files that you write; they use libraries and frameworks. This is where [bindings](/docs/manual/external) come into play.
+Real world projects are more than JavaScript files that you write; they use libraries and frameworks. This is where [bindings](../docs/manual/external.mdx) come into play.
 A binding is a way to tell ReScript the types and imports from external JavaScript. You can think of bindings in the same way that you need to create a `*.d.ts` file to add types to a JavaScript library that doesn't use TypeScript.
 
-ReScript has great integration with [React](/docs/react/introduction) and those bindings are kept up to date by the core team, but that doesn't mean you don't have other options!
+ReScript has great integration with [React](../docs/react/introduction.mdx) and those bindings are kept up to date by the core team, but that doesn't mean you don't have other options!
 
 ## Using existing bindings
 
-While ReScript isn't as large as TypeScript it has a small but growing list of bindings you can find on NPM. The website has a [package explorer](/packages) you can use to find official and community maintained bindings.
+While ReScript isn't as large as TypeScript it has a small but growing list of bindings you can find on NPM. The website has a [package explorer](https://rescript-lang.org/packages) you can use to find official and community maintained bindings.
 Many major libraries have existing bindings. Here's a small set of what you can find.
 
 - [Node](https://github.com/TheSpyder/rescript-nodejs)
@@ -80,8 +80,8 @@ const result = format(new Date(2014, 1, 11), "MM/dd/yyyy");
 ```
 
 That's all we need to know to write bindings to use this function in ReScript.
-The first thing we need to figure out is how to handle the type for what `date-fns` considers to be a `date`, which is `Date | string | number`. In ReScript things can't just be of different types like they can in JavaScript or TypeScript. There are a couple options here; you can make a function for each type such as `formatString` and `formatDate`, or you can create a [variant type](/docs/manual/variant) to map to the possible input types.
-Creating a function for each type is simpler, and it's most likely how you will use the library in your project. You probably have a standard type for Dates already. We'll also need a type for `FormatDateOptions` in case we want to pass options. We'll use [labeled argmuments](/docs/manual/function#labeled-arguments) for our binding.
+The first thing we need to figure out is how to handle the type for what `date-fns` considers to be a `date`, which is `Date | string | number`. In ReScript things can't just be of different types like they can in JavaScript or TypeScript. There are a couple options here; you can make a function for each type such as `formatString` and `formatDate`, or you can create a [variant type](../docs/manual/variant.mdx) to map to the possible input types.
+Creating a function for each type is simpler, and it's most likely how you will use the library in your project. You probably have a standard type for Dates already. We'll also need a type for `FormatDateOptions` in case we want to pass options. We'll use [labeled argmuments](../docs/manual/function.mdx#labeled-arguments) for our binding.
 
 ```res
 // DateFns.res - you might want to put this in a folder called "bindings" or "external"
@@ -147,7 +147,7 @@ You can write new bindings and extend existing types as you need.
 
 ## How can I get started?
 
-You can [follow this guide](/docs/manual/v11.0.0/converting-from-js) to add ReScript to an existing JavaScript project to get a feel for how the language works and interacts with JavaScript.
+You can [follow this guide](../docs/manual/converting-from-js.mdx) to add ReScript to an existing JavaScript project to get a feel for how the language works and interacts with JavaScript.
 The forum is also a great place to ask questions! Feel free to drop by and ask how to get started with a specific framework or project that you want to work on,
 and you'll probably get great advice and information from users who have already used ReScript for something similar.
 

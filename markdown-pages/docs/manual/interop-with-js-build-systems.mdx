@@ -48,7 +48,7 @@ This will:
 
 "What if my build system uses a CSS/png/whatever loader and I'd like to use it in ReScript?"
 
-Loaders are indeed troublesome; in the meantime, please use e.g. `%raw("require('./myStyles.css')")` at the top of your file. This just uses [`raw`](embed-raw-javascript) to compile the snippet into an actual JS require.
+Loaders are indeed troublesome; in the meantime, please use e.g. `%raw("require('./myStyles.css')")` at the top of your file. This just uses [`raw`](embed-raw-javascript.mdx) to compile the snippet into an actual JS require.
 
 ## Getting Project's Dependencies
 
@@ -56,4 +56,4 @@ Loaders are indeed troublesome; in the meantime, please use e.g. `%raw("require(
 
 ## Run Script Per File Built
 
-See [js-post-build](build-configuration#js-post-build). Though please use it sparingly; if you hook up a node.js script after each file built, you'll incur the node startup time per file!
+See [js-post-build](build-configuration.mdx#js-post-build). Though please use it sparingly; if you hook up a node.js script after each file built, you'll incur the node startup time per file!

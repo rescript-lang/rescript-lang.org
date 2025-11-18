@@ -8,7 +8,7 @@ description: |
   Unleashing ReScript from React
 ---
 
-At the beginning of the year, the ReScript team [released ReScript 11.0](/blog/release-11-0-0), which laid ground work for a lot of possible improvements to make it easier to interact with the JavaScript ecosystem.
+This is a follow up release to [ReScript 11](./release-11-0-0.mdx). For information
 
 This next minor has some wonderful additions to the ReScript toolbelt for you today.
 
@@ -42,13 +42,13 @@ let make = (~name) => {
 }
 ```
 
-Read more in the [new documentation on the generic JSX transform](/docs/manual/jsx#generic-jsx-transform-jsx-beyond-react-experimental).
+Read more in the [new documentation on the generic JSX transform](../docs/manual/jsx.mdx#generic-jsx-transform-jsx-beyond-react-experimental).
 
 ## Tagged template literals
 
 This release comes with support for [tagged templates](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates).
 
-A tag function in JavaScript is a function that expects an array of strings and variadic parameters as input. Now it's possibe to bind to such functions with the new [`@taggedTemplate`](/syntax-lookup/taggedTemplate-decorator) decorator:
+A tag function in JavaScript is a function that expects an array of strings and variadic parameters as input. Now it's possibe to bind to such functions with the new [`@taggedTemplate`](../syntax-lookup/decorator_taggedTemplate.mdx) decorator:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -78,7 +78,7 @@ Of course you can also create your own tag function in ReScript now as well, it 
 let myTagFunction : (array<string>, array<'param>) => 'output
 ```
 
-Refer to the docs to find a [detailed example](/docs/manual/tagged-templates).
+Refer to the docs to find a [detailed example](../docs/manual/tagged-templates.mdx).
 
 ## Import attributes
 
@@ -204,7 +204,7 @@ var result2 = JSON.stringify(obj, undefined, 2);
 
 ## %todo and warn-error
 
-Inspired by languages like [Elm](https://package.elm-lang.org/packages/elm/core/latest/Debug#todo) or [Gleam](https://tour.gleam.run/advanced-features/todo/), we introduced a new extension point: [`%todo`](/syntax-lookup/todo).
+Inspired by languages like [Elm](https://package.elm-lang.org/packages/elm/core/latest/Debug#todo) or [Gleam](https://tour.gleam.run/advanced-features/todo/), we introduced a new extension point: [`%todo`](../syntax-lookup/extension_todo.mdx).
 
 It is used to tell the compiler that some code still needs to be implemented and it will crash when executed.
 
@@ -242,7 +242,7 @@ We also made the compiler's `-warn-error` flag accessible by the build system, s
 rescript -warn-error +110
 ```
 
-See ["Compile with stricter errors in CI"](/docs/manual/build-overview#compile-with-stricter-errors-in-ci).
+See ["Compile with stricter errors in CI"](../docs/manual/build-overview.mdx#compile-with-stricter-errors-in-ci).
 
 ## Other changes
 

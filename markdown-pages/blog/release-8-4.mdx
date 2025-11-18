@@ -55,8 +55,6 @@ dependent's command line flags for building binary artifacts. Such strategy bene
 
 To make `bsb -make-world` more practical for e.g. multi-package setups (`lerna`, `yarn workspaces`, etc.), we introduced a new concept called `pinned-dependencies`. A pinned dependency allows you to automatically rebuild packages that are pinned by a toplevel package, like your final webapp.
 
-Please refer to our [pinned dependencies](/docs/manual/build-pinned-dependencies) docs for more details.
-
 ### More robust handling of removal of staled output
 
 When people delete or rename ReScript files, it will introduce dangling staled output, for example, renaming `src/A.res`

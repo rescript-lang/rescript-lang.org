@@ -62,7 +62,7 @@ We now need to create a module binding that imports our styles as a JS object:
 let app = <div className={styles["root"]} />
 ```
 
-**Note:** `{..}` is an open [JS object type](/docs/manual/object#type-declaration), which means the type checker will not type check correct classname usage. If you want to enforce compiler errors, replace `{..}` with a concrete JS object type, such as `{"root": string}`.
+**Note:** `{..}` is an open [JS object type](../manual/object.mdx#type-declaration), which means the type checker will not type check correct classname usage. If you want to enforce compiler errors, replace `{..}` with a concrete JS object type, such as `{"root": string}`.
 
 ## CSS Utility Libraries
 

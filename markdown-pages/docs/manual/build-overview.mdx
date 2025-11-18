@@ -62,7 +62,7 @@ Any new file change will be picked up and the build will re-run.
 
 **Note**: third-party libraries (in `node_modules`, or via `pinned-dependencies`) aren't watched, as doing so may exceed the node.js watcher count limit.
 
-**Note 2**: In case you want to set up a project in a JS-monorepo-esque approach (`npm` and `yarn` workspaces) where changes in your sub packages should be noticed by the build, you will need to define pinned dependencies in your main project's `rescript.json`. More details [here](./build-pinned-dependencies).
+**Note 2**: In case you want to set up a project in a JS-monorepo-esque approach (`npm` and `yarn` workspaces) where changes in your sub packages should be noticed by the build, you will need to define pinned dependencies in your main project's `rescript.json`. More details [here](./build-monorepo-setup.mdx).
 
 ## Clean Project
 
@@ -82,4 +82,4 @@ You may want to compile your project with stricter rules for production, than wh
 rescript -warn-error +110
 ```
 
-Here, warning number 110, which is triggered when a [`%todo`](/syntax-lookup/todo) has been found, gets promoted to an error. The full list of warning numbers can be found [here](/docs/manual/next/warning-numbers).
+Here, warning number 110, which is triggered when a [`%todo`](../../syntax-lookup/extension_todo.mdx) has been found, gets promoted to an error. The full list of warning numbers can be found [here](./warning-numbers.mdx).

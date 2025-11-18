@@ -13,10 +13,10 @@ A migration to it can be very straightforward, but it can also take some time, d
 
 Please have a look at the full [set of breaking changes](#list-of-all-breaking-changes) below to be able to decide whether this is a task you want to undertake. There is also the possibilty to [opt-out of uncurried mode](#minimal-migration) for now, which is probably the most fundamental change of this release. That and other new and notable features are discussed in the following blogposts:
 
-- [Better interop with customizable variants](/blog/improving-interop)
-- [Enhanced Ergonomics for Record Types](/blog/enhanced-ergonomics-for-record-types)
-- [First-class Dynamic Import Support](/blog/first-class-dynamic-import-support)
-- [Uncurried Mode](/blog/uncurried-mode)
+- [Blog: Improving Interop with unboxed types](../../blog/improving-interop.mdx)
+- [Blog: Enhanced Ergonomics for Record Types](../../blog/enhanced-ergonomics-for-record-types.mdx)
+- [Blog: First-Class Dynamic `import()` Support](../../blog/first-class-dynamic-import-support.mdx)
+- [Blog: Uncurried Mode by Default](../../blog/uncurried-mode.mdx)
 
 ## Recommended Migration
 
@@ -26,7 +26,7 @@ For uncurried mode to take effect in ReScript 11 there is nothing to configure, 
 
 ### Adapt suffix
 
-ReScript 11 now allows having arbitrary suffixes in the generated JavaScript files. However, it is still recommended to stick to using `.res.js`, `.res.mjs` or `.res.cjs`. For more information, read the Build System Configuration about [suffixes](/docs/manual/next/build-configuration#suffix).
+ReScript 11 now allows having arbitrary suffixes in the generated JavaScript files. However, it is still recommended to stick to using `.res.js`, `.res.mjs` or `.res.cjs`. For more information, read the Build System Configuration about [suffixes](build-configuration.mdx#suffix).
 
 ### rescript.json
 
@@ -68,11 +68,11 @@ One major change to be aware of is that array access now returns an `option`.
 let firstItem = myArray[0] // Some("hello")
 ```
 
-If you would like to not use an `option`, you can use [`Array.getUnsafe`](api/stdlib/array#value-getUnsafe).
+If you would like to not use an `option`, you can use [`Array.getUnsafe`](https://rescript-lang.org/docs/manual/api/latest/stdlib/array#value-getUnsafe).
 
 For a detailed explanation on migration to ReScript Core, please refer to its [migration guide](https://github.com/rescript-association/rescript-core#migration). A semi-automated script is available as well.
 
-See ReScript Core API docs [here](api/stdlib).
+See ReScript Core API docs [here](https://rescript-lang.org/docs/manual/api/latest/stdlib).
 
 ### Removed bindings
 
@@ -92,7 +92,7 @@ If you use currying extensively and don't want to bother with adapting your code
 }
 ```
 
-For more information, read the Build System Configuration about [uncurried](/docs/manual/next/build-configuration#uncurried).
+For more information, read the Build System Configuration about [uncurried](build-configuration.mdx#uncurried).
 
 ## List of all breaking changes
 

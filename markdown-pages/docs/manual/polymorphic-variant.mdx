@@ -12,7 +12,7 @@ Polymorphic variants (or poly variant) are a cousin of [variant](variant.mdx). W
 
 - They start with a `#` and the constructor name doesn't need to be capitalized.
 - They don't require an explicit type definition. The type is inferred from usage.
-- Values of different poly variant types can share the constructors they have in common (aka, poly variants are "structurally" typed, as opposed to ["nominally" typed](variant#variant-types-are-found-by-field-name)).
+- Values of different poly variant types can share the constructors they have in common (aka, poly variants are "structurally" typed, as opposed to ["nominally" typed](variant.mdx#variant-types-are-found-by-field-name)).
 
 They're a convenient and useful alternative to regular variants, but should **not** be abused. See the drawbacks at the end of this page.
 
@@ -110,7 +110,7 @@ That `myColor` parameter's type is inferred to be `#red`, `#green` or `#yellow`,
 
 ## Constructor Arguments
 
-This is similar to a regular variant's [constructor arguments](variant#constructor-arguments):
+This is similar to a regular variant's [constructor arguments](variant.mdx#constructor-arguments):
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -162,7 +162,7 @@ var myColor = "Ruby";
 
 </CodeTab>
 
-There's also some special [pattern matching](./pattern-matching-destructuring) syntax to match on constructors defined in a specific poly variant type:
+There's also some special [pattern matching](./pattern-matching-destructuring.mdx) syntax to match on constructors defined in a specific poly variant type:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -276,7 +276,7 @@ var intl = Intl.NumberFormat("de-DE");
 
 The JS output is identical to handwritten JS, but we also get to enjoy type errors if we accidentally write `makeNumberFormat(#"de-DR")`.
 
-More advanced usage examples for poly variant interop can be found in [Bind to JS Function](bind-to-js-function#constrain-arguments-better).
+More advanced usage examples for poly variant interop can be found in [Bind to JS Function](bind-to-js-function.mdx#constrain-arguments-better).
 
 ### Bind to String Enums
 
@@ -406,7 +406,7 @@ var message = "Hello " + theCompany;
 
 ### Variant vs Polymorphic Variant
 
-One might think that polymorphic variants are superior to regular [variants](./variant). As always, there are trade-offs:
+One might think that polymorphic variants are superior to regular [variants](./variant.mdx). As always, there are trade-offs:
 
 - Due to their "structural" nature, poly variant's type errors might be more confusing. If you accidentally write `#blur` instead of `#blue`, ReScript will still error but can't indicate the correct source as easily. Regular variants' source of truth is the type definition, so the error can't go wrong.
 - It's also harder to refactor poly variants. Consider this:

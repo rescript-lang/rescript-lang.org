@@ -16,7 +16,7 @@ Use your favorite package manager to install the new compiler release, e.g.:
 npm install rescript@11
 ```
 
-You can find the complete migration guide [here](../../docs/manual/migrate-to-v11.mdx).
+You can find the complete migration guide [here](../docs/manual/migrate-to-v11.mdx).
 
 The complete list of changes can be found [here](https://github.com/rescript-lang/rescript/blob/v11.0.0/CHANGELOG). Let's have a look at the most notable improvements.
 
@@ -28,31 +28,31 @@ The complete list of changes can be found [here](https://github.com/rescript-lan
 
 We are introducing new features that will improve interop with JavaScript/TypeScript, including customizable runtime representation of variants, zero cost bindings to discriminated unions, and unboxed variants that can be used to map to things like heterogenous array items and nullable values.
 
-- Blogpost: [Better interop with customizable variants](/blog/improving-interop)
+- [Better Interop with Customizable Variants](./improving-interop.mdx)
 
 ### Enhanced Ergonomics for Record Types
 
 New enhancements for record types: Record Type Spread and Record Type Coercion. Record Type Spread allows one to share subsets of record fields with other record types, making it easier to work with types with lots of fields. And Record Type Coercion makes it easier to safely to convert between records with the same set of fields (or a subset).
 
-- Blogpost: [Enhanced Ergonomics for Record Types](/blog/enhanced-ergonomics-for-record-types)
+- Blogpost: [Enhanced ergonomics for record types](./enhanced-ergonomics-for-record-types.mdx)
 
 ### First-class Dynamic Import Support
 
 Another addition is first-class support for dynamic imports, which will allow developers to split up and load parts of the app code on demand as separate JS modules to prevent bundle bloat and reduce initial load times for applications.
 
-- Blogpost: [First-class Dynamic Import Support](/blog/first-class-dynamic-import-support)
+- [First-class Dynamic Import Support](./first-class-dynamic-import-support.mdx)
 
 ### Uncurried Mode
 
 This release is also introducing uncurried mode, which is a new default mode that compiles all dependencies as uncurried, and it aims to make it easier for newcomers to use the language.
 
-- Blogpost: [Uncurried Mode](/blog/uncurried-mode)
+- Blogpost: [Uncurried mode](./uncurried-mode.mdx)
 
 ### New Standard Library: ReScript Core
 
 [ReScript Core](https://github.com/rescript-lang/rescript-core) is ReScript's new standard library. It replaces the complete `Js` module as well as some of the more frequently used modules from `Belt` and is recommended to use with uncurried mode.
 
-The latest docs on [rescript-lang.org](/) already use it for the examples. Have a look at the new [RescriptCore API docs](/docs/manual/api/stdlib).
+The latest docs on [rescript-lang.org](/) already use it for the examples. Have a look at the new [RescriptCore API docs](https://rescript-lang.org/docs/manual/api/latest/stdlib).
 
 ## More Features
 
@@ -60,7 +60,7 @@ Furthermore, there are a lot of smaller improvements of which we want to state o
 
 ### More types eligible for type coercion
 
-The `:>` (type coercion) operator now supports a few more datatypes, check out its [Syntax Lookup](/syntax-lookup/type-coercion) page.
+The `:>` (type coercion) operator now supports a few more datatypes.
 
 ### Build System
 
@@ -90,11 +90,11 @@ It's now possible to have a module opened by default that is just part of the cu
 
 Previously, the ReScript binary was able to initialize new projects itself. But it was required to have a global npm install to use it. This functionality has been removed.
 
-Going forward, `create-rescript-app` is the new recommended way to setup a new project. It can even be used to quickly add ReScript to an existing project. Have a look at the updated [installation instructions](/docs/manual/installation) for how to use it.
+Going forward, `create-rescript-app` is the new recommended way to setup a new project. It can even be used to quickly add ReScript to an existing project. Have a look at the updated [installation instructions](../docs/manual/installation.mdx) for how to use it.
 
 ### ReScript-React v0.12
 
-In tandem with the new ReScript release, a new version of ReScript-React is released as well. It brings support for dynamically loading React components via `React.lazy`, and more. Check out the [corresponding docs](/docs/react/installation).
+In tandem with the new ReScript release, a new version of ReScript-React is released as well. It brings support for dynamically loading React components via `React.lazy`, and more. Check out the [corresponding docs](../docs/react/installation.mdx).
 
 ### ReScript Tools / Documentation Extraction
 

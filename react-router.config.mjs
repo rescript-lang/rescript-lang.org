@@ -20,7 +20,7 @@ export default {
   async prerender({ getStaticPaths }) {
     return [
       ...(await getStaticPaths()),
-      ...(await mdx.paths()).map(path => path.includes("blog") ? Url.removeDatePrefix(path) : path),
+      ...(await mdx.paths()),
       ...stdlibPaths,
     ];
   },

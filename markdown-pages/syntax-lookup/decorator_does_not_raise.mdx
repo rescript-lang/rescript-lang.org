@@ -7,12 +7,12 @@ category: "decorators"
 status: "deprecated"
 ---
 
-> Deprecated since v12.0.0. Use the [@doesNotThrow](/syntax-lookup/does-not-throw-decorator) decorator instead.
+> Deprecated since v12.0.0. Use the [@doesNotThrow](./decorator_does_not_throw.mdx) decorator instead.
 
-> This decorator requires [`reanalyze`](https://github.com/rescript-lang/reanalyze), a code analysis tool for ReScript, to be installed. [Click here to read about how you get started with reanalyze.](/docs/manual/v12.0.0/editor-plugins#code-analysis).
+> This decorator is an alias for the [@does_not_throw](./decorator_does_not_throw.mdx) decorator.
 
 `@doesNotRaise` is used to override the reanalyze's exception analysis and state that an expression does not throw any exceptions, even though the analysis reports otherwise. This can happen for example in the case of array access where the analysis does not perform range checks but takes a conservative stance that any access could potentially throw.
 
 ### References
 
-- [Reanalyze: Exception Analysis](/docs/manual/v12.0.0/editor-plugins#exception-analysis)
+- [Editor Plugins](../docs/manual/editor-plugins.mdx)
