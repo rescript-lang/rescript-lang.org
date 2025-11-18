@@ -25,44 +25,6 @@ module KeyMap = {
     }
 }
 
-let useWindowWidth: unit => int = %raw(`() => {
-  const isClient = typeof window === 'object';
-
-  function getSize() {
-    return {
-      width: isClient ? window.innerWidth : 0,
-      height: isClient ? window.innerHeight : 0
-    };
-  }
-
-  const [windowSize, setWindowSize] = React.useState(getSize);
-
-  let throttled = false;
-  React.useEffect(() => {
-    if (!isClient) {
-      return false;
-    }
-
-    function handleResize() {
-      if(!throttled) {
-        setWindowSize(getSize());
-
-        throttled = true;
-        setTimeout(() => { throttled = false }, 300);
-      }
-    }
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []); // Empty array ensures that effect is only run on mount and unmount
-
-  if(windowSize) {
-    return windowSize.width;
-  }
-  return null;
-}
-`)
-
 module Error = {
   type kind = [#Error | #Warning]
 
@@ -114,11 +76,22 @@ module CM6 = {
     @get external lineLength: line => int = "length"
   }
 
+  module EditorSelection = {
+    type t
+    type range
+    @module("@codemirror/state") @scope("EditorSelection") @val
+    external single: (int, int) => t = "single"
+    @get external main: t => range = "main"
+    @get external anchor: range => int = "anchor"
+    @get external head: range => int = "head"
+  }
+
   module EditorState = {
     type createConfig = {doc: string, extensions: array<extension>}
 
     @module("@codemirror/state") @scope("EditorState")
     external create: createConfig => editorState = "create"
+    @get external selection: editorState => EditorSelection.t = "selection"
 
     module ReadOnly = {
       @module("@codemirror/state") @scope(("EditorState", "readOnly")) @val
@@ -144,7 +117,7 @@ module CM6 = {
     @get external dom: editorView => WebAPI.DOMAPI.htmlElement = "dom"
 
     type change = {from: int, to: int, insert: string}
-    type dispatchArg = {changes: change}
+    type dispatchArg = {changes: change, selection?: EditorSelection.t}
     @send
     external dispatch: (editorView, dispatchArg) => unit = "dispatch"
 
@@ -523,12 +496,12 @@ type editorConfig = {
   readOnly: bool,
   lineNumbers: bool,
   lineWrapping: bool,
-  keyMap: string,
-  onChange: option<string => unit>,
+  keyMap: KeyMap.t,
+  onChange?: string => unit,
   errors: array<Error.t>,
   hoverHints: array<HoverHint.t>,
-  minHeight: option<string>,
-  maxHeight: option<string>,
+  minHeight?: string,
+  maxHeight?: string,
 }
 
 let createLinterExtension = (errors: array<Error.t>): CM6.extension => {
@@ -583,6 +556,25 @@ module ReScript = {
 
   let extension = CM6.Language.LanguageSupport.make(language)
 }
+
+let keyMapToExtension = (keyMap: KeyMap.t) =>
+  switch keyMap {
+  | Vim =>
+    let vimExt = CM6.Vim.vim()
+    let defaultKeymapExt = CM6.Keymap.of_(CM6.Commands.defaultKeymap)
+    let historyKeymapExt = CM6.Keymap.of_(CM6.Commands.historyKeymap)
+    let searchKeymapExt = CM6.Keymap.of_(CM6.Search.searchKeymap)
+    // Return vim extension combined with keymap extensions
+    // We need to wrap them in an array and convert to extension
+    /* combine extensions into a JS array value */
+    [vimExt, defaultKeymapExt, historyKeymapExt, searchKeymapExt]->CM6.Extension.fromArray
+  | _ =>
+    let defaultKeymapExt = CM6.Keymap.of_(CM6.Commands.defaultKeymap)
+    let historyKeymapExt = CM6.Keymap.of_(CM6.Commands.historyKeymap)
+    let searchKeymapExt = CM6.Keymap.of_(CM6.Search.searchKeymap)
+    // Return combined keymap extensions as a JS array
+    [defaultKeymapExt, historyKeymapExt, searchKeymapExt]->CM6.Extension.fromArray
+  }
 
 let createEditor = (config: editorConfig): editorInstance => {
   // Setup language based on mode
@@ -640,22 +632,7 @@ let createEditor = (config: editorConfig): editorInstance => {
   )
 
   // Add keymap
-  let keymapExtension = if config.keyMap === "vim" {
-    let vimExt = CM6.Vim.vim()
-    let defaultKeymapExt = CM6.Keymap.of_(CM6.Commands.defaultKeymap)
-    let historyKeymapExt = CM6.Keymap.of_(CM6.Commands.historyKeymap)
-    let searchKeymapExt = CM6.Keymap.of_(CM6.Search.searchKeymap)
-    // Return vim extension combined with keymap extensions
-    // We need to wrap them in an array and convert to extension
-    /* combine extensions into a JS array value */
-    [vimExt, defaultKeymapExt, historyKeymapExt, searchKeymapExt]->CM6.Extension.fromArray
-  } else {
-    let defaultKeymapExt = CM6.Keymap.of_(CM6.Commands.defaultKeymap)
-    let historyKeymapExt = CM6.Keymap.of_(CM6.Commands.historyKeymap)
-    let searchKeymapExt = CM6.Keymap.of_(CM6.Search.searchKeymap)
-    // Return combined keymap extensions as a JS array
-    [defaultKeymapExt, historyKeymapExt, searchKeymapExt]->CM6.Extension.fromArray
-  }
+  let keymapExtension = keyMapToExtension(config.keyMap)
   Array.push(extensions, CM6.Compartment.make(keymapConf, keymapExtension))
 
   // Add change listener
@@ -703,20 +680,101 @@ let createEditor = (config: editorConfig): editorInstance => {
   }
 }
 
-let editorSetValue = (instance: editorInstance, value: string): unit => {
-  let doc = CM6.EditorView.state(instance.view)->CM6.EditorState.doc
-  CM6.EditorView.dispatch(
-    instance.view,
-    {changes: {from: 0, to: CM6.Text.toString(doc)->String.length, insert: value}},
-  )
+type textDiff = {from: int, to: int, insert: string}
+
+let computeDiff = (currentValue: string, nextValue: string): option<textDiff> => {
+  if currentValue === nextValue {
+    None
+  } else {
+    let currentLength = String.length(currentValue)
+    let nextLength = String.length(nextValue)
+    let minLength = currentLength < nextLength ? currentLength : nextLength
+
+    let rec findStart = index =>
+      if (
+        index < minLength &&
+          String.charCodeAtUnsafe(currentValue, index) === String.charCodeAtUnsafe(nextValue, index)
+      ) {
+        findStart(index + 1)
+      } else {
+        index
+      }
+
+    let startIndex = findStart(0)
+
+    let rec findEnd = (currentIndex, nextIndex) =>
+      if (
+        currentIndex > startIndex &&
+        nextIndex > startIndex &&
+        String.charCodeAtUnsafe(currentValue, currentIndex - 1) ===
+          String.charCodeAtUnsafe(nextValue, nextIndex - 1)
+      ) {
+        findEnd(currentIndex - 1, nextIndex - 1)
+      } else {
+        (currentIndex, nextIndex)
+      }
+
+    let (currentEnd, nextEnd) = findEnd(currentLength, nextLength)
+    Some({
+      from: startIndex,
+      to: currentEnd,
+      insert: String.slice(nextValue, ~start=startIndex, ~end=nextEnd),
+    })
+  }
+}
+
+let mapPosition = (~position, ~from, ~to, ~insertLength) => {
+  if position <= from {
+    position
+  } else if position >= to {
+    position + insertLength - (to - from)
+  } else {
+    from + Math.Int.min(insertLength, position - from)
+  }
 }
 
 let editorGetValue = (instance: editorInstance): string => {
   CM6.EditorView.state(instance.view)->CM6.EditorState.doc->CM6.Text.toString
 }
 
+let editorSetValue = (instance: editorInstance, value: string): unit => {
+  let currentValue = editorGetValue(instance)
+  if currentValue !== value {
+    switch computeDiff(currentValue, value) {
+    | Some({from, to, insert}) =>
+      let state = CM6.EditorView.state(instance.view)
+      let selection = CM6.EditorState.selection(state)->CM6.EditorSelection.main
+      let anchor = CM6.EditorSelection.anchor(selection)
+      let head = CM6.EditorSelection.head(selection)
+      let insertLength = String.length(insert)
+      let mapToNewPosition = pos => mapPosition(~position=pos, ~from, ~to, ~insertLength)
+
+      CM6.EditorView.dispatch(
+        instance.view,
+        {
+          changes: {from, to, insert},
+          selection: CM6.EditorSelection.single(mapToNewPosition(anchor), mapToNewPosition(head)),
+        },
+      )
+    | None => ()
+    }
+  }
+}
+
 let editorDestroy = (instance: editorInstance): unit => {
   CM6.EditorView.destroy(instance.view)
+}
+
+let editorSetKeyMap = (instance: editorInstance, keyMap: KeyMap.t): unit => {
+  CM6.EditorView.dispatchEffects(
+    instance.view,
+    {
+      effects: CM6.Compartment.reconfigure(
+        instance.keymapConf,
+        (keyMap->keyMapToExtension: CM6.extension),
+      ),
+    },
+  )
 }
 
 let editorSetMode = (instance: editorInstance, mode: string): unit => {
@@ -739,88 +797,4 @@ let editorSetErrors = (instance: editorInstance, errors: array<Error.t>): unit =
       effects: CM6.Compartment.reconfigure(instance.lintConf, createLinterExtension(errors)),
     },
   )
-}
-
-@react.component
-let make = (
-  ~errors: array<Error.t>=[],
-  ~hoverHints: array<HoverHint.t>=[],
-  ~minHeight: option<string>=?,
-  ~maxHeight: option<string>=?,
-  ~className: option<string>=?,
-  ~style: option<ReactDOM.Style.t>=?,
-  ~onChange: option<string => unit>=?,
-  ~value: string,
-  ~mode: string,
-  ~readOnly=false,
-  ~lineNumbers=true,
-  ~keyMap=KeyMap.Default,
-  ~lineWrapping=false,
-): React.element => {
-  let containerRef = React.useRef(Nullable.null)
-  let editorRef: React.ref<option<editorInstance>> = React.useRef(None)
-
-  // Initialize editor
-  React.useEffect(() => {
-    switch containerRef.current->Nullable.toOption {
-    | Some(parent) =>
-      let config: editorConfig = {
-        parent,
-        initialValue: value,
-        mode,
-        readOnly,
-        lineNumbers,
-        lineWrapping,
-        keyMap: KeyMap.toString(keyMap),
-        onChange,
-        errors,
-        hoverHints,
-        minHeight,
-        maxHeight,
-      }
-
-      let editor = createEditor(config)
-      editorRef.current = Some(editor)
-
-      Some(() => editorDestroy(editor))
-    | None => None
-    }
-  }, [keyMap])
-
-  // Update value when it changes externally
-  React.useEffect(() => {
-    switch editorRef.current {
-    | Some(editor) =>
-      let currentValue = editorGetValue(editor)
-      if currentValue !== value {
-        editorSetValue(editor, value)
-      }
-    | None => ()
-    }
-    None
-  }, [value])
-
-  // Update mode when it changes
-  React.useEffect(() => {
-    switch editorRef.current {
-    | Some(editor) => editorSetMode(editor, mode)
-    | None => ()
-    }
-    None
-  }, [mode])
-
-  // Update errors when they change
-  React.useEffect(() => {
-    switch editorRef.current {
-    | Some(editor) => editorSetErrors(editor, errors)
-    | None => ()
-    }
-    None
-  }, [errors])
-
-  <div
-    ?className
-    ?style
-    ref={ReactDOM.Ref.domRef((Obj.magic(containerRef): React.ref<Nullable.t<Dom.element>>))}
-  />
 }

@@ -30,22 +30,28 @@ module HoverHint: {
   }
 }
 
-let useWindowWidth: unit => int
+type editorInstance
 
-@react.component
-let make: (
-  ~errors: array<Error.t>=?,
-  ~hoverHints: array<HoverHint.t>=?,
-  ~minHeight: string=?,
-  ~maxHeight: string=?,
-  ~className: string=?,
-  ~style: ReactDOM.Style.t=?,
-  ~onChange: string => unit=?,
-  ~value: string,
-  // props for codemirror options
-  ~mode: string,
-  ~readOnly: bool=?,
-  ~lineNumbers: bool=?,
-  ~keyMap: KeyMap.t=?,
-  ~lineWrapping: bool=?,
-) => React.element
+type editorConfig = {
+  parent: WebAPI.DOMAPI.element,
+  initialValue: string,
+  mode: string,
+  readOnly: bool,
+  lineNumbers: bool,
+  lineWrapping: bool,
+  keyMap: KeyMap.t,
+  onChange?: string => unit,
+  errors: array<Error.t>,
+  hoverHints: array<HoverHint.t>,
+  minHeight?: string,
+  maxHeight?: string,
+}
+
+let createEditor: editorConfig => editorInstance
+
+let editorSetErrors: (editorInstance, array<Error.t>) => unit
+let editorSetMode: (editorInstance, string) => unit
+let editorSetKeyMap: (editorInstance, KeyMap.t) => unit
+let editorDestroy: editorInstance => unit
+let editorSetValue: (editorInstance, string) => unit
+let editorGetValue: editorInstance => string

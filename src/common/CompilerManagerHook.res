@@ -249,13 +249,12 @@ let useCompilerManager = (
   ~initialLang: Lang.t=Res,
   ~onAction: option<action => unit>=?,
   ~versions: array<Semver.t>,
-  (),
 ) => {
   let (state, setState) = React.useState(_ => Init)
   let {pathname} = ReactRouter.useLocation()
 
   // Dispatch method for the public interface
-  let dispatch = (action: action): unit => {
+  let dispatch = React.useCallback((action: action): unit => {
     Option.forEach(onAction, cb => cb(action))
     setState(state =>
       switch action {
@@ -295,47 +294,49 @@ let useCompilerManager = (
           let currentLang = ready.targetLang
 
           Array.find(availableTargetLangs, l => l === lang)
-          ->Option.map(lang => {
-            // Try to automatically transform code
-            let (result, targetLang) = switch ready.selected.apiVersion {
-            | V1 =>
-              let convResult = switch (currentLang, lang) {
-              | (Reason, Res) =>
-                instance->Compiler.convertSyntax(~fromLang=Reason, ~toLang=Res, ~code)->Some
-              | (Res, Reason) =>
-                instance->Compiler.convertSyntax(~fromLang=Res, ~toLang=Reason, ~code)->Some
-              | _ => None
-              }
+          ->Option.map(
+            lang => {
+              // Try to automatically transform code
+              let (result, targetLang) = switch ready.selected.apiVersion {
+              | V1 =>
+                let convResult = switch (currentLang, lang) {
+                | (Reason, Res) =>
+                  instance->Compiler.convertSyntax(~fromLang=Reason, ~toLang=Res, ~code)->Some
+                | (Res, Reason) =>
+                  instance->Compiler.convertSyntax(~fromLang=Res, ~toLang=Reason, ~code)->Some
+                | _ => None
+                }
 
-              /*
+                /*
                     Syntax convertion works the following way:
                     If currentLang -> otherLang is not valid, try to pretty print the code
                     with the otherLang, in case we e.g. want to copy paste or otherLang code
                     in the editor and quickly switch to it
  */
-              switch convResult {
-              | Some(result) =>
-                switch result {
-                | ConversionResult.Fail(_)
-                | Unknown(_, _)
-                | UnexpectedError(_) =>
-                  let secondTry =
-                    instance->Compiler.convertSyntax(~fromLang=lang, ~toLang=lang, ~code)
-                  switch secondTry {
+                switch convResult {
+                | Some(result) =>
+                  switch result {
                   | ConversionResult.Fail(_)
                   | Unknown(_, _)
-                  | UnexpectedError(_) => (FinalResult.Conv(secondTry), lang)
-                  | Success(_) => (Conv(secondTry), lang)
+                  | UnexpectedError(_) =>
+                    let secondTry =
+                      instance->Compiler.convertSyntax(~fromLang=lang, ~toLang=lang, ~code)
+                    switch secondTry {
+                    | ConversionResult.Fail(_)
+                    | Unknown(_, _)
+                    | UnexpectedError(_) => (FinalResult.Conv(secondTry), lang)
+                    | Success(_) => (Conv(secondTry), lang)
+                    }
+                  | ConversionResult.Success(_) => (Conv(result), lang)
                   }
-                | ConversionResult.Success(_) => (Conv(result), lang)
+                | None => (Nothing, lang)
                 }
-              | None => (Nothing, lang)
+              | _ => (Nothing, lang)
               }
-            | _ => (Nothing, lang)
-            }
 
-            Ready({...ready, result, errors: [], targetLang})
-          })
+              Ready({...ready, result, errors: [], targetLang})
+            },
+          )
           ->Option.getOr(state)
         | _ => state
         }
@@ -401,7 +402,7 @@ let useCompilerManager = (
         }
       }
     )
-  }
+  }, [onAction])
 
   let dispatchError = (err: error) =>
     setState(prev => {
