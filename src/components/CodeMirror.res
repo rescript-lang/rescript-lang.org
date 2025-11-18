@@ -25,6 +25,13 @@ module KeyMap = {
     }
 }
 
+module Side = {
+  @@warning("-37")
+  type t =
+    | @as(-1) BeforePointer
+    | @as(1) AfterPointer
+}
+
 module Error = {
   type kind = [#Error | #Warning]
 
@@ -66,14 +73,21 @@ module CM6 = {
     external fromArray: array<t> => t = "%identity"
   }
 
+  module Line = {
+    type t = {
+      from: int,
+      @as("to") to_: int,
+      number: int,
+      text: string,
+      length: int,
+    }
+  }
+
   module Text = {
-    type t
-    type line
+    type t = {lines: int}
     @send external toString: t => string = "toString"
-    @get external lines: t => int = "lines"
-    @send external line: (t, int) => line = "line"
-    @get external lineFrom: line => int = "from"
-    @get external lineLength: line => int = "length"
+    @send external line: (t, int) => Line.t = "line"
+    @send external lineAt: (t, int) => Line.t = "lineAt"
   }
 
   module EditorSelection = {
@@ -108,6 +122,21 @@ module CM6 = {
   }
 
   module EditorView = {
+    module Tooltip = {
+      module View = {
+        type t = {dom: WebAPI.DOMAPI.element, offset?: {x: int, y: int}}
+      }
+      type t = {
+        pos: int,
+        end?: int,
+        create: editorView => View.t,
+        above?: bool,
+        strictSide?: bool,
+        arrow?: bool,
+        clip?: bool,
+      }
+    }
+
     type createConfig = {state: editorState, parent: WebAPI.DOMAPI.element}
     @module("@codemirror/view") @new
     external create: createConfig => editorView = "EditorView"
@@ -145,6 +174,10 @@ module CM6 = {
 
     @module("@codemirror/view")
     external dropCursor: unit => extension = "dropCursor"
+
+    @module("@codemirror/view")
+    external hoverTooltip: ((editorView, int, Side.t) => null<Tooltip.t>) => extension =
+      "hoverTooltip"
 
     module UpdateListener = {
       type update
@@ -449,10 +482,16 @@ module CM6 = {
   }
 
   module Lint = {
+    type severity =
+      | @as("error") Error
+      // | @as("hint") Hint
+      // | @as("info") Info
+      | @as("warning") Warning
+
     type diagnostic = {
       from: int,
       to: int,
-      severity: string,
+      severity: severity,
       message: string,
     }
 
@@ -487,6 +526,7 @@ type editorInstance = {
   readOnlyConf: CM6.compartment,
   keymapConf: CM6.compartment,
   lintConf: CM6.compartment,
+  hintConf: CM6.compartment,
 }
 
 type editorConfig = {
@@ -514,21 +554,24 @@ let createLinterExtension = (errors: array<Error.t>): CM6.extension => {
 
       Array.forEach(errors, err => {
         try {
-          // Error row/endRow are 1-based (same as CodeMirror 5)
-          // Error column/endColumn are 0-based (same as CodeMirror 5)
-          let fromLine = Math.Int.max(1, Math.Int.min(err.row, CM6.Text.lines(doc)))
-          let toLine = Math.Int.max(1, Math.Int.min(err.endRow, CM6.Text.lines(doc)))
+          // Error row/endRow are 1-based (same as CodeMirror 6)
+          // Error column/endColumn are 0-based (same as CodeMirror 6)
+          let fromLine = Math.Int.max(1, Math.Int.min(err.row, doc.lines))
+          let toLine = Math.Int.max(1, Math.Int.min(err.endRow, doc.lines))
 
           let startLine = CM6.Text.line(doc, fromLine)
           let endLine = CM6.Text.line(doc, toLine)
 
-          let fromCol = Math.Int.max(0, Math.Int.min(err.column, CM6.Text.lineLength(startLine)))
-          let toCol = Math.Int.max(0, Math.Int.min(err.endColumn, CM6.Text.lineLength(endLine)))
+          let fromCol = Math.Int.max(0, Math.Int.min(err.column, startLine.length))
+          let toCol = Math.Int.max(0, Math.Int.min(err.endColumn, endLine.length))
 
           let diagnostic = {
-            CM6.Lint.from: CM6.Text.lineFrom(startLine) + fromCol,
-            to: CM6.Text.lineFrom(endLine) + toCol,
-            severity: err.kind === #Error ? "error" : "warning",
+            CM6.Lint.from: startLine.from + fromCol,
+            to: endLine.from + toCol,
+            severity: switch err.kind {
+            | #Error => Error
+            | #Warning => Warning
+            },
             message: err.text,
           }
 
@@ -543,6 +586,32 @@ let createLinterExtension = (errors: array<Error.t>): CM6.extension => {
   }
 
   CM6.Lint.linter(linterSource)
+}
+
+let createHoverHintExtension = (hoverHints: array<HoverHint.t>) => {
+  CM6.EditorView.hoverTooltip((view, pos, _side) => {
+    let doc = view->CM6.EditorView.state->CM6.EditorState.doc
+    let {number: line, from} = doc->CM6.Text.lineAt(pos)
+    let col = pos - from
+    let found = hoverHints->Array.find(({start, end}) => {
+      line >= start.line && line <= end.line && col >= start.col && col <= end.col
+    })
+    switch found {
+    | Some({hint, start, end}) =>
+      let pos = CM6.Text.line(doc, start.line).from + start.col
+      let end = CM6.Text.line(doc, end.line).from + end.col
+      let dom = WebAPI.Global.document->WebAPI.Document.createElement("div")
+      dom.textContent = Value(hint)
+      dom.className = "p-1 border"
+      Value({
+        pos,
+        end,
+        above: true,
+        create: _view => {dom: dom},
+      })
+    | None => Null
+    }
+  })
 }
 
 module ReScript = {
@@ -589,6 +658,7 @@ let createEditor = (config: editorConfig): editorInstance => {
   let readOnlyConf = CM6.Compartment.create()
   let keymapConf = CM6.Compartment.create()
   let lintConf = CM6.Compartment.create()
+  let hintConf = CM6.Compartment.create()
 
   // Basic extensions
   let extensions = [
@@ -651,6 +721,10 @@ let createEditor = (config: editorConfig): editorInstance => {
 
   // Add linter for errors (wrap the raw linter extension in the compartment)
   Array.push(extensions, CM6.Compartment.make(lintConf, createLinterExtension(config.errors)))
+  Array.push(
+    extensions,
+    CM6.Compartment.make(hintConf, createHoverHintExtension(config.hoverHints)),
+  )
   Array.push(extensions, CM6.Lint.lintGutter())
 
   // Create editor
@@ -677,6 +751,7 @@ let createEditor = (config: editorConfig): editorInstance => {
     readOnlyConf,
     keymapConf,
     lintConf,
+    hintConf,
   }
 }
 
@@ -795,6 +870,15 @@ let editorSetErrors = (instance: editorInstance, errors: array<Error.t>): unit =
     instance.view,
     {
       effects: CM6.Compartment.reconfigure(instance.lintConf, createLinterExtension(errors)),
+    },
+  )
+}
+
+let editorSetHoverHints = (instance: editorInstance, hints: array<HoverHint.t>): unit => {
+  CM6.EditorView.dispatchEffects(
+    instance.view,
+    {
+      effects: CM6.Compartment.reconfigure(instance.hintConf, createHoverHintExtension(hints)),
     },
   )
 }
