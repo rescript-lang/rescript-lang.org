@@ -660,19 +660,31 @@ let createEditor = (config: editorConfig): editorInstance => {
   let lintConf = CM6.Compartment.create()
   let hintConf = CM6.Compartment.create()
 
+  let lineHeight = "1.5"
+  let cursorColor = "#dd8c1b"
+
   // Basic extensions
   let extensions = [
     CM6.Compartment.make(languageConf, (language: CM6.extension)),
     CM6.Commands.history(),
     CM6.EditorView.theme({
       ".cm-content": {
-        "lineHeight": "1.5",
+        "lineHeight": lineHeight,
+        "caretColor": cursorColor,
       },
       ".cm-line": {
-        "lineHeight": "1.5",
+        "lineHeight": lineHeight,
+      },
+      ".cm-cursor, .cm-dropCursor": {"borderLeftColor": cursorColor},
+      ".cm-activeLine": {
+        "backgroundColor": "rgba(255, 255, 255, 0.02)",
       },
       ".cm-gutters": {"backgroundColor": "inherit"},
       ".cm-gutters.cm-gutters-before": {"border": "none"},
+      ".cm-activeLineGutter": {
+        "color": "#cdcdd6",
+        "backgroundColor": "inherit",
+      },
     }),
     CM6.EditorView.drawSelection(),
     CM6.EditorView.dropCursor(),
