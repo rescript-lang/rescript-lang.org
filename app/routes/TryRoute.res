@@ -22,21 +22,26 @@ let loader = async () => {
     )
   }
 
-  let versions = {
-    let response = await fetch(versionsBaseUrl + "/playground-bundles/versions.json")
-    let json = await WebAPI.Response.json(response)
-    json
-    ->JSON.Decode.array
-    ->Option.getOrThrow
-    ->Array.map(json => json->JSON.Decode.string->Option.getOrThrow)
-  }
+  try {
+    let versions = {
+      let response = await fetch(versionsBaseUrl + "/playground-bundles/versions.json")
+      let json = await WebAPI.Response.json(response)
+      json
+      ->JSON.Decode.array
+      ->Option.getOrThrow
+      ->Array.map(json => json->JSON.Decode.string->Option.getOrThrow)
+    }
 
-  {
-    bundleBaseUrl,
-    versions,
+    Some({
+      bundleBaseUrl,
+      versions,
+    })
+  } catch {
+  | JsExn(e) =>
+    Console.error2("error while fetching compiler versions", e)
+    None
   }
 }
-
 module ClientOnly = {
   @react.component
   let make = (~bundleBaseUrl, ~versions) => {
@@ -47,12 +52,19 @@ module ClientOnly = {
 }
 
 let default = () => {
-  let {bundleBaseUrl, versions} = ReactRouter.useLoaderData()
+  let data = ReactRouter.useLoaderData()
   <>
     <Meta
       title="ReScript Playground" description="Try ReScript in the browser" ogImage="/og/try.png"
     />
 
-    <ClientOnly bundleBaseUrl versions />
+    {switch data {
+    | Some({bundleBaseUrl, versions}) => <ClientOnly bundleBaseUrl versions />
+    | None =>
+      <div className="mt-16 p-5 text-xl text-red-500 self-center">
+        <h1> {React.string("Oops an error occurred!")} </h1>
+        {React.string("The playground cannot be loaded, please try again in a few moments.")}
+      </div>
+    }}
   </>
 }

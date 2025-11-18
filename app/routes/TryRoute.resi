@@ -3,6 +3,6 @@ type props = {
   versions: array<string>,
 }
 
-let loader: unit => promise<props>
+let loader: unit => promise<option<props>>
 
 let default: unit => React.element
