@@ -1697,6 +1697,68 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
         Some(editorInstance),
       ) =>
       CodeMirror.editorSetValue(editorInstance, code)
+    | (
+        Ready({
+          result: Comp(Fail(
+            SyntaxErr(locMsgs)
+            | TypecheckErr(locMsgs)
+            | OtherErr(locMsgs),
+          )),
+        }),
+        Some(editorInstance),
+      ) =>
+      CodeMirror.editorSetErrors(
+        editorInstance,
+        Array.map(locMsgs, locMsgToCmError(~kind=#Error, ...)),
+      )
+    | (Ready({result: Comp(Fail(WarningErr(warnings)))}), Some(editorInstance)) =>
+      CodeMirror.editorSetErrors(
+        editorInstance,
+        Array.map(warnings, warning => {
+          switch warning {
+          | Api.Warning.Warn({details})
+          | WarnErr({details}) =>
+            locMsgToCmError(~kind=#Warning, details)
+          }
+        }),
+      )
+    | (Ready({result: Comp(Success({warnings, typeHints}))}), Some(editorInstance)) =>
+      CodeMirror.editorSetErrors(
+        editorInstance,
+        Array.map(warnings, warning => {
+          switch warning {
+          | Api.Warning.Warn({details})
+          | WarnErr({details}) =>
+            locMsgToCmError(~kind=#Warning, details)
+          }
+        }),
+      )
+      CodeMirror.editorSetHoverHints(
+        editorInstance,
+        Array.map(typeHints, hint => {
+          switch hint {
+          | TypeDeclaration({start, end, hint})
+          | Binding({start, end, hint})
+          | CoreType({start, end, hint})
+          | Expression({start, end, hint}) => {
+              CodeMirror.HoverHint.start: {
+                line: start.line,
+                col: start.col,
+              },
+              end: {
+                line: end.line,
+                col: end.col,
+              },
+              hint,
+            }
+          }
+        }),
+      )
+    | (Ready({result: Conv(Fail({details}))}), Some(editorInstance)) =>
+      CodeMirror.editorSetErrors(
+        editorInstance,
+        Array.map(details, locMsgToCmError(~kind=#Error, ...)),
+      )
     | _ => ()
     }
     None
@@ -1843,64 +1905,6 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
       },
     )
   }, [layout])
-
-  let cmErrors = switch compilerState {
-  | Ready({result}) =>
-    switch result {
-    | FinalResult.Comp(Fail(result)) =>
-      switch result {
-      | SyntaxErr(locMsgs)
-      | TypecheckErr(locMsgs)
-      | OtherErr(locMsgs) =>
-        Array.map(locMsgs, locMsgToCmError(~kind=#Error, ...))
-      | WarningErr(warnings) =>
-        Array.map(warnings, warning => {
-          switch warning {
-          | Api.Warning.Warn({details})
-          | WarnErr({details}) =>
-            locMsgToCmError(~kind=#Warning, details)
-          }
-        })
-      | WarningFlagErr(_) => []
-      }
-    | Comp(Success({warnings})) =>
-      Array.map(warnings, warning => {
-        switch warning {
-        | Api.Warning.Warn({details})
-        | WarnErr({details}) =>
-          locMsgToCmError(~kind=#Warning, details)
-        }
-      })
-    | Conv(Fail({details})) => Array.map(details, locMsgToCmError(~kind=#Error, ...))
-    | Comp(_)
-    | Conv(_)
-    | Nothing => []
-    }
-  | _ => []
-  }
-
-  let cmHoverHints = switch compilerState {
-  | Ready({result: FinalResult.Comp(Success({typeHints}))}) =>
-    Array.map(typeHints, hint => {
-      switch hint {
-      | TypeDeclaration({start, end, hint})
-      | Binding({start, end, hint})
-      | CoreType({start, end, hint})
-      | Expression({start, end, hint}) => {
-          CodeMirror.HoverHint.start: {
-            line: start.line,
-            col: start.col,
-          },
-          end: {
-            line: end.line,
-            col: end.col,
-          },
-          hint,
-        }
-      }
-    })
-  | _ => []
-  }
 
   let (currentTab, setCurrentTab) = React.useState(_ => JavaScript)
 
