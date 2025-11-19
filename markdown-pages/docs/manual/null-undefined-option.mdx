@@ -28,7 +28,7 @@ type option<'a> = None | Some('a)
 
 It means "a value of type option is either None (representing nothing) or that actual value wrapped in a Some".
 
-**Note** how the `option` type is just a regular [variant](variant.mdx).
+**Note** how the `option` type is just a regular [variant](./variant.mdx).
 
 ## Example
 
@@ -65,7 +65,7 @@ var licenseNumber = personHasACar ? 5 : undefined;
 
 </CodeTab>
 
-Later on, when another piece of code receives such value, it'd be forced to handle both cases through [pattern matching](pattern-matching-destructuring.mdx):
+Later on, when another piece of code receives such value, it'd be forced to handle both cases through [pattern matching](./pattern-matching-destructuring.mdx):
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 

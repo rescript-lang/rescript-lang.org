@@ -8,11 +8,11 @@ order: 10
 
 # Polymorphic Variant
 
-Polymorphic variants (or poly variant) are a cousin of [variant](variant.mdx). With these differences:
+Polymorphic variants (or poly variant) are a cousin of [variant](./variant.mdx). With these differences:
 
 - They start with a `#` and the constructor name doesn't need to be capitalized.
 - They don't require an explicit type definition. The type is inferred from usage.
-- Values of different poly variant types can share the constructors they have in common (aka, poly variants are "structurally" typed, as opposed to ["nominally" typed](variant.mdx#variant-types-are-found-by-field-name)).
+- Values of different poly variant types can share the constructors they have in common (aka, poly variants are "structurally" typed, as opposed to ["nominally" typed](./variant.mdx#variant-types-are-found-by-field-name)).
 
 They're a convenient and useful alternative to regular variants, but should **not** be abused. See the drawbacks at the end of this page.
 
@@ -110,7 +110,7 @@ That `myColor` parameter's type is inferred to be `#red`, `#green` or `#yellow`,
 
 ## Constructor Arguments
 
-This is similar to a regular variant's [constructor arguments](variant.mdx#constructor-arguments):
+This is similar to a regular variant's [constructor arguments](./variant.mdx#constructor-arguments):
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -276,7 +276,7 @@ var intl = Intl.NumberFormat("de-DE");
 
 The JS output is identical to handwritten JS, but we also get to enjoy type errors if we accidentally write `makeNumberFormat(#"de-DR")`.
 
-More advanced usage examples for poly variant interop can be found in [Bind to JS Function](bind-to-js-function.mdx#constrain-arguments-better).
+More advanced usage examples for poly variant interop can be found in [Bind to JS Function](./bind-to-js-function.mdx#constrain-arguments-better).
 
 ### Bind to String Enums
 

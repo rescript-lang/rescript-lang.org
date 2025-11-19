@@ -85,7 +85,7 @@ order: 1
 | `myArray[1] = 10`  | Same                  |
 | `[1, "Bob", true]` | `(1, "Bob", true)` \* |
 
-\* ReScript does not have heterogenous arrays. Use tuples or [Untagged Variants](variant.mdx#untagged-variants) instead.
+\* ReScript does not have heterogenous arrays. Use tuples or [Untagged Variants](./variant.mdx#untagged-variants) instead.
 
 ### Null
 
@@ -152,7 +152,7 @@ order: 1
 | --------------------- | ---------------------------------------------------------------------------------- |
 | `if (a) {b} else {c}` | `if a {b} else {c}` \*                                                             |
 | `a ? b : c`           | Same                                                                               |
-| `switch`              | `switch` but [super-powered pattern matching!](pattern-matching-destructuring.mdx) |
+| `switch`              | `switch` but [super-powered pattern matching!](./pattern-matching-destructuring.mdx) |
 
 \* Our conditionals are always expressions! You can write `let result = if a {"hello"} else {"bye"}`
 

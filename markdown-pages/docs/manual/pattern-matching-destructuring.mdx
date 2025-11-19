@@ -508,7 +508,7 @@ if (person1.TAG) {
 
 ### Match on subtype variants
 
-You can refine a variant A to variant B using the [variant type spread syntax](variant.mdx#variant-type-spreads) in pattern matching. This is possible if variant B [is a subtype of](variant.mdx#coercion) variant A.
+You can refine a variant A to variant B using the [variant type spread syntax](./variant.mdx#variant-type-spreads) in pattern matching. This is possible if variant B [is a subtype of](./variant.mdx#coercion) variant A.
 
 Let's look at an example:
 
@@ -1128,4 +1128,4 @@ function optionBoolToBool(opt) {
 
 </CodeTab>
 
-Pretty darn hard to make a mistake in this code at this point! Whenever you'd like to use an if-else with many branches, prefer pattern matching instead. It's more concise and [performant](variant.mdx#design-decisions) too.
+Pretty darn hard to make a mistake in this code at this point! Whenever you'd like to use an if-else with many branches, prefer pattern matching instead. It's more concise and [performant](./variant.mdx#design-decisions) too.

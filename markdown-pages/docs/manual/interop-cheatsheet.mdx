@@ -18,43 +18,40 @@ This is a glossary with examples. All the features are described by later pages.
 
 ### Attributes
 
-- `@as`: [here](attribute.mdx#usage), [here](bind-to-js-function.mdx#fixed-arguments), [here](bind-to-js-function.mdx#constrain-arguments-better) and [here](generate-converters-accessors.mdx#usage-3)
-- [`@deriving`](generate-converters-accessors.mdx#generate-functions--plain-values-for-variants)
-- [`@get`](bind-to-js-object.mdx#bind-using-special-bs-getters--setters)
-- [`@get_index`](bind-to-js-object.mdx#bind-using-special-bs-getters--setters)
-  {/* - `@ignore` */}
-- [`@inline`](inlining-constants.mdx)
-- [`@int`](bind-to-js-function.mdx#constrain-arguments-better)
-  {/* - `@meth` */}
-- [`@module`](import-from-export-to-js.mdx#import-a-javascript-modules-content)
-- [`@new`](bind-to-js-object.mdx#bind-to-a-js-object-thats-a-class)
-- [`@optional`](generate-converters-accessors.mdx#optional-labels)
-- [`@return`](bind-to-js-function.mdx#function-nullable-return-value-wrapping)
-- `@send`: [here](bind-to-js-function.mdx#object-method) and [here](pipe.mdx#js-method-chaining)
-- [`@scope`](bind-to-global-js-values.mdx#global-modules)
-- [`@set`](bind-to-js-object.mdx#bind-using-special-bs-getters--setters)
-- [`@set_index`](bind-to-js-object.mdx#bind-using-special-bs-getters--setters)
-- [`@variadic`](bind-to-js-function.mdx#variadic-function-arguments)
-- [`@string`](bind-to-js-function.mdx#constrain-arguments-better)
-- [`@this`](bind-to-js-function.mdx#modeling-this-based-callbacks)
-- [`@uncurry`](bind-to-js-function.mdx#extra-solution)
-- [`@unwrap`](bind-to-js-function.mdx#trick-2-polymorphic-variant--bsunwrap)
-- [`@val`](bind-to-global-js-values.mdx#global-modules)
-- [`@taggedTemplate`](bind-to-js-function.mdx#tagged_template-functions)
-
-- [`@deprecated`](attribute.mdx#usage)
+- `@as`: [here](./attribute.mdx#usage), [here](./bind-to-js-function.mdx#fixed-arguments), [here](./bind-to-js-function.mdx#constrain-arguments-better) and [here](./generate-converters-accessors.mdx#usage-3)
+- [`@deriving`](./generate-converters-accessors.mdx#generate-functions--plain-values-for-variants)
+- [`@get`](./bind-to-js-object.mdx#bind-using-special-bs-getters--setters)
+- [`@get_index`](./bind-to-js-object.mdx#bind-using-special-bs-getters--setters)
+- [`@inline`](./inlining-constants.mdx)
+- [`@int`](./bind-to-js-function.mdx#constrain-arguments-better)
+- [`@module`](./import-from-export-to-js.mdx#import-a-javascript-modules-content)
+- [`@new`](./bind-to-js-object.mdx#bind-to-a-js-object-thats-a-class)
+- [`@optional`](./generate-converters-accessors.mdx#optional-labels)
+- [`@return`](./bind-to-js-function.mdx#function-nullable-return-value-wrapping)
+- `@send`: [here](./bind-to-js-function.mdx#object-method) and [here](./pipe.mdx#js-method-chaining)
+- [`@scope`](./bind-to-global-js-values.mdx#global-modules)
+- [`@set`](./bind-to-js-object.mdx#bind-using-special-bs-getters--setters)
+- [`@set_index`](./bind-to-js-object.mdx#bind-using-special-bs-getters--setters)
+- [`@variadic`](./bind-to-js-function.mdx#variadic-function-arguments)
+- [`@string`](./bind-to-js-function.mdx#constrain-arguments-better)
+- [`@this`](./bind-to-js-function.mdx#modeling-this-based-callbacks)
+- [`@uncurry`](./bind-to-js-function.mdx#extra-solution)
+- [`@unwrap`](./bind-to-js-function.mdx#trick-2-polymorphic-variant--bsunwrap)
+- [`@val`](./bind-to-global-js-values.mdx#global-modules)
+- [`@taggedTemplate`](./bind-to-js-function.mdx#tagged_template-functions)
+- [`@deprecated`](./attribute.mdx#usage)
 - [`genType`](https://github.com/reason-association/genType)
-- [`@JSX`](jsx.mdx)
+- [`@JSX`](./jsx.mdx)
 - `@react.component`: [here](../react/introduction.mdx) and [here](https://github.com/reasonml/reason-react)
-- [`@warning`](attribute.mdx#usage)
-- [`@unboxed`](variant.mdx#untagged-variants)
+- [`@warning`](./attribute.mdx#usage)
+- [`@unboxed`](./variant.mdx#untagged-variants)
 
 ### Extension Points
 
-- [`%debugger`](embed-raw-javascript.mdx#debugger)
-- [`%external`](bind-to-global-js-values.mdx#special-global-values)
-- [`%raw`](embed-raw-javascript.mdx#paste-raw-js-code)
-- [`%re`](primitive-types.mdx#regular-expression)
+- [`%debugger`](./embed-raw-javascript.mdx#debugger)
+- [`%external`](./bind-to-global-js-values.mdx#special-global-values)
+- [`%raw`](./embed-raw-javascript.mdx#paste-raw-js-code)
+- [`%re`](./primitive-types.mdx#regular-expression)
 - [`%todo`](../../syntax-lookup/extension_todo.mdx)
 
 ## Raw JS
@@ -154,9 +151,9 @@ var result3 = Caml_option.nullable_to_opt(10);
 
 ## JS Object
 
-- [Bind to a JS object as a ReScript record](bind-to-js-object.mdx#bind-to-record-like-js-objects).
-- [Bind to a JS object that acts like a hash map](bind-to-js-object.mdx#bind-to-hash-map-like-js-object).
-- [Bind to a JS object that's a class](bind-to-js-object.mdx#bind-to-a-js-object-thats-a-class).
+- [Bind to a JS object as a ReScript record](./bind-to-js-object.mdx#bind-to-record-like-js-objects).
+- [Bind to a JS object that acts like a hash map](./bind-to-js-object.mdx#bind-to-hash-map-like-js-object).
+- [Bind to a JS object that's a class](./bind-to-js-object.mdx#bind-to-a-js-object-thats-a-class).
 
 ## Function
 
@@ -264,7 +261,7 @@ padLeft("Hello World", "Message from ReScript: ");
 
 ## JS Module Interop
 
-[See here](import-from-export-to-js.mdx)
+[See here](./import-from-export-to-js.mdx)
 
 ## Dangerous Type Cast
 

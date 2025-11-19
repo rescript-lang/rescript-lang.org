@@ -135,11 +135,11 @@ Js.Promise.make: (
 ) => Js.Promise.t<'a>
 ```
 
-This type signature means that `make` takes a callback that takes 2 named arguments, `resolve` and `reject`. Both arguments are themselves [uncurried callbacks](function.mdx#uncurried-function) (with a dot). `make` returns the created promise.
+This type signature means that `make` takes a callback that takes 2 named arguments, `resolve` and `reject`. Both arguments are themselves [uncurried callbacks](./function.mdx#uncurried-function) (with a dot). `make` returns the created promise.
 
 ### Usage
 
-Using the [pipe operator](pipe.mdx):
+Using the [pipe operator](./pipe.mdx):
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 

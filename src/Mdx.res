@@ -136,7 +136,11 @@ let remarkLinkPlugin = (tree, vfile) => {
           )}`,
       )
     if url->String.includes("https://rescript-lang.org") {
-      Console.warn3("⚠️  Absolute link should be relative:", url, filePath)
+      JsExn.throw(
+        Error(
+          `Links to rescript-lang.org are not allowed in MDX files, you should use a relative link instead: ${url} in file ${filePath}`,
+        ),
+      )
     } else if url->String.startsWith("http") || url->String.startsWith("#") {
       ()
     } else if url->String.startsWith(".") {
@@ -161,16 +165,18 @@ let remarkLinkPlugin = (tree, vfile) => {
         ->String.replaceAll(".mdx", "")
         ->String.replaceAll(".md", "") ++ hash
     } else if (
-      url->String.startsWith("/docs") ||
+      (!(url->String.includes("api")) && url->String.startsWith("/docs")) ||
       url->String.startsWith("/blog") ||
       url->String.startsWith("/community") ||
       url->String.startsWith("/syntax-lookup")
     ) {
-      Console.warn3("⚠️  Link to mdx file should use the relative path:", url, filePath)
+      JsExn.throw(
+        Error(`Link to mdx file should use the relative path: ${url} in file ${filePath}`),
+      )
     } else if url->String.startsWith("/") {
       ()
     } else {
-      Console.warn3("⚠️  Unrecognized link format in MDX:", url, filePath)
+      JsExn.throw(Error(`Unrecognized link format in MDX: ${url} in file ${filePath}`))
     }
   })
 }
