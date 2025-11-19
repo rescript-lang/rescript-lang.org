@@ -24,16 +24,15 @@ for (const file of files) {
 
     const log = reporter(result, { quiet: true });
 
-    const warningMessage = log.replace(file, "")
+    const warningMessage = log.replace(file, "");
 
     if (
       log &&
       !warningMessage.includes("api/") &&
-      markdownFolders.some((folder) =>
-        warningMessage.includes(`${folder}`),
-      ) && !warningMessage.includes(".txt")
+      markdownFolders.some((folder) => warningMessage.includes(`${folder}`)) &&
+      !warningMessage.includes(".txt")
     ) {
-      console.log(log)
+      console.log(log);
       issues += 1;
     }
   }
