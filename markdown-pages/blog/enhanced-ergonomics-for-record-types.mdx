@@ -7,16 +7,16 @@ description: |
   A tour of new capabilities coming to ReScript v11
 ---
 
-> This is the second post covering new capabilities that'll ship in ReScript v11. You can check out the first post on [better interop with customizable variants here](https://rescript-lang.org/blog/improving-interop).
+> This is the second post covering new capabilities that'll ship in ReScript v11. You can check out the first post on [better interop with customizable variants here](./improving-interop.mdx).
 
-[Records](https://rescript-lang.org/docs/manual/record) are a fundamental part of ReScript, offering a clear and concise definition of complex data structures, immutability by default, great error messages, and support for exhaustive pattern matching.
+[Records](../docs/manual/record.mdx) are a fundamental part of ReScript, offering a clear and concise definition of complex data structures, immutability by default, great error messages, and support for exhaustive pattern matching.
 
 Even though records are generally preferable for defining structured data, there are still a few ergonomic annoyances, such as...
 
 1. Existing record types can't be extended, which makes them hard to compose
 2. Functions may only accept record arguments of the exact record type (no explicit sub-typing)
 
-To mitigate the limitations above, one would need to retreat to [structural objects](https://rescript-lang.org/docs/manual/object#sidebar) to allow more flexible object field sharing and sub-typing, at the cost of more complex type errors and no pattern matching capabilities.
+To mitigate the limitations above, one would need to retreat to [structural objects](../docs/manual/object.mdx#sidebar) to allow more flexible object field sharing and sub-typing, at the cost of more complex type errors and no pattern matching capabilities.
 
 We think that records are a much more powerful data structure though, so we want to encourage more record type usage for these scenarios. This is why ReScript v11 will come with two new big enhancements for record types: **Record Type Spread** and **Record Type Coercion**.
 
@@ -175,7 +175,7 @@ Records are nominally typed, so it is not possible to pass a record `a` as recor
 
 ## Try it out!
 
-Feel free to check out the v11 alpha version on our [online playground](https://rescript-lang.org/try?version=v11.0.0-alpha.5&code=LYewJgrgNgpgBAJRgYxAJzAFQJ4AcYDKuaMAhmAKIAepwuscAvHAN4BQccALnvKU6w6c4AO1owAXHADOXNAEsRAcwA0QzqSWS4irms4BfNkJ744AIwHtho8VNkLl+4Zu27nRobC63gMAGJoIMAAQgIAFOZS5gCUTAB8FgB0Yn7GnN5wpFL8zNbCqdoARABy4kXOGlpSAMwArB7pcJmFAoWBwSHh4fwSibExbJ6gkAxIqBg4+ADCIDBoyPIgItS09PB5JrxZVuo6YPZyiqp7hYeOJzauUu57pMhc8gBu2uYgIFCNW2aWmzZnMiOTju1R0Ij0Qk8GRgPnaQVCESiFjijH6KXETUy2R2f2E8gOcCKAEYKqc7ISyn5SVdQfVKlkHs9tHIIDAvtDYeI2uIOqFur1+jFBkYgA), or install the alpha release via npm: `npm i rescript@11.0.0-alpha.6`.
+Feel free to check out the v11 alpha version on our [online playground](/try?version=v11.0.0-alpha.5&code=LYewJgrgNgpgBAJRgYxAJzAFQJ4AcYDKuaMAhmAKIAepwuscAvHAN4BQccALnvKU6w6c4AO1owAXHADOXNAEsRAcwA0QzqSWS4irms4BfNkJ744AIwHtho8VNkLl+4Zu27nRobC63gMAGJoIMAAQgIAFOZS5gCUTAB8FgB0Yn7GnN5wpFL8zNbCqdoARABy4kXOGlpSAMwArB7pcJmFAoWBwSHh4fwSibExbJ6gkAxIqBg4+ADCIDBoyPIgItS09PB5JrxZVuo6YPZyiqp7hYeOJzauUu57pMhc8gBu2uYgIFCNW2aWmzZnMiOTju1R0Ij0Qk8GRgPnaQVCESiFjijH6KXETUy2R2f2E8gOcCKAEYKqc7ISyn5SVdQfVKlkHs9tHIIDAvtDYeI2uIOqFur1+jFBkYgA), or install the alpha release via npm: `npm i rescript@11.0.0-alpha.6`.
 
 This release is mainly for feedback purposes and not intended for production usage.
 

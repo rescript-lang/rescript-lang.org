@@ -81,7 +81,7 @@ Needless to say, the async / await version offers better ergonomics and less opp
 
 ### Handling Rejected Promises
 
-You can handle a rejected promise using the [`Promise.catch()`](https://rescript-lang.org/docs/manual/api/latest/stdlib/promise#value-catch) method, which allows you to catch and manage errors effectively.
+You can handle a rejected promise using the [`Promise.catch()`](/docs/manual/api/stdlib/promise#value-catch) method, which allows you to catch and manage errors effectively.
 
 ### Run multiple promises in parallel
 
@@ -116,9 +116,9 @@ export { logAsyncMessage };
 
 ## Js.Promise module (legacy - do not use)
 
-> **Note:** The `Js.Promise` bindings are following the outdated data-last convention from a few years ago. We kept those APIs for backwards compatibility. Either use [`Promise`](https://rescript-lang.org/docs/manual/api/latest/stdlib/promise) or a third-party promise binding instead.
+> **Note:** The `Js.Promise` bindings are following the outdated data-last convention from a few years ago. We kept those APIs for backwards compatibility. Either use [`Promise`](/docs/manual/api/stdlib/promise) or a third-party promise binding instead.
 
-ReScript has built-in support for [JavaScript promises](https://rescript-lang.org/docs/manual/api/latest/js/promise). The 3 functions you generally need are:
+ReScript has built-in support for [JavaScript promises](/docs/manual/api/stdlibjs/promise). The 3 functions you generally need are:
 
 - `Js.Promise.resolve: 'a => Js.Promise.t<'a>`
 - `Js.Promise.then_: ('a => Js.Promise.t<'b>, Js.Promise.t<'a>) => Js.Promise.t<'b>`

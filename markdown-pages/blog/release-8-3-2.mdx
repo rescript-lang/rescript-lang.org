@@ -64,7 +64,7 @@ so that the second build will do the rebuild.
 The benefit is two fold:
 
 - Rebuild will re-capture those warnings
-- Rebuild will be fast since only those files with warnings get rebuilt, it will not trigger unnecessary builds since our build is [content-based](https://rescript-lang.org/blog/scalable) build system.
+- Rebuild will be fast since only those files with warnings get rebuilt, it will not trigger unnecessary builds since our build is content-based build system.
 
 The integration between compiler and build system is encoded in a specialized protocol. This makes it almost cost-free.
 

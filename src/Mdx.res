@@ -1,5 +1,3 @@
-open WebAPI
-
 type social = X(string) | Bluesky(string)
 
 type author = {
@@ -52,7 +50,7 @@ type tree
 type loadMdxOptions = {remarkPlugins?: array<remarkPlugin>}
 
 @module("react-router-mdx/server")
-external loadMdx: (FetchAPI.request, ~options: loadMdxOptions=?) => promise<t> = "loadMdx"
+external loadMdx: (WebAPI.FetchAPI.request, ~options: loadMdxOptions=?) => promise<t> = "loadMdx"
 
 @module("react-router-mdx/client")
 external useMdxAttributes: unit => attributes = "useMdxAttributes"
@@ -71,9 +69,6 @@ external gfm: remarkPlugin = "default"
 
 @module("remark-validate-links")
 external validateLinks: remarkPlugin = "default"
-
-@module("remark-inline-links")
-external inlineLinks: remarkPlugin = "default"
 
 // The loadAllMdx function logs out all of the file contents as it reads them, which is noisy and not useful.
 // We can suppress that logging with this helper function.
@@ -131,18 +126,51 @@ let remarkReScriptPrelude = tree => {
   }
 }
 
-let remarkLinkPlugin = tree => {
-  let prelude = ref("")
-
+let remarkLinkPlugin = (tree, vfile) => {
   visit(tree, "link", node => {
-    if node["url"]->String.startsWith("http") {
+    let url = node["url"]
+    let filePath =
+      vfile["history"][0]->Option.getOrThrow(
+        ~message=`File path not found for vfile: ${JSON.stringifyAny(vfile)->Option.getOr(
+            "unknown file",
+          )}`,
+      )
+    if url->String.includes("https://rescript-lang.org") {
+      Console.warn3("⚠️  Absolute link should be relative:", url, filePath)
+    } else if url->String.startsWith("http") || url->String.startsWith("#") {
       ()
-    } else {
+    } else if url->String.startsWith(".") {
+      let (path, hash) = {
+        let splitHref = url->String.split("#")
+        (
+          splitHref[0]->Option.getOr("/"),
+          splitHref[1]->Option.map(hash => "#" ++ hash)->Option.getOr(""),
+        )
+      }
+
+      let filePath =
+        filePath
+        ->String.split("/")
+        ->Array.filter(part => !(part->String.includes(".mdx")) || !(part->String.includes(".md")))
+        ->Array.join("/")
+
       // Strip put any file extensions from internal links
       node["url"] =
-        node["url"]
-        ->String.replace(".mdx", "")
-        ->String.replaceAll(".md", "")
+        Node.Path.resolve(filePath, path)
+        ->String.replace(vfile["cwd"] ++ "/markdown-pages", "")
+        ->String.replaceAll(".mdx", "")
+        ->String.replaceAll(".md", "") ++ hash
+    } else if (
+      url->String.startsWith("/docs") ||
+      url->String.startsWith("/blog") ||
+      url->String.startsWith("/community") ||
+      url->String.startsWith("/syntax-lookup")
+    ) {
+      Console.warn3("⚠️  Link to mdx file should use the relative path:", url, filePath)
+    } else if url->String.startsWith("/") {
+      ()
+    } else {
+      Console.warn3("⚠️  Unrecognized link format in MDX:", url, filePath)
     }
   })
 }
@@ -153,6 +181,6 @@ let remarkReScriptPreludePlugin = makePlugin(_options =>
   (tree, _vfile) => remarkReScriptPrelude(tree)
 )
 
-let remarkLinkPlugin = makePlugin(_options => (tree, _vfile) => remarkLinkPlugin(tree))
+let remarkLinkPlugin = makePlugin(_options => (tree, vfile) => remarkLinkPlugin(tree, vfile))
 
-let plugins = [gfm, remarkReScriptPreludePlugin, remarkLinkPlugin, inlineLinks]
+let plugins = [remarkLinkPlugin, gfm, remarkReScriptPreludePlugin]

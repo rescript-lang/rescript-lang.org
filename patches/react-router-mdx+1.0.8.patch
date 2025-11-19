@@ -1,0 +1,43 @@
+diff --git a/node_modules/react-router-mdx/dist/server/index.js b/node_modules/react-router-mdx/dist/server/index.js
+index 1e56a6c..5f08c1c 100644
+--- a/node_modules/react-router-mdx/dist/server/index.js
++++ b/node_modules/react-router-mdx/dist/server/index.js
+@@ -59,15 +59,16 @@ import matter from "gray-matter";
+ import { compile as compileMdx } from "@mdx-js/mdx";
+ import remarkFrontmatter from "remark-frontmatter";
+ var compile = async (content, options) => {
+-  const compiled = await compileMdx(content, {
++  // TODO: open a PR to add in the path!
++  const compiled = await compileMdx({ value: content, path: options?.path }, {
+     ...options ?? {},
+     outputFormat: "function-body",
+-    remarkPlugins: [remarkFrontmatter, ...options?.remarkPlugins ?? []]
+-  });
++    remarkPlugins: [remarkFrontmatter, ...options?.remarkPlugins ?? []],
++  },);
+   return String(compiled);
+ };
+ var getAttributes = (content) => {
+-  const { data: attributes } = matter(content);
++  const { data: attributes, } = matter(content);
+   return attributes;
+ };
+ 
+@@ -118,13 +119,15 @@ var loadMdx = async (request, options) => {
+   const aliases = getAliases(getOptions());
+   const path = getFilePathBasedOnUrl(request.url, paths, aliases);
+   const content = await getFileContent(path);
++  console.log({ path })
+   const [mdxContent, attributes] = await Promise.all([
+-    compile(content, options),
++    compile(content, { ...options, path }),
+     getAttributes(content)
+   ]);
+   return {
+     __raw: mdxContent,
+-    attributes
++    attributes,
++    path
+   };
+ };
+ var loadAllMdx = async (filterByPaths) => {

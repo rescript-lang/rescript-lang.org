@@ -391,12 +391,18 @@ module A = {
 
     // In case we are handling a relative URL, we will use the Next routing
     if Util.Url.isAbsolute(href) {
-      <a href rel="noopener noreferrer" className="no-underline text-fire hover:underline" ?target>
+      <a
+        href
+        rel="noopener noreferrer"
+        className="no-underline text-fire hover:underline"
+        ?target
+        dataTestId="absolute-url"
+      >
         children
       </a>
     } else {
       <ReactRouter.Link.String
-        relative="path" to={href} className="no-underline text-fire hover:underline" ?target
+        to={href} className="no-underline text-fire hover:underline" ?target relative="route"
       >
         children
       </ReactRouter.Link.String>

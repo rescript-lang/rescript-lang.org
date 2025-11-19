@@ -1,6 +1,5 @@
 import * as fs from "node:fs";
 import { init } from "react-router-mdx/server";
-import { Url } from "./src/common/Util.mjs";
 
 const mdx = init({
   paths: [

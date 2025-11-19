@@ -8,7 +8,7 @@ order: 19
 
 # Exception
 
-Exceptions are just a special kind of variant, thrown in **exceptional** cases (don't abuse them!). Consider using the [`option`](null-undefined-option.mdx) or [`result`](https://rescript-lang.org/docs/manual/api/latest/stdlib/result) type for recoverable errors.
+Exceptions are just a special kind of variant, thrown in **exceptional** cases (don't abuse them!). Consider using the [`option`](null-undefined-option.mdx) or [`result`](/docs/manual/api/stdlib/result) type for recoverable errors.
 
 You can create your own exceptions like you'd make a variant (exceptions need to be capitalized too).
 
@@ -381,8 +381,8 @@ try {
 }
 ```
 
-The payload `exn` here is of type `unknown` since in JS you can throw anything. To operate on `exn`, do like the code above by using the standard library's [`JsExn`](https://rescript-lang.org/docs/manual/api/latest/stdlib/jsexn) module's helpers
-or use [`Type.Classify.classify`](https://rescript-lang.org/docs/manual/api/latest/stdlib/type/classify#value-classify) to get more information about the runtime type of `exn`.
+The payload `exn` here is of type `unknown` since in JS you can throw anything. To operate on `exn`, do like the code above by using the standard library's [`JsExn`](/docs/manual/api/stdlib/jsexn) module's helpers
+or use [`Type.Classify.classify`](/docs/manual/api/stdlib/type/classify#value-classify) to get more information about the runtime type of `exn`.
 
 ## Throw a JS Exception
 
