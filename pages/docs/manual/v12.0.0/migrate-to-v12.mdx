@@ -16,9 +16,9 @@ If you encounter any missing information or issues during migration, please [ope
 - Uncurried mode must be enabled (i.e. you have not opted-out from it)
 - Your project must not contain any OCaml source code anymore, as support for `.ml` files is removed in this version. However there are ways to convert OCaml syntax with an older ReScript compiler version ([see below](#converting-generated-ml-files)).
 - The old configuration filename that was deprecated in v11, `bsconfig.json`, is removed. Rename it to `rescript.json`.
-- Minimum supported Node.js version is 20.0.0
+- Minimum supported Node.js version is 20.11.0
 
-### Standard library changes
+### Standard Library Changes
 
 In V12, the new standard library ships with the compiler, so you can uninstall and remove the `@rescript/core` dependency from your `rescript.json`
 
@@ -224,9 +224,9 @@ Below is a consolidated excerpt of all the breaking changes from the compiler ch
 ### Language & syntax
 
 - Tag functions named `j` or `js` are no longer reserved, so add your own implementation whenever a tagged template expects them. https://github.com/rescript-lang/rescript-compiler/pull/6817
-- `lazy` syntax was removed; use the `Lazy` module or `React.lazy_` instead. https://github.com/rescript-lang/rescript-compiler/pull/6342
+- `lazy` syntax was removed; use the `Lazy` module instead. https://github.com/rescript-lang/rescript-compiler/pull/6342
 - All legacy `@bs.*` attributes (e.g. `@bs.as`, `@bs.send`) and `@bs.open` were removed; use their prefix-free successors (`@as`, `@send`, `@open`, …). https://github.com/rescript-lang/rescript-compiler/pull/6643 https://github.com/rescript-lang/rescript-compiler/pull/6629
-- `@bs.send.pipe` was removed, together with the helper functions in `Js_typed_array` that relied on it; rewrite bindings to use explicit piping. https://github.com/rescript-lang/rescript-compiler/pull/6858 https://github.com/rescript-lang/rescript-compiler/pull/6891
+- `@bs.send.pipe` was removed; rewrite bindings to use `@send`. https://github.com/rescript-lang/rescript-compiler/pull/6858 https://github.com/rescript-lang/rescript-compiler/pull/6891
 - OCaml `.ml` files are no longer supported anywhere: `.ml` parsing/formatting went away and the `rescript convert` CLI was removed, so convert legacy files to `.res` before upgrading. https://github.com/rescript-lang/rescript-compiler/pull/6848 https://github.com/rescript-lang/rescript-compiler/pull/6852 https://github.com/rescript-lang/rescript-compiler/pull/6860
 - The `%time` extension and the `caml_external_polyfill` module were deleted. https://github.com/rescript-lang/rescript-compiler/pull/6924 https://github.com/rescript-lang/rescript-compiler/pull/6925
 - Some global names and old keywords are no longer automatically prefixed during JS emission; update any code that was relying on the mangled names. https://github.com/rescript-lang/rescript-compiler/pull/6831
@@ -252,7 +252,7 @@ Below is a consolidated excerpt of all the breaking changes from the compiler ch
 
 ### Build system & CLI
 
-- The new Rust-based `rewatch` build system now powers the `rescript` command. The old Ninja builder moved behind `rescript legacy`, the standalone `rewatch` command was removed, and `--compiler-args` became the `compiler-args` subcommand. https://github.com/rescript-lang/rescript/pull/7551 https://github.com/rescript-lang/rescript/pull/7593
+- The new Rust-based `rewatch` build system now powers the `rescript` command. The old Ninja-based builder system moved behind `rescript legacy`, and `--compiler-args` became the `compiler-args` subcommand. https://github.com/rescript-lang/rescript/pull/7551 https://github.com/rescript-lang/rescript/pull/7593
 - The `rescript legacy` subcommand was removed in favor of a stand-alone `rescript-legacy` binary. https://github.com/rescript-lang/rescript/pull/7928
 - `rescript format` was reimplemented in Rust, its options now use the `--check` / `--stdin` long-form spelling, and the `--all` flag was removed because every tracked file (non-dev by default) is formatted automatically. https://github.com/rescript-lang/rescript/pull/7603 https://github.com/rescript-lang/rescript/pull/7752
 - The `rescript dump` command was removed; call `bsc` directly if you need to inspect `.cmi` files. https://github.com/rescript-lang/rescript/pull/7710
@@ -260,6 +260,6 @@ Below is a consolidated excerpt of all the breaking changes from the compiler ch
 
 ### Configuration & platform
 
-- The minimum supported Node.js version is now 20. https://github.com/rescript-lang/rescript/pull/7354
+- The minimum supported Node.js version is now 20.11.0 https://github.com/rescript-lang/rescript/pull/7354
 - The `experimental-features` key in `rescript.json` now uses kebab-case to match the other config fields. https://github.com/rescript-lang/rescript/pull/7891
-- The legacy `-bs-super-errors` flag was removed along with Super_errors. https://github.com/rescript-lang/rescript-compiler/pull/6814
+- The legacy `-bs-super-errors` flag was removed. https://github.com/rescript-lang/rescript-compiler/pull/6814
