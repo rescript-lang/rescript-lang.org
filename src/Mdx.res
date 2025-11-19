@@ -135,7 +135,12 @@ let remarkLinkPlugin = (tree, vfile) => {
             "unknown file",
           )}`,
       )
-    if url->String.includes("https://rescript-lang.org") {
+
+    // Direct links to the homepage are OK
+    if url == "https://rescript-lang.org" {
+      ()
+      // Relative paths should be used as much as possible
+    } else if url->String.includes("https://rescript-lang.org") {
       JsExn.throw(
         Error(
           `Links to rescript-lang.org are not allowed in MDX files, you should use a relative link instead: ${url} in file ${filePath}`,
