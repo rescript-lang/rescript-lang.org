@@ -131,9 +131,7 @@ let remarkLinkPlugin = (tree, vfile) => {
     let url = node["url"]
     let filePath =
       vfile["history"][0]->Option.getOrThrow(
-        ~message=`File path not found for vfile: ${JSON.stringifyAny(vfile)->Option.getOr(
-            "unknown file",
-          )}`,
+        ~message=`File path not found for vfile: ${node["url"]}`,
       )
 
     // Direct links to the homepage are OK
