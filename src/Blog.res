@@ -257,8 +257,6 @@ let make = (~posts: array<BlogApi.post>, ~category: category): React.element => 
     </>
   }
 
-  let (isOverlayOpen, setOverlayOpen) = React.useState(() => false)
-
   <>
     <div className="mt-16 pt-2">
       <div className="text-gray-80 text-18">

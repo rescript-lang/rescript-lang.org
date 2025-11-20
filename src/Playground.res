@@ -1503,7 +1503,7 @@ let initialReContent = `Js.log("Hello Reason 3.6!");`
 
 @react.component
 let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
-  let (searchParams, setSearchParams) = ReactRouter.useSearchParams()
+  let (searchParams, _) = ReactRouter.useSearchParams()
 
   let versions =
     versions

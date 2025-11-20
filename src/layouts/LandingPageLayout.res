@@ -679,8 +679,6 @@ module CuratedResources = {
 
 @react.component
 let make = (~components=MarkdownComponents.default, ~children) => {
-  let (isOverlayOpen, setOverlayOpen) = React.useState(() => false)
-
   <>
     <Meta
       title="The ReScript Programming Language"

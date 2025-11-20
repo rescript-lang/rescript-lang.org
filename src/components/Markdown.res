@@ -405,8 +405,6 @@ module Hr = {
 module A = {
   @react.component
   let make = (~href, ~target=?, ~children) => {
-    let {pathname} = ReactRouter.useLocation()
-
     // In case we are handling a relative URL, we will use the Next routing
     if Util.Url.isAbsolute(href) {
       <a

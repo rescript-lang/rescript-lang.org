@@ -89,7 +89,6 @@ let transformItems = (items: DocSearch.transformItems) => {
 @react.component
 let make = () => {
   let (state, setState) = React.useState(_ => Inactive)
-  let location = ReactRouter.useLocation()
 
   let handleCloseModal = () => {
     let () = switch WebAPI.Document.querySelector(document, ".DocSearch-Modal") {

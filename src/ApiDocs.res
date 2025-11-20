@@ -128,11 +128,6 @@ module SidebarTree = {
       // This is the full path to this module, e.g. "/docs/manual/api/stdlib/array" or "/docs/manual/api/stdlib/int"
       let fullPath = `${moduleRoute}/${relativePath}`->Url.normalizePath
 
-      let parentPath = switch node.path->Array.join("/")->Url.normalizePath {
-      | "" => None
-      | path => Some(path)
-      }
-
       let isCurrentRoute = fullPath == (location.pathname :> string)
 
       let classNameActive = isCurrentRoute ? classNameActive : ""
@@ -180,12 +175,6 @@ module SidebarTree = {
         </li>
       }
     }
-
-    let {pathname} = ReactRouter.useLocation()
-
-    let url = (pathname :> string)->Url.parse->Some
-
-    let onChange = evt => ()
 
     let preludeSection =
       <div className="flex justify-between text-fire font-medium items-baseline">
@@ -301,11 +290,6 @@ let make = (props: props) => {
 
   let toggleSidebar = () => setSidebarOpen(prev => !prev)
 
-  let title = switch props {
-  | Ok({module_: {id}}) => id
-  | _ => "API"
-  }
-
   let children = {
     open Markdown
     switch props {
@@ -401,8 +385,6 @@ module Data = {
 
   let getVersion = (~moduleName: string) => {
     open Node
-
-    let pathModule = Path.join([dir, `${moduleName}.json`])
 
     let moduleContent =
       Fs.readFileSync(`markdown-pages/docs/api/${moduleName}.json`)->JSON.parseOrThrow

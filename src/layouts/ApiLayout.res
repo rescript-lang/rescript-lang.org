@@ -67,7 +67,6 @@ let make = (
   ~breadcrumbs=?,
   ~categories: array<Sidebar.Category.t>,
   ~title="",
-  ~version: option<string>=?,
   ~activeToc: option<TableOfContents.t>=?,
   ~children,
 ) => {
@@ -76,38 +75,14 @@ let make = (
   let (isSidebarOpen, setSidebarOpen) = React.useState(_ => false)
   let toggleSidebar = () => setSidebarOpen(prev => !prev)
 
-  let navigate = ReactRouter.useNavigate()
-
   let preludeSection =
     <div className="flex justify-between text-fire font-medium items-baseline">
-      {switch version {
-      | Some(version) =>
-        let onChange = evt => {
-          open Url
-          ReactEvent.Form.preventDefault(evt)
-          let version = (evt->ReactEvent.Form.target)["value"]
-          let url = Url.parse((route :> string))
-          WebAPI.Storage.setItem(localStorage, ~key=(Url.Manual :> string), ~value=version)
-
-          let targetUrl =
-            "/" ++
-            (Array.join(url.base, "/") ++
-            ("/" ++ (version ++ ("/" ++ Array.join(url.pagepath, "/")))))
-          navigate(targetUrl)
-        }
-        <VersionSelect />
-      | None => React.null
-      }}
+      <VersionSelect />
     </div>
 
   let sidebar =
     <Sidebar preludeSection isOpen=isSidebarOpen toggle=toggleSidebar categories ?activeToc route />
 
-  let pageTitle = switch breadcrumbs {
-  | Some(list{_, {Url.name: name}}) => name
-  | Some(list{_, module_, {name}}) => module_.name ++ ("." ++ name)
-  | _ => "API"
-  }
   <SidebarLayout
     ?breadcrumbs
     // metaTitle={pageTitle ++ " | ReScript API"}

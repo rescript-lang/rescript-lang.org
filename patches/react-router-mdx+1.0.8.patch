@@ -1,13 +1,12 @@
 diff --git a/node_modules/react-router-mdx/dist/server/index.js b/node_modules/react-router-mdx/dist/server/index.js
-index 1e56a6c..5f08c1c 100644
+index 1e56a6c..b323b05 100644
 --- a/node_modules/react-router-mdx/dist/server/index.js
 +++ b/node_modules/react-router-mdx/dist/server/index.js
-@@ -59,15 +59,16 @@ import matter from "gray-matter";
+@@ -59,15 +59,15 @@ import matter from "gray-matter";
  import { compile as compileMdx } from "@mdx-js/mdx";
  import remarkFrontmatter from "remark-frontmatter";
  var compile = async (content, options) => {
 -  const compiled = await compileMdx(content, {
-+  // TODO: open a PR to add in the path!
 +  const compiled = await compileMdx({ value: content, path: options?.path }, {
      ...options ?? {},
      outputFormat: "function-body",
@@ -23,11 +22,9 @@ index 1e56a6c..5f08c1c 100644
    return attributes;
  };
  
-@@ -118,13 +119,15 @@ var loadMdx = async (request, options) => {
-   const aliases = getAliases(getOptions());
+@@ -119,12 +119,13 @@ var loadMdx = async (request, options) => {
    const path = getFilePathBasedOnUrl(request.url, paths, aliases);
    const content = await getFileContent(path);
-+  console.log({ path })
    const [mdxContent, attributes] = await Promise.all([
 -    compile(content, options),
 +    compile(content, { ...options, path }),

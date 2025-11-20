@@ -88,7 +88,8 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
   let location = ReactRouter.useLocation()
   let route = location.pathname
 
-  let (isLocked, toggleScrollLock) = ScrollLockContext.useScrollLock()
+  // TODO: post RR7 - I am not sure we need this, but it was fidgety to get this working right so I am leaving it for now
+  let (_isLocked, toggleScrollLock) = ScrollLockContext.useScrollLock()
 
   let toggleOverlay = () => {
     setOverlayOpen(prev => !prev)

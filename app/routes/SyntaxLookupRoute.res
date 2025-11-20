@@ -15,7 +15,7 @@ let convert = (mdx: Mdx.attributes): SyntaxLookup.item => {
   }
 }
 
-let loader: Loader.t<loaderData> = async ({request}) => {
+let loader: Loader.t<loaderData> = async _ => {
   let allMdx = await Shims.runWithoutLogging(() => loadAllMdx())
 
   let mdxSources =

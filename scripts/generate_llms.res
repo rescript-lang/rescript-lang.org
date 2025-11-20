@@ -68,7 +68,8 @@ let createSmallFile = (content: string, filePath: string): unit => {
   Node.Fs.appendFileSync(filePath, smallContent, "utf8")
 }
 
-let createLlmsFiles = (version: string, docsDirectory: string, llmsDirectory: string): unit => {
+// TODO: post RR7 - refactor to remove the version parameter, as it's unused
+let createLlmsFiles = (_version: string, docsDirectory: string, llmsDirectory: string): unit => {
   let mdxFileTemplatePath = llmsDirectory->Node.Path.join2("template.mdx")
   let mdxFilePath = docsDirectory->Node.Path.join2("llms.mdx")
   let txtFileTemplatePath = llmsDirectory->Node.Path.join2("template.txt")

@@ -31,10 +31,6 @@ let make = (
   ~editHref: option<string>=?,
   ~activeToc: option<TableOfContents.t>=?,
   ~breadcrumbs: option<list<Url.breadcrumb>>=?,
-  ~frontmatter=?,
-  ~version: option<string>=?,
-  ~availableVersions: option<array<(string, string)>>=?,
-  ~nextVersion: option<(string, string)>=?,
   ~categories: array<Category.t>,
   ~components=MarkdownComponents.default,
   ~theme=#Reason,
@@ -44,8 +40,6 @@ let make = (
 
   let (isSidebarOpen, setSidebarOpen) = React.useState(_ => false)
   let toggleSidebar = () => setSidebarOpen(prev => !prev)
-
-  let navigate = ReactRouter.useNavigate()
 
   let preludeSection =
     <div className="flex flex-col justify-between text-fire font-medium items-baseline">

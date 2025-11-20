@@ -13,7 +13,6 @@ let make = (
   ~ogDescription=description,
   ~ogTitle=?,
   ~ogImage="/Art-3-rescript-launch.jpg",
-  ~version: option<Url.version>=?,
 ) => {
   let ogImage = Env.root_url ++ ogImage
 

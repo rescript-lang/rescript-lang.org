@@ -1,7 +1,5 @@
 @react.component
 let make = (~components=MarkdownComponents.default, ~children) => {
-  let (isOverlayOpen, setOverlayOpen) = React.useState(() => false)
-
   <>
     <div className={"mt-4 xs:mt-16"}>
       <div className="text-gray-80">

@@ -6,10 +6,6 @@
  */
 module Link = ReactRouter.Link
 
-let scrollToAnchor = (hash: string) => {
-  WebAPI.Document.getElementById(document, hash)->WebAPI.Element.scrollIntoView_alignToTop
-}
-
 let isDocRoute = (~route: Path.t) => {
   let route = (route :> string)
   route->String.includes("/docs/") || route->String.includes("/syntax-lookup")
@@ -31,7 +27,14 @@ module Toc = {
       {Array.map(entries, ({header, href}) => {
         <li key=header className="pl-2 mt-2 first:mt-1" dataTestId=header>
           <Link.String
-            onClick={_evt => scrollToAnchor(href)}
+            onClick={evt => {
+              evt->ReactEvent.Mouse.preventDefault
+              Console.log(href)
+              WebAPI.Document.getElementById(
+                document,
+                href->String.replace("#", ""),
+              )->WebAPI.Element.scrollIntoView_alignToTop
+            }}
             to={"#" ++ href->Url.normalizeAnchor}
             className="font-normal block text-14 text-gray-40 leading-tight hover:text-gray-80"
             preventScrollReset=true
@@ -287,8 +290,9 @@ let make = (
 
   let breadcrumbs = breadcrumbs->Option.mapOr(React.null, crumbs => <BreadCrumbs crumbs />)
 
-  let (isSidebarOpen, setSidebarOpen) = sidebarState
-  let (isLocked, toggleScrollLock) = ScrollLockContext.useScrollLock()
+  // TODO: post rr7 - this can most likely be removed
+  let (_isSidebarOpen, setSidebarOpen) = sidebarState
+  let (_isLocked, toggleScrollLock) = ScrollLockContext.useScrollLock()
 
   let toggleSidebar = () => {
     setSidebarOpen(prev => !prev)

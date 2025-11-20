@@ -399,8 +399,7 @@ let make = (props: props) => {
     </Category>
   }
 
-  let location = ReactRouter.useLocation()
-  let (searchParams, setSearchParams) = ReactRouter.useSearchParams()
+  let (_, setSearchParams) = ReactRouter.useSearchParams()
 
   // On first render, the router query is undefined so we set a flag.
   let firstRenderDone = React.useRef(false)
@@ -422,7 +421,6 @@ let make = (props: props) => {
     None
   }, [state])
 
-  let (isOverlayOpen, setOverlayOpen) = React.useState(() => false)
   <>
     <Meta
       siteName="ReScript Packages"

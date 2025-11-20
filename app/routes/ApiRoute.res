@@ -111,8 +111,6 @@ let loader: ReactRouter.Loader.t<loaderData> = async args => {
   | _ => parseApi(await Node.Fs.readFile("./markdown-pages/docs/api/stdlib.json", "utf-8"))
   }
 
-  let stdlibToc = apiDocs->Dict.get(basePath)
-
   let toctree = groupItems(apiDocs)
 
   let data = {

@@ -101,7 +101,7 @@ module BlogHeader = {
 }
 
 let make = (props: props) => {
-  let {children, isArchived, path, frontmatter} = props
+  let {children, isArchived, frontmatter} = props
 
   let archivedNote = isArchived
     ? {

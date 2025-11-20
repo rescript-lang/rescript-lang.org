@@ -92,7 +92,7 @@ type itemInfo = {
 
 module Tag = {
   @react.component
-  let make = (~deprecated: bool, ~text: string, ~id: string, ~href) => {
+  let make = (~deprecated: bool, ~text: string, ~href) => {
     <ReactRouter.Link.String
       to={"/syntax-lookup/" ++ href}
       className={`
@@ -219,8 +219,6 @@ let make = (
     }
   })
 
-  let findItemById = id => allItems->Array.find(item => "#" ++ item.id === id)
-
   let findItemByExactName = name => {
     allItems->Array.find(item => {
       item.name === name
@@ -324,9 +322,7 @@ let make = (
               onSearchValueChange(item.name)
             }
             <span className="mr-2 mb-2 cursor-pointer" onMouseDown key=item.name>
-              <Tag
-                text={item.name} deprecated={item.status == Deprecated} id=item.id href=item.href
-              />
+              <Tag text={item.name} deprecated={item.status == Deprecated} href=item.href />
             </span>
           })
         let el =
@@ -351,7 +347,6 @@ let make = (
     onSearchValueChange("")
   }
 
-  let (isOverlayOpen, setOverlayOpen) = React.useState(() => false)
   let title = "Syntax Lookup | ReScript Documentation"
 
   let content =
