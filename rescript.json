@@ -4,13 +4,8 @@
   "jsx": {
     "version": 4
   },
-  "dependencies": [
-    "@rescript/react",
-    "@rescript/webapi"
-  ],
-  "compiler-flags": [
-    "-open WebAPI.Global"
-  ],
+  "dependencies": ["@rescript/react", "@rescript/webapi"],
+  "compiler-flags": ["-open WebAPI.Global"],
   "sources": [
     {
       "dir": "app",
