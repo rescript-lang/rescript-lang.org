@@ -4,8 +4,13 @@
   "jsx": {
     "version": 4
   },
-  "dependencies": ["@rescript/react", "@rescript/webapi"],
-  "compiler-flags": ["-open WebAPI.Global"],
+  "dependencies": [
+    "@rescript/react",
+    "@rescript/webapi"
+  ],
+  "compiler-flags": [
+    "-open WebAPI.Global"
+  ],
   "sources": [
     {
       "dir": "app",
@@ -25,8 +30,7 @@
     "in-source": true
   },
   "warnings": {
-    "error": "+8",
-    "number": "-27-26"
+    "error": "+8"
   },
   "suffix": ".mjs",
   "gentypeconfig": {
