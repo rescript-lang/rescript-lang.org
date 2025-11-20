@@ -17,7 +17,7 @@
     "build": "patch-package && rescript build  && react-router build",
     "test": "node scripts/test-examples.mjs && node scripts/test-hrefs.mjs",
     "reanalyze": "reanalyze -all-cmt .",
-    "update-index": "npm run generate-llms && && node scripts/generate_feed.mjs > public/blog/feed.xml",
+    "update-index": "npm run generate-llms && node scripts/generate_feed.mjs > public/blog/feed.xml",
     "sync-bundles": "node scripts/sync-playground-bundles.mjs",
     "generate-llms": "node scripts/generate_llms.mjs",
     "format": "prettier . --write --experimental-cli && rescript format",

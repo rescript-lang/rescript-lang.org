@@ -189,7 +189,12 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
     // TODO POST RR7: extract this out into a separate function
     // it can probably be cached or something
     let fileContents = await (await allMdx())
-    ->Array.filter(mdx => mdx.path->Option.map(String.includes(_, pathname))->Option.getOr(false))
+    ->Array.filter(mdx => {
+      switch mdx.slug {
+      | Some(slug) => pathname->Util.String.camelCase->String.includes(slug->Util.String.camelCase)
+      | None => false
+      }
+    })
     ->Array.get(0)
     ->Option.flatMap(mdx => {
       filePath :=
@@ -298,7 +303,7 @@ let default = () => {
         <Meta title=title description={attributes.description->Nullable.getOr("")} />
         <DocsLayout
           categories
-          activeToc={title: "Introduction", entries}
+          activeToc={title, entries}
           breadcrumbs=?{loaderData.breadcrumbs->Option.map(crumbs =>
             List.mapWithIndex(crumbs, (item, index) => {
               if index === 0 {
