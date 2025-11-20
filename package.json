@@ -14,7 +14,7 @@
     "res:watch": "rescript watch",
     "res:clean": "rescript clean",
     "res:build": "rescript build",
-    "build": "rescript build && npm run sync-bundles && npm run update-index && react-router build",
+    "build": "rescript build  && react-router build",
     "test": "node scripts/test-examples.mjs && node scripts/test-hrefs.mjs",
     "reanalyze": "reanalyze -all-cmt .",
     "update-index": "npm run generate-llms  && node scripts/generate_feed.mjs > public/blog/feed.xml",
