@@ -76,10 +76,6 @@ let getGroup = (groups, groupName): SidebarLayout.Sidebar.Category.t => {
 let getAllGroups = (groups, groupNames): array<SidebarLayout.Sidebar.Category.t> =>
   groupNames->Array.map(item => getGroup(groups, item))
 
-let blogPosts = async () => {
-  (await allMdx())->filterMdxPages("blog")
-}
-
 // These are the pages for the language manual, sorted by their "order" field in the frontmatter
 let manualTableOfContents = async () => {
   let groups =
@@ -139,8 +135,6 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
   let mdx = await loadMdx(request, ~options={remarkPlugins: Mdx.plugins})
 
   if pathname->String.includes("blog") {
-    let posts = blogPosts()
-
     let res: loaderData = {
       __raw: mdx.__raw,
       attributes: mdx.attributes,
