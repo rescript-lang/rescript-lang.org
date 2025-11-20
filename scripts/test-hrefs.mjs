@@ -29,6 +29,8 @@ for (const file of files) {
     if (
       log &&
       !warningMessage.includes("api/") &&
+      // When running on CI it fails to ignore the link directly to the blog root
+      // https://github.com/rescript-lang/rescript-lang.org/actions/runs/19520461368/job/55882556586?pr=1115#step:6:338
       !warningMessage.includes("`../../blog`") &&
       markdownFolders.some((folder) => warningMessage.includes(`${folder}`)) &&
       !warningMessage.includes(".txt")
