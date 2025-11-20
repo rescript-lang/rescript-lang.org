@@ -29,6 +29,7 @@ for (const file of files) {
     if (
       log &&
       !warningMessage.includes("api/") &&
+      !warningMessage.includes("`../../blog`") &&
       markdownFolders.some((folder) => warningMessage.includes(`${folder}`)) &&
       !warningMessage.includes(".txt")
     ) {
