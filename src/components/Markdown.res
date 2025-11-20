@@ -160,7 +160,13 @@ module H2 = {
 module H3 = {
   @react.component
   let make = (~id, ~children) => {
-    let title = childrenToString(children)
+    let title = {
+      try {
+        childrenToString(children)->Url.normalizeAnchor
+      } catch {
+      | _ => ""
+      }
+    }
     <h3 id className="group mt-8 mb-4 hl-4 scroll-mt-32">
       children
       <span className="ml-2">
@@ -173,7 +179,13 @@ module H3 = {
 module H4 = {
   @react.component
   let make = (~id, ~children) => {
-    let title = childrenToString(children)
+    let title = {
+      try {
+        childrenToString(children)->Url.normalizeAnchor
+      } catch {
+      | _ => ""
+      }
+    }
     <h4 id className="group mt-8 hl-5 scroll-mt-32">
       children
       <span className="ml-2">
@@ -186,7 +198,13 @@ module H4 = {
 module H5 = {
   @react.component
   let make = (~id, ~children) => {
-    let title = childrenToString(children)
+    let title = {
+      try {
+        childrenToString(children)->Url.normalizeAnchor
+      } catch {
+      | _ => ""
+      }
+    }
     <h5
       id
       className="group mt-12 mb-3 text-12 leading-2 font-sans font-semibold uppercase tracking-wide text-gray-80"
