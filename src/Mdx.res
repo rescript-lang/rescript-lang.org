@@ -129,13 +129,12 @@ let remarkReScriptPrelude = tree => {
 let remarkLinkPlugin = (tree, vfile) => {
   visit(tree, "link", node => {
     let url = node["url"]
-    let filePath = switch vfile["history"][0] {
-    | Some(path) => path
-    | None => {
-        Console.error2("File path not found for vfile:", JSON.stringifyAny(node["url"]))
-        ""
-      }
-    }
+    let filePath =
+      vfile["history"][0]->Option.getOrThrow(
+        ~message=`File path not found for vfile: ${JSON.stringifyAny(vfile)->Option.getOr(
+            "unknown vfile",
+          )}`,
+      )
 
     // Direct links to the homepage are OK
     if url == "https://rescript-lang.org" {
