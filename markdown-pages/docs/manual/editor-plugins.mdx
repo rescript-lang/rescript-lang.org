@@ -40,14 +40,14 @@ The code analysis provides extra checks for your ReScript project, such as detec
 ### Configuration
 
 Add a `reanalyze` section to your `rescript.json` to control what the analyzer checks or ignores. You’ll get autocomplete for config options in the editor.  
-More details: [reanalyze config docs](https://github.com/rescript-associlangation/reanalyze#configuration-via-bsconfigjson)
+More details: [reanalyze config docs](https://github.com/rescript-association/reanalyze#configuration-via-bsconfigjson)
 
 ### Exception analysis
 
 The exception analysis is designed to keep track statically of the exceptions that might be thrown at runtime. It works by issuing warnings and recognizing annotations. Warnings are issued whenever an exception is thrown and not immediately caught. Annotations are used to push warnings from he local point where the exception is thrown, to the outside context: callers of the current function.
 Nested functions need to be annotated separately.
 
-Instructions on how to run the exception analysis using the `-exception` and `-exception-cmt` command-line arguments, or how to add `"analysis": ["exception"]` in `rescript.json` are contained in the [reanalyze config docs](https://github.com/rescript-associlangation/reanalyze#configuration-via-bsconfigjson).
+Instructions on how to run the exception analysis using the `-exception` and `-exception-cmt` command-line arguments, or how to add `"analysis": ["exception"]` in `rescript.json` are contained in the [reanalyze config docs](https://github.com/rescript-association/reanalyze#configuration-via-bsconfigjson).
 
 Here's an example, where the analysis reports a warning any time an exception is thrown, and not caught:
 
