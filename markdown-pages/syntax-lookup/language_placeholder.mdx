@@ -1,0 +1,56 @@
+---
+id: "placeholder"
+keywords: ["placeholder"]
+name: "_"
+summary: "This is a `placeholder`."
+category: "languageconstructs"
+---
+
+Placeholders may be used for [ignoring parts of values](../docs/manual/pattern-matching-destructuring.mdx#ignore-part-of-a-value) (including serving as a catch-all in `switch` statements), and [specifying the position of an argument](../docs/manual/pipe.mdx#pipe-placeholders).
+
+### Example: Ignoring values
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+switch person1 {
+| Teacher(_) => Console.log("Hi teacher")
+| Student(_) => Console.log("Hey student")
+}
+```
+
+```js
+if (person1.TAG === "Teacher") {
+  console.log("Hi teacher");
+} else {
+  console.log("Hey student");
+}
+```
+
+</CodeTab>
+
+### Example: Specifying an argument position
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let greet = (greeting, name) => greeting ++ " " ++ name
+
+// Pipe the value "John" into the second argument of the greet() function.
+let greetJohn = "John"->greet("Hello", _)
+```
+
+```js
+function greet(greeting, name) {
+  return greeting + " " + name;
+}
+
+var greetJohn = "Hello John";
+```
+
+</CodeTab>
+
+### References
+
+- [Ignore part of a value](../docs/manual/pattern-matching-destructuring.mdx#ignore-part-of-a-value)
+- [Pipe placeholders](../docs/manual/pipe.mdx#pipe-placeholders)

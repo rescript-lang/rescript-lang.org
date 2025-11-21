@@ -9,7 +9,7 @@
 
 ## Language Documentation
 
-- [ReScript documentation](https://rescript-lang.org/llms/manual/latest/llms.txt): This is the developer documentation for ReScript.
+- [ReScript documentation](https://rescript-lang.org/llms/manual/llms.txt): This is the developer documentation for ReScript.
 
 ## Notes
 

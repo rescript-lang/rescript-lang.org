@@ -1,0 +1,85 @@
+---
+title: "Overview"
+metaTitle: "Build System Overview"
+description: "Documentation about the ReScript build system and its toolchain"
+canonical: "/docs/manual/build-overview"
+section: "Build System"
+order: 1
+---
+
+# Build System Overview
+
+ReScript comes with a build system, [`rescript`](https://www.npmjs.com/package/rescript), that's fast, lean and used as the authoritative build system of the community.
+
+Every ReScript project needs a build description file, `rescript.json`.
+
+## Options
+
+See `rescript help`:
+
+```
+❯ rescript help
+Usage: rescript <options> <subcommand>
+
+`rescript` is equivalent to `rescript build`
+
+Options:
+  -v, -version  display version number
+  -h, -help     display help
+
+Subcommands:
+  build
+  clean
+  format
+  convert
+  dump
+  help
+
+Run `rescript <subcommand> -h` for subcommand help. Examples:
+  rescript build -h
+  rescript format -h
+```
+
+## Build Project
+
+Each build will create build artifacts from your project's source files.
+
+**To build a project (including its dependencies / pinned-dependencies)**, run:
+
+```sh
+rescript
+```
+
+Which is an alias for `rescript build`.
+
+To keep a build watcher, run:
+
+```sh
+rescript -w
+```
+
+Any new file change will be picked up and the build will re-run.
+
+**Note**: third-party libraries (in `node_modules`, or via `pinned-dependencies`) aren't watched, as doing so may exceed the node.js watcher count limit.
+
+**Note 2**: In case you want to set up a project in a JS-monorepo-esque approach (`npm` and `yarn` workspaces) where changes in your sub packages should be noticed by the build, you will need to define pinned dependencies in your main project's `rescript.json`. More details [here](./build-monorepo-setup.mdx).
+
+## Clean Project
+
+If you ever get into a stale build for edge-case reasons, use:
+
+```sh
+rescript clean
+```
+
+## Compile with stricter errors in CI
+
+**Since 11.1**
+
+You may want to compile your project with stricter rules for production, than when developing. With the `-warn-error` build flag, this can easily be done, for instance in a continuous integration script. E.g.:
+
+```sh
+rescript -warn-error +110
+```
+
+Here, warning number 110, which is triggered when a [`%todo`](../../syntax-lookup/extension_todo.mdx) has been found, gets promoted to an error. The full list of warning numbers can be found [here](./warning-numbers.mdx).

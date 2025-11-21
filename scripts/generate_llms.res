@@ -53,11 +53,6 @@ let removeToDos = (content: string): string => {
   String.replaceRegExp(content, regex, "")
 }
 
-let fillContentWithVersion = (content: string, version: string): string => {
-  let regex = RegExp.fromString("<VERSION>", ~flags="g")
-  String.replaceRegExp(content, regex, version)
-}
-
 let createFullFile = (content: string, filePath: string): unit => {
   Node.Fs.appendFileSync(filePath, content ++ "\n", "utf8")
 }
@@ -73,65 +68,52 @@ let createSmallFile = (content: string, filePath: string): unit => {
   Node.Fs.appendFileSync(filePath, smallContent, "utf8")
 }
 
-let createLlmsFiles = (version: string, docsDirectory: string, llmsDirectory: string): unit => {
+// TODO: post RR7 - refactor to remove the version parameter, as it's unused
+let createLlmsFiles = (_version: string, docsDirectory: string, llmsDirectory: string): unit => {
   let mdxFileTemplatePath = llmsDirectory->Node.Path.join2("template.mdx")
-  let mdxFilePath = docsDirectory->Node.Path.join2(version)->Node.Path.join2("llms.mdx")
+  let mdxFilePath = docsDirectory->Node.Path.join2("llms.mdx")
   let txtFileTemplatePath = llmsDirectory->Node.Path.join2("template.txt")
-  let txtFilePath = llmsDirectory->Node.Path.join2(version)->Node.Path.join2("llms.txt")
+  let txtFilePath = llmsDirectory->Node.Path.join2("llms.txt")
 
-  Node.Fs.writeFileSync(
-    mdxFilePath,
-    readMarkdownFile(mdxFileTemplatePath)->fillContentWithVersion(version),
-  )
+  Console.log(txtFilePath)
 
-  Node.Fs.writeFileSync(
-    txtFilePath,
-    readMarkdownFile(txtFileTemplatePath)->fillContentWithVersion(version),
-  )
+  Node.Fs.writeFileSync(mdxFilePath, readMarkdownFile(mdxFileTemplatePath))
+
+  Node.Fs.writeFileSync(txtFilePath, readMarkdownFile(txtFileTemplatePath))
 }
 
-let processVersions = (
-  versions: array<string>,
-  docsDirectory: string,
-  llmsDirectory: string,
-): unit => {
+let generateFile = (docsDirectory: string, llmsDirectory: string): unit => {
   let fullFileName = "llm-full.txt"
   let smallFileName = "llm-small.txt"
 
-  versions->Array.forEach(version => {
-    let versionDir = docsDirectory->Node.Path.join2(version)
-    let llmsDir = llmsDirectory->Node.Path.join2(version)
-    let fullFilePath = llmsDir->Node.Path.join2(fullFileName)
-    let smallFilePath = llmsDir->Node.Path.join2(smallFileName)
+  let llmsDir = llmsDirectory
+  let fullFilePath = llmsDir->Node.Path.join2(fullFileName)
+  let smallFilePath = llmsDir->Node.Path.join2(smallFileName)
 
-    createDirectoryIfNotExists(llmsDir)
-    clearFile(fullFilePath)
-    clearFile(smallFilePath)
+  createDirectoryIfNotExists(llmsDir)
+  clearFile(fullFilePath)
+  clearFile(smallFilePath)
 
-    createLlmsFiles(version, docsDirectory, llmsDirectory)
+  createLlmsFiles("", docsDirectory, llmsDirectory)
 
-    versionDir
-    ->collectFiles
-    ->Array.forEach(filePath => {
-      if String.endsWith(filePath, ".mdx") {
-        let content = readMarkdownFile(filePath)
+  docsDirectory
+  ->collectFiles
+  ->Array.forEach(filePath => {
+    if String.endsWith(filePath, ".mdx") {
+      let content = readMarkdownFile(filePath)
 
-        content->createFullFile(fullFilePath)
+      content->createFullFile(fullFilePath)
 
-        content->createSmallFile(smallFilePath)
-      }
-    })
+      content->createSmallFile(smallFilePath)
+    }
   })
 }
 
-let manualVersions = ["v12.0.0", "v11.0.0"]
-let reactManualVersions = ["latest", "v0.10.0", "v0.11.0"]
-
-let manualDocsDirectory = "pages/docs/manual"
-let reactDocsDirectory = "pages/docs/react"
+let manualDocsDirectory = "markdown-pages/docs/manual"
+let reactDocsDirectory = "markdown-pages/docs/react"
 
 let manualLlmsDirectory = "public/llms/manual"
 let reactLlmsDirectory = "public/llms/react"
 
-processVersions(manualVersions, manualDocsDirectory, manualLlmsDirectory)
-processVersions(reactManualVersions, reactDocsDirectory, reactLlmsDirectory)
+generateFile(manualDocsDirectory, manualLlmsDirectory)
+generateFile(reactDocsDirectory, reactLlmsDirectory)

@@ -1,0 +1,267 @@
+---
+author: rescript-team
+date: "2024-04-19"
+previewImg: /blog/compiler_release_11_1.jpg
+title: ReScript 11.1
+badge: release
+description: |
+  Unleashing ReScript from React
+---
+
+This is a follow up release to [ReScript 11](./release-11-0-0.mdx). For information
+
+This next minor has some wonderful additions to the ReScript toolbelt for you today.
+
+Use your favorite package manager to install the new compiler release, e.g.:
+
+```sh
+npm install rescript@11.1
+```
+
+Find a list of all the new features below:
+
+## JSX for more than React
+
+Historically, ReScript has focused mainly on React for its frontend support. This has led to ReScript having a great JSX transform built into the language itself. However, that JSX transform has been quite difficult to use with anything but React.
+
+With v11.1, that changes! The JSX transform can now be configured to work with any framework. First class React support is of course still the same, and remains a priority. This makes it possible to integrate any other framework's JSX idiomatically in ReScript. And, all the tooling like autocompletion of prop names and types just works.
+
+Many popular frameworks like [Vue](https://vuejs.org/) and [Preact](https://preactjs.com/) use JSX. But, JSX is also becoming more and more ubiquitous, and these days JSX can also be used for everything from building CLI apps to responsive e-mail templating. We're happy that ReScript users will now be able to leverage all of these innovations in a more idiomatic way than before.
+
+Here's an example of what a Preact integration could look like:
+
+```rescript
+// Greet.res
+
+// @jsx.component works the same as @react.component does in React
+@jsx.component
+let make = (~name) => {
+  <div>
+    {Preact.string("Hello " ++ name)}
+  </div>
+}
+```
+
+Read more in the [new documentation on the generic JSX transform](../docs/manual/jsx.mdx#generic-jsx-transform-jsx-beyond-react-experimental).
+
+## Tagged template literals
+
+This release comes with support for [tagged templates](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates).
+
+A tag function in JavaScript is a function that expects an array of strings and variadic parameters as input. Now it's possibe to bind to such functions with the new [`@taggedTemplate`](../syntax-lookup/decorator_taggedTemplate.mdx) decorator:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```rescript
+// see https://bun.sh/docs/runtime/shell
+type result = {exitCode: int}
+@module("bun") @taggedTemplate
+external sh: (array<string>, array<string>) => promise<result> = "$"
+
+let filename = "index.res"
+let result = await sh`ls ${filename}`
+```
+
+```js
+var $$Bun = require("bun");
+
+var filename = "index.res";
+
+var result = await $$Bun.$`ls ${filename}`;
+```
+
+</CodeTab>
+
+Of course you can also create your own tag function in ReScript now as well, it is just a function with the following signature.
+
+```rescript
+let myTagFunction : (array<string>, array<'param>) => 'output
+```
+
+Refer to the docs to find a [detailed example](../docs/manual/tagged-templates.mdx).
+
+## Import attributes
+
+Import attributes is a JS feature that is [currently in standardization](https://github.com/tc39/proposal-import-attributes), but is already implemented by many JS tools. Now, ReScript supports it too, as long as the compiler is configured to output ES6.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+@module({from: "./myJson.json", with: {type_: "json", \"some-identifier": "yep"}})
+external myJson: Js.Json.t = "default"
+Console.log(myJson)
+
+@module({from: "./myCss.css", with: {type_: "css", \"some-identifier": "yep"}})
+external buttonCss: string = "button"
+Console.log(buttonCss)
+```
+
+```js
+import * as MyCssCss from "./myCss.css" with { type: "css", "some-identifier": "yep" };
+import MyJsonJson from "./myJson.json" with { type: "json", "some-identifier": "yep" };
+
+var myJson = MyJsonJson;
+console.log(myJson);
+
+var buttonCss = MyCssCss.button;
+console.log(buttonCss);
+```
+
+</CodeTab>
+
+## BigInt support
+
+ReScript now natively supports [JavaScript's `bigint` type](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt).
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+open! Js.BigInt
+
+let a = 9007199254740991n + 9007199254740991n
+let b = 2n ** 2n
+```
+
+```js
+var a = 9007199254740991n + 9007199254740991n;
+
+var p = 2n ** 2n;
+```
+
+</CodeTab>
+
+See [big integer docs](../docs/manual/primitive-types.mdx#big-integers-experimental) for more.
+
+## Array spread syntax
+
+The spread syntax, which was already supported for records and lists for a long time, now also supports arrays!
+
+```rescript
+let animals = ["🐶", "🐱", "🐷"]
+let moreAnimals = [...animals, "🐔", "🐴", "🐮"]
+```
+
+## Hyphens in JSX tag names
+
+We lifted restrictions on JSX tag names. This means you no longer need to escape tag names that contain hyphens:
+
+Previously:
+
+```rescript
+let x = <\"custom-tag" />
+```
+
+Now:
+
+```rescript
+let x = <custom-tag />
+```
+
+This is particularly useful when dealing with [web components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components), where element names tend to use hyphens.
+
+## Omit trailing undefined in external function calls
+
+ReScript 11's uncurried mode allows for much more ergonomic external function bindings, because trailing units are not needed anymore. But, this comes with a potential problem. All arguments, whether they're actually supplied or not, were printed as `undefined` in the resulting JS. This is handled better now, as trailing `undefined`s are automatically omitted.
+
+<CodeTab labels={["ReScript", "JS Output (ReScript 11.0)", "JS Output (ReScript 11.1)"]}>
+
+```res
+@val
+external stringify: (
+  'a,
+  ~replacer: (string, JSON.t) => JSON.t=?,
+  ~space: int=?,
+) => string = "JSON.stringify"
+
+let obj = {"test": 1}
+
+let result = stringify(obj)
+
+let result2 = stringify(obj, ~space=2)
+```
+
+```js
+var obj = {
+  test: 1,
+};
+
+var result = JSON.stringify(obj, undefined, undefined);
+
+var result2 = JSON.stringify(obj, undefined, 2);
+```
+
+```js
+var obj = {
+  test: 1,
+};
+
+var result = JSON.stringify(obj);
+
+var result2 = JSON.stringify(obj, undefined, 2);
+```
+
+</CodeTab>
+
+## %todo and warn-error
+
+Inspired by languages like [Elm](https://package.elm-lang.org/packages/elm/core/latest/Debug#todo) or [Gleam](https://tour.gleam.run/advanced-features/todo/), we introduced a new extension point: [`%todo`](../syntax-lookup/extension_todo.mdx).
+
+It is used to tell the compiler that some code still needs to be implemented and it will crash when executed.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let implementMeLater = (): string => %todo("This should return a string eventually.")
+
+let x = implementMeLater()
+
+Console.log(x->String.includes("x"))
+```
+
+```js
+var Js_exn = require("./stdlib/js_exn.js");
+
+function implementMeLater() {
+  return Js_exn.raiseError(
+    "playground.res:1:37-42 - Todo: This should return a string eventually.",
+  );
+}
+
+var x = Js_exn.raiseError(
+  "playground.res:1:37-42 - Todo: This should return a string eventually.",
+);
+
+console.log(x.includes("x"));
+```
+
+</CodeTab>
+
+We also made the compiler's `-warn-error` flag accessible by the build system, so that `%todo`s and other warnings can be turned into errors in production builds.
+
+```sh
+rescript -warn-error +110
+```
+
+See ["Compile with stricter errors in CI"](../docs/manual/build-overview.mdx#compile-with-stricter-errors-in-ci).
+
+## Other changes
+
+Of course we also got a bunch of other changes and bug fixes in this release. Check out the [compiler changelog](https://github.com/rescript-lang/rescript/blob/11.0_release/CHANGELOG.md#1110-rc1) if you are interested.
+
+## v12 is next
+
+v11.1 marks the completion of the v11 versions feature wise. We will of course continue to support the v11 release series with bug fixes and other important updates. However, our focus for new feature development will move to v12. You'll hear more about v12 and the plans for that version soon.
+
+## Acknowledgements
+
+Once again we want to thank everyone from the community who volunteered their precious time to support this project with contributions of any kind, from documentation, to PRs, to discussions in the forum. But especially we want to thank the following people, who helped landing this release:
+
+[@aspeddro](https://github.com/aspeddro), [@cknitt](https://github.com/cknitt), [@cometkim](https://github.com/cometkim), [@cristianoc](https://github.com/cristianoc), [@diogomqbm](https://github.com/diogomqbm), [@enzo-pellegrini](https://github.com/enzo-pellegrini), [@fhammerschmidt](https://github.com/fhammerschmidt), [@glennsl](https://github.com/glennsl), [@JonoPrest](https://github.com/JonoPrest), [@mununki](https://github.com/mununki), [@kevinbarabash](https://github.com/kevinbarabash), [@shulhi](https://github.com/shulhi), [@tsnobip](https://github.com/tsnobip), [@zth](https://github.com/zth).
+
+## That's it
+
+We hope you enjoy the newest improvements as much as we do.
+
+If you find any problems with this new release, make sure to report them here:
+
+- [rescript-lang/rescript](https://github.com/rescript-lang/rescript/issues/new/choose)

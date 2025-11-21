@@ -1,0 +1,98 @@
+---
+author: ryyppy
+date: "2020-05-15"
+previewImg: /blog/archive/state-of-reasonml-org-q2-2020.jpg
+title: State of reasonml.org 2020-Q2 / Pt. 4
+description: |
+  A report on recent achievements in the reasonml.org project.
+  This is the final part of the series about our vision of a more accessible Reason platform.
+---
+
+## It's all Opinions
+
+This is the final part of our "State of reasonml.org Q1-2020" series. > **Go to [Part 3](./state-of-reasonml-org-2020-q2-pt3.mdx)** if you haven't read it yet.
+
+Apart from the general progress perspective of the `reasonml.org` project, we also want to give you some more context on how we envision the documentation landscape for the Reason language in the near future. It should give you a perspective on how we see things, and we hope it will kick off some constructive community discussions on where things should be heading.
+
+### Our Focus: Web Development
+
+Our goal is to increase the number of Reason developers by focusing on the biggest market for the language, which is the JS / React ecosystem.
+
+Thinking back to when Reason got its first massive surge in traction around 2017, the primary motivation around adoption was its JS-dev friendly nature, with good JS interop and superb React support. Many people spoke at conferences and meetups because they were really excited about having a strongly typed language, with the right level of escape hatches to allow seamless interop with existing JS.
+
+We had _massive_ success with ReasonConf 2018, which was mainly targeted at complete Reason beginners, and experienced JS developers. The demand was huge, and actually still is!
+
+#### What about Native Compilation?
+
+Reason is often advertised as an alternative syntax to OCaml. The native story was always a big part of its marketing scheme, so we took the time to really think about what use-cases we can really cover with the native (OCaml) platform and explain what we believe would be a good strategy to push the Reason platform further.
+
+First of all, there are companies relying on the OCaml stack every day for crunching numbers and building reliable systems, like Ahrefs and JaneStreet, and some of them either use Reason just as an alternative syntax to OCaml, or they use Reason together with BuckleScript to build JS applications. They have the resources, company culture and the right level of OCaml knowledge to make that work.
+
+Reason / BuckleScript and Reason / OCaml are pretty different though, not only tooling wise, but they also come with different community conventions and different roadmaps which are hard to unify. The effort making it work would extremely limit our actual potential to grow the language and community.
+
+Companies and Products like [Darklang](https://darklang.com/) and [OneGraph](https://www.onegraph.com/) demonstrated with years of struggle and effort that native can eventually be used for web development, but the situation is still far from ideal. It requires a lot of resilience and dedication to make it work. [Paul Biggar](https://www.youtube.com/watch?v=EnPodoPzimE) and [Sean Grove](https://www.youtube.com/watch?v=Lv2QCq6ZBPs) talked about that topic (and all the problems along the way) in detail at ReasonConfUS 2019.
+
+So what we think is that Reason Native has very specific use-cases that compiled JavaScript could not cover. Its biggest potential today lies in building Reason / OCaml related development tools (CLIs, parsers, ppxes, etc), since they are really fast and the library support for building e.g. CLIs is actually good.
+
+In the app development space, for many companies the BuckleScript / NodeJS / ElectronJS platform is still perceived as a safer bet and easier to justify for managers and tech leads. For what we know from our discussions is that the most important question on tech stack were mostly about using TypeScript / Flow or Reason (BuckleScript) and not about choosing JS vs native.
+
+There needs to be a clearer separation between both platforms (JS and OCaml), a stronger focus on the JS use-case and clear instructions on getting into native, for those who are ready to do so and need the extra performance.
+
+#### Marketing and Newcomer Sustainability
+
+In the past few months, we observed more and more newcomers getting into the BuckleScript platform to build ReasonReact applications. Those Reason developers also started to talk more about Reason at JS conferences, meetups and [podcasts](https://youtu.be/0Usnsda0WDo), which caused yet another wave of newcomers joining the Discord chat to ask for guidance, which is a great virtuous cycle (fun fact: it also seems we just hit the [10k users mark](https://discordapp.com/channels/235176658175262720/235176658175262720/702838691227369502))!
+
+Fair enough, the only "real numbers and statistics" we can showcase are vague, but still interesting: Just typing in ["reasonml" on Youtube](https://www.youtube.com/results?search_query=reasonml) shows a list of videos mostly targeted to JS audiences.
+
+<Image
+  src="/blog/archive/youtube-search-reasonml.jpg"
+  withShadow={true}
+  caption="Top hits on Youtube for 'reasonml' (not logged in, anonymous browser session)"
+/>
+
+To put this in relation to some "high volume" [ReasonConf](https://www.youtube.com/channel/UCtFP_Hn5nIbZY4Xi47qfHhw?view_as=subscriber) viewing numbers: Our best performing videos are our ReasonConf keynotes (2018: 3.3k, 2019: 4,3k, 2019 US: 18k). These are relatively low numbers in comparison to talks like [ReasonML for skeptics by Eric Shaefer](https://www.youtube.com/watch?v=EmBzyBQU760), ticking in at 6.4k views ([React Day Berlin](https://reactday.berlin/)) and Ken Wheeler's [ReasonML is Serious Business](https://www.youtube.com/watch?v=lzEweA7RPi0) at React Rally 2018, which accumulated a pretty huge number of 15k views.
+
+The same goes for other JS focused talks, such as [GOTO2019 - ReasonML: React as a Language and what the Future looks like](https://www.youtube.com/watch?v=xGN4BMPbk7Q) by Peter Piekarczyk (5.8k views) or high volume JS related Youtube channels like Fun Fun Function [building a speed typing game with ReasonML and Comic Sans as editor font](https://www.youtube.com/watch?v=6MSksJhPcVA) (19.8k views). There's still a ton more resources about ReasonML we didn't mention, since we were just talking about the first few Youtube hits there.
+
+Apart from all that Youtube viewing numbers, many of you who spend a lot of time in our community channels already may have noticed that there seems to be more interaction happening, and we strongly believe this is related to the stronger marketing focus on the JS part, pulling in interested folks to build React applications in Reason. Even if all of this is just solely about web development, we also think that the OCaml community greatly benefited from this visibility boost as well.
+
+Hopefully for the future, with a unified documentation platform and blog as a central communication channel, it will be easier to conduct polls or capture web traffic for more concrete factual data. To move beyond our current stage where we are all largely guesstimating, we need to align our resources and put a focus on one specific goal, to be able to build a solid foundation the Reason platform can further grow on.
+
+### Separating the Documentation for JS and Native
+
+So what about the native documentation then? `reasonml.org` reserved a spot for the Native platform, but it requires a lot of dedicated work to "Reasonify" most OCaml platform resources first.
+
+**Documentation would include:**
+
+- Reasonified OCaml manual
+- esy & opam
+- dune
+- ppxes
+- js_of_ocaml
+- etc.
+
+We strongly believe that it's not viable to teach the Reason language while it requires you to know the in's and out's of OCaml as well. Learning one language is hard enough, so we shouldn't confront newcomers with leaky abstractions without any preparations.
+
+Our proposal (to the community) was to further promote Reason a JS-first language, but still have `Reason Native` as the ace-up-our-sleeve for doing deep level work in tooling or building more performant binaries.
+
+Please be aware that we are not the ones to make a final decision on this: In the interest of serving one community well, we've chosen to make this one experience delightful. And after several months of tinkering with documentation concepts, this is the best we have produced.
+
+That said, **we are looking for contributors** to help us with the documentation of the "Reason Native" section, since it requires a ton of work, knowledge and dedication to split the workload into a list of actionables and to coordinate the technical writing.
+
+## Conclusion
+
+Building documentation is not only a technical challenge, it's also about having a proper vision and putting focus on certain aspects of the language. We should not only think about technical ingenuity, but also keep an eye on bringing in more people. Our hopes is that we can break the complexity of understanding the language by focusing on a single use-case, then later branch out to more complex areas in well isolated manners, as soon as we get ready for prime time.
+
+We want Reason to be a web developer friendly language, but we also want to be able to document the Native parts in a way that can be understood without any OCaml knowledge, and for that we'll need help from experienced and ambitious native toolchain users to make this happen.
+
+This is the end of our "State of reasonml.org Q1-2020" series. We hope you have a better understanding on what's going on in `reasonml.org` and will try to keep our processes transparent with future blog posts as well.
+
+In case you have any questions or comments, make sure to let us know in the [Reason Discord](https://discord.gg/reasonml) `#docs` channel!
+
+Happy documentation browsing!
+
+## Previous Posts
+
+- **Part 1) [Introduction to reasonml.org](./state-of-reasonml-org-2020-q2-pt1.mdx)**
+- **Part 2) [Higher Quality Docs](./state-of-reasonml-org-2020-q2-pt2.mdx)**
+- **Part 3) [Future Tools for the Community](./state-of-reasonml-org-2020-q2-pt3.mdx)**

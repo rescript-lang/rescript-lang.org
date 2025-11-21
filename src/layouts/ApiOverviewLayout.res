@@ -1,22 +1,18 @@
 module Sidebar = SidebarLayout.Sidebar
 
-let makeCategories: string => array<Sidebar.Category.t> = version => [
+let categories: array<Sidebar.Category.t> = [
   {
     name: "Overview",
     items: [
-      {name: "Introduction", href: `/docs/manual/${version}/api`},
-      if version >= "v12.0.0" {
-        {name: "Stdlib", href: `/docs/manual/${version}/api/stdlib`}
-      } else {
-        {name: "Core", href: `/docs/manual/${version}/api/core`}
-      },
+      {name: "Introduction", href: "/docs/manual/api"},
+      {name: "Stdlib", href: "/docs/manual/api/stdlib"},
     ],
   },
   {
     name: "Additional Libraries",
     items: [
-      {name: "Belt", href: `/docs/manual/${version}/api/belt`},
-      {name: "Dom", href: `/docs/manual/${version}/api/dom`},
+      {name: "Belt", href: "/docs/manual/api/belt"},
+      {name: "Dom", href: "/docs/manual/api/dom"},
     ],
   },
 ]
@@ -24,23 +20,34 @@ let makeCategories: string => array<Sidebar.Category.t> = version => [
 /* Used for API docs (structured data) */
 module Docs = {
   @react.component
-  let make = (~version, ~components=ApiMarkdown.default, ~children) => {
-    let router = Next.Router.useRouter()
-    let route = router.route
-
-    let categories = makeCategories(version)
+  let make = (~children) => {
+    let {pathname: route} = ReactRouter.useLocation()
 
     let breadcrumbs = list{
-      {Url.name: "Docs", href: `/docs/manual/${version}/introduction`},
-      {name: "API", href: `/docs/manual/${version}/api`},
+      {Url.name: "Docs", href: `/docs/manual/api`},
+      {name: "API", href: `/docs/manual/api`},
     }
 
-    <ApiLayout breadcrumbs categories version components>
-      {switch version {
-      | "v9.0.0" | "v8.0.0" => <ApiLayout.OldDocsWarning route version />
-      | _ => React.null
-      }}
+    let (isSidebarOpen, setSidebarOpen) = React.useState(_ => false)
+
+    let preludeSection =
+      <div className="flex flex-col justify-between text-fire font-medium items-baseline">
+        <VersionSelect />
+      </div>
+
+    let sidebar =
+      <Sidebar
+        isOpen=isSidebarOpen
+        toggle={() => setSidebarOpen(prev => !prev)}
+        preludeSection
+        categories
+        route
+      />
+
+    <SidebarLayout
+      breadcrumbs categories sidebarState=(isSidebarOpen, setSidebarOpen) theme={#Js} sidebar
+    >
       children
-    </ApiLayout>
+    </SidebarLayout>
   }
 }

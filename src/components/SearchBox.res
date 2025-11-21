@@ -67,7 +67,6 @@ let make = (
   }
 
   let onChange = evt => {
-    ReactEvent.Form.preventDefault(evt)
     let value = ReactEvent.Form.target(evt)["value"]
     onValueChange(value)
   }
@@ -78,7 +77,8 @@ let make = (
     onBlur
     className={(
       state === Active ? "border-fire" : "border-fire-30"
-    ) ++ " flex items-center border rounded-lg py-4 px-5"}>
+    ) ++ " flex items-center border rounded-lg py-4 px-5"}
+  >
     <Icon.MagnifierGlass
       className={(state === Active ? "text-fire" : "text-fire-70") ++ " w-4 h-4"}
     />

@@ -1,0 +1,48 @@
+---
+id: "type"
+keywords: ["type"]
+name: "type"
+summary: "This is the `type` keyword"
+category: "languageconstructs"
+---
+
+The `type` keyword is used to declare a _type_, including [Records](../docs/manual/record.mdx), [Variants](../docs/manual/variant.mdx) and [Polymorphic Variants](../docs/manual/polymorphic-variant.mdx).
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+type location = {
+  name: string,
+  coordinates: (float, float),
+  keywords: array<string>,
+}
+
+let uluru: location = {
+  name: "Uluru",
+  coordinates: (-25.344490, 131.035431),
+  keywords: ["Rock", "Australia"],
+}
+```
+
+```js
+var uluru_coordinates = [-25.34449, 131.035431];
+
+var uluru_keywords = ["Rock", "Australia"];
+
+var uluru = {
+  name: "Uluru",
+  coordinates: uluru_coordinates,
+  keywords: uluru_keywords,
+};
+```
+
+</CodeTab>
+
+### References
+
+- [ReScript Types](../docs/manual/type.mdx)
+- [Record Types](../docs/manual/record.mdx)
+- [Variant Types](../docs/manual/variant.mdx)
+- [Polymorphic Variant Types](../docs/manual/polymorphic-variant.mdx)

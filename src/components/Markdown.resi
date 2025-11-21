@@ -27,7 +27,7 @@ module Warn: {
 
 module UrlBox: {
   @react.component
-  let make: (~text: string, ~href: string, ~children: Mdx.MdxChildren.t) => React.element
+  let make: (~text: string, ~href: string, ~children: MdxLegacy.MdxChildren.t) => React.element
 }
 
 // Used for creating invisible, hoverable <a> anchors for url linking
@@ -35,7 +35,7 @@ module Anchor: {
   /* let idFormat = (id: string): string => id */
 
   @react.component
-  let make: (~id: string) => React.element
+  let make: (~id: string, ~title: string=?) => React.element
 }
 
 module H1: {
@@ -45,22 +45,22 @@ module H1: {
 
 module H2: {
   @react.component
-  let make: (~id: string, ~children: React.element) => React.element
+  let make: (~id: string, ~children: React.element, ~title: string=?) => React.element
 }
 
 module H3: {
   @react.component
-  let make: (~id: string, ~children: React.element) => React.element
+  let make: (~id: string, ~children: React.element, ~title: string=?) => React.element
 }
 
 module H4: {
   @react.component
-  let make: (~id: string, ~children: React.element) => React.element
+  let make: (~id: string, ~children: React.element, ~title: string=?) => React.element
 }
 
 module H5: {
   @react.component
-  let make: (~id: string, ~children: React.element) => React.element
+  let make: (~id: string, ~children: React.element, ~title: string=?) => React.element
 }
 
 module Pre: {
@@ -93,13 +93,13 @@ module Code: {
   let make: (
     ~className: string=?,
     ~metastring: option<string>,
-    ~children: Mdx.Components.unknown,
+    ~children: MdxLegacy.Components.unknown,
   ) => React.element
 }
 
 module CodeTab: {
   @react.component
-  let make: (~children: Mdx.MdxChildren.t, ~labels: array<string>=?) => React.element
+  let make: (~children: MdxLegacy.MdxChildren.t, ~labels: array<string>=?) => React.element
 }
 
 module Blockquote: {
@@ -161,6 +161,7 @@ module Image: {
     ~withShadow: bool=?,
     ~caption: string=?,
     ~externalLink: string=?,
+    ~className: string=?,
   ) => React.element
 }
 

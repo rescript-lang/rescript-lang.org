@@ -1,1 +1,45 @@
+!_shims.mjs
+!public/_redirects
+.DS_Store
+.next/
+.react-router
+*.swo
+*.swp
+app/**/*.mjs
+build
 data/api/**/*.json
+dist
+index_data/*.json
+node_modules/
+out/
+public/playground-bundles/
+
+# Generated via update-index script
+public/blog/feed.xml
+
+
+# Generated via test examples script
+_tempFile.cmi
+_tempFile.cmj
+_tempFile.cmt
+_tempFile.res
+temp
+
+
+.bsb.lock
+.merlin
+lib/
+
+.vercel
+
+src/**/*.mjs
+scripts/gendocs.mjs
+scripts/generate_*.mjs
+
+# Generated via generate-llms script
+public/llms/manual/**/llm*.txt
+public/llms/react/**/llm*.txt
+pages/docs/**/**/llms.mdx
+
+# prettier refuses to not mess up the installation table
+markdown-pages/docs/manual/installation.mdx

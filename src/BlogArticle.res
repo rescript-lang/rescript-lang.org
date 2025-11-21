@@ -1,29 +1,15 @@
-/*
-      This module is responsible for statically prerendering each individual blog post.
- General concepts:
-      -----------------------
-      - We use webpack's "require" mechanic to reuse the MDX pipeline for rendering
-      - Frontmatter is being parsed and attached as an attribute to the resulting component function via plugins/mdx-loader
-      - We generate a list of static paths for each blog post via the BlogApi module (using fs)
-      - The contents of this file is being reexported by /pages/blog/[slug].js
-
-
-      A Note on Performance:
-      -----------------------
-      Luckily, since pages are prerendered, we don't need to worry about
-      increased bundle sizes due to the `require` with path interpolation. It
-      might cause longer builds though, so we might need to refactor as soon as
-      builds are taking too long.  I think we will be fine for now.
-  Link to NextJS discussion: https://github.com/zeit/next.js/discussions/11728#discussioncomment-3501
- */
-
 let middleDotSpacer = " " ++ (String.fromCharCode(183) ++ " ")
 
 module Params = {
   type t = {slug: string}
 }
 
-type props = {mdxSource: MdxRemote.output, isArchived: bool, path: string}
+type props = {
+  children: React.element,
+  isArchived: bool,
+  path: string,
+  frontmatter: BlogFrontmatter.t,
+}
 
 module Line = {
   @react.component
@@ -44,7 +30,8 @@ module AuthorBox = {
           | Bluesky(handle) => "https://bsky.app/profile/" ++ handle
           }}
           className="hover:text-gray-80"
-          rel="noopener noreferrer">
+          rel="noopener noreferrer"
+        >
           {React.string(author.fullname)}
         </a>
         <div className="text-gray-60"> {React.string(author.role)} </div>
@@ -113,18 +100,8 @@ module BlogHeader = {
   }
 }
 
-let default = (props: props) => {
-  let {mdxSource, isArchived, path} = props
-
-  let children =
-    <MdxRemote
-      frontmatter={mdxSource.frontmatter}
-      compiledSource={mdxSource.compiledSource}
-      scope={mdxSource.scope}
-      components={MarkdownComponents.default}
-    />
-
-  let fm = mdxSource.frontmatter->BlogFrontmatter.decode
+let make = (props: props) => {
+  let {children, isArchived, frontmatter} = props
 
   let archivedNote = isArchived
     ? {
@@ -142,14 +119,15 @@ let default = (props: props) => {
       }
     : React.null
 
-  let content = switch fm {
-  | Ok({date, author, co_authors, title, description, articleImg, previewImg}) =>
+  let {date, author, co_authors, title, description, articleImg, previewImg} = frontmatter
+
+  <MainLayout>
     <div className="w-full">
       <Meta
         siteName="ReScript Blog"
         title={title ++ " | ReScript Blog"}
-        description=?{description->Null.toOption}
-        ogImage={previewImg->Null.toOption->Option.getOr(Blog.defaultPreviewImg)}
+        description=?{description->Nullable.toOption}
+        ogImage={previewImg->Nullable.toOption->Option.getOr(Blog.defaultPreviewImg)}
       />
       <div className="mb-10 md:mb-20">
         <BlogHeader
@@ -157,83 +135,28 @@ let default = (props: props) => {
           author
           co_authors
           title
-          description={description->Null.toOption}
-          articleImg={articleImg->Null.toOption}
+          description={description->Nullable.toOption}
+          articleImg={articleImg->Nullable.toOption}
         />
       </div>
       <div className="flex justify-center">
         <div className="max-w-740 w-full">
           archivedNote
-          children
+          <div className="markdown-body"> children </div>
           <div className="mt-12">
             <Line />
             <div className="pt-20 flex flex-col items-center">
               <div className="text-24 sm:text-32 text-center text-gray-80 font-medium">
                 {React.string("Want to read more?")}
               </div>
-              <Next.Link href="/blog" className="text-fire hover:text-fire-70">
+              <ReactRouter.Link to=#"/blog" className="text-fire hover:text-fire-70">
                 {React.string("Back to Overview")}
                 <Icon.ArrowRight className="ml-2 inline-block" />
-              </Next.Link>
+              </ReactRouter.Link>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-  | Error(msg) =>
-    <div>
-      <Markdown.Warn>
-        <h2 className="font-bold text-gray-80 text-24 mb-2">
-          {React.string("Could not parse file '_blogposts/" ++ (path ++ ".mdx'"))}
-        </h2>
-        <p>
-          {React.string("The content of this blog post will be displayed as soon as all
-            required frontmatter data has been added.")}
-        </p>
-        <p className="font-bold mt-4"> {React.string("Errors:")} </p>
-        {React.string(msg)}
-      </Markdown.Warn>
-    </div>
-  }
-  <MainLayout> content </MainLayout>
-}
-
-let getStaticProps: Next.GetStaticProps.t<props, Params.t> = async ctx => {
-  open Next.GetStaticProps
-  let {params} = ctx
-
-  let path = switch BlogApi.getAllPosts()->Array.find(({path}) =>
-    BlogApi.blogPathToSlug(path) == params.slug
-  ) {
-  | None => params.slug
-  | Some({path}) => path
-  }
-
-  let filePath = Node.Path.resolve("_blogposts", path)
-
-  let isArchived = String.startsWith(path, "archive/")
-
-  let source = filePath->Node.Fs.readFileSync
-
-  let mdxSource = await MdxRemote.serialize(
-    source,
-    {parseFrontmatter: true, mdxOptions: MdxRemote.defaultMdxOptions},
-  )
-
-  let props = {mdxSource, isArchived, path}
-
-  {"props": props}
-}
-
-let getStaticPaths: Next.GetStaticPaths.t<Params.t> = async () => {
-  open Next.GetStaticPaths
-
-  let paths = BlogApi.getAllPosts()->Array.map(postData => {
-    params: {
-      Params.slug: BlogApi.blogPathToSlug(postData.path),
-    },
-  })
-
-  {paths, fallback: false}
+  </MainLayout>
 }

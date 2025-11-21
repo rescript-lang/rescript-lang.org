@@ -1,14 +1,34 @@
-module CommunityLayout = DocsLayout.Make({
-  // Structure defined by `scripts/extract-tocs.js`
-  @module("index_data/community_toc.json") external tocData: SidebarLayout.Toc.raw = "default"
-})
-
 @react.component
-let make = (~frontmatter=?, ~components=MarkdownComponents.default, ~children) => {
+let make = (~children, ~categories, ~entries) => {
+  let {pathname} = ReactRouter.useLocation()
+
+  let activePage =
+    (pathname :> string)
+    ->String.split("/")
+    ->Array.filter(str => str !== "")
+    ->Array.at(1)
+    ->Option.getOr("Community")
+    ->String.replaceAll("-", " ")
+    ->Util.String.capitalizeSentence
+
   let breadcrumbs = list{{Url.name: "Community", href: "/community"}}
 
-  <CommunityLayout
-    theme=#Reason components metaTitleCategory="ReScript Community" breadcrumbs ?frontmatter>
-    children
-  </CommunityLayout>
+  let (isSidebarOpen, setSidebarOpen) = React.useState(_ => false)
+  <>
+    <Meta title={`${activePage} | ReScript Community`} />
+    <SidebarLayout
+      sidebar={<SidebarLayout.Sidebar
+        categories
+        isOpen={isSidebarOpen}
+        route=pathname
+        toggle={() => setSidebarOpen(prev => !prev)}
+        activeToc={title: "Overview", entries}
+      />}
+      sidebarState=(isSidebarOpen, setSidebarOpen)
+      theme=#Reason
+      breadcrumbs
+    >
+      children
+    </SidebarLayout>
+  </>
 }

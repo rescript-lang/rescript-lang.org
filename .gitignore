@@ -14,10 +14,8 @@ index_data/*.json
 _tempFile.cmi
 _tempFile.cmj
 _tempFile.cmt
-
-# these docs are checked in, but we consider them frozen.
-# pages/docs/manual/v8.0.0/
-# pages/docs/manual/v9.0.0/
+_tempFile.res
+temp
 
 .bsb.lock
 .merlin
@@ -35,4 +33,13 @@ public/llms/react/**/llm*.txt
 pages/docs/**/**/llms.mdx
 
 public/playground-bundles/
-public/_redirects
+!public/_redirects
+
+
+dist
+build
+.react-router
+mdx-manifest.json
+
+app/**/*.mjs
+!_shims.mjs

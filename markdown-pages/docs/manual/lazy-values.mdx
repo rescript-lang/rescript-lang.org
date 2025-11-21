@@ -1,0 +1,97 @@
+---
+title: "Lazy Value"
+description: "Data type for deferred computation in ReScript"
+canonical: "/docs/manual/lazy-values"
+section: "Language Features"
+order: 20
+---
+
+# Lazy Value
+
+If you have some expensive computations you'd like to **defer and cache** subsequently, you can turn them into _lazy_ values:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res prelude
+@module("node:fs")
+external readdirSync: string => array<string> = "readdirSync"
+
+// Read the directory, only once
+let expensiveFilesRead = Lazy.make(() => {
+  Console.log("Reading dir")
+  readdirSync("./pages")
+})
+```
+
+```js
+import * as Lazy from "./stdlib/Lazy.js";
+import * as Nodefs from "node:fs";
+
+let expensiveFilesRead = Lazy.make(() => {
+  console.log("Reading dir");
+  return Nodefs.readdirSync("./pages");
+});
+```
+
+</CodeTab>
+
+**Note**: a lazy value is **not** a [shared data type](./shared-data-types.mdx). Don't rely on its runtime representation in your JavaScript code.
+
+## Execute The Lazy Computation
+
+To actually run the lazy value's computation, use `Lazy.get` from the standard library `Lazy` module:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+// First call. The computation happens
+Console.log(Lazy.get(expensiveFilesRead)) // logs "Reading dir" and the directory content
+
+// Second call. Will just return the already calculated result
+Console.log(Lazy.get(expensiveFilesRead)) // logs the directory content
+```
+
+```js
+console.log(Lazy.get(expensiveFilesRead));
+
+console.log(Lazy.get(expensiveFilesRead));
+```
+
+</CodeTab>
+
+The first time `Lazy.get` is called, the expensive computation happens and the result is **cached**. The second time, the cached value is directly used.
+
+**You can't re-trigger the computation after the first `get` call**. Make sure you only use a lazy value with computations whose results don't change (e.g. an expensive server request whose response is always the same).
+
+## Exception Handling
+
+For completeness' sake, our files read example might throw an exception because of `readdirSync`. Here's how you'd handle it:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+let result = try {
+  Lazy.get(expensiveFilesRead)
+} catch {
+| Not_found => [] // empty array of files
+}
+```
+
+```js
+let result;
+
+try {
+  result = Lazy.get(expensiveFilesRead);
+} catch (raw_exn) {
+  let exn = Primitive_exceptions.internalToException(raw_exn);
+  if (exn.RE_EXN_ID === "Not_found") {
+    result = [];
+  } else {
+    throw exn;
+  }
+}
+```
+
+</CodeTab>
+
+Though you should probably handle the exception inside the lazy computation itself.

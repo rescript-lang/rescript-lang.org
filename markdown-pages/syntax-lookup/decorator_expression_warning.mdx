@@ -1,0 +1,33 @@
+---
+id: "expression-warning-decorator"
+keywords: ["warning", "decorator"]
+name: "@warning"
+summary: "This is the `@warning` decorator."
+category: "decorators"
+---
+
+The `@warning` decorator is used to modify the enabled compiler warnings for types, values and submodules. See [here](../docs/manual/warning-numbers.mdx) for all available warning numbers. Prefix the warning number with `+` or `-` to enable or disable respectively.
+
+### Examples
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+// Disables warning 27 for the deepClone function
+@warning("-27")
+let deepClone = (obj: 'a): 'a => %raw(`
+  JSON.parse(JSON.stringify(obj))
+`);
+```
+
+```js
+function deepClone(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+```
+
+</CodeTab>
+
+### References
+
+- [Warning Numbers](../docs/manual/warning-numbers.mdx)

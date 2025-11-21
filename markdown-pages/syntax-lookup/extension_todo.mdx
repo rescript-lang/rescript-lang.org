@@ -1,0 +1,52 @@
+---
+id: "todo"
+keywords: ["todo"]
+name: "%todo"
+summary: "This is the `todo` extension point."
+category: "extensionpoints"
+---
+
+**Since 11.1**
+
+`%todo` is used to tell the compiler that some code still needs to be implemented.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let implementMeLater = (): string => %todo("This should return a string eventually.")
+
+let x = implementMeLater()
+
+Console.log(x->String.includes("x"))
+```
+
+```js
+var Js_exn = require("./stdlib/js_exn.js");
+
+function implementMeLater() {
+  return Js_exn.raiseError(
+    "playground.res:1:37-42 - Todo: This should return a string eventually.",
+  );
+}
+
+var x = Js_exn.raiseError(
+  "playground.res:1:37-42 - Todo: This should return a string eventually.",
+);
+
+console.log(x.includes("x"));
+```
+
+</CodeTab>
+
+It can also be used without a text message:
+
+```res
+let implementMeLater = (): string => %todo
+```
+
+This will crash when executed. We suggest to [promote the warning to an error](../docs/manual/build-overview.mdx#compile-with-stricter-errors-in-ci) when building for production.
+
+### References
+
+- [Stricter compilation in CI](../docs/manual/build-overview.mdx#compile-with-stricter-errors-in-ci)
+- [Extension Point Attributes](../docs/manual/attribute.mdx#extension-point)

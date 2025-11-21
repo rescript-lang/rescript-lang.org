@@ -1,0 +1,85 @@
+---
+title: "JSON"
+description: "Interacting with JSON in ReScript"
+canonical: "/docs/manual/json"
+section: "JavaScript Interop"
+order: 9
+---
+
+# JSON
+
+## Parse
+
+Bind to JavaScript's `JSON.parse` and type the return value as the type you're expecting:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+// declare the shape of the json you're binding to
+type data = {names: array<string>}
+
+// bind to JS' JSON.parse
+@scope("JSON") @val
+external parseIntoMyData: string => data = "parse"
+
+let result = parseIntoMyData(`{"names": ["Luke", "Christine"]}`)
+let name1 = result.names[0]
+```
+
+```js
+var result = JSON.parse('{"names": ["Luke", "Christine"]}');
+var name1 = result.names[0];
+```
+
+</CodeTab>
+
+Where `data` can be any type you assume the JSON is. As you can see, this compiles to a straightforward `JSON.parse` call. As with regular JS, this is convenient, but has no guarantee that e.g. the data is correctly shaped, or even syntactically valid. Slightly dangerous.
+
+## Stringify
+
+Use [`JSON.stringify`](/docs/manual/api/stdlib/json#value-stringify) if your data is of type `JSON.t` or [`JSON.stringifyAny`](/docs/manual/api/stdlib/json#value-stringifyAny) if it is not.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+Console.log(JSON.stringifyAny(["Amy", "Joe"]))
+```
+
+```js
+console.log(JSON.stringify(["Amy", "Joe"]));
+```
+
+</CodeTab>
+
+## Import a JSON file
+
+Use the `@module` attribute to import JSON files directly.
+
+<CodeTab labels={["ReScript", "JS Output (Module)", "JS Output (CommonJS)"]}>
+
+```res example
+@module external studentNames: JSON.t = "./students.json"
+Console.log(studentNames)
+```
+
+```js
+import * as StudentsJson from "./students.json";
+
+var studentNames = StudentsJson;
+
+console.log(studentNames);
+```
+
+```js
+var StudentsJson = require("./students.json");
+
+var studentNames = StudentsJson;
+
+console.log(studentNames);
+```
+
+</CodeTab>
+
+## Advanced
+
+The generated types are [variants](./variant.mdx), and decoding them requires you to drill down as much

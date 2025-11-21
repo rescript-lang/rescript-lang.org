@@ -60,6 +60,9 @@ let useScrollDirection = (~topMargin=80, ~threshold=20) => {
         }
       })
     }
+
+    // let onScroll = Util.debounce(onScroll, 50)
+
     WebAPI.Window.addEventListener(window, Scroll, onScroll)
     Some(() => WebAPI.Window.removeEventListener(window, Scroll, onScroll))
   }, [topMargin, threshold])
