@@ -1508,7 +1508,27 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   let versions =
     versions
     ->Array.filterMap(v => v->Semver.parse)
-    ->Belt.SortArray.stableSortBy((a, b) => {
+    // Remove older versions and v12 alpha and betas
+    ->Array.filter(v => {
+      switch v.major {
+      | 8 | 9 => false
+      | 10 => v.minor >= 1
+      | 11 => v.minor >= 1 && v.preRelease->Option.isNone
+      | 12 =>
+        switch v.preRelease {
+        | None => true
+        | Some(preRelease) =>
+          switch preRelease {
+          | Semver.Rc(_) => true
+          | Semver.Beta(_) => false
+          | Semver.Alpha(_) => false
+          | Semver.Dev(_) => false
+          }
+        }
+      | _ => true
+      }
+    })
+    ->Array.toSorted((a, b) => {
       let cmp = ({Semver.major: major, minor, patch, _}) => {
         [major, minor, patch]
         ->Array.map(v => v->Int.toString)
@@ -1516,7 +1536,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
         ->Int.fromString
         ->Option.getOr(0)
       }
-      cmp(b) - cmp(a)
+      cmp(b) < cmp(a) ? -1.0 : 1.0
     })
 
   let initialVersion = switch versions {
