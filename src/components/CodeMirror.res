@@ -155,7 +155,7 @@ module CM6 = {
     external dispatchEffects: (editorView, dispatchEffectsArg) => unit = "dispatch"
 
     @module("@codemirror/view") @scope("EditorView") @val
-    external theme: {..} => extension = "theme"
+    external theme: dict<dict<string>> => extension = "theme"
 
     @module("@codemirror/view") @scope("EditorView") @val
     external lineWrapping: extension = "lineWrapping"
@@ -667,25 +667,27 @@ let createEditor = (config: editorConfig): editorInstance => {
   let extensions = [
     CM6.Compartment.make(languageConf, (language: CM6.extension)),
     CM6.Commands.history(),
-    CM6.EditorView.theme({
-      ".cm-content": {
-        "lineHeight": lineHeight,
-        "caretColor": cursorColor,
+    CM6.EditorView.theme(
+      dict{
+        ".cm-content": dict{
+          "lineHeight": lineHeight,
+          "caretColor": cursorColor,
+        },
+        ".cm-line": dict{
+          "lineHeight": lineHeight,
+        },
+        ".cm-cursor, .cm-dropCursor": dict{"borderLeftColor": cursorColor},
+        ".cm-activeLine": dict{
+          "backgroundColor": "rgba(255, 255, 255, 0.02)",
+        },
+        ".cm-gutters": dict{"backgroundColor": "inherit"},
+        ".cm-gutters.cm-gutters-before": dict{"border": "none"},
+        ".cm-activeLineGutter": dict{
+          "color": "#cdcdd6",
+          "backgroundColor": "inherit",
+        },
       },
-      ".cm-line": {
-        "lineHeight": lineHeight,
-      },
-      ".cm-cursor, .cm-dropCursor": {"borderLeftColor": cursorColor},
-      ".cm-activeLine": {
-        "backgroundColor": "rgba(255, 255, 255, 0.02)",
-      },
-      ".cm-gutters": {"backgroundColor": "inherit"},
-      ".cm-gutters.cm-gutters-before": {"border": "none"},
-      ".cm-activeLineGutter": {
-        "color": "#cdcdd6",
-        "backgroundColor": "inherit",
-      },
-    }),
+    ),
     CM6.EditorView.drawSelection(),
     CM6.EditorView.dropCursor(),
     CM6.Language.bracketMatching(),
