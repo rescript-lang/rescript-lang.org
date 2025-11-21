@@ -378,7 +378,7 @@ let make = (
               id="mobile-navbar"
               className={`z-10 fixed border-b shadow ${isDocRoute(~route=pathname)
                   ? "top-28"
-                  : "top-16"} left-0 pl-4 bg-white w-full py-4 md:relative md:border-none md:shadow-none md:p-0 md:top-auto flex items-center transition duration-300 ease-out group-[.nav-disappear]:-translate-y-64 md:group-[.nav-disappear]:-translate-y-0 z-25`}
+                  : "top-16"} left-0 pl-4 bg-white w-full py-4 md:relative md:border-none md:shadow-none md:p-0 md:top-auto flex items-center transition duration-300 ease-out group-[.nav-disappear]:-translate-y-64 md:group-[.nav-disappear]:translate-y-0 z-25`}
             >
               <MobileDrawerButton hidden=isNavOpen onClick={handleDrawerButtonClick} />
               <div

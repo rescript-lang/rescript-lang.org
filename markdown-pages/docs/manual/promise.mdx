@@ -36,8 +36,6 @@ A builtin module to create, chain and manipulate promises.
 
 ```res
 let p1 = Promise.make((resolve, reject) => {
-  // We use uncurried functions for resolve / reject
-  // for cleaner JS output without unintended curry calls
   resolve("hello world")
 })
 

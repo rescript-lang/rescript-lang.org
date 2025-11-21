@@ -15,7 +15,6 @@ const { stdlibPaths } = await import("./app/routes.mjs");
 
 export default {
   ssr: false,
-
   async prerender({ getStaticPaths }) {
     return [
       ...(await getStaticPaths()),
