@@ -79,7 +79,7 @@ let getAllGroups = (groups, groupNames): array<SidebarLayout.Sidebar.Category.t>
 // These are the pages for the language manual, sorted by their "order" field in the frontmatter
 let manualTableOfContents = async () => {
   let groups =
-    (await allMdx())
+    (await allMdx(~filterByPaths=["markdown-pages/docs"]))
     ->filterMdxPages("docs/manual")
     ->groupBySection
     ->Dict.mapValues(values => values->sortSection->convertToNavItems("/docs/manual"))
@@ -102,7 +102,7 @@ let manualTableOfContents = async () => {
 
 let reactTableOfContents = async () => {
   let groups =
-    (await allMdx())
+    (await allMdx(~filterByPaths=["markdown-pages/docs"]))
     ->filterMdxPages("docs/react")
     ->groupBySection
     ->Dict.mapValues(values => values->sortSection->convertToNavItems("/docs/react"))
@@ -118,7 +118,7 @@ let reactTableOfContents = async () => {
 
 let communityTableOfContents = async () => {
   let groups =
-    (await allMdx())
+    (await allMdx(~filterByPaths=["markdown-pages/community"]))
     ->filterMdxPages("community")
     ->groupBySection
     ->Dict.mapValues(values => values->sortSection->convertToNavItems("/community"))
@@ -147,7 +147,7 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
     res
   } else if pathname->String.includes("syntax-lookup") {
     let mdxSources =
-      (await allMdx())
+      (await allMdx(~filterByPaths=["markdown-pages/syntax-lookup"]))
       ->Array.filter(page =>
         page.path
         ->Option.map(String.includes(_, "syntax-lookup"))
@@ -186,13 +186,15 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
 
     let filePath = ref(None)
 
-    // TODO POST RR7: extract this out into a separate function
-    // it can probably be cached or something
     let fileContents = await (await allMdx())
     ->Array.filter(mdx => {
-      switch mdx.slug {
-      | Some(slug) => pathname->Util.String.camelCase->String.includes(slug->Util.String.camelCase)
-      | None => false
+      switch (mdx.slug, mdx.canonical) {
+      // Having a canonical path is the best way to ensure we get the right file
+      | (_, Nullable.Value(canonical)) => pathname == (canonical :> string)
+      // if we don't have a canonical path, see if we can find the slug in the pathname
+      | (Some(slug), _) => pathname->String.includes(slug)
+      // otherwise we can't match it and the build should fail
+      | _ => false
       }
     })
     ->Array.get(0)
@@ -205,7 +207,7 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
       mdx.path
     })
     ->Option.map(path => Node.Fs.readFile(path, "utf-8"))
-    ->Option.getOrThrow
+    ->Option.getOrThrow(~message="Could not find MDX file for path " ++ (pathname :> string))
 
     let markdownTree = Mdast.fromMarkdown(fileContents)
     let tocResult = Mdast.toc(markdownTree, {maxDepth: 2})

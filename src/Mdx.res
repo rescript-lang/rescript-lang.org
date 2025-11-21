@@ -22,7 +22,7 @@ type attributes = {
   previewImg: Nullable.t<string>,
   articleImg: Nullable.t<string>,
   badge: Nullable.t<string>,
-  canonical: Path.t,
+  canonical: Nullable.t<Path.t>,
   category?: string,
   id?: string,
   keywords?: array<string>,
@@ -72,7 +72,8 @@ external validateLinks: remarkPlugin = "default"
 
 // The loadAllMdx function logs out all of the file contents as it reads them, which is noisy and not useful.
 // We can suppress that logging with this helper function.
-let allMdx = async () => await Shims.runWithoutLogging(() => loadAllMdx())
+let allMdx = async (~filterByPaths: option<array<string>>=?) =>
+  await Shims.runWithoutLogging(() => loadAllMdx(~filterByPaths?))
 
 let sortSection = mdxPages =>
   Array.toSorted(mdxPages, (a: attributes, b: attributes) =>

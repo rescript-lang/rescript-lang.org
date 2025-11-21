@@ -17,9 +17,12 @@ export default defineConfig({
   },
   css: {
     transformer: "lightningcss",
+    lightningcss: {
+      minify: process.env.NODE_ENV === "production",
+    },
   },
   optimizeDeps: {
-    exclude: ["node_modules/.vite"],
+    exclude: ["node_modules/.vite/deps/*.js"],
   },
   assetsInclude: ["**/resources.json"],
 });
