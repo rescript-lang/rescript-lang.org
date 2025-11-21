@@ -686,6 +686,9 @@ let createEditor = (config: editorConfig): editorInstance => {
           "color": "#cdcdd6",
           "backgroundColor": "inherit",
         },
+        "&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection": dict{
+          "backgroundColor": "rgba(255, 255, 255, 0.20)",
+        },
       },
     ),
     CM6.EditorView.drawSelection(),
