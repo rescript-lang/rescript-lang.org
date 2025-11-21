@@ -1,0 +1,155 @@
+---
+title: Extensions of props
+description: "Extensions of props in ReScript and React"
+canonical: "/docs/react/extensions-of-props"
+section: "Guides"
+order: 3
+---
+
+# Extensions of Props
+
+> **Note:** The output shown for the examples on this page assumes your `rescript.json` to be set to `"jsx": { "version": 4, "mode": "classic" }`. We will update it for automatic mode soon.
+
+## Spread props
+
+JSX props spread is supported now, but in a stricter way than in JS.
+
+<div className="hidden">
+
+```res prelude
+module Comp = {
+  type props = {a?: string, b?: string}
+  external make: React.component<props> = "default"
+}
+```
+
+</div>
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+let props = {Comp.b: "b"}
+<Comp {...props} a="a" />
+```
+
+```js
+var props = {b: "b"};
+var newrecord = Caml_obj.obj_dup(props);
+return JsxRuntime.jsx(default, (newrecord.a = "a", newrecord));
+```
+
+</CodeTab>
+
+Multiple spreads are not allowed:
+
+<CodeTab labels={["ReScript"]}>
+
+```res
+<NotAllowed {...props1} {...props2} />
+```
+
+</CodeTab>
+
+The spread must be at the first position, followed by other props:
+
+<CodeTab labels={["ReScript"]}>
+
+```res
+<NotAllowed a="a" {...props} />
+```
+
+</CodeTab>
+
+## Shared props
+
+You can control the definition of the `props` type by passing as argument to `@react.component` the body of the type definition of `props`. The main application is sharing a single type definition across several components. Here are a few examples:
+
+<CodeTab labels={["Decorated", "Expanded"]}>
+
+```res example
+type sharedProps<'x, 'y> = {x: 'x, y: 'y, z:string}
+
+module C1 = {
+  @react.component(:sharedProps<'a, 'b>)
+  let make = (~x, ~y, ~z) => React.string(x ++ y ++ z)
+}
+
+module C2 = {
+  @react.component(:sharedProps<string, 'b>)
+  let make = (~x, ~y, ~z) => React.string(x ++ y ++ z)
+}
+
+module C3 = {
+  type myProps = sharedProps<int, int>
+  @react.component(:myProps)
+  let make = (~x, ~y) => React.int(x + y)
+}
+```
+
+```res example
+type sharedProps<'x, 'y> = {x: 'x, y: 'y, z: string}
+
+module C1 = {
+  type props<'a, 'b> = sharedProps<'a, 'b>
+  let make = ({x, y, z}: props<_>) => React.string(x ++ y ++ z)
+}
+
+module C2 = {
+  type props<'b> = sharedProps<string, 'b>
+  let make = ({x, y, z}: props<_>) => React.string(x ++ y ++ z)
+}
+
+module C3 = {
+  type myProps = sharedProps<int, int>
+  type props = myProps
+  let make = ({x, y, _}: props) => React.int(x + y)
+}
+```
+
+</CodeTab>
+
+This feature can be used when the nominally different components are passed to the prop of `Screen` component in [ReScript React Native Navigation](https://github.com/rescript-react-native/rescript-react-navigation).
+
+```res
+type screenProps = { navigation: navigation, route: route }
+
+module Screen: {
+  @react.component
+  let make: (
+    ~name: string,
+    ~component: React.component<screenProps>,
+    ...
+  ) => React.element
+}
+
+<Screen
+  name="SomeScreen"
+  component={A.make} // This will cause a type check error
+  ...
+/>
+<Screen
+  name="SomeScreen"
+  component={B.make} // This will cause a type check error
+  ...
+/>
+```
+
+This example can't pass the type checker, because the props types of both components are nominally different. You can make the both components having the same props type by passing `screenProps` type as argument to `@react.component`.
+
+```res
+module A = {
+  @react.component(:screenProps)
+  let make = (
+    ~navigation: navigation,
+    ~route: route
+  ) => ...
+}
+
+module B = {
+  @react.component(:screenProps)
+  let make = (
+    ~navigation: navigation,
+    ~route: route
+  ) => ...
+}
+```

@@ -1,0 +1,37 @@
+---
+id: "taggedTemplate-decorator"
+keywords: ["taggedTemplate", "tagged", "template", "decorator"]
+name: "@taggedTemplate"
+summary: "This is the `@taggedTemplate` decorator."
+category: "decorators"
+---
+
+**Since 11.1**
+
+The `@taggedTemplate` decorator is used to bind to JavaScript tag functions.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+// see https://bun.sh/docs/runtime/shell
+type result = {exitCode: int}
+@module("bun") @taggedTemplate
+external sh: (array<string>, array<string>) => promise<result> = "$"
+
+let filename = "index.res"
+let result = await sh`ls ${filename}`
+```
+
+```js
+import * as $$Bun from "bun";
+var filename = "index.res";
+var result = await $$Bun.$`ls ${filename}`;
+```
+
+</CodeTab>
+
+### References
+
+- [Bind to JS Function](../docs/manual/bind-to-js-function.mdx#bind-to-a-js-function)

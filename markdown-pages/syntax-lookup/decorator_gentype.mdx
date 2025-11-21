@@ -1,0 +1,64 @@
+---
+id: "gentype-decorator"
+keywords: ["gentype", "decorator", "typescript"]
+name: "@genType"
+summary: "This is the `@genType` decorator."
+category: "decorators"
+---
+
+The `@genType` decorator may be used to export ReScript values and types to JavaScript, and import JavaScript values and types into ReScript. It allows seamless integration of compiled ReScript modules in existing TypeScript, or plain JavaScript codebases, without losing type information across different type systems.
+
+[GenType](../docs/manual/typescript-integration.mdx) is a code generation tool for automatically generating [TypeScript](https://www.typescriptlang.org/) type definitions, and JS runtime converters for non-shared ReScript values. It also features first-class support for [rescript-react](../docs/react/introduction.mdx) components.
+
+### Example
+
+<CodeTab labels={["ReScript", "TypeScript Output"]}>
+
+```res
+@genType
+export type color =
+  | Red
+  | Blue
+
+@genType @react.component
+export make = (~name: string, ~color: color) => {
+  let colorStr = switch color {
+  | Red => "red"
+  | Blue => "blue"
+  }
+  <div className={"color-" ++ colorStr}> {React.string(name)} </div>
+}
+```
+
+```ts
+/* TypeScript file generated from MyComponent.res by genType. */
+/* eslint-disable import/first */
+
+import * as React from "react";
+
+const $$toRE818596289: { [key: string]: any } = { Red: 0, Blue: 1 };
+
+// tslint:disable-next-line:no-var-requires
+const MyComponentBS = require("./MyComponent.bs");
+
+// tslint:disable-next-line:interface-over-type-literal
+export type color = "Red" | "Blue";
+
+// tslint:disable-next-line:interface-over-type-literal
+export type Props = { readonly color: color; readonly name: string };
+
+export const make: React.ComponentType<{
+  readonly color: color;
+  readonly name: string;
+}> = function MyComponent(Arg1: any) {
+  const $props = { color: $$toRE818596289[Arg1.color], name: Arg1.name };
+  const result = React.createElement(MyComponentBS.make, $props);
+  return result;
+};
+```
+
+</CodeTab>
+
+### References
+
+- [TypeScript Integration](../docs/manual/typescript-integration.mdx)

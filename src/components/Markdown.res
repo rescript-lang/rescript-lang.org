@@ -40,12 +40,12 @@ module Warn = {
 }
 
 module UrlBox = {
-  open! Mdx.MdxChildren
+  open! MdxLegacy.MdxChildren
 
-  let imgEl = <img src="/static/hyperlink.svg" className="mr-2 inline-block" />
+  let imgEl = <img src="/hyperlink.svg" className="mr-2 inline-block" />
 
   @react.component
-  let make = (~text: string, ~href: string, ~children: Mdx.MdxChildren.t) => {
+  let make = (~text: string, ~href: string, ~children: MdxLegacy.MdxChildren.t) => {
     let content = switch classify(children) {
     | String(str) =>
       <p>
@@ -71,7 +71,7 @@ module UrlBox = {
             {headChildren->toReactElement}
           </P>
           {if length > 1 {
-            arr->Array.slice(~start=1, ~end=length)->Mdx.arrToReactElement
+            arr->Array.slice(~start=1, ~end=length)->MdxLegacy.arrToReactElement
           } else {
             React.null
           }}
@@ -84,18 +84,21 @@ module UrlBox = {
       React.null
     }
 
-    // Next.Link doesn't allow any absolute URLs, so we need to render
-    // a plain <a> component when there is an absolute href
     let link = if Util.Url.isAbsolute(href) {
       <a href rel="noopener noreferrer" className="flex items-center">
         {React.string(text)}
         <Icon.ArrowRight className="ml-1" />
       </a>
     } else {
-      <Next.Link href className="flex items-center">
+      <ReactRouter.Link.String
+        // to={Env.root_url ++ href->Util.String.leadingSlash}
+        to=href
+        className="flex items-center"
+        relative="path"
+      >
         {React.string(text)}
         <Icon.ArrowRight className="ml-1" />
-      </Next.Link>
+      </ReactRouter.Link.String>
     }
     <div className="md-url-box text-16 border-l-2 border-gray-60 my-6 py-6 pl-8 pr-10 bg-gray-5">
       content
@@ -106,19 +109,17 @@ module UrlBox = {
 
 // Used for creating invisible, hoverable <a> anchors for url linking
 module Anchor = {
-  // Todo: Headers with nested components don't pass a string, we need to flatten
-  // everything to a single string first before we are able to use this id transformation
-  // function
-
   @react.component
-  let make = (~id: string) => {
-    <span className="inline group relative">
+  let make = (~id: string, ~title: option<string>=?) => {
+    <span className="inline group relative" title=?title>
       <a
-        className="invisible text-gray-60 opacity-50 hover:opacity-100 hover:text-gray-60 hover:cursor-pointer group-hover:visible"
-        href={"#" ++ id}>
+        title=?title
+        className="scroll-mt-30 invisible text-gray-60 opacity-50 hover:opacity-100 hover:text-gray-60 hover:cursor-pointer group-hover:visible"
+        href={"#" ++ id}
+        id={id}
+      >
         <Icon.Hyperlink className="inline-block align-middle text-gray-40" />
       </a>
-      <a className="absolute -top-28" id />
     </span>
   }
 }
@@ -126,55 +127,62 @@ module Anchor = {
 
 module H1 = {
   @react.component
-  let make = (~children) => <h1 className="hl-1 mb-6 "> children </h1>
+  let make = (~children) => <h1 className="hl-1 mb-6 scroll-mt-0"> children </h1>
 }
 
 module H2 = {
   @react.component
-  let make = (~id, ~children) => <>
-    // Here we know that children is always a string (## headline)
-    <h2 id className="group mt-16 mb-3 hl-3 scroll-mt-32">
-      children
-      <span className="ml-2">
-        <Anchor id />
-      </span>
-    </h2>
-  </>
+  let make = (~id, ~children, ~title=?) => {
+    // Children may not be a string
+
+    <>
+      <h2 id className="group mt-16 mb-3 hl-3 scroll-mt-32">
+        children
+        <span className="ml-2">
+          <Anchor ?title id />
+        </span>
+      </h2>
+    </>
+  }
 }
 
 module H3 = {
   @react.component
-  let make = (~id, ~children) =>
+  let make = (~id, ~children, ~title=?) => {
     <h3 id className="group mt-8 mb-4 hl-4 scroll-mt-32">
       children
       <span className="ml-2">
-        <Anchor id />
+        <Anchor ?title id={id} />
       </span>
     </h3>
+  }
 }
 
 module H4 = {
   @react.component
-  let make = (~id, ~children) =>
+  let make = (~id, ~children, ~title=?) => {
     <h4 id className="group mt-8 hl-5 scroll-mt-32">
       children
       <span className="ml-2">
-        <Anchor id />
+        <Anchor ?title id />
       </span>
     </h4>
+  }
 }
 
 module H5 = {
   @react.component
-  let make = (~id, ~children) =>
+  let make = (~id, ~children, ~title=?) => {
     <h5
       id
-      className="group mt-12 mb-3 text-12 leading-2 font-sans font-semibold uppercase tracking-wide text-gray-80">
+      className="group mt-12 mb-3 text-12 leading-2 font-sans font-semibold uppercase tracking-wide text-gray-80"
+    >
       children
       <span className="ml-2">
-        <Anchor id />
+        <Anchor ?title id />
       </span>
     </h5>
+  }
 }
 
 module Pre = {
@@ -186,7 +194,8 @@ module InlineCode = {
   @react.component
   let make = (~children) =>
     <code
-      className="md-inline-code px-2 py-0.5  text-gray-60 font-mono rounded-sm bg-gray-10-tr border border-gray-90/5">
+      className="md-inline-code px-2 py-0.5  text-gray-60 font-mono rounded-sm bg-gray-10-tr border border-gray-90/5"
+    >
       children
     </code>
 }
@@ -195,7 +204,7 @@ module Table = {
   @react.component
   let make = (~children) =>
     <div className="overflow-x-auto mt-10 mb-16">
-      <table className="md-table"> children </table>
+      <table> children </table>
     </div>
 }
 
@@ -208,7 +217,8 @@ module Th = {
   @react.component
   let make = (~children) =>
     <th
-      className="py-2 pr-8 text-12 text-gray-60 uppercase font-medium tracking-wide text-left border-b-2 border-gray-20">
+      className="py-2 pr-8 text-12 text-gray-60 uppercase font-medium tracking-wide text-left border-b-2 border-gray-20"
+    >
       children
     </th>
 }
@@ -223,7 +233,7 @@ module Code = {
   external parseNumericRange: string => array<int> = "parsePart"
 
   // TODO: Might be refactorable with the new @unboxed feature
-  type unknown = Mdx.Components.unknown
+  type unknown = MdxLegacy.Components.unknown
 
   external unknownAsString: unknown => string = "%identity"
 
@@ -280,26 +290,26 @@ module Code = {
 }
 
 module CodeTab = {
-  let getMdxMetastring: Mdx.mdxComponent => option<string> = %raw("element => {
+  let getMdxMetastring: MdxLegacy.mdxComponent => option<string> = %raw("element => {
       if(element == null || element.props == null) {
         return;
       }
       return element.props.metastring;
     }")
   @react.component
-  let make = (~children: Mdx.MdxChildren.t, ~labels: array<string>=[]) => {
-    let mdxElements = switch Mdx.MdxChildren.classify(children) {
+  let make = (~children: MdxLegacy.MdxChildren.t, ~labels: array<string>=[]) => {
+    let mdxElements = switch MdxLegacy.MdxChildren.classify(children) {
     | Array(mdxElements) => mdxElements
     | Element(el) => [el]
     | _ => []
     }
 
     let tabs = Array.reduceWithIndex(mdxElements, [], (acc, mdxElement, i) => {
-      let child = mdxElement->Mdx.MdxChildren.getMdxChildren->Mdx.MdxChildren.classify
+      let child = mdxElement->MdxLegacy.MdxChildren.getMdxChildren->MdxLegacy.MdxChildren.classify
 
       switch child {
       | Element(codeEl) =>
-        let className = Mdx.getMdxClassName(codeEl)->Option.getOr("")
+        let className = MdxLegacy.getMdxClassName(codeEl)->Option.getOr("")
 
         let metastring = getMdxMetastring(codeEl)->Option.getOr("")
 
@@ -308,7 +318,7 @@ module CodeTab = {
         | _ => None
         }
 
-        let code = String.make(Mdx.MdxChildren.getMdxChildren(codeEl))
+        let code = String.make(MdxLegacy.MdxChildren.getMdxChildren(codeEl))
         let label = labels[i]
         let tab = {
           CodeExample.Toggle.lang,
@@ -343,6 +353,8 @@ module Hr = {
 }
 
 /*
+// TODO: Post RR7 - this can probably be simplified  
+
     This will map either to an external link, or
     an anchor / reference link.
 
@@ -360,27 +372,26 @@ module Hr = {
  */
 module A = {
   @react.component
-  let make = (~href, ~target=?, ~children) =>
+  let make = (~href, ~target=?, ~children) => {
     // In case we are handling a relative URL, we will use the Next routing
     if Util.Url.isAbsolute(href) {
-      <a href rel="noopener noreferrer" className="no-underline text-fire hover:underline" ?target>
+      <a
+        href
+        rel="noopener noreferrer"
+        className="no-underline text-fire hover:underline"
+        ?target
+        dataTestId="absolute-url"
+      >
         children
       </a>
     } else {
-      // We drop any .md / .mdx / .html extensions on every href...
-      // Ideally one would check if this link is relative first,
-      // but it's very unlikely we'd refer to an absolute URL ending
-      // with .md
-      let regex = /\.md(x)?|\.html$/
-      let href = switch String.split(href, "#") {
-      | [pathname, anchor] => String.replaceRegExp(pathname, regex, "") ++ ("#" ++ anchor)
-      | [pathname] => String.replaceRegExp(pathname, regex, "")
-      | _ => href
-      }
-      <Next.Link href className="no-underline text-fire hover:underline" ?target>
+      <ReactRouter.Link.String
+        to={href} className="no-underline text-fire hover:underline" ?target relative="route"
+      >
         children
-      </Next.Link>
+      </ReactRouter.Link.String>
     }
+  }
 }
 
 module Ul = {
@@ -422,14 +433,14 @@ module Li = {
       let first = Belt.Array.getExn(head, 0)
 
       switch {
-        open Mdx
+        open MdxLegacy
         last->fromReactElement->getMdxType
       } {
       | "ul"
       | "li"
       | "pre" =>
         switch {
-          open Mdx
+          open MdxLegacy
           first->fromReactElement->getMdxType
         } {
         | "p" =>
@@ -451,7 +462,7 @@ module Li = {
     } else {
       switch {
         /* Unknown Scenario */
-        open Mdx
+        open MdxLegacy
         children->fromReactElement->getMdxType
       } {
       | "pre" => children
@@ -477,6 +488,7 @@ module Image = {
     ~withShadow=false,
     ~caption: option<string>=?,
     ~externalLink: option<string>=?,
+    ~className: option<string>=?,
   ) => {
     let width = switch size {
     | #large => "w-full"
@@ -491,9 +503,14 @@ module Image = {
 
     let target = externalLink->Option.isSome ? Some("_blank") : None
 
-    <div className={`mt-8 mb-12 ${size === #large ? "md:-mx-16" : ""}`}>
+    let className = `${switch className {
+      | Some(cn) => " " ++ cn
+      | None => ""
+      }}`
+
+    <div className={`mt-8 mb-12 ${size === #large ? "md:-mx-16" : ""}${className}`}>
       <a href={externalLink->Option.getOr(src)} rel="noopener noreferrer" ?target>
-        <img className={width ++ " " ++ shadow} src />
+        <img className={`${width} ${shadow}`} src />
       </a>
       {switch caption {
       | None => React.null

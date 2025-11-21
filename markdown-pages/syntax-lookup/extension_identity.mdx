@@ -1,0 +1,30 @@
+---
+id: "identity"
+keywords: ["identity", "external", "type", "convert"]
+name: "%identity"
+summary: "This is the `identity` extension point."
+category: "extensionpoints"
+---
+
+`%identity` is used with `external` to do an **unsafe conversion** of a value from one type to another type.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+external convertToFloat: int => float = "%identity"
+let age = 10
+let gpa = 2.1 +. convertToFloat(age)
+```
+
+```js
+var gpa = 2.1 + 10;
+var age = 10;
+```
+
+</CodeTab>
+
+### References
+
+- [Type](../docs/manual/type.mdx)
+- [Interop Cheatsheet](../docs/manual/interop-cheatsheet.mdx)
+- [Attribute](../docs/manual/attribute.mdx)

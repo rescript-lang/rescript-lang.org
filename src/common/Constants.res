@@ -1,14 +1,21 @@
+type env = {
+  @as("VITE_VERSION_LATEST")
+  latestVersion: string,
+  @as("VITE_VERSION_NEXT")
+  nextVersion: string,
+}
+
+@scope("import.meta") external env: env = "env"
+
 type versionMapping = {
   latest: string,
   next: string,
 }
 
-type versions = {
-  @as("VERSION_NEXT") next: string,
-  @as("VERSION_LATEST") latest: string,
+let versions = {
+  latest: env.latestVersion,
+  next: env.nextVersion,
 }
-
-@scope("process") external versions: versions = "env"
 
 let latestVersion = (versions.latest, versions.latest->Semver.tryGetMajorString)
 

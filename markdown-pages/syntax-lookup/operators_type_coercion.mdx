@@ -1,0 +1,136 @@
+---
+id: "type-coercion"
+keywords:
+  [
+    "operator",
+    "type",
+    "coercion",
+    "polymorphic",
+    "variant",
+    "polyvar",
+    "object",
+  ]
+name: ":>"
+summary: "This is the `type coercion` operator."
+category: "operators"
+---
+
+The `:>` operator may be used to convert a polymorphic variant to a `string` or `int`, or convert an [object](../docs/manual/object.mdx) to a type with a subset of its fields.
+
+_Since ReScript `11.0.0`_ coercion also works for converting
+
+- from `int` to `float`
+- from record to record with the same field(s) or when record A is a subtype of record B
+- from `@unboxed` variant with only strings to `string`
+- from `string` to `@unboxed` variant that have a catch-all unboxed `string` case
+- from variant to variant when applicable
+- from variant to `string`/`int`/`float` when applicable
+- for invariant type arguments such as array payloads when the runtime representation is guaranteed to be exactly the same
+
+### Example 1
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+type color = [#Red | #Green | #Blue]
+let color: color = #Red
+let message = "The color is " ++ (color :> string)
+```
+
+```js
+var message = "The color is Red";
+```
+
+</CodeTab>
+
+### Example 2
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+type bit = [#0 | #1]
+let bit: bit = #1
+let value = (bit :> int)
+```
+
+```js
+var bit = 1;
+var value = 1;
+```
+
+</CodeTab>
+
+### Example 3
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+type person = {"id": int, "name": string}
+type name = {"name": string}
+let person = {"id": 10, "name": "Gideon"}
+let name = (person :> name)
+```
+
+```js
+var person = {
+  id: 10,
+  name: "Gideon",
+};
+
+var name = person;
+```
+
+</CodeTab>
+
+### Example 4
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+@unboxed
+type myNumberType = One | Two | Other(string)
+
+let v = Other("Infinite")
+let v2 = One
+
+let x = "NaN"
+
+// variant to string
+Console.log((v :> string))
+Console.log((v2 :> string))
+
+// string to variant
+let y = (x :> myNumberType)
+
+let f = switch y {
+| One => "One"
+| _ => "Two"
+}
+```
+
+```js
+var v = "Infinite";
+
+var x = "NaN";
+
+console.log(v);
+
+console.log("One");
+
+var f;
+
+f = (x === "One" || x === "Two") && x === "One" ? "One" : "Two";
+
+var v2 = "One";
+
+var y = x;
+```
+
+</CodeTab>
+
+### References
+
+- [Int-to-Float Coercion](../docs/manual/primitive-types.mdx#int-to-float-coercion)
+- [Variant Coercion](../docs/manual/variant.mdx#coercion)
+- [Polymorphic Variant Coercion](../docs/manual/polymorphic-variant.mdx#coercion)
+- [Record Type Coercion](../docs/manual/record.mdx#record-type-coercion)

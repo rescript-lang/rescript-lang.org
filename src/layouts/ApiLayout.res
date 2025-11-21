@@ -2,12 +2,11 @@
 let allApiVersions = Constants.allManualVersions
 
 module Sidebar = SidebarLayout.Sidebar
-module Toc = SidebarLayout.Toc
 
 module OldDocsWarning = {
   @react.component
-  let make = (~version: string, ~route: string) => {
-    let url = Url.parse(route)
+  let make = (~version: string, ~route: Path.t) => {
+    let url = Url.parse((route :> string))
     let latestUrl =
       "/" ++ (Array.join(url.base, "/") ++ ("/latest/" ++ Array.join(url.pagepath, "/")))
 
@@ -42,8 +41,8 @@ module OldDocsWarning = {
   }
 }
 
-let makeBreadcrumbs = (~prefix: Url.breadcrumb, route: string): list<Url.breadcrumb> => {
-  let url = route->Url.parse
+let makeBreadcrumbs = (~prefix: Url.breadcrumb, route: Path.t): list<Url.breadcrumb> => {
+  let url = Url.parse((route :> string))
 
   let (_, rest) = // Strip the "api" part of the url before creating the rest of the breadcrumbs
   Array.slice(url.pagepath, ~start=1)->Array.reduce((prefix.href, []), (acc, path) => {
@@ -68,73 +67,29 @@ let make = (
   ~breadcrumbs=?,
   ~categories: array<Sidebar.Category.t>,
   ~title="",
-  ~version: option<string>=?,
-  ~activeToc: option<Toc.t>=?,
-  ~components=ApiMarkdown.default,
+  ~activeToc: option<TableOfContents.t>=?,
   ~children,
 ) => {
-  let router = Next.Router.useRouter()
-  let route = router.route
+  let {pathname: route} = ReactRouter.useLocation()
 
   let (isSidebarOpen, setSidebarOpen) = React.useState(_ => false)
   let toggleSidebar = () => setSidebarOpen(prev => !prev)
 
-  React.useEffect(() => {
-    open Next.Router.Events
-    let {Next.Router.events: events} = router
-
-    let onChangeComplete = _url => setSidebarOpen(_ => false)
-
-    events->on(#routeChangeComplete(onChangeComplete))
-    events->on(#hashChangeComplete(onChangeComplete))
-
-    Some(
-      () => {
-        events->off(#routeChangeComplete(onChangeComplete))
-        events->off(#hashChangeComplete(onChangeComplete))
-      },
-    )
-  }, [])
-
   let preludeSection =
     <div className="flex justify-between text-fire font-medium items-baseline">
-      {switch version {
-      | Some(version) =>
-        let onChange = evt => {
-          open Url
-          ReactEvent.Form.preventDefault(evt)
-          let version = (evt->ReactEvent.Form.target)["value"]
-          let url = Url.parse(route)
-          WebAPI.Storage.setItem(localStorage, ~key=(Url.Manual :> string), ~value=version)
-
-          let targetUrl =
-            "/" ++
-            (Array.join(url.base, "/") ++
-            ("/" ++ (version ++ ("/" ++ Array.join(url.pagepath, "/")))))
-          router->Next.Router.push(targetUrl)
-        }
-        <VersionSelect
-          onChange version availableVersions=allApiVersions nextVersion=?Constants.nextVersion
-        />
-      | None => React.null
-      }}
+      <VersionSelect />
     </div>
 
   let sidebar =
     <Sidebar preludeSection isOpen=isSidebarOpen toggle=toggleSidebar categories ?activeToc route />
 
-  let pageTitle = switch breadcrumbs {
-  | Some(list{_, {Url.name: name}}) => name
-  | Some(list{_, module_, {name}}) => module_.name ++ ("." ++ name)
-  | _ => "API"
-  }
   <SidebarLayout
     ?breadcrumbs
-    metaTitle={pageTitle ++ " | ReScript API"}
+    // metaTitle={pageTitle ++ " | ReScript API"}
     theme=#Reason
-    components
     sidebarState=(isSidebarOpen, setSidebarOpen)
-    sidebar>
+    sidebar
+  >
     children
   </SidebarLayout>
 }

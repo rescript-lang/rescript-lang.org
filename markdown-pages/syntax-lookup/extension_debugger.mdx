@@ -1,0 +1,32 @@
+---
+id: "debugger"
+keywords: ["javascript", "embed", "raw", "debugger"]
+name: "%debugger"
+summary: "This is the `debugger` extension point."
+category: "extensionpoints"
+---
+
+`%debugger` is used to insert a JavaScript `debugger` statement.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let f = (x, y) => {
+  %debugger
+  x + y
+}
+```
+
+```js
+function f(x, y) {
+  debugger;
+  return (x + y) | 0;
+}
+```
+
+</CodeTab>
+
+### References
+
+- [Embed Raw JavaScript](../docs/manual/embed-raw-javascript.mdx)
+- [Attribute](../docs/manual/attribute.mdx)

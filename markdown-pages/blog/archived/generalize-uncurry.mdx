@@ -1,0 +1,151 @@
+---
+author: hongbo
+date: "2020-03-26"
+previewImg:
+title: Generalized Uncurry Support in 7.3
+description: |
+---
+
+## Introduction
+
+[ReasonML](https://github.com/facebook/reason) is a
+[curried](https://en.wikipedia.org/wiki/Currying) language, while Js is an
+uncurried language. When compiling ReasonML into Js, there's lots of headache
+due to the semantics mismatch.
+
+After several years of research and development, we will finally reach a new
+milestone in our next release: adding a lightweight uncurried calling
+convention to ReasonML.
+
+## Why we need native uncurried calling convention
+
+**The curried call is inherently slower than the uncurried call.**
+
+A native implementation of curried call like [purescript](https://www.purescript.org/) does will generate very slow code:
+
+```js
+let curriedFunction = (x) => (y) => (z) => x + y + z;
+let curriedApply = curriedFunction(1)(2)(3); // memory allocation triggered
+```
+
+BuckleScript does tons of optimizations and very aggressive arity inference so that the curried function is compiled into a multiple-arity function, and when the application is supplied with the exact arguments -- which is true in most cases, it is applied like normal functions.
+
+However, such optimization does not apply to high order functions:
+
+```reason
+let highOrder = (f,a,b)=> f (a, b)
+// can not infer the arity of `f` since we know
+// nothing about the arity of `f`, unless
+// we do the whole program optimization
+```
+
+In cases where arity inference does not help, the arity guessing has to be delayed into the runtime.
+
+**Bindings to JS world:**
+
+When we create bindings for high order functions in the JS world, we would like to have native uncurried functions which behave the same as JS world -- no semantics mismatch.
+
+## Generalized uncurried calling convention in this release
+
+Before release 7.3, we had introduced uncurried calling convention, however, it has serious limitations -- uncurried functions can not be polymorphic, it does not support labels, the error
+message leaks the underlying encoding -- now all those limitations are gone!
+
+**Previously:**
+
+<img
+  src="/blog/archive/poly-error.png"
+  className="my-4 mx-auto max-h-[500px]"
+/>
+
+<img
+  src="/blog/archive/label-error.png"
+  className="my-4 mx-auto max-h-[500px]"
+/>
+
+<img
+  src="/blog/archive/recursive-error.png"
+  className="my-4 mx-auto max-h-[500px]"
+/>
+
+The error messages above are cryptic and hard to understand. And the limitation of not supporting recursive functions make uncurried support pretty weak.
+
+Now those limitations are all gone, you can have polymorphic uncurried recursive functions and it support labels.
+
+<img
+  src="/blog/archive/uncurry-label.png"
+  className="my-4 mx-auto max-h-[500px]"
+/>
+
+<img src="/blog/archive/recursive.png" className="my-4 mx-auto max-h-[500px]" />
+
+The error message is also enhanced significantly
+
+### When the uncurried function is used in curried
+
+```reason
+let add = (. x, y ) => x + y;
+
+let u = add (1, 2)
+```
+
+The old error message:
+
+```
+Error: This expression has type (. int, int) => int
+    This is not a function; it cannot be applied.
+```
+
+The new error message
+
+```
+Error: This function has uncurried type, it needs to be applied in ucurried style
+```
+
+### When the curried function is used in the uncurried context
+
+```reason
+let add = ( x, y ) => x + y;
+
+let u = add (.1, 2)
+```
+
+The old error message:
+
+```
+Error: This expression has type (int, int) => int
+    but an expression was expected of type (. 'a, 'b) => 'c
+```
+
+The new error message:
+
+```
+Error: This function is a curried function where an uncurried function is expected
+```
+
+### When arity mismatch
+
+```reason
+let add = (. x, y ) => x + y;
+
+let u = add (.1, 2,3)
+```
+
+The old message:
+
+```
+Error: This expression has type (. int, int) => int
+    but an expression was expected of type (. 'a, 'b, 'c) => 'd
+    These two variant types have no intersection
+```
+
+The new message:
+
+```
+Error: This function has arity2 but was expected arity3
+```
+
+Note the generalized uncurry support also applies to objects, so that you can use `obj##meth (~label1=a,~label2=b)`.
+
+The only thing where the uncurried call is not supported is optional arguments, if users are mostly targeting JS runtime, we suggest you can try uncurry by default and would like to hear your feedback!
+
+You can already test it today by `npm install bs-platform@7.3.0-dev.1` (Windows support will be coming soon).

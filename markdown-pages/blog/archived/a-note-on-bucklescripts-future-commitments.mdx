@@ -1,0 +1,81 @@
+---
+author: chenglou
+co-authors:
+  - ryyppy
+date: "2020-07-06"
+title: A Note on BuckleScript's New Syntax and Its Future Support Commitments
+description: |
+  This post clarifies the goals and commitments of the BuckleScript compiler toolchain
+  and gives more context on what to expect in the future.
+---
+
+> **Update / August 13th 2020:**
+> BuckleScript is now called ReScript. More infos [here](../bucklescript-is-rebranding.mdx)
+
+## A Statement for the Future
+
+Our [new ReScript syntax announcement](./bucklescript-8-1-new-syntax.mdx) generated lots of good feedback, but also raised some concerns from community members whose use-cases still align with our goal, but sometimes extend outside of it, and who are worried about further commitments to the ecosystem in the face of new unknowns.
+
+This post is dedicated to answer some common questions regarding trust, breakages, and future investment.
+
+## Q & A
+
+**What is the new syntax called?**
+
+It's called ReScript. The extension is `.res` and `.resi` (reminiscent of Reason) as to not overload various existing tools operating on `.ml` and `.re`.
+
+**Will BuckleScript break my existing code?**
+
+No. This new syntax is purely additive. It sits beside the existing OCaml and Reason syntax inside BuckleScript. We **won't** remove OCaml and Reason support from BuckleScript for a long time, whatever the surface emphasis might be.
+
+**Will I be able to continue writing OCaml/Reason and compile to JS in the future?**
+
+It follows from our previous guarantee that yes, you will still be able to. If BuckleScript _ever_ starts removing language features, it'll be on the `.res` syntax level; this means that you can just keep writing in OCaml and Reason syntax to access the complete set of OCaml features that BuckleScript supports today.
+
+BuckleScript will also continue to acquire upstream OCaml features whenever relevant, just like today.
+
+**What about the AST? Will this new syntax prompt the move to a non-OCaml AST?**
+
+No, since that'd break existing ppxes (e.g. internationalization, graphql). If we feel the need to adopt a new AST in the future, it'll again be purely additive.
+
+**Will there be a migration script to convert our code to the new syntax?**
+
+Yes, very soon, from both OCaml and Reason. We wanted to gather the community feedback before finalizing it. So far, many changes proposed by members [have](https://github.com/BuckleScript/syntax/issues/8) [been](https://github.com/BuckleScript/syntax/pull/12) [great](https://github.com/BuckleScript/syntax/issues/7)!
+
+**What's the editor tooling story?**
+
+Currently, highlighting of `.res` and `.resi` is supported on most editors. We will be adding code intelligence support (type-driven autocomplete, type hint, diagnosis panel) back, to the same level as Reason and more (thanks to the syntax's tighter integration with BuckleScript now).
+
+We will be adding these in Reason-language-server, so the editing setup won't need to change. We as first party don't work on ocaml's language server.
+
+**We now have 3 syntaxes to worry about.**
+
+The plan is to emphasize the new syntax and focus our tooling around it. It'll be confusing to temporarily have different syntaxes in the same codebase, but that's the cost of a proper migration support. We hope this is transient; it's darkest before the dawn.
+
+**How do we address the fragmentation of the community by the new syntax?**
+
+Folks who have been in the community for a while know that there have always been opposing philosophies regarding newcomer funneling, tooling emphasis, library preferences, etc. The new syntax raised these opposing voices, but did not create them; it's only been released for two days, after all.
+
+Rather, it's more accurate to say a few pieces of shared infrastructure held opposing forces together. This is true when Reason spun off from OCaml's engineering, and true when BuckleScript entered the picture.
+
+We can't realistically always release new features that are a fusion/compromise of various philosophies, but that's exactly what we've been trying our best to do for the past few years. This syntax is a departure from that (much tighter integration with BS, more JavaScript/TypeScript-friendly philosophy, many fewer compromises, etc.). We believe that its quality so far speaks for the decisions even if its stance generated worries.
+
+Since even before the open sourcing of Reason, the team has been evaluating the proper management and division of the community. If a proper separation means each subset of the community can live more harmoniously within themselves, with less noise, while still enjoying the technical infra support we've provided and have promised to continue providing above, then we're willing to explore that possibility.
+
+Worth emphasizing for the last time: your code keeps working. Your future code will also keep working.
+
+**The new changes make me worried about the (potential lack of) the team's future support I'm going to receive.**
+
+Consider that the new syntax is written by a [community member](https://github.com/iwankaramazow/) of ours, outside of the official Reason team.
+
+This means we get back _more_, not less, time and energy that we can reinvest (thank you again, [Maxim](https://twitter.com/_binary_search)!).
+
+Consider also that with the release of this new syntax, people's entire toolchain, from BuckleScript to syntax to ReasonReact to editor tooling, has now become primarily community-owned, with much less reliance on the company (while retaining the same energy devoted to said projects by the company).
+
+We hope you can see how this is a net engineering & bus factor increase, and a good justification to keep investing into the ecosystem rather than less. Again: same amount of company engineering effort and _more_ community engineering effort, in the most prominent parts.
+
+## Conclusion
+
+Hopefully this post helped assuage certain concerns regarding future support and investment. More importantly, let's not forget to enjoy all the awesome improvements in BuckleScript 8.1; let the code speak for itself! And let's continue shipping great products!
+
+Stay tuned and let us know in the [Discourse Forum](https://forum.rescript-lang.org) what you think!
