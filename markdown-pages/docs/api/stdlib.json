@@ -491,9 +491,7 @@
         "id": "Stdlib.Type.Classify.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "The type representing a classified JavaScript value."
-        ],
+        "docstrings": ["The type representing a classified JavaScript value."],
         "signature": "type t =\n  | Bool(bool)\n  | Null\n  | Undefined\n  | String(string)\n  | Number(float)\n  | Object(object)\n  | Function(function)\n  | Symbol(Symbol.t)\n  | BigInt(bigint)"
       },
       {
@@ -516,9 +514,7 @@
         "id": "Stdlib.RegExp.Result.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Type representing the result of a `RegExp` execution."
-        ],
+        "docstrings": ["Type representing the result of a `RegExp` execution."],
         "signature": "type t = array<option<string>>"
       },
       {
@@ -560,9 +556,7 @@
   "stdlib/math/int": {
     "id": "Stdlib.Math.Int",
     "name": "Int",
-    "docstrings": [
-      "Provide Math utilities for `int`"
-    ],
+    "docstrings": ["Provide Math utilities for `int`"],
     "items": [
       {
         "id": "Stdlib.Math.Int.abs",
@@ -677,9 +671,7 @@
   "stdlib/math/constants": {
     "id": "Stdlib.Math.Constants",
     "name": "Constants",
-    "docstrings": [
-      "Mathematical Constants"
-    ],
+    "docstrings": ["Mathematical Constants"],
     "items": [
       {
         "id": "Stdlib.Math.Constants.e",
@@ -888,45 +880,35 @@
         "id": "Stdlib.JSON.Encode.stringArray",
         "kind": "value",
         "name": "stringArray",
-        "docstrings": [
-          "Returns an array of strings as a JSON object."
-        ],
+        "docstrings": ["Returns an array of strings as a JSON object."],
         "signature": "let stringArray: array<string> => t"
       },
       {
         "id": "Stdlib.JSON.Encode.floatArray",
         "kind": "value",
         "name": "floatArray",
-        "docstrings": [
-          "Returns an array of floats as a JSON object."
-        ],
+        "docstrings": ["Returns an array of floats as a JSON object."],
         "signature": "let floatArray: array<float> => t"
       },
       {
         "id": "Stdlib.JSON.Encode.intArray",
         "kind": "value",
         "name": "intArray",
-        "docstrings": [
-          "Returns an array of integers as a JSON object."
-        ],
+        "docstrings": ["Returns an array of integers as a JSON object."],
         "signature": "let intArray: array<int> => t"
       },
       {
         "id": "Stdlib.JSON.Encode.boolArray",
         "kind": "value",
         "name": "boolArray",
-        "docstrings": [
-          "Returns an array of booleans as a JSON object."
-        ],
+        "docstrings": ["Returns an array of booleans as a JSON object."],
         "signature": "let boolArray: array<bool> => t"
       },
       {
         "id": "Stdlib.JSON.Encode.objectArray",
         "kind": "value",
         "name": "objectArray",
-        "docstrings": [
-          "Returns an array of objects as a JSON object."
-        ],
+        "docstrings": ["Returns an array of objects as a JSON object."],
         "signature": "let objectArray: array<dict<t>> => t"
       }
     ]
@@ -940,9 +922,7 @@
         "id": "Stdlib.JSON.Classify.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "A type representing a JavaScript type."
-        ],
+        "docstrings": ["A type representing a JavaScript type."],
         "signature": "type t =\n  | Bool(bool)\n  | Null\n  | String(string)\n  | Number(float)\n  | Object(dict<t>)\n  | Array(array<t>)"
       },
       {
@@ -1523,9 +1503,7 @@
         "id": "Stdlib.Intl.NumberFormat.currency",
         "kind": "type",
         "name": "currency",
-        "docstrings": [
-          "An ISO 4217 currency code. e.g. USD, EUR, CNY"
-        ],
+        "docstrings": ["An ISO 4217 currency code. e.g. USD, EUR, CNY"],
         "signature": "type currency = string"
       },
       {
@@ -1553,9 +1531,7 @@
         "id": "Stdlib.Intl.NumberFormat.compactDisplay",
         "kind": "type",
         "name": "compactDisplay",
-        "docstrings": [
-          "Used only when notation is #compact"
-        ],
+        "docstrings": ["Used only when notation is #compact"],
         "signature": "type compactDisplay = [#long | #short]"
       },
       {
@@ -1585,9 +1561,7 @@
         "id": "Stdlib.Intl.NumberFormat.unitDisplay",
         "kind": "type",
         "name": "unitDisplay",
-        "docstrings": [
-          "Only used when style is #unit"
-        ],
+        "docstrings": ["Only used when style is #unit"],
         "signature": "type unitDisplay = [#long | #narrow | #short]"
       },
       {
@@ -1834,9 +1808,7 @@
   "stdlib/intl/locale": {
     "id": "Stdlib.Intl.Locale",
     "name": "Locale",
-    "docstrings": [
-      "Bindings to JavaScript's `Intl.Locale`."
-    ],
+    "docstrings": ["Bindings to JavaScript's `Intl.Locale`."],
     "items": [
       {
         "id": "Stdlib.Intl.Locale.t",
@@ -2100,9 +2072,7 @@
   "stdlib/intl/datetimeformat": {
     "id": "Stdlib.Intl.DateTimeFormat",
     "name": "DateTimeFormat",
-    "docstrings": [
-      "Bindings to JavaScript's `Intl.DateTimeFormat`."
-    ],
+    "docstrings": ["Bindings to JavaScript's `Intl.DateTimeFormat`."],
     "items": [
       {
         "id": "Stdlib.Intl.DateTimeFormat.t",
@@ -2614,9 +2584,7 @@
   "stdlib/float/constants": {
     "id": "Stdlib.Float.Constants",
     "name": "Constants",
-    "docstrings": [
-      "Float constants."
-    ],
+    "docstrings": ["Float constants."],
     "items": [
       {
         "id": "Stdlib.Float.Constants.nan",
@@ -4478,9 +4446,7 @@
         "id": "Stdlib.Set.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Type representing an instance of `Set`."
-        ],
+        "docstrings": ["Type representing an instance of `Set`."],
         "signature": "type t<'a>"
       },
       {
@@ -4748,9 +4714,7 @@
         "id": "Stdlib.Map.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Type representing an instance of `Map`."
-        ],
+        "docstrings": ["Type representing an instance of `Map`."],
         "signature": "type t<'k, 'v>"
       },
       {
@@ -4910,9 +4874,7 @@
         "id": "Stdlib.AsyncIterator.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "The type representing an async iterator."
-        ],
+        "docstrings": ["The type representing an async iterator."],
         "signature": "type t<'a>"
       },
       {
@@ -4989,18 +4951,14 @@
         "id": "Stdlib.Iterator.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "The type representing an iterator."
-        ],
+        "docstrings": ["The type representing an iterator."],
         "signature": "type t<'a>"
       },
       {
         "id": "Stdlib.Iterator.value",
         "kind": "type",
         "name": "value",
-        "docstrings": [
-          "The current value of an iterator."
-        ],
+        "docstrings": ["The current value of an iterator."],
         "signature": "type value<'a> = {done: bool, value: option<'a>}"
       },
       {
@@ -5142,9 +5100,7 @@
         "id": "Stdlib.Type.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "The possible types of JavaScript values."
-        ],
+        "docstrings": ["The possible types of JavaScript values."],
         "signature": "type t = [\n  | #bigint\n  | #boolean\n  | #function\n  | #number\n  | #object\n  | #string\n  | #symbol\n  | #undefined\n]"
       },
       {
@@ -5178,9 +5134,7 @@
         "id": "Stdlib.Symbol.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Type representing a Symbol."
-        ],
+        "docstrings": ["Type representing a Symbol."],
         "signature": "type t"
       },
       {
@@ -5367,9 +5321,7 @@
         "id": "Stdlib.String.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Type representing a string."
-        ],
+        "docstrings": ["Type representing a string."],
         "signature": "type t = string"
       },
       {
@@ -6250,9 +6202,7 @@
         "id": "Stdlib.RegExp.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Type representing an instantiated `RegExp`."
-        ],
+        "docstrings": ["Type representing an instantiated `RegExp`."],
         "signature": "type t"
       },
       {
@@ -6803,9 +6753,7 @@
         "id": "Stdlib.Option.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Type representing an option of type 'a."
-        ],
+        "docstrings": ["Type representing an option of type 'a."],
         "signature": "type t<'a> = option<'a> = None | Some('a)"
       },
       {
@@ -8588,17 +8536,13 @@
   "stdlib/json": {
     "id": "Stdlib.JSON",
     "name": "JSON",
-    "docstrings": [
-      "Functions for interacting with JSON."
-    ],
+    "docstrings": ["Functions for interacting with JSON."],
     "items": [
       {
         "id": "Stdlib.JSON.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "A type representing a JSON object."
-        ],
+        "docstrings": ["A type representing a JSON object."],
         "signature": "@unboxed\ntype t =\n  | Boolean(bool)\n  | @as(null) Null\n  | String(string)\n  | Number(float)\n  | Object(dict<t>)\n  | Array(array<t>)"
       },
       {
@@ -8777,9 +8721,7 @@
         "id": "Stdlib.JsExn.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Represents a JS exception"
-        ],
+        "docstrings": ["Represents a JS exception"],
         "signature": "type t = unknown"
       },
       {
@@ -8865,9 +8807,7 @@
         "id": "Stdlib.JsError.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Represents a JavaScript error."
-        ],
+        "docstrings": ["Represents a JavaScript error."],
         "signature": "type t"
       },
       {
@@ -9007,9 +8947,7 @@
         "id": "Stdlib.Int.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Type representing an int."
-        ],
+        "docstrings": ["Type representing an int."],
         "signature": "type t = int"
       },
       {
@@ -9151,9 +9089,7 @@
         "id": "Stdlib.Int.rangeOptions",
         "kind": "type",
         "name": "rangeOptions",
-        "docstrings": [
-          "The options for `range`."
-        ],
+        "docstrings": ["The options for `range`."],
         "signature": "type rangeOptions = {step?: int, inclusive?: bool}"
       },
       {
@@ -9261,17 +9197,13 @@
   "stdlib/float": {
     "id": "Stdlib.Float",
     "name": "Float",
-    "docstrings": [
-      "Functions for interacting with float."
-    ],
+    "docstrings": ["Functions for interacting with float."],
     "items": [
       {
         "id": "Stdlib.Float.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Type representing a float."
-        ],
+        "docstrings": ["Type representing a float."],
         "signature": "type t = float"
       },
       {
@@ -9490,9 +9422,7 @@
         "id": "Stdlib.Error.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Represents a JavaScript exception."
-        ],
+        "docstrings": ["Represents a JavaScript exception."],
         "signature": "type t = Exn.t",
         "deprecated": ""
       },
@@ -9609,17 +9539,13 @@
   "stdlib/exn": {
     "id": "Stdlib.Exn",
     "name": "Exn",
-    "docstrings": [
-      "Provide utilities for dealing with JS exceptions."
-    ],
+    "docstrings": ["Provide utilities for dealing with JS exceptions."],
     "items": [
       {
         "id": "Stdlib.Exn.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Represents a JS exception"
-        ],
+        "docstrings": ["Represents a JS exception"],
         "signature": "type t",
         "deprecated": ""
       },
@@ -9677,9 +9603,7 @@
         "id": "Stdlib.Exn.raiseError",
         "kind": "value",
         "name": "raiseError",
-        "docstrings": [
-          "Raise Js exception Error object with stacktrace"
-        ],
+        "docstrings": ["Raise Js exception Error object with stacktrace"],
         "signature": "let raiseError: string => 'a",
         "deprecated": ""
       },
@@ -9754,9 +9678,7 @@
         "id": "Stdlib.Dict.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Type representing a dictionary of value `'a`."
-        ],
+        "docstrings": ["Type representing a dictionary of value `'a`."],
         "signature": "type t<'a> = dict<'a>"
       },
       {
@@ -9935,17 +9857,13 @@
   "stdlib/date": {
     "id": "Stdlib.Date",
     "name": "Date",
-    "docstrings": [
-      "Functions for interacting with JavaScript Dates."
-    ],
+    "docstrings": ["Functions for interacting with JavaScript Dates."],
     "items": [
       {
         "id": "Stdlib.Date.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "A type representing a JavaScript date."
-        ],
+        "docstrings": ["A type representing a JavaScript date."],
         "signature": "type t"
       },
       {
@@ -10663,9 +10581,7 @@
         "id": "Stdlib.DataView.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Type representing a DataView."
-        ],
+        "docstrings": ["Type representing a DataView."],
         "signature": "type t"
       },
       {
@@ -11455,9 +11371,7 @@
         "id": "Stdlib.Bool.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Type representing a boolean."
-        ],
+        "docstrings": ["Type representing a boolean."],
         "signature": "type t = bool"
       },
       {
@@ -11526,9 +11440,7 @@
         "id": "Stdlib.BigInt.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Type representing a bigint."
-        ],
+        "docstrings": ["Type representing a bigint."],
         "signature": "type t = bigint"
       },
       {
@@ -11827,9 +11739,7 @@
         "id": "Stdlib.Array.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "Type representing an array of value `'a`."
-        ],
+        "docstrings": ["Type representing an array of value `'a`."],
         "signature": "type t<'a> = array<'a>"
       },
       {
