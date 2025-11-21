@@ -15,7 +15,6 @@ If you encounter any missing information or issues during migration, please [ope
 - ReScript V11 project.
 - Uncurried mode must be enabled (i.e. you have not opted-out from it)
 - Your project must not contain any OCaml source code anymore, as support for `.ml` files is removed in this version. However there are ways to convert OCaml syntax with an older ReScript compiler version ([see below](#converting-generated-ml-files)).
-- The old configuration filename that was deprecated in v11, `bsconfig.json`, is removed. Rename it to `rescript.json`.
 - Minimum supported Node.js version is 20.11.0
 
 ### Standard Library Changes
@@ -56,14 +55,14 @@ this is replaced by `@rescript/runtime`, which is a installed as a dependency of
 
 Some typical name changes include:
 
-`Error.t` -> `JsError.t`
-`raise(MyException("error"))` -> `throw(MyException("error"))`
-`Js.Exn.Error` exception -> `JsExn`
-`Error.make` -> `JsExn.make`
-`Error.raise` -> `JsExn.raise`
-`Error.message` -> `JsExn.message`
-`Bool.fromStringExn("true")` -> `Bool.fromStringOrThrow("true")`
-`Int.Bitwise.lsl` -> `Int.shiftLeft`
+- `Error.t` -> `JsError.t`
+- `raise(MyException("error"))` -> `throw(MyException("error"))`
+- `Js.Exn.Error` exception -> `JsExn`
+- `Error.make` -> `JsExn.make`
+- `Error.raise` -> `JsExn.raise`
+- `Error.message` -> `JsExn.message`
+- `Bool.fromStringExn("true")` -> `Bool.fromStringOrThrow("true")`
+- `Int.Bitwise.lsl` -> `Int.shiftLeft`
 
 Tip: You can use the migration tool to automatically replace these with the new functions.
 
@@ -79,19 +78,37 @@ rescript-tools migrate <file> [--stdout]
 v11:
 
 ```res
-let x = ~a        // bitwise NOT
-let y = a ^ b     // bitwise XOR
-let z = a & b     // bitwise AND
-let w = a | b     // bitwise OR
+let w = lnot(a)     // bitwise NOT
+let x = lxor(a, b)  // bitwise XOR
+let y = land(a, b)  // bitwise AND
+let z = lor(a, b)   // bitwise OR
 ```
 
 v12:
 
 ```res
-let x = ~~~a      // bitwise NOT
-let y = a ^^^ b   // bitwise XOR
-let z = a &&& b   // bitwise AND
-let w = a ||| b   // bitwise OR
+let w = ~~~a     // bitwise NOT
+let x = a ^^^ b  // bitwise XOR
+let y = a &&& b  // bitwise AND
+let z = a ||| b  // bitwise OR
+```
+
+### Shift operations
+
+v11:
+
+```res
+let x = lsl(a, b)  // logical left shift
+let y = lsr(a, b)  // logical right shift
+let z = asr(a, b)  // unsigned right shift
+```
+
+v12:
+
+```res
+let x = a << b  // logical left shift
+let y = a >> b  // logical right shift
+let z = a >>> b  // unsigned right shift
 ```
 
 ### JSX children spread
@@ -191,7 +208,9 @@ rescript format
 
 ## Converting generated `.ml` files
 
-Some projects still rely on tools such as `atdgen` that emit OCaml `.ml` files. ReScript 12 cannot compile those files directly, so you must keep using ReScript 11 **only** to convert the generated `.ml` files back to `.res` files before you run the v12 build.
+**Note**: This setup is an escape hatch. It keeps legacy generators like `atdgen` working but it also forces you to maintain two compiler versions. Whenever possible migrate such things to modern ReScript tooling such as [Sury](https://github.com/DZakh/sury/).
+
+Some projects still rely on tools such as `atdgen` that emit `.ml` files. ReScript 12 cannot compile those files directly, so you must keep using ReScript 11 **only** to convert the generated `.ml` files back to `.res` files before you run the v12 build.
 
 1. Keep ReScript 12 as the sole compiler dependency in your main project (i.e. `devDependencies.rescript` stays at `^12.0.0`).
 
@@ -214,8 +233,6 @@ Some projects still rely on tools such as `atdgen` that emit OCaml `.ml` files. 
 ```console
 npm run convert-ml
 ```
-
-This setup is an escape hatch. It keeps legacy generators like `atdgen` working but it also forces you to maintain two compiler versions. Whenever possible migrate such things to modern ReScript tooling such as [Sury](https://github.com/DZakh/sury/).
 
 ## List of all breaking changes
 
@@ -252,11 +269,9 @@ Below is a consolidated excerpt of all the breaking changes from the compiler ch
 
 ### Build system & CLI
 
-- The new Rust-based `rewatch` build system now powers the `rescript` command. The old Ninja-based builder system moved behind `rescript legacy`, and `--compiler-args` became the `compiler-args` subcommand. https://github.com/rescript-lang/rescript/pull/7551 https://github.com/rescript-lang/rescript/pull/7593
-- The `rescript legacy` subcommand was removed in favor of a stand-alone `rescript-legacy` binary. https://github.com/rescript-lang/rescript/pull/7928
+- The new Rust-based `rewatch` build system now powers the `rescript` command. The old Ninja-based builder system moved behind `rescript legacy`, and `--compiler-args` became the `compiler-args` subcommand. https://github.com/rescript-lang/rescript/pull/7551 https://github.com/rescript-lang/rescript/pull/7593 https://github.com/rescript-lang/rescript/pull/7928
 - `rescript format` was reimplemented in Rust, its options now use the `--check` / `--stdin` long-form spelling, and the `--all` flag was removed because every tracked file (non-dev by default) is formatted automatically. https://github.com/rescript-lang/rescript/pull/7603 https://github.com/rescript-lang/rescript/pull/7752
 - The `rescript dump` command was removed; call `bsc` directly if you need to inspect `.cmi` files. https://github.com/rescript-lang/rescript/pull/7710
-- `rewatch` now builds packages marked with `"type": "dev"` (and their `dev-dependencies`) by default, and the CLI `--dev` flag no longer has any effect. https://github.com/rescript-lang/rescript/pull/7934
 
 ### Configuration & platform
 
