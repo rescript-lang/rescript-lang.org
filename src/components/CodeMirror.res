@@ -572,7 +572,7 @@ let createLinterExtension = (errors: array<Error.t>): CM6.extension => {
             | #Error => Error
             | #Warning => Warning
             },
-            message: err.text,
+            message: err.text->Ansi.parse->Ansi.Printer.plainString,
           }
 
           Array.push(diagnostics, diagnostic)
