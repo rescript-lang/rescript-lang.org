@@ -12,7 +12,7 @@ let make = (
   ~ogSiteName=siteName,
   ~ogDescription=description,
   ~ogTitle=?,
-  ~ogImage="/Art-3-rescript-launch.jpg",
+  ~ogImage=Env.root_url ++ "Art-3-rescript-launch.jpg",
 ) => {
   let ogImage = Env.root_url ++ ogImage
 

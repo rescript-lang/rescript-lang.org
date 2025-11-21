@@ -109,13 +109,13 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
       >
         <div className="flex justify-between items-center h-full w-full max-w-1280">
           <div className="h-8 w-8 lg:h-10 lg:w-32">
-            <a
-              href="/"
+            <ReactRouter.Link.String
+              to="/"
               className="block hover:cursor-pointer w-full h-full flex justify-center items-center font-bold"
             >
               <img src="/nav-logo@2x.png" className="lg:hidden" />
               <img src="/nav-logo-full@2x.png" className="hidden lg:block" />
-            </a>
+            </ReactRouter.Link.String>
           </div>
 
           /* Desktop horizontal navigation */
