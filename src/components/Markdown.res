@@ -136,7 +136,7 @@ module H2 = {
     // Children may not be a string
 
     <>
-      <h2 id className="group mt-16 mb-3 hl-3 scroll-mt-32">
+      <h2 id className="group mt-16 mb-3 hl-3 md:scroll-mt-32 scroll-mt-20">
         children
         <span className="ml-2">
           <Anchor ?title id />

@@ -19,9 +19,10 @@ module Sidebar: {
     @react.component
     let make: (
       ~getActiveToc: t => option<TableOfContents.t>=?,
-      ~isItemActive: t => bool=?,
       ~isHidden: bool=?,
+      ~isItemActive: t => bool=?,
       ~items: array<t>,
+      ~onClick: unit => unit,
     ) => React.element
   }
   module Category: {
@@ -32,9 +33,10 @@ module Sidebar: {
 
     @react.component
     let make: (
+      ~category: t,
       ~getActiveToc: NavItem.t => option<TableOfContents.t>=?,
       ~isItemActive: NavItem.t => bool=?,
-      ~category: t,
+      ~onClick: unit => unit,
     ) => React.element
   }
 

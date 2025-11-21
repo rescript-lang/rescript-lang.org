@@ -18,6 +18,7 @@ const paths = routes.map((route) => `#"/${route.path}"`).join(" |\n");
 await fs.writeFile(
   "src/Path.res",
   `type t = [
+#"/" |
 ${paths}
 ]
 `,

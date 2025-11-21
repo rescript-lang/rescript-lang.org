@@ -52,17 +52,13 @@ let default = () => {
   <html>
     <head>
       <style> {React.string("html {opacity:0;}")} </style>
-      <link rel="preload" href={mainCss} as_="css" />
-      // Preload the fonts used for the above the fold on the homepage
-      <link rel="preload" href="/fonts/subset-Inter-Bold.woff2" as_="font" />
-      <link rel="preload" href="/fonts/subset-Inter-Regular.woff2" as_="font" />
+      <link rel="preload" href={mainCss} as_="style" />
       <link rel="stylesheet" href={mainCss} />
-
-      <Links />
-      <Meta />
       <link rel="stylesheet" href={hljsCss} />
       <link rel="stylesheet" href={utilsCss} />
       <link rel="icon" href="/favicon.ico" />
+      <Links />
+      <Meta />
       <meta
         name="viewport"
         content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, minimal-ui"

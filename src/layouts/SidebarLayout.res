@@ -22,7 +22,7 @@ module Toc = {
   }>
 
   @react.component
-  let make = (~entries: array<TableOfContents.entry>) =>
+  let make = (~entries: array<TableOfContents.entry>, ~onClick) =>
     <ul className="mt-3 py-1 mb-4 border-l border-fire-10">
       {Array.map(entries, ({header, href}) => {
         <li key=header className="pl-2 mt-2 first:mt-1" dataTestId=header>
@@ -30,11 +30,11 @@ module Toc = {
             prefetch={#intent}
             onClick={evt => {
               evt->ReactEvent.Mouse.preventDefault
-              Console.log(href)
               WebAPI.Document.getElementById(
                 document,
                 href->String.replace("#", ""),
               )->WebAPI.Element.scrollIntoView_alignToTop
+              onClick()
             }}
             to={"#" ++ href->Url.normalizeAnchor}
             className="font-normal block text-14 text-gray-40 leading-tight hover:text-gray-80"
@@ -70,9 +70,10 @@ module Sidebar = {
     @react.component
     let make = (
       ~getActiveToc: option<t => option<TableOfContents.t>>=?,
-      ~isItemActive: t => bool=_nav => false,
       ~isHidden=false,
+      ~isItemActive: t => bool=_nav => false,
       ~items: array<t>,
+      ~onClick,
     ) =>
       <ul className="mt-2 text-14 font-medium">
         {Array.map(items, m => {
@@ -100,7 +101,7 @@ module Sidebar = {
               if Array.length(entries) === 0 {
                 React.null
               } else {
-                <Toc entries />
+                <Toc entries onClick />
               }
             | None => React.null
             }}
@@ -116,10 +117,15 @@ module Sidebar = {
     }
 
     @react.component
-    let make = (~getActiveToc=?, ~isItemActive: option<NavItem.t => bool>=?, ~category: t) =>
+    let make = (
+      ~category: t,
+      ~getActiveToc=?,
+      ~isItemActive: option<NavItem.t => bool>=?,
+      ~onClick,
+    ) =>
       <div key=category.name className="my-10">
         <Title> {React.string(category.name)} </Title>
-        <NavItem ?isItemActive ?getActiveToc items=category.items />
+        <NavItem ?isItemActive ?getActiveToc items=category.items onClick />
       </div>
   }
 
@@ -199,7 +205,7 @@ module Sidebar = {
             {categories
             ->Array.map(category => {
               <div key=category.name>
-                <Category getActiveToc isItemActive category />
+                <Category getActiveToc isItemActive category onClick=toggle />
               </div>
             })
             ->React.array}
