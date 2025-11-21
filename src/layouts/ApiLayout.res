@@ -73,7 +73,12 @@ let make = (
   let {pathname: route} = ReactRouter.useLocation()
 
   let (isSidebarOpen, setSidebarOpen) = React.useState(_ => false)
-  let toggleSidebar = () => setSidebarOpen(prev => !prev)
+
+  let (isScrollLock, setScrollLock) = ScrollLockContext.useScrollLock()
+
+  let toggleSidebar = () => {
+    setSidebarOpen(prev => !prev)
+  }
 
   let preludeSection =
     <div className="flex justify-between text-fire font-medium items-baseline">
@@ -83,13 +88,7 @@ let make = (
   let sidebar =
     <Sidebar preludeSection isOpen=isSidebarOpen toggle=toggleSidebar categories ?activeToc route />
 
-  <SidebarLayout
-    ?breadcrumbs
-    // metaTitle={pageTitle ++ " | ReScript API"}
-    theme=#Reason
-    sidebarState=(isSidebarOpen, setSidebarOpen)
-    sidebar
-  >
+  <SidebarLayout ?breadcrumbs theme=#Reason sidebarState=(isSidebarOpen, setSidebarOpen) sidebar>
     children
   </SidebarLayout>
 }

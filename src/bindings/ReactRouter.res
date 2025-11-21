@@ -78,6 +78,7 @@ module Link = {
   module String = {
     @module("react-router") @react.component
     external make: (
+      ~title: string=?,
       ~onClick: ReactEvent.Mouse.t => unit=?,
       ~children: React.element=?,
       ~className: string=?,
