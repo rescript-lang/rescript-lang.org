@@ -232,7 +232,9 @@
   "stdlib/intl/numberformat/grouping": {
     "id": "Stdlib.Intl.NumberFormat.Grouping",
     "name": "Grouping",
-    "docstrings": [],
+    "docstrings": [
+      "Represents the `useGrouping` option accepted by `Intl.NumberFormat`.\n\nSee [`Intl.NumberFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat) on MDN for full option details."
+    ],
     "items": [
       {
         "id": "Stdlib.Intl.NumberFormat.Grouping.t",
@@ -252,21 +254,27 @@
         "id": "Stdlib.Intl.NumberFormat.Grouping.fromBool",
         "kind": "value",
         "name": "fromBool",
-        "docstrings": [],
+        "docstrings": [
+          "Constructs a grouping setting from a boolean.\n\n## Examples\n\n```rescript\nlet formatter =\n  Intl.NumberFormat.make(\n    ~locales=[\"en-US\"],\n    ~options={useGrouping: Intl.NumberFormat.Grouping.fromBool(false)},\n  )\nformatter->Intl.NumberFormat.format(1234.) == \"1234\"\n```"
+        ],
         "signature": "let fromBool: bool => t"
       },
       {
         "id": "Stdlib.Intl.NumberFormat.Grouping.fromString",
         "kind": "value",
         "name": "fromString",
-        "docstrings": [],
+        "docstrings": [
+          "Constructs a grouping setting from a string literal.\n\n## Examples\n\n```rescript\nlet formatter =\n  Intl.NumberFormat.make(\n    ~locales=[\"en-US\"],\n    ~options={useGrouping: Intl.NumberFormat.Grouping.fromString(#always)},\n  )\nformatter->Intl.NumberFormat.format(1234.) == \"1,234\"\n```"
+        ],
         "signature": "let fromString: [#always | #auto | #min2] => t"
       },
       {
         "id": "Stdlib.Intl.NumberFormat.Grouping.parseJsValue",
         "kind": "value",
         "name": "parseJsValue",
-        "docstrings": [],
+        "docstrings": [
+          "`parseJsValue(value)` attempts to interpret a JavaScript `value` as a grouping setting.\n\n## Examples\n\n```rescript\nIntl.NumberFormat.Grouping.parseJsValue(Js.Json.string(\"auto\")) == Some(#auto)\n```"
+        ],
         "signature": "let parseJsValue: 'a => option<[> #always | #auto | #bool(bool) | #min2]>"
       },
       {
@@ -1103,7 +1111,7 @@
     "id": "Stdlib.Intl.Segments",
     "name": "Segments",
     "docstrings": [
-      "A Segments instance is an object that represents the segments of a specific string, subject to the locale and options of its constructing Intl.Segmenter instance.\nhttps://tc39.es/ecma402/#sec-segments-objects"
+      "Bindings to `Segments` objects produced by `Intl.Segmenter.segment`.\n A Segments instance is an object that represents the segments of a specific string, subject to the locale and options of its constructing Intl.Segmenter instance.\nhttps://tc39.es/ecma402/#sec-segments-objects.\n\nSee [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter/segment) for API details and the [ECMA-402 specification](https://tc39.es/ecma402/#sec-segments-objects) for the object shape."
     ],
     "items": [
       {
@@ -1124,14 +1132,18 @@
         "id": "Stdlib.Intl.Segments.containing",
         "kind": "value",
         "name": "containing",
-        "docstrings": [],
+        "docstrings": [
+          "`containing(segments)` returns the segment data for the index supplied when iterating.\n\nUse this when consuming `Segments` via iteration helpers where the index is already implied."
+        ],
         "signature": "let containing: t => segmentData"
       },
       {
         "id": "Stdlib.Intl.Segments.containingWithIndex",
         "kind": "value",
         "name": "containingWithIndex",
-        "docstrings": [],
+        "docstrings": [
+          "`containingWithIndex(segments, index)` returns the segment that contains `index` within the original string.\n\n## Examples\n\n```rescript\nlet segmenter = Intl.Segmenter.make(~locales=[\"en\"], ~options={granularity: #word})\nlet segments = segmenter->Intl.Segmenter.segment(\"Hello world\")\nIntl.Segments.containingWithIndex(segments, 0).segment == \"Hello\"\n```"
+        ],
         "signature": "let containingWithIndex: (t, int) => segmentData"
       },
       {
@@ -1148,7 +1160,9 @@
   "stdlib/intl/segmenter": {
     "id": "Stdlib.Intl.Segmenter",
     "name": "Segmenter",
-    "docstrings": [],
+    "docstrings": [
+      "Bindings to JavaScript's `Intl.Segmenter`.\n\nSee [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter) for API details."
+    ],
     "items": [
       {
         "id": "Stdlib.Intl.Segmenter.t",
@@ -1196,28 +1210,36 @@
         "id": "Stdlib.Intl.Segmenter.make",
         "kind": "value",
         "name": "make",
-        "docstrings": [],
+        "docstrings": [
+          "Creates a new `Intl.Segmenter` instance for segmenting strings.\n\nSee [`Intl.Segmenter`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter) on MDN.\n\n## Examples\n\n```rescript\nlet segmenter = Intl.Segmenter.make(~locales=[\"en\"], ~options={granularity: #word})\nIntl.Segmenter.resolvedOptions(segmenter).granularity == #word\n```"
+        ],
         "signature": "let make: (~locales: array<string>=?, ~options: options=?) => t"
       },
       {
         "id": "Stdlib.Intl.Segmenter.supportedLocalesOf",
         "kind": "value",
         "name": "supportedLocalesOf",
-        "docstrings": [],
-        "signature": "let supportedLocalesOf: (array<string>, ~options: supportedLocalesOptions=?) => t"
+        "docstrings": [
+          "`supportedLocalesOf(locales, ~options)` filters `locales` to those supported for segmentation.\n\nSee [`Intl.Segmenter.supportedLocalesOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter/supportedLocalesOf) on MDN.\n\n## Examples\n\n```rescript\nIntl.Segmenter.supportedLocalesOf([\"en-US\", \"klingon\"]) == [\"en-US\"]\n```"
+        ],
+        "signature": "let supportedLocalesOf: (\n  array<string>,\n  ~options: supportedLocalesOptions=?,\n) => array<string>"
       },
       {
         "id": "Stdlib.Intl.Segmenter.resolvedOptions",
         "kind": "value",
         "name": "resolvedOptions",
-        "docstrings": [],
+        "docstrings": [
+          "`resolvedOptions(segmenter)` returns the locale and granularity currently in use.\n\nSee [`Intl.Segmenter.prototype.resolvedOptions`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter/resolvedOptions) on MDN.\n\n## Examples\n\n```rescript\nlet segmenter = Intl.Segmenter.make(~locales=[\"en\"], ~options={granularity: #sentence})\nIntl.Segmenter.resolvedOptions(segmenter).granularity == #sentence\n```"
+        ],
         "signature": "let resolvedOptions: t => resolvedOptions"
       },
       {
         "id": "Stdlib.Intl.Segmenter.segment",
         "kind": "value",
         "name": "segment",
-        "docstrings": [],
+        "docstrings": [
+          "`segment(segmenter, input)` returns a `Segments` object describing `input`.\n\nSee [`Intl.Segmenter.prototype.segment`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter/segment) on MDN.\n\n## Examples\n\n```rescript\nlet segmenter = Intl.Segmenter.make(~locales=[\"en\"], ~options={granularity: #word})\nlet segments = segmenter->Intl.Segmenter.segment(\"Hello world\")\nIntl.Segments.containingWithIndex(segments, 0).segment == \"Hello\"\n```"
+        ],
         "signature": "let segment: (t, string) => Intl_Segments.t"
       },
       {
@@ -1234,7 +1256,9 @@
   "stdlib/intl/relativetimeformat": {
     "id": "Stdlib.Intl.RelativeTimeFormat",
     "name": "RelativeTimeFormat",
-    "docstrings": [],
+    "docstrings": [
+      "Bindings to JavaScript's `Intl.RelativeTimeFormat`.\n\nSee [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat) for API details."
+    ],
     "items": [
       {
         "id": "Stdlib.Intl.RelativeTimeFormat.t",
@@ -1303,35 +1327,45 @@
         "id": "Stdlib.Intl.RelativeTimeFormat.make",
         "kind": "value",
         "name": "make",
-        "docstrings": [],
+        "docstrings": [
+          "Creates a new `Intl.RelativeTimeFormat` instance for formatting relative time strings.\n\nSee [`Intl.RelativeTimeFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat) on MDN.\n\n## Examples\n\n```rescript\nlet formatter = Intl.RelativeTimeFormat.make(~locales=[\"en-US\"])\nformatter->Intl.RelativeTimeFormat.format(1, #day)->String.length > 0\n```"
+        ],
         "signature": "let make: (~locales: array<string>=?, ~options: options=?) => t"
       },
       {
         "id": "Stdlib.Intl.RelativeTimeFormat.supportedLocalesOf",
         "kind": "value",
         "name": "supportedLocalesOf",
-        "docstrings": [],
-        "signature": "let supportedLocalesOf: (array<string>, ~options: supportedLocalesOptions=?) => t"
+        "docstrings": [
+          "`supportedLocalesOf(locales, ~options)` filters `locales` to those supported for relative time formatting.\n\nSee [`Intl.RelativeTimeFormat.supportedLocalesOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat/supportedLocalesOf) on MDN.\n\n## Examples\n\n```rescript\nIntl.RelativeTimeFormat.supportedLocalesOf([\"en-US\", \"klingon\"]) == [\"en-US\"]\n```"
+        ],
+        "signature": "let supportedLocalesOf: (\n  array<string>,\n  ~options: supportedLocalesOptions=?,\n) => array<string>"
       },
       {
         "id": "Stdlib.Intl.RelativeTimeFormat.resolvedOptions",
         "kind": "value",
         "name": "resolvedOptions",
-        "docstrings": [],
+        "docstrings": [
+          "`resolvedOptions(formatter)` returns the locale and options currently in use.\n\nSee [`Intl.RelativeTimeFormat.prototype.resolvedOptions`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat/resolvedOptions) on MDN.\n\n## Examples\n\n```rescript\nlet formatter = Intl.RelativeTimeFormat.make(~locales=[\"en-US\"])\nIntl.RelativeTimeFormat.resolvedOptions(formatter).locale == \"en-US\"\n```"
+        ],
         "signature": "let resolvedOptions: t => resolvedOptions"
       },
       {
         "id": "Stdlib.Intl.RelativeTimeFormat.format",
         "kind": "value",
         "name": "format",
-        "docstrings": [],
+        "docstrings": [
+          "`format(formatter, value, unit)` returns the formatted string for `value` expressed in `unit`.\n\n## Examples\n\n```rescript\nlet formatter = Intl.RelativeTimeFormat.make(~locales=[\"en\"])\nformatter->Intl.RelativeTimeFormat.format(-1, #day)->String.length > 0\n```"
+        ],
         "signature": "let format: (t, int, timeUnit) => string"
       },
       {
         "id": "Stdlib.Intl.RelativeTimeFormat.formatToParts",
         "kind": "value",
         "name": "formatToParts",
-        "docstrings": [],
+        "docstrings": [
+          "`formatToParts(formatter, value, unit)` returns an array describing how the output string is assembled.\n\nSee [`Intl.RelativeTimeFormat.prototype.formatToParts`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat/formatToParts) on MDN.\n\n## Examples\n\n```rescript\nlet formatter = Intl.RelativeTimeFormat.make(~locales=[\"en\"])\nformatter->Intl.RelativeTimeFormat.formatToParts(-1, #day)->Array.length > 0\n```"
+        ],
         "signature": "let formatToParts: (t, int, timeUnit) => array<relativeTimePart>"
       },
       {
@@ -1396,21 +1430,27 @@
         "id": "Stdlib.Intl.PluralRules.make",
         "kind": "value",
         "name": "make",
-        "docstrings": [],
+        "docstrings": [
+          "Creates a new `Intl.PluralRules` instance to determine plural categories.\n\nSee [`Intl.PluralRules`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/PluralRules) on MDN.\n\n## Examples\n\n```rescript\nlet rules = Intl.PluralRules.make(~locales=[\"en\"])\nlet category = rules->Intl.PluralRules.select(1.0)\ncategory == #one\n```"
+        ],
         "signature": "let make: (~locales: array<string>=?, ~options: options=?) => t"
       },
       {
         "id": "Stdlib.Intl.PluralRules.supportedLocalesOf",
         "kind": "value",
         "name": "supportedLocalesOf",
-        "docstrings": [],
-        "signature": "let supportedLocalesOf: (array<string>, ~options: supportedLocalesOptions=?) => t"
+        "docstrings": [
+          "`supportedLocalesOf(locales, ~options)` filters `locales` to those supported for plural rules.\n\nSee [`Intl.PluralRules.supportedLocalesOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/PluralRules/supportedLocalesOf) on MDN.\n\n## Examples\n\n```rescript\nIntl.PluralRules.supportedLocalesOf([\"en-US\", \"klingon\"]) == [\"en-US\"]\n```"
+        ],
+        "signature": "let supportedLocalesOf: (\n  array<string>,\n  ~options: supportedLocalesOptions=?,\n) => array<string>"
       },
       {
         "id": "Stdlib.Intl.PluralRules.resolvedOptions",
         "kind": "value",
         "name": "resolvedOptions",
-        "docstrings": [],
+        "docstrings": [
+          "`resolvedOptions(rules)` returns the plural rule configuration in use.\n\n## Examples\n\n```rescript\nlet rules = Intl.PluralRules.make(~locales=[\"en\"])\nIntl.PluralRules.resolvedOptions(rules).locale == \"en\"\n```"
+        ],
         "signature": "let resolvedOptions: t => resolvedOptions"
       },
       {
@@ -1424,43 +1464,37 @@
         "id": "Stdlib.Intl.PluralRules.select",
         "kind": "value",
         "name": "select",
-        "docstrings": [],
+        "docstrings": [
+          "`select(rules, value)` returns the plural category for the given number.\n\n## Examples\n\n```rescript\nlet rules = Intl.PluralRules.make(~locales=[\"en\"])\nrules->Intl.PluralRules.select(1.) == #one\n```"
+        ],
         "signature": "let select: (t, float) => rule"
       },
       {
         "id": "Stdlib.Intl.PluralRules.selectInt",
         "kind": "value",
         "name": "selectInt",
-        "docstrings": [],
+        "docstrings": [
+          "`selectInt(rules, value)` is like `select` but accepts an integer.\n\n## Examples\n\n```rescript\nlet rules = Intl.PluralRules.make(~locales=[\"en\"])\nrules->Intl.PluralRules.selectInt(2) == #other\n```"
+        ],
         "signature": "let selectInt: (t, int) => rule"
-      },
-      {
-        "id": "Stdlib.Intl.PluralRules.selectBigInt",
-        "kind": "value",
-        "name": "selectBigInt",
-        "docstrings": [],
-        "signature": "let selectBigInt: (t, bigint) => rule"
       },
       {
         "id": "Stdlib.Intl.PluralRules.selectRange",
         "kind": "value",
         "name": "selectRange",
-        "docstrings": [],
+        "docstrings": [
+          "`selectRange(rules, ~start, ~end)` returns the category for numbers in the range.\n\n## Examples\n\n```rescript\nlet rules = Intl.PluralRules.make(~locales=[\"en\"])\nrules->Intl.PluralRules.selectRange(~start=1., ~end=2.) == #other\n```"
+        ],
         "signature": "let selectRange: (t, ~start: float, ~end: float) => rule"
       },
       {
         "id": "Stdlib.Intl.PluralRules.selectRangeInt",
         "kind": "value",
         "name": "selectRangeInt",
-        "docstrings": [],
+        "docstrings": [
+          "`selectRangeInt(rules, ~start, ~end)` is the integer version of `selectRange`.\n\n## Examples\n\n```rescript\nlet rules = Intl.PluralRules.make(~locales=[\"en\"])\nrules->Intl.PluralRules.selectRangeInt(~start=1, ~end=1) == #other\n```"
+        ],
         "signature": "let selectRangeInt: (t, ~start: int, ~end: int) => rule"
-      },
-      {
-        "id": "Stdlib.Intl.PluralRules.selectRangeBigInt",
-        "kind": "value",
-        "name": "selectRangeBigInt",
-        "docstrings": [],
-        "signature": "let selectRangeBigInt: (t, ~start: bigint, ~end: bigint) => rule"
       },
       {
         "id": "Stdlib.Intl.PluralRules.ignore",
@@ -1637,120 +1671,154 @@
         "id": "Stdlib.Intl.NumberFormat.make",
         "kind": "value",
         "name": "make",
-        "docstrings": [],
+        "docstrings": [
+          "Creates a new `Intl.NumberFormat` instance for locale-aware number formatting.\n\nSee [`Intl.NumberFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat) on MDN.\n\n## Examples\n\n```rescript\nlet formatter = Intl.NumberFormat.make(~locales=[\"en-US\"], ~options={style: #currency, currency: \"USD\"})\nformatter->Intl.NumberFormat.format(1234.5) == \"$1,234.50\"\n```"
+        ],
         "signature": "let make: (~locales: array<string>=?, ~options: options=?) => t"
       },
       {
         "id": "Stdlib.Intl.NumberFormat.supportedLocalesOf",
         "kind": "value",
         "name": "supportedLocalesOf",
-        "docstrings": [],
-        "signature": "let supportedLocalesOf: (array<string>, ~options: supportedLocalesOptions=?) => t"
+        "docstrings": [
+          "`supportedLocalesOf(locales, ~options)` filters `locales` to those supported for number formatting.\n\nSee [`Intl.NumberFormat.supportedLocalesOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/supportedLocalesOf) on MDN.\n\n## Examples\n\n```rescript\nIntl.NumberFormat.supportedLocalesOf([\"en-US\", \"klingon\"]) == [\"en-US\"]\n```"
+        ],
+        "signature": "let supportedLocalesOf: (\n  array<string>,\n  ~options: supportedLocalesOptions=?,\n) => array<string>"
       },
       {
         "id": "Stdlib.Intl.NumberFormat.resolvedOptions",
         "kind": "value",
         "name": "resolvedOptions",
-        "docstrings": [],
+        "docstrings": [
+          "`resolvedOptions(formatter)` returns the actual options being used.\n\n## Examples\n\n```rescript\nlet formatter = Intl.NumberFormat.make(~locales=[\"en-US\"])\nIntl.NumberFormat.resolvedOptions(formatter).locale == \"en-US\"\n```"
+        ],
         "signature": "let resolvedOptions: t => resolvedOptions"
       },
       {
         "id": "Stdlib.Intl.NumberFormat.format",
         "kind": "value",
         "name": "format",
-        "docstrings": [],
+        "docstrings": [
+          "`format(formatter, value)` returns the formatted representation of `value`.\n\n## Examples\n\n```rescript\nlet formatter = Intl.NumberFormat.make(~locales=[\"en-US\"])\nformatter->Intl.NumberFormat.format(1234.5) == \"1,234.5\"\n```"
+        ],
         "signature": "let format: (t, float) => string"
       },
       {
         "id": "Stdlib.Intl.NumberFormat.formatRange",
         "kind": "value",
         "name": "formatRange",
-        "docstrings": [],
-        "signature": "let formatRange: (t, ~start: float, ~end: float) => array<string>"
+        "docstrings": [
+          "`formatRange(formatter, ~start, ~end)` formats numbers representing a range.\n\n## Examples\n\n```rescript\nlet formatter = Intl.NumberFormat.make(~locales=[\"en-US\"])\nformatter->Intl.NumberFormat.formatRange(~start=1., ~end=2.)->String.length > 0\n```"
+        ],
+        "signature": "let formatRange: (t, ~start: float, ~end: float) => string"
       },
       {
         "id": "Stdlib.Intl.NumberFormat.formatToParts",
         "kind": "value",
         "name": "formatToParts",
-        "docstrings": [],
+        "docstrings": [
+          "`formatToParts(formatter, value)` breaks the formatted result into parts.\n\n## Examples\n\n```rescript\nlet formatter = Intl.NumberFormat.make(~locales=[\"en-US\"])\nformatter->Intl.NumberFormat.formatToParts(123)->Array.length > 0\n```"
+        ],
         "signature": "let formatToParts: (t, float) => array<numberFormatPart>"
       },
       {
         "id": "Stdlib.Intl.NumberFormat.formatRangeToParts",
         "kind": "value",
         "name": "formatRangeToParts",
-        "docstrings": [],
+        "docstrings": [
+          "`formatRangeToParts(formatter, ~start, ~end)` returns how the range would be rendered.\n\n## Examples\n\n```rescript\nlet formatter = Intl.NumberFormat.make(~locales=[\"en-US\"])\nformatter->Intl.NumberFormat.formatRangeToParts(~start=1., ~end=2.)->Array.length > 0\n```"
+        ],
         "signature": "let formatRangeToParts: (\n  t,\n  ~start: float,\n  ~end: float,\n) => array<numberFormatRangePart>"
       },
       {
         "id": "Stdlib.Intl.NumberFormat.formatInt",
         "kind": "value",
         "name": "formatInt",
-        "docstrings": [],
+        "docstrings": [
+          "`formatInt(formatter, value)` formats integer values.\n\n## Examples\n\n```rescript\nlet formatter = Intl.NumberFormat.make(~locales=[\"en\"])\nformatter->Intl.NumberFormat.formatInt(42) == \"42\"\n```"
+        ],
         "signature": "let formatInt: (t, int) => string"
       },
       {
         "id": "Stdlib.Intl.NumberFormat.formatIntRange",
         "kind": "value",
         "name": "formatIntRange",
-        "docstrings": [],
-        "signature": "let formatIntRange: (t, ~start: int, ~end: int) => array<string>"
+        "docstrings": [
+          "`formatIntRange(formatter, ~start, ~end)` formats integer ranges.\n\n## Examples\n\n```rescript\nlet formatter = Intl.NumberFormat.make(~locales=[\"en\"])\nformatter->Intl.NumberFormat.formatIntRange(~start=1, ~end=3)->String.length > 0\n```"
+        ],
+        "signature": "let formatIntRange: (t, ~start: int, ~end: int) => string"
       },
       {
         "id": "Stdlib.Intl.NumberFormat.formatIntToParts",
         "kind": "value",
         "name": "formatIntToParts",
-        "docstrings": [],
+        "docstrings": [
+          "`formatIntToParts(formatter, value)` returns formatting parts for an integer.\n\n## Examples\n\n```rescript\nlet formatter = Intl.NumberFormat.make(~locales=[\"en\"])\nformatter->Intl.NumberFormat.formatIntToParts(123)->Array.length > 0\n```"
+        ],
         "signature": "let formatIntToParts: (t, int) => array<numberFormatPart>"
       },
       {
         "id": "Stdlib.Intl.NumberFormat.formatIntRangeToParts",
         "kind": "value",
         "name": "formatIntRangeToParts",
-        "docstrings": [],
+        "docstrings": [
+          "`formatIntRangeToParts(formatter, ~start, ~end)` returns how the integer range would be rendered.\n\n## Examples\n\n```rescript\nlet formatter = Intl.NumberFormat.make(~locales=[\"en\"])\nformatter->Intl.NumberFormat.formatIntRangeToParts(~start=1, ~end=1)->Array.length > 0\n```"
+        ],
         "signature": "let formatIntRangeToParts: (t, ~start: int, ~end: int) => array<numberFormatRangePart>"
       },
       {
         "id": "Stdlib.Intl.NumberFormat.formatBigInt",
         "kind": "value",
         "name": "formatBigInt",
-        "docstrings": [],
+        "docstrings": [
+          "`formatBigInt(formatter, value)` formats bigint values."
+        ],
         "signature": "let formatBigInt: (t, bigint) => string"
       },
       {
         "id": "Stdlib.Intl.NumberFormat.formatBigIntRange",
         "kind": "value",
         "name": "formatBigIntRange",
-        "docstrings": [],
-        "signature": "let formatBigIntRange: (t, ~start: bigint, ~end: bigint) => array<string>"
+        "docstrings": [
+          "`formatBigIntRange(formatter, ~start, ~end)` formats a range of bigint values.\n\n## Examples\n\n```rescript\nlet formatter = Intl.NumberFormat.make(~locales=[\"en\"])\nformatter->Intl.NumberFormat.formatBigIntRange(~start=1n, ~end=2n) == \"1–2\"\n```"
+        ],
+        "signature": "let formatBigIntRange: (t, ~start: bigint, ~end: bigint) => string"
       },
       {
         "id": "Stdlib.Intl.NumberFormat.formatBigIntToParts",
         "kind": "value",
         "name": "formatBigIntToParts",
-        "docstrings": [],
+        "docstrings": [
+          "`formatBigIntToParts(formatter, value)` returns the bigint formatting broken into parts.\n\n## Examples\n\n```rescript\nlet formatter = Intl.NumberFormat.make(~locales=[\"en\"])\nformatter->Intl.NumberFormat.formatBigIntToParts(5n)->Array.length > 0\n```"
+        ],
         "signature": "let formatBigIntToParts: (t, bigint) => array<numberFormatPart>"
       },
       {
         "id": "Stdlib.Intl.NumberFormat.formatBigIntRangeToParts",
         "kind": "value",
         "name": "formatBigIntRangeToParts",
-        "docstrings": [],
-        "signature": "let formatBigIntRangeToParts: (t, ~start: bigint, ~end: bigint) => array<numberFormatPart>"
+        "docstrings": [
+          "`formatBigIntRangeToParts(formatter, ~start, ~end)` describes how the bigint range would be rendered.\n\n## Examples\n\n```rescript\nlet formatter = Intl.NumberFormat.make(~locales=[\"en\"])\nformatter->Intl.NumberFormat.formatBigIntRangeToParts(~start=3n, ~end=4n)->Array.length > 0\n```"
+        ],
+        "signature": "let formatBigIntRangeToParts: (\n  t,\n  ~start: bigint,\n  ~end: bigint,\n) => array<numberFormatRangePart>"
       },
       {
         "id": "Stdlib.Intl.NumberFormat.formatString",
         "kind": "value",
         "name": "formatString",
-        "docstrings": [],
+        "docstrings": [
+          "`formatString(formatter, value)` interprets `value` as a number string and formats it.\n\n## Examples\n\n```rescript\nlet formatter = Intl.NumberFormat.make(~locales=[\"en\"])\nformatter->Intl.NumberFormat.formatString(\"1234\") == \"1,234\"\n```"
+        ],
         "signature": "let formatString: (t, string) => string"
       },
       {
         "id": "Stdlib.Intl.NumberFormat.formatStringToParts",
         "kind": "value",
         "name": "formatStringToParts",
-        "docstrings": [],
-        "signature": "let formatStringToParts: (t, string) => array<numberFormatRangePart>"
+        "docstrings": [
+          "`formatStringToParts(formatter, value)` returns formatting parts for a numeric string.\n\n## Examples\n\n```rescript\nlet formatter = Intl.NumberFormat.make(~locales=[\"en\"])\nformatter->Intl.NumberFormat.formatStringToParts(\"123\")->Array.length > 0\n```"
+        ],
+        "signature": "let formatStringToParts: (t, string) => array<numberFormatPart>"
       },
       {
         "id": "Stdlib.Intl.NumberFormat.ignore",
@@ -1766,7 +1834,9 @@
   "stdlib/intl/locale": {
     "id": "Stdlib.Intl.Locale",
     "name": "Locale",
-    "docstrings": [],
+    "docstrings": [
+      "Bindings to JavaScript's `Intl.Locale`."
+    ],
     "items": [
       {
         "id": "Stdlib.Intl.Locale.t",
@@ -1786,91 +1856,117 @@
         "id": "Stdlib.Intl.Locale.make",
         "kind": "value",
         "name": "make",
-        "docstrings": [],
+        "docstrings": [
+          "Creates a new `Intl.Locale` object from a locale identifier and optional modifiers.\n\nSee [`Intl.Locale`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale) on MDN.\n\n## Examples\n\n```rescript\nlet locale = Intl.Locale.make(\"en-US\")\nlocale->Intl.Locale.language == \"en\"\n```"
+        ],
         "signature": "let make: (string, ~options: options=?) => t"
       },
       {
         "id": "Stdlib.Intl.Locale.baseName",
         "kind": "value",
         "name": "baseName",
-        "docstrings": [],
+        "docstrings": [
+          "`baseName(locale)` returns the canonical base name (without Unicode extensions).\n\nSee [`Intl.Locale.prototype.baseName`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale/baseName) on MDN.\n\n## Examples\n\n```rescript\nlet locale = Intl.Locale.make(\"fr-CA\")\nlocale->Intl.Locale.baseName == \"fr-CA\"\n```"
+        ],
         "signature": "let baseName: t => string"
       },
       {
         "id": "Stdlib.Intl.Locale.calendar",
         "kind": "value",
         "name": "calendar",
-        "docstrings": [],
+        "docstrings": [
+          "`calendar(locale)` returns the specified calendar, if present.\n\nSee [`Intl.Locale.prototype.calendar`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale/calendar) on MDN.\n\n## Examples\n\n```rescript\nlet locale = Intl.Locale.make(\"en\", ~options={calendar: #gregory})\nlocale->Intl.Locale.calendar == Some(\"gregory\")\n```"
+        ],
         "signature": "let calendar: t => option<string>"
       },
       {
         "id": "Stdlib.Intl.Locale.caseFirst",
         "kind": "value",
         "name": "caseFirst",
-        "docstrings": [],
+        "docstrings": [
+          "`caseFirst(locale)` returns the case-first ordering setting, if present.\n\nSee [`Intl.Locale.prototype.caseFirst`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale/caseFirst) on MDN.\n\n## Examples\n\n```rescript\nlet locale = Intl.Locale.make(\"en\", ~options={caseFirst: #upper})\nlocale->Intl.Locale.caseFirst == Some(\"upper\")\n```"
+        ],
         "signature": "let caseFirst: t => option<string>"
       },
       {
         "id": "Stdlib.Intl.Locale.collation",
         "kind": "value",
         "name": "collation",
-        "docstrings": [],
+        "docstrings": [
+          "`collation(locale)` returns the collation type, if present.\n\nSee [`Intl.Locale.prototype.collation`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale/collation) on MDN.\n\n## Examples\n\n```rescript\nlet locale = Intl.Locale.make(\"en\", ~options={collation: #phonebk})\nlocale->Intl.Locale.collation == Some(\"phonebk\")\n```"
+        ],
         "signature": "let collation: t => option<string>"
       },
       {
         "id": "Stdlib.Intl.Locale.hourCycle",
         "kind": "value",
         "name": "hourCycle",
-        "docstrings": [],
+        "docstrings": [
+          "`hourCycle(locale)` returns the preferred hour cycle, if present.\n\nSee [`Intl.Locale.prototype.hourCycle`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale/hourCycle) on MDN.\n\n## Examples\n\n```rescript\nlet locale = Intl.Locale.make(\"en\", ~options={hourCycle: #h12})\nlocale->Intl.Locale.hourCycle == Some(\"h12\")\n```"
+        ],
         "signature": "let hourCycle: t => option<string>"
       },
       {
         "id": "Stdlib.Intl.Locale.language",
         "kind": "value",
         "name": "language",
-        "docstrings": [],
+        "docstrings": [
+          "`language(locale)` returns the primary language subtag.\n\nSee [`Intl.Locale.prototype.language`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale/language) on MDN.\n\n## Examples\n\n```rescript\nlet locale = Intl.Locale.make(\"pt-BR\")\nlocale->Intl.Locale.language == \"pt\"\n```"
+        ],
         "signature": "let language: t => string"
       },
       {
         "id": "Stdlib.Intl.Locale.numberingSystem",
         "kind": "value",
         "name": "numberingSystem",
-        "docstrings": [],
+        "docstrings": [
+          "`numberingSystem(locale)` returns the numbering system identifier, if present.\n\nSee [`Intl.Locale.prototype.numberingSystem`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale/numberingSystem) on MDN.\n\n## Examples\n\n```rescript\nlet locale = Intl.Locale.make(\"en\", ~options={numberingSystem: #latn})\nlocale->Intl.Locale.numberingSystem == Some(\"latn\")\n```"
+        ],
         "signature": "let numberingSystem: t => option<string>"
       },
       {
         "id": "Stdlib.Intl.Locale.numeric",
         "kind": "value",
         "name": "numeric",
-        "docstrings": [],
+        "docstrings": [
+          "`numeric(locale)` indicates whether numeric ordering should be used for region subtags.\n\nSee [`Intl.Locale.prototype.numeric`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale/numeric) on MDN.\n\n## Examples\n\n```rescript\nlet locale = Intl.Locale.make(\"en\", ~options={numeric: true})\nlocale->Intl.Locale.numeric == true\n```"
+        ],
         "signature": "let numeric: t => bool"
       },
       {
         "id": "Stdlib.Intl.Locale.region",
         "kind": "value",
         "name": "region",
-        "docstrings": [],
+        "docstrings": [
+          "`region(locale)` returns the region subtag, if present.\n\nSee [`Intl.Locale.prototype.region`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale/region) on MDN.\n\n## Examples\n\n```rescript\nlet locale = Intl.Locale.make(\"en-US\")\nlocale->Intl.Locale.region == Some(\"US\")\n```"
+        ],
         "signature": "let region: t => option<string>"
       },
       {
         "id": "Stdlib.Intl.Locale.script",
         "kind": "value",
         "name": "script",
-        "docstrings": [],
+        "docstrings": [
+          "`script(locale)` returns the script subtag, if present.\n\nSee [`Intl.Locale.prototype.script`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale/script) on MDN.\n\n## Examples\n\n```rescript\nlet locale = Intl.Locale.make(\"sr-Cyrl\")\nlocale->Intl.Locale.script == Some(\"Cyrl\")\n```"
+        ],
         "signature": "let script: t => option<string>"
       },
       {
         "id": "Stdlib.Intl.Locale.maximize",
         "kind": "value",
         "name": "maximize",
-        "docstrings": [],
+        "docstrings": [
+          "`maximize(locale)` adds likely subtags to produce the most specific locale.\n\nSee [`Intl.Locale.prototype.maximize`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale/maximize) on MDN.\n\n## Examples\n\n```rescript\nlet locale = Intl.Locale.make(\"en\")\nlocale->Intl.Locale.maximize->Intl.Locale.region == Some(\"US\")\n```"
+        ],
         "signature": "let maximize: t => t"
       },
       {
         "id": "Stdlib.Intl.Locale.minimize",
         "kind": "value",
         "name": "minimize",
-        "docstrings": [],
+        "docstrings": [
+          "`minimize(locale)` removes unnecessary subtags while preserving semantics.\n\nSee [`Intl.Locale.prototype.minimize`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale/minimize) on MDN.\n\n## Examples\n\n```rescript\nlet locale = Intl.Locale.make(\"en-Latn-US\")\nlocale->Intl.Locale.minimize->Intl.Locale.baseName == \"en\"\n```"
+        ],
         "signature": "let minimize: t => t"
       },
       {
@@ -1949,35 +2045,45 @@
         "id": "Stdlib.Intl.ListFormat.make",
         "kind": "value",
         "name": "make",
-        "docstrings": [],
+        "docstrings": [
+          "Creates a new `Intl.ListFormat` instance for formatting lists.\n\nSee [`Intl.ListFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/ListFormat) on MDN.\n\n## Examples\n\n```rescript\nlet formatter = Intl.ListFormat.make(~locales=[\"en\"], ~options={\\\"type\": #conjunction})\nformatter->Intl.ListFormat.format([\"apples\", \"bananas\", \"cherries\"]) == \"apples, bananas, and cherries\"\n```"
+        ],
         "signature": "let make: (~locales: array<string>=?, ~options: options=?) => t"
       },
       {
         "id": "Stdlib.Intl.ListFormat.supportedLocalesOf",
         "kind": "value",
         "name": "supportedLocalesOf",
-        "docstrings": [],
-        "signature": "let supportedLocalesOf: (array<string>, ~options: supportedLocalesOptions=?) => t"
+        "docstrings": [
+          "`supportedLocalesOf(locales, ~options)` filters `locales` to those supported for list formatting.\n\nSee [`Intl.ListFormat.supportedLocalesOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/ListFormat/supportedLocalesOf) on MDN.\n\n## Examples\n\n```rescript\nIntl.ListFormat.supportedLocalesOf([\"en-US\", \"klingon\"]) == [\"en-US\"]\n```"
+        ],
+        "signature": "let supportedLocalesOf: (\n  array<string>,\n  ~options: supportedLocalesOptions=?,\n) => array<string>"
       },
       {
         "id": "Stdlib.Intl.ListFormat.resolvedOptions",
         "kind": "value",
         "name": "resolvedOptions",
-        "docstrings": [],
+        "docstrings": [
+          "`resolvedOptions(formatter)` returns the actual options being used.\n\nSee [`Intl.ListFormat.prototype.resolvedOptions`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/ListFormat/resolvedOptions) on MDN.\n\n## Examples\n\n```rescript\nlet formatter = Intl.ListFormat.make(~locales=[\"en\"])\nIntl.ListFormat.resolvedOptions(formatter).locale == \"en\"\n```"
+        ],
         "signature": "let resolvedOptions: t => resolvedOptions"
       },
       {
         "id": "Stdlib.Intl.ListFormat.format",
         "kind": "value",
         "name": "format",
-        "docstrings": [],
+        "docstrings": [
+          "`format(formatter, items)` returns the formatted list string.\n\n## Examples\n\n```rescript\nlet formatter = Intl.ListFormat.make(~locales=[\"en\"])\nformatter->Intl.ListFormat.format([\"a\", \"b\"]) == \"a and b\"\n```"
+        ],
         "signature": "let format: (t, array<string>) => string"
       },
       {
         "id": "Stdlib.Intl.ListFormat.formatToParts",
         "kind": "value",
         "name": "formatToParts",
-        "docstrings": [],
+        "docstrings": [
+          "`formatToParts(formatter, items)` returns the list as an array of parts describing how it would be rendered.\n\nSee [`Intl.ListFormat.prototype.formatToParts`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/ListFormat/formatToParts) on MDN.\n\n## Examples\n\n```rescript\nlet formatter = Intl.ListFormat.make(~locales=[\"en\"])\nformatter->Intl.ListFormat.formatToParts([\"a\", \"b\"])->Array.length > 0\n```"
+        ],
         "signature": "let formatToParts: (t, array<string>) => array<listPart>"
       },
       {
@@ -1994,7 +2100,9 @@
   "stdlib/intl/datetimeformat": {
     "id": "Stdlib.Intl.DateTimeFormat",
     "name": "DateTimeFormat",
-    "docstrings": [],
+    "docstrings": [
+      "Bindings to JavaScript's `Intl.DateTimeFormat`."
+    ],
     "items": [
       {
         "id": "Stdlib.Intl.DateTimeFormat.t",
@@ -2163,49 +2271,63 @@
         "id": "Stdlib.Intl.DateTimeFormat.make",
         "kind": "value",
         "name": "make",
-        "docstrings": [],
+        "docstrings": [
+          "Creates a new `Intl.DateTimeFormat` instance for formatting date values.\n\nSee [`Intl.DateTimeFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat) on MDN.\n\n## Examples\n\n```rescript\nlet formatter = Intl.DateTimeFormat.make(~locales=[\"en-US\"], ~options={timeStyle: #short})\nlet sampleDate = Js.Date.makeWithYMD(~year=2024, ~month=0, ~date=1)\nformatter->Intl.DateTimeFormat.format(sampleDate)->String.length > 0\n```"
+        ],
         "signature": "let make: (~locales: array<string>=?, ~options: options=?) => t"
       },
       {
         "id": "Stdlib.Intl.DateTimeFormat.supportedLocalesOf",
         "kind": "value",
         "name": "supportedLocalesOf",
-        "docstrings": [],
-        "signature": "let supportedLocalesOf: (array<string>, ~options: supportedLocalesOptions=?) => t"
+        "docstrings": [
+          "`supportedLocalesOf(locales, ~options)` filters `locales` to those supported by the runtime for date/time formatting.\n\nSee [`Intl.DateTimeFormat.supportedLocalesOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/supportedLocalesOf) on MDN.\n\n## Examples\n\n```rescript\nIntl.DateTimeFormat.supportedLocalesOf([\"en-US\", \"klingon\"]) == [\"en-US\"]\n```"
+        ],
+        "signature": "let supportedLocalesOf: (\n  array<string>,\n  ~options: supportedLocalesOptions=?,\n) => array<string>"
       },
       {
         "id": "Stdlib.Intl.DateTimeFormat.resolvedOptions",
         "kind": "value",
         "name": "resolvedOptions",
-        "docstrings": [],
+        "docstrings": [
+          "`resolvedOptions(formatter)` returns the actual locale and formatting options in use.\n\nSee [`Intl.DateTimeFormat.prototype.resolvedOptions`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/resolvedOptions) on MDN.\n\n## Examples\n\n```rescript\nlet formatter = Intl.DateTimeFormat.make(~locales=[\"en-US\"])\nIntl.DateTimeFormat.resolvedOptions(formatter).locale == \"en-US\"\n```"
+        ],
         "signature": "let resolvedOptions: t => resolvedOptions"
       },
       {
         "id": "Stdlib.Intl.DateTimeFormat.format",
         "kind": "value",
         "name": "format",
-        "docstrings": [],
+        "docstrings": [
+          "`format(formatter, date)` returns the formatted string for `date`.\n\n## Examples\n\n```rescript\nlet formatter = Intl.DateTimeFormat.make(~locales=[\"en\"])\nlet date = Js.Date.makeWithYMD(~year=2024, ~month=0, ~date=1)\nformatter->Intl.DateTimeFormat.format(date)->String.length > 0\n```"
+        ],
         "signature": "let format: (t, Date.t) => string"
       },
       {
         "id": "Stdlib.Intl.DateTimeFormat.formatToParts",
         "kind": "value",
         "name": "formatToParts",
-        "docstrings": [],
+        "docstrings": [
+          "`formatToParts(formatter, date)` breaks the formatted output into an array of parts.\n\nSee [`Intl.DateTimeFormat.prototype.formatToParts`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/formatToParts) on MDN.\n\n## Examples\n\n```rescript\nlet formatter = Intl.DateTimeFormat.make(~locales=[\"en\"])\nlet date = Js.Date.makeWithYMD(~year=2024, ~month=0, ~date=1)\nformatter->Intl.DateTimeFormat.formatToParts(date)->Array.length > 0\n```"
+        ],
         "signature": "let formatToParts: (t, Date.t) => array<dateTimePart>"
       },
       {
         "id": "Stdlib.Intl.DateTimeFormat.formatRange",
         "kind": "value",
         "name": "formatRange",
-        "docstrings": [],
+        "docstrings": [
+          "`formatRange(formatter, ~startDate, ~endDate)` formats the range between `startDate` and `endDate`.\n\nSee [`Intl.DateTimeFormat.prototype.formatRange`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/formatRange) on MDN.\n\n## Examples\n\n```rescript\nlet formatter = Intl.DateTimeFormat.make(~locales=[\"en-US\"], ~options={dateStyle: #short})\nlet startDate = Js.Date.makeWithYMD(~year=2024, ~month=0, ~date=1)\nlet endDate = Js.Date.makeWithYMD(~year=2024, ~month=1, ~date=1)\nformatter->Intl.DateTimeFormat.formatRange(~startDate=startDate, ~endDate=endDate)->String.length > 0\n```"
+        ],
         "signature": "let formatRange: (t, ~startDate: Date.t, ~endDate: Date.t) => string"
       },
       {
         "id": "Stdlib.Intl.DateTimeFormat.formatRangeToParts",
         "kind": "value",
         "name": "formatRangeToParts",
-        "docstrings": [],
+        "docstrings": [
+          "`formatRangeToParts(formatter, ~startDate, ~endDate)` returns an array describing how the range would be rendered.\n\nSee [`Intl.DateTimeFormat.prototype.formatRangeToParts`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/formatRangeToParts) on MDN.\n\n## Examples\n\n```rescript\nlet formatter = Intl.DateTimeFormat.make(~locales=[\"en-US\"], ~options={dateStyle: #short})\nlet startDate = Js.Date.makeWithYMD(~year=2024, ~month=0, ~date=1)\nlet endDate = Js.Date.makeWithYMD(~year=2024, ~month=1, ~date=1)\nformatter->Intl.DateTimeFormat.formatRangeToParts(~startDate=startDate, ~endDate=endDate)->Array.length > 0\n```"
+        ],
         "signature": "let formatRangeToParts: (\n  t,\n  ~startDate: Date.t,\n  ~endDate: Date.t,\n) => array<dateTimeRangePart>"
       },
       {
@@ -2277,28 +2399,36 @@
         "id": "Stdlib.Intl.Collator.make",
         "kind": "value",
         "name": "make",
-        "docstrings": [],
+        "docstrings": [
+          "Creates a new `Intl.Collator` instance that can compare strings using locale-aware rules.\n\nSee [`Intl.Collator`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Collator) on MDN.\n\n## Examples\n\n```rescript\nlet collator = Intl.Collator.make(~locales=[\"en\"])\ncollator->Intl.Collator.compare(\"apple\", \"banana\") < 0\n```"
+        ],
         "signature": "let make: (~locales: array<string>=?, ~options: options=?) => t"
       },
       {
         "id": "Stdlib.Intl.Collator.supportedLocalesOf",
         "kind": "value",
         "name": "supportedLocalesOf",
-        "docstrings": [],
-        "signature": "let supportedLocalesOf: (array<string>, ~options: supportedLocalesOptions=?) => t"
+        "docstrings": [
+          "`supportedLocalesOf(locales, ~options)` filters `locales` to those supported by the runtime for collation.\n\nSee [`Intl.Collator.supportedLocalesOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Collator/supportedLocalesOf) on MDN.\n\n## Examples\n\n```rescript\nIntl.Collator.supportedLocalesOf([\"en-US\", \"klingon\"]) == [\"en-US\"]\n\n```"
+        ],
+        "signature": "let supportedLocalesOf: (\n  array<string>,\n  ~options: supportedLocalesOptions=?,\n) => array<string>"
       },
       {
         "id": "Stdlib.Intl.Collator.resolvedOptions",
         "kind": "value",
         "name": "resolvedOptions",
-        "docstrings": [],
+        "docstrings": [
+          "`resolvedOptions(collator)` returns the locale and collation settings in use.\n\nSee [`Intl.Collator.prototype.resolvedOptions`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Collator/resolvedOptions) on MDN.\n\n## Examples\n\n```rescript\nlet collator = Intl.Collator.make(~locales=[\"en-US\"])\nIntl.Collator.resolvedOptions(collator).locale == \"en-US\"\n```"
+        ],
         "signature": "let resolvedOptions: t => resolvedOptions"
       },
       {
         "id": "Stdlib.Intl.Collator.compare",
         "kind": "value",
         "name": "compare",
-        "docstrings": [],
+        "docstrings": [
+          "`compare(collator, a, b)` compares two strings using the rules of `collator`. Returns a negative number when `a` comes before `b`, `0` when equal, and a positive number otherwise.\n\n## Examples\n\n```rescript\nlet collator = Intl.Collator.make(~locales=[\"en-US\"])\ncollator->Intl.Collator.compare(\"apple\", \"banana\") < 0\n```"
+        ],
         "signature": "let compare: (t, string, string) => int"
       },
       {
@@ -8842,7 +8972,7 @@
         "kind": "value",
         "name": "getCanonicalLocalesExn",
         "docstrings": [
-          "@throws RangeError"
+          "`getCanonicalLocalesExn(locale)` returns the canonical form of `locale`.\n\nThrows `RangeError` when the locale string is malformed.\n\nSee [`Intl.getCanonicalLocales`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/getCanonicalLocales) on MDN.\n\n## Examples\n\n```rescript\nIntl.getCanonicalLocalesExn(\"EN-US\") == [\"en-US\"]\n```"
         ],
         "signature": "let getCanonicalLocalesExn: string => array<string>"
       },
@@ -8851,7 +8981,7 @@
         "kind": "value",
         "name": "getCanonicalLocalesManyExn",
         "docstrings": [
-          "@throws RangeError"
+          "`getCanonicalLocalesManyExn(locales)` canonicalises every locale in `locales`.\n\nThrows `RangeError` when any locale string is malformed.\n\nSee [`Intl.getCanonicalLocales`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/getCanonicalLocales) on MDN.\n\n## Examples\n\n```rescript\nIntl.getCanonicalLocalesManyExn([\"EN-US\", \"fr\"]) == [\"en-US\", \"fr\"]\n```"
         ],
         "signature": "let getCanonicalLocalesManyExn: array<string> => array<string>"
       },
@@ -8860,7 +8990,7 @@
         "kind": "value",
         "name": "supportedValuesOfExn",
         "docstrings": [
-          "@throws RangeError"
+          "`supportedValuesOfExn(key)` returns the list of values supported by the runtime for the feature identified by `key`.\n\nThrows `RangeError` when `key` is unsupported.\n\nSee [`Intl.supportedValuesOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/supportedValuesOf) on MDN.\n\n## Examples\n\n```rescript\nIntl.supportedValuesOfExn(\"calendar\")->Array.includes(\"gregory\") == true\n```"
         ],
         "signature": "let supportedValuesOfExn: string => array<string>"
       }
