@@ -245,10 +245,8 @@ Below is a consolidated excerpt of all the breaking changes from the compiler ch
 - All legacy `@bs.*` attributes (e.g. `@bs.as`, `@bs.send`) and `@bs.open` were removed; use their prefix-free successors (`@as`, `@send`, `@open`, …). https://github.com/rescript-lang/rescript-compiler/pull/6643 https://github.com/rescript-lang/rescript-compiler/pull/6629
 - `@bs.send.pipe` was removed; rewrite bindings to use `@send`. https://github.com/rescript-lang/rescript-compiler/pull/6858 https://github.com/rescript-lang/rescript-compiler/pull/6891
 - OCaml `.ml` files are no longer supported anywhere: `.ml` parsing/formatting went away and the `rescript convert` CLI was removed, so convert legacy files to `.res` before upgrading. https://github.com/rescript-lang/rescript-compiler/pull/6848 https://github.com/rescript-lang/rescript-compiler/pull/6852 https://github.com/rescript-lang/rescript-compiler/pull/6860
-- The `%time` extension and the `caml_external_polyfill` module were deleted. https://github.com/rescript-lang/rescript-compiler/pull/6924 https://github.com/rescript-lang/rescript-compiler/pull/6925
 - Some global names and old keywords are no longer automatically prefixed during JS emission; update any code that was relying on the mangled names. https://github.com/rescript-lang/rescript-compiler/pull/6831
 - JSX v3 and the `-bs-jsx-mode` option were removed and JSX children spreads are no longer valid; JSX v4 semantics are now the only supported mode. https://github.com/rescript-lang/rescript-compiler/pull/7072 https://github.com/rescript-lang/rescript/pull/7327 https://github.com/rescript-lang/rescript/pull/7869
-- Bitwise operators switched to the F#-style spellings `~~~`, `^^^`, `&&&`, `|||`; the previous `~`, `^`, `&`, `|` tokens are no longer accepted. https://github.com/rescript-lang/rescript/pull/7894
 
 ### Standard library & runtime
 
@@ -264,7 +262,6 @@ Below is a consolidated excerpt of all the breaking changes from the compiler ch
 - The `List` API was cleaned up—several functions were renamed or removed (see the PR for the exact surface). https://github.com/rescript-lang/rescript/pull/7290
 - `String.getSymbol` / `String.setSymbol` were removed; only `String.getSymbolUnsafe` remains on strings. https://github.com/rescript-lang/rescript/pull/7571 https://github.com/rescript-lang/rescript/pull/7626
 - `String.charCodeAt` now returns `option<int>` and exposes `String.charCodeAtUnsafe` for unchecked access. https://github.com/rescript-lang/rescript/pull/7877
-- Runtime files now live in the `@rescript/runtime` package and the legacy `@rescript/std` package was removed, so ensure `@rescript/runtime` is installed wherever you depend on the compiler. https://github.com/rescript-lang/rescript/pull/7796 https://github.com/rescript-lang/rescript/pull/7811
 - `Intl.*.supportedLocalesOf` bindings now return `array<string>` and the non-portable `Intl.PluralRules.selectBigInt` / `selectRangeBigInt` were removed. https://github.com/rescript-lang/rescript/pull/7995
 
 ### Build system & CLI
