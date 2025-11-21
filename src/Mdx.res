@@ -70,6 +70,9 @@ external gfm: remarkPlugin = "default"
 @module("remark-validate-links")
 external validateLinks: remarkPlugin = "default"
 
+@module("mdast-util-to-string")
+external childrenToString: {..} => string = "toString"
+
 // The loadAllMdx function logs out all of the file contents as it reads them, which is noisy and not useful.
 // We can suppress that logging with this helper function.
 let allMdx = async (~filterByPaths: option<array<string>>=?) =>
@@ -199,4 +202,23 @@ let remarkReScriptPreludePlugin = makePlugin(_options =>
 
 let remarkLinkPlugin = makePlugin(_options => (tree, vfile) => remarkLinkPlugin(tree, vfile))
 
-let plugins = [remarkLinkPlugin, gfm, remarkReScriptPreludePlugin]
+// converts the inner text of headings to kebab-case IDs
+let anchorLinkPlugin = (tree, _vfile) => {
+  visit(tree, "heading", node => {
+    let planText = childrenToString(node)
+    let nodeData = switch node["data"] {
+    | Some(data) => data
+    | None => {
+        "hProperties": {
+          "id": planText->Url.normalizeAnchor,
+          "title": planText,
+        },
+      }
+    }
+    node["data"] = nodeData
+  })
+}
+
+let anchorLinkPlugin = makePlugin(_options => (tree, vfile) => anchorLinkPlugin(tree, vfile))
+
+let plugins = [remarkLinkPlugin, gfm, remarkReScriptPreludePlugin, anchorLinkPlugin]

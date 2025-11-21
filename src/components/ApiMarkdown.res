@@ -10,13 +10,13 @@ module H2 = {
   // We will currently hide the headline, to keep the structure,
   // but having an Elm like documentation
   @react.component
-  let make = (~id, ~children) => <>
+  let make = (~id, ~children, ~title) => <>
     <div className="mb-10 mt-20" />
-    <Markdown.H2 id> children </Markdown.H2>
+    <Markdown.H2 id title> children </Markdown.H2>
   </>
 }
 
-type aliasH2 = Markdown.H2.props<string, React.element> => React.element
+type aliasH2 = Markdown.H2.props<string, React.element, string> => React.element
 external asMarkdownH2: 'a => aliasH2 = "%identity"
 
 let default = {

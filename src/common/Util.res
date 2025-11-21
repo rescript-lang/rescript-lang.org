@@ -7,6 +7,12 @@ module String = {
      return str.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
     }")
 
+  let kebabCase = string =>
+    string
+    ->String.replaceAllRegExp(/([a-z])([A-Z])/g, "$1-$2")
+    ->String.toLowerCase
+    ->String.replaceAll(" ", "-")
+
   let capitalize: string => string = %raw("str => {
       return str && str.charAt(0).toUpperCase() + str.substring(1);
     }")

@@ -10,6 +10,7 @@ module Unsafe: {
 
 module String: {
   let camelCase: string => string
+  let kebabCase: string => string
   let capitalize: string => string
   let capitalizeSentence: string => string
   let leadingSlash: string => string

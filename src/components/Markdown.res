@@ -1,6 +1,5 @@
 // This file was automatically converted to ReScript from 'Markdown.re'
 // Check the output and make sure to delete the original file
-external childrenToString: React.element => string = "%identity"
 
 module P = {
   @react.component
@@ -110,15 +109,11 @@ module UrlBox = {
 
 // Used for creating invisible, hoverable <a> anchors for url linking
 module Anchor = {
-  // Todo: Headers with nested components don't pass a string, we need to flatten
-  // everything to a single string first before we are able to use this id transformation
-  // function
-
   @react.component
-  let make = (~id: string, ~title: string) => {
-    <span className="inline group relative" title>
+  let make = (~id: string, ~title: option<string>=?) => {
+    <span className="inline group relative" title=?title>
       <a
-        title
+        title=?title
         className="scroll-mt-30 invisible text-gray-60 opacity-50 hover:opacity-100 hover:text-gray-60 hover:cursor-pointer group-hover:visible"
         href={"#" ++ id}
         id={id}
@@ -137,20 +132,14 @@ module H1 = {
 
 module H2 = {
   @react.component
-  let make = (~id, ~children) => {
+  let make = (~id, ~children, ~title=?) => {
     // Children may not be a string
-    let title = {
-      try {
-        childrenToString(children)->Url.normalizeAnchor
-      } catch {
-      | _ => ""
-      }
-    }
+
     <>
       <h2 id className="group mt-16 mb-3 hl-3 scroll-mt-32">
         children
         <span className="ml-2">
-          <Anchor title={title} id={title} />
+          <Anchor ?title id />
         </span>
       </h2>
     </>
@@ -159,18 +148,11 @@ module H2 = {
 
 module H3 = {
   @react.component
-  let make = (~id, ~children) => {
-    let title = {
-      try {
-        childrenToString(children)->Url.normalizeAnchor
-      } catch {
-      | _ => ""
-      }
-    }
+  let make = (~id, ~children, ~title=?) => {
     <h3 id className="group mt-8 mb-4 hl-4 scroll-mt-32">
       children
       <span className="ml-2">
-        <Anchor title={title} id={title->encodeURIComponent} />
+        <Anchor ?title id={id} />
       </span>
     </h3>
   }
@@ -178,18 +160,11 @@ module H3 = {
 
 module H4 = {
   @react.component
-  let make = (~id, ~children) => {
-    let title = {
-      try {
-        childrenToString(children)->Url.normalizeAnchor
-      } catch {
-      | _ => ""
-      }
-    }
+  let make = (~id, ~children, ~title=?) => {
     <h4 id className="group mt-8 hl-5 scroll-mt-32">
       children
       <span className="ml-2">
-        <Anchor title={title} id={title->encodeURIComponent} />
+        <Anchor ?title id />
       </span>
     </h4>
   }
@@ -197,21 +172,14 @@ module H4 = {
 
 module H5 = {
   @react.component
-  let make = (~id, ~children) => {
-    let title = {
-      try {
-        childrenToString(children)->Url.normalizeAnchor
-      } catch {
-      | _ => ""
-      }
-    }
+  let make = (~id, ~children, ~title=?) => {
     <h5
       id
       className="group mt-12 mb-3 text-12 leading-2 font-sans font-semibold uppercase tracking-wide text-gray-80"
     >
       children
       <span className="ml-2">
-        <Anchor title={title} id={title->encodeURIComponent} />
+        <Anchor ?title id />
       </span>
     </h5>
   }

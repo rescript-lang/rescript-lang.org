@@ -35,7 +35,7 @@ module Anchor: {
   /* let idFormat = (id: string): string => id */
 
   @react.component
-  let make: (~id: string, ~title: string) => React.element
+  let make: (~id: string, ~title: string=?) => React.element
 }
 
 module H1: {
@@ -45,22 +45,22 @@ module H1: {
 
 module H2: {
   @react.component
-  let make: (~id: string, ~children: React.element) => React.element
+  let make: (~id: string, ~children: React.element, ~title: string=?) => React.element
 }
 
 module H3: {
   @react.component
-  let make: (~id: string, ~children: React.element) => React.element
+  let make: (~id: string, ~children: React.element, ~title: string=?) => React.element
 }
 
 module H4: {
   @react.component
-  let make: (~id: string, ~children: React.element) => React.element
+  let make: (~id: string, ~children: React.element, ~title: string=?) => React.element
 }
 
 module H5: {
   @react.component
-  let make: (~id: string, ~children: React.element) => React.element
+  let make: (~id: string, ~children: React.element, ~title: string=?) => React.element
 }
 
 module Pre: {
