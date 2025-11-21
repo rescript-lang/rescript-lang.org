@@ -27,6 +27,7 @@ module Toc = {
       {Array.map(entries, ({header, href}) => {
         <li key=header className="pl-2 mt-2 first:mt-1" dataTestId=header>
           <Link.String
+            prefetch={#intent}
             onClick={evt => {
               evt->ReactEvent.Mouse.preventDefault
               Console.log(href)
@@ -88,6 +89,7 @@ module Sidebar = {
           <li key=m.name className={hidden ++ " mt-1 leading-4"}>
             <Link.String
               to=m.href
+              prefetch={#intent}
               className={"truncate block py-1 md:h-auto tracking-tight text-gray-60 rounded-sm hover:bg-gray-20 hover:-ml-2 hover:py-1 hover:pl-2 " ++
               active}
             >
@@ -238,7 +240,7 @@ module BreadCrumbs = {
         let item = if i === List.length(crumbs) - 1 {
           <span key={Int.toString(i)}> {React.string(crumb.name)} </span>
         } else {
-          <Link.String key={Int.toString(i)} to=crumb.href>
+          <Link.String key={Int.toString(i)} to=crumb.href prefetch={#intent}>
             {React.string(crumb.name)}
           </Link.String>
         }
@@ -331,6 +333,7 @@ let make = (
       | Some({name, href}) =>
         <Link.String
           to=href
+          prefetch={#intent}
           className={"flex items-center text-fire hover:text-fire-70 border-2 border-red-300 rounded py-1.5 px-3"}
         >
           <Icon.ArrowRight className={"rotate-180 mr-2"} />
@@ -341,6 +344,7 @@ let make = (
       let next = switch items->Array.get(i + 1) {
       | Some({name, href}) =>
         <Link.String
+          prefetch={#intent}
           to=href
           className={"flex items-center text-fire hover:text-fire-70 ml-auto border-2 border-red-300 rounded py-1.5 px-3"}
         >

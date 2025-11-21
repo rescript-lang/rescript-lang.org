@@ -35,17 +35,22 @@ module MobileNav = {
     <div className="border-gray-80 border-tn">
       <ul>
         <li className=base>
-          <Link to=#"/try" className={linkOrActiveLink(~target=#"/try", ~route)}>
+          <Link prefetch={#intent} to=#"/try" className={linkOrActiveLink(~target=#"/try", ~route)}>
             {React.string("Playground")}
           </Link>
         </li>
         <li className=base>
-          <Link to=#"/blog" className={linkOrActiveLinkSubroute(~target=#"/blog", ~route)}>
+          <Link
+            prefetch={#intent}
+            to=#"/blog"
+            className={linkOrActiveLinkSubroute(~target=#"/blog", ~route)}
+          >
             {React.string("Blog")}
           </Link>
         </li>
         <li className=base>
           <Link
+            prefetch={#intent}
             to=#"/community/overview"
             className={linkOrActiveLink(~target=#"/community/overview", ~route)}
           >
@@ -53,7 +58,11 @@ module MobileNav = {
           </Link>
         </li>
         <li className=base>
-          <Link to=#"/packages" className={linkOrActiveLink(~target=#"/packages", ~route)}>
+          <Link
+            prefetch={#intent}
+            to=#"/packages"
+            className={linkOrActiveLink(~target=#"/packages", ~route)}
+          >
             {React.string("Packages")}
           </Link>
         </li>

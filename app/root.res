@@ -53,11 +53,9 @@ let default = () => {
     <head>
       <style> {React.string("html {opacity:0;}")} </style>
       <link rel="preload" href={mainCss} as_="css" />
+      // Preload the fonts used for the above the fold on the homepage
       <link rel="preload" href="/fonts/subset-Inter-Bold.woff2" as_="font" />
       <link rel="preload" href="/fonts/subset-Inter-Regular.woff2" as_="font" />
-      <link rel="preload" href="/fonts/subset-Inter-SemiBold.woff2" as_="font" />
-      <link rel="preload" href="/fonts/subset-Inter-Medium.woff2" as_="font" />
-
       <link rel="stylesheet" href={mainCss} />
 
       <Links />
