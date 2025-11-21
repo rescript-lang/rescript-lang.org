@@ -109,13 +109,14 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
       >
         <div className="flex justify-between items-center h-full w-full max-w-1280">
           <div className="h-8 w-8 lg:h-10 lg:w-32">
-            <ReactRouter.Link.String
+            <Link.String
+              prefetch={#intent}
               to="/"
               className="block hover:cursor-pointer w-full h-full flex justify-center items-center font-bold"
             >
               <img src="/nav-logo@2x.png" className="lg:hidden" />
               <img src="/nav-logo-full@2x.png" className="hidden lg:block" />
-            </ReactRouter.Link.String>
+            </Link.String>
           </div>
 
           /* Desktop horizontal navigation */
@@ -123,12 +124,17 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
             className="flex items-center xs:justify-between w-full bg-gray-90 sm:h-auto sm:relative"
           >
             <div className="flex ml-10 space-x-5 w-full text-gray-40 max-w-104">
-              <Link to=#"/docs/manual/introduction" className={isDocRouteActive(~route)}>
+              <Link
+                to=#"/docs/manual/introduction"
+                className={isDocRouteActive(~route)}
+                prefetch=#intent
+              >
                 {React.string("Docs")}
               </Link>
 
               <Link
                 to=#"/try"
+                prefetch=#intent
                 className={"hidden xs:block " ++ linkOrActiveLink(~target=#"/try", ~route)}
               >
                 {React.string("Playground")}
@@ -136,12 +142,14 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
 
               <Link
                 to=#"/blog"
+                prefetch=#intent
                 className={"hidden xs:block " ++ linkOrActiveLinkSubroute(~target=#"/blog", ~route)}
               >
                 {React.string("Blog")}
               </Link>
 
               <Link
+                prefetch=#intent
                 to=#"/community/overview"
                 className={"hidden xs:block " ++
                 linkOrActiveLink(~target=#"/community/overview", ~route)}
@@ -150,6 +158,7 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
               </Link>
 
               <Link
+                prefetch=#intent
                 to=#"/packages"
                 className={"hidden xs:block " ++ linkOrActiveLink(~target=#"/packages", ~route)}
               >
@@ -208,20 +217,28 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
           >
             <div className="flex gap-6 lg:gap-10 items-center h-full w-full max-w-1280 m-auto">
               <Link
+                prefetch=#intent
                 to=#"/docs/manual/introduction"
                 className={isActiveLink(~includes="/docs/manual/", ~excludes="/api", ~route)}
               >
                 {React.string("Language Manual")}
               </Link>
-              <Link to=#"/docs/manual/api" className={isActiveLink(~includes="/api", ~route)}>
+              <Link
+                prefetch=#intent
+                to=#"/docs/manual/api"
+                className={isActiveLink(~includes="/api", ~route)}
+              >
                 {React.string("API")}
               </Link>
               <Link
-                to=#"/syntax-lookup" className={isActiveLink(~includes="/syntax-lookup", ~route)}
+                prefetch=#intent
+                to=#"/syntax-lookup"
+                className={isActiveLink(~includes="/syntax-lookup", ~route)}
               >
                 {React.string("Syntax Lookup")}
               </Link>
               <Link
+                prefetch=#intent
                 to=#"/docs/react/introduction"
                 className={isActiveLink(~includes="/docs/react/", ~route)}
               >

@@ -12,7 +12,7 @@ module Intro = {
             compiler toolchain that scales to any codebase size.`)}
         </h2>
         <div className="mt-4 mb-2">
-          <ReactRouter.Link to=#"/docs/manual/installation">
+          <ReactRouter.Link to=#"/docs/manual/installation" prefetch=#viewport>
             <Button> {React.string("Get started")} </Button>
           </ReactRouter.Link>
         </div>

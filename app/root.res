@@ -52,7 +52,12 @@ let default = () => {
   <html>
     <head>
       <style> {React.string("html {opacity:0;}")} </style>
-      <link rel="preconnect" href={mainCss} />
+      <link rel="preload" href={mainCss} as_="css" />
+      <link rel="preload" href="/fonts/subset-Inter-Bold.woff2" as_="font" />
+      <link rel="preload" href="/fonts/subset-Inter-Regular.woff2" as_="font" />
+      <link rel="preload" href="/fonts/subset-Inter-SemiBold.woff2" as_="font" />
+      <link rel="preload" href="/fonts/subset-Inter-Medium.woff2" as_="font" />
+
       <link rel="stylesheet" href={mainCss} />
 
       <Links />

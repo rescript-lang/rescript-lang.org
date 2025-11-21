@@ -47,6 +47,8 @@ module Scripts = {
 }
 
 module Link = {
+  type prefetch = [#none | #intent | #render | #viewport]
+
   @module("react-router") @react.component
   external make: (
     ~children: React.element=?,
@@ -54,6 +56,7 @@ module Link = {
     ~target: string=?,
     ~to: Path.t,
     ~preventScrollReset: bool=?,
+    ~prefetch: prefetch=?,
   ) => React.element = "Link"
 
   module Path = {
@@ -68,6 +71,7 @@ module Link = {
       ~id: string=?,
       ~to: to,
       ~preventScrollReset: bool=?,
+      ~prefetch: prefetch=?,
     ) => React.element = "Link"
   }
 
@@ -81,6 +85,7 @@ module Link = {
       ~to: string,
       ~preventScrollReset: bool=?,
       ~relative: string=?,
+      ~prefetch: prefetch=?,
     ) => React.element = "Link"
   }
 }
