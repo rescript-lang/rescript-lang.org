@@ -75,6 +75,8 @@ let createLlmsFiles = (_version: string, docsDirectory: string, llmsDirectory: s
   let txtFileTemplatePath = llmsDirectory->Node.Path.join2("template.txt")
   let txtFilePath = llmsDirectory->Node.Path.join2("llms.txt")
 
+  Console.log(txtFilePath)
+
   Node.Fs.writeFileSync(mdxFilePath, readMarkdownFile(mdxFileTemplatePath))
 
   Node.Fs.writeFileSync(txtFilePath, readMarkdownFile(txtFileTemplatePath))
@@ -92,7 +94,7 @@ let generateFile = (docsDirectory: string, llmsDirectory: string): unit => {
   clearFile(fullFilePath)
   clearFile(smallFilePath)
 
-  createLlmsFiles("v12", docsDirectory, llmsDirectory)
+  createLlmsFiles("", docsDirectory, llmsDirectory)
 
   docsDirectory
   ->collectFiles
