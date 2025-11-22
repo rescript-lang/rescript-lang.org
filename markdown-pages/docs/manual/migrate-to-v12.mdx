@@ -15,9 +15,9 @@ If you encounter any missing information or issues during migration, please [ope
 ### Prerequisites
 
 - ReScript V11 project.
-- Uncurried mode must be enabled (i.e. you have not opted-out from it)
+- Uncurried mode must be enabled (i.e. you have not opted-out from it).
 - Your project must not contain any OCaml source code anymore, as support for `.ml` files is removed in this version. However there are ways to convert OCaml syntax with an older ReScript compiler version ([see below](#converting-generated-ml-files)).
-- Minimum supported Node.js version is 20.11.0
+- Minimum supported Node.js version is 20.11.0.
 
 ### Standard Library Changes
 
@@ -254,7 +254,7 @@ Below is a consolidated excerpt of all the breaking changes from the compiler ch
 
 - OCaml compatibility layers in the stdlib and primitives were removed/deprecated. https://github.com/rescript-lang/rescript-compiler/pull/6984
 - Deprecated modules `Js.Vector` and `Js.List` were deleted. https://github.com/rescript-lang/rescript-compiler/pull/6900
-- The legacy `js_cast.res` helpers disappeared; migrate to explicit externals. https://github.com/rescript-lang/rescript-compiler/pull/7075
+- The legacy `js_cast.res` helpers were removed; migrate to explicit externals. https://github.com/rescript-lang/rescript-compiler/pull/7075
 - `JsError` and related modules were renamed/cleaned up under `JsExn`. https://github.com/rescript-lang/rescript/pull/7408
 - `BigInt.fromFloat` now returns `option` and exposes `BigInt.fromFloatOrThrow`, and the `Exn`-suffixed helpers across `Bool`, `BigInt`, `JSON`, `Option`, `Null`, `Nullable`, `Result`, and `List` now end with `OrThrow`. https://github.com/rescript-lang/rescript/pull/7419 https://github.com/rescript-lang/rescript/pull/7518 https://github.com/rescript-lang/rescript/pull/7554
 - `Result.getOrThrow` throws a JS `Error` (instead of `Not_found`), and `Result.equal` / `Result.compare` now provide a comparison function for `Error` values. https://github.com/rescript-lang/rescript/pull/7630 https://github.com/rescript-lang/rescript/pull/7933
@@ -274,6 +274,6 @@ Below is a consolidated excerpt of all the breaking changes from the compiler ch
 
 ### Configuration & platform
 
-- The minimum supported Node.js version is now 20.11.0 https://github.com/rescript-lang/rescript/pull/7354
+- The minimum supported Node.js version is now 20.11.0. https://github.com/rescript-lang/rescript/pull/7354
 - The `experimental-features` key in `rescript.json` now uses kebab-case to match the other config fields. https://github.com/rescript-lang/rescript/pull/7891
 - The legacy `-bs-super-errors` flag was removed. https://github.com/rescript-lang/rescript-compiler/pull/6814
