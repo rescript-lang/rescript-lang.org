@@ -155,6 +155,7 @@ type t = [
   | #"/blog/release-8-4"
   | #"/blog/release-8-3"
   | #"/blog/release-8-3-2"
+  | #"/blog/release-12-0-0"
   | #"/blog/release-11-1-0"
   | #"/blog/release-11-0-0"
   | #"/blog/release-10-1"
