@@ -1,0 +1,279 @@
+---
+title: "Migrate to v12"
+description: "Instructions on upgrading to ReScript 12"
+canonical: "/docs/manual/migrate-to-v12"
+section: "Overview"
+order: 4
+---
+
+# Migrate to ReScript 12
+
+If you encounter any missing information or issues during migration, please [open an issue](https://github.com/rescript-lang/rescript-lang.org/issues/new?template=documentation_issue.md) or, even better, [send a pull request](https://github.com/rescript-lang/rescript-lang.org/) to help improve this guide.
+
+## Recommended Migration
+
+### Prerequisites
+
+- ReScript V11 project.
+- Uncurried mode must be enabled (i.e. you have not opted-out from it).
+- Your project must not contain any OCaml source code anymore, as support for `.ml` files is removed in this version. However there are ways to convert OCaml syntax with an older ReScript compiler version ([see below](#converting-generated-ml-files)).
+- Minimum supported Node.js version is 20.11.0.
+
+### Standard Library Changes
+
+In V12, the new standard library ships with the compiler, so you can uninstall and remove the `@rescript/core` dependency from your `rescript.json`
+
+```console
+$ npm remove @rescript/core
+```
+
+```diff
+ {
+   "bs-dependencies": [
+-    "@rescript/core"
+   ]
+ }
+```
+
+Also remove auto opening of `RescriptCore`.
+
+```diff
+ {
+   "bsc-flags": [
+-    "-open RescriptCore",
+   ]
+ }
+```
+
+if you had `@rescript/std` installed, remove it as well:
+
+```shell
+npm uninstall @rescript/std
+```
+
+this is replaced by `@rescript/runtime`, which is a installed as a dependency of `rescript` now.
+
+## Replacements
+
+Some typical name changes include:
+
+- `Error.t` -> `JsError.t`
+- `raise(MyException("error"))` -> `throw(MyException("error"))`
+- `Js.Exn.Error` exception -> `JsExn`
+- `Error.make` -> `JsExn.make`
+- `Error.raise` -> `JsExn.raise`
+- `Error.message` -> `JsExn.message`
+- `Bool.fromStringExn("true")` -> `Bool.fromStringOrThrow("true")`
+- `Int.Bitwise.lsl` -> `Int.shiftLeft`
+
+Tip: You can use the migration tool to automatically replace these with the new functions.
+
+```shell
+npx rescript-tools migrate-all <root>
+
+# preview the changes via
+rescript-tools migrate <file> [--stdout]
+```
+
+### Bitwise operations
+
+v11:
+
+```res
+let w = lnot(a)     // bitwise NOT
+let x = lxor(a, b)  // bitwise XOR
+let y = land(a, b)  // bitwise AND
+let z = lor(a, b)   // bitwise OR
+```
+
+v12:
+
+```res
+let w = ~~~a     // bitwise NOT
+let x = a ^^^ b  // bitwise XOR
+let y = a &&& b  // bitwise AND
+let z = a ||| b  // bitwise OR
+```
+
+### Shift operations
+
+v11:
+
+```res
+let x = lsl(a, b)  // logical left shift
+let y = lsr(a, b)  // logical right shift
+let z = asr(a, b)  // unsigned right shift
+```
+
+v12:
+
+```res
+let x = a << b  // logical left shift
+let y = a >> b  // logical right shift
+let z = a >>> b  // unsigned right shift
+```
+
+### JSX children spread
+
+v11:
+
+```res
+<div> ...children </div>
+```
+
+v12:
+
+```res
+<div> children </div>
+```
+
+### Attributes
+
+v11:
+
+```res
+@bs.as("foo")
+@bs.send
+@bs.new
+@raises
+@genType.as
+```
+
+v12:
+
+```res
+@as("foo")
+@send
+@new
+@throws
+@as
+```
+
+- `@meth` and `@bs.send.pipe` are removed.
+
+### Assert
+
+v11:
+
+```res
+assert 1 == 2
+```
+
+v12:
+
+```res
+assert(1 == 2)  // Now a regular function call
+```
+
+## Configuration
+
+Rename `bsconfig.json` to `rescript.json` and update these configuration options:
+
+- `bs-dependencies` → `dependencies`
+- `bs-dev-dependencies` → `dev-dependencies`
+- `bsc-flags` → `compiler-flags`
+
+### jsx
+
+- Set `version` to `4` (lower versions are not supported)
+- Remove `mode` option (automatically set to `automatic`)
+
+## Build System Changes
+
+The build system has been completely rewritten in v12.0.0.
+
+In v11, we had:
+
+```shell
+# build
+rescript build
+
+# watch build
+rescript build -w
+
+# format
+rescript format -all
+```
+
+in v12, this becomes:
+
+```shell
+# build
+rescript
+
+# watch build
+rescript watch
+
+# format
+rescript format
+```
+
+## Converting generated `.ml` files
+
+**Note**: This setup is an escape hatch. It keeps legacy generators like `atdgen` working but it also forces you to maintain two compiler versions. Whenever possible migrate such things to modern ReScript tooling such as [Sury](https://github.com/DZakh/sury/).
+
+Some projects still rely on tools such as `atdgen` that emit `.ml` files. ReScript 12 cannot compile those files directly, so you must keep using ReScript 11 **only** to convert the generated `.ml` files back to `.res` files before you run the v12 build.
+
+1. Keep ReScript 12 as the sole compiler dependency in your main project (i.e. `devDependencies.rescript` stays at `^12.0.0`).
+
+2. Install ReScript 11 in a dedicated subfolder (so its binaries never replace the v12 ones in `node_modules/.bin`). A simple option is to store it under a subfolder, e.g. `tools` (if you're using workspaces, keep this folder out of the root workspace list so hoisting can't swap the v12 shims):
+
+`cd` into `tools` and run `npm create rescript-app` and select the basic template and a v11 version of ReScript. You can name it `rescript-11` for instance.
+
+3. `cd` back into the root of your project and add a helper script that references the compiler from that folder (adapt the path accordingly):
+
+   ```json
+   {
+     "scripts": {
+       "convert-ml": "tools/rescript-11/node_modules/.bin/rescript convert src/*.ml"
+     }
+   }
+   ```
+
+4. Execute the helper script to convert your `.ml` files to `.res` files:
+
+```console
+npm run convert-ml
+```
+
+## List of all breaking changes
+
+Below is a consolidated excerpt of all the breaking changes from the compiler changelog.
+
+### Language & syntax
+
+- Tag functions named `j` or `js` are no longer reserved, so add your own implementation whenever a tagged template expects them. https://github.com/rescript-lang/rescript-compiler/pull/6817
+- `lazy` syntax was removed; use the `Lazy` module instead. https://github.com/rescript-lang/rescript-compiler/pull/6342
+- All legacy `@bs.*` attributes (e.g. `@bs.as`, `@bs.send`) and `@bs.open` were removed; use their prefix-free successors (`@as`, `@send`, `@open`, …). https://github.com/rescript-lang/rescript-compiler/pull/6643 https://github.com/rescript-lang/rescript-compiler/pull/6629
+- `@bs.send.pipe` was removed; rewrite bindings to use `@send`. https://github.com/rescript-lang/rescript-compiler/pull/6858 https://github.com/rescript-lang/rescript-compiler/pull/6891
+- OCaml `.ml` files are no longer supported anywhere: `.ml` parsing/formatting went away and the `rescript convert` CLI was removed, so convert legacy files to `.res` before upgrading. https://github.com/rescript-lang/rescript-compiler/pull/6848 https://github.com/rescript-lang/rescript-compiler/pull/6852 https://github.com/rescript-lang/rescript-compiler/pull/6860
+- Some global names and old keywords are no longer automatically prefixed during JS emission; update any code that was relying on the mangled names. https://github.com/rescript-lang/rescript-compiler/pull/6831
+- JSX v3 and the `-bs-jsx-mode` option were removed and JSX children spreads are no longer valid; JSX v4 semantics are now the only supported mode. https://github.com/rescript-lang/rescript-compiler/pull/7072 https://github.com/rescript-lang/rescript/pull/7327 https://github.com/rescript-lang/rescript/pull/7869
+
+### Standard library & runtime
+
+- OCaml compatibility layers in the stdlib and primitives were removed/deprecated. https://github.com/rescript-lang/rescript-compiler/pull/6984
+- Deprecated modules `Js.Vector` and `Js.List` were deleted. https://github.com/rescript-lang/rescript-compiler/pull/6900
+- The legacy `js_cast.res` helpers were removed; migrate to explicit externals. https://github.com/rescript-lang/rescript-compiler/pull/7075
+- `JsError` and related modules were renamed/cleaned up under `JsExn`. https://github.com/rescript-lang/rescript/pull/7408
+- `BigInt.fromFloat` now returns `option` and exposes `BigInt.fromFloatOrThrow`, and the `Exn`-suffixed helpers across `Bool`, `BigInt`, `JSON`, `Option`, `Null`, `Nullable`, `Result`, and `List` now end with `OrThrow`. https://github.com/rescript-lang/rescript/pull/7419 https://github.com/rescript-lang/rescript/pull/7518 https://github.com/rescript-lang/rescript/pull/7554
+- `Result.getOrThrow` throws a JS `Error` (instead of `Not_found`), and `Result.equal` / `Result.compare` now provide a comparison function for `Error` values. https://github.com/rescript-lang/rescript/pull/7630 https://github.com/rescript-lang/rescript/pull/7933
+- `Iterator.forEach` now emits `Iterator.prototype.forEach`. https://github.com/rescript-lang/rescript/pull/7506
+- `Date.make` uses `~day` instead of `~date`. https://github.com/rescript-lang/rescript/pull/7324
+- Plain `int` multiplication is implemented as a regular int32 operation instead of `Math.imul`. https://github.com/rescript-lang/rescript/pull/7358
+- The `List` API was cleaned up—several functions were renamed or removed (see the PR for the exact surface). https://github.com/rescript-lang/rescript/pull/7290
+- `String.getSymbol` / `String.setSymbol` were removed; only `String.getSymbolUnsafe` remains on strings. https://github.com/rescript-lang/rescript/pull/7571 https://github.com/rescript-lang/rescript/pull/7626
+- `String.charCodeAt` now returns `option<int>` and exposes `String.charCodeAtUnsafe` for unchecked access. https://github.com/rescript-lang/rescript/pull/7877
+- `Intl.*.supportedLocalesOf` bindings now return `array<string>` and the non-portable `Intl.PluralRules.selectBigInt` / `selectRangeBigInt` were removed. https://github.com/rescript-lang/rescript/pull/7995
+
+### Build system & CLI
+
+- The new Rust-based `rewatch` build system now powers the `rescript` command. The old Ninja-based builder system moved behind `rescript legacy`, and `--compiler-args` became the `compiler-args` subcommand. https://github.com/rescript-lang/rescript/pull/7551 https://github.com/rescript-lang/rescript/pull/7593 https://github.com/rescript-lang/rescript/pull/7928
+- `rescript format` was reimplemented in Rust, its options now use the `--check` / `--stdin` long-form spelling, and the `--all` flag was removed because every tracked file (non-dev by default) is formatted automatically. https://github.com/rescript-lang/rescript/pull/7603 https://github.com/rescript-lang/rescript/pull/7752
+- The `rescript dump` command was removed; call `bsc` directly if you need to inspect `.cmi` files. https://github.com/rescript-lang/rescript/pull/7710
+
+### Configuration & platform
+
+- The minimum supported Node.js version is now 20.11.0. https://github.com/rescript-lang/rescript/pull/7354
+- The `experimental-features` key in `rescript.json` now uses kebab-case to match the other config fields. https://github.com/rescript-lang/rescript/pull/7891
+- The legacy `-bs-super-errors` flag was removed. https://github.com/rescript-lang/rescript-compiler/pull/6814
