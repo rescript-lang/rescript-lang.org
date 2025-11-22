@@ -52,18 +52,19 @@ let default = () => {
   <html>
     <head>
       <style> {React.string("html {opacity:0;}")} </style>
-      <link rel="preload" href={mainCss} as_="style" />
+      // preloading causes issues in dev mode with HMR
+      {Env.dev ? React.null : <link rel="preload" href={mainCss} as_="style" />}
       <link rel="stylesheet" href={mainCss} />
       <link rel="stylesheet" href={hljsCss} />
       <link rel="stylesheet" href={utilsCss} />
       <link rel="icon" href="/favicon.ico" />
-      <Links />
-      <Meta />
       <meta
         name="viewport"
         content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, minimal-ui"
       />
       <meta charSet="UTF-8" />
+      <Meta />
+      <Links />
     </head>
     <body className={isScrollLockEnabled ? "overflow-hidden" : ""}>
       <ScrollLockContext.Provider lockState=(isScrollLockEnabled, setIsScrollLockEnabled)>
@@ -71,9 +72,9 @@ let default = () => {
           <Navigation isOverlayOpen setOverlayOpen />
           <Outlet />
           <ScrollRestoration />
-          <Scripts />
         </EnableCollapsibleNavbar>
       </ScrollLockContext.Provider>
+      <Scripts />
     </body>
   </html>
 }

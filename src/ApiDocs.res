@@ -58,7 +58,7 @@ module RightSidebar = {
         let deprecatedIcon = switch deprecated->Null.toOption {
         | Some(_) =>
           <div
-            className={`bg-orange-100 min-w-[20px] min-h-[20px] w-5 h-5 mr-3 flex justify-center items-center rounded-xl ml-auto`}
+            className={`bg-orange-100 min-w-5 min-h-5 w-5 h-5 mr-3 flex justify-center items-center rounded-xl ml-auto`}
           >
             <span className={"text-[10px] text-orange-400"}> {"D"->React.string} </span>
           </div>->Some
@@ -74,7 +74,7 @@ module RightSidebar = {
               onClick={_ => onClick()}
             >
               <div
-                className={`${bgColor} min-w-[20px] min-h-[20px] w-5 h-5 mr-3 flex justify-center items-center rounded-xl`}
+                className={`${bgColor} min-w-5 min-h-5 w-5 h-5 mr-3 flex justify-center items-center rounded-xl`}
               >
                 <span className={"text-[10px] font-normal " ++ textColor}>
                   {icon->React.string}

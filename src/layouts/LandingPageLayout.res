@@ -75,7 +75,7 @@ export {
         <div className="relative w-full pt-6 pb-8 sm:px-8 md:px-16 max-w-[1400px]">
           // Playground widget
           <div
-            className="relative z-2 flex flex-col md:flex-row bg-gray-90 mx-auto sm:rounded-lg max-w-[1280px]"
+            className="relative z-2 flex flex-col md:flex-row bg-gray-90 mx-auto sm:rounded-lg max-w-1280"
           >
             //Left Side (ReScript)
             <div className="md:w-1/2">
@@ -236,7 +236,7 @@ module QuickInstall = {
     }
     @react.component
     let make = () => {
-      <div className="w-full max-w-[400px]">
+      <div className="w-full max-w-400">
         <h2 className="hl-3 lg:mt-12"> {React.string("Quick Install")} </h2>
         <div className="captions x text-gray-40 mb-2 mt-1">
           {React.string(
@@ -624,7 +624,7 @@ module CuratedResources = {
         <div className="body-lg text-center z-2 relative text-gray-40 max-w-48 mx-auto bg-gray-100">
           {React.string("Guides and Docs")}
         </div>
-        <hr className="bg-gray-80 h-px border-0 relative top-[-12px]" />
+        <hr className="bg-gray-80 h-px border-0 relative -top-3" />
       </div>
 
       //divider
@@ -653,7 +653,7 @@ module CuratedResources = {
           <div className="body-lg text-center z-2 relative text-gray-40 w-32 mx-auto bg-gray-100">
             {React.string("Templates")}
           </div>
-          <hr className="bg-gray-80 h-px border-0 relative top-[-12px]" />
+          <hr className="bg-gray-80 h-px border-0 relative -top-3" />
         </div>
         <div
           className="grid grid-flow-col grid-cols-2 lg:grid-cols-3 lg:grid-rows-1 gap-2 md:gap-4 lg:gap-8 max-w-1280 px-5 md:px-8 mx-auto"

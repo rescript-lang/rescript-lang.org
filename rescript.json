@@ -29,8 +29,6 @@
   },
   "suffix": ".mjs",
   "gentypeconfig": {
-    "language": "untyped",
-    "shims": [],
     "module": "es6"
   }
 }

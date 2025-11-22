@@ -110,7 +110,7 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
   <>
     <header
       id="header"
-      className={fixedNavClassName ++ " items-center z-50 w-full transition duration-300 ease-out group-[.nav-disappear]:-translate-y-16 md:group-[.nav-disappear]:-translate-y-0 min-w-[20rem]"}
+      className={fixedNavClassName ++ " items-center z-50 w-full transition duration-300 ease-out group-[.nav-disappear]:-translate-y-16 md:group-[.nav-disappear]:translate-y-0 min-w-[20rem]"}
     >
       <nav
         className="px-4 flex xs:justify-center bg-gray-90 shadow h-16 text-white-80 text-14"
