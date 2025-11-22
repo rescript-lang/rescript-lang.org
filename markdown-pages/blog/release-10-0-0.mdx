@@ -1,0 +1,98 @@
+---
+author: rescript-team
+date: "2022-08-25"
+previewImg: /blog/grid_0.jpeg
+title: ReScript 10.0
+badge: release
+description: |
+  The first community powered release.
+---
+
+ReScript version 10 is available! Version 10 is a culmination of over a year's worth of work, bringing faster builds, improving JS interop, and including a bunch of bug fixes. It's also the first fully community powered release, with contributions from over 20 community members.
+
+```
+npm install rescript@10
+```
+
+All changes are listed [here](https://github.com/rescript-lang/rescript/blob/10.0_release/CHANGELOG). Let's take a tour of a few of the features we're extra excited about.
+
+## Faster builds with native M1 support
+
+Users with M1 chips should see a notable speedup, as the new ReScript version has full native support for M1.
+
+## Better ergonomics with Unicode support in regular strings
+
+You can now use Unicode characters directly in regular strings. This will now produce what you'd expect:
+
+```res
+let str = "Σ"
+```
+
+You can also pattern match on Unicode characters:
+
+```res
+switch someCharacter {
+  | 'Σ' => "what a fine Unicode char"
+  | _ => "Unicode is fun"
+}
+```
+
+## Experimental optional record fields
+
+Previously, a record would always have to define all its optional fields:
+
+```res
+type user = {
+  name: string,
+  age: option<int>
+}
+
+let userWithoutAge = {
+  name: "Name",
+  age: None,
+}
+
+let userWithAge = {
+  name: "Name",
+  age: Some(34),
+}
+```
+
+For small records like the one above, this is typically fine. But for records with many fields, the friction of having to always set all optional fields explicitly adds up. This release has a new experimental feature called optional record fields, allowing you to rewrite the above to this instead:
+
+```res
+type user = {
+  name: string,
+  age?: int
+}
+
+// No need to set `age` unless it should have a value
+let userWithoutAge = {
+  name: "Name",
+}
+
+let userWithAge = {
+  name: "Name",
+  age: 34
+}
+```
+
+Other than drastically improving the experience when working with large records with optional fields, this also has implications for bindings. For example, binding to JS APIs with large configuration objects is now more ergonomic.
+This feature also paves the way for other exciting features coming in the next release, such as a more idiomatic representation of React components.
+
+## What's next
+
+Version 10 brings the building blocks needed for a number of exciting new features that'll be available in the next version. Features ranging from native support for async/await, to a new version of the JSX integration, making it leaner and more flexible. You'll hear more about this soon.
+
+## Upgrade guide
+
+Please see the detailed [changelog](https://github.com/rescript-lang/rescript/blob/10.0_release/CHANGELOG) for a list of breaking changes.
+Each breaking change lists suggestions on how to upgrade your project.
+This can be out of your control in case of dependencies. In that case, please raise issues with the maintainers of those libraries.
+
+One special word for PPXs, in particular for PPX authors: As mentioned in the changelog, some PPXs may give an error `"Attributes not allowed here"`. The solution is to adapt the PPXs following the example of `rescript-relay` in https://github.com/zth/rescript-relay/pull/372.
+
+## Acknowledgements
+
+We would like to thank everyone from the community who volunteered their precious time to suport this project with contributions of any kind, from documentation, to PRs, to discussions in the forum.
+In particular, thank you [@cknitt](https://github.com/cknitt), [@TheSpyder](https://github.com/TheSpyder), [@mattdamon108](https://github.com/mattdamon108), [@DZakh](https://github.com/DZakh), [@fhammerschmidt](https://github.com/fhammerschmidt), [@amiralies](https://github.com/amiralies), [@Minnozz](https://github.com/Minnozz), [@Zeta611](https://github.com/Zeta611), [@jchavarri](https://github.com/jchavarri), [@nkrkv](https://github.com/nkrkv), [@whitchapman](https://github.com/whitchapman), [@ostera](https://github.com/ostera), [@benadamstyles](https://github.com/benadamstyles), [@cannorin](https://github.com/cannorin), [@ClaireNeveu](https://github.com/ClaireNeveu), [@kevinbarabash](https://github.com/kevinbarabash), [@JsonKim](https://github.com/JsonKim), [@Sehun0819](https://github.com/Sehun0819), [@glennsl](https://github.com/glennsl), [@namenu](https://github.com/namenu), [@a-c-sreedhar-reddy](https://github.com/a-c-sreedhar-reddy).

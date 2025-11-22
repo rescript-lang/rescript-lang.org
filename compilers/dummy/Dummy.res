@@ -1,1 +1,1 @@
-Console.log("I am a dummy file")
+Console.debug("I am a dummy file")

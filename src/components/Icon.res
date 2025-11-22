@@ -5,7 +5,8 @@ module GitHub = {
       className={"fill-current " ++ className}
       width="18.236"
       height="17.79"
-      viewBox="0 0 18.236 17.79">
+      viewBox="0 0 18.236 17.79"
+    >
       <g transform="translate(8 -5.365)">
         <path
           d="M17.013,9.906a9.078,9.078,0,0,0-3.318-3.318A8.918,8.918,0,0,0,9.118,5.365,8.919,8.919,0,0,0,4.541,6.588,9.077,9.077,0,0,0,1.223,9.906,8.919,8.919,0,0,0,0,14.483a8.861,8.861,0,0,0,1.739,5.36,8.93,8.93,0,0,0,4.493,3.294.531.531,0,0,0,.475-.083.464.464,0,0,0,.154-.356q0-.036-.006-.641T6.85,21l-.273.047a3.484,3.484,0,0,1-.659.042,5.02,5.02,0,0,1-.825-.083,1.844,1.844,0,0,1-.8-.356,1.506,1.506,0,0,1-.522-.73l-.119-.273a2.966,2.966,0,0,0-.374-.605,1.432,1.432,0,0,0-.516-.451l-.083-.06a.871.871,0,0,1-.154-.143.651.651,0,0,1-.107-.166q-.036-.083.059-.137a.77.77,0,0,1,.344-.053l.237.035a1.733,1.733,0,0,1,.588.285,1.916,1.916,0,0,1,.576.617,2.093,2.093,0,0,0,.659.742,1.4,1.4,0,0,0,.778.255,3.376,3.376,0,0,0,.677-.059,2.362,2.362,0,0,0,.534-.178,1.924,1.924,0,0,1,.582-1.223,8.129,8.129,0,0,1-1.217-.214,4.845,4.845,0,0,1-1.116-.463,3.2,3.2,0,0,1-.956-.8,3.822,3.822,0,0,1-.623-1.247A5.928,5.928,0,0,1,3.3,14.007a3.463,3.463,0,0,1,.938-2.446A3.192,3.192,0,0,1,4.321,9.14a1.664,1.664,0,0,1,1.021.16,7.138,7.138,0,0,1,.991.457q.315.19.5.321a8.574,8.574,0,0,1,4.559,0l.451-.285a6.389,6.389,0,0,1,1.092-.522,1.556,1.556,0,0,1,.962-.13A3.161,3.161,0,0,1,14,11.562a3.463,3.463,0,0,1,.938,2.446,5.994,5.994,0,0,1-.243,1.787,3.674,3.674,0,0,1-.629,1.247,3.319,3.319,0,0,1-.962.789,4.855,4.855,0,0,1-1.116.463,8.121,8.121,0,0,1-1.217.214,2.115,2.115,0,0,1,.617,1.686v2.5a.473.473,0,0,0,.149.356.516.516,0,0,0,.469.083A8.929,8.929,0,0,0,16.5,19.842a8.863,8.863,0,0,0,1.739-5.36A8.926,8.926,0,0,0,17.013,9.906Z"
@@ -60,7 +61,8 @@ module MagnifierGlass = {
       className={"stroke-current " ++ className}
       width="19.203"
       height="19.203"
-      viewBox="0 0 19.203 19.203">
+      viewBox="0 0 19.203 19.203"
+    >
       <g fill="none" strokeLinecap="round" strokeWidth="2px" transform="translate(-2 -2)">
         <path
           d="M6.479,0A6.479,6.479,0,1,1,0,6.479,6.479,6.479,0,0,1,6.479,0Z"
@@ -88,7 +90,8 @@ module Caret = {
       width
       fill="none"
       strokeMiterlimit="10"
-      strokeWidth="2">
+      strokeWidth="2"
+    >
       {switch direction {
       | #Up => <path d="M.6,4.022,4.509.8,8.476,4.087" fill="none" />
       | #Down => <path d="M.6.866,4.509,4.087,8.476.8" />
@@ -105,7 +108,8 @@ module DrawerDots = {
       stroke="none"
       width="22"
       height="4"
-      viewBox="0 0 22 4">
+      viewBox="0 0 22 4"
+    >
       <circle cx="2" cy="2" r="2" />
       <circle cx="2" cy="2" r="2" transform="translate(9)" />
       <circle cx="2" cy="2" r="2" transform="translate(18)" />
@@ -122,7 +126,8 @@ module CornerLeftUp = {
       fill="none"
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth="2px">
+      strokeWidth="2px"
+    >
       <path d="M11.414 6l-5-5-5 5" />
       <path d="M17.414 17h-7a4 4 0 01-4-4V1" />
     </svg>
@@ -154,7 +159,7 @@ module Table = {
 module Close = {
   @react.component
   let make = (~className: string="") =>
-    <svg className={"fill-current " ++ className} width="12.728" height="12.728">
+    <svg className={"fill-current " ++ className} width="16" height="16">
       <path d="M12.728 11.313l-1.414 1.414L0 1.414 1.414-.001z" />
       <path d="M11.314 0l1.414 1.414L1.415 12.728 0 11.314z" />
     </svg>
@@ -164,7 +169,8 @@ module ArrowRight = {
   @react.component
   let make = (~className: string="") =>
     <svg
-      className={"fill-current " ++ className} width="18" height="11.769" viewBox="0 0 18 11.769">
+      className={"fill-current " ++ className} width="18" height="11.769" viewBox="0 0 18 11.769"
+    >
       <defs>
         <clipPath id="prefix__a">
           <path
@@ -207,7 +213,8 @@ module Hyperlink = {
       className={"fill-current " ++ className}
       width="0.8em"
       height="0.8em"
-      viewBox="0 0 20.003 19.944">
+      viewBox="0 0 20.003 19.944"
+    >
       <path
         d="M11.927 7.908a4.819 4.819 0 00-3.968-1.3 5.091 5.091 0 00-2.921 1.508L1.47 11.684a4.82 4.82 0 00.192 7.122 4.994 4.994 0 006.76-.4l3.7-3.776a.109.109 0 00-.067-.184s-.649.029-1.132.006a10.116 10.116 0 01-1.35-.226.308.308 0 00-.243.088l-2.529 2.609a2.733 2.733 0 01-3.583.319 2.64 2.64 0 01-.247-3.951l3.755-3.753a2.7 2.7 0 013.654-.073.108.108 0 00.15 0l1.4-1.4a.114.114 0 00-.003-.157z"
       />
@@ -238,7 +245,8 @@ module ExternalLink = {
       stroke="currentColor"
       strokeWidth="2"
       strokeLinecap="round"
-      strokeLinejoin="round">
+      strokeLinejoin="round"
+    >
       <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" />
     </svg>
 }
@@ -252,7 +260,8 @@ module Copy = {
       height="24"
       viewBox="0 0 24 24"
       fill="none"
-      xmlns="http://www.w3.org/2000/svg">
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <rect
         x="8.00012" y="8.3175" width="12" height="12" rx="2" strokeWidth="2" strokeLinecap="round"
       />
@@ -276,7 +285,8 @@ module Clipboard = {
       fill="none"
       strokeWidth="2"
       strokeLinecap="round"
-      strokeLinejoin="round">
+      strokeLinejoin="round"
+    >
       <path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2" />
       <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
     </svg>

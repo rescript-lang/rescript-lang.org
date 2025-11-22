@@ -1,13 +1,3 @@
-type link = {
-  url: string,
-  title: string,
-  description: string,
-  image: string,
-}
-
-@module("../data/resources.json")
-external resources: array<link> = "default"
-
 let simplifyUrl = url =>
   url
   ->String.replace("https://", "")
@@ -16,6 +6,7 @@ let simplifyUrl = url =>
   ->Array.at(0)
 
 module LinkCard = {
+  open CommunityResources
   @react.component
   let make = (~link, ~index) => {
     let loading = switch index {
@@ -41,10 +32,10 @@ module LinkCards = {
   @react.component
   let make = () => {
     <div className="grid lg:grid-cols-2 gap-6">
-      {resources
+      {CommunityResources.resources
       ->Array.map(link =>
         switch link.image {
-        | "" => {...link, image: "/static/Art-3-rescript-launch.jpg"}
+        | "" => {...link, image: "/Art-3-rescript-launch.jpg"}
         | _ => link
         }
       )

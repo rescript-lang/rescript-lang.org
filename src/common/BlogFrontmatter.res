@@ -96,11 +96,11 @@ type t = {
   author: author,
   co_authors: array<author>,
   date: DateStr.t,
-  previewImg: Null.t<string>,
-  articleImg: Null.t<string>,
+  previewImg: Nullable.t<string>,
+  articleImg: Nullable.t<string>,
   title: string,
-  badge: Null.t<Badge.t>,
-  description: Null.t<string>,
+  badge: Nullable.t<Badge.t>,
+  description: Nullable.t<string>,
 }
 
 let decodeBadge = (str: string): Badge.t =>
@@ -147,20 +147,20 @@ let decode = (json: JSON.t): result<t, string> => {
     }
     let date = date->DateStr.fromString
     let badge = switch badge {
-    | Some(String(badge)) => badge->decodeBadge->Null.Value
-    | _ => Null
+    | Some(String(badge)) => badge->decodeBadge->Nullable.Value
+    | _ => Nullable.null
     }
     let previewImg = switch previewImg {
-    | Some(String(previewImg)) => previewImg->Null.Value
-    | _ => Null
+    | Some(String(previewImg)) => previewImg->Nullable.Value
+    | _ => Nullable.null
     }
     let articleImg = switch articleImg {
-    | Some(String(articleImg)) => articleImg->Null.Value
-    | _ => Null
+    | Some(String(articleImg)) => articleImg->Nullable.Value
+    | _ => Nullable.null
     }
     let description = switch description {
-    | Some(String(description)) => description->Null.Value
-    | _ => Null
+    | Some(String(description)) => description->Nullable.Value
+    | _ => Nullable.null
     }
     Ok({
       author,

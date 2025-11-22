@@ -1,0 +1,35 @@
+---
+id: "external"
+keywords: ["external", "javascript"]
+name: "external"
+summary: "This is the `external binding` keyword."
+category: "languageconstructs"
+---
+
+`external` is used to bind ReScript code to [external JS code](../docs/manual/external.mdx), including bindings to [global values](../docs/manual/bind-to-global-js-values.mdx), [modules](../docs/manual/import-from-export-to-js.mdx#import-from-javascript), [functions](../docs/manual/bind-to-js-function.mdx) and [objects](../docs/manual/bind-to-js-object.mdx).
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+@module("path")
+external dirname: string => string = "dirname"
+
+let root = dirname("/User/github")
+```
+
+```js
+var Path = require("path");
+var root = Path.dirname("/User/github");
+```
+
+</CodeTab>
+
+### References
+
+- [External (Bind to Any JS Library)](../docs/manual/external.mdx)
+- [Bind to JS Object](../docs/manual/bind-to-js-object.mdx)
+- [Bind to JS Function](../docs/manual/bind-to-js-function.mdx)
+- [Import From JavaScript](../docs/manual/import-from-export-to-js.mdx#import-from-javascript)
+- [Bind to Global JS Values](../docs/manual/bind-to-global-js-values.mdx)

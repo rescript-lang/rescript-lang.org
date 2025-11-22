@@ -1,0 +1,85 @@
+---
+id: "optional-labeled-argument"
+keywords: ["optional", "labeled", "argument"]
+name: "~arg=?"
+summary: "This is an `optional labeled argument`."
+category: "languageconstructs"
+---
+
+Labeled arguments, i.e. arguments that are prefixed with `~`, can be suffixed with `=?` to denote that they are optional. Thus, they can be
+omitted when calling the function.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+let print = (text, ~logLevel=?) => {
+  switch logLevel {
+  | Some(#error) => Console.error(text)
+  | _ => Console.log(text)
+  }
+}
+
+print("An info")
+print("An error", ~logLevel=#error)
+```
+
+```js
+function print(text, logLevel) {
+  if (logLevel === "error") {
+    console.error(text);
+  } else {
+    console.log(text);
+  }
+}
+
+print("An info", undefined);
+
+print("An error", "error");
+```
+
+</CodeTab>
+
+Optional labeled arguments can also hold a default value.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+let print = (text, ~logLevel=#info) => {
+  switch logLevel {
+  | #error => Console.error(text)
+  | #warn => Console.warn(text)
+  | #info => Console.log(text)
+  }
+}
+
+print("An info")
+print("A warning", ~logLevel=#warn)
+```
+
+```js
+function print(text, logLevelOpt) {
+  var logLevel = logLevelOpt !== undefined ? logLevelOpt : "info";
+  if (logLevel === "warn") {
+    console.warn(text);
+  } else if (logLevel === "error") {
+    console.error(text);
+  } else {
+    console.log(text);
+  }
+}
+
+print("An info", undefined);
+
+print("A warning", "warn");
+```
+
+</CodeTab>
+
+### References
+
+- [Labeled Arguments](../docs/manual/function.mdx#labeled-arguments)
+- [Optional Labeled Arguments](../docs/manual/function.mdx#optional-labeled-arguments)
+- [Labeled Argument with Default Value](../docs/manual/function.mdx#optional-with-default-value)
+- [Function Syntax Cheatsheet](../docs/manual/function.mdx#tips--tricks)

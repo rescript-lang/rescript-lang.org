@@ -1,0 +1,302 @@
+---
+author: rescript-team
+date: "2025-11-04"
+previewImg: /blog/rescript-12-reforging-build-system.webp
+articleImg: /blog/rescript-12-reforging-build-system.webp
+badge: roadmap
+title: "Reforging the ReScript Build System"
+description: |
+  ReScript 12 introduces a completely new build system that brings intelligent dependency tracking, faster incremental builds, and proper monorepo support.
+---
+
+## Introduction
+
+ReScript 12 comes with a completely new build system. Internally, we call it Rewatch, though you will not need to invoke it by name (it is now the default when you run `rescript build`). If you have been working with ReScript for a while, you will know the previous build system (internally called bsb) as a reliable workhorse. As projects grew larger and monorepos became more common, however, its limitations became increasingly apparent.
+
+The new system addresses these limitations directly. It brings smarter compilation, significantly faster incremental builds, and proper support for modern development workflows.
+
+## The Evolution from Single Packages to Monorepos
+
+The previous build system worked well for single-package projects, providing efficient incremental builds and avoiding unnecessary recompilations when module interfaces didn't change. For many projects, it was perfectly adequate.
+
+However, as the ReScript ecosystem matured and teams began adopting monorepo structures with multiple interdependent packages, specific limitations became apparent.
+
+### Watch Mode in Monorepos
+
+The most significant pain point was watch mode. While bsb could build monorepos, its watch mode only tracked files within the current package. If you had Package A depending on Package B, changes to Package B would not trigger rebuilds in Package A's watch mode. Developers had to manually rebuild or run separate watchers for each package.
+
+You can see this issue discussed in detail [here](https://github.com/rescript-lang/rescript-lang.org/issues/1090#issuecomment-3361543242).
+
+### Sequential Dependency Builds
+
+When building multiple packages, bsb processed them sequentially rather than in parallel. In a monorepo with five packages, they would build one after another, even when some could build simultaneously. This meant unused parallelization opportunities.
+
+### Per-Package Build Isolation
+
+Each package ran in its own Ninja process with no shared understanding across the monorepo. This meant no cross-package optimization opportunities and multiplied process startup overhead.
+
+## Why a Complete Rewrite?
+
+To understand why the new build system represents such a significant improvement, it helps to understand what the old build system actually was.
+
+### The Legacy Architecture: Ninja-Based
+
+The previous build system was a wrapper around [Ninja](https://ninja-build.org/), a generic build system originally created by Google for building Chrome. It would scan your ReScript source files, generate a `build.ninja` file describing all compilation rules, and Ninja would execute the builds in parallel.
+
+This architecture served ReScript well for years, providing solid build performance for single-package projects.
+
+### The Limitations of a Generic Build System
+
+Ninja was designed for C++ compilation and had no native understanding of concepts crucial for modern ReScript workflows:
+
+- Monorepo package boundaries and inter-package dependencies
+- Coordinated watching across multiple packages
+- Parallel builds across package boundaries
+- Cross-package optimization opportunities
+
+The wrapper approach meant every ReScript-specific feature had to be translated into Ninja's generic model. This translation layer worked well for single packages but became limiting as monorepo adoption grew.
+
+### A Purpose-Built Solution
+
+Rewatch started at [Walnut](https://walnut.io), where [Jaap Frolich](https://github.com/jfrolich) and [Roland Peelen](https://github.com/rolandpeelen) built it to solve real problems they were facing with large ReScript codebases. It is now part of the official ReScript compiler distribution.
+
+Written specifically for ReScript in Rust, the new build system has native understanding of ReScript's compilation model. There is no translation layer. It directly understands:
+
+- ReScript's compilation phases (parsing, type checking, code generation)
+- The meaning and role of CMI, CMT, and CMJ files
+- Module dependency graphs spanning multiple packages
+- Package boundaries and monorepo structures
+- When and how to coordinate builds across packages
+
+This deep integration enables features that were difficult or impossible with a wrapper around a generic build system:
+
+- **Unified watch mode** that tracks changes across all packages in a monorepo
+- **Parallel package builds** instead of sequential processing
+- **Explicit hash-based interface checking** that's more reliable than timestamp-based mechanisms
+- **Integrated formatter** that works seamlessly across package boundaries
+- **Better error messages** with full context about where in the build pipeline issues occurred
+
+The rewrite also opens doors for future improvements that require tight integration: incremental type checking, distributed build caching, and better language server integration.
+
+## The Intelligence Behind the New Build System
+
+The new build system takes a fundamentally different approach to building your code. At its core is a sophisticated understanding of what actually needs to be rebuilt when files change.
+
+### How ReScript Compilation Works
+
+ReScript's compilation model differs from many other languages in important ways.
+
+**ReScript compiles one file at a time, in complete isolation.** When you compile `Button.res`, the compiler does not maintain any shared state with other modules. Each file produces its own self-contained set of artifacts: the JavaScript output (`.mjs` or whatever extension you specified in your `rescript.json`), the module interface (`.cmi`), the typed tree (`.cmt`), and optimization metadata (`.cmj`). There is no separate linking phase like in C/C++, and no whole-program analysis like in many bundlers.
+
+Compilation happens in two phases: first, the file is parsed into an abstract syntax tree, then that tree is type-checked and compiled to JavaScript. This two-phase approach gives the build system fine-grained control over what work to skip. If a file has not changed at all, both phases can be skipped. If a dependency's public interface did not change (even though the file was modified), dependent modules can skip recompilation entirely.
+
+Additionally, ReScript's module system enforces a strict constraint: **dependency cycles are not allowed.** Module A cannot depend on Module B while Module B also depends on Module A. This means the module graph is always a DAG ([Directed Acyclic Graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph)).
+
+Most languages compile like cooking a complex dish where all ingredients affect each other. ReScript compiles like an assembly line where each station produces a complete, independent part. This makes it straightforward to parallelize, cache, and optimize.
+
+**Why this matters for build performance:**
+
+- **Perfect caching:** Since files compile independently with no global state, cached artifacts are always safe to reuse
+- **Trivial parallelization:** No coordination needed between parallel compilations since they do not share state
+- **Precise incremental rebuilds:** Changes propagate predictably through the DAG with clear stopping points
+- **Foundation for future optimizations:** This model enables possibilities like distributed compilation and build caching across CI runs
+
+**The trade-off:** This approach limits some whole-program optimizations, but the gains in predictability and speed are substantial. More importantly, this clean, constrained model is exactly what makes the sophisticated optimizations possible. The CMI hash checking, wave-based compilation, and early termination strategies all build on these fundamental properties.
+
+### Understanding CMI Files
+
+A specific artifact is central to the build system's optimizations: the CMI file.
+
+**CMI stands for Compiled Module Interface.** When the compiler processes your ReScript code, it always generates several output files:
+
+```
+Button.res  (your source code)
+  ↓ compiler
+├─ Button.mjs     # JavaScript output
+├─ Button.cmi     # Module's public API signature
+├─ Button.cmt     # Typed AST
+└─ Button.cmj     # Optimization metadata (function arity, cross-module inlining)
+```
+
+The `.cmi` file is automatically generated for every module. It acts as a contract or table of contents that describes what other modules can see and import from your module. It contains your type definitions and function signatures, but only the public ones.
+
+If you do not write an explicit interface file (`.resi`), the compiler infers the interface from everything you export in the `.res` file. If you do write a `.resi` file, that becomes the explicit interface instead.
+
+Here's a concrete example with an explicit [interface file](../docs/manual/module.mdx#signatures):
+
+```rescript
+// Button.resi
+type size = Small | Medium | Large
+let make: (~size: size, ~onClick: unit => unit) => Jsx.element
+let defaultSize: size
+```
+
+```rescript
+// Button.res
+type size = Small | Medium | Large
+
+let make = (~size: size, ~onClick) => {
+  // component implementation
+}
+
+let defaultSize = Medium
+
+// Not in interface file - this is private
+let internalHelper = () => {
+  // some internal logic
+}
+```
+
+The `.cmi` file for this module will contain:
+
+- The `size` type definition
+- The signature of `make`
+- The type of `defaultSize`
+
+But it will not contain `internalHelper` because it is not listed in the `.resi` file, making it truly internal to the module.
+
+**This distinction is crucial for build performance.** If you change `internalHelper`, the `.cmi` file stays exactly the same because the public interface did not change. But if you add a parameter to `make` or change the `size` type, the `.cmi` file changes because the public contract changed.
+
+**Tip for React developers:** Using `.resi` files for your components has an additional benefit. When you modify a component's internal implementation without changing the interface, React's [Fast Refresh](https://www.gatsbyjs.com/docs/reference/local-development/fast-refresh/) can preserve component state more reliably during development, creating an exceptionally smooth development experience.
+
+### Hash-Based Interface Stability Detection
+
+To detect whether a module's interface has changed, the build system computes a hash of the `.cmi` file before and after compilation. If the hashes match, dependent modules can skip recompilation.
+
+The previous system used timestamp-based detection through Ninja's `restat` feature, which worked well for single packages. While both approaches aim to avoid unnecessary recompilation, the explicit hash-based method provides more predictable behaviour, especially when dealing with timestamp issues across filesystems or in containerized environments. It also provides consistent behaviour across package boundaries in monorepos.
+
+### Faster Module Resolution with Flat Directory Layout
+
+The build system employs another optimization for module resolution. When building your project, it copies all source files to a flat directory structure in the build output. Instead of maintaining the original nested directory structure, every module ends up in one place.
+
+The old approach scattered modules across multiple directories, like books spread across multiple rooms and floors. Finding a specific module required checking each location. The new approach places all modules in one location, making lookups instant.
+
+**Why this matters:**
+
+- Module lookup becomes a single directory operation
+- The filesystem cache is more effective when files are adjacent
+- Cross-package references are as fast as local references
+- The compiler spends less time searching and more time compiling
+
+The small cost of copying files upfront is paid back many times over through faster compilation.
+
+Note that filesystems can struggle when there are too many files in a single directory. Since the build system controls the output layout, it can transparently shard files into subdirectories as a future optimization if needed, without any changes required from users.
+
+### Wave-Based Parallel Compilation
+
+Compilation is organized into waves based on dependency order, similar to an assembly line where some stations can run in parallel while others must wait for earlier stations to complete.
+
+Consider this dependency structure:
+
+```
+    A
+   ╱ ╲
+  B   C
+  │   │
+  D   E
+   ╲ ╱
+    F
+```
+
+This is processed in waves:
+
+**Wave 1:** Compile A (no dependencies)  
+**Wave 2:** Compile B and C in parallel (both depend only on A, which is done)  
+**Wave 3:** Compile D and E in parallel (their dependencies are satisfied)  
+**Wave 4:** Compile F (waits for both D and E)
+
+The key insight: within each wave, all modules compile simultaneously. The build system identifies which modules are ready (all their dependencies are compiled) and processes them together.
+
+Combined with CMI hash checking, this becomes even more powerful. If module A's interface does not change, modules B and C might skip actual compilation even though they are queued in Wave 2. They pass through the wave without doing unnecessary work.
+
+This approach emerged naturally from solving the problem of maximizing parallel compilation while respecting dependencies. The solution corresponds to a classic computer science algorithm: [Kahn's algorithm](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm) for topological sorting.
+
+### Proper Monorepo Support
+
+The build system was designed from the ground up with monorepos in mind. It automatically detects the parent-child relationship between your monorepo root and its packages by examining `rescript.json` files and package dependencies.
+
+This detection means commands work intuitively wherever you run them:
+
+- **Building from the root** builds all local packages
+- **Building from a child package** builds just that package, with full knowledge of the parent for resolving dependencies
+- **Clean and format commands** follow the same pattern: operate on all packages from the root, or on a single package from a child
+
+File watching works correctly across all packages, detecting changes wherever they occur. This works with npm workspaces, yarn workspaces, pnpm, and other package managers that use symlinking for local dependencies.
+
+## A Unified Developer Experience
+
+Beyond the build performance improvements, ReScript 12 brings a completely redesigned command-line interface. The new system consolidates everything into one cohesive tool:
+
+```bash
+rescript              # Defaults to build
+rescript build        # Explicit build
+rescript watch        # Build + watch mode
+rescript clean        # Clean artifacts
+rescript format       # Format code
+```
+
+**Smart defaults:** Running `rescript` without arguments builds your project.
+
+**Consistent interface:** All commands follow the same patterns and use the same help system.
+
+**Better error messages:** Clear, contextual errors instead of multi-layer stack traces.
+
+**Reliable process handling:** Ctrl+C in watch mode always cleans up properly.
+
+**Integrated formatting:** Format your entire project, specific files, or use check mode for CI, all with parallel processing.
+
+## Package Manager Compatibility
+
+The build system works with the major package managers: npm, yarn, pnpm, deno, and bun.
+
+**Note on Bun:** Recent versions of Bun (1.3+) default to "isolated" mode for monorepo installations, which can cause issues. If you are using Bun, you will need to configure it to use hoisted mode by adding this to your `bunfig.toml`:
+
+```toml
+[install]
+linker = "hoisted"
+```
+
+We are continuing to test compatibility across different environments and configurations. If you encounter issues with any package manager, please report them so we can address them.
+
+## Using the Legacy Build System
+
+For projects that need it, the legacy build system remains available throughout the v12 release cycle through the `rescript-legacy` command. This is a separate binary, not a subcommand. We expect to remove it in v13, so we encourage migrating to the new system when possible.
+
+```bash
+# Build your project
+rescript-legacy build
+
+# Build with watch mode
+rescript-legacy build -w
+
+# Clean build artifacts
+rescript-legacy clean
+```
+
+You can add these to your `package.json` scripts:
+
+```json
+{
+  "scripts": {
+    "build": "rescript-legacy build",
+    "watch": "rescript-legacy build -w",
+    "clean": "rescript-legacy clean"
+  }
+}
+```
+
+The legacy system might be needed temporarily for compatibility with specific tooling or during migration. However, we strongly encourage moving to the new build system to take advantage of the performance improvements and better monorepo support.
+
+The default `rescript` command now uses the new build system. If you have been using `rescript build` or `rescript -w`, they will automatically use it.
+
+## Conclusion
+
+ReScript 12's new build system brings together intelligent dependency tracking, proper monorepo support, and a unified developer experience. The improvements are most noticeable in monorepo setups, but all projects benefit from faster module resolution, integrated formatting, and more reliable build orchestration.
+
+## Acknowledgments
+
+Our deep appreciation goes to Jaap Frolich and Roland Peelen for creating Rewatch. What started as solving their own build challenges at Walnut has become a fundamental improvement for the entire ReScript community. The research and engineering effort they invested in understanding compiler internals and reimagining dependency tracking has made a real difference for every ReScript developer. Thank you to Walnut for supporting this work and sharing it with the community.
+
+If you are upgrading to ReScript 12, you will get the new build system automatically. We are excited to hear how it works for your projects. As always, feedback and bug reports are welcome. You can reach us through the [forum](https://forum.rescript-lang.org/) or on [GitHub](https://github.com/rescript-lang/rescript).
+
+Happy building!

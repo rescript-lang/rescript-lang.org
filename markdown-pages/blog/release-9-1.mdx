@@ -1,0 +1,166 @@
+---
+author: rescript-team
+date: "2021-05-07"
+previewImg: /blog/compiler_release_9_1.jpg
+title: ReScript 9.1
+badge: release
+description: |
+  Featuring a new npm package, a CLI revamp, polymorphic variant interop and object cleanup.
+---
+
+## Exciting Improvements in ReScript 9.1
+
+Our recent few releases of ReScript contains [lots of improvements](https://github.com/rescript-lang/rescript/blob/3134392a364b70c9c172aa6c1dbaa1ac6580265d/Changes.md#91), among which are a few standout features we'd like to further promote. Hope you're as excited as we are about these! It goes without saying, our [updated editor plugin](https://forum.rescript-lang.org/t/ann-rescript-vscode-1-1-1-released/1542/3) works with the new releases.
+
+### New NPM Package
+
+We've finally moved from [bs-platform](https://www.npmjs.com/package/bs-platform) to [rescript](https://www.npmjs.com/package/rescript)!
+
+This is mostly just a long overdue name change; the package's virtually identical. Apart from the renaming of our CLI.
+
+### CLI Cleanup
+
+We took the occasion of the NPM package move to also unify the binaries `bsc`, `bsb` and their various commands into a single `rescript` command:
+
+```sh
+❯ rescript -help
+Available flags
+-v, -version  display version number
+-h, -help     display help
+Subcommands:
+    build
+    clean
+    format
+    convert
+    help
+Run rescript subcommand -h for more details,
+For example:
+    rescript build -h
+    rescript format -h
+The default `rescript` is equivalent to `rescript build` subcommand
+```
+
+Here's a table of translation, if you're upgrading your script that is currently using `bsc` and `bsb`:
+
+- `bsc -format myFile.res`: `rescript format myFile.res`
+- `bsb`: `rescript build` \*
+- `bsb -make-world`: `rescript build -with-deps` \*
+- `bsb -w`: `rescript build -w`
+- `bsb -w -make-world`: `rescript build -w -with-deps` \*
+
+\* **However**, we've gone even further to improve your experience; in most cases you won't need to invoke `build`, nor `-with-deps` anymore! Not only is `rescript` an alias to `rescript build`, it also smartly detects whether your dependencies are already built; if not, it builds them automatically.
+
+This means that you can ditch your old `-make-world` (now the explicit `-with-deps` flag, for edge-case explicit usages). Just call `rescript` and everything including dependencies will always be built! As performance is our highest priority, we've ensured that such extra detections does not slow down the build.
+
+### Polymorphic Variants for Numbers and Strings
+
+_Drumrolls_
+
+- Poly variants like `#1`, `#42` compile to JavaScript numbers.
+- Poly variants like `#hello`, `#world` compile to JavaScript Strings.
+
+This is a feature many of you were probably waiting for. Now you can interop with a JavaScript value that's a limited set of numbers or strings:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let secret = #42
+
+// optional type annotation, for documentation
+type t = [#1 | #3 | #5 ]
+
+// enjoy the pattern matching
+let test = (arg: t) => {
+  switch arg {
+  | #1 | #3 => "hello"
+  | #5 => "world"
+  }
+}
+```
+
+```js
+var secret = 42;
+
+function test(arg) {
+  if (arg === 5) {
+    return "world";
+  } else {
+    return "hello";
+  }
+}
+```
+
+</CodeTab>
+
+But wait, **there's more**. We allow safely coercing these poly variants to `int`s or `string`s even at the ReScript side:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let test2 = (arg: [#1 | #3 | #5]) => {
+  (arg :> int)
+}
+
+let test3 = (arg: option<[#1 | #3 | #5]>) => {
+  (arg :> option<int>)
+}
+
+Js.log(test2(#1))
+Js.log(test3(Some(#3)))
+```
+
+```js
+function test2(arg) {
+  return arg;
+}
+
+function test3(arg) {
+  return arg;
+}
+
+console.log(1);
+console.log(3);
+```
+
+</CodeTab>
+
+As usual, check the output tabs: there's no runtime cost. Time to upgrade some interop!
+
+### Object Cleanup
+
+Our objects had various constraints due to legacy reasons; we've managed to clean them up, and expose the UX that they deserve:
+
+- `Js.t<{"x": int}>` is now simply `{"x": int}`. Existing code using `Js.t` still work; it's now a no-op. Our `rescript format` will also format them away.
+- You can now use object type spread:
+  ```
+  type point2d = {
+    "x": float,
+    "y": float,
+  }
+  type point3d = {
+    ...point2d,
+    "z": float,
+  }
+  ```
+
+The cleanup also allowed us to unlock very exciting ideas. For example, [this one](https://forum.rescript-lang.org/t/rfc-more-general-type-checking-for-structural-typings/1485).
+
+## What's Next?
+
+First class unicode support! Expect being able to write the following:
+
+```res
+let helloUnicode = (x) =>{
+  switch x {
+  | '❤️' => "ReScript is awesome"
+  | 'Σ' => "Math is fun"
+  | _ => "Lots of unicode"
+  }
+}
+```
+
+## Conclusion
+
+Don't miss our various other improvements in [our changelog](https://github.com/rescript-lang/rescript/blob/3134392a364b70c9c172aa6c1dbaa1ac6580265d/Changes.md#91). As always we try to keep our changes performant, lean and robust. We hope you'll enjoy these.
+
+See you next time!

@@ -8,6 +8,10 @@
   "compiler-flags": ["-open WebAPI.Global"],
   "sources": [
     {
+      "dir": "app",
+      "subdirs": true
+    },
+    {
       "dir": "src",
       "subdirs": true
     },

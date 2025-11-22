@@ -70,8 +70,8 @@ module Item = {
     name: string,
     summary: string,
     category: Category.t,
-    children: React.element,
     status: Status.t,
+    href: string,
   }
 
   let compare = (a, b) =>
@@ -90,24 +90,19 @@ type itemInfo = {
   status: Status.t,
 }
 
-let getAnchor = path => {
-  switch String.split(path, "#") {
-  | [_, anchor] => Some(anchor)
-  | _ => None
-  }
-}
-
 module Tag = {
   @react.component
-  let make = (~deprecated: bool, ~text: string) => {
-    <span
+  let make = (~deprecated: bool, ~text: string, ~href) => {
+    <ReactRouter.Link.String
+      to={"/syntax-lookup/" ++ href}
       className={`
        py-1 px-3 rounded text-16
       ${deprecated
           ? "hover:bg-gray-30 bg-gray-50 text-gray-80 line-through"
-          : "hover:bg-fire hover:text-white bg-fire-5 text-fire"}`}>
+          : "hover:bg-fire hover:text-white bg-fire-5 text-fire"}`}
+    >
       {React.string(text)}
-    </span>
+    </ReactRouter.Link.String>
   }
 }
 
@@ -131,7 +126,7 @@ module DetailBox = {
 
     <div>
       <div className="text-24 border-b border-gray-40 pb-4 mb-4 font-semibold"> summaryEl </div>
-      <div className="mt-16"> children </div>
+      <div className="mt-16 markdown-body"> children </div>
     </div>
   }
 }
@@ -143,7 +138,6 @@ type state =
 
 let scrollToTop = () => WebAPI.Window.scrollTo(window, ~options={left: 0.0, top: 0.0})
 
-type props = {mdxSources: array<MdxRemote.output>}
 type params = {slug: string}
 
 let decode = (json: JSON.t) => {
@@ -176,21 +170,33 @@ let decode = (json: JSON.t) => {
   }
 }
 
-let default = (props: props) => {
-  let {mdxSources} = props
+type item = {
+  id: string,
+  keywords: array<string>,
+  name: string,
+  summary: string,
+  category: Category.t,
+  status: Status.t,
+  href: string,
+}
 
+@react.component
+let make = (
+  ~mdxSources: array<item>,
+  ~children: option<React.element>=React.null,
+  ~activeItem: option<item>=?,
+) => {
   let allItems = mdxSources->Array.map(mdxSource => {
-    let {id, keywords, category, summary, name, status} = decode(mdxSource.frontmatter)
-
-    let children =
-      <MdxRemote
-        frontmatter={mdxSource.frontmatter}
-        compiledSource={mdxSource.compiledSource}
-        scope={mdxSource.scope}
-        components={MarkdownComponents.default}
-      />
-
-    {Item.id, keywords, category, summary, name, status, children}
+    let {id, keywords, category, summary, name, status, href} = mdxSource
+    {
+      Item.id,
+      keywords,
+      category,
+      summary,
+      name,
+      status,
+      href,
+    }
   })
 
   let fuseOpts = Fuse.Options.t(
@@ -206,12 +212,18 @@ let default = (props: props) => {
 
   let fuse: Fuse.t<Item.t> = Fuse.make(allItems, fuseOpts)
 
-  let router = Next.Router.useRouter()
-  let (state, setState) = React.useState(_ => ShowAll)
+  let (state, setState) = React.useState(_ => {
+    switch activeItem {
+    | Some(item) => ShowDetails((item :> Item.t))
+    | None => ShowAll
+    }
+  })
 
-  let findItemById = id => allItems->Array.find(item => item.id === id)
-
-  let findItemByExactName = name => allItems->Array.find(item => item.name === name)
+  let findItemByExactName = name => {
+    allItems->Array.find(item => {
+      item.name === name
+    })
+  }
 
   let searchItems = value =>
     fuse
@@ -220,25 +232,9 @@ let default = (props: props) => {
       m["item"]
     })
 
-  // This effect is responsible for updating the view state when the router anchor changes.
-  // This effect is triggered when:
-  // [A] The page first loads.
-  // [B] The search box is cleared.
-  // [C] The search box value exactly matches an item name.
-  React.useEffect(() => {
-    switch getAnchor(router.asPath) {
-    | None => setState(_ => ShowAll)
-    | Some(anchor) =>
-      switch findItemById(anchor) {
-      | None => setState(_ => ShowAll)
-      | Some(item) => {
-          setState(_ => ShowDetails(item))
-          scrollToTop()
-        }
-      }
-    }
-    None
-  }, [router])
+  let navigate = ReactRouter.useNavigate()
+
+  let {pathname} = ReactRouter.useLocation()
 
   // onSearchValueChange() is called when:
   // [A] The search value changes.
@@ -251,15 +247,23 @@ let default = (props: props) => {
   // [3] Search does not match an item - immediately update the view state to show filtered items.
   let onSearchValueChange = value => {
     switch value {
-    | "" => router->Next.Router.push("/syntax-lookup")
+    | "" =>
+      setState(_ => ShowAll)
+      navigate("/syntax-lookup")
     | value =>
       switch findItemByExactName(value) {
       | None => {
           let filtered = searchItems(value)
           setState(_ => ShowFiltered(value, filtered))
         }
+      | Some(item) => {
+          let target = "/syntax-lookup/" ++ item.href
 
-      | Some(item) => router->Next.Router.push("/syntax-lookup#" ++ item.id)
+          // This makes sure we don't double navigate
+          if (pathname :> string) != target {
+            navigate(target)
+          }
+        }
       }
     }
   }
@@ -269,7 +273,7 @@ let default = (props: props) => {
   | ShowAll => React.null
   | ShowDetails(item) =>
     <div className="mb-16">
-      <DetailBox summary={item.summary}> item.children </DetailBox>
+      <DetailBox summary={item.summary}> children </DetailBox>
     </div>
   }
 
@@ -318,7 +322,7 @@ let default = (props: props) => {
               onSearchValueChange(item.name)
             }
             <span className="mr-2 mb-2 cursor-pointer" onMouseDown key=item.name>
-              <Tag text={item.name} deprecated={item.status == Deprecated} />
+              <Tag text={item.name} deprecated={item.status == Deprecated} href=item.href />
             </span>
           })
         let el =
@@ -331,17 +335,18 @@ let default = (props: props) => {
     })
   }
 
-  let (searchValue, completionItems) = switch state {
-  | ShowFiltered(search, items) => (search, items)
-  | ShowAll => ("", allItems)
-  | ShowDetails(item) => (item.name, [item])
-  }
+  let (searchValue, completionItems) = React.useMemo(() =>
+    switch state {
+    | ShowFiltered(search, items) => (search, items)
+    | ShowAll => ("", allItems)
+    | ShowDetails(item) => (item.name, [item])
+    }
+  , [state])
 
   let onSearchClear = () => {
     onSearchValueChange("")
   }
 
-  let (isOverlayOpen, setOverlayOpen) = React.useState(() => false)
   let title = "Syntax Lookup | ReScript Documentation"
 
   let content =
@@ -377,35 +382,15 @@ let default = (props: props) => {
     />
     <div className="mt-4 xs:mt-16">
       <div className="text-gray-80">
-        <Navigation isOverlayOpen setOverlayOpen />
         <div className="flex xs:justify-center overflow-hidden pb-48">
           <main className="mt-24 min-w-320 lg:align-center w-full px-4 md:px-8 max-w-1280">
-            <MdxProvider components=MarkdownComponents.default>
-              <div className="flex justify-center">
-                <div className="max-w-740 w-full"> content </div>
-              </div>
-            </MdxProvider>
+            <div className="flex justify-center">
+              <div className="max-w-740 w-full"> content </div>
+            </div>
           </main>
         </div>
         <Footer />
       </div>
     </div>
   </>
-}
-
-let getStaticProps: Next.GetStaticProps.t<props, params> = async _ctx => {
-  let dir = Node.Path.resolve("misc_docs", "syntax")
-
-  let allFiles = Node.Fs.readdirSync(dir)->Array.map(async file => {
-    let fullPath = Node.Path.join2(dir, file)
-    let source = fullPath->Node.Fs.readFileSync
-    await MdxRemote.serialize(
-      source,
-      {parseFrontmatter: true, mdxOptions: MdxRemote.defaultMdxOptions},
-    )
-  })
-
-  let mdxSources = await Promise.all(allFiles)
-
-  {"props": {mdxSources: mdxSources}}
 }

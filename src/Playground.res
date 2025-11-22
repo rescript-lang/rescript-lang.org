@@ -1,13 +1,3 @@
-%%raw(`
-if (typeof window !== "undefined" && typeof window.navigator !== "undefined") {
-  require("codemirror/mode/javascript/javascript");
-  require("codemirror/keymap/vim");
-  require("codemirror/addon/scroll/simplescrollbars");
-  require("plugins/cm-rescript-mode");
-  require("plugins/cm-reason-mode");
-}
-`)
-
 open CompilerManagerHook
 module Api = RescriptCompilerApi
 
@@ -52,12 +42,13 @@ module DropdownSelect = {
   let make = (~onChange, ~name, ~value, ~disabled=false, ~children) => {
     let opacity = disabled ? " opacity-50" : ""
     <select
-      className={"text-14 bg-transparent border border-gray-80 inline-block rounded px-4 py-1 font-semibold" ++
+      className={"text-14 bg-gray-100 border border-gray-80 inline-block rounded px-4 py-1 font-semibold" ++
       opacity}
       name
       value
       disabled
-      onChange>
+      onChange
+    >
       children
     </select>
   }
@@ -73,7 +64,8 @@ module SelectionOption = {
         "bg-gray-80 opacity-50 hover:opacity-80"
       }}
       onClick
-      disabled>
+      disabled
+    >
       {React.string(label)}
     </button>
   }
@@ -615,7 +607,8 @@ module WarningFlagsWidget = {
         ?onMouseEnter
         ?onMouseLeave
         className={color ++ " hover:cursor-default text-16 inline-block border border-gray-40 rounded-full px-2 mr-1"}
-        key={Int.toString(i) ++ flag}>
+        key={Int.toString(i) ++ flag}
+      >
         {React.string(full)}
       </span>
     })->React.array
@@ -772,7 +765,8 @@ module WarningFlagsWidget = {
       Option.map(suggestions, elements =>
         <div
           ref={ReactDOM.Ref.domRef((Obj.magic(listboxRef): React.ref<Nullable.t<Dom.element>>))}
-          className="p-2 absolute overflow-auto z-50 border-b rounded border-l border-r block w-full bg-gray-100 max-h-60">
+          className="p-2 absolute overflow-auto z-50 border-b rounded border-l border-r block w-full bg-gray-100 max-h-60"
+        >
           elements
         </div>
       )->Option.getOr(React.null)
@@ -813,7 +807,8 @@ module WarningFlagsWidget = {
         onClick
         onFocus
         tabIndex=0
-        className="focus:outline-hidden self-start focus:ring-3 hover:cursor-pointer hover:bg-gray-40 p-2 rounded-full">
+        className="focus:outline-hidden self-start focus:ring-3 hover:cursor-pointer hover:bg-gray-40 p-2 rounded-full"
+      >
         <Icon.Close />
       </button>
     }
@@ -945,7 +940,8 @@ module Settings = {
               WebAPI.Storage.setItem(localStorage, ~key=(Url.Playground :> string), ~value=id)
             | None => ()
             }
-          }}>
+          }}
+        >
           {
             let (experimentalVersions, stableVersions) = readyState.versions->Array.reduce(
               ([], []),
@@ -1095,7 +1091,8 @@ module Settings = {
         <div className=titleClass>
           {React.string("Warning Flags")}
           <button
-            onClick=onWarningFlagsResetClick className={"ml-6 text-12 " ++ Text.Link.standalone}>
+            onClick=onWarningFlagsResetClick className={"ml-6 text-12 " ++ Text.Link.standalone}
+          >
             {React.string("[reset]")}
           </button>
         </div>
@@ -1114,7 +1111,8 @@ module ControlPanel = {
     let make = (~children, ~onClick=?) =>
       <button
         ?onClick
-        className="inline-block text-sky hover:cursor-pointer hover:bg-sky hover:text-white-80-tr rounded border active:bg-sky-70 border-sky-70 px-2 py-1 ">
+        className="inline-block text-sky hover:cursor-pointer hover:bg-sky hover:text-white-80-tr rounded border active:bg-sky-70 border-sky-70 px-2 py-1 "
+      >
         children
       </button>
   }
@@ -1174,7 +1172,8 @@ module ControlPanel = {
       <>
         <button
           onClick
-          className={className ++ " w-40 transition-all duration-500 ease-in-out inline-block hover:cursor-pointer hover:text-white-80 text-white rounded border px-2 py-1 "}>
+          className={className ++ " w-40 transition-all duration-500 ease-in-out inline-block hover:cursor-pointer hover:text-white-80 text-white rounded border px-2 py-1 "}
+        >
           {React.string(text)}
         </button>
       </>
@@ -1241,7 +1240,7 @@ module ControlPanel = {
         }
       }
 
-      <div className="flex flex-row gap-x-2">
+      <div className="flex flex-row gap-x-2" dataTestId="control-panel">
         <ToggleButton
           checked=autoRun
           onChange={_ => {
@@ -1250,7 +1249,8 @@ module ControlPanel = {
             | _ => ()
             }
             dispatch(ToggleAutoRun)
-          }}>
+          }}
+        >
           {React.string("Auto-run")}
         </ToggleButton>
         <Button onClick={_ => runCode()}> {React.string(runButtonText)} </Button>
@@ -1503,7 +1503,7 @@ let initialReContent = `Js.log("Hello Reason 3.6!");`
 
 @react.component
 let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
-  let router = Next.Router.useRouter()
+  let (searchParams, _) = ReactRouter.useSearchParams()
 
   let versions =
     versions
@@ -1523,9 +1523,11 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   | [v] => Some(v) // only single version available. maybe local dev.
   | versions => {
       let lastStableVersion = versions->Array.find(version => version.preRelease->Option.isNone)
-      switch Dict.get(router.query, (CompilerManagerHook.Version :> string)) {
-      | Some(version) => version->Semver.parse
-      | None =>
+      switch Nullable.make(
+        searchParams->WebAPI.URLSearchParams.get((CompilerManagerHook.Version :> string)),
+      ) {
+      | Nullable.Value(version) => version->Semver.parse
+      | _ =>
         switch Url.getVersionFromStorage(Playground) {
         | Some(v) => v->Semver.parse
         | None => lastStableVersion
@@ -1534,23 +1536,35 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     }
   }
 
-  let initialLang = switch Dict.get(router.query, (CompilerManagerHook.Ext :> string)) {
-  | Some("re") => Api.Lang.Reason
+  let initialLang = switch Nullable.make(
+    searchParams->WebAPI.URLSearchParams.get((CompilerManagerHook.Ext :> string)),
+  ) {
+  | Nullable.Value("re") => Api.Lang.Reason
   | _ => Api.Lang.Res
   }
 
-  let initialModuleSystem = Dict.get(router.query, (Module :> string))
-  let initialJsxPreserveMode = Dict.get(router.query, (JsxPreserve :> string))->Option.isSome
+  let initialModuleSystem =
+    Nullable.make(searchParams->WebAPI.URLSearchParams.get((Module :> string)))->Nullable.toOption
+
+  let initialJsxPreserveMode = !(
+    Nullable.make(
+      searchParams->WebAPI.URLSearchParams.get((JsxPreserve :> string)),
+    )->Nullable.isNullable
+  )
 
   let initialExperimentalFeatures =
-    Dict.get(router.query, (Experiments :> string))->Option.mapOr([], str =>
-      str->String.split(",")->Array.map(String.trim)
-    )
+    Nullable.make(
+      searchParams->WebAPI.URLSearchParams.get((Experiments :> string)),
+    )->Nullable.mapOr([], str => str->String.split(",")->Array.map(String.trim))
 
-  let initialContent = switch (Dict.get(router.query, (Code :> string)), initialLang) {
-  | (Some(compressedCode), _) => LzString.decompressToEncodedURIComponent(compressedCode)
-  | (None, Reason) => initialReContent
-  | (None, Res) =>
+  let initialContent = switch (
+    Nullable.make(searchParams->WebAPI.URLSearchParams.get((Code :> string))),
+    initialLang,
+  ) {
+  | (Nullable.Value(compressedCode), _) =>
+    LzString.lzString.decompressFromEncodedURIComponent(compressedCode)
+  | (_, Reason) => initialReContent
+  | (_, Res) =>
     switch initialVersion {
     | Some({major: 10, minor}) if minor >= 1 => InitialContent.since_10_1
     | Some({major}) if major > 10 => InitialContent.since_11
@@ -1597,7 +1611,11 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
    we take any success results and set the editor code to the new formatted code */
   switch compilerState {
   | Ready({result: FinalResult.Nothing} as ready) =>
-    compilerDispatch(CompileCode(ready.targetLang, editorCode.current))
+    try {
+      compilerDispatch(CompileCode(ready.targetLang, editorCode.current))
+    } catch {
+    | err => Console.error(err)
+    }
   | Ready({result: FinalResult.Conv(Api.ConversionResult.Success({code}))}) =>
     editorCode.current = code
   | _ => ()
@@ -1617,7 +1635,12 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   React.useEffect(() => {
     timeoutCompile.current = () =>
       switch compilerState {
-      | Ready(ready) => compilerDispatch(CompileCode(ready.targetLang, editorCode.current))
+      | Ready(ready) =>
+        try {
+          compilerDispatch(CompileCode(ready.targetLang, editorCode.current))
+        } catch {
+        | err => Console.error(err)
+        }
       | _ => ()
       }
 
@@ -1909,7 +1932,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     <button key={Int.toString(i)} onClick className disabled> {title} </button>
   })
 
-  <main className={"flex flex-col bg-gray-100 overflow-hidden"}>
+  <main className={"flex flex-col bg-gray-100  text-gray-40 text-14 overflow-scroll mt-16"}>
     <ControlPanel
       actionIndicatorKey={Int.toString(actionCount)}
       state=compilerState
@@ -1919,13 +1942,15 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     />
     <div
       className={`flex ${layout == Column ? "flex-col" : "flex-row"}`}
-      ref={ReactDOM.Ref.domRef((Obj.magic(panelRef): React.ref<Nullable.t<Dom.element>>))}>
+      ref={ReactDOM.Ref.domRef((Obj.magic(panelRef): React.ref<Nullable.t<Dom.element>>))}
+    >
       // Left Panel
       <div
         ref={ReactDOM.Ref.domRef((Obj.magic(leftPanelRef): React.ref<Nullable.t<Dom.element>>))}
-        className={`${layout == Column ? "h-2/4" : "h-full!"} ${layout == Column
+        className={`overflow-scroll ${layout == Column ? "h-2/4" : "h-full!"} ${layout == Column
             ? "w-full"
-            : "w-[50%]"}`}>
+            : "w-[50%]"}`}
+      >
         <CodeMirror
           className="bg-gray-100 h-full"
           mode
@@ -1960,7 +1985,8 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
             : "cursor-col-resize"}`}
         onMouseDown={onMouseDown}
         onTouchStart={onTouchStart}
-        onTouchEnd={onMouseUp}>
+        onTouchEnd={onMouseUp}
+      >
         <span className={`m-0.5 ${layout == Column ? "rotate-90" : ""}`}>
           {React.string("⣿")}
         </span>
@@ -1970,13 +1996,15 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
         ref={ReactDOM.Ref.domRef((Obj.magic(rightPanelRef): React.ref<Nullable.t<Dom.element>>))}
         className={`${layout == Column ? "h-6/15" : "h-inherit!"} ${layout == Column
             ? "w-full"
-            : "w-[50%]"}`}>
+            : "w-[50%]"}`}
+      >
         <div className={"flex flex-wrap justify-between w-full " ++ (disabled ? "opacity-50" : "")}>
           {React.array(headers)}
         </div>
         <div
           ref={ReactDOM.Ref.domRef((Obj.magic(subPanelRef): React.ref<Nullable.t<Dom.element>>))}
-          className="overflow-auto">
+          className="overflow-auto"
+        >
           <OutputPanel
             currentTab compilerDispatch compilerState editorCode keyMapState={(keyMap, setKeyMap)}
           />

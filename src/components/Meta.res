@@ -1,5 +1,3 @@
-module Head = Next.Head
-
 /*
     canonical: Set a canonical URL pointing to the original content.
  */
@@ -11,13 +9,12 @@ let make = (
   ~canonical=?,
   ~title=?,
   ~ogLocale="en_US",
-  ~ogSiteName=?,
+  ~ogSiteName=siteName,
   ~ogDescription=description,
   ~ogTitle=?,
-  ~ogImage="/static/Art-3-rescript-launch.jpg",
-  ~version: option<Url.version>=?,
+  ~ogImage=Env.root_url ++ "Art-3-rescript-launch.jpg",
 ) => {
-  let ogImage = "https://rescript-lang.org" ++ ogImage
+  let ogImage = Env.root_url ++ ogImage
 
   let title = switch title {
   | None
@@ -25,17 +22,12 @@ let make = (
   | Some(title) => title
   }
 
-  let ogSiteName = switch ogSiteName {
-  | Some(ogSiteName) => ogSiteName
-  | None => siteName
-  }
-
   let ogTitle = switch ogTitle {
   | Some(ogTitle) => ogTitle
   | None => title
   }
 
-  <Head>
+  <>
     <title key="title"> {React.string(title)} </title>
     <meta charSet="utf-8" />
     <meta
@@ -48,10 +40,10 @@ let make = (
     | Some(href) => <link key="canonical" href rel="canonical" />
     | None => React.null
     }}
-    <link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/apple-touch-icon.png" />
-    <link rel="icon" type_="image/png" sizes="32x32" href="/static/favicon/favicon-32x32.png" />
-    <link rel="icon" type_="image/png" sizes="16x16" href="/static/favicon/favicon-16x16.png" />
-    <link rel="manifest" href="/static/favicon/site.webmanifest" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+    <link rel="icon" type_="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+    <link rel="icon" type_="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
 
     /* OG link preview meta data */
     <meta key="og:site_name" property="og:site_name" content=ogSiteName />
@@ -69,14 +61,8 @@ let make = (
     <meta key="twitter:card" name="twitter:card" content="summary_large_image" />
     <link rel="alternate" type_="application/rss+xml" title="ReScript Blog" href="/blog/feed.xml" />
     // Docsearch meta tags
-    <meta
-      name="docsearch:version"
-      content={switch version {
-      | Some(Version(v)) => v
-      | Some(Latest) => Constants.versions.latest
-      | Some(Next) => Constants.versions.next
-      | _ => Constants.versions.latest
-      }}
-    />
-  </Head>
+    <meta name="docsearch:version" content="v12" />
+    // Robots meta tag
+    <meta name="robots" content="index, follow" />
+  </>
 }

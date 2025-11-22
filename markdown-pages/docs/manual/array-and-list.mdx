@@ -1,0 +1,219 @@
+---
+title: "Array & List"
+description: "Arrays and List data structures"
+canonical: "/docs/manual/array-and-list"
+section: "Language Features"
+order: 12
+---
+
+# Array and List
+
+## Array
+
+Arrays are our main ordered data structure. They work the same way as JavaScript arrays: they can be randomly accessed, dynamically resized, updated, etc.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+let myArray = ["hello", "world", "how are you"]
+```
+
+```js
+var myArray = ["hello", "world", "how are you"];
+```
+
+</CodeTab>
+
+ReScript arrays' items must have the same type, i.e. homogeneous.
+
+### Usage
+
+#### Access
+
+Accessing items in an array will return an `option` and can be done like so:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+let myArray = ["hello", "world", "how are you"]
+
+let firstItem = myArray[0] // Some("hello")
+
+let tenthItem = myArray->Array.get(10) // None
+```
+
+```js
+var myArray = ["hello", "world", "how are you"];
+
+var firstItem = myArray[0];
+
+var tenthItem = myArray[10];
+```
+
+</CodeTab>
+
+#### Update
+
+Items in an array can be updated by assigning a value to an index or using a function:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+let myArray = ["hello", "world", "how are you"]
+
+myArray[0] = "hey" // now ["hey", "world", "how are you"]
+
+myArray->Array.push("?") //  ["hey", "world", "how are you", "?"]
+
+myArray->Array.set(0, "bye") //  ["bye", "world", "how are you", "?"]
+```
+
+```js
+var myArray = ["hello", "world", "how are you"];
+
+myArray[0] = "hey";
+
+myArray.push("?");
+
+myArray[0] = "bye";
+```
+
+</CodeTab>
+
+### Array spreads
+
+**Since 11.1**
+
+You can spread arrays of the the same type into new arrays, just like in JavaScript:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+let y = [1, 2]
+let x = [4, 5, ...y]
+let x2 = [4, 5, ...y, 7, ...y]
+let x3 = [...y]
+```
+
+```javascript
+var Belt_Array = require("rescript/lib/js/belt_Array.js");
+
+var y = [1, 2];
+
+var x = Belt_Array.concatMany([[4, 5], y]);
+
+var x2 = Belt_Array.concatMany([[4, 5], y, [7], y]);
+
+var x3 = Belt_Array.concatMany([y]);
+```
+
+</CodeTab>
+
+> Note that array spreads compiles to `Belt.Array.concatMany` right now. This is likely to change to native array spreads in the future.
+
+## List
+
+ReScript provides a singly linked list too. Lists are:
+
+- immutable
+- fast at prepending items
+- fast at getting the head
+- slow at everything else
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+let myList = list{1, 2, 3}
+```
+
+```js
+var myList = {
+  hd: 1,
+  tl: {
+    hd: 2,
+    tl: {
+      hd: 3,
+      tl: 0,
+    },
+  },
+};
+```
+
+</CodeTab>
+
+Like arrays, lists' items need to be of the same type.
+
+### Usage
+
+You'd use list for its resizability, its fast prepend (adding at the head), and its fast split, all of which are immutable and relatively efficient.
+
+Do **not** use list if you need to randomly access an item or insert at non-head position. Your code would end up obtuse and/or slow.
+
+For accessing deeper, see [destructuring](./pattern-matching-destructuring.mdx).
+
+#### Immutable Prepend
+
+Use the spread syntax:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res prelude
+let myList = list{1, 2, 3}
+let anotherList = list{0, ...myList}
+```
+
+```js
+var myList = {
+  hd: 1,
+  tl: {
+    hd: 2,
+    tl: {
+      hd: 3,
+      tl: 0,
+    },
+  },
+};
+
+var anotherList = {
+  hd: 0,
+  tl: myList,
+};
+```
+
+</CodeTab>
+
+`myList` didn't mutate. `anotherList` is now `list{0, 1, 2, 3}`. This is efficient (constant time, not linear). `anotherList`'s last 3 elements are shared with `myList`!
+
+**Note that `list{a, ...b, ...c}` was a syntax error** before compiler v10.1. In general, the pattern should be used with care as its performance and allocation overhead are linear (`O(n)`).
+
+#### Access
+
+`switch` (described in the [pattern matching section](./pattern-matching-destructuring.mdx)) is usually used to access list items:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+let message =
+  switch myList {
+  | list{} => "This list is empty"
+  | list{first, second, ...rest} => "The list two items and a potenial remainder of items"
+  | list{a, ...rest} => "The head of the list is the string " ++ Int.toString(a)
+  }
+```
+
+```js
+let message =
+  myList !== 0
+    ? {
+        hd: 2,
+        tl: {
+          hd: 3,
+          tl: /* [] */ 0,
+        },
+      } !== 0
+      ? "The list two items and a potenial remainder of items"
+      : "The head of the list is the string " + (1).toString()
+    : "This list is empty";
+```
+
+</CodeTab>
