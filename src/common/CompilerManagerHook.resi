@@ -69,7 +69,6 @@ let useCompilerManager: (
   ~initialLang: Lang.t=?,
   ~onAction: action => unit=?,
   ~versions: array<Semver.t>,
-  unit,
 ) => (state, action => unit)
 
 let createUrl: (string, ready) => string

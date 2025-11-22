@@ -77,7 +77,7 @@ const reasonLanguage = StreamLanguage.define({
 
     // Handle booleans
     if (stream.match(/^(?:true|false)\b/)) {
-      return "builtin";
+      return "bool";
     }
 
     // Handle fun definitions
@@ -118,7 +118,7 @@ const reasonLanguage = StreamLanguage.define({
     number: "number",
     keyword: "keyword",
     atom: "atom",
-    builtin: "builtin",
+    bool: "bool",
     namespace: "namespace",
     typeName: "typeName",
     operator: "operator",
