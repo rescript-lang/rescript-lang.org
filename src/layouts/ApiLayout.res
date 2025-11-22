@@ -74,8 +74,6 @@ let make = (
 
   let (isSidebarOpen, setSidebarOpen) = React.useState(_ => false)
 
-  let (isScrollLock, setScrollLock) = ScrollLockContext.useScrollLock()
-
   let toggleSidebar = () => {
     setSidebarOpen(prev => !prev)
   }
