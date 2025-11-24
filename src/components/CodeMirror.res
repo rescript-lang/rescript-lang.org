@@ -409,10 +409,9 @@ module CM6 = {
           tag: [
             Tags.variableName,
             Tags.definition(Tags.propertyName),
-            Tags.tagName,
             Tags.labelName,
-            Tags.definition(Tags.variableName),
             Tags.definition(Tags.typeName),
+            Tags.special(Tags.angleBracket),
           ],
           class: "text-gray-30",
         },
@@ -433,8 +432,16 @@ module CM6 = {
           class: "text-orange",
         },
         {
-          tag: [Tags.namespace, Tags.annotation],
+          tag: [Tags.namespace],
           class: "text-water-dark",
+        },
+        {
+          tag: [Tags.annotation, Tags.tagName],
+          class: "text-ocean-dark",
+        },
+        {
+          tag: [Tags.attributeName, Tags.labelName, Tags.definition(Tags.variableName)],
+          color: "#bcc9ab",
         },
       ])
     }
