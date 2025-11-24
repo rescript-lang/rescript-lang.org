@@ -35,9 +35,6 @@ export default defineConfig({
   build: {
     // Having these on helps with local development
     sourcemap: process.env.NODE_ENV !== "production",
-    watch: {
-      exclude: excludedFiles,
-    },
   },
   css: {
     transformer: "lightningcss",
