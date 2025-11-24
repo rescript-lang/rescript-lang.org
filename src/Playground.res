@@ -364,7 +364,7 @@ module ResultPane = {
     ~focusedRowCol: option<(int, int)>=?,
     ~result: FinalResult.t,
   ) =>
-    <div className="pt-4 bg-0 overflow-y-auto">
+    <div className="pt-4 bg-0 overflow-y-auto playground-scrollbar">
       <div className="flex items-center text-16 font-medium px-4">
         <div className="pr-4"> {renderTitle(result)} </div>
       </div>
@@ -765,7 +765,7 @@ module WarningFlagsWidget = {
       Option.map(suggestions, elements =>
         <div
           ref={ReactDOM.Ref.domRef((Obj.magic(listboxRef): React.ref<Nullable.t<Dom.element>>))}
-          className="p-2 absolute overflow-auto z-50 border-b rounded border-l border-r block w-full bg-gray-100 max-h-60"
+          className="p-2 absolute overflow-auto playground-scrollbar z-50 border-b rounded border-l border-r block w-full bg-gray-100 max-h-60"
         >
           elements
         </div>
@@ -1932,7 +1932,9 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     <button key={Int.toString(i)} onClick className disabled> {title} </button>
   })
 
-  <main className={"flex flex-col bg-gray-100  text-gray-40 text-14 overflow-scroll mt-16"}>
+  <main className={
+    "flex flex-col bg-gray-100 text-gray-40 text-14 overflow-scroll playground-scrollbar mt-16"
+  }>
     <ControlPanel
       actionIndicatorKey={Int.toString(actionCount)}
       state=compilerState
@@ -1947,7 +1949,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
       // Left Panel
       <div
         ref={ReactDOM.Ref.domRef((Obj.magic(leftPanelRef): React.ref<Nullable.t<Dom.element>>))}
-        className={`overflow-scroll ${layout == Column ? "h-2/4" : "h-full!"} ${layout == Column
+        className={`overflow-scroll playground-scrollbar ${layout == Column ? "h-2/4" : "h-full!"} ${layout == Column
             ? "w-full"
             : "w-[50%]"}`}
       >
@@ -2003,7 +2005,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
         </div>
         <div
           ref={ReactDOM.Ref.domRef((Obj.magic(subPanelRef): React.ref<Nullable.t<Dom.element>>))}
-          className="overflow-auto"
+          className="overflow-auto playground-scrollbar"
         >
           <OutputPanel
             currentTab compilerDispatch compilerState editorCode keyMapState={(keyMap, setKeyMap)}

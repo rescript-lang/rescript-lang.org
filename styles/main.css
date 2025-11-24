@@ -294,6 +294,31 @@
     /* Chrome/Safari/Webkit */
   }
 
+  .playground-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-gray-70) var(--color-gray-100);
+    scrollbar-gutter: stable; /* Reserve only at the scrollbar edge to avoid padding shifts */
+  }
+
+  .playground-scrollbar::-webkit-scrollbar {
+    width: 0.65rem;
+    height: 0.65rem;
+  }
+
+  .playground-scrollbar::-webkit-scrollbar-track {
+    background: var(--color-gray-100);
+  }
+
+  .playground-scrollbar::-webkit-scrollbar-thumb {
+    background-color: var(--color-gray-70);
+    border-radius: 9999px;
+    border: 2px solid var(--color-gray-100);
+  }
+
+  .playground-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-gray-60);
+  }
+
   a > code {
     @apply text-fire;
   }
