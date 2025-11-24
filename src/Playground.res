@@ -1180,14 +1180,56 @@ module ControlPanel = {
     }
   }
 
+  let commandWithKeyboardShortcut = (commandName, ~key) => {
+    let userAgent = window.navigator.userAgent
+    if userAgent->String.includes("iPhone") || userAgent->String.includes("Android") {
+      commandName
+    } else if userAgent->String.includes("Mac") {
+      `${commandName} (⌘ + ${key})`
+    } else {
+      `${commandName} (Ctrl + ${key})`
+    }
+  }
+
   @react.component
   let make = (
     ~actionIndicatorKey: string,
     ~state: CompilerManagerHook.state,
     ~dispatch: CompilerManagerHook.action => unit,
-    ~editorCode: React.ref<string>,
+    ~editorRef: React.ref<option<CodeMirror.editorInstance>>,
     ~setCurrentTab: (tab => tab) => unit,
   ) => {
+    let format = () =>
+      editorRef.current->Option.forEach(editorInstance =>
+        dispatch(Format(CodeMirror.editorGetValue(editorInstance)))
+      )
+    React.useEffect(() => {
+      switch state {
+      | Ready(_)
+      | Compiling(_)
+      | Executing(_) =>
+        let onKeyDown = event => {
+          switch (
+            event->ReactEvent.Keyboard.metaKey || event->ReactEvent.Keyboard.ctrlKey,
+            event->ReactEvent.Keyboard.key,
+          ) {
+          | (true, "e") =>
+            event->ReactEvent.Keyboard.preventDefault
+            setCurrentTab(_ => Output)
+            dispatch(RunCode)
+          | (true, "s") =>
+            event->ReactEvent.Keyboard.preventDefault
+            format()
+          | _ => ()
+          }
+        }
+
+        WebAPI.Window.addEventListener(window, Keydown, onKeyDown)
+        Some(() => WebAPI.Window.removeEventListener(window, Keydown, onKeyDown))
+      | _ => None
+      }
+    }, (state, dispatch, setCurrentTab))
+
     let children = switch state {
     | Init => React.string("Initializing...")
     | SwitchingCompiler(_ready, _version) => React.string("Switching Compiler...")
@@ -1196,7 +1238,7 @@ module ControlPanel = {
     | Ready(_) =>
       let onFormatClick = evt => {
         ReactEvent.Mouse.preventDefault(evt)
-        dispatch(Format(editorCode.current))
+        format()
       }
 
       let autoRun = switch state {
@@ -1204,40 +1246,6 @@ module ControlPanel = {
       | Compiling({state: {autoRun: true}})
       | Ready({autoRun: true}) => true
       | _ => false
-      }
-
-      let runCode = () => {
-        setCurrentTab(_ => Output)
-        dispatch(RunCode)
-      }
-
-      let onKeyDown = event => {
-        switch (
-          event->ReactEvent.Keyboard.metaKey || event->ReactEvent.Keyboard.ctrlKey,
-          event->ReactEvent.Keyboard.key,
-        ) {
-        | (true, "e") =>
-          event->ReactEvent.Keyboard.preventDefault
-          runCode()
-        | _ => ()
-        }
-      }
-
-      React.useEffect(() => {
-        WebAPI.Window.addEventListener(window, Keydown, onKeyDown)
-        Some(() => WebAPI.Window.removeEventListener(window, Keydown, onKeyDown))
-      }, [])
-
-      let runButtonText = {
-        let userAgent = window.navigator.userAgent
-        let run = "Run"
-        if userAgent->String.includes("iPhone") || userAgent->String.includes("Android") {
-          run
-        } else if userAgent->String.includes("Mac") {
-          `${run} (⌘ + E)`
-        } else {
-          `${run} (Ctrl + E)`
-        }
       }
 
       <div className="flex flex-row gap-x-2" dataTestId="control-panel">
@@ -1253,8 +1261,17 @@ module ControlPanel = {
         >
           {React.string("Auto-run")}
         </ToggleButton>
-        <Button onClick={_ => runCode()}> {React.string(runButtonText)} </Button>
-        <Button onClick=onFormatClick> {React.string("Format")} </Button>
+        <Button
+          onClick={_ => {
+            setCurrentTab(_ => Output)
+            dispatch(RunCode)
+          }}
+        >
+          {React.string(commandWithKeyboardShortcut("Run", ~key="E"))}
+        </Button>
+        <Button onClick=onFormatClick>
+          {React.string(commandWithKeyboardShortcut("Format", ~key="S"))}
+        </Button>
         <ShareButton actionIndicatorKey />
       </div>
     | _ => React.null
@@ -1504,6 +1521,8 @@ let initialReContent = `Js.log("Hello Reason 3.6!");`
 @react.component
 let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   let (searchParams, _) = ReactRouter.useSearchParams()
+  let containerRef = React.useRef(Nullable.null)
+  let editorRef: React.ref<option<CodeMirror.editorInstance>> = React.useRef(None)
 
   let versions =
     versions
@@ -1575,7 +1594,10 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   // We don't count to infinity. This value is only required to trigger
   // rerenders for specific components (ActivityIndicator)
   let (actionCount, setActionCount) = React.useState(_ => 0)
-  let onAction = _ => setActionCount(prev => prev > 1000000 ? 0 : prev + 1)
+  let onAction = React.useCallback(
+    _ => setActionCount(prev => prev > 1000000 ? 0 : prev + 1),
+    [setActionCount],
+  )
   let (compilerState, compilerDispatch) = useCompilerManager(
     ~bundleBaseUrl,
     ~initialVersion?,
@@ -1585,69 +1607,169 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     ~initialLang,
     ~onAction,
     ~versions,
-    (),
   )
 
-  let (keyMap, setKeyMap) = React.useState(() => {
-    Dom.Storage2.localStorage
-    ->Dom.Storage2.getItem("vimMode")
-    ->Option.map(CodeMirror.KeyMap.fromString)
-    ->Option.getOr(CodeMirror.KeyMap.Default)
-  })
+  let (keyMap, setKeyMap) = React.useState(() => CodeMirror.KeyMap.Default)
+  let typingTimer = React.useRef(None)
+  let timeoutCompile = React.useRef(_ => ())
 
-  React.useEffect1(() => {
+  React.useEffect(() => {
+    setKeyMap(_ =>
+      Dom.Storage2.localStorage
+      ->Dom.Storage2.getItem("vimMode")
+      ->Option.map(CodeMirror.KeyMap.fromString)
+      ->Option.getOr(CodeMirror.KeyMap.Default)
+    )
+    None
+  }, [])
+
+  React.useEffect(() => {
+    switch containerRef.current {
+    | Value(parent) =>
+      let mode = switch compilerState {
+      | Ready({targetLang: Reason}) => "reason"
+      | Ready({targetLang: Res}) => "rescript"
+      | _ => "rescript"
+      }
+      let config: CodeMirror.editorConfig = {
+        parent,
+        initialValue: initialContent,
+        mode,
+        readOnly: false,
+        lineNumbers: true,
+        lineWrapping: false,
+        keyMap: CodeMirror.KeyMap.Default,
+        errors: [],
+        hoverHints: [],
+        onChange: {
+          value => {
+            switch typingTimer.current {
+            | None => ()
+            | Some(timer) => clearTimeout(timer)
+            }
+            let timer = setTimeout(~handler=() => {
+              timeoutCompile.current(value)
+              typingTimer.current = None
+            }, ~timeout=100)
+            typingTimer.current = Some(timer)
+          }
+        },
+      }
+      let editor = CodeMirror.createEditor(config)
+      editorRef.current = Some(editor)
+      Some(() => CodeMirror.editorDestroy(editor))
+    | Null | Undefined => None
+    }
+  }, [])
+
+  React.useEffect(() => {
     Dom.Storage2.localStorage->Dom.Storage2.setItem("vimMode", CodeMirror.KeyMap.toString(keyMap))
+    editorRef.current->Option.forEach(CodeMirror.editorSetKeyMap(_, keyMap))
     None
   }, [keyMap])
 
-  // The user can focus an error / warning on a specific line & column
-  // which is stored in this ref and triggered by hover / click states
-  // in the CodeMirror editor
-  let (_focusedRowCol, setFocusedRowCol) = React.useState(_ => None)
-
   let editorCode = React.useRef(initialContent)
 
-  /* In case the compiler did some kind of syntax conversion / reformatting,
-   we take any success results and set the editor code to the new formatted code */
-  switch compilerState {
-  | Ready({result: FinalResult.Nothing} as ready) =>
-    try {
-      compilerDispatch(CompileCode(ready.targetLang, editorCode.current))
-    } catch {
-    | err => Console.error(err)
-    }
-  | Ready({result: FinalResult.Conv(Api.ConversionResult.Success({code}))}) =>
-    editorCode.current = code
-  | _ => ()
-  }
-
   /*
-     The codemirror state and the compilerState are not dependent on eachother,
+     The codemirror state and the compilerState are not dependent on each other,
      so we need to sync a timeoutCompiler function with our compilerState to be
      able to do compilation on code changes.
 
      The typingTimer is a debounce mechanism to prevent compilation during editing
      and will be manipulated by the codemirror onChange function.
  */
-  let typingTimer = React.useRef(None)
-  let timeoutCompile = React.useRef(() => ())
-
   React.useEffect(() => {
-    timeoutCompile.current = () =>
+    timeoutCompile.current = code =>
       switch compilerState {
-      | Ready(ready) =>
-        try {
-          compilerDispatch(CompileCode(ready.targetLang, editorCode.current))
-        } catch {
-        | err => Console.error(err)
-        }
+      | Ready({targetLang}) => compilerDispatch(CompileCode(targetLang, code))
       | _ => ()
       }
 
+    switch (compilerState, editorRef.current) {
+    | (Ready({result: FinalResult.Nothing, targetLang}), Some(editorInstance)) =>
+      try {
+        compilerDispatch(CompileCode(targetLang, CodeMirror.editorGetValue(editorInstance)))
+      } catch {
+      | err => Console.error(err)
+      }
+    | (
+        Ready({result: FinalResult.Conv(Api.ConversionResult.Success({code}))}),
+        Some(editorInstance),
+      ) =>
+      CodeMirror.editorSetValue(editorInstance, code)
+    | (
+        Ready({
+          result: Comp(Fail(
+            SyntaxErr(locMsgs)
+            | TypecheckErr(locMsgs)
+            | OtherErr(locMsgs),
+          )),
+        }),
+        Some(editorInstance),
+      ) =>
+      CodeMirror.editorSetErrors(
+        editorInstance,
+        Array.map(locMsgs, locMsgToCmError(~kind=#Error, ...)),
+      )
+    | (Ready({result: Comp(Fail(WarningErr(warnings)))}), Some(editorInstance)) =>
+      CodeMirror.editorSetErrors(
+        editorInstance,
+        Array.map(warnings, warning => {
+          switch warning {
+          | Api.Warning.Warn({details})
+          | WarnErr({details}) =>
+            locMsgToCmError(~kind=#Warning, details)
+          }
+        }),
+      )
+    | (Ready({result: Comp(Success({warnings, typeHints}))}), Some(editorInstance)) =>
+      CodeMirror.editorSetErrors(
+        editorInstance,
+        Array.map(warnings, warning => {
+          switch warning {
+          | Api.Warning.Warn({details})
+          | WarnErr({details}) =>
+            locMsgToCmError(~kind=#Warning, details)
+          }
+        }),
+      )
+      CodeMirror.editorSetHoverHints(
+        editorInstance,
+        Array.map(typeHints, hint => {
+          switch hint {
+          | TypeDeclaration({start, end, hint})
+          | Binding({start, end, hint})
+          | CoreType({start, end, hint})
+          | Expression({start, end, hint}) => {
+              CodeMirror.HoverHint.start: {
+                line: start.line,
+                col: start.col,
+              },
+              end: {
+                line: end.line,
+                col: end.col,
+              },
+              hint,
+            }
+          }
+        }),
+      )
+    | (Ready({result: Conv(Fail({details}))}), Some(editorInstance)) =>
+      CodeMirror.editorSetErrors(
+        editorInstance,
+        Array.map(details, locMsgToCmError(~kind=#Error, ...)),
+      )
+    | _ => ()
+    }
     None
   }, (compilerState, compilerDispatch))
 
-  let (layout, setLayout) = React.useState(_ => window.innerWidth < breakingPoint ? Column : Row)
+  let (layout, setLayout) = React.useState(() => Row)
+
+  React.useEffect(() => {
+    setLayout(_ => window.innerWidth < breakingPoint ? Column : Row)
+    None
+  }, [])
 
   let isDragging = React.useRef(false)
 
@@ -1784,70 +1906,6 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     )
   }, [layout])
 
-  let cmErrors = switch compilerState {
-  | Ready({result}) =>
-    switch result {
-    | FinalResult.Comp(Fail(result)) =>
-      switch result {
-      | SyntaxErr(locMsgs)
-      | TypecheckErr(locMsgs)
-      | OtherErr(locMsgs) =>
-        Array.map(locMsgs, locMsgToCmError(~kind=#Error, ...))
-      | WarningErr(warnings) =>
-        Array.map(warnings, warning => {
-          switch warning {
-          | Api.Warning.Warn({details})
-          | WarnErr({details}) =>
-            locMsgToCmError(~kind=#Warning, details)
-          }
-        })
-      | WarningFlagErr(_) => []
-      }
-    | Comp(Success({warnings})) =>
-      Array.map(warnings, warning => {
-        switch warning {
-        | Api.Warning.Warn({details})
-        | WarnErr({details}) =>
-          locMsgToCmError(~kind=#Warning, details)
-        }
-      })
-    | Conv(Fail({details})) => Array.map(details, locMsgToCmError(~kind=#Error, ...))
-    | Comp(_)
-    | Conv(_)
-    | Nothing => []
-    }
-  | _ => []
-  }
-
-  let cmHoverHints = switch compilerState {
-  | Ready({result: FinalResult.Comp(Success({typeHints}))}) =>
-    Array.map(typeHints, hint => {
-      switch hint {
-      | TypeDeclaration({start, end, hint})
-      | Binding({start, end, hint})
-      | CoreType({start, end, hint})
-      | Expression({start, end, hint}) => {
-          CodeMirror.HoverHint.start: {
-            line: start.line,
-            col: start.col,
-          },
-          end: {
-            line: end.line,
-            col: end.col,
-          },
-          hint,
-        }
-      }
-    })
-  | _ => []
-  }
-
-  let mode = switch compilerState {
-  | Ready({targetLang: Reason}) => "reason"
-  | Ready({targetLang: Res}) => "rescript"
-  | _ => "rescript"
-  }
-
   let (currentTab, setCurrentTab) = React.useState(_ => JavaScript)
 
   let disabled = false
@@ -1939,8 +1997,8 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
       actionIndicatorKey={Int.toString(actionCount)}
       state=compilerState
       dispatch=compilerDispatch
-      editorCode
       setCurrentTab
+      editorRef
     />
     <div
       className={`flex ${layout == Column ? "flex-col" : "flex-row"}`}
@@ -1953,28 +2011,9 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
             ? "w-full"
             : "w-[50%]"}`}
       >
-        <CodeMirror
+        <div
           className="bg-gray-100 h-full"
-          mode
-          hoverHints=cmHoverHints
-          errors=cmErrors
-          value={editorCode.current}
-          onChange={value => {
-            editorCode.current = value
-
-            switch typingTimer.current {
-            | None => ()
-            | Some(timer) => clearTimeout(timer)
-            }
-            let timer = setTimeout(~handler=() => {
-              timeoutCompile.current()
-              typingTimer.current = None
-            }, ~timeout=100)
-            typingTimer.current = Some(timer)
-          }}
-          onMarkerFocus={rowCol => setFocusedRowCol(_prev => Some(rowCol))}
-          onMarkerFocusLeave={_ => setFocusedRowCol(_ => None)}
-          keyMap
+          ref={ReactDOM.Ref.domRef((Obj.magic(containerRef): React.ref<Nullable.t<Dom.element>>))}
         />
       </div>
       // Separator
