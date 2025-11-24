@@ -1996,7 +1996,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     <button key={Int.toString(i)} onClick className disabled> {title} </button>
   })
 
-  <main className={"flex flex-col bg-gray-100 text-gray-40 text-14 overflow-hidden mt-16"}>
+  <main className={"flex flex-col bg-gray-100 text-gray-40 text-14 mt-16"}>
     <ControlPanel
       actionIndicatorKey={Int.toString(actionCount)}
       state=compilerState
