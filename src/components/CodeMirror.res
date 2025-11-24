@@ -409,17 +409,17 @@ module CM6 = {
           class: "text-berry-dark-50",
         },
         {
-          tag: [
-            Tags.variableName,
-            Tags.definition(Tags.propertyName),
-            Tags.labelName,
-            Tags.definition(Tags.typeName),
-            Tags.special(Tags.angleBracket),
-          ],
+          tag: [Tags.variableName, Tags.labelName, Tags.special(Tags.angleBracket)],
           class: "text-gray-30",
         },
         {
-          tag: [Tags.bool, Tags.atom, Tags.typeName, Tags.special(Tags.tagName)],
+          tag: [
+            Tags.bool,
+            Tags.atom,
+            Tags.typeName,
+            Tags.special(Tags.tagName),
+            Tags.definition(Tags.typeName),
+          ],
           class: "text-orange-dark",
         },
         {
@@ -439,7 +439,12 @@ module CM6 = {
           class: "text-water-dark",
         },
         {
-          tag: [Tags.annotation, Tags.tagName],
+          tag: [
+            Tags.annotation,
+            Tags.tagName,
+            Tags.propertyName,
+            Tags.definition(Tags.propertyName),
+          ],
           class: "text-ocean-dark",
         },
         {
