@@ -154,8 +154,11 @@ module CM6 = {
     @send
     external dispatchEffects: (editorView, dispatchEffectsArg) => unit = "dispatch"
 
+    module ThemeOptions = {
+      type t = {dark?: bool}
+    }
     @module("@codemirror/view") @scope("EditorView") @val
-    external theme: dict<dict<string>> => extension = "theme"
+    external theme: (dict<dict<string>>, ~options: ThemeOptions.t=?) => extension = "theme"
 
     @module("@codemirror/view") @scope("EditorView") @val
     external lineWrapping: extension = "lineWrapping"
@@ -698,6 +701,7 @@ let createEditor = (config: editorConfig): editorInstance => {
         },
         ".cm-selectionMatch": dict{"backgroundColor": "#aafe661a"},
       },
+      ~options={dark: true},
     ),
     CM6.EditorView.drawSelection(),
     CM6.EditorView.dropCursor(),
