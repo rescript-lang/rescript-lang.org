@@ -713,10 +713,3 @@ let make = (~components=MarkdownComponents.default, ~children) => {
     </div>
   </>
 }
-
-module Layout = {
-  @react.component
-  let make = () => {
-    <Intro />
-  }
-}

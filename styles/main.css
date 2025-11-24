@@ -6,6 +6,7 @@
 
 @source '../src/**/*.{mjs,js,res}';
 @source '../pages/**/*.{mjs,js,mdx}';
+@source '../app/**/*.{mjs,js,mdx}';
 
 @theme {
   --radius-*: initial;
