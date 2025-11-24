@@ -473,7 +473,7 @@ let BadArgument = /* @__PURE__ */ Primitive_exceptions.create(
 
 function myTest() {
   throw {
-    RE_EXN_ID: BadArgument,
+    RE_EXN_ID: BadArgument, // `RE_EXN_ID` is an internal API and you should NEVER try and access it from JavaScript
     myMessage: "Oops!",
     Error: new Error(),
   };
@@ -493,8 +493,6 @@ try {
   console.log(e.Error.stack); // the stack trace
 }
 ```
-
-> Note: `RE_EXN_ID` is an internal field for bookkeeping purposes. Don't use it on the JS side. Use the other fields.
 
 The above `BadArgument` exception takes an inline record type. We special-case compile the exception as `{RE_EXN_ID, myMessage, Error}` for good ergonomics. If the exception instead took ordinary positional arguments, l like the standard library's `Invalid_argument("Oops!")`, which takes a single argument, the argument is compiled to JS as the field `_1` instead. A second positional argument would compile to `_2`, etc.
 

@@ -127,18 +127,6 @@ let lookup = (str: string): array<(string, string)> =>
     | None => []
     }
   | None =>
-    /* str */
-    /* ->Js.String2.toLowerCase */
-    /* ->letter */
-    /* ->Belt.Array.reduce([||], (acc, num) => { */
-    /* switch (getDescription(num)) { */
-    /* | Some(description) => */
-    /* Js.Array2.push(acc, (Belt.Int.toString(num), description)) */
-    /* ->ignore; */
-    /* acc; */
-    /* | None => acc */
-    /* } */
-    /* }); */
     let search = str->String.toLowerCase
     Array.filter(letterDescriptions, ((l, _)) => l === search)
   }
