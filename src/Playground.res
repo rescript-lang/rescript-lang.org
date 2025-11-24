@@ -1523,6 +1523,12 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   let (searchParams, _) = ReactRouter.useSearchParams()
   let containerRef = React.useRef(Nullable.null)
   let editorRef: React.ref<option<CodeMirror.editorInstance>> = React.useRef(None)
+  let (_, setScrollLock) = ScrollLockContext.useScrollLock()
+
+  React.useEffect(() => {
+    setScrollLock(_ => true)
+    None
+  }, [])
 
   let versions =
     versions
@@ -1990,9 +1996,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     <button key={Int.toString(i)} onClick className disabled> {title} </button>
   })
 
-  <main className={
-    "flex flex-col bg-gray-100 text-gray-40 text-14 overflow-scroll playground-scrollbar mt-16"
-  }>
+  <main className={"flex flex-col bg-gray-100 text-gray-40 text-14 overflow-hidden mt-16"}>
     <ControlPanel
       actionIndicatorKey={Int.toString(actionCount)}
       state=compilerState
@@ -2007,9 +2011,9 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
       // Left Panel
       <div
         ref={ReactDOM.Ref.domRef((Obj.magic(leftPanelRef): React.ref<Nullable.t<Dom.element>>))}
-        className={`overflow-scroll playground-scrollbar ${layout == Column ? "h-2/4" : "h-full!"} ${layout == Column
-            ? "w-full"
-            : "w-[50%]"}`}
+        className={`overflow-scroll playground-scrollbar ${layout == Column
+            ? "h-2/4"
+            : "h-full!"} ${layout == Column ? "w-full" : "w-[50%]"}`}
       >
         <div
           className="bg-gray-100 h-full"
