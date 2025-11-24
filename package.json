@@ -91,6 +91,7 @@
     "vfile-reporter": "^8.1.1",
     "vite": "^7.0.6",
     "vite-plugin-devtools-json": "^1.0.0",
-    "vite-plugin-env-compatible": "^2.0.1"
+    "vite-plugin-env-compatible": "^2.0.1",
+    "vite-plugin-page-reload": "^0.2.2"
   }
 }
