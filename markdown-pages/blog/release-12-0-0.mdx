@@ -2,7 +2,7 @@
 author: rescript-team
 date: "2025-11-25"
 previewImg: /blog/compiler_release_12_0.webp
-articleImg: /blog/compiler_release_12_0.webp
+articleImg: /blog/compiler_release_12_0_article.webp
 badge: release
 title: "Announcing ReScript 12"
 description: |
@@ -36,11 +36,10 @@ Earlier versions bundled these files inside the `rescript` package and exposed a
 ReScript 12 removes `@rescript/std`; install `rescript` and `@rescript/runtime` together to keep projects in sync.
 Projects that previously published custom runtime shims should revisit their setup to ensure the new package structure remains discoverable.
 
-### Updated bitwise operator surface
+### Bitwise operators
 
+ReScript now supports F#-style bitwise operators `&&&` (AND), `|||` (OR), `^^^` (XOR), and `~~~` (NOT) for both `int` and `bigint`.
 Legacy OCaml-style bitwise functions such as `land`, `lor`, and `lsl` are deprecated.
-They continue to work in v12 with warnings but will be removed in a future version.
-ReScript now prefers unified operator syntax: `&&&`, `|||`, `^^^`, and `~~~` cover AND, OR, XOR, and NOT for both `int` and `bigint`.
 
 ### API naming alignment
 
