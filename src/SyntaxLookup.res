@@ -352,8 +352,14 @@ let default = (props: props) => {
           <div className="mb-8 text-gray-60-tr text-14">
             {React.string("Enter some language construct you want to know more about.")}
           </div>
+          <p className="text-11 text-gray-70 mt-14 md:mt-4">
+            {React.string("You are viewing docs for an older version of ReScript.")}
+          </p>
+          <a href="https://rescript-lang.org/syntax-lookup" className="text-11 text-fire underline">
+            {React.string("Go to the latest version.")}
+          </a>
         </div>
-        <div className="w-full max-w-[34rem]">
+        <div className="w-full max-w-[34rem] mt-8">
           <SearchBox
             placeholder="Enter keywords or syntax..."
             completionValues={Array.map(completionItems, item => item.name)}

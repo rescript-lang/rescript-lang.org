@@ -63,7 +63,8 @@
     "test": "node scripts/test-examples.mjs && node scripts/test-hrefs.mjs",
     "reanalyze": "reanalyze -all-cmt .",
     "update-index": "node scripts/extract-tocs.mjs && node scripts/extract-syntax.mjs",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy",
+    "sync-bundles": "echo 'Skipping bundle sync for older docs...'"
   },
   "devDependencies": {
     "@mdx-js/react": "^2.3.0",
