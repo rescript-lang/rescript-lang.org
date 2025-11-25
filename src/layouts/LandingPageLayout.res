@@ -75,7 +75,7 @@ export {
         <div className="relative w-full pt-6 pb-8 sm:px-8 md:px-16 max-w-[1400px]">
           // Playground widget
           <div
-            className="relative z-2 flex flex-col md:flex-row bg-gray-90 mx-auto sm:rounded-lg max-w-[1280px]"
+            className="relative z-2 flex flex-col md:flex-row bg-gray-90 mx-auto sm:rounded-lg max-w-1280"
           >
             //Left Side (ReScript)
             <div className="md:w-1/2">
@@ -105,11 +105,12 @@ export {
 
           /* ---Link to Playground--- */
           <div>
-            // <ReactRouter.Link
-            //   to={(`/try?code=${encodeURIComponent(example.res)}}` :> ReactRouter.Link.to)}
-            //   className="captions md:px-0 border-b border-gray-40 hover:border-gray-60 text-gray-60">
-            //   {React.string("Edit this example in Playground")}
-            // </ReactRouter.Link>
+            <ReactRouter.Link.String
+              to={`/try?code=${encodeURIComponent(example.res)}}`}
+              className="captions md:px-0 border-b border-gray-40 hover:border-gray-60 text-gray-60"
+            >
+              {React.string("Edit this example in Playground")}
+            </ReactRouter.Link.String>
           </div>
           //
           <div className="hidden md:block">
@@ -236,7 +237,7 @@ module QuickInstall = {
     }
     @react.component
     let make = () => {
-      <div className="w-full max-w-[400px]">
+      <div className="w-full max-w-400">
         <h2 className="hl-3 lg:mt-12"> {React.string("Quick Install")} </h2>
         <div className="captions x text-gray-40 mb-2 mt-1">
           {React.string(
@@ -595,17 +596,15 @@ module CuratedResources = {
       descr: "Get started with ViteJS and ReScript.",
       href: "https://github.com/rescript-lang/create-rescript-app/blob/master/templates/rescript-template-vite/README.md",
     },
-    // {
-    //   imgSrc: "/nodejs_starter_logo.svg",
-    //   title: <>
-    //     <div> {React.string("ReScript & ")} </div>
-    //     <div className="text-gray-40" style={ReactDOM.Style.make(~color="#699D65", ())}>
-    //       {React.string("NodeJS")}
-    //     </div>
-    //   </>,
-    //   descr: "Get started with ReScript targeting the Node platform.",
-    //   href: "/",
-    // },
+    {
+      imgSrc: "/nodejs_starter_logo.svg",
+      title: <>
+        <div> {React.string("ReScript & ")} </div>
+        <div className="text-gray-40" style={{color: "#699D65"}}> {React.string("NodeJS")} </div>
+      </>,
+      descr: "Get started with ReScript targeting the Node platform.",
+      href: "/",
+    },
   ]
 
   @react.component
@@ -624,7 +623,7 @@ module CuratedResources = {
         <div className="body-lg text-center z-2 relative text-gray-40 max-w-48 mx-auto bg-gray-100">
           {React.string("Guides and Docs")}
         </div>
-        <hr className="bg-gray-80 h-px border-0 relative top-[-12px]" />
+        <hr className="bg-gray-80 h-px border-0 relative -top-3" />
       </div>
 
       //divider
@@ -653,7 +652,7 @@ module CuratedResources = {
           <div className="body-lg text-center z-2 relative text-gray-40 w-32 mx-auto bg-gray-100">
             {React.string("Templates")}
           </div>
-          <hr className="bg-gray-80 h-px border-0 relative top-[-12px]" />
+          <hr className="bg-gray-80 h-px border-0 relative -top-3" />
         </div>
         <div
           className="grid grid-flow-col grid-cols-2 lg:grid-cols-3 lg:grid-rows-1 gap-2 md:gap-4 lg:gap-8 max-w-1280 px-5 md:px-8 mx-auto"
@@ -689,6 +688,13 @@ let make = (~components=MarkdownComponents.default, ~children) => {
     <div className="mt-4 xs:mt-16">
       <div className="text-gray-80 text-18 z">
         <div className="absolute w-full top-16">
+          <Banner>
+            {React.string("ReScript 12 is out! Read the ")}
+            <ReactRouter.Link to=#"/blog/release-12-0-0" className="underline">
+              {React.string("announcement blog post")}
+            </ReactRouter.Link>
+            {React.string(".")}
+          </Banner>
           <div className="relative overflow-hidden pb-32">
             <main className="mt-10 min-w-320 lg:align-center w-full">
               <div className="">

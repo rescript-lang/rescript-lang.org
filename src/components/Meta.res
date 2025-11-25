@@ -12,10 +12,8 @@ let make = (
   ~ogSiteName=siteName,
   ~ogDescription=description,
   ~ogTitle=?,
-  ~ogImage=Env.root_url ++ "Art-3-rescript-launch.jpg",
+  ~ogImage="/Art-3-rescript-launch.jpg",
 ) => {
-  let ogImage = Env.root_url ++ ogImage
-
   let title = switch title {
   | None
   | Some("") => siteName

@@ -58,7 +58,7 @@ let default = () => {
       <link rel="stylesheet" href={utilsCss} />
       <link rel="icon" href="/favicon.ico" />
       <Links />
-      <Meta />
+      <ReactRouter.Meta />
       <meta
         name="viewport"
         content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, minimal-ui"
