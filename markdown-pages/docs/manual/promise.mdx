@@ -14,7 +14,7 @@ order: 21
 
 **Since 10.1**
 
-In ReScript, every JS promise is represented with the globally available `promise<'a>` type. For ReScript versions < 10.1, use its original alias `Js.Promise.t<'a>` instead.
+In ReScript, every JS promise is represented with the globally available `promise<'a>` type.
 
 Here's a usage example in a function signature:
 
@@ -36,8 +36,6 @@ A builtin module to create, chain and manipulate promises.
 
 ```res
 let p1 = Promise.make((resolve, reject) => {
-  // We use uncurried functions for resolve / reject
-  // for cleaner JS output without unintended curry calls
   resolve("hello world")
 })
 
@@ -110,72 +108,6 @@ async function logAsyncMessage(param) {
 }
 
 export { logAsyncMessage };
-```
-
-</CodeTab>
-
-## Js.Promise module (legacy - do not use)
-
-> **Note:** The `Js.Promise` bindings are following the outdated data-last convention from a few years ago. We kept those APIs for backwards compatibility. Either use [`Promise`](/docs/manual/api/stdlib/promise) or a third-party promise binding instead.
-
-ReScript has built-in support for [JavaScript promises](/docs/manual/api/stdlib/promise). The 3 functions you generally need are:
-
-- `Js.Promise.resolve: 'a => Js.Promise.t<'a>`
-- `Js.Promise.then_: ('a => Js.Promise.t<'b>, Js.Promise.t<'a>) => Js.Promise.t<'b>`
-- `Js.Promise.catch: (Js.Promise.error => Js.Promise.t<'a>, Js.Promise.t<'a>) => Js.Promise.t<'a>`
-
-Additionally, here's the type signature for creating a promise on the ReScript side:
-
-```res
-Js.Promise.make: (
-  (
-    ~resolve: (. 'a) => unit,
-    ~reject: (. exn) => unit
-  ) => unit
-) => Js.Promise.t<'a>
-```
-
-This type signature means that `make` takes a callback that takes 2 named arguments, `resolve` and `reject`. Both arguments are themselves [uncurried callbacks](./function.mdx#uncurried-function) (with a dot). `make` returns the created promise.
-
-### Usage
-
-Using the [pipe operator](./pipe.mdx):
-
-<CodeTab labels={["ReScript", "JS Output"]}>
-
-```res example
-let myPromise = Js.Promise.make((~resolve, ~reject) => resolve(. 2))
-
-myPromise->Js.Promise.then_(value => {
-  Console.log(value)
-  Js.Promise.resolve(value + 2)
-}, _)->Js.Promise.then_(value => {
-  Console.log(value)
-  Js.Promise.resolve(value + 3)
-}, _)->Js.Promise.catch(err => {
-  Console.log2("Failure!!", err)
-  Js.Promise.resolve(-2)
-}, _)
-```
-
-```js
-var myPromise = new Promise(function (resolve, reject) {
-  return resolve(2);
-});
-
-myPromise
-  .then(function (value) {
-    console.log(value);
-    return Promise.resolve((value + 2) | 0);
-  })
-  .then(function (value) {
-    console.log(value);
-    return Promise.resolve((value + 3) | 0);
-  })
-  .catch(function (err) {
-    console.log("Failure!!", err);
-    return Promise.resolve(-2);
-  });
 ```
 
 </CodeTab>

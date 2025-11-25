@@ -9,7 +9,7 @@ order: 2
 
 # Configuration
 
-`rescript.json` (or `bsconfig.json` in versions prior ReScript 11) is the single, mandatory build meta file needed for `rescript`.
+`rescript.json` is the single, mandatory build meta file needed for `rescript`.
 
 **The complete configuration schema is [here](./build-configuration-schema.mdx)**. We'll _non-exhaustively_ highlight the important parts in prose below.
 
@@ -173,18 +173,6 @@ Generating JS files with the `.res.js` suffix means that, on the JS side, you ca
 - It avoids clashes with a potential `TheFile.js` file in the same folder.
 - It avoids the need of using a build system loader for ReScript files. This + in-source build means integrating a ReScript project into your pure JS codebase **basically doesn't touch anything in your build pipeline at all**.
 
-## uncurried
-
-**Since 11.0**: While we strongly encourage all users to use uncurried mode, it is still possible to opt out. Just set `"uncurried"` to `false` to get the old behavior back:
-
-```json
-{
-  "uncurried": false
-}
-```
-
-We've also published a blog post on the [transition to the new uncurried mode by default](../../blog/uncurried-mode.mdx).
-
 ## warnings
 
 Selectively turn on/off certain warnings and/or turn them into hard errors. Example:
@@ -237,12 +225,6 @@ To enable genType, set `"gentypeconfig"` at top level in the project's `rescript
 - `"bundler"`: Use TS input's extension. This provides compatibility with projects using `"moduleResolution": "bundler"` and ES Modules. This also requires TS v5.0+ and `compilerOptions.allowImportingTsExtensions` to `true`
 
 `debug`: Enable debug logs.
-
-### Deprecated options
-
-`language`: the `language` setting is not required from compiler v10.1.
-
-`shims`: Required only if one needs to export certain basic ReScript data types to JS when one cannot modify the sources to add annotations (e.g. exporting ReScript lists), and if the types are not first-classed in genType.
 
 ## Environment Variables
 
