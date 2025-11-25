@@ -43,3 +43,5 @@ pages/docs/**/**/llms.mdx
 
 # prettier refuses to not mess up the installation table
 markdown-pages/docs/manual/installation.mdx
+
+.yarn/releases/yarn-4.12.0.cjs

@@ -8,8 +8,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: ".node-version"
-          cache: npm
-      - run: npm ci
-      - run: npm run res:build -- --warn-error +3+8+11+12+26+27+31+32+33+34+35+39+44+45+110
-      - run: npm test
-      - run: npm run ci:format
+          cache: yarn
+      - run: yarn
+      - run: yarn res:build --warn-error +3+8+11+12+26+27+31+32+33+34+35+39+44+45+110
+      - run: yarn test
+      - run: yarn ci:format
