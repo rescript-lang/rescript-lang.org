@@ -1949,7 +1949,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rescript/react@npm:^0.14.0-rc.1":
+"@rescript/react@npm:^0.14.0":
   version: 0.14.0
   resolution: "@rescript/react@npm:0.14.0"
   peerDependencies:
@@ -8119,7 +8119,7 @@ __metadata:
     "@react-router/dev": "npm:^7.8.1"
     "@react-router/node": "npm:^7.8.1"
     "@replit/codemirror-vim": "npm:^6.3.0"
-    "@rescript/react": "npm:^0.14.0-rc.1"
+    "@rescript/react": "npm:^0.14.0"
     "@rescript/webapi": "npm:0.1.0-experimental-29db5f4"
     "@tailwindcss/vite": "npm:^4.1.13"
     "@tsnobip/rescript-lezer": "npm:^0.6.0"
