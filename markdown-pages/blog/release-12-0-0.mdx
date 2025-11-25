@@ -2,6 +2,7 @@
 author: rescript-team
 date: "2025-11-25"
 previewImg: /blog/compiler_release_12_0.webp
+articleImg: /blog/compiler_release_12_0.webp
 badge: release
 title: "Announcing ReScript 12"
 description: |
@@ -38,7 +39,7 @@ Projects that previously published custom runtime shims should revisit their set
 ### Updated bitwise operator surface
 
 Legacy OCaml-style bitwise functions such as `land`, `lor`, and `lsl` are deprecated.
-They continue to work in v12 with warnings but will be removed in v13.
+They continue to work in v12 with warnings but will be removed in a future version.
 ReScript now prefers unified operator syntax: `&&&`, `|||`, `^^^`, and `~~~` cover AND, OR, XOR, and NOT for both `int` and `bigint`.
 
 ### API naming alignment
@@ -89,7 +90,7 @@ Projects attempting to compile with v3 will receive an explicit error, ensuring 
 The standard library continues its shift away from OCaml-specific aliases.
 Functions such as `succ`, `pred`, `abs_float`, `string_of_int`, `fst`, `raise`, and the `char` type are now deprecated.
 The recommended replacements are the JavaScript-aligned counterparts in `Int`, `Float`, `Bool`, `Pair`, and related modules, alongside the `throw` keyword for exceptions.
-References to the OCaml composition operators (`|>`, `@@`) now warn and will be removed in v13; the ReScript pipe operator `->` replaces them.
+References to the OCaml composition operators (`|>`, `@@`) now warn and will be removed in a future version; the ReScript pipe operator `->` replaces them.
 The migration tool highlights deprecated usage, and incremental cleanups are encouraged so your codebase is ready before the next major release.
 
 ## New features
