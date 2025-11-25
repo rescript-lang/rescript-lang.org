@@ -133,8 +133,6 @@ module Sidebar = {
         None
       }
 
-    let {pathname} = Next.Router.useRouter()
-
     <>
       <div
         id="sidebar"
@@ -152,16 +150,7 @@ module Sidebar = {
             className="md:hidden h-16 flex pt-2 right-4 absolute">
             <Icon.Close />
           </button>
-          <div className="mb-4">
-            <p className="text-11">
-              {React.string("You are viewing an older version of the documentation.")}
-            </p>
-            <a
-              className="text-11 text-fire-30 border-b border-fire"
-              href={`https://rescript-lang.org${pathname->Util.removeVersionFromPathname}`}>
-              {React.string("Go to the latest version.")}
-            </a>
-          </div>
+
           <div className="flex justify-between">
             <div className="w-3/4 md:w-full"> toplevelNav </div>
           </div>
@@ -252,6 +241,8 @@ let make = (
     setSidebarOpen(prev => !prev)
   }
 
+  let pathname = router.pathname
+
   React.useEffect(() => {
     open Next.Router.Events
     let {Next.Router.events: events} = router
@@ -338,12 +329,13 @@ let make = (
                   </div>
                 </div>
                 <p className="text-11 text-gray-70 mt-14 md:mt-4">
-                  <a href="">
-                    {React.string("You are viewing docs for an older version of Rescript.")}
-                    <br />
-                    {React.string("Go to latest version.")}
-                  </a>
+                  {React.string("You are viewing docs for an older version of ReScript.")}
                 </p>
+                <a
+                  href={`https://rescript-lang.org${pathname->Util.removeVersionFromPathname}`}
+                  className="text-11 text-fire underline">
+                  {React.string("Go to the latest version.")}
+                </a>
                 <div className={hasBreadcrumbs ? "mt-10" : "mt-6 md:-mt-4"}>
                   <MdxProvider components> children </MdxProvider>
                 </div>

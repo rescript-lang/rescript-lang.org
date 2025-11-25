@@ -84,7 +84,10 @@ let removeVersionFromPathname = (pathname: string) =>
   pathname
   ->Stdlib.String.split("/")
   ->Array.filter(s => {
-    let isVersion = s->Stdlib.String.includes("v") && s->Stdlib.String.includes(".")
+    let isVersion =
+      (s->Stdlib.String.includes("v") && s->Stdlib.String.includes(".")) ||
+      s == "latest" ||
+      s == "next"
     !isVersion
   })
   ->Array.join("/")
