@@ -373,8 +373,11 @@ module Hr = {
 module A = {
   @react.component
   let make = (~href, ~target=?, ~children) => {
-    // In case we are handling a relative URL, we will use the Next routing
-    if Util.Url.isAbsolute(href) {
+    // FIXME: can this be improved/generalized?
+    let shouldReloadDocument = href->String.startsWith("/llms")
+
+    // In case we are handling a relative URL, we will use React Router's link component.
+    if Util.Url.isAbsolute(href) || shouldReloadDocument {
       <a
         href
         rel="noopener noreferrer"
