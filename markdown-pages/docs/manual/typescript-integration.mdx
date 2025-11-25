@@ -264,6 +264,19 @@ export type inputFocusEvent = React.FocusEvent<HTMLInputElement>;
 
 More complete example shims can be found [here](https://github.com/rescript-lang/rescript-compiler/blob/master/jscomp/gentype_tests/typescript-react-example/src/shims/).
 
+## Deprecated features
+
+Features related to generating runtimes were deprecated since v11 and should no longer be used.
+
+- **`@genType("alias")`** and **`@genType.as("alias")`**
+- **`@genType.opaque`**
+- **`@genType.import`**
+- TypeScript Shims
+
+genType does not generate anything runtime-related, and in the near future it generates definition files (`*.d.ts`) directly (See the [roadmap](https://github.com/rescript-lang/rescript-compiler/issues/6196)).
+
+If any runtime code is required for interoperability with JavaScript / TypeScript projects, it can be written by hand, or request a relevant features (e.g. `@deriving`) to the compiler.
+
 ## Limitations
 
 - **in-source = true**. Currently only supports ReScript projects with [in-source generation](./build-configuration.mdx#package-specs) and file suffixes that end on `.js`, like `.res.js` or `.bs.js`.
