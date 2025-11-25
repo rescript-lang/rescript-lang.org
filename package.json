@@ -67,7 +67,7 @@
     "remark-frontmatter": "^5.0.0",
     "remark-gfm": "^4.0.1",
     "remark-validate-links": "^13.1.0",
-    "rescript": "^12.0.0-rc.5",
+    "rescript": "^12.0.0",
     "unified": "^11.0.5",
     "vfile-matter": "^5.0.0"
   },
