@@ -53,8 +53,7 @@ We’ve renamed JS errors to `JsError.t` to better distinguish them from the `Re
 ```res
 let foo = switch myUnsafeJsResult() {
 | exception Exn.Error(e) => Error(e->Error.message)
-  // ☝️ this will crash if `e` is undefined or null,
-  // or return undefined if `e` has no `message` property
+  // ☝️ this will crash if `e` is undefined or null
 | myRes => Ok(myRes)
 }
 ```
@@ -63,7 +62,8 @@ Additionally, the coexistence of `Result.Error` and the `Error` module caused co
 The new recommended pattern is:
 ```res
 let foo = switch myUnsafeJsResult() {
-| exception JsExn(e) => Error(e->JsExn.message->Option.getOr("[no message]"))
+| exception JsExn(e) => Error(e->JsExn.message))
+// ☝️ this is now safe even `e` is undefined or null
 | myRes => Ok(myRes)
 }
 ```
