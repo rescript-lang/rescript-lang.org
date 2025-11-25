@@ -695,10 +695,14 @@ let createEditor = (config: editorConfig): editorInstance => {
         ".cm-activeLine": dict{
           "backgroundColor": "rgba(255, 255, 255, 0.02)",
         },
-        ".cm-gutters": dict{"backgroundColor": "inherit"},
+        ".cm-gutters": dict{
+          "color": "#696b7d",
+          "backgroundColor": "transparent",
+          "backdropFilter": "blur(var(--blur-sm))",
+        },
         ".cm-gutters.cm-gutters-before": dict{"border": "none"},
-        ".cm-activeLineGutter": dict{
-          "color": "#cdcdd6",
+        ".cm-gutterElement.cm-activeLineGutter": dict{
+          "color": "#ffffff",
           "backgroundColor": "inherit",
         },
         "&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection": dict{

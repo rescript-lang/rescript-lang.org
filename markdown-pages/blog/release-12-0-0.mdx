@@ -197,10 +197,10 @@ Note that `Result.getOrThrow` now throws a JavaScript exception, so please updat
 
 We’ve renamed JS errors to `JsError.t` to better distinguish them from the `Result.Error` variant. Since JavaScript allows throwing anything (not only proper Error objects), the previous way of catching JS exceptions was unsafe:
 
-```res
+```rescript
 let foo = switch myUnsafeJsResult() {
 | exception Exn.Error(e) => Error(e->Error.message)
-  // ☝️ this will crash if `e` is undefined or null
+// ☝️ this will crash if `e` is undefined or null
 | myRes => Ok(myRes)
 }
 ```
@@ -209,17 +209,17 @@ Additionally, the coexistence of `Result.Error` and the `Error` module caused co
 
 The new recommended pattern is:
 
-```res
+```rescript
 let foo = switch myUnsafeJsResult() {
-| exception JsExn(e) => Error(e->JsExn.message))
-// ☝️ this is now safe even `e` is undefined or null
+| exception JsExn(e) => Error(e->JsExn.message)
+// ☝️ this is now safe even if `e` is undefined or null
 | myRes => Ok(myRes)
 }
 ```
 
 Utility helpers for working with JS errors are now in `JsError`, eg:
 
-```res
+```rescript
 JsError.throw(JsError.RangeError.make("the payload should be below 16"))
 ```
 

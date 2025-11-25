@@ -55,7 +55,7 @@ let authors = [
     username: "rescript-team",
     fullname: "ReScript Team",
     role: "Core Development",
-    imgUrl: "https://pbs.twimg.com/profile_images/1358354824660541440/YMKNWE1V_400x400.png",
+    imgUrl: "/brand/rescript-brandmark.svg",
     social: X("rescriptlang"),
   },
   {

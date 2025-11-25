@@ -12,8 +12,6 @@ let default = () => {
         "web development",
       ]
     />
-    <LandingPageLayout>
-      <> </>
-    </LandingPageLayout>
+    <LandingPageLayout />
   </>
 }

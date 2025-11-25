@@ -677,7 +677,7 @@ module CuratedResources = {
 }
 
 @react.component
-let make = (~components=MarkdownComponents.default, ~children) => {
+let make = (~components=MarkdownComponents.default) => {
   <>
     <Meta
       title="The ReScript Programming Language"
@@ -708,7 +708,6 @@ let make = (~components=MarkdownComponents.default, ~children) => {
                   <OtherSellingPoints />
                   <TrustedBy />
                   <CuratedResources />
-                  children
                 </div>
               </div>
             </main>
