@@ -15,6 +15,7 @@ This is the official documentation platform for the [ReScript](https://rescript-
 ## System Requirements
 
 - `node@22` or higher
+- `yarn` or `corepack`
 
 ## Setup
 
@@ -26,10 +27,10 @@ yarn
 yarn rescript
 
 # Build the index data. Only needed for initial clone (or content H2 changes)
-yarn run update-index
+yarn update-index
 
 # In a new tab
-yarn run dev
+yarn dev
 
 open localhost:3000
 ```
@@ -47,7 +48,7 @@ search terms we need for searching inside the `Belt` docs). You can create your
 index by running following command:
 
 ```sh
-yarn run update-index
+yarn update-index
 ```
 
 All the index data is stored in `index_data`, but will not be tracked by git.
