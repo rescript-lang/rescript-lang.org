@@ -50,6 +50,7 @@ The deprecated `*Exn` variants remain available in v12 to ease the transition, a
 Note that `Result.getOrThrow` now throws a JavaScript exception, so please update any exception-handling logic that relied on OCaml exception names. We also revamped the API around JS exceptions and errors.
 
 We’ve renamed JS errors to `JsError.t` to better distinguish them from the `Result.Error` variant. Since JavaScript allows throwing anything (not only proper Error objects), the previous way of catching JS exceptions was unsafe:
+
 ```res
 let foo = switch myUnsafeJsResult() {
 | exception Exn.Error(e) => Error(e->Error.message)
@@ -57,9 +58,11 @@ let foo = switch myUnsafeJsResult() {
 | myRes => Ok(myRes)
 }
 ```
+
 Additionally, the coexistence of `Result.Error` and the `Error` module caused confusion.
 
 The new recommended pattern is:
+
 ```res
 let foo = switch myUnsafeJsResult() {
 | exception JsExn(e) => Error(e->JsExn.message))
@@ -67,7 +70,9 @@ let foo = switch myUnsafeJsResult() {
 | myRes => Ok(myRes)
 }
 ```
+
 Utility helpers for working with JS errors are now in `JsError`, eg:
+
 ```res
 JsError.throw(JsError.RangeError.make("the payload should be below 16"))
 ```
