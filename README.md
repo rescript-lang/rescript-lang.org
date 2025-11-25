@@ -14,23 +14,22 @@ This is the official documentation platform for the [ReScript](https://rescript-
 
 ## System Requirements
 
-- `node@20` or higher
-- `npm@10` or higher
+- `node@22` or higher
 
 ## Setup
 
 ```sh
 # For first time clone / build (install dependencies)
-npm i
+yarn
 
 # Initial build
-npx rescript
+yarn rescript
 
 # Build the index data. Only needed for initial clone (or content H2 changes)
-npm run update-index
+yarn run update-index
 
 # In a new tab
-npm run dev
+yarn run dev
 
 open localhost:3000
 ```
@@ -38,7 +37,7 @@ open localhost:3000
 In case you want to run ReScript in watchmode:
 
 ```sh
-npx rescript -w
+yarn rescript -w
 ```
 
 ## Build Index Data
@@ -48,7 +47,7 @@ search terms we need for searching inside the `Belt` docs). You can create your
 index by running following command:
 
 ```sh
-npm run update-index
+yarn run update-index
 ```
 
 All the index data is stored in `index_data`, but will not be tracked by git.
@@ -120,7 +119,7 @@ node scripts/test-hrefs.mjs "pages/docs/manual/**/*.mdx"
 
 ### Continous Integration
 
-Always make sure to run `npm test` before pushing any content, otherwise our CI
+Always make sure to run `yarn test` before pushing any content, otherwise our CI
 might trigger a failure warning. Failing branches are very unlikely to be merged.
 
 ## Design / UX
