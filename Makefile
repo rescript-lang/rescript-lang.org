@@ -1,18 +1,18 @@
 SHELL = /bin/bash
 
 node_modules/.bin/rescript:
-	npm install
-	npm run update-index
+	yarn install
+	yarn update-index
 
 build: node_modules/.bin/rescript	
 	node_modules/.bin/rescript
-	npm run update-index
+	yarn update-index
 
 dev: build
-	npm run dev
+	yarn dev
 
 test: build
-	npm run test
+	yarn test
 
 clean:
 	rm -r node_modules lib

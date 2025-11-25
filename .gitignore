@@ -43,3 +43,11 @@ mdx-manifest.json
 
 app/**/*.mjs
 !_shims.mjs
+
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
