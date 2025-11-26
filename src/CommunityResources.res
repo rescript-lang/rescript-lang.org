@@ -10,19 +10,19 @@ let resources: array<link> = [
   {
     title: "YouTube Videos by @nojaf",
     description: "Talks, tutorials, and deep dives into the ReScript programming language — covering syntax, tooling, and real‑world use cases.",
-    image: "https://img.youtube.com/vi/xGN3d6hPSC0/maxresdefault.jpg",
+    image: "https://img.youtube.com/vi/xGN3d6hPSC0/maxresdefault.avif",
     url: "https://www.youtube.com/playlist?list=PLvw_J2kfZCX0u_27-uIoalSPR6TOMPmuD",
   },
   {
     title: "JavaScript schema library from the Future 🧬",
     description: "ReScript Schema - The fastest parser in the entire JavaScript ecosystem with a focus on small bundle...",
-    image: "https://media2.dev.to/dynamic/image/width=1000,height=500,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fn102ksd9w1xo5ysgxbur.png",
+    image: "https://media2.dev.to/dynamic/image/width=1000,height=500,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fn102ksd9w1xo5ysgxbur.avif",
     url: "https://dev.to/dzakh/javascript-schema-library-from-the-future-5420",
   },
   {
     title: "ReScript: A Better Typed JavaScript? (with Gabriel Nordeborn)",
     description: "ReScript is a strongly-typed programming language that compiles to JavaScript, and that puts it squarely in competition with TypeScript. So why would a JavaS...",
-    image: "https://i.ytimg.com/vi/yKl2fSdnw7w/maxresdefault.jpg",
+    image: "https://i.ytimg.com/vi/yKl2fSdnw7w/maxresdefault.avif",
     url: "https://www.youtube.com/watch?v=yKl2fSdnw7w",
   },
   {
@@ -34,55 +34,55 @@ let resources: array<link> = [
   {
     title: "An early look at @rescript/webapi",
     description: "Here's an early look at the new ReScript Web API bindings I've been working on.For more information, visit https://rescript-lang.github.io/experimental-rescr...",
-    image: "https://i.ytimg.com/vi/MC-dbM-GEuw/maxresdefault.jpg",
+    image: "https://i.ytimg.com/vi/MC-dbM-GEuw/maxresdefault.avif",
     url: "https://www.youtube.com/watch?v=MC-dbM-GEuw",
   },
   {
     title: "ReScript has come a long way, maybe it's time to switch from TypeScript?",
     description: "ReScript, the \"Fast, Simple, Fully Typed JavaScript from the Future\", has been around for awhile now....",
-    image: "https://media2.dev.to/dynamic/image/width=1000,height=500,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2F5jrqcbteob11bc7nvwz9.jpg",
+    image: "https://media2.dev.to/dynamic/image/width=1000,height=500,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2F5jrqcbteob11bc7nvwz9.avif",
     url: "https://dev.to/jderochervlk/rescript-has-come-a-long-way-maybe-its-time-to-switch-from-typescript-29he",
   },
   {
     title: "Create a Snake Game in ReScript",
     description: "Let's create a simple snake game in ReScript without using any framework.Full code here https://github.com/Exegetech/snake-rescript00:00 Getting started03:20...",
-    image: "https://i.ytimg.com/vi/f0gDMjuaCZo/maxresdefault.jpg",
+    image: "https://i.ytimg.com/vi/f0gDMjuaCZo/maxresdefault.avif",
     url: "https://www.youtube.com/watch?v=f0gDMjuaCZo",
   },
   {
     title: "ReScript and EdgeDB | Gel Blog",
     description: "Learn how together ReScript and EdgeDB achieve full type safety with less busy work. This post shows you the benefits and how you can get started with this pairing today!",
-    image: "https://www.geldata.com/_images/_blog/ab9848d310c94bb25e21f219ee74b7f24ca16baa.jpg",
+    image: "https://www.geldata.com/_images/_blog/ab9848d310c94bb25e21f219ee74b7f24ca16baa.avif",
     url: "https://www.geldata.com/blog/rescript-and-edgedb",
   },
   {
     title: "Building and consuming REST API in ReScript with rescript-rest and Fastify",
     description: "In the video, I show how you can use my ReScript Rest library to create an HTTP server with Fastify, generate OpenAPI for it, and then consume it on the clie...",
-    image: "https://i.ytimg.com/vi/37FY6a-zY20/maxresdefault.jpg?sqp=-oaymwEmCIAKENAF8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGEsgXShlMA8=&rs=AOn4CLBrz-ZJf8pcr_1_YZCfiMUwFKqj6A",
+    image: "https://i.ytimg.com/vi/37FY6a-zY20/maxresdefault.avif?sqp=-oaymwEmCIAKENAF8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGEsgXShlMA8=&rs=AOn4CLBrz-ZJf8pcr_1_YZCfiMUwFKqj6A",
     url: "https://www.youtube.com/watch?v=37FY6a-zY20",
   },
   {
     title: "When and Where to use ReScript? The ReScript happy path",
     description: "Are you ever hesitant about adopting ReScript, or have you tried it and been frustrated? I will give you a realistic guide for adopting ReScript in the project. (Hint: Review your project architecture first)",
-    image: "https://media2.dev.to/dynamic/image/width=1000,height=500,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fool4835vdaqw8vueb9b5.png",
+    image: "https://media2.dev.to/dynamic/image/width=1000,height=500,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fool4835vdaqw8vueb9b5.avif",
     url: "https://dev.to/cometkim/when-and-where-to-use-rescript-the-rescript-happy-path-47ni",
   },
   {
     title: "Getting rid of your dead code in ReScript",
     description: "Exploring ReScript's tools for eliminating dead code, keeping your repository clean and without...",
-    image: "https://media2.dev.to/dynamic/image/width=1000,height=500,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2F12lsasc06v1a355i6rfk.jpeg",
+    image: "https://media2.dev.to/dynamic/image/width=1000,height=500,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2F12lsasc06v1a355i6rfk.avif",
     url: "https://dev.to/zth/getting-rid-of-your-dead-code-in-rescript-3mba",
   },
   {
     title: "ReScript: digitalising a hospital with the JavaScript from the Future - MAXIM VALCKE",
     description: "",
-    image: "https://i.ytimg.com/vi/KDL-kRgilkQ/maxresdefault.jpg",
+    image: "https://i.ytimg.com/vi/KDL-kRgilkQ/maxresdefault.avif",
     url: "https://www.youtube.com/watch?v=KDL-kRgilkQ",
   },
   {
     title: "Rescript React Error boundary usage",
     description: "Hi  I was trying to capture the react errors. I had to write the bindings for the ErrorBoundary and...",
-    image: "https://dev-to-uploads.s3.amazonaws.com/uploads/articles/3otvb2z646ytpt1hl2rv.jpg",
+    image: "https://dev-to-uploads.s3.amazonaws.com/uploads/articles/3otvb2z646ytpt1hl2rv.avif",
     url: "https://dev.to/srikanthkyatham/rescript-react-error-boundary-usage-3b05",
   },
   {
@@ -94,7 +94,7 @@ let resources: array<link> = [
   {
     title: "ReScript for React Development",
     description: "Looking for ReScript for React Development information? In this article, I highlight the development & business advantages of ReScript.",
-    image: "https://scalac.io/wp-content/uploads/2021/08/ReScript-for-React-Development-FB.png",
+    image: "https://scalac.io/wp-content/uploads/2021/08/ReScript-for-React-Development-FB.avif",
     url: "https://scalac.io/blog/rescript-for-react-development/",
   },
   {
@@ -112,7 +112,7 @@ let resources: array<link> = [
   {
     title: "ReScript records, NextJS, undefined and getStaticProps",
     description: "NextJS, a pretty solid framework for building React based websites and web-applications, offers a nic...",
-    image: "https://dev-to-uploads.s3.amazonaws.com/uploads/articles/3otvb2z646ytpt1hl2rv.jpg",
+    image: "https://dev-to-uploads.s3.amazonaws.com/uploads/articles/3otvb2z646ytpt1hl2rv.avif",
     url: "https://dev.to/ryyppy/rescript-records-nextjs-undefined-and-getstaticprops-4890",
   },
 ]

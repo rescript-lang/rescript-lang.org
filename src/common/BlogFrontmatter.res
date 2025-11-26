@@ -34,21 +34,21 @@ let authors = [
     username: "ryyppy",
     fullname: "Patrick Ecker",
     role: "Documentation",
-    imgUrl: "https://pbs.twimg.com/profile_images/1388426717006544897/B_a7D4GF_400x400.jpg",
+    imgUrl: "https://pbs.twimg.com/profile_images/1388426717006544897/B_a7D4GF_400x400.avif",
     social: X("ryyppy"),
   },
   {
     username: "rickyvetter",
     fullname: "Ricky Vetter",
     role: "ReScript & React",
-    imgUrl: "https://pbs.twimg.com/profile_images/541111032207273984/DGsZmmfr_400x400.jpeg",
+    imgUrl: "https://pbs.twimg.com/profile_images/541111032207273984/DGsZmmfr_400x400.avif",
     social: X("rickyvetter"),
   },
   {
     username: "made_by_betty",
     fullname: "Bettina Steinbrecher",
     role: "Brand / UI / UX",
-    imgUrl: "https://pbs.twimg.com/profile_images/1366785342704136195/3IGyRhV1_400x400.jpg",
+    imgUrl: "https://pbs.twimg.com/profile_images/1366785342704136195/3IGyRhV1_400x400.avif",
     social: X("made_by_betty"),
   },
   {
@@ -62,7 +62,7 @@ let authors = [
     username: "rescript-association",
     fullname: "ReScript Association",
     role: "Foundation",
-    imgUrl: "https://pbs.twimg.com/profile_images/1045362176117100545/MioTQoTp_400x400.jpg",
+    imgUrl: "https://pbs.twimg.com/profile_images/1045362176117100545/MioTQoTp_400x400.avif",
     social: X("ReScriptAssoc"),
   },
   {
