@@ -2342,14 +2342,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsnobip/rescript-lezer@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@tsnobip/rescript-lezer@npm:0.6.0"
+"@tsnobip/rescript-lezer@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "@tsnobip/rescript-lezer@npm:0.7.0"
   dependencies:
     "@lezer/common": "npm:^1.2.3"
     "@lezer/highlight": "npm:^1.2.1"
     "@lezer/lr": "npm:^1.4.2"
-  checksum: 10c0/9e10dd6906bd7d18b3aa3004bdb78091861dae6fdd72f489557a9d2f4ed0a0fee63b80df9fe783ed0d1210a100799502e879893f2c58b87ceb3e4ba8e7060f45
+  checksum: 10c0/7f8b1e3c04bf0a2aa9306d3d4213a8e3b7b79901a85aa942b9658ce971ce95f71582d51b7ade40f7141df09b37beb428133819b6eaf559108d73e4138b583f45
   languageName: node
   linkType: hard
 
@@ -8122,7 +8122,7 @@ __metadata:
     "@rescript/react": "npm:^0.14.0"
     "@rescript/webapi": "npm:0.1.0-experimental-29db5f4"
     "@tailwindcss/vite": "npm:^4.1.13"
-    "@tsnobip/rescript-lezer": "npm:^0.6.0"
+    "@tsnobip/rescript-lezer": "npm:^0.7.0"
     "@types/react": "npm:^19.2.2"
     "@vitejs/plugin-react": "npm:^4.7.0"
     chokidar: "npm:^4.0.3"
