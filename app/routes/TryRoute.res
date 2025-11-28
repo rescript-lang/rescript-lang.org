@@ -55,7 +55,7 @@ let default = () => {
   let data = ReactRouter.useLoaderData()
   <>
     <Meta
-      title="ReScript Playground" description="Try ReScript in the browser" ogImage="/og/try.png"
+      title="ReScript Playground" description="Try ReScript in the browser" ogImage="/og/try.avif"
     />
 
     {switch data {

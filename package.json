@@ -22,7 +22,8 @@
     "generate-llms": "node scripts/generate_llms.mjs",
     "format": "prettier . --write --experimental-cli && rescript format",
     "ci:format": "prettier . --check --experimental-cli",
-    "preview": "yarn build && static-server build/client"
+    "preview": "yarn build && static-server build/client",
+    "convert-images": "auto-convert-images"
   },
   "dependencies": {
     "@babel/generator": "^7.24.7",
@@ -77,6 +78,7 @@
     "@tailwindcss/vite": "^4.1.13",
     "@types/react": "^19.2.2",
     "@vitejs/plugin-react": "^4.7.0",
+    "auto-image-converter": "^2.1.2",
     "chokidar": "^4.0.3",
     "dotenv": "^16.4.7",
     "jsdom": "^26.1.0",

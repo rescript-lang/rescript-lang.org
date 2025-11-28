@@ -123,8 +123,8 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
               to="/"
               className="block hover:cursor-pointer w-full h-full flex justify-center items-center font-bold"
             >
-              <img src="/nav-logo@2x.png" className="lg:hidden" />
-              <img src="/nav-logo-full@2x.png" className="hidden lg:block" />
+              <img src="/brand/rescript-brandmark.svg" className="lg:hidden" />
+              <img src="/brand/rescript-logo.svg" className="hidden lg:block" />
             </Link.String>
           </div>
 

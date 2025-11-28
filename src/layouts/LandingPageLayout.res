@@ -115,14 +115,14 @@ export {
           //
           <div className="hidden md:block">
             <img className="absolute z-0 left-0 top-0 -ml-10 -mt-6 h-96 w-96" src="/lp/grid.svg" />
-            <img className="absolute z-0 left-0 top-0 -ml-10 mt-10" src="/lp/illu_left.png" />
+            <img className="absolute z-0 left-0 top-0 -ml-10 mt-10" src="/lp/illu_left.avif" />
           </div>
           <div className="hidden md:block">
             <img
               className="absolute z-0 right-0 bottom-0 -mb-10 mt-24 -mr-10 h-96 w-96"
               src="/lp/grid.svg"
             />
-            <img className="absolute z-3 right-0 bottom-0 -mr-2 mb-10" src="/lp/illu_right.png" />
+            <img className="absolute z-3 right-0 bottom-0 -mr-2 mb-10" src="/lp/illu_right.avif" />
           </div>
         </div>
       </div>
@@ -363,7 +363,7 @@ module MainUSP = {
     <Item
       caption="Fast and simple"
       title={React.string("The fastest build system on the web")}
-      media={<video className="rounded-lg" controls={true} poster={"/lp/fast-build-preview.jpg"}>
+      media={<video className="rounded-lg" controls={true} poster={"/lp/fast-build-preview.avif"}>
         <source src="https://assets-17077.kxcdn.com/videos/fast-build-3.mp4" type_="video/mp4" />
       </video>}
       paragraph={<>
@@ -392,7 +392,7 @@ module MainUSP = {
       >
         {React.string("Type Better")}
       </span>}
-      media={<video className="rounded-lg" controls={true} poster={"/lp/type-better-preview.jpg"}>
+      media={<video className="rounded-lg" controls={true} poster={"/lp/type-better-preview.avif"}>
         <source src="https://assets-17077.kxcdn.com/videos/type-better-3.mp4" type_="video/mp4" />
       </video>}
       polygonDirection=Up
@@ -412,7 +412,7 @@ module MainUSP = {
         {React.string(" at your fingertips")}
       </>}
       media={<video
-        className="rounded-lg" controls={true} poster={"/lp/interop-example-preview.jpg"}
+        className="rounded-lg" controls={true} poster={"/lp/interop-example-preview.avif"}
       >
         <source
           src="https://assets-17077.kxcdn.com/videos/interop-example-2.mp4" type_="video/mp4"
@@ -447,7 +447,7 @@ module OtherSellingPoints = {
           <ImageGallery
             className="w-full "
             imgClassName="w-full h-[25.9rem] object-cover rounded-lg"
-            imgSrcs={["/lp/community-3.jpg", "/lp/community-2.jpg", "/lp/community-1.jpg"]}
+            imgSrcs={["/lp/community-3.avif", "/lp/community-2.avif", "/lp/community-1.avif"]}
             imgLoading=#lazy
           />
           <h3 className="hl-3 text-gray-20 mt-4 mb-2">
@@ -472,7 +472,8 @@ module OtherSellingPoints = {
         // Item 2
         <div className="col-span-4 lg:row-start-1">
           <img
-            className="w-full rounded-lg border-2 border-turtle-dark" src="/lp/editor-tooling-1.jpg"
+            className="w-full rounded-lg border-2 border-turtle-dark"
+            src="/lp/editor-tooling-1.avif"
           />
           <h3 className="hl-3 text-gray-20 mt-6 mb-2">
             {React.string(`Tooling that just works out of the box`)}
@@ -487,7 +488,7 @@ module OtherSellingPoints = {
         // Item 3
         <div className="col-span-4 lg:row-start-2">
           <img
-            className="w-full rounded-lg border-2 border-fire-30" src="/lp/easy-to-unadopt.jpg"
+            className="w-full rounded-lg border-2 border-fire-30" src="/lp/easy-to-unadopt.avif"
           />
           <h3 className="hl-3 text-gray-20 mt-6 mb-2">
             {React.string(`Easy to adopt — without any lock-in`)}
@@ -552,25 +553,25 @@ module CuratedResources = {
 
   let cards = [
     {
-      imgSrc: "/ic_manual@2x.png",
+      imgSrc: "/ic_manual@2x.avif",
       title: React.string("Language Manual"),
       descr: "Look up the basics: Reference for all our language features",
       href: "/docs/manual/introduction",
     },
     {
-      imgSrc: "/ic_rescript_react@2x.png",
+      imgSrc: "/ic_rescript_react@2x.avif",
       title: React.string("ReScript + React"),
       descr: "First Class bindings for ReactJS used by production users all over the world.",
       href: "/docs/react/introduction",
     },
     {
-      imgSrc: "/ic_manual@2x.png",
+      imgSrc: "/ic_manual@2x.avif",
       title: React.string("Gradually Adopt ReScript"),
       descr: "Learn how to start using ReScript in your current projects. Try before you buy!",
       href: "/docs/manual/installation#integrate-into-an-existing-js-project",
     },
     {
-      imgSrc: "/ic_gentype@2x.png",
+      imgSrc: "/ic_gentype@2x.avif",
       title: React.string("TypeScript Integration"),
       descr: "Learn how to integrate ReScript in your existing TypeScript codebases.",
       href: "/docs/manual/typescript-integration",
@@ -683,7 +684,7 @@ let make = (~components=MarkdownComponents.default) => {
       title="The ReScript Programming Language"
       description="Fast, Simple, Fully Typed JavaScript from the Future"
       keywords=["ReScript", "rescriptlang", "JavaScript", "JS", "TypeScript"]
-      ogImage="/Art-3-rescript-launch.jpg"
+      ogImage="/Art-3-rescript-launch.avif"
     />
     <div className="mt-4 xs:mt-16">
       <div className="text-gray-80 text-18 z">

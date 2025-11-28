@@ -1,6 +1,6 @@
 module Link = ReactRouter.Link
 
-let defaultPreviewImg = "/Art-3-rescript-launch.jpg"
+let defaultPreviewImg = "/Art-3-rescript-launch.avif"
 
 // For encoding reasons, see https://shripadk.github.io/react/docs/jsx-gotchas.html
 let middleDotSpacer = " " ++ (String.fromCharCode(183) ++ " ")
