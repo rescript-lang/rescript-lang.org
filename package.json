@@ -14,7 +14,7 @@
     "res:watch": "rescript watch",
     "res:clean": "rescript clean",
     "res:build": "rescript build",
-    "build": "rescript build && yarn build-scripts && update-index && react-router build",
+    "build": "rescript build && yarn build-scripts && yarn update-index && react-router build",
     "test": "node scripts/test-examples.mjs && node scripts/test-hrefs.mjs",
     "update-index": "yarn generate-llms && node _scripts/generate_feed.mjs > public/blog/feed.xml",
     "reanalyze": "rescript-tools reanalyze -all-cmt .",
