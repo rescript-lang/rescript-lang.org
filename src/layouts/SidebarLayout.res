@@ -180,7 +180,7 @@ module Sidebar = {
       >
         <aside
           id="sidebar-content"
-          className="h-full relative top-0 px-4 w-full block md:top-28 md:sticky border-r border-gray-20 overflow-y-auto pb-24 max-h-[calc(100vh-7rem)]"
+          className="h-full relative top-0 w-full block md:top-28 md:sticky border-r border-gray-20 overflow-y-auto pb-24 max-h-[calc(100vh-7rem)]"
         >
           <button
             onClick={evt => {
@@ -368,17 +368,18 @@ let make = (
   }
   <>
     <div
-      className={"w-full mt-16 min-w-320 grid lg:justify-center max-w-1280 md:mx-10 md:mt-32 grid-cols-[auto_minmax(0px,1fr)] " ++
+      className={"mt-16 min-w-320 grid max-w-1280 md:mt-32 grid-cols-[auto_minmax(0px,1fr)] justify-items-center md:mx-10 md:px-4 lg:px-24 " ++
       theme}
     >
       sidebar
-      <main className="px-4 pt-4 md:pl-16 lg:mr-8 mb-32 md:max-w-576 lg:max-w-740">
-        //width of the right content part
+      // md:max-w-576 lg:max-w-740
+      <main className="px-4 pt-4 md:pl-16 lg:mr-8 mb-32">
+        // width of the right content part
         <div
           id="mobile-navbar"
           className={`z-10 fixed border-b shadow ${isDocRoute(~route=pathname)
               ? "top-28"
-              : "top-16"} left-0 pl-4 bg-white w-full py-4 md:relative md:border-none md:shadow-none md:p-0 md:top-auto flex items-center transition duration-300 ease-out group-[.nav-disappear]:-translate-y-64 md:group-[.nav-disappear]:-translate-y-0 z-25`}
+              : "top-16"} left-0 pl-4 bg-white w-full py-4 md:relative md:border-none md:shadow-none md:p-0 md:top-auto flex items-center transition duration-300 ease-out group-[.nav-disappear]:-translate-y-64 md:group-[.nav-disappear]:translate-y-0 z-25`}
         >
           <MobileDrawerButton hidden=isNavOpen onClick={handleDrawerButtonClick} />
           <div
