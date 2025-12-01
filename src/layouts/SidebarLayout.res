@@ -366,43 +366,41 @@ let make = (
     }
   | None => React.null
   }
-
-  <div className={"mt-16 min-w-320 " ++ theme}>
-    <div className="w-full">
-      <div className="flex lg:justify-center">
-        <div className="flex w-full max-w-1280 md:mx-10 md:mt-16">
-          sidebar
-          <main className="px-4 w-full pt-4 md:ml-12 lg:mr-8 mb-32 md:max-w-576 lg:max-w-740">
-            //width of the right content part
-            <div
-              id="mobile-navbar"
-              className={`z-10 fixed border-b shadow ${isDocRoute(~route=pathname)
-                  ? "top-28"
-                  : "top-16"} left-0 pl-4 bg-white w-full py-4 md:relative md:border-none md:shadow-none md:p-0 md:top-auto flex items-center transition duration-300 ease-out group-[.nav-disappear]:-translate-y-64 md:group-[.nav-disappear]:-translate-y-0 z-25`}
-            >
-              <MobileDrawerButton hidden=isNavOpen onClick={handleDrawerButtonClick} />
-              <div
-                className="truncate overflow-x-auto touch-scroll flex items-center space-x-4 md:justify-between mr-4 w-full"
-              >
-                breadcrumbs
-                editLinkEl
-              </div>
-            </div>
-            <div
-              className={hasBreadcrumbs ? "mt-28 md:mt-10" : "mt-6 md:-mt-4"}
-              dataTestId="side-layout-children"
-            >
-              children
-            </div>
-            pagination
-          </main>
-          {switch rightSidebar {
-          | Some(ele) => ele
-          | None => React.null
-          }}
+  <>
+    <div
+      className={"w-full mt-16 min-w-320 grid lg:justify-center max-w-1280 md:mx-10 md:mt-16 grid-cols-[auto_minmax(0px,1fr)] " ++
+      theme}
+    >
+      sidebar
+      <main className="px-4 w-full pt-4 md:ml-12 lg:mr-8 mb-32 md:max-w-576 lg:max-w-740">
+        //width of the right content part
+        <div
+          id="mobile-navbar"
+          className={`z-10 fixed border-b shadow ${isDocRoute(~route=pathname)
+              ? "top-28"
+              : "top-16"} left-0 pl-4 bg-white w-full py-4 md:relative md:border-none md:shadow-none md:p-0 md:top-auto flex items-center transition duration-300 ease-out group-[.nav-disappear]:-translate-y-64 md:group-[.nav-disappear]:-translate-y-0 z-25`}
+        >
+          <MobileDrawerButton hidden=isNavOpen onClick={handleDrawerButtonClick} />
+          <div
+            className="truncate overflow-x-auto touch-scroll flex items-center space-x-4 md:justify-between mr-4 w-full"
+          >
+            breadcrumbs
+            editLinkEl
+          </div>
         </div>
-      </div>
+        <div
+          className={hasBreadcrumbs ? "mt-28 md:mt-10" : "mt-6 md:-mt-4"}
+          dataTestId="side-layout-children"
+        >
+          children
+        </div>
+        pagination
+      </main>
+      {switch rightSidebar {
+      | Some(ele) => ele
+      | None => React.null
+      }}
     </div>
     <Footer />
-  </div>
+  </>
 }
