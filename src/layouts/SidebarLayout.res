@@ -176,7 +176,7 @@ module Sidebar = {
         id="sidebar"
         className={(
           isOpen ? "fixed w-full left-0 h-full z-20 min-w-320" : "hidden "
-        ) ++ " md:block md:w-48 lg:w-1/5 h-auto md:relative overflow-y-visible pl-4 md:pl-0 pt-2 bg-white md:mt-0 min-w-48"}
+        ) ++ " md:block md:w-48 lg:w-1/5 h-auto md:relative overflow-y-visible px-4 md:pl-0 pt-2 bg-white md:mt-0 min-w-48"}
       >
         <aside
           id="sidebar-content"
