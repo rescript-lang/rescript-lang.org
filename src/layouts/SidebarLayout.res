@@ -373,7 +373,7 @@ let make = (
     >
       sidebar
       // md:max-w-576 lg:max-w-740
-      <main className="px-4 pt-4 md:pl-16 lg:mr-8 mb-32">
+      <main className="px-4 pt-4 md:pl-16 lg:mr-8 mb-32 max-w-svw">
         // width of the right content part
         <div
           id="mobile-navbar"
