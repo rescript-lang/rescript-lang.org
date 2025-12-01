@@ -18,14 +18,16 @@ module Error: {
 }
 
 module HoverHint: {
-  type position = {
-    line: int,
-    col: int,
+  module Position: {
+    type t = {
+      line: int,
+      col: int,
+    }
   }
 
   type t = {
-    start: position,
-    end: position,
+    start: Position.t,
+    end: Position.t,
     hint: string,
   }
 }
