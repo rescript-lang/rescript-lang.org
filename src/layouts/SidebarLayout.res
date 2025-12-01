@@ -368,11 +368,11 @@ let make = (
   }
   <>
     <div
-      className={"w-full mt-16 min-w-320 grid lg:justify-center max-w-1280 md:mx-10 md:mt-16 grid-cols-[auto_minmax(0px,1fr)] " ++
+      className={"w-full mt-16 min-w-320 grid lg:justify-center max-w-1280 md:mx-10 md:mt-32 grid-cols-[auto_minmax(0px,1fr)] " ++
       theme}
     >
       sidebar
-      <main className="px-4 w-full pt-4 md:ml-12 lg:mr-8 mb-32 md:max-w-576 lg:max-w-740">
+      <main className="px-4 pt-4 md:pl-16 lg:mr-8 mb-32 md:max-w-576 lg:max-w-740">
         //width of the right content part
         <div
           id="mobile-navbar"
