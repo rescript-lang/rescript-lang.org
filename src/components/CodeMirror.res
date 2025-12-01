@@ -46,14 +46,35 @@ module Error = {
 }
 
 module HoverHint = {
-  type position = {
-    line: int,
-    col: int,
+  module Position = {
+    type t = {
+      line: int,
+      col: int,
+    }
+    let compareLineCol = (pos1, pos2) => {
+      if pos1.line < pos2.line {
+        Ordering.less
+      } else if pos1.line > pos2.line {
+        Ordering.greater
+      } // same line, compare column
+      else if pos1.col < pos2.col {
+        Ordering.less
+      } else if pos1.col > pos2.col {
+        Ordering.greater
+      } else {
+        Ordering.equal
+      }
+    }
+    // let \"<" = (pos1, pos2) => compareLineCol(pos1, pos2) === Ordering.less
+    let \"<=" = (pos1, pos2) => compareLineCol(pos1, pos2) !== Ordering.greater
+    // let \">" = (pos1, pos2) => compareLineCol(pos1, pos2) === Ordering.greater
+    let \">=" = (pos1, pos2) => compareLineCol(pos1, pos2) !== Ordering.less
+    // let \"==" = (pos1, pos2) => compareLineCol(pos1, pos2) === Ordering.equal
   }
 
   type t = {
-    start: position,
-    end: position,
+    start: Position.t,
+    end: Position.t,
     hint: string,
   }
 }
@@ -178,9 +199,14 @@ module CM6 = {
     @module("@codemirror/view")
     external dropCursor: unit => extension = "dropCursor"
 
+    module HoverTooltipOptions = {
+      type t = {hoverTime?: int, hideOnChange?: bool}
+    }
     @module("@codemirror/view")
-    external hoverTooltip: ((editorView, int, Side.t) => null<Tooltip.t>) => extension =
-      "hoverTooltip"
+    external hoverTooltip: (
+      (editorView, int, Side.t) => null<Tooltip.t>,
+      ~options: HoverTooltipOptions.t=?,
+    ) => extension = "hoverTooltip"
 
     module UpdateListener = {
       type update
@@ -604,12 +630,25 @@ let createLinterExtension = (errors: array<Error.t>): CM6.extension => {
 }
 
 let createHoverHintExtension = (hoverHints: array<HoverHint.t>) => {
-  CM6.EditorView.hoverTooltip((view, pos, _side) => {
+  CM6.EditorView.hoverTooltip(~options={hoverTime: 100}, (view, pos, _side) => {
     let doc = view->CM6.EditorView.state->CM6.EditorState.doc
     let {number: line, from} = doc->CM6.Text.lineAt(pos)
     let col = pos - from
-    let found = hoverHints->Array.find(({start, end}) => {
-      line >= start.line && line <= end.line && col >= start.col && col <= end.col
+    let mousePos = {HoverHint.Position.line, col}
+
+    let found = Array.reduce(hoverHints, None, (prev, currentHint) => {
+      open! HoverHint.Position
+      let currentHintIncludesMousePos = currentHint.start <= mousePos && currentHint.end >= mousePos
+      switch prev {
+      | None if currentHintIncludesMousePos => Some(currentHint)
+      | Some(prevHint)
+        if currentHintIncludesMousePos &&
+        (currentHint.start >= prevHint.start &&
+        currentHint.end <= prevHint.end) =>
+        Some(currentHint)
+      | None
+      | Some(_) => prev
+      }
     })
     switch found {
     | Some({hint, start, end}) =>
