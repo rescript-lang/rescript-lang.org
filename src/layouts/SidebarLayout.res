@@ -180,7 +180,7 @@ module Sidebar = {
       >
         <aside
           id="sidebar-content"
-          className="h-full relative top-0 w-full block md:top-28 md:sticky border-r border-gray-20 overflow-y-auto pb-24 max-h-[calc(100vh-7rem)]"
+          className="h-full relative top-0 w-full block md:top-28 md:sticky border-r border-gray-20 overflow-y-auto pb-24 max-h-[calc(100vh-7rem)] px-4 md:px-0"
         >
           <button
             onClick={evt => {
