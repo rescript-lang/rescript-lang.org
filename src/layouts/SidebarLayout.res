@@ -176,7 +176,7 @@ module Sidebar = {
         id="sidebar"
         className={(
           isOpen ? "fixed w-full left-0 h-full z-20 min-w-320" : "hidden "
-        ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible pt-2 bg-white md:mt-0 min-w-48"}
+        ) ++ " md:block md:w-48 lg:w-1/5 h-auto md:relative overflow-y-visible pl-4 md:pl-0 pt-2 bg-white md:mt-0 min-w-48"}
       >
         <aside
           id="sidebar-content"
@@ -368,7 +368,7 @@ let make = (
   }
   <>
     <div
-      className={"mt-16 min-w-320 grid max-w-1280 md:mt-32 grid-cols-[auto_minmax(0px,1fr)] justify-items-center md:mx-10 md:px-4 lg:px-24 " ++
+      className={"mt-16 min-w-320 grid max-w-1280 md:mt-32 grid-cols-[auto_minmax(0px,1fr)] pr-4 lg:pr-24 m-auto " ++
       theme}
     >
       sidebar
