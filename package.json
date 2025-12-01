@@ -14,16 +14,17 @@
     "res:watch": "rescript watch",
     "res:clean": "rescript clean",
     "res:build": "rescript build",
-    "build": "rescript build && yarn update-index && react-router build",
+    "build": "rescript build && yarn build-scripts && update-index && react-router build",
     "test": "node scripts/test-examples.mjs && node scripts/test-hrefs.mjs",
     "reanalyze": "reanalyze -all-cmt .",
-    "update-index": "yarn generate-llms && node scripts/generate_feed.mjs > public/blog/feed.xml",
+    "update-index": "yarn generate-llms && node _scripts/generate_feed.mjs > public/blog/feed.xml",
     "sync-bundles": "node scripts/sync-playground-bundles.mjs",
     "generate-llms": "node scripts/generate_llms.mjs",
     "format": "prettier . --write --experimental-cli && rescript format",
     "ci:format": "prettier . --check --experimental-cli",
     "preview": "yarn build && static-server build/client",
-    "convert-images": "auto-convert-images"
+    "convert-images": "auto-convert-images",
+    "build-scripts": "yarn dlx tsdown scripts/*.jsx -d _scripts --no-clean --ext .mjs"
   },
   "dependencies": {
     "@babel/generator": "^7.24.7",
