@@ -178,9 +178,14 @@ module CM6 = {
     @module("@codemirror/view")
     external dropCursor: unit => extension = "dropCursor"
 
+    module HoverTooltipOptions = {
+      type t = {hoverTime?: int, hideOnChange?: bool}
+    }
     @module("@codemirror/view")
-    external hoverTooltip: ((editorView, int, Side.t) => null<Tooltip.t>) => extension =
-      "hoverTooltip"
+    external hoverTooltip: (
+      (editorView, int, Side.t) => null<Tooltip.t>,
+      ~options: HoverTooltipOptions.t=?,
+    ) => extension = "hoverTooltip"
 
     module UpdateListener = {
       type update
@@ -604,7 +609,7 @@ let createLinterExtension = (errors: array<Error.t>): CM6.extension => {
 }
 
 let createHoverHintExtension = (hoverHints: array<HoverHint.t>) => {
-  CM6.EditorView.hoverTooltip((view, pos, _side) => {
+  CM6.EditorView.hoverTooltip(~options={hoverTime: 100}, (view, pos, _side) => {
     let doc = view->CM6.EditorView.state->CM6.EditorState.doc
     let {number: line, from} = doc->CM6.Text.lineAt(pos)
     let col = pos - from
