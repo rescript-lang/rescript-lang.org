@@ -8151,15 +8151,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"reanalyze@npm:^2.16.0":
-  version: 2.23.0
-  resolution: "reanalyze@npm:2.23.0"
-  bin:
-    reanalyze: reanalyze.exe
-  checksum: 10c0/b8b05f47d17b21175f9bf1b650c1c3d2888ebcf82601f0260d499a40f8ea52b7db0ab9fa5e93fb12b440e0a25025b203bb4fe600bba69d4ae671b61775b1620f
-  languageName: node
-  linkType: hard
-
 "recma-build-jsx@npm:^1.0.0":
   version: 1.0.0
   resolution: "recma-build-jsx@npm:1.0.0"
@@ -8460,7 +8451,6 @@ __metadata:
     react-router: "npm:^7.9.4"
     react-router-dom: "npm:^7.9.4"
     react-router-mdx: "patch:react-router-mdx@npm%3A1.0.8#~/.yarn/patches/react-router-mdx-npm-1.0.8-d4402c3003.patch"
-    reanalyze: "npm:^2.16.0"
     rehype-slug: "npm:^6.0.0"
     rehype-stringify: "npm:^10.0.1"
     remark: "npm:^15.0.1"
