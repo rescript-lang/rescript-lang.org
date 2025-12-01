@@ -91,7 +91,7 @@ module Sidebar = {
             <Link.String
               to=m.href
               prefetch={#intent}
-              className={"truncate block py-1 md:h-auto tracking-tight text-gray-60 rounded-sm hover:bg-gray-20 hover:-ml-2 hover:py-1 hover:pl-2 " ++
+              className={"block py-1 md:h-auto tracking-tight text-gray-60 rounded-sm hover:bg-gray-20 hover:-ml-2 hover:py-1 hover:pl-2 " ++
               active}
             >
               {React.string(m.name)}
