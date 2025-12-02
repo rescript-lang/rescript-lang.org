@@ -1,0 +1,28 @@
+on: [push]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup yarn
+        uses: actions/setup-node@v3
+        with:
+          cache: 'yarn'
+          node-version: '24'
+      - name: Build
+        run: |
+          yarn install
+          yarn build
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy public --project-name=rescript-lang.org
+          # Optional: Enable this if you want to have GitHub Deployments triggered
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
