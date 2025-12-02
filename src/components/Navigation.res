@@ -121,7 +121,7 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
             <Link.String
               prefetch={#intent}
               to="/"
-              className="hover:cursor-pointer w-full h-full flex justify-center items-center font-bold"
+              className="block hover:cursor-pointer w-full h-full flex justify-center items-center font-bold"
             >
               <img src="/brand/rescript-brandmark.svg" className="lg:hidden" />
               <img src="/brand/rescript-logo.svg" className="hidden lg:block" />
@@ -213,7 +213,7 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
           id="mobile-overlay"
           className={(
             isOverlayOpen ? "flex" : "hidden"
-          ) ++ " top-16 flex-col fixed left-0 h-full w-full z-50 sm:w-9/12 bg-gray-100 sm:h-auto sm:flex sm:relative sm:flex-row sm:justify-between"}
+          ) ++ " sm:hidden top-16 flex-col fixed left-0 h-full w-full z-50 sm:w-9/12 bg-gray-100 sm:h-auto sm:flex sm:relative sm:flex-row sm:justify-between"}
         >
           <MobileNav route />
         </div>
