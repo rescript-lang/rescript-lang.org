@@ -19,7 +19,7 @@
     "update-index": "yarn generate-llms && node _scripts/generate_feed.mjs > public/blog/feed.xml",
     "reanalyze": "rescript-tools reanalyze -all-cmt .",
     "sync-bundles": "node scripts/sync-playground-bundles.mjs",
-    "generate-llms": "node scripts/generate_llms.mjs",
+    "generate-llms": "node _scripts/generate_llms.mjs",
     "format": "prettier . --write --experimental-cli && rescript format",
     "ci:format": "prettier . --check --experimental-cli",
     "preview": "yarn build && static-server build/client",
