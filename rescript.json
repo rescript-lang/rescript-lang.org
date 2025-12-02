@@ -2,6 +2,7 @@
   "name": "rescript-lang.org",
   "namespace": false,
   "jsx": {
+    "preserve": true,
     "version": 4
   },
   "dependencies": ["@rescript/react", "@rescript/webapi"],
@@ -27,7 +28,7 @@
   "warnings": {
     "error": "+8"
   },
-  "suffix": ".mjs",
+  "suffix": ".jsx",
   "gentypeconfig": {
     "language": "untyped",
     "shims": [],

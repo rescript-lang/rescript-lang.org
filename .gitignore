@@ -24,8 +24,11 @@ lib/
 .vercel
 
 src/**/*.mjs
+src/**/*.jsx
 scripts/gendocs.mjs
 scripts/generate_*.mjs
+scripts/gendocs.jsx
+scripts/generate_*.jsx
 
 # Generated via generate-llms script
 public/llms/manual/**/llm*.txt
@@ -42,7 +45,9 @@ build
 mdx-manifest.json
 
 app/**/*.mjs
+app/**/*.jsx
 !_shims.mjs
+!_shims.jsx
 
 # Yarn
 .yarn/*
@@ -51,3 +56,6 @@ app/**/*.mjs
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Scripts generated from rolldown to convert them from .jsx files to .mjs files
+_scripts
