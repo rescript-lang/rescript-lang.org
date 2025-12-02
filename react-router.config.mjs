@@ -11,7 +11,7 @@ const mdx = init({
   aliases: ["blog", "docs", "community", "syntax-lookup"],
 });
 
-const { stdlibPaths } = await import("./app/routes.mjs");
+const { stdlibPaths } = await import("./app/routes.jsx");
 
 export default {
   ssr: false,
