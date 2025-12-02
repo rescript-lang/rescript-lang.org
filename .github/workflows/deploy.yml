@@ -13,8 +13,8 @@ jobs:
       - name: Setup yarn
         uses: actions/setup-node@v3
         with:
-          cache: 'yarn'
-          node-version: '24'
+          cache: "yarn"
+          node-version: "24"
       - name: Build
         run: |
           yarn install
