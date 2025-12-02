@@ -2,11 +2,6 @@ name: Deploy to Cloudflare Pages
 on:
   push:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: "Choose an environment to deploy to: <dev|staging|prod>"
-        required: true
-        default: "dev"
 
 jobs:
   deploy:
