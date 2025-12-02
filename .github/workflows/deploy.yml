@@ -4,6 +4,11 @@ on:
     branches:
       - master
   workflow_dispatch:
+    inputs:
+      environment:
+        description: "Choose an environment to deploy to: <dev|staging|prod>"
+        required: true
+        default: "dev"
   pull_request:
     branches:
       - master
@@ -13,10 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy
     permissions:
-      actions: read
       contents: read
       deployments: write
-      pull-requests: write
     steps:
       - uses: actions/checkout@v4
       - name: Setup yarn
@@ -29,12 +32,10 @@ jobs:
       - name: Build
         run: yarn build
       - name: Deploy
-        uses: andykenward/github-actions-cloudflare-pages@v3.0.0
+        uses: cloudflare/wrangler-action@v3
         with:
-          cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          cloudflare-project-name: rescript-lang-org
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          github-environment: ${{ vars.CLOUDFLARE_PROJECT_NAME }} ${{ (github.ref == 'refs/heads/master' && 'production') || 'preview' }}
-          directory: ./out
-          working-directory: .
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy out --project-name=rescript-lang-org
+          # Optional: Enable this if you want to have GitHub Deployments triggered
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
