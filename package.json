@@ -23,8 +23,9 @@
     "dev:res": "rescript watch",
     "dev:vite": "react-router dev --host",
     "dev:wrangler": "yarn wrangler pages dev build/client",
-    "dev": "yarn dev:res & yarn dev:vite & yarn dev:wrangler",
+    "dev": "yarn prepare && yarn dev:res & yarn dev:vite & yarn dev:wrangler",
     "format": "prettier . --write --experimental-cli && rescript format",
+    "prepare": "yarn build:res && yarn build:scripts && yarn build:update-index",
     "preview": "yarn build && static-server build/client",
     "reanalyze": "rescript-tools reanalyze -all-cmt .",
     "test": "node scripts/test-examples.mjs && node scripts/test-hrefs.mjs"
