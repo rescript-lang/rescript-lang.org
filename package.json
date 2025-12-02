@@ -10,21 +10,24 @@
   "packageManager": "yarn@4.12.0",
   "type": "module",
   "scripts": {
-    "dev": "react-router dev --host",
-    "res:watch": "rescript watch",
-    "res:clean": "rescript clean",
-    "res:build": "rescript build",
-    "build": "rescript build && yarn build-scripts && yarn update-index && react-router build",
-    "test": "node scripts/test-examples.mjs && node scripts/test-hrefs.mjs",
-    "update-index": "yarn generate-llms && node _scripts/generate_feed.mjs > public/blog/feed.xml",
-    "reanalyze": "rescript-tools reanalyze -all-cmt .",
-    "sync-bundles": "node scripts/sync-playground-bundles.mjs",
-    "generate-llms": "node _scripts/generate_llms.mjs",
-    "format": "prettier . --write --experimental-cli && rescript format",
+    "build:generate-llms": "node _scripts/generate_llms.mjs",
+    "build:res": "rescript build",
+    "build:scripts": "yarn dlx tsdown scripts/*.jsx -d _scripts --no-clean --ext .mjs",
+    "build:sync-bundles": "node scripts/sync-playground-bundles.mjs",
+    "build:update-index": "yarn build:generate-llms && node _scripts/generate_feed.mjs > public/blog/feed.xml",
+    "build:vite": "react-router build",
+    "build": "yarn build:res && yarn build:scripts && yarn build:update-index && yarn build:vite",
     "ci:format": "prettier . --check --experimental-cli",
-    "preview": "yarn build && static-server build/client",
+    "clean:res": "rescript clean",
     "convert-images": "auto-convert-images",
-    "build-scripts": "yarn dlx tsdown scripts/*.jsx -d _scripts --no-clean --ext .mjs"
+    "dev:res": "rescript watch",
+    "dev:vite": "react-router dev --host",
+    "dev:wrangler": "yarn wrangler pages dev build/client",
+    "dev": "yarn dev:res & yarn dev:vite & yarn dev:wrangler",
+    "format": "prettier . --write --experimental-cli && rescript format",
+    "preview": "yarn build && static-server build/client",
+    "reanalyze": "rescript-tools reanalyze -all-cmt .",
+    "test": "node scripts/test-examples.mjs && node scripts/test-hrefs.mjs"
   },
   "dependencies": {
     "@babel/generator": "^7.24.7",
@@ -94,6 +97,6 @@
     "vite-plugin-devtools-json": "^1.0.0",
     "vite-plugin-env-compatible": "^2.0.1",
     "vite-plugin-page-reload": "^0.2.2",
-    "wrangler": "^4.52.0"
+    "wrangler": "^4.51.0"
   }
 }
