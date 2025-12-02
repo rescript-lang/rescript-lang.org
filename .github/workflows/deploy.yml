@@ -1,5 +1,5 @@
 name: Deploy to Cloudflare Pages
-on: 
+on:
   push:
   workflow_dispatch:
     inputs:
@@ -37,5 +37,3 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           github-environment: ${{ vars.CLOUDFLARE_PROJECT_NAME }} ${{ (github.ref == 'refs/heads/master' && '(production)') || '(preview)' }}
           directory: ./out
-
-
