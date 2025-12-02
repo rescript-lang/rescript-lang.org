@@ -32,6 +32,7 @@ jobs:
       - name: Build
         run: yarn build
       - name: Deploy
+        id: deploy
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -39,3 +40,15 @@ jobs:
           command: pages deploy out --project-name=rescript-lang-org
           # Optional: Enable this if you want to have GitHub Deployments triggered
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+      - name: Comment PR with deployment link
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          recreate: true
+          message: |
+            ## Deployed ${{ steps.deploy.outputs.pages-deployment-id }} to Cloudflare Pages ${{ steps.deploy.outputs.pages-environment }}
+            Deployment Status: ${{ steps.deploy.conclusion }}
+            Deployment Url: ${{ steps.deploy.outputs.deployment-url }}
+            Deployment Alias Url: ${{ steps.deploy.outputs.pages-deployment-alias-url }}
+            ${{ steps.deploy.outputs.command-output }}
+            ${{ steps.deploy.outputs.command-stderr }}
