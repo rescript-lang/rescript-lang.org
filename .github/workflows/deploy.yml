@@ -1,5 +1,12 @@
 name: Deploy to Cloudflare Pages
-on: [push]
+on: 
+  push:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Choose an environment to deploy to: <dev|staging|prod>"
+        required: true
+        default: "dev"
 
 jobs:
   deploy:
@@ -24,6 +31,6 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy public --project-name=rescript-lang-org
+          command: pages deploy build/client --project-name=rescript-lang-org
           # Optional: Enable this if you want to have GitHub Deployments triggered
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
