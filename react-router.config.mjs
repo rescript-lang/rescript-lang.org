@@ -23,4 +23,7 @@ export default {
       ...stdlibPaths,
     ];
   },
+  buildEnd: async () => {
+    fs.cpSync("./build/client", "./out", { recursive: true });
+  },
 };
