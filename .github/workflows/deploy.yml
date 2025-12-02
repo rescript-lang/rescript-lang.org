@@ -13,8 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy
     permissions:
+      actions: read
       contents: read
       deployments: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
       - name: Setup yarn
@@ -27,10 +29,13 @@ jobs:
           yarn install
           yarn build
       - name: Deploy
-        uses: cloudflare/wrangler-action@v3
+        uses: andykenward/github-actions-cloudflare-pages@v3.0.0
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy out --project-name=rescript-lang-org
-          # Optional: Enable this if you want to have GitHub Deployments triggered
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          cloudflare-project-name: rescript-lang-org
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-environment: ${{ vars.CLOUDFLARE_PROJECT_NAME }} ${{ (github.ref == 'refs/heads/master' && '(Production)') || '(Preview)' }}
+          directory: ./out
+
+
