@@ -1,0 +1,55 @@
+name: Deploy to Cloudflare Pages
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Choose an environment to deploy to: <dev|staging|prod>"
+        required: true
+        default: "dev"
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy
+    permissions:
+      contents: read
+      deployments: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup yarn
+        uses: actions/setup-node@v3
+        with:
+          cache: "yarn"
+          node-version: "24"
+      - name: Install dependencies
+        run: yarn install
+      - name: Build
+        run: yarn build
+      - name: Deploy
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy out --project-name=rescript-lang-org
+          # Optional: Enable this if you want to have GitHub Deployments triggered
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+      - name: Comment PR with deployment link
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          recreate: true
+          message: |
+            ## Deployed ${{ steps.deploy.outputs.pages-deployment-id }} to Cloudflare Pages ${{ steps.deploy.outputs.pages-environment }}
+            Deployment Status: ${{ steps.deploy.conclusion }}
+            Deployment Url: ${{ steps.deploy.outputs.deployment-url }}
+            Deployment Alias Url: ${{ steps.deploy.outputs.pages-deployment-alias-url }}
+            ${{ steps.deploy.outputs.command-output }}
+            ${{ steps.deploy.outputs.command-stderr }}
