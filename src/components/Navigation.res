@@ -110,7 +110,7 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
   <>
     <header
       id="header"
-      className={fixedNavClassName ++ " items-center z-50 w-full transition duration-300 ease-out group-[.nav-disappear]:-translate-y-16 md:group-[.nav-disappear]:-translate-y-0 min-w-[20rem]"}
+      className={fixedNavClassName ++ " items-center z-50 w-full transition duration-300 ease-out group-[.nav-disappear]:-translate-y-16 md:group-[.nav-disappear]:translate-y-0 min-w-[20rem]"}
     >
       <nav
         className="px-4 flex xs:justify-center bg-gray-90 shadow h-16 text-white-80 text-14"
@@ -121,7 +121,7 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
             <Link.String
               prefetch={#intent}
               to="/"
-              className="block hover:cursor-pointer w-full h-full flex justify-center items-center font-bold"
+              className="hover:cursor-pointer w-full h-full flex justify-center items-center font-bold"
             >
               <img src="/brand/rescript-brandmark.svg" className="lg:hidden" />
               <img src="/brand/rescript-logo.svg" className="hidden lg:block" />
@@ -213,7 +213,7 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
           id="mobile-overlay"
           className={(
             isOverlayOpen ? "flex" : "hidden"
-          ) ++ " top-16 sm:hidden flex-col fixed top-0 left-0 h-full w-full z-50 sm:w-9/12 bg-gray-100 sm:h-auto sm:flex sm:relative sm:flex-row sm:justify-between"}
+          ) ++ " top-16 flex-col fixed left-0 h-full w-full z-50 sm:w-9/12 bg-gray-100 sm:h-auto sm:flex sm:relative sm:flex-row sm:justify-between"}
         >
           <MobileNav route />
         </div>
@@ -222,9 +222,11 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
       {isDocRoute(~route)
         ? <nav
             id="doc-navbar"
-            className="bg-white z-50 px-4 w-full h-12 shadow text-gray-60 text-12 md:text-14 transition duration-300 ease-out group-[.nav-disappear]:-translate-y-32 md:group-[.nav-disappear]:translate-y-0"
+            className="bg-white z-50 px-4 w-full h-12 shadow text-gray-60 text-11 sm:text-12 md:text-14 transition duration-300 ease-out group-[.nav-disappear]:-translate-y-32 md:group-[.nav-disappear]:translate-y-0"
           >
-            <div className="flex gap-6 lg:gap-10 items-center h-full w-full max-w-1280 m-auto">
+            <div
+              className="overflow-x-scroll flex gap-4 md:gap-6 lg:gap-10 items-center h-full w-full max-w-1280 m-auto"
+            >
               <Link
                 prefetch=#intent
                 to=#"/docs/manual/introduction"
