@@ -10,6 +10,6 @@ jobs:
           node-version-file: ".node-version"
           cache: yarn
       - run: yarn
-      - run: yarn res:build --warn-error +3+8+11+12+26+27+31+32+33+34+35+39+44+45+110
+      - run: yarn build:res --warn-error +3+8+11+12+26+27+31+32+33+34+35+39+44+45+110
       - run: yarn test
       - run: yarn ci:format

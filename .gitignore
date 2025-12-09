@@ -57,5 +57,11 @@ app/**/*.jsx
 !.yarn/sdks
 !.yarn/versions
 
+# wrangler
+.wrangler
+
 # Scripts generated from rolldown to convert them from .jsx files to .mjs files
 _scripts
+
+# Local env files
+.env
