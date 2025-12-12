@@ -151,23 +151,64 @@ module Sidebar = {
       }
     }
 
+    // the height of the navbars above is fluid across pages, and it's easy to get it wrong
+    // so we calculate it dynamically here
+    let sidebarTopOffset = isOpen
+      ? {
+          let mobileNavbarHeight =
+            Nullable.make(document->WebAPI.Document.getElementById("mobile-navbar"))
+            ->Nullable.map(el => el.clientHeight)
+            ->Nullable.getOr(0)
+          let docNavbarHeight =
+            Nullable.make(document->WebAPI.Document.getElementById("doc-navbar"))
+            ->Nullable.map(el => el.clientHeight)
+            ->Nullable.getOr(0)
+          let mainNavbarHeight =
+            Nullable.make(document->WebAPI.Document.getElementById("main-navbar"))
+            ->Nullable.map(el => el.clientHeight)
+            ->Nullable.getOr(0)
+
+          mobileNavbarHeight + docNavbarHeight + mainNavbarHeight
+        }
+      : 0
+
+    // If a user changes screen size we want to close the sidebar
+    React.useEffect(() => {
+      let handleResize = () => {
+        if isOpen {
+          toggle()
+        }
+      }
+
+      addEventListener(Resize, handleResize)
+      Some(() => removeEventListener(Resize, handleResize))
+    }, [isOpen])
+
     <>
       <div
         id="sidebar"
+        style={{
+          top: isOpen ? `${sidebarTopOffset->Int.toString}px` : "0px",
+        }}
         className={(
-          isOpen ? "fixed left-0 h-full z-20 " : "hidden"
-        ) ++ " min-w-3xs max-w-3xs lg:max-w-xs md:block h-auto md:relative overflow-y-visible px-4 md:pl-0 pt-2 bg-white md:mt-0"}
+          isOpen ? "fixed left-0 h-full w-full" : "hidden"
+        ) ++ " z-20  min-w-3xs md:max-w-3xs lg:max-w-xs md:block h-auto md:relative overflow-y-visible px-4 md:pl-0 pt-2 bg-white md:mt-0 border-r border-gray-20"}
       >
         <aside
           id="sidebar-content"
-          className="h-full relative top-0 block md:top-28 md:sticky border-r border-gray-20 overflow-y-auto pb-24 max-h-[calc(100vh-7rem)] px-4"
+          className="h-full relative top-0 block md:top-28 md:sticky overflow-y-auto pb-24 max-h-[calc(100vh-7rem)] px-4"
         >
           <button
+            style={{
+              // This is needed to make sure it's clickable
+              zIndex: "20",
+            }}
             onClick={evt => {
               ReactEvent.Mouse.preventDefault(evt)
+              Console.debug("Sidebar toggle")
               toggle()
             }}
-            className="md:hidden h-16 flex pt-2 right-4 absolute"
+            className="md:hidden h-16 flex pt-2 right-4 absolute cursor-pointer"
           >
             <Icon.Close />
           </button>
@@ -297,6 +338,7 @@ let make = (
 
   let handleDrawerButtonClick = React.useCallback(evt => {
     ReactEvent.Mouse.preventDefault(evt)
+    Console.debug("drawer button clicked")
     toggleSidebar()
   }, [])
 
@@ -352,7 +394,7 @@ let make = (
       theme}
     >
       sidebar
-      <main className="px-4 md:px-0 md:pt-4 lg:px-4 lg:pl-16 lg:mr-8 mb-32 max-w-svw">
+      <main className="px-4 md:pt-4 lg:px-4 lg:pl-16 lg:mr-8 mb-32 max-w-svw">
         // width of the right content part
         <div
           id="mobile-navbar"
