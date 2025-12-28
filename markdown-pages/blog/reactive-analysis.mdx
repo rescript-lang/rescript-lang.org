@@ -1,0 +1,113 @@
+---
+author: cristiano
+date: "2025-01-02"
+title: "Real-Time Analysis is Coming to ReScript"
+badge: roadmap
+description: |
+  ReScript's static analyzer is going reactive. Dead code detection that updates instantly as you edit, powered by novel reactive combinators.
+---
+
+## Introduction
+
+Imagine editing a ReScript file and seeing dead code warnings appear and disappear _instantly_ as you type. No waiting for a build. No running a separate analysis command. Just immediate, continuous feedback about which parts of your code are actually used.
+
+This is what we're bringing to ReScript.
+
+The static analyzer that powers dead code detection is being rebuilt on a **reactive foundation**. When you add a reference to a function, the "unused" warning vanishes immediately. When you remove the last use of a module, the dead code warning appears right away. The analysis stays in sync with your code, updating in real time.
+
+## Why This Matters
+
+Traditional static analyzers work in batch mode: gather all files, analyze everything, report results. This works fine when you run analysis as a CI check or a manual command. But it's not what you want when you're actively editing code.
+
+Batch analysis has an awkward tradeoff:
+
+- **Run it rarely** and feedback comes too late to be useful
+- **Run it often** and you're constantly waiting
+
+What developers actually want is _continuous_ feedback that keeps up with their typing speed. That's exactly what reactive analysis provides.
+
+## The Reactive Approach
+
+Instead of re-analyzing your entire project on every change, the reactive analyzer represents the analysis as a **computation graph**. Each piece of data—declarations, references, liveness information—flows through this graph. When a file changes, only the affected parts of the graph recompute.
+
+The result: analysis that completes in milliseconds for typical edits, even in large codebases.
+
+### A Glimpse Under the Hood
+
+The technology behind this comes from [Skip Labs](https://skiplabs.io), whose reactive programming primitives were designed for exactly this kind of incremental computation.
+
+The analysis pipeline is built from composable operators:
+
+- **Sources** hold the raw data from your `.cmt` files
+- **FlatMap** transforms and extracts declarations and references
+- **Join** connects references to their target declarations
+- **Union** combines data from different sources
+- **Fixpoint** computes transitive closures—which functions call which
+
+That last one, **fixpoint**, is particularly interesting. Dead code detection needs to know which declarations are _reachable_ from your entry points. This is a classic graph traversal—but doing it incrementally is hard. When you add one edge to a graph, how do you efficiently update the set of reachable nodes without recomputing from scratch?
+
+The reactive fixpoint operator solves exactly this problem. It maintains the reachable set incrementally, handling both additions and removals efficiently. This is what makes the analysis fast enough for real-time use.
+
+### Glitch-Free by Design
+
+There's a subtle correctness issue with reactive systems: **glitches**. If node A depends on both B and C, and both B and C update, node A might briefly see an inconsistent state—B's new value with C's old value, or vice versa.
+
+For analysis, glitches mean incorrect results. A function might briefly appear dead because the reference to it hasn't propagated yet, even though it's actually used.
+
+The reactive scheduler prevents this with a simple principle: **accumulate, then propagate**. All updates at each level of the graph are collected before any downstream nodes run. Nodes process in topological order, wave by wave. The analysis never sees partial updates.
+
+## What's Shipping
+
+The reactive analysis infrastructure is landing now. Here's what it enables:
+
+### For Developers
+
+- **Editor integration** (coming soon): Dead code warnings that update as you type
+- **Faster CI analysis**: Incremental runs are dramatically faster than full runs
+- **Immediate feedback loop**: See the impact of your changes instantly
+
+### For Tooling Authors
+
+The reactive primitives are general-purpose. The same infrastructure that powers dead code detection can express other analyses:
+
+- Dependency graph visualization
+- Unused export detection
+- Reference counting and hotspot identification
+- Custom project-specific checks
+
+## The Road Ahead
+
+This is the beginning of a larger shift. The same reactive foundation will extend to other parts of the editor experience:
+
+- **Type checking**: Incremental type feedback without waiting for builds
+- **Navigation**: Jump-to-definition that stays accurate as files change
+- **Refactoring**: Real-time previews of rename and move operations
+
+The goal is an editor experience where the tooling _keeps up with you_—no waiting, no stale results, just continuous assistance.
+
+## Try It Today
+
+The reactive analyzer is available now in the development builds:
+
+```bash
+# Clone and build
+git clone https://github.com/rescript-lang/rescript
+cd rescript
+make lib
+
+# Run with timing info
+cd your-project
+path/to/rescript-editor-analysis reanalyze -dce -config -reactive -timing
+```
+
+The `-timing` flag shows how much work the reactive system avoided on subsequent runs. You can also use `-runs N` to benchmark multiple iterations.
+
+## Acknowledgments
+
+The reactive primitives are based on work by [Skip Labs](https://skiplabs.io). Their reactive collections library provides the foundation for glitch-free, incremental computation that makes real-time analysis possible.
+
+---
+
+We're excited to bring this to the ReScript community. Static analysis that runs continuously, in the background, without you having to think about it—that's the experience we're building toward.
+
+Stay tuned for editor integration updates. And as always, we welcome feedback on [GitHub](https://github.com/rescript-lang/rescript) and [Discord](https://discord.gg/rescriptlang).
