@@ -59,7 +59,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-markdown": "^10.1.0",
-    "react-router": "^7.9.4",
+    "react-router": "^7.12.0",
     "react-router-dom": "^7.9.4",
     "react-router-mdx": "patch:react-router-mdx@npm%3A1.0.8#~/.yarn/patches/react-router-mdx-npm-1.0.8-d4402c3003.patch",
     "rehype-slug": "^6.0.0",
