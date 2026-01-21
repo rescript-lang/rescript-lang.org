@@ -56,7 +56,7 @@ bun create rescript-app
 - Trigger a ReScript build:
 
   ```sh
-  npm run res:build
+  npm run build:res
   ```
 - If you selected the "basic" template, simply run it with:
 
@@ -156,8 +156,8 @@ bun create rescript-app
 - Add convenience `npm` scripts to `package.json`:
   ```json
   "scripts": {
-    "res:build": "rescript",
-    "res:dev": "rescript -w"
+    "build:res": "rescript",
+    "dev:res": "rescript watch"
   }
   ```
 
