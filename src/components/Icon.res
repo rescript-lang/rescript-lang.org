@@ -62,8 +62,6 @@ module MagnifierGlass = {
       width="19.203"
       height="19.203"
       viewBox="0 0 19.203 19.203"
-      aria-hidden="true" // Hide the SVG from assistive technologies
-      focusable="false" // Prevent IE from making SVG focusable
     >
       <g fill="none" strokeLinecap="round" strokeWidth="2px" transform="translate(-2 -2)">
         <path
