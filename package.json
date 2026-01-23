@@ -24,7 +24,7 @@
     "ci:format": "prettier . --check --experimental-cli",
     "preview": "yarn build && static-server build/client",
     "convert-images": "auto-convert-images",
-    "build-scripts": "yarn dlx tsdown scripts/*.jsx -d _scripts --no-clean --ext .mjs"
+    "build-scripts": "yarn dlx tsdown@0.20.0 scripts/*.jsx -d _scripts --no-clean --ext .mjs"
   },
   "dependencies": {
     "@babel/generator": "^7.24.7",
