@@ -220,6 +220,7 @@ module QuickInstall = {
         disabled={state === Copied}
         className="relative h-10 w-10 flex justify-center items-center "
         onClick
+        ariaLabel={"Copy " ++ code ++ " command"}
       >
         <Icon.Copy className="w-6 h-6 mt-px text-gray-40 hover:cursor-pointer hover:text-gray-80" />
       </button>
