@@ -10,8 +10,8 @@ type contentType =
   | @as("lvl6") Lvl6
 
 type hierarchy = {
-  lvl0: string,
-  lvl1: string,
+  lvl0: Nullable.t<string>,
+  lvl1: Nullable.t<string>,
   lvl2: Nullable.t<string>,
   lvl3: Nullable.t<string>,
   lvl4: Nullable.t<string>,
