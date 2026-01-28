@@ -49,7 +49,7 @@ let default = () => {
     None
   }, [pathname])
 
-  <html>
+  <html lang="en">
     <head>
       <style> {React.string("html {opacity:0;}")} </style>
       <link rel="preload" href={mainCss} as_="style" />
