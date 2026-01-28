@@ -59,13 +59,25 @@ let transformItems = (items: DocSearch.transformItems) => {
     | Some({pathname, hash}) =>
       RegExp.test(/v(8|9|10|11)\./, pathname)
         ? None
-        : Some({
-            ...item,
-            deprecated: pathname->String.includes("api/js") || pathname->String.includes("api/core")
-              ? Some("Deprecated")
-              : None,
-            url: pathname->String.replace("/v12.0.0/", "/") ++ hash,
-          })
+        : {
+            // DocSearch internally calls .replace() on hierarchy.lvl1, so we must
+            // provide a fallback for items where lvl1 is null to prevent crashes
+            let hierarchy = item.hierarchy
+            let lvl0 = hierarchy.lvl0->Nullable.toOption->Option.getOr("")
+            let lvl1 = hierarchy.lvl1->Nullable.toOption->Option.getOr(lvl0)
+            Some({
+              ...item,
+              deprecated: pathname->String.includes("api/js") || pathname->String.includes("api/core")
+                ? Some("Deprecated")
+                : None,
+              url: pathname->String.replace("/v12.0.0/", "/") ++ hash,
+              hierarchy: {
+                ...hierarchy,
+                lvl0: Nullable.make(lvl0),
+                lvl1: Nullable.make(lvl1),
+              },
+            })
+          }
     | None => None
     }
   })
