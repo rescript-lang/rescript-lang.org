@@ -200,9 +200,10 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
     ->Array.get(0)
     ->Option.flatMap(mdx => {
       filePath :=
-        mdx.path->Option.map(mdxPath =>
-          String.slice(mdxPath, ~start=mdxPath->String.indexOf("rescript-lang.org/") + 17)
-        )
+        mdx.path->Option.map(mdxPath => {
+          Console.log2("mdxPath:", mdxPath)
+          String.slice(mdxPath, ~start=mdxPath->String.indexOf("/markdown-pages"))
+        })
       // remove the filesystem path to get the relative path to the files in the repo
       mdx.path
     })
@@ -288,6 +289,8 @@ let default = () => {
   let loaderData: loaderData = ReactRouter.useLoaderData()
 
   let {entries, categories, title} = loaderData
+
+  Console.log(loaderData)
 
   <>
     {if (pathname :> string) == "/docs/manual/api" {
