@@ -69,3 +69,21 @@ let useScrollDirection = (~topMargin=80, ~threshold=20) => {
 
   scrollDir
 }
+
+let useIsMobile = (~breakpoint=768) => {
+  let (isMobile, setIsMobile) = React.useState(() => false)
+
+  React.useEffect(() => {
+    let check = () => window.innerWidth < breakpoint
+    setIsMobile(_ => check())
+
+    let onResize = _ => {
+      setIsMobile(_ => check())
+    }
+
+    WebAPI.Window.addEventListener(window, Resize, onResize)
+    Some(() => WebAPI.Window.removeEventListener(window, Resize, onResize))
+  }, [breakpoint])
+
+  isMobile
+}
