@@ -288,13 +288,19 @@ module DocstringsStylize = {
 
 let make = (props: props) => {
   let (_, setScrollLock) = ScrollLockContext.useScrollLock()
-  let (isSidebarOpen, setSidebarOpen) = React.useState(_ => true)
+  let isMobile = Hooks.useIsMobile()
+  let (isSidebarOpen, setSidebarOpen) = React.useState(_ => false)
 
-  let toggleSidebar = () =>
-    setSidebarOpen(prev => {
-      setScrollLock(_ => !prev)
-      !prev
-    })
+  React.useEffect(() => {
+    setSidebarOpen(_ => !isMobile)
+    None
+  }, [isMobile])
+
+  let toggleSidebar = () => {
+    let nextSidebarOpen = !(isSidebarOpen && isMobile)
+    setSidebarOpen(_ => nextSidebarOpen)
+    setScrollLock(_ => nextSidebarOpen && isMobile)
+  }
 
   let children = {
     open Markdown
