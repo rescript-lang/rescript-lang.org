@@ -26,6 +26,8 @@ module String = {
   let leadingSlash = str => str->String.startsWith("/") ? str : "/" ++ str
 
   let trailingSlash = str => str->String.endsWith("/") ? str : str ++ "/"
+
+  let removeTrailingSlash = str => str->String.replaceRegExp(/\/$/, "")
 }
 
 module Url = {
@@ -68,7 +70,7 @@ module Url = {
     let splitUrl = str->Stdlib.String.split("#")
 
     `${splitUrl[0]->Option.getOr("")}/${splitUrl[1]
-      ->Option.map(anchor => "#" ++ anchor)
+      ->Option.map(anchor => "#" ++ anchor->String.removeTrailingSlash)
       ->Option.getOr("")}`
   }
 }
