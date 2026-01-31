@@ -14,3 +14,7 @@
 /docs/manual/v8.0.0/* https://v11.rescript-lang.org/docs/manual/v8.0.0/:splat 308
 /docs/react/v0.11.0/* https://v11.rescript-lang.org/docs/react/v0.11.0/:splat 308
 /docs/react/v0.10.0/* https://v11.rescript-lang.org/docs/react/v0.10.0/:splat 308
+
+
+/docs/manual/api/js https://v11.rescript-lang.org/docs/manual/v10.0.0/api/js/:splat 308
+/docs/manual/api/js/* https://v11.rescript-lang.org/docs/manual/v10.0.0/api/js/:splat 308
