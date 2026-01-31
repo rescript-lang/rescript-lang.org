@@ -72,7 +72,7 @@ myValue.contents = 6;
 
 </CodeTab>
 
-Note the `mut` at binding; see [let binding](./let-binding.mdx)!. While a tuple is always
+Note that the previous binding `five` stays `5`, since it got the underlying item on the `ref` box, not the `ref` itself.
 
 **Note**: you might see in the JS output tabs above that `ref` allocates an object. Worry not; local, non-exported `ref`s allocations are optimized away.
 
