@@ -2,6 +2,7 @@ module Url: {
   let isAbsolute: string => bool
   let getRootPath: string => string
   let createRelativePath: (string, string) => string
+  let normalizeUrl: string => string
 }
 
 module Unsafe: {
@@ -14,6 +15,7 @@ module String: {
   let capitalize: string => string
   let capitalizeSentence: string => string
   let leadingSlash: string => string
+  let trailingSlash: string => string
 }
 
 module Date: {
