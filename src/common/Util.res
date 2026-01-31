@@ -64,6 +64,8 @@ module Url = {
     }
   }
 
+  let removeBaseUrl = str => str->Stdlib.String.replace(Env.root_url, "")
+
   // Cloudflare links have to include a trailing slash or they will redirect
   let normalizeUrl = str => {
     // separate the anchor if there is any
@@ -71,7 +73,7 @@ module Url = {
 
     `${splitUrl[0]->Option.getOr("")}/${splitUrl[1]
       ->Option.map(anchor => "#" ++ anchor->String.removeTrailingSlash)
-      ->Option.getOr("")}`
+      ->Option.getOr("")}`->removeBaseUrl
   }
 }
 
