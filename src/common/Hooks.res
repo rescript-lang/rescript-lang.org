@@ -69,3 +69,12 @@ let useScrollDirection = (~topMargin=80, ~threshold=20) => {
 
   scrollDir
 }
+
+let useFixAnchor = () => {
+  let {hash, pathname} = ReactRouter.useLocation()
+  let navigate = ReactRouter.useNavigate()
+  React.useEffect(() => {
+    navigate(pathname->Util.String.removeTrailingSlash ++ hash)
+    None
+  }, [])
+}

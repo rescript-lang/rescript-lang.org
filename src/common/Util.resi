@@ -16,6 +16,7 @@ module String: {
   let capitalizeSentence: string => string
   let leadingSlash: string => string
   let trailingSlash: string => string
+  let removeTrailingSlash: string => string
 }
 
 module Date: {
