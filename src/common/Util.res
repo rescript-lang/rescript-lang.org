@@ -69,9 +69,9 @@ module Url = {
     // separate the anchor if there is any
     let splitUrl = str->Stdlib.String.split("#")
 
-    `${splitUrl[0]->Option.getOr("")}/${splitUrl[1]
+    `${splitUrl[0]->Option.getOr("")->String.removeTrailingSlash}${splitUrl[1]
       ->Option.map(anchor => "#" ++ anchor->String.removeTrailingSlash)
-      ->Option.getOr("")}`
+      ->Option.getOr("/")}`
   }
 }
 
