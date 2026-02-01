@@ -123,8 +123,8 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
               to="/"
               className="block hover:cursor-pointer w-full h-full flex justify-center items-center font-bold"
             >
-              <img src="/brand/rescript-brandmark.svg" className="lg:hidden" />
-              <img src="/brand/rescript-logo.svg" className="hidden lg:block" />
+              <img src="/brand/rescript-brandmark.svg" className="lg:hidden" alt="ReScript Home" />
+              <img src="/brand/rescript-logo.svg" className="hidden lg:block" alt="ReScript Home" />
             </Link.String>
           </div>
 
@@ -177,16 +177,16 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
             <div className="md:flex flex items-center text-gray-60">
               <Search />
               <div className="hidden md:flex items-center ml-5">
-                <a href=Constants.githubHref rel="noopener noreferrer" className={"mr-5 " ++ link}>
+                <a href=Constants.githubHref rel="noopener noreferrer" className={"mr-5 " ++ link} ariaLabel="GitHub">
                   <Icon.GitHub className="w-6 h-6 opacity-50 hover:opacity-100" />
                 </a>
-                <a href=Constants.xHref rel="noopener noreferrer" className={"mr-5 " ++ link}>
+                <a href=Constants.xHref rel="noopener noreferrer" className={"mr-5 " ++ link} ariaLabel="X (formerly Twitter)">
                   <Icon.X className="w-6 h-6 opacity-50 hover:opacity-100" />
                 </a>
-                <a href=Constants.blueSkyHref rel="noopener noreferrer" className={"mr-5 " ++ link}>
+                <a href=Constants.blueSkyHref rel="noopener noreferrer" className={"mr-5 " ++ link} ariaLabel="Bluesky">
                   <Icon.Bluesky className="w-6 h-6 opacity-50 hover:opacity-100" />
                 </a>
-                <a href=Constants.discourseHref rel="noopener noreferrer" className=link>
+                <a href=Constants.discourseHref rel="noopener noreferrer" className=link ariaLabel="Forum">
                   <Icon.Discourse className="w-6 h-6 opacity-50 hover:opacity-100" />
                 </a>
               </div>

@@ -10,9 +10,9 @@
   "packageManager": "yarn@4.12.0",
   "type": "module",
   "scripts": {
+    "build:scripts": "yarn dlx tsdown@0.20.0 scripts/*.jsx -d _scripts --no-clean --ext .mjs",
     "build:generate-llms": "node _scripts/generate_llms.mjs",
     "build:res": "rescript build",
-    "build:scripts": "yarn dlx tsdown scripts/*.jsx -d _scripts --no-clean --ext .mjs",
     "build:sync-bundles": "node scripts/sync-playground-bundles.mjs",
     "build:update-index": "yarn build:generate-llms && node _scripts/generate_feed.mjs > public/blog/feed.xml",
     "build:vite": "react-router build",
@@ -28,7 +28,7 @@
     "prepare": "yarn build:res && yarn build:scripts && yarn build:update-index",
     "preview": "yarn build && static-server build/client",
     "reanalyze": "rescript-tools reanalyze -all-cmt .",
-    "test": "node scripts/test-examples.mjs && node scripts/test-hrefs.mjs"
+    "test": "node scripts/test-examples.mjs && node scripts/test-hrefs.mjs",
   },
   "dependencies": {
     "@babel/generator": "^7.24.7",
@@ -63,7 +63,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-markdown": "^10.1.0",
-    "react-router": "^7.9.4",
+    "react-router": "^7.12.0",
     "react-router-dom": "^7.9.4",
     "react-router-mdx": "patch:react-router-mdx@npm%3A1.0.8#~/.yarn/patches/react-router-mdx-npm-1.0.8-d4402c3003.patch",
     "rehype-slug": "^6.0.0",
