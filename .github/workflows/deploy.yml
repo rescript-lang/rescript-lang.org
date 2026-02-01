@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: "Choose an environment to deploy to: <dev|staging|prod>"
+        description: "Choose an environment to deploy to: <preview|production>"
         required: true
-        default: "dev"
+        default: "preview"
   pull_request:
     branches:
       - master
@@ -39,7 +39,6 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy out --project-name=rescript-lang-org
-          # Optional: Enable this if you want to have GitHub Deployments triggered
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
       - name: Comment PR with deployment link
@@ -51,5 +50,7 @@ jobs:
             Deployment Status: ${{ steps.deploy.conclusion }}
             Deployment Url: ${{ steps.deploy.outputs.deployment-url }}
             Deployment Alias Url: ${{ steps.deploy.outputs.pages-deployment-alias-url }}
-            ${{ steps.deploy.outputs.command-output }}
+
+            ```
             ${{ steps.deploy.outputs.command-stderr }}
+            ```
