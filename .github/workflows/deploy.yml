@@ -10,8 +10,6 @@ on:
         required: true
         default: "preview"
   pull_request:
-    branches:
-      - master
 
 jobs:
   deploy:
