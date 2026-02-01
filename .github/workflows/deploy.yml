@@ -53,6 +53,6 @@ jobs:
 
             ${{ steps.deploy.outputs.command-output }}
 
-            ```
+            ```console
             ${{ steps.deploy.outputs.command-stderr }}
             ```
