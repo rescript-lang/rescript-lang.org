@@ -41,6 +41,8 @@ jobs:
           command: pages deploy out --project-name=rescript-lang-org
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
+        env:
+          FORCE_COLOR: 0
       - name: Comment PR with deployment link
         uses: marocchino/sticky-pull-request-comment@v2
         with:
