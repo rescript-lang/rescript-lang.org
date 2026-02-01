@@ -1,0 +1,55 @@
+name: Deploy to Cloudflare Pages
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Choose an environment to deploy to: <preview|production>"
+        required: true
+        default: "preview"
+  pull_request:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy
+    permissions:
+      contents: read
+      deployments: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup yarn
+        uses: actions/setup-node@v3
+        with:
+          cache: "yarn"
+          node-version: "24"
+      - name: Install dependencies
+        run: yarn install
+      - name: Build
+        run: yarn build
+      - name: Deploy
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy out --project-name=rescript-lang-org
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          wranglerVersion: 4.61.1
+        continue-on-error: true
+        env:
+          FORCE_COLOR: 0
+      - name: Comment PR with deployment link
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          recreate: true
+          header: deploymemt
+          message: |
+            ## Cloudflare deployment
+            Deployement ID: ${{ steps.deploy.outputs.pages-deployment-id }}
+            Deployment Environment: ${{ steps.deploy.outputs.pages-environment }}
+
+            ${{ steps.deploy.outputs.command-output }}

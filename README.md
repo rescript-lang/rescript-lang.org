@@ -23,37 +23,9 @@ This is the official documentation platform for the [ReScript](https://rescript-
 # For first time clone / build (install dependencies)
 yarn
 
-# Initial build
-yarn rescript
-
-# Build the index data. Only needed for initial clone (or content H2 changes)
-yarn update-index
-
-# In a new tab
+# Run ReScript, Vite, and Wrangler in development mode
 yarn dev
-
-open localhost:3000
 ```
-
-In case you want to run ReScript in watchmode:
-
-```sh
-yarn rescript -w
-```
-
-## Build Index Data
-
-We are parsing our content for specific index data (such as, all interesting
-search terms we need for searching inside the `Belt` docs). You can create your
-index by running following command:
-
-```sh
-yarn update-index
-```
-
-All the index data is stored in `index_data`, but will not be tracked by git.
-Make sure to build the index after a fresh clone, otherwise Next might not
-build specific pages (file `index_data/x.json` not found).
 
 ## Project Structure Overview
 
