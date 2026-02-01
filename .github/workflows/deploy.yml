@@ -45,8 +45,10 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           recreate: true
+          header: Release
           message: |
-            ## Deployed ${{ steps.deploy.outputs.pages-deployment-id }} to Cloudflare Pages ${{ steps.deploy.outputs.pages-environment }}
+            Deployement ID: ${{ steps.deploy.outputs.pages-deployment-id }}
+            Deployment Environment: ${{ steps.deploy.outputs.pages-environment }}
             Deployment Status: ${{ steps.deploy.conclusion }}
             Deployment Url: ${{ steps.deploy.outputs.deployment-url }}
             Deployment Alias Url: ${{ steps.deploy.outputs.pages-deployment-alias-url }}
