@@ -51,6 +51,8 @@ jobs:
             Deployment Url: ${{ steps.deploy.outputs.deployment-url }}
             Deployment Alias Url: ${{ steps.deploy.outputs.pages-deployment-alias-url }}
 
+            ${{ steps.deploy.outputs.command-output }}
+
             ```
             ${{ steps.deploy.outputs.command-stderr }}
             ```
