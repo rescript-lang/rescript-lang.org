@@ -40,6 +40,7 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy out --project-name=rescript-lang-org
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          wranglerVersion: 4.61.1
         continue-on-error: true
         env:
           FORCE_COLOR: 0
@@ -47,16 +48,10 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           recreate: true
-          header: Release
+          header: deploymemt
           message: |
+            ## Cloudflare deployment
             Deployement ID: ${{ steps.deploy.outputs.pages-deployment-id }}
             Deployment Environment: ${{ steps.deploy.outputs.pages-environment }}
-            Deployment Status: ${{ steps.deploy.conclusion }}
-            Deployment Url: ${{ steps.deploy.outputs.deployment-url }}
-            Deployment Alias Url: ${{ steps.deploy.outputs.pages-deployment-alias-url }}
 
             ${{ steps.deploy.outputs.command-output }}
-
-            ```console
-            ${{ steps.deploy.outputs.command-stderr }}
-            ```
