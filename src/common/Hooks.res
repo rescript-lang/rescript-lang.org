@@ -73,8 +73,15 @@ let useScrollDirection = (~topMargin=80, ~threshold=20) => {
 let useFixAnchor = () => {
   let {hash, pathname} = ReactRouter.useLocation()
   let navigate = ReactRouter.useNavigate()
-  React.useEffect(() => {
-    navigate(pathname->Util.String.removeTrailingSlash ++ hash)
-    None
-  }, [])
+  let hash = hash->Option.getOr("")
+
+  let target = (pathname :> string)->Util.String.removeTrailingSlash ++ hash
+
+  // let _ = navigate(target)
+  // React.useEffect(() => {
+  //   let _ = navigate(target)
+
+  //   // None
+  //   None
+  // }, [])
 }
