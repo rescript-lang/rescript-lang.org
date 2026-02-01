@@ -2182,9 +2182,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rescript/darwin-arm64@npm:12.1.0":
+  version: 12.1.0
+  resolution: "@rescript/darwin-arm64@npm:12.1.0"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
 "@rescript/darwin-x64@npm:12.0.0":
   version: 12.0.0
   resolution: "@rescript/darwin-x64@npm:12.0.0"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@rescript/darwin-x64@npm:12.1.0":
+  version: 12.1.0
+  resolution: "@rescript/darwin-x64@npm:12.1.0"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
@@ -2196,9 +2210,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rescript/linux-arm64@npm:12.1.0":
+  version: 12.1.0
+  resolution: "@rescript/linux-arm64@npm:12.1.0"
+  conditions: os=linux & cpu=arm64
+  languageName: node
+  linkType: hard
+
 "@rescript/linux-x64@npm:12.0.0":
   version: 12.0.0
   resolution: "@rescript/linux-x64@npm:12.0.0"
+  conditions: os=linux & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@rescript/linux-x64@npm:12.1.0":
+  version: 12.1.0
+  resolution: "@rescript/linux-x64@npm:12.1.0"
   conditions: os=linux & cpu=x64
   languageName: node
   linkType: hard
@@ -2220,6 +2248,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rescript/runtime@npm:12.1.0":
+  version: 12.1.0
+  resolution: "@rescript/runtime@npm:12.1.0"
+  checksum: 10c0/7c6c75fce8011873007bbe59fee7b355519fdaf31f64258837e7da420eee57ebb36236e3f55c576258adbb5811841b033188f617351addfdc2034384075e38b8
+  languageName: node
+  linkType: hard
+
 "@rescript/webapi@npm:0.1.0-experimental-29db5f4":
   version: 0.1.0-experimental-29db5f4
   resolution: "@rescript/webapi@npm:0.1.0-experimental-29db5f4"
@@ -2232,6 +2267,13 @@ __metadata:
 "@rescript/win32-x64@npm:12.0.0":
   version: 12.0.0
   resolution: "@rescript/win32-x64@npm:12.0.0"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@rescript/win32-x64@npm:12.1.0":
+  version: 12.1.0
+  resolution: "@rescript/win32-x64@npm:12.1.0"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -8475,7 +8517,7 @@ __metadata:
     remark-frontmatter: "npm:^5.0.0"
     remark-gfm: "npm:^4.0.1"
     remark-validate-links: "npm:^13.1.0"
-    rescript: "npm:^12.0.0"
+    rescript: "npm:^12.1.0"
     search-insights: "npm:^2.17.3"
     tailwindcss: "npm:^4"
     to-vfile: "npm:^8.0.0"
@@ -8489,7 +8531,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rescript@npm:^12.0.0, rescript@npm:^12.0.0-beta.3":
+"rescript@npm:^12.0.0-beta.3":
   version: 12.0.0
   resolution: "rescript@npm:12.0.0"
   dependencies:
@@ -8517,6 +8559,37 @@ __metadata:
     rescript-legacy: cli/rescript-legacy.js
     rescript-tools: cli/rescript-tools.js
   checksum: 10c0/8fc92a806d86825fe593cc2c23accc39c95236b4885f9c6d9874fc1b375dd6dd07f8a99ef4c8bbbb273a6f44d47439b5cb4a62577a57ab9ecb0c7ad15021846c
+  languageName: node
+  linkType: hard
+
+"rescript@npm:^12.1.0":
+  version: 12.1.0
+  resolution: "rescript@npm:12.1.0"
+  dependencies:
+    "@rescript/darwin-arm64": "npm:12.1.0"
+    "@rescript/darwin-x64": "npm:12.1.0"
+    "@rescript/linux-arm64": "npm:12.1.0"
+    "@rescript/linux-x64": "npm:12.1.0"
+    "@rescript/runtime": "npm:12.1.0"
+    "@rescript/win32-x64": "npm:12.1.0"
+  dependenciesMeta:
+    "@rescript/darwin-arm64":
+      optional: true
+    "@rescript/darwin-x64":
+      optional: true
+    "@rescript/linux-arm64":
+      optional: true
+    "@rescript/linux-x64":
+      optional: true
+    "@rescript/win32-x64":
+      optional: true
+  bin:
+    bsc: cli/bsc.js
+    bstracing: cli/bstracing.js
+    rescript: cli/rescript.js
+    rescript-legacy: cli/rescript-legacy.js
+    rescript-tools: cli/rescript-tools.js
+  checksum: 10c0/526aacd9049427efe31dd450857eec1ab012edd2fbf1eeeeb03f4782ad776097da6c7cf4a21079d0d6dca2125a850201aa3929547f0be4aeccae4df3b8411c69
   languageName: node
   linkType: hard
 
