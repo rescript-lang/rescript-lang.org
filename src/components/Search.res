@@ -51,7 +51,7 @@ let transformItems = (items: DocSearch.transformItems) => {
   items
   ->Array.filterMap(item => {
     let url = try WebAPI.URL.make(~url=item.url)->Some catch {
-    | Exn.Error(obj) =>
+    | JsExn(obj) =>
       Console.error2(`Failed to parse URL ${item.url}`, obj)
       None
     }
@@ -67,7 +67,8 @@ let transformItems = (items: DocSearch.transformItems) => {
             let lvl1 = hierarchy.lvl1->Nullable.toOption->Option.getOr(lvl0)
             Some({
               ...item,
-              deprecated: pathname->String.includes("api/js") || pathname->String.includes("api/core")
+              deprecated: pathname->String.includes("api/js") ||
+                pathname->String.includes("api/core")
                 ? Some("Deprecated")
                 : None,
               url: pathname->String.replace("/v12.0.0/", "/") ++ hash,
@@ -78,6 +79,7 @@ let transformItems = (items: DocSearch.transformItems) => {
               },
             })
           }
+
     | None => None
     }
   })
@@ -155,7 +157,9 @@ let make = () => {
   }, [setState])
 
   <>
-    <button onClick type_="button" className="text-gray-60 hover:text-fire-50 p-2" ariaLabel="Search">
+    <button
+      onClick type_="button" className="text-gray-60 hover:text-fire-50 p-2" ariaLabel="Search"
+    >
       <Icon.MagnifierGlass className="fill-current" />
     </button>
     {switch state {
