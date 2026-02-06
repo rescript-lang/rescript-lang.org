@@ -41,8 +41,7 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy out --project-name=rescript-lang-org
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          wranglerVersion: 4.61.1
-        continue-on-error: true
+          wranglerVersion: 4.63.0
         env:
           FORCE_COLOR: 0
       - name: Comment PR with deployment link
