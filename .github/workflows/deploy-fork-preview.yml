@@ -70,19 +70,15 @@ jobs:
         env:
           FORCE_COLOR: 0
 
-      - name: Save deployment info
-        # This artifact is used by comment-fork-preview.yml, since fork PR runs
-        # can't write comments directly.
-        run: |
-          node -e 'const fs=require("fs"); const data={pr:Number(process.env.PR_NUMBER), deployment_id:process.env.DEPLOYMENT_ID||"", environment:process.env.DEPLOYMENT_ENV||"", command_output:process.env.COMMAND_OUTPUT||""}; fs.writeFileSync("deploy-info.json", JSON.stringify(data, null, 2));'
-        env:
-          PR_NUMBER: ${{ steps.pr.outputs.number }}
-          DEPLOYMENT_ID: ${{ steps.deploy.outputs.pages-deployment-id }}
-          DEPLOYMENT_ENV: ${{ steps.deploy.outputs.pages-environment }}
-          COMMAND_OUTPUT: ${{ steps.deploy.outputs.command-output }}
-
-      - name: Upload deployment info
-        uses: actions/upload-artifact@v4
+      - name: Comment PR with deployment link
+        uses: marocchino/sticky-pull-request-comment@v2
         with:
-          name: fork-preview-info
-          path: deploy-info.json
+          recreate: true
+          header: fork-preview-deployment
+          message: |
+            ## Fork PR Cloudflare deployment
+            PR: #${{ steps.pr.outputs.number }}
+            Deployement ID: ${{ steps.deploy.outputs.pages-deployment-id }}
+            Deployment Environment: ${{ steps.deploy.outputs.pages-environment }}
+
+            ${{ steps.deploy.outputs.command-output }}
