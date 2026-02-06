@@ -20,6 +20,12 @@ let onRequest = async ({request}: context) => {
   let title = url.searchParams->URLSearchParams.get("title")
   let descripton = url.searchParams->URLSearchParams.get("description")
 
+  // we want to split the title if it contains a |
+  let (title, subTitle) = {
+    let segments = title->String.split("|")
+    (segments[0]->Option.getOr(""), segments[1])
+  }
+
   Cloudflare.imageResponse(
     <div
       style={{
@@ -58,6 +64,22 @@ let onRequest = async ({request}: context) => {
       >
         {React.string(title)}
       </h1>
+      {switch subTitle {
+      | Some(subTitle) =>
+        <h2
+          style={{
+            fontSize: "40px",
+            fontWeight: "600",
+            marginBottom: "20px",
+            maxWidth: "996px",
+            fontFamily: "heading",
+            textWrap: "balance",
+          }}
+        >
+          {React.string(subTitle)}
+        </h2>
+      | None => React.null
+      }}
       <hr
         style={{
           borderTop: "2px solid #efefef",
