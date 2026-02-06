@@ -17,10 +17,6 @@ jobs:
       deployments: write
       pull-requests: write
     steps:
-      - name: Debug inputs
-        run: |
-          echo "event_name=${{ github.event_name }}"
-          echo "input_pr_number=${{ inputs.pr_number }}"
       # Note: fork PR workflows get a read-only GITHUB_TOKEN even if we request
       # pull-requests: write, so we can't post PR comments here.
       - name: Fetch PR info
@@ -88,6 +84,7 @@ jobs:
           FORCE_COLOR: 0
 
       - name: Comment PR with deployment link
+        if: ${{ github.event_name != 'workflow_dispatch' }}
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           recreate: true
