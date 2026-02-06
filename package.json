@@ -34,6 +34,7 @@
     "@babel/generator": "^7.24.7",
     "@babel/parser": "^7.24.7",
     "@babel/traverse": "^7.24.7",
+    "@cloudflare/pages-plugin-vercel-og": "^0.1.2",
     "@codemirror/commands": "^6.9.0",
     "@codemirror/lang-javascript": "^6.2.4",
     "@codemirror/language": "^6.11.3",

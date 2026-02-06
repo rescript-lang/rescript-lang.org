@@ -46,6 +46,8 @@ mdx-manifest.json
 
 app/**/*.mjs
 app/**/*.jsx
+functions/**/*.mjs
+functions/**/*.jsx
 !_shims.mjs
 !_shims.jsx
 

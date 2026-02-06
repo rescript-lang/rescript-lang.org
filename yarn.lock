@@ -599,6 +599,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cloudflare/pages-plugin-vercel-og@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "@cloudflare/pages-plugin-vercel-og@npm:0.1.2"
+  checksum: 10c0/4bf26c8ba46d28f863b783199f69570cf3b5c4b62fea230272ae06480f4de52ae37db334689be0fdc4febbd17e2ab7ba65135918bc67530d0350d19fb4e164e3
+  languageName: node
+  linkType: hard
+
 "@cloudflare/unenv-preset@npm:2.12.0":
   version: 2.12.0
   resolution: "@cloudflare/unenv-preset@npm:2.12.0"
@@ -8854,6 +8861,7 @@ __metadata:
     "@babel/generator": "npm:^7.24.7"
     "@babel/parser": "npm:^7.24.7"
     "@babel/traverse": "npm:^7.24.7"
+    "@cloudflare/pages-plugin-vercel-og": "npm:^0.1.2"
     "@codemirror/commands": "npm:^6.9.0"
     "@codemirror/lang-javascript": "npm:^6.2.4"
     "@codemirror/language": "npm:^6.11.3"
