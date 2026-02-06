@@ -19,13 +19,13 @@ let onRequest = async ({request}: context) => {
   let url = WebAPI.URL.make(~url=request.url)
   let title = url.searchParams->URLSearchParams.get("title")
   let descripton = url.searchParams->URLSearchParams.get("description")
-  Console.log(title)
+
   Cloudflare.imageResponse(
     <div
       style={{
         width: "1200px",
         height: "630px",
-        background: "linear-gradient(100deg,rgba(11, 13, 34, 1) 0%, rgba(20, 22, 24, 1) 100%)",
+        background: "radial-gradient(at left top, rgba(11, 13, 34, 1), rgba(20, 22, 24, 1))",
         color: "#efefef",
         display: "flex",
         flexDirection: "column",
