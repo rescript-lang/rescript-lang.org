@@ -17,6 +17,10 @@ jobs:
       deployments: write
       pull-requests: write
     steps:
+      - name: Debug inputs
+        run: |
+          echo "event_name=${{ github.event_name }}"
+          echo "input_pr_number=${{ inputs.pr_number }}"
       # Note: fork PR workflows get a read-only GITHUB_TOKEN even if we request
       # pull-requests: write, so we can't post PR comments here.
       - name: Fetch PR info
@@ -24,10 +28,15 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
+            const inputRaw = core.getInput("pr_number") || (context.payload.inputs && context.payload.inputs.pr_number) || "";
             const prNumber =
               context.eventName === "workflow_dispatch"
-                ? Number(core.getInput("pr_number"))
+                ? Number(inputRaw)
                 : context.payload.pull_request.number;
+            if (context.eventName === "workflow_dispatch" && (!prNumber || Number.isNaN(prNumber))) {
+              core.setFailed(`Missing required input: pr_number (got: "${inputRaw}")`);
+              return;
+            }
             const { data: pr } = await github.rest.pulls.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
