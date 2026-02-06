@@ -23,7 +23,7 @@ export default {
         ...stdlibPaths,
       ];
     },
-    unstable_concurrency: 4,
+    unstable_concurrency: 8,
   },
   buildEnd: async () => {
     fs.cpSync("./build/client", "./out", { recursive: true });
