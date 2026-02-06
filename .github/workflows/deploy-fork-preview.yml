@@ -35,15 +35,6 @@ jobs:
             core.setOutput("number", pr.number);
             core.setOutput("is_fork", pr.head.repo.fork ? "true" : "false");
 
-      - name: Warn on PR
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          header: fork-preview-warning
-          message: |
-            ## Fork preview deployment requested
-            This workflow checks out **fork code** and runs the build with **Cloudflare secrets**.
-            Only run this after reviewing the PR for malicious changes.
-
       - name: Checkout PR head
         uses: actions/checkout@v4
         with:
