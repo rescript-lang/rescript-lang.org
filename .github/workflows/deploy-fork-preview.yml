@@ -1,12 +1,17 @@
 name: Deploy Fork PR Preview
 on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number to deploy (including forks)"
+        required: true
   pull_request_target:
     types: [labeled]
 
 jobs:
   deploy-fork:
     runs-on: ubuntu-latest
-    if: ${{ github.event.label.name == 'ok-to-deploy' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.label.name == 'ok-to-deploy' }}
     permissions:
       contents: read
       deployments: write
@@ -19,7 +24,10 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const prNumber = context.payload.pull_request.number;
+            const prNumber =
+              context.eventName === "workflow_dispatch"
+                ? Number(core.getInput("pr_number"))
+                : context.payload.pull_request.number;
             const { data: pr } = await github.rest.pulls.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
