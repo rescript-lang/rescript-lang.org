@@ -46,7 +46,7 @@ type item =
 
 module RightSidebar = {
   @react.component
-  let make = (~items: array<item>, ~onClick) => {
+  let make = (~items: array<item>, ~onLinkClick=?) => {
     items
     ->Array.map(item => {
       switch item {
@@ -65,29 +65,28 @@ module RightSidebar = {
         | None => None
         }
         let title = `${Option.isSome(deprecatedIcon) ? "Deprecated " : ""}` ++ name
-        let result =
-          <li className="my-3" key={href}>
-            <ReactRouter.Link.String
-              title
-              className="flex items-center w-full font-normal text-14 text-gray-40 leading-tight hover:text-gray-80"
-              to=href
-              onClick={_ => onClick()}
+
+        <li className="my-3" key={href}>
+          <ReactRouter.Link.String
+            title
+            className="flex items-center w-full font-normal text-14 text-gray-40 leading-tight hover:text-gray-80"
+            to=href
+            onClick={_ => onLinkClick->Option.forEach(fn => fn())}
+          >
+            <div
+              className={`${bgColor} min-w-[20px] min-h-[20px] w-5 h-5 mr-3 flex justify-center items-center rounded-xl`}
             >
-              <div
-                className={`${bgColor} min-w-[20px] min-h-[20px] w-5 h-5 mr-3 flex justify-center items-center rounded-xl`}
-              >
-                <span className={"text-[10px] font-normal " ++ textColor}>
-                  {icon->React.string}
-                </span>
-              </div>
-              <span className={"truncate"}> {React.string(name)} </span>
-              {switch deprecatedIcon {
-              | Some(icon) => icon
-              | None => React.null
-              }}
-            </ReactRouter.Link.String>
-          </li>
-        result
+              <span className={"text-[10px] font-normal " ++ textColor}>
+                {icon->React.string}
+              </span>
+            </div>
+            <span className={"truncate"}> {React.string(name)} </span>
+            {switch deprecatedIcon {
+            | Some(icon) => icon
+            | None => React.null
+            }}
+          </ReactRouter.Link.String>
+        </li>
       }
     })
     ->React.array
@@ -116,7 +115,7 @@ module SidebarTree = {
     | true =>
       <div className={"xl:hidden ml-5"} dataTestId={`submenu-${node.name}`}>
         <ul className={"list-none py-0.5"}>
-          <RightSidebar items onClick=toggle />
+          <RightSidebar items onLinkClick=toggle />
         </ul>
       </div>
     | false => React.null
@@ -286,14 +285,46 @@ module DocstringsStylize = {
   }
 }
 
+let useIsMobile = () => {
+  let query = switch Type.Classify.classify(globalThis["window"]) {
+  | Undefined => "(max-width: 768px)" // Fallback value for SSR
+  | _ => {
+      let documentElt = WebAPI.HTMLElement.asElement(document.documentElement)
+      let computedStyle = window->WebAPI.Window.getComputedStyle(~elt=documentElt)
+      let mdBreakpoint =
+        computedStyle->WebAPI.CSSStyleDeclaration.getPropertyValue("--breakpoint-md")->String.trim
+      `(max-width: ${mdBreakpoint})`
+    }
+  }
+  Hooks.useMediaQuery(query)
+}
+
+@react.componentWithProps
 let make = (props: props) => {
   let (_, setScrollLock) = ScrollLockContext.useScrollLock()
   let (isSidebarOpen, setSidebarOpen) = React.useState(_ => true)
+  let isMobile = useIsMobile()
+
+  // Close sidebar and remove scroll lock when not on mobile
+  React.useEffect(() => {
+    if !isMobile {
+      setSidebarOpen(_ => true)
+      setScrollLock(_ => false)
+    }
+
+    None
+  }, [isMobile])
 
   let toggleSidebar = () =>
     setSidebarOpen(prev => {
-      setScrollLock(_ => !prev)
-      !prev
+      // Only toggle on mobile devices,
+      // on desktop the sidebar is always open and shouldn't affect scroll lock
+      if isMobile && prev {
+        setScrollLock(_ => !prev)
+        !prev
+      } else {
+        prev
+      }
     })
 
   let children = {
@@ -343,7 +374,7 @@ let make = (props: props) => {
           {"Types and values"->React.string}
         </div>
         <ul>
-          <RightSidebar items onClick=toggleSidebar />
+          <RightSidebar items />
         </ul>
       </aside>
     </div>
@@ -361,9 +392,7 @@ let make = (props: props) => {
   }
 
   let prefix = {Url.name: "API", href: "/docs/manual/api"}
-
   let {pathname: route} = ReactRouter.useLocation()
-
   let breadcrumbs = ApiLayout.makeBreadcrumbs(~prefix, route)
 
   <SidebarLayout
@@ -416,8 +445,6 @@ let processStaticProps = (~slug: array<string>) => {
     Data.getVersion(~moduleName)
     ->Option.map(data => data.mainModule)
     ->Option.flatMap(Dict.get(_, modulePath))
-
-  let _content = content
 
   switch content {
   | Some(json) =>
