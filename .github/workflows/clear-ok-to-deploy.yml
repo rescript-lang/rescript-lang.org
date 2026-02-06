@@ -1,0 +1,24 @@
+name: Clear ok-to-deploy on new commits
+on:
+  pull_request_target:
+    types: [synchronize]
+
+jobs:
+  clear-label:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Remove ok-to-deploy label
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const labels = pr.labels.map((l) => l.name);
+            if (!labels.includes("ok-to-deploy")) return;
+            await github.rest.issues.removeLabel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              name: "ok-to-deploy",
+            });
