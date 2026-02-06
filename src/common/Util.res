@@ -24,6 +24,10 @@ module String = {
     ->Array.join(" ")
 
   let leadingSlash = str => str->String.startsWith("/") ? str : "/" ++ str
+
+  let trailingSlash = str => str->String.endsWith("/") ? str : str ++ "/"
+
+  let removeTrailingSlash = str => str->String.replaceRegExp(/\/$/, "")
 }
 
 module Url = {
@@ -58,6 +62,18 @@ module Url = {
       let href = href->Stdlib.String.replace("docs/manual", "")
       (rootPath ++ href->String.leadingSlash)->Stdlib.String.replaceAll("//", "/")
     }
+  }
+
+  let removeBaseUrl = str => str->Stdlib.String.replace(Env.root_url, "")
+
+  // Cloudflare links have to include a trailing slash or they will redirect
+  let normalizeUrl = str => {
+    // separate the anchor if there is any
+    let splitUrl = str->Stdlib.String.split("#")
+
+    `${splitUrl[0]->Option.getOr("")}/${splitUrl[1]
+      ->Option.map(anchor => "#" ++ anchor->String.removeTrailingSlash)
+      ->Option.getOr("")}`->removeBaseUrl
   }
 }
 

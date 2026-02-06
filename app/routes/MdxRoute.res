@@ -289,6 +289,8 @@ let default = () => {
 
   let {entries, categories, title} = loaderData
 
+  Hooks.useFixAnchor()
+
   <>
     {if (pathname :> string) == "/docs/manual/api" {
       <>

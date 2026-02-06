@@ -14,7 +14,7 @@ external useSearchParams: unit => (WebAPI.URLAPI.urlSearchParams, {..} => unit) 
 external useLoaderData: unit => 'a = "useLoaderData"
 
 /* The types for this are auto-generated from the react-router.config.mjs file */
-type path = {pathname: Path.t, search?: string, hash?: string}
+type path = {pathname: Path.t, search?: string, hash?: option<string>}
 
 module Loader = {
   type loaderArgs = {request: WebAPI.FetchAPI.request}
