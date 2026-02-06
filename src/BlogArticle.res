@@ -119,7 +119,7 @@ let make = (props: props) => {
       }
     : React.null
 
-  let {date, author, co_authors, title, description, articleImg, previewImg} = frontmatter
+  let {date, author, co_authors, title, description, articleImg} = frontmatter
 
   <MainLayout>
     <div className="w-full">
@@ -127,7 +127,7 @@ let make = (props: props) => {
         siteName="ReScript Blog"
         title={title ++ " | ReScript Blog"}
         description=?{description->Nullable.toOption}
-        ogImage={previewImg->Nullable.toOption->Option.getOr(Blog.defaultPreviewImg)}
+        ogImage={Util.Url.makeOpenGraphImageUrl(title, description->Nullable.getOr(""))}
       />
       <div className="mb-10 md:mb-20">
         <BlogHeader

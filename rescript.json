@@ -19,6 +19,10 @@
     {
       "dir": "scripts",
       "subdirs": true
+    },
+    {
+      "dir": "functions",
+      "subdirs": true
     }
   ],
   "package-specs": {

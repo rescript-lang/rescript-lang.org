@@ -2,6 +2,7 @@ module Url: {
   let isAbsolute: string => bool
   let getRootPath: string => string
   let createRelativePath: (string, string) => string
+  let makeOpenGraphImageUrl: (string, string) => string
 }
 
 module Unsafe: {
