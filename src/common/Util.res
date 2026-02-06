@@ -59,6 +59,9 @@ module Url = {
       (rootPath ++ href->String.leadingSlash)->Stdlib.String.replaceAll("//", "/")
     }
   }
+
+  let makeOpenGraphImageUrl = (title, description) =>
+    `/ogimage?title=${title}&description=${description}`
 }
 
 module Date = {

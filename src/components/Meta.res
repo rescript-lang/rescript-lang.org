@@ -12,7 +12,7 @@ let make = (
   ~ogSiteName=siteName,
   ~ogDescription=description,
   ~ogTitle=?,
-  ~ogImage="/Art-3-rescript-launch.avif",
+  ~ogImage=?,
 ) => {
   let title = switch title {
   | None
@@ -23,6 +23,13 @@ let make = (
   let ogTitle = switch ogTitle {
   | Some(ogTitle) => ogTitle
   | None => title
+  }
+
+  let ogImage = switch ogImage {
+  | None
+  | Some("") =>
+    Util.Url.makeOpenGraphImageUrl(title, description)
+  | Some(ogImage) => ogImage
   }
 
   <>
