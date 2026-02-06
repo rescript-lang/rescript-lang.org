@@ -159,12 +159,9 @@ let default = () => {
     }
     ->Array.at(0)
     ->Option.flatMap(str => String.split(str, ".")[0])
-    ->Option.getOr("")
-
-  let _ = Console.log2(title, docstrings)
 
   <>
-    <Meta title />
+    <Meta title description=?docstrings />
     <ApiDocs {...loaderData} />
   </>
 }
