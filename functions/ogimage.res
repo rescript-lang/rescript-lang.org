@@ -2,8 +2,8 @@ open WebAPI
 
 %%raw("import React from 'react'")
 
-let loadGoogleFont = async (family: string, text: string) => {
-  let url = `https://fonts.googleapis.com/css2?family=${family}&text=${encodeURIComponent(text)}`
+let loadGoogleFont = async (family: string) => {
+  let url = `https://fonts.googleapis.com/css2?family=${family}`
   let css = await (await fetch(url))->Response.text
 
   // this function should fail if we can't load the font
@@ -103,16 +103,16 @@ let onRequest = async ({request}: context) => {
       width: 1200,
       fonts: [
         {
-          data: await loadGoogleFont("Inter:opsz,wght@14..32,600&display=swap", title),
+          data: await loadGoogleFont("Inter:opsz,wght@14..32,600&display=swap"),
           name: "heading",
           style: #normal,
           weight: 600,
         },
         {
-          data: await loadGoogleFont("Inter:opsz,wght@14..32,400&display=swap", descripton),
+          data: await loadGoogleFont("Inter:opsz,wght@14..32,400&display=swap"),
           name: "text",
           style: #normal,
-          weight: 600,
+          weight: 400,
         },
       ],
     },

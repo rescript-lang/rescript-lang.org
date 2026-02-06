@@ -119,7 +119,7 @@ let make = (props: props) => {
       }
     : React.null
 
-  let {date, author, co_authors, title, description, articleImg, previewImg} = frontmatter
+  let {date, author, co_authors, title, description, articleImg} = frontmatter
 
   <MainLayout>
     <div className="w-full">

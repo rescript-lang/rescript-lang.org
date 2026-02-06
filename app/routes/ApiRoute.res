@@ -140,14 +140,31 @@ let default = () => {
   let {pathname} = ReactRouter.useLocation()
 
   let segments = (pathname :> string)->String.split("/")
-  let title = switch (segments[4], segments[5]) {
-  | (Some(x), Some(y)) => `${x->String.capitalize}.${y->String.capitalize} | ReScript API`
-  | (Some(x), None) => `${x->String.capitalize} | ReScript API`
-  | _ => "ReScript API"
+
+  let _module = switch (segments[4], segments[5]) {
+  | (Some(x), Some(y)) => Some(`${x->String.capitalize}.${y->String.capitalize}`)
+  | (Some(x), None) => Some(`${x->String.capitalize}`)
+  | _ => None
   }
 
+  let title = switch _module {
+  | Some(_module) => _module ++ " | ReScript API"
+  | None => "ReScript API"
+  }
+
+  let docstrings =
+    switch loaderData {
+    | Ok(loaderData) => loaderData.module_.docstrings
+    | Error(_) => []
+    }
+    ->Array.at(0)
+    ->Option.flatMap(str => String.split(str, ".")[0])
+    ->Option.getOr("")
+
+  let _ = Console.log2(title, docstrings)
+
   <>
-    <title> {React.string(title)} </title>
+    <Meta title ogImage={Util.Url.makeOpenGraphImageUrl(title, docstrings)} />
     <ApiDocs {...loaderData} />
   </>
 }
