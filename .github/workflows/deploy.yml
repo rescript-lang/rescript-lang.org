@@ -28,6 +28,8 @@ jobs:
           node-version: "24"
       - name: Install dependencies
         run: yarn install
+      - name: Sync playground bundles
+        run: yarn build:sync-bundles
       - name: Build
         run: yarn build
       - name: Deploy
