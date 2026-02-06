@@ -52,6 +52,7 @@ let onRequest = async ({request}: context) => {
           marginBottom: "20px",
           maxWidth: "996px",
           fontFamily: "heading",
+          textWrap: "balance",
         }}
       >
         {React.string(title)}
@@ -62,6 +63,7 @@ let onRequest = async ({request}: context) => {
           fontSize: "32px",
           opacity: "0.9",
           maxWidth: "900px",
+          textWrap: "balance",
         }}
       >
         {React.string(descripton)}
