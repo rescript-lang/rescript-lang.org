@@ -1,0 +1,93 @@
+name: Deploy Fork PR Preview
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number to deploy (including forks)"
+        required: true
+
+jobs:
+  deploy-fork:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+      pull-requests: write
+    steps:
+      - name: Fetch PR info
+        id: pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = Number(core.getInput("pr_number"));
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+            });
+            const labels = pr.labels.map((l) => l.name);
+            if (!labels.includes("ok-to-deploy")) {
+              core.setFailed("Missing required label: ok-to-deploy");
+            }
+            core.setOutput("repo", pr.head.repo.full_name);
+            core.setOutput("ref", pr.head.ref);
+            core.setOutput("sha", pr.head.sha);
+            core.setOutput("number", pr.number);
+            core.setOutput("is_fork", pr.head.repo.fork ? "true" : "false");
+
+      - name: Warn on PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: fork-preview-warning
+          message: |
+            ## Fork preview deployment requested
+            This workflow checks out **fork code** and runs the build with **Cloudflare secrets**.
+            Only run this after reviewing the PR for malicious changes.
+
+      - name: Checkout PR head
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ steps.pr.outputs.repo }}
+          ref: ${{ steps.pr.outputs.sha }}
+          persist-credentials: false
+
+      - name: Setup yarn
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".node-version"
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Sync playground bundles
+        run: yarn build:sync-bundles
+
+      - name: Build
+        run: yarn build
+
+      - name: Deploy
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy out --project-name=rescript-lang-org
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          wranglerVersion: 4.61.1
+        continue-on-error: true
+        env:
+          FORCE_COLOR: 0
+
+      - name: Comment PR with deployment link
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          recreate: true
+          header: fork-preview-deployment
+          message: |
+            ## Fork PR Cloudflare deployment
+            PR: #${{ steps.pr.outputs.number }}
+            Deployement ID: ${{ steps.deploy.outputs.pages-deployment-id }}
+            Deployment Environment: ${{ steps.deploy.outputs.pages-environment }}
+
+            ${{ steps.deploy.outputs.command-output }}
