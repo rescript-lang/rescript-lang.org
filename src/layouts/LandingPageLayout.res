@@ -685,7 +685,6 @@ let make = (~components=MarkdownComponents.default) => {
       title="The ReScript Programming Language"
       description="Fast, Simple, Fully Typed JavaScript from the Future"
       keywords=["ReScript", "rescriptlang", "JavaScript", "JS", "TypeScript"]
-      ogImage="/Art-3-rescript-launch.avif"
     />
     <div className="mt-4 xs:mt-16">
       <div className="text-gray-80 text-18 z">

@@ -164,7 +164,7 @@ let default = () => {
   let _ = Console.log2(title, docstrings)
 
   <>
-    <Meta title ogImage={Util.Url.makeOpenGraphImageUrl(title, docstrings)} />
+    <Meta title />
     <ApiDocs {...loaderData} />
   </>
 }
