@@ -25,7 +25,8 @@ let onRequest = async ({request}: context) => {
       style={{
         width: "1200px",
         height: "630px",
-        background: "radial-gradient(at left top, rgba(11, 13, 34, 1), rgba(20, 22, 24, 1))",
+        background: "#0B0D22",
+        backgroundImage: "linear-gradient(45deg, #0B0D22 70%, #14162c)",
         color: "#efefef",
         display: "flex",
         flexDirection: "column",
@@ -57,6 +58,12 @@ let onRequest = async ({request}: context) => {
       >
         {React.string(title)}
       </h1>
+      <hr
+        style={{
+          borderTop: "2px solid #efefef",
+          width: "100%",
+        }}
+      />
       <p
         style={{
           fontFamily: "text",
