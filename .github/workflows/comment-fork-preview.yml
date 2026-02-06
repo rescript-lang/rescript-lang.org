@@ -1,0 +1,47 @@
+name: Comment Fork PR Deployment
+on:
+  workflow_run:
+    workflows: ["Deploy Fork PR Preview"]
+    types: [completed]
+
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: write
+    steps:
+      # This workflow runs in base repo context, so the token can write PR comments.
+      # It reads deployment details from the artifact produced by the fork deploy job.
+      - name: Download deployment info
+        uses: actions/download-artifact@v4
+        with:
+          name: fork-preview-info
+          run-id: ${{ github.event.workflow_run.id }}
+          path: .
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require("fs");
+            const info = JSON.parse(fs.readFileSync("deploy-info.json", "utf8"));
+            if (!info.pr) {
+              core.setFailed("Missing PR number in deploy-info.json");
+              return;
+            }
+            const body = [
+              "## Fork PR Cloudflare deployment",
+              `PR: #${info.pr}`,
+              `Deployment ID: ${info.deployment_id || "n/a"}`,
+              `Deployment Environment: ${info.environment || "n/a"}`,
+              "",
+              info.command_output || "(no command output)",
+            ].join("\\n");
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: info.pr,
+              body,
+            });
