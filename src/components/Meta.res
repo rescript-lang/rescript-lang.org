@@ -28,7 +28,7 @@ let make = (
   let ogImage = switch ogImage {
   | None
   | Some("") =>
-    Env.root_url ++ Util.Url.makeOpenGraphImageUrl(title, description)
+    Util.Url.makeOpenGraphImageUrl(title, description)
   | Some(ogImage) => ogImage
   }
 
