@@ -13,12 +13,15 @@ let loadGoogleFont = async (family: string) => {
   await response->Response.arrayBuffer
 }
 
-type context = {request: FetchAPI.request}
+type context = {request: FetchAPI.request, params: {path: array<string>}}
 
-let onRequest = async ({request}: context) => {
-  let url = WebAPI.URL.make(~url=request.url)
-  let title = url.searchParams->URLSearchParams.get("title")
-  let descripton = url.searchParams->URLSearchParams.get("description")
+let onRequest = async ({params}: context) => {
+  Console.log(params.path)
+
+  let title = params.path[0]->Option.getOr("ReScript")->decodeURIComponent
+  //   let url = WebAPI.URL.make(~url=request.url)
+  //   let title = url.searchParams->URLSearchParams.get("title")
+  let descripton = params.path[1]->Option.getOr("ReScript")->decodeURIComponent
 
   // we want to split the title if it contains a |
   let (title, subTitle) = {
@@ -36,11 +39,10 @@ let onRequest = async ({request}: context) => {
         color: "#efefef",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center",
         alignItems: "flex-start",
         textAlign: "left",
         position: "relative",
-        padding: "60px",
+        padding: "0 60px",
         boxSizing: "border-box",
       }}
     >
@@ -93,6 +95,7 @@ let onRequest = async ({request}: context) => {
           opacity: "0.9",
           maxWidth: "900px",
           textWrap: "balance",
+          // extra space since X wants to overlay the text
         }}
       >
         {React.string(descripton)}

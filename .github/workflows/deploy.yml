@@ -31,15 +31,32 @@ jobs:
         run: yarn install
       - name: Sync playground bundles
         run: yarn build:sync-bundles
+      - name: Set VITE_DEPLOYMENT_URL
+        shell: bash
+        run: |
+          RAW_BRANCH="${{ github.head_ref || github.ref_name }}"
+
+          if [[ "$RAW_BRANCH" == "master" ]]; then
+             echo "VITE_DEPLOYMENT_URL=" >> "$GITHUB_ENV"
+          else
+             SAFE_BRANCH="${RAW_BRANCH//\//-}"
+             
+             SAFE_BRANCH=$(echo "$SAFE_BRANCH" | tr '[:upper:]' '[:lower:]')
+             
+             echo "SAFE_BRANCH=$SAFE_BRANCH" >> "$GITHUB_ENV"
+             echo "VITE_DEPLOYMENT_URL=https://${SAFE_BRANCH}.rescript-lang.pages.dev" >> "$GITHUB_ENV"
+          fi
       - name: Build
         run: yarn build
+        env:
+          VITE_DEPLOYMENT_URL: ${{ env.VITE_DEPLOYMENT_URL }}
       - name: Deploy
         id: deploy
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy out --project-name=rescript-lang-org
+          command: pages deploy out --project-name=rescript-lang-org --branch=${{ env.SAFE_BRANCH }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           wranglerVersion: 4.63.0
         env:
