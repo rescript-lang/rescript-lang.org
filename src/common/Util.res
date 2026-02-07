@@ -63,7 +63,7 @@ module Url = {
   let makeOpenGraphImageUrl = (title, description) =>
     `${Env.root_url}${Env.root_url->Stdlib.String.endsWith("/")
         ? ""
-        : "/"}ogimage?title=${title}&description=${description}`
+        : "/"}ogimage.png?title=${title}&description=${description}`
 }
 
 module Date = {
