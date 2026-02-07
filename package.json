@@ -12,7 +12,7 @@
   "scripts": {
     "build:scripts": "yarn dlx tsdown@0.20.0 scripts/*.jsx -d _scripts --no-clean --ext .mjs",
     "build:generate-llms": "node _scripts/generate_llms.mjs",
-    "build:res": "rescript build",
+    "build:res": "rescript build --warn-error +3+8+11+12+26+27+31+32+33+34+35+39+44+45+110",
     "build:sync-bundles": "node scripts/sync-playground-bundles.mjs",
     "build:update-index": "yarn build:generate-llms && node _scripts/generate_feed.mjs > public/blog/feed.xml",
     "build:vite": "react-router build",

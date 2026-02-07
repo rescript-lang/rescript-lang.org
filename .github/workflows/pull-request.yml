@@ -1,7 +1,7 @@
-name: Test
+name: Pull Request
 on: [pull_request]
 jobs:
-  CI:
+  Format:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -15,10 +15,30 @@ jobs:
         run: yarn
       - name: Format check
         run: yarn ci:format
-      - name: Build ReScript
-        run: yarn build:res --warn-error +3+8+11+12+26+27+31+32+33+34+35+39+44+45+110
+  Site_Checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".node-version"
+          cache: yarn
       - name: Test examples and hrefs
         run: yarn test
+  Vitest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".node-version"
+          cache: yarn
+      - name: Build ReScript
+        run: yarn build:res
       - name: Install Playwright
         run: yarn playwright install --with-deps
       - name: Vitest
