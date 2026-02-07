@@ -9,7 +9,7 @@ description: |
 
 ## Introduction
 
-Imagine editing a ReScript file and seeing dead code warnings appear and disappear _instantly_ as you type. No waiting for a build. No running a separate analysis command. Just immediate, continuous feedback about which parts of your code are actually used.
+Imagine editing a ReScript file and seeing dead code warnings update almost immediately as you work. No waiting for a full re-analysis command. Just continuous feedback about which parts of your code are actually used.
 
 This is what we're bringing to ReScript.
 
@@ -62,7 +62,7 @@ The reactive analysis infrastructure is landing now. Here's what it enables:
 
 ### For Developers
 
-- **Editor integration** (coming soon): Dead code warnings that update as you type
+- **Editor integration**: Available now in the latest extension, with reactive dead code updates during active development
 - **Monorepo support**: The analyzer now works correctly in monorepo setups, running from the workspace root with proper binary lookup
 - **Faster CI analysis**: Incremental runs are dramatically faster than full runs
 - **Immediate feedback loop**: See the impact of your changes instantly
@@ -90,13 +90,15 @@ The goal is an editor experience where the tooling _keeps up with you_—no wait
 
 **Requirements:**
 
+Reactive analysis is a newer capability of Editor Code Analysis and requires a newer extension version.
+
 - ReScript compiler >= 12.1.0
 - VSCode or Cursor with rescript-vscode extension >= 1.73.9 (pre-release)
 
 1. Start the build watcher (accept the prompt when opening a ReScript file, or run **"ReScript: Start Build"**)
 2. Run **"ReScript: Start Code Analyzer"**
 
-Dead code warnings will appear in your editor and update automatically as you save files. For configuration options and usage details, see the [Dead Code Analysis guide](../docs/manual/editor-code-analysis.mdx).
+Dead code warnings appear in your editor and update reactively while you develop (currently driven by save/build updates). For configuration options and usage details, see the [Dead Code Analysis guide](../docs/manual/editor-code-analysis.mdx).
 
 ## Acknowledgments
 
@@ -106,4 +108,4 @@ The reactive primitives are based on work by [SkipLabs](https://skiplabs.io). Th
 
 We're excited to bring this to the ReScript community. Static analysis that runs continuously, in the background, without you having to think about it—that's the experience we're building toward.
 
-Stay tuned for editor integration updates. And as always, we welcome feedback on [GitHub](https://github.com/rescript-lang/rescript) and on the [forum](https://forum.rescript-lang.org).
+Stay tuned for broader reactive tooling updates. And as always, we welcome feedback on [GitHub](https://github.com/rescript-lang/rescript) and on the [forum](https://forum.rescript-lang.org).
