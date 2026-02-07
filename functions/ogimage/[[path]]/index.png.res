@@ -39,11 +39,10 @@ let onRequest = async ({params}: context) => {
         color: "#efefef",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center",
         alignItems: "flex-start",
         textAlign: "left",
         position: "relative",
-        padding: "60px",
+        padding: "0 60px",
         boxSizing: "border-box",
       }}
     >
@@ -96,6 +95,7 @@ let onRequest = async ({params}: context) => {
           opacity: "0.9",
           maxWidth: "900px",
           textWrap: "balance",
+          // extra space since X wants to overlay the text
         }}
       >
         {React.string(descripton)}
