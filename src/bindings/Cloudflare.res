@@ -9,6 +9,9 @@ type ogImageOptions = {
   width: int,
   height: int,
   fonts: array<font>,
+  headers: {
+    @as("Content-Type") contentType: string,
+  },
 }
 
 type t
