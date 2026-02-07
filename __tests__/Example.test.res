@@ -2,7 +2,10 @@ open Vitest
 
 module Example = {
   @react.component
-  let make = () => <div> {React.string("testing")} </div>
+  let make = (~handleClick) =>
+    <div>
+      <button onClick=handleClick> {React.string("testing")} </button>
+    </div>
 }
 
 test("basic assertions", async () => {
@@ -12,7 +15,14 @@ test("basic assertions", async () => {
 })
 
 test("component rendering", async () => {
-  let screen = await render(<Example />)
+  let callback = fn()
+  let screen = await render(<Example handleClick=callback />)
 
   await element(screen->getByText("testing"))->toBeVisible
+
+  let button = await screen->getByRole(#button)
+
+  await button->click
+
+  expect(callback)->toHaveBeenCalled
 })
