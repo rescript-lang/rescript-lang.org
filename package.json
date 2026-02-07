@@ -12,12 +12,13 @@
   "scripts": {
     "build:scripts": "yarn dlx tsdown@0.20.0 scripts/*.jsx -d _scripts --no-clean --ext .mjs",
     "build:generate-llms": "node _scripts/generate_llms.mjs",
-    "build:res": "rescript build",
+    "build:res": "rescript build --warn-error +3+8+11+12+26+27+31+32+33+34+35+39+44+45+110",
     "build:sync-bundles": "node scripts/sync-playground-bundles.mjs",
     "build:update-index": "yarn build:generate-llms && node _scripts/generate_feed.mjs > public/blog/feed.xml",
     "build:vite": "react-router build",
     "build": "yarn build:res && yarn build:scripts && yarn build:update-index && yarn build:vite",
     "ci:format": "prettier . --check --experimental-cli",
+    "ci:test": "yarn vitest --run --browser.headless",
     "clean:res": "rescript clean",
     "convert-images": "auto-convert-images",
     "dev:res": "rescript watch",
@@ -28,7 +29,8 @@
     "prepare": "yarn build:res && yarn build:scripts && yarn build:update-index",
     "preview": "yarn build && static-server build/client",
     "reanalyze": "rescript-tools reanalyze -all-cmt .",
-    "test": "node scripts/test-examples.mjs && node scripts/test-hrefs.mjs"
+    "test": "node scripts/test-examples.mjs && node scripts/test-hrefs.mjs",
+    "vitest": "vitest"
   },
   "dependencies": {
     "@babel/generator": "^7.24.7",
@@ -84,12 +86,14 @@
     "@tailwindcss/vite": "^4.1.13",
     "@types/react": "^19.2.2",
     "@vitejs/plugin-react": "^4.7.0",
+    "@vitest/browser-playwright": "^4.0.18",
     "auto-image-converter": "^2.1.2",
     "chokidar": "^4.0.3",
     "dotenv": "^16.4.7",
     "jsdom": "^26.1.0",
     "lefthook": "^2.0.4",
     "lightningcss": "^1.30.1",
+    "playwright": "^1.58.2",
     "prettier": "^3.6.2",
     "remark-cli": "^12.0.1",
     "search-insights": "^2.17.3",
@@ -100,6 +104,8 @@
     "vite-plugin-devtools-json": "^1.0.0",
     "vite-plugin-env-compatible": "^2.0.1",
     "vite-plugin-page-reload": "^0.2.2",
+    "vitest": "^4.0.18",
+    "vitest-browser-react": "^2.0.5",
     "wrangler": "^4.63.0"
   }
 }

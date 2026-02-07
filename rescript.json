@@ -9,6 +9,11 @@
   "compiler-flags": ["-open WebAPI.Global"],
   "sources": [
     {
+      "dir": "__tests__",
+      "subdirs": true,
+      "type": "dev"
+    },
+    {
       "dir": "app",
       "subdirs": true
     },
