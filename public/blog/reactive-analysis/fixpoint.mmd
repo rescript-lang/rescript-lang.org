@@ -1,0 +1,20 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e8f5e9', 'primaryTextColor': '#102a43', 'primaryBorderColor': '#4caf50', 'lineColor': '#486581'}}}%%
+flowchart LR
+    A_main["<b>main</b><br/><small>root</small>"]
+    A_helper["helper"]
+    A_format["format"]
+    A_validate["validate"]
+    A_old["old"]
+
+    A_main -- "wave 1" --> A_helper
+    A_helper -- "wave 2" --> A_format
+    A_helper -- "wave 2" --> A_validate
+    A_validate -. "new edge: validate → old" .-> A_old
+
+    classDef rootNode fill:#c8e6c9,stroke:#2e7d32,stroke-width:3px,color:#102a43
+    classDef liveNode fill:#e8f5e9,stroke:#4caf50,stroke-width:2px,color:#102a43
+    classDef newlyLive fill:#fff9c4,stroke:#f9a825,stroke-width:2.5px,color:#102a43
+
+    class A_main rootNode
+    class A_helper,A_format,A_validate liveNode
+    class A_old newlyLive

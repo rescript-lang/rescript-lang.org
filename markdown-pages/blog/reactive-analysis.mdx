@@ -13,7 +13,7 @@ Imagine editing a ReScript file and seeing dead code warnings update almost imme
 
 This is what we're bringing to ReScript.
 
-The static analyzer that powers dead code detection is being rebuilt on a **reactive foundation**. When you add a reference to a function, the "unused" warning vanishes immediately. When you remove the last use of a module, the dead code warning appears right away. The analysis stays in sync with your code, updating in real time.
+The static analyzer that powers dead code detection is being rebuilt on a **reactive foundation**. When you add a reference to a function, the "unused" warning vanishes quickly. When you remove the last use of a module, the dead code warning appears right away. The analysis stays in sync with your code, updating in real time.
 
 ## Why This Matters
 
@@ -32,21 +32,40 @@ Instead of re-analyzing your entire project on every change, the reactive analyz
 
 The result: analysis that completes in milliseconds for typical edits, even in large codebases.
 
+### A Concrete Update Flow
+
+Suppose you have a call graph where `main` calls `helper`, and `helper` calls `format` and `validate`. In your edit, `validate` starts calling `old`.
+
+With batch analysis, the analyzer scans everything again. With reactive analysis:
+
+1. The edited `.cmt` updates — **FlatMap** extracts the new reference. The compiler already resolved it: the ref knows its target (`old`) and its source location (inside `validate`)
+2. **Join** maps that source position to its containing declaration, producing a new graph edge: _validate → old_
+3. **Fixpoint** propagates reachability from roots (`main`) along edges — `old` now becomes reachable and enters the live set
+4. A final **Classify** step (a join of declarations with the live set) marks `old` as live — so its dead-code warning disappears
+
+The rest of the project graph stays untouched.
+
 ### A Glimpse Under the Hood
 
-The technology behind this comes from [SkipLabs](https://skiplabs.io), whose reactive programming primitives were designed for exactly this kind of incremental computation.
+Here is a simplified view of the reactive dead code pipeline:
+
+![Simplified reactive dead code pipeline](/blog/reactive-analysis/reactive-pipeline-simple.svg)
 
 The analysis pipeline is built from composable operators:
 
 - **Sources** hold the raw data from your `.cmt` files
-- **FlatMap** transforms and extracts declarations and references
-- **Join** connects references to their target declarations
-- **Union** combines data from different sources
-- **Fixpoint** computes transitive closures—which functions call which
+- **FlatMap** extracts declarations, references, and annotations from each file's data
+- **Union** merges collections — for example, combining value references, type references, and exception references into a unified set
+- **Join** maps data across collections — for example, mapping each reference to the declaration that contains it, or partitioning declarations into dead and live using the fixpoint result
+- **Fixpoint** computes transitive reachability — starting from root declarations (entry points, annotated `@live`, or externally referenced), following edges to find everything that's live
 
 That last one, **fixpoint**, is particularly interesting. Dead code detection needs to know which declarations are _reachable_ from your entry points. This is a classic graph traversal—but doing it incrementally is hard. When you add one edge to a graph, how do you efficiently update the set of reachable nodes without recomputing from scratch?
 
-The reactive fixpoint operator solves exactly this problem. It maintains the reachable set incrementally, handling both additions and removals efficiently. This is what makes the analysis fast enough for real-time use.
+In the running example above, only one new edge (`validate → old`) is added, and fixpoint propagates liveness from that delta.
+
+![Fixpoint: incremental reachability](/blog/reactive-analysis/fixpoint.svg)
+
+The reactive fixpoint operator solves exactly this problem. It takes a set of roots and a set of edges, and maintains the full reachable set. In this example, once `old` becomes reachable through `validate`, fixpoint only propagates through neighbors affected by that new edge, without revisiting unrelated parts of the graph. This is what makes the analysis fast enough for real-time use.
 
 ### Glitch-Free by Design
 
