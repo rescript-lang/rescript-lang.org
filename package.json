@@ -18,6 +18,7 @@
     "build:vite": "react-router build",
     "build": "yarn build:res && yarn build:scripts && yarn build:update-index && yarn build:vite",
     "ci:format": "prettier . --check --experimental-cli",
+    "ci:test": "yarn vitest --run --browser.headless",
     "clean:res": "rescript clean",
     "convert-images": "auto-convert-images",
     "dev:res": "rescript watch",
@@ -29,7 +30,7 @@
     "preview": "yarn build && static-server build/client",
     "reanalyze": "rescript-tools reanalyze -all-cmt .",
     "test": "node scripts/test-examples.mjs && node scripts/test-hrefs.mjs",
-    "test:browser": "vitest --config=vitest.browser.config.js"
+    "vitest": "vitest"
   },
   "dependencies": {
     "@babel/generator": "^7.24.7",
