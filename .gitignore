@@ -48,6 +48,8 @@ app/**/*.mjs
 app/**/*.jsx
 functions/**/*.mjs
 functions/**/*.jsx
+__tests__/**/*.mjs
+__tests__/**/*.jsx
 !_shims.mjs
 !_shims.jsx
 
