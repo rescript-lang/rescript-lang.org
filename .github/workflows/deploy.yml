@@ -31,25 +31,25 @@ jobs:
         run: yarn install
       - name: Sync playground bundles
         run: yarn build:sync-bundles
-      - name: Set DEPLOY_URL
+      - name: Set PUBLIC_DEPLOYMENT_URL
         shell: bash
         run: |
           RAW_BRANCH="${{ github.head_ref || github.ref_name }}"
 
           if [[ "$RAW_BRANCH" == "master" ]]; then
-             echo "DEPLOY_URL=" >> "$GITHUB_ENV"
+             echo "PUBLIC_DEPLOYMENT_URL=" >> "$GITHUB_ENV"
           else
              SAFE_BRANCH="${RAW_BRANCH//\//-}"
              
              SAFE_BRANCH=$(echo "$SAFE_BRANCH" | tr '[:upper:]' '[:lower:]')
              
              echo "SAFE_BRANCH=$SAFE_BRANCH" >> "$GITHUB_ENV"
-             echo "DEPLOY_URL=https://${SAFE_BRANCH}.rescript-lang.pages.dev" >> "$GITHUB_ENV"
+             echo "PUBLIC_DEPLOYMENT_URL=https://${SAFE_BRANCH}.rescript-lang.pages.dev" >> "$GITHUB_ENV"
           fi
       - name: Build
         run: yarn build
         env:
-          DEPLOY_URL: ${{ env.DEPLOY_URL }}
+          PUBLIC_DEPLOYMENT_URL: ${{ env.PUBLIC_DEPLOYMENT_URL }}
       - name: Deploy
         id: deploy
         uses: cloudflare/wrangler-action@v3

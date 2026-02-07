@@ -2,7 +2,7 @@
 external dev: bool = "import.meta.env.DEV"
 
 // Cloudflare deployment URL
-external deployment_url: option<string> = "import.meta.env.DEPLOYMENT_URL"
+external deployment_url: option<string> = "import.meta.env.PUBLIC_DEPLOYMENT_URL"
 
 // the root url of the site, e.g. "https://rescript-lang.org/" or "http://localhost:5173/"
 let root_url = switch deployment_url {
