@@ -25,6 +25,8 @@ jobs:
         with:
           node-version-file: ".node-version"
           cache: yarn
+      - name: Install dependencies
+        run: yarn
       - name: Test examples and hrefs
         run: yarn test
   Vitest:
@@ -37,6 +39,8 @@ jobs:
         with:
           node-version-file: ".node-version"
           cache: yarn
+      - name: Install dependencies
+        run: yarn
       - name: Build ReScript
         run: yarn build:res
       - name: Install Playwright
