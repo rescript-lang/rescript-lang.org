@@ -101,9 +101,6 @@ let onRequest = async ({request}: context) => {
     {
       height: 630,
       width: 1200,
-      headers: {
-        contentType: "image/png",
-      },
       fonts: [
         {
           data: await loadGoogleFont("Inter:opsz,wght@14..32,600&display=swap"),
