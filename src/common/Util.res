@@ -65,7 +65,9 @@ module Url = {
     Console.log(baseUrl)
     `${baseUrl}${baseUrl->Stdlib.String.endsWith("/")
         ? ""
-        : "/"}ogimage.png?title=${title}&description=${description}`
+        : "/"}ogimage.png?title=${encodeURIComponent(title)}&description=${encodeURIComponent(
+        description,
+      )}`
   }
 }
 
