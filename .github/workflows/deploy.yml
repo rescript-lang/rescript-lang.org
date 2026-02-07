@@ -43,7 +43,7 @@ jobs:
              
              SAFE_BRANCH=$(echo "$SAFE_BRANCH" | tr '[:upper:]' '[:lower:]')
              
-             echo "SAFE_BRANCH=$SAFE_BRANCH >> "$GITHUB_ENV"
+             echo "SAFE_BRANCH=$SAFE_BRANCH" >> "$GITHUB_ENV"
              echo "DEPLOY_URL=https://${SAFE_BRANCH}.rescript-lang.pages.dev" >> "$GITHUB_ENV"
           fi
       - name: Build
