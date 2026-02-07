@@ -93,6 +93,7 @@ let onRequest = async ({request}: context) => {
           opacity: "0.9",
           maxWidth: "900px",
           textWrap: "balance",
+          marginBottom: "100px",
         }}
       >
         {React.string(descripton)}
