@@ -26,8 +26,27 @@ for (const file of files) {
 
     const warningMessage = log.replace(file, "");
 
+    // Skip warnings about files that exist in public/ (served at root by Vite)
+    const missingFileMatches = [
+      ...warningMessage.matchAll(/`\.\.\/\.\.\/(.*?)`/g),
+    ];
+    let allMissingExistInPublic = false;
+    if (missingFileMatches.length > 0) {
+      allMissingExistInPublic = (
+        await Promise.all(
+          missingFileMatches.map(([, p]) =>
+            fs.access("public/" + p).then(
+              () => true,
+              () => false,
+            ),
+          ),
+        )
+      ).every(Boolean);
+    }
+
     if (
       log &&
+      !allMissingExistInPublic &&
       !warningMessage.includes("api/") &&
       // When running on CI it fails to ignore the link directly to the blog root
       // https://github.com/rescript-lang/rescript-lang.org/actions/runs/19520461368/job/55882556586?pr=1115#step:6:338
