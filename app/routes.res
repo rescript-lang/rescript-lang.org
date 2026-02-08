@@ -28,6 +28,16 @@ let stdlibRoutes =
 let beltRoutes =
   beltPaths->Array.map(path => route(path, "./routes/ApiRoute.jsx", ~options={id: path}))
 
+let guideRoutes =
+  mdxRoutes("./routes/Guide.jsx")->Array.filter(route =>
+    route.path->Option.map(path => String.includes(path, "guide/"))->Option.getOr(false)
+  )
+
+let mdxRoutes =
+  mdxRoutes("./routes/MdxRoute.jsx")->Array.filter(route =>
+    route.path->Option.map(path => !String.includes(path, "guide/"))->Option.getOr(true)
+  )
+
 let default = [
   index("./routes/LandingPageRoute.jsx"),
   route("packages", "./routes/PackagesRoute.jsx"),
@@ -42,6 +52,8 @@ let default = [
   route("docs/manual/api/dom", "./routes/ApiRoute.jsx", ~options={id: "api-dom"}),
   ...stdlibRoutes,
   ...beltRoutes,
-  ...mdxRoutes("./routes/MdxRoute.jsx"),
+  ...mdxRoutes,
+  route("guides", "./routes/Guides.jsx"),
+  ...guideRoutes,
   route("*", "./routes/NotFoundRoute.jsx"),
 ]

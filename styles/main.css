@@ -4,9 +4,9 @@
 
 @import "tailwindcss";
 
-@source '../src/**/*.{mjs,js,res}';
-@source '../pages/**/*.{mjs,js,mdx}';
-@source '../app/**/*.{mjs,js,mdx}';
+@source '../src/**/*.{jsx,res}';
+@source '../pages/**/*.{jsx,mdx}';
+@source '../app/**/*.{jsx,mdx}';
 
 @theme {
   --radius-*: initial;

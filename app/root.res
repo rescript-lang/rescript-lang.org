@@ -68,7 +68,7 @@ let default = () => {
     <body className={isScrollLockEnabled ? "overflow-hidden" : ""}>
       <ScrollLockContext.Provider lockState=(isScrollLockEnabled, setIsScrollLockEnabled)>
         <EnableCollapsibleNavbar isEnabled={!isOverlayOpen}>
-          <Navigation isOverlayOpen setOverlayOpen />
+          // <Navigation isOverlayOpen setOverlayOpen />
           <Outlet />
           <ScrollRestoration />
           <Scripts />
