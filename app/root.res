@@ -65,7 +65,8 @@ let default = () => {
       />
       <meta charSet="UTF-8" />
     </head>
-    <body className={isScrollLockEnabled ? "overflow-hidden" : ""}>
+    <body className="overflow-hidden h-dvh">
+      // className={isScrollLockEnabled ? "overflow-hidden" : ""}>
       <ScrollLockContext.Provider lockState=(isScrollLockEnabled, setIsScrollLockEnabled)>
         <EnableCollapsibleNavbar isEnabled={!isOverlayOpen}>
           // <Navigation isOverlayOpen setOverlayOpen />

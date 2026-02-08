@@ -62,29 +62,16 @@ let default = () => {
   // let attributes = Mdx.useMdxAttributes()
   let component = Mdx.useMdxComponent(~components)
 
-  let scrollDirection = Hooks.useScrollDirection(~topMargin=64, ~threshold=32)
-
-  let navbarClasses = switch scrollDirection {
-  | Up(_) => "translate-y-0"
-  | Down(_) => "-translate-y-full md:translate-y-0"
-  }
-
-  let secondaryNavbarClasses = switch scrollDirection {
-  | Up(_) => "translate-y-[32]"
-  // TODO: this has to be full plus the 16 for the banner above
-  | Down(_) => "-translate-y-[128px] md:translate-y-[32]"
-  }
-
-  <>
+  <div className="overflow-hidden">
     <NavbarPrimary />
-    <NavbarSecondary />
-    <NavbarTertiary />
-    <div className="flex flex-wrap max-w-7xl mx-auto min-h-lvh overflow-hidden">
+    <NavbarSecondary> {React.null} </NavbarSecondary>
+    // <NavbarTertiary />
+    <div className="flex max-w-7xl mx-auto h-dvh overflow-hidden">
       <Sidebar items={loaderData.sidebarItems} />
-      <div className="basis-0 grow-999 min-w-1/2 p-8 overflow-scroll">
+      <div className="basis-0 grow-999 min-w-1/2 p-8 overflow-y-auto h-full">
         <a className="text-gray-60"> {React.string("See all guides")} </a>
         {component()}
       </div>
     </div>
-  </>
+  </div>
 }

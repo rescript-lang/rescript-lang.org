@@ -330,7 +330,7 @@
   display: inline-block;
 }
 
-[popover] {
+#older-versions[popover] {
   inset: unset;
   width: 100%;
   height: auto;
@@ -358,7 +358,7 @@
     transform 0.3s ease;
 }
 
-[popover]:popover-open ~ .menu {
+#older-versions[popover]:popover-open ~ .menu {
   opacity: 1;
   visibility: visible;
 }
@@ -372,10 +372,22 @@
   }
 }
 
-[popover]:popover-open ~ .trigger {
+#older-versions[popover]:popover-open ~ .trigger {
   svg {
     transform: rotate(180deg);
   }
+}
+
+#sidebar[popover] {
+  inset: unset;
+  width: unset;
+  border: none;
+  position: relative;
+  top: 0px;
+  left: 0px;
+  overlay: none;
+  height: 100%;
+  @apply min-w-64 bg-white border-gray-20 border-r-2 overflow-y-scroll h-full md:block;
 }
 
 /* This has to stay at the end! */

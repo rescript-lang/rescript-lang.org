@@ -9,7 +9,7 @@ let make = () => {
 
   <nav
     dataTestId="navbar-primary"
-    className={"h-16 w-full bg-gray-90 sticky z-100 top-0 transition-transform duration-300 " ++
+    className={"shadow h-16 w-full bg-gray-90 sticky z-100 top-0 transition-transform duration-300 " ++
     navbarClasses}
   >
   </nav>
