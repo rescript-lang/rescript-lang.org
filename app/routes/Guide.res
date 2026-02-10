@@ -62,16 +62,16 @@ let default = () => {
   // let attributes = Mdx.useMdxAttributes()
   let component = Mdx.useMdxComponent(~components)
 
-  <div className="overflow-hidden">
+  <>
     <NavbarPrimary />
     <NavbarSecondary> {React.null} </NavbarSecondary>
     // <NavbarTertiary />
-    <div className="flex max-w-7xl mx-auto h-dvh overflow-hidden">
+    <div className="flex max-w-7xl mx-auto">
       <Sidebar items={loaderData.sidebarItems} />
-      <div className="basis-0 grow-999 min-w-1/2 p-8 overflow-y-auto h-full">
+      <div className="basis-0 grow-999 min-w-1/2 p-8">
         <a className="text-gray-60"> {React.string("See all guides")} </a>
         {component()}
       </div>
     </div>
-  </div>
+  </>
 }

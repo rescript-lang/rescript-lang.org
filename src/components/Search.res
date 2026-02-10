@@ -157,9 +157,7 @@ let make = () => {
   }, [setState])
 
   <>
-    <button
-      onClick type_="button" className="text-gray-60 hover:text-fire-50 p-2" ariaLabel="Search"
-    >
+    <button onClick type_="button" className="text-gray-60 hover:text-fire-50" ariaLabel="Search">
       <Icon.MagnifierGlass className="fill-current" />
     </button>
     {switch state {
