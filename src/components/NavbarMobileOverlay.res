@@ -7,6 +7,7 @@ module MobileNav = {
     let base = "font-normal mx-4 py-5 text-gray-40 border-b border-gray-80"
     let extLink = "block hover:cursor-pointer hover:text-white text-gray-60"
     <ul
+      dataTestId="mobile-nav"
       className="border-gray-80 border-tn top-16 flex-col fixed h-full w-full z-50 sm:w-9/12 bg-gray-100 sm:h-auto sm:flex sm:relative sm:flex-row sm:justify-between"
     >
       <li className=base>
@@ -47,7 +48,12 @@ module MobileNav = {
         </Link>
       </li>
       <li className=base>
-        <a href=Constants.xHref rel="noopener noreferrer" className=extLink>
+        <a
+          href=Constants.xHref
+          rel="noopener noreferrer"
+          className=extLink
+          ariaLabel="X (formerly Twitter)"
+        >
           {React.string("X")}
         </a>
       </li>
@@ -75,14 +81,20 @@ let make = () => {
   let location = ReactRouter.useLocation()
   let route = location.pathname
 
-  // TODO: close dialog when you click outside
-  //   React.useEffect(() => {
-  //     document->WebAPI.Document.addEventListener(Click, closeMobileOverlay)
-  //     Some(() => document->WebAPI.Document.removeEventListener(Click, closeMobileOverlay))
-  //     // None
-  //   }, [])
+  let handleBackdropClick = (e: JsxEvent.Mouse.t) => {
+    let target = e->JsxEvent.Mouse.target
+    let currentTarget = e->JsxEvent.Mouse.currentTarget
+    if target == currentTarget {
+      closeMobileOverlay()
+    }
+  }
 
-  <dialog id="mobile-overlay">
+  React.useEffect(() => {
+    // Make sure the dialog element closes if the component unmounts
+    Some(closeMobileOverlay)
+  }, [])
+
+  <dialog id="mobile-overlay" onClick={handleBackdropClick}>
     <MobileNav route />
   </dialog>
 }

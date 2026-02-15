@@ -224,7 +224,6 @@ let make = (~fixed=true, ~isOverlayOpen: bool, ~setOverlayOpen: (bool => bool) =
           }}
         >
           <Icon.DrawerDots
-            onClick={Console.log}
             className={"h-1 w-auto block " ++ (isOverlayOpen ? "text-fire" : "text-gray-60")}
           />
         </button>

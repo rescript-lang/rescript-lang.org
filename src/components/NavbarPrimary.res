@@ -12,6 +12,7 @@ module LeftContent = {
   let make = () => {
     let {pathname} = useLocation()
     <div
+      dataTestId="navbar-primary-left-content"
       className="row-start-1 justify-self-start col-[content] flex items-center h-full  space-x-5 text-gray-40"
     >
       <Link to=#"/" className="h-8 w-8 lg:h-10 lg:w-32 flex items-center" ariaLabel="homepage">
@@ -47,13 +48,18 @@ module RightContent = {
     let iconClasses = "w-6 h-6 opacity-50 hover:opacity-100"
     let linkClasses = "hidden md:block"
     <div
+      dataTestId="navbar-primary-right-content"
       className="row-start-1 justify-self-end col-[content] grid grid-flow-col items-center space-x-5 text-gray-40"
     >
       <Search />
-      <Icon.DrawerDots
+      <button
         className={"h-1 w-auto block md:hidden opacity-50 hover:opacity-100 m-0"}
         onClick={toggleMobileOverlay}
-      />
+        ariaLabel="Toggle additional menu"
+        dataTestId="toggle-mobile-overlay"
+      >
+        <Icon.DrawerDots />
+      </button>
       <a
         href=Constants.githubHref rel="noopener noreferrer" ariaLabel="GitHub" className=linkClasses
       >

@@ -102,9 +102,8 @@ module Caret = {
 
 module DrawerDots = {
   @react.component
-  let make = (~className: string="", ~onClick) =>
+  let make = (~className: string="") =>
     <svg
-      onClick
       className={"fill-current " ++ className}
       stroke="none"
       width="22"

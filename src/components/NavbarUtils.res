@@ -9,17 +9,31 @@ let linkOrActiveLinkSubroute = (~target: Path.t, ~route: Path.t) =>
 external elementToDialog: WebAPI.DOMAPI.element => WebAPI.DOMAPI.htmlDialogElement = "%identity"
 
 let getMobileOverlayDialog = () => {
-  document->WebAPI.Document.getElementById("mobile-overlay")->elementToDialog
+  Nullable.make(document->WebAPI.Document.getElementById("mobile-overlay")->elementToDialog)
 }
 
 @get external _open: WebAPI.DOMAPI.htmlDialogElement => bool = "open"
 
-let openMobileOverlay = _ => getMobileOverlayDialog()->WebAPI.HTMLDialogElement.showModal
+let openMobileOverlay = _ =>
+  switch getMobileOverlayDialog() {
+  | Nullable.Value(dialog) => dialog->WebAPI.HTMLDialogElement.showModal
+  | Null => ()
+  | Undefined => ()
+  }
 
-let closeMobileOverlay = _ => getMobileOverlayDialog()->WebAPI.HTMLDialogElement.close
+let closeMobileOverlay = _ =>
+  switch getMobileOverlayDialog() {
+  | Nullable.Value(dialog) => dialog->WebAPI.HTMLDialogElement.close
+  | Null => ()
+  | Undefined => ()
+  }
 
 let toggleMobileOverlay = _ => {
-  let isOpen = getMobileOverlayDialog()->_open
+  let isOpen = switch getMobileOverlayDialog() {
+  | Nullable.Value(dialog) => dialog->_open
+  | Null => false
+  | Undefined => false
+  }
 
   if isOpen {
     closeMobileOverlay()
