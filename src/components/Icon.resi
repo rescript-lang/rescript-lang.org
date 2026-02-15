@@ -30,7 +30,7 @@ module Caret: {
 
 module DrawerDots: {
   @react.component
-  let make: (~className: string=?) => React.element
+  let make: (~className: string=?, ~onClick: JsxEvent.Mouse.t => unit) => React.element
 }
 
 module CornerLeftUp: {

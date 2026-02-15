@@ -63,7 +63,6 @@ let default = () => {
   let component = Mdx.useMdxComponent(~components)
 
   <>
-    <NavbarPrimary />
     <NavbarSecondary> {React.null} </NavbarSecondary>
     // <NavbarTertiary />
     <div className="flex max-w-7xl mx-auto">

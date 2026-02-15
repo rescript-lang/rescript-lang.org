@@ -390,6 +390,15 @@
   @apply min-w-64 bg-white border-gray-20 border-r-2 overflow-y-scroll h-full md:block;
 }
 
+/* When any dialog is open as a modal, lock the body scroll */
+body:has(dialog[open]) {
+  overflow: hidden;
+}
+
+body {
+  scrollbar-gutter: stable;
+}
+
 /* This has to stay at the end! */
 /* This is to prevent FOUC (flash of unstyled content) */
 html {

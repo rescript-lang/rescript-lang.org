@@ -17,6 +17,12 @@ external fn: unit => 'a => 'b = "fn"
 external expect: 'a => expect = "expect"
 
 /**
+ * Vitest browser
+ */
+@module("vitest/browser") @scope("page")
+external viewport: (int, int) => promise<unit> = "viewport"
+
+/**
  * vitest-browser-react
  */
 @module("vitest-browser-react")
@@ -30,6 +36,9 @@ external element: 'a => element = "element"
  */
 @send
 external getByText: (screen, string) => element = "getByText"
+
+@send
+external getByLabelText: (screen, string) => element = "getByLabelText"
 
 @send
 external getByRole: (screen, [#button]) => promise<element> = "getByRole"
@@ -54,3 +63,6 @@ external toHaveBeenCalled: expect => unit = "toHaveBeenCalled"
  */
 @send
 external toBeVisible: element => promise<unit> = "toBeVisible"
+
+@send @scope("not")
+external notToBeVisible: element => promise<unit> = "toBeVisible"

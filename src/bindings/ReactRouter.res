@@ -51,12 +51,14 @@ module Link = {
 
   @module("react-router") @react.component
   external make: (
+    ~onClick: ReactEvent.Mouse.t => unit=?,
     ~children: React.element=?,
     ~className: string=?,
     ~target: string=?,
     ~to: Path.t,
     ~preventScrollReset: bool=?,
     ~prefetch: prefetch=?,
+    @as("aria-label") ~ariaLabel: string=?,
   ) => React.element = "Link"
 
   module Path = {
@@ -115,4 +117,9 @@ module Routes = {
 
   @module("react-router-mdx/server")
   external mdxRoutes: string => array<t> = "routes"
+}
+
+module BrowserRouter = {
+  @react.component @module("react-router")
+  external make: (~children: React.element) => React.element = "BrowserRouter"
 }

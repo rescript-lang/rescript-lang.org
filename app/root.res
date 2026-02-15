@@ -66,15 +66,13 @@ let default = () => {
       <meta charSet="UTF-8" />
     </head>
     <body>
-      // className={isScrollLockEnabled ? "overflow-hidden" : ""}>
-      <ScrollLockContext.Provider lockState=(isScrollLockEnabled, setIsScrollLockEnabled)>
-        <EnableCollapsibleNavbar isEnabled={!isOverlayOpen}>
-          // <Navigation isOverlayOpen setOverlayOpen />
-          <Outlet />
-          <ScrollRestoration />
-          <Scripts />
-        </EnableCollapsibleNavbar>
-      </ScrollLockContext.Provider>
+      <NavbarPrimary />
+      // <EnableCollapsibleNavbar isEnabled={!isOverlayOpen}>
+      // <Navigation isOverlayOpen setOverlayOpen />
+      <Outlet />
+      <ScrollRestoration />
+      <Scripts />
+      // </EnableCollapsibleNavbar>
     </body>
   </html>
 }

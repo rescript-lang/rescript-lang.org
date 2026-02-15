@@ -62,7 +62,6 @@ module Url = {
 
   let makeOpenGraphImageUrl = (title, description) => {
     let baseUrl = Env.deployment_url->Option.getOr(Env.root_url)
-    Console.log(baseUrl)
     `${baseUrl}${baseUrl->Stdlib.String.endsWith("/") ? "" : "/"}ogimage/${encodeURIComponent(
         title,
       )}/${encodeURIComponent(description)}/index.png`
