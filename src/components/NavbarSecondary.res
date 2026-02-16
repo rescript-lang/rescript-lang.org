@@ -1,5 +1,3 @@
-open ReactRouter
-
 let link = "no-underline block hover:cursor-pointer hover:text-fire-30 mb-px"
 let activeLink = "font-medium text-fire-30 border-b border-fire"
 
