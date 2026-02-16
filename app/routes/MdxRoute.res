@@ -291,8 +291,43 @@ let default = () => {
 
   <>
     {if (pathname :> string) == "/docs/manual/api" {
+      let breadcrumbs = list{
+        {Url.name: "Docs", href: `/docs/manual/api`},
+        {name: "API", href: `/docs/manual/api`},
+      }
+      let sidebarContent =
+        <aside className="px-4 w-full block">
+          <div className="flex justify-between items-baseline">
+            <div className="flex flex-col text-fire font-medium">
+              <VersionSelect />
+            </div>
+            <button
+              className="flex items-center" onClick={_ => NavbarUtils.closeMobileTertiaryDrawer()}
+            >
+              <Icon.Close />
+            </button>
+          </div>
+          <div className="mb-56">
+            {ApiOverviewLayout.categories
+            ->Array.map(category => {
+              let isItemActive = (navItem: SidebarLayout.Sidebar.NavItem.t) =>
+                navItem.href === (pathname :> string)
+              <div key=category.name>
+                <SidebarLayout.Sidebar.Category
+                  isItemActive category onClick={_ => NavbarUtils.closeMobileTertiaryDrawer()}
+                />
+              </div>
+            })
+            ->React.array}
+          </div>
+        </aside>
+
       <>
         <Meta title=title description={attributes.description->Nullable.getOr("ReScript API")} />
+        <NavbarSecondary />
+        <NavbarTertiary sidebar=sidebarContent>
+          <SidebarLayout.BreadCrumbs crumbs=breadcrumbs />
+        </NavbarTertiary>
         <ApiOverviewLayout.Docs>
           <div className="markdown-body"> {component()} </div>
         </ApiOverviewLayout.Docs>
@@ -399,7 +434,7 @@ let default = () => {
             ->Option.getOr("Syntax Lookup | ReScript API")}
             description={attributes.description->Nullable.getOr("")}
           />
-
+          <NavbarSecondary />
           <SyntaxLookup mdxSources activeItem=?loaderData.activeSyntaxItem>
             {component()}
           </SyntaxLookup>

@@ -160,8 +160,36 @@ let default = () => {
     ->Array.at(0)
     ->Option.flatMap(str => String.split(str, ".")[0])
 
+  let breadcrumbs = {
+    let prefix = {Url.name: "API", href: "/docs/manual/api"}
+    let crumbs = ApiLayout.makeBreadcrumbs(~prefix, pathname)
+    list{{Url.name: "Docs", href: "/docs/manual/api"}, ...crumbs}
+  }
+
+  let sidebarContent = switch loaderData {
+  | Ok({toctree, module_: {items}}) =>
+    <div>
+      <div className="flex justify-between items-baseline px-4">
+        <div className="flex flex-col text-fire font-medium">
+          <VersionSelect />
+        </div>
+        <button
+          className="flex items-center" onClick={_ => NavbarUtils.closeMobileTertiaryDrawer()}
+        >
+          <Icon.Close />
+        </button>
+      </div>
+      <ApiDocs.SidebarTree node={toctree} items />
+    </div>
+  | Error(_) => React.null
+  }
+
   <>
     <Meta title description=?docstrings />
+    <NavbarSecondary />
+    <NavbarTertiary sidebar=sidebarContent>
+      <SidebarLayout.BreadCrumbs crumbs=breadcrumbs />
+    </NavbarTertiary>
     <ApiDocs {...loaderData} />
   </>
 }

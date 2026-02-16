@@ -400,6 +400,11 @@ body:has(dialog[open]) {
   margin: 0;
 }
 
+#mobile-tertiary-drawer {
+  max-width: 100%;
+  margin: 0;
+}
+
 body {
   scrollbar-gutter: stable;
   height: 100%;

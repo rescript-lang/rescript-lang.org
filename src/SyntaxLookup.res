@@ -126,7 +126,7 @@ module DetailBox = {
 
     <div>
       <div className="text-24 border-b border-gray-40 pb-4 mb-4 font-semibold"> summaryEl </div>
-      <div className="mt-16 markdown-body"> children </div>
+      <div className="markdown-body"> children </div>
     </div>
   }
 }
@@ -383,7 +383,7 @@ let make = (
     <div className="mt-4 xs:mt-16">
       <div className="text-gray-80">
         <div className="flex xs:justify-center overflow-hidden pb-48">
-          <main className="mt-24 min-w-320 lg:align-center w-full px-4 md:px-8 max-w-1280">
+          <main className="mt-8 min-w-320 lg:align-center w-full px-4 md:px-8 max-w-1280">
             <div className="flex justify-center">
               <div className="max-w-740 w-full"> content </div>
             </div>

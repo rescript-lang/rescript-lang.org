@@ -2,7 +2,7 @@ open NavbarUtils
 open ReactRouter
 
 @react.component
-let make = (~sidebar: React.element=?, ~children) => {
+let make = (~sidebar: option<React.element>=?, ~children) => {
   let {pathname} = useLocation()
 
   let scrollDirection = Hooks.useScrollDirection(~topMargin=64, ~threshold=32)
@@ -10,6 +10,14 @@ let make = (~sidebar: React.element=?, ~children) => {
   let navbarClasses = switch scrollDirection {
   | Up(_) => "translate-y-0"
   | Down(_) => "-translate-y-[176px] lg:translate-y-0"
+  }
+
+  let handleBackdropClick = (e: JsxEvent.Mouse.t) => {
+    let target = e->JsxEvent.Mouse.target
+    let currentTarget = e->JsxEvent.Mouse.currentTarget
+    if target == currentTarget {
+      closeMobileTertiaryDrawer()
+    }
   }
 
   React.useEffect(() => {
@@ -36,9 +44,10 @@ let make = (~sidebar: React.element=?, ~children) => {
     </nav>
     <dialog
       id="mobile-tertiary-drawer"
+      onClick={handleBackdropClick}
       className={`${isDocRoute(~route=pathname)
-          ? "top-44"
-          : "top-32"} flex-col h-full w-full z-50 bg-white overflow-y-auto pb-8`}
+          ? "top-40"
+          : "top-28"} flex-col h-full w-full z-50 bg-white overflow-y-auto pb-8 backdrop:bg-transparent`}
     >
       {switch sidebar {
       | Some(sidebar) => sidebar

@@ -269,7 +269,7 @@ module BreadCrumbs = {
 let make = (
   ~theme: ColorTheme.t,
   ~editHref: option<string>=?,
-  ~sidebarState: (bool, (bool => bool) => unit),
+  ~sidebarState: (bool, (bool => bool) => unit)=(false, _ => ()),
   // (Sidebar, toggleSidebar) ... for toggling sidebar in mobile view
   ~sidebar: React.element,
   ~rightSidebar: option<React.element>=?,

@@ -72,3 +72,4 @@ _scripts
 
 # Vitest screenshots
 !__tests__/__screenshots__/**/*
+.vitest-attachments

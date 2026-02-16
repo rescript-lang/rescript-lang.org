@@ -60,7 +60,7 @@ let getMobileTertiaryDialog = () => {
 
 let openMobileTertiaryDrawer = _ =>
   switch getMobileTertiaryDialog() {
-  | Nullable.Value(dialog) => dialog->WebAPI.HTMLDialogElement.show
+  | Nullable.Value(dialog) => dialog->WebAPI.HTMLDialogElement.showModal
   | Null => ()
   | Undefined => ()
   }

@@ -95,7 +95,7 @@ module RightSidebar = {
 
 module SidebarTree = {
   @react.component
-  let make = (~isOpen: bool, ~toggle: unit => unit, ~node: node, ~items: array<item>) => {
+  let make = (~node: node, ~items: array<item>) => {
     open ReactRouter
 
     let location = useLocation()
@@ -115,7 +115,7 @@ module SidebarTree = {
     | true =>
       <div className={"xl:hidden ml-5"} dataTestId={`submenu-${node.name}`}>
         <ul className={"list-none py-0.5"}>
-          <RightSidebar items onLinkClick=toggle />
+          <RightSidebar items />
         </ul>
       </div>
     | false => React.null
@@ -176,54 +176,26 @@ module SidebarTree = {
       }
     }
 
-    let preludeSection =
-      <div className="flex justify-between text-fire font-medium items-baseline">
-        <VersionSelect />
+    <aside className="px-4 w-full block">
+      <div className="my-10">
+        <div className="hl-overline block text-gray-80 mt-5 mb-2" dataTestId="overview">
+          {"Overview"->React.string}
+        </div>
+        <Link.String
+          className={"block " ++ summaryClassName ++ (isCurrentlyAtRoot ? classNameActive : "")}
+          to={moduleRoute}
+        >
+          {node.name->React.string}
+        </Link.String>
+        {isCurrentlyAtRoot ? subMenu : React.null}
       </div>
-
-    <div
-      id="sidebar"
-      className={(
-        isOpen ? "fixed w-full left-0 h-full z-20 min-w-320" : "hidden "
-      ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible bg-white"}
-    >
-      <aside
-        id="sidebar-content-api-docs"
-        className="w-80 h-full relative top-12 px-4 w-full block md:top-28 md:sticky border-r border-gray-20 overflow-y-auto pb-24 max-h-[calc(100vh-7rem)]"
-      >
-        <div className="flex justify-between items-center">
-          {preludeSection}
-          <button
-            onClick={evt => {
-              ReactEvent.Mouse.preventDefault(evt)
-              toggle()
-            }}
-            className="md:hidden h-auto"
-          >
-            <Icon.Close />
-          </button>
-        </div>
-
-        <div className="my-10">
-          <div className="hl-overline block text-gray-80 mt-5 mb-2" dataTestId="overview">
-            {"Overview"->React.string}
-          </div>
-          <Link.String
-            className={"block " ++ summaryClassName ++ (isCurrentlyAtRoot ? classNameActive : "")}
-            to={moduleRoute}
-          >
-            {node.name->React.string}
-          </Link.String>
-          {isCurrentlyAtRoot ? subMenu : React.null}
-        </div>
-        <div className="hl-overline text-gray-80 mt-5 mb-2"> {"submodules"->React.string} </div>
-        {node.children
-        ->Array.toSorted((v1, v2) => String.compare(v1.name, v2.name))
-        ->Array.filter(child => child.name !== node.name)
-        ->Array.map(renderNode)
-        ->React.array}
-      </aside>
-    </div>
+      <div className="hl-overline text-gray-80 mt-5 mb-2"> {"submodules"->React.string} </div>
+      {node.children
+      ->Array.toSorted((v1, v2) => String.compare(v1.name, v2.name))
+      ->Array.filter(child => child.name !== node.name)
+      ->Array.map(renderNode)
+      ->React.array}
+    </aside>
   }
 }
 
@@ -285,48 +257,8 @@ module DocstringsStylize = {
   }
 }
 
-let useIsMobile = () => {
-  let query = switch Type.Classify.classify(globalThis["window"]) {
-  | Undefined => "(max-width: 768px)" // Fallback value for SSR
-  | _ => {
-      let documentElt = WebAPI.HTMLElement.asElement(document.documentElement)
-      let computedStyle = window->WebAPI.Window.getComputedStyle(~elt=documentElt)
-      let mdBreakpoint =
-        computedStyle->WebAPI.CSSStyleDeclaration.getPropertyValue("--breakpoint-md")->String.trim
-      `(max-width: ${mdBreakpoint})`
-    }
-  }
-  Hooks.useMediaQuery(query)
-}
-
 @react.componentWithProps
 let make = (props: props) => {
-  let (_, setScrollLock) = ScrollLockContext.useScrollLock()
-  let (isSidebarOpen, setSidebarOpen) = React.useState(_ => true)
-  let isMobile = useIsMobile()
-
-  // Close sidebar and remove scroll lock when not on mobile
-  React.useEffect(() => {
-    if !isMobile {
-      setSidebarOpen(_ => true)
-      setScrollLock(_ => false)
-    }
-
-    None
-  }, [isMobile])
-
-  let toggleSidebar = () =>
-    setSidebarOpen(prev => {
-      // Only toggle on mobile devices,
-      // on desktop the sidebar is always open and shouldn't affect scroll lock
-      if isMobile && prev {
-        setScrollLock(_ => !prev)
-        !prev
-      } else {
-        prev
-      }
-    })
-
   let children = {
     open Markdown
     switch props {
@@ -381,10 +313,19 @@ let make = (props: props) => {
   | _ => React.null
   }
 
-  // This is the inline sidebar on the left for mobile and tablet
+  // This is the inline sidebar on the left for desktop
   let sidebar = switch props {
   | Ok({toctree, module_: {items}}) =>
-    <SidebarTree isOpen=isSidebarOpen toggle=toggleSidebar node={toctree} items />
+    <div
+      id="sidebar"
+      className="hidden md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible bg-white"
+    >
+      <div
+        className="w-80 h-full relative top-12 w-full md:top-28 md:sticky border-r border-gray-20 overflow-y-auto pb-24 max-h-[calc(100vh-7rem)]"
+      >
+        <SidebarTree node={toctree} items />
+      </div>
+    </div>
   | Error(_) => {
       Console.error("Error loading API data")
       React.null
@@ -398,7 +339,6 @@ let make = (props: props) => {
   <SidebarLayout
     breadcrumbs={list{{Url.name: "Docs", href: "/docs/manual/api"}, ...breadcrumbs}}
     theme=#Reason
-    sidebarState=(isSidebarOpen, setSidebarOpen)
     sidebar
     rightSidebar
   >
