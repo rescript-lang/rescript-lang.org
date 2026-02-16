@@ -104,7 +104,7 @@ let make = () => {
 
   <>
     <nav
-      id="main-navbar"
+      dataTestId="navbar-primary"
       className={`
     sticky top-0 h-16 w-full items-center bg-gray-90 shadow text-white-80 text-14 z-100
     grid grid-rows-1 grid-cols-[[full-start]_minmax(1rem,1fr)_[content-start]_min(1280px,100%-2rem)_[content-end]_minmax(1rem,1fr)_[full-end]]

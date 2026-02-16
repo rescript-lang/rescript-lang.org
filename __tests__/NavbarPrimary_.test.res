@@ -23,6 +23,10 @@ test("desktop has everything visible", async () => {
   await element(rightContent->getByLabelText("X (formerly Twitter)"))->toBeVisible
   await element(rightContent->getByLabelText("Bluesky"))->toBeVisible
   await element(rightContent->getByLabelText("Forum"))->toBeVisible
+
+  let navbar = await screen->getByTestId("navbar-primary")
+
+  await element(navbar)->toMatchScreenshot("desktop-navbar-primary")
 })
 
 test("tablet has everything visible", async () => {
@@ -47,6 +51,10 @@ test("tablet has everything visible", async () => {
   await element(rightContent->getByLabelText("X (formerly Twitter)"))->toBeVisible
   await element(rightContent->getByLabelText("Bluesky"))->toBeVisible
   await element(rightContent->getByLabelText("Forum"))->toBeVisible
+
+  let navbar = await screen->getByTestId("navbar-primary")
+
+  await element(navbar)->toMatchScreenshot("tablet-navbar-primary")
 })
 
 test("phone has some things hidden and a mobile nav that can be toggled", async () => {
@@ -84,8 +92,9 @@ test("phone has some things hidden and a mobile nav that can be toggled", async 
 
   await element(mobileNav)->toBeVisible
 
-  // await element(screen->getByLabelText("Github"))->toBeVisible
-  // await element(screen->getByLabelText("X (formerly Twitter)"))->toBeVisible
-  // await element(screen->getByLabelText("Bluesky"))->toBeVisible
-  // await element(screen->getByLabelText("Forum"))->toBeVisible
+  let navbar = await screen->getByTestId("navbar-primary")
+
+  await element(navbar)->toMatchScreenshot("mobile-navbar-primary")
+
+  await element(mobileNav)->toMatchScreenshot("mobile-overlay-navbar-primary")
 })

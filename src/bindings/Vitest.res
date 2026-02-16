@@ -71,3 +71,6 @@ external toBeVisible: element => promise<unit> = "toBeVisible"
 
 @send @scope("not")
 external notToBeVisible: element => promise<unit> = "toBeVisible"
+
+@send
+external toMatchScreenshot: (element, string) => promise<unit> = "toMatchScreenshot"
