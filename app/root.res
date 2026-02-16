@@ -38,17 +38,6 @@ open ReactRouter
 
 @react.component
 let default = () => {
-  let {pathname} = ReactRouter.useLocation()
-  let (_isOverlayOpen, setOverlayOpen) = React.useState(_ => false)
-  let (_isScrollLockEnabled, setIsScrollLockEnabled) = React.useState(_ => false)
-
-  React.useEffect(() => {
-    // When the path changes close the sidebar and disable scroll lock
-    setOverlayOpen(_ => false)
-    setIsScrollLockEnabled(_ => false)
-    None
-  }, [pathname])
-
   <html lang="en">
     <head>
       <style> {React.string("html {opacity:0;}")} </style>
