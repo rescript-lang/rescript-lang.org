@@ -395,6 +395,11 @@ body:has(dialog[open]) {
   overflow: hidden;
 }
 
+#mobile-overlay {
+  max-width: 100%;
+  margin: 0;
+}
+
 body {
   scrollbar-gutter: stable;
 }

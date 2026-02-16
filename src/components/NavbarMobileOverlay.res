@@ -6,10 +6,7 @@ module MobileNav = {
   let make = (~route: Path.t) => {
     let base = "font-normal mx-4 py-5 text-gray-40 border-b border-gray-80"
     let extLink = "block hover:cursor-pointer hover:text-white text-gray-60"
-    <ul
-      dataTestId="mobile-nav"
-      className="border-gray-80 border-tn top-16 flex-col fixed h-full w-full z-50 sm:w-9/12 bg-gray-100 sm:h-auto sm:flex sm:relative sm:flex-row sm:justify-between"
-    >
+    <ul dataTestId="mobile-nav">
       <li className=base>
         <Link
           prefetch={#intent}
@@ -94,7 +91,11 @@ let make = () => {
     Some(closeMobileOverlay)
   }, [])
 
-  <dialog id="mobile-overlay" onClick={handleBackdropClick}>
+  <dialog
+    id="mobile-overlay"
+    onClick={handleBackdropClick}
+    className="top-16 flex-col h-full w-full z-50 bg-gray-100  overflow-scroll pb-8"
+  >
     <MobileNav route />
   </dialog>
 }
