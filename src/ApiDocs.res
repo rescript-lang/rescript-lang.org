@@ -510,12 +510,20 @@ let processStaticProps = (~slug: array<string>) => {
       | _ => assert(false)
       }
     )
+    let itemName = item =>
+      switch item {
+      | Value({name}) | Type({name}) => name
+      }
+
+    let sortedItems =
+      items->Array.toSorted((a, b) => itemName(a)->String.localeCompare(itemName(b)))
+
     let module_ = {
       id,
       name,
       docstrings,
       deprecated: deprecated->Null.fromOption,
-      items,
+      items: sortedItems,
     }
 
     Ok({module_, toctree: Obj.magic({name: "root", path: [], children: []})})
