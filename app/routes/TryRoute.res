@@ -61,7 +61,7 @@ let default = () => {
     {switch data {
     | Some({bundleBaseUrl, versions}) => <ClientOnly bundleBaseUrl versions />
     | None =>
-      <div className="mt-16 p-5 text-xl text-red-500 self-center">
+      <div className="text-xl text-red-500 self-center">
         <h1> {React.string("Oops an error occurred!")} </h1>
         {React.string("The playground cannot be loaded, please try again in a few moments.")}
       </div>

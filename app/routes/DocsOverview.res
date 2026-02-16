@@ -31,7 +31,7 @@ let default = (~showVersionSelect=true) => {
   ]
 
   <MainLayout>
-    <div className="max-w-740 w-full m-auto mt-16 md:mt-6">
+    <div className="max-w-740 w-full m-auto">
       // <div className="mb-6" />
       <Markdown.H1> {React.string("Docs")} </Markdown.H1>
 

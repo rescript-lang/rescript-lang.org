@@ -258,17 +258,15 @@ let make = (~posts: array<BlogApi.post>, ~category: category): React.element => 
   }
 
   <>
-    <div className="mt-16 pt-2">
-      <div className="text-gray-80 text-18">
-        <div className="flex justify-center overflow-hidden">
-          <main className="min-w-320 lg:align-center w-full lg:px-0 max-w-1280 pb-48">
-            <div className="flex justify-center">
-              <div className="w-full max-w-266.5"> content </div>
-            </div>
-          </main>
-        </div>
-        <Footer />
+    <div className="text-gray-80 text-18">
+      <div className="flex justify-center overflow-hidden">
+        <main className="min-w-320 lg:align-center w-full lg:px-0 max-w-1280 pb-48">
+          <div className="flex justify-center">
+            <div className="w-full max-w-266.5"> content </div>
+          </div>
+        </main>
       </div>
+      <Footer />
     </div>
   </>
 }

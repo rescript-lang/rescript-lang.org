@@ -185,7 +185,7 @@ module SidebarTree = {
       id="sidebar"
       className={(
         isOpen ? "fixed w-full left-0 h-full z-20 min-w-320" : "hidden "
-      ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible bg-white mt-16 md:mt-0"}
+      ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible bg-white"}
     >
       <aside
         id="sidebar-content-api-docs"
@@ -370,7 +370,7 @@ let make = (props: props) => {
       <aside
         className="relative pl-4 w-full block md:top-28 md:pt-4 md:sticky border-l border-gray-20 overflow-y-auto pb-24 h-[calc(100vh-7rem)]"
       >
-        <div className="hl-overline block text-gray-80 mt-16 mb-2">
+        <div className="hl-overline block text-gray-80 mb-2">
           {"Types and values"->React.string}
         </div>
         <ul>

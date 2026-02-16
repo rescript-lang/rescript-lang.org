@@ -402,6 +402,8 @@ body:has(dialog[open]) {
 
 body {
   scrollbar-gutter: stable;
+  height: 100%;
+  min-height: 100vh;
 }
 
 /* This has to stay at the end! */

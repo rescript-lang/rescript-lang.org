@@ -1802,6 +1802,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   let subPanelRef = React.useRef(Nullable.null)
 
   let onResize = () => {
+    Console.debug("resizing playground...")
     let newLayout = window.innerWidth < breakingPoint ? Column : Row
     setLayout(_ => newLayout)
     switch panelRef.current->Nullable.toOption {
@@ -2011,7 +2012,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     <button key={Int.toString(i)} onClick className disabled> {title} </button>
   })
 
-  <main className={"flex flex-col bg-gray-100 text-gray-40 text-14 mt-16"}>
+  <main className={"flex flex-col bg-gray-100 text-gray-40 text-14 h-100"}>
     <ControlPanel
       actionIndicatorKey={Int.toString(actionCount)}
       state=compilerState
@@ -2020,7 +2021,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
       editorRef
     />
     <div
-      className={`flex ${layout == Column ? "flex-col" : "flex-row"}`}
+      className={`flex bg-gray-100 ${layout == Column ? "flex-col" : "flex-row"}`}
       ref={ReactDOM.Ref.domRef((Obj.magic(panelRef): React.ref<Nullable.t<Dom.element>>))}
     >
       // Left Panel

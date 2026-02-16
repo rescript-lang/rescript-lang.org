@@ -67,12 +67,9 @@ let default = () => {
     </head>
     <body>
       <NavbarPrimary />
-      // <EnableCollapsibleNavbar isEnabled={!isOverlayOpen}>
-      // <Navigation isOverlayOpen setOverlayOpen />
       <Outlet />
       <ScrollRestoration />
       <Scripts />
-      // </EnableCollapsibleNavbar>
     </body>
   </html>
 }
