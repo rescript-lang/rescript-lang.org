@@ -408,7 +408,7 @@ let default = () => {
                 {React.string("Edit")}
               </a>
             </NavbarTertiary>
-            <DocsLayout categories activeToc={title, entries} breadcrumbs=?{breadcrumbs} editHref>
+            <DocsLayout categories activeToc={title, entries}>
               <div className="markdown-body"> {component()} </div>
             </DocsLayout>
           </>

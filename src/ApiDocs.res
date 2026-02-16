@@ -332,18 +332,7 @@ let make = (props: props) => {
     }
   }
 
-  let prefix = {Url.name: "API", href: "/docs/manual/api"}
-  let {pathname: route} = ReactRouter.useLocation()
-  let breadcrumbs = ApiLayout.makeBreadcrumbs(~prefix, route)
-
-  <SidebarLayout
-    breadcrumbs={list{{Url.name: "Docs", href: "/docs/manual/api"}, ...breadcrumbs}}
-    theme=#Reason
-    sidebar
-    rightSidebar
-  >
-    children
-  </SidebarLayout>
+  <SidebarLayout theme=#Reason sidebar rightSidebar> children </SidebarLayout>
 }
 
 module Data = {

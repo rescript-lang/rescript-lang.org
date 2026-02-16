@@ -11,8 +11,6 @@ let make = (~children, ~categories, ~entries) => {
     ->String.replaceAll("-", " ")
     ->Util.String.capitalizeSentence
 
-  let breadcrumbs = list{{Url.name: "Community", href: "/community"}}
-
   let (isSidebarOpen, setSidebarOpen) = React.useState(_ => false)
   <>
     <Meta title={`${activePage} | ReScript Community`} />
@@ -26,7 +24,6 @@ let make = (~children, ~categories, ~entries) => {
       />}
       sidebarState=(isSidebarOpen, setSidebarOpen)
       theme=#Reason
-      breadcrumbs
     >
       children
     </SidebarLayout>

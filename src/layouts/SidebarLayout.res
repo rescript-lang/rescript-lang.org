@@ -6,11 +6,6 @@
  */
 module Link = ReactRouter.Link
 
-let isDocRoute = (~route: Path.t) => {
-  let route = (route :> string)
-  route->String.includes("/docs/") || route->String.includes("/syntax-lookup")
-}
-
 module Toc = {
   type raw = Dict.t<{
     "title": string,
@@ -145,7 +140,7 @@ module Sidebar = {
 
     // the height of the navbars above is fluid across pages, and it's easy to get it wrong
     // so we calculate it dynamically here
-    let sidebarTopOffset = isOpen
+    let _sidebarTopOffset = isOpen
       ? {
           let mobileNavbarHeight =
             Nullable.make(document->WebAPI.Document.getElementById("mobile-navbar"))
@@ -268,36 +263,21 @@ module BreadCrumbs = {
 @react.component
 let make = (
   ~theme: ColorTheme.t,
-  ~editHref: option<string>=?,
   ~sidebarState: (bool, (bool => bool) => unit)=(false, _ => ()),
   // (Sidebar, toggleSidebar) ... for toggling sidebar in mobile view
   ~sidebar: React.element,
   ~rightSidebar: option<React.element>=?,
   ~categories: option<array<Sidebar.Category.t>>=?,
-  ~breadcrumbs: option<list<Url.breadcrumb>>=?,
   ~children,
 ) => {
-  let (isNavOpen, setNavOpen) = React.useState(() => false)
+  let (_isNavOpen, setNavOpen) = React.useState(() => false)
 
   let location = ReactRouter.useLocation()
 
   let theme = ColorTheme.toCN(theme)
 
-  let hasBreadcrumbs = switch breadcrumbs {
-  | None => false
-  | Some(l) => List.length(l) > 0
-  }
-
-  let breadcrumbs = breadcrumbs->Option.mapOr(React.null, crumbs => <BreadCrumbs crumbs />)
-
   // TODO: post rr7 - this can most likely be removed
   let (_isSidebarOpen, setSidebarOpen) = sidebarState
-  let (_isLocked, toggleScrollLock) = ScrollLockContext.useScrollLock()
-
-  let toggleSidebar = () => {
-    setSidebarOpen(prev => !prev)
-    toggleScrollLock(prev => !prev)
-  }
 
   let {pathname} = ReactRouter.useLocation()
 
@@ -306,19 +286,6 @@ let make = (
     setNavOpen(_ => false)
     None
   }, [pathname])
-
-  let handleDrawerButtonClick = React.useCallback(evt => {
-    ReactEvent.Mouse.preventDefault(evt)
-    toggleSidebar()
-  }, [])
-
-  let editLinkEl = switch editHref {
-  | Some(href) =>
-    <a href className="inline text-14 hover:underline text-fire" rel="noopener noreferrer">
-      {React.string("Edit")}
-    </a>
-  | None => React.null
-  }
 
   let pagination = switch categories {
   | Some(categories) =>
