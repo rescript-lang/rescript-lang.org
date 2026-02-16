@@ -138,23 +138,6 @@ module Sidebar = {
   ) => {
     let isItemActive = (navItem: NavItem.t) => navItem.href === (route :> string)
 
-    // the height of the navbars above is fluid across pages, and it's easy to get it wrong
-    // so we calculate it dynamically here
-    let _sidebarTopOffset = isOpen
-      ? {
-          let mobileNavbarHeight =
-            Nullable.make(document->WebAPI.Document.getElementById("mobile-navbar"))
-            ->Nullable.map(el => el.clientHeight)
-            ->Nullable.getOr(0)
-          let docNavbarHeight =
-            Nullable.make(document->WebAPI.Document.getElementById("doc-navbar"))
-            ->Nullable.map(el => el.clientHeight)
-            ->Nullable.getOr(0)
-
-          mobileNavbarHeight + docNavbarHeight + 8
-        }
-      : 0
-
     let getActiveToc = (navItem: NavItem.t) => {
       if navItem.href === (route :> string) {
         activeToc
@@ -165,9 +148,6 @@ module Sidebar = {
 
     <>
       <div
-        // style={{
-        //   paddingTop: `${sidebarTopOffset->Int.toString}px`,
-        // }}
         id="sidebar"
         className={(
           isOpen ? "fixed w-full left-0 h-full z-20 min-w-320" : "hidden "
@@ -270,22 +250,9 @@ let make = (
   ~categories: option<array<Sidebar.Category.t>>=?,
   ~children,
 ) => {
-  let (_isNavOpen, setNavOpen) = React.useState(() => false)
-
   let location = ReactRouter.useLocation()
 
   let theme = ColorTheme.toCN(theme)
-
-  // TODO: post rr7 - this can most likely be removed
-  let (_isSidebarOpen, setSidebarOpen) = sidebarState
-
-  let {pathname} = ReactRouter.useLocation()
-
-  React.useEffect(() => {
-    setSidebarOpen(_ => false)
-    setNavOpen(_ => false)
-    None
-  }, [pathname])
 
   let pagination = switch categories {
   | Some(categories) =>

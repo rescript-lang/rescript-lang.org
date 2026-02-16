@@ -10,7 +10,8 @@
   "sources": [
     {
       "dir": "__tests__",
-      "subdirs": true
+      "subdirs": true,
+      "type": "dev"
     },
     {
       "dir": "app",

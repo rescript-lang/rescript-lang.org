@@ -7,9 +7,8 @@ const mdx = init({
     "markdown-pages/docs",
     "markdown-pages/community",
     "markdown-pages/syntax-lookup",
-    "markdown-pages/guide",
   ],
-  aliases: ["blog", "docs", "community", "syntax-lookup", "guide"],
+  aliases: ["blog", "docs", "community", "syntax-lookup"],
 });
 
 const { stdlibPaths } = await import("./app/routes.jsx");
