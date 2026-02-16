@@ -1,19 +1,5 @@
-let link = "no-underline block hover:cursor-pointer hover:text-fire-30 mb-px"
-let activeLink = "font-medium text-fire-30 border-b border-fire"
-
-let linkOrActiveLink = (~target: Path.t, ~route: Path.t) => target === route ? activeLink : link
-
-let isActiveLink = (~includes: string, ~excludes: option<string>=?, ~route: Path.t) => {
-  let route = (route :> string)
-  // includes means we want the lnk to be active if it contains the expected text
-  let includes = route->String.includes(includes)
-  // excludes allows us to not have links be active even if they do have the includes text
-  let excludes = switch excludes {
-  | Some(excludes) => route->String.includes(excludes)
-  | None => false
-  }
-  includes && !excludes ? activeLink : link
-}
+open ReactRouter
+open NavbarUtils
 
 module MobileDrawerButton = {
   @react.component
@@ -24,7 +10,10 @@ module MobileDrawerButton = {
 }
 
 @react.component
-let make = (~children) => {
+let make = () => {
+  let location = ReactRouter.useLocation()
+  let route = location.pathname
+
   let scrollDirection = Hooks.useScrollDirection(~topMargin=64, ~threshold=32)
 
   let navbarClasses = switch scrollDirection {
@@ -34,12 +23,36 @@ let make = (~children) => {
 
   <nav
     dataTestId="navbar-secondary"
-    className={"text-12 md:text-14 shadow h-12 w-full bg-white sticky z-95 top-16 transition-transform duration-300 " ++
+    className={"text-12 md:text-14 shadow h-12 w-full bg-white sticky z-95 top-16 transition-transform duration-300 px-4 " ++
     navbarClasses}
   >
-    <div className="px-4 flex gap-6 lg:gap-10 items-center h-full w-full max-w-1280 m-auto">
-      <MobileDrawerButton hidden=false />
-      {children}
+    <div className="flex gap-6 lg:gap-10 items-center h-full w-full max-w-1280 m-auto">
+      <Link
+        prefetch=#intent
+        to=#"/docs/manual/introduction"
+        className={isActiveLink(~includes="/docs/manual/", ~excludes="/api", ~route)}
+      >
+        {React.string("Language Manual")}
+      </Link>
+      <Link
+        prefetch=#intent to=#"/docs/manual/api" className={isActiveLink(~includes="/api", ~route)}
+      >
+        {React.string("API")}
+      </Link>
+      <Link
+        prefetch=#intent
+        to=#"/syntax-lookup"
+        className={isActiveLink(~includes="/syntax-lookup", ~route)}
+      >
+        {React.string("Syntax Lookup")}
+      </Link>
+      <Link
+        prefetch=#intent
+        to=#"/docs/react/introduction"
+        className={isActiveLink(~includes="/docs/react/", ~route)}
+      >
+        {React.string("React")}
+      </Link>
     </div>
   </nav>
 }

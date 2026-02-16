@@ -53,6 +53,11 @@ module Sidebar: {
   ) => React.element
 }
 
+module BreadCrumbs: {
+  @react.component
+  let make: (~crumbs: list<Url.breadcrumb>) => React.element
+}
+
 @react.component
 let make: (
   ~theme: ColorTheme.t,
