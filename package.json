@@ -18,7 +18,7 @@
     "build:vite": "react-router build",
     "build": "yarn build:res && yarn build:scripts && yarn build:update-index && yarn build:vite",
     "ci:format": "prettier . --check --experimental-cli",
-    "ci:test": "yarn vitest --run --browser.headless",
+    "ci:test": "yarn vitest --run --browser.headless --update",
     "clean:res": "rescript clean",
     "convert-images": "auto-convert-images",
     "dev:res": "rescript watch",
