@@ -1,6 +1,6 @@
 ---
 author: rescript-team
-date: "2025-12-28"
+date: "2026-02-16"
 title: "Real-Time Analysis is Coming to ReScript"
 badge: roadmap
 description: |
@@ -9,15 +9,15 @@ description: |
 
 ## Introduction
 
-Imagine editing a ReScript file and seeing dead code warnings update almost immediately as you work. No waiting for a full re-analysis command. Just continuous feedback about which parts of your code are actually used.
+Imagine editing a ReScript file and seeing **project-wide** dead code warnings update almost immediately as you work. No waiting for a full re-analysis command. Just continuous feedback about which parts of your project are actually used.
 
 This is what we're bringing to ReScript.
 
-The static analyzer that powers dead code detection is being rebuilt on a **reactive foundation**. When you add a reference to a function, the "unused" warning vanishes quickly. When you remove the last use of a module, the dead code warning appears right away. The analysis stays in sync with your code, updating in real time.
+The static analyzer that powers dead code detection is being rebuilt on a **reactive foundation**. When you add a reference to a function in one file, the "unused" warning on its declaration in another file vanishes quickly. When you remove the last use of a module anywhere in the project, the dead code warning appears right away. The analysis stays in sync with your code, updating in real time.
 
 ## Why This Matters
 
-Traditional static analyzers work in batch mode: gather all files, analyze everything, report results. This works fine when you run analysis as a CI check or a manual command. But it's not what you want when you're actively editing code.
+Most tools that flag dead code—like ESLint or similar linters—only look at the _current file_. They can tell you about an unused local variable, but they can't tell you that a function exported from one module is never imported anywhere in the project. True project-wide dead code detection requires analyzing the entire codebase, and traditional analyzers do this in batch mode: gather all files, analyze everything, report results. This works fine as a CI check or a manual command. But it's not what you want when you're actively editing code.
 
 Batch analysis has an awkward tradeoff:
 
@@ -30,7 +30,7 @@ What developers actually want is _continuous_ feedback that keeps up with their 
 
 Instead of re-analyzing your entire project on every change, the reactive analyzer represents the analysis as a **computation graph**. Each piece of data—declarations, references, liveness information—flows through this graph. When a file changes, only the affected parts of the graph recompute.
 
-The result: analysis that completes in milliseconds for typical edits, even in large codebases.
+The result: analysis that completes almost instantly for typical edits, even in large codebases.
 
 ### A Concrete Update Flow
 
@@ -94,6 +94,12 @@ The reactive primitives are general-purpose. The same infrastructure that powers
 - Unused export detection
 - Reference counting and hotspot identification
 - Custom project-specific checks
+
+## A Natural Fit for Agentic Coding
+
+Reactive analysis is particularly powerful in agentic coding workflows. AI coding agents work best with fast feedback: make a change, observe the result, iterate. An agent tasked with cleaning up a codebase can remove a function, immediately see whether new dead code warnings appear (because something else depended on it), and adjust—all without waiting for a full analysis pass.
+
+As agentic coding becomes a bigger part of development workflows, tooling that provides continuous, whole-project feedback becomes essential infrastructure.
 
 ## The Road Ahead
 
