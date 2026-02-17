@@ -330,7 +330,7 @@
   display: inline-block;
 }
 
-#older-versions[popover] {
+.version-popover[popover] {
   inset: unset;
   width: 100%;
   height: auto;
@@ -358,7 +358,7 @@
     transform 0.3s ease;
 }
 
-#older-versions[popover]:popover-open ~ .menu {
+.version-popover[popover]:popover-open ~ .menu {
   opacity: 1;
   visibility: visible;
 }
@@ -372,7 +372,7 @@
   }
 }
 
-#older-versions[popover]:popover-open ~ .trigger {
+.version-popover[popover]:popover-open ~ .trigger {
   svg {
     transform: rotate(180deg);
   }
