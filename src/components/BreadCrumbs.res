@@ -8,14 +8,17 @@ let make = () => {
 
   <div className="w-full captions overflow-x-auto text-gray-60 mb-8">
     {paths
-    ->Array.mapWithIndex((path, i) =>
-      <>
-        <ReactRouter.Link.String key={path} to=path prefetch={#intent}>
+    ->Array.mapWithIndex((path, i) => {
+      let cumulativePath =
+        "/" ++ (paths->Array.slice(0, i + 1)->Array.joinWith("/"))
+
+      <React.Fragment key={cumulativePath}>
+        <ReactRouter.Link.String to=cumulativePath prefetch={#intent}>
           {React.string(path->String.capitalize)}
         </ReactRouter.Link.String>
         {i == lastIndex ? React.null : React.string(" / ")}
-      </>
-    )
+      </React.Fragment>
+    })
     ->React.array}
   </div>
 }
