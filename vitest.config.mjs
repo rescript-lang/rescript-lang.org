@@ -1,5 +1,5 @@
 import { defineConfig } from "vitest/config";
-import { playwright, defineBrowserCommand } from "@vitest/browser-playwright";
+import { playwright } from "@vitest/browser-playwright";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 

@@ -32,7 +32,12 @@ let make = (~sidebar: option<React.element>=?, ~children) => {
       ${isDocRoute(~route=pathname) ? "top-28" : "top-16"}`}
     >
       <div className="flex items-center h-full w-full max-w-1280 m-auto">
-        <button className="md:hidden mr-3" onClick={toggleMobileTertiaryDrawer}>
+        <button
+          className="md:hidden mr-3"
+          onClick={toggleMobileTertiaryDrawer}
+          ariaLabel="Toggle navigation menu"
+          type_="button"
+        >
           <img className="h-4" src="/ic_sidebar_drawer.svg" />
         </button>
         <div

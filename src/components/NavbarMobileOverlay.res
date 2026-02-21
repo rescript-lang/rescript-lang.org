@@ -59,17 +59,32 @@ module MobileNav = {
         </a>
       </li>
       <li className=base>
-        <a href=Constants.blueSkyHref rel="noopener noreferrer" className=extLink onClick=closeMobileOverlay>
+        <a
+          href=Constants.blueSkyHref
+          rel="noopener noreferrer"
+          className=extLink
+          onClick=closeMobileOverlay
+        >
           {React.string("Bluesky")}
         </a>
       </li>
       <li className=base>
-        <a href=Constants.githubHref rel="noopener noreferrer" className=extLink onClick=closeMobileOverlay>
+        <a
+          href=Constants.githubHref
+          rel="noopener noreferrer"
+          className=extLink
+          onClick=closeMobileOverlay
+        >
           {React.string("GitHub")}
         </a>
       </li>
       <li className=base>
-        <a href=Constants.discourseHref rel="noopener noreferrer" className=extLink onClick=closeMobileOverlay>
+        <a
+          href=Constants.discourseHref
+          rel="noopener noreferrer"
+          className=extLink
+          onClick=closeMobileOverlay
+        >
           {React.string("Forum")}
         </a>
       </li>
