@@ -3,7 +3,7 @@ let activeLink = "font-medium text-fire-30 border-b border-fire"
 
 let isActiveLink = (~includes: string, ~excludes: option<string>=?, ~route: Path.t) => {
   let route = (route :> string)
-  // includes means we want the lnk to be active if it contains the expected text
+  // includes means we want the link to be active if it contains the expected text
   let includes = route->String.includes(includes)
   // excludes allows us to not have links be active even if they do have the includes text
   let excludes = switch excludes {

@@ -1,14 +1,6 @@
 open ReactRouter
 open NavbarUtils
 
-module MobileDrawerButton = {
-  @react.component
-  let make = (~hidden: bool) =>
-    <button className={(hidden ? "hidden " : "") ++ "md:hidden mr-3"} popoverTarget="sidebar">
-      <img className="h-4" src="/ic_sidebar_drawer.svg" />
-    </button>
-}
-
 @react.component
 let make = () => {
   let location = ReactRouter.useLocation()
