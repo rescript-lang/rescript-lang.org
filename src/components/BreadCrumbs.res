@@ -9,8 +9,7 @@ let make = () => {
   <div className="w-full captions overflow-x-auto text-gray-60 mb-8">
     {paths
     ->Array.mapWithIndex((path, i) => {
-      let cumulativePath =
-        "/" ++ (paths->Array.slice(0, i + 1)->Array.joinWith("/"))
+      let cumulativePath = "/" ++ paths->Array.slice(~start=0, ~end=i + 1)->Array.join("/")
 
       <React.Fragment key={cumulativePath}>
         <ReactRouter.Link.String to=cumulativePath prefetch={#intent}>
