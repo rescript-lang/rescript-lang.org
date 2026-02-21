@@ -22,6 +22,7 @@ module MobileNav = {
           prefetch={#intent}
           to=#"/blog"
           className={linkOrActiveLinkSubroute(~target=#"/blog", ~route)}
+          onClick=toggleMobileOverlay
         >
           {React.string("Blog")}
         </Link>
@@ -31,6 +32,7 @@ module MobileNav = {
           prefetch={#intent}
           to=#"/community/overview"
           className={linkOrActiveLink(~target=#"/community/overview", ~route)}
+          onClick=toggleMobileOverlay
         >
           {React.string("Community")}
         </Link>
@@ -40,6 +42,7 @@ module MobileNav = {
           prefetch={#intent}
           to=#"/packages"
           className={linkOrActiveLink(~target=#"/packages", ~route)}
+          onClick=toggleMobileOverlay
         >
           {React.string("Packages")}
         </Link>
@@ -50,22 +53,23 @@ module MobileNav = {
           rel="noopener noreferrer"
           className=extLink
           ariaLabel="X (formerly Twitter)"
+          onClick=closeMobileOverlay
         >
           {React.string("X")}
         </a>
       </li>
       <li className=base>
-        <a href=Constants.blueSkyHref rel="noopener noreferrer" className=extLink>
+        <a href=Constants.blueSkyHref rel="noopener noreferrer" className=extLink onClick=closeMobileOverlay>
           {React.string("Bluesky")}
         </a>
       </li>
       <li className=base>
-        <a href=Constants.githubHref rel="noopener noreferrer" className=extLink>
+        <a href=Constants.githubHref rel="noopener noreferrer" className=extLink onClick=closeMobileOverlay>
           {React.string("GitHub")}
         </a>
       </li>
       <li className=base>
-        <a href=Constants.discourseHref rel="noopener noreferrer" className=extLink>
+        <a href=Constants.discourseHref rel="noopener noreferrer" className=extLink onClick=closeMobileOverlay>
           {React.string("Forum")}
         </a>
       </li>
