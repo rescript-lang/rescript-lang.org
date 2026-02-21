@@ -1,0 +1,35 @@
+---
+id: "not-undefined-decorator"
+keywords: ["not", "undefined", "decorator"]
+name: "@notUndefined"
+summary: "This is the `@notUndefined` decorator."
+category: "decorators"
+---
+
+**Since 12.0**
+
+Use `@notUndefined` on an abstract type to tell the compiler that
+values of that type can never be JavaScript `undefined`.
+
+With `@notUndefined`, the compiler can treat the abstract type as never-undefined for optimization purposes (notably option representation and code generation decisions).
+
+> **Note:** This attribute is a compiler contract. If `undefined` can flow into that type through unsafe interop or casts, generated code assumptions can be broken. Use it only when this guarantee is actually true.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+@notUndefined
+type t
+```
+
+```js
+// Empty output
+```
+
+</CodeTab>
+
+### References
+
+- [Signatures](../docs/manual/module.mdx#signatures)

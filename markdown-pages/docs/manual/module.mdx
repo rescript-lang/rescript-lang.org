@@ -350,6 +350,12 @@ It's also useful to hide the underlying type as an implementation detail others
 can't rely on. If you ask what the type of `Company.profession` is, instead of
 exposing the variant, it'll only tell you "it's `Company.profession`".
 
+This also means that the compiler can't make assumptions about the type.
+In certain cases, when working with abstract types and `option` for example, the compiler doesn't know whether
+the abstract type can be the JavaScript value `undefined` or not. This can lead to less optimal code being generated.
+For this reason, you can use the `@notUndefined` decorator to tell the compiler that the abstract type can never be `undefined`
+(use with caution and see the `@notUndefined` decorator documentation for more details and caveats).
+
 ### Extending module signatures
 
 Like modules themselves, module signatures can also be extended by other module signatures using `include`. Again, **heavily discouraged**:
