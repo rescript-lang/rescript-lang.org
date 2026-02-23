@@ -20,6 +20,9 @@ jobs:
       contents: read
       deployments: write
       pull-requests: write
+    outputs:
+      deployment-url: ${{ steps.set-url.outputs.deployment-url }}
+      is-pr: ${{ github.event_name == 'pull_request' }}
     steps:
       - uses: actions/checkout@v4
       - name: Setup yarn
@@ -38,11 +41,12 @@ jobs:
 
           if [[ "$RAW_BRANCH" == "master" ]]; then
              echo "VITE_DEPLOYMENT_URL=" >> "$GITHUB_ENV"
+             echo "SAFE_BRANCH=" >> "$GITHUB_ENV"
           else
              SAFE_BRANCH="${RAW_BRANCH//\//-}"
-             
+
              SAFE_BRANCH=$(echo "$SAFE_BRANCH" | tr '[:upper:]' '[:lower:]')
-             
+
              echo "SAFE_BRANCH=$SAFE_BRANCH" >> "$GITHUB_ENV"
              echo "VITE_DEPLOYMENT_URL=https://${SAFE_BRANCH}.rescript-lang.pages.dev" >> "$GITHUB_ENV"
           fi
@@ -61,6 +65,15 @@ jobs:
           wranglerVersion: 4.63.0
         env:
           FORCE_COLOR: 0
+      - name: Set deployment URL output
+        id: set-url
+        shell: bash
+        run: |
+          if [[ "${{ github.ref_name }}" == "master" ]]; then
+            echo "deployment-url=https://rescript-lang.org" >> "$GITHUB_OUTPUT"
+          else
+            echo "deployment-url=${{ env.VITE_DEPLOYMENT_URL }}" >> "$GITHUB_OUTPUT"
+          fi
       - name: Comment PR with deployment link
         uses: marocchino/sticky-pull-request-comment@v2
         with:
@@ -72,3 +85,79 @@ jobs:
             Deployment Environment: ${{ steps.deploy.outputs.pages-environment }}
 
             ${{ steps.deploy.outputs.command-output }}
+
+  e2e:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: [deploy]
+    # Only run E2E on pull requests from non-fork branches; push-to-master runs
+    # are excluded here since production smoke tests are a separate concern.
+    if: ${{ github.event_name == 'pull_request' && needs.deploy.outputs.deployment-url != '' }}
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".node-version"
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install
+
+      # The e2e test files are written in ReScript and must be compiled to .jsx
+      # before Playwright can discover and run them.
+      - name: Build ReScript (includes e2e tests)
+        run: yarn build:res
+
+      - name: Install Playwright browsers (Chromium only)
+        run: yarn playwright install chromium --with-deps
+
+      - name: Run Playwright E2E tests
+        run: yarn e2e
+        env:
+          PLAYWRIGHT_BASE_URL: ${{ needs.deploy.outputs.deployment-url }}
+          CI: true
+
+      - name: Run Chromatic visual regression
+        # Always run Chromatic even when Playwright tests fail so that visual
+        # diffs are still captured and surfaced on the PR.
+        if: ${{ always() && needs.deploy.outputs.deployment-url != '' }}
+        run: yarn e2e:chromatic --exit-zero-on-changes
+        env:
+          CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          PLAYWRIGHT_BASE_URL: ${{ needs.deploy.outputs.deployment-url }}
+
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Upload test results (traces / screenshots / videos)
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results/
+          retention-days: 7
+
+      - name: Comment PR with Playwright report link
+        if: ${{ failure() }}
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          recreate: true
+          header: e2e-report
+          message: |
+            ## E2E Test Failures
+
+            One or more Playwright tests failed against the preview deployment.
+
+            **Preview URL:** ${{ needs.deploy.outputs.deployment-url }}
+
+            Download the full HTML report from the [workflow run artifacts](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).

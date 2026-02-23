@@ -50,8 +50,11 @@ functions/**/*.mjs
 functions/**/*.jsx
 __tests__/**/*.mjs
 __tests__/**/*.jsx
+e2e/**/*.mjs
+e2e/**/*.jsx
 !_shims.mjs
 !_shims.jsx
+!src/bindings/playwright-shim.mjs
 
 # Yarn
 .yarn/*
@@ -73,3 +76,7 @@ _scripts
 # Vitest screenshots
 !__tests__/__screenshots__/**/*
 .vitest-attachments
+
+# Playwright artifacts
+playwright-report/
+test-results/

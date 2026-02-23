@@ -1,3 +1,7 @@
+e2e/**/*.mjs
+e2e/**/*.jsx
+playwright-report/
+test-results/
 !_shims.mjs
 !public/_redirects
 .DS_Store
