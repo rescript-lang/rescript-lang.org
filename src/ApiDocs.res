@@ -99,14 +99,15 @@ module SidebarTree = {
     open ReactRouter
 
     let location = useLocation()
+    let currentPathname = (location.pathname :> string)->Url.normalizePath
 
     let moduleRoute = `${apiDocsRootPath}/${(location.pathname :> string)
       ->String.replace(`/docs/manual/api/`, "")
       ->String.split("/")
       ->Array.get(0)
-      ->Option.getOr("stdlib")}`
+      ->Option.getOr("stdlib")}`->Url.normalizePath
 
-    let isCurrentlyAtRoot = (location.pathname :> string) == moduleRoute
+    let isCurrentlyAtRoot = currentPathname == moduleRoute
 
     let summaryClassName = "truncate py-1 md:h-auto tracking-tight text-gray-60 font-medium text-14 rounded-sm hover:bg-gray-20 hover:-ml-2 hover:py-1 hover:pl-2 "
     let classNameActive = " bg-fire-5 text-red-500 -ml-2 pl-2 font-medium hover:bg-fire-70"
@@ -128,7 +129,7 @@ module SidebarTree = {
       // This is the full path to this module, e.g. "/docs/manual/api/stdlib/array" or "/docs/manual/api/stdlib/int"
       let fullPath = `${moduleRoute}/${relativePath}`->Url.normalizePath
 
-      let isCurrentRoute = fullPath == (location.pathname :> string)
+      let isCurrentRoute = fullPath == currentPathname
 
       let classNameActive = isCurrentRoute ? classNameActive : ""
 
@@ -138,7 +139,7 @@ module SidebarTree = {
 
       switch hasChildren {
       | true =>
-        let open_ = (location.pathname :> string)->String.includes(fullPath)
+        let open_ = currentPathname->String.includes(fullPath)
 
         <details
           key={node.name}
