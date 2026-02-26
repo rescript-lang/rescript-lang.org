@@ -57,13 +57,13 @@ order: 1
 
 ### Number
 
-| JavaScript  | ReScript     |
-| ----------- | ------------ |
-| `3`         | Same \*      |
-| `3.1415`    | Same         |
-| `3 + 4`     | Same         |
-| `3.0 + 4.5` | `3.0 +. 4.5` |
-| `5 % 3`     | `mod(5, 3)`  |
+| JavaScript  | ReScript |
+| ----------- | -------- |
+| `3`         | Same \*  |
+| `3.1415`    | Same     |
+| `3 + 4`     | Same     |
+| `3.0 + 4.5` | Same     |
+| `5 % 3`     | Same     |
 
 \* JS has no distinction between integer and float.
 
@@ -235,7 +235,7 @@ The last expression of a block delimited by `{}` implicitly returns (including f
 | ------------------------------- | ------------------------------------ | ------------------------------------------ |
 | String                          | `"Hello"`                            | `"Hello"`                                  |
 | String Interpolation            | `` `Hello ${message}` ``             | `"Hello " + message`                       |
-| Character (disrecommended)      | `'x'`                                | `120` (char code)                          |
+| Character (discouraged)         | `'x'`                                | `120` (char code)                          |
 | Integer                         | `23`, `-23`                          | `23`, `-23`                                |
 | Float                           | `23.0`, `-23.0`                      | `23.0`, `-23.0`                            |
 | Integer Addition                | `23 + 1`                             | `23 + 1`                                   |
@@ -247,7 +247,7 @@ The last expression of a block delimited by `{}` implicitly returns (including f
 | Comparison                      | `>`, `<`, `>=`, `<=`                 | `>`, `<`, `>=`, `<=`                       |
 | Boolean operation               | `!`, `&&`, `\|\|`                    | `!`, `&&`, `\|\|`                          |
 | Shallow and deep Equality       | `===`, `==`                          | `===`, `==`                                |
-| List (disrecommended)           | `list{1, 2, 3}`                      | `{hd: 1, tl: {hd: 2, tl: {hd: 3, tl: 0}}}` |
+| List (discouraged)              | `list{1, 2, 3}`                      | `{hd: 1, tl: {hd: 2, tl: {hd: 3, tl: 0}}}` |
 | List Prepend                    | `list{a1, a2, ...oldList}`           | `{hd: a1, tl: {hd: a2, tl: theRest}}`      |
 | Array                           | `[1, 2, 3]`                          | `[1, 2, 3]`                                |
 | Record                          | `type t = {b: int}; let a = {b: 10}` | `var a = {b: 10}`                          |

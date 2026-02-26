@@ -1,0 +1,45 @@
+---
+id: "module-type-of"
+keywords: ["module type of", "module type"]
+name: "module type of"
+summary: "`module type of` extracts a module type from an existing module."
+category: "languagemodules"
+---
+
+Use `module type of` when you want a signature based on an existing module.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+module Message = {
+  let greeting = "Hello"
+  let prefix = "[msg]"
+}
+
+module type MessageShape = module type of Message
+
+module LoudMessage: MessageShape = {
+  let greeting = "HELLO"
+  let prefix = "[LOUD]"
+}
+```
+
+```js
+var Message = {
+  greeting: "Hello",
+  prefix: "[msg]",
+};
+
+var LoudMessage = {
+  greeting: "HELLO",
+  prefix: "[LOUD]",
+};
+```
+
+</CodeTab>
+
+### References
+
+- [Module](../docs/manual/module.mdx)

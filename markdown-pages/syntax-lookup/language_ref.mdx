@@ -1,0 +1,33 @@
+---
+id: "ref"
+keywords: ["ref", ":=", "mutable", "contents"]
+name: "ref"
+summary: "This is the `ref` mutable reference syntax."
+category: "languageconstructs"
+---
+
+Use `ref(value)` to create a mutable reference cell. Read via `.contents` and update via `:=`.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let counter = ref(0)
+
+counter := counter.contents + 1
+```
+
+```js
+var counter = {
+  contents: 0,
+};
+
+counter.contents = (counter.contents + 1) | 0;
+```
+
+</CodeTab>
+
+### References
+
+- [Mutation](../docs/manual/mutation.mdx)

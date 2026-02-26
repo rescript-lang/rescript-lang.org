@@ -1,0 +1,30 @@
+---
+id: "attached-doc-comment"
+keywords: ["doc comment", "attached doc comment", "/**"]
+name: "/** ... */"
+summary: "This is the `attached doc comment` syntax."
+category: "languagecomments"
+---
+
+Use an attached doc comment directly before a value or type declaration.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+/** Returns the full name. */
+let fullName = (first, last) => first ++ " " ++ last
+```
+
+```js
+function fullName(first, last) {
+  return first + " " + last;
+}
+```
+
+</CodeTab>
+
+### References
+
+- [Overview](../docs/manual/overview.mdx#comments)

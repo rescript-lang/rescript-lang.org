@@ -1,0 +1,58 @@
+---
+id: "module-function"
+keywords: ["module function", "module", "(Item: Comparable) => {}"]
+name: "module function"
+summary: "A module function takes a module as input and returns a new module."
+category: "languagemodules"
+---
+
+A `module function` lets you parameterize modules over other modules.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+module type Greeter = {
+  let greet: string => string
+}
+
+module MakeWelcome = (G: Greeter) => {
+  let welcome = name => G.greet(name) ++ "!"
+}
+
+module English = {
+  let greet = name => "Hello " ++ name
+}
+
+module Welcome = MakeWelcome(English)
+let message = Welcome.welcome("Ada")
+```
+
+```js
+function MakeWelcome(G) {
+  function welcome(name) {
+    return G.greet(name) + "!";
+  }
+
+  return {
+    welcome: welcome,
+  };
+}
+
+var English = {
+  greet: function (name) {
+    return "Hello " + name;
+  },
+};
+
+var Welcome = MakeWelcome(English);
+var message = Welcome.welcome("Ada");
+```
+
+</CodeTab>
+
+### References
+
+- [Module Functions](../docs/manual/module-functions.mdx)
+- [Module](../docs/manual/module.mdx)

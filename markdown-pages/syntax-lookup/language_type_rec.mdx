@@ -1,0 +1,33 @@
+---
+id: "type-rec"
+keywords: ["type rec", "recursive type", "mutually recursive types"]
+name: "type rec"
+summary: "`type rec` defines recursive and mutually recursive types."
+category: "languagetypes"
+---
+
+Use `type rec` to define recursive types. Combine it with `and` for mutually recursive types.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+type rec expr =
+  | Int(int)
+  | Add(expr, expr)
+and node = {
+  value: expr,
+  next: option<node>,
+}
+```
+
+```js
+// Type declarations are erased from JavaScript output.
+```
+
+</CodeTab>
+
+### References
+
+- [Type](../docs/manual/type.mdx)
