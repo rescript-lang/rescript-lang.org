@@ -426,6 +426,7 @@ type t = [
   | #"/syntax-lookup/decorator_react_component"
   | #"/syntax-lookup/decorator_raises"
   | #"/syntax-lookup/decorator_obj"
+  | #"/syntax-lookup/decorator_not_undefined"
   | #"/syntax-lookup/decorator_new"
   | #"/syntax-lookup/decorator_module_warning"
   | #"/syntax-lookup/decorator_module_deprecated"
