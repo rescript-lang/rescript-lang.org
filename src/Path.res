@@ -11,6 +11,8 @@ type t = [
   | #"/docs/manual/api/introduction"
   | #"/docs/manual/api/belt"
   | #"/docs/manual/api/dom"
+  | #"/docs/manual/api/dom/storage"
+  | #"/docs/manual/api/dom/storage2"
   | #"/docs/manual/api/stdlib/intl/numberformat/grouping"
   | #"/docs/manual/api/stdlib/biguint64array/constants"
   | #"/docs/manual/api/stdlib/bigint64array/constants"
