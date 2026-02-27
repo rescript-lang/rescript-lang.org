@@ -3089,14 +3089,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsnobip/rescript-lezer@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "@tsnobip/rescript-lezer@npm:0.7.0"
+"@tsnobip/rescript-lezer@npm:^0.8.0":
+  version: 0.8.0
+  resolution: "@tsnobip/rescript-lezer@npm:0.8.0"
   dependencies:
     "@lezer/common": "npm:^1.2.3"
     "@lezer/highlight": "npm:^1.2.1"
     "@lezer/lr": "npm:^1.4.2"
-  checksum: 10c0/7f8b1e3c04bf0a2aa9306d3d4213a8e3b7b79901a85aa942b9658ce971ce95f71582d51b7ade40f7141df09b37beb428133819b6eaf559108d73e4138b583f45
+  checksum: 10c0/5e8b0f380d69fa923d235f1123ba902ce4008a96770e9ce0a56f30d76adf3d3d4a3b496bc7ff042a48d1ca99153a05aaa11712cb3850cb1234b778afed5a9bcc
   languageName: node
   linkType: hard
 
@@ -9497,7 +9497,7 @@ __metadata:
     "@rescript/react": "npm:^0.14.0"
     "@rescript/webapi": "npm:0.1.0-experimental-29db5f4"
     "@tailwindcss/vite": "npm:^4.1.13"
-    "@tsnobip/rescript-lezer": "npm:^0.7.0"
+    "@tsnobip/rescript-lezer": "npm:^0.8.0"
     "@types/react": "npm:^19.2.2"
     "@vitejs/plugin-react": "npm:^4.7.0"
     "@vitest/browser-playwright": "npm:^4.0.18"
