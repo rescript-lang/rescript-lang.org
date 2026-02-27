@@ -44,7 +44,7 @@ Run `rescript <subcommand> -h` for subcommand help. Examples:
 
 Each build will create build artifacts from your project's source files.
 
-**To build a project (including its dependencies / pinned-dependencies)**, run:
+**To build a project (including its dependencies)**, run:
 
 ```sh
 rescript
@@ -60,9 +60,9 @@ rescript -w
 
 Any new file change will be picked up and the build will re-run.
 
-**Note**: third-party libraries (in `node_modules`, or via `pinned-dependencies`) aren't watched, as doing so may exceed the node.js watcher count limit.
+**Note**: third-party libraries in `node_modules` aren't watched, as doing so may exceed the node.js watcher count limit.
 
-**Note 2**: In case you want to set up a project in a JS-monorepo-esque approach (`npm` and `yarn` workspaces) where changes in your sub packages should be noticed by the build, you will need to define pinned dependencies in your main project's `rescript.json`. More details [here](./build-monorepo-setup.mdx).
+For monorepo setup in ReScript 12+, see [Setting up a monorepo](./build-monorepo-setup.mdx).
 
 ## Clean Project
 
