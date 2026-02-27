@@ -148,6 +148,12 @@ ReScript's `true/false` compiles into a JavaScript `true/false`.
 
 32-bits, truncated when necessary. We provide the usual operations on them: `+`, `-`, `*`, `/`, etc. See [Int](/docs/manual/api/stdlib/int) for helper functions.
 
+Integer operators include `+`, `-`, `*`, `/`, `**`, and `%`.
+
+`%` keeps the familiar `mod` naming, but its semantics are remainder (same behavior as JavaScript `%`).
+
+Bitwise operators for `int`: `~~~`, `&&&`, `|||`, `^^^`, `<<`, `>>`, `>>>`.
+
 **Be careful when you bind to JavaScript numbers!** Since ReScript integers have a much smaller range than JavaScript numbers, data might get lost when dealing with large numbers. In those cases it’s much safer to bind the numbers as **float**. Be extra mindful of this when binding to JavaScript Dates and their epoch time.
 
 To improve readability, you may place underscores in the middle of numeric literals such as `1_000_000`. Note that underscores can be placed anywhere within a number, not just every three digits.
@@ -155,6 +161,8 @@ To improve readability, you may place underscores in the middle of numeric liter
 ## Floats
 
 Float requires other operators: `+.`, `-.`, `*.`, `/.`, etc. Like `0.5 +. 0.6`. See [Float](/docs/manual/api/stdlib/float) for helper functions.
+
+Float also supports `**` (exponentiation) and `%` (remainder semantics).
 
 As with integers, you may use underscores within literals to improve readability.
 
@@ -179,7 +187,7 @@ var result = 1 + 2;
 **Since 11.1**
 
 For values which are too large to be represented by Int or Float, there is the `bigint` primitive type.
-We provide the usual operations on them: `+`, `-`, `*`, `/`, etc. See [BigInt](/docs/manual/api/stdlib/bigint) for helper functions.
+We provide the usual operations on them: `+`, `-`, `*`, `/`, `**`, `%`, etc. See [BigInt](/docs/manual/api/stdlib/bigint) for helper functions.
 
 A `bigint` number is denoted by a trailing `n` like so: `42n`.
 
@@ -209,28 +217,26 @@ It also supports all the bitwise operations, except unsigned shift right (`>>>`)
 ```res example
 open! BigInt
 
-let a = land(1n, 1n)
-let b = lor(1n, 1n)
-let c = lxor(1n, 1n)
-let d = lnot(1n)
-let e = lsl(1n, 1n)
-let f = asr(1n, 1n)
+let a = 5n &&& 3n
+let b = 5n ||| 2n
+let c = 5n ^^^ 1n
+let d = ~~~5n
+let e = 5n << 1n
+let f = 5n >> 1n
 ```
 
 ```js
-var Js_bigint = require("./stdlib/js_bigint.js");
+var a = 5n & 3n;
 
-var a = 1n & 1n;
+var b = 5n | 2n;
 
-var b = 1n | 1n;
+var c = 5n ^ 1n;
 
-var c = 1n ^ 1n;
+var d = ~5n;
 
-var d = Js_bigint.lnot(1n);
+var e = 5n << 1n;
 
-var e = 1n << 1n;
-
-var f = 1n >> 1n;
+var f = 5n >> 1n;
 ```
 
 </CodeTab>

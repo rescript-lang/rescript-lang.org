@@ -1,0 +1,52 @@
+---
+id: "variant-type"
+keywords:
+  [
+    "variant",
+    "variant type",
+    "constructors",
+    "A | B",
+    "MyVariant",
+    "Ok",
+    "Error",
+  ]
+name: "MyVariant"
+summary: "A variant type models a value as one of several named constructors."
+category: "languagepatternsvalues"
+---
+
+A variant type lets you represent different cases in one type.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+type myResult<'a> =
+  | MyVariant('a)
+  | Error(string)
+
+let response = MyVariant(42)
+
+let message = switch response {
+| MyVariant(value) => "Success: " ++ Int.toString(value)
+| Error(err) => "Error: " ++ err
+}
+```
+
+```js
+var response = {
+  TAG: "MyVariant",
+  _0: 42,
+};
+
+var message =
+  response.TAG === "MyVariant" ? "Success: 42" : "Error: " + response._0;
+```
+
+</CodeTab>
+
+### References
+
+- [Variant](../docs/manual/variant.mdx)
+- [Pattern Matching](../docs/manual/pattern-matching-destructuring.mdx)

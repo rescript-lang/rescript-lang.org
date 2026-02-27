@@ -1,0 +1,29 @@
+---
+id: "empty-object-type"
+keywords: ["{.}", "empty object type", "object type"]
+name: "{.}"
+summary: "This is the `empty object type` syntax."
+category: "languagetypes"
+---
+
+Use `{.}` to describe an object type with no known fields.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+type empty = {.}
+
+let acceptEmpty = (_value: empty) => ()
+```
+
+```js
+function acceptEmpty(_value) {}
+```
+
+</CodeTab>
+
+### References
+
+- [Object](../docs/manual/object.mdx)

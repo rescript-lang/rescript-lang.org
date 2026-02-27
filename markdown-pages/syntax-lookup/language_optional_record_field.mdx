@@ -1,0 +1,48 @@
+---
+id: "optional-record-field"
+keywords:
+  [
+    "optional record field",
+    "{ ?key: type }",
+    "{ ?key: value }",
+    "name?: string",
+    "?",
+    "record",
+  ]
+name: "{ ?key: type }"
+summary: "Optional record fields can be omitted when creating records."
+category: "languagetypes"
+---
+
+Use `?` on a record field to mark it optional.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+type user = {
+  age: int,
+  name?: string,
+}
+
+let withName: user = {age: 5, name: "Ada"}
+let withoutName: user = {age: 7}
+```
+
+```js
+var withName = {
+  age: 5,
+  name: "Ada",
+};
+
+var withoutName = {
+  age: 7,
+};
+```
+
+</CodeTab>
+
+### References
+
+- [Optional Record Fields](../docs/manual/record.mdx#optional-record-fields)

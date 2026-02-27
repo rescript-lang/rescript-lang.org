@@ -1,0 +1,33 @@
+---
+id: "exception"
+keywords: ["exception", "exn", "throw", "try", "catch"]
+name: "exception"
+summary: "This is the `exception` syntax."
+category: "languagecontrolflow"
+---
+
+Use `exception` to declare custom exception constructors.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+exception NotFound(string)
+
+let message = try {
+  throw(NotFound("Missing value"))
+} catch {
+| NotFound(text) => text
+}
+```
+
+```js
+var message = "Missing value";
+```
+
+</CodeTab>
+
+### References
+
+- [Exception](../docs/manual/exception.mdx)
