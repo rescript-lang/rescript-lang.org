@@ -28,6 +28,8 @@ let stdlibRoutes =
 let beltRoutes =
   beltPaths->Array.map(path => route(path, "./routes/ApiRoute.jsx", ~options={id: path}))
 
+let mdxRoutes = mdxRoutes("./routes/MdxRoute.jsx")
+
 let default = [
   index("./routes/LandingPageRoute.jsx"),
   route("packages", "./routes/PackagesRoute.jsx"),
@@ -42,6 +44,6 @@ let default = [
   route("docs/manual/api/dom", "./routes/ApiRoute.jsx", ~options={id: "api-dom"}),
   ...stdlibRoutes,
   ...beltRoutes,
-  ...mdxRoutes("./routes/MdxRoute.jsx"),
+  ...mdxRoutes,
   route("*", "./routes/NotFoundRoute.jsx"),
 ]

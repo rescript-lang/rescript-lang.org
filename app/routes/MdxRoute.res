@@ -291,8 +291,43 @@ let default = () => {
 
   <>
     {if (pathname :> string) == "/docs/manual/api" {
+      let breadcrumbs = list{
+        {Url.name: "Docs", href: `/docs/manual/api`},
+        {name: "API", href: `/docs/manual/api`},
+      }
+      let sidebarContent =
+        <aside className="px-4 w-full block">
+          <div className="flex justify-between items-baseline">
+            <div className="flex flex-col text-fire font-medium">
+              <VersionSelect />
+            </div>
+            <button
+              className="flex items-center" onClick={_ => NavbarUtils.closeMobileTertiaryDrawer()}
+            >
+              <Icon.Close />
+            </button>
+          </div>
+          <div className="mb-56">
+            {ApiOverviewLayout.categories
+            ->Array.map(category => {
+              let isItemActive = (navItem: SidebarLayout.Sidebar.NavItem.t) =>
+                navItem.href === (pathname :> string)
+              <div key=category.name>
+                <SidebarLayout.Sidebar.Category
+                  isItemActive category onClick={_ => NavbarUtils.closeMobileTertiaryDrawer()}
+                />
+              </div>
+            })
+            ->React.array}
+          </div>
+        </aside>
+
       <>
         <Meta title=title description={attributes.description->Nullable.getOr("ReScript API")} />
+        <NavbarSecondary />
+        <NavbarTertiary sidebar=sidebarContent>
+          <SidebarLayout.BreadCrumbs crumbs=breadcrumbs />
+        </NavbarTertiary>
         <ApiOverviewLayout.Docs>
           <div className="markdown-body"> {component()} </div>
         </ApiOverviewLayout.Docs>
@@ -304,10 +339,9 @@ let default = () => {
     ) {
       <>
         <Meta title=title description={attributes.description->Nullable.getOr("")} />
-        <DocsLayout
-          categories
-          activeToc={title, entries}
-          breadcrumbs=?{loaderData.breadcrumbs->Option.map(crumbs =>
+        <NavbarSecondary />
+        {
+          let breadcrumbs = loaderData.breadcrumbs->Option.map(crumbs =>
             List.mapWithIndex(crumbs, (item, index) => {
               if index === 0 {
                 if (pathname :> string)->String.includes("docs/manual") {
@@ -321,11 +355,64 @@ let default = () => {
                 item
               }
             })
-          )}
-          editHref={`https://github.com/rescript-lang/rescript-lang.org/blob/master${loaderData.filePath->Option.getOrThrow}`}
-        >
-          <div className="markdown-body"> {component()} </div>
-        </DocsLayout>
+          )
+          let editHref = `https://github.com/rescript-lang/rescript-lang.org/blob/master${loaderData.filePath->Option.getOrThrow}`
+
+          let sidebarContent =
+            <aside className="px-4 w-full block">
+              <div className="flex justify-between items-baseline">
+                <div className="flex flex-col text-fire font-medium">
+                  <VersionSelect />
+                </div>
+                <button
+                  className="flex items-center"
+                  onClick={_ => NavbarUtils.closeMobileTertiaryDrawer()}
+                >
+                  <Icon.Close />
+                </button>
+              </div>
+              <div className="mb-56">
+                {categories
+                ->Array.map(category => {
+                  let isItemActive = (navItem: SidebarLayout.Sidebar.NavItem.t) =>
+                    navItem.href === (pathname :> string)
+                  let getActiveToc = (navItem: SidebarLayout.Sidebar.NavItem.t) =>
+                    if navItem.href === (pathname :> string) {
+                      Some({TableOfContents.title, entries})
+                    } else {
+                      None
+                    }
+                  <div key=category.name>
+                    <SidebarLayout.Sidebar.Category
+                      isItemActive
+                      getActiveToc
+                      category
+                      onClick={_ => NavbarUtils.closeMobileTertiaryDrawer()}
+                    />
+                  </div>
+                })
+                ->React.array}
+              </div>
+            </aside>
+
+          <>
+            <NavbarTertiary sidebar=sidebarContent>
+              {breadcrumbs->Option.mapOr(React.null, crumbs =>
+                <SidebarLayout.BreadCrumbs crumbs />
+              )}
+              <a
+                href=editHref
+                className="inline text-14 hover:underline text-fire"
+                rel="noopener noreferrer"
+              >
+                {React.string("Edit")}
+              </a>
+            </NavbarTertiary>
+            <DocsLayout categories activeToc={title, entries}>
+              <div className="markdown-body"> {component()} </div>
+            </DocsLayout>
+          </>
+        }
       </>
     } else if (pathname :> string)->String.includes("community") {
       <CommunityLayout categories entries>
@@ -347,7 +434,7 @@ let default = () => {
             ->Option.getOr("Syntax Lookup | ReScript API")}
             description={attributes.description->Nullable.getOr("")}
           />
-
+          <NavbarSecondary />
           <SyntaxLookup mdxSources activeItem=?loaderData.activeSyntaxItem>
             {component()}
           </SyntaxLookup>

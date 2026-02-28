@@ -1,5 +1,3 @@
-// @ts-check
-
 import { reactRouter } from "@react-router/dev/vite";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
@@ -13,12 +11,11 @@ const excludedFiles = ["lib/**", "**/*.res", "**/*.resi"];
 export default defineConfig({
   plugins: [
     tailwindcss(),
+    reactRouter(),
     react({
-      reactRefreshHost: "",
       include: ["**/*.mjs"],
       exclude: excludedFiles,
     }),
-    reactRouter(),
     // this is to make it so babel doesn't break when trying to acess process.env in the client
     env({ prefix: "PUBLIC_" }),
     // adds dev scripts for browser devtools

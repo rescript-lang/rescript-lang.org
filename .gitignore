@@ -69,3 +69,7 @@ _scripts
 
 # Local env files
 .env.local
+
+# Vitest screenshots
+!__tests__/__screenshots__/**/*
+.vitest-attachments

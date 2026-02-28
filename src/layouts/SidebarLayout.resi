@@ -53,15 +53,18 @@ module Sidebar: {
   ) => React.element
 }
 
+module BreadCrumbs: {
+  @react.component
+  let make: (~crumbs: list<Url.breadcrumb>) => React.element
+}
+
 @react.component
 let make: (
   ~theme: ColorTheme.t,
-  ~editHref: string=?,
   // (Sidebar, toggleSidebar) ... for toggling sidebar in mobile view
-  ~sidebarState: (bool, (bool => bool) => unit),
+  ~sidebarState: (bool, (bool => bool) => unit)=?,
   ~sidebar: React.element,
   ~rightSidebar: React.element=?,
   ~categories: array<Sidebar.Category.t>=?,
-  ~breadcrumbs: list<Url.breadcrumb>=?,
   ~children: React.element,
 ) => React.element

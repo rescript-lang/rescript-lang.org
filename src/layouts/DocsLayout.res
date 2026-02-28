@@ -28,9 +28,7 @@ let makeBreadcrumbs = (~basePath: string, route: string): list<Url.breadcrumb> =
 
 @react.component
 let make = (
-  ~editHref: option<string>=?,
   ~activeToc: option<TableOfContents.t>=?,
-  ~breadcrumbs: option<list<Url.breadcrumb>>=?,
   ~categories: array<Category.t>,
   ~components=MarkdownComponents.default,
   ~theme=#Reason,
@@ -49,9 +47,7 @@ let make = (
   let sidebar =
     <Sidebar isOpen=isSidebarOpen toggle=toggleSidebar preludeSection ?activeToc categories route />
 
-  <SidebarLayout
-    theme sidebarState=(isSidebarOpen, setSidebarOpen) sidebar categories ?breadcrumbs ?editHref
-  >
+  <SidebarLayout theme sidebarState=(isSidebarOpen, setSidebarOpen) sidebar categories>
     children
   </SidebarLayout>
 }

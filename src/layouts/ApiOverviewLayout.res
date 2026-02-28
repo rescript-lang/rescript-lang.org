@@ -23,11 +23,6 @@ module Docs = {
   let make = (~children) => {
     let {pathname: route} = ReactRouter.useLocation()
 
-    let breadcrumbs = list{
-      {Url.name: "Docs", href: `/docs/manual/api`},
-      {name: "API", href: `/docs/manual/api`},
-    }
-
     let (isSidebarOpen, setSidebarOpen) = React.useState(_ => false)
 
     let preludeSection =
@@ -44,9 +39,7 @@ module Docs = {
         route
       />
 
-    <SidebarLayout
-      breadcrumbs categories sidebarState=(isSidebarOpen, setSidebarOpen) theme={#Js} sidebar
-    >
+    <SidebarLayout categories sidebarState=(isSidebarOpen, setSidebarOpen) theme={#Js} sidebar>
       children
     </SidebarLayout>
   }

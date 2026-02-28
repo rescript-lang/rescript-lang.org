@@ -9,7 +9,6 @@ let makeBreadcrumbs: (~prefix: Url.breadcrumb, Path.t) => list<Url.breadcrumb>
 
 @react.component
 let make: (
-  ~breadcrumbs: list<Url.breadcrumb>=?,
   ~categories: array<SidebarLayout.Sidebar.Category.t>,
   ~title: string=?,
   ~activeToc: TableOfContents.t=?,

@@ -64,7 +64,6 @@ let makeBreadcrumbs = (~prefix: Url.breadcrumb, route: Path.t): list<Url.breadcr
 
 @react.component
 let make = (
-  ~breadcrumbs=?,
   ~categories: array<Sidebar.Category.t>,
   ~title="",
   ~activeToc: option<TableOfContents.t>=?,
@@ -86,7 +85,7 @@ let make = (
   let sidebar =
     <Sidebar preludeSection isOpen=isSidebarOpen toggle=toggleSidebar categories ?activeToc route />
 
-  <SidebarLayout ?breadcrumbs theme=#Reason sidebarState=(isSidebarOpen, setSidebarOpen) sidebar>
+  <SidebarLayout theme=#Reason sidebarState=(isSidebarOpen, setSidebarOpen) sidebar>
     children
   </SidebarLayout>
 }

@@ -427,34 +427,33 @@ let make = (props: props) => {
       title="Package Index | ReScript Documentation"
       description="Official and unofficial resources, libraries and bindings for ReScript"
     />
-    <div className="mt-16 pt-2">
-      <div className="text-gray-80 text-18">
-        <div className="flex overflow-hidden">
-          <div
-            className="flex justify-between min-w-320 px-4 pt-16 lg:align-center w-full lg:px-8 pb-48"
-          >
-            <main className="max-w-1280 w-full flex justify-center">
-              <div className="w-full max-w-176.25">
-                <H1> {React.string("Libraries & Bindings")} </H1>
-                <SearchBox
-                  placeholder="Enter a search term, name, keyword, etc"
-                  onValueChange
-                  onClear
-                  value={searchValue}
-                />
-                <div className="mt-12 space-y-8">
-                  officialCategory
-                  communityCategory
-                </div>
+
+    <div className="text-gray-80 text-18">
+      <div className="flex overflow-hidden">
+        <div
+          className="flex justify-between min-w-320 px-4 pt-16 lg:align-center w-full lg:px-8 pb-48"
+        >
+          <main className="max-w-1280 w-full flex justify-center">
+            <div className="w-full max-w-176.25">
+              <H1> {React.string("Libraries & Bindings")} </H1>
+              <SearchBox
+                placeholder="Enter a search term, name, keyword, etc"
+                onValueChange
+                onClear
+                value={searchValue}
+              />
+              <div className="mt-12 space-y-8">
+                officialCategory
+                communityCategory
               </div>
-            </main>
-            <div className="hidden lg:block h-full ">
-              <InfoSidebar filter setFilter />
             </div>
+          </main>
+          <div className="hidden lg:block h-full ">
+            <InfoSidebar filter setFilter />
           </div>
         </div>
-        <Footer />
       </div>
+      <Footer />
     </div>
   </>
 }

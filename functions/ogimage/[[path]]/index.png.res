@@ -16,8 +16,6 @@ let loadGoogleFont = async (family: string) => {
 type context = {request: FetchAPI.request, params: {path: array<string>}}
 
 let onRequest = async ({params}: context) => {
-  Console.log(params.path)
-
   let title = params.path[0]->Option.getOr("ReScript")->decodeURIComponent
   //   let url = WebAPI.URL.make(~url=request.url)
   //   let title = url.searchParams->URLSearchParams.get("title")

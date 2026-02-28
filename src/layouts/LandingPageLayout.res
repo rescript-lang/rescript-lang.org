@@ -106,7 +106,7 @@ export {
           /* ---Link to Playground--- */
           <div>
             <ReactRouter.Link.String
-              to={`/try?code=${encodeURIComponent(example.res)}}`}
+              to={`/try?code=${encodeURIComponent(example.res)}`}
               className="captions md:px-0 border-b border-gray-40 hover:border-gray-60 text-gray-60"
             >
               {React.string("Edit this example in Playground")}

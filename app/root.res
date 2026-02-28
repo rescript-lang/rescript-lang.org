@@ -38,17 +38,6 @@ open ReactRouter
 
 @react.component
 let default = () => {
-  let {pathname} = ReactRouter.useLocation()
-  let (isOverlayOpen, setOverlayOpen) = React.useState(_ => false)
-  let (isScrollLockEnabled, setIsScrollLockEnabled) = React.useState(_ => false)
-
-  React.useEffect(() => {
-    // When the path changes close the sidebar and disable scroll lock
-    setOverlayOpen(_ => false)
-    setIsScrollLockEnabled(_ => false)
-    None
-  }, [pathname])
-
   <html lang="en">
     <head>
       <style> {React.string("html {opacity:0;}")} </style>
@@ -65,15 +54,11 @@ let default = () => {
       />
       <meta charSet="UTF-8" />
     </head>
-    <body className={isScrollLockEnabled ? "overflow-hidden" : ""}>
-      <ScrollLockContext.Provider lockState=(isScrollLockEnabled, setIsScrollLockEnabled)>
-        <EnableCollapsibleNavbar isEnabled={!isOverlayOpen}>
-          <Navigation isOverlayOpen setOverlayOpen />
-          <Outlet />
-          <ScrollRestoration />
-          <Scripts />
-        </EnableCollapsibleNavbar>
-      </ScrollLockContext.Provider>
+    <body>
+      <NavbarPrimary />
+      <Outlet />
+      <ScrollRestoration />
+      <Scripts />
     </body>
   </html>
 }

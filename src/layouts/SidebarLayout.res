@@ -6,11 +6,6 @@
  */
 module Link = ReactRouter.Link
 
-let isDocRoute = (~route: Path.t) => {
-  let route = (route :> string)
-  route->String.includes("/docs/") || route->String.includes("/syntax-lookup")
-}
-
 module Toc = {
   type raw = Dict.t<{
     "title": string,
@@ -143,23 +138,6 @@ module Sidebar = {
   ) => {
     let isItemActive = (navItem: NavItem.t) => navItem.href === (route :> string)
 
-    // the height of the navbars above is fluid across pages, and it's easy to get it wrong
-    // so we calculate it dynamically here
-    let sidebarTopOffset = isOpen
-      ? {
-          let mobileNavbarHeight =
-            Nullable.make(document->WebAPI.Document.getElementById("mobile-navbar"))
-            ->Nullable.map(el => el.clientHeight)
-            ->Nullable.getOr(0)
-          let docNavbarHeight =
-            Nullable.make(document->WebAPI.Document.getElementById("doc-navbar"))
-            ->Nullable.map(el => el.clientHeight)
-            ->Nullable.getOr(0)
-
-          mobileNavbarHeight + docNavbarHeight + 8
-        }
-      : 0
-
     let getActiveToc = (navItem: NavItem.t) => {
       if navItem.href === (route :> string) {
         activeToc
@@ -170,17 +148,14 @@ module Sidebar = {
 
     <>
       <div
-        style={{
-          paddingTop: `${sidebarTopOffset->Int.toString}px`,
-        }}
         id="sidebar"
         className={(
           isOpen ? "fixed w-full left-0 h-full z-20 min-w-320" : "hidden "
-        ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible pt-2 bg-white md:mt-0 min-w-48"}
+        ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible bg-white md:mt-0 min-w-48"}
       >
         <aside
           id="sidebar-content"
-          className="h-full relative top-0 px-4 w-full block md:top-28 md:sticky border-r border-gray-20 overflow-y-auto pb-24 max-h-[calc(100vh-7rem)]"
+          className="h-full relative top-0 px-4 w-full block md:top-40 md:sticky border-r border-gray-20 overflow-y-auto pb-24 max-h-[calc(100vh-10rem)] pt-8"
         >
           <button
             onClick={evt => {
@@ -265,68 +240,19 @@ module BreadCrumbs = {
   }
 }
 
-module MobileDrawerButton = {
-  @react.component
-  let make = (~hidden: bool, ~onClick) =>
-    <button className={(hidden ? "hidden " : "") ++ "md:hidden mr-3"} onClick=onClick>
-      <img className="h-4" src="/ic_sidebar_drawer.svg" />
-    </button>
-}
-
 @react.component
 let make = (
   ~theme: ColorTheme.t,
-  ~editHref: option<string>=?,
-  ~sidebarState: (bool, (bool => bool) => unit),
+  ~sidebarState: (bool, (bool => bool) => unit)=(false, _ => ()),
   // (Sidebar, toggleSidebar) ... for toggling sidebar in mobile view
   ~sidebar: React.element,
   ~rightSidebar: option<React.element>=?,
   ~categories: option<array<Sidebar.Category.t>>=?,
-  ~breadcrumbs: option<list<Url.breadcrumb>>=?,
   ~children,
 ) => {
-  let (isNavOpen, setNavOpen) = React.useState(() => false)
-
   let location = ReactRouter.useLocation()
 
   let theme = ColorTheme.toCN(theme)
-
-  let hasBreadcrumbs = switch breadcrumbs {
-  | None => false
-  | Some(l) => List.length(l) > 0
-  }
-
-  let breadcrumbs = breadcrumbs->Option.mapOr(React.null, crumbs => <BreadCrumbs crumbs />)
-
-  // TODO: post rr7 - this can most likely be removed
-  let (_isSidebarOpen, setSidebarOpen) = sidebarState
-  let (_isLocked, toggleScrollLock) = ScrollLockContext.useScrollLock()
-
-  let toggleSidebar = () => {
-    setSidebarOpen(prev => !prev)
-    toggleScrollLock(prev => !prev)
-  }
-
-  let {pathname} = ReactRouter.useLocation()
-
-  React.useEffect(() => {
-    setSidebarOpen(_ => false)
-    setNavOpen(_ => false)
-    None
-  }, [pathname])
-
-  let handleDrawerButtonClick = React.useCallback(evt => {
-    ReactEvent.Mouse.preventDefault(evt)
-    toggleSidebar()
-  }, [])
-
-  let editLinkEl = switch editHref {
-  | Some(href) =>
-    <a href className="inline text-14 hover:underline text-fire" rel="noopener noreferrer">
-      {React.string("Edit")}
-    </a>
-  | None => React.null
-  }
 
   let pagination = switch categories {
   | Some(categories) =>
@@ -367,33 +293,16 @@ let make = (
   | None => React.null
   }
 
-  <div className={"mt-16 min-w-320 " ++ theme}>
+  <div className={"min-w-320 " ++ theme}>
     <div className="w-full">
       <div className="flex lg:justify-center">
-        <div className="flex w-full max-w-1280 md:mx-10 md:mt-16">
+        <div className="flex w-full max-w-1280 md:mx-10 ">
           sidebar
-          <main className="px-4 w-full pt-4 md:ml-12 lg:mr-8 mb-32 md:max-w-576 lg:max-w-740">
-            //width of the right content part
-            <div
-              id="mobile-navbar"
-              className={`z-10 fixed border-b shadow ${isDocRoute(~route=pathname)
-                  ? "top-28"
-                  : "top-16"} left-0 pl-4 bg-white w-full py-4 md:relative md:border-none md:shadow-none md:p-0 md:top-auto flex items-center transition duration-300 ease-out group-[.nav-disappear]:-translate-y-64 md:group-[.nav-disappear]:-translate-y-0 z-25`}
-            >
-              <MobileDrawerButton hidden=isNavOpen onClick={handleDrawerButtonClick} />
-              <div
-                className="truncate overflow-x-auto touch-scroll flex items-center space-x-4 md:justify-between mr-4 w-full"
-              >
-                breadcrumbs
-                editLinkEl
-              </div>
-            </div>
-            <div
-              className={hasBreadcrumbs ? "mt-28 md:mt-10" : "mt-6 md:-mt-4"}
-              dataTestId="side-layout-children"
-            >
-              children
-            </div>
+          <main
+            dataTestId="side-layout-children"
+            className="px-4 w-full pt-4 md:ml-12 lg:mr-8 mb-32 md:max-w-576 lg:max-w-740 md:pt-8"
+          >
+            children
             pagination
           </main>
           {switch rightSidebar {

@@ -1,6 +1,5 @@
 type page
 type expect
-type screen
 type element
 type mock
 
@@ -17,10 +16,16 @@ external fn: unit => 'a => 'b = "fn"
 external expect: 'a => expect = "expect"
 
 /**
+ * Vitest browser
+ */
+@module("vitest/browser") @scope("page")
+external viewport: (int, int) => promise<unit> = "viewport"
+
+/**
  * vitest-browser-react
  */
 @module("vitest-browser-react")
-external render: Jsx.element => promise<screen> = "render"
+external render: Jsx.element => promise<element> = "render"
 
 @module("vitest") @scope("expect")
 external element: 'a => element = "element"
@@ -29,10 +34,19 @@ external element: 'a => element = "element"
  * Locators
  */
 @send
-external getByText: (screen, string) => element = "getByText"
+external getByTestId: (element, string) => promise<element> = "getByTestId"
 
 @send
-external getByRole: (screen, [#button]) => promise<element> = "getByRole"
+external getByText: (element, string) => promise<element> = "getByText"
+
+@send
+external getByLabelText: (element, string) => promise<element> = "getByLabelText"
+
+@send
+external getAllByLabelText: (element, string) => promise<array<element>> = "getAllByLabelText"
+
+@send
+external getByRole: (element, [#button]) => promise<element> = "getByRole"
 
 /**
  * Actions
@@ -54,3 +68,9 @@ external toHaveBeenCalled: expect => unit = "toHaveBeenCalled"
  */
 @send
 external toBeVisible: element => promise<unit> = "toBeVisible"
+
+@send @scope("not")
+external notToBeVisible: element => promise<unit> = "toBeVisible"
+
+@send
+external toMatchScreenshot: (element, string) => promise<unit> = "toMatchScreenshot"

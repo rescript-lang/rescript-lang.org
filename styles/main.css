@@ -4,9 +4,9 @@
 
 @import "tailwindcss";
 
-@source '../src/**/*.{mjs,js,res}';
-@source '../pages/**/*.{mjs,js,mdx}';
-@source '../app/**/*.{mjs,js,mdx}';
+@source '../src/**/*.{jsx,res}';
+@source '../pages/**/*.{jsx,mdx}';
+@source '../app/**/*.{jsx,mdx}';
 
 @theme {
   --radius-*: initial;
@@ -330,7 +330,7 @@
   display: inline-block;
 }
 
-[popover] {
+.version-popover[popover] {
   inset: unset;
   width: 100%;
   height: auto;
@@ -358,7 +358,7 @@
     transform 0.3s ease;
 }
 
-[popover]:popover-open ~ .menu {
+.version-popover[popover]:popover-open ~ .menu {
   opacity: 1;
   visibility: visible;
 }
@@ -372,10 +372,43 @@
   }
 }
 
-[popover]:popover-open ~ .trigger {
+.version-popover[popover]:popover-open ~ .trigger {
   svg {
     transform: rotate(180deg);
   }
+}
+
+#sidebar[popover] {
+  inset: unset;
+  width: unset;
+  border: none;
+  position: relative;
+  top: 0px;
+  left: 0px;
+  overlay: none;
+  height: 100%;
+  @apply min-w-64 bg-white border-gray-20 border-r-2 overflow-y-scroll h-full md:block;
+}
+
+/* When any dialog is open as a modal, lock the body scroll */
+body:has(dialog[open]) {
+  overflow: hidden;
+}
+
+#mobile-overlay {
+  max-width: 100%;
+  margin: 0;
+}
+
+#mobile-tertiary-drawer {
+  max-width: 100%;
+  margin: 0;
+}
+
+body {
+  scrollbar-gutter: stable;
+  height: 100%;
+  min-height: 100vh;
 }
 
 /* This has to stay at the end! */
