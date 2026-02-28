@@ -136,10 +136,11 @@ module Sidebar = {
     ~isOpen: bool,
     ~toggle: unit => unit,
   ) => {
-    let isItemActive = (navItem: NavItem.t) => navItem.href === (route :> string)
+    let currentRoute = (route :> string)->Url.normalizePath
+    let isItemActive = (navItem: NavItem.t) => navItem.href->Url.normalizePath === currentRoute
 
     let getActiveToc = (navItem: NavItem.t) => {
-      if navItem.href === (route :> string) {
+      if navItem.href->Url.normalizePath === currentRoute {
         activeToc
       } else {
         None
@@ -257,8 +258,9 @@ let make = (
   let pagination = switch categories {
   | Some(categories) =>
     let items = categories->Array.flatMap(c => c.items)
+    let currentPathname = (location.pathname :> string)->Url.normalizePath
 
-    switch items->Array.findIndex(item => item.href === (location.pathname :> string)) {
+    switch items->Array.findIndex(item => item.href->Url.normalizePath === currentPathname) {
     | -1 => React.null
     | i =>
       let previous = switch items->Array.get(i - 1) {
