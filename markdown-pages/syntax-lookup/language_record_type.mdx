@@ -1,0 +1,51 @@
+---
+id: "record-type"
+keywords:
+  [
+    "record",
+    "record type",
+    "{ key: type }",
+    "{ key: value }",
+    "myRecord",
+    "{name: string}",
+    "fields",
+  ]
+name: "{ key: type }"
+summary: "A record type is a named set of typed fields."
+category: "languagetypes"
+---
+
+A record type defines a fixed structure with named fields.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+type myRecord = {
+  name: string,
+  age: int,
+}
+
+let myRecord: myRecord = {name: "Ada", age: 36}
+
+let label = switch myRecord {
+| {name, age} => name ++ " (" ++ Int.toString(age) ++ ")"
+}
+```
+
+```js
+var myRecord = {
+  name: "Ada",
+  age: 36,
+};
+
+var label = "Ada (36)";
+```
+
+</CodeTab>
+
+### References
+
+- [Record](../docs/manual/record.mdx)
+- [Pattern Matching](../docs/manual/pattern-matching-destructuring.mdx)

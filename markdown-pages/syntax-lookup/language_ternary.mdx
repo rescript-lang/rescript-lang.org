@@ -1,0 +1,30 @@
+---
+id: "ternary"
+keywords: ["ternary", "?:", "?", ":"]
+name: "?:"
+summary: "This is the `ternary` expression syntax."
+category: "languagecontrolflow"
+---
+
+Use `condition ? whenTrue : whenFalse` as a concise conditional expression.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let isAdmin = true
+let greeting = isAdmin ? "Welcome, admin" : "Welcome, user"
+```
+
+```js
+var isAdmin = true;
+
+var greeting = isAdmin ? "Welcome, admin" : "Welcome, user";
+```
+
+</CodeTab>
+
+### References
+
+- [If-Else & Ternary](../docs/manual/control-flow.mdx)

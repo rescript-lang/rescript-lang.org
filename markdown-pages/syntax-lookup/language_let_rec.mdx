@@ -1,0 +1,38 @@
+---
+id: "let-rec"
+keywords: ["let rec", "recursive function", "recursion"]
+name: "let rec"
+summary: "This is the `let rec` recursive binding syntax."
+category: "languageconstructs"
+---
+
+Use `let rec` to define recursive functions.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let rec factorial = n =>
+  if n <= 1 {
+    1
+  } else {
+    n * factorial(n - 1)
+  }
+```
+
+```js
+function factorial(n) {
+  if (n <= 1) {
+    return 1;
+  } else {
+    return Math.imul(n, factorial((n - 1) | 0));
+  }
+}
+```
+
+</CodeTab>
+
+### References
+
+- [Recursive Functions](../docs/manual/function.mdx#recursive-functions)

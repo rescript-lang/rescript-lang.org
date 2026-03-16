@@ -1,0 +1,45 @@
+---
+id: "module-type"
+keywords: ["module type", "signature"]
+name: "module type"
+summary: "`module type` defines the required shape of a module."
+category: "languagemodules"
+---
+
+Use `module type` to declare a module signature.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+module type Showable = {
+  type t
+  let show: t => string
+}
+
+module IntShow: Showable = {
+  type t = int
+  let show = x => Int.toString(x)
+}
+
+let rendered = IntShow.show(42)
+```
+
+```js
+function show(x) {
+  return String(x);
+}
+
+var IntShow = {
+  show: show,
+};
+
+var rendered = show(42);
+```
+
+</CodeTab>
+
+### References
+
+- [Module](../docs/manual/module.mdx)

@@ -2,6 +2,13 @@ module Category = {
   type t =
     | Decorators
     | Operators
+    | ArithmeticOperators
+    | BitwiseOperators
+    | ControlFlow
+    | Types
+    | PatternsAndValues
+    | Modules
+    | Comments
     | LanguageConstructs
     | BuiltInFunctions
     | ExtensionPoints
@@ -12,6 +19,13 @@ module Category = {
     switch t {
     | Decorators => "Decorators"
     | Operators => "Operators"
+    | ArithmeticOperators => "Arithmetic Operators"
+    | BitwiseOperators => "Bitwise Operators"
+    | ControlFlow => "Control Flow"
+    | Types => "Types"
+    | PatternsAndValues => "Patterns & Values"
+    | Modules => "Modules"
+    | Comments => "Comments"
     | ExtensionPoints => "Extension Points"
     | BuiltInFunctions => "Built-In Functions"
     | LanguageConstructs => "Language Constructs"
@@ -23,6 +37,13 @@ module Category = {
     switch s {
     | "decorators" => Decorators
     | "operators" => Operators
+    | "operators-arithmetic" => ArithmeticOperators
+    | "operators-bitwise" => BitwiseOperators
+    | "languagecontrolflow" => ControlFlow
+    | "languagetypes" => Types
+    | "languagepatternsvalues" => PatternsAndValues
+    | "languagemodules" => Modules
+    | "languagecomments" => Comments
     | "languageconstructs" => LanguageConstructs
     | "builtinfunctions" => BuiltInFunctions
     | "extensionpoints" => ExtensionPoints
@@ -74,9 +95,26 @@ module Item = {
     href: string,
   }
 
+  let quoteLiteralRank = name =>
+    switch name {
+    | "\"\"" => 0
+    | "``" => 1
+    | "' '" => 2
+    | _ => 3
+    }
+
+  let compareNames = (a, b) => {
+    let rankA = quoteLiteralRank(a)
+    let rankB = quoteLiteralRank(b)
+    switch Int.compare(rankA, rankB) {
+    | 0. => String.compare(a, b)
+    | x => x
+    }
+  }
+
   let compare = (a, b) =>
     switch Status.compare(a.status, b.status) {
-    | 0. => String.compare(a.name, b.name)
+    | 0. => compareNames(a.name, b.name)
     | x => x
     }
 }
@@ -278,12 +316,19 @@ let make = (
   }
 
   /*
-    Order all items in tag groups
+    Group all items into top-level sections with optional subsections.
  */
   let categories = {
     let initial = [
       Category.Decorators,
       Operators,
+      ArithmeticOperators,
+      BitwiseOperators,
+      ControlFlow,
+      Types,
+      PatternsAndValues,
+      Modules,
+      Comments,
       LanguageConstructs,
       BuiltInFunctions,
       ExtensionPoints,
@@ -299,7 +344,7 @@ let make = (
     | ShowFiltered(_, items) => items
     }
 
-    Array.reduce(items, Dict.fromArray(initial), (acc, item) => {
+    let grouped = Array.reduce(items, Dict.fromArray(initial), (acc, item) => {
       let key = item.category->Category.toString
       Dict.get(acc, key)->Option.mapOr(acc, items => {
         Array.push(items, item)->ignore
@@ -307,32 +352,84 @@ let make = (
         acc
       })
     })
-    ->Dict.toArray
-    ->Array.reduce([], (acc, entry) => {
-      let (title, items) = entry
+
+    let getItems = category => Dict.get(grouped, category->Category.toString)->Option.getOr([])
+
+    let renderTags = items =>
+      items
+      ->Array.toSorted(Item.compare)
+      ->Array.map(item => {
+        let onMouseDown = evt => {
+          ReactEvent.Mouse.preventDefault(evt)
+          onSearchValueChange(item.name)
+        }
+        <span className="mr-2 mb-2 cursor-pointer" onMouseDown key=item.name>
+          <Tag text={item.name} deprecated={item.status == Deprecated} href=item.href />
+        </span>
+      })
+      ->React.array
+
+    let renderSubsection = (~showHeading, title, items) =>
       if Array.length(items) === 0 {
-        acc
+        None
       } else {
-        let children =
-          items
-          ->Array.toSorted(Item.compare)
-          ->Array.map(item => {
-            let onMouseDown = evt => {
-              ReactEvent.Mouse.preventDefault(evt)
-              onSearchValueChange(item.name)
-            }
-            <span className="mr-2 mb-2 cursor-pointer" onMouseDown key=item.name>
-              <Tag text={item.name} deprecated={item.status == Deprecated} href=item.href />
-            </span>
-          })
-        let el =
-          <div key=title className="first:mt-0 mt-12">
-            <Category title> {React.array(children)} </Category>
-          </div>
-        Array.push(acc, el)->ignore
-        acc
+        <div key=title className="first:mt-0 mt-3">
+          {if showHeading {
+            <h4 className="font-sans font-medium text-gray-80 tracking-wide text-12 uppercase mb-1">
+              {React.string(title)}
+            </h4>
+          } else {
+            React.null
+          }}
+          <div className="flex flex-wrap"> {renderTags(items)} </div>
+        </div>->Some
       }
-    })
+
+    let renderSection = (title, subsections) => {
+      let subsections =
+        subsections->Array.filterMap(((subtitle, items)) =>
+          renderSubsection(~showHeading=subtitle !== title, subtitle, items)
+        )
+      if Array.length(subsections) === 0 {
+        None
+      } else {
+        <div key=title className="first:mt-0 mt-8">
+          <h3 className="font-sans font-medium text-gray-100 tracking-wide text-14 uppercase mb-2">
+            {React.string(title)}
+          </h3>
+          <div> {React.array(subsections)} </div>
+        </div>->Some
+      }
+    }
+
+    let sections = [
+      ("Decorators", [("Decorators", getItems(Decorators))]),
+      (
+        "Operators",
+        [
+          ("Operators", getItems(Operators)),
+          ("Arithmetic", getItems(ArithmeticOperators)),
+          ("Bitwise", getItems(BitwiseOperators)),
+        ],
+      ),
+      (
+        "Language Constructs",
+        [
+          ("Language Constructs", getItems(LanguageConstructs)),
+          ("Control Flow", getItems(ControlFlow)),
+          ("Types", getItems(Types)),
+          ("Patterns & Values", getItems(PatternsAndValues)),
+          ("Modules", getItems(Modules)),
+          ("Comments", getItems(Comments)),
+        ],
+      ),
+      ("Built-In Functions", [("Built-In Functions", getItems(BuiltInFunctions))]),
+      ("Extension Points", [("Extension Points", getItems(ExtensionPoints))]),
+      ("Special Values", [("Special Values", getItems(SpecialValues))]),
+      ("Other", [("Other", getItems(Other))]),
+    ]
+
+    sections->Array.filterMap(((title, subsections)) => renderSection(title, subsections))
   }
 
   let (searchValue, completionItems) = React.useMemo(() =>

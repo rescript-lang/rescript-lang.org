@@ -1,0 +1,33 @@
+---
+id: "exponentiation"
+keywords: ["**", "exponentiation", "power", "int", "float", "bigint"]
+name: "**"
+summary: "This is the `exponentiation` operator."
+category: "operators-arithmetic"
+---
+
+`**` raises a base value to a power.
+
+It supports `int`, `float`, and `bigint`.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let i = 2 ** 3
+let f = 2. ** 3.
+
+open! BigInt
+let b = 2n ** 3n
+```
+
+```js
+var i = 8;
+
+var f = 8;
+
+var b = 2n ** 3n;
+```
+
+</CodeTab>

@@ -1,0 +1,31 @@
+---
+id: "covariant-type-parameter"
+keywords: ["<+a>", "+'a", "covariant", "variance", "type parameter"]
+name: "<+a>"
+summary: "This is a `covariant type parameter` annotation."
+category: "languagetypes"
+---
+
+Use a `+` variance annotation on a type parameter to mark it as covariant.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+type source<+'a> = unit => 'a
+
+let fromValue = (x: 'a): source<'a> => () => x
+```
+
+```js
+function fromValue(x) {
+  return (_) => x;
+}
+```
+
+</CodeTab>
+
+### References
+
+- [Type Parameters](../docs/manual/type.mdx#type-parameter-aka-generic)

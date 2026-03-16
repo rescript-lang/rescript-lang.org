@@ -1,0 +1,32 @@
+---
+id: "object-type"
+keywords: ['{"key": type}', '{"key": "value"}', "object type", "quoted fields"]
+name: '{ "key": type }'
+summary: "This is the `object type` syntax."
+category: "languagetypes"
+---
+
+Use quoted field names inside `{ ... }` to define an object type.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+type user = {"name": string, "age": int}
+
+let u: user = {"name": "Ada", "age": 36}
+```
+
+```js
+var u = {
+  name: "Ada",
+  age: 36,
+};
+```
+
+</CodeTab>
+
+### References
+
+- [Object](../docs/manual/object.mdx)

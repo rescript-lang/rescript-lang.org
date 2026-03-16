@@ -1,0 +1,35 @@
+---
+id: "open-object-type"
+keywords: ["{..}", "open object type", "object spread type", "as 'a"]
+name: "{..}"
+summary: "This is the `open object type` syntax."
+category: "languagetypes"
+---
+
+Use `{..}` to describe object types that must contain some fields but may contain additional fields.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+type named<'a> = {.."name": string} as 'a
+
+let getName: named<_> => string = obj => obj["name"]
+
+let name = getName({"name": "Ada", "age": 36})
+```
+
+```js
+function getName(obj) {
+  return obj.name;
+}
+
+var name = "Ada";
+```
+
+</CodeTab>
+
+### References
+
+- [Object](../docs/manual/object.mdx)
