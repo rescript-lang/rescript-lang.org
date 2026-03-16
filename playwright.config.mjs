@@ -22,6 +22,22 @@ const useLocalServer = !process.env.PLAYWRIGHT_BASE_URL;
 
 export default defineConfig({
   /**
+   * Apply a Babel plugin to rewrite the first parameter of ReScript-compiled
+   * test callbacks from `async param => …` to `async ({ ...param }) => …`.
+   *
+   * Playwright requires the first parameter of every test/hook callback to use
+   * object destructuring syntax so it can statically determine which fixtures
+   * the test depends on. ReScript always compiles record-pattern arguments to a
+   * plain identifier (`param`), which Playwright rejects.
+   *
+   * The plugin uses object-rest destructuring (`{ ...param }`) so the callback
+   * body is completely unchanged — `param.page` etc. continue to work.
+   */
+  build: {
+    babelPlugins: [["./src/bindings/playwright-babel-plugin.mjs"]],
+  },
+
+  /**
    * Start Wrangler Pages dev server automatically for local runs so that
    * `yarn e2e` works after `yarn build` with zero extra setup.
    *

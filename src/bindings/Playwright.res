@@ -27,29 +27,36 @@ external context: page => browserContext = "context"
  * automatically when CHROMATIC_PROJECT_TOKEN is present in the environment;
  * when the token is absent every `takeSnapshot` call is a no-op so the suite
  * still runs as ordinary Playwright tests.
+ *
+ * `test` and all hooks are bound directly to `@chromatic-com/playwright` so
+ * that Playwright's source-location tracking (which captures frame[1] of a
+ * fresh `Error.captureStackTrace`) points at the test file rather than any
+ * intermediate wrapper. ReScript's compiled callbacks are rewritten into the
+ * required object-destructuring form by a Babel plugin configured in
+ * `playwright.config.mjs`.
  * ─────────────────────────────────────────────────────────────────────────────
  */
-@module("./playwright-shim.mjs")
+@module("@chromatic-com/playwright")
 external test: (string, fixtures => promise<unit>) => unit = "test"
 
 /** Group related tests under a shared label. */
-@module("./playwright-shim.mjs") @scope("test")
+@module("@chromatic-com/playwright") @scope("test")
 external describe: (string, unit => unit) => unit = "describe"
 
 /** Run a hook before every test in the current scope. */
-@module("./playwright-shim.mjs") @scope("test")
+@module("@chromatic-com/playwright") @scope("test")
 external beforeEach: (fixtures => promise<unit>) => unit = "beforeEach"
 
 /** Run a hook after every test in the current scope. */
-@module("./playwright-shim.mjs") @scope("test")
+@module("@chromatic-com/playwright") @scope("test")
 external afterEach: (fixtures => promise<unit>) => unit = "afterEach"
 
 /** Run a hook once before all tests in the current scope (worker-level). */
-@module("./playwright-shim.mjs") @scope("test")
+@module("@chromatic-com/playwright") @scope("test")
 external beforeAll: (fixtures => promise<unit>) => unit = "beforeAll"
 
 /** Run a hook once after all tests in the current scope (worker-level). */
-@module("./playwright-shim.mjs") @scope("test")
+@module("@chromatic-com/playwright") @scope("test")
 external afterAll: (fixtures => promise<unit>) => unit = "afterAll"
 
 /**
@@ -57,11 +64,11 @@ external afterAll: (fixtures => promise<unit>) => unit = "afterAll"
  * Tests decorated with `only` must not be committed — set `forbidOnly: true`
  * in playwright.config.mjs to enforce this in CI.
  */
-@module("./playwright-shim.mjs") @scope("test")
+@module("@chromatic-com/playwright") @scope("test")
 external only: (string, fixtures => promise<unit>) => unit = "only"
 
 /** Skip a test unconditionally. */
-@module("./playwright-shim.mjs") @scope("test")
+@module("@chromatic-com/playwright") @scope("test")
 external skip: (string, fixtures => promise<unit>) => unit = "skip"
 
 /**
