@@ -1,6 +1,5 @@
 {
   "name": "rescript-lang.org",
-  "private": true,
   "version": "1.0.0",
   "author": "Patrick Ecker <ryyppy@users.noreply.github.com>",
   "license": "MIT",
@@ -20,7 +19,7 @@
     "ci:format": "prettier . --check --experimental-cli",
     "ci:test": "yarn vitest --run --browser.headless --update",
     "e2e": "playwright test",
-    "e2e:chromatic": "chromatic --playwright",
+    "e2e:chromatic": "yarn dlx chromatic --playwright --project-token=chpt_e92d16169d30db1",
     "e2e:report": "playwright show-report",
     "clean:res": "rescript clean",
     "convert-images": "auto-convert-images",
@@ -97,6 +96,7 @@
     "@vitest/browser-playwright": "^4.0.18",
     "auto-image-converter": "^2.1.2",
     "chokidar": "^4.0.3",
+    "chromatic": "^15.1.1",
     "dotenv": "^16.4.7",
     "jsdom": "^26.1.0",
     "lefthook": "^2.0.4",

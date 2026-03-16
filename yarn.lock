@@ -5105,6 +5105,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"chromatic@npm:^15.1.1":
+  version: 15.1.1
+  resolution: "chromatic@npm:15.1.1"
+  peerDependencies:
+    "@chromatic-com/cypress": ^0.*.* || ^1.0.0
+    "@chromatic-com/playwright": ^0.*.* || ^1.0.0
+  peerDependenciesMeta:
+    "@chromatic-com/cypress":
+      optional: true
+    "@chromatic-com/playwright":
+      optional: true
+  bin:
+    chroma: dist/bin.js
+    chromatic: dist/bin.js
+    chromatic-cli: dist/bin.js
+  checksum: 10c0/c7d68fe4d8979c29e7d1f10064c36aa44f2bcd76b01bd3fe7cfb5d4e81e92df22fb8968e19cf4fd6c8ad3049ce748b2dd04b38a4b7f7a5a233b2b10a1005e872
+  languageName: node
+  linkType: hard
+
 "chrome-trace-event@npm:^1.0.2":
   version: 1.0.4
   resolution: "chrome-trace-event@npm:1.0.4"
@@ -11464,6 +11483,7 @@ __metadata:
     "@vitest/browser-playwright": "npm:^4.0.18"
     auto-image-converter: "npm:^2.1.2"
     chokidar: "npm:^4.0.3"
+    chromatic: "npm:^15.1.1"
     docson: "npm:^2.1.0"
     dotenv: "npm:^16.4.7"
     fuse.js: "npm:^6.4.3"

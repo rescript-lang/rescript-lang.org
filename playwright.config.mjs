@@ -49,7 +49,7 @@ export default defineConfig({
    * ReScript compiles *.res → *.jsx (in-source), so Playwright must discover
    * those generated files.
    */
-  testMatch: "**/*.test.{js,jsx,ts,tsx}",
+  testMatch: "e2e/**/*.test.{js,jsx,ts,tsx}",
 
   /** Run each test file in parallel. */
   fullyParallel: true,

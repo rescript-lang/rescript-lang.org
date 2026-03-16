@@ -43,6 +43,7 @@ dist
 build
 .react-router
 mdx-manifest.json
+build-archive.log
 
 app/**/*.mjs
 app/**/*.jsx
