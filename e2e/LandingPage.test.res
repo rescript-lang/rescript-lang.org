@@ -29,13 +29,13 @@ describe("Landing Page", () => {
     await page->getByRole("link", ~options={name: "Community"})->expect->toBeVisible
   })
 
-  test("Get Started link navigates to the introduction", async ({page}) => {
+  test("Get Started link navigates to the installation guide", async ({page}) => {
     let _ = await page->goto("/")
 
     let getStarted = page->getByRole("link", ~options={name: "Get Started"})
     await getStarted->first->click
 
-    await page->expect->toHaveURL("/docs/manual/latest/introduction")
+    await page->expect->toHaveURL("/docs/manual/installation")
   })
 
   test("GitHub social link is present", async ({page}) => {

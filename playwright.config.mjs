@@ -44,12 +44,7 @@ export default defineConfig({
 
   testDir: "./e2e",
 
-  /**
-   * Include compiled ReScript output (.jsx) as well as plain .js / .ts files.
-   * ReScript compiles *.res → *.jsx (in-source), so Playwright must discover
-   * those generated files.
-   */
-  testMatch: "e2e/**/*.test.{js,jsx,ts,tsx}",
+  testMatch: "e2e/**/*.test.jsx",
 
   /** Run each test file in parallel. */
   fullyParallel: true,
