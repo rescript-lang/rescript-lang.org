@@ -33,7 +33,7 @@ export default defineConfig({
    */
   webServer: useLocalServer
     ? {
-        command: `yarn wrangler pages dev ${path.join(__dirname, "out")} --port 8788`,
+        command: `yarn wrangler pages dev ${path.join(__dirname, "build/client")} --port 8788`,
         url: "http://localhost:8788",
         reuseExistingServer: true,
         stdout: "pipe",
@@ -44,7 +44,7 @@ export default defineConfig({
 
   testDir: "./e2e",
 
-  testMatch: "e2e/**/*.test.jsx",
+  testMatch: "**/*.test.{jsx,mjs}",
 
   /** Run each test file in parallel. */
   fullyParallel: true,

@@ -19,7 +19,7 @@
     "ci:format": "prettier . --check --experimental-cli",
     "ci:test": "yarn vitest --run --browser.headless --update",
     "e2e": "playwright test",
-    "e2e:chromatic": "yarn dlx chromatic --playwright --project-token=chpt_e92d16169d30db1",
+    "e2e:chromatic": "yarn chromatic --playwright --project-token=chpt_e92d16169d30db1",
     "e2e:report": "playwright show-report",
     "clean:res": "rescript clean",
     "convert-images": "auto-convert-images",
