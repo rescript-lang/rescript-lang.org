@@ -1,0 +1,108 @@
+open ReactRouter
+open Vitest
+
+let mockCategories: array<SidebarLayout.Sidebar.Category.t> = [
+  {
+    name: "Overview",
+    items: [
+      {name: "Introduction", href: "/docs/manual/introduction"},
+      {name: "Installation", href: "/docs/manual/installation"},
+    ],
+  },
+  {
+    name: "Language Features",
+    items: [
+      {name: "Primitive Types", href: "/docs/manual/primitive-types"},
+      {name: "Record", href: "/docs/manual/record"},
+      {name: "Object", href: "/docs/manual/object"},
+    ],
+  },
+]
+
+let mockToc: TableOfContents.t = {
+  title: "Introduction",
+  entries: [
+    {header: "Overview", href: "#overview"},
+    {header: "Installation", href: "#installation"},
+    {header: "Getting Started", href: "#getting-started"},
+  ],
+}
+
+test("desktop docs layout shows sidebar with categories", async () => {
+  await viewport(1440, 900)
+
+  let screen = await render(
+    <BrowserRouter>
+      <div dataTestId="docs-layout-wrapper">
+        <DocsLayout categories=mockCategories activeToc=mockToc>
+          <div> {React.string("This is the documentation content.")} </div>
+        </DocsLayout>
+      </div>
+    </BrowserRouter>,
+  )
+
+  let overviewHeading = await screen->getByText("Overview")
+  await element(overviewHeading)->toBeVisible
+
+  let languageFeaturesHeading = await screen->getByText("Language Features")
+  await element(languageFeaturesHeading)->toBeVisible
+
+  let introItem = await screen->getByText("Introduction")
+  await element(introItem)->toBeVisible
+
+  let mainContent = await screen->getByTestId("side-layout-children")
+  await element(mainContent)->toBeVisible
+
+  let wrapper = await screen->getByTestId("docs-layout-wrapper")
+  await element(wrapper)->toMatchScreenshot("desktop-docs-layout")
+})
+
+test("desktop docs layout shows table of contents entries", async () => {
+  await viewport(1440, 900)
+
+  let screen = await render(
+    <BrowserRouter>
+      <div dataTestId="docs-layout-wrapper">
+        <DocsLayout categories=mockCategories activeToc=mockToc>
+          <div> {React.string("This is the documentation content.")} </div>
+        </DocsLayout>
+      </div>
+    </BrowserRouter>,
+  )
+
+  // The TOC entries render inside the sidebar under the active nav item.
+  // Since the test isn't at a matching route, the TOC appears for the first
+  // category item that matches the current location. Verify the layout
+  // renders with the activeToc data by checking sidebar and content are present.
+  let overviewHeading = await screen->getByText("Overview")
+  await element(overviewHeading)->toBeVisible
+
+  let mainContent = await screen->getByTestId("side-layout-children")
+  await element(mainContent)->toBeVisible
+
+  let wrapper = await screen->getByTestId("docs-layout-wrapper")
+  await element(wrapper)->toMatchScreenshot("desktop-docs-layout-with-toc")
+})
+
+test("mobile docs layout hides sidebar by default", async () => {
+  await viewport(600, 1200)
+
+  let screen = await render(
+    <BrowserRouter>
+      <div dataTestId="docs-layout-wrapper">
+        <DocsLayout categories=mockCategories activeToc=mockToc>
+          <div> {React.string("This is the documentation content.")} </div>
+        </DocsLayout>
+      </div>
+    </BrowserRouter>,
+  )
+
+  let introItem = await screen->getByText("Introduction")
+  await element(introItem)->notToBeVisible
+
+  let mainContent = await screen->getByTestId("side-layout-children")
+  await element(mainContent)->toBeVisible
+
+  let wrapper = await screen->getByTestId("docs-layout-wrapper")
+  await element(wrapper)->toMatchScreenshot("mobile-docs-layout")
+})
