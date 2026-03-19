@@ -91,3 +91,111 @@ test("mobile blog article", async () => {
   let wrapper = await screen->getByTestId("blog-article-wrapper")
   await element(wrapper)->toMatchScreenshot("mobile-blog-article")
 })
+
+let mockCoAuthor: BlogFrontmatter.author = {
+  username: "co-author",
+  fullname: "Co Author",
+  role: "Contributor",
+  imgUrl: "https://rescript-lang.org/brand/rescript-brandmark.svg",
+  social: Bluesky("coauthor.bsky.social"),
+}
+
+let mockFrontmatterWithCoAuthors: BlogFrontmatter.t = {
+  author: mockAuthor,
+  co_authors: [mockCoAuthor],
+  date: DateStr.fromString("2025-03-20"),
+  previewImg: Nullable.null,
+  articleImg: Nullable.null,
+  title: "Collaborative Blog Post",
+  badge: Nullable.Value(Release),
+  description: Nullable.Value("A post written by multiple authors."),
+}
+
+test("desktop blog article with co-authors shows all authors", async () => {
+  await viewport(1440, 900)
+
+  let screen = await render(
+    <BrowserRouter>
+      <div dataTestId="blog-article-wrapper">
+        <BlogArticle
+          frontmatter=mockFrontmatterWithCoAuthors isArchived=false path="/blog/collab-post"
+        >
+          <div> {React.string("Collaborative content.")} </div>
+        </BlogArticle>
+      </div>
+    </BrowserRouter>,
+  )
+
+  let mainAuthor = await screen->getByText("Test Author")
+  await element(mainAuthor)->toBeVisible
+
+  let coAuthor = await screen->getByText("Co Author")
+  await element(coAuthor)->toBeVisible
+
+  let wrapper = await screen->getByTestId("blog-article-wrapper")
+  await element(wrapper)->toMatchScreenshot("desktop-blog-article-coauthors")
+})
+
+let mockFrontmatterWithArticleImg: BlogFrontmatter.t = {
+  author: mockAuthor,
+  co_authors: [],
+  date: DateStr.fromString("2025-06-01"),
+  previewImg: Nullable.null,
+  articleImg: Nullable.Value("https://rescript-lang.org/brand/rescript-brandmark.svg"),
+  title: "Blog Post With Article Image",
+  badge: Nullable.Value(Release),
+  description: Nullable.Value("A post with an article image."),
+}
+
+test("desktop blog article with article image shows image", async () => {
+  await viewport(1440, 900)
+
+  let screen = await render(
+    <BrowserRouter>
+      <div dataTestId="blog-article-wrapper">
+        <BlogArticle
+          frontmatter=mockFrontmatterWithArticleImg isArchived=false path="/blog/image-post"
+        >
+          <div> {React.string("Content below the article image.")} </div>
+        </BlogArticle>
+      </div>
+    </BrowserRouter>,
+  )
+
+  let title = await screen->getByText("Blog Post With Article Image")
+  await element(title)->toBeVisible
+
+  let wrapper = await screen->getByTestId("blog-article-wrapper")
+  await element(wrapper)->toMatchScreenshot("desktop-blog-article-with-image")
+})
+
+let mockFrontmatterNoDescription: BlogFrontmatter.t = {
+  author: mockAuthor,
+  co_authors: [],
+  date: DateStr.fromString("2025-02-10"),
+  previewImg: Nullable.null,
+  articleImg: Nullable.null,
+  title: "Blog Post Without Description",
+  badge: Nullable.null,
+  description: Nullable.null,
+}
+
+test("desktop blog article without description", async () => {
+  await viewport(1440, 900)
+
+  let screen = await render(
+    <BrowserRouter>
+      <div dataTestId="blog-article-wrapper">
+        <BlogArticle frontmatter=mockFrontmatterNoDescription isArchived=false path="/blog/no-desc">
+          <div> {React.string("Content without a description above.")} </div>
+        </BlogArticle>
+      </div>
+    </BrowserRouter>,
+  )
+
+  let title = await screen->getByText("Blog Post Without Description")
+  await element(title)->toBeVisible
+
+  let wrapper = await screen->getByTestId("blog-article-wrapper")
+  await element(wrapper)->toMatchScreenshot("desktop-blog-article-no-description")
+})

@@ -106,3 +106,51 @@ test("mobile docs layout hides sidebar by default", async () => {
   let wrapper = await screen->getByTestId("docs-layout-wrapper")
   await element(wrapper)->toMatchScreenshot("mobile-docs-layout")
 })
+
+test("desktop docs layout highlights active nav item", async () => {
+  await viewport(1440, 900)
+
+  let screen = await render(
+    <MemoryRouter initialEntries=["/docs/manual/installation"]>
+      <div dataTestId="docs-layout-wrapper">
+        <DocsLayout categories=mockCategories activeToc=mockToc>
+          <div> {React.string("This is the documentation content.")} </div>
+        </DocsLayout>
+      </div>
+    </MemoryRouter>,
+  )
+
+  let installItem = await screen->getByText("Installation")
+  await element(installItem)->toBeVisible
+
+  let introItem = await screen->getByText("Introduction")
+  await element(introItem)->toBeVisible
+
+  let wrapper = await screen->getByTestId("docs-layout-wrapper")
+  await element(wrapper)->toMatchScreenshot("desktop-docs-layout-active-item")
+})
+
+test("desktop docs layout shows pagination (prev/next)", async () => {
+  await viewport(1440, 900)
+
+  let screen = await render(
+    <MemoryRouter initialEntries=["/docs/manual/installation"]>
+      <div dataTestId="docs-layout-wrapper">
+        <DocsLayout categories=mockCategories activeToc=mockToc>
+          <div> {React.string("Installation documentation content.")} </div>
+        </DocsLayout>
+      </div>
+    </MemoryRouter>,
+  )
+
+  // When at "Installation" (second item), there should be a "Previous" link to "Introduction"
+  // and a "Next" link to "Primitive Types"
+  let prevLink = await screen->getByText("Introduction")
+  await element(prevLink)->toBeVisible
+
+  let nextLink = await screen->getByText("Primitive Types")
+  await element(nextLink)->toBeVisible
+
+  let wrapper = await screen->getByTestId("docs-layout-wrapper")
+  await element(wrapper)->toMatchScreenshot("desktop-docs-layout-pagination")
+})

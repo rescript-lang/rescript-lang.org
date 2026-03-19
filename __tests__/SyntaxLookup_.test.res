@@ -113,3 +113,61 @@ test("mobile syntax lookup", async () => {
   let wrapper = await screen->getByTestId("syntax-lookup-wrapper")
   await element(wrapper)->toMatchScreenshot("mobile-syntax-lookup")
 })
+
+test("deprecated items show with line-through styling", async () => {
+  await viewport(1440, 900)
+
+  let screen = await render(
+    <BrowserRouter>
+      <div dataTestId="syntax-lookup-wrapper">
+        <SyntaxLookup mdxSources=mockItems />
+      </div>
+    </BrowserRouter>,
+  )
+
+  let deprecatedTag = await screen->getByText("|>")
+  await element(deprecatedTag)->toBeVisible
+
+  let wrapper = await screen->getByTestId("syntax-lookup-wrapper")
+  await element(wrapper)->toMatchScreenshot("desktop-syntax-lookup-deprecated")
+})
+
+test("syntax lookup detail box shows summary", async () => {
+  await viewport(1440, 900)
+
+  let screen = await render(
+    <BrowserRouter>
+      <div dataTestId="syntax-lookup-wrapper">
+        <SyntaxLookup mdxSources=mockItems activeItem={mockItems->Array.getUnsafe(2)}>
+          <div> {React.string("Detailed documentation about the pipe operator.")} </div>
+        </SyntaxLookup>
+      </div>
+    </BrowserRouter>,
+  )
+
+  let detail = await screen->getByText("Detailed documentation about the pipe operator.")
+  await element(detail)->toBeVisible
+
+  let wrapper = await screen->getByTestId("syntax-lookup-wrapper")
+  await element(wrapper)->toMatchScreenshot("desktop-syntax-lookup-pipe-detail")
+})
+
+test("mobile syntax lookup with active item", async () => {
+  await viewport(600, 1200)
+
+  let screen = await render(
+    <BrowserRouter>
+      <div dataTestId="syntax-lookup-wrapper">
+        <SyntaxLookup mdxSources=mockItems activeItem={mockItems->Array.getUnsafe(0)}>
+          <div> {React.string("Detail content for @as decorator.")} </div>
+        </SyntaxLookup>
+      </div>
+    </BrowserRouter>,
+  )
+
+  let detail = await screen->getByText("Detail content for @as decorator.")
+  await element(detail)->toBeVisible
+
+  let wrapper = await screen->getByTestId("syntax-lookup-wrapper")
+  await element(wrapper)->toMatchScreenshot("mobile-syntax-lookup-active")
+})

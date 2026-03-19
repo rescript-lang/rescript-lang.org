@@ -64,3 +64,49 @@ test("mobile API overview hides sidebar", async () => {
   let wrapper = await screen->getByTestId("api-overview-wrapper")
   await element(wrapper)->toMatchScreenshot("mobile-api-overview")
 })
+
+test("desktop API overview shows all category items", async () => {
+  await viewport(1440, 900)
+
+  let screen = await render(
+    <BrowserRouter>
+      <div dataTestId="api-overview-wrapper">
+        <ApiOverviewLayout.Docs>
+          <div>
+            <Markdown.H1> {React.string("API Reference")} </Markdown.H1>
+            <Markdown.P> {React.string("Welcome to the ReScript API documentation.")} </Markdown.P>
+          </div>
+        </ApiOverviewLayout.Docs>
+      </div>
+    </BrowserRouter>,
+  )
+
+  let apiTitle = await screen->getByText("API Reference")
+  await element(apiTitle)->toBeVisible
+
+  let apiDescription = await screen->getByText("Welcome to the ReScript API documentation.")
+  await element(apiDescription)->toBeVisible
+
+  let wrapper = await screen->getByTestId("api-overview-wrapper")
+  await element(wrapper)->toMatchScreenshot("desktop-api-overview-with-content")
+})
+
+test("tablet API overview", async () => {
+  await viewport(900, 900)
+
+  let screen = await render(
+    <BrowserRouter>
+      <div dataTestId="api-overview-wrapper">
+        <ApiOverviewLayout.Docs>
+          <div> {React.string("API documentation content.")} </div>
+        </ApiOverviewLayout.Docs>
+      </div>
+    </BrowserRouter>,
+  )
+
+  let overview = await screen->getByText("Overview")
+  await element(overview)->toBeVisible
+
+  let wrapper = await screen->getByTestId("api-overview-wrapper")
+  await element(wrapper)->toMatchScreenshot("tablet-api-overview")
+})

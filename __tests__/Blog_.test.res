@@ -134,3 +134,90 @@ test("blog shows empty state when no posts", async () => {
   let wrapper = await screen->getByTestId("blog-empty-wrapper")
   await element(wrapper)->toMatchScreenshot("desktop-blog-empty")
 })
+
+let mockArchivedPosts: array<BlogApi.post> = [
+  {
+    path: "blog/old-post-2020",
+    archived: true,
+    frontmatter: {
+      author: mockAuthor,
+      co_authors: [],
+      date: DateStr.fromString("2020-03-15"),
+      previewImg: Nullable.null,
+      articleImg: Nullable.null,
+      title: "An Old Archived Post",
+      badge: Nullable.null,
+      description: Nullable.Value("This post is from the archives."),
+    },
+  },
+  {
+    path: "blog/old-post-2019",
+    archived: true,
+    frontmatter: {
+      author: mockAuthor,
+      co_authors: [],
+      date: DateStr.fromString("2019-11-01"),
+      previewImg: Nullable.null,
+      articleImg: Nullable.null,
+      title: "Another Archived Post",
+      badge: Nullable.null,
+      description: Nullable.Value("Another old post from the archives."),
+    },
+  },
+]
+
+test("desktop blog shows archived posts", async () => {
+  await viewport(1440, 900)
+
+  let screen = await render(
+    <BrowserRouter>
+      <div dataTestId="blog-wrapper">
+        <Blog posts=mockArchivedPosts category=Archived />
+      </div>
+    </BrowserRouter>,
+  )
+
+  let post1 = await screen->getByText("An Old Archived Post")
+  await element(post1)->toBeVisible
+
+  let post2 = await screen->getByText("Another Archived Post")
+  await element(post2)->toBeVisible
+
+  let wrapper = await screen->getByTestId("blog-wrapper")
+  await element(wrapper)->toMatchScreenshot("desktop-blog-archived")
+})
+
+test("desktop blog with single post", async () => {
+  await viewport(1440, 900)
+
+  let singlePost: array<BlogApi.post> = [
+    {
+      path: "blog/only-post",
+      archived: false,
+      frontmatter: {
+        author: mockAuthor,
+        co_authors: [],
+        date: DateStr.fromString("2025-12-01"),
+        previewImg: Nullable.null,
+        articleImg: Nullable.null,
+        title: "The Only Post",
+        badge: Nullable.Value(Release),
+        description: Nullable.Value("This is the only blog post."),
+      },
+    },
+  ]
+
+  let screen = await render(
+    <BrowserRouter>
+      <div dataTestId="blog-wrapper">
+        <Blog posts=singlePost category=All />
+      </div>
+    </BrowserRouter>,
+  )
+
+  let post = await screen->getByText("The Only Post")
+  await element(post)->toBeVisible
+
+  let wrapper = await screen->getByTestId("blog-wrapper")
+  await element(wrapper)->toMatchScreenshot("desktop-blog-single-post")
+})

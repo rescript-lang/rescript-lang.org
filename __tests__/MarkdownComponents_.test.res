@@ -251,3 +251,124 @@ test("renders horizontal rule", async () => {
   let wrapper = await screen->getByTestId("hr-wrapper")
   await element(wrapper)->toMatchScreenshot("markdown-hr")
 })
+
+test("renders inline code", async () => {
+  await viewport(1440, 900)
+
+  let screen = await render(
+    <div dataTestId="inline-code-wrapper">
+      <Markdown.P>
+        {React.string("Use ")}
+        <code
+          className="md-inline-code px-2 py-0.5 text-gray-60 font-mono rounded-sm bg-gray-10-tr border border-gray-90/5"
+        >
+          {React.string("Array.map")}
+        </code>
+        {React.string(" to transform elements.")}
+      </Markdown.P>
+    </div>,
+  )
+
+  let code = await screen->getByText("Array.map")
+  await element(code)->toBeVisible
+
+  let wrapper = await screen->getByTestId("inline-code-wrapper")
+  await element(wrapper)->toMatchScreenshot("markdown-inline-code")
+})
+
+test("renders Anchor with link icon", async () => {
+  await viewport(1440, 900)
+
+  let screen = await render(
+    <div dataTestId="anchor-wrapper">
+      <Markdown.H2 id="test-section"> {React.string("Test Section")} </Markdown.H2>
+    </div>,
+  )
+
+  let heading = await screen->getByText("Test Section")
+  await element(heading)->toBeVisible
+
+  let wrapper = await screen->getByTestId("anchor-wrapper")
+  await element(wrapper)->toMatchScreenshot("markdown-anchor")
+})
+
+test("renders Image with small size", async () => {
+  await viewport(1440, 900)
+
+  let screen = await render(
+    <div dataTestId="image-small-wrapper">
+      <Markdown.Image
+        src="https://rescript-lang.org/brand/rescript-brandmark.svg"
+        size=#small
+        caption="Small image"
+      />
+    </div>,
+  )
+
+  let caption = await screen->getByText("Small image")
+  await element(caption)->toBeVisible
+
+  let wrapper = await screen->getByTestId("image-small-wrapper")
+  await element(wrapper)->toMatchScreenshot("markdown-image-small")
+})
+
+test("renders Cite without author", async () => {
+  await viewport(1440, 900)
+
+  let screen = await render(
+    <div dataTestId="cite-no-author-wrapper">
+      <Markdown.Cite author=None>
+        {React.string("An anonymous quote about functional programming.")}
+      </Markdown.Cite>
+    </div>,
+  )
+
+  let quote = await screen->getByText("An anonymous quote about functional programming.")
+  await element(quote)->toBeVisible
+
+  let wrapper = await screen->getByTestId("cite-no-author-wrapper")
+  await element(wrapper)->toMatchScreenshot("markdown-cite-no-author")
+})
+
+test("renders nested list (ul inside li)", async () => {
+  await viewport(1440, 900)
+
+  let screen = await render(
+    <div dataTestId="nested-list-wrapper">
+      <Markdown.Ul>
+        <Markdown.Li> {React.string("Parent item")} </Markdown.Li>
+      </Markdown.Ul>
+      <Markdown.Ol>
+        <Markdown.Li> {React.string("Numbered item")} </Markdown.Li>
+      </Markdown.Ol>
+    </div>,
+  )
+
+  let parentItem = await screen->getByText("Parent item")
+  await element(parentItem)->toBeVisible
+
+  let numberedItem = await screen->getByText("Numbered item")
+  await element(numberedItem)->toBeVisible
+
+  let wrapper = await screen->getByTestId("nested-list-wrapper")
+  await element(wrapper)->toMatchScreenshot("markdown-nested-lists")
+})
+
+test("renders Strong text", async () => {
+  await viewport(1440, 900)
+
+  let screen = await render(
+    <div dataTestId="strong-wrapper">
+      <Markdown.P>
+        <Markdown.Strong> {React.string("Bold text")} </Markdown.Strong>
+        {React.string(" and normal text")}
+      </Markdown.P>
+    </div>,
+  )
+
+  let bold = await screen->getByText("Bold text")
+  await element(bold)->toBeVisible
+
+  let wrapper = await screen->getByTestId("strong-wrapper")
+  await element(wrapper)->toMatchScreenshot("markdown-strong")
+})
