@@ -35,10 +35,10 @@ test("desktop API layout shows sidebar categories and version select", async () 
   let stdlib = await screen->getByText("Stdlib")
   await element(stdlib)->toBeVisible
 
-  let belt = await screen->getByText("Belt")
+  let belt = await screen->getByTextExact("Belt")
   await element(belt)->toBeVisible
 
-  let array = await screen->getByText("Array")
+  let array = await screen->getByTextExact("Array")
   await element(array)->toBeVisible
 
   let wrapper = await screen->getByTestId("api-layout-wrapper")

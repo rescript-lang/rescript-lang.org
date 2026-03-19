@@ -85,7 +85,7 @@ test("breadcrumbs render path segments", async () => {
 let mockTocEntries: TableOfContents.t = {
   title: "Introduction",
   entries: [
-    {header: "Overview", href: "#overview"},
+    {header: "What is ReScript", href: "#what-is-rescript"},
     {header: "Basic Usage", href: "#basic-usage"},
     {header: "Advanced", href: "#advanced"},
   ],
@@ -112,7 +112,7 @@ test("sidebar category with active TOC renders entries", async () => {
     </MemoryRouter>,
   )
 
-  let overview = await screen->getByText("Overview")
+  let overview = await screen->getByText("What is ReScript")
   await element(overview)->toBeVisible
 
   let basicUsage = await screen->getByText("Basic Usage")

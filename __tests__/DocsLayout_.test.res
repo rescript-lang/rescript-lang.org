@@ -22,8 +22,8 @@ let mockCategories: array<SidebarLayout.Sidebar.Category.t> = [
 let mockToc: TableOfContents.t = {
   title: "Introduction",
   entries: [
-    {header: "Overview", href: "#overview"},
-    {header: "Installation", href: "#installation"},
+    {header: "What is ReScript", href: "#what-is-rescript"},
+    {header: "Prerequisites", href: "#prerequisites"},
     {header: "Getting Started", href: "#getting-started"},
   ],
 }
@@ -120,10 +120,12 @@ test("desktop docs layout highlights active nav item", async () => {
     </MemoryRouter>,
   )
 
-  let installItem = await screen->getByText("Installation")
+  let sidebar = await screen->getByTestId("sidebar-content")
+
+  let installItem = await sidebar->getByText("Installation")
   await element(installItem)->toBeVisible
 
-  let introItem = await screen->getByText("Introduction")
+  let introItem = await sidebar->getByText("Introduction")
   await element(introItem)->toBeVisible
 
   let wrapper = await screen->getByTestId("docs-layout-wrapper")
@@ -145,10 +147,12 @@ test("desktop docs layout shows pagination (prev/next)", async () => {
 
   // When at "Installation" (second item), there should be a "Previous" link to "Introduction"
   // and a "Next" link to "Primitive Types"
-  let prevLink = await screen->getByText("Introduction")
+  let content = await screen->getByTestId("side-layout-children")
+
+  let prevLink = await content->getByText("Introduction")
   await element(prevLink)->toBeVisible
 
-  let nextLink = await screen->getByText("Primitive Types")
+  let nextLink = await content->getByText("Primitive Types")
   await element(nextLink)->toBeVisible
 
   let wrapper = await screen->getByTestId("docs-layout-wrapper")
