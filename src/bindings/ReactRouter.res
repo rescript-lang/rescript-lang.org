@@ -123,3 +123,9 @@ module BrowserRouter = {
   @react.component @module("react-router")
   external make: (~children: React.element) => React.element = "BrowserRouter"
 }
+
+module MemoryRouter = {
+  @react.component @module("react-router")
+  external make: (~children: React.element, ~initialEntries: array<string>=?) => React.element =
+    "MemoryRouter"
+}

@@ -40,6 +40,11 @@ external getByTestId: (element, string) => promise<element> = "getByTestId"
 external getByText: (element, string) => promise<element> = "getByText"
 
 @send
+external getByTextWithOptions: (element, string, {"exact": bool}) => promise<element> = "getByText"
+
+let getByTextExact = (element, text) => getByTextWithOptions(element, text, {"exact": true})
+
+@send
 external getByLabelText: (element, string) => promise<element> = "getByLabelText"
 
 @send

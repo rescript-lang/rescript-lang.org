@@ -156,6 +156,7 @@ module Sidebar = {
       >
         <aside
           id="sidebar-content"
+          dataTestId="sidebar-content"
           className="h-full relative top-0 px-4 w-full block md:top-40 md:sticky border-r border-gray-20 overflow-y-auto pb-24 max-h-[calc(100vh-10rem)] pt-8"
         >
           <button
