@@ -28,7 +28,15 @@ let stdlibRoutes =
 let beltRoutes =
   beltPaths->Array.map(path => route(path, "./routes/ApiRoute.jsx", ~options={id: path}))
 
-let mdxRoutes = mdxRoutes("./routes/MdxRoute.jsx")
+let blogArticleRoutes =
+  MdxFile.scanPaths(~dir="markdown-pages/blog", ~alias="blog")->Array.map(path =>
+    route(path, "./routes/BlogArticleRoute.jsx", ~options={id: path})
+  )
+
+let mdxRoutes =
+  mdxRoutes("./routes/MdxRoute.jsx")->Array.filter(r =>
+    !(r.path->Option.map(String.includes(_, "blog"))->Option.getOr(false))
+  )
 
 let default = [
   index("./routes/LandingPageRoute.jsx"),
@@ -44,6 +52,7 @@ let default = [
   route("docs/manual/api/dom", "./routes/ApiRoute.jsx", ~options={id: "api-dom"}),
   ...stdlibRoutes,
   ...beltRoutes,
+  ...blogArticleRoutes,
   ...mdxRoutes,
   route("*", "./routes/NotFoundRoute.jsx"),
 ]

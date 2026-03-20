@@ -4,7 +4,6 @@ type loaderData = {
   ...Mdx.t,
   categories: array<SidebarLayout.Sidebar.Category.t>,
   entries: array<TableOfContents.entry>,
-  blogPost?: BlogApi.post,
   mdxSources?: array<SyntaxLookup.item>,
   activeSyntaxItem?: SyntaxLookup.item,
   breadcrumbs?: list<Url.breadcrumb>,
@@ -134,18 +133,7 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
 
   let mdx = await loadMdx(request, ~options={remarkPlugins: Mdx.plugins})
 
-  if pathname->String.includes("blog") {
-    let res: loaderData = {
-      __raw: mdx.__raw,
-      attributes: mdx.attributes,
-      entries: [],
-      categories: [],
-      blogPost: mdx.attributes->BlogLoader.transform,
-      title: `${mdx.attributes.title} | ReScript Blog`,
-      filePath: None,
-    }
-    res
-  } else if pathname->String.includes("syntax-lookup") {
+  if pathname->String.includes("syntax-lookup") {
     let mdxSources =
       (await allMdx(~filterByPaths=["markdown-pages/syntax-lookup"]))
       ->Array.filter(page =>
@@ -418,12 +406,6 @@ let default = () => {
       <CommunityLayout categories entries>
         <div className="markdown-body"> {component()} </div>
       </CommunityLayout>
-    } else if (pathname :> string)->String.includes("blog") {
-      switch loaderData.blogPost {
-      | Some({frontmatter, archived, path}) =>
-        <BlogArticle frontmatter isArchived=archived path> {component()} </BlogArticle>
-      | None => React.null // TODO: Post RR7 show an error?
-      }
     } else {
       switch loaderData.mdxSources {
       | Some(mdxSources) =>
