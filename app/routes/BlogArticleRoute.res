@@ -15,7 +15,7 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
 
   let frontmatter = switch BlogFrontmatter.decode(frontmatter) {
   | Ok(fm) => fm
-  | Error(msg) => JsExn.throw(msg)
+  | Error(msg) => JsError.throwWithMessage(msg)
   }
 
   let archived = filePath->String.includes("/archived/")

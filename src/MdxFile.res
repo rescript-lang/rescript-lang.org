@@ -28,7 +28,11 @@ let rec scanDir = (baseDir, currentDir) => {
       scanDir(baseDir, fullPath)
     } else if Node.Path.extname(entry) === ".mdx" {
       // Get the relative path from baseDir
-      let relativePath = fullPath->String.replace(baseDir ++ "/", "")->String.replace(".mdx", "")
+      let relativePath =
+        fullPath
+        ->String.replaceAll("\\", "/")
+        ->String.replace(baseDir->String.replaceAll("\\", "/") ++ "/", "")
+        ->String.replace(".mdx", "")
       [relativePath]
     } else {
       []

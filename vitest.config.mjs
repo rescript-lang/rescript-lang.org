@@ -10,8 +10,8 @@ export default defineConfig({
     setupFiles: ["./vitest.setup.mjs"],
     browser: {
       enabled: true,
-      provider: playwright(),
       // https://vitest.dev/config/browser/playwright
+      provider: playwright(),
       instances: [
         {
           browser: "chromium",
