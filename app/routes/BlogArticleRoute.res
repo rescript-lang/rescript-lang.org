@@ -1,5 +1,5 @@
 type loaderData = {
-  content: string,
+  compiledMdx: CompiledMdx.t,
   blogPost: BlogApi.post,
   title: string,
 }
@@ -11,12 +11,16 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
     ~dir="markdown-pages/blog",
     ~alias="blog",
   )
-  let {content, frontmatter} = await MdxFile.loadFile(filePath)
+
+  let raw = await Node.Fs.readFile(filePath, "utf-8")
+  let {frontmatter}: MarkdownParser.result = MarkdownParser.parseSync(raw)
 
   let frontmatter = switch BlogFrontmatter.decode(frontmatter) {
   | Ok(fm) => fm
   | Error(msg) => JsError.throwWithMessage(msg)
   }
+
+  let compiledMdx = await MdxFile.compileMdx(raw, ~filePath, ~remarkPlugins=Mdx.plugins)
 
   let archived = filePath->String.includes("/archived/")
 
@@ -35,18 +39,16 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
   }
 
   {
-    content,
+    compiledMdx,
     blogPost,
     title: `${frontmatter.title} | ReScript Blog`,
   }
 }
 
 let default = () => {
-  let {content, blogPost: {frontmatter, archived, path}} = ReactRouter.useLoaderData()
+  let {compiledMdx, blogPost: {frontmatter, archived, path}} = ReactRouter.useLoaderData()
 
   <BlogArticle frontmatter isArchived=archived path>
-    <ReactMarkdown components=MarkdownComponents.default rehypePlugins=[Rehype.Plugin(Rehype.raw)]>
-      content
-    </ReactMarkdown>
+    <MdxContent compiledMdx />
   </BlogArticle>
 }

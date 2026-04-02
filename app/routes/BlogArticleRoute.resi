@@ -1,5 +1,5 @@
 type loaderData = {
-  content: string,
+  compiledMdx: CompiledMdx.t,
   blogPost: BlogApi.post,
   title: string,
 }

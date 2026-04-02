@@ -3,6 +3,27 @@ type fileData = {
   frontmatter: JSON.t,
 }
 
+type compileInput = {value: string, path: string}
+type compileOptions = {
+  outputFormat: string,
+  remarkPlugins: array<Mdx.remarkPlugin>,
+}
+@module("@mdx-js/mdx")
+external compile: (compileInput, compileOptions) => promise<CompiledMdx.compileResult> = "compile"
+
+@module("remark-frontmatter") external remarkFrontmatter: Mdx.remarkPlugin = "default"
+
+let compileMdx = async (content, ~filePath, ~remarkPlugins=[]) => {
+  let compiled = await compile(
+    {value: content, path: filePath},
+    {
+      outputFormat: "function-body",
+      remarkPlugins: [remarkFrontmatter, ...remarkPlugins],
+    },
+  )
+  compiled->CompiledMdx.fromCompileResult
+}
+
 let resolveFilePath = (pathname, ~dir, ~alias) => {
   let path = if pathname->String.startsWith("/") {
     pathname->String.slice(~start=1, ~end=String.length(pathname))

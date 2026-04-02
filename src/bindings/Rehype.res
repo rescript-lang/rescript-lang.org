@@ -13,4 +13,3 @@ type rec rehypePlugin =
   | WithOptions(array<pluginOrOption>)
 
 @module("rehype-slug") external slug: plugin = "default"
-@module("rehype-raw") external raw: plugin = "default"

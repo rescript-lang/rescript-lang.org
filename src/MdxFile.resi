@@ -17,3 +17,10 @@ let loadFile: string => promise<fileData>
  * → ["blog/release-12-0-0", "blog/archived/some-post", ...]
  */
 let scanPaths: (~dir: string, ~alias: string) => array<string>
+
+/** Compile raw MDX content into a function-body string using @mdx-js/mdx. */
+let compileMdx: (
+  string,
+  ~filePath: string,
+  ~remarkPlugins: array<Mdx.remarkPlugin>=?,
+) => promise<CompiledMdx.t>
