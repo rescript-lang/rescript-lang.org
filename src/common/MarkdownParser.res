@@ -27,6 +27,15 @@ type result = {
 
 let vfileMatterPlugin = makePlugin(_options => (_tree, vfile) => vfileMatter(vfile))
 
+type remarkNode = {@as("type") type_: string}
+type remarkTree = {mutable children: array<remarkNode>}
+
+let stripFrontmatterPlugin = makePlugin(_options =>
+  (tree, _vfile) => {
+    tree.children = tree.children->Array.filter(node => node.type_ !== "yaml")
+  }
+)
+
 let parser =
   make()
   ->use(remarkParse)
@@ -35,6 +44,7 @@ let parser =
   ->use(remarkComment)
   ->useOptions(remarkFrontmatter, [{"type": "yaml", "marker": "-"}])
   ->use(vfileMatterPlugin)
+  ->use(stripFrontmatterPlugin)
 
 let parseSync = content => {
   let vfile = parser->processSync(content)

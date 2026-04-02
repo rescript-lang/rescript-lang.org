@@ -64,6 +64,9 @@ __tests__/        → Vitest browser-mode tests (Playwright)
 - Output format is ES modules with `.jsx` suffix, compiled in-source (`.jsx` files sit alongside `.res` files).
 - Reference the abridged documentation for clarification on how ReScript's APIs work: https://rescript-lang.org/llms/manual/llm-small.txt
 - If you need more information you can access the full documentation, but do this only when needed as the docs are very large: https://rescript-lang.org/llms/manual/llm-full.txt
+- Never use `%raw` unless you are specifically asked to
+- Never use `Object.magic`
+- Don't add type annotations unless necessary for clarity or to resolve an error. ReScript's type inference is powerful, and often explicit annotations are not needed.
 
 ### ReScript Dependencies
 
