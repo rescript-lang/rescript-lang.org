@@ -179,8 +179,10 @@ let default: unit => React.element
   })
   ```
 
-- Components requiring React Router context must be wrapped in `<BrowserRouter>`.
-- Run tests with `yarn vitest`.
+- Components requiring React Router context must be wrapped in `<MemoryRouter>`.
+- Do not use `<BrowserRouter>` in tests.
+- Run tests with `yarn vitest --browser.headless --run`.
+- Do not update snapshots without asking for confirmation.
 
 ## MDX Content
 
