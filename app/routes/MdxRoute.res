@@ -322,8 +322,7 @@ let default = () => {
       </>
     } else if (
       (pathname :> string)->String.includes("docs/manual") ||
-      (pathname :> string)->String.includes("docs/react") ||
-      (pathname :> string)->String.includes("docs/guidelines")
+        (pathname :> string)->String.includes("docs/react")
     ) {
       <>
         <Meta title=title description={attributes.description->Nullable.getOr("")} />
