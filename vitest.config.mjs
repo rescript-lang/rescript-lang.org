@@ -10,7 +10,12 @@ export default defineConfig({
     setupFiles: ["./vitest.setup.mjs"],
     browser: {
       enabled: true,
-      provider: playwright(),
+      provider: playwright({
+        contextOptions: {
+          deviceScaleFactor: 1,
+        },
+      }),
+      ui: false,
       // https://vitest.dev/config/browser/playwright
       instances: [
         {
@@ -18,6 +23,17 @@ export default defineConfig({
           viewport: { width: 1440, height: 900 },
         },
       ],
+      expect: {
+        toMatchScreenshot: {
+          screenshotOptions: {
+            scale: "css",
+          },
+          comparatorOptions: {
+            threshold: 0.2,
+            allowedMismatchedPixelRatio: 0.05,
+          },
+        },
+      },
     },
   },
 });
