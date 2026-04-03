@@ -35,7 +35,10 @@ let blogArticleRoutes =
 
 let mdxRoutes =
   mdxRoutes("./routes/MdxRoute.jsx")->Array.filter(r =>
-    !(r.path->Option.map(String.startsWith(_, "blog"))->Option.getOr(false))
+    !(r.path
+      ->Option.map(path => path === "blog" || String.startsWith(path, "blog/"))
+      ->Option.getOr(false)
+    )
   )
 
 let default = [
