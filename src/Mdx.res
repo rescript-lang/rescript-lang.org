@@ -82,7 +82,9 @@ let sortSection = mdxPages =>
   Array.toSorted(mdxPages, (a: attributes, b: attributes) =>
     switch (a.order, b.order) {
     | (Some(a), Some(b)) => a > b ? 1.0 : -1.0
-    | _ => -1.0
+    | (Some(_), None) => -1.0
+    | (None, Some(_)) => 1.0
+    | (None, None) => 0.0
     }
   )
 
