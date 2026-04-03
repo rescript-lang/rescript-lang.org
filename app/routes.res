@@ -49,13 +49,22 @@ let docsGuidelinesRoutes =
     ~alias="docs/guidelines",
   )->Array.map(path => route(path, "./routes/DocsGuidelinesRoute.jsx", ~options={id: path}))
 
-let mdxRoutes = mdxRoutes("./routes/MdxRoute.jsx")->Array.filter(r => {
-  let path = r.path->Option.getOr("")
-  !(path->String.startsWith("blog")) &&
-  !(path->String.startsWith("docs/manual")) &&
-  !(path->String.startsWith("docs/react")) &&
-  !(path->String.startsWith("docs/guidelines"))
-})
+let mdxRoutes = mdxRoutes("./routes/MdxRoute.jsx")->Array.filter(r =>
+  !(
+    r.path
+    ->Option.map(path =>
+      path === "blog" ||
+      String.startsWith(path, "blog/") ||
+      path === "docs/manual" ||
+      String.startsWith(path, "docs/manual/") ||
+      path === "docs/react" ||
+      String.startsWith(path, "docs/react/") ||
+      path === "docs/guidelines" ||
+      String.startsWith(path, "docs/guidelines/")
+    )
+    ->Option.getOr(false)
+  )
+)
 
 let default = [
   index("./routes/LandingPageRoute.jsx"),

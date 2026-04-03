@@ -99,22 +99,6 @@ let manualTableOfContents = async () => {
   categories
 }
 
-let reactTableOfContents = async () => {
-  let groups =
-    (await allMdx(~filterByPaths=["markdown-pages/docs"]))
-    ->filterMdxPages("docs/react")
-    ->groupBySection
-    ->Dict.mapValues(values => values->sortSection->convertToNavItems("/docs/react"))
-
-  // these are the categories that appear in the sidebar
-  let categories: array<SidebarLayout.Sidebar.Category.t> = getAllGroups(
-    groups,
-    ["Overview", "Main Concepts", "Hooks & State Management", "Guides"],
-  )
-
-  categories
-}
-
 let communityTableOfContents = async () => {
   let groups =
     (await allMdx(~filterByPaths=["markdown-pages/community"]))
@@ -163,8 +147,6 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
         []
       } else if pathname->String.includes("docs/manual") {
         await manualTableOfContents()
-      } else if pathname->String.includes("docs/react") {
-        await reactTableOfContents()
       } else if pathname->String.includes("community") {
         await communityTableOfContents()
       } else {
@@ -222,21 +204,11 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
               href: "/docs/manual/" ++ "introduction",
             },
           })
-        : pathname->String.includes("docs/react")
-        ? Some(list{
-          {Url.name: "Docs", href: "/docs/"},
-          {
-            Url.name: "rescript-react",
-            href: "/docs/react/" ++ "introduction",
-          },
-        })
         : None
 
     let metaTitleCategory = {
       let path = (pathname :> string)
-      let title = if path->String.includes("docs/react") {
-        "ReScript React"
-      } else if path->String.includes("docs/manual/api") {
+      let title = if path->String.includes("docs/manual/api") {
         "ReScript API"
       } else if path->String.includes("docs/manual") {
         "ReScript Language Manual"
@@ -322,7 +294,8 @@ let default = () => {
       </>
     } else if (
       (pathname :> string)->String.includes("docs/manual") ||
-        (pathname :> string)->String.includes("docs/react")
+      (pathname :> string)->String.includes("docs/react") ||
+      (pathname :> string)->String.includes("docs/guidelines")
     ) {
       <>
         <Meta title=title description={attributes.description->Nullable.getOr("")} />
@@ -333,8 +306,6 @@ let default = () => {
               if index === 0 {
                 if (pathname :> string)->String.includes("docs/manual") {
                   {...item, href: "/docs/manual/introduction"}
-                } else if (pathname :> string)->String.includes("docs/react") {
-                  {...item, href: "/docs/react/introduction"}
                 } else {
                   item
                 }
