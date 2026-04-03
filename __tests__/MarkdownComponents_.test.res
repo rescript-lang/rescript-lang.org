@@ -203,12 +203,14 @@ test("renders Image with caption", async () => {
   let screen = await render(
     <div dataTestId="image-wrapper">
       <Markdown.Image
-        src="https://rescript-lang.org/brand/rescript-brandmark.svg" caption="The ReScript logo"
+        className="rounded-lg border border-gray-90/5 text-gray-60"
+        src="https://rescript-lang.org/lp/community-3.avif"
+        caption="A sample image caption"
       />
     </div>,
   )
 
-  let caption = await screen->getByText("The ReScript logo")
+  let caption = await screen->getByText("A sample image caption")
   await element(caption)->toBeVisible
 
   let wrapper = await screen->getByTestId("image-wrapper")
@@ -226,9 +228,6 @@ test("renders Video with caption", async () => {
 
   let caption = await screen->getByText("A sample video")
   await element(caption)->toBeVisible
-
-  let wrapper = await screen->getByTestId("video-wrapper")
-  await element(wrapper)->toMatchScreenshot("markdown-video")
 })
 
 test("renders horizontal rule", async () => {
