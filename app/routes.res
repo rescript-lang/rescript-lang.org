@@ -54,6 +54,11 @@ let communityRoutes =
     route(path, "./routes/CommunityRoute.jsx", ~options={id: path})
   )
 
+let syntaxLookupDetailRoutes =
+  MdxFile.scanPaths(~dir="markdown-pages/syntax-lookup", ~alias="syntax-lookup")->Array.map(path =>
+    route(path, "./routes/SyntaxLookupDetailRoute.jsx", ~options={id: path})
+  )
+
 let mdxRoutes = mdxRoutes("./routes/MdxRoute.jsx")->Array.filter(r =>
   !(
     r.path
@@ -67,7 +72,9 @@ let mdxRoutes = mdxRoutes("./routes/MdxRoute.jsx")->Array.filter(r =>
       path === "docs/guidelines" ||
       String.startsWith(path, "docs/guidelines/") ||
       path === "community" ||
-      String.startsWith(path, "community/")
+      String.startsWith(path, "community/") ||
+      path === "syntax-lookup" ||
+      String.startsWith(path, "syntax-lookup/")
     )
     ->Option.getOr(false)
   )
@@ -92,6 +99,7 @@ let default = [
   ...docsReactRoutes,
   ...docsGuidelinesRoutes,
   ...communityRoutes,
+  ...syntaxLookupDetailRoutes,
   ...mdxRoutes,
   route("*", "./routes/NotFoundRoute.jsx"),
 ]
