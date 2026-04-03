@@ -2003,7 +2003,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mdx-js/mdx@npm:^3.1.0":
+"@mdx-js/mdx@npm:^3.1.0, @mdx-js/mdx@npm:^3.1.1":
   version: 3.1.1
   resolution: "@mdx-js/mdx@npm:3.1.1"
   dependencies:
@@ -9489,6 +9489,7 @@ __metadata:
     "@docsearch/react": "npm:^4.3.1"
     "@headlessui/react": "npm:^2.2.4"
     "@lezer/highlight": "npm:^1.2.1"
+    "@mdx-js/mdx": "npm:^3.1.1"
     "@node-cli/static-server": "npm:^3.1.4"
     "@prettier/plugin-oxc": "npm:^0.0.4"
     "@react-router/dev": "npm:^7.8.1"

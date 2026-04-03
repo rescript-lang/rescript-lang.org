@@ -1,0 +1,77 @@
+type fileData = {
+  content: string,
+  frontmatter: JSON.t,
+}
+
+type compileInput = {value: string, path: string}
+type compileOptions = {
+  outputFormat: string,
+  remarkPlugins: array<Mdx.remarkPlugin>,
+}
+@module("@mdx-js/mdx")
+external compile: (compileInput, compileOptions) => promise<CompiledMdx.compileResult> = "compile"
+
+@module("remark-frontmatter") external remarkFrontmatter: Mdx.remarkPlugin = "default"
+
+let compileMdx = async (content, ~filePath, ~remarkPlugins=[]) => {
+  let compiled = await compile(
+    {value: content, path: filePath},
+    {
+      outputFormat: "function-body",
+      remarkPlugins: [remarkFrontmatter, ...remarkPlugins],
+    },
+  )
+  compiled->CompiledMdx.fromCompileResult
+}
+
+let resolveFilePath = (pathname, ~dir, ~alias) => {
+  let path = if pathname->String.startsWith("/") {
+    pathname->String.slice(~start=1, ~end=String.length(pathname))
+  } else {
+    pathname
+  }
+  let relativePath =
+    if path->String.startsWith(alias ++ "/") {
+      let rest = path->String.slice(~start=String.length(alias) + 1, ~end=String.length(path))
+      Node.Path.join2(dir, rest)
+    } else if path->String.startsWith(alias) {
+      let rest = path->String.slice(~start=String.length(alias), ~end=String.length(path))
+      Node.Path.join2(dir, rest)
+    } else {
+      path
+    }
+  relativePath ++ ".mdx"
+}
+
+let loadFile = async filePath => {
+  let raw = await Node.Fs.readFile(filePath, "utf-8")
+  let {frontmatter, content}: MarkdownParser.result = MarkdownParser.parseSync(raw)
+  {content, frontmatter}
+}
+
+// Recursively scan a directory for .mdx files
+let rec scanDir = (baseDir, currentDir) => {
+  let entries = Node.Fs.readdirSync(currentDir)
+  entries->Array.flatMap(entry => {
+    let fullPath = Node.Path.join2(currentDir, entry)
+    if Node.Fs.statSync(fullPath)["isDirectory"]() {
+      scanDir(baseDir, fullPath)
+    } else if Node.Path.extname(entry) === ".mdx" {
+      // Get the relative path from baseDir
+      let relativePath =
+        fullPath
+        ->String.replaceAll("\\", "/")
+        ->String.replace(baseDir->String.replaceAll("\\", "/") ++ "/", "")
+        ->String.replace(".mdx", "")
+      [relativePath]
+    } else {
+      []
+    }
+  })
+}
+
+let scanPaths = (~dir, ~alias) => {
+  scanDir(dir, dir)->Array.map(relativePath => {
+    alias ++ "/" ++ relativePath
+  })
+}

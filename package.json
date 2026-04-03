@@ -48,6 +48,7 @@
     "@docsearch/react": "^4.3.1",
     "@headlessui/react": "^2.2.4",
     "@lezer/highlight": "^1.2.1",
+    "@mdx-js/mdx": "^3.1.1",
     "@node-cli/static-server": "^3.1.4",
     "@react-router/node": "^7.8.1",
     "@replit/codemirror-vim": "^6.3.0",
