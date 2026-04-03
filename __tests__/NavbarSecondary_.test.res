@@ -5,9 +5,9 @@ test("desktop secondary navbar shows all doc section links", async () => {
   await viewport(1440, 500)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter initialEntries=["/docs/manual/introduction"]>
       <NavbarSecondary />
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let navbar = await screen->getByTestId("navbar-secondary")
@@ -24,9 +24,9 @@ test("mobile secondary navbar shows all links", async () => {
   await viewport(600, 500)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter initialEntries=["/docs/manual/introduction"]>
       <NavbarSecondary />
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let navbar = await screen->getByTestId("navbar-secondary")

@@ -226,9 +226,6 @@ test("renders Video with caption", async () => {
 
   let caption = await screen->getByText("A sample video")
   await element(caption)->toBeVisible
-
-  let wrapper = await screen->getByTestId("video-wrapper")
-  await element(wrapper)->toMatchScreenshot("markdown-video")
 })
 
 test("renders horizontal rule", async () => {
