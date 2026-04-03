@@ -9,68 +9,12 @@ type loaderData = {
   filePath: option<string>,
 }
 
-let convertToNavItems = (items, rootPath) =>
-  Array.map(items, (item): SidebarLayout.Sidebar.NavItem.t => {
-    let href = switch item.slug {
-    | Some(slug) => `${rootPath}/${slug}`
-    | None => rootPath
-    }
-    {
-      name: item.title,
-      href,
-    }
-  })
-
-let getGroup = (groups, groupName): SidebarLayout.Sidebar.Category.t => {
-  {
-    name: groupName,
-    items: groups
-    ->Dict.get(groupName)
-    ->Option.getOr([]),
-  }
-}
-
-let getAllGroups = (groups, groupNames): array<SidebarLayout.Sidebar.Category.t> =>
-  groupNames->Array.map(item => getGroup(groups, item))
-
-// These are the pages for the language manual, sorted by their "order" field in the frontmatter
-let manualTableOfContents = async () => {
-  let groups =
-    (await allMdx(~filterByPaths=["markdown-pages/docs"]))
-    ->filterMdxPages("docs/manual")
-    ->groupBySection
-    ->Dict.mapValues(values => values->sortSection->convertToNavItems("/docs/manual"))
-
-  // these are the categories that appear in the sidebar
-  let categories: array<SidebarLayout.Sidebar.Category.t> = getAllGroups(
-    groups,
-    [
-      "Overview",
-      "Guides",
-      "Language Features",
-      "JavaScript Interop",
-      "Build System",
-      "Advanced Features",
-    ],
-  )
-
-  categories
-}
-
 let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
   let {pathname} = WebAPI.URL.make(~url=request.url)
 
   let mdx = await loadMdx(request, ~options={remarkPlugins: Mdx.plugins})
 
-  let categories = {
-    if pathname == "/docs/manual/api" {
-      []
-    } else if pathname->String.includes("docs/manual") {
-      await manualTableOfContents()
-    } else {
-      []
-    }
-  }
+  let categories = []
 
   let filePath = ref(None)
 
@@ -126,22 +70,14 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
 
   let metaTitleCategory = {
     let path = (pathname :> string)
-    let title = if path->String.includes("docs/manual/api") {
-      "ReScript API"
-    } else if path->String.includes("docs/manual") {
+    if path->String.includes("docs/manual") {
       "ReScript Language Manual"
     } else {
       "ReScript"
     }
-
-    title
   }
 
-  let title = if pathname == "/docs/manual/api" {
-    "API"
-  } else {
-    mdx.attributes.title
-  }
+  let title = mdx.attributes.title
 
   let res: loaderData = {
     __raw: mdx.__raw,
@@ -165,49 +101,7 @@ let default = () => {
   let {entries, categories, title} = loaderData
 
   <>
-    {if (pathname :> string) == "/docs/manual/api" {
-      let breadcrumbs = list{
-        {Url.name: "Docs", href: `/docs/manual/api`},
-        {name: "API", href: `/docs/manual/api`},
-      }
-      let sidebarContent =
-        <aside className="px-4 w-full block">
-          <div className="flex justify-between items-baseline">
-            <div className="flex flex-col text-fire font-medium">
-              <VersionSelect />
-            </div>
-            <button
-              className="flex items-center" onClick={_ => NavbarUtils.closeMobileTertiaryDrawer()}
-            >
-              <Icon.Close />
-            </button>
-          </div>
-          <div className="mb-56">
-            {ApiOverviewLayout.categories
-            ->Array.map(category => {
-              let isItemActive = (navItem: SidebarLayout.Sidebar.NavItem.t) =>
-                navItem.href === (pathname :> string)
-              <div key=category.name>
-                <SidebarLayout.Sidebar.Category
-                  isItemActive category onClick={_ => NavbarUtils.closeMobileTertiaryDrawer()}
-                />
-              </div>
-            })
-            ->React.array}
-          </div>
-        </aside>
-
-      <>
-        <Meta title=title description={attributes.description->Nullable.getOr("ReScript API")} />
-        <NavbarSecondary />
-        <NavbarTertiary sidebar=sidebarContent>
-          <SidebarLayout.BreadCrumbs crumbs=breadcrumbs />
-        </NavbarTertiary>
-        <ApiOverviewLayout.Docs>
-          <div className="markdown-body"> {component()} </div>
-        </ApiOverviewLayout.Docs>
-      </>
-    } else if (
+    {if (
       (pathname :> string)->String.includes("docs/manual") ||
         (pathname :> string)->String.includes("docs/react")
     ) {

@@ -88,6 +88,7 @@ let default = [
   route("blog", "./routes/BlogRoute.jsx", ~options={id: "blog-index"}),
   route("blog/archived", "./routes/BlogRoute.jsx", ~options={id: "blog-archived"}),
   route("docs", "./routes/DocsOverview.jsx", ~options={id: "docs-overview"}),
+  route("docs/manual/api", "./routes/ApiOverviewRoute.jsx", ~options={id: "api-overview"}),
   route("docs/manual/api/stdlib", "./routes/ApiRoute.jsx", ~options={id: "api-stdlib"}),
   route("docs/manual/api/introduction", "./routes/ApiRoute.jsx", ~options={id: "api-intro"}),
   route("docs/manual/api/belt", "./routes/ApiRoute.jsx", ~options={id: "api-belt"}),
