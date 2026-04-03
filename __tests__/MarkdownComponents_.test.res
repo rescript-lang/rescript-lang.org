@@ -203,7 +203,9 @@ test("renders Image with caption", async () => {
   let screen = await render(
     <div dataTestId="image-wrapper">
       <Markdown.Image
-        src="https://rescript-lang.org/lp/community-3.avif" caption="A sample image caption"
+        className="rounded-lg border border-gray-90/5 text-gray-60"
+        src="https://rescript-lang.org/lp/community-3.avif"
+        caption="A sample image caption"
       />
     </div>,
   )
