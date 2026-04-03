@@ -47,23 +47,6 @@ type remarkPlugin
 
 type tree
 
-type loadMdxOptions = {remarkPlugins?: array<remarkPlugin>}
-
-@module("react-router-mdx/server")
-external loadMdx: (WebAPI.FetchAPI.request, ~options: loadMdxOptions=?) => promise<t> = "loadMdx"
-
-@module("react-router-mdx/client")
-external useMdxAttributes: unit => attributes = "useMdxAttributes"
-
-@module("react-router-mdx/client")
-external useMdxComponent: (~components: {..}=?) => Jsx.component<'a> = "useMdxComponent"
-
-@module("react-router-mdx/server")
-external loadAllMdx: (~filterByPaths: array<string>=?) => promise<array<attributes>> = "loadAllMdx"
-
-@module("react-router-mdx/client")
-external useMdxFiles: unit => {..} = "useMdxFiles"
-
 @module("remark-gfm")
 external gfm: remarkPlugin = "default"
 
@@ -72,11 +55,6 @@ external validateLinks: remarkPlugin = "default"
 
 @module("mdast-util-to-string")
 external childrenToString: {..} => string = "toString"
-
-// The loadAllMdx function logs out all of the file contents as it reads them, which is noisy and not useful.
-// We can suppress that logging with this helper function.
-let allMdx = async (~filterByPaths: option<array<string>>=?) =>
-  await Shims.runWithoutLogging(() => loadAllMdx(~filterByPaths?))
 
 let sortSection = mdxPages =>
   Array.toSorted(mdxPages, (a: attributes, b: attributes) =>

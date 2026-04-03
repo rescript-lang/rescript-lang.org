@@ -3,8 +3,7 @@ type loaderData = {posts: array<BlogApi.post>, category: Blog.category}
 let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
   let showArchived = request.url->String.includes("archived")
   let posts = async () =>
-    (await Mdx.allMdx(~filterByPaths=["markdown-pages/blog"]))
-    ->Mdx.filterMdxPages("blog")
+    (await MdxFile.loadAllAttributes(~dir="markdown-pages/blog"))
     ->Array.map(BlogLoader.transform)
     ->Array.toSorted((a, b) => {
       a.frontmatter.date->DateStr.toDate > b.frontmatter.date->DateStr.toDate ? -1.0 : 1.0

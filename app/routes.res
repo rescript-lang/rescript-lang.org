@@ -59,27 +59,6 @@ let syntaxLookupDetailRoutes =
     route(path, "./routes/SyntaxLookupDetailRoute.jsx", ~options={id: path})
   )
 
-let mdxRoutes = mdxRoutes("./routes/MdxRoute.jsx")->Array.filter(r =>
-  !(
-    r.path
-    ->Option.map(path =>
-      path === "blog" ||
-      String.startsWith(path, "blog/") ||
-      path === "docs/manual" ||
-      String.startsWith(path, "docs/manual/") ||
-      path === "docs/react" ||
-      String.startsWith(path, "docs/react/") ||
-      path === "docs/guidelines" ||
-      String.startsWith(path, "docs/guidelines/") ||
-      path === "community" ||
-      String.startsWith(path, "community/") ||
-      path === "syntax-lookup" ||
-      String.startsWith(path, "syntax-lookup/")
-    )
-    ->Option.getOr(false)
-  )
-)
-
 let default = [
   index("./routes/LandingPageRoute.jsx"),
   route("packages", "./routes/PackagesRoute.jsx"),
@@ -101,6 +80,5 @@ let default = [
   ...docsGuidelinesRoutes,
   ...communityRoutes,
   ...syntaxLookupDetailRoutes,
-  ...mdxRoutes,
   route("*", "./routes/NotFoundRoute.jsx"),
 ]
