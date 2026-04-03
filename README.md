@@ -47,6 +47,26 @@ yarn dev
 
 ## Run Tests
 
+### Unit Tests (Vitest)
+
+We use [Vitest](https://vitest.dev/) with browser mode (Playwright) for component-level unit tests. Test files live in `__tests__/` and are written in ReScript.
+
+```sh
+# Run tests in watch mode (headed browser)
+yarn vitest
+
+# Run tests once in headless mode (same as CI)
+yarn ci:test
+```
+
+**Updating screenshots:** Screenshot baselines should only be updated in headless mode so they match CI and stay consistent across devices. Use the dedicated command:
+
+```sh
+yarn vitest:update
+```
+
+This runs the full suite headlessly with the `--update` flag, regenerating any screenshot baselines that have changed. Commit the updated `.png` files alongside your code changes.
+
 ### Markdown Codeblock Tests
 
 We check the validity of our code examples marked with:
