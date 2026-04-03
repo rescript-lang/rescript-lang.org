@@ -38,10 +38,18 @@ let docsManualRoutes =
   ->Array.filter(path => !String.includes(path, "docs/manual/api"))
   ->Array.map(path => route(path, "./routes/DocsManualRoute.jsx", ~options={id: path}))
 
-let mdxRoutes = mdxRoutes("./routes/MdxRoute.jsx")->Array.filter(r => {
-  let path = r.path->Option.getOr("")
-  !(path->String.startsWith("blog")) && !(path->String.startsWith("docs/manual"))
-})
+let mdxRoutes = mdxRoutes("./routes/MdxRoute.jsx")->Array.filter(r =>
+  !(
+    r.path
+    ->Option.map(path =>
+      path === "blog" ||
+      String.startsWith(path, "blog/") ||
+      path === "docs/manual" ||
+      String.startsWith(path, "docs/manual/")
+    )
+    ->Option.getOr(false)
+  )
+)
 
 let default = [
   index("./routes/LandingPageRoute.jsx"),

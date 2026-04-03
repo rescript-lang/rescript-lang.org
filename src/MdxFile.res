@@ -30,7 +30,15 @@ let resolveFilePath = (pathname, ~dir, ~alias) => {
   } else {
     pathname
   }
-  let relativePath = path->String.replace(alias, dir)
+  let relativePath = if path->String.startsWith(alias ++ "/") {
+    let rest = path->String.slice(~start=String.length(alias) + 1, ~end=String.length(path))
+    Node.Path.join2(dir, rest)
+  } else if path->String.startsWith(alias) {
+    let rest = path->String.slice(~start=String.length(alias), ~end=String.length(path))
+    Node.Path.join2(dir, rest)
+  } else {
+    path
+  }
   relativePath ++ ".mdx"
 }
 
