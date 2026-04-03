@@ -203,12 +203,12 @@ test("renders Image with caption", async () => {
   let screen = await render(
     <div dataTestId="image-wrapper">
       <Markdown.Image
-        src="https://rescript-lang.org/brand/rescript-brandmark.svg" caption="The ReScript logo"
+        src="https://rescript-lang.org/lp/community-3.avif" caption="A sample image caption"
       />
     </div>,
   )
 
-  let caption = await screen->getByText("The ReScript logo")
+  let caption = await screen->getByText("A sample image caption")
   await element(caption)->toBeVisible
 
   let wrapper = await screen->getByTestId("image-wrapper")
