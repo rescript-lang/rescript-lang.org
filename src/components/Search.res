@@ -51,7 +51,7 @@ let transformItems = (items: DocSearch.transformItems) => {
   items
   ->Array.filterMap(item => {
     let url = try WebAPI.URL.make(~url=item.url)->Some catch {
-    | Exn.Error(obj) =>
+    | JsExn(obj) =>
       Console.error2(`Failed to parse URL ${item.url}`, obj)
       None
     }

@@ -10,7 +10,7 @@ let renderHLJS = (~highlightedLines=[], ~darkmode=false, ~code: string, ~lang: s
   // If the language couldn't be parsed, we will fall back to text
   let options = {language: lang}
   let (lang, highlighted) = try (lang, highlight(~code, ~options)->valueGet) catch {
-  | Exn.Error(_) => ("text", code)
+  | JsExn(_) => ("text", code)
   }
 
   // Add line highlighting as well
