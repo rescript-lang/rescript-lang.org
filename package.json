@@ -57,7 +57,7 @@
     "@tsnobip/rescript-lezer": "^0.8.0",
     "docson": "^2.1.0",
     "fuse.js": "^6.4.3",
-    "glob": "^7.1.4",
+    "glob": "^13.0.6",
     "highlight.js": "^11.11.1",
     "highlightjs-rescript": "^0.2.2",
     "isbot": "^5",

@@ -1,5 +1,5 @@
 import fs from "fs";
-import glob from "glob";
+import { globSync } from "glob";
 import path from "path";
 import { URL } from "url";
 import child_process from "child_process";
@@ -97,9 +97,8 @@ fs.writeFileSync(tempFileName, "");
 
 let success = true;
 
-glob
-  .sync(__dirname + "/../markdown-pages/docs/{manual,react}/**/*.mdx")
-  .forEach((file) => {
+globSync(__dirname + "/../markdown-pages/docs/{manual,react}/**/*.mdx").forEach(
+  (file) => {
     let content = fs.readFileSync(file, { encoding: "utf-8" });
     let parsedResult = parseFile(content);
     if (parsedResult != null) {
@@ -116,7 +115,8 @@ glob
         success = false;
       }
     }
-  });
+  },
+);
 
 fs.unlinkSync(tempFileName);
 process.exit(success ? 0 : 1);
