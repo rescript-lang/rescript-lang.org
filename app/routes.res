@@ -33,13 +33,13 @@ let blogArticleRoutes =
     route(path, "./routes/BlogArticleRoute.jsx", ~options={id: path})
   )
 
-let mdxRoutes =
-  mdxRoutes("./routes/MdxRoute.jsx")->Array.filter(r =>
-    !(r.path
-      ->Option.map(path => path === "blog" || String.startsWith(path, "blog/"))
-      ->Option.getOr(false)
-    )
+let mdxRoutes = mdxRoutes("./routes/MdxRoute.jsx")->Array.filter(r =>
+  !(
+    r.path
+    ->Option.map(path => path === "blog" || String.startsWith(path, "blog/"))
+    ->Option.getOr(false)
   )
+)
 
 let default = [
   index("./routes/LandingPageRoute.jsx"),
