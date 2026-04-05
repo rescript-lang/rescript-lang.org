@@ -57,7 +57,6 @@
     "@tsnobip/rescript-lezer": "^0.8.0",
     "docson": "^2.1.0",
     "fuse.js": "^6.6.2",
-    "glob": "^13.0.6",
     "highlight.js": "^11.11.1",
     "highlightjs-rescript": "^0.2.2",
     "isbot": "^5.1.37",
@@ -79,6 +78,7 @@
     "remark-gfm": "^4.0.1",
     "remark-validate-links": "^13.1.0",
     "rescript": "^12.2.0",
+    "tinyglobby": "^0.2.15",
     "unified": "^11.0.5",
     "vfile-matter": "^5.0.1"
   },
