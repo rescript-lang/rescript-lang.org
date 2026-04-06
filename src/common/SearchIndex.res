@@ -94,49 +94,6 @@ let cleanDocstring = (text: string): string =>
   ->String.replaceRegExp(RegExp.fromString("\\n", ~flags="g"), " ")
   ->String.trim
 
-let stripMarkdownFull = (text: string): string =>
-  text
-  // Strip code blocks but keep code content
-  ->String.replaceRegExp(RegExp.fromString("```\\w*\\n?([\\s\\S]*?)```", ~flags="g"), "$1")
-  // Strip inline code backticks
-  ->String.replaceRegExp(RegExp.fromString("`([^`]+)`", ~flags="g"), "$1")
-  // Strip bold
-  ->String.replaceRegExp(RegExp.fromString("\\*\\*([^*]+)\\*\\*", ~flags="g"), "$1")
-  // Strip italic
-  ->String.replaceRegExp(RegExp.fromString("\\*([^*]+)\\*", ~flags="g"), "$1")
-  // Strip links (keep text, handle empty URLs too)
-  ->String.replaceRegExp(RegExp.fromString("\\[([^\\]]+)\\]\\([^)]*\\)", ~flags="g"), "$1")
-  // Strip heading markers
-  ->String.replaceRegExp(RegExp.fromString("^#{1,6}\\s+", ~flags="gm"), "")
-  // Collapse multiple newlines
-  ->String.replaceRegExp(RegExp.fromString("\\n{2,}", ~flags="g"), " ")
-  // Replace remaining newlines with space
-  ->String.replaceRegExp(RegExp.fromString("\\n", ~flags="g"), " ")
-  ->String.trim
-
-let docstringToSearchHtml = (text: string): string =>
-  text
-  // Strip code blocks but keep code content wrapped in <code>
-  ->String.replaceRegExp(
-    RegExp.fromString("```\\w*\\n?([\\s\\S]*?)```", ~flags="g"),
-    "<code>$1</code>",
-  )
-  // Convert inline code backticks to <code> tags
-  ->String.replaceRegExp(RegExp.fromString("`([^`]+)`", ~flags="g"), "<code>$1</code>")
-  // Strip bold
-  ->String.replaceRegExp(RegExp.fromString("\\*\\*([^*]+)\\*\\*", ~flags="g"), "$1")
-  // Strip italic
-  ->String.replaceRegExp(RegExp.fromString("\\*([^*]+)\\*", ~flags="g"), "$1")
-  // Strip links (keep text, handle empty URLs too)
-  ->String.replaceRegExp(RegExp.fromString("\\[([^\\]]+)\\]\\([^)]*\\)", ~flags="g"), "$1")
-  // Strip heading markers
-  ->String.replaceRegExp(RegExp.fromString("^#{1,6}\\s+", ~flags="gm"), "")
-  // Convert double newlines to <br />
-  ->String.replaceRegExp(RegExp.fromString("\\n{2,}", ~flags="g"), "<br />")
-  // Replace remaining newlines with space
-  ->String.replaceRegExp(RegExp.fromString("\\n", ~flags="g"), " ")
-  ->String.trim
-
 let extractIntro = (content: string): string => {
   let parts = content->String.split("\n## ")
   let intro = parts[0]->Option.getOr("")

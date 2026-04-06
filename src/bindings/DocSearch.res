@@ -63,21 +63,3 @@ external make: (
   ~searchParameters: searchParameters=?,
   ~initialScrollY: int=?,
 ) => React.element = "DocSearchModal"
-
-let getContentSnippet: docSearchHit => option<string> = %raw(`
-  function(hit) {
-    try {
-      var s = hit._snippetResult;
-      if (s && s.content && s.content.value) {
-        var val = s.content.value.trim();
-        if (val !== '' && val !== '...') return val;
-      }
-    } catch(e) {}
-    var c = hit.content;
-    if (c != null) {
-      c = c.trim();
-      if (c !== '') return c;
-    }
-    return undefined;
-  }
-`)
