@@ -9,6 +9,9 @@ type mock
 @module("vitest")
 external test: (string, unit => promise<unit>) => unit = "test"
 
+@module("vitest")
+external describe: (string, unit => unit) => unit = "describe"
+
 @module("vitest") @scope("vi")
 external fn: unit => 'a => 'b = "fn"
 
@@ -64,6 +67,9 @@ external click: element => promise<unit> = "click"
  */
 @send
 external toBe: (expect, 'a) => unit = "toBe"
+
+@send
+external toEqual: (expect, 'a) => unit = "toEqual"
 
 @send
 external toHaveBeenCalled: expect => unit = "toHaveBeenCalled"
