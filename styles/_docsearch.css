@@ -279,12 +279,6 @@ svg.DocSearch-Hit-Select-Icon {
 
 .DocSearch-Hit-path {
   @apply text-14 text-gray-60;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  white-space: normal !important;
-  text-overflow: ellipsis;
 }
 
 .DocSearch-Hit-path code {
