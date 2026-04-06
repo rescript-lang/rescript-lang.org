@@ -1,4 +1,4 @@
-import glob from "glob";
+import { globSync } from "tinyglobby";
 import path from "path";
 import fs from "fs";
 import { URL } from "url";
@@ -46,7 +46,10 @@ const extractSyntax = async (version) => {
     __dirname,
     "../index_data/syntax_index.json",
   );
-  const syntaxFiles = glob.sync(`${SYNTAX_MD_DIR}/*.md?(x)`);
+  const syntaxFiles = globSync(["*.md", "*.mdx"], {
+    cwd: SYNTAX_MD_DIR,
+    absolute: true,
+  });
   const syntaxIndex = syntaxFiles
     .map(processFile)
     .filter(Boolean)
