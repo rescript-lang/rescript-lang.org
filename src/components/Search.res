@@ -1,103 +1,13 @@
-let apiKey = "a2485ef172b8cd82a2dfa498d551399b"
-let indexName = "rescript-lang"
-let appId = "S32LNEY41T"
+let apiKey = Env.algolia_read_api_key
+let indexName = Env.algolia_index_name
+let appId = Env.algolia_app_id
 
 type state = Active | Inactive
 
-let hit = ({hit, children}: DocSearch.hitComponent) => {
-  let toTitle = str => str->String.charAt(0)->String.toUpperCase ++ String.slice(str, ~start=1)
-
-  let description = switch hit.url
-  ->String.split("/")
-  ->Array.slice(~start=1)
-  ->List.fromArray {
-  | list{"blog" as r | "community" as r, ..._} => r->toTitle
-  | list{"docs", doc, version, ...rest} =>
-    let path = rest->List.toArray
-
-    let info =
-      path
-      ->Array.slice(~start=0, ~end=Array.length(path) - 1)
-      ->Array.map(path =>
-        switch path {
-        | "api" => "API"
-        | other => toTitle(other)
-        }
-      )
-
-    [doc->toTitle, version->toTitle]->Array.concat(info)->Array.join(" / ")
-  | _ => ""
-  }
-
-  let isDeprecated = hit.deprecated->Option.isSome
-  let deprecatedBadge = isDeprecated
-    ? <span
-        className="inline-flex items-center px-2 py-1 text-xs font-medium text-orange-600 bg-orange-100 rounded-full mr-2"
-      >
-        {"Deprecated"->React.string}
-      </span>
-    : React.null
-
-  <ReactRouter.Link.String to=hit.url className="flex flex-col w-full">
-    <span className="text-gray-60 captions px-4 pt-3 pb-1 flex items-center">
-      {deprecatedBadge}
-      {description->React.string}
-    </span>
-    children
-  </ReactRouter.Link.String>
-}
-
-let transformItems = (items: DocSearch.transformItems) => {
-  items
-  ->Array.filterMap(item => {
-    let url = try WebAPI.URL.make(~url=item.url)->Some catch {
-    | JsExn(obj) =>
-      Console.error2(`Failed to parse URL ${item.url}`, obj)
-      None
-    }
-    switch url {
-    | Some({pathname, hash}) =>
-      RegExp.test(/v(8|9|10|11)\./, pathname)
-        ? None
-        : {
-            // DocSearch internally calls .replace() on hierarchy.lvl1, so we must
-            // provide a fallback for items where lvl1 is null to prevent crashes
-            let hierarchy = item.hierarchy
-            let lvl0 = hierarchy.lvl0->Nullable.toOption->Option.getOr("")
-            let lvl1 = hierarchy.lvl1->Nullable.toOption->Option.getOr(lvl0)
-            Some({
-              ...item,
-              deprecated: pathname->String.includes("api/js") ||
-                pathname->String.includes("api/core")
-                ? Some("Deprecated")
-                : None,
-              url: pathname->String.replace("/v12.0.0/", "/") ++ hash,
-              hierarchy: {
-                ...hierarchy,
-                lvl0: Nullable.make(lvl0),
-                lvl1: Nullable.make(lvl1),
-              },
-            })
-          }
-
-    | None => None
-    }
-  })
-  // Sort deprecated items to the end
-  ->Array.toSorted((a, b) => {
-    switch (a.deprecated, b.deprecated) {
-    | (Some(_), None) => 1. // a is deprecated, b is not - put a after b
-    | (None, Some(_)) => -1. // a is not deprecated, b is - put a before b
-    | _ => 0.
-    }
-  })
-  ->Array.toSorted((a, b) => {
-    switch (a.url->String.includes("api/stdlib"), b.url->String.includes("api/stdlib")) {
-    | (true, false) => -1. // a is a stdlib doc, b is not - put a before b
-    | (false, true) => 1. // a is not a stdlib doc, b is - put a after b
-    | _ => 0. // both same API status - maintain original order
-    }
-  })
+let navigator: DocSearch.navigator = {
+  navigate: ({itemUrl}) => {
+    ReactRouter.navigate(itemUrl)
+  },
 }
 
 @react.component
@@ -174,10 +84,10 @@ let make = () => {
             apiKey
             appId
             indexName
+            navigator
             onClose
             initialScrollY={window.scrollY->Float.toInt}
-            transformItems={transformItems}
-            hitComponent=hit
+            searchParameters={distinct: 3, hitsPerPage: 20}
           />,
           element,
         )

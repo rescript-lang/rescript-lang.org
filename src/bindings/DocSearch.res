@@ -44,7 +44,11 @@ type item = {itemUrl: string}
 
 type navigator = {navigate: item => unit}
 
-type searchParameters = {facetFilters: array<string>}
+type searchParameters = {
+  facetFilters?: array<string>,
+  hitsPerPage?: int,
+  distinct?: int,
+}
 
 @module("@docsearch/react") @react.component
 external make: (
@@ -58,3 +62,21 @@ external make: (
   ~searchParameters: searchParameters=?,
   ~initialScrollY: int=?,
 ) => React.element = "DocSearchModal"
+
+let getContentSnippet: docSearchHit => option<string> = %raw(`
+  function(hit) {
+    try {
+      var s = hit._snippetResult;
+      if (s && s.content && s.content.value) {
+        var val = s.content.value.trim();
+        if (val !== '' && val !== '...') return val;
+      }
+    } catch(e) {}
+    var c = hit.content;
+    if (c != null) {
+      c = c.trim();
+      if (c !== '') return c;
+    }
+    return undefined;
+  }
+`)
