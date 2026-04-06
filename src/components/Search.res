@@ -58,13 +58,22 @@ let markdownToHtml = (text: string): string =>
   ->String.replaceRegExp(RegExp.fromString("\\n", ~flags="g"), " ")
   ->String.trim
 
+let isChildHit = (hit: DocSearch.docSearchHit) =>
+  switch hit.type_ {
+  | Lvl2 | Lvl3 | Lvl4 | Lvl5 | Lvl6 | Content => true
+  | Lvl0 | Lvl1 => hit.url->String.includes("#")
+  }
+
 let hitComponent = ({hit, children: _}: DocSearch.hitComponent): React.element => {
   let titleHtml = getHighlightedTitle(hit)
   let subtitle = getSubtitle(hit)
   let contentHtml = hit.content->Nullable.toOption->Option.map(markdownToHtml)
+  let isChild = isChildHit(hit)
 
   <a href={hit.url}>
     <div className="DocSearch-Hit-Container">
+      {isChild ? <Icon.DocTree /> : React.null}
+      {isChild ? <Icon.DocHash /> : <Icon.DocPage />}
       <div className="DocSearch-Hit-content-wrapper">
         <span className="DocSearch-Hit-title" dangerouslySetInnerHTML={{"__html": titleHtml}} />
         {switch subtitle {
@@ -77,6 +86,7 @@ let hitComponent = ({hit, children: _}: DocSearch.hitComponent): React.element =
         | _ => React.null
         }}
       </div>
+      <Icon.DocSelect />
     </div>
   </a>
 }
