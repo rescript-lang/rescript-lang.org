@@ -19,6 +19,11 @@ let getHighlightedTitle: DocSearch.docSearchHit => string = %raw(`
 
 let markdownToHtml = (text: string): string =>
   text
+  ->String.replaceRegExp(
+    RegExp.fromString("See\\s+\\[([^\\]]+)\\]\\([^)]*\\)\\s+on MDN\\.?", ~flags="g"),
+    "",
+  )
+  ->String.replaceRegExp(RegExp.fromString("See\\s+\\S+\\s+on MDN\\.?", ~flags="g"), "")
   ->String.replaceRegExp(RegExp.fromString("\\[([^\\]]+)\\]\\([^)]*\\)", ~flags="g"), "$1")
   ->String.replaceRegExp(RegExp.fromString("\\x60([^\\x60]+)\\x60", ~flags="g"), "<code>$1</code>")
   ->String.replaceRegExp(
