@@ -12,13 +12,36 @@ let navigator: DocSearch.navigator = {
 
 let getHighlightedTitle: DocSearch.docSearchHit => string = %raw(`
   function(hit) {
-    try { return hit._highlightResult.hierarchy.lvl1.value; }
-    catch(e) { return hit.hierarchy.lvl1 || ''; }
+    var type = hit.type;
+    var h = hit._highlightResult && hit._highlightResult.hierarchy;
+    var raw = hit.hierarchy;
+    try {
+      if (type && type !== 'lvl1' && type !== 'lvl0') {
+        var lvl = h && h[type] && h[type].value;
+        if (lvl) return lvl;
+      }
+      if (h && h.lvl1 && h.lvl1.value) return h.lvl1.value;
+    } catch(e) {}
+    return (raw && raw.lvl1) || '';
+  }
+`)
+
+let getSubtitle: DocSearch.docSearchHit => option<string> = %raw(`
+  function(hit) {
+    var type = hit.type;
+    if (type && type !== 'lvl1' && type !== 'lvl0') {
+      var raw = hit.hierarchy;
+      if (raw && raw.lvl1) return raw.lvl1;
+    }
+    return undefined;
   }
 `)
 
 let markdownToHtml = (text: string): string =>
   text
+  // Strip stray backslashes from MDX processing
+  ->String.replaceRegExp(RegExp.fromString("^\\\\\\s+", ~flags=""), "")
+  ->String.replaceRegExp(RegExp.fromString("\\\\\\s+", ~flags="g"), " ")
   ->String.replaceRegExp(
     RegExp.fromString("See\\s+\\[([^\\]]+)\\]\\([^)]*\\)\\s+on MDN\\.?", ~flags="g"),
     "",
@@ -37,12 +60,17 @@ let markdownToHtml = (text: string): string =>
 
 let hitComponent = ({hit, children: _}: DocSearch.hitComponent): React.element => {
   let titleHtml = getHighlightedTitle(hit)
+  let subtitle = getSubtitle(hit)
   let contentHtml = hit.content->Nullable.toOption->Option.map(markdownToHtml)
 
   <a href={hit.url}>
     <div className="DocSearch-Hit-Container">
       <div className="DocSearch-Hit-content-wrapper">
         <span className="DocSearch-Hit-title" dangerouslySetInnerHTML={{"__html": titleHtml}} />
+        {switch subtitle {
+        | Some(s) => <span className="DocSearch-Hit-subtitle"> {React.string(s)} </span>
+        | None => React.null
+        }}
         {switch contentHtml {
         | Some(c) if String.length(c) > 0 =>
           <span className="DocSearch-Hit-path" dangerouslySetInnerHTML={{"__html": c}} />

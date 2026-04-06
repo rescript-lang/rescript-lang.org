@@ -273,6 +273,10 @@ svg.DocSearch-Hit-Select-Icon {
   @apply text-14 text-gray-60;
 }
 
+.DocSearch-Hit-subtitle {
+  @apply text-12 text-gray-40;
+}
+
 .DocSearch-Hit-path {
   @apply text-14 text-gray-60;
   display: -webkit-box;
