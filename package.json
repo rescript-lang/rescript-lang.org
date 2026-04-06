@@ -102,7 +102,7 @@
     "tailwindcss": "^4",
     "to-vfile": "^8.0.0",
     "vfile-reporter": "^8.1.1",
-    "vite": "^8.0.3",
+    "vite": "^8.0.5",
     "vite-plugin-devtools-json": "^1.0.0",
     "vite-plugin-env-compatible": "^2.0.1",
     "vite-plugin-page-reload": "^0.2.3",
