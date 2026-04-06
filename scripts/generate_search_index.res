@@ -1,5 +1,5 @@
 // Build script: reads all site content, builds Algolia search records, and uploads them.
-// Runs as a standalone Node script via: node --env-file-if-exists=.env.local _scripts/generate_search_index.mjs
+// Runs as a standalone Node script via: node --env-file-if-exists=.env --env-file-if-exists=.env.local _scripts/generate_search_index.mjs
 //
 // Required env vars:
 //   ALGOLIA_ADMIN_API_KEY -- API key with addObject/deleteObject/editSettings ACLs
@@ -17,6 +17,59 @@ let getEnv = (key: string): option<string> =>
     }
   )
 
+let compareVersions = (a: string, b: string): float => {
+  let parse = (v: string) =>
+    v
+    ->String.replaceRegExp(RegExp.fromString("^v", ~flags=""), "")
+    ->String.split(".")
+    ->Array.map(s => Int.fromString(s)->Option.getOr(0))
+  let partsA = parse(a)
+  let partsB = parse(b)
+  switch (partsA[0], partsB[0]) {
+  | (Some(a0), Some(b0)) if a0 !== b0 => Int.toFloat(a0 - b0)
+  | _ =>
+    switch (partsA[1], partsB[1]) {
+    | (Some(a1), Some(b1)) if a1 !== b1 => Int.toFloat(a1 - b1)
+    | _ =>
+      switch (partsA[2], partsB[2]) {
+      | (Some(a2), Some(b2)) => Int.toFloat(a2 - b2)
+      | _ => 0.0
+      }
+    }
+  }
+}
+
+let resolveApiDir = (): option<string> => {
+  let majorVersion =
+    getEnv("VITE_VERSION_LATEST")
+    ->Option.map(v => v->String.replaceRegExp(RegExp.fromString("^v", ~flags=""), ""))
+    ->Option.flatMap(v => v->String.split(".")->Array.get(0))
+  switch majorVersion {
+  | None => {
+      Console.log("[search-index] VITE_VERSION_LATEST not set, cannot resolve API version.")
+      None
+    }
+  | Some(major) => {
+      let prefix = "v" ++ major ++ "."
+      let entries = Node.Fs.readdirSync("data/api")
+      let matching =
+        entries
+        ->Array.filter(entry => String.startsWith(entry, prefix))
+        ->Array.toSorted(compareVersions)
+      switch matching->Array.at(-1) {
+      | Some(dir) => {
+          Console.log(`[search-index] Resolved API version: ${dir}`)
+          Some("data/api/" ++ dir)
+        }
+      | None => {
+          Console.log(`[search-index] No API version found matching v${major}.*`)
+          None
+        }
+      }
+    }
+  }
+}
+
 let main = async () => {
   let appId = getEnv("ALGOLIA_APP_ID")
   let adminApiKey = getEnv("ALGOLIA_ADMIN_API_KEY")
@@ -25,6 +78,8 @@ let main = async () => {
   switch (appId, adminApiKey, indexName) {
   | (Some(appId), Some(apiKey), Some(idx)) => {
       Console.log("[search-index] Building search index records...")
+
+      let apiDir = resolveApiDir()->Option.getOr("markdown-pages/docs/api")
 
       // 1. Build records from all content sources
       let manualRecords = SearchIndex.buildMarkdownRecords(
@@ -70,7 +125,7 @@ let main = async () => {
 
       let stdlibApiRecords = SearchIndex.buildApiRecords(
         ~basePath="/docs/manual/api",
-        ~dirPath="markdown-pages/docs/api",
+        ~dirPath=apiDir,
         ~pageRank=80,
         ~category="API / StdLib",
         ~files=["stdlib.json"],
@@ -81,7 +136,7 @@ let main = async () => {
 
       let beltApiRecords = SearchIndex.buildApiRecords(
         ~basePath="/docs/manual/api",
-        ~dirPath="markdown-pages/docs/api",
+        ~dirPath=apiDir,
         ~pageRank=75,
         ~category="API / Belt",
         ~files=["belt.json"],
@@ -92,7 +147,7 @@ let main = async () => {
 
       let domApiRecords = SearchIndex.buildApiRecords(
         ~basePath="/docs/manual/api",
-        ~dirPath="markdown-pages/docs/api",
+        ~dirPath=apiDir,
         ~pageRank=70,
         ~category="API / DOM",
         ~files=["dom.json"],
@@ -150,7 +205,7 @@ let main = async () => {
           exactOnSingleWordQuery: "word",
           attributesForFaceting: ["type"],
           customRanking: ["desc(weight.pageRank)", "desc(weight.level)", "asc(weight.position)"],
-          attributesToSnippet: ["content:30"],
+          attributesToSnippet: [],
           attributeForDistinct: "hierarchy.lvl0",
         },
       })
@@ -159,9 +214,8 @@ let main = async () => {
       Console.log("[search-index] Done.")
     }
   | (None, _, _) => Console.log("[search-index] ALGOLIA_APP_ID not set, skipping index upload.")
-  | (_, None, _) => Console.log(
-      "[search-index] ALGOLIA_ADMIN_API_KEY not set, skipping index upload.",
-    )
+  | (_, None, _) =>
+    Console.log("[search-index] ALGOLIA_ADMIN_API_KEY not set, skipping index upload.")
   | (_, _, None) => Console.log("[search-index] ALGOLIA_INDEX_NAME not set, skipping index upload.")
   }
 }

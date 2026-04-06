@@ -274,7 +274,17 @@ svg.DocSearch-Hit-Select-Icon {
 }
 
 .DocSearch-Hit-path {
-  @apply text-12;
+  @apply text-14 text-gray-60;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: normal !important;
+  text-overflow: ellipsis;
+}
+
+.DocSearch-Hit-path code {
+  @apply bg-gray-10 text-black rounded-sm px-1 py-0.5 text-12 font-mono;
 }
 
 .DocSearch-Hit[aria-selected="true"] .DocSearch-Hit-title,

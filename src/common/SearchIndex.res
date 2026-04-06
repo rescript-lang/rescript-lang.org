@@ -94,6 +94,49 @@ let cleanDocstring = (text: string): string =>
   ->String.replaceRegExp(RegExp.fromString("\\n", ~flags="g"), " ")
   ->String.trim
 
+let stripMarkdownFull = (text: string): string =>
+  text
+  // Strip code blocks but keep code content
+  ->String.replaceRegExp(RegExp.fromString("```\\w*\\n?([\\s\\S]*?)```", ~flags="g"), "$1")
+  // Strip inline code backticks
+  ->String.replaceRegExp(RegExp.fromString("`([^`]+)`", ~flags="g"), "$1")
+  // Strip bold
+  ->String.replaceRegExp(RegExp.fromString("\\*\\*([^*]+)\\*\\*", ~flags="g"), "$1")
+  // Strip italic
+  ->String.replaceRegExp(RegExp.fromString("\\*([^*]+)\\*", ~flags="g"), "$1")
+  // Strip links (keep text, handle empty URLs too)
+  ->String.replaceRegExp(RegExp.fromString("\\[([^\\]]+)\\]\\([^)]*\\)", ~flags="g"), "$1")
+  // Strip heading markers
+  ->String.replaceRegExp(RegExp.fromString("^#{1,6}\\s+", ~flags="gm"), "")
+  // Collapse multiple newlines
+  ->String.replaceRegExp(RegExp.fromString("\\n{2,}", ~flags="g"), " ")
+  // Replace remaining newlines with space
+  ->String.replaceRegExp(RegExp.fromString("\\n", ~flags="g"), " ")
+  ->String.trim
+
+let docstringToSearchHtml = (text: string): string =>
+  text
+  // Strip code blocks but keep code content wrapped in <code>
+  ->String.replaceRegExp(
+    RegExp.fromString("```\\w*\\n?([\\s\\S]*?)```", ~flags="g"),
+    "<code>$1</code>",
+  )
+  // Convert inline code backticks to <code> tags
+  ->String.replaceRegExp(RegExp.fromString("`([^`]+)`", ~flags="g"), "<code>$1</code>")
+  // Strip bold
+  ->String.replaceRegExp(RegExp.fromString("\\*\\*([^*]+)\\*\\*", ~flags="g"), "$1")
+  // Strip italic
+  ->String.replaceRegExp(RegExp.fromString("\\*([^*]+)\\*", ~flags="g"), "$1")
+  // Strip links (keep text, handle empty URLs too)
+  ->String.replaceRegExp(RegExp.fromString("\\[([^\\]]+)\\]\\([^)]*\\)", ~flags="g"), "$1")
+  // Strip heading markers
+  ->String.replaceRegExp(RegExp.fromString("^#{1,6}\\s+", ~flags="gm"), "")
+  // Convert double newlines to <br />
+  ->String.replaceRegExp(RegExp.fromString("\\n{2,}", ~flags="g"), "<br />")
+  // Replace remaining newlines with space
+  ->String.replaceRegExp(RegExp.fromString("\\n", ~flags="g"), " ")
+  ->String.trim
+
 let extractIntro = (content: string): string => {
   let parts = content->String.split("\n## ")
   let intro = parts[0]->Option.getOr("")
@@ -410,19 +453,29 @@ let buildApiRecords = (
                     }
                     let itemAnchor = kindPrefix ++ itemName
                     let itemUrl = moduleUrl ++ "#" ++ itemAnchor
-                    let firstDocstring = switch itemDocstrings[0] {
-                    | Some(String(d)) => Some(d->cleanDocstring)
+                    let qualifiedName = name ++ "." ++ itemName
+                    let docstringIntro = switch itemDocstrings[0] {
+                    | Some(String(d)) if String.length(d) > 0 => {
+                        // Take content before first heading or code block
+                        let intro =
+                          d
+                          ->String.split("\n## ")
+                          ->Array.get(0)
+                          ->Option.getOr(d)
+                          ->String.split("\n```")
+                          ->Array.get(0)
+                          ->Option.getOr(d)
+                          ->String.trim
+                        Some(intro->truncate(~maxLen=2000))
+                      }
                     | _ => None
                     }
-                    let qualifiedName = name ++ "." ++ itemName
-                    let content = switch firstDocstring {
-                    | Some(d) if String.length(d) > 0 =>
-                      Some((qualifiedName ++ " - " ++ d)->truncate(~maxLen=maxContentLength))
+                    let content = switch docstringIntro {
+                    | Some(d) if String.length(d) > 0 => Some(d)
                     | _ =>
                       switch signature {
-                      | Some(String(s)) =>
-                        Some((qualifiedName ++ " - " ++ s)->truncate(~maxLen=maxContentLength))
-                      | _ => Some(qualifiedName)
+                      | Some(String(s)) => Some(s)
+                      | _ => None
                       }
                     }
 
@@ -432,8 +485,8 @@ let buildApiRecords = (
                       url_without_anchor: moduleUrl,
                       anchor: Some(itemAnchor),
                       content,
-                      type_: "lvl2",
-                      hierarchy: makeHierarchy(~lvl0=category, ~lvl1=name, ~lvl2=qualifiedName, ()),
+                      type_: "lvl1",
+                      hierarchy: makeHierarchy(~lvl0=category, ~lvl1=qualifiedName, ()),
                       weight: {pageRank, level: 70, position: i},
                     })
                   }

@@ -48,6 +48,7 @@ type searchParameters = {
   facetFilters?: array<string>,
   hitsPerPage?: int,
   distinct?: int,
+  attributesToSnippet?: array<string>,
 }
 
 @module("@docsearch/react") @react.component

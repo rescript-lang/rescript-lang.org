@@ -14,7 +14,7 @@
     "build:generate-llms": "node _scripts/generate_llms.mjs",
     "build:res": "rescript build --warn-error +3+8+11+12+26+27+31+32+33+34+35+39+44+45+110",
     "build:sync-bundles": "node scripts/sync-playground-bundles.mjs",
-    "build:search-index": "node --env-file-if-exists=.env.local _scripts/generate_search_index.mjs",
+    "build:search-index": "node --env-file-if-exists=.env --env-file-if-exists=.env.local _scripts/generate_search_index.mjs",
     "build:update-index": "yarn build:generate-llms && node _scripts/generate_feed.mjs > public/blog/feed.xml && yarn build:search-index",
     "build:vite": "react-router build",
     "build": "yarn build:res && yarn build:scripts && yarn build:update-index && yarn build:vite",
