@@ -302,7 +302,6 @@ type t = [
   | #"/docs/manual/build-monorepo-setup"
   | #"/docs/manual/build-configuration"
   | #"/docs/manual/build-configuration-schema"
-  | #"/docs/manual/browser-support-polyfills"
   | #"/docs/manual/bind-to-js-object"
   | #"/docs/manual/bind-to-js-function"
   | #"/docs/manual/bind-to-global-js-values"
