@@ -21,12 +21,14 @@ jobs:
       deployments: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup yarn
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v6.0.2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6.3.0
         with:
+          node-version-file: ".node-version"
           cache: "yarn"
-          node-version: "24"
+      - name: Enable Corepack
+        run: corepack enable
       - name: Install dependencies
         run: yarn install
       - name: Sync playground bundles
@@ -40,9 +42,9 @@ jobs:
              echo "VITE_DEPLOYMENT_URL=" >> "$GITHUB_ENV"
           else
              SAFE_BRANCH="${RAW_BRANCH//\//-}"
-             
+
              SAFE_BRANCH=$(echo "$SAFE_BRANCH" | tr '[:upper:]' '[:lower:]')
-             
+
              echo "SAFE_BRANCH=$SAFE_BRANCH" >> "$GITHUB_ENV"
              echo "VITE_DEPLOYMENT_URL=https://${SAFE_BRANCH}.rescript-lang.pages.dev" >> "$GITHUB_ENV"
           fi
