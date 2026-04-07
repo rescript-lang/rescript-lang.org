@@ -197,7 +197,7 @@ and num = Num(numTy<'a>, 'a): num
 and num_array = Narray(numTy<'a>, array<'a>): num_array
 
 let addInt = (x, y) => x + y
-let addFloat = (x, y) => x + y
+let addFloat = (x: float, y: float) => x + y
 
 let sum = (Narray(witness, array)) => {
   switch witness {
