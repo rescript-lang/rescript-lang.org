@@ -33,10 +33,20 @@ let blogArticleRoutes =
     route(path, "./routes/BlogArticleRoute.jsx", ~options={id: path})
   )
 
+let docsManualRoutes =
+  MdxFile.scanPaths(~dir="markdown-pages/docs/manual", ~alias="docs/manual")
+  ->Array.filter(path => !String.includes(path, "docs/manual/api"))
+  ->Array.map(path => route(path, "./routes/DocsManualRoute.jsx", ~options={id: path}))
+
 let mdxRoutes = mdxRoutes("./routes/MdxRoute.jsx")->Array.filter(r =>
   !(
     r.path
-    ->Option.map(path => path === "blog" || String.startsWith(path, "blog/"))
+    ->Option.map(path =>
+      path === "blog" ||
+      String.startsWith(path, "blog/") ||
+      ((path === "docs/manual" || String.startsWith(path, "docs/manual/")) &&
+        path !== "docs/manual/api")
+    )
     ->Option.getOr(false)
   )
 )
@@ -56,6 +66,7 @@ let default = [
   ...stdlibRoutes,
   ...beltRoutes,
   ...blogArticleRoutes,
+  ...docsManualRoutes,
   ...mdxRoutes,
   route("*", "./routes/NotFoundRoute.jsx"),
 ]
