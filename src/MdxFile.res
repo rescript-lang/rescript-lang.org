@@ -75,12 +75,25 @@ let scanPaths = (~dir, ~alias) => {
   })
 }
 
-// Convert frontmatter JSON dict to Mdx.attributes
-// This is the same unsafe approach as react-router-mdx — frontmatter YAML
-// becomes a JS object that we type as Mdx.attributes. Fields not present
-// in the frontmatter (e.g. blog-specific `author`, `date`) are undefined at
-// runtime, which is fine because docs/community code never accesses them.
-external dictToAttributes: Dict.t<JSON.t> => Mdx.attributes = "%identity"
+type sidebarEntry = {
+  title: string,
+  slug: option<string>,
+  section: option<string>,
+  order: option<int>,
+  path: option<string>,
+}
+
+let jsonToString = json =>
+  switch json {
+  | JSON.String(s) => Some(s)
+  | _ => None
+  }
+
+let jsonToInt = json =>
+  switch json {
+  | JSON.Number(n) => Some(Float.toInt(n))
+  | _ => None
+  }
 
 let loadAllAttributes = async (~dir) => {
   let files = scanDir(dir, dir)
@@ -95,12 +108,13 @@ let loadAllAttributes = async (~dir) => {
       | _ => Dict.make()
       }
 
-      // Add path and slug fields (same as react-router-mdx does)
-      dict->Dict.set("path", JSON.String(fullPath))
-      let slug = Node.Path.basename(relativePath)
-      dict->Dict.set("slug", JSON.String(slug))
-
-      dictToAttributes(dict)
+      {
+        title: dict->Dict.get("title")->Option.flatMap(jsonToString)->Option.getOr(""),
+        slug: Some(Node.Path.basename(relativePath)),
+        section: dict->Dict.get("section")->Option.flatMap(jsonToString),
+        order: dict->Dict.get("order")->Option.flatMap(jsonToInt),
+        path: Some(fullPath),
+      }
     }),
   )
 }

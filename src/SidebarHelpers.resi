@@ -1,5 +1,17 @@
-/** Convert Mdx.attributes to sidebar nav items, building hrefs from rootPath + slug. */
-let convertToNavItems: (array<Mdx.attributes>, string) => array<SidebarLayout.Sidebar.NavItem.t>
+/** Filter sidebar entries whose path contains the given substring. */
+let filterByPath: (array<MdxFile.sidebarEntry>, string) => array<MdxFile.sidebarEntry>
+
+/** Sort sidebar entries by their `order` field (ascending). */
+let sortByOrder: array<MdxFile.sidebarEntry> => array<MdxFile.sidebarEntry>
+
+/** Group sidebar entries by their `section` field into a dict. */
+let groupBySection: array<MdxFile.sidebarEntry> => Dict.t<array<MdxFile.sidebarEntry>>
+
+/** Convert sidebar entries to nav items, building hrefs from rootPath + slug. */
+let convertToNavItems: (
+  array<MdxFile.sidebarEntry>,
+  string,
+) => array<SidebarLayout.Sidebar.NavItem.t>
 
 /** Get a single sidebar category by name from a dict of grouped nav items. */
 let getGroup: (

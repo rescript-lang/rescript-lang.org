@@ -25,8 +25,19 @@ let compileMdx: (
   ~remarkPlugins: array<Mdx.remarkPlugin>=?,
 ) => promise<CompiledMdx.t>
 
-/** Scan all .mdx files in a directory, parse frontmatter only, and return
- * as Mdx.attributes with `path` and `slug` fields populated.
- * Replaces `react-router-mdx`'s `loadAllMdx`.
+/** Lightweight frontmatter record containing only the fields needed for
+ * sidebar navigation. Unlike Mdx.attributes, every field is either
+ * optional or has a safe default, so no unsafe casting is required.
  */
-let loadAllAttributes: (~dir: string) => promise<array<Mdx.attributes>>
+type sidebarEntry = {
+  title: string,
+  slug: option<string>,
+  section: option<string>,
+  order: option<int>,
+  path: option<string>,
+}
+
+/** Scan all .mdx files in a directory, parse frontmatter only, and return
+ * sidebar entries with `path` and `slug` fields populated.
+ */
+let loadAllAttributes: (~dir: string) => promise<array<sidebarEntry>>

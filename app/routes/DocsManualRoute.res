@@ -7,27 +7,36 @@ type loaderData = {
   filePath: string,
 }
 
-// Build sidebar categories from all manual docs, sorted by their "order" field in frontmatter
+// Module-level cache to avoid re-scanning frontmatter on every request
+let manualTableOfContentsCache: ref<option<array<SidebarLayout.Sidebar.Category.t>>> = ref(None)
+
+// Build sidebar categories from manual docs, sorted by their "order" field in frontmatter
 let manualTableOfContents = async () => {
-  let groups =
-    (await MdxFile.loadAllAttributes(~dir="markdown-pages/docs"))
-    ->Mdx.filterMdxPages("docs/manual")
-    ->Mdx.groupBySection
-    ->Dict.mapValues(values =>
-      values->Mdx.sortSection->SidebarHelpers.convertToNavItems("/docs/manual")
+  switch manualTableOfContentsCache.contents {
+  | Some(categories) => categories
+  | None =>
+    let groups =
+      (await MdxFile.loadAllAttributes(~dir="markdown-pages/docs/manual"))
+      ->SidebarHelpers.groupBySection
+      ->Dict.mapValues(values =>
+        values->SidebarHelpers.sortByOrder->SidebarHelpers.convertToNavItems("/docs/manual")
+      )
+
+    let categories = SidebarHelpers.getAllGroups(
+      groups,
+      [
+        "Overview",
+        "Guides",
+        "Language Features",
+        "JavaScript Interop",
+        "Build System",
+        "Advanced Features",
+      ],
     )
 
-  SidebarHelpers.getAllGroups(
-    groups,
-    [
-      "Overview",
-      "Guides",
-      "Language Features",
-      "JavaScript Interop",
-      "Build System",
-      "Advanced Features",
-    ],
-  )
+    manualTableOfContentsCache := Some(categories)
+    categories
+  }
 }
 
 let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {

@@ -63,42 +63,6 @@ let convertToNavItems = (items, rootPath) =>
     }
   })
 
-let getGroup = (groups, groupName): SidebarLayout.Sidebar.Category.t => {
-  {
-    name: groupName,
-    items: groups
-    ->Dict.get(groupName)
-    ->Option.getOr([]),
-  }
-}
-
-let getAllGroups = (groups, groupNames): array<SidebarLayout.Sidebar.Category.t> =>
-  groupNames->Array.map(item => getGroup(groups, item))
-
-// These are the pages for the language manual, sorted by their "order" field in the frontmatter
-let manualTableOfContents = async () => {
-  let groups =
-    (await allMdx(~filterByPaths=["markdown-pages/docs"]))
-    ->filterMdxPages("docs/manual")
-    ->groupBySection
-    ->Dict.mapValues(values => values->sortSection->convertToNavItems("/docs/manual"))
-
-  // these are the categories that appear in the sidebar
-  let categories: array<SidebarLayout.Sidebar.Category.t> = getAllGroups(
-    groups,
-    [
-      "Overview",
-      "Guides",
-      "Language Features",
-      "JavaScript Interop",
-      "Build System",
-      "Advanced Features",
-    ],
-  )
-
-  categories
-}
-
 let reactTableOfContents = async () => {
   let groups =
     (await allMdx(~filterByPaths=["markdown-pages/docs"]))
@@ -107,7 +71,7 @@ let reactTableOfContents = async () => {
     ->Dict.mapValues(values => values->sortSection->convertToNavItems("/docs/react"))
 
   // these are the categories that appear in the sidebar
-  let categories: array<SidebarLayout.Sidebar.Category.t> = getAllGroups(
+  let categories: array<SidebarLayout.Sidebar.Category.t> = SidebarHelpers.getAllGroups(
     groups,
     ["Overview", "Main Concepts", "Hooks & State Management", "Guides"],
   )
@@ -123,7 +87,10 @@ let communityTableOfContents = async () => {
     ->Dict.mapValues(values => values->sortSection->convertToNavItems("/community"))
 
   // these are the categories that appear in the sidebar
-  let categories: array<SidebarLayout.Sidebar.Category.t> = getAllGroups(groups, ["Resources"])
+  let categories: array<SidebarLayout.Sidebar.Category.t> = SidebarHelpers.getAllGroups(
+    groups,
+    ["Resources"],
+  )
 
   categories
 }
@@ -161,8 +128,6 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
     let categories = {
       if pathname == "/docs/manual/api" {
         []
-      } else if pathname->String.includes("docs/manual") {
-        await manualTableOfContents()
       } else if pathname->String.includes("docs/react") {
         await reactTableOfContents()
       } else if pathname->String.includes("community") {
@@ -214,22 +179,14 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
       ->Array.slice(~start=2) // skip first two entries which are the document entry and the H1 title for the page, we just want the h2 sections
 
     let breadcrumbs =
-      pathname->String.includes("docs/manual")
+      pathname->String.includes("docs/react")
         ? Some(list{
             {Url.name: "Docs", href: "/docs/"},
             {
-              Url.name: "Language Manual",
-              href: "/docs/manual/" ++ "introduction",
+              Url.name: "rescript-react",
+              href: "/docs/react/" ++ "introduction",
             },
           })
-        : pathname->String.includes("docs/react")
-        ? Some(list{
-          {Url.name: "Docs", href: "/docs/"},
-          {
-            Url.name: "rescript-react",
-            href: "/docs/react/" ++ "introduction",
-          },
-        })
         : None
 
     let metaTitleCategory = {
@@ -238,8 +195,6 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
         "ReScript React"
       } else if path->String.includes("docs/manual/api") {
         "ReScript API"
-      } else if path->String.includes("docs/manual") {
-        "ReScript Language Manual"
       } else if path->String.includes("community") {
         "ReScript Community"
       } else {
@@ -321,9 +276,8 @@ let default = () => {
         </ApiOverviewLayout.Docs>
       </>
     } else if (
-      (pathname :> string)->String.includes("docs/manual") ||
       (pathname :> string)->String.includes("docs/react") ||
-      (pathname :> string)->String.includes("docs/guidelines")
+        (pathname :> string)->String.includes("docs/guidelines")
     ) {
       <>
         <Meta title=title description={attributes.description->Nullable.getOr("")} />
@@ -332,9 +286,7 @@ let default = () => {
           let breadcrumbs = loaderData.breadcrumbs->Option.map(crumbs =>
             List.mapWithIndex(crumbs, (item, index) => {
               if index === 0 {
-                if (pathname :> string)->String.includes("docs/manual") {
-                  {...item, href: "/docs/manual/introduction"}
-                } else if (pathname :> string)->String.includes("docs/react") {
+                if (pathname :> string)->String.includes("docs/react") {
                   {...item, href: "/docs/react/introduction"}
                 } else {
                   item
