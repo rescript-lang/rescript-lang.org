@@ -8,6 +8,6 @@ order: 13
 
 # Browser Support & Polyfills
 
-ReScript compiles to modern JavaScript (ES6+ by default). The generated output targets contemporary browsers and current versions of Node.js, so polyfills are generally not needed.
+ReScript compiles to modern JavaScript (ES6+ by default), so polyfills are generally not needed.
 
-If you need to support very old browsers that lack ES6+ features, use your bundler's transpilation and polyfill capabilities (for example, Babel or SWC via Webpack, Vite, or esbuild) to downlevel the output as needed.
+If you need to support older browsers, use your bundler to transpile and polyfill the output (e.g. Babel or SWC via Webpack, Vite, or esbuild).

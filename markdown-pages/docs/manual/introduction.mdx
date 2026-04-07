@@ -12,17 +12,17 @@ ReScript is a robustly typed language that compiles to efficient and human-reada
 
 ## JavaScript Interop
 
-ReScript compiles to clean, readable, and performant JavaScript, directly runnable in browsers and Node. ReScript integrates seamlessly with existing JavaScript tooling -- package managers, bundlers, frameworks, and test runners all work out of the box.
+ReScript compiles to clean, readable, and performant JavaScript, directly runnable in browsers and Node. Your existing package managers, bundlers, frameworks, and test runners all work with ReScript.
 
-Your existing knowledge of web development tooling transfers directly to ReScript projects.
+Your existing knowledge of web development transfers to ReScript projects.
 
 ReScript code can be [imported into JavaScript code](./import-from-export-to-js.mdx#export-to-javascript), can [generate types for TypeScript](./typescript-integration.mdx), and ReScript can [import code written in JavaScript or TypeScript](./import-from-export-to-js.mdx#import-from-javascript).
 
 ## Type System
 
 - Is deliberately curated to be a simple subset most folks will have an easier time to use.
-- Sound by design -- types are always correct. If a type isn't marked as nullable, the value is guaranteed to never be `undefined`. **ReScript code has no null/undefined errors**.
-- Consistent across all projects -- the type system has a single, well-defined behavior with no configuration needed.
+- Sound type system. If a type isn't marked as nullable, the value will never be `undefined`. **ReScript code has no null/undefined errors**.
+- No configuration needed. The type system behaves the same way in every project.
 - Runs extremely fast precisely thanks to its simplicity and curation. It's one of the fastest compiler & build system toolchains for JavaScript development.
 - **Doesn't need type annotations**. Annotate as much or as little as you'd like. The types are inferred by the language (and, again, are guaranteed correct).
 
@@ -30,7 +30,7 @@ ReScript code can be [imported into JavaScript code](./import-from-export-to-js.
 
 ### Compiles to Optimized JavaScript
 
-ReScript's type system and compiler generate JavaScript that is performant by default, with good leverage of various Just-In-Time optimizations (hidden classes, inline caching, avoiding deopts, etc).
+ReScript's type system and compiler generate JavaScript that is performant by default, taking advantage of Just-In-Time optimizations (hidden classes, inline caching, avoiding deopts, etc).
 
 ### Tiny JS Output
 

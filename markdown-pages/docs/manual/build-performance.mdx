@@ -68,7 +68,7 @@ The watcher is also just a thin file watcher that calls `rescript.exe`. We don't
 
 ReScript doesn't take whole seconds to run every time. The bulk of the build performance comes from incremental build, aka re-building a previously built project when a few files changed.
 
-In short, thanks to our compiler and the build system's architecture, we're able to **only build what's needed**. If `MyFile.res` isn't changed, it isn't recompiled. The build system ensures complete correctness -- renaming or moving files is handled automatically, with no stale builds.
+In short, thanks to our compiler and the build system's architecture, we're able to **only build what's needed**. If `MyFile.res` isn't changed, it isn't recompiled. Renaming or moving files is handled automatically, with no stale builds.
 
 ## Speed Up Incremental Build
 
