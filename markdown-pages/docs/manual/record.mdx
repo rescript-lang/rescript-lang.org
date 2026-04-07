@@ -657,7 +657,7 @@ Optional record fields, introduced in [`v10`](../../blog/release-10-0-0.mdx#expe
 
 ## Design Decisions
 
-After reading the constraints in the previous sections, and if you're coming from a dynamic language background, you might be wondering why one would bother with record in the first place instead of straight using object, since the former needs explicit typing and doesn't allow different records with the same field name to be passed to the same function, etc.
+Given the constraints above, you might wonder why to use records instead of objects. Records offer several advantages:
 
 1. The truth is that most of the times in your app, your data's shape is actually fixed, and if it's not, it can potentially be better represented as a combination of variant (introduced next) + record instead.
 

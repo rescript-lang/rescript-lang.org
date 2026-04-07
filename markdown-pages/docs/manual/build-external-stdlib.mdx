@@ -9,34 +9,31 @@ order: 4
 
 # External Stdlib
 
-**Since 9.0**
-
-Your ReScript project depends on the `rescript` package as a [`devDependency`](https://docs.npmjs.com/specifying-dependencies-and-devdependencies-in-a-package-json-file), which includes our compiler, build system and runtime like `Belt`. However, you had to move it to `dependency` in `package.json` if you publish your code:
+Your ReScript project depends on the `rescript` package as a [`devDependency`](https://docs.npmjs.com/specifying-dependencies-and-devdependencies-in-a-package-json-file), which includes the compiler, build system, and runtime. However, you may need to move it to `dependency` in `package.json` if you publish your code:
 
 - To Docker or other low-storage deployment devices.
 - For pure JS/TS consumers who probably won't install `rescript` in their own project.
 
-In these cases, the size or mere presence of `rescript` can be troublesome, since it includes not just our necessary runtime like `Belt`, but also our compiler and build system.
+In these cases, the size or mere presence of `rescript` can be troublesome, since it includes not just the necessary runtime, but also the compiler and build system.
 
-To solve that, we now publish our runtime as a standalone package at [`@rescript/std`](https://www.npmjs.com/package/@rescript/std), whose versions mirror `rescript`'s. Now you can keep `rescript` as a `devDependency` and have only `@rescript/std` as your runtime `dependency`.
+To solve that, the runtime is published as a standalone package at [`@rescript/runtime`](https://www.npmjs.com/package/@rescript/runtime), whose versions mirror `rescript`'s. You can keep `rescript` as a `devDependency` and have only `@rescript/runtime` as your runtime `dependency`.
 
 **This is an advanced feature**. Please only use it in the aforementioned scenarios. If you already use a JS bundler with dead code elimination, you might not need this feature.
 
 ## Configuration
 
-Say you want to publish a JS-only ReScript 9.0 library. Install the packages like this:
+Say you want to publish a JS-only ReScript library. Install the packages like this:
 
 ```sh
-npm install rescript@11.0.1 --save-dev
-npm install @rescript/std@11.0.1
+npm install rescript --save-dev
+npm install @rescript/runtime
 ```
 
 Then add this to `rescript.json`:
 
 ```json
 {
-  // ...
-  "external-stdlib": "@rescript/std"
+  "external-stdlib": "@rescript/runtime"
 }
 ```
 
@@ -49,14 +46,11 @@ Array.forEach([1, 2, 3], num => Console.log(num))
 ```
 
 ```js
-// Note the require path starting with "@rescript/std".
-var Belt_Array = require("@rescript/std/lib/js/belt_Array.js");
-
-Belt_Array.forEach([1, 2, 3], function (num) {
+[1, 2, 3].forEach(function (num) {
   console.log(num);
 });
 ```
 
 </CodeTab>
 
-**Make sure the version number of `rescript` and `@rescript/std` match in your `package.json`** to avoid running into runtime issues due to mismatching stdlib assumptions.
+**Make sure the version number of `rescript` and `@rescript/runtime` match in your `package.json`** to avoid running into runtime issues due to mismatching stdlib assumptions.

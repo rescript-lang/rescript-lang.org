@@ -10,11 +10,11 @@ order: 14
 
 ReScript supports `if`, `else`, ternary expression (`a ? b : c`), `for` and `while`.
 
-The `switch` pattern has a default case too, just like many other functional languages. Read more about [pattern-matching & destructuring](./pattern-matching-destructuring.mdx). there.
+The `switch` pattern supports a default case. Read more about [pattern-matching & destructuring](./pattern-matching-destructuring.mdx).
 
 ## If-Else & Ternary
 
-Unlike its JavaScript counterpart, ReScript's `if` is an expression; they evaluate to their body's content:
+ReScript's `if` is an expression; it evaluates to its body's content:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -94,7 +94,7 @@ var message = isMorning ? "Good morning!" : "Hello!";
 
 </CodeTab>
 
-**`if-else` and ternary are much less used** in ReScript than in other languages; [Pattern-matching](./pattern-matching-destructuring.mdx) kills a whole category of code that previously required conditionals.
+`if-else` and ternary are often replaced by [pattern matching](./pattern-matching-destructuring.mdx), which handles a wide range of conditional logic more expressively.
 
 ## For Loops
 

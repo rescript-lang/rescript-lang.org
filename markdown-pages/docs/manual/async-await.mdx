@@ -67,7 +67,7 @@ You will probably notice that this looks very similar to `async` / `await` in JS
 - `await` may only be called on a `promise` value
 - `await` calls are expressions, therefore they can be used in pattern matching (`switch`)
 - A function returning a `promise<'a>` is equivalent to an `async` function returning a value `'a` (important for writing signature files and bindings)
-- `promise` values and types returned from an `async` function don't auto-collapse into a "flat promise" like in JS (more on this later)
+- `promise` values and types returned from an `async` function don't auto-collapse into a flat promise. See the details below.
 
 ## Types and `async` functions
 

@@ -8,13 +8,6 @@ order: 13
 
 # Browser Support & Polyfills
 
-ReScript compiles to JavaScript **ES5**, with the exception of optionally allowing to compile to ES6's module import & export.
+ReScript compiles to modern JavaScript (ES6+ by default). The generated output targets contemporary browsers and current versions of Node.js, so polyfills are generally not needed.
 
-For [old browsers](https://caniuse.com/#search=typed%20array), you also need to polyfill TypedArray. The following standard library functions require it:
-
-- `Int64.float_of_bits`
-- `Int64.bits_of_float`
-- `Int32.float_of_bits`
-- `Int32.bits_of_float`
-
-If you don't use these functions, you're fine. Otherwise, it'll be a runtime failure.
+If you need to support very old browsers that lack ES6+ features, use your bundler's transpilation and polyfill capabilities (for example, Babel or SWC via Webpack, Vite, or esbuild) to downlevel the output as needed.
