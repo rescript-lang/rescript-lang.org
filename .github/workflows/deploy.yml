@@ -10,18 +10,28 @@ on:
         required: true
         default: "preview"
   pull_request:
+  pull_request_target:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     name: Deploy
-    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false }}
+    if: >-
+      github.event_name == 'push' ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' &&
+       github.event.pull_request.head.repo.fork == false &&
+       github.actor != 'dependabot[bot]') ||
+      (github.event_name == 'pull_request_target' &&
+       github.actor == 'dependabot[bot]')
     permissions:
       contents: read
       deployments: write
       pull-requests: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || '' }}
       - name: Setup yarn
         uses: actions/setup-node@v3
         with:
@@ -40,9 +50,9 @@ jobs:
              echo "VITE_DEPLOYMENT_URL=" >> "$GITHUB_ENV"
           else
              SAFE_BRANCH="${RAW_BRANCH//\//-}"
-             
+
              SAFE_BRANCH=$(echo "$SAFE_BRANCH" | tr '[:upper:]' '[:lower:]')
-             
+
              echo "SAFE_BRANCH=$SAFE_BRANCH" >> "$GITHUB_ENV"
              echo "VITE_DEPLOYMENT_URL=https://${SAFE_BRANCH}.rescript-lang.pages.dev" >> "$GITHUB_ENV"
           fi
