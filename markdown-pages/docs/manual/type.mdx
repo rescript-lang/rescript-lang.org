@@ -277,7 +277,7 @@ This declaration converts a `myType1` of your choice to `myType2` of your choice
 ```res example
 external convertToFloat : int => float = "%identity"
 let age = 10
-let gpa = 2.1 +. convertToFloat(age)
+let gpa = 2.1 + convertToFloat(age)
 ```
 
 ```js

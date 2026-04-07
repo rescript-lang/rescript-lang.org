@@ -57,18 +57,16 @@ There is no equality with implicit type casting.
 
 ## Numbers
 
-| Syntax              | Description               |
-| ------------------- | ------------------------- |
-| `3`                 | Integer literal           |
-| `3.1415`            | Float literal             |
-| `3 + 4`             | Integer addition          |
-| `3.0 +. 4.5`        | Float addition            |
-| `2 / 3 * 4`         | Integer division/multiply |
-| `2.0 /. 3.0 *. 4.0` | Float division/multiply   |
-| `2.0 ** 3.0`        | Float exponentiation      |
-| `5 % 3`             | Integer modulo            |
+| Syntax       | Description                        |
+| ------------ | ---------------------------------- |
+| `3`          | Integer literal                    |
+| `3.1415`     | Float literal                      |
+| `3 + 4`      | Addition (works for int and float) |
+| `2 / 3 * 4`  | Division and multiplication        |
+| `2.0 ** 3.0` | Exponentiation                     |
+| `5 % 3`      | Modulo                             |
 
-Integer and float are distinct types with separate arithmetic operators.
+Arithmetic operators (`+`, `-`, `*`, `/`, `%`, `**`) work for both `int` and `float`.
 
 ## Records
 
@@ -222,10 +220,10 @@ A reference showing how common ReScript features compile to JavaScript.
 | Character (discouraged)   | `'x'`                                | `120` (char code)                          |
 | Integer                   | `23`, `-23`                          | `23`, `-23`                                |
 | Float                     | `23.0`, `-23.0`                      | `23.0`, `-23.0`                            |
-| Integer Addition          | `23 + 1`                             | `23 + 1`                                   |
-| Float Addition            | `23.0 +. 1.0`                        | `23.0 + 1.0`                               |
-| Integer Division/Multiply | `2 / 23 * 1`                         | `2 / 23 * 1`                               |
-| Float Division/Multiply   | `2.0 /. 23.0 *. 1.0`                 | `2.0 / 23.0 * 1.0`                         |
+| Addition                  | `23 + 1`                             | `23 + 1`                                   |
+| Float Addition            | `23.0 + 1.0`                         | `23.0 + 1.0`                               |
+| Division/Multiply         | `2 / 23 * 1`                         | `2 / 23 * 1`                               |
+| Float Division/Multiply   | `2.0 / 23.0 * 1.0`                   | `2.0 / 23.0 * 1.0`                         |
 | Float Exponentiation      | `2.0 ** 3.0`                         | `2.0 ** 3.0`                               |
 | String Concatenation      | `"Hello " ++ "World"`                | `"Hello " + "World"`                       |
 | Comparison                | `>`, `<`, `>=`, `<=`                 | `>`, `<`, `>=`, `<=`                       |

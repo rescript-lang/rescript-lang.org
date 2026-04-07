@@ -160,9 +160,7 @@ To improve readability, you may place underscores in the middle of numeric liter
 
 ## Floats
 
-Float requires other operators: `+.`, `-.`, `*.`, `/.`, etc. Like `0.5 +. 0.6`. See [Float](/docs/manual/api/stdlib/float) for helper functions.
-
-Float also supports `**` (exponentiation) and `%` (remainder semantics).
+Arithmetic operators (`+`, `-`, `*`, `/`, `%`, `**`) work for both `int` and `float`. Like `0.5 + 0.6`. See [Float](/docs/manual/api/stdlib/float) for helper functions.
 
 As with integers, you may use underscores within literals to improve readability.
 
@@ -173,7 +171,7 @@ As with integers, you may use underscores within literals to improve readability
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res example
-let result = (1 :> float) +. 2.
+let result = (1 :> float) + 2.
 ```
 
 ```js
