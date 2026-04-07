@@ -89,12 +89,6 @@ Note that only sources marked with `"type":"dev"` will be able to resolve module
 
 > The legacy keys `bs-dependencies` and `bs-dev-dependencies` are still accepted but deprecated.
 
-## external-stdlib
-
-This setting allows depending on an externally built stdlib package (instead of a locally built stdlib runtime). Useful for shipping packages that are only consumed in JS or TS without any dependencies to the ReScript development toolchain.
-
-More details can be found on our [external stdlib](./build-external-stdlib.mdx) page.
-
 ## js-post-build
 
 Hook that's invoked every time a file is recompiled. Good for JS build system interop, but please use it **sparingly**. Calling your custom command for every recompiled file slows down your build and worsens the building experience for even third-party users of your lib.

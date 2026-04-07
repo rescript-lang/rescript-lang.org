@@ -300,7 +300,6 @@ type t = [
   | #"/docs/manual/build-performance"
   | #"/docs/manual/build-overview"
   | #"/docs/manual/build-monorepo-setup"
-  | #"/docs/manual/build-external-stdlib"
   | #"/docs/manual/build-configuration"
   | #"/docs/manual/build-configuration-schema"
   | #"/docs/manual/browser-support-polyfills"
