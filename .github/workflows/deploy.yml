@@ -53,7 +53,7 @@ jobs:
         env:
           VITE_DEPLOYMENT_URL: ${{ env.VITE_DEPLOYMENT_URL }}
       - name: Deploy
-        if: github.actor != 'dependabot[bot]'
+        if: ${{ github.actor != 'dependabot[bot]' }}
         id: deploy
         uses: cloudflare/wrangler-action@v3
         with:
@@ -65,7 +65,7 @@ jobs:
         env:
           FORCE_COLOR: 0
       - name: Comment PR with deployment link
-        if: github.actor != 'dependabot[bot]'
+        if: ${{ github.actor != 'dependabot[bot]' }}
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           recreate: true
