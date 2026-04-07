@@ -10,7 +10,6 @@ on:
         required: true
         default: "preview"
   pull_request:
-  pull_request_target:
 
 jobs:
   deploy:
@@ -20,18 +19,13 @@ jobs:
       github.event_name == 'push' ||
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'pull_request' &&
-       github.event.pull_request.head.repo.fork == false &&
-       github.actor != 'dependabot[bot]') ||
-      (github.event_name == 'pull_request_target' &&
-       github.actor == 'dependabot[bot]')
+       github.event.pull_request.head.repo.fork == false)
     permissions:
       contents: read
       deployments: write
       pull-requests: write
     steps:
       - uses: actions/checkout@v6.0.2
-        with:
-          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || '' }}
       - name: Setup Node.js environment
         uses: actions/setup-node@v6.3.0
         with:
@@ -63,6 +57,7 @@ jobs:
         env:
           VITE_DEPLOYMENT_URL: ${{ env.VITE_DEPLOYMENT_URL }}
       - name: Deploy
+        if: github.actor != 'dependabot[bot]'
         id: deploy
         uses: cloudflare/wrangler-action@v3
         with:
@@ -74,6 +69,7 @@ jobs:
         env:
           FORCE_COLOR: 0
       - name: Comment PR with deployment link
+        if: github.actor != 'dependabot[bot]'
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           recreate: true
