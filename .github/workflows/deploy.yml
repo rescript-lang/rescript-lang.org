@@ -30,8 +30,11 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v6.0.2
+        if: github.event_name == 'pull_request_target'
         with:
-          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || '' }}
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/checkout@v6.0.2
+        if: github.event_name != 'pull_request_target'
       - name: Setup Node.js environment
         uses: actions/setup-node@v6.3.0
         with:
