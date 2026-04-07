@@ -5,12 +5,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/checkout@v6.0.2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6.3.0
         with:
           node-version-file: ".node-version"
           cache: yarn
+      - name: Enable Corepack
+        run: corepack enable
       - name: Install dependencies
         run: yarn
       - name: Format check
@@ -19,12 +21,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/checkout@v6.0.2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6.3.0
         with:
           node-version-file: ".node-version"
           cache: yarn
+      - name: Enable Corepack
+        run: corepack enable
       - name: Install dependencies
         run: yarn
       - name: Test examples and hrefs
@@ -33,12 +37,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/checkout@v6.0.2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6.3.0
         with:
           node-version-file: ".node-version"
           cache: yarn
+      - name: Enable Corepack
+        run: corepack enable
       - name: Install dependencies
         run: yarn
       - name: Build ReScript
