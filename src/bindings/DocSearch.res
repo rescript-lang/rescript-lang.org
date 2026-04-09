@@ -44,7 +44,12 @@ type item = {itemUrl: string}
 
 type navigator = {navigate: item => unit}
 
-type searchParameters = {facetFilters: array<string>}
+type searchParameters = {
+  facetFilters?: array<string>,
+  hitsPerPage?: int,
+  distinct?: int,
+  attributesToSnippet?: array<string>,
+}
 
 @module("@docsearch/react") @react.component
 external make: (

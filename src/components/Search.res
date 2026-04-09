@@ -1,103 +1,94 @@
-let apiKey = "a2485ef172b8cd82a2dfa498d551399b"
-let indexName = "rescript-lang"
-let appId = "S32LNEY41T"
+let apiKey = Env.algolia_read_api_key
+let indexName = Env.algolia_index_name
+let appId = Env.algolia_app_id
 
 type state = Active | Inactive
 
-let hit = ({hit, children}: DocSearch.hitComponent) => {
-  let toTitle = str => str->String.charAt(0)->String.toUpperCase ++ String.slice(str, ~start=1)
-
-  let description = switch hit.url
-  ->String.split("/")
-  ->Array.slice(~start=1)
-  ->List.fromArray {
-  | list{"blog" as r | "community" as r, ..._} => r->toTitle
-  | list{"docs", doc, version, ...rest} =>
-    let path = rest->List.toArray
-
-    let info =
-      path
-      ->Array.slice(~start=0, ~end=Array.length(path) - 1)
-      ->Array.map(path =>
-        switch path {
-        | "api" => "API"
-        | other => toTitle(other)
-        }
-      )
-
-    [doc->toTitle, version->toTitle]->Array.concat(info)->Array.join(" / ")
-  | _ => ""
-  }
-
-  let isDeprecated = hit.deprecated->Option.isSome
-  let deprecatedBadge = isDeprecated
-    ? <span
-        className="inline-flex items-center px-2 py-1 text-xs font-medium text-orange-600 bg-orange-100 rounded-full mr-2"
-      >
-        {"Deprecated"->React.string}
-      </span>
-    : React.null
-
-  <ReactRouter.Link.String to=hit.url className="flex flex-col w-full">
-    <span className="text-gray-60 captions px-4 pt-3 pb-1 flex items-center">
-      {deprecatedBadge}
-      {description->React.string}
-    </span>
-    children
-  </ReactRouter.Link.String>
+let navigator: DocSearch.navigator = {
+  navigate: ({itemUrl}) => {
+    ReactRouter.navigate(itemUrl)
+  },
 }
 
-let transformItems = (items: DocSearch.transformItems) => {
-  items
-  ->Array.filterMap(item => {
-    let url = try WebAPI.URL.make(~url=item.url)->Some catch {
-    | JsExn(obj) =>
-      Console.error2(`Failed to parse URL ${item.url}`, obj)
-      None
-    }
-    switch url {
-    | Some({pathname, hash}) =>
-      RegExp.test(/v(8|9|10|11)\./, pathname)
-        ? None
-        : {
-            // DocSearch internally calls .replace() on hierarchy.lvl1, so we must
-            // provide a fallback for items where lvl1 is null to prevent crashes
-            let hierarchy = item.hierarchy
-            let lvl0 = hierarchy.lvl0->Nullable.toOption->Option.getOr("")
-            let lvl1 = hierarchy.lvl1->Nullable.toOption->Option.getOr(lvl0)
-            Some({
-              ...item,
-              deprecated: pathname->String.includes("api/js") ||
-                pathname->String.includes("api/core")
-                ? Some("Deprecated")
-                : None,
-              url: pathname->String.replace("/v12.0.0/", "/") ++ hash,
-              hierarchy: {
-                ...hierarchy,
-                lvl0: Nullable.make(lvl0),
-                lvl1: Nullable.make(lvl1),
-              },
-            })
-          }
+let getHighlightedTitle: DocSearch.docSearchHit => string = %raw(`
+  function(hit) {
+    var type = hit.type;
+    var h = hit._highlightResult && hit._highlightResult.hierarchy;
+    var raw = hit.hierarchy;
+    try {
+      if (type && type !== 'lvl1' && type !== 'lvl0') {
+        var lvl = h && h[type] && h[type].value;
+        if (lvl) return lvl;
+      }
+      if (h && h.lvl1 && h.lvl1.value) return h.lvl1.value;
+    } catch(e) {}
+    return (raw && raw.lvl1) || '';
+  }
+`)
 
-    | None => None
+let getSubtitle: DocSearch.docSearchHit => option<string> = %raw(`
+  function(hit) {
+    var type = hit.type;
+    if (type && type !== 'lvl1' && type !== 'lvl0') {
+      var raw = hit.hierarchy;
+      if (raw && raw.lvl1) return raw.lvl1;
     }
-  })
-  // Sort deprecated items to the end
-  ->Array.toSorted((a, b) => {
-    switch (a.deprecated, b.deprecated) {
-    | (Some(_), None) => 1. // a is deprecated, b is not - put a after b
-    | (None, Some(_)) => -1. // a is not deprecated, b is - put a before b
-    | _ => 0.
-    }
-  })
-  ->Array.toSorted((a, b) => {
-    switch (a.url->String.includes("api/stdlib"), b.url->String.includes("api/stdlib")) {
-    | (true, false) => -1. // a is a stdlib doc, b is not - put a before b
-    | (false, true) => 1. // a is not a stdlib doc, b is - put a after b
-    | _ => 0. // both same API status - maintain original order
-    }
-  })
+    return undefined;
+  }
+`)
+
+let markdownToHtml = (text: string): string =>
+  text
+  // Strip stray backslashes from MDX processing
+  ->String.replaceRegExp(RegExp.fromString("^\\\\\\s+", ~flags=""), "")
+  ->String.replaceRegExp(RegExp.fromString("\\\\\\s+", ~flags="g"), " ")
+  ->String.replaceRegExp(
+    RegExp.fromString("See\\s+\\[([^\\]]+)\\]\\([^)]*\\)\\s+on MDN\\.?", ~flags="g"),
+    "",
+  )
+  ->String.replaceRegExp(RegExp.fromString("See\\s+\\S+\\s+on MDN\\.?", ~flags="g"), "")
+  ->String.replaceRegExp(RegExp.fromString("\\[([^\\]]+)\\]\\([^)]*\\)", ~flags="g"), "$1")
+  ->String.replaceRegExp(RegExp.fromString("\\x60([^\\x60]+)\\x60", ~flags="g"), "<code>$1</code>")
+  ->String.replaceRegExp(
+    RegExp.fromString("\\*\\*([^*]+)\\*\\*", ~flags="g"),
+    "<strong>$1</strong>",
+  )
+  ->String.replaceRegExp(RegExp.fromString("\\*([^*]+)\\*", ~flags="g"), "<em>$1</em>")
+  ->String.replaceRegExp(RegExp.fromString("\\n{2,}", ~flags="g"), "<br />")
+  ->String.replaceRegExp(RegExp.fromString("\\n", ~flags="g"), " ")
+  ->String.trim
+
+let isChildHit = (hit: DocSearch.docSearchHit) =>
+  switch hit.type_ {
+  | Lvl2 | Lvl3 | Lvl4 | Lvl5 | Lvl6 | Content => true
+  | Lvl0 | Lvl1 => hit.url->String.includes("#")
+  }
+
+let hitComponent = ({hit, children: _}: DocSearch.hitComponent): React.element => {
+  let titleHtml = getHighlightedTitle(hit)
+  let subtitle = getSubtitle(hit)
+  let contentHtml = hit.content->Nullable.toOption->Option.map(markdownToHtml)
+  let isChild = isChildHit(hit)
+
+  <a href={hit.url}>
+    <div className="DocSearch-Hit-Container">
+      {isChild ? <Icon.DocTree /> : React.null}
+      {isChild ? <Icon.DocHash /> : <Icon.DocPage />}
+      <div className="DocSearch-Hit-content-wrapper">
+        <span className="DocSearch-Hit-title" dangerouslySetInnerHTML={{"__html": titleHtml}} />
+        {switch subtitle {
+        | Some(s) => <span className="DocSearch-Hit-subtitle"> {React.string(s)} </span>
+        | None => React.null
+        }}
+        {switch contentHtml {
+        | Some(c) if String.length(c) > 0 =>
+          <span className="DocSearch-Hit-path" dangerouslySetInnerHTML={{"__html": c}} />
+        | _ => React.null
+        }}
+      </div>
+      <Icon.DocSelect />
+    </div>
+  </a>
 }
 
 @react.component
@@ -140,7 +131,6 @@ let make = () => {
       switch e.key {
       | "/" => focusSearch(e)
       | "k" if e.ctrlKey || e.metaKey => focusSearch(e)
-      | "Escape" => handleCloseModal()
       | _ => ()
       }
     }
@@ -174,10 +164,11 @@ let make = () => {
             apiKey
             appId
             indexName
+            navigator
+            hitComponent
             onClose
             initialScrollY={window.scrollY->Float.toInt}
-            transformItems={transformItems}
-            hitComponent=hit
+            searchParameters={distinct: 3, hitsPerPage: 20, attributesToSnippet: ["content:9999"]}
           />,
           element,
         )

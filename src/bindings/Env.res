@@ -9,3 +9,8 @@ let root_url = switch deployment_url {
 | Some(url) => url
 | None => dev ? "http://localhost:5173/" : "https://rescript-lang.org/"
 }
+
+// Algolia search configuration (read from .env via Vite)
+external algolia_app_id: string = "import.meta.env.VITE_ALGOLIA_APP_ID"
+external algolia_read_api_key: string = "import.meta.env.VITE_ALGOLIA_READ_API_KEY"
+external algolia_index_name: string = "import.meta.env.VITE_ALGOLIA_INDEX_NAME"
