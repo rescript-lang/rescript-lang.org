@@ -30,6 +30,9 @@
     "preview": "yarn build && static-server build/client",
     "reanalyze": "rescript-tools reanalyze -all-cmt .",
     "test": "node scripts/test-examples.mjs && node scripts/test-hrefs.mjs",
+    "cy:open": "cypress open --e2e --browser electron",
+    "cy:run": "cypress run",
+    "cy:e2e": "cypress run --browser chrome",
     "vitest": "vitest",
     "vitest:update": "vitest --run --browser.headless --update"
   },
@@ -94,6 +97,7 @@
     "@vitest/browser-playwright": "^4.1.2",
     "auto-image-converter": "^2.2.0",
     "chokidar": "^4.0.3",
+    "cypress": "^15.13.1",
     "dotenv": "^16.6.1",
     "jsdom": "^26.1.0",
     "lefthook": "^2.1.4",
