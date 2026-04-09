@@ -6,6 +6,7 @@ open Cy
 let waitForHydration = () => {
   getByTestId("navbar-primary")->shouldBeVisible->ignore
   cyWindow()->its("document.readyState")->shouldWithValue("eq", "complete")->ignore
+  wait(2000)
 }
 
 // Use short, re-queryable selectors to avoid detached DOM issues.
