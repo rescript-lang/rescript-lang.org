@@ -45,7 +45,8 @@ let mdxRoutes = mdxRoutes("./routes/MdxRoute.jsx")->Array.filter(r =>
       path === "blog" ||
       String.startsWith(path, "blog/") ||
       path === "community" ||
-      String.startsWith(path, "community/")
+      String.startsWith(path, "community/") ||
+      path === "docs/manual/api"
     )
     ->Option.getOr(false)
   )
