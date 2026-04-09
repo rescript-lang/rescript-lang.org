@@ -1,6 +1,6 @@
 // -- Chainable type -----------------------------------------------------------
 
-type chainable
+type t
 
 // -- Cypress global commands --------------------------------------------------
 
@@ -11,22 +11,22 @@ external visit: string => unit = "visit"
 external visitWithOptions: (string, {..}) => unit = "visit"
 
 @val @scope("cy")
-external get: string => chainable = "get"
+external get: string => t = "get"
 
 @val @scope("cy")
-external contains: string => chainable = "contains"
+external contains: string => t = "contains"
 
 @val @scope("cy")
-external containsSelector: (string, string) => chainable = "contains"
+external containsSelector: (string, string) => t = "contains"
 
 @val @scope("cy")
-external title: unit => chainable = "title"
+external title: unit => t = "title"
 
 @val @scope("cy")
-external url: unit => chainable = "url"
+external url: unit => t = "url"
 
 @val @scope("cy")
-external cyLocation: string => chainable = "location"
+external cyLocation: string => t = "location"
 
 @val @scope("cy")
 external wait: int => unit = "wait"
@@ -49,60 +49,60 @@ external log: string => unit = "log"
 // -- Chainable commands -------------------------------------------------------
 
 // Contains (chainable versions)
-@send external containsChainable: (chainable, string) => chainable = "contains"
-@send external containsSelectorChainable: (chainable, string, string) => chainable = "contains"
+@send external containsChainable: (t, string) => t = "contains"
+@send external containsSelectorChainable: (t, string, string) => t = "contains"
 
 // Queries
-@send external find: (chainable, string) => chainable = "find"
-@send external first: chainable => chainable = "first"
-@send external last: chainable => chainable = "last"
-@send external eq: (chainable, int) => chainable = "eq"
-@send external children: chainable => chainable = "children"
-@send external parent: chainable => chainable = "parent"
-@send external parents: (chainable, string) => chainable = "parents"
-@send external closest: (chainable, string) => chainable = "closest"
-@send external next: chainable => chainable = "next"
-@send external prev: chainable => chainable = "prev"
-@send external siblings: chainable => chainable = "siblings"
-@send external filter: (chainable, string) => chainable = "filter"
-@send external not_: (chainable, string) => chainable = "not"
+@send external find: (t, string) => t = "find"
+@send external first: t => t = "first"
+@send external last: t => t = "last"
+@send external eq: (t, int) => t = "eq"
+@send external children: t => t = "children"
+@send external parent: t => t = "parent"
+@send external parents: (t, string) => t = "parents"
+@send external closest: (t, string) => t = "closest"
+@send external next: t => t = "next"
+@send external prev: t => t = "prev"
+@send external siblings: t => t = "siblings"
+@send external filter: (t, string) => t = "filter"
+@send external not_: (t, string) => t = "not"
 
 // Actions
-@send external click: chainable => chainable = "click"
-@send external clickWithOptions: (chainable, {..}) => chainable = "click"
-@send external dblclick: chainable => chainable = "dblclick"
-@send external type_: (chainable, string) => chainable = "type"
-@send external clear: chainable => chainable = "clear"
-@send external check: chainable => chainable = "check"
-@send external uncheck: chainable => chainable = "uncheck"
-@send external select: (chainable, string) => chainable = "select"
-@send external trigger: (chainable, string) => chainable = "trigger"
-@send external scrollIntoView: chainable => chainable = "scrollIntoView"
-@send external focus: chainable => chainable = "focus"
-@send external blur: chainable => chainable = "blur"
+@send external click: t => t = "click"
+@send external clickWithOptions: (t, {..}) => t = "click"
+@send external dblclick: t => t = "dblclick"
+@send external type_: (t, string) => t = "type"
+@send external clear: t => t = "clear"
+@send external check: t => t = "check"
+@send external uncheck: t => t = "uncheck"
+@send external select: (t, string) => t = "select"
+@send external trigger: (t, string) => t = "trigger"
+@send external scrollIntoView: t => t = "scrollIntoView"
+@send external focus: t => t = "focus"
+@send external blur: t => t = "blur"
 
 // Assertions
-@send external should: (chainable, string) => chainable = "should"
-@send external shouldWithValue: (chainable, string, string) => chainable = "should"
-@send external shouldWithKeyValue: (chainable, string, string, string) => chainable = "should"
-@send external and_: (chainable, string) => chainable = "and"
-@send external andWithValue: (chainable, string, string) => chainable = "and"
+@send external should: (t, string) => t = "should"
+@send external shouldWithValue: (t, string, string) => t = "should"
+@send external shouldWithKeyValue: (t, string, string, string) => t = "should"
+@send external and_: (t, string) => t = "and"
+@send external andWithValue: (t, string, string) => t = "and"
 
 // Traversal
-@send external each: (chainable, chainable => unit) => chainable = "each"
-@send external then: (chainable, chainable => unit) => chainable = "then"
-@send external its: (chainable, string) => chainable = "its"
+@send external each: (t, t => unit) => t = "each"
+@send external then: (t, t => unit) => t = "then"
+@send external its: (t, string) => t = "its"
 
 // Attributes
-@send external invoke: (chainable, string) => chainable = "invoke"
-@send external invokeWithArg: (chainable, string, string) => chainable = "invoke"
-@send external attr: (chainable, string) => chainable = "attr"
+@send external invoke: (t, string) => t = "invoke"
+@send external invokeWithArg: (t, string, string) => t = "invoke"
+@send external attr: (t, string) => t = "attr"
 
 // Visibility & state
-@send external asChainable: (chainable, string) => chainable = "as"
+@send external asChainable: (t, string) => t = "as"
 
 // Yielding
-@send external within: (chainable, unit => unit) => chainable = "within"
+@send external within: (t, unit => unit) => t = "within"
 
 // -- Describe / It (Mocha globals) --------------------------------------------
 
@@ -117,7 +117,7 @@ external log: string => unit = "log"
 // -- Window -------------------------------------------------------------------
 
 @val @scope("cy")
-external cyWindow: unit => chainable = "window"
+external cyWindow: unit => t = "window"
 
 // -- Convenience helpers ------------------------------------------------------
 
