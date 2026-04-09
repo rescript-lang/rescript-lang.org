@@ -131,7 +131,6 @@ let make = () => {
       switch e.key {
       | "/" => focusSearch(e)
       | "k" if e.ctrlKey || e.metaKey => focusSearch(e)
-      | "Escape" => handleCloseModal()
       | _ => ()
       }
     }

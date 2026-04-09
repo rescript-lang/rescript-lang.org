@@ -345,6 +345,24 @@ svg.DocSearch-Hit-Select-Icon {
     border border-gray-20 bg-gray-5 text-11 text-gray-60 font-medium;
 }
 
+/* Swap "to close" / "to clear" based on whether the input has a query.
+   :placeholder-shown is true when the input is empty, false when it has text. */
+.DocSearch-Commands li:last-child .DocSearch-Label {
+  font-size: 0;
+}
+
+.DocSearch-Commands li:last-child .DocSearch-Label::after {
+  content: "to close";
+  font-size: 0.75rem;
+}
+
+.DocSearch-Modal:has(.DocSearch-Input:not(:placeholder-shown))
+  .DocSearch-Commands
+  li:last-child
+  .DocSearch-Label::after {
+  content: "to clear";
+}
+
 /* Responsive */
 @media (max-width: 750px) {
   .DocSearch-Dropdown {
