@@ -33,10 +33,20 @@ let blogArticleRoutes =
     route(path, "./routes/BlogArticleRoute.jsx", ~options={id: path})
   )
 
+let communityRoutes =
+  MdxFile.scanPaths(~dir="markdown-pages/community", ~alias="community")->Array.map(path =>
+    route(path, "./routes/CommunityRoute.jsx", ~options={id: path})
+  )
+
 let mdxRoutes = mdxRoutes("./routes/MdxRoute.jsx")->Array.filter(r =>
   !(
     r.path
-    ->Option.map(path => path === "blog" || String.startsWith(path, "blog/"))
+    ->Option.map(path =>
+      path === "blog" ||
+      String.startsWith(path, "blog/") ||
+      path === "community" ||
+      String.startsWith(path, "community/")
+    )
     ->Option.getOr(false)
   )
 )
@@ -56,6 +66,7 @@ let default = [
   ...stdlibRoutes,
   ...beltRoutes,
   ...blogArticleRoutes,
+  ...communityRoutes,
   ...mdxRoutes,
   route("*", "./routes/NotFoundRoute.jsx"),
 ]
