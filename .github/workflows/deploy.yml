@@ -20,6 +20,8 @@ jobs:
       contents: read
       deployments: write
       pull-requests: write
+    outputs:
+      deployment-url: ${{ steps.deploy.outputs.deployment-url }}
     steps:
       - uses: actions/checkout@v6.0.2
       - name: Setup Node.js environment
@@ -76,3 +78,28 @@ jobs:
             Deployment Environment: ${{ steps.deploy.outputs.pages-environment }}
 
             ${{ steps.deploy.outputs.command-output }}
+
+  e2e:
+    runs-on: ubuntu-latest
+    name: E2E Tests
+    needs: deploy
+    if: ${{ github.actor != 'dependabot[bot]' }}
+    steps:
+      - uses: actions/checkout@v6.0.2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6.3.0
+        with:
+          node-version-file: ".node-version"
+          cache: "yarn"
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install dependencies
+        run: yarn install
+      - name: Build ReScript
+        run: yarn build:res
+      - name: Cypress E2E tests
+        uses: cypress-io/github-action@v7
+        with:
+          install: false
+          browser: chrome
+          config: baseUrl=${{ needs.deploy.outputs.deployment-url }}
