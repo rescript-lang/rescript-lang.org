@@ -97,7 +97,9 @@ jobs:
         run: yarn install
       - name: Build ReScript
         run: yarn build:res
-      - name: Run Cypress E2E tests
-        run: yarn cy:e2e
-        env:
-          CYPRESS_BASE_URL: ${{ needs.deploy.outputs.deployment-url }}
+      - name: Cypress E2E tests
+        uses: cypress-io/github-action@v7
+        with:
+          install: false
+          browser: chrome
+          config: baseUrl=${{ needs.deploy.outputs.deployment-url }}
