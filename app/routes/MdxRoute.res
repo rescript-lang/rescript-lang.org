@@ -115,19 +115,6 @@ let reactTableOfContents = async () => {
   categories
 }
 
-let communityTableOfContents = async () => {
-  let groups =
-    (await allMdx(~filterByPaths=["markdown-pages/community"]))
-    ->filterMdxPages("community")
-    ->groupBySection
-    ->Dict.mapValues(values => values->sortSection->convertToNavItems("/community"))
-
-  // these are the categories that appear in the sidebar
-  let categories: array<SidebarLayout.Sidebar.Category.t> = getAllGroups(groups, ["Resources"])
-
-  categories
-}
-
 let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
   let {pathname} = WebAPI.URL.make(~url=request.url)
 
@@ -163,8 +150,6 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
         await manualTableOfContents()
       } else if pathname->String.includes("docs/react") {
         await reactTableOfContents()
-      } else if pathname->String.includes("community") {
-        await communityTableOfContents()
       } else {
         []
       }
@@ -236,8 +221,6 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
         "ReScript React"
       } else if path->String.includes("docs/manual") {
         "ReScript Language Manual"
-      } else if path->String.includes("community") {
-        "ReScript Community"
       } else {
         "ReScript"
       }
@@ -352,10 +335,6 @@ let default = () => {
           </>
         }
       </>
-    } else if (pathname :> string)->String.includes("community") {
-      <CommunityLayout categories entries>
-        <div className="markdown-body"> {component()} </div>
-      </CommunityLayout>
     } else {
       switch loaderData.mdxSources {
       | Some(mdxSources) =>
