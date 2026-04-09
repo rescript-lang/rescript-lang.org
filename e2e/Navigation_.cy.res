@@ -5,7 +5,7 @@ open Cy
 // handlers before client-side navigation works.
 let waitForHydration = () => {
   getByTestId("navbar-primary")->shouldBeVisible->ignore
-  wait(2000)
+  cyWindow()->its("document.readyState")->shouldWithValue("eq", "complete")->ignore
 }
 
 // Use short, re-queryable selectors to avoid detached DOM issues.

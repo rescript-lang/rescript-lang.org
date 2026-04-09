@@ -30,9 +30,9 @@
     "preview": "yarn build && static-server build/client",
     "reanalyze": "rescript-tools reanalyze -all-cmt .",
     "test": "node scripts/test-examples.mjs && node scripts/test-hrefs.mjs",
-    "cy:open": "cypress open --e2e --browser electron",
-    "cy:run": "cypress run",
-    "cy:e2e": "cypress run --browser chrome",
+    "cy:open": "yarn build:res && cypress open --e2e --browser electron",
+    "cy:run": "yarn build:res && cypress run",
+    "cy:e2e": "yarn build:res && cypress run --browser chrome",
     "vitest": "vitest",
     "vitest:update": "vitest --run --browser.headless --update"
   },
