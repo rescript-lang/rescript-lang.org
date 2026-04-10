@@ -1,0 +1,67 @@
+open Cy
+
+let waitForHydration = () => {
+  getByTestId("navbar-primary")->shouldBeVisible->ignore
+  cyWindow()->its("document.readyState")->shouldWithValue("eq", "complete")->ignore
+  wait(2000)
+}
+
+let waitForPlayground = () => {
+  get(".cm-editor")->should("be.visible")->ignore
+  getByTestId("control-panel")->should("be.visible")->ignore
+  wait(2000)
+}
+
+let clickNavLink = (~testId, ~text) => {
+  get(`[data-testid="${testId}"] a:visible`)
+  ->containsChainable(text)
+  ->click
+  ->ignore
+}
+
+describe("Playground", () => {
+  beforeEach(() => {
+    viewport(1280, 720)
+    visit("/")
+    waitForHydration()
+  })
+
+  it("should compile and run Console.log in the playground", () => {
+    // Navigate to the playground from the homepage
+    clickNavLink(~testId="navbar-primary-left-content", ~text="Playground")
+    url()->shouldInclude("/try")->ignore
+
+    // Wait for the playground editor and compiler to fully load
+    waitForPlayground()
+
+    // Clear all existing code and type new ReScript source
+    get(".cm-content")
+    ->typeWithOptions(
+      "{selectall}{backspace}Console.log(\"Hello ReScript!\")",
+      {"force": true, "delay": 20},
+    )
+    ->ignore
+
+    // Allow time for the compiler to process
+    wait(3000)
+
+    // Switch to the JavaScript tab and verify compiled output
+    contains("JavaScript")->click->ignore
+    get("pre.whitespace-pre-wrap")
+    ->shouldContainText("console.log")
+    ->ignore
+
+    // Click the Run button in the control panel
+    getByTestId("control-panel")
+    ->find("button")
+    ->containsChainable("Run")
+    ->click
+    ->ignore
+
+    // The Run button auto-switches to the Output tab.
+    // Verify the console output panel contains the logged text.
+    get("div.whitespace-pre-wrap pre")
+    ->shouldContainText("Hello ReScript!")
+    ->ignore
+  })
+})
