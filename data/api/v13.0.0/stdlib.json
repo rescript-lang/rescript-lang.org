@@ -2427,9 +2427,9 @@
         "kind": "value",
         "name": "compare",
         "docstrings": [
-          "`compare(collator, a, b)` compares two strings using the rules of `collator`. Returns a negative number when `a` comes before `b`, `0` when equal, and a positive number otherwise.\n\n## Examples\n\n```rescript\nlet collator = Intl.Collator.make(~locales=[\"en-US\"])\ncollator->Intl.Collator.compare(\"apple\", \"banana\") < 0\n```"
+          "`compare(collator, a, b)` compares two strings using the rules of `collator`. Returns a negative number when `a` comes before `b`, `0` when equal, and a positive number otherwise.\n\n## Examples\n\n```rescript\nlet collator = Intl.Collator.make(~locales=[\"en-US\"])\nOrdering.isLess(collator->Intl.Collator.compare(\"apple\", \"banana\"))\n```"
         ],
-        "signature": "let compare: (t, string, string) => int"
+        "signature": "let compare: (t, string, string) => Ordering.t"
       },
       {
         "id": "Stdlib.Intl.Collator.ignore",
@@ -5984,9 +5984,9 @@
         "kind": "value",
         "name": "localeCompare",
         "docstrings": [
-          "`localeCompare(referenceStr, compareStr)` returns a float than indicatings\nwhether a reference string comes before or after, or is the same as the given\nstring in sort order. If `referenceStr` occurs before `compareStr` positive if\nthe `referenceStr` occurs after `compareStr`, `0` if they are equivalent.\nDo not rely on exact return values of `-1` or `1`\nSee [`String.localeCompare`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare) on MDN.\n\n## Examples\n\n```rescript\nString.localeCompare(\"a\", \"c\") < 0.0 == true\nString.localeCompare(\"a\", \"a\") == 0.0\n```"
+          "`localeCompare(referenceStr, compareStr, ~locales=?, ~options=?)` returns a float indicating\nwhether a reference string comes before or after, or is the same as the given\nstring in sort order. Returns a negative value if `referenceStr` occurs before `compareStr`,\npositive if `referenceStr` occurs after `compareStr`, `0` if they are equivalent.\nDo not rely on exact return values of `-1` or `1`.\n\nOptionally takes `~locales` to specify locale(s) and `~options` to customize comparison behavior\n(e.g., sensitivity, case ordering, numeric sorting). These correspond to the `Intl.Collator` options.\nSee [`String.localeCompare`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare) on MDN.\n\n## Examples\n\n```rescript\nString.localeCompare(\"a\", \"c\") < 0.0 == true\nString.localeCompare(\"a\", \"a\") == 0.0\nString.localeCompare(\"a\", \"b\", ~locales=[\"en-US\"]) < 0.0 == true\nString.localeCompare(\"a\", \"A\", ~locales=[\"en-US\"], ~options={sensitivity: #base}) == 0.0\n```"
         ],
-        "signature": "let localeCompare: (string, string) => float"
+        "signature": "let localeCompare: (\n  string,\n  string,\n  ~locales: array<string>=?,\n  ~options: Intl_Collator.options=?,\n) => float"
       },
       {
         "id": "Stdlib.String.ignore",
