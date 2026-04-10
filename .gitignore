@@ -50,6 +50,8 @@ functions/**/*.mjs
 functions/**/*.jsx
 __tests__/**/*.mjs
 __tests__/**/*.jsx
+e2e/**/*.mjs
+e2e/**/*.jsx
 !_shims.mjs
 !_shims.jsx
 

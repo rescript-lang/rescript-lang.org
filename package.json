@@ -30,6 +30,9 @@
     "preview": "yarn build && static-server build/client",
     "reanalyze": "rescript-tools reanalyze -all-cmt .",
     "test": "node scripts/test-examples.mjs && node scripts/test-hrefs.mjs",
+    "cy:open": "yarn build:res && cypress open --e2e --browser electron",
+    "cy:run": "yarn build:res && cypress run",
+    "cy:e2e": "yarn build:res && cypress run --browser chrome",
     "vitest": "vitest",
     "vitest:update": "vitest --run --browser.headless --update"
   },
@@ -82,6 +85,9 @@
     "unified": "^11.0.5",
     "vfile-matter": "^5.0.1"
   },
+  "resolutions": {
+    "marked": "4.0.10"
+  },
   "devDependencies": {
     "@prettier/plugin-oxc": "^0.1.3",
     "@react-router/dev": "^7.14.0",
@@ -91,6 +97,7 @@
     "@vitest/browser-playwright": "^4.1.2",
     "auto-image-converter": "^2.2.0",
     "chokidar": "^4.0.3",
+    "cypress": "^15.13.1",
     "dotenv": "^16.6.1",
     "jsdom": "^26.1.0",
     "lefthook": "^2.1.4",
