@@ -40,4 +40,7 @@ export default defineConfig({
     exclude: ["node_modules/.vite/deps/*.js"],
   },
   assetsInclude: ["**/resources.json"],
+  legacy: {
+    inconsistentCjsInterop: true,
+  },
 });
