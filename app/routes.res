@@ -11,6 +11,17 @@ let stdlibPaths = {
   ->Array.filter(path => path !== "docs/manual/api/stdlib")
 }
 
+let domPaths = {
+  let rawFile = await Node.Fs.readFile("./markdown-pages/docs/api/dom.json", "utf-8")
+  let json = JSON.parseOrThrow(rawFile)
+  switch json {
+  | Object(json) => Dict.keysToArray(json)
+  | _ => []
+  }
+  ->Array.map(key => "docs/manual/api/" ++ key)
+  ->Array.filter(path => path !== "docs/manual/api/dom")
+}
+
 let beltPaths = {
   let rawFile = await Node.Fs.readFile("./markdown-pages/docs/api/belt.json", "utf-8")
   let json = JSON.parseOrThrow(rawFile)
@@ -24,6 +35,9 @@ let beltPaths = {
 
 let stdlibRoutes =
   stdlibPaths->Array.map(path => route(path, "./routes/ApiRoute.jsx", ~options={id: path}))
+
+let domRoutes =
+  domPaths->Array.map(path => route(path, "./routes/ApiRoute.jsx", ~options={id: path}))
 
 let beltRoutes =
   beltPaths->Array.map(path => route(path, "./routes/ApiRoute.jsx", ~options={id: path}))
@@ -72,6 +86,7 @@ let default = [
   route("docs/manual/api/dom", "./routes/ApiRoute.jsx", ~options={id: "api-dom"}),
   ...stdlibRoutes,
   ...beltRoutes,
+  ...domRoutes,
   ...blogArticleRoutes,
   ...docsGuidelinesRoutes,
   ...communityRoutes,
