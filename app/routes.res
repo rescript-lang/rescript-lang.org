@@ -11,6 +11,17 @@ let stdlibPaths = {
   ->Array.filter(path => path !== "docs/manual/api/stdlib")
 }
 
+let domPaths = {
+  let rawFile = await Node.Fs.readFile("./markdown-pages/docs/api/dom.json", "utf-8")
+  let json = JSON.parseOrThrow(rawFile)
+  switch json {
+  | Object(json) => Dict.keysToArray(json)
+  | _ => []
+  }
+  ->Array.map(key => "docs/manual/api/" ++ key)
+  ->Array.filter(path => path !== "docs/manual/api/dom")
+}
+
 let beltPaths = {
   let rawFile = await Node.Fs.readFile("./markdown-pages/docs/api/belt.json", "utf-8")
   let json = JSON.parseOrThrow(rawFile)
@@ -25,6 +36,9 @@ let beltPaths = {
 let stdlibRoutes =
   stdlibPaths->Array.map(path => route(path, "./routes/ApiRoute.jsx", ~options={id: path}))
 
+let domRoutes =
+  domPaths->Array.map(path => route(path, "./routes/ApiRoute.jsx", ~options={id: path}))
+
 let beltRoutes =
   beltPaths->Array.map(path => route(path, "./routes/ApiRoute.jsx", ~options={id: path}))
 
@@ -38,6 +52,11 @@ let docsReactRoutes =
     route(path, "./routes/DocsReactRoute.jsx", ~options={id: path})
   )
 
+let communityRoutes =
+  MdxFile.scanPaths(~dir="markdown-pages/community", ~alias="community")->Array.map(path =>
+    route(path, "./routes/CommunityRoute.jsx", ~options={id: path})
+  )
+
 let mdxRoutes = mdxRoutes("./routes/MdxRoute.jsx")->Array.filter(r =>
   !(
     r.path
@@ -45,7 +64,10 @@ let mdxRoutes = mdxRoutes("./routes/MdxRoute.jsx")->Array.filter(r =>
       path === "blog" ||
       String.startsWith(path, "blog/") ||
       path === "docs/react" ||
-      String.startsWith(path, "docs/react/")
+      String.startsWith(path, "docs/react/") ||
+      path === "community" ||
+      String.startsWith(path, "community/") ||
+      path === "docs/manual/api"
     )
     ->Option.getOr(false)
   )
@@ -59,14 +81,17 @@ let default = [
   route("blog", "./routes/BlogRoute.jsx", ~options={id: "blog-index"}),
   route("blog/archived", "./routes/BlogRoute.jsx", ~options={id: "blog-archived"}),
   route("docs", "./routes/DocsOverview.jsx", ~options={id: "docs-overview"}),
+  route("docs/manual/api", "./routes/ApiOverviewRoute.jsx", ~options={id: "api-overview"}),
   route("docs/manual/api/stdlib", "./routes/ApiRoute.jsx", ~options={id: "api-stdlib"}),
   route("docs/manual/api/introduction", "./routes/ApiRoute.jsx", ~options={id: "api-intro"}),
   route("docs/manual/api/belt", "./routes/ApiRoute.jsx", ~options={id: "api-belt"}),
   route("docs/manual/api/dom", "./routes/ApiRoute.jsx", ~options={id: "api-dom"}),
   ...stdlibRoutes,
   ...beltRoutes,
+  ...domRoutes,
   ...blogArticleRoutes,
   ...docsReactRoutes,
+  ...communityRoutes,
   ...mdxRoutes,
   route("*", "./routes/NotFoundRoute.jsx"),
 ]

@@ -99,19 +99,6 @@ let manualTableOfContents = async () => {
   categories
 }
 
-let communityTableOfContents = async () => {
-  let groups =
-    (await allMdx(~filterByPaths=["markdown-pages/community"]))
-    ->filterMdxPages("community")
-    ->groupBySection
-    ->Dict.mapValues(values => values->sortSection->convertToNavItems("/community"))
-
-  // these are the categories that appear in the sidebar
-  let categories: array<SidebarLayout.Sidebar.Category.t> = getAllGroups(groups, ["Resources"])
-
-  categories
-}
-
 let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
   let {pathname} = WebAPI.URL.make(~url=request.url)
 
@@ -143,12 +130,8 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
     res
   } else {
     let categories = {
-      if pathname == "/docs/manual/api" {
-        []
-      } else if pathname->String.includes("docs/manual") {
+      if pathname->String.includes("docs/manual") {
         await manualTableOfContents()
-      } else if pathname->String.includes("community") {
-        await communityTableOfContents()
       } else {
         []
       }
@@ -208,12 +191,8 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
 
     let metaTitleCategory = {
       let path = (pathname :> string)
-      let title = if path->String.includes("docs/manual/api") {
-        "ReScript API"
-      } else if path->String.includes("docs/manual") {
+      let title = if path->String.includes("docs/manual") {
         "ReScript Language Manual"
-      } else if path->String.includes("community") {
-        "ReScript Community"
       } else {
         "ReScript"
       }
@@ -221,11 +200,7 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
       title
     }
 
-    let title = if pathname == "/docs/manual/api" {
-      "API"
-    } else {
-      mdx.attributes.title
-    }
+    let title = mdx.attributes.title
 
     let res: loaderData = {
       __raw: mdx.__raw,
@@ -250,49 +225,7 @@ let default = () => {
   let {entries, categories, title} = loaderData
 
   <>
-    {if (pathname :> string) == "/docs/manual/api" {
-      let breadcrumbs = list{
-        {Url.name: "Docs", href: `/docs/manual/api`},
-        {name: "API", href: `/docs/manual/api`},
-      }
-      let sidebarContent =
-        <aside className="px-4 w-full block">
-          <div className="flex justify-between items-baseline">
-            <div className="flex flex-col text-fire font-medium">
-              <VersionSelect />
-            </div>
-            <button
-              className="flex items-center" onClick={_ => NavbarUtils.closeMobileTertiaryDrawer()}
-            >
-              <Icon.Close />
-            </button>
-          </div>
-          <div className="mb-56">
-            {ApiOverviewLayout.categories
-            ->Array.map(category => {
-              let isItemActive = (navItem: SidebarLayout.Sidebar.NavItem.t) =>
-                navItem.href === (pathname :> string)
-              <div key=category.name>
-                <SidebarLayout.Sidebar.Category
-                  isItemActive category onClick={_ => NavbarUtils.closeMobileTertiaryDrawer()}
-                />
-              </div>
-            })
-            ->React.array}
-          </div>
-        </aside>
-
-      <>
-        <Meta title=title description={attributes.description->Nullable.getOr("ReScript API")} />
-        <NavbarSecondary />
-        <NavbarTertiary sidebar=sidebarContent>
-          <SidebarLayout.BreadCrumbs crumbs=breadcrumbs />
-        </NavbarTertiary>
-        <ApiOverviewLayout.Docs>
-          <div className="markdown-body"> {component()} </div>
-        </ApiOverviewLayout.Docs>
-      </>
-    } else if (
+    {if (
       (pathname :> string)->String.includes("docs/manual") ||
         (pathname :> string)->String.includes("docs/guidelines")
     ) {
@@ -371,10 +304,6 @@ let default = () => {
           </>
         }
       </>
-    } else if (pathname :> string)->String.includes("community") {
-      <CommunityLayout categories entries>
-        <div className="markdown-body"> {component()} </div>
-      </CommunityLayout>
     } else {
       switch loaderData.mdxSources {
       | Some(mdxSources) =>
