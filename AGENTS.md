@@ -201,6 +201,12 @@ let default: unit => React.element
 - **Lefthook** runs `yarn format` on pre-commit (auto-stages fixed files).
 - Generated `.mjs`/`.jsx` output files from ReScript are git-tracked but excluded from Prettier.
 
+## Pull Requests and Commits
+
+- Use conventional commits format for commit messages (e.g. `feat: add new API docs`, `fix: resolve loader data issue`).
+- Commit bodies should explain what changed with some concise details
+- PR descriptions should provide context for the change, a summary of the changes with descriptions, and reference any related issues.
+
 ## Important Warnings
 
 - Do **not** modify generated `.jsx` / `.mjs` files directly — they are ReScript compiler output.

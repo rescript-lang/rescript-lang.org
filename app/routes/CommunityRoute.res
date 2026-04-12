@@ -7,38 +7,16 @@ type loaderData = {
   categories: array<SidebarLayout.Sidebar.Category.t>,
 }
 
-let convertToNavItems = (items, rootPath) =>
-  Array.map(items, (item): SidebarLayout.Sidebar.NavItem.t => {
-    let href = switch item.Mdx.slug {
-    | Some(slug) => `${rootPath}/${slug}`
-    | None => rootPath
-    }
-    {
-      name: item.title,
-      href,
-    }
-  })
-
-let getGroup = (groups, groupName): SidebarLayout.Sidebar.Category.t => {
-  {
-    name: groupName,
-    items: groups
-    ->Dict.get(groupName)
-    ->Option.getOr([]),
-  }
-}
-
-let getAllGroups = (groups, groupNames): array<SidebarLayout.Sidebar.Category.t> =>
-  groupNames->Array.map(item => getGroup(groups, item))
-
 let communityTableOfContents = async () => {
   let groups =
-    (await Mdx.allMdx(~filterByPaths=["markdown-pages/community"]))
+    (await MdxFile.loadAllAttributes(~dir="markdown-pages/community"))
     ->Mdx.filterMdxPages("community")
     ->Mdx.groupBySection
-    ->Dict.mapValues(values => values->Mdx.sortSection->convertToNavItems("/community"))
+    ->Dict.mapValues(values =>
+      values->Mdx.sortSection->SidebarHelpers.convertToNavItems("/community")
+    )
 
-  getAllGroups(groups, ["Resources"])
+  SidebarHelpers.getAllGroups(groups, ["Resources"])
 }
 
 let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
