@@ -146,9 +146,7 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
     res
   } else {
     let categories = {
-      if pathname == "/docs/manual/api" {
-        []
-      } else if pathname->String.includes("docs/manual") {
+      if pathname->String.includes("docs/manual") {
         await manualTableOfContents()
       } else if pathname->String.includes("docs/react") {
         await reactTableOfContents()
@@ -221,8 +219,6 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
       let path = (pathname :> string)
       let title = if path->String.includes("docs/react") {
         "ReScript React"
-      } else if path->String.includes("docs/manual/api") {
-        "ReScript API"
       } else if path->String.includes("docs/manual") {
         "ReScript Language Manual"
       } else {
@@ -232,11 +228,7 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
       title
     }
 
-    let title = if pathname == "/docs/manual/api" {
-      "API"
-    } else {
-      mdx.attributes.title
-    }
+    let title = mdx.attributes.title
 
     let res: loaderData = {
       __raw: mdx.__raw,
@@ -261,49 +253,7 @@ let default = () => {
   let {entries, categories, title} = loaderData
 
   <>
-    {if (pathname :> string) == "/docs/manual/api" {
-      let breadcrumbs = list{
-        {Url.name: "Docs", href: `/docs/manual/api`},
-        {name: "API", href: `/docs/manual/api`},
-      }
-      let sidebarContent =
-        <aside className="px-4 w-full block">
-          <div className="flex justify-between items-baseline">
-            <div className="flex flex-col text-fire font-medium">
-              <VersionSelect />
-            </div>
-            <button
-              className="flex items-center" onClick={_ => NavbarUtils.closeMobileTertiaryDrawer()}
-            >
-              <Icon.Close />
-            </button>
-          </div>
-          <div className="mb-56">
-            {ApiOverviewLayout.categories
-            ->Array.map(category => {
-              let isItemActive = (navItem: SidebarLayout.Sidebar.NavItem.t) =>
-                navItem.href === (pathname :> string)
-              <div key=category.name>
-                <SidebarLayout.Sidebar.Category
-                  isItemActive category onClick={_ => NavbarUtils.closeMobileTertiaryDrawer()}
-                />
-              </div>
-            })
-            ->React.array}
-          </div>
-        </aside>
-
-      <>
-        <Meta title=title description={attributes.description->Nullable.getOr("ReScript API")} />
-        <NavbarSecondary />
-        <NavbarTertiary sidebar=sidebarContent>
-          <SidebarLayout.BreadCrumbs crumbs=breadcrumbs />
-        </NavbarTertiary>
-        <ApiOverviewLayout.Docs>
-          <div className="markdown-body"> {component()} </div>
-        </ApiOverviewLayout.Docs>
-      </>
-    } else if (
+    {if (
       (pathname :> string)->String.includes("docs/manual") ||
       (pathname :> string)->String.includes("docs/react") ||
       (pathname :> string)->String.includes("docs/guidelines")
