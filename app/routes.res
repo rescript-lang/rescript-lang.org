@@ -47,11 +47,6 @@ let blogArticleRoutes =
     route(path, "./routes/BlogArticleRoute.jsx", ~options={id: path})
   )
 
-let docsGuidelinesRoutes =
-  MdxFile.scanPaths(
-    ~dir="markdown-pages/docs/guidelines",
-    ~alias="docs/guidelines",
-  )->Array.map(path => route(path, "./routes/DocsGuidelinesRoute.jsx", ~options={id: path}))
 let communityRoutes =
   MdxFile.scanPaths(~dir="markdown-pages/community", ~alias="community")->Array.map(path =>
     route(path, "./routes/CommunityRoute.jsx", ~options={id: path})
@@ -63,8 +58,9 @@ let mdxRoutes = mdxRoutes("./routes/MdxRoute.jsx")->Array.filter(r =>
     ->Option.map(path =>
       path === "blog" ||
       String.startsWith(path, "blog/") ||
-      path === "docs/guidelines" ||
-      String.startsWith(path, "docs/guidelines/") ||
+      path === "community" ||
+      String.startsWith(path, "community/") ||
+      path === "docs/manual/api" ||
       path === "community" ||
       String.startsWith(path, "community/")
     )
@@ -80,6 +76,7 @@ let default = [
   route("blog", "./routes/BlogRoute.jsx", ~options={id: "blog-index"}),
   route("blog/archived", "./routes/BlogRoute.jsx", ~options={id: "blog-archived"}),
   route("docs", "./routes/DocsOverview.jsx", ~options={id: "docs-overview"}),
+  route("docs/manual/api", "./routes/ApiOverviewRoute.jsx", ~options={id: "api-overview"}),
   route("docs/manual/api/stdlib", "./routes/ApiRoute.jsx", ~options={id: "api-stdlib"}),
   route("docs/manual/api/introduction", "./routes/ApiRoute.jsx", ~options={id: "api-intro"}),
   route("docs/manual/api/belt", "./routes/ApiRoute.jsx", ~options={id: "api-belt"}),
@@ -88,7 +85,6 @@ let default = [
   ...beltRoutes,
   ...domRoutes,
   ...blogArticleRoutes,
-  ...docsGuidelinesRoutes,
   ...communityRoutes,
   ...mdxRoutes,
   route("*", "./routes/NotFoundRoute.jsx"),
