@@ -207,7 +207,6 @@ let default = () => {
 
   <>
     <Meta title description=?docstrings />
-    <NavbarSecondary />
     <NavbarTertiary sidebar=sidebarContent>
       <SidebarLayout.BreadCrumbs crumbs=breadcrumbs />
     </NavbarTertiary>

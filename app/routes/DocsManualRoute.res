@@ -112,7 +112,6 @@ let default = () => {
 
   <>
     <Meta title description />
-    <NavbarSecondary />
     <NavbarTertiary sidebar=sidebarContent>
       <SidebarLayout.BreadCrumbs crumbs=breadcrumbs />
       <a

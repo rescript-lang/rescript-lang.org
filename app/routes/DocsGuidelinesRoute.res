@@ -42,7 +42,6 @@ let default = () => {
 
   <>
     <Meta title description />
-    <NavbarSecondary />
     <NavbarTertiary>
       <a
         href=editHref className="inline text-14 hover:underline text-fire" rel="noopener noreferrer"

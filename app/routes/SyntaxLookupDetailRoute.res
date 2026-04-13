@@ -48,7 +48,6 @@ let default = () => {
       ->Option.getOr("Syntax Lookup | ReScript API")}
       description=""
     />
-    <NavbarSecondary />
     <SyntaxLookup mdxSources activeItem=?activeSyntaxItem>
       <MdxContent compiledMdx />
     </SyntaxLookup>
