@@ -44,7 +44,6 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
 }
 
 let default = () => {
-  let {pathname} = ReactRouter.useLocation()
   let {compiledMdx, title, description} = ReactRouter.useLoaderData()
 
   let breadcrumbs = list{
@@ -52,39 +51,9 @@ let default = () => {
     {Url.name: "API", href: `/docs/manual/api`},
   }
 
-  let sidebarContent =
-    <aside className="px-4 w-full block">
-      <div className="flex justify-between items-baseline">
-        <div className="flex flex-col text-fire font-medium">
-          <VersionSelect />
-        </div>
-        <button
-          className="flex items-center" onClick={_ => NavbarUtils.closeMobileTertiaryDrawer()}
-        >
-          <Icon.Close />
-        </button>
-      </div>
-      <div className="mb-56">
-        {categories
-        ->Array.map(category => {
-          let isItemActive = (navItem: SidebarLayout.Sidebar.NavItem.t) =>
-            navItem.href === (pathname :> string)
-          <div key=category.name>
-            <SidebarLayout.Sidebar.Category
-              isItemActive category onClick={_ => NavbarUtils.closeMobileTertiaryDrawer()}
-            />
-          </div>
-        })
-        ->React.array}
-      </div>
-    </aside>
-
   <>
     <Meta title description />
-    <NavbarTertiary sidebar=sidebarContent>
-      <SidebarLayout.BreadCrumbs crumbs=breadcrumbs />
-    </NavbarTertiary>
-    <DocsLayout categories theme=#Js>
+    <DocsLayout categories breadcrumbs theme=#Js>
       <div className="markdown-body">
         <MdxContent compiledMdx />
       </div>

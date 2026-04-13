@@ -54,7 +54,6 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
 }
 
 let default = () => {
-  let {pathname} = ReactRouter.useLocation()
   let {compiledMdx, categories, entries, title, description, filePath} = ReactRouter.useLoaderData()
 
   let breadcrumbs = list{
@@ -67,53 +66,9 @@ let default = () => {
 
   let editHref = `https://github.com/rescript-lang/rescript-lang.org/blob/master/${filePath}`
 
-  let sidebarContent =
-    <aside className="px-4 w-full block">
-      <div className="flex justify-between items-baseline">
-        <div className="flex flex-col text-fire font-medium">
-          <VersionSelect />
-        </div>
-        <button
-          className="flex items-center" onClick={_ => NavbarUtils.closeMobileTertiaryDrawer()}
-        >
-          <Icon.Close />
-        </button>
-      </div>
-      <div className="mb-56">
-        {categories
-        ->Array.map(category => {
-          let isItemActive = (navItem: SidebarLayout.Sidebar.NavItem.t) =>
-            navItem.href === (pathname :> string)
-          let getActiveToc = (navItem: SidebarLayout.Sidebar.NavItem.t) =>
-            if navItem.href === (pathname :> string) {
-              Some({TableOfContents.title, entries})
-            } else {
-              None
-            }
-          <div key=category.name>
-            <SidebarLayout.Sidebar.Category
-              isItemActive
-              getActiveToc
-              category
-              onClick={_ => NavbarUtils.closeMobileTertiaryDrawer()}
-            />
-          </div>
-        })
-        ->React.array}
-      </div>
-    </aside>
-
   <>
     <Meta title description />
-    <NavbarTertiary sidebar=sidebarContent>
-      <SidebarLayout.BreadCrumbs crumbs=breadcrumbs />
-      <a
-        href=editHref className="inline text-14 hover:underline text-fire" rel="noopener noreferrer"
-      >
-        {React.string("Edit")}
-      </a>
-    </NavbarTertiary>
-    <DocsLayout categories activeToc={title, entries}>
+    <DocsLayout categories activeToc={title, entries} breadcrumbs editHref>
       <div className="markdown-body">
         <MdxContent compiledMdx />
       </div>
