@@ -1,3 +1,20 @@
+let categories: array<SidebarLayout.Sidebar.Category.t> = [
+  {
+    name: "Overview",
+    items: [
+      {name: "Introduction", href: "/docs/manual/api"},
+      {name: "Stdlib", href: "/docs/manual/api/stdlib"},
+    ],
+  },
+  {
+    name: "Additional Libraries",
+    items: [
+      {name: "Belt", href: "/docs/manual/api/belt"},
+      {name: "Dom", href: "/docs/manual/api/dom"},
+    ],
+  },
+]
+
 type loaderData = {
   compiledMdx: CompiledMdx.t,
   title: string,
@@ -48,7 +65,7 @@ let default = () => {
         </button>
       </div>
       <div className="mb-56">
-        {ApiOverviewLayout.categories
+        {categories
         ->Array.map(category => {
           let isItemActive = (navItem: SidebarLayout.Sidebar.NavItem.t) =>
             navItem.href === (pathname :> string)
@@ -67,10 +84,10 @@ let default = () => {
     <NavbarTertiary sidebar=sidebarContent>
       <SidebarLayout.BreadCrumbs crumbs=breadcrumbs />
     </NavbarTertiary>
-    <ApiOverviewLayout.Docs>
+    <DocsLayout categories theme=#Js>
       <div className="markdown-body">
         <MdxContent compiledMdx />
       </div>
-    </ApiOverviewLayout.Docs>
+    </DocsLayout>
   </>
 }
