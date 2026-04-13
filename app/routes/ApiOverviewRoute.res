@@ -15,14 +15,7 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
   let raw = await Node.Fs.readFile(filePath, "utf-8")
   let {frontmatter}: MarkdownParser.result = MarkdownParser.parseSync(raw)
 
-  let description = switch frontmatter {
-  | Object(dict) =>
-    switch dict->Dict.get("description") {
-    | Some(String(s)) => s
-    | _ => ""
-    }
-  | _ => ""
-  }
+  let description = FrontmatterUtils.getField(frontmatter, "description")
 
   let compiledMdx = await MdxFile.compileMdx(raw, ~filePath, ~remarkPlugins=Mdx.plugins)
 

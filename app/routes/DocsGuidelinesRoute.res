@@ -17,41 +17,12 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
   let raw = await Node.Fs.readFile(filePath, "utf-8")
   let {frontmatter}: MarkdownParser.result = MarkdownParser.parseSync(raw)
 
-  let description = switch frontmatter {
-  | Object(dict) =>
-    switch dict->Dict.get("description") {
-    | Some(String(s)) => s
-    | _ => ""
-    }
-  | _ => ""
-  }
-
-  let title = switch frontmatter {
-  | Object(dict) =>
-    switch dict->Dict.get("title") {
-    | Some(String(s)) => s
-    | _ => ""
-    }
-  | _ => ""
-  }
+  let description = FrontmatterUtils.getField(frontmatter, "description")
+  let title = FrontmatterUtils.getField(frontmatter, "title")
 
   let compiledMdx = await MdxFile.compileMdx(raw, ~filePath, ~remarkPlugins=Mdx.plugins)
 
-  // Build table of contents entries from markdown headings
-  let markdownTree = Mdast.fromMarkdown(raw)
-  let tocResult = Mdast.toc(markdownTree, {maxDepth: 2})
-
-  let headers = Dict.make()
-  Mdast.reduceHeaders(tocResult.map, headers)
-
-  let entries =
-    headers
-    ->Dict.toArray
-    ->Array.map(((header, url)): TableOfContents.entry => {
-      header,
-      href: (url :> string),
-    })
-    ->Array.slice(~start=2) // skip document entry and H1 title, keep h2 sections
+  let entries = TocUtils.buildEntries(raw)
 
   {
     compiledMdx,
