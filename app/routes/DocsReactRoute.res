@@ -66,9 +66,19 @@ let default = () => {
 
   let editHref = `https://github.com/rescript-lang/rescript-lang.org/blob/master/${filePath}`
 
+  let activeToc = {TableOfContents.title, entries}
+
   <>
     <Meta title description />
-    <DocsLayout categories activeToc={title, entries} breadcrumbs editHref>
+    <NavbarTertiary sidebar={<DocsSidebar categories activeToc />}>
+      <SidebarLayout.BreadCrumbs crumbs=breadcrumbs />
+      <a
+        href=editHref className="inline text-14 hover:underline text-fire" rel="noopener noreferrer"
+      >
+        {React.string("Edit")}
+      </a>
+    </NavbarTertiary>
+    <DocsLayout categories activeToc>
       <div className="markdown-body">
         <MdxContent compiledMdx />
       </div>

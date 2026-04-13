@@ -41,15 +41,13 @@ test("desktop docs layout shows sidebar with categories", async () => {
     </MemoryRouter>,
   )
 
-  let sidebar = await screen->getByTestId("sidebar-content")
-
-  let overviewHeading = await sidebar->getByText("Overview")
+  let overviewHeading = await screen->getByText("Overview")
   await element(overviewHeading)->toBeVisible
 
-  let languageFeaturesHeading = await sidebar->getByText("Language Features")
+  let languageFeaturesHeading = await screen->getByText("Language Features")
   await element(languageFeaturesHeading)->toBeVisible
 
-  let introItem = await sidebar->getByText("Introduction")
+  let introItem = await screen->getByText("Introduction")
   await element(introItem)->toBeVisible
 
   let mainContent = await screen->getByTestId("side-layout-children")
@@ -76,9 +74,7 @@ test("desktop docs layout shows table of contents entries", async () => {
   // Since the test isn't at a matching route, the TOC appears for the first
   // category item that matches the current location. Verify the layout
   // renders with the activeToc data by checking sidebar and content are present.
-  let sidebar = await screen->getByTestId("sidebar-content")
-
-  let overviewHeading = await sidebar->getByText("Overview")
+  let overviewHeading = await screen->getByText("Overview")
   await element(overviewHeading)->toBeVisible
 
   let mainContent = await screen->getByTestId("side-layout-children")
@@ -101,9 +97,7 @@ test("mobile docs layout hides sidebar by default", async () => {
     </MemoryRouter>,
   )
 
-  let sidebar = await screen->getByTestId("sidebar-content")
-
-  let introItem = await sidebar->getByText("Introduction")
+  let introItem = await screen->getByText("Introduction")
   await element(introItem)->notToBeVisible
 
   let mainContent = await screen->getByTestId("side-layout-children")

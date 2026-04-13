@@ -53,7 +53,10 @@ let default = () => {
 
   <>
     <Meta title description />
-    <DocsLayout categories breadcrumbs theme=#Js>
+    <NavbarTertiary sidebar={<DocsSidebar categories />}>
+      <SidebarLayout.BreadCrumbs crumbs=breadcrumbs />
+    </NavbarTertiary>
+    <DocsLayout categories theme=#Js>
       <div className="markdown-body">
         <MdxContent compiledMdx />
       </div>

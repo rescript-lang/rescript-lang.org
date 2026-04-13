@@ -42,7 +42,14 @@ let default = () => {
 
   <>
     <Meta title description />
-    <DocsLayout categories activeToc={title, entries} editHref>
+    <NavbarTertiary>
+      <a
+        href=editHref className="inline text-14 hover:underline text-fire" rel="noopener noreferrer"
+      >
+        {React.string("Edit")}
+      </a>
+    </NavbarTertiary>
+    <DocsLayout categories activeToc={title, entries}>
       <div className="markdown-body">
         <MdxContent compiledMdx />
       </div>
