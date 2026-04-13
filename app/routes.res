@@ -47,26 +47,31 @@ let blogArticleRoutes =
     route(path, "./routes/BlogArticleRoute.jsx", ~options={id: path})
   )
 
+let docsManualRoutes =
+  MdxFile.scanPaths(~dir="markdown-pages/docs/manual", ~alias="docs/manual")
+  ->Array.filter(path => !String.includes(path, "docs/manual/api"))
+  ->Array.map(path => route(path, "./routes/DocsManualRoute.jsx", ~options={id: path}))
+
+let docsReactRoutes =
+  MdxFile.scanPaths(~dir="markdown-pages/docs/react", ~alias="docs/react")->Array.map(path =>
+    route(path, "./routes/DocsReactRoute.jsx", ~options={id: path})
+  )
+
+let docsGuidelinesRoutes =
+  MdxFile.scanPaths(
+    ~dir="markdown-pages/docs/guidelines",
+    ~alias="docs/guidelines",
+  )->Array.map(path => route(path, "./routes/DocsGuidelinesRoute.jsx", ~options={id: path}))
+
 let communityRoutes =
   MdxFile.scanPaths(~dir="markdown-pages/community", ~alias="community")->Array.map(path =>
     route(path, "./routes/CommunityRoute.jsx", ~options={id: path})
   )
 
-let mdxRoutes = mdxRoutes("./routes/MdxRoute.jsx")->Array.filter(r =>
-  !(
-    r.path
-    ->Option.map(path =>
-      path === "blog" ||
-      String.startsWith(path, "blog/") ||
-      path === "community" ||
-      String.startsWith(path, "community/") ||
-      path === "docs/manual/api" ||
-      path === "community" ||
-      String.startsWith(path, "community/")
-    )
-    ->Option.getOr(false)
+let syntaxLookupDetailRoutes =
+  MdxFile.scanPaths(~dir="markdown-pages/syntax-lookup", ~alias="syntax-lookup")->Array.map(path =>
+    route(path, "./routes/SyntaxLookupDetailRoute.jsx", ~options={id: path})
   )
-)
 
 let default = [
   index("./routes/LandingPageRoute.jsx"),
@@ -85,7 +90,10 @@ let default = [
   ...beltRoutes,
   ...domRoutes,
   ...blogArticleRoutes,
+  ...docsManualRoutes,
+  ...docsReactRoutes,
+  ...docsGuidelinesRoutes,
   ...communityRoutes,
-  ...mdxRoutes,
+  ...syntaxLookupDetailRoutes,
   route("*", "./routes/NotFoundRoute.jsx"),
 ]

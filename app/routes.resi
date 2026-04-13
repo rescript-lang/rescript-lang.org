@@ -1,5 +1,13 @@
 let stdlibPaths: array<string>
+let domPaths: array<string>
 let beltPaths: array<string>
 let stdlibRoutes: array<ReactRouter.Routes.t>
+let domRoutes: array<ReactRouter.Routes.t>
 let beltRoutes: array<ReactRouter.Routes.t>
-let default: Belt.Array.t<ReactRouter.Routes.t>
+let blogArticleRoutes: array<ReactRouter.Routes.t>
+let docsManualRoutes: array<ReactRouter.Routes.t>
+let docsReactRoutes: array<ReactRouter.Routes.t>
+let docsGuidelinesRoutes: array<ReactRouter.Routes.t>
+let communityRoutes: array<ReactRouter.Routes.t>
+let syntaxLookupDetailRoutes: array<ReactRouter.Routes.t>
+let default: array<ReactRouter.Routes.t>
