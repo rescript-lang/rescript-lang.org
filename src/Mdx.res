@@ -59,10 +59,14 @@ external childrenToString: {..} => string = "toString"
 let sortSection = mdxPages =>
   Array.toSorted(mdxPages, (a: attributes, b: attributes) =>
     switch (a.order, b.order) {
-    | (Some(a), Some(b)) => a > b ? 1.0 : -1.0
+    | (Some(orderA), Some(orderB)) =>
+      switch Int.compare(orderA, orderB) {
+      | 0. => String.compare(a.title, b.title)
+      | result => result
+      }
     | (Some(_), None) => -1.0
     | (None, Some(_)) => 1.0
-    | (None, None) => 0.0
+    | (None, None) => String.compare(a.title, b.title)
     }
   )
 

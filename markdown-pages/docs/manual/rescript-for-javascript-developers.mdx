@@ -1,0 +1,56 @@
+---
+title: "ReScript for JavaScript Developers"
+description: "A quick ReScript syntax guide for JavaScript developers"
+canonical: "/docs/manual/rescript-for-javascript-developers"
+section: "Overview"
+order: 3
+---
+
+# ReScript for JavaScript Developers
+
+If you already write JavaScript, ReScript should feel familiar quickly. This page is a compact syntax guide for the main differences you should be aware of.
+
+For a guided migration workflow, see [Converting from JS](./converting-from-js.mdx).
+
+## What to know first
+
+- `let` bindings are immutable by default. See [Let Binding](./let-binding.mdx) and [Mutation](./mutation.mdx).
+- ReScript does not use `null` and `undefined` as normal control flow. Reach for `option` instead. See [Null, Undefined and Option](./null-undefined-option.mdx).
+- Arrays must contain values of the same type. See [Array and List](./array-and-list.mdx) and [Tuple](./tuple.mdx).
+- Records are not ad-hoc JS objects; they have known field names and types. See [Record](./record.mdx) and [Object](./object.mdx).
+- Conditionals and blocks return values, so expression-oriented code is common. See [If-Else & Loops](./control-flow.mdx).
+- Pattern matching replaces many ad-hoc `if` or property-check branches. See [Pattern Matching / Destructuring](./pattern-matching-destructuring.mdx).
+
+## Quick reference
+
+| Topic                 | ReScript                    | Notes for JavaScript developers                                                                                                        |
+| --------------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Semicolons            | `let x = 1`                 | Semicolons are not required. See [Overview](./overview.mdx#semicolons).                                                                |
+| Comments              | `//`, `/* */`, `/** */`     | Familiar syntax, including doc comments. See [Overview](./overview.mdx#comments).                                                      |
+| Variables             | `let x = 5`                 | `let` creates an immutable binding. See [Let Binding](./let-binding.mdx).                                                              |
+| Mutation              | `let x = ref(5)`            | Mutable state is explicit through `ref` or mutable fields. See [Mutation](./mutation.mdx).                                             |
+| Strings               | `"hello"`                   | Strings use double quotes. See [Primitive Types](./primitive-types.mdx).                                                               |
+| String concatenation  | `"hello " ++ name`          | ReScript uses `++` for strings. See [Primitive Types](./primitive-types.mdx).                                                          |
+| Interpolation         | `` `hello ${name}` ``       | Template strings work similarly. See [Primitive Types](./primitive-types.mdx).                                                         |
+| Equality              | `===`, `!==`, `==`, `!=`    | No coercive equality. `==` and `!=` are structural. See [Equality and Comparison](./equality-comparison.mdx).                          |
+| Numbers               | `3`, `3.14`, `2.0 * 3.0`    | Arithmetic operators work for both `int` and `float`. See [Primitive Types](./primitive-types.mdx).                                    |
+| Records               | `{x: 30, y: 20}`            | Similar object syntax, but records are typed. See [Record](./record.mdx).                                                              |
+| Arrays                | `[1, 2, 3]`                 | Arrays are homogeneous. See [Array and List](./array-and-list.mdx).                                                                    |
+| Mixed fixed-size data | `(1, "Bob", true)`          | Use tuples instead of heterogeneous arrays. See [Tuple](./tuple.mdx).                                                                  |
+| Missing values        | `option<'a>`                | Use `Some(value)` and `None` instead of `null` and `undefined`. See [Null, Undefined and Option](./null-undefined-option.mdx).         |
+| Functions             | `let add = (a, b) => a + b` | Familiar arrow-style syntax. See [Function](./function.mdx).                                                                           |
+| Blocks                | `{ let x = 1; x + 1 }`      | The last expression is returned implicitly. See [Overview](./overview.mdx#blocks).                                                     |
+| Conditionals          | `if cond {a} else {b}`      | `if` is an expression. See [If-Else & Loops](./control-flow.mdx).                                                                      |
+| Pattern matching      | `switch value { ... }`      | Use `switch` for destructuring and exhaustive branching. See [Pattern Matching / Destructuring](./pattern-matching-destructuring.mdx). |
+| Destructuring         | `let {a, b} = data`         | Works for records, arrays, tuples, and more. See [Pattern Matching / Destructuring](./pattern-matching-destructuring.mdx).             |
+| Loops                 | `for i in 0 to 10 {}`       | `for` and `while` exist, but collection transforms are also common. See [If-Else & Loops](./control-flow.mdx).                         |
+| Exceptions            | `throw(MyException(...))`   | `throw` and `try` exist, but typed data flow is preferred where possible. See [Exception](./exception.mdx).                            |
+| JSX                   | `<Comp message />`          | JSX is supported directly, with a few ReScript conventions. See [JSX](./jsx.mdx).                                                      |
+
+## Where to Go Next
+
+- For a broader syntax reference, see [Overview](./overview.mdx).
+- For a migration workflow inside an existing codebase, see [Converting from JS](./converting-from-js.mdx).
+- For JavaScript interop, see [Interop Cheatsheet](./interop-cheatsheet.mdx).
+- For importing and exporting JS modules, see [Import from Export to JS](./import-from-export-to-js.mdx).
+- For binding to JS objects and functions, see [Bind to JS Object](./bind-to-js-object.mdx) and [Bind to JS Function](./bind-to-js-function.mdx).
