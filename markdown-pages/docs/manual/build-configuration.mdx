@@ -149,9 +149,14 @@ Output to either CommonJS (the default) or JavaScript module. Example:
 
 This configuration only applies to you, when you develop the project. When the project is used as a third-party library, the consumer's own `rescript.json` `package-specs` overrides the configuration here, logically.
 
+## external-stdlib
+
+**Since 9.0**: This setting allows depending on an externally built stdlib package (instead of a locally built stdlib runtime). Useful for shipping packages that are only consumed in JS or TS without any dependencies to the ReScript development toolchain.
+
 ## suffix
 
-The suffix can be freely chosen. However, we still suggest you stick to the convention and use
+**Since 11.0**: The suffix can be freely chosen. However, we still suggest you stick to the convention and use
+
 one of the following:
 
 - `".js`
