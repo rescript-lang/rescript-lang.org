@@ -80,7 +80,7 @@ describe("Playground", () => {
     ->ignore
 
     // Verify playground shell is in light mode
-    get("main")->shouldWithValue("have.class", "bg-gray-5")->ignore
+    get("main")->shouldWithValue("have.class", "playground-theme-light")->ignore
 
     // Switch back to dark mode from Settings
     contains("Settings")->click->ignore
@@ -92,6 +92,6 @@ describe("Playground", () => {
     ->ignore
 
     // Verify playground shell is back to dark mode
-    get("main")->shouldWithValue("have.class", "bg-gray-100")->ignore
+    get("main")->shouldWithValue("have.class", "playground-theme-dark")->ignore
   })
 })
