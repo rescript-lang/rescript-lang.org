@@ -1,24 +1,16 @@
 @react.component
-let make = (~checked, ~onChange, ~children, ~isLightTheme=false) => {
-  let switchThemeClass = if isLightTheme {
-    "bg-gray-30 after:bg-white after:border-gray-40 border-gray-40 peer-checked:bg-sky"
-  } else {
-    "bg-gray-700 after:bg-white after:border-gray-300 border-gray-600 peer-checked:bg-sky"
-  }
-
-  let labelThemeClass = isLightTheme ? "text-gray-80" : "text-gray-300"
-
+let make = (~checked, ~onChange, ~children) => {
   <label className="inline-flex items-center cursor-pointer">
     <input type_="checkbox" value="" checked onChange className="sr-only peer" />
     <div
       className={`relative w-8 h-4
+      playground-toggle-track
       rounded-full peer peer-checked:after:translate-x-full 
       peer-checked:rtl:after:-translate-x-full peer-checked:after:border-white 
+      peer-checked:bg-sky
       after:content-[''] after:absolute after:top-[2px] after:start-[4px] 
-      after:border after:rounded-full 
-      after:h-3 after:w-3 after:transition-all ` ++
-      switchThemeClass}
+      after:border after:rounded-full after:h-3 after:w-3 after:transition-all`}
     />
-    <span className={"ms-2 text-sm " ++ labelThemeClass}> {children} </span>
+    <span className="playground-toggle-label ms-2 text-sm"> {children} </span>
   </label>
 }

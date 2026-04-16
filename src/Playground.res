@@ -51,17 +51,18 @@ let themeLabel = (theme: CodeMirror.Theme.t): string =>
   | CodeMirror.Theme.Light => "Light"
   }
 
+let playgroundThemeClass = (theme: CodeMirror.Theme.t): string =>
+  switch theme {
+  | CodeMirror.Theme.Dark => "playground-theme-dark"
+  | CodeMirror.Theme.Light => "playground-theme-light"
+  }
+
 module DropdownSelect = {
   @react.component
-  let make = (~onChange, ~name, ~value, ~theme, ~disabled=false, ~children) => {
-    let themeClass = switch theme {
-    | CodeMirror.Theme.Dark => "bg-gray-100 border-gray-80 text-gray-20"
-    | CodeMirror.Theme.Light => "bg-white border-gray-30 text-gray-80"
-    }
+  let make = (~onChange, ~name, ~value, ~disabled=false, ~children) => {
     let opacity = disabled ? " opacity-50" : ""
     <select
-      className={"text-14 border inline-block rounded px-4 py-1 font-semibold " ++
-      themeClass ++
+      className={"playground-select text-14 border inline-block rounded px-4 py-1 font-semibold" ++
       opacity}
       name
       value
@@ -75,16 +76,12 @@ module DropdownSelect = {
 
 module SelectionOption = {
   @react.component
-  let make = (~label, ~isActive, ~disabled, ~onClick, ~theme) => {
-    let inactiveClass = switch theme {
-    | CodeMirror.Theme.Dark => "bg-gray-80 opacity-50 hover:opacity-80 text-gray-20"
-    | CodeMirror.Theme.Light => "bg-gray-10 border border-gray-30 text-gray-80 hover:bg-gray-20"
-    }
+  let make = (~label, ~isActive, ~disabled, ~onClick) => {
     <button
-      className={"mr-1 px-2 py-1 rounded inline-block " ++ if isActive {
-        "bg-fire text-white font-bold"
+      className={"playground-selection-option mr-1 px-2 py-1 rounded inline-block " ++ if isActive {
+        "playground-selection-option-active font-bold"
       } else {
-        inactiveClass
+        "opacity-50 hover:opacity-80"
       }}
       onClick
       disabled
@@ -100,7 +97,6 @@ module ToggleSelection = {
     ~onChange: 'a => unit,
     ~values: array<'a>,
     ~toLabel: 'a => string,
-    ~theme: CodeMirror.Theme.t,
     ~selected: 'a,
     ~disabled=false,
   ) => {
@@ -123,7 +119,7 @@ module ToggleSelection = {
           }
         }
 
-        <SelectionOption key={label} label isActive onClick disabled theme />
+        <SelectionOption key={label} label isActive onClick disabled />
       })
       ->React.array}
     </div>
@@ -385,17 +381,15 @@ module ResultPane = {
   let make = (
     ~targetLang: Api.Lang.t,
     ~compilerVersion: string,
-    ~theme: CodeMirror.Theme.t,
     ~focusedRowCol: option<(int, int)>=?,
     ~result: FinalResult.t,
   ) => {
-    let contentClass = isDarkTheme(theme) ? "text-gray-20" : "text-gray-80"
     <div className="pt-4 bg-0 overflow-y-auto playground-scrollbar">
       <div className="flex items-center text-16 font-medium px-4">
         <div className="pr-4"> {renderTitle(result)} </div>
       </div>
       <div className="">
-        <div className={contentClass ++ " px-4 py-4"}>
+        <div className="playground-text-primary px-4 py-4">
           {renderResult(~focusedRowCol, ~compilerVersion, ~targetLang, result)}
         </div>
       </div>
@@ -560,7 +554,6 @@ module WarningFlagsWidget = {
   let make = (
     ~onUpdate: array<WarningFlagDescription.Parser.token> => unit,
     ~flags: array<WarningFlagDescription.Parser.token>,
-    ~theme: CodeMirror.Theme.t,
   ) => {
     let (state, setState) = React.useState(_ => HideSuggestion({input: ""}))
 
@@ -586,11 +579,10 @@ module WarningFlagsWidget = {
 
       let full = (enabled ? "+" : "-") ++ flag
       let color = switch (enabled, isActive) {
-      | (true, false) => isDarkTheme(theme) ? "text-turtle-dark" : "text-turtle"
+      | (true, false) => "text-turtle"
       | (false, false) => "text-fire"
-      | (true, true) =>
-        isDarkTheme(theme) ? "bg-gray-40 text-turtle-dark" : "bg-gray-20 text-turtle"
-      | (false, true) => isDarkTheme(theme) ? "bg-gray-40 text-fire" : "bg-gray-20 text-fire"
+      | (true, true) => "playground-chip-active text-turtle"
+      | (false, true) => "playground-chip-active text-fire"
       }
 
       let hoverEnabled = switch state {
@@ -717,7 +709,7 @@ module WarningFlagsWidget = {
       WarningFlagDescription.lookup(token.flag)
       ->Array.map(((num, description)) => {
         let (modifier, color) = if token.enabled {
-          ("(Enabled) ", "text-turtle-dark")
+          ("(Enabled) ", "text-turtle")
         } else {
           ("(Disabled) ", "text-fire")
         }
@@ -794,11 +786,7 @@ module WarningFlagsWidget = {
       Option.map(suggestions, elements =>
         <div
           ref={ReactDOM.Ref.domRef((Obj.magic(listboxRef): React.ref<Nullable.t<Dom.element>>))}
-          className={"p-2 absolute overflow-auto playground-scrollbar z-50 border-b rounded border-l border-r block w-full max-h-60 " ++ (
-            isDarkTheme(theme)
-              ? "bg-gray-100 text-gray-20 border-gray-70"
-              : "bg-white text-gray-80 border-gray-30"
-          )}
+          className="playground-overlay p-2 absolute overflow-auto playground-scrollbar z-50 border-b rounded border-l border-r block w-full max-h-60"
         >
           elements
         </div>
@@ -840,20 +828,16 @@ module WarningFlagsWidget = {
         onClick
         onFocus
         tabIndex=0
-        className={"focus:outline-hidden self-start focus:ring-3 hover:cursor-pointer p-2 rounded-full " ++ (
-          isDarkTheme(theme) ? "hover:bg-gray-40" : "hover:bg-gray-20"
-        )}
+        className="playground-icon-button focus:outline-hidden self-start focus:ring-3 hover:cursor-pointer p-2 rounded-full"
       >
         <Icon.Close />
       </button>
     }
 
     let activeClass = if isActive {
-      isDarkTheme(theme) ? "border-white" : "border-gray-60"
-    } else if isDarkTheme(theme) {
-      "border-gray-60"
+      "playground-field-active"
     } else {
-      "border-gray-30"
+      "playground-field"
     }
 
     let areaOnFocus = _evt =>
@@ -875,11 +859,7 @@ module WarningFlagsWidget = {
           <section className="mt-3">
             <input
               ref={ReactDOM.Ref.domRef((Obj.magic(inputRef): React.ref<Nullable.t<Dom.element>>))}
-              className={"inline-block p-1 max-w-20 outline-hidden " ++ (
-                isDarkTheme(theme)
-                  ? "bg-gray-90 text-gray-20 placeholder-gray-20/50"
-                  : "bg-gray-10 text-gray-80 placeholder-gray-60"
-              )}
+              className="playground-input inline-block p-1 max-w-20 outline-hidden"
               placeholder="Flags"
               type_="text"
               tabIndex=0
@@ -967,14 +947,13 @@ module Settings = {
 
     let onCompilerSelect = id => dispatch(SwitchToCompiler(id))
 
-    let titleClass = "hl-5 mb-2 " ++ (isDarkTheme(theme) ? "text-gray-20" : "text-gray-80")
-    <div className={"p-4 pt-8 " ++ (isDarkTheme(theme) ? "text-gray-20" : "text-gray-80")}>
+    let titleClass = "playground-text-primary hl-5 mb-2"
+    <div className="playground-text-primary p-4 pt-8">
       <div>
         <div className=titleClass> {React.string("ReScript Version")} </div>
         <DropdownSelect
           name="compilerVersions"
           value={Semver.toString(readyState.selected.id)}
-          theme
           onChange={evt => {
             ReactEvent.Form.preventDefault(evt)
             let id: string = (evt->ReactEvent.Form.target)["value"]
@@ -1062,7 +1041,6 @@ module Settings = {
           <ToggleSelection
             values=availableTargetLangs
             toLabel={lang => lang->Api.Lang.toExt->String.toUpperCase}
-            theme
             selected=readyState.targetLang
             onChange=onTargetLangSelect
           />
@@ -1074,7 +1052,6 @@ module Settings = {
         <div className=titleClass> {React.string("Use Vim Keymap")} </div>
         <ToggleSelection
           values=[CodeMirror.KeyMap.Default, CodeMirror.KeyMap.Vim]
-          theme
           toLabel={enabled =>
             switch enabled {
             | CodeMirror.KeyMap.Vim => "On"
@@ -1088,7 +1065,6 @@ module Settings = {
         <div className=titleClass> {React.string("Module-System")} </div>
         <ToggleSelection
           values=["commonjs", "esmodule"]
-          theme
           toLabel={value => value}
           selected=config.moduleSystem
           onChange=onModuleSystemUpdate
@@ -1098,7 +1074,6 @@ module Settings = {
         <div className=titleClass> {React.string("Playground Theme")} </div>
         <ToggleSelection
           values=[CodeMirror.Theme.Dark, CodeMirror.Theme.Light]
-          theme
           toLabel=themeLabel
           selected=theme
           onChange={value => setTheme(_ => value)}
@@ -1110,7 +1085,6 @@ module Settings = {
               <div className=titleClass> {React.string("JSX")} </div>
               <ToggleSelection
                 values=[JsxCompilation.Plain, PreserveJsx]
-                theme
                 toLabel=JsxCompilation.getLabel
                 selected={config.jsxPreserveMode->Option.getOr(false)->JsxCompilation.fromBool}
                 onChange=onJsxPreserveModeUpdate
@@ -1125,7 +1099,6 @@ module Settings = {
                 <SelectionOption
                   key
                   disabled=false
-                  theme
                   label={feature->ExperimentalFeatures.getLabel}
                   isActive={config.experimentalFeatures
                   ->Option.getOr([])
@@ -1157,7 +1130,7 @@ module Settings = {
         </div>
         <div className="flex justify-end" />
         <div className="max-w-md">
-          <WarningFlagsWidget onUpdate=onWarningFlagsUpdate flags=warnFlagTokens theme />
+          <WarningFlagsWidget onUpdate=onWarningFlagsUpdate flags=warnFlagTokens />
         </div>
       </div>
     </div>
@@ -1254,7 +1227,6 @@ module ControlPanel = {
   let make = (
     ~actionIndicatorKey: string,
     ~state: CompilerManagerHook.state,
-    ~theme: CodeMirror.Theme.t,
     ~dispatch: CompilerManagerHook.action => unit,
     ~editorRef: React.ref<option<CodeMirror.editorInstance>>,
     ~setCurrentTab: (tab => tab) => unit,
@@ -1311,7 +1283,6 @@ module ControlPanel = {
       <div className="flex flex-row gap-x-2" dataTestId="control-panel">
         <ToggleButton
           checked=autoRun
-          isLightTheme={!isDarkTheme(theme)}
           onChange={_ => {
             switch state {
             | Ready({autoRun: false}) => setCurrentTab(_ => Output)
@@ -1338,11 +1309,7 @@ module ControlPanel = {
     | _ => React.null
     }
 
-    <div
-      className={"flex justify-start items-center py-3 px-11 " ++ (
-        isDarkTheme(theme) ? "bg-gray-100" : "bg-white border-b border-gray-20"
-      )}
-    >
+    <div className="playground-control-panel flex justify-start items-center py-3 px-11">
       children
     </div>
   }
@@ -1350,14 +1317,10 @@ module ControlPanel = {
 
 module NewLightModeToast = {
   @react.component
-  let make = (~theme: CodeMirror.Theme.t, ~onClose, ~onTryNow) => {
-    let containerClass = isDarkTheme(theme)
-      ? "bg-gray-90 text-gray-20 border-gray-70"
-      : "bg-white text-gray-80 border-gray-30"
+  let make = (~onClose, ~onTryNow) => {
     <div
       dataTestId="playground-lightmode-toast"
-      className={"fixed right-4 bottom-4 z-50 max-w-xs rounded border shadow-sm px-4 py-3 " ++
-      containerClass}
+      className="playground-toast fixed right-4 bottom-4 z-50 max-w-xs rounded border shadow-sm px-4 py-3"
     >
       <div className="flex items-start gap-2">
         <div className="flex-1">
@@ -1380,9 +1343,7 @@ module NewLightModeToast = {
             ReactEvent.Mouse.preventDefault(evt)
             onClose()
           }}
-          className={"text-12 rounded px-2 py-1 hover:cursor-pointer " ++ (
-            isDarkTheme(theme) ? "hover:bg-gray-80" : "hover:bg-gray-10"
-          )}
+          className="playground-icon-button text-12 rounded px-2 py-1 hover:cursor-pointer"
         >
           {React.string("Dismiss")}
         </button>
@@ -1415,7 +1376,7 @@ module OutputPanel = {
   ) => {
     let (theme, _setTheme) = themeState
     let output =
-      <div className={isDarkTheme(theme) ? "text-gray-20" : "text-gray-80"}>
+      <div className="playground-text-primary">
         {switch compilerState {
         | Compiling({previousJsCode: Some(jsCode)})
         | Executing({jsCode})
@@ -1425,7 +1386,7 @@ module OutputPanel = {
           </pre>
         | Ready({result: Conv(Success(_))}) => React.null
         | Ready({result, targetLang, selected}) =>
-          <ResultPane targetLang compilerVersion=selected.compilerVersion result theme />
+          <ResultPane targetLang compilerVersion=selected.compilerVersion result />
         | _ => React.null
         }}
       </div>
@@ -1438,7 +1399,6 @@ module OutputPanel = {
       <ResultPane
         targetLang=ready.targetLang
         compilerVersion=ready.selected.compilerVersion
-        theme
         result=ready.result
       />
     | SetupFailed(msg) => <div> {React.string("Setup failed: " ++ msg)} </div>
@@ -2112,13 +2072,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   let disabled = false
 
   let makeTabClass = active => {
-    let activeClass = if active {
-      isDarkTheme(theme)
-        ? "text-white border-sky-70! font-medium hover:cursor-default"
-        : "text-gray-80 border-sky-70! font-medium hover:cursor-default"
-    } else {
-      ""
-    }
+    let activeClass = active ? "playground-tab-active font-medium hover:cursor-default" : ""
 
     "flex-1 items-center p-4 border-t-4 border-transparent " ++ activeClass
   }
@@ -2198,14 +2152,12 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   })
 
   <main
-    className={"flex flex-col text-14 " ++ (
-      isDarkTheme(theme) ? "bg-gray-100 text-gray-40" : "bg-gray-5 text-gray-80"
-    )}
+    className={"playground-theme playground-main flex flex-col text-14 " ++
+    playgroundThemeClass(theme)}
   >
     <ControlPanel
       actionIndicatorKey={Int.toString(actionCount)}
       state=compilerState
-      theme
       dispatch=compilerDispatch
       setCurrentTab
       editorRef
@@ -2222,7 +2174,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
             : "h-full!"} ${layout == Column ? "w-full" : "w-[50%]"}`}
       >
         <div
-          className={"h-full " ++ (isDarkTheme(theme) ? "bg-gray-100" : "bg-white")}
+          className="playground-editor-shell h-full"
           ref={ReactDOM.Ref.domRef((Obj.magic(containerRef): React.ref<Nullable.t<Dom.element>>))}
         />
       </div>
@@ -2230,19 +2182,15 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
       <div
         ref={ReactDOM.Ref.domRef((Obj.magic(separatorRef): React.ref<Nullable.t<Dom.element>>))}
         // TODO: touch-none not applied
-        className={"flex items-center justify-center touch-none select-none rounded-lg " ++
-        (isDarkTheme(theme)
-          ? "bg-gray-70 opacity-30 hover:opacity-50"
-          : "bg-gray-20 border border-gray-30 opacity-100 hover:bg-gray-30") ++
-        " " ++ (layout == Column ? "cursor-row-resize" : "cursor-col-resize")}
+        className={"playground-divider flex items-center justify-center touch-none select-none rounded-lg " ++ (
+          layout == Column ? "cursor-row-resize" : "cursor-col-resize"
+        )}
         onMouseDown={onMouseDown}
         onTouchStart={onTouchStart}
         onTouchEnd={onMouseUp}
       >
         <span
-          className={"m-0.5 " ++
-          (isDarkTheme(theme) ? "text-gray-20" : "text-gray-60") ++
-          " " ++ (layout == Column ? "rotate-90" : "")}
+          className={"playground-divider-handle m-0.5 " ++ (layout == Column ? "rotate-90" : "")}
         >
           {React.string("⣿")}
         </span>
@@ -2273,7 +2221,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
       </div>
     </div>
     {if showNewLightModeToast {
-      <NewLightModeToast theme onClose=hideNewLightModeToast onTryNow=tryLightModeFromToast />
+      <NewLightModeToast onClose=hideNewLightModeToast onTryNow=tryLightModeFromToast />
     } else {
       React.null
     }}

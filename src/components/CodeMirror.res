@@ -445,14 +445,14 @@ module CM6 = {
       @scope("HighlightStyle") @module("@codemirror/language")
       external define: array<TagStyle.t> => t = "define"
 
-      let dark = define([
+      let shared = define([
         {
           tag: [Tags.keyword, Tags.moduleKeyword, Tags.operator],
-          class: "text-berry-dark-50",
+          color: "var(--playground-editor-syntax-keyword)",
         },
         {
           tag: [Tags.variableName, Tags.labelName, Tags.special(Tags.angleBracket)],
-          class: "text-gray-30",
+          color: "var(--playground-editor-syntax-variable)",
         },
         {
           tag: [
@@ -462,23 +462,23 @@ module CM6 = {
             Tags.special(Tags.tagName),
             Tags.definition(Tags.typeName),
           ],
-          class: "text-orange-dark",
+          color: "var(--playground-editor-syntax-type)",
         },
         {
           tag: [Tags.string, Tags.special(Tags.string), Tags.number],
-          class: "text-turtle-dark",
+          color: "var(--playground-editor-syntax-string)",
         },
         {
           tag: [Tags.comment],
-          class: "text-gray-60",
+          color: "var(--playground-editor-syntax-comment)",
         },
         {
           tag: [Tags.definition(Tags.namespace)],
-          class: "text-orange",
+          color: "var(--playground-editor-syntax-namespace-def)",
         },
         {
           tag: [Tags.namespace],
-          class: "text-water-dark",
+          color: "var(--playground-editor-syntax-namespace)",
         },
         {
           tag: [
@@ -487,61 +487,11 @@ module CM6 = {
             Tags.propertyName,
             Tags.definition(Tags.propertyName),
           ],
-          class: "text-ocean-dark",
+          color: "var(--playground-editor-syntax-property)",
         },
         {
           tag: [Tags.attributeName, Tags.labelName, Tags.definition(Tags.variableName)],
-          color: "#bcc9ab",
-        },
-      ])
-
-      let light = define([
-        {
-          tag: [Tags.keyword, Tags.moduleKeyword, Tags.operator],
-          class: "text-berry",
-        },
-        {
-          tag: [Tags.variableName, Tags.labelName, Tags.special(Tags.angleBracket)],
-          class: "text-gray-80",
-        },
-        {
-          tag: [
-            Tags.bool,
-            Tags.atom,
-            Tags.typeName,
-            Tags.special(Tags.tagName),
-            Tags.definition(Tags.typeName),
-          ],
-          class: "text-orange",
-        },
-        {
-          tag: [Tags.string, Tags.special(Tags.string), Tags.number],
-          class: "text-turtle",
-        },
-        {
-          tag: [Tags.comment],
-          class: "text-gray-60",
-        },
-        {
-          tag: [Tags.definition(Tags.namespace)],
-          class: "text-orange",
-        },
-        {
-          tag: [Tags.namespace],
-          class: "text-water",
-        },
-        {
-          tag: [
-            Tags.annotation,
-            Tags.tagName,
-            Tags.propertyName,
-            Tags.definition(Tags.propertyName),
-          ],
-          class: "text-sky",
-        },
-        {
-          tag: [Tags.attributeName, Tags.labelName, Tags.definition(Tags.variableName)],
-          color: "#4f5f78",
+          color: "var(--playground-editor-syntax-attribute)",
         },
       ])
     }
@@ -767,85 +717,54 @@ let keyMapToExtension = (keyMap: KeyMap.t) =>
     [defaultKeymapExt, historyKeymapExt, searchKeymapExt]->CM6.Extension.fromArray
   }
 
-let themeToExtension = (theme: Theme.t): CM6.extension =>
-  switch theme {
-  | Theme.Dark =>
-    let lineHeight = "1.5"
-    let cursorColor = "#dd8c1b"
-    let editorTheme = CM6.EditorView.theme(
-      dict{
-        ".cm-content": dict{
-          "lineHeight": lineHeight,
-          "caretColor": cursorColor,
-        },
-        ".cm-line": dict{"lineHeight": lineHeight},
-        ".cm-cursor, .cm-dropCursor": dict{"borderLeftColor": cursorColor},
-        ".cm-activeLine": dict{
-          "backgroundColor": "rgba(255, 255, 255, 0.02)",
-        },
-        ".cm-gutters": dict{
-          "color": "#696b7d",
-          "backgroundColor": "transparent",
-          "backdropFilter": "blur(var(--blur-sm))",
-        },
-        ".cm-gutters.cm-gutters-before": dict{"border": "none"},
-        ".cm-gutterElement.cm-activeLineGutter": dict{
-          "color": "#ffffff",
-          "backgroundColor": "inherit",
-        },
-        "&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection": dict{
-          "backgroundColor": "rgba(255, 255, 255, 0.20)",
-        },
-        ".cm-selectionMatch": dict{"backgroundColor": "#aafe661a"},
-      },
-      ~options={dark: true},
-    )
-    let syntaxHighlight = CM6.Language.syntaxHighlighting(
-      CM6.Language.HighlightStyle.dark,
-      {fallback: true},
-    )
-    [editorTheme, syntaxHighlight]->CM6.Extension.fromArray
-  | Theme.Light =>
-    let lineHeight = "1.5"
-    let cursorColor = "#2258c3"
-    let editorTheme = CM6.EditorView.theme(
-      dict{
-        "&": dict{
-          "backgroundColor": "#ffffff",
-          "color": "#232538",
-        },
-        ".cm-content": dict{
-          "lineHeight": lineHeight,
-          "caretColor": cursorColor,
-        },
-        ".cm-line": dict{"lineHeight": lineHeight},
-        ".cm-cursor, .cm-dropCursor": dict{"borderLeftColor": cursorColor},
-        ".cm-activeLine": dict{
-          "backgroundColor": "rgba(34, 88, 195, 0.07)",
-        },
-        ".cm-gutters": dict{
-          "color": "#696b7d",
-          "backgroundColor": "#fafbfc",
-          "borderRight": "1px solid #edf0f2",
-        },
-        ".cm-gutters.cm-gutters-before": dict{"border": "none"},
-        ".cm-gutterElement.cm-activeLineGutter": dict{
-          "color": "#232538",
-          "backgroundColor": "#edf0f2",
-        },
-        "&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection": dict{
-          "backgroundColor": "rgba(34, 88, 195, 0.22)",
-        },
-        ".cm-selectionMatch": dict{"backgroundColor": "rgba(94, 94, 222, 0.18)"},
-      },
-      ~options={dark: false},
-    )
-    let syntaxHighlight = CM6.Language.syntaxHighlighting(
-      CM6.Language.HighlightStyle.light,
-      {fallback: true},
-    )
-    [editorTheme, syntaxHighlight]->CM6.Extension.fromArray
+let themeToExtension = (theme: Theme.t): CM6.extension => {
+  let isDark = switch theme {
+  | Theme.Dark => true
+  | Theme.Light => false
   }
+
+  let editorTheme = CM6.EditorView.theme(
+    dict{
+      "&": dict{
+        "backgroundColor": "var(--playground-editor-bg)",
+        "color": "var(--playground-editor-text)",
+      },
+      ".cm-content": dict{
+        "lineHeight": "1.5",
+        "caretColor": "var(--playground-editor-cursor)",
+      },
+      ".cm-line": dict{"lineHeight": "1.5"},
+      ".cm-cursor, .cm-dropCursor": dict{
+        "borderLeftColor": "var(--playground-editor-cursor)",
+      },
+      ".cm-activeLine": dict{
+        "backgroundColor": "var(--playground-editor-active-line)",
+      },
+      ".cm-gutters": dict{
+        "color": "var(--playground-editor-gutter-text)",
+        "backgroundColor": "var(--playground-editor-gutter-bg)",
+        "borderRight": "1px solid var(--playground-editor-gutter-border)",
+      },
+      ".cm-gutters.cm-gutters-before": dict{"border": "none"},
+      ".cm-gutterElement.cm-activeLineGutter": dict{
+        "color": "var(--playground-editor-active-gutter-text)",
+        "backgroundColor": "var(--playground-editor-active-gutter-bg)",
+      },
+      "&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection": dict{
+        "backgroundColor": "var(--playground-editor-selection)",
+      },
+      ".cm-selectionMatch": dict{
+        "backgroundColor": "var(--playground-editor-selection-match)",
+      },
+    },
+    ~options={dark: isDark},
+  )
+  let syntaxHighlight = CM6.Language.syntaxHighlighting(
+    CM6.Language.HighlightStyle.shared,
+    {fallback: true},
+  )
+  [editorTheme, syntaxHighlight]->CM6.Extension.fromArray
+}
 
 let createEditor = (config: editorConfig): editorInstance => {
   // Setup language based on mode
