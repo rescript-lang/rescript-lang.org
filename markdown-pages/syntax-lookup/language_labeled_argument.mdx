@@ -14,7 +14,7 @@ When declaring a function, arguments can be prefixed with `~` which means that t
 
 ```res prelude
 let calculateDistance = (~x1, ~y1, ~x2, ~y2) => {
-  Math.sqrt((x1 -. x2) ** 2. +. (y1 -. y2) ** 2.)
+  Math.sqrt((x1 - x2) ** 2. + (y1 - y2) ** 2.)
 }
 
 calculateDistance(~x1=6., ~y1=8., ~x2=3., ~y2=4.)

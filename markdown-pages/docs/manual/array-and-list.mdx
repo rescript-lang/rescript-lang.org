@@ -10,7 +10,7 @@ order: 12
 
 ## Array
 
-Arrays are our main ordered data structure. They work the same way as JavaScript arrays: they can be randomly accessed, dynamically resized, updated, etc.
+Arrays are the main ordered data structure in ReScript. They can be randomly accessed, dynamically resized, and updated.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -84,7 +84,7 @@ myArray[0] = "bye";
 
 **Since 11.1**
 
-You can spread arrays of the the same type into new arrays, just like in JavaScript:
+You can spread arrays of the same type into new arrays:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -96,20 +96,16 @@ let x3 = [...y]
 ```
 
 ```javascript
-var Belt_Array = require("rescript/lib/js/belt_Array.js");
-
 var y = [1, 2];
 
-var x = Belt_Array.concatMany([[4, 5], y]);
+var x = [4, 5, ...y];
 
-var x2 = Belt_Array.concatMany([[4, 5], y, [7], y]);
+var x2 = [4, 5, ...y, 7, ...y];
 
-var x3 = Belt_Array.concatMany([y]);
+var x3 = [...y];
 ```
 
 </CodeTab>
-
-> Note that array spreads compiles to `Belt.Array.concatMany` right now. This is likely to change to native array spreads in the future.
 
 ## List
 

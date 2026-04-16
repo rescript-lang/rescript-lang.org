@@ -10,7 +10,7 @@ order: 13
 
 _Cheat sheet for the full function syntax at the end_.
 
-ReScript functions are declared with an arrow and return an expression, just like JS functions. They compile to clean JS functions too.
+ReScript functions are declared with an arrow and return an expression. They compile to clean JavaScript functions.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -639,6 +639,6 @@ To annotate a function from the implementation file (`.res`) in your interface f
 let add: (int, int) => int
 ```
 
-The type annotation part is the same as the previous section on With Type Annotation.
+The type annotation syntax is the same as described in [With Type Annotation](#with-type-annotation) above.
 
 **Don't** confuse `let add: myType` with `type add = myType`. When used in `.resi` interface files, the former exports the binding `add` while annotating it as type `myType`. The latter exports the type `add`, whose value is the type `myType`.

@@ -89,7 +89,7 @@ See the familiar `String` API in the [API docs](/docs/manual/api/stdlib/string).
 - an enum: `if (audio.canPlayType() === 'probably') {...}` [(ಠ_ಠ)](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/canPlayType#Return_value)
 - other crazy patterns you'll soon find horrible, after getting used to ReScript's alternatives.
 
-The more you overload the poor string type, the less the type system (or a teammate) can help you! ReScript provides concise, fast and maintainable types & data structures alternatives to the use-cases above (e.g. variants, in a later section).
+The more you overload the poor string type, the less the type system (or a teammate) can help you! ReScript provides concise, fast and maintainable types & data structures alternatives to the use-cases above (e.g. [variants](./variant.mdx)).
 
 ## Char
 
@@ -160,9 +160,7 @@ To improve readability, you may place underscores in the middle of numeric liter
 
 ## Floats
 
-Float requires other operators: `+.`, `-.`, `*.`, `/.`, etc. Like `0.5 +. 0.6`. See [Float](/docs/manual/api/stdlib/float) for helper functions.
-
-Float also supports `**` (exponentiation) and `%` (remainder semantics).
+Arithmetic operators (`+`, `-`, `*`, `/`, `%`, `**`) work for both `int` and `float`. Like `0.5 + 0.6`. See [Float](/docs/manual/api/stdlib/float) for helper functions.
 
 As with integers, you may use underscores within literals to improve readability.
 
@@ -173,7 +171,7 @@ As with integers, you may use underscores within literals to improve readability
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res example
-let result = (1 :> float) +. 2.
+let result = (1 :> float) + 2.
 ```
 
 ```js

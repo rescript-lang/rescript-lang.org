@@ -276,7 +276,7 @@ inside a signature definition's `{}` block.
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res example
-/* Picking up previous section's example */
+/* Using the types defined above */
 module type EstablishmentType = {
   type profession
   let getProfession: profession => string
@@ -305,7 +305,7 @@ To illustrate the various kinds of type entries, consider the above signature
 **Note**:
 
 Modules of the type `EstablishmentType` can contain more fields than the
-signature declares, just like the module `School` in the previous section (if we
+signature declares, just like the module `School` defined above (if we
 choose to assign it the type `EstablishmentType`. Otherwise, `School` exposes
 every field). This effectively makes the `person1` field an enforced
 implementation detail! Outsiders can't access it, since it's not present in the

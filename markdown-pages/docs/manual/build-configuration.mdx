@@ -81,17 +81,13 @@ Here, the file `src/MyMainModule.res` is exposed to outside consumers, while all
 }
 ```
 
-## bs-dependencies, bs-dev-dependencies
+## dependencies, dev-dependencies
 
 List of ReScript dependencies. Just like `package.json`'s dependencies, they'll be searched in `node_modules`.
 
-Note that only sources marked with `"type":"dev"` will be able to resolve modules from `bs-dev-dependencies`.
+Note that only sources marked with `"type":"dev"` will be able to resolve modules from `dev-dependencies`.
 
-## external-stdlib
-
-**Since 9.0**: This setting allows depending on an externally built stdlib package (instead of a locally built stdlib runtime). Useful for shipping packages that are only consumed in JS or TS without any dependencies to the ReScript development toolchain.
-
-More details can be found on our [external stdlib](./build-external-stdlib.mdx) page.
+> The legacy keys `bs-dependencies` and `bs-dev-dependencies` are still accepted but deprecated.
 
 ## js-post-build
 
@@ -155,7 +151,8 @@ This configuration only applies to you, when you develop the project. When the p
 
 ## suffix
 
-**Since 11.0**: The suffix can now be freely chosen. However, we still suggest you stick to the convention and use
+**Since 11.0**: The suffix can be freely chosen. However, we still suggest you stick to the convention and use
+
 one of the following:
 
 - `".js`
@@ -190,11 +187,13 @@ Turn off warning `44` and `102` (polymorphic comparison). Turn warning `5` (part
 
 The warning numbers are shown in the build output when they're triggered. See [Warning Numbers](./warning-numbers.mdx) for the complete list.
 
-## bsc-flags
+## compiler-flags
 
 Extra flags to pass to the compiler. For advanced usages.
 
 - `-open ABC` opens the module `ABC` for each file in the project. `ABC` can either be a dependency, namespaced project or local module of the current project.
+
+> The legacy key `bsc-flags` is still accepted but deprecated.
 
 ## gentypeconfig
 
