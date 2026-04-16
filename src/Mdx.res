@@ -61,12 +61,12 @@ let sortSection = mdxPages =>
     switch (a.order, b.order) {
     | (Some(orderA), Some(orderB)) =>
       switch Int.compare(orderA, orderB) {
-      | 0 => String.compare(a.title, b.title)->Int.toFloat
-      | result => result->Int.toFloat
+      | 0. => String.compare(a.title, b.title)
+      | result => result
       }
     | (Some(_), None) => -1.0
     | (None, Some(_)) => 1.0
-    | (None, None) => String.compare(a.title, b.title)->Int.toFloat
+    | (None, None) => String.compare(a.title, b.title)
     }
   )
 
