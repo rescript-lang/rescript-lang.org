@@ -64,4 +64,34 @@ describe("Playground", () => {
     ->shouldContainText("Hello ReScript!")
     ->ignore
   })
+
+  it("should switch to light mode from toast and back to dark mode in settings", () => {
+    // Navigate to playground and wait for initial render
+    clickNavLink(~testId="navbar-primary-left-content", ~text="Playground")
+    url()->shouldInclude("/try")->ignore
+    waitForPlayground()
+
+    // Switch to light mode through the onboarding toast
+    getByTestId("playground-lightmode-toast")
+    ->should("be.visible")
+    ->find("button")
+    ->containsChainable("Try it now")
+    ->click
+    ->ignore
+
+    // Verify playground shell is in light mode
+    get("main")->shouldWithValue("have.class", "bg-gray-5")->ignore
+
+    // Switch back to dark mode from Settings
+    contains("Settings")->click->ignore
+    contains("Playground Theme")
+    ->closest("div")
+    ->find("button")
+    ->containsChainable("Dark")
+    ->click
+    ->ignore
+
+    // Verify playground shell is back to dark mode
+    get("main")->shouldWithValue("have.class", "bg-gray-100")->ignore
+  })
 })

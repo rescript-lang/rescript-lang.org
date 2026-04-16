@@ -1311,6 +1311,7 @@ module ControlPanel = {
       <div className="flex flex-row gap-x-2" dataTestId="control-panel">
         <ToggleButton
           checked=autoRun
+          isLightTheme={!isDarkTheme(theme)}
           onChange={_ => {
             switch state {
             | Ready({autoRun: false}) => setCurrentTab(_ => Output)
@@ -2229,14 +2230,20 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
       <div
         ref={ReactDOM.Ref.domRef((Obj.magic(separatorRef): React.ref<Nullable.t<Dom.element>>))}
         // TODO: touch-none not applied
-        className={"flex items-center justify-center touch-none select-none opacity-30 hover:opacity-50 rounded-lg " ++
-        (isDarkTheme(theme) ? "bg-gray-70" : "bg-gray-20") ++
+        className={"flex items-center justify-center touch-none select-none rounded-lg " ++
+        (isDarkTheme(theme)
+          ? "bg-gray-70 opacity-30 hover:opacity-50"
+          : "bg-gray-20 border border-gray-30 opacity-100 hover:bg-gray-30") ++
         " " ++ (layout == Column ? "cursor-row-resize" : "cursor-col-resize")}
         onMouseDown={onMouseDown}
         onTouchStart={onTouchStart}
         onTouchEnd={onMouseUp}
       >
-        <span className={`m-0.5 ${layout == Column ? "rotate-90" : ""}`}>
+        <span
+          className={"m-0.5 " ++
+          (isDarkTheme(theme) ? "text-gray-20" : "text-gray-60") ++
+          " " ++ (layout == Column ? "rotate-90" : "")}
+        >
           {React.string("⣿")}
         </span>
       </div>
