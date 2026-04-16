@@ -727,7 +727,7 @@ module WarningFlagsWidget = {
       | ErrorSuggestion(msg) => React.string(msg)
       | FuzzySuggestions({precedingTokens, selected, results, modifier}) =>
         Array.mapWithIndex(results, ((flag, desc), i) => {
-          let activeClass = selected === i ? "bg-gray-40" : ""
+          let activeClass = selected === i ? "playground-suggestion-active" : ""
 
           let ref = if selected === i {
             ReactDOM.Ref.callbackDomRef(dom => {
