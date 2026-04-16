@@ -81,11 +81,15 @@ describe("Playground", () => {
 
     // Verify playground shell is in light mode
     get("main")->shouldWithValue("have.class", "playground-theme-light")->ignore
+    cyWindow()
+    ->its("localStorage")
+    ->invokeWithArg("getItem", "playgroundTheme")
+    ->shouldWithValue("eq", "light")
+    ->ignore
 
     // Switch back to dark mode from Settings
     contains("Settings")->click->ignore
-    contains("Playground Theme")
-    ->closest("div")
+    get("main")
     ->find("button")
     ->containsChainable("Dark")
     ->click
@@ -93,5 +97,10 @@ describe("Playground", () => {
 
     // Verify playground shell is back to dark mode
     get("main")->shouldWithValue("have.class", "playground-theme-dark")->ignore
+    cyWindow()
+    ->its("localStorage")
+    ->invokeWithArg("getItem", "playgroundTheme")
+    ->shouldWithValue("eq", "dark")
+    ->ignore
   })
 })
