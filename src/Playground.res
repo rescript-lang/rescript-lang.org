@@ -1363,7 +1363,7 @@ module NewLightModeToast = {
         <div className="flex-1">
           <div className="text-14 font-semibold"> {React.string("New: Light Mode")} </div>
           <div className="text-12 mt-1">
-            {React.string("You can now switch Playground theme in Settings.")}
+            {React.string("You can now switch the Playground theme in Settings.")}
           </div>
         </div>
         <button
