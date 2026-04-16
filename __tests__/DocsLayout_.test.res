@@ -32,13 +32,13 @@ test("desktop docs layout shows sidebar with categories", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter initialEntries=["/docs/manual/introduction"]>
       <div dataTestId="docs-layout-wrapper">
         <DocsLayout categories=mockCategories activeToc=mockToc>
           <div> {React.string("This is the documentation content.")} </div>
         </DocsLayout>
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let overviewHeading = await screen->getByText("Overview")
@@ -61,13 +61,13 @@ test("desktop docs layout shows table of contents entries", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter initialEntries=["/docs/manual/introduction"]>
       <div dataTestId="docs-layout-wrapper">
         <DocsLayout categories=mockCategories activeToc=mockToc>
           <div> {React.string("This is the documentation content.")} </div>
         </DocsLayout>
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   // The TOC entries render inside the sidebar under the active nav item.
@@ -88,13 +88,13 @@ test("mobile docs layout hides sidebar by default", async () => {
   await viewport(600, 1200)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter initialEntries=["/docs/manual/introduction"]>
       <div dataTestId="docs-layout-wrapper">
         <DocsLayout categories=mockCategories activeToc=mockToc>
           <div> {React.string("This is the documentation content.")} </div>
         </DocsLayout>
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let introItem = await screen->getByText("Introduction")

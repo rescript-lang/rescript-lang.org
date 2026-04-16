@@ -26,7 +26,6 @@ let default = () => {
   let {mdxSources} = useLoaderData()
   <>
     <title> {React.string("Syntax Lookup | ReScript API")} </title>
-    <NavbarSecondary />
     <SyntaxLookup mdxSources />
   </>
 }

@@ -34,43 +34,14 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
   let raw = await Node.Fs.readFile(filePath, "utf-8")
   let {frontmatter}: MarkdownParser.result = MarkdownParser.parseSync(raw)
 
-  let description = switch frontmatter {
-  | Object(dict) =>
-    switch dict->Dict.get("description") {
-    | Some(String(s)) => s
-    | _ => ""
-    }
-  | _ => ""
-  }
-
-  let title = switch frontmatter {
-  | Object(dict) =>
-    switch dict->Dict.get("title") {
-    | Some(String(s)) => s
-    | _ => ""
-    }
-  | _ => ""
-  }
+  let description = FrontmatterUtils.getField(frontmatter, "description")
+  let title = FrontmatterUtils.getField(frontmatter, "title")
 
   let categories = await reactTableOfContents()
 
   let compiledMdx = await MdxFile.compileMdx(raw, ~filePath, ~remarkPlugins=Mdx.plugins)
 
-  // Build table of contents entries from markdown headings
-  let markdownTree = Mdast.fromMarkdown(raw)
-  let tocResult = Mdast.toc(markdownTree, {maxDepth: 2})
-
-  let headers = Dict.make()
-  Mdast.reduceHeaders(tocResult.map, headers)
-
-  let entries =
-    headers
-    ->Dict.toArray
-    ->Array.map(((header, url)): TableOfContents.entry => {
-      header,
-      href: (url :> string),
-    })
-    ->Array.slice(~start=2) // skip document entry and H1 title, keep h2 sections
+  let entries = TocUtils.buildEntries(raw)
 
   {
     compiledMdx,
@@ -83,7 +54,6 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
 }
 
 let default = () => {
-  let {pathname} = ReactRouter.useLocation()
   let {compiledMdx, categories, entries, title, description, filePath} = ReactRouter.useLoaderData()
 
   let breadcrumbs = list{
@@ -96,46 +66,11 @@ let default = () => {
 
   let editHref = `https://github.com/rescript-lang/rescript-lang.org/blob/master/${filePath}`
 
-  let sidebarContent =
-    <aside className="px-4 w-full block">
-      <div className="flex justify-between items-baseline">
-        <div className="flex flex-col text-fire font-medium">
-          <VersionSelect />
-        </div>
-        <button
-          className="flex items-center" onClick={_ => NavbarUtils.closeMobileTertiaryDrawer()}
-        >
-          <Icon.Close />
-        </button>
-      </div>
-      <div className="mb-56">
-        {categories
-        ->Array.map(category => {
-          let isItemActive = (navItem: SidebarLayout.Sidebar.NavItem.t) =>
-            navItem.href === (pathname :> string)
-          let getActiveToc = (navItem: SidebarLayout.Sidebar.NavItem.t) =>
-            if navItem.href === (pathname :> string) {
-              Some({TableOfContents.title, entries})
-            } else {
-              None
-            }
-          <div key=category.name>
-            <SidebarLayout.Sidebar.Category
-              isItemActive
-              getActiveToc
-              category
-              onClick={_ => NavbarUtils.closeMobileTertiaryDrawer()}
-            />
-          </div>
-        })
-        ->React.array}
-      </div>
-    </aside>
+  let activeToc = {TableOfContents.title, entries}
 
   <>
     <Meta title description />
-    <NavbarSecondary />
-    <NavbarTertiary sidebar=sidebarContent>
+    <NavbarTertiary sidebar={<DocsSidebar categories activeToc />}>
       <SidebarLayout.BreadCrumbs crumbs=breadcrumbs />
       <a
         href=editHref className="inline text-14 hover:underline text-fire" rel="noopener noreferrer"
@@ -143,7 +78,7 @@ let default = () => {
         {React.string("Edit")}
       </a>
     </NavbarTertiary>
-    <DocsLayout categories activeToc={title, entries}>
+    <DocsLayout categories activeToc>
       <div className="markdown-body">
         <MdxContent compiledMdx />
       </div>

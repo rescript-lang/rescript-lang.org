@@ -1,35 +1,54 @@
 open ReactRouter
 open Vitest
 
+let categories: array<SidebarLayout.Sidebar.Category.t> = [
+  {
+    name: "Overview",
+    items: [
+      {name: "Introduction", href: "/docs/manual/api"},
+      {name: "Stdlib", href: "/docs/manual/api/stdlib"},
+    ],
+  },
+  {
+    name: "Additional Libraries",
+    items: [
+      {name: "Belt", href: "/docs/manual/api/belt"},
+      {name: "Dom", href: "/docs/manual/api/dom"},
+    ],
+  },
+]
+
 test("desktop API overview shows sidebar categories and content", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter initialEntries=["/docs/manual/api"]>
       <div dataTestId="api-overview-wrapper">
-        <ApiOverviewLayout.Docs>
+        <DocsLayout categories theme=#Js>
           <div> {React.string("API documentation content.")} </div>
-        </ApiOverviewLayout.Docs>
+        </DocsLayout>
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
-  let overview = await screen->getByText("Overview")
+  let sidebar = await screen->getByTestId("sidebar-content")
+
+  let overview = await sidebar->getByText("Overview")
   await element(overview)->toBeVisible
 
-  let introduction = await screen->getByText("Introduction")
+  let introduction = await sidebar->getByText("Introduction")
   await element(introduction)->toBeVisible
 
-  let stdlib = await screen->getByText("Stdlib")
+  let stdlib = await sidebar->getByText("Stdlib")
   await element(stdlib)->toBeVisible
 
-  let additionalLibraries = await screen->getByText("Additional Libraries")
+  let additionalLibraries = await sidebar->getByText("Additional Libraries")
   await element(additionalLibraries)->toBeVisible
 
-  let belt = await screen->getByText("Belt")
+  let belt = await sidebar->getByText("Belt")
   await element(belt)->toBeVisible
 
-  let dom = await screen->getByText("Dom")
+  let dom = await sidebar->getByText("Dom")
   await element(dom)->toBeVisible
 
   let mainContent = await screen->getByTestId("side-layout-children")
@@ -43,22 +62,24 @@ test("mobile API overview hides sidebar", async () => {
   await viewport(600, 1200)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter initialEntries=["/docs/manual/api"]>
       <div dataTestId="api-overview-wrapper">
-        <ApiOverviewLayout.Docs>
+        <DocsLayout categories theme=#Js>
           <div> {React.string("API documentation content.")} </div>
-        </ApiOverviewLayout.Docs>
+        </DocsLayout>
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
-  let introduction = await screen->getByText("Introduction")
+  let sidebar = await screen->getByTestId("sidebar-content")
+
+  let introduction = await sidebar->getByText("Introduction")
   await element(introduction)->notToBeVisible
 
-  let stdlib = await screen->getByText("Stdlib")
+  let stdlib = await sidebar->getByText("Stdlib")
   await element(stdlib)->notToBeVisible
 
-  let belt = await screen->getByText("Belt")
+  let belt = await sidebar->getByText("Belt")
   await element(belt)->notToBeVisible
 
   let wrapper = await screen->getByTestId("api-overview-wrapper")
@@ -69,16 +90,16 @@ test("desktop API overview shows all category items", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter initialEntries=["/docs/manual/api"]>
       <div dataTestId="api-overview-wrapper">
-        <ApiOverviewLayout.Docs>
+        <DocsLayout categories theme=#Js>
           <div>
             <Markdown.H1> {React.string("API Reference")} </Markdown.H1>
             <Markdown.P> {React.string("Welcome to the ReScript API documentation.")} </Markdown.P>
           </div>
-        </ApiOverviewLayout.Docs>
+        </DocsLayout>
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let apiTitle = await screen->getByText("API Reference")
@@ -95,16 +116,18 @@ test("tablet API overview", async () => {
   await viewport(900, 900)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter initialEntries=["/docs/manual/api"]>
       <div dataTestId="api-overview-wrapper">
-        <ApiOverviewLayout.Docs>
+        <DocsLayout categories theme=#Js>
           <div> {React.string("API documentation content.")} </div>
-        </ApiOverviewLayout.Docs>
+        </DocsLayout>
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
-  let overview = await screen->getByText("Overview")
+  let sidebar = await screen->getByTestId("sidebar-content")
+
+  let overview = await sidebar->getByText("Overview")
   await element(overview)->toBeVisible
 
   let wrapper = await screen->getByTestId("api-overview-wrapper")
