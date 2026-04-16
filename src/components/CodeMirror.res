@@ -25,6 +25,22 @@ module KeyMap = {
     }
 }
 
+module Theme = {
+  type t = Dark | Light
+
+  let toString = (theme: t) =>
+    switch theme {
+    | Dark => "dark"
+    | Light => "light"
+    }
+
+  let fromString = (str: string) =>
+    switch str {
+    | "light" => Light
+    | _ => Dark
+    }
+}
+
 module Side = {
   @@warning("-37")
   type t =
@@ -429,14 +445,14 @@ module CM6 = {
       @scope("HighlightStyle") @module("@codemirror/language")
       external define: array<TagStyle.t> => t = "define"
 
-      let default = define([
+      let shared = define([
         {
           tag: [Tags.keyword, Tags.moduleKeyword, Tags.operator],
-          class: "text-berry-dark-50",
+          color: "var(--playground-editor-syntax-keyword)",
         },
         {
           tag: [Tags.variableName, Tags.labelName, Tags.special(Tags.angleBracket)],
-          class: "text-gray-30",
+          color: "var(--playground-editor-syntax-variable)",
         },
         {
           tag: [
@@ -446,23 +462,23 @@ module CM6 = {
             Tags.special(Tags.tagName),
             Tags.definition(Tags.typeName),
           ],
-          class: "text-orange-dark",
+          color: "var(--playground-editor-syntax-type)",
         },
         {
           tag: [Tags.string, Tags.special(Tags.string), Tags.number],
-          class: "text-turtle-dark",
+          color: "var(--playground-editor-syntax-string)",
         },
         {
           tag: [Tags.comment],
-          class: "text-gray-60",
+          color: "var(--playground-editor-syntax-comment)",
         },
         {
           tag: [Tags.definition(Tags.namespace)],
-          class: "text-orange",
+          color: "var(--playground-editor-syntax-namespace-def)",
         },
         {
           tag: [Tags.namespace],
-          class: "text-water-dark",
+          color: "var(--playground-editor-syntax-namespace)",
         },
         {
           tag: [
@@ -471,11 +487,11 @@ module CM6 = {
             Tags.propertyName,
             Tags.definition(Tags.propertyName),
           ],
-          class: "text-ocean-dark",
+          color: "var(--playground-editor-syntax-property)",
         },
         {
           tag: [Tags.attributeName, Tags.labelName, Tags.definition(Tags.variableName)],
-          color: "#bcc9ab",
+          color: "var(--playground-editor-syntax-attribute)",
         },
       ])
     }
@@ -564,6 +580,7 @@ module CM6 = {
 type editorInstance = {
   view: CM6.editorView,
   languageConf: CM6.compartment,
+  themeConf: CM6.compartment,
   readOnlyConf: CM6.compartment,
   keymapConf: CM6.compartment,
   lintConf: CM6.compartment,
@@ -577,6 +594,7 @@ type editorConfig = {
   readOnly: bool,
   lineNumbers: bool,
   lineWrapping: bool,
+  theme: Theme.t,
   keyMap: KeyMap.t,
   onChange?: string => unit,
   errors: array<Error.t>,
@@ -699,6 +717,55 @@ let keyMapToExtension = (keyMap: KeyMap.t) =>
     [defaultKeymapExt, historyKeymapExt, searchKeymapExt]->CM6.Extension.fromArray
   }
 
+let themeToExtension = (theme: Theme.t): CM6.extension => {
+  let isDark = switch theme {
+  | Theme.Dark => true
+  | Theme.Light => false
+  }
+
+  let editorTheme = CM6.EditorView.theme(
+    dict{
+      "&": dict{
+        "backgroundColor": "var(--playground-editor-bg)",
+        "color": "var(--playground-editor-text)",
+      },
+      ".cm-content": dict{
+        "lineHeight": "1.5",
+        "caretColor": "var(--playground-editor-cursor)",
+      },
+      ".cm-line": dict{"lineHeight": "1.5"},
+      ".cm-cursor, .cm-dropCursor": dict{
+        "borderLeftColor": "var(--playground-editor-cursor)",
+      },
+      ".cm-activeLine": dict{
+        "backgroundColor": "var(--playground-editor-active-line)",
+      },
+      ".cm-gutters": dict{
+        "color": "var(--playground-editor-gutter-text)",
+        "backgroundColor": "var(--playground-editor-gutter-bg)",
+        "borderRight": "1px solid var(--playground-editor-gutter-border)",
+      },
+      ".cm-gutters.cm-gutters-before": dict{"border": "none"},
+      ".cm-gutterElement.cm-activeLineGutter": dict{
+        "color": "var(--playground-editor-active-gutter-text)",
+        "backgroundColor": "var(--playground-editor-active-gutter-bg)",
+      },
+      "&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection": dict{
+        "backgroundColor": "var(--playground-editor-selection)",
+      },
+      ".cm-selectionMatch": dict{
+        "backgroundColor": "var(--playground-editor-selection-match)",
+      },
+    },
+    ~options={dark: isDark},
+  )
+  let syntaxHighlight = CM6.Language.syntaxHighlighting(
+    CM6.Language.HighlightStyle.shared,
+    {fallback: true},
+  )
+  [editorTheme, syntaxHighlight]->CM6.Extension.fromArray
+}
+
 let createEditor = (config: editorConfig): editorInstance => {
   // Setup language based on mode
   let language = switch config.mode {
@@ -709,53 +776,21 @@ let createEditor = (config: editorConfig): editorInstance => {
 
   // Setup compartments for dynamic config
   let languageConf = CM6.Compartment.create()
+  let themeConf = CM6.Compartment.create()
   let readOnlyConf = CM6.Compartment.create()
   let keymapConf = CM6.Compartment.create()
   let lintConf = CM6.Compartment.create()
   let hintConf = CM6.Compartment.create()
 
-  let lineHeight = "1.5"
-  let cursorColor = "#dd8c1b"
-
   // Basic extensions
   let extensions = [
     CM6.Compartment.make(languageConf, (language: CM6.extension)),
     CM6.Commands.history(),
-    CM6.EditorView.theme(
-      dict{
-        ".cm-content": dict{
-          "lineHeight": lineHeight,
-          "caretColor": cursorColor,
-        },
-        ".cm-line": dict{
-          "lineHeight": lineHeight,
-        },
-        ".cm-cursor, .cm-dropCursor": dict{"borderLeftColor": cursorColor},
-        ".cm-activeLine": dict{
-          "backgroundColor": "rgba(255, 255, 255, 0.02)",
-        },
-        ".cm-gutters": dict{
-          "color": "#696b7d",
-          "backgroundColor": "transparent",
-          "backdropFilter": "blur(var(--blur-sm))",
-        },
-        ".cm-gutters.cm-gutters-before": dict{"border": "none"},
-        ".cm-gutterElement.cm-activeLineGutter": dict{
-          "color": "#ffffff",
-          "backgroundColor": "inherit",
-        },
-        "&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection": dict{
-          "backgroundColor": "rgba(255, 255, 255, 0.20)",
-        },
-        ".cm-selectionMatch": dict{"backgroundColor": "#aafe661a"},
-      },
-      ~options={dark: true},
-    ),
+    CM6.Compartment.make(themeConf, themeToExtension(config.theme)),
     CM6.EditorView.drawSelection(),
     CM6.EditorView.dropCursor(),
     CM6.Language.bracketMatching(),
     CM6.Search.highlightSelectionMatches(),
-    CM6.Language.syntaxHighlighting(CM6.Language.HighlightStyle.default, {fallback: true}),
   ]
 
   // Add optional extensions
@@ -825,6 +860,7 @@ let createEditor = (config: editorConfig): editorInstance => {
   {
     view,
     languageConf,
+    themeConf,
     readOnlyConf,
     keymapConf,
     lintConf,
@@ -924,6 +960,18 @@ let editorSetKeyMap = (instance: editorInstance, keyMap: KeyMap.t): unit => {
       effects: CM6.Compartment.reconfigure(
         instance.keymapConf,
         (keyMap->keyMapToExtension: CM6.extension),
+      ),
+    },
+  )
+}
+
+let editorSetTheme = (instance: editorInstance, theme: Theme.t): unit => {
+  CM6.EditorView.dispatchEffects(
+    instance.view,
+    {
+      effects: CM6.Compartment.reconfigure(
+        instance.themeConf,
+        (theme->themeToExtension: CM6.extension),
       ),
     },
   )
