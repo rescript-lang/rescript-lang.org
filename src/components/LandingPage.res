@@ -6,7 +6,7 @@ module Intro = {
         <h1 className="hl-title text-center max-w-212">
           {React.string("Fast, Simple, Fully Typed JavaScript from the Future")}
         </h1>
-        <h2 className="body-lg text-center text-gray-60 my-4 max-w-md">
+        <h2 className="body-lg text-center text-gray-60 dark:text-gray-30 my-4 max-w-md">
           {React.string(`ReScript is a robustly typed language that compiles to efficient
             and human-readable JavaScript. It comes with a lightning fast
             compiler toolchain that scales to any codebase size.`)}
@@ -70,7 +70,7 @@ export {
     let (example, _setExample) = React.useState(_ => examples->Array.getUnsafe(0))
 
     //Playground Section & Background
-    <section className="lp-playground-hero relative mt-20 bg-gray-10">
+    <section className="relative mt-20 bg-gray-10 dark:bg-gray-100">
       <div className="relative flex justify-center w-full">
         <div className="relative w-full pt-6 pb-8 sm:px-8 md:px-16 max-w-[1400px]">
           // Playground widget
@@ -80,7 +80,7 @@ export {
             //Left Side (ReScript)
             <div className="md:w-1/2">
               <div
-                className="body-sm text-gray-40 text-center py-3 sm:rounded-t-lg md:rounded-tl-lg bg-gray-100"
+                className="body-sm text-gray-40 dark:text-gray-30 text-center py-3 sm:rounded-t-lg md:rounded-tl-lg bg-gray-100"
               >
                 {React.string("Write in ReScript")}
               </div>
@@ -91,7 +91,7 @@ export {
             //Right Side (JavaScript)
             <div className="md:w-1/2 ">
               <div
-                className="body-sm text-gray-40 py-3 text-center md:border-l border-gray-80 bg-gray-100 sm:rounded-tr-lg"
+                className="body-sm text-gray-40 dark:text-gray-30 py-3 text-center md:border-l border-gray-80 bg-gray-100 sm:rounded-tr-lg"
               >
                 {React.string("Compile to JavaScript")}
               </div>
@@ -107,7 +107,7 @@ export {
           <div>
             <ReactRouter.Link.String
               to={`/try?code=${encodeURIComponent(example.res)}`}
-              className="captions md:px-0 border-b border-gray-40 hover:border-gray-60 text-gray-60"
+              className="captions md:px-0 border-b border-gray-40 dark:border-gray-60 hover:border-gray-60 text-gray-60 dark:text-gray-30"
             >
               {React.string("Edit this example in Playground")}
             </ReactRouter.Link.String>
@@ -222,7 +222,9 @@ module QuickInstall = {
         onClick
         ariaLabel={"Copy " ++ code ++ " command"}
       >
-        <Icon.Copy className="w-6 h-6 mt-px text-gray-40 hover:cursor-pointer hover:text-gray-80" />
+        <Icon.Copy
+          className="w-6 h-6 mt-px text-gray-40 dark:text-gray-30 hover:cursor-pointer hover:text-gray-80 dark:hover:text-gray-20"
+        />
       </button>
     }
   }
@@ -230,9 +232,11 @@ module QuickInstall = {
   module Instructions = {
     let copyBox = text => {
       <div
-        className="flex justify-between items-center pl-6 pr-3 py-3 w-full bg-gray-10 border border-gray-20 rounded max-w-400"
+        className="flex justify-between items-center pl-6 pr-3 py-3 w-full bg-gray-10 dark:bg-gray-90 border border-gray-20 dark:border-gray-80 rounded max-w-400"
       >
-        <span className="font-mono text-14  text-gray-70"> {React.string(text)} </span>
+        <span className="font-mono text-14 text-gray-70 dark:text-gray-30">
+          {React.string(text)}
+        </span>
         <CopyButton code=text />
       </div>
     }
@@ -240,13 +244,13 @@ module QuickInstall = {
     let make = () => {
       <div className="w-full max-w-400">
         <h2 className="hl-3 lg:mt-12"> {React.string("Quick Install")} </h2>
-        <div className="captions x text-gray-40 mb-2 mt-1">
+        <div className="captions x text-gray-40 dark:text-gray-30 mb-2 mt-1">
           {React.string(
             "You can quickly add ReScript to your existing JavaScript codebase via npm / yarn:",
           )}
         </div>
         <div className="w-full space-y-2"> {copyBox("npm install rescript")} </div>
-        <div className="captions x text-gray-40 mb-2 mt-2">
+        <div className="captions x text-gray-40 dark:text-gray-30 mb-2 mt-2">
           {React.string("Or generate a new project from the official template with npx:")}
         </div>
         <div className="w-full space-y-2"> {copyBox("npx create-rescript-app")} </div>
@@ -261,7 +265,7 @@ module QuickInstall = {
         //---Textblock on the left side---
         <div className="relative max-w-112">
           <p
-            className="relative z-1 space-y-12 text-gray-80 font-semibold text-24 md:text-32 leading-2"
+            className="relative z-1 space-y-12 text-gray-80 dark:text-gray-20 font-semibold text-24 md:text-32 leading-2"
           >
             <span className="bg-fire-5 rounded-lg border border-fire-10 p-1 ">
               {React.string(`Leverage the full power`)}
@@ -272,7 +276,7 @@ module QuickInstall = {
         //spacing between columns
         <div className="w-full mt-12 md:flex flex-col lg:flex-row md:justify-between ">
           <p
-            className="relative z-1 text-gray-80 font-semibold text-24 md:text-32 leading-2 max-w-lg"
+            className="relative z-1 text-gray-80 dark:text-gray-20 font-semibold text-24 md:text-32 leading-2 max-w-lg"
           >
             {React.string(`ReScript is used to ship and maintain mission-critical products with good UI and UX.`)}
           </p>
@@ -322,7 +326,7 @@ module MainUSP = {
         >
           <div className="max-w-96 flex flex-col justify-center mb-6 lg:mb-2">
             <div className="hl-overline text-gray-20 mb-4"> {React.string(caption)} </div>
-            <h3 className="text-gray-10 mb-4 hl-2 font-semibold"> title </h3>
+            <h3 className="text-gray-10 dark:text-gray-10 mb-4 hl-2 font-semibold"> title </h3>
             <div className="flex">
               <div className="text-gray-30 body-md pr-8"> paragraph </div>
             </div>
@@ -512,7 +516,7 @@ module TrustedBy = {
   @react.component
   let make = () => {
     <section className="mt-20 flex flex-col items-center">
-      <h3 className="hl-1 text-gray-80 text-center max-w-576 mx-auto">
+      <h3 className="hl-1 text-gray-80 dark:text-gray-20 text-center max-w-576 mx-auto">
         {React.string("Trusted by our users")}
       </h3>
       <div
@@ -616,7 +620,9 @@ module CuratedResources = {
       <div
         className="mb-10 max-w-1280 flex flex-col justify-center items-center mx-5 md:mx-8 lg:mx-auto"
       >
-        <div className="body-sm md:body-lg text-gray-40 w-40 mb-4 xs:w-auto text-center">
+        <div
+          className="body-sm md:body-lg text-gray-40 dark:text-gray-30 w-40 mb-4 xs:w-auto text-center"
+        >
           {React.string("Get up and running with ReScript")}
         </div>
         <h2 className="hl-1 text-gray-20 text-center"> {React.string("Curated resources")} </h2>
@@ -643,7 +649,7 @@ module CuratedResources = {
               className="hover:bg-gray-80 bg-gray-90 px-4 md:px-8 pb-0 md:pb-8 relative rounded-xl md:min-w-[196px]"
             >
               <img className="h-[53px] absolute mt-6" src=card.imgSrc loading=#lazy />
-              <h5 className="text-gray-10 hl-4 mt-32 h-12"> {card.title} </h5>
+              <h5 className="text-gray-10 dark:text-gray-10 hl-4 mt-32 h-12"> {card.title} </h5>
               <div className="text-gray-40 mt-2 mb-8 body-sm"> {React.string(card.descr)} </div>
             </ReactRouter.Link.String>
           )
@@ -667,7 +673,7 @@ module CuratedResources = {
               className="hover:bg-gray-80 bg-gray-90 px-5 pb-8 relative rounded-xl min-w-[200px]"
             >
               <img className="h-12 absolute mt-5" src=card.imgSrc loading=#lazy />
-              <h5 className="text-gray-10 hl-4 mt-32 h-12"> {card.title} </h5>
+              <h5 className="text-gray-10 dark:text-gray-10 hl-4 mt-32 h-12"> {card.title} </h5>
               <div className="text-gray-40 mt-4 body-sm"> {React.string(card.descr)} </div>
             </a>
           )
@@ -687,7 +693,7 @@ let make = (~components=MarkdownComponents.default) => {
       keywords=["ReScript", "rescriptlang", "JavaScript", "JS", "TypeScript"]
     />
     <div id="landing-page" className="mt-4 xs:mt-16">
-      <div className="text-gray-80 text-18 z">
+      <div className="text-gray-80 dark:text-gray-20 text-18 z">
         <div className="absolute w-full top-16">
           <Banner>
             {React.string("ReScript 12 is out! Read the ")}
