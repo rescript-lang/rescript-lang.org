@@ -518,6 +518,10 @@
     @apply font-sans bg-white sm:subpixel-antialiased;
   }
 
+  html.site-dark body {
+    @apply bg-gray-100 text-gray-20;
+  }
+
   .hide-scrollbar {
     scrollbar-width: none;
     /* Firefox */
@@ -559,6 +563,86 @@
 
   a > code {
     @apply text-fire;
+  }
+
+  html.site-dark #navbar-primary {
+    @apply bg-gray-100 text-gray-20;
+  }
+
+  html.site-dark [data-testid="navbar-primary-left-content"],
+  html.site-dark [data-testid="navbar-primary-right-content"] {
+    @apply text-gray-20;
+  }
+
+  html.site-dark [data-testid="navbar-primary-right-content"] button {
+    @apply text-gray-30 border-gray-60;
+  }
+
+  html.site-dark #mobile-overlay {
+    @apply bg-gray-95;
+  }
+
+  html.site-dark #doc-navbar {
+    @apply bg-gray-95 text-gray-30 border-b border-gray-80;
+  }
+
+  html.site-dark #site-footer {
+    @apply border-gray-80 bg-gray-95;
+  }
+
+  html.site-dark #site-footer .site-footer-content {
+    @apply text-gray-20;
+  }
+
+  html.site-dark #site-footer .site-footer-muted {
+    @apply text-gray-40;
+  }
+
+  html.site-dark #site-footer .site-footer-icons {
+    @apply text-gray-20;
+  }
+
+  html.site-dark #site-footer .site-logo-light {
+    display: none;
+  }
+
+  html.site-dark #site-footer .site-logo-dark {
+    display: block;
+  }
+
+  html.site-dark #landing-page {
+    @apply text-gray-20;
+  }
+
+  html.site-dark #landing-page .hl-title,
+  html.site-dark #landing-page .hl-1,
+  html.site-dark #landing-page .hl-2,
+  html.site-dark #landing-page .hl-3,
+  html.site-dark #landing-page .hl-4,
+  html.site-dark #landing-page .hl-5,
+  html.site-dark #landing-page .hl-overline {
+    @apply text-gray-20;
+  }
+
+  html.site-dark #landing-page .text-black,
+  html.site-dark #landing-page .text-gray-80 {
+    @apply text-gray-20;
+  }
+
+  html.site-dark #landing-page .text-gray-60 {
+    @apply text-gray-30;
+  }
+
+  html.site-dark #landing-page .text-gray-40 {
+    @apply text-gray-30;
+  }
+
+  html.site-dark #landing-page .lp-playground-hero {
+    @apply bg-gray-100;
+  }
+
+  html.site-dark #landing-page .lp-playground-hero .captions {
+    @apply text-gray-30 border-gray-60;
   }
 }
 

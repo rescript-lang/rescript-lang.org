@@ -59,10 +59,15 @@ let playgroundThemeClass = (theme: CodeMirror.Theme.t): string =>
 
 module DropdownSelect = {
   @react.component
-  let make = (~onChange, ~name, ~value, ~disabled=false, ~children) => {
+  let make = (~onChange, ~name, ~value, ~theme, ~disabled=false, ~children) => {
+    let themeClass = switch theme {
+    | CodeMirror.Theme.Dark => "bg-gray-100 border-gray-80 text-gray-20"
+    | CodeMirror.Theme.Light => "bg-white border-gray-30 text-gray-80"
+    }
     let opacity = disabled ? " opacity-50" : ""
     <select
-      className={"playground-select text-14 border inline-block rounded px-4 py-1 font-semibold" ++
+      className={"playground-select text-14 border inline-block rounded px-4 py-1 font-semibold " ++
+      themeClass ++
       opacity}
       name
       value
@@ -76,12 +81,16 @@ module DropdownSelect = {
 
 module SelectionOption = {
   @react.component
-  let make = (~label, ~isActive, ~disabled, ~onClick) => {
+  let make = (~label, ~isActive, ~disabled, ~onClick, ~theme) => {
+    let inactiveClass = switch theme {
+    | CodeMirror.Theme.Dark => "bg-gray-80 opacity-50 hover:opacity-80 text-gray-20"
+    | CodeMirror.Theme.Light => "bg-gray-10 border border-gray-30 text-gray-80 hover:bg-gray-20"
+    }
     <button
       className={"playground-selection-option mr-1 px-2 py-1 rounded inline-block " ++ if isActive {
         "playground-selection-option-active font-bold"
       } else {
-        "opacity-50 hover:opacity-80"
+        inactiveClass
       }}
       onClick
       disabled
@@ -97,6 +106,7 @@ module ToggleSelection = {
     ~onChange: 'a => unit,
     ~values: array<'a>,
     ~toLabel: 'a => string,
+    ~theme: CodeMirror.Theme.t,
     ~selected: 'a,
     ~disabled=false,
   ) => {
@@ -119,7 +129,7 @@ module ToggleSelection = {
           }
         }
 
-        <SelectionOption key={label} label isActive onClick disabled />
+        <SelectionOption key={label} label isActive onClick disabled theme />
       })
       ->React.array}
     </div>
@@ -954,6 +964,7 @@ module Settings = {
         <DropdownSelect
           name="compilerVersions"
           value={Semver.toString(readyState.selected.id)}
+          theme
           onChange={evt => {
             ReactEvent.Form.preventDefault(evt)
             let id: string = (evt->ReactEvent.Form.target)["value"]
@@ -1041,6 +1052,7 @@ module Settings = {
           <ToggleSelection
             values=availableTargetLangs
             toLabel={lang => lang->Api.Lang.toExt->String.toUpperCase}
+            theme
             selected=readyState.targetLang
             onChange=onTargetLangSelect
           />
@@ -1052,6 +1064,7 @@ module Settings = {
         <div className=titleClass> {React.string("Use Vim Keymap")} </div>
         <ToggleSelection
           values=[CodeMirror.KeyMap.Default, CodeMirror.KeyMap.Vim]
+          theme
           toLabel={enabled =>
             switch enabled {
             | CodeMirror.KeyMap.Vim => "On"
@@ -1065,6 +1078,7 @@ module Settings = {
         <div className=titleClass> {React.string("Module-System")} </div>
         <ToggleSelection
           values=["commonjs", "esmodule"]
+          theme
           toLabel={value => value}
           selected=config.moduleSystem
           onChange=onModuleSystemUpdate
@@ -1074,6 +1088,7 @@ module Settings = {
         <div className=titleClass> {React.string("Playground Theme")} </div>
         <ToggleSelection
           values=[CodeMirror.Theme.Dark, CodeMirror.Theme.Light]
+          theme
           toLabel=themeLabel
           selected=theme
           onChange={value => setTheme(_ => value)}
@@ -1085,6 +1100,7 @@ module Settings = {
               <div className=titleClass> {React.string("JSX")} </div>
               <ToggleSelection
                 values=[JsxCompilation.Plain, PreserveJsx]
+                theme
                 toLabel=JsxCompilation.getLabel
                 selected={config.jsxPreserveMode->Option.getOr(false)->JsxCompilation.fromBool}
                 onChange=onJsxPreserveModeUpdate
@@ -1099,6 +1115,7 @@ module Settings = {
                 <SelectionOption
                   key
                   disabled=false
+                  theme
                   label={feature->ExperimentalFeatures.getLabel}
                   isActive={config.experimentalFeatures
                   ->Option.getOr([])
@@ -1227,6 +1244,7 @@ module ControlPanel = {
   let make = (
     ~actionIndicatorKey: string,
     ~state: CompilerManagerHook.state,
+    ~theme: CodeMirror.Theme.t,
     ~dispatch: CompilerManagerHook.action => unit,
     ~editorRef: React.ref<option<CodeMirror.editorInstance>>,
     ~setCurrentTab: (tab => tab) => unit,
@@ -1283,6 +1301,7 @@ module ControlPanel = {
       <div className="flex flex-row gap-x-2" dataTestId="control-panel">
         <ToggleButton
           checked=autoRun
+          isLightTheme={!isDarkTheme(theme)}
           onChange={_ => {
             switch state {
             | Ready({autoRun: false}) => setCurrentTab(_ => Output)
@@ -2158,6 +2177,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     <ControlPanel
       actionIndicatorKey={Int.toString(actionCount)}
       state=compilerState
+      theme
       dispatch=compilerDispatch
       setCurrentTab
       editorRef

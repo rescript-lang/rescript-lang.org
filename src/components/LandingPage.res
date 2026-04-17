@@ -70,7 +70,7 @@ export {
     let (example, _setExample) = React.useState(_ => examples->Array.getUnsafe(0))
 
     //Playground Section & Background
-    <section className="relative mt-20 bg-gray-10">
+    <section className="lp-playground-hero relative mt-20 bg-gray-10">
       <div className="relative flex justify-center w-full">
         <div className="relative w-full pt-6 pb-8 sm:px-8 md:px-16 max-w-[1400px]">
           // Playground widget
@@ -686,7 +686,7 @@ let make = (~components=MarkdownComponents.default) => {
       description="Fast, Simple, Fully Typed JavaScript from the Future"
       keywords=["ReScript", "rescriptlang", "JavaScript", "JS", "TypeScript"]
     />
-    <div className="mt-4 xs:mt-16">
+    <div id="landing-page" className="mt-4 xs:mt-16">
       <div className="text-gray-80 text-18 z">
         <div className="absolute w-full top-16">
           <Banner>
