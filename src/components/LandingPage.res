@@ -2,15 +2,25 @@ module Intro = {
   @react.component
   let make = () => {
     <section className="flex justify-center">
+      // We only need this font on the homepage, so we load it here instead of globally to save some bandwidth for users who navigate to other pages directly
+      <link
+        href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@700&display=swap"
+        rel="stylesheet"
+      />
       <div className="max-w-1060 flex flex-col items-center px-5 sm:px-8 lg:box-content">
         <h1 className="hl-title text-center max-w-212">
-          {React.string("Fast, Simple, Fully Typed JavaScript from the Future")}
+          {React.string("Typed JavaScript Made Simple for Humans and AI")}
         </h1>
-        <h2 className="body-lg text-center text-gray-60 my-4 max-w-md">
-          {React.string(`ReScript is a robustly typed language that compiles to efficient
-            and human-readable JavaScript. It comes with a lightning fast
-            compiler toolchain that scales to any codebase size.`)}
+        <h2 className="ubuntu-mono-bold hl-1 text-center text-gray-60 my-4 max-w-md">
+          {React.string(`types > vibes`)}
         </h2>
+        <p className="body-lg text-center text-gray-60 my-4 max-w-md">
+          {React.string(`ReScript is a strongly typed language that compiles to clean,
+            efficient JavaScript that humans and AI tools can read and understand.
+            Its fast compiler and static type system keep feedback loops tight,
+            so you can move quickly with AI assistance while maintaining
+            confidence as your codebase grows.`)}
+        </p>
         <div className="mt-4 mb-2">
           <ReactRouter.Link to=#"/docs/manual/installation" prefetch=#viewport>
             <Button> {React.string("Get started")} </Button>
