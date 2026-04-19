@@ -559,7 +559,7 @@
   }
 
   a > code {
-    @apply text-fire;
+    @apply text-fire dark:text-fire-dark;
   }
 }
 

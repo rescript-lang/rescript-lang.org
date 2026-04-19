@@ -123,50 +123,66 @@ Docco style used in http://jashkenas.github.com/docco/ converted by Simon Madine
 
 /* DARK MODE COLORS */
 
-.hljs.dark {
+.hljs.dark,
+.site-dark .hljs {
   @apply text-gray-30;
 }
 
-.hljs.dark .hljs-module-identifier {
+.hljs.dark .hljs-module-identifier,
+.site-dark .hljs .hljs-module-identifier {
   @apply text-fire-dark;
 }
 
-.hljs.dark .hljs-comment {
+.hljs.dark .hljs-comment,
+.site-dark .hljs .hljs-comment {
   color: #546e7a;
 }
 
 .hljs.dark .hljs-operator,
-.hljs.dark .hljs-literal {
+.hljs.dark .hljs-literal,
+.site-dark .hljs .hljs-operator,
+.site-dark .hljs .hljs-literal {
   @apply text-ocean-dark;
 }
 
 .hljs.dark .hljs-tag,
 .hljs.dark .hljs-name,
-.hljs.dark .hljs-attribute {
+.hljs.dark .hljs-attribute,
+.site-dark .hljs .hljs-tag,
+.site-dark .hljs .hljs-name,
+.site-dark .hljs .hljs-attribute {
   @apply text-water-dark;
   font-weight: normal;
 }
 
 .hljs.dark .hljs-number,
 .hljs.dark .hljs-string,
-.hljs.dark .hljs-doctag {
+.hljs.dark .hljs-doctag,
+.site-dark .hljs .hljs-number,
+.site-dark .hljs .hljs-string,
+.site-dark .hljs .hljs-doctag {
   @apply text-orange-dark;
 }
 
-.hljs.dark .hljs-keyword {
+.hljs.dark .hljs-keyword,
+.site-dark .hljs .hljs-keyword {
   @apply text-berry-dark-50;
 }
 
 .hljs.dark .hljs-built_in,
-.hljs.dark .hljs-builtin-name {
+.hljs.dark .hljs-builtin-name,
+.site-dark .hljs .hljs-built_in,
+.site-dark .hljs .hljs-builtin-name {
   @apply text-water-dark;
 }
 
-.hljs.dark .hljs-title {
+.hljs.dark .hljs-title,
+.site-dark .hljs .hljs-title {
   color: inherit;
 }
 
-.hljs.dark .hljs-params {
+.hljs.dark .hljs-params,
+.site-dark .hljs .hljs-params {
   color: inherit;
 }
 

@@ -27,14 +27,18 @@ let make = () => {
   let popoverId = "older-versions-" ++ id
 
   let children = Array.map(olderVersions, ver => {
-    <a className="py-0.5 block hover:underline" key=ver.label href=ver.link>
+    <a
+      className="py-0.5 block text-gray-70 dark:text-gray-20 hover:underline"
+      key=ver.label
+      href=ver.link
+    >
       {React.string(ver.label)}
     </a>
   })
   <div className="wrapper block w-full" dataTestId="version-select">
     <div id=popoverId className="version-popover" popover=Auto />
     <button
-      className="trigger text-12 border border-gray-20 bg-gray-10 text-gray-80 inline-block rounded px-4 py-1 font-semibold whitespace-nowrap"
+      className="trigger text-12 border border-gray-20 dark:border-gray-80 bg-gray-10 dark:bg-gray-95 text-gray-80 dark:text-gray-20 inline-block rounded px-4 py-1 font-semibold whitespace-nowrap"
       name="versionSelection"
       value=version
       popoverTarget=popoverId
@@ -60,7 +64,7 @@ let make = () => {
     </button>
 
     <div
-      className="menu text-12 bg-gray-10 border-gray-20 border xs-rounded px-4 py-1 shadow w-full transform duration-200"
+      className="menu text-12 bg-gray-10 dark:bg-gray-95 border-gray-20 dark:border-gray-80 border xs-rounded px-4 py-1 shadow w-full transform duration-200"
     >
       {children->React.array}
     </div>

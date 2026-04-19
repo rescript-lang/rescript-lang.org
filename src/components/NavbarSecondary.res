@@ -15,7 +15,7 @@ let make = () => {
 
   <nav
     dataTestId="navbar-secondary"
-    className={"text-12 md:text-14 shadow h-12 w-full bg-white sticky z-95 top-16 transition-transform duration-300 px-4 " ++
+    className={"text-12 md:text-14 shadow h-12 w-full bg-white dark:bg-gray-95 text-gray-60 dark:text-gray-30 border-b border-gray-20 dark:border-gray-80 sticky z-95 top-16 transition-transform duration-300 px-4 " ++
     navbarClasses}
   >
     <div className="flex gap-6 lg:gap-10 items-center h-full w-full max-w-1280 m-auto">

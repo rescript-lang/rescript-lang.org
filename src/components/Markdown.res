@@ -4,7 +4,9 @@
 module P = {
   @react.component
   let make = (~children) =>
-    <p className="md-p md:leading-5 tracking-[-0.015em] text-gray-80 md:text-16"> children </p>
+    <p className="md-p md:leading-5 tracking-[-0.015em] text-gray-80 dark:text-gray-20 md:text-16">
+      children
+    </p>
 }
 
 // Used for hero like introduction text in
@@ -30,13 +32,15 @@ module Cite = {
 module Info = {
   @react.component
   let make = (~children) =>
-    <div className="infobox my-5 py-6 pl-8 pr-10 rounded-lg bg-sky-5"> children </div>
+    <div className="infobox my-5 py-6 pl-8 pr-10 rounded-lg bg-sky-5 dark:bg-sky-90/25">
+      children
+    </div>
 }
 
 module Warn = {
   @react.component
   let make = (~children) =>
-    <div className="my-6 py-6 pl-8 pr-10 rounded-lg bg-orange-10"> children </div>
+    <div className="my-6 py-6 pl-8 pr-10 rounded-lg bg-orange-10 dark:bg-orange-15"> children </div>
 }
 
 module UrlBox = {
@@ -100,9 +104,11 @@ module UrlBox = {
         <Icon.ArrowRight className="ml-1" />
       </ReactRouter.Link.String>
     }
-    <div className="md-url-box text-16 border-l-2 border-gray-60 my-6 py-6 pl-8 pr-10 bg-gray-5">
+    <div
+      className="md-url-box text-16 border-l-2 border-gray-60 dark:border-gray-40 my-6 py-6 pl-8 pr-10 bg-gray-5 dark:bg-gray-95"
+    >
       content
-      <div className="mt-4 text-sky hover:text-sky-30"> link </div>
+      <div className="mt-4 text-sky dark:text-water-dark hover:text-sky-30"> link </div>
     </div>
   }
 }
@@ -114,11 +120,11 @@ module Anchor = {
     <span className="inline group relative" title=?title>
       <a
         title=?title
-        className="scroll-mt-30 invisible text-gray-60 opacity-50 hover:opacity-100 hover:text-gray-60 hover:cursor-pointer group-hover:visible"
+        className="scroll-mt-30 invisible text-gray-60 dark:text-gray-30 opacity-50 hover:opacity-100 hover:text-gray-60 dark:hover:text-gray-20 hover:cursor-pointer group-hover:visible"
         href={"#" ++ id}
         id={id}
       >
-        <Icon.Hyperlink className="inline-block align-middle text-gray-40" />
+        <Icon.Hyperlink className="inline-block align-middle text-gray-40 dark:text-gray-30" />
       </a>
     </span>
   }
@@ -175,7 +181,7 @@ module H5 = {
   let make = (~id, ~children, ~title=?) => {
     <h5
       id
-      className="group mt-12 mb-3 text-12 leading-2 font-sans font-semibold uppercase tracking-wide text-gray-80"
+      className="group mt-12 mb-3 text-12 leading-2 font-sans font-semibold uppercase tracking-wide text-gray-80 dark:text-gray-20"
     >
       children
       <span className="ml-2">
@@ -194,7 +200,7 @@ module InlineCode = {
   @react.component
   let make = (~children) =>
     <code
-      className="md-inline-code px-2 py-0.5  text-gray-60 font-mono rounded-sm bg-gray-10-tr border border-gray-90/5"
+      className="md-inline-code px-2 py-0.5 text-gray-60 dark:text-gray-20 font-mono rounded-sm bg-gray-10-tr dark:bg-gray-90 border border-gray-90/5 dark:border-gray-80"
     >
       children
     </code>
@@ -217,7 +223,7 @@ module Th = {
   @react.component
   let make = (~children) =>
     <th
-      className="py-2 pr-8 text-12 text-gray-60 uppercase font-medium tracking-wide text-left border-b-2 border-gray-20"
+      className="py-2 pr-8 text-12 text-gray-60 dark:text-gray-30 uppercase font-medium tracking-wide text-left border-b-2 border-gray-20 dark:border-gray-80"
     >
       children
     </th>
@@ -225,7 +231,12 @@ module Th = {
 
 module Td = {
   @react.component
-  let make = (~children) => <td className="border-b border-gray-20 py-3 pr-8"> children </td>
+  let make = (~children) =>
+    <td
+      className="border-b border-gray-20 dark:border-gray-80 py-3 pr-8 text-gray-80 dark:text-gray-20"
+    >
+      children
+    </td>
 }
 
 module Code = {
@@ -349,7 +360,7 @@ module Blockquote = {
 
 module Hr = {
   @react.component
-  let make = () => <hr className="my-4" />
+  let make = () => <hr className="my-4 border-gray-20 dark:border-gray-80" />
 }
 
 /*
@@ -381,7 +392,7 @@ module A = {
       <a
         href
         rel="noopener noreferrer"
-        className="no-underline text-fire hover:underline"
+        className="no-underline text-fire dark:text-fire-dark hover:underline"
         ?target
         dataTestId="absolute-url"
       >
@@ -389,7 +400,10 @@ module A = {
       </a>
     } else {
       <ReactRouter.Link.String
-        to={href} className="no-underline text-fire hover:underline" ?target relative="route"
+        to={href}
+        className="no-underline text-fire dark:text-fire-dark hover:underline"
+        ?target
+        relative="route"
       >
         children
       </ReactRouter.Link.String>
@@ -518,7 +532,11 @@ module Image = {
       {switch caption {
       | None => React.null
       | Some(caption) =>
-        <div className={`mt-4 text-14 text-gray-60 ${size === #large ? "md:ml-16" : ""}`}>
+        <div
+          className={`mt-4 text-14 text-gray-60 dark:text-gray-30 ${size === #large
+              ? "md:ml-16"
+              : ""}`}
+        >
           {React.string(caption)}
         </div>
       }}
@@ -538,7 +556,9 @@ module Video = {
       {switch caption {
       | None => React.null
       | Some(caption) =>
-        <div className="mt-4 text-14 text-gray-80 md:ml-16"> {React.string(caption)} </div>
+        <div className="mt-4 text-14 text-gray-80 dark:text-gray-20 md:ml-16">
+          {React.string(caption)}
+        </div>
       }}
     </div>
   }

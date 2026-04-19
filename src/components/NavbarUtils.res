@@ -1,5 +1,6 @@
-let link = "no-underline block hover:cursor-pointer hover:text-fire-30 mb-px"
-let activeLink = "font-medium text-fire-30 border-b border-fire"
+let link = "no-underline block hover:cursor-pointer text-gray-60 dark:text-gray-30 hover:text-fire-30 dark:hover:text-fire-dark mb-px"
+
+let activeLink = "font-medium text-fire-30 dark:text-fire-dark border-b border-fire dark:border-fire-dark"
 
 let isActiveLink = (~includes: string, ~excludes: option<string>=?, ~route: Path.t) => {
   let route = (route :> string)
