@@ -10,7 +10,7 @@ order: 9
 
 A variant allows a type to convey that it can be one of many possible values. [TypeScript](https://www.typescriptlang.org/docs/handbook/enums.html) and [Rust's](https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html) have a similar concept with their `enum` types.
 
-A variant type uses `|` to separete the possible cases, which are called variant constructors. Each constructor must start with a capital letter.
+A variant type uses `|` to separate the possible cases, which are called variant constructors. Each constructor must start with a capital letter.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -31,7 +31,7 @@ var areYouCrushingIt = "Yes";
 
 `myResponse` is a variant type with the cases `Yes`, `No` and `PrettyMuch`.
 
-A variant type should be used to express business logic and to represent that logic with the type system. Variant types can be used with (patern matching)[./pattern-matching-destructuring.mdx] that allows you to convientently handle the possible cases, and to revieve warnings it you forget to handle a case.
+A variant type should be used to express business logic and to represent that logic with the type system. Variant types can be used with [pattern matching](./pattern-matching-destructuring.mdx) that allows you to conveniently handle the possible cases, and to receive warnings if you forget to handle a case.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -57,10 +57,10 @@ let dbStatus = client => {
 
 </CodeTab>
 
-A variant type is fixed when defined and cannot be changed later on, but there are two other types of variants that you can use if you need a more dynamic variant type. (Extensible variants)[./extensible-variant.mdx] allow you to create a type and add the variant contructors later, and (polymorphic variants)[./polymorphic-variant.mdx] can be dynamically created without the need to define anything at the start.
+A variant type is fixed when defined and cannot be changed later on, but there are two other types of variants that you can use if you need a more dynamic variant type. [Extensible variants](./extensible-variant.mdx) allow you to create a type and add the variant constructors later, and [polymorphic variants](./polymorphic-variant.mdx) can be dynamically created without the need to define anything at the start.
 
 - Use a variant type when you know the possible variants and want to enforce exhaustive pattern matching from a single type definition. This is what you will use most of the time.
-- Use polymorphic variants when you don't need to define the types and want to have a vary dynamic variant that can be very different from one place to another. This is useful for collecting possible error types with (`result`)[/docs/manual/api/stdlib/result].
+- Use polymorphic variants when you don't need to define the types and want to have a very dynamic variant that can be very different from one place to another. This is useful for collecting possible error types with [`result`](/docs/manual/api/stdlib/result).
 - Use extensible variants when you don't fully know the data and want to extend and are OK with non-exhaustive pattern matching. You will rarely need this, but it's a powerful advanced feature.
 
 ## Constructor Arguments
@@ -289,7 +289,7 @@ Here's a list of everything you can put in the `@as` tag of a variant constructo
 
 ## Untagged variants
 
-With _untagged variants_ it is possible to mix types together that normally can't be mixed in the ReScript type system, as long as there's a way to discriminate them at runtime. For example, with untagged variants you can represent a heterogenous array:
+With _untagged variants_ it is possible to mix types together that normally can't be mixed in the ReScript type system, as long as there's a way to discriminate them at runtime. For example, with untagged variants you can represent a heterogeneous array:
 
 ```rescript
 @unboxed type listItemValue = String(string) | Boolean(bool) | Number(float)
@@ -460,30 +460,33 @@ With untagged variants comes a rather interesting capability - catch-all cases a
 Let's look at how it works. Imagine you're using a third party API that returns a list of available animals. You could of course model it as a regular `string`, but given that variants can be used as "typed strings", using a variant would give you much more benefit:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
+
 ```rescript
 type animal = Dog | Cat | Bird
 
 type apiResponse = {
-animal: animal
+  animal: animal,
 }
 
 let greetAnimal = (animal: animal) =>
-switch animal {
-| Dog => "Wof"
-| Cat => "Meow"
-| Bird => "Kashiiin"
-}
+  switch animal {
+  | Dog => "Wof"
+  | Cat => "Meow"
+  | Bird => "Kashiiin"
+  }
 
-````
+```
+
 ```javascript
-````
+
+```
 
 </CodeTab>
 
 This is all fine and good as long as the API returns `"Dog"`, `"Cat"` or `"Bird"` for `animal`.
 However, what if the API changes before you have a chance to deploy new code, and can now return `"Turtle"` as well? Your code would break down because the variant `animal` doesn't cover `"Turtle"`.
 
-So, we'll need to go back to `string`, loosing all of the goodies of using a variant, and then do manual conversion into the `animal` variant from `string`, right?
+So, we'll need to go back to `string`, losing all of the goodies of using a variant, and then do manual conversion into the `animal` variant from `string`, right?
 Well, this used to be the case before, but not anymore! We can leverage untagged variants to bake in handling of unknown values into the variant itself.
 
 Let's update our type definition first:
@@ -504,40 +507,41 @@ So, any string not mapping directly to one of the payloadless constructors will 
 As soon as we've added this, the compiler complains that we now need to handle this additional case in our pattern match as well. Let's fix that:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
+
 ```rescript
 @unboxed
 type animal = Dog | Cat | Bird | UnknownAnimal(string)
 
 type apiResponse = {
-animal: animal
+  animal: animal,
 }
 
 let greetAnimal = (animal: animal) =>
-switch animal {
-| Dog => "Wof"
-| Cat => "Meow"
-| Bird => "Kashiiin"
-| UnknownAnimal(otherAnimal) =>
-`I don't know how to greet animal ${otherAnimal}`
-}
+  switch animal {
+  | Dog => "Wof"
+  | Cat => "Meow"
+  | Bird => "Kashiiin"
+  | UnknownAnimal(otherAnimal) =>
+    `I don't know how to greet animal ${otherAnimal}`
+  }
 
-````
+```
+
 ```javascript
 function greetAnimal(animal) {
   if (!(animal === "Cat" || animal === "Dog" || animal === "Bird")) {
     return "I don't know how to greet animal " + animal;
   }
   switch (animal) {
-    case "Dog" :
-        return "Wof";
-    case "Cat" :
-        return "Meow";
-    case "Bird" :
-        return "Kashiiin";
-
+    case "Dog":
+      return "Wof";
+    case "Cat":
+      return "Meow";
+    case "Bird":
+      return "Kashiiin";
   }
 }
-````
+```
 
 </CodeTab>
 
@@ -582,7 +586,7 @@ let one: a = One
 let oneAsString = (one :> string)
 ```
 
-If you were to configure all of your construtors to be represented as `int` or `float`, you could coerce to those too:
+If you were to configure all of your constructors to be represented as `int` or `float`, you could coerce to those too:
 
 ```rescript
 type asInt = | @as(1) One | @as(2) Two | @as(3) Three
@@ -593,7 +597,7 @@ let toInt = (oneInt :> int)
 
 ### Advanced: Coercing `string` to Variant
 
-In certain situtations it's possible to coerce a `string` to a variant. This is an advanced technique that you're unlikely to need much, but when you do it's really useful.
+In certain situations it's possible to coerce a `string` to a variant. This is an advanced technique that you're unlikely to need much, but when you do it's really useful.
 
 You can coerce a `string` to a variant when:
 
