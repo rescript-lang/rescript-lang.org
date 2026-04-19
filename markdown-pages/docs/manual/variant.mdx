@@ -8,9 +8,9 @@ order: 9
 
 # Variant
 
-So far, most of ReScript's data structures might look familiar to you. This section introduces an extremely important, and perhaps unfamiliar, data structure: variant.
+A variant allows a type to convey that it can be one of many possible values. [TypeScript](https://www.typescriptlang.org/docs/handbook/enums.html) and [Rust's](https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html) have a similar concept with their `enum` types.
 
-Most data structures in most languages are about "this **and** that". A variant allows us to express "this **or** that".
+A variant type uses `|` to separete the possible cases, which are called variant constructors. Each constructor must start with a capital letter.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -29,42 +29,39 @@ var areYouCrushingIt = "Yes";
 
 </CodeTab>
 
-`myResponse` is a variant type with the cases `Yes`, `No` and `PrettyMuch`, which are called "variant constructors" (or "variant tag"). The `|` bar separates each constructor.
+`myResponse` is a variant type with the cases `Yes`, `No` and `PrettyMuch`.
 
-**Note**: a variant's constructors need to be capitalized.
-
-## Variant Needs an Explicit Definition
-
-If the variant you're using is in a different file, bring it into scope [record](./record.mdx) type
+A variant type should be used to express business logic and to represent that logic with the type system. Variant types can be used with (patern matching)[./pattern-matching-destructuring.mdx] that allows you to convientently handle the possible cases, and to revieve warnings it you forget to handle a case.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res example
-// Zoo.res
-type animal = Dog | Cat | Bird
+type dbClient
+type dbClientConnection =
+  | Connected(dbClient)
+  | ConnectionFailed(string)
+  | ConnectionNotStarted
+
+let dbStatus = client => {
+  switch client {
+    | Connected(_) => "Database is connected"
+    | ConnectionFailed(reason) => `Database connection failed with reason ${reason}`
+    | ConnectionNotStarted => "Database connection has not yet started"
+  }
+}
 ```
 
 ```js
-// Empty output
+
 ```
 
 </CodeTab>
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+A variant type is fixed when defined and cannot be changed later on, but there are two other types of variants that you can use if you need a more dynamic variant type. (Extensible variants)[./extensible-variant.mdx] allow you to create a type and add the variant contructors later, and (polymorphic variants)[./polymorphic-variant.mdx] can be dynamically created without the need to define anything at the start.
 
-```res
-// Example.res
-let pet: Zoo.animal = Dog // preferred
-// or
-let pet2 = Zoo.Dog
-```
-
-```js
-var pet = "Dog";
-var pet2 = "Dog";
-```
-
-</CodeTab>
+- Use a variant type when you know the possible variants and want to enforce exhaustive pattern matching from a single type definition. This is what you will use most of the time.
+- Use polymorphic variants when you don't need to define the types and want to have a vary dynamic variant that can be very different from one place to another. This is useful for collecting possible error types with (`result`)[/docs/manual/api/stdlib/result].
+- Use extensible variants when you don't fully know the data and want to extend and are OK with non-exhaustive pattern matching. You will rarely need this, but it's a powerful advanced feature.
 
 ## Constructor Arguments
 
@@ -107,8 +104,6 @@ var friendAccount = {
 ```
 
 </CodeTab>
-
-### Labeled Variant Payloads (Inline Record)
 
 If a variant payload has multiple fields, you can use a record-like syntax to label them for better readability:
 
@@ -159,7 +154,7 @@ var me = {
 
 </CodeTab>
 
-The output is slightly uglier and less performant than the former.
+The output is slightly uglier and less performant than the former, but it can be used if you want to use the type outside of the variant.
 
 ## Variant Type Spreads
 
@@ -184,89 +179,35 @@ Type spreads act as a 'copy-paste', meaning all constructors are copied as-is fr
 
 Note that you need a leading `|` if you want to use a spread in the first position of a variant definition.
 
-### Pattern Matching On Variant
+## Using variants in different files
 
-See the [Pattern Matching/Destructuring](./pattern-matching-destructuring.mdx) section later.
-
-## JavaScript Output
-
-A variant value compiles to 3 possible JavaScript outputs depending on its type declaration:
-
-- If the variant value is a constructor with no payload, it compiles to a string of the constructor name. Example: `Yes` compiles to `"Yes"`.
-- If it's a constructor with a payload, it compiles to an object with the field `TAG` and the field `_0` for the first payload, `_1` for the second payload, etc. The value of `TAG` is the constructor name as string by default, but note that the name of the `TAG` field as well as the string value used for each constructor name [can be customized](#tagged-variants).
-- Labeled variant payloads (the inline record trick earlier) compile to an object with the label names instead of `_0`, `_1`, etc. The object will have the `TAG` field as per the previous rule.
-
-Check the output in these examples:
+If the variant you're using is in a different file, you'll need to use the module name with an explicit type annotation.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res example
-type greeting = Hello | Goodbye
-let g1 = Hello
-let g2 = Goodbye
-
-type outcome = Good | Error(string)
-let o1 = Good
-let o2 = Error("oops!")
-
-type family = Child | Mom(int, string) | Dad (int)
-let f1 = Child
-let f2 = Mom(30, "Jane")
-let f3 = Dad(32)
-
-type person = Teacher | Student({gpa: float})
-let p1 = Teacher
-let p2 = Student({gpa: 99.5})
-
-type s = {score: float}
-type adventurer = Warrior(s) | Wizard(string)
-let a1 = Warrior({score: 10.5})
-let a2 = Wizard("Joe")
+// Zoo.res
+type animal = Dog | Cat | Bird
 ```
 
 ```js
-var g1 = "Hello";
+// Empty output
+```
 
-var g2 = "Goodbye";
+</CodeTab>
 
-var o1 = "Good";
+<CodeTab labels={["ReScript", "JS Output"]}>
 
-var o2 = {
-  TAG: "Error",
-  _0: "oops!",
-};
+```res
+// Example.res
+let pet: Zoo.animal = Dog // preferred
+// or
+let pet2 = Zoo.Dog
+```
 
-var f1 = "Child";
-
-var f2 = {
-  TAG: "Mom",
-  _0: 30,
-  _1: "Jane",
-};
-
-var f3 = {
-  TAG: "Dad",
-  _0: 32,
-};
-
-var p1 = "Teacher";
-
-var p2 = {
-  TAG: "Student",
-  gpa: 99.5,
-};
-
-var a1 = {
-  TAG: "Warrior",
-  _0: {
-    score: 10.5,
-  },
-};
-
-var a2 = {
-  TAG: "Wizard",
-  _0: "Joe",
-};
+```js
+var pet = "Dog";
+var pet2 = "Dog";
 ```
 
 </CodeTab>
@@ -856,3 +797,86 @@ The compiler sees the variant, then
 
 1. conceptually turns them into `type animal = "Dog" | "Cat" | "Bird"`
 2. compiles `switch` to a constant-time jump table (`O(1)`).
+
+## JavaScript Output
+
+A variant value compiles to 3 possible JavaScript outputs depending on its type declaration:
+
+- If the variant value is a constructor with no payload, it compiles to a string of the constructor name. Example: `Yes` compiles to `"Yes"`.
+- If it's a constructor with a payload, it compiles to an object with the field `TAG` and the field `_0` for the first payload, `_1` for the second payload, etc. The value of `TAG` is the constructor name as string by default, but note that the name of the `TAG` field as well as the string value used for each constructor name [can be customized](#tagged-variants).
+- Labeled variant payloads (the inline record trick earlier) compile to an object with the label names instead of `_0`, `_1`, etc. The object will have the `TAG` field as per the previous rule.
+
+Check the output in these examples:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+type greeting = Hello | Goodbye
+let g1 = Hello
+let g2 = Goodbye
+
+type outcome = Good | Error(string)
+let o1 = Good
+let o2 = Error("oops!")
+
+type family = Child | Mom(int, string) | Dad (int)
+let f1 = Child
+let f2 = Mom(30, "Jane")
+let f3 = Dad(32)
+
+type person = Teacher | Student({gpa: float})
+let p1 = Teacher
+let p2 = Student({gpa: 99.5})
+
+type s = {score: float}
+type adventurer = Warrior(s) | Wizard(string)
+let a1 = Warrior({score: 10.5})
+let a2 = Wizard("Joe")
+```
+
+```js
+var g1 = "Hello";
+
+var g2 = "Goodbye";
+
+var o1 = "Good";
+
+var o2 = {
+  TAG: "Error",
+  _0: "oops!",
+};
+
+var f1 = "Child";
+
+var f2 = {
+  TAG: "Mom",
+  _0: 30,
+  _1: "Jane",
+};
+
+var f3 = {
+  TAG: "Dad",
+  _0: 32,
+};
+
+var p1 = "Teacher";
+
+var p2 = {
+  TAG: "Student",
+  gpa: 99.5,
+};
+
+var a1 = {
+  TAG: "Warrior",
+  _0: {
+    score: 10.5,
+  },
+};
+
+var a2 = {
+  TAG: "Wizard",
+  _0: "Joe",
+};
+```
+
+</CodeTab>
