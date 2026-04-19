@@ -93,7 +93,7 @@ export let run = ({
       logger.log("testing examples in", file);
       child_process.execSync(`npm exec rescript build ${tempRoot} -- --quiet`, {
         cwd: projectRoot,
-        stdio: "pipe",
+        stdio: "inherit",
       });
     } catch {
       success = false;
