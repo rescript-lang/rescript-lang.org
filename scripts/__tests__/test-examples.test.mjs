@@ -54,3 +54,83 @@ test("run compiles a real example block from an injected workspace", () => {
     /module M_0 = \{[\s\S]*let greeting = "hello"/,
   );
 });
+
+test("warns about stale JS Output blocks without rewriting the file", () => {
+  let fixture = `# Demo
+
+<div className="hidden">
+
+\`\`\`res prelude
+@val external alert: string => unit = "alert"
+\`\`\`
+
+</div>
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+\`\`\`res example
+alert("hello")
+\`\`\`
+
+\`\`\`js
+console.log("stale");
+\`\`\`
+
+</CodeTab>
+`;
+
+  let { docsRoot, tempRoot, file } = makeWorkspace(fixture);
+  let { logger, warnings } = makeLogger();
+
+  let result = run({ docsRoot, tempRoot, logger });
+  let nextContent = fs.readFileSync(file, "utf8");
+
+  assert.equal(result.success, true);
+  assert.equal(result.warningCount, 1);
+  assert.match(warnings[0], /sample\.mdx/);
+  assert.match(warnings[0], /--update/);
+  assert.match(nextContent, /console\.log\("stale"\);/);
+});
+
+test("ignores standalone javascript fences outside a matching CodeTab", () => {
+  let fixture = `# Demo
+
+\`\`\`res example
+let value = 1
+\`\`\`
+
+\`\`\`js
+console.log("leave me alone");
+\`\`\`
+`;
+
+  let { docsRoot, tempRoot } = makeWorkspace(fixture);
+  let { logger } = makeLogger();
+
+  let result = run({ docsRoot, tempRoot, logger });
+
+  assert.equal(result.success, true);
+  assert.equal(result.warningCount, 0);
+});
+
+test("warns and skips malformed CodeTabs that never provide a JS Output fence", () => {
+  let fixture = `# Demo
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+\`\`\`res example
+let value = 1
+\`\`\`
+
+</CodeTab>
+`;
+
+  let { docsRoot, tempRoot } = makeWorkspace(fixture);
+  let { logger, warnings } = makeLogger();
+
+  let result = run({ docsRoot, tempRoot, logger });
+
+  assert.equal(result.success, true);
+  assert.equal(result.warningCount, 1);
+  assert.match(warnings[0], /missing paired JS Output block/);
+});
