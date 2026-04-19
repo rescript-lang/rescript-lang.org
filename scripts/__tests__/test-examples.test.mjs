@@ -14,9 +14,9 @@ let greeting = "hello"
 \`\`\`
 `,
 ) => {
-  let root = fs.mkdtempSync(path.join(os.tmpdir(), "test-examples-"));
+  let root = fs.mkdtempSync(path.join(os.tmpdir(), "test examples-"));
   let docsRoot = path.join(root, "markdown-pages", "docs");
-  let tempRoot = path.join(root, "temp");
+  let tempRoot = path.join(root, "temp workspace");
   let file = path.join(docsRoot, "manual", "sample.mdx");
 
   fs.mkdirSync(path.dirname(file), { recursive: true });
@@ -47,6 +47,7 @@ test("run compiles a real example block from an injected workspace", () => {
 
   assert.equal(result.success, true);
   assert.equal(result.warningCount, 0);
+  assert.ok(tempRoot.includes(" "));
   assert.ok(logs.some((log) => log.includes("testing examples in")));
   assert.match(
     fs.readFileSync(path.join(tempRoot, "src", "_tempFile.res"), "utf-8"),

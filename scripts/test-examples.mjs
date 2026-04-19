@@ -101,10 +101,14 @@ export let run = ({
     fs.writeFileSync(path.join(tempRoot, "src", "_tempFile.res"), parsedResult);
     try {
       logger.log("testing examples in", file);
-      child_process.execSync(`npm exec rescript build ${tempRoot} -- --quiet`, {
-        cwd: projectRoot,
-        stdio: "inherit",
-      });
+      child_process.execFileSync(
+        "npm",
+        ["exec", "rescript", "build", tempRoot, "--", "--quiet"],
+        {
+          cwd: projectRoot,
+          stdio: "inherit",
+        },
+      );
     } catch {
       success = false;
     }
