@@ -66,6 +66,16 @@ let ensureTempProject = (tempRoot) => {
   fs.mkdirSync(path.join(tempRoot, "src"), { recursive: true });
   fs.writeFileSync(path.join(tempRoot, "rescript.json"), rescriptJson);
   fs.writeFileSync(path.join(tempRoot, "src", "_tempFile.res"), "");
+  let tempNodeModules = path.join(tempRoot, "node_modules", "@rescript");
+  let tempReactPackage = path.join(tempNodeModules, "react");
+  if (!fs.existsSync(tempReactPackage)) {
+    fs.mkdirSync(tempNodeModules, { recursive: true });
+    fs.cpSync(
+      path.join(projectRoot, "node_modules", "@rescript", "react"),
+      tempReactPackage,
+      { recursive: true },
+    );
+  }
 };
 
 export let run = ({
