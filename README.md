@@ -79,12 +79,19 @@ We check the validity of our code examples marked with:
 Run the checks with:
 
 ```sh
-node scripts/test-examples.mjs
+yarn test
 ```
 
 Refresh stale or missing JS Output fences with:
 
 ```sh
+yarn test --update
+```
+
+If you only want to run the example checker directly, you can still use:
+
+```sh
+node scripts/test-examples.mjs
 node scripts/test-examples.mjs --update
 ```
 

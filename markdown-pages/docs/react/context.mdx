@@ -67,38 +67,55 @@ let make = () => {
 ```
 
 ```js
-function Button(props) {
-  var className = props.theme ? "theme-black" : "theme-light";
-  return React.createElement(
-    "button",
-    {
-      className: className,
-    },
-    "Click me",
-  );
+let JsxRuntime = require("react/jsx-runtime");
+
+function _tempFile$Button(props) {
+  let className;
+  className = props.theme === "Light" ? "theme-light" : "theme-black";
+  return JsxRuntime.jsx("button", {
+    children: "Click me",
+    className: className,
+  });
 }
 
-function ThemedButton(props) {
-  return React.createElement(App$Button, {
+let Button = {
+  make: _tempFile$Button,
+};
+
+function _tempFile$ThemedButton(props) {
+  return JsxRuntime.jsx(_tempFile$Button, {
     theme: props.theme,
   });
 }
 
-function Toolbar(props) {
-  return React.createElement(
-    "div",
-    undefined,
-    React.createElement(App$ThemedButton, {
+let ThemedButton = {
+  make: _tempFile$ThemedButton,
+};
+
+function _tempFile$Toolbar(props) {
+  return JsxRuntime.jsx("div", {
+    children: JsxRuntime.jsx(_tempFile$ThemedButton, {
       theme: props.theme,
     }),
-  );
-}
-
-function App(props) {
-  return React.createElement(App$Toolbar, {
-    theme: /* Dark */ 1,
   });
 }
+
+let Toolbar = {
+  make: _tempFile$Toolbar,
+};
+
+function _tempFile(props) {
+  return JsxRuntime.jsx(_tempFile$Toolbar, {
+    theme: "Dark",
+  });
+}
+
+let make = _tempFile;
+
+exports.Button = Button;
+exports.ThemedButton = ThemedButton;
+exports.Toolbar = Toolbar;
+exports.make = make;
 ```
 
 </CodeTab>
@@ -159,67 +176,72 @@ let make = () => {
 ```
 
 ```js
-var context = React.createContext(/* Light */ 0);
+let React = require("react");
+let JsxRuntime = require("react/jsx-runtime");
 
-var make = context.Provider;
+let context = React.createContext("Light");
 
-var Provider = {
+let make = context.Provider;
+
+let Provider = {
   make: make,
 };
 
-var ThemeContext = {
+let ThemeContext = {
   context: context,
   Provider: Provider,
 };
 
-function App$Button(props) {
-  var className = props.theme ? "theme-black" : "theme-light";
-  return React.createElement(
-    "button",
-    {
-      className: className,
-    },
-    "Click me",
-  );
+function _tempFile$Button(props) {
+  let className;
+  className = props.theme === "Light" ? "theme-light" : "theme-black";
+  return JsxRuntime.jsx("button", {
+    children: "Click me",
+    className: className,
+  });
 }
 
-var Button = {
-  make: App$Button,
+let Button = {
+  make: _tempFile$Button,
 };
 
-function App$ThemedButton(props) {
-  var theme = React.useContext(context);
-  return React.createElement(App$Button, {
+function _tempFile$ThemedButton(props) {
+  let theme = React.useContext(context);
+  return JsxRuntime.jsx(_tempFile$Button, {
     theme: theme,
   });
 }
 
-var ThemedButton = {
-  make: App$ThemedButton,
+let ThemedButton = {
+  make: _tempFile$ThemedButton,
 };
 
-function App$Toolbar(props) {
-  return React.createElement(
-    "div",
-    undefined,
-    React.createElement(App$ThemedButton, {}),
-  );
-}
-
-var Toolbar = {
-  make: App$Toolbar,
-};
-
-function App(props) {
-  return React.createElement(make, {
-    value: /* Dark */ 1,
-    children: React.createElement(
-      "div",
-      undefined,
-      React.createElement(App$Toolbar, {}),
-    ),
+function _tempFile$Toolbar(props) {
+  return JsxRuntime.jsx("div", {
+    children: JsxRuntime.jsx(_tempFile$ThemedButton, {}),
   });
 }
+
+let Toolbar = {
+  make: _tempFile$Toolbar,
+};
+
+function _tempFile(props) {
+  return JsxRuntime.jsx(make, {
+    value: "Dark",
+    children: JsxRuntime.jsx("div", {
+      children: JsxRuntime.jsx(_tempFile$Toolbar, {}),
+    }),
+  });
+}
+
+let make$1 = _tempFile;
+
+exports.ThemeContext = ThemeContext;
+exports.Button = Button;
+exports.ThemedButton = ThemedButton;
+exports.Toolbar = Toolbar;
+exports.make = make$1;
 ```
 
 </CodeTab>

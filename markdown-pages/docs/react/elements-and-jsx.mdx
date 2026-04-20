@@ -104,14 +104,20 @@ let element = switch name {
 ```
 
 ```js
-var name = "Andrea";
+let JsxRuntime = require("react/jsx-runtime");
 
-var element =
-  name !== undefined
-    ? React.createElement("div", undefined, "Hello " + name)
-    : null;
+let name = "Andrea";
 
-React.createElement("div", undefined, element);
+let element = JsxRuntime.jsx("div", {
+  children: "Hello " + name,
+});
+
+JsxRuntime.jsx("div", {
+  children: element,
+});
+
+exports.name = name;
+exports.element = element;
 ```
 
 </CodeTab>
@@ -161,18 +167,18 @@ let render = (article: props => React.element) => {
 ```
 
 ```js
+let React = require("react");
+
 function render(article) {
-  var children = ["Introduction", "Body"];
-  var props = {
+  let children = ["Introduction", "Body"];
+  let props = {
     title: "Article #1",
     children: null,
   };
-  return Caml_splice_call.spliceApply(React.createElement, [
-    article,
-    props,
-    children,
-  ]);
+  return React.createElement(article, props, ...children);
 }
+
+exports.render = render;
 ```
 
 </CodeTab>
@@ -207,7 +213,10 @@ React.cloneElement(original, {"className": "world", "data-name": "some name"})
 ```
 
 ```js
-var original = React.createElement("div", {
+let React = require("react");
+let JsxRuntime = require("react/jsx-runtime");
+
+let original = JsxRuntime.jsx("div", {
   className: "hello",
 });
 
@@ -215,6 +224,8 @@ React.cloneElement(original, {
   className: "world",
   "data-name": "some name",
 });
+
+exports.original = original;
 ```
 
 </CodeTab>

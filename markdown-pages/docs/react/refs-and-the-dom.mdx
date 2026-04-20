@@ -103,22 +103,24 @@ let make = () => {
 ```
 
 ```js
-function CustomTextInput(Props) {
-  var textInput = React.useRef(null);
-  var focusInput = function () {
-    var dom = textInput.current;
-    if (dom === null || dom === undefined) {
+let React = require("react");
+let Primitive_option = require("@rescript/runtime/lib/js/Primitive_option.js");
+let JsxRuntime = require("react/jsx-runtime");
+
+function _tempFile(props) {
+  let textInput = React.useRef(null);
+  let focusInput = () => {
+    let dom = textInput.current;
+    if (dom == null) {
       return;
     }
     dom.focus();
   };
-  var onClick = function (param) {
-    focusInput();
-  };
+  let onClick = (param) => focusInput();
   return JsxRuntime.jsxs("div", {
     children: [
       JsxRuntime.jsx("input", {
-        ref: Caml_option.some(textInput),
+        ref: Primitive_option.some(textInput),
         type: "text",
       }),
       JsxRuntime.jsx("input", {
@@ -129,6 +131,10 @@ function CustomTextInput(Props) {
     ],
   });
 }
+
+let make = _tempFile;
+
+exports.make = make;
 ```
 
 </CodeTab>
@@ -219,30 +225,38 @@ let make = () => {
 ```
 
 ```js
-function CustomTextInput(Props) {
-  var textInput = React.useRef(null);
-  var setTextInputRef = function (element) {
+let React = require("react");
+let Stdlib_Nullable = require("@rescript/runtime/lib/js/Stdlib_Nullable.js");
+let Primitive_option = require("@rescript/runtime/lib/js/Primitive_option.js");
+let JsxRuntime = require("react/jsx-runtime");
+
+function _tempFile(props) {
+  let textInput = React.useRef(null);
+  let setTextInputRef = (element) => {
     textInput.current = element;
   };
-  var focusTextInput = function (param) {
-    Core__Nullable.forEach(textInput.current, function (input) {
+  let focusTextInput = (param) =>
+    Stdlib_Nullable.forEach(textInput.current, (input) => {
       input.focus();
     });
-  };
-  return React.createElement(
-    "div",
-    undefined,
-    React.createElement("input", {
-      ref: Caml_option.some(setTextInputRef),
-      type: "text",
-    }),
-    React.createElement("input", {
-      type: "button",
-      value: "Focus the text input",
-      onClick: focusTextInput,
-    }),
-  );
+  return JsxRuntime.jsxs("div", {
+    children: [
+      JsxRuntime.jsx("input", {
+        ref: Primitive_option.some(setTextInputRef),
+        type: "text",
+      }),
+      JsxRuntime.jsx("input", {
+        type: "button",
+        value: "Focus the text input",
+        onClick: focusTextInput,
+      }),
+    ],
+  });
 }
+
+let make = _tempFile;
+
+exports.make = make;
 ```
 
 </CodeTab>
@@ -280,31 +294,37 @@ let make = () => {
 ```
 
 ```js
-function CustomTextInput(Props) {
-  var setInputRef = Props.setInputRef;
-  return React.createElement(
-    "div",
-    undefined,
-    React.createElement("input", {
-      ref: setInputRef,
+let React = require("react");
+let Primitive_option = require("@rescript/runtime/lib/js/Primitive_option.js");
+let JsxRuntime = require("react/jsx-runtime");
+
+function _tempFile$CustomTextInput(props) {
+  return JsxRuntime.jsx("div", {
+    children: JsxRuntime.jsx("input", {
+      ref: Primitive_option.some(props.setInputRef),
       type: "text",
     }),
-  );
+  });
 }
 
-var CustomTextInput = {
-  make: CustomTextInput,
+let CustomTextInput = {
+  make: _tempFile$CustomTextInput,
 };
 
-function Parent(Props) {
-  var textInput = React.useRef(null);
-  var setInputRef = function (element) {
+function _tempFile(props) {
+  let textInput = React.useRef(null);
+  let setInputRef = (element) => {
     textInput.current = element;
   };
-  return React.createElement(CustomTextInput, {
+  return JsxRuntime.jsx(_tempFile$CustomTextInput, {
     setInputRef: setInputRef,
   });
 }
+
+let make = _tempFile;
+
+exports.CustomTextInput = CustomTextInput;
+exports.make = make;
 ```
 
 </CodeTab>

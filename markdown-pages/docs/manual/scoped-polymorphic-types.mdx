@@ -54,10 +54,15 @@ myLogger.log(42)
 ```
 
 ```js
-var myLogger = JsAPI.getLogger();
+let JsAPI = require("jsAPI");
+
+let myLogger = JsAPI.getLogger();
 
 myLogger.log("Hello, ReScript!");
+
 myLogger.log(42);
+
+exports.myLogger = myLogger;
 ```
 
 </CodeTab>

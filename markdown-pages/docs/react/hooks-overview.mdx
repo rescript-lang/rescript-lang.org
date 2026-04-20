@@ -48,30 +48,30 @@ let make = () => {
 ```
 
 ```js
-function Counter(Props) {
-  var match = React.useState(function () {
-    return 0;
-  });
-  var setCount = match[1];
-  var onClick = function (_evt) {
-    return Curry._1(setCount, function (prev) {
-      return (prev + 1) | 0;
-    });
-  };
-  var msg = "You clicked" + String(match[0]) + "times";
-  return React.createElement(
-    "div",
-    undefined,
-    React.createElement("p", undefined, msg),
-    React.createElement(
-      "button",
-      {
+let React = require("react");
+let JsxRuntime = require("react/jsx-runtime");
+
+function _tempFile(props) {
+  let match = React.useState(() => 0);
+  let setCount = match[1];
+  let onClick = (_evt) => setCount((prev) => (prev + 1) | 0);
+  let msg = "You clicked" + String(match[0]) + "times";
+  return JsxRuntime.jsxs("div", {
+    children: [
+      JsxRuntime.jsx("p", {
+        children: msg,
+      }),
+      JsxRuntime.jsx("button", {
+        children: "Click me",
         onClick: onClick,
-      },
-      "Click me",
-    ),
-  );
+      }),
+    ],
+  });
 }
+
+let make = _tempFile;
+
+exports.make = make;
 ```
 
 </CodeTab>

@@ -71,71 +71,70 @@ let make = () => {
 ```
 
 ```js
-var context = React.createContext("light");
+let React = require("react");
+let JsxRuntime = require("react/jsx-runtime");
 
-var make = context.Provider;
+let context = React.createContext("light");
 
-var Provider = {
+let make = context.Provider;
+
+let Provider = {
   make: make,
 };
 
-var ThemeContext = {
+let ThemeContext = {
   context: context,
   Provider: Provider,
 };
 
-function App$ThemedButton(props) {
-  var theme = React.useContext(context);
-  var match;
+function _tempFile$ThemedButton(props) {
+  let theme = React.useContext(context);
+  let match;
   switch (theme) {
     case "dark":
       match = ["#ffffff", "#222222"];
       break;
-    case "light":
-      match = ["#000000", "#eeeeee"];
-      break;
     default:
       match = ["#000000", "#eeeeee"];
   }
-  var style = {
-    backgroundColor: match[1],
-    color: match[0],
-  };
-  return React.createElement(
-    "button",
-    {
-      style: style,
+  return JsxRuntime.jsx("button", {
+    children: "I am a styled button!",
+    style: {
+      backgroundColor: match[1],
+      color: match[0],
     },
-    "I am a styled button!",
-  );
-}
-
-var ThemedButton = {
-  make: App$ThemedButton,
-};
-
-function App$Toolbar(props) {
-  return React.createElement(
-    "div",
-    undefined,
-    React.createElement(App$ThemedButton, {}),
-  );
-}
-
-var Toolbar = {
-  make: App$Toolbar,
-};
-
-function App(props) {
-  return React.createElement(make, {
-    value: "dark",
-    children: React.createElement(
-      "div",
-      undefined,
-      React.createElement(App$Toolbar, {}),
-    ),
   });
 }
+
+let ThemedButton = {
+  make: _tempFile$ThemedButton,
+};
+
+function _tempFile$Toolbar(props) {
+  return JsxRuntime.jsx("div", {
+    children: JsxRuntime.jsx(_tempFile$ThemedButton, {}),
+  });
+}
+
+let Toolbar = {
+  make: _tempFile$Toolbar,
+};
+
+function _tempFile(props) {
+  return JsxRuntime.jsx(make, {
+    value: "dark",
+    children: JsxRuntime.jsx("div", {
+      children: JsxRuntime.jsx(_tempFile$Toolbar, {}),
+    }),
+  });
+}
+
+let make$1 = _tempFile;
+
+exports.ThemeContext = ThemeContext;
+exports.ThemedButton = ThemedButton;
+exports.Toolbar = Toolbar;
+exports.make = make$1;
 ```
 
 </CodeTab>

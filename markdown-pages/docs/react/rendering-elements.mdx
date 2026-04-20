@@ -56,10 +56,14 @@ switch ReactDOM.querySelector("#root") {
 ```
 
 ```js
-var root = document.querySelector("#root");
+let Client = require("react-dom/client");
+let JsxRuntime = require("react/jsx-runtime");
 
-if (!(root == null)) {
-  ReactDom.render(React.createElement("div", undefined, "Hello Andrea"), root);
+let rootElement = document.querySelector("#root");
+
+if (!(rootElement == null)) {
+  let root = Client.createRoot(rootElement);
+  root.render(JsxRuntime.jsx("div", {}));
 }
 ```
 

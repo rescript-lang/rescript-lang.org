@@ -33,9 +33,20 @@ let props = {Comp.b: "b"}
 ```
 
 ```js
-var props = {b: "b"};
-var newrecord = Caml_obj.obj_dup(props);
-return JsxRuntime.jsx(default, (newrecord.a = "a", newrecord));
+let JsxRuntime = require("react/jsx-runtime");
+
+let Comp = {};
+
+let props = {
+  b: "b"
+};
+
+let newrecord = {...props};
+
+JsxRuntime.jsx(default, (newrecord.a = "a", newrecord));
+
+exports.Comp = Comp;
+exports.props = props;
 ```
 
 </CodeTab>

@@ -143,127 +143,14 @@ let session = stripe->createCheckoutSession({})
 
 ````
 ```js
-let Belt_Array = require("@rescript/runtime/lib/js/Belt_Array.js");
+let Stripe = require("stripe").default;
 
-let myArray = [
-  "hello",
-  "world",
-  "how are you"
-];
+let stripe = new Stripe("sk\_...");
 
-let M_0 = {
-  myArray: myArray
-};
+let session = stripe.checkout.sessions.create({});
 
-let myArray$1 = [
-  "hello",
-  "world",
-  "how are you"
-];
-
-let firstItem = myArray$1[0];
-
-let tenthItem = myArray$1[10];
-
-let M_1 = {
-  myArray: myArray$1,
-  firstItem: firstItem,
-  tenthItem: tenthItem
-};
-
-let myArray$2 = [
-  "hello",
-  "world",
-  "how are you"
-];
-
-myArray$2[0] = "hey";
-
-myArray$2.push("?");
-
-myArray$2[0] = "bye";
-
-let M_2 = {
-  myArray: myArray$2
-};
-
-let y = [
-  1,
-  2
-];
-
-let x = Belt_Array.concatMany([
-  [
-    4,
-    5
-  ],
-  y
-]);
-
-let x2 = Belt_Array.concatMany([
-  [
-    4,
-    5
-  ],
-  y,
-  [7],
-  y
-]);
-
-let x3 = Belt_Array.concatMany([y]);
-
-let M_3 = {
-  y: y,
-  x: x,
-  x2: x2,
-  x3: x3
-};
-
-let M_4 = {
-  myList: {
-    hd: 1,
-    tl: {
-      hd: 2,
-      tl: {
-        hd: 3,
-        tl: /* [] */0
-      }
-    }
-  }
-};
-
-let myList = {
-  hd: 1,
-  tl: {
-    hd: 2,
-    tl: {
-      hd: 3,
-      tl: /* [] */0
-    }
-  }
-};
-
-let anotherList = {
-  hd: 0,
-  tl: myList
-};
-
-let message = myList !== 0 ? (
-    myList.tl !== 0 ? "The list two items and a potenial remainder of items" : "The head of the list is the string " + (1).toString()
-  ) : "This list is empty";
-
-let M_5 = {
-  message: message
-};
-
-exports.M_0 = M_0;
-exports.M_1 = M_1;
-exports.M_2 = M_2;
-exports.M_3 = M_3;
-exports.M_4 = M_4;
-exports.myList = myList;
-exports.anotherList = anotherList;
-exports.M_5 = M_5;
+exports.stripe = stripe;
+exports.session = session;
 ````
 
 </CodeTab>

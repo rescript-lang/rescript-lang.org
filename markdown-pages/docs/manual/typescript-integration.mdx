@@ -120,6 +120,25 @@ export const Size_getNum: (size: Size_t) => number = MyCompBS.Size.getNum;
 export const Size: { getNum: (size: Size_t) => number } = MyCompBS.Size;
 ```
 
+```js
+function getNum(size) {
+  switch (size) {
+    case "Small":
+      return 1;
+    case "Medium":
+      return 5;
+    case "Large":
+      return 10;
+  }
+}
+
+let Size = {
+  getNum: getNum,
+};
+
+exports.Size = Size;
+```
+
 </CodeTab>
 
 ## Setup

@@ -23,8 +23,12 @@ let my3dCoordinates = (20.0, 30.5, 100.0)
 ```
 
 ```js
-var ageAndName = [24, "Lil' ReScript"];
-var my3dCoordinates = [20.0, 30.5, 100.0];
+let ageAndName = [24, "Lil' ReScript"];
+
+let my3dCoordinates = [20.0, 30.5, 100.0];
+
+exports.ageAndName = ageAndName;
+exports.my3dCoordinates = my3dCoordinates;
 ```
 
 </CodeTab>
@@ -60,7 +64,15 @@ let (_, y, _) = my3dCoordinates // now you've retrieved y
 ```
 
 ```js
-var y = 30.5;
+let ageAndName = [24, "Lil' ReScript"];
+
+let my3dCoordinates = [20.0, 30.5, 100.0];
+
+let y = 30.5;
+
+exports.ageAndName = ageAndName;
+exports.my3dCoordinates = my3dCoordinates;
+exports.y = y;
 ```
 
 </CodeTab>
@@ -78,9 +90,21 @@ let coordinates2 = (c1x + 50, 20, 30)
 ```
 
 ```js
-var coordinates1 = [10, 20, 30];
-var c1x = 10;
-var coordinates2 = [60, 20, 30];
+let coordinates2 = [60, 20, 30];
+
+let ageAndName = [24, "Lil' ReScript"];
+
+let my3dCoordinates = [20.0, 30.5, 100.0];
+
+let coordinates1 = [10, 20, 30];
+
+let c1x = 10;
+
+exports.ageAndName = ageAndName;
+exports.my3dCoordinates = my3dCoordinates;
+exports.coordinates1 = coordinates1;
+exports.c1x = c1x;
+exports.coordinates2 = coordinates2;
 ```
 
 </CodeTab>

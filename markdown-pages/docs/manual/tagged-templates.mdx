@@ -110,12 +110,37 @@ module Greetings = {
 ```
 
 ```js
-function Greetings(props) {
-  return React.createElement(
-    "div",
-    undefined,
-    s(
-      ["hello ", " you're ", " year old!"],
+let Stdlib_Array = require("@rescript/runtime/lib/js/Stdlib_Array.js");
+let JsxRuntime = require("react/jsx-runtime");
+
+function s(strings, parameters) {
+  return Stdlib_Array.reduceWithIndex(
+    parameters,
+    strings[0],
+    (acc, param, i) => {
+      let s = strings[(i + 1) | 0];
+      let p;
+      switch (param.TAG) {
+        case "I":
+        case "F":
+          p = param._0.toString();
+          break;
+        case "S":
+          p = param._0;
+          break;
+        case "Bool":
+          p = param._0 ? "true" : "false";
+          break;
+      }
+      return acc + p + s;
+    },
+  );
+}
+
+function _tempFile$Greetings(props) {
+  return JsxRuntime.jsx("div", {
+    children: s(
+      [`hello `, ` you're `, ` year old!`],
       [
         {
           TAG: "S",
@@ -127,8 +152,15 @@ function Greetings(props) {
         },
       ],
     ),
-  );
+  });
 }
+
+let Greetings = {
+  make: _tempFile$Greetings,
+};
+
+exports.s = s;
+exports.Greetings = Greetings;
 ```
 
 </CodeTab>

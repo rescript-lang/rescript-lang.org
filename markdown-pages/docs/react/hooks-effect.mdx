@@ -59,11 +59,27 @@ React.useEffect(() => {
 ```
 
 ```js
-React.useEffect(function () {});
-React.useEffect(function () {}, []);
-React.useEffect(function () {}, [prop1]);
-React.useEffect(function () {}, [prop1, prop2]);
-React.useEffect(function () {}, [prop1, prop2, prop3]);
+let React = require("react");
+
+React.useEffect(() => {});
+
+React.useEffect(() => {}, []);
+
+React.useEffect(() => {}, [1]);
+
+React.useEffect(() => {}, [1, 2]);
+
+React.useEffect(() => {}, [1, 2, 3]);
+
+let prop1 = 1;
+
+let prop2 = 2;
+
+let prop3 = 3;
+
+exports.prop1 = prop1;
+exports.prop2 = prop2;
+exports.prop3 = prop3;
 ```
 
 </CodeTab>
@@ -121,34 +137,37 @@ let make = () => {
 ```
 
 ```js
-function Counter(Props) {
-  var match = React.useState(function () {
-    return 0;
+let React = require("react");
+let JsxRuntime = require("react/jsx-runtime");
+
+let Document = {};
+
+function _tempFile(props) {
+  let match = React.useState(() => 0);
+  let setCount = match[1];
+  let count = match[0];
+  React.useEffect(() => {
+    document.title = `You clicked ` + String(count) + ` times!`;
   });
-  var setCount = match[1];
-  var count = match[0];
-  React.useEffect(function () {
-    document.title = "You clicked " + String(count) + " times!";
-  });
-  var onClick = function (_evt) {
-    return Curry._1(setCount, function (prev) {
-      return (prev + 1) | 0;
-    });
-  };
-  var msg = "You clicked" + String(count) + "times";
-  return React.createElement(
-    "div",
-    undefined,
-    React.createElement("p", undefined, msg),
-    React.createElement(
-      "button",
-      {
+  let onClick = (_evt) => setCount((prev) => (prev + 1) | 0);
+  let msg = "You clicked" + String(count) + "times";
+  return JsxRuntime.jsxs("div", {
+    children: [
+      JsxRuntime.jsx("p", {
+        children: msg,
+      }),
+      JsxRuntime.jsx("button", {
+        children: "Click me",
         onClick: onClick,
-      },
-      "Click me",
-    ),
-  );
+      }),
+    ],
+  });
 }
+
+let make = _tempFile;
+
+exports.Document = Document;
+exports.make = make;
 ```
 
 </CodeTab>

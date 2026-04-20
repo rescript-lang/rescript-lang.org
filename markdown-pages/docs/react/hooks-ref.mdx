@@ -70,29 +70,34 @@ let make = () => {
 ```
 
 ```js
-function TextInputWithFocusButton(Props) {
-  var inputEl = React.useRef(null);
-  var onClick = function (param) {
-    Core__Nullable.forEach(inputEl.current, function (input) {
+let React = require("react");
+let Stdlib_Nullable = require("@rescript/runtime/lib/js/Stdlib_Nullable.js");
+let Primitive_option = require("@rescript/runtime/lib/js/Primitive_option.js");
+let JsxRuntime = require("react/jsx-runtime");
+
+function _tempFile(props) {
+  let inputEl = React.useRef(null);
+  let onClick = (param) =>
+    Stdlib_Nullable.forEach(inputEl.current, (input) => {
       input.focus();
     });
-  };
-  return React.createElement(
-    React.Fragment,
-    {},
-    React.createElement("input", {
-      ref: Caml_option.some(inputEl),
-      type: "text",
-    }),
-    React.createElement(
-      "button",
-      {
+  return JsxRuntime.jsxs(JsxRuntime.Fragment, {
+    children: [
+      JsxRuntime.jsx("input", {
+        ref: Primitive_option.some(inputEl),
+        type: "text",
+      }),
+      JsxRuntime.jsx("button", {
+        children: "Focus the input",
         onClick: onClick,
-      },
-      "Focus the input",
-    ),
-  );
+      }),
+    ],
+  });
 }
+
+let make = _tempFile;
+
+exports.make = make;
 ```
 
 </CodeTab>
@@ -130,30 +135,38 @@ let make = () => {
 ```
 
 ```js
-function CustomTextInput(Props) {
-  var textInput = React.useRef(null);
-  var setTextInputRef = function (element) {
+let React = require("react");
+let Stdlib_Nullable = require("@rescript/runtime/lib/js/Stdlib_Nullable.js");
+let Primitive_option = require("@rescript/runtime/lib/js/Primitive_option.js");
+let JsxRuntime = require("react/jsx-runtime");
+
+function _tempFile(props) {
+  let textInput = React.useRef(null);
+  let setTextInputRef = (element) => {
     textInput.current = element;
   };
-  var focusTextInput = function (param) {
-    Core__Nullable.forEach(textInput.current, function (input) {
+  let focusTextInput = (param) =>
+    Stdlib_Nullable.forEach(textInput.current, (input) => {
       input.focus();
     });
-  };
-  return React.createElement(
-    "div",
-    undefined,
-    React.createElement("input", {
-      ref: Caml_option.some(setTextInputRef),
-      type: "text",
-    }),
-    React.createElement("input", {
-      type: "button",
-      value: "Focus the text input",
-      onClick: focusTextInput,
-    }),
-  );
+  return JsxRuntime.jsxs("div", {
+    children: [
+      JsxRuntime.jsx("input", {
+        ref: Primitive_option.some(setTextInputRef),
+        type: "text",
+      }),
+      JsxRuntime.jsx("input", {
+        type: "button",
+        value: "Focus the text input",
+        onClick: focusTextInput,
+      }),
+    ],
+  });
 }
+
+let make = _tempFile;
+
+exports.make = make;
 ```
 
 </CodeTab>

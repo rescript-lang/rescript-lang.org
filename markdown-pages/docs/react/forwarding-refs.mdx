@@ -122,58 +122,55 @@ let make = () => {
 ```
 
 ```js
-import * as React from "react";
-import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
-import * as Caml_option from "rescript/lib/es6/caml_option.js";
+let React = require("react");
+let Stdlib_Option = require("@rescript/runtime/lib/js/Stdlib_Option.js");
+let Stdlib_Nullable = require("@rescript/runtime/lib/js/Stdlib_Nullable.js");
+let Primitive_option = require("@rescript/runtime/lib/js/Primitive_option.js");
+let JsxRuntime = require("react/jsx-runtime");
 
-var make = React.forwardRef(function (props, ref) {
-  return React.createElement(
-    "div",
-    undefined,
-    React.createElement("input", {
-      ref: Belt_Option.map(
-        ref == null ? undefined : Caml_option.some(ref),
-        function (prim) {
-          return prim;
-        },
-      ),
-      className: props.className,
-      type: "text",
-    }),
-    props.children,
-  );
-});
+let make = React.forwardRef((props, ref) =>
+  JsxRuntime.jsxs("div", {
+    children: [
+      JsxRuntime.jsx("input", {
+        ref: Stdlib_Option.map(
+          ref == null ? undefined : Primitive_option.some(ref),
+          (prim) => prim,
+        ),
+        className: props.className,
+        type: "text",
+      }),
+      props.children,
+    ],
+  }),
+);
 
-var FancyInput = {
+let FancyInput = {
   make: make,
 };
 
-function App(props) {
-  var input = React.useRef(null);
-  var onClick = function (param) {
-    Belt_Option.forEach(
-      Caml_option.nullable_to_opt(input.current),
-      function (input) {
-        input.focus();
-      },
-    );
-  };
-  return React.createElement(
-    "div",
-    undefined,
-    React.createElement(make, {
+function _tempFile(props) {
+  let input = React.useRef(null);
+  let focusInput = () =>
+    Stdlib_Nullable.forEach(input.current, (input) => {
+      input.focus();
+    });
+  let onClick = (param) => focusInput();
+  return JsxRuntime.jsx("div", {
+    children: JsxRuntime.jsx(make, {
       className: "fancy",
-      children: React.createElement(
-        "button",
-        {
-          onClick: onClick,
-        },
-        "Click to focus",
-      ),
+      children: JsxRuntime.jsx("button", {
+        children: "Click to focus",
+        onClick: onClick,
+      }),
       ref: input,
     }),
-  );
+  });
 }
+
+let make$1 = _tempFile;
+
+exports.FancyInput = FancyInput;
+exports.make = make$1;
 ```
 
 </CodeTab>

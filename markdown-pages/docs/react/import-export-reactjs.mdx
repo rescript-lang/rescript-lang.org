@@ -32,17 +32,22 @@ let make = () => {
 ```
 
 ```js
-import ReactConfetti from "react-confetti";
-import * as JsxRuntime from "react/jsx-runtime";
+let ReactConfetti = require("react-confetti").default;
+let JsxRuntime = require("react/jsx-runtime");
 
-var Confetti = {};
+let Confetti = {};
 
-function Playground(props) {
+function _tempFile(props) {
   return JsxRuntime.jsx(ReactConfetti, {
     width: 300,
     height: 300,
   });
 }
+
+let make = _tempFile;
+
+exports.Confetti = Confetti;
+exports.make = make;
 ```
 
 </CodeTab>
@@ -54,7 +59,7 @@ Use "default" to indicate the default export, or specify a named export if neede
 
 ### Named Export Example
 
-<CodeTab labels={["ReScript"]}>
+<CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res example
 // Equivalent of import { Foo } from "bar"
@@ -62,6 +67,12 @@ module Foo = {
   @module("bar") @react.component
   external make: unit => React.element = "Foo"
 }
+```
+
+```js
+let Foo = {};
+
+exports.Foo = Foo;
 ```
 
 </CodeTab>
@@ -92,17 +103,22 @@ let make = () => {
 ```
 
 ```js
-import ReactConfetti from "react-confetti";
-import * as JsxRuntime from "react/jsx-runtime";
+let ReactConfetti = require("react-confetti").default;
+let JsxRuntime = require("react/jsx-runtime");
 
-var Confetti = {};
+let Confetti = {};
 
-function Playground(props) {
+function _tempFile(props) {
   return JsxRuntime.jsx(ReactConfetti, {
     width: 300,
     height: 300,
   });
 }
+
+let make = _tempFile;
+
+exports.Confetti = Confetti;
+exports.make = make;
 ```
 
 </CodeTab>
@@ -133,17 +149,22 @@ let make = () => {
 ```
 
 ```js
-import ReactConfetti from "react-confetti";
-import * as JsxRuntime from "react/jsx-runtime";
+let ReactConfetti = require("react-confetti").default;
+let JsxRuntime = require("react/jsx-runtime");
 
-var Confetti = {};
+let Confetti = {};
 
-function Playground(props) {
+function _tempFile(props) {
   return JsxRuntime.jsx(ReactConfetti, {
     width: 300,
     height: 300,
   });
 }
+
+let make = _tempFile;
+
+exports.Confetti = Confetti;
+exports.make = make;
 ```
 
 </CodeTab>
@@ -172,18 +193,23 @@ let make = () => {
 ```
 
 ```js
-import Foo from "foo";
-import * as JsxRuntime from "react/jsx-runtime";
+let Foo = require("foo").default;
+let JsxRuntime = require("react/jsx-runtime");
 
-var Foo$1 = {};
+let Foo$1 = {};
 
-function Playground(props) {
+function _tempFile(props) {
   return JsxRuntime.jsx(Foo, {
     height: "300px",
     width: "300px",
     customProp: "bar",
   });
 }
+
+let make = _tempFile;
+
+exports.Foo = Foo$1;
+exports.make = make;
 ```
 
 </CodeTab>

@@ -39,15 +39,17 @@ let make = () => {
 ```
 
 ```js
-import * as React from "react";
+let JsxRuntime = require("react/jsx-runtime");
 
-function Greeting(props) {
+function _tempFile(props) {
   return JsxRuntime.jsx("div", {
     children: "Hello ReScripters!",
   });
 }
 
-var make = Greeting;
+let make = _tempFile;
+
+exports.make = make;
 ```
 
 </CodeTab>
@@ -78,20 +80,26 @@ let make = (~title: string, ~visitorCount: int, ~children: React.element) => {
 ```
 
 ```js
-import * as React from "react";
+let JsxRuntime = require("react/jsx-runtime");
 
-function Article(props) {
-  var visitorCountMsg = "You are visitor number: " + String(props.visitorCount);
-  return React.createElement(
-    "div",
-    undefined,
-    React.createElement("div", undefined, props.title),
-    React.createElement("div", undefined, visitorCountMsg),
-    props.children,
-  );
+function _tempFile(props) {
+  let visitorCountMsg = "You are visitor number: " + String(props.visitorCount);
+  return JsxRuntime.jsxs("div", {
+    children: [
+      JsxRuntime.jsx("div", {
+        children: props.title,
+      }),
+      JsxRuntime.jsx("div", {
+        children: visitorCountMsg,
+      }),
+      props.children,
+    ],
+  });
 }
 
-var make = Article;
+let make = _tempFile;
+
+exports.make = make;
 ```
 
 </CodeTab>
@@ -115,11 +123,19 @@ let make = (~name: option<string>=?) => {
 ```
 
 ```js
-function Greeting(props) {
-  var name = props.name;
-  var greeting = name !== undefined ? "Hello " + name + "!" : "Hello stranger!";
-  return React.createElement("div", undefined, greeting);
+let JsxRuntime = require("react/jsx-runtime");
+
+function _tempFile(props) {
+  let name = props.name;
+  let greeting = name !== undefined ? "Hello " + name + "!" : "Hello stranger!";
+  return JsxRuntime.jsx("div", {
+    children: greeting,
+  });
 }
+
+let make = _tempFile;
+
+exports.make = make;
 ```
 
 </CodeTab>
@@ -148,11 +164,25 @@ let name = Some("Andrea")
 ```
 
 ```js
-var name = "Andrea";
+let Stdlib_Option = require("@rescript/runtime/lib/js/Stdlib_Option.js");
+let JsxRuntime = require("react/jsx-runtime");
 
-React.createElement(Greeting, {
+function _tempFile$Greeting(props) {
+  return Stdlib_Option.getOr(props.name, "");
+}
+
+let Greeting = {
+  make: _tempFile$Greeting,
+};
+
+let name = "Andrea";
+
+JsxRuntime.jsx(_tempFile$Greeting, {
   name: name,
 });
+
+exports.Greeting = Greeting;
+exports.name = name;
 ```
 
 </CodeTab>
@@ -201,22 +231,40 @@ module MyList = {
 ```
 
 ```js
-function MyList(props) {
-  return React.createElement("ul", undefined, props.children);
+let Stdlib_Option = require("@rescript/runtime/lib/js/Stdlib_Option.js");
+let JsxRuntime = require("react/jsx-runtime");
+
+function _tempFile$Greeting(props) {
+  return Stdlib_Option.getOr(props.name, "");
 }
 
-var MyList = {
-  make: MyList,
+let Greeting = {
+  make: _tempFile$Greeting,
 };
 
-React.createElement(
-  MyList,
-  {
-    children: null,
-  },
-  React.createElement("li", undefined, "Item 1"),
-  React.createElement("li", undefined, "Item 2"),
-);
+function _tempFile$MyList(props) {
+  return JsxRuntime.jsx("ul", {
+    children: props.children,
+  });
+}
+
+let MyList = {
+  make: _tempFile$MyList,
+};
+
+JsxRuntime.jsxs(_tempFile$MyList, {
+  children: [
+    JsxRuntime.jsx("li", {
+      children: "Item 1",
+    }),
+    JsxRuntime.jsx("li", {
+      children: "Item 2",
+    }),
+  ],
+});
+
+exports.Greeting = Greeting;
+exports.MyList = MyList;
 ```
 
 </CodeTab>
@@ -386,18 +434,27 @@ let make = () => {
 ```
 
 ```js
-var React = require("react");
-var Greeting = require("./Greeting.js");
+let Stdlib_Option = require("@rescript/runtime/lib/js/Stdlib_Option.js");
+let JsxRuntime = require("react/jsx-runtime");
 
-function App(Props) {
-  return React.createElement(
-    "div",
-    undefined,
-    React.createElement(Greeting.make, {}),
-  );
+function _tempFile$Greeting(props) {
+  return Stdlib_Option.getOr(props.name, "");
 }
 
-var make = App;
+let Greeting = {
+  make: _tempFile$Greeting,
+};
+
+function _tempFile(props) {
+  return JsxRuntime.jsx("div", {
+    children: JsxRuntime.jsx(_tempFile$Greeting, {}),
+  });
+}
+
+let make = _tempFile;
+
+exports.Greeting = Greeting;
+exports.make = make;
 ```
 
 </CodeTab>
@@ -427,18 +484,35 @@ module Link = {
 ```
 
 ```js
-function make(props) {
-  return React.createElement("a", { href: props.href }, props.children);
+let Stdlib_Option = require("@rescript/runtime/lib/js/Stdlib_Option.js");
+let JsxRuntime = require("react/jsx-runtime");
+
+function _tempFile$Greeting(props) {
+  return Stdlib_Option.getOr(props.name, "");
 }
 
-var Link = {
+let Greeting = {
+  make: _tempFile$Greeting,
+};
+
+function make(props) {
+  return JsxRuntime.jsx("a", {
+    children: props.children,
+    href: props.href,
+  });
+}
+
+let Link = {
   make: make,
 };
 
-React.createElement(make, {
+JsxRuntime.jsx(make, {
   href: "/docs",
   children: "Docs",
 });
+
+exports.Greeting = Greeting;
+exports.Link = Link;
 ```
 
 </CodeTab>
