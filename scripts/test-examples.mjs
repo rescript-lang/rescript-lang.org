@@ -64,6 +64,21 @@ let parseFile = (content) => {
 
 let splitLines = (content) => content.split("\n");
 
+let parseCodeTabLabels = (line) => {
+  let match = line.match(/<CodeTab labels=\{(\[[^\n]+\])\}>/);
+
+  if (match == null) {
+    return null;
+  }
+
+  try {
+    let labels = JSON.parse(match[1]);
+    return Array.isArray(labels) ? labels : null;
+  } catch {
+    return null;
+  }
+};
+
 let fenceKind = (line) => {
   if (line.startsWith("```res example")) {
     return "res-example";
@@ -102,31 +117,61 @@ let collectPreludeBlocks = (content) => {
   return preludes;
 };
 
-export let collectCodeTabPairs = (content) => {
+let collectCodeTabTargets = ({ content, allowInsertions = false }) => {
   let lines = splitLines(content);
-  let pairs = [];
+  let targets = [];
   let warnings = [];
   let inTargetTab = false;
+  let tabStart = null;
+  let tabEnd = null;
+  let labels = null;
+  let labelLine = null;
   let pendingRes = null;
 
   for (let i = 0; i < lines.length; i++) {
     let line = lines[i];
+    let parsedLabels = parseCodeTabLabels(line);
 
-    if (line.includes('<CodeTab labels={["ReScript", "JS Output"]}>')) {
+    if (parsedLabels != null && parsedLabels.at(0) === "ReScript") {
       inTargetTab = true;
+      tabStart = i;
+      tabEnd = null;
+      labels = parsedLabels;
+      labelLine = i;
       pendingRes = null;
       continue;
     }
 
     if (inTargetTab && line.includes("</CodeTab>")) {
+      tabEnd = i;
       if (pendingRes != null) {
-        warnings.push({
-          line: pendingRes.line,
-          message: "missing paired JS Output block",
-        });
+        if (allowInsertions) {
+          targets.push({
+            tabStart,
+            tabEnd,
+            labels,
+            labelLine,
+            line: pendingRes.line,
+            res: pendingRes,
+            js: null,
+          });
+        } else if (
+          labels.includes("JS Output") ||
+          labels.includes("JS Output (Module)") ||
+          labels.includes("JS Output (CommonJS)")
+        ) {
+          warnings.push({
+            line: pendingRes.line,
+            message: "missing paired JS Output block",
+          });
+        }
       }
 
       inTargetTab = false;
+      tabStart = null;
+      tabEnd = null;
+      labels = null;
+      labelLine = null;
       pendingRes = null;
       continue;
     }
@@ -145,6 +190,8 @@ export let collectCodeTabPairs = (content) => {
       }
 
       pendingRes = {
+        fenceStart: i,
+        fenceEnd: end,
         line: i + 1,
         content: lines.slice(start, end).join("\n"),
       };
@@ -159,10 +206,17 @@ export let collectCodeTabPairs = (content) => {
         end++;
       }
 
-      pairs.push({
+      targets.push({
+        tabStart,
+        tabEnd,
+        labels,
+        labelLine,
         line: pendingRes.line,
         res: pendingRes,
         js: {
+          fenceKind: kind,
+          fenceStart: i,
+          fenceEnd: end,
           content: lines.slice(start, end).join("\n"),
         },
       });
@@ -172,7 +226,7 @@ export let collectCodeTabPairs = (content) => {
     }
   }
 
-  return { pairs, warnings };
+  return { targets, warnings };
 };
 
 let stripCompilerBoilerplate = (output) => {
@@ -207,6 +261,31 @@ let compileSnippet = (tempRoot, source) => {
   return fs.readFileSync(path.join(tempRoot, "src", "_tempFile.js"), "utf8");
 };
 
+let rewriteCodeTabLabel = ({ lines, target }) => {
+  if (target.labels.length === 1 && target.labels[0] === "ReScript") {
+    lines[target.labelLine] = '<CodeTab labels={["ReScript", "JS Output"]}>';
+  }
+};
+
+let applyJsOutputUpdate = ({ lines, target, compiledJs }) => {
+  let nextLines = [...lines];
+  let jsLines = compiledJs === "" ? [] : compiledJs.split("\n");
+
+  if (target.js != null) {
+    nextLines.splice(
+      target.js.fenceStart + 1,
+      target.js.fenceEnd - target.js.fenceStart - 1,
+      ...jsLines,
+    );
+  } else {
+    nextLines.splice(target.tabEnd, 0, "", "```js", ...jsLines, "```", "");
+  }
+
+  rewriteCodeTabLabel({ lines: nextLines, target });
+
+  return nextLines;
+};
+
 let ensureTempProject = (tempRoot) => {
   fs.mkdirSync(path.join(tempRoot, "src"), { recursive: true });
   fs.writeFileSync(path.join(tempRoot, "rescript.json"), rescriptJson);
@@ -223,10 +302,32 @@ let ensureTempProject = (tempRoot) => {
   }
 };
 
+export let collectCodeTabPairs = (content) => {
+  let { targets, warnings } = collectCodeTabTargets({ content });
+
+  return {
+    pairs: targets.map((target) => ({
+      line: target.line,
+      res: {
+        line: target.res.line,
+        content: target.res.content,
+      },
+      js:
+        target.js == null
+          ? null
+          : {
+              content: target.js.content,
+            },
+    })),
+    warnings,
+  };
+};
+
 export let run = ({
   docsRoot = path.join(projectRoot, "markdown-pages", "docs"),
   tempRoot = path.join(projectRoot, "temp"),
   logger = console,
+  update = false,
 } = {}) => {
   logger.log("Running tests...");
   ensureTempProject(tempRoot);
@@ -261,25 +362,42 @@ export let run = ({
     }
 
     let preludes = collectPreludeBlocks(content);
-    let { pairs, warnings: malformedWarnings } = collectCodeTabPairs(content);
+    let { targets, warnings: malformedWarnings } = collectCodeTabTargets({
+      content,
+      allowInsertions: update,
+    });
+    let nextLines = splitLines(content);
 
     for (let warning of malformedWarnings) {
       logger.warn(`${file}:${warning.line} ${warning.message}`);
       warningCount++;
     }
 
-    for (let pair of pairs) {
-      let snippetSource = buildSnippetSource({ preludes, pair });
+    for (let target of [...targets].reverse()) {
+      let snippetSource = buildSnippetSource({ preludes, pair: target });
       let compiledJs = compileSnippet(tempRoot, snippetSource);
       let expectedJs = stripCompilerBoilerplate(compiledJs);
-      let currentJs = pair.js.content.trimEnd();
+      let currentJs = target.js?.content.trimEnd() ?? null;
 
-      if (expectedJs !== currentJs) {
+      if (update) {
+        if (currentJs == null || expectedJs !== currentJs) {
+          nextLines = applyJsOutputUpdate({
+            lines: nextLines,
+            target,
+            compiledJs: expectedJs,
+          });
+        }
+      } else if (currentJs != null && expectedJs !== currentJs) {
         logger.warn(
-          `${file}:${pair.line} JS Output is stale. Run scripts/test-examples.mjs --update`,
+          `${file}:${target.line} JS Output is stale. Run scripts/test-examples.mjs --update`,
         );
         warningCount++;
       }
+    }
+
+    let nextContent = nextLines.join("\n");
+    if (update && nextContent !== content) {
+      fs.writeFileSync(file, nextContent);
     }
   });
 
@@ -287,6 +405,6 @@ export let run = ({
 };
 
 if (process.argv[1] && path.resolve(process.argv[1]) === __filename) {
-  let { success } = run();
+  let { success } = run({ update: process.argv.includes("--update") });
   process.exit(success ? 0 : 1);
 }

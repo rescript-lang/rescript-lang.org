@@ -92,6 +92,123 @@ console.log("stale");
   assert.match(nextContent, /console\.log\("stale"\);/);
 });
 
+test("update rewrites a stale JS Output fence", () => {
+  let fixture = `# Demo
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+\`\`\`res example
+let value = 1
+\`\`\`
+
+\`\`\`js
+console.log("stale");
+\`\`\`
+
+</CodeTab>
+`;
+
+  let { docsRoot, tempRoot, file } = makeWorkspace(fixture);
+  let { logger, warnings } = makeLogger();
+
+  let result = run({ docsRoot, tempRoot, logger, update: true });
+  let nextContent = fs.readFileSync(file, "utf8");
+
+  assert.equal(result.success, true);
+  assert.equal(result.warningCount, 0);
+  assert.deepEqual(warnings, []);
+  assert.match(nextContent, /let value = 1;/);
+  assert.match(nextContent, /exports\.value = value;/);
+  assert.doesNotMatch(nextContent, /console\.log\("stale"\);/);
+});
+
+test("update fills an empty JS Output fence", () => {
+  let fixture = `# Demo
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+\`\`\`res example
+let value = 1
+\`\`\`
+
+\`\`\`js
+\`\`\`
+
+</CodeTab>
+`;
+
+  let { docsRoot, tempRoot, file } = makeWorkspace(fixture);
+  let { logger, warnings } = makeLogger();
+
+  let result = run({ docsRoot, tempRoot, logger, update: true });
+  let nextContent = fs.readFileSync(file, "utf8");
+
+  assert.equal(result.success, true);
+  assert.equal(result.warningCount, 0);
+  assert.deepEqual(warnings, []);
+  assert.match(nextContent, /\`\`\`js/);
+  assert.match(nextContent, /let value = 1;/);
+  assert.match(nextContent, /exports\.value = value;/);
+});
+
+test("update inserts a missing JS Output fence and upgrades a single ReScript label", () => {
+  let fixture = `# Demo
+
+<CodeTab labels={["ReScript"]}>
+
+\`\`\`res example
+let value = 1
+\`\`\`
+
+</CodeTab>
+`;
+
+  let { docsRoot, tempRoot, file } = makeWorkspace(fixture);
+  let { logger, warnings } = makeLogger();
+
+  let result = run({ docsRoot, tempRoot, logger, update: true });
+  let nextContent = fs.readFileSync(file, "utf8");
+
+  assert.equal(result.success, true);
+  assert.equal(result.warningCount, 0);
+  assert.deepEqual(warnings, []);
+  assert.match(nextContent, /labels=\{\["ReScript", "JS Output"\]\}/);
+  assert.match(nextContent, /\`\`\`js/);
+  assert.match(nextContent, /let value = 1;/);
+  assert.match(nextContent, /exports\.value = value;/);
+  assert.match(nextContent, /\`\`\`\n\n<\/CodeTab>/);
+});
+
+test("update inserts a missing JS Output fence without renaming a multi-label tab", () => {
+  let fixture = `# Demo
+
+<CodeTab labels={["ReScript", "JS Output (Module)"]}>
+
+\`\`\`res example
+let value = 1
+\`\`\`
+
+</CodeTab>
+`;
+
+  let { docsRoot, tempRoot, file } = makeWorkspace(fixture);
+  let { logger, warnings } = makeLogger();
+
+  let result = run({ docsRoot, tempRoot, logger, update: true });
+  let nextContent = fs.readFileSync(file, "utf8");
+
+  assert.equal(result.success, true);
+  assert.equal(result.warningCount, 0);
+  assert.deepEqual(warnings, []);
+  assert.match(
+    nextContent,
+    /labels=\{\["ReScript", "JS Output \(Module\)"\]\}/,
+  );
+  assert.match(nextContent, /\`\`\`js/);
+  assert.match(nextContent, /let value = 1;/);
+  assert.match(nextContent, /exports\.value = value;/);
+});
+
 test("ignores standalone javascript fences outside a matching CodeTab", () => {
   let fixture = `# Demo
 

@@ -82,6 +82,12 @@ Run the checks with:
 node scripts/test-examples.mjs
 ```
 
+Refresh stale or missing JS Output fences with:
+
+```sh
+node scripts/test-examples.mjs --update
+```
+
 ### Markdown Hyperlink Tests
 
 We are also verifying markdown href links to relative resources (via
