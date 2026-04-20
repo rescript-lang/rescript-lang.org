@@ -65,8 +65,8 @@ let parseFile = (content) => {
 let splitLines = (content) => content.split("\n");
 
 let fenceKind = (line) => {
-  if (line.startsWith("```res")) {
-    return "res";
+  if (line.startsWith("```res example")) {
+    return "res-example";
   }
 
   if (line.startsWith("```js") || line.startsWith("```javascript")) {
@@ -102,7 +102,7 @@ let collectPreludeBlocks = (content) => {
   return preludes;
 };
 
-let collectCodeTabPairs = (content) => {
+export let collectCodeTabPairs = (content) => {
   let lines = splitLines(content);
   let pairs = [];
   let warnings = [];
@@ -137,7 +137,7 @@ let collectCodeTabPairs = (content) => {
 
     let kind = fenceKind(line);
 
-    if (kind === "res") {
+    if (kind === "res-example") {
       let start = i + 1;
       let end = start;
       while (end < lines.length && !lines[end].startsWith("```")) {

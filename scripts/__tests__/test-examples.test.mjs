@@ -4,7 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-import { run } from "../test-examples.mjs";
+import { collectCodeTabPairs, run } from "../test-examples.mjs";
 
 let makeWorkspace = (
   content = `# Example
@@ -111,6 +111,46 @@ console.log("leave me alone");
 
   assert.equal(result.success, true);
   assert.equal(result.warningCount, 0);
+});
+
+test("collectCodeTabPairs ignores plain res fences inside a matching CodeTab", () => {
+  let fixture = `# Demo
+
+\`\`\`res example
+let keepCompilerPathAlive = 1
+\`\`\`
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+\`\`\`res
+let hiddenValue = 1
+\`\`\`
+
+\`\`\`js
+console.log("leave me alone");
+\`\`\`
+
+</CodeTab>
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+\`\`\`res example
+let visibleValue = 2
+\`\`\`
+
+\`\`\`js
+console.log("stale");
+\`\`\`
+
+</CodeTab>
+`;
+
+  let { pairs, warnings } = collectCodeTabPairs(fixture);
+
+  assert.equal(warnings.length, 0);
+  assert.equal(pairs.length, 1);
+  assert.equal(pairs[0].res.content, "let visibleValue = 2");
+  assert.equal(pairs[0].js.content, 'console.log("stale");');
 });
 
 test("warns and skips malformed CodeTabs that never provide a JS Output fence", () => {
