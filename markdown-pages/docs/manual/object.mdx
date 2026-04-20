@@ -56,10 +56,12 @@ let me = {
 ```
 
 ```js
-var me = {
+let me = {
   age: 5,
   name: "Big ReScript",
 };
+
+exports.me = me;
 ```
 
 </CodeTab>
@@ -127,7 +129,8 @@ student1["name"] = "Mary"
 ```
 
 ```js
-var MyJSFile = require("MyJSFile");
+let MyJSFile = require("MyJSFile");
+
 MyJSFile.student1.name = "Mary";
 ```
 
@@ -157,11 +160,13 @@ let myPoint: point3d = {
 ```
 
 ```js
-var myPoint = {
+let myPoint = {
   x: 1.0,
   y: 2.0,
   z: 3.0,
 };
+
+exports.myPoint = myPoint;
 ```
 
 </CodeTab>
@@ -192,11 +197,15 @@ document["location"]["href"] = "rescript-lang.org"
 ```
 
 ```js
-document.addEventListener("mouseup", function (_event) {
+document.addEventListener("mouseup", (_event) => {
   console.log("clicked!");
 });
-var loc = document.location;
+
+let loc = document.location;
+
 document.location.href = "rescript-lang.org";
+
+exports.loc = loc;
 ```
 
 </CodeTab>

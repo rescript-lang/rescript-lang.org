@@ -189,10 +189,12 @@ let fetchData = async () => {
 ```
 
 ```js
-async function fetchData(param) {
-  var mail = (await GlobalAPI.fetchUserMail("1234")).toUpperCase();
-  console.log("All upper-cased mail: " + mail + "");
+async function fetchData() {
+  let mail = (await GlobalAPI.fetchUserMail("1234")).toUpperCase();
+  console.log(`All upper-cased mail: ` + mail);
 }
+
+exports.fetchData = fetchData;
 ```
 
 </CodeTab>
@@ -221,15 +223,17 @@ let fetchData = async () => {
 ```
 
 ```js
-async function fetchData(param) {
-  var val;
-  var val$1;
+let Primitive_exceptions = require("@rescript/runtime/lib/js/Primitive_exceptions.js");
+
+async function fetchData() {
+  let val;
+  let val$1;
   try {
     val = await GlobalAPI.fetchUserMail("user1");
     val$1 = await GlobalAPI.fetchUserMail("user2");
   } catch (raw_err) {
-    var err = Caml_js_exceptions.internalToOCamlException(raw_err);
-    if (err.RE_EXN_ID === "JsError") {
+    let err = Primitive_exceptions.internalToException(raw_err);
+    if (err.RE_EXN_ID === "JsExn") {
       console.log("Some error occurred", err._1);
       return;
     }
@@ -238,6 +242,8 @@ async function fetchData(param) {
   console.log("user 1 mail: " + val);
   console.log("user 2 mail: " + val$1);
 }
+
+exports.fetchData = fetchData;
 ```
 
 </CodeTab>

@@ -19,9 +19,15 @@ let newScore = 10 + score
 ```
 
 ```js
-var greeting = "hello!";
-var score = 10;
-var newScore = 20;
+let newScore = 20;
+
+let greeting = "hello!";
+
+let score = 10;
+
+exports.greeting = greeting;
+exports.score = score;
+exports.newScore = newScore;
 ```
 
 </CodeTab>
@@ -42,7 +48,9 @@ let message = {
 ```
 
 ```js
-var message = "hello world";
+let message = "hello world";
+
+exports.message = message;
 ```
 
 </CodeTab>
@@ -144,9 +152,13 @@ Console.log(result) // prints 1
 ```
 
 ```js
-var result = 1;
 console.log("hello");
+
 console.log(1);
+
+let result = 1;
+
+exports.result = result;
 ```
 
 </CodeTab>

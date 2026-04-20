@@ -39,7 +39,14 @@ let five = myValue.contents // 5
 ```
 
 ```js
-var five = myValue.contents;
+let myValue = {
+  contents: 5,
+};
+
+let five = myValue.contents;
+
+exports.myValue = myValue;
+exports.five = five;
 ```
 
 </CodeTab>
@@ -53,7 +60,13 @@ myValue.contents = 6
 ```
 
 ```js
+let myValue = {
+  contents: 5,
+};
+
 myValue.contents = 6;
+
+exports.myValue = myValue;
 ```
 
 </CodeTab>
@@ -67,7 +80,13 @@ myValue := 6
 ```
 
 ```js
+let myValue = {
+  contents: 5,
+};
+
 myValue.contents = 6;
+
+exports.myValue = myValue;
 ```
 
 </CodeTab>

@@ -29,9 +29,14 @@ Console.log(x) // 10
 ```
 
 ```js
-var coordinates = [10, 20, 30];
-var x = 10;
 console.log(10);
+
+let coordinates = [10, 20, 30];
+
+let x = 10;
+
+exports.coordinates = coordinates;
+exports.x = x;
 ```
 
 </CodeTab>
@@ -111,11 +116,12 @@ function displayMessage(m) {
   console.log(m._0);
 }
 
-displayMessage(
-  /* Success */ {
-    _0: "You did it!",
-  },
-);
+displayMessage({
+  TAG: "Success",
+  _0: "You did it!",
+});
+
+exports.displayMessage = displayMessage;
 ```
 
 </CodeTab>
@@ -188,7 +194,7 @@ switch data {
 ```
 
 ```js
-var data = {
+let data = {
   TAG: "GoodResult",
   _0: "Product shipped!",
 };
@@ -202,6 +208,8 @@ if (typeof data !== "object") {
 } else {
   console.log("Success! Product shipped!");
 }
+
+exports.data = data;
 ```
 
 </CodeTab>
@@ -394,11 +402,73 @@ switch person1 {
 ```
 
 ```js
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
 if (person1.TAG === "Teacher") {
   console.log("Hi teacher");
 } else {
   console.log("Hey student");
 }
+
+exports.person1 = person1;
+exports.message = message;
+exports.myStatus = myStatus;
 ```
 
 </CodeTab>
@@ -415,11 +485,73 @@ switch myStatus {
 ```
 
 ```js
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
 if (typeof myStatus !== "object" || myStatus.TAG !== "Vacations") {
   console.log("Ok.");
 } else {
   console.log("Have fun!");
 }
+
+exports.person1 = person1;
+exports.message = message;
+exports.myStatus = myStatus;
 ```
 
 </CodeTab>
@@ -436,11 +568,73 @@ switch myStatus {
 ```
 
 ```js
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
 if (typeof myStatus !== "object" || myStatus.TAG !== "Vacations") {
   console.log("Ok.");
 } else {
   console.log("Have fun!");
 }
+
+exports.person1 = person1;
+exports.message = message;
+exports.myStatus = myStatus;
 ```
 
 </CodeTab>
@@ -466,6 +660,64 @@ switch person1 {
 ```
 
 ```js
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
 if (person1.TAG !== "Teacher") {
   if ("Jane".reportCard.gpa < 0.5) {
     console.log("What's happening");
@@ -473,6 +725,10 @@ if (person1.TAG !== "Teacher") {
     console.log("Heyo");
   }
 }
+
+exports.person1 = person1;
+exports.message = message;
+exports.myStatus = myStatus;
 ```
 
 </CodeTab>
@@ -493,13 +749,75 @@ switch person1 {
 ```
 
 ```js
-if (person1.TAG) {
-  if (person1.reportCard.gpa < 0.5) {
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
+if (person1.TAG !== "Teacher") {
+  if ("Jane".reportCard.gpa < 0.5) {
     console.log("What's happening");
   } else {
     console.log("Heyo");
   }
 }
+
+exports.person1 = person1;
+exports.message = message;
+exports.myStatus = myStatus;
 ```
 
 </CodeTab>
@@ -731,9 +1049,67 @@ switch students {
 ```
 
 ```js
-var students = ["Jane", "Harvey", "Patrick"];
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
 
-var len = students.length;
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
+let students = ["Jane", "Harvey", "Patrick"];
+
+let len = students.length;
 
 if (len !== 1) {
   if (len !== 0) {
@@ -742,9 +1118,14 @@ if (len !== 1) {
     console.log("There are no students");
   }
 } else {
-  var student1 = students[0];
+  let student1 = students[0];
   console.log("There's a single student here: " + student1);
 }
+
+exports.person1 = person1;
+exports.message = message;
+exports.myStatus = myStatus;
+exports.students = students;
 ```
 
 </CodeTab>
@@ -769,15 +1150,73 @@ printStudents(list{"Jane", "Harvey", "Patrick"})
 ```
 
 ```js
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
 function printStudents(_students) {
   while (true) {
-    var students = _students;
-    if (!students) {
+    let students = _students;
+    if (students === 0) {
       return;
     }
-    var otherStudents = students.tl;
-    var student = students.hd;
-    if (otherStudents) {
+    let otherStudents = students.tl;
+    let student = students.hd;
+    if (otherStudents !== 0) {
       console.log(student);
       _students = otherStudents;
       continue;
@@ -797,6 +1236,11 @@ printStudents({
     },
   },
 });
+
+exports.person1 = person1;
+exports.message = message;
+exports.myStatus = myStatus;
+exports.printStudents = printStudents;
 ```
 
 </CodeTab>
@@ -875,10 +1319,84 @@ switch coordinates {
 ```
 
 ```js
-var coordinates = [10, 20, 30];
-var centerY = 20;
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
+let d = {
+  A: 5,
+  B: 6,
+};
 
 console.log(10);
+
+let b = d.B;
+
+let coordinates = [10, 20, 30];
+
+let centerY = 20;
+
+exports.person1 = person1;
+exports.message = message;
+exports.myStatus = myStatus;
+exports.d = d;
+exports.b = b;
+exports.coordinates = coordinates;
+exports.centerY = centerY;
 ```
 
 </CodeTab>
@@ -974,13 +1492,81 @@ switch myNullableValue {
 ```
 
 ```js
-var myNullableValue = 5;
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
 
-if (myNullableValue !== undefined) {
-  console.log("value is present");
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
 } else {
-  console.log("value is absent");
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
 }
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
+let d = {
+  A: 5,
+  B: 6,
+};
+
+console.log("value is present");
+
+let b = d.B;
+
+let myNullableValue = 5;
+
+exports.person1 = person1;
+exports.message = message;
+exports.myStatus = myStatus;
+exports.d = d;
+exports.b = b;
+exports.myNullableValue = myNullableValue;
 ```
 
 </CodeTab>
@@ -1014,6 +1600,69 @@ let optionBoolToBool = opt => {
 ```
 
 ```js
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
+let d = {
+  A: 5,
+  B: 6,
+};
+
 function optionBoolToBool(opt) {
   if (opt === undefined) {
     return false;
@@ -1021,6 +1670,15 @@ function optionBoolToBool(opt) {
     return opt === true;
   }
 }
+
+let b = d.B;
+
+exports.person1 = person1;
+exports.message = message;
+exports.myStatus = myStatus;
+exports.d = d;
+exports.b = b;
+exports.optionBoolToBool = optionBoolToBool;
 ```
 
 </CodeTab>
@@ -1039,13 +1697,85 @@ let optionBoolToBool = opt => {
 ```
 
 ```js
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
+let d = {
+  A: 5,
+  B: 6,
+};
+
 function optionBoolToBool(opt) {
-  if (opt !== undefined && opt) {
-    return true;
+  if (opt !== undefined) {
+    return opt;
   } else {
     return false;
   }
 }
+
+let b = d.B;
+
+exports.person1 = person1;
+exports.message = message;
+exports.myStatus = myStatus;
+exports.d = d;
+exports.b = b;
+exports.optionBoolToBool = optionBoolToBool;
 ```
 
 </CodeTab>
@@ -1065,13 +1795,85 @@ let optionBoolToBool = opt => {
 ```
 
 ```js
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
+let d = {
+  A: 5,
+  B: 6,
+};
+
 function optionBoolToBool(opt) {
-  if (opt !== undefined && opt) {
-    return true;
+  if (opt !== undefined) {
+    return opt;
   } else {
     return false;
   }
 }
+
+let b = d.B;
+
+exports.person1 = person1;
+exports.message = message;
+exports.myStatus = myStatus;
+exports.d = d;
+exports.b = b;
+exports.optionBoolToBool = optionBoolToBool;
 ```
 
 </CodeTab>
@@ -1090,13 +1892,85 @@ let optionBoolToBool = opt => {
 ```
 
 ```js
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
+let d = {
+  A: 5,
+  B: 6,
+};
+
 function optionBoolToBool(opt) {
-  if (opt !== undefined && opt) {
-    return true;
+  if (opt !== undefined) {
+    return opt;
   } else {
     return false;
   }
 }
+
+let b = d.B;
+
+exports.person1 = person1;
+exports.message = message;
+exports.myStatus = myStatus;
+exports.d = d;
+exports.b = b;
+exports.optionBoolToBool = optionBoolToBool;
 ```
 
 </CodeTab>
@@ -1115,6 +1989,69 @@ let optionBoolToBool = opt => {
 ```
 
 ```js
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
+let d = {
+  A: 5,
+  B: 6,
+};
+
 function optionBoolToBool(opt) {
   if (opt !== undefined) {
     return opt;
@@ -1122,6 +2059,15 @@ function optionBoolToBool(opt) {
     return false;
   }
 }
+
+let b = d.B;
+
+exports.person1 = person1;
+exports.message = message;
+exports.myStatus = myStatus;
+exports.d = d;
+exports.b = b;
+exports.optionBoolToBool = optionBoolToBool;
 ```
 
 </CodeTab>

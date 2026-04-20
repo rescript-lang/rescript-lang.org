@@ -122,15 +122,11 @@ send(setWaitDuration(asyncRequest(), 4000))
 ```
 
 ```js
-var result = [1, 2, 3]
-  .map(function (a) {
-    return (a + 1) | 0;
-  })
-  .filter(function (a) {
-    return a % 2 === 0;
-  });
+let result = [1, 2, 3].map((a) => (a + 1) | 0).filter((a) => a % 2 === 0);
 
 asyncRequest().setWaitDuration(4000).send();
+
+exports.result = result;
 ```
 
 </CodeTab>
@@ -148,15 +144,11 @@ asyncRequest()->setWaitDuration(4000)->send
 ```
 
 ```js
-var result = [1, 2, 3]
-  .map(function (a) {
-    return (a + 1) | 0;
-  })
-  .filter(function (a) {
-    return a % 2 === 0;
-  });
+let result = [1, 2, 3].map((a) => (a + 1) | 0).filter((a) => a % 2 === 0);
 
 asyncRequest().setWaitDuration(4000).send();
+
+exports.result = result;
 ```
 
 </CodeTab>

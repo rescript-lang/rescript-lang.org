@@ -126,7 +126,7 @@ for x in 1 to 3 {
 ```
 
 ```js
-for (var x = 1; x <= 3; ++x) {
+for (let x = 1; x <= 3; ++x) {
   console.log(x);
 }
 ```
@@ -161,7 +161,7 @@ for x in 3 downto 1 {
 ```
 
 ```js
-for (var x = 3; x >= 1; --x) {
+for (let x = 3; x >= 1; --x) {
   console.log(x);
 }
 ```
@@ -207,7 +207,7 @@ while !break.contents {
 ```
 
 ```js
-var $$break = {
+let $$break = {
   contents: false,
 };
 
@@ -218,6 +218,8 @@ while (!$$break.contents) {
     console.log("Still running");
   }
 }
+
+exports.$$break = $$break;
 ```
 
 </CodeTab>

@@ -21,10 +21,10 @@ throw(InputClosed("The stream has closed!"))
 ```
 
 ```js
-import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js";
+let Primitive_exceptions = require("@rescript/runtime/lib/js/Primitive_exceptions.js");
 
 let InputClosed = /* @__PURE__ */ Primitive_exceptions.create(
-  "Playground.InputClosed",
+  "_tempFile.InputClosed",
 );
 
 throw {
@@ -32,6 +32,8 @@ throw {
   _1: "The stream has closed!",
   Error: new Error(),
 };
+
+exports.InputClosed = InputClosed;
 ```
 
 </CodeTab>
@@ -163,8 +165,61 @@ try divide(2, 0)->Console.log catch {
 ````
 
 ```js
-import * as Primitive_int from "./stdlib/Primitive_int.js";
-import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js";
+let Stdlib_List = require("@rescript/runtime/lib/js/Stdlib_List.js");
+let Primitive_int = require("@rescript/runtime/lib/js/Primitive_int.js");
+let Primitive_exceptions = require("@rescript/runtime/lib/js/Primitive_exceptions.js");
+
+function getItem(item) {
+  if (item === 3) {
+    return 1;
+  }
+  throw {
+    RE_EXN_ID: "Not_found",
+    Error: new Error()
+  };
+}
+
+let result;
+
+try {
+  result = getItem(2);
+} catch (raw_exn) {
+  let exn = Primitive_exceptions.internalToException(raw_exn);
+  if (exn.RE_EXN_ID === "Not_found") {
+    result = 0;
+  } else {
+    throw exn;
+  }
+}
+
+let exit = 0;
+
+let item;
+
+try {
+  item = Stdlib_List.getOrThrow({
+    hd: 1,
+    tl: {
+      hd: 2,
+      tl: {
+        hd: 3,
+        tl: /* [] */0
+      }
+    }
+  }, 4);
+  exit = 1;
+} catch (raw_exn$1) {
+  let exn$1 = Primitive_exceptions.internalToException(raw_exn$1);
+  if (exn$1.RE_EXN_ID === "Not_found") {
+    console.log("No such item found!");
+  } else {
+    throw exn$1;
+  }
+}
+
+if (exit === 1) {
+  console.log(item);
+}
 
 function divide(a, b) {
   if (b === 0) {
@@ -187,6 +242,10 @@ try {
     throw msg;
   }
 }
+
+exports.getItem = getItem;
+exports.result = result;
+exports.divide = divide;
 ````
 
 </CodeTab>
@@ -216,7 +275,63 @@ try decodeUser(%raw("{}"))->Console.log catch {
 ```
 
 ```js
-import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js";
+let Stdlib_List = require("@rescript/runtime/lib/js/Stdlib_List.js");
+let Primitive_exceptions = require("@rescript/runtime/lib/js/Primitive_exceptions.js");
+
+function getItem(item) {
+  if (item === 3) {
+    return 1;
+  }
+  throw {
+    RE_EXN_ID: "Not_found",
+    Error: new Error(),
+  };
+}
+
+let result;
+
+try {
+  result = getItem(2);
+} catch (raw_exn) {
+  let exn = Primitive_exceptions.internalToException(raw_exn);
+  if (exn.RE_EXN_ID === "Not_found") {
+    result = 0;
+  } else {
+    throw exn;
+  }
+}
+
+let exit = 0;
+
+let item;
+
+try {
+  item = Stdlib_List.getOrThrow(
+    {
+      hd: 1,
+      tl: {
+        hd: 2,
+        tl: {
+          hd: 3,
+          tl: /* [] */ 0,
+        },
+      },
+    },
+    4,
+  );
+  exit = 1;
+} catch (raw_exn$1) {
+  let exn$1 = Primitive_exceptions.internalToException(raw_exn$1);
+  if (exn$1.RE_EXN_ID === "Not_found") {
+    console.log("No such item found!");
+  } else {
+    throw exn$1;
+  }
+}
+
+if (exit === 1) {
+  console.log(item);
+}
 
 function decodeUser(json) {
   if (typeof json === "object" && json !== null && !Array.isArray(json)) {
@@ -227,13 +342,13 @@ function decodeUser(json) {
     }
     throw {
       RE_EXN_ID: "Assert_failure",
-      _1: ["playground.res", 6, 11],
+      _1: ["_tempFile.res", 26, 11],
       Error: new Error(),
     };
   }
   throw {
     RE_EXN_ID: "Assert_failure",
-    _1: ["playground.res", 8, 9],
+    _1: ["_tempFile.res", 28, 9],
     Error: new Error(),
   };
 }
@@ -248,6 +363,10 @@ try {
     throw loc;
   }
 }
+
+exports.getItem = getItem;
+exports.result = result;
+exports.decodeUser = decodeUser;
 ```
 
 </CodeTab>
@@ -279,7 +398,60 @@ false
 ````
 
 ```js
-import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js";
+let Stdlib_List = require("@rescript/runtime/lib/js/Stdlib_List.js");
+let Primitive_exceptions = require("@rescript/runtime/lib/js/Primitive_exceptions.js");
+
+function getItem(item) {
+  if (item === 3) {
+    return 1;
+  }
+  throw {
+    RE_EXN_ID: "Not_found",
+    Error: new Error()
+  };
+}
+
+let result;
+
+try {
+  result = getItem(2);
+} catch (raw_exn) {
+  let exn = Primitive_exceptions.internalToException(raw_exn);
+  if (exn.RE_EXN_ID === "Not_found") {
+    result = 0;
+  } else {
+    throw exn;
+  }
+}
+
+let exit = 0;
+
+let item;
+
+try {
+  item = Stdlib_List.getOrThrow({
+    hd: 1,
+    tl: {
+      hd: 2,
+      tl: {
+        hd: 3,
+        tl: /* [] */0
+      }
+    }
+  }, 4);
+  exit = 1;
+} catch (raw_exn$1) {
+  let exn$1 = Primitive_exceptions.internalToException(raw_exn$1);
+  if (exn$1.RE_EXN_ID === "Not_found") {
+    console.log("No such item found!");
+  } else {
+    throw exn$1;
+  }
+}
+
+if (exit === 1) {
+  console.log(item);
+}
 
 function isValidEmail(email) {
   let hasAtSign = email.includes("@");
@@ -307,6 +479,11 @@ try {
     throw msg;
   }
 }
+
+exports.getItem = getItem;
+exports.result = result;
+exports.isValidEmail = isValidEmail;
+exports.isValid = isValid;
 ````
 
 </CodeTab>
@@ -327,23 +504,75 @@ Console.log(result) // None
 ````
 
 ```js
-import * as Primitive_int from "./stdlib/Primitive_int.js";
-import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js";
+let Stdlib_List = require("@rescript/runtime/lib/js/Stdlib_List.js");
+let Primitive_int = require("@rescript/runtime/lib/js/Primitive_int.js");
+let Primitive_exceptions = require("@rescript/runtime/lib/js/Primitive_exceptions.js");
+
+function getItem(item) {
+  if (item === 3) {
+    return 1;
+  }
+  throw {
+    RE_EXN_ID: "Not_found",
+    Error: new Error()
+  };
+}
+
+try {
+  getItem(2);
+} catch (raw_exn) {
+  let exn = Primitive_exceptions.internalToException(raw_exn);
+  if (exn.RE_EXN_ID !== "Not_found") {
+    throw exn;
+  }
+}
+
+let exit = 0;
+
+let item;
+
+try {
+  item = Stdlib_List.getOrThrow({
+    hd: 1,
+    tl: {
+      hd: 2,
+      tl: {
+        hd: 3,
+        tl: /* [] */0
+      }
+    }
+  }, 4);
+  exit = 1;
+} catch (raw_exn$1) {
+  let exn$1 = Primitive_exceptions.internalToException(raw_exn$1);
+  if (exn$1.RE_EXN_ID === "Not_found") {
+    console.log("No such item found!");
+  } else {
+    throw exn$1;
+  }
+}
+
+if (exit === 1) {
+  console.log(item);
+}
 
 let result;
 
 try {
   result = Primitive_int.div(10, 0);
-} catch (raw_exn) {
-  let exn = Primitive_exceptions.internalToException(raw_exn);
-  if (exn.RE_EXN_ID === "Division_by_zero") {
+} catch (raw_exn$2) {
+  let exn$2 = Primitive_exceptions.internalToException(raw_exn$2);
+  if (exn$2.RE_EXN_ID === "Division_by_zero") {
     result = undefined;
   } else {
-    throw exn;
+    throw exn$2;
   }
 }
 
 console.log(result);
+
+exports.getItem = getItem;
+exports.result = result;
 ````
 
 </CodeTab>
@@ -399,11 +628,72 @@ let myTest = () => {
 ```
 
 ```js
-import * as Stdlib_JsError from "./stdlib/Stdlib_JsError.js";
+let Stdlib_List = require("@rescript/runtime/lib/js/Stdlib_List.js");
+let Stdlib_JsError = require("@rescript/runtime/lib/js/Stdlib_JsError.js");
+let Primitive_exceptions = require("@rescript/runtime/lib/js/Primitive_exceptions.js");
+
+function getItem(item) {
+  if (item === 3) {
+    return 1;
+  }
+  throw {
+    RE_EXN_ID: "Not_found",
+    Error: new Error(),
+  };
+}
+
+let result;
+
+try {
+  result = getItem(2);
+} catch (raw_exn) {
+  let exn = Primitive_exceptions.internalToException(raw_exn);
+  if (exn.RE_EXN_ID === "Not_found") {
+    result = 0;
+  } else {
+    throw exn;
+  }
+}
+
+let exit = 0;
+
+let item;
+
+try {
+  item = Stdlib_List.getOrThrow(
+    {
+      hd: 1,
+      tl: {
+        hd: 2,
+        tl: {
+          hd: 3,
+          tl: /* [] */ 0,
+        },
+      },
+    },
+    4,
+  );
+  exit = 1;
+} catch (raw_exn$1) {
+  let exn$1 = Primitive_exceptions.internalToException(raw_exn$1);
+  if (exn$1.RE_EXN_ID === "Not_found") {
+    console.log("No such item found!");
+  } else {
+    throw exn$1;
+  }
+}
+
+if (exit === 1) {
+  console.log(item);
+}
 
 function myTest() {
   return Stdlib_JsError.throwWithMessage("Hello!");
 }
+
+exports.getItem = getItem;
+exports.result = result;
+exports.myTest = myTest;
 ```
 
 </CodeTab>
@@ -432,9 +722,71 @@ let myTest = () => {
 ```
 
 ```js
+let Stdlib_List = require("@rescript/runtime/lib/js/Stdlib_List.js");
+let Primitive_exceptions = require("@rescript/runtime/lib/js/Primitive_exceptions.js");
+
+function getItem(item) {
+  if (item === 3) {
+    return 1;
+  }
+  throw {
+    RE_EXN_ID: "Not_found",
+    Error: new Error(),
+  };
+}
+
+let result;
+
+try {
+  result = getItem(2);
+} catch (raw_exn) {
+  let exn = Primitive_exceptions.internalToException(raw_exn);
+  if (exn.RE_EXN_ID === "Not_found") {
+    result = 0;
+  } else {
+    throw exn;
+  }
+}
+
+let exit = 0;
+
+let item;
+
+try {
+  item = Stdlib_List.getOrThrow(
+    {
+      hd: 1,
+      tl: {
+        hd: 2,
+        tl: {
+          hd: 3,
+          tl: /* [] */ 0,
+        },
+      },
+    },
+    4,
+  );
+  exit = 1;
+} catch (raw_exn$1) {
+  let exn$1 = Primitive_exceptions.internalToException(raw_exn$1);
+  if (exn$1.RE_EXN_ID === "Not_found") {
+    console.log("No such item found!");
+  } else {
+    throw exn$1;
+  }
+}
+
+if (exit === 1) {
+  console.log(item);
+}
+
 function myTest() {
   throw "some non-error value!";
 }
+
+exports.getItem = getItem;
+exports.result = result;
+exports.myTest = myTest;
 ```
 
 </CodeTab>
@@ -465,19 +817,80 @@ let myTest = () => {
 ```
 
 ```js
-import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js";
+let Stdlib_List = require("@rescript/runtime/lib/js/Stdlib_List.js");
+let Primitive_exceptions = require("@rescript/runtime/lib/js/Primitive_exceptions.js");
+
+function getItem(item) {
+  if (item === 3) {
+    return 1;
+  }
+  throw {
+    RE_EXN_ID: "Not_found",
+    Error: new Error(),
+  };
+}
+
+let result;
+
+try {
+  result = getItem(2);
+} catch (raw_exn) {
+  let exn = Primitive_exceptions.internalToException(raw_exn);
+  if (exn.RE_EXN_ID === "Not_found") {
+    result = 0;
+  } else {
+    throw exn;
+  }
+}
+
+let exit = 0;
+
+let item;
+
+try {
+  item = Stdlib_List.getOrThrow(
+    {
+      hd: 1,
+      tl: {
+        hd: 2,
+        tl: {
+          hd: 3,
+          tl: /* [] */ 0,
+        },
+      },
+    },
+    4,
+  );
+  exit = 1;
+} catch (raw_exn$1) {
+  let exn$1 = Primitive_exceptions.internalToException(raw_exn$1);
+  if (exn$1.RE_EXN_ID === "Not_found") {
+    console.log("No such item found!");
+  } else {
+    throw exn$1;
+  }
+}
+
+if (exit === 1) {
+  console.log(item);
+}
 
 let BadArgument = /* @__PURE__ */ Primitive_exceptions.create(
-  "Playground.BadArgument",
+  "_tempFile.BadArgument",
 );
 
 function myTest() {
   throw {
-    RE_EXN_ID: BadArgument, // `RE_EXN_ID` is an internal API and you should NEVER try and access it from JavaScript
+    RE_EXN_ID: BadArgument,
     myMessage: "Oops!",
     Error: new Error(),
   };
 }
+
+exports.getItem = getItem;
+exports.result = result;
+exports.BadArgument = BadArgument;
+exports.myTest = myTest;
 ```
 
 </CodeTab>

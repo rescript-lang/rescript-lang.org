@@ -40,8 +40,11 @@ let root = dirname("/User/github") // returns "User"
 ```
 
 ```js
-import * as Path from "path";
-var root = Path.dirname("/User/github");
+let Path = require("path");
+
+let root = Path.dirname("/User/github");
+
+exports.root = root;
 ```
 
 ```js
@@ -71,8 +74,16 @@ let paddedResult = leftPad("hi", 5)
 ```
 
 ```js
-import * as LeftPad from "./leftPad";
-var paddedResult = LeftPad("hi", 5);
+let LeftPad = require("./leftPad");
+
+function leftPad(prim0, prim1) {
+  return LeftPad(prim0, prim1);
+}
+
+let paddedResult = LeftPad("hi", 5);
+
+exports.leftPad = leftPad;
+exports.paddedResult = paddedResult;
 ```
 
 ```js
@@ -96,8 +107,13 @@ Console.log(studentName)
 ```
 
 ```js
-import Student from "./student";
-var studentName = Student;
+let Student = require("./student").default;
+
+let studentName = Student;
+
+console.log(studentName);
+
+exports.studentName = studentName;
 ```
 
 </CodeTab>
@@ -235,11 +251,9 @@ let default = "Bob"
 ```
 
 ```js
-var $$default = "Bob";
+let $$default = "Bob";
 
-exports.$$default = $$default;
 exports.default = $$default;
-// informal transpiler-compatible marker of a default export compiled from JavaScript module
 exports.__esModule = true;
 ```
 

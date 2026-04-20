@@ -25,8 +25,12 @@ let multilineGreeting = "Hello
 ```
 
 ```js
-var greeting = "Hello world!";
-var multilineGreeting = "Hello\n world!";
+let greeting = "Hello world!";
+
+let multilineGreeting = "Hello\n world!";
+
+exports.greeting = greeting;
+exports.multilineGreeting = multilineGreeting;
 ```
 
 </CodeTab>
@@ -40,7 +44,9 @@ let greetings = "Hello " ++ "world!"
 ```
 
 ```js
-var greetings = "Hello world!";
+let greetings = "Hello world!";
+
+exports.greetings = greetings;
 ```
 
 </CodeTab>
@@ -66,9 +72,19 @@ ${name}
 ```
 
 ```js
-var name = "Joe";
+let name = "Joe";
 
-var greeting = "Hello\nWorld\n👋\n" + name + "\n";
+let greeting =
+  `Hello
+World
+👋
+` +
+  name +
+  `
+`;
+
+exports.name = name;
+exports.greeting = greeting;
 ```
 
 </CodeTab>
@@ -102,7 +118,9 @@ let firstLetterOfAlphabet = 'a'
 ```
 
 ```js
-var firstLetterOfAlphabet = /* "a" */ 97;
+let firstLetterOfAlphabet = /* 'a' */ 97;
+
+exports.firstLetterOfAlphabet = firstLetterOfAlphabet;
 ```
 
 </CodeTab>
@@ -123,6 +141,8 @@ let r = /b/g
 
 ```js
 let r = /b/g;
+
+exports.r = r;
 ```
 
 </CodeTab>
@@ -175,7 +195,9 @@ let result = (1 :> float) + 2.
 ```
 
 ```js
-var result = 1 + 2;
+let result = 1 + 2;
+
+exports.result = result;
 ```
 
 </CodeTab>
@@ -201,9 +223,12 @@ let b = 2n ** 2n
 ```
 
 ```js
-var a = 9007199254740991n + 9007199254740991n;
+let a = 9007199254740991n + 9007199254740991n;
 
-var p = 2n ** 2n;
+let b = 2n ** 2n;
+
+exports.a = a;
+exports.b = b;
 ```
 
 </CodeTab>
@@ -224,17 +249,24 @@ let f = 5n >> 1n
 ```
 
 ```js
-var a = 5n & 3n;
+let a = 5n & 3n;
 
-var b = 5n | 2n;
+let b = 5n | 2n;
 
-var c = 5n ^ 1n;
+let c = 5n ^ 1n;
 
-var d = ~5n;
+let d = ~5n;
 
-var e = 5n << 1n;
+let e = 5n << 1n;
 
-var f = 5n >> 1n;
+let f = 5n >> 1n;
+
+exports.a = a;
+exports.b = b;
+exports.c = c;
+exports.d = d;
+exports.e = e;
+exports.f = f;
 ```
 
 </CodeTab>
@@ -254,17 +286,11 @@ switch bigintValue {
 ```
 
 ```js
-if (1n !== 1n) {
-  if (1n !== 100n) {
-    console.log("Other bigint");
-  } else {
-    console.log("Larger bigint");
-  }
-} else {
-  console.log("Small bigint");
-}
+console.log("Small bigint");
 
-var bigintValue = 1n;
+let bigintValue = 1n;
+
+exports.bigintValue = bigintValue;
 ```
 
 </CodeTab>

@@ -41,11 +41,13 @@ if (process["env"]["mode"] === mode) {
 ```
 
 ```js
-var mode = "development";
+let mode = "development";
 
 if (process.env.mode === mode) {
   console.log("Dev-only code here!");
 }
+
+exports.mode = mode;
 ```
 
 </CodeTab>

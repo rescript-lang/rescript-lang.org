@@ -54,12 +54,14 @@ Console.log(add(1, 2))
 ```
 
 ```js
-var add = function (a, b) {
+let add = function (a, b) {
   console.log("hello from raw JavaScript!");
   return a + b;
 };
 
 console.log(add(1, 2));
+
+exports.add = add;
 ```
 
 </CodeTab>
@@ -90,6 +92,8 @@ function f(x, y) {
   debugger;
   return (x + y) | 0;
 }
+
+exports.f = f;
 ```
 
 </CodeTab>

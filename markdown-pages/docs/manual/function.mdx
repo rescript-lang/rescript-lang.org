@@ -35,7 +35,11 @@ greet("world!") // "Hello world!"
 ```
 
 ```js
-greet("world!");
+function greet(name) {
+  return "Hello " + name;
+}
+
+exports.greet = greet;
 ```
 
 </CodeTab>
@@ -50,9 +54,16 @@ add(1, 2, 3) // 6
 ```
 
 ```js
+function greet(name) {
+  return "Hello " + name;
+}
+
 function add(x, y, z) {
   return (((x + y) | 0) + z) | 0;
 }
+
+exports.greet = greet;
+exports.add = add;
 ```
 
 </CodeTab>
@@ -69,9 +80,16 @@ let greetMore = (name) => {
 ```
 
 ```js
+function greet(name) {
+  return "Hello " + name;
+}
+
 function greetMore(name) {
   return "Hello " + name;
 }
+
+exports.greet = greet;
+exports.greetMore = greetMore;
 ```
 
 </CodeTab>
@@ -332,12 +350,18 @@ let rec neverTerminate = () => neverTerminate()
 ```
 
 ```js
-function neverTerminate(_param) {
+function greet(name) {
+  return "Hello " + name;
+}
+
+function neverTerminate() {
   while (true) {
-    _param = undefined;
     continue;
   }
 }
+
+exports.greet = greet;
+exports.neverTerminate = neverTerminate;
 ```
 
 </CodeTab>
@@ -357,10 +381,14 @@ let rec listHas = (list, item) =>
 ```
 
 ```js
+function greet(name) {
+  return "Hello " + name;
+}
+
 function listHas(_list, item) {
   while (true) {
-    var list = _list;
-    if (!list) {
+    let list = _list;
+    if (list === 0) {
       return false;
     }
     if (list.hd === item) {
@@ -370,6 +398,9 @@ function listHas(_list, item) {
     continue;
   }
 }
+
+exports.greet = greet;
+exports.listHas = listHas;
 ```
 
 </CodeTab>
@@ -389,19 +420,25 @@ and callFirst = () => callSecond()
 ```
 
 ```js
-function callSecond(_param) {
+function greet(name) {
+  return "Hello " + name;
+}
+
+function callSecond() {
   while (true) {
-    _param = undefined;
     continue;
   }
 }
 
-function callFirst(_param) {
+function callFirst() {
   while (true) {
-    _param = undefined;
     continue;
   }
 }
+
+exports.greet = greet;
+exports.callSecond = callSecond;
+exports.callFirst = callFirst;
 ```
 
 </CodeTab>
@@ -447,10 +484,22 @@ let greetUser = async (userId) => {
 ```
 
 ```js
+function greet(name) {
+  return "Hello " + name;
+}
+
+async function getUserName(userId) {
+  return userId;
+}
+
 async function greetUser(userId) {
-  var name = await getUserName(userId);
+  let name = await getUserName(userId);
   return "Hello " + name + "!";
 }
+
+exports.greet = greet;
+exports.getUserName = getUserName;
+exports.greetUser = greetUser;
 ```
 
 </CodeTab>
@@ -481,17 +530,31 @@ let someAsyncFn = async () => {
 ```
 
 ```js
-var SomeReScriptException = /* @__PURE__ */ Caml_exceptions.create(
-  "Example.SomeReScriptException",
+let Primitive_option = require("@rescript/runtime/lib/js/Primitive_option.js");
+let Primitive_exceptions = require("@rescript/runtime/lib/js/Primitive_exceptions.js");
+
+function greet(name) {
+  return "Hello " + name;
+}
+
+let SomeReScriptException = /* @__PURE__ */ Primitive_exceptions.create(
+  "_tempFile.SomeReScriptException",
 );
 
-async function someAsyncFn(param) {
-  var data;
+async function somethingThatMightThrow() {
+  throw {
+    RE_EXN_ID: SomeReScriptException,
+    Error: new Error(),
+  };
+}
+
+async function someAsyncFn() {
+  let data;
   try {
-    data = await somethingThatMightThrow(undefined);
+    data = await somethingThatMightThrow();
   } catch (raw_exn) {
-    var exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
-    if (exn.RE_EXN_ID === "JsError") {
+    let exn = Primitive_exceptions.internalToException(raw_exn);
+    if (exn.RE_EXN_ID === "JsExn") {
       return;
     }
     if (exn.RE_EXN_ID === SomeReScriptException) {
@@ -499,8 +562,13 @@ async function someAsyncFn(param) {
     }
     throw exn;
   }
-  return data;
+  return Primitive_option.some(data);
 }
+
+exports.greet = greet;
+exports.SomeReScriptException = SomeReScriptException;
+exports.somethingThatMightThrow = somethingThatMightThrow;
+exports.someAsyncFn = someAsyncFn;
 ```
 
 </CodeTab>

@@ -25,13 +25,17 @@ type t +=
 ```
 
 ```js
-var Caml_exceptions = require("./stdlib/caml_exceptions.js");
+let Primitive_exceptions = require("@rescript/runtime/lib/js/Primitive_exceptions.js");
 
-var Other = Caml_exceptions.create("Playground.Other");
+let Other = /* @__PURE__ */ Primitive_exceptions.create("_tempFile.Other");
 
-var Point = Caml_exceptions.create("Playground.Point");
+let Point = /* @__PURE__ */ Primitive_exceptions.create("_tempFile.Point");
 
-var Line = Caml_exceptions.create("Playground.Line");
+let Line = /* @__PURE__ */ Primitive_exceptions.create("_tempFile.Line");
+
+exports.Other = Other;
+exports.Point = Point;
+exports.Line = Line;
 ```
 
 </CodeTab>

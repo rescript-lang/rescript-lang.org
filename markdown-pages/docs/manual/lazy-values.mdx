@@ -52,9 +52,19 @@ Console.log(Lazy.get(expensiveFilesRead)) // logs the directory content
 ```
 
 ```js
-console.log(Lazy.get(expensiveFilesRead));
+let Nodefs = require("node:fs");
+let Stdlib_Lazy = require("@rescript/runtime/lib/js/Stdlib_Lazy.js");
 
-console.log(Lazy.get(expensiveFilesRead));
+let expensiveFilesRead = Stdlib_Lazy.make(() => {
+  console.log("Reading dir");
+  return Nodefs.readdirSync("./pages");
+});
+
+console.log(Stdlib_Lazy.get(expensiveFilesRead));
+
+console.log(Stdlib_Lazy.get(expensiveFilesRead));
+
+exports.expensiveFilesRead = expensiveFilesRead;
 ```
 
 </CodeTab>
@@ -78,10 +88,19 @@ let result = try {
 ```
 
 ```js
+let Nodefs = require("node:fs");
+let Stdlib_Lazy = require("@rescript/runtime/lib/js/Stdlib_Lazy.js");
+let Primitive_exceptions = require("@rescript/runtime/lib/js/Primitive_exceptions.js");
+
+let expensiveFilesRead = Stdlib_Lazy.make(() => {
+  console.log("Reading dir");
+  return Nodefs.readdirSync("./pages");
+});
+
 let result;
 
 try {
-  result = Lazy.get(expensiveFilesRead);
+  result = Stdlib_Lazy.get(expensiveFilesRead);
 } catch (raw_exn) {
   let exn = Primitive_exceptions.internalToException(raw_exn);
   if (exn.RE_EXN_ID === "Not_found") {
@@ -90,6 +109,9 @@ try {
     throw exn;
   }
 }
+
+exports.expensiveFilesRead = expensiveFilesRead;
+exports.result = result;
 ```
 
 </CodeTab>

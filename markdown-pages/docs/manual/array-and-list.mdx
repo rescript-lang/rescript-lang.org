@@ -19,7 +19,9 @@ let myArray = ["hello", "world", "how are you"]
 ```
 
 ```js
-var myArray = ["hello", "world", "how are you"];
+let myArray = ["hello", "world", "how are you"];
+
+exports.myArray = myArray;
 ```
 
 </CodeTab>
@@ -43,11 +45,15 @@ let tenthItem = myArray->Array.get(10) // None
 ```
 
 ```js
-var myArray = ["hello", "world", "how are you"];
+let myArray = ["hello", "world", "how are you"];
 
-var firstItem = myArray[0];
+let firstItem = myArray[0];
 
-var tenthItem = myArray[10];
+let tenthItem = myArray[10];
+
+exports.myArray = myArray;
+exports.firstItem = firstItem;
+exports.tenthItem = tenthItem;
 ```
 
 </CodeTab>
@@ -69,13 +75,15 @@ myArray->Array.set(0, "bye") //  ["bye", "world", "how are you", "?"]
 ```
 
 ```js
-var myArray = ["hello", "world", "how are you"];
+let myArray = ["hello", "world", "how are you"];
 
 myArray[0] = "hey";
 
 myArray.push("?");
 
 myArray[0] = "bye";
+
+exports.myArray = myArray;
 ```
 
 </CodeTab>
@@ -96,13 +104,20 @@ let x3 = [...y]
 ```
 
 ```javascript
-var y = [1, 2];
+let Belt_Array = require("@rescript/runtime/lib/js/Belt_Array.js");
 
-var x = [4, 5, ...y];
+let y = [1, 2];
 
-var x2 = [4, 5, ...y, 7, ...y];
+let x = Belt_Array.concatMany([[4, 5], y]);
 
-var x3 = [...y];
+let x2 = Belt_Array.concatMany([[4, 5], y, [7], y]);
+
+let x3 = Belt_Array.concatMany([y]);
+
+exports.y = y;
+exports.x = x;
+exports.x2 = x2;
+exports.x3 = x3;
 ```
 
 </CodeTab>
@@ -123,16 +138,18 @@ let myList = list{1, 2, 3}
 ```
 
 ```js
-var myList = {
+let myList = {
   hd: 1,
   tl: {
     hd: 2,
     tl: {
       hd: 3,
-      tl: 0,
+      tl: /* [] */ 0,
     },
   },
 };
+
+exports.myList = myList;
 ```
 
 </CodeTab>
@@ -198,18 +215,32 @@ let message =
 ```
 
 ```js
+let myList = {
+  hd: 1,
+  tl: {
+    hd: 2,
+    tl: {
+      hd: 3,
+      tl: /* [] */ 0,
+    },
+  },
+};
+
+let anotherList = {
+  hd: 0,
+  tl: myList,
+};
+
 let message =
   myList !== 0
-    ? {
-        hd: 2,
-        tl: {
-          hd: 3,
-          tl: /* [] */ 0,
-        },
-      } !== 0
+    ? myList.tl !== 0
       ? "The list two items and a potenial remainder of items"
       : "The head of the list is the string " + (1).toString()
     : "This list is empty";
+
+exports.myList = myList;
+exports.anotherList = anotherList;
+exports.message = message;
 ```
 
 </CodeTab>
