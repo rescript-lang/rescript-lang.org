@@ -26,12 +26,14 @@ function greet(name) {
 
 </CodeTab>
 
-This declares a function and assigns to it the name `greet`, which you can call like so:
+This declares a function and assigns to it the name `greet`.
+
+When ReScript can evaluate a known pure function call ahead of time, it can emit the resulting data directly:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res example
-greet("world!") // "Hello world!"
+let message = greet("world!") // "Hello world!"
 ```
 
 ```js
@@ -39,18 +41,23 @@ function greet(name) {
   return "Hello " + name;
 }
 
+let message = "Hello world!";
+
 exports.greet = greet;
+exports.message = message;
 ```
 
 </CodeTab>
 
 Multi-arguments functions have arguments separated by comma:
 
+If all the arguments are known up front, ReScript can precompute the result too:
+
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res example
 let add = (x, y, z) => x + y + z
-add(1, 2, 3) // 6
+let sum = add(1, 2, 3) // 6
 ```
 
 ```js
@@ -62,8 +69,11 @@ function add(x, y, z) {
   return (((x + y) | 0) + z) | 0;
 }
 
+let sum = 6;
+
 exports.greet = greet;
 exports.add = add;
+exports.sum = sum;
 ```
 
 </CodeTab>

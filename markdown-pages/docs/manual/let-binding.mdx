@@ -32,6 +32,8 @@ exports.newScore = newScore;
 
 </CodeTab>
 
+Because these bindings are pure and known up front, the JS output can inline the calculation and emit `20` directly for `newScore`.
+
 ## Block Scope
 
 Bindings can be scoped through `{}`.
@@ -54,6 +56,8 @@ exports.message = message;
 ```
 
 </CodeTab>
+
+The whole block is pure too, so the generated JS can collapse it to the final string literal.
 
 The value of the last line of a scope is implicitly returned.
 
