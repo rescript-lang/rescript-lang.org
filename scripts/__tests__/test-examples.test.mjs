@@ -55,6 +55,51 @@ test("run compiles a real example block from an injected workspace", () => {
   );
 });
 
+test("run compiles examples without requiring npm on PATH", () => {
+  let { docsRoot, tempRoot } = makeWorkspace();
+  let { logger } = makeLogger();
+  let originalPath = process.env.PATH;
+
+  process.env.PATH = path.join(os.tmpdir(), "missing-npm");
+
+  try {
+    let result = run({ docsRoot, tempRoot, logger });
+
+    assert.equal(result.success, true);
+    assert.equal(result.warningCount, 0);
+  } finally {
+    process.env.PATH = originalPath;
+  }
+});
+
+test("run reports cleaned compiler errors without raw Node stack traces", () => {
+  let fixture = `# Demo
+
+\`\`\`res example
+type person = {name: string}
+type person = {age: int}
+\`\`\`
+`;
+
+  let { docsRoot, tempRoot } = makeWorkspace(fixture);
+  let { logger, warnings } = makeLogger();
+
+  let result = run({ docsRoot, tempRoot, logger });
+
+  assert.equal(result.success, false);
+  assert.ok(warnings.some((warning) => warning.includes("sample.mdx")));
+  assert.ok(
+    warnings.some((warning) =>
+      warning.includes("Multiple definition of the type name person"),
+    ),
+  );
+  assert.ok(warnings.some((warning) => warning.includes("```res example")));
+  assert.ok(
+    !warnings.some((warning) => warning.includes("Error: Command failed")),
+  );
+  assert.ok(!warnings.some((warning) => warning.includes("node:internal")));
+});
+
 test("warns about stale JS Output blocks without rewriting the file", () => {
   let fixture = `# Demo
 

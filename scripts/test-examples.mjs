@@ -1,12 +1,20 @@
 import fs from "fs";
 import { globSync } from "tinyglobby";
 import path from "path";
+import { createRequire } from "module";
 import { fileURLToPath } from "url";
 import child_process from "child_process";
 
+const require = createRequire(import.meta.url);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, "..");
+const tempFileRegex = /_tempFile\.res/g;
+const rescriptCliPath = path.join(
+  path.dirname(require.resolve("rescript/package.json")),
+  "cli",
+  "rescript.js",
+);
 
 const rescriptJson = `{
   "name": "temp",
@@ -247,16 +255,52 @@ let buildSnippetSource = ({ preludes, pair }) => {
   return [...visiblePreludes, pair.res.content].filter(Boolean).join("\n\n");
 };
 
-let compileSnippet = (tempRoot, source) => {
-  fs.writeFileSync(path.join(tempRoot, "src", "_tempFile.res"), source);
+let formatCompilerError = ({ file, error }) => {
+  let stderr =
+    error?.stderr == null
+      ? String(error?.message ?? "Unknown compiler error")
+      : error.stderr.toString();
+
+  return stderr
+    .replace(tempFileRegex, path.relative(".", file))
+    .replace(
+      /\/\* _MODULE_(EXAMPLE|PRELUDE|SIG)_START \*\/.+/g,
+      (_, capture) => {
+        return (
+          "```res " +
+          (capture === "EXAMPLE"
+            ? "example"
+            : capture === "PRELUDE"
+              ? "prelude"
+              : "sig")
+        );
+      },
+    )
+    .replace(/(.*)\}(.*)\/\/ _MODULE_END/g, (_, before, after) => {
+      return `${before}\`\`\`${after}`;
+    })
+    .trim();
+};
+
+let reportCompilerError = ({ logger, file, line, error }) => {
+  logger.warn(`${file}${line == null ? "" : `:${line}`}`);
+  logger.warn(formatCompilerError({ file, error }));
+};
+
+let runRescriptBuild = (tempRoot, stdio = "pipe") => {
   child_process.execFileSync(
-    "npm",
-    ["exec", "rescript", "build", tempRoot, "--", "--quiet"],
+    process.execPath,
+    [rescriptCliPath, "build", tempRoot, "--quiet"],
     {
       cwd: projectRoot,
-      stdio: "pipe",
+      stdio,
     },
   );
+};
+
+let compileSnippet = (tempRoot, source) => {
+  fs.writeFileSync(path.join(tempRoot, "src", "_tempFile.res"), source);
+  runRescriptBuild(tempRoot);
 
   return fs.readFileSync(path.join(tempRoot, "src", "_tempFile.js"), "utf8");
 };
@@ -348,15 +392,9 @@ export let run = ({
     fs.writeFileSync(path.join(tempRoot, "src", "_tempFile.res"), parsedResult);
     try {
       logger.log("testing examples in", file);
-      child_process.execFileSync(
-        "npm",
-        ["exec", "rescript", "build", tempRoot, "--", "--quiet"],
-        {
-          cwd: projectRoot,
-          stdio: "inherit",
-        },
-      );
-    } catch {
+      runRescriptBuild(tempRoot);
+    } catch (error) {
+      reportCompilerError({ logger, file, error });
       success = false;
       return;
     }
@@ -375,7 +413,14 @@ export let run = ({
 
     for (let target of [...targets].reverse()) {
       let snippetSource = buildSnippetSource({ preludes, pair: target });
-      let compiledJs = compileSnippet(tempRoot, snippetSource);
+      let compiledJs;
+      try {
+        compiledJs = compileSnippet(tempRoot, snippetSource);
+      } catch (error) {
+        reportCompilerError({ logger, file, line: target.line, error });
+        success = false;
+        break;
+      }
       let expectedJs = stripCompilerBoilerplate(compiledJs);
       let currentJs = target.js?.content.trimEnd() ?? null;
 
