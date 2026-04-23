@@ -16,11 +16,11 @@ const rescriptCliPath = path.join(
   "rescript.js",
 );
 
-const rescriptJson = `{
+let makeRescriptJson = ({ preserve = false } = {}) => `{
   "name": "temp",
   "namespace": false,
   "jsx": {
-    "version": 4
+    "version": 4${preserve ? ',\n    "preserve": true' : ""}
   },
   "dependencies": [
     "@rescript/react"
@@ -67,6 +67,10 @@ let classifyFence = (line) => {
   let resKind = classifyResFence(line);
   if (resKind != null) {
     return resKind;
+  }
+
+  if (line.startsWith("```jsx")) {
+    return "jsx";
   }
 
   if (line.startsWith("```js") || line.startsWith("```javascript")) {
@@ -155,7 +159,7 @@ let isEligibleReScriptCodeTab = (labels) =>
 let fenceKind = (line) => {
   let kind = classifyFence(line);
 
-  if (kind === "js") {
+  if (kind === "js" || kind === "jsx") {
     return "js";
   }
 
@@ -192,112 +196,114 @@ let collectPreludeBlocks = (content) => {
   return preludes;
 };
 
+let collectFenceBlock = (lines, fenceStart) => {
+  let start = fenceStart + 1;
+  let end = start;
+
+  while (end < lines.length && !lines[end].startsWith("```")) {
+    end++;
+  }
+
+  return {
+    fenceStart,
+    fenceEnd: end,
+    content: lines.slice(start, end).join("\n"),
+  };
+};
+
 let collectCodeTabTargets = ({ content, allowInsertions = false }) => {
   let lines = splitLines(content);
   let targets = [];
   let warnings = [];
-  let inTargetTab = false;
-  let tabStart = null;
-  let tabEnd = null;
-  let labels = null;
-  let labelLine = null;
-  let pendingRes = null;
+  let currentTarget = null;
 
   for (let i = 0; i < lines.length; i++) {
     let line = lines[i];
     let parsedLabels = parseCodeTabLabels(line);
 
     if (parsedLabels != null && isEligibleReScriptCodeTab(parsedLabels)) {
-      inTargetTab = true;
-      tabStart = i;
-      tabEnd = null;
-      labels = parsedLabels;
-      labelLine = i;
-      pendingRes = null;
+      currentTarget = {
+        tabStart: i,
+        tabEnd: null,
+        labels: parsedLabels,
+        labelLine: i,
+        res: null,
+        js: null,
+        jsx: null,
+      };
       continue;
     }
 
-    if (inTargetTab && line.includes("</CodeTab>")) {
-      tabEnd = i;
-      if (pendingRes != null) {
+    if (currentTarget != null && line.includes("</CodeTab>")) {
+      currentTarget.tabEnd = i;
+
+      if (currentTarget.res != null) {
         if (allowInsertions) {
           targets.push({
-            tabStart,
-            tabEnd,
-            labels,
-            labelLine,
-            line: pendingRes.line,
-            res: pendingRes,
-            js: null,
+            ...currentTarget,
+            line: currentTarget.res.line,
           });
         } else if (
-          labels.includes("JS Output") ||
-          labels.includes("JS Output (Module)") ||
-          labels.includes("JS Output (CommonJS)")
+          currentTarget.js != null ||
+          currentTarget.labels.includes("JS Output") ||
+          currentTarget.labels.includes("JS Output (Module)") ||
+          currentTarget.labels.includes("JS Output (CommonJS)")
         ) {
-          warnings.push({
-            line: pendingRes.line,
-            message: "missing paired JS Output block",
-          });
+          if (currentTarget.js != null) {
+            targets.push({
+              ...currentTarget,
+              line: currentTarget.res.line,
+            });
+          } else {
+            warnings.push({
+              line: currentTarget.res.line,
+              message: "missing paired JS Output block",
+            });
+          }
         }
       }
 
-      inTargetTab = false;
-      tabStart = null;
-      tabEnd = null;
-      labels = null;
-      labelLine = null;
-      pendingRes = null;
+      currentTarget = null;
       continue;
     }
 
-    if (!inTargetTab) {
+    if (currentTarget == null) {
       continue;
     }
 
     let kind = fenceKind(line);
 
     if (kind === "res") {
-      let start = i + 1;
-      let end = start;
-      while (end < lines.length && !lines[end].startsWith("```")) {
-        end++;
+      let block = collectFenceBlock(lines, i);
+
+      if (currentTarget.res == null) {
+        currentTarget.res = {
+          ...block,
+          line: i + 1,
+        };
       }
 
-      pendingRes = {
-        fenceStart: i,
-        fenceEnd: end,
-        line: i + 1,
-        content: lines.slice(start, end).join("\n"),
-      };
-      i = end;
+      i = block.fenceEnd;
       continue;
     }
 
-    if (kind === "js" && pendingRes != null) {
-      let start = i + 1;
-      let end = start;
-      while (end < lines.length && !lines[end].startsWith("```")) {
-        end++;
+    if (kind === "js" && currentTarget.res != null) {
+      let block = collectFenceBlock(lines, i);
+      let fence = classifyFence(line);
+
+      if (fence === "jsx" && currentTarget.jsx == null) {
+        currentTarget.jsx = {
+          ...block,
+          fenceKind: "jsx",
+        };
+      } else if (fence === "js" && currentTarget.js == null) {
+        currentTarget.js = {
+          ...block,
+          fenceKind: "js",
+        };
       }
 
-      targets.push({
-        tabStart,
-        tabEnd,
-        labels,
-        labelLine,
-        line: pendingRes.line,
-        res: pendingRes,
-        js: {
-          fenceKind: kind,
-          fenceStart: i,
-          fenceEnd: end,
-          content: lines.slice(start, end).join("\n"),
-        },
-      });
-
-      pendingRes = null;
-      i = end;
+      i = block.fenceEnd;
     }
   }
 
@@ -362,41 +368,134 @@ let runRescriptBuild = (tempRoot, stdio = "pipe") => {
   );
 };
 
+let readCompiledSnippet = (tempRoot) => {
+  let jsxPath = path.join(tempRoot, "src", "_tempFile.jsx");
+  let jsPath = path.join(tempRoot, "src", "_tempFile.js");
+  let outputPath = fs.existsSync(jsxPath) ? jsxPath : jsPath;
+
+  return fs.readFileSync(outputPath, "utf8");
+};
+
 let compileSnippet = (tempRoot, source) => {
   fs.writeFileSync(path.join(tempRoot, "src", "_tempFile.res"), source);
   runRescriptBuild(tempRoot);
 
-  return fs.readFileSync(path.join(tempRoot, "src", "_tempFile.js"), "utf8");
+  return readCompiledSnippet(tempRoot);
 };
 
-let rewriteCodeTabLabel = ({ lines, target }) => {
-  if (target.labels.length === 1 && target.labels[0] === "ReScript") {
-    lines[target.labelLine] = '<CodeTab labels={["ReScript", "JS Output"]}>';
+let usesJsxRuntime = (compiledJs) => compiledJs.includes("JsxRuntime");
+
+let rewriteCodeTabLabels = ({ lines, target, needsPreserveTab }) => {
+  let nextLabels =
+    target.labels.length === 1 && target.labels[0] === "ReScript"
+      ? ["ReScript", "JS Output"]
+      : [...target.labels];
+
+  let withoutPreserve = nextLabels.filter(
+    (label) => label !== "JSX Preserved Output",
+  );
+  let finalLabels = needsPreserveTab
+    ? [...withoutPreserve, "JSX Preserved Output"]
+    : withoutPreserve;
+
+  let formattedLabels = `[${finalLabels.map((label) => JSON.stringify(label)).join(", ")}]`;
+
+  lines[target.labelLine] = `<CodeTab labels={${formattedLabels}}>`;
+};
+
+let splitBlockLines = (content) => (content === "" ? [] : content.split("\n"));
+
+let buildDerivedFenceBlock = ({ fence, content }) => [
+  "",
+  `\`\`\`${fence}`,
+  ...splitBlockLines(content),
+  "```",
+  "",
+];
+
+let expandFenceRangeForBlankLines = ({ lines, fenceStart, fenceEnd }) => {
+  let start = fenceStart;
+  let end = fenceEnd;
+
+  if (start > 0 && lines[start - 1] === "") {
+    start--;
   }
+
+  if (end + 1 < lines.length && lines[end + 1] === "") {
+    end++;
+  }
+
+  return {
+    start,
+    deleteCount: end - start + 1,
+  };
 };
 
-let applyJsOutputUpdate = ({ lines, target, compiledJs }) => {
+let findCodeTabEnd = ({ lines, target }) => {
+  for (let i = target.tabStart; i < lines.length; i++) {
+    if (lines[i].includes("</CodeTab>")) {
+      return i;
+    }
+  }
+
+  return lines.length;
+};
+
+let applyDerivedOutputUpdate = ({ lines, target, compiledJs, compiledJsx }) => {
   let nextLines = [...lines];
-  let jsLines = compiledJs === "" ? [] : compiledJs.split("\n");
+  let needsPreserveTab = compiledJsx != null;
+
+  if (target.jsx != null) {
+    if (needsPreserveTab) {
+      nextLines.splice(
+        target.jsx.fenceStart + 1,
+        target.jsx.fenceEnd - target.jsx.fenceStart - 1,
+        ...splitBlockLines(compiledJsx),
+      );
+    } else {
+      let { start, deleteCount } = expandFenceRangeForBlankLines({
+        lines: nextLines,
+        fenceStart: target.jsx.fenceStart,
+        fenceEnd: target.jsx.fenceEnd,
+      });
+
+      nextLines.splice(start, deleteCount);
+    }
+  }
 
   if (target.js != null) {
     nextLines.splice(
       target.js.fenceStart + 1,
       target.js.fenceEnd - target.js.fenceStart - 1,
-      ...jsLines,
+      ...splitBlockLines(compiledJs),
     );
   } else {
-    nextLines.splice(target.tabEnd, 0, "", "```js", ...jsLines, "```", "");
+    nextLines.splice(
+      findCodeTabEnd({ lines: nextLines, target }),
+      0,
+      ...buildDerivedFenceBlock({ fence: "js", content: compiledJs }),
+    );
   }
 
-  rewriteCodeTabLabel({ lines: nextLines, target });
+  if (needsPreserveTab && target.jsx == null) {
+    nextLines.splice(
+      findCodeTabEnd({ lines: nextLines, target }),
+      0,
+      ...buildDerivedFenceBlock({ fence: "jsx", content: compiledJsx }),
+    );
+  }
+
+  rewriteCodeTabLabels({ lines: nextLines, target, needsPreserveTab });
 
   return nextLines;
 };
 
-let ensureTempProject = (tempRoot) => {
+let ensureTempProject = ({ tempRoot, preserve = false }) => {
   fs.mkdirSync(path.join(tempRoot, "src"), { recursive: true });
-  fs.writeFileSync(path.join(tempRoot, "rescript.json"), rescriptJson);
+  fs.writeFileSync(
+    path.join(tempRoot, "rescript.json"),
+    makeRescriptJson({ preserve }),
+  );
   fs.writeFileSync(path.join(tempRoot, "src", "_tempFile.res"), "");
   let tempNodeModules = path.join(tempRoot, "node_modules", "@rescript");
   let tempReactPackage = path.join(tempNodeModules, "react");
@@ -438,7 +537,20 @@ export let run = ({
   update = false,
 } = {}) => {
   logger.log("Running tests...");
-  ensureTempProject(tempRoot);
+  let runtimeTempRoot = path.join(
+    path.dirname(tempRoot),
+    path.basename(tempRoot) + "-js-output",
+  );
+  let preserveTempRoot = path.join(
+    path.dirname(tempRoot),
+    path.basename(tempRoot) + "-jsx-preserve",
+  );
+
+  ensureTempProject({ tempRoot });
+  if (update) {
+    ensureTempProject({ tempRoot: runtimeTempRoot });
+    ensureTempProject({ tempRoot: preserveTempRoot, preserve: true });
+  }
 
   let success = true;
   let warningCount = 0;
@@ -482,24 +594,34 @@ export let run = ({
 
       let snippetSource = buildSnippetSource({ preludes, pair: target });
       let compiledJs;
+      let compiledJsx = null;
       try {
-        compiledJs = compileSnippet(tempRoot, snippetSource);
+        compiledJs = compileSnippet(
+          update ? runtimeTempRoot : tempRoot,
+          snippetSource,
+        );
+        let expectedJs = stripCompilerBoilerplate(compiledJs);
+
+        if (usesJsxRuntime(expectedJs)) {
+          compiledJsx = stripCompilerBoilerplate(
+            compileSnippet(preserveTempRoot, snippetSource),
+          );
+        }
+
+        compiledJs = expectedJs;
       } catch (error) {
         reportCompilerError({ logger, file, line: target.line, error });
         success = false;
         break;
       }
-      let expectedJs = stripCompilerBoilerplate(compiledJs);
-      let currentJs = target.js?.content.trimEnd() ?? null;
 
       if (update) {
-        if (currentJs == null || expectedJs !== currentJs) {
-          nextLines = applyJsOutputUpdate({
-            lines: nextLines,
-            target,
-            compiledJs: expectedJs,
-          });
-        }
+        nextLines = applyDerivedOutputUpdate({
+          lines: nextLines,
+          target,
+          compiledJs,
+          compiledJsx,
+        });
       }
     }
 
