@@ -246,7 +246,7 @@ export const value: number
   assert.match(nextContent, /let visibleValue = 1;/);
   assert.match(
     nextContent,
-    /<CodeTab labels=\{\["ReScript", "TypeScript Output"\]\}>\n\n```res\n@genType\nlet value = 1\n```\n\n```ts\nexport const value: number\n```\n\n<\/CodeTab>/,
+    /<CodeTab labels=\{\["ReScript", "TypeScript Output"\]\}>\n\n```res\nlet value = 1\n```\n\n```ts\nexport const value: number\n```\n\n<\/CodeTab>/,
   );
 });
 
