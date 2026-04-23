@@ -31,7 +31,7 @@
       }
 
       p {
-        @apply text-gray-80 ml-5;
+        @apply text-gray-80 dark:text-gray-20 ml-5;
       }
     }
   }
@@ -57,7 +57,7 @@
         @apply underline text-current;
 
         &:hover {
-          @apply no-underline text-current text-gray-70;
+          @apply no-underline text-current text-gray-70 dark:text-gray-20;
         }
       }
     }

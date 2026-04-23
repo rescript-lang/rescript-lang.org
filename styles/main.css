@@ -3,6 +3,7 @@
 @import "./_docsearch.css" layer(base);
 
 @import "tailwindcss";
+@custom-variant dark (&:where(.site-dark, .site-dark *));
 
 @source '../src/**/*.{jsx,res}';
 @source '../pages/**/*.{jsx,mdx}';
@@ -430,7 +431,7 @@
 }
 
 @utility hl-title {
-  @apply text-[2.5rem] tracking-tighter leading-tight font-semibold text-gray-80;
+  @apply text-[2.5rem] tracking-tighter leading-tight font-semibold text-gray-80 dark:text-gray-20;
 
   @media (width >=theme(--breakpoint-xs)) {
     @apply text-48;
@@ -447,37 +448,37 @@
 
 @utility hl-1 {
   @layer components {
-    @apply text-48 font-semibold tracking-tighter leading-tight text-black;
+    @apply text-48 font-semibold tracking-tighter leading-tight text-black dark:text-gray-20;
   }
 }
 
 @utility hl-2 {
   @layer components {
-    @apply text-32 font-semibold tracking-tighter leading-tight text-black;
+    @apply text-32 font-semibold tracking-tighter leading-tight text-black dark:text-gray-20;
   }
 }
 
 @utility hl-3 {
   @layer components {
-    @apply text-24 font-semibold tracking-tight leading-tight text-black;
+    @apply text-24 font-semibold tracking-tight leading-tight text-black dark:text-gray-20;
   }
 }
 
 @utility hl-4 {
   @layer components {
-    @apply text-18 font-semibold tracking-tight leading-tight text-gray-80;
+    @apply text-18 font-semibold tracking-tight leading-tight text-gray-80 dark:text-gray-20;
   }
 }
 
 @utility hl-5 {
   @layer components {
-    @apply text-14 font-bold tracking-normal leading-tight text-gray-80;
+    @apply text-14 font-bold tracking-normal leading-tight text-gray-80 dark:text-gray-20;
   }
 }
 
 @utility hl-overline {
   @layer components {
-    @apply text-11 font-semibold tracking-wide leading-tight uppercase text-gray-80;
+    @apply text-11 font-semibold tracking-wide leading-tight uppercase text-gray-80 dark:text-gray-20;
   }
 }
 
@@ -515,7 +516,7 @@
   /* @import "./_typography.css"; */
 
   body {
-    @apply font-sans bg-white sm:subpixel-antialiased;
+    @apply font-sans bg-white text-gray-80 dark:bg-gray-100 dark:text-gray-20 sm:subpixel-antialiased;
   }
 
   .hide-scrollbar {
@@ -558,7 +559,7 @@
   }
 
   a > code {
-    @apply text-fire;
+    @apply text-fire dark:text-fire-dark;
   }
 }
 

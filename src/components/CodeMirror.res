@@ -765,7 +765,6 @@ let themeToExtension = (theme: Theme.t): CM6.extension => {
   )
   [editorTheme, syntaxHighlight]->CM6.Extension.fromArray
 }
-
 let createEditor = (config: editorConfig): editorInstance => {
   // Setup language based on mode
   let language = switch config.mode {

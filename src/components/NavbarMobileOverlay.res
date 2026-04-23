@@ -113,7 +113,7 @@ let make = () => {
   <dialog
     id="mobile-overlay"
     onClick={handleBackdropClick}
-    className="top-16 flex-col h-full w-full z-50 bg-gray-100  overflow-scroll pb-8"
+    className="top-16 flex-col h-full w-full z-50 bg-gray-100 dark:bg-gray-95 overflow-scroll pb-8"
   >
     <MobileNav route />
   </dialog>

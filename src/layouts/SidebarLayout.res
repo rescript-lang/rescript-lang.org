@@ -18,7 +18,7 @@ module Toc = {
 
   @react.component
   let make = (~entries: array<TableOfContents.entry>, ~onClick) =>
-    <ul className="mt-3 py-1 mb-4 border-l border-fire-10">
+    <ul className="mt-3 py-1 mb-4 border-l border-fire-10 dark:border-fire-70">
       {Array.map(entries, ({header, href}) => {
         <li key=header className="pl-2 mt-2 first:mt-1" dataTestId=header>
           <Link.String
@@ -32,7 +32,7 @@ module Toc = {
               onClick()
             }}
             to={"#" ++ href->Url.normalizeAnchor}
-            className="font-normal block text-14 text-gray-40 leading-tight hover:text-gray-80"
+            className="font-normal block text-14 text-gray-40 dark:text-gray-30 leading-tight hover:text-gray-80 dark:hover:text-gray-20"
             preventScrollReset=true
           >
             {React.string(
@@ -50,7 +50,7 @@ module Sidebar = {
   module Title = {
     @react.component
     let make = (~children) => {
-      let className = "hl-overline text-gray-80 mt-5" //overline
+      let className = "hl-overline text-gray-80 dark:text-gray-20 mt-5" //overline
 
       <div className> children </div>
     }
@@ -74,7 +74,7 @@ module Sidebar = {
         {Array.map(items, m => {
           let hidden = isHidden ? "hidden" : "block"
           let active = isItemActive(m)
-            ? ` bg-fire-5 text-red-500 leading-5 -ml-2 pl-2 font-medium block hover:bg-fire-70 `
+            ? ` bg-fire-5 dark:bg-fire-100 text-red-500 dark:text-fire-dark leading-5 -ml-2 pl-2 font-medium block hover:bg-fire-70 dark:hover:bg-fire-90 `
             : ""
 
           let activeToc = switch getActiveToc {
@@ -86,7 +86,7 @@ module Sidebar = {
             <Link.String
               to=m.href
               prefetch={#intent}
-              className={"block py-1 md:h-auto tracking-tight text-gray-60 rounded-sm hover:bg-gray-20 hover:-ml-2 hover:py-1 hover:pl-2 " ++
+              className={"block py-1 md:h-auto tracking-tight text-gray-60 dark:text-gray-30 rounded-sm hover:bg-gray-20 dark:hover:bg-gray-90 hover:-ml-2 hover:py-1 hover:pl-2 " ++
               active}
             >
               {React.string(m.name)}
@@ -152,19 +152,19 @@ module Sidebar = {
         id="sidebar"
         className={(
           isOpen ? "fixed w-full left-0 h-full z-20 min-w-320" : "hidden "
-        ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible bg-white md:mt-0 min-w-48"}
+        ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible bg-white dark:bg-gray-95 md:mt-0 min-w-48"}
       >
         <aside
           id="sidebar-content"
           dataTestId="sidebar-content"
-          className="h-full relative top-0 px-4 w-full block md:top-40 md:sticky border-r border-gray-20 overflow-y-auto pb-24 max-h-[calc(100vh-10rem)] pt-8"
+          className="h-full relative top-0 px-4 w-full block md:top-40 md:sticky border-r border-gray-20 dark:border-gray-80 overflow-y-auto pb-24 max-h-[calc(100vh-10rem)] pt-8"
         >
           <button
             onClick={evt => {
               ReactEvent.Mouse.preventDefault(evt)
               toggle()
             }}
-            className="md:hidden h-16 flex pt-2 right-4 absolute"
+            className="md:hidden h-16 flex pt-2 right-4 absolute text-gray-60 dark:text-gray-30 hover:text-gray-80 dark:hover:text-gray-20"
           >
             <Icon.Close />
           </button>
@@ -218,7 +218,7 @@ module BreadCrumbs = {
     | None => crumbs
     }
 
-    <div className="w-full captions overflow-x-auto text-gray-60">
+    <div className="w-full captions overflow-x-auto text-gray-60 dark:text-gray-30">
       {List.mapWithIndex(crumbs, (crumb, i) => {
         let item = if i === List.length(crumbs) - 1 {
           <span key={Int.toString(i)}> {React.string(crumb.name)} </span>
@@ -269,7 +269,7 @@ let make = (
         <Link.String
           to=href
           prefetch={#intent}
-          className={"flex items-center text-fire hover:text-fire-70 border-2 border-red-300 rounded py-1.5 px-3"}
+          className={"flex items-center text-fire dark:text-fire-dark hover:text-fire-70 dark:hover:text-fire-30 border-2 border-red-300 dark:border-fire-70 rounded py-1.5 px-3"}
         >
           <Icon.ArrowRight className={"rotate-180 mr-2"} />
           {React.string(name)}
@@ -281,7 +281,7 @@ let make = (
         <Link.String
           prefetch={#intent}
           to=href
-          className={"flex items-center text-fire hover:text-fire-70 ml-auto border-2 border-red-300 rounded py-1.5 px-3"}
+          className={"flex items-center text-fire dark:text-fire-dark hover:text-fire-70 dark:hover:text-fire-30 ml-auto border-2 border-red-300 dark:border-fire-70 rounded py-1.5 px-3"}
         >
           {React.string(name)}
           <Icon.ArrowRight className={"ml-2"} />

@@ -195,7 +195,8 @@ let default = () => {
           <VersionSelect />
         </div>
         <button
-          className="flex items-center" onClick={_ => NavbarUtils.closeMobileTertiaryDrawer()}
+          className="flex items-center text-gray-60 dark:text-gray-30 hover:text-gray-80 dark:hover:text-gray-20"
+          onClick={_ => NavbarUtils.closeMobileTertiaryDrawer()}
         >
           <Icon.Close />
         </button>

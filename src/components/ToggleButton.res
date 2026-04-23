@@ -1,5 +1,7 @@
 @react.component
-let make = (~checked, ~onChange, ~children) => {
+let make = (~checked, ~onChange, ~children, ~isLightTheme=false) => {
+  let _ = isLightTheme
+
   <label className="inline-flex items-center cursor-pointer">
     <input type_="checkbox" value="" checked onChange className="sr-only peer" />
     <div

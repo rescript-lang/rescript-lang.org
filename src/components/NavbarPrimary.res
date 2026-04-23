@@ -7,13 +7,36 @@ let isActive = (~url, ~pathname: Path.t) => {
     : "hover:text-fire-30"
 }
 
+module ThemeToggle = {
+  @react.component
+  let make = (~theme: SiteTheme.t, ~onToggle: unit => unit) => {
+    let (label, title) = switch theme {
+    | SiteTheme.Light => ("Light", "Switch to dark mode")
+    | SiteTheme.Dark => ("Dark", "Switch to light mode")
+    }
+
+    <button
+      className="rounded border border-gray-60 dark:border-gray-60 px-2 py-1 text-12 text-white-80 dark:text-gray-30 hover:cursor-pointer hover:text-white dark:hover:text-gray-20"
+      onClick={evt => {
+        ReactEvent.Mouse.preventDefault(evt)
+        onToggle()
+      }}
+      title
+      ariaLabel={title}
+      dataTestId="theme-toggle"
+    >
+      {React.string(label)}
+    </button>
+  }
+}
+
 module LeftContent = {
   @react.component
   let make = () => {
     let {pathname} = useLocation()
     <div
       dataTestId="navbar-primary-left-content"
-      className="row-start-1 justify-self-start col-[content] flex items-center h-full  space-x-5 text-gray-40"
+      className="row-start-1 justify-self-start col-[content] flex items-center h-full  space-x-5 text-gray-40 dark:text-gray-20"
     >
       <Link to=#"/" className="h-8 w-8 lg:h-10 lg:w-32 flex items-center" ariaLabel="homepage">
         <img
@@ -44,14 +67,15 @@ module LeftContent = {
 
 module RightContent = {
   @react.component
-  let make = () => {
+  let make = (~theme, ~onToggleTheme) => {
     let iconClasses = "w-6 h-6 opacity-50 hover:opacity-100"
     let linkClasses = "hidden md:block"
     <div
       dataTestId="navbar-primary-right-content"
-      className="row-start-1 justify-self-end col-[content] grid grid-flow-col items-center space-x-5 text-gray-40"
+      className="row-start-1 justify-self-end col-[content] grid grid-flow-col items-center space-x-5 text-gray-40 dark:text-gray-20"
     >
       <Search />
+      <ThemeToggle theme onToggle=onToggleTheme />
       <button
         className={"h-1 w-auto block md:hidden opacity-50 hover:opacity-100 m-0"}
         onClick={toggleMobileOverlay}
@@ -95,7 +119,22 @@ module RightContent = {
 
 @react.component
 let make = () => {
+  let (theme, setTheme) = React.useState(_ => SiteTheme.Light)
   let scrollDirection = Hooks.useScrollDirection(~topMargin=64, ~threshold=32)
+
+  React.useEffect(() => {
+    let initialTheme = SiteTheme.getInitial()
+    setTheme(_ => initialTheme)
+    SiteTheme.applyToDom(initialTheme)
+    None
+  }, [])
+
+  let onToggleTheme = () =>
+    setTheme(prev => {
+      let next = SiteTheme.toggle(prev)
+      SiteTheme.set(next)
+      next
+    })
 
   let navbarClasses = switch scrollDirection {
   | Up(_) => "translate-y-0"
@@ -106,13 +145,13 @@ let make = () => {
     <nav
       dataTestId="navbar-primary"
       className={`
-    sticky top-0 h-16 w-full items-center bg-gray-90 shadow text-white-80 text-14 z-100
+    sticky top-0 h-16 w-full items-center bg-gray-90 dark:bg-gray-100 shadow text-white-80 dark:text-gray-20 text-14 z-100
     grid grid-rows-1 grid-cols-[[full-start]_minmax(1rem,1fr)_[content-start]_min(1280px,100%-2rem)_[content-end]_minmax(1rem,1fr)_[full-end]]
     transition-transform duration-300 ${navbarClasses}
     `}
     >
       <LeftContent />
-      <RightContent />
+      <RightContent theme onToggleTheme />
     </nav>
     <NavbarMobileOverlay />
   </>

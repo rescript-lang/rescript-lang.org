@@ -11,7 +11,10 @@ let make = (
       <div className="flex flex-col text-fire font-medium">
         <VersionSelect />
       </div>
-      <button className="flex items-center" onClick={_ => NavbarUtils.closeMobileTertiaryDrawer()}>
+      <button
+        className="flex items-center text-gray-60 dark:text-gray-30 hover:text-gray-80 dark:hover:text-gray-20"
+        onClick={_ => NavbarUtils.closeMobileTertiaryDrawer()}
+      >
         <Icon.Close />
       </button>
     </div>

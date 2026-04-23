@@ -52,8 +52,18 @@ module RightSidebar = {
       switch item {
       | Value({name, deprecated}) as kind | Type({name, deprecated}) as kind =>
         let (icon, textColor, bgColor, href) = switch kind {
-        | Type(_) => ("t", "text-fire-30", "bg-fire-5", `#type-${name}`)
-        | Value(_) => ("v", "text-sky-30", "bg-sky-5", `#value-${name}`)
+        | Type(_) => (
+            "t",
+            "text-fire-30 dark:text-fire-dark",
+            "bg-fire-5 dark:bg-fire-100",
+            `#type-${name}`,
+          )
+        | Value(_) => (
+            "v",
+            "text-sky-30 dark:text-water-dark",
+            "bg-sky-5 dark:bg-sky-90",
+            `#value-${name}`,
+          )
         }
         let deprecatedIcon = switch deprecated->Null.toOption {
         | Some(_) =>
@@ -69,7 +79,7 @@ module RightSidebar = {
         <li className="my-3" key={href}>
           <ReactRouter.Link.String
             title
-            className="flex items-center w-full font-normal text-14 text-gray-40 leading-tight hover:text-gray-80"
+            className="flex items-center w-full font-normal text-14 text-gray-40 dark:text-gray-30 leading-tight hover:text-gray-80 dark:hover:text-gray-20"
             to=href
             onClick={_ => onLinkClick->Option.forEach(fn => fn())}
           >
@@ -109,8 +119,8 @@ module SidebarTree = {
 
     let isCurrentlyAtRoot = currentPathname == moduleRoute
 
-    let summaryClassName = "truncate py-1 md:h-auto tracking-tight text-gray-60 font-medium text-14 rounded-sm hover:bg-gray-20 hover:-ml-2 hover:py-1 hover:pl-2 "
-    let classNameActive = " bg-fire-5 text-red-500 -ml-2 pl-2 font-medium hover:bg-fire-70"
+    let summaryClassName = "truncate py-1 md:h-auto tracking-tight text-gray-60 dark:text-gray-30 font-medium text-14 rounded-sm hover:bg-gray-20 dark:hover:bg-gray-90 hover:-ml-2 hover:py-1 hover:pl-2 "
+    let classNameActive = " bg-fire-5 dark:bg-fire-100 text-red-500 dark:text-fire-dark -ml-2 pl-2 font-medium hover:bg-fire-70 dark:hover:bg-fire-90"
 
     let subMenu = switch items->Array.length > 0 {
     | true =>
@@ -179,7 +189,10 @@ module SidebarTree = {
 
     <aside className="px-4 w-full block">
       <div className="my-10">
-        <div className="hl-overline block text-gray-80 mt-5 mb-2" dataTestId="overview">
+        <div
+          className="hl-overline block text-gray-80 dark:text-gray-20 mt-5 mb-2"
+          dataTestId="overview"
+        >
           {"Overview"->React.string}
         </div>
         <Link.String
@@ -190,7 +203,9 @@ module SidebarTree = {
         </Link.String>
         {isCurrentlyAtRoot ? subMenu : React.null}
       </div>
-      <div className="hl-overline text-gray-80 mt-5 mb-2"> {"submodules"->React.string} </div>
+      <div className="hl-overline text-gray-80 dark:text-gray-20 mt-5 mb-2">
+        {"submodules"->React.string}
+      </div>
       {node.children
       ->Array.toSorted((v1, v2) => String.compare(v1.name, v2.name))
       ->Array.filter(child => child.name !== node.name)
@@ -299,11 +314,13 @@ let make = (props: props) => {
   // This is the sidebar on the right side of the page for desktops showing types and values
   let rightSidebar = switch props {
   | Ok({module_: {items}}) if Array.length(items) > 0 =>
-    <div className="hidden xl:block lg:w-1/5 md:h-auto md:relative overflow-y-visible bg-white">
+    <div
+      className="hidden xl:block lg:w-1/5 md:h-auto md:relative overflow-y-visible bg-white dark:bg-gray-95"
+    >
       <aside
-        className="relative pl-4 w-full block md:top-28 md:pt-4 md:sticky border-l border-gray-20 overflow-y-auto pb-24 h-[calc(100vh-7rem)]"
+        className="relative pl-4 w-full block md:top-28 md:pt-4 md:sticky border-l border-gray-20 dark:border-gray-80 overflow-y-auto pb-24 h-[calc(100vh-7rem)]"
       >
-        <div className="hl-overline block text-gray-80 mb-2">
+        <div className="hl-overline block text-gray-80 dark:text-gray-20 mb-2">
           {"Types and values"->React.string}
         </div>
         <ul>
@@ -319,10 +336,10 @@ let make = (props: props) => {
   | Ok({toctree, module_: {items}}) =>
     <div
       id="sidebar"
-      className="hidden md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible bg-white"
+      className="hidden md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible bg-white dark:bg-gray-95"
     >
       <div
-        className="w-80 h-full relative top-12 w-full md:top-28 md:sticky border-r border-gray-20 overflow-y-auto pb-24 max-h-[calc(100vh-7rem)]"
+        className="w-80 h-full relative top-12 w-full md:top-28 md:sticky border-r border-gray-20 dark:border-gray-80 overflow-y-auto pb-24 max-h-[calc(100vh-7rem)]"
       >
         <SidebarTree node={toctree} items />
       </div>

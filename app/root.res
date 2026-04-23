@@ -36,10 +36,27 @@ external utilsCss: string = "default"
 
 open ReactRouter
 
+let initializeThemeScript = `
+(() => {
+  try {
+    const key = "siteTheme";
+    const darkClass = "site-dark";
+    const lightClass = "site-light";
+    const stored = localStorage.getItem(key);
+    const preferred = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    const theme = stored === "dark" || stored === "light" ? stored : preferred;
+    const root = document.documentElement;
+    root.classList.remove(darkClass, lightClass);
+    root.classList.add(theme === "dark" ? darkClass : lightClass);
+  } catch (_err) {}
+})();
+`
+
 @react.component
 let default = () => {
   <html lang="en">
     <head>
+      <script> {React.string(initializeThemeScript)} </script>
       <style> {React.string("html {opacity:0;}")} </style>
       <link rel="preload" href={mainCss} as_="style" />
       <link rel="stylesheet" href={mainCss} />
