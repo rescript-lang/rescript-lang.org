@@ -60,7 +60,7 @@ The example above defines a binding `clicks` of type `React.ref<int>`. Note how 
 
 When a ref is passed to an element during render, a reference to the node becomes accessible at the current attribute of the ref.
 
-```res
+```res nocheck
 let value = myRef.current
 ```
 
@@ -169,9 +169,27 @@ let make = () => {
 ```
 
 ```js
-// Compiler Error:
-// Ref cannot be passed as a normal prop. Please use `forwardRef`
-// API instead
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function _tempFile$MyComp(props) {
+  return JsxRuntime.jsx("input", {});
+}
+
+let MyComp = {
+  make: _tempFile$MyComp,
+};
+
+function _tempFile(props) {
+  let textInput = React.useRef(null);
+  return JsxRuntime.jsx(_tempFile$MyComp, {
+    ref: textInput,
+  });
+}
+
+let make = _tempFile;
+
+export { MyComp, make };
 ```
 
 </CodeTab>

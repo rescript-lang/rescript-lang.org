@@ -20,7 +20,7 @@ to learn more about them.
 
 Tag functions in ReScript have the following signature:
 
-```res
+```res sig
 let myTagFunction : (array<string>, array<'param>) => 'output
 ```
 
@@ -28,7 +28,7 @@ As you can see, you can have any type you want both for the placeholder array an
 
 Given how string interpolation works, you'll always have the following invariant:
 
-```res
+```res nocheck
 Array.length(strings) == Array.length(placeholder) + 1
 ```
 

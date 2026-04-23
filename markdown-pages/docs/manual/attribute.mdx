@@ -20,7 +20,9 @@ let mode2 = mode
 ```
 
 ```js
-var mode2 = "dev";
+let mode2 = "dev";
+
+export { mode2 };
 ```
 
 </CodeTab>
@@ -59,7 +61,15 @@ let customTriple = foo => foo * 3
 ```
 
 ```js
+function customDouble(foo) {
+  return foo << 1;
+}
 
+function customTriple(foo) {
+  return (foo * 3) | 0;
+}
+
+export { customDouble, customTriple };
 ```
 
 </CodeTab>
@@ -84,7 +94,7 @@ There's a second category of attributes, called "extension points" (a remnant te
 ```
 
 ```js
-var a = 1;
+((var a = 1));
 ```
 
 </CodeTab>

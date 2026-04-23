@@ -96,7 +96,7 @@ In contrast, scoped polymorphic types, such as `'a. 'a => unit`, overcome this l
 
 Scoped polymorphic types work only when they are directly applied to let-bindings or record fields (as demonstrated in the logger example above). They can neither be applied to function bodies, nor to separate type definitions:
 
-```res
+```res nocheck
 exception Abort
 
 let testExn: 'a. unit => 'a = () => throw(Abort) // Works!

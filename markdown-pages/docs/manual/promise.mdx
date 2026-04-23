@@ -99,8 +99,8 @@ let logAsyncMessage = async () => {
 ```
 
 ```js
-async function logAsyncMessage(param) {
-  var messages = await Promise.all([
+async function logAsyncMessage() {
+  let messages = await Promise.all([
     global.fetchMessage("message1"),
     global.fetchMessage("message2"),
   ]);

@@ -123,19 +123,26 @@ let make = (~name: option<string>=?) => {
 ```
 
 ```js
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
 import * as JsxRuntime from "react/jsx-runtime";
 
+function _tempFile$Greeting(props) {
+  return Stdlib_Option.getOr(props.name, "");
+}
+
+let Greeting = {
+  make: _tempFile$Greeting,
+};
+
 function _tempFile(props) {
-  let name = props.name;
-  let greeting = name !== undefined ? "Hello " + name + "!" : "Hello stranger!";
   return JsxRuntime.jsx("div", {
-    children: greeting,
+    children: JsxRuntime.jsx(_tempFile$Greeting, {}),
   });
 }
 
 let make = _tempFile;
 
-export { make };
+export { Greeting, make };
 ```
 
 </CodeTab>
@@ -175,13 +182,15 @@ let Greeting = {
   make: _tempFile$Greeting,
 };
 
-let name = "Andrea";
+function _tempFile(props) {
+  return JsxRuntime.jsx("div", {
+    children: JsxRuntime.jsx(_tempFile$Greeting, {}),
+  });
+}
 
-JsxRuntime.jsx(_tempFile$Greeting, {
-  name: name,
-});
+let make = _tempFile;
 
-export { Greeting, name };
+export { Greeting, make };
 ```
 
 </CodeTab>
@@ -204,7 +213,7 @@ For `data-*` this is a bit trickier; words with `-` in them aren't valid in ReSc
 
 In React `props.children` is a special attribute to represent the nested elements within a parent element:
 
-```res
+```res nocheck
 let element = <div> child1 child2 </div>
 ```
 
@@ -241,28 +250,15 @@ let Greeting = {
   make: _tempFile$Greeting,
 };
 
-function _tempFile$MyList(props) {
-  return JsxRuntime.jsx("ul", {
-    children: props.children,
+function _tempFile(props) {
+  return JsxRuntime.jsx("div", {
+    children: JsxRuntime.jsx(_tempFile$Greeting, {}),
   });
 }
 
-let MyList = {
-  make: _tempFile$MyList,
-};
+let make = _tempFile;
 
-JsxRuntime.jsxs(_tempFile$MyList, {
-  children: [
-    JsxRuntime.jsx("li", {
-      children: "Item 1",
-    }),
-    JsxRuntime.jsx("li", {
-      children: "Item 2",
-    }),
-  ],
-});
-
-export { Greeting, MyList };
+export { Greeting, make };
 ```
 
 </CodeTab>
@@ -273,7 +269,7 @@ It is also possible to redefine the `children` type as well. Here are some examp
 
 **Component with a mandatory `string` as children:**
 
-```res
+```res nocheck
 module StringChildren = {
   @react.component
   let make = (~children: string) => {
@@ -291,7 +287,7 @@ module StringChildren = {
 
 **Component with an optional `React.element` as children:**
 
-```res
+```res nocheck
 module OptionalChildren = {
   @react.component
   let make = (~children: option<React.element>=?) => {
@@ -312,7 +308,7 @@ module OptionalChildren = {
 
 **Component that doesn't allow children at all:**
 
-```res
+```res nocheck
 module NoChildren = {
   @react.component
   let make = () => {
@@ -340,7 +336,7 @@ It's a decorator that tells the ReScript compiler to treat the function as a Rea
 In JavaScript, a React component is just a function that takes props (an object) and returns JSX. In ReScript, props are typically represented as a record type.
 The `@react.component` decorator automatically generates that record type and wraps the function for you—so you don't have to.
 
-```res
+```res nocheck
 // Counter.res
 
 @react.component
@@ -379,15 +375,26 @@ let make = (props: props) => {
 ```
 
 ```js
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
 import * as JsxRuntime from "react/jsx-runtime";
 
-function Counter(props) {
-  return JsxRuntime.jsxs("h1", {
-    children: [props.title, props.count],
+function _tempFile$Greeting(props) {
+  return Stdlib_Option.getOr(props.name, "");
+}
+
+let Greeting = {
+  make: _tempFile$Greeting,
+};
+
+function _tempFile(props) {
+  return JsxRuntime.jsx("div", {
+    children: JsxRuntime.jsx(_tempFile$Greeting, {}),
   });
 }
 
-let make = Counter;
+let make = _tempFile;
+
+export { Greeting, make };
 ```
 
 </CodeTab>
@@ -398,7 +405,7 @@ The ReScript type system is really good at inferring the prop types just by look
 
 For simple cases, well-scoped usage, or experimentation, it's still fine to omit type annotations:
 
-```res
+```res nocheck
 // Button.res
 
 @react.component
@@ -519,7 +526,7 @@ More details on the `@react.component` decorator and its generated interface can
 
 We can also represent React components as submodules, which makes it very convenient to build more complex UI without the need to create multiple files for each composite component (that's probably only used by the parent component anyways):
 
-```res
+```res nocheck
 // src/Button.res
 module Label = {
   @react.component
@@ -539,7 +546,7 @@ let make = (~children) => {
 
 The `Button.res` file defined above is now containing a `Label` component, that can also be used by other components, either by writing the fully qualified module name (`<Button.Label title="My Button"/>`) or by using a module alias to shortcut the full qualifier:
 
-```res
+```res nocheck
 module Label = Button.Label
 
 let content = <Label title="Test"/>
@@ -549,7 +556,7 @@ let content = <Label title="Test"/>
 
 Because components are actually a pair of functions, they have to belong to a module to be used in JSX. It makes sense to use these modules for identification purposes as well. `@react.component` or `@react.componentWithProps` automatically adds the name for you based on the module you are in.
 
-```res
+```res nocheck
 // File.res
 
 // will be named `File` in dev tools

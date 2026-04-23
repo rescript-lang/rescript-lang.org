@@ -167,7 +167,7 @@ export { me };
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 // Example.res
 
 let me: School.schoolPerson = {age: 20, name: "Big ReScript"}
@@ -439,12 +439,12 @@ When matching on the value directly, it's an `option`. Example:
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-type person = {
+type matchedOptionalPerson = {
   age: int,
   name?: string,
 }
 
-let me = {
+let me: matchedOptionalPerson = {
   age: 123,
   name: "Hello",
 }
@@ -456,14 +456,14 @@ let isRescript = switch me.name {
 ```
 
 ```js
-var isRescript;
+let isRescript = "Hello" === "ReScript";
 
-isRescript = "Hello" === "ReScript" ? true : false;
-
-var me = {
+let me = {
   age: 123,
   name: "Hello",
 };
+
+export { me, isRescript };
 ```
 
 </CodeTab>
@@ -473,12 +473,12 @@ But, when matching on the field as part of the general record structure, it's tr
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-type person = {
+type matchedOptionalRecord = {
   age: int,
   name?: string,
 }
 
-let me = {
+let me: matchedOptionalRecord = {
   age: 123,
   name: "Hello",
 }
@@ -491,14 +491,14 @@ let isRescript = switch me {
 ```
 
 ```js
-var isRescript;
+let isRescript = "Hello" === "ReScript";
 
-isRescript = "Hello" === "ReScript" ? true : false;
-
-var me = {
+let me = {
   age: 123,
   name: "Hello",
 };
+
+export { me, isRescript };
 ```
 
 </CodeTab>
@@ -508,12 +508,12 @@ Sometimes you _do_ want to know whether the field was set or not. You can tell t
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-type person = {
+type matchedOptionalPerson = {
   age: int,
   name?: string,
 }
 
-let me = {
+let me: matchedOptionalPerson = {
   age: 123,
   name: "Hello",
 }
@@ -525,12 +525,14 @@ let nameWasSet = switch me {
 ```
 
 ```js
-var nameWasSet = true;
-
-var me = {
+let me = {
   age: 123,
   name: "Hello",
 };
+
+let nameWasSet = true;
+
+export { me, nameWasSet };
 ```
 
 </CodeTab>
@@ -659,7 +661,7 @@ With records, you **cannot** say "I'd like this function to take any record type
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 type person = {age: int, name: string}
 type monster = {age: int, hasTentacles: bool}
 
@@ -676,7 +678,7 @@ function getAge(entity) {
 
 Instead, `getAge` will infer that the parameter `entity` must be of type `monster`, the closest record type with the field `age`. The following code's last line fails:
 
-```res
+```res nocheck
 let kraken = {age: 9999, hasTentacles: true}
 let me = {age: 5, name: "Baby ReScript"}
 

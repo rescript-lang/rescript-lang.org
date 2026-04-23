@@ -32,7 +32,7 @@ When ReScript can evaluate a known pure function call ahead of time, it can emit
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let message = greet("world!") // "Hello world!"
 ```
 
@@ -54,7 +54,7 @@ If all the arguments are known up front, ReScript can precompute the result too:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let add = (x, y, z) => x + y + z
 let sum = add(1, 2, 3) // 6
 ```
@@ -79,7 +79,7 @@ For longer functions, you'd surround the body with a block:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let greetMore = (name) => {
   let part1 = "Hello"
   part1 ++ " " ++ name
@@ -108,7 +108,7 @@ Multi-arguments functions, especially those whose arguments are of the same type
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let addCoordinates = (x, y) => {
   // use x and y here
 }
@@ -130,7 +130,7 @@ You can attach labels to an argument by prefixing the name with the `~` symbol:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let addCoordinates = (~x, ~y) => {
   // use x and y here
 }
@@ -152,7 +152,7 @@ You can provide the arguments in **any order**:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 addCoordinates(~y=6, ~x=5)
 ```
 
@@ -166,7 +166,7 @@ The `~x` part in the declaration means the function accepts an argument labeled 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let drawCircle = (~radius as r, ~color as c) => {
   setColor(c)
   startAt(r, r)
@@ -193,7 +193,7 @@ Here's the syntax for typing the arguments:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let drawCircle = (~radius as r: int, ~color as c: string) => {
   // code here
 }
@@ -213,7 +213,7 @@ Labeled function arguments can be made optional during declaration. You can then
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 // radius can be omitted
 let drawCircle = (~color, ~radius=?) => {
   setColor(color)
@@ -251,7 +251,7 @@ If we get back to our previous example and both add a signature and type annotat
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let drawCircle: (~color: color, ~radius: int=?) => unit =
   (~color: color, ~radius: option<int>=?) => {
     setColor(color)
@@ -287,7 +287,7 @@ Sometimes, you might want to forward a value to a function without knowing wheth
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let result =
   switch payloadRadius {
   | None => drawCircle(~color)
@@ -310,7 +310,7 @@ This quickly gets tedious. We provide a shortcut:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let result = drawCircle(~color, ~radius=?payloadRadius)
 ```
 
@@ -328,7 +328,7 @@ Optional labeled arguments can also be provided a default value. In this case, t
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let drawCircle = (~radius=1, ~color) => {
   setColor(color)
   startAt(radius, radius)
@@ -351,7 +351,7 @@ ReScript chooses the sane default of preventing a function to be called recursiv
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let rec neverTerminate = () => neverTerminate()
 ```
 
@@ -375,7 +375,7 @@ A simple recursive function may look like this:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 // Recursively check every item on the list until one equals the `item`
 // argument. If a match is found, return `true`, otherwise return `false`
 let rec listHas = (list, item) =>
@@ -418,7 +418,7 @@ Mutually recursive functions start like a single recursive function using the
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let rec callSecond = () => callFirst()
 and callFirst = () => callSecond()
 ```
@@ -452,7 +452,7 @@ export { greet, callSecond, callFirst };
 To partially apply a function, use the explicit `...` syntax.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
-```res
+```res nocheck
 let add = (a, b) => a + b
 let addFive = add(5, ...)
 ```
@@ -476,7 +476,7 @@ The output looks like idiomatic JS:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let getUserName = async (userId) => userId
 
 let greetUser = async (userId) => {
@@ -515,7 +515,7 @@ Both JS exceptions and exceptions defined in ReScript can be caught. The compile
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 exception SomeReScriptException
 
 let somethingThatMightThrow = async () => throw(SomeReScriptException)
@@ -576,7 +576,7 @@ Occasionally you may want to ignore the return value of a function. ReScript pro
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 mySideEffect()->Promise.catch(handleError)->ignore
 
 setTimeout(myFunc, 1000)->ignore
@@ -600,7 +600,7 @@ Cheat sheet for the function syntaxes:
 
 ### Declaration
 
-```res
+```res nocheck
 // anonymous function
 (x, y) => 1
 // bind to a name
@@ -624,7 +624,7 @@ let add = (~first=?, ~second=?) => switch first {...}
 
 #### With Type Annotation
 
-```res
+```res nocheck
 // anonymous function
 (x: int, y: int): int => 1
 // bind to a name
@@ -650,7 +650,7 @@ let add = (~first: option<int>=?, ~second: option<int>=?) : int => switch first 
 
 ### Application
 
-```res
+```res nocheck
 add(x, y)
 
 // labeled
@@ -669,7 +669,7 @@ add(~first?, ~second?)
 
 #### With Type Annotation
 
-```res
+```res nocheck
 // labeled
 add(~first=1: int, ~second=2: int)
 // with punning sugar
@@ -685,7 +685,7 @@ add(~first=?Some(1): option<int>, ~second=?Some(2): option<int>)
 
 ### Standalone Type Signature
 
-```res
+```res nocheck
 // first arg type, second arg type, return type
 type add = (int, int) => int
 

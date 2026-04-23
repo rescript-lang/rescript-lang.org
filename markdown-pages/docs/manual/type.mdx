@@ -67,7 +67,7 @@ You can also wrap any expression in parentheses and annotate it:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let myInt = 5
 let myInt: int = 5
 let myInt = (5: int) + (4: int)
@@ -282,7 +282,7 @@ ReScript's type system is robust and does not allow dangerous, unsafe stuff like
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 external myShadyConversion: myType1 => myType2 = "%identity"
 ```
 

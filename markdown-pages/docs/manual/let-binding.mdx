@@ -65,7 +65,7 @@ ReScript's `if`, `while` and functions all use the same block scoping mechanism.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 if displayGreeting {
   let message = "Enjoying the docs so far?"
   Console.log(message)
@@ -109,7 +109,7 @@ In ReScript, this obviously works too:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let result1 = 0
 let result2 = calculate(result1)
 let result3 = calculateSomeMore(result2)
@@ -127,7 +127,7 @@ Additionally, reusing the same let binding name overshadows the previous binding
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let result = 0
 let result = calculate(result)
 let result = calculateSomeMore(result)

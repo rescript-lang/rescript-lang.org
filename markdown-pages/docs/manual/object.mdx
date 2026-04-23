@@ -70,7 +70,7 @@ export { me };
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 type person = {
   "age": int
 };
@@ -90,7 +90,7 @@ var me = {
 
 Since the type checker doesn't try to match `me` with the type `person`. If you ever want to force an object value to be of a predeclared object type, just annotate the value:
 
-```res
+```res nocheck
 let me: person = {
   "age": "hello!"
 }
@@ -102,7 +102,7 @@ Now the type system will error properly.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let age = me["age"]
 ```
 

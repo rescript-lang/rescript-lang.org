@@ -58,39 +58,21 @@ let Success(message) = myResult // "You did it!" assigned to `message`
 ```
 
 ```js
-var student1 = {
+let student1 = {
   name: "John",
   age: 10,
 };
-var name = "John";
 
-var myResult = /* Success */ {
+let name = "John";
+
+let myResult = {
+  TAG: "Success",
   _0: "You did it!",
 };
-var message = "You did it!";
 
-var myArray = [1, 2, 3];
-if (myArray.length !== 2) {
-  throw {
-    RE_EXN_ID: "Match_failure",
-    _1: ["playground.res", 14, 4],
-    Error: new Error(),
-  };
-}
-var item1 = myArray[0];
-var item2 = myArray[1];
+let message = "You did it!";
 
-var myList = {
-  hd: 1,
-  tl: {
-    hd: 2,
-    tl: {
-      hd: 3,
-      tl: /* [] */ 0,
-    },
-  },
-};
-// ...
+export { student1, name, myResult, message };
 ```
 
 </CodeTab>
@@ -129,7 +111,7 @@ For a record, you can rename the field while destructuring:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let {name: n} = student1 // "John" assigned to `n`
 ```
 
@@ -141,7 +123,7 @@ var n = "John";
 
 You _can_ in theory destructure array and list at the top level too:
 
-```res
+```res nocheck
 let myArray = [1, 2, 3]
 let [item1, item2, _] = myArray
 // 1 assigned to `item1`, 2 assigned to `item2`, 3rd item ignored
@@ -329,7 +311,7 @@ Here's another example of pattern matching, this time on an inline tuple.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 type animal = Dog | Cat | Bird
 let categoryId = switch (isBig, myAnimal) {
 | (true, Dog) => 1
@@ -847,6 +829,64 @@ let greetAnimal = (animal: animals) => {
 ```
 
 ```js
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
 function greetPet(pet) {
   if (pet === "Cat") {
     console.log("Hello kitty!");
@@ -873,6 +913,8 @@ function greetAnimal(animal) {
       return greetFish(animal);
   }
 }
+
+export { person1, message, myStatus, greetPet, greetFish, greetAnimal };
 ```
 
 </CodeTab>
@@ -890,7 +932,7 @@ The example above aliases the variant type spread to a variable so we can use it
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let isPet = (animal: animals) => {
   switch animal {
   | ...pets => Console.log("A pet!")
@@ -937,6 +979,64 @@ let isPet = (animal: animals) => {
 ```
 
 ```js
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
 function isPet(animal) {
   if (animal === "Dog") {
     console.log("A dog!");
@@ -944,6 +1044,8 @@ function isPet(animal) {
   }
   console.log("Not a dog...");
 }
+
+export { person1, message, myStatus, isPet };
 ```
 
 </CodeTab>
@@ -971,6 +1073,64 @@ let isPet = (animal: animals) => {
 ```
 
 ```js
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
 function isPet(animal) {
   if (animal === "Dog") {
     console.log("A dog!");
@@ -978,6 +1138,8 @@ function isPet(animal) {
   }
   console.log("Not a dog...");
 }
+
+export { person1, message, myStatus, isPet };
 ```
 
 </CodeTab>
@@ -988,7 +1150,7 @@ If the function throws an exception (covered later), you can also match on _that
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 switch List.find(i => i === theItem, myItems) {
 | item => Console.log(item)
 | exception Not_found => Console.log("No such item found!")
@@ -1388,7 +1550,7 @@ Let's revisit one of the above examples:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let message = switch person1 {
 | Teacher({name: "Mary" | "Joe"}) =>
   `Hey, still going to the party on Saturday?`

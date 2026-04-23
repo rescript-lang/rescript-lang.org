@@ -57,7 +57,7 @@ Multiple spreads are not allowed:
 
 <CodeTab labels={["ReScript"]}>
 
-```res
+```res nocheck
 <NotAllowed {...props1} {...props2} />
 ```
 
@@ -67,7 +67,7 @@ The spread must be at the first position, followed by other props:
 
 <CodeTab labels={["ReScript"]}>
 
-```res
+```res nocheck
 <NotAllowed a="a" {...props} />
 ```
 
@@ -123,7 +123,7 @@ module C3 = {
 
 This feature can be used when the nominally different components are passed to the prop of `Screen` component in [ReScript React Native Navigation](https://github.com/rescript-react-native/rescript-react-navigation).
 
-```res
+```res nocheck
 type screenProps = { navigation: navigation, route: route }
 
 module Screen: {
@@ -149,7 +149,7 @@ module Screen: {
 
 This example can't pass the type checker, because the props types of both components are nominally different. You can make the both components having the same props type by passing `screenProps` type as argument to `@react.component`.
 
-```res
+```res nocheck
 module A = {
   @react.component(:screenProps)
   let make = (

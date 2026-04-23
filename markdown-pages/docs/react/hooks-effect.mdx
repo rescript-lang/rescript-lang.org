@@ -171,7 +171,7 @@ export { Document, make };
 
 In case we want to make the effects dependent on `count`, we can just use following `useEffect` call instead:
 
-```res
+```res nocheck
  React.useEffect(() => {
     open! Document
     document->setTitle(`You clicked ${Belt.Int.toString(count)} times!`)
@@ -238,44 +238,52 @@ let make = (~friendId: string) => {
 ```
 
 ```js
-function FriendStatus(Props) {
-  var friendId = Props.friendId;
-  var match = React.useState(function () {
-    return /* Offline */ 0;
-  });
-  var setState = match[1];
-  React.useEffect(function () {
-    var handleStatusChange = function (status) {
-      return Curry._1(setState, function (param) {
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let Document = {};
+
+let ChatAPI = {};
+
+function _tempFile(props) {
+  let friendId = props.friendId;
+  let match = React.useState(() => "Offline");
+  let setState = match[1];
+  React.useEffect(() => {
+    let handleStatusChange = (status) =>
+      setState((param) => {
         if (status.isOnline) {
-          return /* Online */ 2;
+          return "Online";
         } else {
-          return /* Offline */ 0;
+          return "Offline";
         }
       });
-    };
     subscribeToFriendStatus(friendId, handleStatusChange);
-    Curry._1(setState, function (param) {
-      return /* Loading */ 1;
-    });
-    return function (param) {
+    setState((param) => "Loading");
+    return () => {
       unsubscribeFromFriendStatus(friendId, handleStatusChange);
     };
   });
-  var text;
+  let text;
   switch (match[0]) {
-    case /* Offline */ 0:
+    case "Offline":
       text = friendId + " is offline";
       break;
-    case /* Loading */ 1:
+    case "Loading":
       text = "loading...";
       break;
-    case /* Online */ 2:
+    case "Online":
       text = friendId + " is online";
       break;
   }
-  return React.createElement("div", undefined, text);
+  return JsxRuntime.jsx("div", {
+    children: text,
+  });
 }
+
+let make = _tempFile;
+
+export { Document, ChatAPI, make };
 ```
 
 </CodeTab>
@@ -284,7 +292,7 @@ function FriendStatus(Props) {
 
 In some cases, cleaning up or applying the effect after every render might create a performance problem. Let's look at a concrete example to see what `useEffect` does:
 
-```res
+```res nocheck
 // from a previous example above
 React.useEffect(() => {
   open! Document
@@ -301,7 +309,7 @@ This also works for effects that have a cleanup phase:
 
 {/* TODO fix this example */}
 
-```res
+```res nocheck
 @react.component
 let make = (~friendId: string) => {
   let (state, setState) = React.useState(_ => Offline)

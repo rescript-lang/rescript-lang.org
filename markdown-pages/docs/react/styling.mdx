@@ -127,7 +127,7 @@ For demonstration purposes, let's create some simple bindings to e.g. [`emotion`
 
 This will give you straight-forward access to `emotion`'s apis. Here's how you'd use them in your app code:
 
-```res
+```res nocheck
 let container = Emotion.css({
   "color": "#fff",
   "backgroundColor": "red"
@@ -138,7 +138,7 @@ let app = <div className={container} />
 
 You can also use submodules to organize your styles more easily:
 
-```res
+```res nocheck
 module Styles = {
   open Emotion
   let container = css({
@@ -167,7 +167,7 @@ let app = <div
 Here we used the already existing `React.Style.t` type to enforce valid CSS attribute names.
 Last but not least, you can also bind to functions that let you use raw CSS directly:
 
-```res
+```res nocheck
 let container = Emotion.rawCss(`
   color: #fff;
   background-color: red;

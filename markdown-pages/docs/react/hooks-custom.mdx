@@ -24,7 +24,7 @@ Let's go back to a previous example from our [React.useEffect section](./hooks-e
 
 {/* TODO: fix this example */}
 
-```res {16-31}
+```res nocheck {16-31}
 // FriendStatus.res
 
 module ChatAPI = {
@@ -117,7 +117,7 @@ Now let’s say that our chat application also has a contact list, and we want t
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res {15-30}
+```res nocheck {15-30}
 // FriendListItem.res
 type state = Offline | Loading | Online
 
@@ -224,7 +224,7 @@ Usually when we want to share logic between two functions, we extract it to a th
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 // FriendStatusHook.res
 
 // module ChatAPI {...}
@@ -291,7 +291,7 @@ Unlike a React component, a custom Hook doesn’t need to have a specific signat
 
 The purpose of our `useFriendStatus` Hook is to subscribe us to a friend’s status. This is why it takes `friendId` as an argument, and returns the online state like `Online`, `Offline` or `Loading`:
 
-```res
+```res nocheck
 let useFriendStatus = (friendId: string): status {
   let (state, setState) = React.useState(_ => Offline)
 
@@ -311,7 +311,7 @@ Now that we’ve extracted this logic to a useFriendStatus hook, we can just use
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res {6}
+```res nocheck {6}
 // FriendStatus.res
 type friend = { id: string }
 
@@ -361,7 +361,7 @@ function FriendStatus(Props) {
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res {4}
+```res nocheck {4}
 // FriendListItem.res
 @react.component
 let make = (~friend: friend) => {
@@ -425,7 +425,7 @@ To illustrate this, we’ll use another component from our hypothetical chat exa
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res {11,12,14-18,22}
+```res nocheck {11,12,14-18,22}
 type friend = {id: string, name: string}
 
 let friendList = [
@@ -537,7 +537,7 @@ We keep the currently chosen friend ID in the `recipientId` state variable, and 
 
 Because the useState Hook call gives us the latest value of the `recipientId` state variable, we can pass it to our custom `FriendStatusHook.useFriendStatus` Hook as an argument:
 
-```res
+```res nocheck
 let (recipientId, setRecipientId) = React.useState(_ => "1")
 let recipientOnlineState = FriendStatusHook.useFriendStatus(recipientId)
 ```

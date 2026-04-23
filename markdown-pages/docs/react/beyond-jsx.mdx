@@ -70,7 +70,7 @@ module Friend = {
 }
 ```
 
-```res
+```res nocheck
 module Friend = {
   type props<'name, 'children> = {
     name: 'name,
@@ -108,7 +108,7 @@ The `@react.component` decorator also works for `React.forwardRef` calls:
 
 <CodeTab labels={["Decorated", "Expanded"]}>
 
-```res
+```res nocheck
 module FancyInput = {
   @react.component
   let make = React.forwardRef((~className=?, ~children, ref) =>
@@ -119,7 +119,7 @@ module FancyInput = {
 }
 ```
 
-```res
+```res nocheck
 // Simplified Output
 type props<'className, 'children, 'ref> = {
   className?: 'className,

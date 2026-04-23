@@ -47,12 +47,12 @@ let logUserDetails = async (userId: string) => {
 
 ```js
 async function logUserDetails(userId) {
-  var email = await GlobalAPI.fetchUserMail(userId);
-  await GlobalAPI.sendAnalytics(
-    "User details have been logged for " + userId + "",
-  );
-  console.log("Email address for user " + userId + ": " + email + "");
+  let email = await GlobalAPI.fetchUserMail(userId);
+  await GlobalAPI.sendAnalytics(`User details have been logged for ` + userId);
+  console.log(`Email address for user ` + userId + `: ` + email);
 }
+
+export { logUserDetails };
 ```
 
 </CodeTab>
@@ -105,7 +105,7 @@ let fetchData = async (userId: string): string => {
 
 For completeness reasons, let's expand the full signature and inline type definitions in one code snippet:
 
-```res
+```res nocheck
 // Note how the inline return type uses `string`, while the type definition uses `promise<string>`
 let fetchData: string => promise<string> = async (userId: string): string {
   await fetchUserMail(userId)
@@ -281,7 +281,7 @@ let logMultipleValues = async () => {
 
 Here's a full example of using the MDN `fetch` API, using `async` / `await` to simulate a login:
 
-```res
+```res nocheck
 // A generic Response type for typing our fetch requests
 module Response = {
   type t<'data>

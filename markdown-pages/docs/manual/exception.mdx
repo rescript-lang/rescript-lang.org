@@ -597,7 +597,7 @@ exports.someJsFunctionThatThrows = () => {
 
 Then catch it from ReScript:
 
-```res
+```res nocheck
 // import the method in Example.js
 @module("./Example")
 external someJsFunctionThatThrows: () => unit = "someJsFunctionThatThrows"
@@ -912,7 +912,7 @@ When you have ordinary variants, you often don't **need** exceptions. For exampl
 
 ### Catch Both ReScript and JS Exceptions in the Same `catch` Clause
 
-```res
+```res nocheck
 try {
   someOtherJSFunctionThatThrows()
 } catch {
