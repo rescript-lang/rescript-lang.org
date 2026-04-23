@@ -38,42 +38,101 @@ const rescriptJson = `{
   ]
 }`;
 
+let splitLines = (content) => content.split("\n");
+
+let isFenceLine = (line, fence) =>
+  new RegExp(`^\\\`\\\`\\\`${fence}(?:\\s|$)`).test(line);
+
+let classifyResFence = (line) => {
+  if (isFenceLine(line, "res prelude")) {
+    return "res-prelude";
+  }
+
+  if (isFenceLine(line, "res sig")) {
+    return "res-sig";
+  }
+
+  if (isFenceLine(line, "res nocheck")) {
+    return "res-nocheck";
+  }
+
+  if (isFenceLine(line, "res")) {
+    return "res";
+  }
+
+  return null;
+};
+
+let classifyFence = (line) => {
+  let resKind = classifyResFence(line);
+  if (resKind != null) {
+    return resKind;
+  }
+
+  if (line.startsWith("```js") || line.startsWith("```javascript")) {
+    return "js";
+  }
+
+  if (line.startsWith("```ts") || line.startsWith("```typescript")) {
+    return "ts";
+  }
+
+  return null;
+};
+
 let parseFile = (content) => {
-  if (!/```res (example|prelude|sig)/.test(content)) {
+  if (!/```res(?:\s|$)/.test(content)) {
     return;
   }
 
-  let inCodeBlock = false;
+  let inWrappedBlock = false;
+  let inIgnoredBlock = false;
   let moduleId = 0;
 
   return content
     .split("\n")
     .map((line) => {
-      let modifiedLine = "";
-      if (line.startsWith("```res example")) {
-        inCodeBlock = true;
-        modifiedLine = `/* _MODULE_EXAMPLE_START */ module M_${moduleId++} = {`;
-      } else if (line.startsWith("```res prelude")) {
-        inCodeBlock = true;
-        modifiedLine = "/* _MODULE_PRELUDE_START */ include {";
-      } else if (line.startsWith("```res sig")) {
-        inCodeBlock = true;
-        modifiedLine = `/* _MODULE_SIG_START */ module type M_${moduleId++} = {`;
-      } else if (inCodeBlock) {
-        if (line.startsWith("```")) {
-          inCodeBlock = false;
-          modifiedLine = "} // _MODULE_END";
-        } else {
-          modifiedLine = line;
+      let kind = classifyResFence(line);
+
+      if (kind === "res") {
+        inWrappedBlock = true;
+        return `/* _MODULE_EXAMPLE_START */ module M_${moduleId++} = {`;
+      }
+
+      if (kind === "res-prelude") {
+        inWrappedBlock = true;
+        return "/* _MODULE_PRELUDE_START */ include {";
+      }
+
+      if (kind === "res-sig") {
+        inWrappedBlock = true;
+        return `/* _MODULE_SIG_START */ module type M_${moduleId++} = {`;
+      }
+
+      if (kind === "res-nocheck") {
+        inIgnoredBlock = true;
+        return "";
+      }
+
+      if (line.startsWith("```")) {
+        if (inWrappedBlock) {
+          inWrappedBlock = false;
+          return "} // _MODULE_END";
+        }
+
+        if (inIgnoredBlock) {
+          inIgnoredBlock = false;
         }
       }
 
-      return modifiedLine;
+      if (inIgnoredBlock) {
+        return "";
+      }
+
+      return inWrappedBlock ? line : "";
     })
     .join("\n");
 };
-
-let splitLines = (content) => content.split("\n");
 
 let parseCodeTabLabels = (line) => {
   let match = line.match(/<CodeTab labels=\{(\[[^\n]+\])\}>/);
@@ -91,12 +150,12 @@ let parseCodeTabLabels = (line) => {
 };
 
 let fenceKind = (line) => {
-  if (line.startsWith("```res example")) {
-    return "res-example";
+  if (classifyFence(line) === "js") {
+    return "js";
   }
 
-  if (line.startsWith("```js") || line.startsWith("```javascript")) {
-    return "js";
+  if (line.startsWith("```res example")) {
+    return "res-example";
   }
 
   return null;
