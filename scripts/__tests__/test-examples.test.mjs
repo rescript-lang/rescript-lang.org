@@ -107,31 +107,28 @@ let helper = 1
 \`\`\`
 
 \`\`\`res
-type person = {name: string}
-type person = {age: int}
+let greeting = "hello"
 \`\`\`
 
 \`\`\`res nocheck
-type ignored = {name: string}
-type ignored = {age: int}
+let ignored = "nope"
 \`\`\`
 `;
 
   let { docsRoot, tempRoot } = makeWorkspace(fixture);
-  let { logger, logs, warnings } = makeLogger();
+  let { logger, logs } = makeLogger();
 
   let result = run({ docsRoot, tempRoot, logger });
+  let tempFile = fs.readFileSync(
+    path.join(tempRoot, "src", "_tempFile.res"),
+    "utf8",
+  );
 
-  assert.equal(result.success, false);
+  assert.equal(result.success, true);
   assert.equal(result.warningCount, 0);
   assert.ok(logs.some((log) => log.includes("testing examples in")));
-  assert.ok(warnings.some((warning) => warning.includes("sample.mdx")));
-  assert.ok(
-    warnings.some((warning) =>
-      warning.includes("Multiple definition of the type name person"),
-    ),
-  );
-  assert.ok(!warnings.some((warning) => warning.includes("ignored")));
+  assert.match(tempFile, /module M_0 = \{[\s\S]*let greeting = "hello"/);
+  assert.doesNotMatch(tempFile, /ignored/);
 });
 
 test("update inserts JS Output for a single-label ReScript CodeTab with a plain res fence", () => {
