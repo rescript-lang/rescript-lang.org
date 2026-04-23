@@ -641,7 +641,7 @@ let one: a = One
 let oneAsString = (one :> string)
 ```
 
-If you were to configure all of your construtors to be represented as `int` or `float`, you could coerce to those too:
+If you were to configure all of your constructors to be represented as `int` or `float`, you could coerce to those too:
 
 ```rescript
 type asInt = | @as(1) One | @as(2) Two | @as(3) Three
@@ -652,7 +652,7 @@ let toInt = (oneInt :> int)
 
 ### Advanced: Coercing `string` to Variant
 
-In certain situtations it's possible to coerce a `string` to a variant. This is an advanced technique that you're unlikely to need much, but when you do it's really useful.
+In certain situations it's possible to coerce a `string` to a variant. This is an advanced technique that you're unlikely to need much, but when you do it's really useful.
 
 You can coerce a `string` to a variant when:
 
