@@ -131,6 +131,7 @@ type ignored = {age: int}
       warning.includes("Multiple definition of the type name person"),
     ),
   );
+  assert.ok(!warnings.some((warning) => warning.includes("ignored")));
 });
 
 test("update inserts JS Output for a single-label ReScript CodeTab with a plain res fence", () => {
@@ -200,9 +201,8 @@ type person = {age: int}
   assert.match(nextContent, /let visibleValue = 1;/);
   assert.match(
     nextContent,
-    /```res nocheck[\s\S]*type person = \{name: string\}/,
+    /<CodeTab labels=\{\["ReScript"\]\}>\n\n```res nocheck\ntype person = \{name: string\}\ntype person = \{age: int\}\n```\n\n<\/CodeTab>/,
   );
-  assert.match(nextContent, /```res nocheck[\s\S]*type person = \{age: int\}/);
 });
 
 test("update ignores ReScript CodeTabs whose second label is TypeScript Output", () => {
@@ -245,8 +245,10 @@ export const value: number
   assert.deepEqual(warnings, []);
   assert.match(nextContent, /labels=\{\["ReScript", "JS Output"\]\}/);
   assert.match(nextContent, /let visibleValue = 1;/);
-  assert.match(nextContent, /labels=\{\["ReScript", "TypeScript Output"\]\}/);
-  assert.match(nextContent, /```ts[\s\S]*export const value: number/);
+  assert.match(
+    nextContent,
+    /<CodeTab labels=\{\["ReScript", "TypeScript Output"\]\}>\n\n```res\n@genType\nlet value = 1\n```\n\n```ts\nexport const value: number\n```\n\n<\/CodeTab>/,
+  );
 });
 
 test("run reports cleaned compiler errors without raw Node stack traces", () => {
