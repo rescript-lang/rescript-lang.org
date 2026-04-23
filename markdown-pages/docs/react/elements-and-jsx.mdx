@@ -90,7 +90,7 @@ let element = React.array([
 
 ReScript doesn't allow `element || null` constraints due to it's strongly typed nature. Whenever you are expressing conditionals where a value might, or might not be rendered, you will need the `React.null` constant to represent _Nothingness_:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 let name = Some("Andrea")
@@ -115,6 +115,18 @@ let element = JsxRuntime.jsx("div", {
 JsxRuntime.jsx("div", {
   children: element,
 });
+
+export { name, element };
+```
+
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+let name = "Andrea";
+
+let element = <div>{"Hello " + name}</div>;
+
+<div>{element}</div>;
 
 export { name, element };
 ```
@@ -202,7 +214,7 @@ ReScript can make sure that we are only passing valid dom props. You can find an
 
 Sometimes it's required to clone an existing element to set, overwrite or add prop values to a new instance, or if you want to set invalid prop names such as `data-name`. You can use `React.cloneElement` for that:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 let original = <div className="hello"/>
@@ -218,6 +230,20 @@ import * as JsxRuntime from "react/jsx-runtime";
 let original = JsxRuntime.jsx("div", {
   className: "hello",
 });
+
+React.cloneElement(original, {
+  className: "world",
+  "data-name": "some name",
+});
+
+export { original };
+```
+
+```jsx
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let original = <div className={"hello"} />;
 
 React.cloneElement(original, {
   className: "world",

@@ -26,7 +26,7 @@ In other words: **It allows us to "hook into" React features.**
 
 Just for a quick look, here is an example of a `Counter` component that allows a user to click a button and increment an `count` value that will immediately be rendered on each button click:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 // Counter.res
@@ -51,7 +51,7 @@ let make = () => {
 import * as React from "react";
 import * as JsxRuntime from "react/jsx-runtime";
 
-function _tempFile(props) {
+function Example(props) {
   let match = React.useState(() => 0);
   let setCount = match[1];
   let onClick = (_evt) => setCount((prev) => (prev + 1) | 0);
@@ -69,7 +69,29 @@ function _tempFile(props) {
   });
 }
 
-let make = _tempFile;
+let make = Example;
+
+export { make };
+```
+
+```jsx
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example(props) {
+  let match = React.useState(() => 0);
+  let setCount = match[1];
+  let onClick = (_evt) => setCount((prev) => (prev + 1) | 0);
+  let msg = "You clicked" + String(match[0]) + "times";
+  return (
+    <div>
+      <p>{msg}</p>
+      <button onClick={onClick}>{"Click me"}</button>
+    </div>
+  );
+}
+
+let make = Example;
 
 export { make };
 ```

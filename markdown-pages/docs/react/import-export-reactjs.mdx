@@ -16,7 +16,7 @@ including defining component props and handling various import scenarios.
 
 To reuse a React component in ReScript, create a new module, specify the component's location, and define its props.
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 module Confetti = {
@@ -37,14 +37,29 @@ import * as JsxRuntime from "react/jsx-runtime";
 
 let Confetti = {};
 
-function _tempFile(props) {
+function Example(props) {
   return JsxRuntime.jsx(ReactConfetti, {
     width: 300,
     height: 300,
   });
 }
 
-let make = _tempFile;
+let make = Example;
+
+export { Confetti, make };
+```
+
+```jsx
+import ReactConfetti from "react-confetti";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let Confetti = {};
+
+function Example(props) {
+  return <ReactConfetti width={300} height={300} />;
+}
+
+let make = Example;
 
 export { Confetti, make };
 ```
@@ -82,7 +97,7 @@ You can define a separate type for your component's props within the module.
 
 ### Props Type Example
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 module Confetti = {
@@ -107,14 +122,29 @@ import * as JsxRuntime from "react/jsx-runtime";
 
 let Confetti = {};
 
-function _tempFile(props) {
+function Example(props) {
   return JsxRuntime.jsx(ReactConfetti, {
     width: 300,
     height: 300,
   });
 }
 
-let make = _tempFile;
+let make = Example;
+
+export { Confetti, make };
+```
+
+```jsx
+import ReactConfetti from "react-confetti";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let Confetti = {};
+
+function Example(props) {
+  return <ReactConfetti width={300} height={300} />;
+}
+
+let make = Example;
 
 export { Confetti, make };
 ```
@@ -125,7 +155,7 @@ export { Confetti, make };
 
 To define optional props, use the `?` symbol.
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 module Confetti = {
@@ -152,14 +182,29 @@ import * as JsxRuntime from "react/jsx-runtime";
 
 let Confetti = {};
 
-function _tempFile(props) {
+function Example(props) {
   return JsxRuntime.jsx(ReactConfetti, {
     width: 300,
     height: 300,
   });
 }
 
-let make = _tempFile;
+let make = Example;
+
+export { Confetti, make };
+```
+
+```jsx
+import ReactConfetti from "react-confetti";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let Confetti = {};
+
+function Example(props) {
+  return <ReactConfetti width={300} height={300} />;
+}
+
+let make = Example;
 
 export { Confetti, make };
 ```
@@ -170,7 +215,7 @@ export { Confetti, make };
 
 To accept existing DOM props for a component, extend the `JsxDOM.domProps` type.
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 module Foo = {
@@ -195,7 +240,7 @@ import * as JsxRuntime from "react/jsx-runtime";
 
 let Foo$1 = {};
 
-function _tempFile(props) {
+function Example(props) {
   return JsxRuntime.jsx(Foo, {
     height: "300px",
     width: "300px",
@@ -203,7 +248,22 @@ function _tempFile(props) {
   });
 }
 
-let make = _tempFile;
+let make = Example;
+
+export { Foo$1 as Foo, make };
+```
+
+```jsx
+import Foo from "foo";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let Foo$1 = {};
+
+function Example(props) {
+  return <Foo height={"300px"} width={"300px"} customProp={"bar"} />;
+}
+
+let make = Example;
 
 export { Foo$1 as Foo, make };
 ```

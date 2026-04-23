@@ -28,7 +28,7 @@ Accepts a `React.Context.t` (the value returned from `React.createContext`) and 
 
 ### A Simple ThemeProvider
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 // App.res
@@ -87,7 +87,7 @@ let ThemeContext = {
   Provider: Provider,
 };
 
-function _tempFile$ThemedButton(props) {
+function Example$ThemedButton(props) {
   let theme = React.useContext(context);
   let match;
   switch (theme) {
@@ -107,29 +107,99 @@ function _tempFile$ThemedButton(props) {
 }
 
 let ThemedButton = {
-  make: _tempFile$ThemedButton,
+  make: Example$ThemedButton,
 };
 
-function _tempFile$Toolbar(props) {
+function Example$Toolbar(props) {
   return JsxRuntime.jsx("div", {
-    children: JsxRuntime.jsx(_tempFile$ThemedButton, {}),
+    children: JsxRuntime.jsx(Example$ThemedButton, {}),
   });
 }
 
 let Toolbar = {
-  make: _tempFile$Toolbar,
+  make: Example$Toolbar,
 };
 
-function _tempFile(props) {
+function Example(props) {
   return JsxRuntime.jsx(make, {
     value: "dark",
     children: JsxRuntime.jsx("div", {
-      children: JsxRuntime.jsx(_tempFile$Toolbar, {}),
+      children: JsxRuntime.jsx(Example$Toolbar, {}),
     }),
   });
 }
 
-let make$1 = _tempFile;
+let make$1 = Example;
+
+export { ThemeContext, ThemedButton, Toolbar, make$1 as make };
+```
+
+```jsx
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let context = React.createContext("light");
+
+let make = context.Provider;
+
+let Provider = {
+  make: make,
+};
+
+let ThemeContext = {
+  context: context,
+  Provider: Provider,
+};
+
+function Example$ThemedButton(props) {
+  let theme = React.useContext(context);
+  let match;
+  switch (theme) {
+    case "dark":
+      match = ["#ffffff", "#222222"];
+      break;
+    default:
+      match = ["#000000", "#eeeeee"];
+  }
+  return (
+    <button
+      style={{
+        backgroundColor: match[1],
+        color: match[0],
+      }}
+    >
+      {"I am a styled button!"}
+    </button>
+  );
+}
+
+let ThemedButton = {
+  make: Example$ThemedButton,
+};
+
+function Example$Toolbar(props) {
+  return (
+    <div>
+      <ThemedButton.make />
+    </div>
+  );
+}
+
+let Toolbar = {
+  make: Example$Toolbar,
+};
+
+function Example(props) {
+  return (
+    <Provider.make value={"dark"}>
+      <div>
+        <Toolbar.make />
+      </div>
+    </Provider.make>
+  );
+}
+
+let make$1 = Example;
 
 export { ThemeContext, ThemedButton, Toolbar, make$1 as make };
 ```

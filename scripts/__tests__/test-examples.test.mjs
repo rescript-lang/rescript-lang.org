@@ -50,7 +50,7 @@ test("run compiles a real example block from an injected workspace", () => {
   assert.ok(tempRoot.includes(" "));
   assert.ok(logs.some((log) => log.includes("testing examples in")));
   assert.match(
-    fs.readFileSync(path.join(tempRoot, "src", "_tempFile.res"), "utf-8"),
+    fs.readFileSync(path.join(tempRoot, "src", "Example.res"), "utf-8"),
     /module M_0 = \{[\s\S]*let greeting = "hello"/,
   );
 });
@@ -85,7 +85,7 @@ let greeting = "hello"
 
   let result = run({ docsRoot, tempRoot, logger });
   let tempFile = fs.readFileSync(
-    path.join(tempRoot, "src", "_tempFile.res"),
+    path.join(tempRoot, "src", "Example.res"),
     "utf8",
   );
 
@@ -115,7 +115,7 @@ let ignored = "nope"
 
   let result = run({ docsRoot, tempRoot, logger });
   let tempFile = fs.readFileSync(
-    path.join(tempRoot, "src", "_tempFile.res"),
+    path.join(tempRoot, "src", "Example.res"),
     "utf8",
   );
 
@@ -149,6 +149,31 @@ let value = 1
     nextContent,
     /<CodeTab labels=\{\["ReScript", "JS Output"\]\}>[\s\S]*```res\nlet value = 1\n```[\s\S]*```js[\s\S]*let value = 1;[\s\S]*<\/CodeTab>/,
   );
+});
+
+test("update emits Example instead of _tempFile for component-style snippets", () => {
+  let fixture = `# Demo
+
+<CodeTab labels={["ReScript"]}>
+
+\`\`\`res
+@react.component
+let make = () => <div> {React.string("Hello")} </div>
+\`\`\`
+
+</CodeTab>
+`;
+
+  let { docsRoot, tempRoot, file } = makeWorkspace(fixture);
+  let { logger } = makeLogger();
+
+  let result = run({ docsRoot, tempRoot, logger, update: true });
+  let nextContent = fs.readFileSync(file, "utf8");
+
+  assert.equal(result.success, true);
+  assert.match(nextContent, /function Example\(props\)/);
+  assert.match(nextContent, /let make = Example;/);
+  assert.doesNotMatch(nextContent, /_tempFile/);
 });
 
 test("update ignores a res nocheck fence inside a ReScript CodeTab", () => {

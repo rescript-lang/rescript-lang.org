@@ -41,7 +41,7 @@ To render our React application into the `root` div, we need to do two things:
 
 Here is a full example rendering our application in our `root` div:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 // Dom access can actually fail. ReScript
@@ -64,6 +64,18 @@ let rootElement = document.querySelector("#root");
 if (!(rootElement == null)) {
   let root = Client.createRoot(rootElement);
   root.render(JsxRuntime.jsx("div", {}));
+}
+```
+
+```jsx
+import * as Client from "react-dom/client";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let rootElement = document.querySelector("#root");
+
+if (!(rootElement == null)) {
+  let root = Client.createRoot(rootElement);
+  root.render(<div />);
 }
 ```
 

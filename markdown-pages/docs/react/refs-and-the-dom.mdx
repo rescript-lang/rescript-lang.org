@@ -76,7 +76,7 @@ Here are some examples:
 
 This code uses a `React.ref` to store a reference to an `input` DOM node to put focus on a text field when a button was clicked:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 // CustomTextInput.res
@@ -107,7 +107,7 @@ import * as React from "react";
 import * as Primitive_option from "@rescript/runtime/lib/es6/Primitive_option.js";
 import * as JsxRuntime from "react/jsx-runtime";
 
-function _tempFile(props) {
+function Example(props) {
   let textInput = React.useRef(null);
   let focusInput = () => {
     let dom = textInput.current;
@@ -132,7 +132,35 @@ function _tempFile(props) {
   });
 }
 
-let make = _tempFile;
+let make = Example;
+
+export { make };
+```
+
+```jsx
+import * as React from "react";
+import * as Primitive_option from "@rescript/runtime/lib/es6/Primitive_option.js";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example(props) {
+  let textInput = React.useRef(null);
+  let focusInput = () => {
+    let dom = textInput.current;
+    if (dom == null) {
+      return;
+    }
+    dom.focus();
+  };
+  let onClick = (param) => focusInput();
+  return (
+    <div>
+      <input ref={Primitive_option.some(textInput)} type={"text"} />
+      <input type={"button"} value={"Focus the text input"} onClick={onClick} />
+    </div>
+  );
+}
+
+let make = Example;
 
 export { make };
 ```
@@ -151,7 +179,7 @@ React will assign the `current` field with the DOM element when the component mo
 
 In React, you **can't** pass a `ref` attribute to a component function:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 module MyComp = {
@@ -172,22 +200,44 @@ let make = () => {
 import * as React from "react";
 import * as JsxRuntime from "react/jsx-runtime";
 
-function _tempFile$MyComp(props) {
+function Example$MyComp(props) {
   return JsxRuntime.jsx("input", {});
 }
 
 let MyComp = {
-  make: _tempFile$MyComp,
+  make: Example$MyComp,
 };
 
-function _tempFile(props) {
+function Example(props) {
   let textInput = React.useRef(null);
-  return JsxRuntime.jsx(_tempFile$MyComp, {
+  return JsxRuntime.jsx(Example$MyComp, {
     ref: textInput,
   });
 }
 
-let make = _tempFile;
+let make = Example;
+
+export { MyComp, make };
+```
+
+```jsx
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$MyComp(props) {
+  return <input />;
+}
+
+let MyComp = {
+  make: Example$MyComp,
+};
+
+function Example(props) {
+  let textInput = React.useRef(null);
+  return <MyComp.make ref={textInput} />;
+}
+
+let make = Example;
 
 export { MyComp, make };
 ```
@@ -214,7 +264,7 @@ Instead of passing a ref value created by `React.useRef()`, you can pass in a ca
 
 The example below implements a common pattern: using the ref callback to store a reference to a DOM node in an instance property.
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 // CustomTextInput.res
@@ -248,7 +298,7 @@ import * as Stdlib_Nullable from "@rescript/runtime/lib/es6/Stdlib_Nullable.js";
 import * as Primitive_option from "@rescript/runtime/lib/es6/Primitive_option.js";
 import * as JsxRuntime from "react/jsx-runtime";
 
-function _tempFile(props) {
+function Example(props) {
   let textInput = React.useRef(null);
   let setTextInputRef = (element) => {
     textInput.current = element;
@@ -272,7 +322,39 @@ function _tempFile(props) {
   });
 }
 
-let make = _tempFile;
+let make = Example;
+
+export { make };
+```
+
+```jsx
+import * as React from "react";
+import * as Stdlib_Nullable from "@rescript/runtime/lib/es6/Stdlib_Nullable.js";
+import * as Primitive_option from "@rescript/runtime/lib/es6/Primitive_option.js";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example(props) {
+  let textInput = React.useRef(null);
+  let setTextInputRef = (element) => {
+    textInput.current = element;
+  };
+  let focusTextInput = (param) =>
+    Stdlib_Nullable.forEach(textInput.current, (input) => {
+      input.focus();
+    });
+  return (
+    <div>
+      <input ref={Primitive_option.some(setTextInputRef)} type={"text"} />
+      <input
+        type={"button"}
+        value={"Focus the text input"}
+        onClick={focusTextInput}
+      />
+    </div>
+  );
+}
+
+let make = Example;
 
 export { make };
 ```
@@ -283,7 +365,7 @@ React will call the ref callback with the DOM element when the component mounts,
 
 You can pass callback refs between components like you can with object refs that were created with `React.useRef()`.
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 // Parent.res
@@ -316,7 +398,7 @@ import * as React from "react";
 import * as Primitive_option from "@rescript/runtime/lib/es6/Primitive_option.js";
 import * as JsxRuntime from "react/jsx-runtime";
 
-function _tempFile$CustomTextInput(props) {
+function Example$CustomTextInput(props) {
   return JsxRuntime.jsx("div", {
     children: JsxRuntime.jsx("input", {
       ref: Primitive_option.some(props.setInputRef),
@@ -326,20 +408,50 @@ function _tempFile$CustomTextInput(props) {
 }
 
 let CustomTextInput = {
-  make: _tempFile$CustomTextInput,
+  make: Example$CustomTextInput,
 };
 
-function _tempFile(props) {
+function Example(props) {
   let textInput = React.useRef(null);
   let setInputRef = (element) => {
     textInput.current = element;
   };
-  return JsxRuntime.jsx(_tempFile$CustomTextInput, {
+  return JsxRuntime.jsx(Example$CustomTextInput, {
     setInputRef: setInputRef,
   });
 }
 
-let make = _tempFile;
+let make = Example;
+
+export { CustomTextInput, make };
+```
+
+```jsx
+import * as React from "react";
+import * as Primitive_option from "@rescript/runtime/lib/es6/Primitive_option.js";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$CustomTextInput(props) {
+  return (
+    <div>
+      <input ref={Primitive_option.some(props.setInputRef)} type={"text"} />
+    </div>
+  );
+}
+
+let CustomTextInput = {
+  make: Example$CustomTextInput,
+};
+
+function Example(props) {
+  let textInput = React.useRef(null);
+  let setInputRef = (element) => {
+    textInput.current = element;
+  };
+  return <CustomTextInput.make setInputRef={setInputRef} />;
+}
+
+let make = Example;
 
 export { CustomTextInput, make };
 ```

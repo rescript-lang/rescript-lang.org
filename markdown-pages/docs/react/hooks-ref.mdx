@@ -47,7 +47,7 @@ More infos on direct DOM manipulation can be found in the [Refs and the DOM](./r
 
 ### Managing Focus for a Text Input
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 // TextInputWithFocusButton.res
@@ -75,7 +75,7 @@ import * as Stdlib_Nullable from "@rescript/runtime/lib/es6/Stdlib_Nullable.js";
 import * as Primitive_option from "@rescript/runtime/lib/es6/Primitive_option.js";
 import * as JsxRuntime from "react/jsx-runtime";
 
-function _tempFile(props) {
+function Example(props) {
   let inputEl = React.useRef(null);
   let onClick = (param) =>
     Stdlib_Nullable.forEach(inputEl.current, (input) => {
@@ -95,7 +95,32 @@ function _tempFile(props) {
   });
 }
 
-let make = _tempFile;
+let make = Example;
+
+export { make };
+```
+
+```jsx
+import * as React from "react";
+import * as Stdlib_Nullable from "@rescript/runtime/lib/es6/Stdlib_Nullable.js";
+import * as Primitive_option from "@rescript/runtime/lib/es6/Primitive_option.js";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example(props) {
+  let inputEl = React.useRef(null);
+  let onClick = (param) =>
+    Stdlib_Nullable.forEach(inputEl.current, (input) => {
+      input.focus();
+    });
+  return (
+    <>
+      <input ref={Primitive_option.some(inputEl)} type={"text"} />
+      <button onClick={onClick}>{"Focus the input"}</button>
+    </>
+  );
+}
+
+let make = Example;
 
 export { make };
 ```
@@ -106,7 +131,7 @@ export { make };
 
 Reusing the example from our [Refs and the DOM](./refs-and-the-dom.mdx#callback-refs) section:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 // CustomTextInput.res
@@ -140,7 +165,7 @@ import * as Stdlib_Nullable from "@rescript/runtime/lib/es6/Stdlib_Nullable.js";
 import * as Primitive_option from "@rescript/runtime/lib/es6/Primitive_option.js";
 import * as JsxRuntime from "react/jsx-runtime";
 
-function _tempFile(props) {
+function Example(props) {
   let textInput = React.useRef(null);
   let setTextInputRef = (element) => {
     textInput.current = element;
@@ -164,7 +189,39 @@ function _tempFile(props) {
   });
 }
 
-let make = _tempFile;
+let make = Example;
+
+export { make };
+```
+
+```jsx
+import * as React from "react";
+import * as Stdlib_Nullable from "@rescript/runtime/lib/es6/Stdlib_Nullable.js";
+import * as Primitive_option from "@rescript/runtime/lib/es6/Primitive_option.js";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example(props) {
+  let textInput = React.useRef(null);
+  let setTextInputRef = (element) => {
+    textInput.current = element;
+  };
+  let focusTextInput = (param) =>
+    Stdlib_Nullable.forEach(textInput.current, (input) => {
+      input.focus();
+    });
+  return (
+    <div>
+      <input ref={Primitive_option.some(setTextInputRef)} type={"text"} />
+      <input
+        type={"button"}
+        value={"Focus the text input"}
+        onClick={focusTextInput}
+      />
+    </div>
+  );
+}
+
+let make = Example;
 
 export { make };
 ```

@@ -83,7 +83,7 @@ We use the `ReactDOM.domRef` type to represent our `inputRef`. We pass our ref i
 
 This is how the previous example would look like with the `React.forwardRef` approach:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 // App.res
@@ -148,7 +148,7 @@ let FancyInput = {
   make: make,
 };
 
-function _tempFile(props) {
+function Example(props) {
   let input = React.useRef(null);
   let focusInput = () =>
     Stdlib_Nullable.forEach(input.current, (input) => {
@@ -167,7 +167,53 @@ function _tempFile(props) {
   });
 }
 
-let make$1 = _tempFile;
+let make$1 = Example;
+
+export { FancyInput, make$1 as make };
+```
+
+```jsx
+import * as React from "react";
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as Stdlib_Nullable from "@rescript/runtime/lib/es6/Stdlib_Nullable.js";
+import * as Primitive_option from "@rescript/runtime/lib/es6/Primitive_option.js";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let make = React.forwardRef((props, ref) => (
+  <div>
+    <input
+      ref={Stdlib_Option.map(
+        ref == null ? undefined : Primitive_option.some(ref),
+        (prim) => prim,
+      )}
+      className={props.className}
+      type={"text"}
+    />
+    {props.children}
+  </div>
+));
+
+let FancyInput = {
+  make: make,
+};
+
+function Example(props) {
+  let input = React.useRef(null);
+  let focusInput = () =>
+    Stdlib_Nullable.forEach(input.current, (input) => {
+      input.focus();
+    });
+  let onClick = (param) => focusInput();
+  return (
+    <div>
+      <FancyInput.make className={"fancy"} ref={input}>
+        <button onClick={onClick}>{"Click to focus"}</button>
+      </FancyInput.make>
+    </div>
+  );
+}
+
+let make$1 = Example;
 
 export { FancyInput, make$1 as make };
 ```

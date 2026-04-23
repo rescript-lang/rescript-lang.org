@@ -9,7 +9,8 @@ const require = createRequire(import.meta.url);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, "..");
-const tempFileRegex = /_tempFile\.res/g;
+const tempModuleName = "Example";
+const tempSourceRegex = new RegExp(`${tempModuleName}\\.res`, "g");
 const rescriptCliPath = path.join(
   path.dirname(require.resolve("rescript/package.json")),
   "cli",
@@ -328,6 +329,9 @@ let buildSnippetSource = ({ preludes, pair }) => {
   return [...visiblePreludes, pair.res.content].filter(Boolean).join("\n\n");
 };
 
+let tempModulePath = (tempRoot, extension) =>
+  path.join(tempRoot, "src", `${tempModuleName}.${extension}`);
+
 let formatCompilerError = ({ file, error }) => {
   let stderr =
     error?.stderr == null
@@ -335,7 +339,7 @@ let formatCompilerError = ({ file, error }) => {
       : error.stderr.toString();
 
   return stderr
-    .replace(tempFileRegex, path.relative(".", file))
+    .replace(tempSourceRegex, path.relative(".", file))
     .replace(
       /\/\* _MODULE_(CHECKED|EXAMPLE|PRELUDE|SIG)_START \*\/.+/g,
       (_, capture) => {
@@ -369,15 +373,15 @@ let runRescriptBuild = (tempRoot, stdio = "pipe") => {
 };
 
 let readCompiledSnippet = (tempRoot) => {
-  let jsxPath = path.join(tempRoot, "src", "_tempFile.jsx");
-  let jsPath = path.join(tempRoot, "src", "_tempFile.js");
+  let jsxPath = tempModulePath(tempRoot, "jsx");
+  let jsPath = tempModulePath(tempRoot, "js");
   let outputPath = fs.existsSync(jsxPath) ? jsxPath : jsPath;
 
   return fs.readFileSync(outputPath, "utf8");
 };
 
 let compileSnippet = (tempRoot, source) => {
-  fs.writeFileSync(path.join(tempRoot, "src", "_tempFile.res"), source);
+  fs.writeFileSync(tempModulePath(tempRoot, "res"), source);
   runRescriptBuild(tempRoot);
 
   return readCompiledSnippet(tempRoot);
@@ -496,7 +500,7 @@ let ensureTempProject = ({ tempRoot, preserve = false }) => {
     path.join(tempRoot, "rescript.json"),
     makeRescriptJson({ preserve }),
   );
-  fs.writeFileSync(path.join(tempRoot, "src", "_tempFile.res"), "");
+  fs.writeFileSync(tempModulePath(tempRoot, "res"), "");
   let tempNodeModules = path.join(tempRoot, "node_modules", "@rescript");
   let tempReactPackage = path.join(tempNodeModules, "react");
   if (!fs.existsSync(tempReactPackage)) {
@@ -565,7 +569,7 @@ export let run = ({
       return;
     }
 
-    fs.writeFileSync(path.join(tempRoot, "src", "_tempFile.res"), parsedResult);
+    fs.writeFileSync(tempModulePath(tempRoot, "res"), parsedResult);
     try {
       logger.log("testing examples in", file);
       runRescriptBuild(tempRoot);

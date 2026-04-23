@@ -38,7 +38,7 @@ Learn more about [records](../manual/record.mdx), [variants](../manual/variant.m
 
 ### Counter Example with `React.useReducer`
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 // Counter.res
@@ -81,7 +81,7 @@ function reducer(state, action) {
   }
 }
 
-function _tempFile(props) {
+function Example(props) {
   let match = React.useReducer(reducer, {
     count: 0,
   });
@@ -101,7 +101,42 @@ function _tempFile(props) {
   });
 }
 
-let make = _tempFile;
+let make = Example;
+
+export { reducer, make };
+```
+
+```jsx
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function reducer(state, action) {
+  if (action === "Inc") {
+    return {
+      count: (state.count + 1) | 0,
+    };
+  } else {
+    return {
+      count: (state.count - 1) | 0,
+    };
+  }
+}
+
+function Example(props) {
+  let match = React.useReducer(reducer, {
+    count: 0,
+  });
+  let dispatch = match[1];
+  return (
+    <>
+      {"Count:" + String(match[0].count)}
+      <button onClick={(param) => dispatch("Dec")}>{"-"}</button>
+      <button onClick={(param) => dispatch("Inc")}>{"+"}</button>
+    </>
+  );
+}
+
+let make = Example;
 
 export { reducer, make };
 ```
@@ -114,7 +149,7 @@ export { reducer, make };
 
 You can leverage the full power of variants to express actions with data payloads to parametrize your state transitions:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 // TodoApp.res
@@ -241,7 +276,7 @@ let initialTodos = [
   },
 ];
 
-function _tempFile(props) {
+function Example(props) {
   let match = React.useReducer(reducer, {
     todos: initialTodos,
     nextId: 2,
@@ -283,7 +318,105 @@ function _tempFile(props) {
   });
 }
 
-let make = _tempFile;
+let make = Example;
+
+export { reducer, initialTodos, make };
+```
+
+```jsx
+import * as React from "react";
+import * as Belt_Array from "@rescript/runtime/lib/es6/Belt_Array.js";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function reducer(state, action) {
+  switch (action.TAG) {
+    case "AddTodo":
+      let todos = state.todos.concat([
+        {
+          id: state.nextId,
+          content: action._0,
+          completed: false,
+        },
+      ]);
+      return {
+        todos: todos,
+        nextId: (state.nextId + 1) | 0,
+      };
+    case "RemoveTodo":
+      let id = action._0;
+      let todos$1 = state.todos.filter((todo) => todo.id !== id);
+      return {
+        todos: todos$1,
+        nextId: state.nextId,
+      };
+    case "ToggleTodo":
+      let id$1 = action._0;
+      let todos$2 = Belt_Array.map(state.todos, (todo) => {
+        if (todo.id === id$1) {
+          return {
+            id: todo.id,
+            content: todo.content,
+            completed: !todo.completed,
+          };
+        } else {
+          return todo;
+        }
+      });
+      return {
+        todos: todos$2,
+        nextId: state.nextId,
+      };
+  }
+}
+
+let initialTodos = [
+  {
+    id: 1,
+    content: "Try ReScript & React",
+    completed: false,
+  },
+];
+
+function Example(props) {
+  let match = React.useReducer(reducer, {
+    todos: initialTodos,
+    nextId: 2,
+  });
+  let dispatch = match[1];
+  let todos = Belt_Array.map(match[0].todos, (todo) => (
+    <li>
+      {todo.content}
+      <button
+        onClick={(param) =>
+          dispatch({
+            TAG: "RemoveTodo",
+            _0: todo.id,
+          })
+        }
+      >
+        {"Remove"}
+      </button>
+      <input
+        checked={todo.completed}
+        type={"checkbox"}
+        onChange={(param) =>
+          dispatch({
+            TAG: "ToggleTodo",
+            _0: todo.id,
+          })
+        }
+      />
+    </li>
+  ));
+  return (
+    <>
+      <h1>{"Todo List:"}</h1>
+      <ul>{todos}</ul>
+    </>
+  );
+}
+
+let make = Example;
 
 export { reducer, initialTodos, make };
 ```
@@ -309,7 +442,7 @@ You can also create the `initialState` lazily. To do this, you can use `React.us
 
 It lets you extract the logic for calculating the initial state outside the reducer. This is also handy for resetting the state later in response to an action:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 // Counter.res
@@ -373,7 +506,7 @@ function reducer(state, action) {
   }
 }
 
-function _tempFile(props) {
+function Example(props) {
   let match = React.useReducer(reducer, props.initialCount, init);
   let dispatch = match[1];
   return JsxRuntime.jsxs(JsxRuntime.Fragment, {
@@ -391,7 +524,52 @@ function _tempFile(props) {
   });
 }
 
-let make = _tempFile;
+let make = Example;
+
+export { init, reducer, make };
+```
+
+```jsx
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function init(initialCount) {
+  return {
+    count: initialCount,
+  };
+}
+
+function reducer(state, action) {
+  if (typeof action !== "object") {
+    if (action === "Inc") {
+      return {
+        count: (state.count + 1) | 0,
+      };
+    } else {
+      return {
+        count: (state.count - 1) | 0,
+      };
+    }
+  } else {
+    return {
+      count: action._0,
+    };
+  }
+}
+
+function Example(props) {
+  let match = React.useReducer(reducer, props.initialCount, init);
+  let dispatch = match[1];
+  return (
+    <>
+      {"Count:" + String(match[0].count)}
+      <button onClick={(param) => dispatch("Dec")}>{"-"}</button>
+      <button onClick={(param) => dispatch("Inc")}>{"+"}</button>
+    </>
+  );
+}
+
+let make = Example;
 
 export { init, reducer, make };
 ```

@@ -63,7 +63,7 @@ let make = () => {
 
 In this example, we are creating a `ThemeContainer` component that manages a `darkmode` boolean state and passes the `setDarkmode` function to a `ControlPanel` component to trigger the state changes.
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 // ThemeContainer.res
@@ -100,7 +100,7 @@ let make = (~content) => {
 import * as React from "react";
 import * as JsxRuntime from "react/jsx-runtime";
 
-function _tempFile$ControlPanel(props) {
+function Example$ControlPanel(props) {
   let setDarkmode = props.setDarkmode;
   let onClick = (evt) => {
     evt.preventDefault();
@@ -117,10 +117,10 @@ function _tempFile$ControlPanel(props) {
 }
 
 let ControlPanel = {
-  make: _tempFile$ControlPanel,
+  make: Example$ControlPanel,
 };
 
-function _tempFile(props) {
+function Example(props) {
   let match = React.useState(() => false);
   let darkmode = match[0];
   let className = darkmode ? "theme-dark" : "theme-light";
@@ -134,7 +134,7 @@ function _tempFile(props) {
           props.content,
         ],
       }),
-      JsxRuntime.jsx(_tempFile$ControlPanel, {
+      JsxRuntime.jsx(Example$ControlPanel, {
         setDarkmode: match[1],
         darkmode: darkmode,
       }),
@@ -143,7 +143,50 @@ function _tempFile(props) {
   });
 }
 
-let make = _tempFile;
+let make = Example;
+
+export { ControlPanel, make };
+```
+
+```jsx
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$ControlPanel(props) {
+  let setDarkmode = props.setDarkmode;
+  let onClick = (evt) => {
+    evt.preventDefault();
+    setDarkmode((prev) => !prev);
+  };
+  let toggleText =
+    "Switch to " + ((props.darkmode ? "light" : "dark") + " theme");
+  return (
+    <div>
+      <button onClick={onClick}>{toggleText}</button>
+    </div>
+  );
+}
+
+let ControlPanel = {
+  make: Example$ControlPanel,
+};
+
+function Example(props) {
+  let match = React.useState(() => false);
+  let darkmode = match[0];
+  let className = darkmode ? "theme-dark" : "theme-light";
+  return (
+    <div className={className}>
+      <section>
+        <h1>{"More Infos about ReScript"}</h1>
+        {props.content}
+      </section>
+      <ControlPanel.make setDarkmode={match[1]} darkmode={darkmode} />
+    </div>
+  );
+}
+
+let make = Example;
 
 export { ControlPanel, make };
 ```

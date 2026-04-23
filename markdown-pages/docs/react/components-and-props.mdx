@@ -26,7 +26,7 @@ The nice thing about this concept is that you can solely focus on the input and 
 
 Let's start with a first example to see how a ReScript React component looks like:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 // src/Greeting.res
@@ -41,13 +41,25 @@ let make = () => {
 ```js
 import * as JsxRuntime from "react/jsx-runtime";
 
-function _tempFile(props) {
+function Example(props) {
   return JsxRuntime.jsx("div", {
     children: "Hello ReScripters!",
   });
 }
 
-let make = _tempFile;
+let make = Example;
+
+export { make };
+```
+
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example(props) {
+  return <div>{"Hello ReScripters!"}</div>;
+}
+
+let make = Example;
 
 export { make };
 ```
@@ -64,7 +76,7 @@ You can also see in the the JS output that the function we created was directly 
 
 In ReactJS, props are usually described as a single `props` record. In ReScript, we use [labeled arguments](../manual/function.mdx#labeled-arguments) to define our props parameters instead. Here's an example:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 // src/Article.res
@@ -82,7 +94,7 @@ let make = (~title: string, ~visitorCount: int, ~children: React.element) => {
 ```js
 import * as JsxRuntime from "react/jsx-runtime";
 
-function _tempFile(props) {
+function Example(props) {
   let visitorCountMsg = "You are visitor number: " + String(props.visitorCount);
   return JsxRuntime.jsxs("div", {
     children: [
@@ -97,7 +109,26 @@ function _tempFile(props) {
   });
 }
 
-let make = _tempFile;
+let make = Example;
+
+export { make };
+```
+
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example(props) {
+  let visitorCountMsg = "You are visitor number: " + String(props.visitorCount);
+  return (
+    <div>
+      <div>{props.title}</div>
+      <div>{visitorCountMsg}</div>
+      {props.children}
+    </div>
+  );
+}
+
+let make = Example;
 
 export { make };
 ```
@@ -108,7 +139,7 @@ export { make };
 
 We can leverage the full power of labeled arguments to define optional props as well:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 // Greeting.res
@@ -123,26 +154,33 @@ let make = (~name: option<string>=?) => {
 ```
 
 ```js
-import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
 import * as JsxRuntime from "react/jsx-runtime";
 
-function _tempFile$Greeting(props) {
-  return Stdlib_Option.getOr(props.name, "");
-}
-
-let Greeting = {
-  make: _tempFile$Greeting,
-};
-
-function _tempFile(props) {
+function Example(props) {
+  let name = props.name;
+  let greeting = name !== undefined ? "Hello " + name + "!" : "Hello stranger!";
   return JsxRuntime.jsx("div", {
-    children: JsxRuntime.jsx(_tempFile$Greeting, {}),
+    children: greeting,
   });
 }
 
-let make = _tempFile;
+let make = Example;
 
-export { Greeting, make };
+export { make };
+```
+
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example(props) {
+  let name = props.name;
+  let greeting = name !== undefined ? "Hello " + name + "!" : "Hello stranger!";
+  return <div>{greeting}</div>;
+}
+
+let make = Example;
+
+export { make };
 ```
 
 </CodeTab>
@@ -162,7 +200,7 @@ module Greeting = {
 
 </div>
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 let name = Some("Andrea")
@@ -174,23 +212,40 @@ let name = Some("Andrea")
 import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
 import * as JsxRuntime from "react/jsx-runtime";
 
-function _tempFile$Greeting(props) {
+function Example$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
 }
 
 let Greeting = {
-  make: _tempFile$Greeting,
+  make: Example$Greeting,
 };
 
-function _tempFile(props) {
-  return JsxRuntime.jsx("div", {
-    children: JsxRuntime.jsx(_tempFile$Greeting, {}),
-  });
+let name = "Andrea";
+
+JsxRuntime.jsx(Example$Greeting, {
+  name: name,
+});
+
+export { Greeting, name };
+```
+
+```jsx
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Greeting(props) {
+  return Stdlib_Option.getOr(props.name, "");
 }
 
-let make = _tempFile;
+let Greeting = {
+  make: Example$Greeting,
+};
 
-export { Greeting, make };
+let name = "Andrea";
+
+<Greeting.make name={name} />;
+
+export { Greeting, name };
 ```
 
 </CodeTab>
@@ -220,7 +275,7 @@ let element = <div> child1 child2 </div>
 By default, whenever you are passing children like in the expression above, `children` will be treated
 as a `React.element`:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 module MyList = {
@@ -242,23 +297,64 @@ module MyList = {
 import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
 import * as JsxRuntime from "react/jsx-runtime";
 
-function _tempFile$Greeting(props) {
+function Example$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
 }
 
 let Greeting = {
-  make: _tempFile$Greeting,
+  make: Example$Greeting,
 };
 
-function _tempFile(props) {
-  return JsxRuntime.jsx("div", {
-    children: JsxRuntime.jsx(_tempFile$Greeting, {}),
+function Example$MyList(props) {
+  return JsxRuntime.jsx("ul", {
+    children: props.children,
   });
 }
 
-let make = _tempFile;
+let MyList = {
+  make: Example$MyList,
+};
 
-export { Greeting, make };
+JsxRuntime.jsxs(Example$MyList, {
+  children: [
+    JsxRuntime.jsx("li", {
+      children: "Item 1",
+    }),
+    JsxRuntime.jsx("li", {
+      children: "Item 2",
+    }),
+  ],
+});
+
+export { Greeting, MyList };
+```
+
+```jsx
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Greeting(props) {
+  return Stdlib_Option.getOr(props.name, "");
+}
+
+let Greeting = {
+  make: Example$Greeting,
+};
+
+function Example$MyList(props) {
+  return <ul>{props.children}</ul>;
+}
+
+let MyList = {
+  make: Example$MyList,
+};
+
+<MyList.make>
+  <li>{"Item 1"}</li>
+  <li>{"Item 2"}</li>
+</MyList.make>;
+
+export { Greeting, MyList };
 ```
 
 </CodeTab>
@@ -359,7 +455,7 @@ Having an uppercased function name also helps distinguish React components from 
 
 If you prefer defining your own props record, you can use `@react.componentWithProps`. This gives you full control over the props type while still generating a proper uppercased component.
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 // Counter.res
@@ -378,21 +474,47 @@ let make = (props: props) => {
 import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
 import * as JsxRuntime from "react/jsx-runtime";
 
-function _tempFile$Greeting(props) {
+function Example$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
 }
 
 let Greeting = {
-  make: _tempFile$Greeting,
+  make: Example$Greeting,
 };
 
-function _tempFile(props) {
-  return JsxRuntime.jsx("div", {
-    children: JsxRuntime.jsx(_tempFile$Greeting, {}),
+function Example(props) {
+  return JsxRuntime.jsxs("h1", {
+    children: [props.title, props.count],
   });
 }
 
-let make = _tempFile;
+let make = Example;
+
+export { Greeting, make };
+```
+
+```jsx
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Greeting(props) {
+  return Stdlib_Option.getOr(props.name, "");
+}
+
+let Greeting = {
+  make: Example$Greeting,
+};
+
+function Example(props) {
+  return (
+    <h1>
+      {props.title}
+      {props.count}
+    </h1>
+  );
+}
+
+let make = Example;
 
 export { Greeting, make };
 ```
@@ -425,7 +547,7 @@ Even though type inference spares us a lot of keyboard typing, we still recommen
 
 Every ReScript component can be used in JSX. For example, if we want to use our `Greeting` component within our `App` component, we can do this:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 // src/App.res
@@ -442,21 +564,46 @@ let make = () => {
 import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
 import * as JsxRuntime from "react/jsx-runtime";
 
-function _tempFile$Greeting(props) {
+function Example$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
 }
 
 let Greeting = {
-  make: _tempFile$Greeting,
+  make: Example$Greeting,
 };
 
-function _tempFile(props) {
+function Example(props) {
   return JsxRuntime.jsx("div", {
-    children: JsxRuntime.jsx(_tempFile$Greeting, {}),
+    children: JsxRuntime.jsx(Example$Greeting, {}),
   });
 }
 
-let make = _tempFile;
+let make = Example;
+
+export { Greeting, make };
+```
+
+```jsx
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Greeting(props) {
+  return Stdlib_Option.getOr(props.name, "");
+}
+
+let Greeting = {
+  make: Example$Greeting,
+};
+
+function Example(props) {
+  return (
+    <div>
+      <Greeting.make />
+    </div>
+  );
+}
+
+let make = Example;
 
 export { Greeting, make };
 ```
@@ -471,7 +618,7 @@ You don't need to use the `@react.component` decorator to write components that 
 
 For example:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 module Link = {
@@ -491,12 +638,12 @@ module Link = {
 import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
 import * as JsxRuntime from "react/jsx-runtime";
 
-function _tempFile$Greeting(props) {
+function Example$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
 }
 
 let Greeting = {
-  make: _tempFile$Greeting,
+  make: Example$Greeting,
 };
 
 function make(props) {
@@ -514,6 +661,31 @@ JsxRuntime.jsx(make, {
   href: "/docs",
   children: "Docs",
 });
+
+export { Greeting, Link };
+```
+
+```jsx
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Greeting(props) {
+  return Stdlib_Option.getOr(props.name, "");
+}
+
+let Greeting = {
+  make: Example$Greeting,
+};
+
+function make(props) {
+  return <a href={props.href}>{props.children}</a>;
+}
+
+let Link = {
+  make: make,
+};
+
+<Link.make href={"/docs"}>{"Docs"}</Link.make>;
 
 export { Greeting, Link };
 ```

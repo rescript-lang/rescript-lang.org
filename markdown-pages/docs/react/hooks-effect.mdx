@@ -107,7 +107,7 @@ module Document = {
 }
 ```
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 
@@ -140,7 +140,7 @@ import * as JsxRuntime from "react/jsx-runtime";
 
 let Document = {};
 
-function _tempFile(props) {
+function Example(props) {
   let match = React.useState(() => 0);
   let setCount = match[1];
   let count = match[0];
@@ -162,7 +162,35 @@ function _tempFile(props) {
   });
 }
 
-let make = _tempFile;
+let make = Example;
+
+export { Document, make };
+```
+
+```jsx
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let Document = {};
+
+function Example(props) {
+  let match = React.useState(() => 0);
+  let setCount = match[1];
+  let count = match[0];
+  React.useEffect(() => {
+    document.title = `You clicked ` + String(count) + ` times!`;
+  });
+  let onClick = (_evt) => setCount((prev) => (prev + 1) | 0);
+  let msg = "You clicked" + String(count) + "times";
+  return (
+    <div>
+      <p>{msg}</p>
+      <button onClick={onClick}>{"Click me"}</button>
+    </div>
+  );
+}
+
+let make = Example;
 
 export { Document, make };
 ```
@@ -198,7 +226,7 @@ module ChatAPI = {
 type state = Offline | Loading | Online
 ```
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 {/* TODO: fix this example */}
 
@@ -245,7 +273,7 @@ let Document = {};
 
 let ChatAPI = {};
 
-function _tempFile(props) {
+function Example(props) {
   let friendId = props.friendId;
   let match = React.useState(() => "Offline");
   let setState = match[1];
@@ -281,7 +309,54 @@ function _tempFile(props) {
   });
 }
 
-let make = _tempFile;
+let make = Example;
+
+export { Document, ChatAPI, make };
+```
+
+```jsx
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let Document = {};
+
+let ChatAPI = {};
+
+function Example(props) {
+  let friendId = props.friendId;
+  let match = React.useState(() => "Offline");
+  let setState = match[1];
+  React.useEffect(() => {
+    let handleStatusChange = (status) =>
+      setState((param) => {
+        if (status.isOnline) {
+          return "Online";
+        } else {
+          return "Offline";
+        }
+      });
+    subscribeToFriendStatus(friendId, handleStatusChange);
+    setState((param) => "Loading");
+    return () => {
+      unsubscribeFromFriendStatus(friendId, handleStatusChange);
+    };
+  });
+  let text;
+  switch (match[0]) {
+    case "Offline":
+      text = friendId + " is offline";
+      break;
+    case "Loading":
+      text = "loading...";
+      break;
+    case "Online":
+      text = friendId + " is online";
+      break;
+  }
+  return <div>{text}</div>;
+}
+
+let make = Example;
 
 export { Document, ChatAPI, make };
 ```
