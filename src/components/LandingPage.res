@@ -14,10 +14,12 @@ module Intro = {
         <h2 className="ubuntu-mono-bold hl-1 text-center text-gray-60 my-4 max-w-md">
           {React.string(`types > vibes`)}
         </h2>
-        <p className="body-lg text-center text-gray-60 my-4 max-w-md">
+        <p className="body-lg text-center text-gray-60 mt-4 max-w-md">
           {React.string(`ReScript is a strongly typed language that compiles to clean,
-            efficient JavaScript that humans and AI tools can read and understand.
-            Its fast compiler and static type system keep feedback loops tight,
+            efficient JavaScript that humans and AI tools can read and understand.`)}
+        </p>
+        <p className="body-lg text-center text-gray-60 my-4 max-w-md">
+          {React.string(`Its fast compiler and static type system keep feedback loops tight,
             so you can move quickly with AI assistance while maintaining
             confidence as your codebase grows.`)}
         </p>
