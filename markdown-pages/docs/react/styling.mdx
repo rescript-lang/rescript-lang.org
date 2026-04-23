@@ -20,7 +20,7 @@ If they work in JS then they almost certainly work in ReScript. In the next few 
 
 This is the most basic form of styling, coming straight from the 90s. You can apply a `style` attribute to any DOM element using the `style` prop.
 
-```res example
+```res
 let make = () =>
   <div style={{ color: "#444444", fontSize: "68px"}} />
 ```
@@ -29,7 +29,7 @@ let make = () =>
 
 Use a `%%raw` expression to import CSS files within your ReScript / React component code:
 
-```res example
+```res
 // in a JS module setup
 %%raw("import './styles/main.css'")
 
@@ -53,7 +53,7 @@ As an example, let's say we have a CSS module like this:
 
 We now need to create a module binding that imports our styles as a JS object:
 
-```res example
+```res
 // {..} means we are handling a JS object with an unknown
 // set of attributes
 @module external styles: {..} = "./styles.module.css"
@@ -82,7 +82,7 @@ First, create your TailwindCSS main entrypoint file:
 
 Then, import your `main.css` file in your ReScript / React application:
 
-```res example
+```res
 // src/App.res
 
 %%raw("import './main.css'")
@@ -90,7 +90,7 @@ Then, import your `main.css` file in your ReScript / React application:
 
 Utilize ReScript's pattern matching and string interpolations to combine different classnames:
 
-```res example
+```res
 @react.component
 let make = (~active: bool) => {
   let activeClass = if active {
@@ -114,7 +114,7 @@ There's no way we could recommend a definitive CSS-in-JS workflow, since there a
 
 For demonstration purposes, let's create some simple bindings to e.g. [`emotion`](https://emotion.sh/docs/introduction) (as described [here](https://github.com/bloodyowl/rescript-react-starter-kit/blob/eca7055c59ba578b2d1994fc928d8f541a423e74/src/shared/Emotion.res)):
 
-```res example
+```res
 // src/Emotion.res
 
 @module("@emotion/css") external css: {..} => string = "css"
@@ -127,7 +127,7 @@ For demonstration purposes, let's create some simple bindings to e.g. [`emotion`
 
 This will give you straight-forward access to `emotion`'s apis. Here's how you'd use them in your app code:
 
-```res
+```res nocheck
 let container = Emotion.css({
   "color": "#fff",
   "backgroundColor": "red"
@@ -138,7 +138,7 @@ let app = <div className={container} />
 
 You can also use submodules to organize your styles more easily:
 
-```res
+```res nocheck
 module Styles = {
   open Emotion
   let container = css({
@@ -153,7 +153,7 @@ let app = <div className={Styles.container} />
 
 Please note that this approach will not check for invalid css attribute names. If you e.g. want to make sure that only valid CSS attributes are being passed, you could define your `css` function like this as well:
 
-```res example
+```res
 @module("@emotion/css") external css: ReactDOM.Style.t => string = "css"
 
 // Usage is slightly different (and probably less ergonomic)
@@ -167,7 +167,7 @@ let app = <div
 Here we used the already existing `React.Style.t` type to enforce valid CSS attribute names.
 Last but not least, you can also bind to functions that let you use raw CSS directly:
 
-```res
+```res nocheck
 let container = Emotion.rawCss(`
   color: #fff;
   background-color: red;

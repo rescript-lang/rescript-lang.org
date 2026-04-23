@@ -27,7 +27,7 @@ If your JavaScript object has fixed fields, then it's conceptually like a ReScri
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type person = {
   name: string,
   friends: array<string>,
@@ -40,9 +40,11 @@ let johnName = john.name
 ```
 
 ```js
-var MySchool = require("MySchool");
+import * as MySchool from "MySchool";
 
-var johnName = MySchool.john.name;
+let johnName = MySchool.john.name;
+
+export { johnName };
 ```
 
 </CodeTab>
@@ -53,7 +55,7 @@ If you want or need to use different field names on the ReScript and the JavaScr
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type action = {
   @as("type") type_: string
 }
@@ -62,9 +64,11 @@ let action = {type_: "ADD_USER"}
 ```
 
 ```js
-var action = {
+let action = {
   type: "ADD_USER",
 };
+
+export { action };
 ```
 
 </CodeTab>
@@ -85,7 +89,9 @@ let value = {foo: 7, bar: "baz"}
 ```
 
 ```js
-var value = [7, "baz"];
+let value = [7, "baz"];
+
+export { value };
 ```
 
 </CodeTab>
@@ -96,7 +102,7 @@ Alternatively, you can use [ReScript object](./object.mdx) to model a JS object 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type person = {
   "name": string,
   "friends": array<string>,
@@ -109,9 +115,11 @@ let johnName = john["name"]
 ```
 
 ```js
-var MySchool = require("MySchool");
+import * as MySchool from "MySchool";
 
-var johnName = MySchool.john.name;
+let johnName = MySchool.john.name;
+
+export { johnName };
 ```
 
 </CodeTab>
@@ -122,14 +130,14 @@ Alternatively, you can use `get` and `set` to bind to individual fields of a JS 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type textarea
 @set external setName: (textarea, string) => unit = "name"
 @get external getName: textarea => string = "name"
 ```
 
 ```js
-
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>
@@ -138,7 +146,7 @@ You can also use `get_index` and `set_index` to access a dynamic property or an 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type t
 @new external create: int => t = "Int32Array"
 @get_index external get: (t, int) => int = ""
@@ -150,9 +158,13 @@ Console.log(i32arr->get(0))
 ```
 
 ```js
-var i32arr = new Int32Array(3);
+let i32arr = new Int32Array(3);
+
 i32arr[0] = 42;
+
 console.log(i32arr[0]);
+
+export { i32arr };
 ```
 
 </CodeTab>
@@ -172,7 +184,7 @@ Use `new` to emulate e.g. `new Date()`:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type t
 @new external createDate: unit => t = "Date"
 
@@ -180,7 +192,9 @@ let date = createDate()
 ```
 
 ```js
-var date = new Date();
+let date = new Date();
+
+export { date };
 ```
 
 </CodeTab>
@@ -189,15 +203,18 @@ You can chain `new` and `module` if the JS module you're importing is itself a c
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type t
 @new @module external book: unit => t = "Book"
 let myBook = book()
 ```
 
 ```js
-var Book = require("Book");
-var myBook = new Book();
+import * as Book from "Book";
+
+let myBook = new Book();
+
+export { myBook };
 ```
 
 </CodeTab>

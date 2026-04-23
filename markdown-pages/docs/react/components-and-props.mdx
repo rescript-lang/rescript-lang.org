@@ -26,9 +26,9 @@ The nice thing about this concept is that you can solely focus on the input and 
 
 Let's start with a first example to see how a ReScript React component looks like:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
-```res example
+```res
 // src/Greeting.res
 @react.component
 let make = () => {
@@ -39,15 +39,29 @@ let make = () => {
 ```
 
 ```js
-import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
 
-function Greeting(props) {
+function Example(props) {
   return JsxRuntime.jsx("div", {
     children: "Hello ReScripters!",
   });
 }
 
-var make = Greeting;
+let make = Example;
+
+export { make };
+```
+
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example(props) {
+  return <div>{"Hello ReScripters!"}</div>;
+}
+
+let make = Example;
+
+export { make };
 ```
 
 </CodeTab>
@@ -62,9 +76,9 @@ You can also see in the the JS output that the function we created was directly 
 
 In ReactJS, props are usually described as a single `props` record. In ReScript, we use [labeled arguments](../manual/function.mdx#labeled-arguments) to define our props parameters instead. Here's an example:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
-```res example
+```res
 // src/Article.res
 @react.component
 let make = (~title: string, ~visitorCount: int, ~children: React.element) => {
@@ -78,20 +92,45 @@ let make = (~title: string, ~visitorCount: int, ~children: React.element) => {
 ```
 
 ```js
-import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
 
-function Article(props) {
-  var visitorCountMsg = "You are visitor number: " + String(props.visitorCount);
-  return React.createElement(
-    "div",
-    undefined,
-    React.createElement("div", undefined, props.title),
-    React.createElement("div", undefined, visitorCountMsg),
-    props.children,
+function Example(props) {
+  let visitorCountMsg = "You are visitor number: " + String(props.visitorCount);
+  return JsxRuntime.jsxs("div", {
+    children: [
+      JsxRuntime.jsx("div", {
+        children: props.title,
+      }),
+      JsxRuntime.jsx("div", {
+        children: visitorCountMsg,
+      }),
+      props.children,
+    ],
+  });
+}
+
+let make = Example;
+
+export { make };
+```
+
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example(props) {
+  let visitorCountMsg = "You are visitor number: " + String(props.visitorCount);
+  return (
+    <div>
+      <div>{props.title}</div>
+      <div>{visitorCountMsg}</div>
+      {props.children}
+    </div>
   );
 }
 
-var make = Article;
+let make = Example;
+
+export { make };
 ```
 
 </CodeTab>
@@ -100,9 +139,9 @@ var make = Article;
 
 We can leverage the full power of labeled arguments to define optional props as well:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
-```res example
+```res
 // Greeting.res
 @react.component
 let make = (~name: option<string>=?) => {
@@ -115,11 +154,33 @@ let make = (~name: option<string>=?) => {
 ```
 
 ```js
-function Greeting(props) {
-  var name = props.name;
-  var greeting = name !== undefined ? "Hello " + name + "!" : "Hello stranger!";
-  return React.createElement("div", undefined, greeting);
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example(props) {
+  let name = props.name;
+  let greeting = name !== undefined ? "Hello " + name + "!" : "Hello stranger!";
+  return JsxRuntime.jsx("div", {
+    children: greeting,
+  });
 }
+
+let make = Example;
+
+export { make };
+```
+
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example(props) {
+  let name = props.name;
+  let greeting = name !== undefined ? "Hello " + name + "!" : "Hello stranger!";
+  return <div>{greeting}</div>;
+}
+
+let make = Example;
+
+export { make };
 ```
 
 </CodeTab>
@@ -139,20 +200,52 @@ module Greeting = {
 
 </div>
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
-```res example
+```res
 let name = Some("Andrea")
 
 <Greeting ?name />
 ```
 
 ```js
-var name = "Andrea";
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as JsxRuntime from "react/jsx-runtime";
 
-React.createElement(Greeting, {
+function Example$Greeting(props) {
+  return Stdlib_Option.getOr(props.name, "");
+}
+
+let Greeting = {
+  make: Example$Greeting,
+};
+
+let name = "Andrea";
+
+JsxRuntime.jsx(Example$Greeting, {
   name: name,
 });
+
+export { Greeting, name };
+```
+
+```jsx
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Greeting(props) {
+  return Stdlib_Option.getOr(props.name, "");
+}
+
+let Greeting = {
+  make: Example$Greeting,
+};
+
+let name = "Andrea";
+
+<Greeting.make name={name} />;
+
+export { Greeting, name };
 ```
 
 </CodeTab>
@@ -175,16 +268,16 @@ For `data-*` this is a bit trickier; words with `-` in them aren't valid in ReSc
 
 In React `props.children` is a special attribute to represent the nested elements within a parent element:
 
-```res
+```res nocheck
 let element = <div> child1 child2 </div>
 ```
 
 By default, whenever you are passing children like in the expression above, `children` will be treated
 as a `React.element`:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
-```res example
+```res
 module MyList = {
   @react.component
   let make = (~children: React.element) => {
@@ -201,22 +294,67 @@ module MyList = {
 ```
 
 ```js
-function MyList(props) {
-  return React.createElement("ul", undefined, props.children);
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Greeting(props) {
+  return Stdlib_Option.getOr(props.name, "");
 }
 
-var MyList = {
-  make: MyList,
+let Greeting = {
+  make: Example$Greeting,
 };
 
-React.createElement(
-  MyList,
-  {
-    children: null,
-  },
-  React.createElement("li", undefined, "Item 1"),
-  React.createElement("li", undefined, "Item 2"),
-);
+function Example$MyList(props) {
+  return JsxRuntime.jsx("ul", {
+    children: props.children,
+  });
+}
+
+let MyList = {
+  make: Example$MyList,
+};
+
+JsxRuntime.jsxs(Example$MyList, {
+  children: [
+    JsxRuntime.jsx("li", {
+      children: "Item 1",
+    }),
+    JsxRuntime.jsx("li", {
+      children: "Item 2",
+    }),
+  ],
+});
+
+export { Greeting, MyList };
+```
+
+```jsx
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Greeting(props) {
+  return Stdlib_Option.getOr(props.name, "");
+}
+
+let Greeting = {
+  make: Example$Greeting,
+};
+
+function Example$MyList(props) {
+  return <ul>{props.children}</ul>;
+}
+
+let MyList = {
+  make: Example$MyList,
+};
+
+<MyList.make>
+  <li>{"Item 1"}</li>
+  <li>{"Item 2"}</li>
+</MyList.make>;
+
+export { Greeting, MyList };
 ```
 
 </CodeTab>
@@ -227,7 +365,7 @@ It is also possible to redefine the `children` type as well. Here are some examp
 
 **Component with a mandatory `string` as children:**
 
-```res
+```res nocheck
 module StringChildren = {
   @react.component
   let make = (~children: string) => {
@@ -245,7 +383,7 @@ module StringChildren = {
 
 **Component with an optional `React.element` as children:**
 
-```res example
+```res nocheck
 module OptionalChildren = {
   @react.component
   let make = (~children: option<React.element>=?) => {
@@ -266,7 +404,7 @@ module OptionalChildren = {
 
 **Component that doesn't allow children at all:**
 
-```res
+```res nocheck
 module NoChildren = {
   @react.component
   let make = () => {
@@ -294,7 +432,7 @@ It's a decorator that tells the ReScript compiler to treat the function as a Rea
 In JavaScript, a React component is just a function that takes props (an object) and returns JSX. In ReScript, props are typically represented as a record type.
 The `@react.component` decorator automatically generates that record type and wraps the function for you—so you don't have to.
 
-```res
+```res nocheck
 // Counter.res
 
 @react.component
@@ -317,7 +455,7 @@ Having an uppercased function name also helps distinguish React components from 
 
 If you prefer defining your own props record, you can use `@react.componentWithProps`. This gives you full control over the props type while still generating a proper uppercased component.
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 // Counter.res
@@ -333,15 +471,52 @@ let make = (props: props) => {
 ```
 
 ```js
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
 import * as JsxRuntime from "react/jsx-runtime";
 
-function Counter(props) {
+function Example$Greeting(props) {
+  return Stdlib_Option.getOr(props.name, "");
+}
+
+let Greeting = {
+  make: Example$Greeting,
+};
+
+function Example(props) {
   return JsxRuntime.jsxs("h1", {
     children: [props.title, props.count],
   });
 }
 
-let make = Counter;
+let make = Example;
+
+export { Greeting, make };
+```
+
+```jsx
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Greeting(props) {
+  return Stdlib_Option.getOr(props.name, "");
+}
+
+let Greeting = {
+  make: Example$Greeting,
+};
+
+function Example(props) {
+  return (
+    <h1>
+      {props.title}
+      {props.count}
+    </h1>
+  );
+}
+
+let make = Example;
+
+export { Greeting, make };
 ```
 
 </CodeTab>
@@ -352,7 +527,7 @@ The ReScript type system is really good at inferring the prop types just by look
 
 For simple cases, well-scoped usage, or experimentation, it's still fine to omit type annotations:
 
-```res example
+```res nocheck
 // Button.res
 
 @react.component
@@ -372,9 +547,9 @@ Even though type inference spares us a lot of keyboard typing, we still recommen
 
 Every ReScript component can be used in JSX. For example, if we want to use our `Greeting` component within our `App` component, we can do this:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
-```res example
+```res
 // src/App.res
 
 @react.component
@@ -386,18 +561,51 @@ let make = () => {
 ```
 
 ```js
-var React = require("react");
-var Greeting = require("./Greeting.js");
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as JsxRuntime from "react/jsx-runtime";
 
-function App(Props) {
-  return React.createElement(
-    "div",
-    undefined,
-    React.createElement(Greeting.make, {}),
+function Example$Greeting(props) {
+  return Stdlib_Option.getOr(props.name, "");
+}
+
+let Greeting = {
+  make: Example$Greeting,
+};
+
+function Example(props) {
+  return JsxRuntime.jsx("div", {
+    children: JsxRuntime.jsx(Example$Greeting, {}),
+  });
+}
+
+let make = Example;
+
+export { Greeting, make };
+```
+
+```jsx
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Greeting(props) {
+  return Stdlib_Option.getOr(props.name, "");
+}
+
+let Greeting = {
+  make: Example$Greeting,
+};
+
+function Example(props) {
+  return (
+    <div>
+      <Greeting.make />
+    </div>
   );
 }
 
-var make = App;
+let make = Example;
+
+export { Greeting, make };
 ```
 
 </CodeTab>
@@ -410,9 +618,9 @@ You don't need to use the `@react.component` decorator to write components that 
 
 For example:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
-```res example
+```res
 module Link = {
   type props = {href: string, children: React.element};
 
@@ -427,18 +635,59 @@ module Link = {
 ```
 
 ```js
-function make(props) {
-  return React.createElement("a", { href: props.href }, props.children);
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Greeting(props) {
+  return Stdlib_Option.getOr(props.name, "");
 }
 
-var Link = {
+let Greeting = {
+  make: Example$Greeting,
+};
+
+function make(props) {
+  return JsxRuntime.jsx("a", {
+    children: props.children,
+    href: props.href,
+  });
+}
+
+let Link = {
   make: make,
 };
 
-React.createElement(make, {
+JsxRuntime.jsx(make, {
   href: "/docs",
   children: "Docs",
 });
+
+export { Greeting, Link };
+```
+
+```jsx
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Greeting(props) {
+  return Stdlib_Option.getOr(props.name, "");
+}
+
+let Greeting = {
+  make: Example$Greeting,
+};
+
+function make(props) {
+  return <a href={props.href}>{props.children}</a>;
+}
+
+let Link = {
+  make: make,
+};
+
+<Link.make href={"/docs"}>{"Docs"}</Link.make>;
+
+export { Greeting, Link };
 ```
 
 </CodeTab>
@@ -449,7 +698,7 @@ More details on the `@react.component` decorator and its generated interface can
 
 We can also represent React components as submodules, which makes it very convenient to build more complex UI without the need to create multiple files for each composite component (that's probably only used by the parent component anyways):
 
-```res example
+```res nocheck
 // src/Button.res
 module Label = {
   @react.component
@@ -469,7 +718,7 @@ let make = (~children) => {
 
 The `Button.res` file defined above is now containing a `Label` component, that can also be used by other components, either by writing the fully qualified module name (`<Button.Label title="My Button"/>`) or by using a module alias to shortcut the full qualifier:
 
-```res
+```res nocheck
 module Label = Button.Label
 
 let content = <Label title="Test"/>
@@ -479,7 +728,7 @@ let content = <Label title="Test"/>
 
 Because components are actually a pair of functions, they have to belong to a module to be used in JSX. It makes sense to use these modules for identification purposes as well. `@react.component` or `@react.componentWithProps` automatically adds the name for you based on the module you are in.
 
-```res
+```res nocheck
 // File.res
 
 // will be named `File` in dev tools

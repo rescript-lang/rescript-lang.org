@@ -18,7 +18,7 @@ Ref forwarding is a technique for automatically passing a [React.ref](./refs-and
 
 Consider a FancyButton component that renders the native button DOM element:
 
-```res example
+```res
 // FancyButton.res
 
 @react.component
@@ -45,7 +45,7 @@ A `React.ref` can be passed down like any other prop. The component will take ca
 
 In the example below, `FancyInput` defines a prop `inputRef` that will be forwarded to its `input` element:
 
-```res example
+```res
 // App.res
 
 module FancyInput = {
@@ -83,9 +83,9 @@ We use the `ReactDOM.domRef` type to represent our `inputRef`. We pass our ref i
 
 This is how the previous example would look like with the `React.forwardRef` approach:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
-```res example
+```res
 // App.res
 
 module FancyInput = {
@@ -123,57 +123,99 @@ let make = () => {
 
 ```js
 import * as React from "react";
-import * as Belt_Option from "rescript/lib/es6/belt_Option.js";
-import * as Caml_option from "rescript/lib/es6/caml_option.js";
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as Stdlib_Nullable from "@rescript/runtime/lib/es6/Stdlib_Nullable.js";
+import * as Primitive_option from "@rescript/runtime/lib/es6/Primitive_option.js";
+import * as JsxRuntime from "react/jsx-runtime";
 
-var make = React.forwardRef(function (props, ref) {
-  return React.createElement(
-    "div",
-    undefined,
-    React.createElement("input", {
-      ref: Belt_Option.map(
-        ref == null ? undefined : Caml_option.some(ref),
-        function (prim) {
-          return prim;
-        },
-      ),
-      className: props.className,
-      type: "text",
-    }),
-    props.children,
-  );
-});
+let make = React.forwardRef((props, ref) =>
+  JsxRuntime.jsxs("div", {
+    children: [
+      JsxRuntime.jsx("input", {
+        ref: Stdlib_Option.map(
+          ref == null ? undefined : Primitive_option.some(ref),
+          (prim) => prim,
+        ),
+        className: props.className,
+        type: "text",
+      }),
+      props.children,
+    ],
+  }),
+);
 
-var FancyInput = {
+let FancyInput = {
   make: make,
 };
 
-function App(props) {
-  var input = React.useRef(null);
-  var onClick = function (param) {
-    Belt_Option.forEach(
-      Caml_option.nullable_to_opt(input.current),
-      function (input) {
-        input.focus();
-      },
-    );
-  };
-  return React.createElement(
-    "div",
-    undefined,
-    React.createElement(make, {
+function Example(props) {
+  let input = React.useRef(null);
+  let focusInput = () =>
+    Stdlib_Nullable.forEach(input.current, (input) => {
+      input.focus();
+    });
+  let onClick = (param) => focusInput();
+  return JsxRuntime.jsx("div", {
+    children: JsxRuntime.jsx(make, {
       className: "fancy",
-      children: React.createElement(
-        "button",
-        {
-          onClick: onClick,
-        },
-        "Click to focus",
-      ),
+      children: JsxRuntime.jsx("button", {
+        children: "Click to focus",
+        onClick: onClick,
+      }),
       ref: input,
     }),
+  });
+}
+
+let make$1 = Example;
+
+export { FancyInput, make$1 as make };
+```
+
+```jsx
+import * as React from "react";
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as Stdlib_Nullable from "@rescript/runtime/lib/es6/Stdlib_Nullable.js";
+import * as Primitive_option from "@rescript/runtime/lib/es6/Primitive_option.js";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let make = React.forwardRef((props, ref) => (
+  <div>
+    <input
+      ref={Stdlib_Option.map(
+        ref == null ? undefined : Primitive_option.some(ref),
+        (prim) => prim,
+      )}
+      className={props.className}
+      type={"text"}
+    />
+    {props.children}
+  </div>
+));
+
+let FancyInput = {
+  make: make,
+};
+
+function Example(props) {
+  let input = React.useRef(null);
+  let focusInput = () =>
+    Stdlib_Nullable.forEach(input.current, (input) => {
+      input.focus();
+    });
+  let onClick = (param) => focusInput();
+  return (
+    <div>
+      <FancyInput.make className={"fancy"} ref={input}>
+        <button onClick={onClick}>{"Click to focus"}</button>
+      </FancyInput.make>
+    </div>
   );
 }
+
+let make$1 = Example;
+
+export { FancyInput, make$1 as make };
 ```
 
 </CodeTab>

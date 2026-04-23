@@ -14,7 +14,7 @@ Why would you use it? Imagine you have the following:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 validateAge(getAge(parseData(person)))
 ```
 
@@ -28,7 +28,7 @@ This is slightly hard to read, since you need to read the code from the innermos
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 person
   ->parseData
   ->getAge
@@ -47,7 +47,7 @@ Basically, `parseData(person)` is transformed into `person->parseData`, and `get
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 a(one, two, three)
 ```
 
@@ -61,7 +61,7 @@ is the same as
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 one->a(two, three)
 ```
 
@@ -112,7 +112,7 @@ You'd use them like this:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res nocheck
 let result = Array.filter(
   Array.map([1, 2, 3], a => a + 1),
   a => mod(a, 2) == 0
@@ -122,15 +122,11 @@ send(setWaitDuration(asyncRequest(), 4000))
 ```
 
 ```js
-var result = [1, 2, 3]
-  .map(function (a) {
-    return (a + 1) | 0;
-  })
-  .filter(function (a) {
-    return a % 2 === 0;
-  });
+let result = [1, 2, 3].map((a) => (a + 1) | 0).filter((a) => a % 2 === 0);
 
 asyncRequest().setWaitDuration(4000).send();
+
+export { result };
 ```
 
 </CodeTab>
@@ -139,7 +135,7 @@ This looks much worse than the JS counterpart! Clean it up visually with pipe:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res nocheck
 let result = [1, 2, 3]
   ->Array.map(a => a + 1)
   ->Array.filter(a => mod(a, 2) == 0)
@@ -148,15 +144,11 @@ asyncRequest()->setWaitDuration(4000)->send
 ```
 
 ```js
-var result = [1, 2, 3]
-  .map(function (a) {
-    return (a + 1) | 0;
-  })
-  .filter(function (a) {
-    return a % 2 === 0;
-  });
+let result = [1, 2, 3].map((a) => (a + 1) | 0).filter((a) => a % 2 === 0);
 
 asyncRequest().setWaitDuration(4000).send();
+
+export { result };
 ```
 
 </CodeTab>
@@ -167,7 +159,7 @@ You can pipe into a variant's constructor as if it was a function:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let result = name->preprocess->Some
 ```
 
@@ -181,7 +173,7 @@ We turn this into:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let result = Some(preprocess(name))
 ```
 
@@ -197,7 +189,7 @@ var result = preprocess(name);
 
 A placeholder is written as an underscore and it tells ReScript that you want to fill in an argument of a function later. These two have equivalent meaning:
 
-```res
+```res nocheck
 let addTo7 = (x) => add3(3, x, 4)
 let addTo7 = add3(3, _, 4)
 ```
@@ -208,7 +200,7 @@ Let's say you have a function `namePerson`, which takes a `person` then a `name`
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 makePerson(~age=47)
   ->namePerson("Jane")
 ```
@@ -223,7 +215,7 @@ If you have a name that you want to apply to a person object, you can use a plac
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 getName(input)
   ->namePerson(personDetails, _)
 ```
@@ -239,7 +231,7 @@ This allows you to pipe into any positional argument. It also works for named ar
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 getName(input)
   ->namePerson(~person=personDetails, ~name=_)
 ```

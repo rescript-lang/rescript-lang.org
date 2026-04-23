@@ -18,7 +18,7 @@ order: 3
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let (state, setState) = React.useState(_ => initialState)
 ```
 
@@ -42,7 +42,7 @@ The `setState` function can be passed down to other components as well, which is
 
 ### Using State for a Text Input
 
-```res example
+```res
 @react.component
 let make = () => {
   let (text, setText) = React.useState(_ => "");
@@ -63,9 +63,9 @@ let make = () => {
 
 In this example, we are creating a `ThemeContainer` component that manages a `darkmode` boolean state and passes the `setDarkmode` function to a `ControlPanel` component to trigger the state changes.
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
-```res example
+```res
 // ThemeContainer.res
 module ControlPanel = {
   @react.component
@@ -97,53 +97,98 @@ let make = (~content) => {
 ```
 
 ```js
-function ControlPanel(Props) {
-  var setDarkmode = Props.setDarkmode;
-  var darkmode = Props.darkmode;
-  var onClick = function (evt) {
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$ControlPanel(props) {
+  let setDarkmode = props.setDarkmode;
+  let onClick = (evt) => {
     evt.preventDefault();
-    return Curry._1(setDarkmode, function (prev) {
-      return !prev;
-    });
+    setDarkmode((prev) => !prev);
   };
-  var toggleText = "Switch to " + ((darkmode ? "light" : "dark") + " theme");
-  return React.createElement(
-    "div",
-    undefined,
-    React.createElement(
-      "button",
-      {
-        onClick: onClick,
-      },
-      toggleText,
-    ),
+  let toggleText =
+    "Switch to " + ((props.darkmode ? "light" : "dark") + " theme");
+  return JsxRuntime.jsx("div", {
+    children: JsxRuntime.jsx("button", {
+      children: toggleText,
+      onClick: onClick,
+    }),
+  });
+}
+
+let ControlPanel = {
+  make: Example$ControlPanel,
+};
+
+function Example(props) {
+  let match = React.useState(() => false);
+  let darkmode = match[0];
+  let className = darkmode ? "theme-dark" : "theme-light";
+  return JsxRuntime.jsxs("div", {
+    children: [
+      JsxRuntime.jsxs("section", {
+        children: [
+          JsxRuntime.jsx("h1", {
+            children: "More Infos about ReScript",
+          }),
+          props.content,
+        ],
+      }),
+      JsxRuntime.jsx(Example$ControlPanel, {
+        setDarkmode: match[1],
+        darkmode: darkmode,
+      }),
+    ],
+    className: className,
+  });
+}
+
+let make = Example;
+
+export { ControlPanel, make };
+```
+
+```jsx
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$ControlPanel(props) {
+  let setDarkmode = props.setDarkmode;
+  let onClick = (evt) => {
+    evt.preventDefault();
+    setDarkmode((prev) => !prev);
+  };
+  let toggleText =
+    "Switch to " + ((props.darkmode ? "light" : "dark") + " theme");
+  return (
+    <div>
+      <button onClick={onClick}>{toggleText}</button>
+    </div>
   );
 }
 
-function ThemeContainer(Props) {
-  var content = Props.content;
-  var match = React.useState(function () {
-    return false;
-  });
-  var darkmode = match[0];
-  var className = darkmode ? "theme-dark" : "theme-light";
-  return React.createElement(
-    "div",
-    {
-      className: className,
-    },
-    React.createElement(
-      "section",
-      undefined,
-      React.createElement("h1", undefined, "More Infos about ReScript"),
-      content,
-    ),
-    React.createElement(Playground$ControlPanel, {
-      setDarkmode: match[1],
-      darkmode: darkmode,
-    }),
+let ControlPanel = {
+  make: Example$ControlPanel,
+};
+
+function Example(props) {
+  let match = React.useState(() => false);
+  let darkmode = match[0];
+  let className = darkmode ? "theme-dark" : "theme-light";
+  return (
+    <div className={className}>
+      <section>
+        <h1>{"More Infos about ReScript"}</h1>
+        {props.content}
+      </section>
+      <ControlPanel.make setDarkmode={match[1]} darkmode={darkmode} />
+    </div>
   );
 }
+
+let make = Example;
+
+export { ControlPanel, make };
 ```
 
 </CodeTab>

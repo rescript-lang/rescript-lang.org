@@ -43,7 +43,7 @@ To actually run the lazy value's computation, use `Lazy.get` from the standard l
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // First call. The computation happens
 Console.log(Lazy.get(expensiveFilesRead)) // logs "Reading dir" and the directory content
 
@@ -52,9 +52,19 @@ Console.log(Lazy.get(expensiveFilesRead)) // logs the directory content
 ```
 
 ```js
-console.log(Lazy.get(expensiveFilesRead));
+import * as Nodefs from "node:fs";
+import * as Stdlib_Lazy from "@rescript/runtime/lib/es6/Stdlib_Lazy.js";
 
-console.log(Lazy.get(expensiveFilesRead));
+let expensiveFilesRead = Stdlib_Lazy.make(() => {
+  console.log("Reading dir");
+  return Nodefs.readdirSync("./pages");
+});
+
+console.log(Stdlib_Lazy.get(expensiveFilesRead));
+
+console.log(Stdlib_Lazy.get(expensiveFilesRead));
+
+export { expensiveFilesRead };
 ```
 
 </CodeTab>
@@ -69,7 +79,7 @@ For completeness' sake, our files read example might throw an exception because 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let result = try {
   Lazy.get(expensiveFilesRead)
 } catch {
@@ -78,10 +88,19 @@ let result = try {
 ```
 
 ```js
+import * as Nodefs from "node:fs";
+import * as Stdlib_Lazy from "@rescript/runtime/lib/es6/Stdlib_Lazy.js";
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
+
+let expensiveFilesRead = Stdlib_Lazy.make(() => {
+  console.log("Reading dir");
+  return Nodefs.readdirSync("./pages");
+});
+
 let result;
 
 try {
-  result = Lazy.get(expensiveFilesRead);
+  result = Stdlib_Lazy.get(expensiveFilesRead);
 } catch (raw_exn) {
   let exn = Primitive_exceptions.internalToException(raw_exn);
   if (exn.RE_EXN_ID === "Not_found") {
@@ -90,6 +109,8 @@ try {
     throw exn;
   }
 }
+
+export { expensiveFilesRead, result };
 ```
 
 </CodeTab>

@@ -18,12 +18,12 @@ order: 3
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @val external setTimeout: (unit => unit, int) => float = "setTimeout"
 ```
 
 ```js
-// Empty output
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>
@@ -48,7 +48,7 @@ Once declared, you can use an `external` as a normal value, just like a let bind
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // The type of document is just some random type 'a
 // that we won't bother to specify
 @val external document: 'a = "document"
@@ -66,13 +66,15 @@ document["location"]["href"] = "rescript-lang.org"
 ```
 
 ```js
-document.addEventListener("mouseup", function (_event) {
+document.addEventListener("mouseup", (_event) => {
   console.log("clicked!");
 });
 
-var loc = document.location;
+let loc = document.location;
 
 document.location.href = "rescript-lang.org";
+
+export { loc };
 ```
 
 </CodeTab>

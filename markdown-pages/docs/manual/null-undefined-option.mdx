@@ -16,12 +16,12 @@ We represent the existence and nonexistence of a value by wrapping it with the `
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type option<'a> = None | Some('a)
 ```
 
 ```js
-// Empty output
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>
@@ -36,12 +36,14 @@ Here's a normal value:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let licenseNumber = 5
 ```
 
 ```js
-var licenseNumber = 5;
+let licenseNumber = 5;
+
+export { licenseNumber };
 ```
 
 </CodeTab>
@@ -50,7 +52,7 @@ To represent the concept of "maybe null", you'd turn this into an `option` type 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let licenseNumber =
   if personHasACar {
     Some(5)
@@ -69,7 +71,7 @@ Later on, when another piece of code receives such value, it'd be forced to hand
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 switch licenseNumber {
 | None =>
   Console.log("The person doesn't have a car")
@@ -98,12 +100,14 @@ The `option` type is common enough that we special-case it when compiling to Jav
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let x = Some(5)
 ```
 
 ```js
-var x = 5;
+let x = 5;
+
+export { x };
 ```
 
 </CodeTab>
@@ -112,12 +116,14 @@ simply compiles down to `5`, and
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let x = None
 ```
 
 ```js
-var x;
+let x;
+
+export { x };
 ```
 
 </CodeTab>
@@ -140,12 +146,12 @@ If you're receiving, for example, a JS string that can be `null` and `undefined`
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @module("MyConstant") external myId: Nullable.t<string> = "myId"
 ```
 
 ```js
-// Empty output
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>
@@ -154,7 +160,7 @@ To create such a nullable string from our side (presumably to pass it to the JS 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @module("MyIdValidator") external validate: Nullable.t<string> => bool = "validate"
 let personId: Nullable.t<string> = Nullable.make("abc123")
 
@@ -162,9 +168,13 @@ let result = validate(personId)
 ```
 
 ```js
-var MyIdValidator = require("MyIdValidator");
-var personId = "abc123";
-var result = MyIdValidator.validate(personId);
+import * as MyIdValidator from "MyIdValidator";
+
+let personId = "abc123";
+
+let result = MyIdValidator.validate(personId);
+
+export { personId, result };
 ```
 
 </CodeTab>

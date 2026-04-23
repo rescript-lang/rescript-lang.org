@@ -29,7 +29,7 @@
     "prepare": "yarn build:res && yarn build:scripts && yarn build:update-index",
     "preview": "yarn build && static-server build/client",
     "reanalyze": "rescript-tools reanalyze -all-cmt .",
-    "test": "node scripts/test-examples.mjs && node scripts/test-hrefs.mjs",
+    "test": "node scripts/test.mjs",
     "cy:open": "yarn build:res && cypress open --e2e --browser electron",
     "cy:run": "yarn build:res && cypress run",
     "cy:e2e": "yarn build:res && cypress run --browser chrome",

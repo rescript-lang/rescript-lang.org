@@ -29,9 +29,13 @@ let myNumber = #7
 ```
 
 ```js
-var myColor = "red";
-var myLabel = "aria-hidden";
-var myNumber = 7;
+let myColor = "red";
+
+let myLabel = "aria-hidden";
+
+let myNumber = 7;
+
+export { myColor, myLabel, myNumber };
 ```
 
 </CodeTab>
@@ -44,7 +48,7 @@ var myNumber = 7;
 
 Although **optional**, you can still pre-declare a poly variant type:
 
-```res
+```res nocheck
 // Note the surrounding square brackets, and # for constructors
 type color = [#red | #green | #blue]
 ```
@@ -71,6 +75,8 @@ function render(myColor) {
     console.log("Hello blue!");
   }
 }
+
+export { render };
 ```
 
 </CodeTab>
@@ -102,6 +108,8 @@ function render(myColor) {
     console.log("Hello blue!");
   }
 }
+
+export { render };
 ```
 
 </CodeTab>
@@ -126,15 +134,17 @@ let him: account = #Facebook("Josh", 26)
 ```
 
 ```js
-var me = {
+let me = {
   NAME: "Instagram",
   VAL: "Jenny",
 };
 
-var him = {
+let him = {
   NAME: "Facebook",
   VAL: ["Josh", 26],
 };
+
+export { me, him };
 ```
 
 </CodeTab>
@@ -157,7 +167,9 @@ let myColor: color = #Ruby
 ```
 
 ```js
-var myColor = "Ruby";
+let myColor = "Ruby";
+
+export { myColor };
 ```
 
 </CodeTab>
@@ -166,7 +178,7 @@ There's also some special [pattern matching](./pattern-matching-destructuring.md
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 // Continuing the previous example above...
 
 switch myColor {
@@ -192,7 +204,7 @@ if (other === "Neon" || other === "Navy" || other === "Sapphire") {
 
 This is a shorter version of:
 
-```res
+```res nocheck
 switch myColor {
 | #Sapphire | #Neon | #Navy => Console.log("This is blue-ish")
 | #Ruby | #Redwood | #Rust => Console.log("This is red-ish")
@@ -224,8 +236,6 @@ Console.log(displayColor(myColor))
 ```
 
 ```js
-var myColor = "blue";
-
 function displayColor(v) {
   if (v === "white") {
     return "Hey white!";
@@ -239,6 +249,10 @@ function displayColor(v) {
 }
 
 console.log(displayColor("blue"));
+
+let myColor = "blue";
+
+export { myColor, displayColor };
 ```
 
 </CodeTab>
@@ -269,7 +283,9 @@ let intl = makeNumberFormat(#"de-DE")
 ```
 
 ```js
-var intl = Intl.NumberFormat("de-DE");
+let intl = Intl.NumberFormat("de-DE");
+
+export { intl };
 ```
 
 </CodeTab>
@@ -304,9 +320,11 @@ type direction = [ #UP | #DOWN | #LEFT | #RIGHT ]
 ```
 
 ```js
-var DirectionJs = require("./direction.js");
+import * as DirectionJs from "./direction.js";
 
-var myDirection = DirectionJs.myDirection;
+let myDirection = DirectionJs.myDirection;
+
+export { myDirection };
 ```
 
 </CodeTab>
@@ -317,7 +335,7 @@ Again: since we were using poly variants, the JS Output is practically zero-cost
 
 The previous poly variant type annotations we've looked at are the regular "closed" kind. However, there's a way to express "I want at least these constructors" (lower bound) and "I want at most these constructors" (upper bound):
 
-```res
+```res nocheck
 // Only #Red allowed. Closed.
 let basic: [#Red] = #Red
 
@@ -336,7 +354,7 @@ let background: [< #Red | #Blue] = #Red
 
 This is the simplest poly variant definition, and also the most practical one. Like a common variant type, this one defines an exact set of constructors.
 
-```res
+```res nocheck
 type rgb = [ #Red | #Green | #Blue ]
 
 let color: rgb = #Green
@@ -352,7 +370,7 @@ A lower bound defines the minimum set of constructors a poly variant type is awa
 
 Here is an example on how to make a minimum set of `basicBlueTones` extensible for a new `color` type:
 
-```res
+```res nocheck
 type basicBlueTone<'a> = [> #Blue | #DeepBlue | #LightBlue ] as 'a
 type color = basicBlueTone<[#Blue | #DeepBlue | #LightBlue | #Purple]>
 
@@ -372,7 +390,7 @@ The upper bound works in the opposite way than a lower bound: the extending type
 
 Here another example, but with red colors:
 
-```res
+```res nocheck
 type validRed<'a> = [< #Fire | #Crimson | #Ash] as 'a
 type myReds = validRed<[#Ash]>
 
@@ -394,8 +412,11 @@ let message = "Hello " ++ (theCompany :> string)
 ```
 
 ```js
-var theCompany = "Apple";
-var message = "Hello " + theCompany;
+let message = "Hello " + "Apple";
+
+let theCompany = "Apple";
+
+export { theCompany, message };
 ```
 
 </CodeTab>

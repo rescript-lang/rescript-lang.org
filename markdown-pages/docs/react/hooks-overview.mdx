@@ -26,9 +26,9 @@ In other words: **It allows us to "hook into" React features.**
 
 Just for a quick look, here is an example of a `Counter` component that allows a user to click a button and increment an `count` value that will immediately be rendered on each button click:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
-```res example
+```res
 // Counter.res
 @react.component
 let make = () => {
@@ -48,30 +48,52 @@ let make = () => {
 ```
 
 ```js
-function Counter(Props) {
-  var match = React.useState(function () {
-    return 0;
-  });
-  var setCount = match[1];
-  var onClick = function (_evt) {
-    return Curry._1(setCount, function (prev) {
-      return (prev + 1) | 0;
-    });
-  };
-  var msg = "You clicked" + String(match[0]) + "times";
-  return React.createElement(
-    "div",
-    undefined,
-    React.createElement("p", undefined, msg),
-    React.createElement(
-      "button",
-      {
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example(props) {
+  let match = React.useState(() => 0);
+  let setCount = match[1];
+  let onClick = (_evt) => setCount((prev) => (prev + 1) | 0);
+  let msg = "You clicked" + String(match[0]) + "times";
+  return JsxRuntime.jsxs("div", {
+    children: [
+      JsxRuntime.jsx("p", {
+        children: msg,
+      }),
+      JsxRuntime.jsx("button", {
+        children: "Click me",
         onClick: onClick,
-      },
-      "Click me",
-    ),
+      }),
+    ],
+  });
+}
+
+let make = Example;
+
+export { make };
+```
+
+```jsx
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example(props) {
+  let match = React.useState(() => 0);
+  let setCount = match[1];
+  let onClick = (_evt) => setCount((prev) => (prev + 1) | 0);
+  let msg = "You clicked" + String(match[0]) + "times";
+  return (
+    <div>
+      <p>{msg}</p>
+      <button onClick={onClick}>{"Click me"}</button>
+    </div>
   );
 }
+
+let make = Example;
+
+export { make };
 ```
 
 </CodeTab>

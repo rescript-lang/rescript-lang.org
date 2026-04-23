@@ -72,14 +72,27 @@ Please be selective in pushing up changes to screenshots and only update files t
 
 We check the validity of our code examples marked with:
 
-- ` ```res example ` (ReScript code snippet)
+- ` ```res ` (ReScript code snippet)
 - ` ```res sig ` (signature)
 - ` ```res prelude ` (ReScript code snippet available for all subsequent code snippets)
 
 Run the checks with:
 
 ```sh
+yarn test
+```
+
+Refresh stale or missing JS Output fences with:
+
+```sh
+yarn test --update
+```
+
+If you only want to run the example checker directly, you can still use:
+
+```sh
 node scripts/test-examples.mjs
+node scripts/test-examples.mjs --update
 ```
 
 ### Markdown Hyperlink Tests

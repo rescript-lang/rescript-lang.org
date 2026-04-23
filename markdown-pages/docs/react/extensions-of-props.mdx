@@ -25,17 +25,46 @@ module Comp = {
 
 </div>
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
-```res example
+```res
 let props = {Comp.b: "b"}
 <Comp {...props} a="a" />
 ```
 
 ```js
-var props = {b: "b"};
-var newrecord = Caml_obj.obj_dup(props);
-return JsxRuntime.jsx(default, (newrecord.a = "a", newrecord));
+import * as JsxRuntime from "react/jsx-runtime";
+
+let Comp = {};
+
+let props = {
+  b: "b"
+};
+
+let newrecord = {...props};
+
+JsxRuntime.jsx(default, (newrecord.a = "a", newrecord));
+
+export {
+  Comp,
+  props,
+}
+```
+
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+let Comp = {};
+
+let props = {
+  b: "b",
+};
+
+let newrecord = { ...props };
+
+<default {...newrecord} a={"a"} />;
+
+export { Comp, props };
 ```
 
 </CodeTab>
@@ -44,7 +73,7 @@ Multiple spreads are not allowed:
 
 <CodeTab labels={["ReScript"]}>
 
-```res
+```res nocheck
 <NotAllowed {...props1} {...props2} />
 ```
 
@@ -54,7 +83,7 @@ The spread must be at the first position, followed by other props:
 
 <CodeTab labels={["ReScript"]}>
 
-```res
+```res nocheck
 <NotAllowed a="a" {...props} />
 ```
 
@@ -66,7 +95,7 @@ You can control the definition of the `props` type by passing as argument to `@r
 
 <CodeTab labels={["Decorated", "Expanded"]}>
 
-```res example
+```res
 type sharedProps<'x, 'y> = {x: 'x, y: 'y, z:string}
 
 module C1 = {
@@ -86,7 +115,7 @@ module C3 = {
 }
 ```
 
-```res example
+```res
 type sharedProps<'x, 'y> = {x: 'x, y: 'y, z: string}
 
 module C1 = {
@@ -110,7 +139,7 @@ module C3 = {
 
 This feature can be used when the nominally different components are passed to the prop of `Screen` component in [ReScript React Native Navigation](https://github.com/rescript-react-native/rescript-react-navigation).
 
-```res
+```res nocheck
 type screenProps = { navigation: navigation, route: route }
 
 module Screen: {
@@ -136,7 +165,7 @@ module Screen: {
 
 This example can't pass the type checker, because the props types of both components are nominally different. You can make the both components having the same props type by passing `screenProps` type as argument to `@react.component`.
 
-```res
+```res nocheck
 module A = {
   @react.component(:screenProps)
   let make = (

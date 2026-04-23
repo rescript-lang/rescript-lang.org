@@ -16,7 +16,7 @@ In our previous section [React Elements & JSX](./elements-and-jsx.mdx) we learne
 
 As we mentioned before, a `React.element` describes what you see on the screen:
 
-```res example
+```res
 let element = <h1> {React.string("Hello World")} </h1>
 ```
 
@@ -41,9 +41,9 @@ To render our React application into the `root` div, we need to do two things:
 
 Here is a full example rendering our application in our `root` div:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
-```res example
+```res
 // Dom access can actually fail. ReScript
 // is really explicit about handling edge cases!
 switch ReactDOM.querySelector("#root") {
@@ -56,10 +56,26 @@ switch ReactDOM.querySelector("#root") {
 ```
 
 ```js
-var root = document.querySelector("#root");
+import * as Client from "react-dom/client";
+import * as JsxRuntime from "react/jsx-runtime";
 
-if (!(root == null)) {
-  ReactDom.render(React.createElement("div", undefined, "Hello Andrea"), root);
+let rootElement = document.querySelector("#root");
+
+if (!(rootElement == null)) {
+  let root = Client.createRoot(rootElement);
+  root.render(JsxRuntime.jsx("div", {}));
+}
+```
+
+```jsx
+import * as Client from "react-dom/client";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let rootElement = document.querySelector("#root");
+
+if (!(rootElement == null)) {
+  let root = Client.createRoot(rootElement);
+  root.render(<div />);
 }
 ```
 

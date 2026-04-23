@@ -18,7 +18,7 @@ We provide an escape hatch syntax for these cases:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let \"my-🍎" = 10
 
 type element = {
@@ -37,17 +37,19 @@ let calculate = (~\"Props") => {
 ```
 
 ```js
-var my$$unknown$unknown$unknown$unknown = 10;
-
-var myElement = {
-  "aria-label": "close",
-};
-
-var label = myElement["aria-label"];
-
 function calculate(Props) {
   return (Props + 1) | 0;
 }
+
+let my$$unknown$unknown$unknown$unknown = 10;
+
+let myElement = {
+  "aria-label": "close",
+};
+
+let label = "close";
+
+export { my$$unknown$unknown$unknown$unknown, myElement, label, calculate };
 ```
 
 </CodeTab>

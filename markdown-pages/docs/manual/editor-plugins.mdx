@@ -154,7 +154,7 @@ Below is a list of all the scenarios where using dots trigger completion in addi
 
 When writing a `.` on something that's a [structural object](./object.mdx), you'll get completions for those object properties. Example:
 
-```res
+```res nocheck
 let obj = {
   "first": true,
   "second": false
@@ -171,7 +171,7 @@ let x = obj.
 
 When writing `.` on _anything_, the editor will try to do pipe completion for the value on the left of the `.`. Example:
 
-```res
+```res nocheck
 let arr = [1, 2, 3]
 
 let x = arr.
@@ -191,7 +191,7 @@ You can configure any type you have control over to draw pipe completions from a
 
 Let's look at an example:
 
-```res
+```res nocheck
 // Types.res
 // In this example types need to live separately in their own file, for various reasons
 type htmlInput
@@ -208,7 +208,7 @@ In the example above, if we try and pipe on something of the type `Types.htmlInp
 
 With `@editor.completeFrom`, we can fix this. Let's look at an updated example:
 
-```res
+```res nocheck
 // Types.res
 @editor.completeFrom(Utils.HtmlInput)
 type htmlInput
@@ -258,7 +258,7 @@ First, let's look at including our own `ArrayExtra` in all completions for `arra
 
 Now, when using pipes on arrays, you'll get completions both from the standard library array functions, and also from your own `ArrayExtra` module.
 
-```res
+```res nocheck
 let x = [1, 2, 3]->
 
 // Example of what completing at the pipe might look like

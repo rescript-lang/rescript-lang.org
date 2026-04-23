@@ -28,13 +28,23 @@ let doStringsMatch = (s1: string, s2: string) => s1 === s2
 ```
 
 ```js
-var t1 = true;
-var t2 = "foo" === "foo";
-var t3 = { foo: "bar" } === { foo: "bar" };
+let t2 = "foo" === "foo";
+
+let t3 =
+  {
+    foo: "bar",
+  } ===
+  {
+    foo: "bar",
+  };
 
 function doStringsMatch(s1, s2) {
   return s1 === s2;
 }
+
+let t1 = true;
+
+export { t1, t2, t3, doStringsMatch };
 ```
 
 </CodeTab>
@@ -57,15 +67,26 @@ let doStringsMatch = (s1: string, s2: string) => s1 == s2
 ```
 
 ```js
-import * as Caml_obj from "./stdlib/caml_obj.js";
+import * as Primitive_object from "@rescript/runtime/lib/es6/Primitive_object.js";
 
-var t1 = true;
-var t2 = true;
-var t3 = Caml_obj.equal({ foo: "bar" }, { foo: "bar" });
+let t2 = true;
+
+let t3 = Primitive_object.equal(
+  {
+    foo: "bar",
+  },
+  {
+    foo: "bar",
+  },
+);
 
 function doStringsMatch(s1, s2) {
   return s1 === s2;
 }
+
+let t1 = true;
+
+export { t1, t2, t3, doStringsMatch };
 ```
 
 </CodeTab>
@@ -114,17 +135,19 @@ let compareOptions = (a: option<float>, b: option<float>) => a < b
 ```
 
 ```js
-import * as Caml_obj from "./stdlib/caml_obj.js";
+import * as Primitive_object from "@rescript/runtime/lib/es6/Primitive_object.js";
 
 function compareInt(a, b) {
   return a > b;
 }
 
-var t1 = false;
+let compareArray = Primitive_object.greaterthan;
 
-var compareArray = Caml_obj.greaterthan;
+let compareOptions = Primitive_object.lessthan;
 
-var compareOptions = Caml_obj.lessthan;
+let t1 = false;
+
+export { compareInt, t1, compareArray, compareOptions };
 ```
 
 </CodeTab>
