@@ -75,10 +75,6 @@ test("run compiles examples without requiring npm on PATH", () => {
 test("run compiles a plain res fence as checked code", () => {
   let fixture = `# Demo
 
-\`\`\`res prelude
-let helper = 1
-\`\`\`
-
 \`\`\`res
 let greeting = "hello"
 \`\`\`
@@ -132,10 +128,6 @@ let ignored = "nope"
 test("update inserts JS Output for a single-label ReScript CodeTab with a plain res fence", () => {
   let fixture = `# Demo
 
-\`\`\`res prelude
-let helper = 1
-\`\`\`
-
 <CodeTab labels={["ReScript"]}>
 
 \`\`\`res
@@ -153,9 +145,10 @@ let value = 1
 
   assert.equal(result.success, true);
   assert.equal(result.warningCount, 0);
-  assert.match(nextContent, /labels=\{\["ReScript", "JS Output"\]\}/);
-  assert.match(nextContent, /\`\`\`js/);
-  assert.match(nextContent, /let value = 1;/);
+  assert.match(
+    nextContent,
+    /<CodeTab labels=\{\["ReScript", "JS Output"\]\}>[\s\S]*```res\nlet value = 1\n```[\s\S]*```js[\s\S]*let value = 1;[\s\S]*<\/CodeTab>/,
+  );
 });
 
 test("update ignores a res nocheck fence inside a ReScript CodeTab", () => {
@@ -192,12 +185,14 @@ type person = {age: int}
   assert.equal(result.success, true);
   assert.equal(result.warningCount, 0);
   assert.deepEqual(warnings, []);
-  assert.match(nextContent, /labels=\{\["ReScript", "JS Output"\]\}/);
-  assert.match(nextContent, /let visibleValue = 1;/);
-  assert.match(nextContent, /<CodeTab labels=\{\["ReScript"\]\}>/);
-  assert.match(nextContent, /```res nocheck/);
-  assert.match(nextContent, /type person = \{name: string\}/);
-  assert.match(nextContent, /type person = \{age: int\}/);
+  assert.match(
+    nextContent,
+    /<CodeTab labels=\{\["ReScript", "JS Output"\]\}>[\s\S]*```res\nlet visibleValue = 1\n```[\s\S]*<\/CodeTab>/,
+  );
+  assert.match(
+    nextContent,
+    /<CodeTab labels=\{\["ReScript"\]\}>[\s\S]*```res nocheck[\s\S]*type person = \{name: string\}[\s\S]*type person = \{age: int\}[\s\S]*<\/CodeTab>/,
+  );
   assert.doesNotMatch(
     nextContent,
     /<CodeTab labels=\{\["ReScript"\]\}>[\s\S]*```js/,
@@ -241,14 +236,14 @@ export const value: number
   assert.equal(result.success, true);
   assert.equal(result.warningCount, 0);
   assert.deepEqual(warnings, []);
-  assert.match(nextContent, /labels=\{\["ReScript", "JS Output"\]\}/);
-  assert.match(nextContent, /let visibleValue = 1;/);
   assert.match(
     nextContent,
-    /<CodeTab labels=\{\["ReScript", "TypeScript Output"\]\}>/,
+    /<CodeTab labels=\{\["ReScript", "JS Output"\]\}>[\s\S]*```res\nlet visibleValue = 1\n```[\s\S]*```js[\s\S]*let visibleValue = 1;[\s\S]*<\/CodeTab>/,
   );
-  assert.match(nextContent, /```res\nlet value = 1\n```/);
-  assert.match(nextContent, /```ts\nexport const value: number\n```/);
+  assert.match(
+    nextContent,
+    /<CodeTab labels=\{\["ReScript", "TypeScript Output"\]\}>[\s\S]*```res\nlet value = 1\n```[\s\S]*```ts\nexport const value: number\n```[\s\S]*<\/CodeTab>/,
+  );
   assert.doesNotMatch(
     nextContent,
     /<CodeTab labels=\{\["ReScript", "TypeScript Output"\]\}>[\s\S]*```js/,
@@ -518,6 +513,10 @@ export const ignoredValue: number
   assert.equal(pairs.length, 1);
   assert.equal(pairs[0].res.content, "let visibleValue = 1");
   assert.equal(pairs[0].js.content, 'console.log("stale");');
+  assert.doesNotMatch(
+    fixture,
+    /<CodeTab labels=\{\["ReScript", "TypeScript Output"\]\}>[\s\S]*```js/,
+  );
 });
 
 test("warns and skips malformed CodeTabs that never provide a JS Output fence", () => {
