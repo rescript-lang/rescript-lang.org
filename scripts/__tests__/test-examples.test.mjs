@@ -72,6 +72,121 @@ test("run compiles examples without requiring npm on PATH", () => {
   }
 });
 
+test("run compiles a plain res fence as checked code", () => {
+  let fixture = `# Demo
+
+\`\`\`res
+let greeting = "hello"
+\`\`\`
+`;
+
+  let { docsRoot, tempRoot } = makeWorkspace(fixture);
+  let { logger } = makeLogger();
+
+  let result = run({ docsRoot, tempRoot, logger });
+
+  assert.equal(result.success, true);
+  assert.equal(result.warningCount, 0);
+});
+
+test("run ignores a res nocheck fence during page-level compile checks", () => {
+  let fixture = `# Demo
+
+\`\`\`res nocheck
+type person = {name: string}
+type person = {age: int}
+\`\`\`
+`;
+
+  let { docsRoot, tempRoot } = makeWorkspace(fixture);
+  let { logger, warnings } = makeLogger();
+
+  let result = run({ docsRoot, tempRoot, logger });
+
+  assert.equal(result.success, true);
+  assert.equal(result.warningCount, 0);
+  assert.deepEqual(warnings, []);
+});
+
+test("update inserts JS Output for a single-label ReScript CodeTab with a plain res fence", () => {
+  let fixture = `# Demo
+
+<CodeTab labels={["ReScript"]}>
+
+\`\`\`res
+let value = 1
+\`\`\`
+
+</CodeTab>
+`;
+
+  let { docsRoot, tempRoot, file } = makeWorkspace(fixture);
+  let { logger } = makeLogger();
+
+  let result = run({ docsRoot, tempRoot, logger, update: true });
+  let nextContent = fs.readFileSync(file, "utf8");
+
+  assert.equal(result.success, true);
+  assert.equal(result.warningCount, 0);
+  assert.match(nextContent, /labels=\{\["ReScript", "JS Output"\]\}/);
+  assert.match(nextContent, /\`\`\`js/);
+  assert.match(nextContent, /let value = 1;/);
+});
+
+test("update ignores a res nocheck fence inside a ReScript CodeTab", () => {
+  let fixture = `# Demo
+
+<CodeTab labels={["ReScript"]}>
+
+\`\`\`res nocheck
+type person = {name: string}
+type person = {age: int}
+\`\`\`
+
+</CodeTab>
+`;
+
+  let { docsRoot, tempRoot, file } = makeWorkspace(fixture);
+  let { logger, warnings } = makeLogger();
+
+  let result = run({ docsRoot, tempRoot, logger, update: true });
+  let nextContent = fs.readFileSync(file, "utf8");
+
+  assert.equal(result.success, true);
+  assert.equal(result.warningCount, 0);
+  assert.deepEqual(warnings, []);
+  assert.equal(nextContent, fixture);
+});
+
+test("update ignores ReScript CodeTabs whose second label is TypeScript Output", () => {
+  let fixture = `# Demo
+
+<CodeTab labels={["ReScript", "TypeScript Output"]}>
+
+\`\`\`res
+@genType
+let value = 1
+\`\`\`
+
+\`\`\`ts
+export const value: number
+\`\`\`
+
+</CodeTab>
+`;
+
+  let { docsRoot, tempRoot, file } = makeWorkspace(fixture);
+  let { logger, warnings } = makeLogger();
+
+  let result = run({ docsRoot, tempRoot, logger, update: true });
+  let nextContent = fs.readFileSync(file, "utf8");
+
+  assert.equal(result.success, true);
+  assert.equal(result.warningCount, 0);
+  assert.deepEqual(warnings, []);
+  assert.equal(nextContent, fixture);
+});
+
 test("run reports cleaned compiler errors without raw Node stack traces", () => {
   let fixture = `# Demo
 
