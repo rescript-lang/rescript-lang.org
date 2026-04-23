@@ -4,14 +4,14 @@ module Intro = {
     <section className="flex justify-center">
       // We only need this font on the homepage, so we load it here instead of globally to save some bandwidth for users who navigate to other pages directly
       <link
-        href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Red+Hat+Mono:wght@700&display=swap"
         rel="stylesheet"
       />
       <div className="max-w-1060 flex flex-col items-center px-5 sm:px-8 lg:box-content">
         <h1 className="hl-title text-center max-w-212">
           {React.string("JavaScript Made Simple for Humans and AI")}
         </h1>
-        <h2 className="ubuntu-mono-bold hl-1 text-center text-gray-60 my-4 max-w-md">
+        <h2 className="red-hat-mono-bold hl-1 text-center text-gray-60 my-4 max-w-md">
           {React.string(`Types > Vibes`)}
         </h2>
         <p className="body-lg text-center text-gray-60 mt-4 max-w-md">

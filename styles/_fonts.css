@@ -138,8 +138,9 @@ $ pyftsubset <path_to_font> --unicodes="U+0000-00FF, U+0131, U+0152-0153, U+02BB
     U+FFFD;
 }
 
-.ubuntu-mono-bold {
-  font-family: "Ubuntu Mono", monospace;
+.red-hat-mono-bold {
+  font-family: "Red Hat Mono", monospace;
+  font-optical-sizing: auto;
   font-weight: 700;
   font-style: normal;
 }
