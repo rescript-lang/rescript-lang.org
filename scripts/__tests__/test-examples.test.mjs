@@ -75,41 +75,70 @@ test("run compiles examples without requiring npm on PATH", () => {
 test("run compiles a plain res fence as checked code", () => {
   let fixture = `# Demo
 
+\`\`\`res prelude
+let helper = 1
+\`\`\`
+
 \`\`\`res
 let greeting = "hello"
 \`\`\`
 `;
 
   let { docsRoot, tempRoot } = makeWorkspace(fixture);
-  let { logger } = makeLogger();
+  let { logger, logs } = makeLogger();
 
   let result = run({ docsRoot, tempRoot, logger });
+  let tempFile = fs.readFileSync(
+    path.join(tempRoot, "src", "_tempFile.res"),
+    "utf8",
+  );
 
   assert.equal(result.success, true);
   assert.equal(result.warningCount, 0);
+  assert.ok(logs.some((log) => log.includes("testing examples in")));
+  assert.match(tempFile, /module M_0 = \{[\s\S]*let greeting = "hello"/);
 });
 
 test("run ignores a res nocheck fence during page-level compile checks", () => {
   let fixture = `# Demo
 
-\`\`\`res nocheck
+\`\`\`res prelude
+let helper = 1
+\`\`\`
+
+\`\`\`res
 type person = {name: string}
 type person = {age: int}
+\`\`\`
+
+\`\`\`res nocheck
+type ignored = {name: string}
+type ignored = {age: int}
 \`\`\`
 `;
 
   let { docsRoot, tempRoot } = makeWorkspace(fixture);
-  let { logger, warnings } = makeLogger();
+  let { logger, logs, warnings } = makeLogger();
 
   let result = run({ docsRoot, tempRoot, logger });
 
-  assert.equal(result.success, true);
+  assert.equal(result.success, false);
   assert.equal(result.warningCount, 0);
-  assert.deepEqual(warnings, []);
+  assert.ok(logs.some((log) => log.includes("testing examples in")));
+  assert.ok(warnings.some((warning) => warning.includes("sample.mdx")));
+  assert.ok(
+    warnings.some((warning) =>
+      warning.includes("Multiple definition of the type name person"),
+    ),
+  );
 });
 
 test("update inserts JS Output for a single-label ReScript CodeTab with a plain res fence", () => {
   let fixture = `# Demo
+
+\`\`\`res prelude
+let helper = 1
+\`\`\`
 
 <CodeTab labels={["ReScript"]}>
 
@@ -136,6 +165,18 @@ let value = 1
 test("update ignores a res nocheck fence inside a ReScript CodeTab", () => {
   let fixture = `# Demo
 
+\`\`\`res prelude
+let helper = 1
+\`\`\`
+
+<CodeTab labels={["ReScript"]}>
+
+\`\`\`res
+let visibleValue = 1
+\`\`\`
+
+</CodeTab>
+
 <CodeTab labels={["ReScript"]}>
 
 \`\`\`res nocheck
@@ -155,11 +196,29 @@ type person = {age: int}
   assert.equal(result.success, true);
   assert.equal(result.warningCount, 0);
   assert.deepEqual(warnings, []);
-  assert.equal(nextContent, fixture);
+  assert.match(nextContent, /labels=\{\["ReScript", "JS Output"\]\}/);
+  assert.match(nextContent, /let visibleValue = 1;/);
+  assert.match(
+    nextContent,
+    /```res nocheck[\s\S]*type person = \{name: string\}/,
+  );
+  assert.match(nextContent, /```res nocheck[\s\S]*type person = \{age: int\}/);
 });
 
 test("update ignores ReScript CodeTabs whose second label is TypeScript Output", () => {
   let fixture = `# Demo
+
+\`\`\`res prelude
+let helper = 1
+\`\`\`
+
+<CodeTab labels={["ReScript"]}>
+
+\`\`\`res
+let visibleValue = 1
+\`\`\`
+
+</CodeTab>
 
 <CodeTab labels={["ReScript", "TypeScript Output"]}>
 
@@ -184,7 +243,10 @@ export const value: number
   assert.equal(result.success, true);
   assert.equal(result.warningCount, 0);
   assert.deepEqual(warnings, []);
-  assert.equal(nextContent, fixture);
+  assert.match(nextContent, /labels=\{\["ReScript", "JS Output"\]\}/);
+  assert.match(nextContent, /let visibleValue = 1;/);
+  assert.match(nextContent, /labels=\{\["ReScript", "TypeScript Output"\]\}/);
+  assert.match(nextContent, /```ts[\s\S]*export const value: number/);
 });
 
 test("run reports cleaned compiler errors without raw Node stack traces", () => {
