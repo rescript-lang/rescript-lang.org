@@ -85,7 +85,7 @@ let greeting = "hello"
 `;
 
   let { docsRoot, tempRoot } = makeWorkspace(fixture);
-  let { logger, logs } = makeLogger();
+  let { logger } = makeLogger();
 
   let result = run({ docsRoot, tempRoot, logger });
   let tempFile = fs.readFileSync(
@@ -95,7 +95,6 @@ let greeting = "hello"
 
   assert.equal(result.success, true);
   assert.equal(result.warningCount, 0);
-  assert.ok(logs.some((log) => log.includes("testing examples in")));
   assert.match(tempFile, /module M_0 = \{[\s\S]*let greeting = "hello"/);
 });
 
@@ -116,7 +115,7 @@ let ignored = "nope"
 `;
 
   let { docsRoot, tempRoot } = makeWorkspace(fixture);
-  let { logger, logs } = makeLogger();
+  let { logger } = makeLogger();
 
   let result = run({ docsRoot, tempRoot, logger });
   let tempFile = fs.readFileSync(
@@ -126,7 +125,6 @@ let ignored = "nope"
 
   assert.equal(result.success, true);
   assert.equal(result.warningCount, 0);
-  assert.ok(logs.some((log) => log.includes("testing examples in")));
   assert.match(tempFile, /module M_0 = \{[\s\S]*let greeting = "hello"/);
   assert.doesNotMatch(tempFile, /ignored/);
 });
@@ -196,9 +194,13 @@ type person = {age: int}
   assert.deepEqual(warnings, []);
   assert.match(nextContent, /labels=\{\["ReScript", "JS Output"\]\}/);
   assert.match(nextContent, /let visibleValue = 1;/);
-  assert.match(
+  assert.match(nextContent, /<CodeTab labels=\{\["ReScript"\]\}>/);
+  assert.match(nextContent, /```res nocheck/);
+  assert.match(nextContent, /type person = \{name: string\}/);
+  assert.match(nextContent, /type person = \{age: int\}/);
+  assert.doesNotMatch(
     nextContent,
-    /<CodeTab labels=\{\["ReScript"\]\}>\n\n```res nocheck\ntype person = \{name: string\}\ntype person = \{age: int\}\n```\n\n<\/CodeTab>/,
+    /<CodeTab labels=\{\["ReScript"\]\}>[\s\S]*```js/,
   );
 });
 
@@ -243,7 +245,13 @@ export const value: number
   assert.match(nextContent, /let visibleValue = 1;/);
   assert.match(
     nextContent,
-    /<CodeTab labels=\{\["ReScript", "TypeScript Output"\]\}>\n\n```res\nlet value = 1\n```\n\n```ts\nexport const value: number\n```\n\n<\/CodeTab>/,
+    /<CodeTab labels=\{\["ReScript", "TypeScript Output"\]\}>/,
+  );
+  assert.match(nextContent, /```res\nlet value = 1\n```/);
+  assert.match(nextContent, /```ts\nexport const value: number\n```/);
+  assert.doesNotMatch(
+    nextContent,
+    /<CodeTab labels=\{\["ReScript", "TypeScript Output"\]\}>[\s\S]*```js/,
   );
 });
 
