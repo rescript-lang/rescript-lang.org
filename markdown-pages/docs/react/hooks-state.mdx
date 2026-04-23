@@ -97,8 +97,8 @@ let make = (~content) => {
 ```
 
 ```js
-let React = require("react");
-let JsxRuntime = require("react/jsx-runtime");
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
 
 function _tempFile$ControlPanel(props) {
   let setDarkmode = props.setDarkmode;
@@ -145,8 +145,7 @@ function _tempFile(props) {
 
 let make = _tempFile;
 
-exports.ControlPanel = ControlPanel;
-exports.make = make;
+export { ControlPanel, make };
 ```
 
 </CodeTab>

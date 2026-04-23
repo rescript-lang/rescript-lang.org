@@ -121,7 +121,7 @@ function queryResult(usePayload, payload) {
 }
 let defaultId = 10;
 
-exports.defaultId = defaultId;
+export { defaultId };
 ```
 
 </CodeTab>
@@ -203,7 +203,7 @@ let queryResult = (usePayload, payload) => {
 ```
 
 ```js
-let School = require("school");
+import * as School from "school";
 
 function queryResult(usePayload, payload) {
   if (usePayload) {
@@ -215,8 +215,7 @@ function queryResult(usePayload, payload) {
 
 let defaultId = 10;
 
-exports.defaultId = defaultId;
-exports.queryResult = queryResult;
+export { defaultId, queryResult };
 ```
 
 </CodeTab>
@@ -255,7 +254,7 @@ let queryResult = (usePayload, payload) => {
 ```
 
 ```js
-let School = require("school");
+import * as School from "school";
 
 function queryResult(usePayload, payload) {
   if (usePayload) {
@@ -267,8 +266,7 @@ function queryResult(usePayload, payload) {
 
 let defaultId = 10;
 
-exports.defaultId = defaultId;
-exports.queryResult = queryResult;
+export { defaultId, queryResult };
 ```
 
 </CodeTab>

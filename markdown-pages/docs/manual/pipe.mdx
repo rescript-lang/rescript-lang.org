@@ -126,7 +126,7 @@ let result = [1, 2, 3].map((a) => (a + 1) | 0).filter((a) => a % 2 === 0);
 
 asyncRequest().setWaitDuration(4000).send();
 
-exports.result = result;
+export { result };
 ```
 
 </CodeTab>
@@ -148,7 +148,7 @@ let result = [1, 2, 3].map((a) => (a + 1) | 0).filter((a) => a % 2 === 0);
 
 asyncRequest().setWaitDuration(4000).send();
 
-exports.result = result;
+export { result };
 ```
 
 </CodeTab>

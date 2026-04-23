@@ -21,7 +21,7 @@ let myArray = ["hello", "world", "how are you"]
 ```js
 let myArray = ["hello", "world", "how are you"];
 
-exports.myArray = myArray;
+export { myArray };
 ```
 
 </CodeTab>
@@ -51,9 +51,7 @@ let firstItem = myArray[0];
 
 let tenthItem = myArray[10];
 
-exports.myArray = myArray;
-exports.firstItem = firstItem;
-exports.tenthItem = tenthItem;
+export { myArray, firstItem, tenthItem };
 ```
 
 </CodeTab>
@@ -83,7 +81,7 @@ myArray.push("?");
 
 myArray[0] = "bye";
 
-exports.myArray = myArray;
+export { myArray };
 ```
 
 </CodeTab>
@@ -104,7 +102,7 @@ let x3 = [...y]
 ```
 
 ```javascript
-let Belt_Array = require("@rescript/runtime/lib/js/Belt_Array.js");
+import * as Belt_Array from "@rescript/runtime/lib/es6/Belt_Array.js";
 
 let y = [1, 2];
 
@@ -114,10 +112,7 @@ let x2 = Belt_Array.concatMany([[4, 5], y, [7], y]);
 
 let x3 = Belt_Array.concatMany([y]);
 
-exports.y = y;
-exports.x = x;
-exports.x2 = x2;
-exports.x3 = x3;
+export { y, x, x2, x3 };
 ```
 
 </CodeTab>
@@ -149,7 +144,7 @@ let myList = {
   },
 };
 
-exports.myList = myList;
+export { myList };
 ```
 
 </CodeTab>
@@ -238,9 +233,7 @@ let message =
       : "The head of the list is the string " + (1).toString()
     : "This list is empty";
 
-exports.myList = myList;
-exports.anotherList = anotherList;
-exports.message = message;
+export { myList, anotherList, message };
 ```
 
 </CodeTab>

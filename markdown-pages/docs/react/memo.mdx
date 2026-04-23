@@ -32,8 +32,8 @@ let make = React.memo((~a: int, ~b: string) => {
 ```
 
 ```js
-let React = require("react");
-let JsxRuntime = require("react/jsx-runtime");
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
 
 let make = React.memo((props) =>
   JsxRuntime.jsxs("div", {
@@ -41,7 +41,7 @@ let make = React.memo((props) =>
   }),
 );
 
-exports.make = make;
+export { make };
 ```
 
 </CodeTab>
@@ -73,8 +73,8 @@ let make = React.memoCustomCompareProps(make, (p1, p2) =>
 ```
 
 ```js
-let React = require("react");
-let JsxRuntime = require("react/jsx-runtime");
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
 
 function _tempFile(props) {
   let onClick = props.onClick;
@@ -87,7 +87,7 @@ function _tempFile(props) {
 
 let make = React.memo(_tempFile, (p1, p2) => p1.disabled === p2.disabled);
 
-exports.make = make;
+export { make };
 ```
 
 </CodeTab>
@@ -113,8 +113,8 @@ let make = React.memoCustomCompareProps(
 ```
 
 ```js
-let React = require("react");
-let JsxRuntime = require("react/jsx-runtime");
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
 
 let make = React.memo(
   (param) => {
@@ -128,7 +128,7 @@ let make = React.memo(
   (p1, p2) => p1.disabled === p2.disabled,
 );
 
-exports.make = make;
+export { make };
 ```
 
 </CodeTab>

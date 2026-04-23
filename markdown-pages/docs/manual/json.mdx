@@ -31,8 +31,7 @@ let result = JSON.parse(`{"names": ["Luke", "Christine"]}`);
 
 let name1 = result.names[0];
 
-exports.result = result;
-exports.name1 = name1;
+export { result, name1 };
 ```
 
 </CodeTab>
@@ -67,13 +66,13 @@ Console.log(studentNames)
 ```
 
 ```js
-let StudentsJson = require("./students.json");
+import * as StudentsJson from "./students.json";
 
 let studentNames = StudentsJson;
 
 console.log(studentNames);
 
-exports.studentNames = studentNames;
+export { studentNames };
 ```
 
 ```js

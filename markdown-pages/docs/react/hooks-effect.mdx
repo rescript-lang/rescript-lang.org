@@ -59,7 +59,7 @@ React.useEffect(() => {
 ```
 
 ```js
-let React = require("react");
+import * as React from "react";
 
 React.useEffect(() => {});
 
@@ -77,9 +77,7 @@ let prop2 = 2;
 
 let prop3 = 3;
 
-exports.prop1 = prop1;
-exports.prop2 = prop2;
-exports.prop3 = prop3;
+export { prop1, prop2, prop3 };
 ```
 
 </CodeTab>
@@ -137,8 +135,8 @@ let make = () => {
 ```
 
 ```js
-let React = require("react");
-let JsxRuntime = require("react/jsx-runtime");
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
 
 let Document = {};
 
@@ -166,8 +164,7 @@ function _tempFile(props) {
 
 let make = _tempFile;
 
-exports.Document = Document;
-exports.make = make;
+export { Document, make };
 ```
 
 </CodeTab>

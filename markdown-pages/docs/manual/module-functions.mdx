@@ -67,8 +67,8 @@ let params = Params.useParams()
 
 ````
 ```js
-let Navigation = require("next/navigation");
-let JsxRuntime = require("react/jsx-runtime");
+import * as Navigation from "next/navigation";
+import * as JsxRuntime from "react/jsx-runtime";
 
 function MakeParams(Params) {
   return {};
@@ -96,8 +96,10 @@ let Component = {
   make: _tempFile$Component
 };
 
-exports.Next = Next;
-exports.Component = Component;
+export {
+  Next,
+  Component,
+}
 ````
 
 </ CodeTab>

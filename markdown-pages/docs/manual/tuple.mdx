@@ -27,8 +27,7 @@ let ageAndName = [24, "Lil' ReScript"];
 
 let my3dCoordinates = [20.0, 30.5, 100.0];
 
-exports.ageAndName = ageAndName;
-exports.my3dCoordinates = my3dCoordinates;
+export { ageAndName, my3dCoordinates };
 ```
 
 </CodeTab>
@@ -70,9 +69,7 @@ let my3dCoordinates = [20.0, 30.5, 100.0];
 
 let y = 30.5;
 
-exports.ageAndName = ageAndName;
-exports.my3dCoordinates = my3dCoordinates;
-exports.y = y;
+export { ageAndName, my3dCoordinates, y };
 ```
 
 </CodeTab>
@@ -100,11 +97,7 @@ let coordinates1 = [10, 20, 30];
 
 let c1x = 10;
 
-exports.ageAndName = ageAndName;
-exports.my3dCoordinates = my3dCoordinates;
-exports.coordinates1 = coordinates1;
-exports.c1x = c1x;
-exports.coordinates2 = coordinates2;
+export { ageAndName, my3dCoordinates, coordinates1, c1x, coordinates2 };
 ```
 
 </CodeTab>

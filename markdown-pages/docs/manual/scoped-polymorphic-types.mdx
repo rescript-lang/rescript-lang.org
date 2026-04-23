@@ -54,7 +54,7 @@ myLogger.log(42)
 ```
 
 ```js
-let JsAPI = require("jsAPI");
+import * as JsAPI from "jsAPI";
 
 let myLogger = JsAPI.getLogger();
 
@@ -62,7 +62,7 @@ myLogger.log("Hello, ReScript!");
 
 myLogger.log(42);
 
-exports.myLogger = myLogger;
+export { myLogger };
 ```
 
 </CodeTab>

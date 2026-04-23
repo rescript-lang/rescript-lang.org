@@ -43,8 +43,7 @@ function greet(name) {
 
 let message = "Hello world!";
 
-exports.greet = greet;
-exports.message = message;
+export { greet, message };
 ```
 
 </CodeTab>
@@ -71,9 +70,7 @@ function add(x, y, z) {
 
 let sum = 6;
 
-exports.greet = greet;
-exports.add = add;
-exports.sum = sum;
+export { greet, add, sum };
 ```
 
 </CodeTab>
@@ -98,8 +95,7 @@ function greetMore(name) {
   return "Hello " + name;
 }
 
-exports.greet = greet;
-exports.greetMore = greetMore;
+export { greet, greetMore };
 ```
 
 </CodeTab>
@@ -370,8 +366,7 @@ function neverTerminate() {
   }
 }
 
-exports.greet = greet;
-exports.neverTerminate = neverTerminate;
+export { greet, neverTerminate };
 ```
 
 </CodeTab>
@@ -409,8 +404,7 @@ function listHas(_list, item) {
   }
 }
 
-exports.greet = greet;
-exports.listHas = listHas;
+export { greet, listHas };
 ```
 
 </CodeTab>
@@ -446,9 +440,7 @@ function callFirst() {
   }
 }
 
-exports.greet = greet;
-exports.callSecond = callSecond;
-exports.callFirst = callFirst;
+export { greet, callSecond, callFirst };
 ```
 
 </CodeTab>
@@ -507,9 +499,7 @@ async function greetUser(userId) {
   return "Hello " + name + "!";
 }
 
-exports.greet = greet;
-exports.getUserName = getUserName;
-exports.greetUser = greetUser;
+export { greet, getUserName, greetUser };
 ```
 
 </CodeTab>
@@ -540,8 +530,8 @@ let someAsyncFn = async () => {
 ```
 
 ```js
-let Primitive_option = require("@rescript/runtime/lib/js/Primitive_option.js");
-let Primitive_exceptions = require("@rescript/runtime/lib/js/Primitive_exceptions.js");
+import * as Primitive_option from "@rescript/runtime/lib/es6/Primitive_option.js";
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
 
 function greet(name) {
   return "Hello " + name;
@@ -575,10 +565,7 @@ async function someAsyncFn() {
   return Primitive_option.some(data);
 }
 
-exports.greet = greet;
-exports.SomeReScriptException = SomeReScriptException;
-exports.somethingThatMightThrow = somethingThatMightThrow;
-exports.someAsyncFn = someAsyncFn;
+export { greet, SomeReScriptException, somethingThatMightThrow, someAsyncFn };
 ```
 
 </CodeTab>

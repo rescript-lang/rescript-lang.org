@@ -122,11 +122,11 @@ let make = () => {
 ```
 
 ```js
-let React = require("react");
-let Stdlib_Option = require("@rescript/runtime/lib/js/Stdlib_Option.js");
-let Stdlib_Nullable = require("@rescript/runtime/lib/js/Stdlib_Nullable.js");
-let Primitive_option = require("@rescript/runtime/lib/js/Primitive_option.js");
-let JsxRuntime = require("react/jsx-runtime");
+import * as React from "react";
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as Stdlib_Nullable from "@rescript/runtime/lib/es6/Stdlib_Nullable.js";
+import * as Primitive_option from "@rescript/runtime/lib/es6/Primitive_option.js";
+import * as JsxRuntime from "react/jsx-runtime";
 
 let make = React.forwardRef((props, ref) =>
   JsxRuntime.jsxs("div", {
@@ -169,8 +169,7 @@ function _tempFile(props) {
 
 let make$1 = _tempFile;
 
-exports.FancyInput = FancyInput;
-exports.make = make$1;
+export { FancyInput, make$1 as make };
 ```
 
 </CodeTab>

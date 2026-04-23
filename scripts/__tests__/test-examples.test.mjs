@@ -137,6 +137,33 @@ console.log("stale");
   assert.match(nextContent, /console\.log\("stale"\);/);
 });
 
+test("update emits ESM JS Output fences", () => {
+  let fixture = `# Demo
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+\`\`\`res example
+let value = 1
+\`\`\`
+
+\`\`\`js
+console.log("stale");
+\`\`\`
+
+</CodeTab>
+`;
+
+  let { docsRoot, tempRoot, file } = makeWorkspace(fixture);
+  let { logger } = makeLogger();
+
+  let result = run({ docsRoot, tempRoot, logger, update: true });
+  let nextContent = fs.readFileSync(file, "utf8");
+
+  assert.equal(result.success, true);
+  assert.match(nextContent, /export \{\n  value,\n\}/);
+  assert.doesNotMatch(nextContent, /exports\.value = value;/);
+});
+
 test("update rewrites a stale JS Output fence", () => {
   let fixture = `# Demo
 
@@ -163,7 +190,7 @@ console.log("stale");
   assert.equal(result.warningCount, 0);
   assert.deepEqual(warnings, []);
   assert.match(nextContent, /let value = 1;/);
-  assert.match(nextContent, /exports\.value = value;/);
+  assert.match(nextContent, /export \{\n  value,\n\}/);
   assert.doesNotMatch(nextContent, /console\.log\("stale"\);/);
 });
 
@@ -193,7 +220,7 @@ let value = 1
   assert.deepEqual(warnings, []);
   assert.match(nextContent, /\`\`\`js/);
   assert.match(nextContent, /let value = 1;/);
-  assert.match(nextContent, /exports\.value = value;/);
+  assert.match(nextContent, /export \{\n  value,\n\}/);
 });
 
 test("update inserts a missing JS Output fence and upgrades a single ReScript label", () => {
@@ -220,7 +247,7 @@ let value = 1
   assert.match(nextContent, /labels=\{\["ReScript", "JS Output"\]\}/);
   assert.match(nextContent, /\`\`\`js/);
   assert.match(nextContent, /let value = 1;/);
-  assert.match(nextContent, /exports\.value = value;/);
+  assert.match(nextContent, /export \{\n  value,\n\}/);
   assert.match(nextContent, /\`\`\`\n\n<\/CodeTab>/);
 });
 
@@ -251,7 +278,7 @@ let value = 1
   );
   assert.match(nextContent, /\`\`\`js/);
   assert.match(nextContent, /let value = 1;/);
-  assert.match(nextContent, /exports\.value = value;/);
+  assert.match(nextContent, /export \{\n  value,\n\}/);
 });
 
 test("ignores standalone javascript fences outside a matching CodeTab", () => {

@@ -110,8 +110,8 @@ module Greetings = {
 ```
 
 ```js
-let Stdlib_Array = require("@rescript/runtime/lib/js/Stdlib_Array.js");
-let JsxRuntime = require("react/jsx-runtime");
+import * as Stdlib_Array from "@rescript/runtime/lib/es6/Stdlib_Array.js";
+import * as JsxRuntime from "react/jsx-runtime";
 
 function s(strings, parameters) {
   return Stdlib_Array.reduceWithIndex(
@@ -159,8 +159,7 @@ let Greetings = {
   make: _tempFile$Greetings,
 };
 
-exports.s = s;
-exports.Greetings = Greetings;
+export { s, Greetings };
 ```
 
 </CodeTab>

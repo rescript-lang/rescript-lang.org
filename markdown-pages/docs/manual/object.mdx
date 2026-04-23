@@ -61,7 +61,7 @@ let me = {
   name: "Big ReScript",
 };
 
-exports.me = me;
+export { me };
 ```
 
 </CodeTab>
@@ -129,7 +129,7 @@ student1["name"] = "Mary"
 ```
 
 ```js
-let MyJSFile = require("MyJSFile");
+import * as MyJSFile from "MyJSFile";
 
 MyJSFile.student1.name = "Mary";
 ```
@@ -166,7 +166,7 @@ let myPoint = {
   z: 3.0,
 };
 
-exports.myPoint = myPoint;
+export { myPoint };
 ```
 
 </CodeTab>
@@ -205,7 +205,7 @@ let loc = document.location;
 
 document.location.href = "rescript-lang.org";
 
-exports.loc = loc;
+export { loc };
 ```
 
 </CodeTab>

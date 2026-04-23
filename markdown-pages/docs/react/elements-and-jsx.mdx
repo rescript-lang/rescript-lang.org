@@ -104,7 +104,7 @@ let element = switch name {
 ```
 
 ```js
-let JsxRuntime = require("react/jsx-runtime");
+import * as JsxRuntime from "react/jsx-runtime";
 
 let name = "Andrea";
 
@@ -116,8 +116,7 @@ JsxRuntime.jsx("div", {
   children: element,
 });
 
-exports.name = name;
-exports.element = element;
+export { name, element };
 ```
 
 </CodeTab>
@@ -167,7 +166,7 @@ let render = (article: props => React.element) => {
 ```
 
 ```js
-let React = require("react");
+import * as React from "react";
 
 function render(article) {
   let children = ["Introduction", "Body"];
@@ -178,7 +177,7 @@ function render(article) {
   return React.createElement(article, props, ...children);
 }
 
-exports.render = render;
+export { render };
 ```
 
 </CodeTab>
@@ -213,8 +212,8 @@ React.cloneElement(original, {"className": "world", "data-name": "some name"})
 ```
 
 ```js
-let React = require("react");
-let JsxRuntime = require("react/jsx-runtime");
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
 
 let original = JsxRuntime.jsx("div", {
   className: "hello",
@@ -225,7 +224,7 @@ React.cloneElement(original, {
   "data-name": "some name",
 });
 
-exports.original = original;
+export { original };
 ```
 
 </CodeTab>

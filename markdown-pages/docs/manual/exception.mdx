@@ -21,7 +21,7 @@ throw(InputClosed("The stream has closed!"))
 ```
 
 ```js
-let Primitive_exceptions = require("@rescript/runtime/lib/js/Primitive_exceptions.js");
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
 
 let InputClosed = /* @__PURE__ */ Primitive_exceptions.create(
   "_tempFile.InputClosed",
@@ -33,7 +33,7 @@ throw {
   Error: new Error(),
 };
 
-exports.InputClosed = InputClosed;
+export { InputClosed };
 ```
 
 </CodeTab>
@@ -165,9 +165,9 @@ try divide(2, 0)->Console.log catch {
 ````
 
 ```js
-let Stdlib_List = require("@rescript/runtime/lib/js/Stdlib_List.js");
-let Primitive_int = require("@rescript/runtime/lib/js/Primitive_int.js");
-let Primitive_exceptions = require("@rescript/runtime/lib/js/Primitive_exceptions.js");
+import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
+import * as Primitive_int from "@rescript/runtime/lib/es6/Primitive_int.js";
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
 
 function getItem(item) {
   if (item === 3) {
@@ -243,9 +243,11 @@ try {
   }
 }
 
-exports.getItem = getItem;
-exports.result = result;
-exports.divide = divide;
+export {
+  getItem,
+  result,
+  divide,
+}
 ````
 
 </CodeTab>
@@ -275,8 +277,8 @@ try decodeUser(%raw("{}"))->Console.log catch {
 ```
 
 ```js
-let Stdlib_List = require("@rescript/runtime/lib/js/Stdlib_List.js");
-let Primitive_exceptions = require("@rescript/runtime/lib/js/Primitive_exceptions.js");
+import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
 
 function getItem(item) {
   if (item === 3) {
@@ -364,9 +366,7 @@ try {
   }
 }
 
-exports.getItem = getItem;
-exports.result = result;
-exports.decodeUser = decodeUser;
+export { getItem, result, decodeUser };
 ```
 
 </CodeTab>
@@ -398,8 +398,8 @@ false
 ````
 
 ```js
-let Stdlib_List = require("@rescript/runtime/lib/js/Stdlib_List.js");
-let Primitive_exceptions = require("@rescript/runtime/lib/js/Primitive_exceptions.js");
+import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
 
 function getItem(item) {
   if (item === 3) {
@@ -480,10 +480,12 @@ try {
   }
 }
 
-exports.getItem = getItem;
-exports.result = result;
-exports.isValidEmail = isValidEmail;
-exports.isValid = isValid;
+export {
+  getItem,
+  result,
+  isValidEmail,
+  isValid,
+}
 ````
 
 </CodeTab>
@@ -504,9 +506,9 @@ Console.log(result) // None
 ````
 
 ```js
-let Stdlib_List = require("@rescript/runtime/lib/js/Stdlib_List.js");
-let Primitive_int = require("@rescript/runtime/lib/js/Primitive_int.js");
-let Primitive_exceptions = require("@rescript/runtime/lib/js/Primitive_exceptions.js");
+import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
+import * as Primitive_int from "@rescript/runtime/lib/es6/Primitive_int.js";
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
 
 function getItem(item) {
   if (item === 3) {
@@ -571,8 +573,10 @@ try {
 
 console.log(result);
 
-exports.getItem = getItem;
-exports.result = result;
+export {
+  getItem,
+  result,
+}
 ````
 
 </CodeTab>
@@ -628,9 +632,9 @@ let myTest = () => {
 ```
 
 ```js
-let Stdlib_List = require("@rescript/runtime/lib/js/Stdlib_List.js");
-let Stdlib_JsError = require("@rescript/runtime/lib/js/Stdlib_JsError.js");
-let Primitive_exceptions = require("@rescript/runtime/lib/js/Primitive_exceptions.js");
+import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
+import * as Stdlib_JsError from "@rescript/runtime/lib/es6/Stdlib_JsError.js";
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
 
 function getItem(item) {
   if (item === 3) {
@@ -691,9 +695,7 @@ function myTest() {
   return Stdlib_JsError.throwWithMessage("Hello!");
 }
 
-exports.getItem = getItem;
-exports.result = result;
-exports.myTest = myTest;
+export { getItem, result, myTest };
 ```
 
 </CodeTab>
@@ -722,8 +724,8 @@ let myTest = () => {
 ```
 
 ```js
-let Stdlib_List = require("@rescript/runtime/lib/js/Stdlib_List.js");
-let Primitive_exceptions = require("@rescript/runtime/lib/js/Primitive_exceptions.js");
+import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
 
 function getItem(item) {
   if (item === 3) {
@@ -784,9 +786,7 @@ function myTest() {
   throw "some non-error value!";
 }
 
-exports.getItem = getItem;
-exports.result = result;
-exports.myTest = myTest;
+export { getItem, result, myTest };
 ```
 
 </CodeTab>
@@ -817,8 +817,8 @@ let myTest = () => {
 ```
 
 ```js
-let Stdlib_List = require("@rescript/runtime/lib/js/Stdlib_List.js");
-let Primitive_exceptions = require("@rescript/runtime/lib/js/Primitive_exceptions.js");
+import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
 
 function getItem(item) {
   if (item === 3) {
@@ -887,10 +887,7 @@ function myTest() {
   };
 }
 
-exports.getItem = getItem;
-exports.result = result;
-exports.BadArgument = BadArgument;
-exports.myTest = myTest;
+export { getItem, result, BadArgument, myTest };
 ```
 
 </CodeTab>

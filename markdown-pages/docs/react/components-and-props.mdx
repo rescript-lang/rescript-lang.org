@@ -39,7 +39,7 @@ let make = () => {
 ```
 
 ```js
-let JsxRuntime = require("react/jsx-runtime");
+import * as JsxRuntime from "react/jsx-runtime";
 
 function _tempFile(props) {
   return JsxRuntime.jsx("div", {
@@ -49,7 +49,7 @@ function _tempFile(props) {
 
 let make = _tempFile;
 
-exports.make = make;
+export { make };
 ```
 
 </CodeTab>
@@ -80,7 +80,7 @@ let make = (~title: string, ~visitorCount: int, ~children: React.element) => {
 ```
 
 ```js
-let JsxRuntime = require("react/jsx-runtime");
+import * as JsxRuntime from "react/jsx-runtime";
 
 function _tempFile(props) {
   let visitorCountMsg = "You are visitor number: " + String(props.visitorCount);
@@ -99,7 +99,7 @@ function _tempFile(props) {
 
 let make = _tempFile;
 
-exports.make = make;
+export { make };
 ```
 
 </CodeTab>
@@ -123,7 +123,7 @@ let make = (~name: option<string>=?) => {
 ```
 
 ```js
-let JsxRuntime = require("react/jsx-runtime");
+import * as JsxRuntime from "react/jsx-runtime";
 
 function _tempFile(props) {
   let name = props.name;
@@ -135,7 +135,7 @@ function _tempFile(props) {
 
 let make = _tempFile;
 
-exports.make = make;
+export { make };
 ```
 
 </CodeTab>
@@ -164,8 +164,8 @@ let name = Some("Andrea")
 ```
 
 ```js
-let Stdlib_Option = require("@rescript/runtime/lib/js/Stdlib_Option.js");
-let JsxRuntime = require("react/jsx-runtime");
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as JsxRuntime from "react/jsx-runtime";
 
 function _tempFile$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
@@ -181,8 +181,7 @@ JsxRuntime.jsx(_tempFile$Greeting, {
   name: name,
 });
 
-exports.Greeting = Greeting;
-exports.name = name;
+export { Greeting, name };
 ```
 
 </CodeTab>
@@ -231,8 +230,8 @@ module MyList = {
 ```
 
 ```js
-let Stdlib_Option = require("@rescript/runtime/lib/js/Stdlib_Option.js");
-let JsxRuntime = require("react/jsx-runtime");
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as JsxRuntime from "react/jsx-runtime";
 
 function _tempFile$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
@@ -263,8 +262,7 @@ JsxRuntime.jsxs(_tempFile$MyList, {
   ],
 });
 
-exports.Greeting = Greeting;
-exports.MyList = MyList;
+export { Greeting, MyList };
 ```
 
 </CodeTab>
@@ -434,8 +432,8 @@ let make = () => {
 ```
 
 ```js
-let Stdlib_Option = require("@rescript/runtime/lib/js/Stdlib_Option.js");
-let JsxRuntime = require("react/jsx-runtime");
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as JsxRuntime from "react/jsx-runtime";
 
 function _tempFile$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
@@ -453,8 +451,7 @@ function _tempFile(props) {
 
 let make = _tempFile;
 
-exports.Greeting = Greeting;
-exports.make = make;
+export { Greeting, make };
 ```
 
 </CodeTab>
@@ -484,8 +481,8 @@ module Link = {
 ```
 
 ```js
-let Stdlib_Option = require("@rescript/runtime/lib/js/Stdlib_Option.js");
-let JsxRuntime = require("react/jsx-runtime");
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as JsxRuntime from "react/jsx-runtime";
 
 function _tempFile$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
@@ -511,8 +508,7 @@ JsxRuntime.jsx(make, {
   children: "Docs",
 });
 
-exports.Greeting = Greeting;
-exports.Link = Link;
+export { Greeting, Link };
 ```
 
 </CodeTab>

@@ -45,8 +45,7 @@ let myValue = {
 
 let five = myValue.contents;
 
-exports.myValue = myValue;
-exports.five = five;
+export { myValue, five };
 ```
 
 </CodeTab>
@@ -66,7 +65,7 @@ let myValue = {
 
 myValue.contents = 6;
 
-exports.myValue = myValue;
+export { myValue };
 ```
 
 </CodeTab>
@@ -86,7 +85,7 @@ let myValue = {
 
 myValue.contents = 6;
 
-exports.myValue = myValue;
+export { myValue };
 ```
 
 </CodeTab>

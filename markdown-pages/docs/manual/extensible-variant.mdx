@@ -25,7 +25,7 @@ type t +=
 ```
 
 ```js
-let Primitive_exceptions = require("@rescript/runtime/lib/js/Primitive_exceptions.js");
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
 
 let Other = /* @__PURE__ */ Primitive_exceptions.create("_tempFile.Other");
 
@@ -33,9 +33,7 @@ let Point = /* @__PURE__ */ Primitive_exceptions.create("_tempFile.Point");
 
 let Line = /* @__PURE__ */ Primitive_exceptions.create("_tempFile.Line");
 
-exports.Other = Other;
-exports.Point = Point;
-exports.Line = Line;
+export { Other, Point, Line };
 ```
 
 </CodeTab>

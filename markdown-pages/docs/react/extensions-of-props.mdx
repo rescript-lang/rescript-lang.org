@@ -33,7 +33,7 @@ let props = {Comp.b: "b"}
 ```
 
 ```js
-let JsxRuntime = require("react/jsx-runtime");
+import * as JsxRuntime from "react/jsx-runtime";
 
 let Comp = {};
 
@@ -45,8 +45,10 @@ let newrecord = {...props};
 
 JsxRuntime.jsx(default, (newrecord.a = "a", newrecord));
 
-exports.Comp = Comp;
-exports.props = props;
+export {
+  Comp,
+  props,
+}
 ```
 
 </CodeTab>

@@ -48,8 +48,8 @@ let make = () => {
 ```
 
 ```js
-let React = require("react");
-let JsxRuntime = require("react/jsx-runtime");
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
 
 function _tempFile(props) {
   let match = React.useState(() => 0);
@@ -71,7 +71,7 @@ function _tempFile(props) {
 
 let make = _tempFile;
 
-exports.make = make;
+export { make };
 ```
 
 </CodeTab>

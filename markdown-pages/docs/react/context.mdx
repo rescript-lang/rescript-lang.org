@@ -67,7 +67,7 @@ let make = () => {
 ```
 
 ```js
-let JsxRuntime = require("react/jsx-runtime");
+import * as JsxRuntime from "react/jsx-runtime";
 
 function _tempFile$Button(props) {
   let className;
@@ -112,10 +112,7 @@ function _tempFile(props) {
 
 let make = _tempFile;
 
-exports.Button = Button;
-exports.ThemedButton = ThemedButton;
-exports.Toolbar = Toolbar;
-exports.make = make;
+export { Button, ThemedButton, Toolbar, make };
 ```
 
 </CodeTab>
@@ -176,8 +173,8 @@ let make = () => {
 ```
 
 ```js
-let React = require("react");
-let JsxRuntime = require("react/jsx-runtime");
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
 
 let context = React.createContext("Light");
 
@@ -237,11 +234,7 @@ function _tempFile(props) {
 
 let make$1 = _tempFile;
 
-exports.ThemeContext = ThemeContext;
-exports.Button = Button;
-exports.ThemedButton = ThemedButton;
-exports.Toolbar = Toolbar;
-exports.make = make$1;
+export { ThemeContext, Button, ThemedButton, Toolbar, make$1 as make };
 ```
 
 </CodeTab>

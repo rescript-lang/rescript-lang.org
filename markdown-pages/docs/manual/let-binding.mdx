@@ -25,9 +25,7 @@ let greeting = "hello!";
 
 let score = 10;
 
-exports.greeting = greeting;
-exports.score = score;
-exports.newScore = newScore;
+export { greeting, score, newScore };
 ```
 
 </CodeTab>
@@ -52,7 +50,7 @@ let message = {
 ```js
 let message = "hello world";
 
-exports.message = message;
+export { message };
 ```
 
 </CodeTab>
@@ -162,7 +160,7 @@ console.log(1);
 
 let result = 1;
 
-exports.result = result;
+export { result };
 ```
 
 </CodeTab>

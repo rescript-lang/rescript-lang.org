@@ -71,8 +71,8 @@ let make = () => {
 ```
 
 ```js
-let React = require("react");
-let JsxRuntime = require("react/jsx-runtime");
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
 
 let context = React.createContext("light");
 
@@ -131,10 +131,7 @@ function _tempFile(props) {
 
 let make$1 = _tempFile;
 
-exports.ThemeContext = ThemeContext;
-exports.ThemedButton = ThemedButton;
-exports.Toolbar = Toolbar;
-exports.make = make$1;
+export { ThemeContext, ThemedButton, Toolbar, make$1 as make };
 ```
 
 </CodeTab>

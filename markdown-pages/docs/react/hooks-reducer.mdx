@@ -66,8 +66,8 @@ let make = () => {
 ```
 
 ```js
-let React = require("react");
-let JsxRuntime = require("react/jsx-runtime");
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
 
 function reducer(state, action) {
   if (action === "Inc") {
@@ -103,8 +103,7 @@ function _tempFile(props) {
 
 let make = _tempFile;
 
-exports.reducer = reducer;
-exports.make = make;
+export { reducer, make };
 ```
 
 </CodeTab>
@@ -189,9 +188,9 @@ let make = () => {
 ```
 
 ```js
-let React = require("react");
-let Belt_Array = require("@rescript/runtime/lib/js/Belt_Array.js");
-let JsxRuntime = require("react/jsx-runtime");
+import * as React from "react";
+import * as Belt_Array from "@rescript/runtime/lib/es6/Belt_Array.js";
+import * as JsxRuntime from "react/jsx-runtime";
 
 function reducer(state, action) {
   switch (action.TAG) {
@@ -286,9 +285,7 @@ function _tempFile(props) {
 
 let make = _tempFile;
 
-exports.reducer = reducer;
-exports.initialTodos = initialTodos;
-exports.make = make;
+export { reducer, initialTodos, make };
 ```
 
 </CodeTab>
@@ -349,8 +346,8 @@ let make = (~initialCount: int) => {
 ```
 
 ```js
-let React = require("react");
-let JsxRuntime = require("react/jsx-runtime");
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
 
 function init(initialCount) {
   return {
@@ -396,9 +393,7 @@ function _tempFile(props) {
 
 let make = _tempFile;
 
-exports.init = init;
-exports.reducer = reducer;
-exports.make = make;
+export { init, reducer, make };
 ```
 
 </CodeTab>
