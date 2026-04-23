@@ -33,7 +33,7 @@ Use the `module` [external](./external.mdx):
 
 <CodeTab labels={["ReScript", "JS Output (Module)", "JS Output (CommonJS)"]}>
 
-```res example
+```res
 // Import nodejs' path.dirname
 @module("path") external dirname: string => string = "dirname"
 let root = dirname("/User/github") // returns "User"
@@ -70,7 +70,7 @@ By omitting the string argument to `module`, you bind to the whole JS module:
 
 <CodeTab labels={["ReScript", "JS Output (Module)", "JS Output (CommonJS)"]}>
 
-```res example
+```res
 @module external leftPad: (string, int) => string = "./leftPad"
 let paddedResult = leftPad("hi", 5)
 ```
@@ -102,7 +102,7 @@ Use the value `default` on the right hand side:
 
 <CodeTab labels={["ReScript", "JS Output (Module)"]}>
 
-```res example
+```res
 @module("./student") external studentName: string = "default"
 Console.log(studentName)
 ```
@@ -246,7 +246,7 @@ A JavaScript default export is really just syntax sugar for a named export impli
 
 <CodeTab labels={["ReScript", "JS Output (Module)", "JS Output (CommonJS)"]}>
 
-```res example
+```res
 // ReScriptStudent.res
 let default = "Bob"
 ```

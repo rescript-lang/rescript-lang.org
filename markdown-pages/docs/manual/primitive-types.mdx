@@ -18,7 +18,7 @@ ReScript `string`s are delimited using **double** quotes (single quotes are rese
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let greeting = "Hello world!"
 let multilineGreeting = "Hello
  world!"
@@ -38,7 +38,7 @@ To concatenate strings, use `++`:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let greetings = "Hello " ++ "world!"
 ```
 
@@ -62,7 +62,7 @@ There's a special syntax for string that allows
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let name = "Joe"
 
 let greeting = `Hello
@@ -113,7 +113,7 @@ ReScript has a type for a string with a single letter:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let firstLetterOfAlphabet = 'a'
 ```
 
@@ -135,7 +135,7 @@ ReScript regular expressions compile cleanly to their JavaScript counterpart:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let r = /b/g
 ```
 
@@ -190,7 +190,7 @@ As with integers, you may use underscores within literals to improve readability
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let result = (1 :> float) + 2.
 ```
 
@@ -215,7 +215,7 @@ As `bigint` is a different data type than `int`, it's necessary to open the corr
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 open! BigInt
 
 let a = 9007199254740991n + 9007199254740991n
@@ -236,7 +236,7 @@ It also supports all the bitwise operations, except unsigned shift right (`>>>`)
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 open! BigInt
 
 let a = 5n &&& 3n
@@ -269,7 +269,7 @@ It can also be pattern-matched.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let bigintValue = 1n
 
 switch bigintValue {

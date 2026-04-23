@@ -16,7 +16,7 @@ We represent the existence and nonexistence of a value by wrapping it with the `
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type option<'a> = None | Some('a)
 ```
 
@@ -36,7 +36,7 @@ Here's a normal value:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let licenseNumber = 5
 ```
 
@@ -100,7 +100,7 @@ The `option` type is common enough that we special-case it when compiling to Jav
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let x = Some(5)
 ```
 
@@ -116,7 +116,7 @@ simply compiles down to `5`, and
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let x = None
 ```
 
@@ -146,7 +146,7 @@ If you're receiving, for example, a JS string that can be `null` and `undefined`
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @module("MyConstant") external myId: Nullable.t<string> = "myId"
 ```
 
@@ -160,7 +160,7 @@ To create such a nullable string from our side (presumably to pass it to the JS 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @module("MyIdValidator") external validate: Nullable.t<string> => bool = "validate"
 let personId: Nullable.t<string> = Nullable.make("abc123")
 

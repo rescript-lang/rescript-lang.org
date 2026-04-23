@@ -16,7 +16,7 @@ In our previous section [React Elements & JSX](./elements-and-jsx.mdx) we learne
 
 As we mentioned before, a `React.element` describes what you see on the screen:
 
-```res example
+```res
 let element = <h1> {React.string("Hello World")} </h1>
 ```
 
@@ -43,7 +43,7 @@ Here is a full example rendering our application in our `root` div:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // Dom access can actually fail. ReScript
 // is really explicit about handling edge cases!
 switch ReactDOM.querySelector("#root") {

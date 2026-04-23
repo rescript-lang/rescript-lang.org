@@ -32,7 +32,7 @@ When ReScript can evaluate a known pure function call ahead of time, it can emit
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let message = greet("world!") // "Hello world!"
 ```
 
@@ -54,7 +54,7 @@ If all the arguments are known up front, ReScript can precompute the result too:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let add = (x, y, z) => x + y + z
 let sum = add(1, 2, 3) // 6
 ```
@@ -79,7 +79,7 @@ For longer functions, you'd surround the body with a block:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let greetMore = (name) => {
   let part1 = "Hello"
   part1 ++ " " ++ name
@@ -351,7 +351,7 @@ ReScript chooses the sane default of preventing a function to be called recursiv
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let rec neverTerminate = () => neverTerminate()
 ```
 
@@ -375,7 +375,7 @@ A simple recursive function may look like this:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // Recursively check every item on the list until one equals the `item`
 // argument. If a match is found, return `true`, otherwise return `false`
 let rec listHas = (list, item) =>
@@ -418,7 +418,7 @@ Mutually recursive functions start like a single recursive function using the
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let rec callSecond = () => callFirst()
 and callFirst = () => callSecond()
 ```
@@ -476,7 +476,7 @@ The output looks like idiomatic JS:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let getUserName = async (userId) => userId
 
 let greetUser = async (userId) => {
@@ -515,7 +515,7 @@ Both JS exceptions and exceptions defined in ReScript can be caught. The compile
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 exception SomeReScriptException
 
 let somethingThatMightThrow = async () => throw(SomeReScriptException)

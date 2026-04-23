@@ -27,7 +27,7 @@ If your JavaScript object has fixed fields, then it's conceptually like a ReScri
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type person = {
   name: string,
   friends: array<string>,
@@ -55,7 +55,7 @@ If you want or need to use different field names on the ReScript and the JavaScr
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type action = {
   @as("type") type_: string
 }
@@ -100,7 +100,7 @@ Alternatively, you can use [ReScript object](./object.mdx) to model a JS object 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type person = {
   "name": string,
   "friends": array<string>,
@@ -128,7 +128,7 @@ Alternatively, you can use `get` and `set` to bind to individual fields of a JS 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type textarea
 @set external setName: (textarea, string) => unit = "name"
 @get external getName: textarea => string = "name"
@@ -144,7 +144,7 @@ You can also use `get_index` and `set_index` to access a dynamic property or an 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type t
 @new external create: int => t = "Int32Array"
 @get_index external get: (t, int) => int = ""
@@ -182,7 +182,7 @@ Use `new` to emulate e.g. `new Date()`:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type t
 @new external createDate: unit => t = "Date"
 
@@ -201,7 +201,7 @@ You can chain `new` and `module` if the JS module you're importing is itself a c
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type t
 @new @module external book: unit => t = "Book"
 let myBook = book()

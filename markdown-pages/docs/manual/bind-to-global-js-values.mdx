@@ -14,7 +14,7 @@ Some JS values, like `setTimeout`, live in the global scope. You can bind to the
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @val external setTimeout: (unit => unit, int) => float = "setTimeout"
 @val external clearTimeout: float => unit = "clearTimeout"
 ```
@@ -41,7 +41,7 @@ We're in a language with a great type system now! Let's leverage a popular featu
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type timerId
 @val external setTimeout: (unit => unit, int) => timerId = "setTimeout"
 @val external clearTimeout: timerId => unit = "clearTimeout"
@@ -72,7 +72,7 @@ If you want to bind to a value inside a global module, e.g. `Math.random`, attac
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @scope("Math") @val external random: unit => float = "random"
 let someNumber = random()
 ```
@@ -89,7 +89,7 @@ you can bind to an arbitrarily deep object by passing a tuple to `scope`:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @val @scope(("window", "location", "ancestorOrigins"))
 external length: int = "length"
 ```
@@ -110,7 +110,7 @@ For these troublesome global values, ReScript provides a special approach: `%ext
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 switch %external(__DEV__) {
 | Some(_) => Console.log("dev mode")
 | None => Console.log("production mode")
@@ -139,7 +139,7 @@ Another example:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 switch %external(__filename) {
 | Some(f) => Console.log(f)
 | None => Console.log("non-node environment")

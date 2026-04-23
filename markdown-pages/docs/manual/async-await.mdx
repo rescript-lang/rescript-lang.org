@@ -83,7 +83,7 @@ let fetchUserMail: string => promise<string>
 
 The same logic applies to type definitions in `.res` files:
 
-```res example
+```res
 // function type
 type someAsyncFn = int => promise<int>
 
@@ -179,7 +179,7 @@ This can be done by wrapping your `await` calls in a new `{}` closure.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @val external fetchUserMail: string => promise<string> = "GlobalAPI.fetchUserMail"
 
 let fetchData = async () => {
@@ -207,7 +207,7 @@ Note how the original closure was removed in the final JS output. No extra alloc
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @val external fetchUserMail: string => promise<string> = "GlobalAPI.fetchUserMail"
 
 let fetchData = async () => {

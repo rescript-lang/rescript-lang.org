@@ -20,7 +20,7 @@ Arrays require a special function `React.array` to convert an `array<Jsx.element
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type todo = {id: string, text: string}
 
 @react.component
@@ -76,7 +76,7 @@ Keys help React identify which elements have been changed, added, or removed thr
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let numbers = [1, 2, 3, 4, 5]
 
 let items = Array.map(numbers, (number) => {
@@ -150,7 +150,7 @@ If you donâ€™t have stable IDs for rendered items, you may use the item index as
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example {1..3}
+```res {1..3}
 let items = Array.mapWithIndex(todos, (todo, i) => {
   // Only do this if items have no stable id
   <li key={Int.toString(i)}>
@@ -204,7 +204,7 @@ Keys used within arrays should be unique among their siblings. However they donâ
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example {6,10,17,18,25,27}
+```res {6,10,17,18,25,27}
 type post = {id: string, title: string, content: string}
 
 module Blog = {
@@ -338,7 +338,7 @@ In case you ever want to render a `list` of items, you can do something like thi
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @react.component
 let make = () => {
   let todoList = list{

@@ -20,7 +20,7 @@ This memoized version of your component will usually not be re-rendered when its
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @react.component
 let make = React.memo((~a: int, ~b: string) => {
   <div>
@@ -57,7 +57,7 @@ To work around this, you can redefine the make binding:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @react.component
 let make = (~disabled, ~onClick) => {
   <button
@@ -96,7 +96,7 @@ Another approach is to use a custom prop type and remove the `@react.component` 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type props = {
   disabled: bool,
   onClick: JsxEvent.Mouse.t => unit,

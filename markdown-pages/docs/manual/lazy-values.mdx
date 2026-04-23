@@ -43,7 +43,7 @@ To actually run the lazy value's computation, use `Lazy.get` from the standard l
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // First call. The computation happens
 Console.log(Lazy.get(expensiveFilesRead)) // logs "Reading dir" and the directory content
 
@@ -79,7 +79,7 @@ For completeness' sake, our files read example might throw an exception because 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let result = try {
   Lazy.get(expensiveFilesRead)
 } catch {

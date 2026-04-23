@@ -36,7 +36,7 @@ You can also nest definitions of records.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type nestedPerson = {
   age: int,
   name: string,
@@ -83,7 +83,7 @@ So if we in the example above ended up needing to refer to `person.notificationS
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type personNotificationSettings = {
   sendEmails: bool,
   allowPasswordLogin: bool,
@@ -149,7 +149,7 @@ The type is found by looking above the `me` value. **Note**: if the type instead
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // School.res
 type schoolPerson = {age: int, name: string}
 ```
@@ -196,7 +196,7 @@ Use the familiar dot notation:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let name = me.name
 ```
 
@@ -219,7 +219,7 @@ New records can be created from old records with the `...` spread operator. The 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let meNextYear = {...me, age: me.age + 1}
 ```
 
@@ -247,7 +247,7 @@ Record fields can optionally be mutable. This allows you to efficiently update t
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type mutablePerson = {
   name: string,
   mutable age: int
@@ -287,7 +287,7 @@ ReScript [`v10`](../../blog/release-10-0-0.mdx#experimental-optional-record-fiel
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type optionalPerson = {
   age: int,
   name?: string
@@ -313,7 +313,7 @@ You can omit any optional fields when creating a record. Not setting an optional
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type optionalPerson = {
   age: int,
   name?: string
@@ -352,7 +352,7 @@ Updating an optional field via an immutable update above lets you set that field
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type personWithOptionalName = {
   age: int,
   name?: string
@@ -390,7 +390,7 @@ However, if you want to set the field to an optional value, you prefix that valu
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type personWithOptionalName = {
   age: int,
   name?: string

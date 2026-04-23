@@ -72,7 +72,7 @@ Please be selective in pushing up changes to screenshots and only update files t
 
 We check the validity of our code examples marked with:
 
-- ` ```res example ` (ReScript code snippet)
+- ` ```res ` (ReScript code snippet)
 - ` ```res sig ` (signature)
 - ` ```res prelude ` (ReScript code snippet available for all subsequent code snippets)
 

@@ -48,7 +48,7 @@ To create a new object:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let me = {
   "age": 5,
   "name": "Big ReScript"
@@ -118,7 +118,7 @@ Disallowed unless the object is a binding that comes from the JavaScript side. I
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type student = {
   @set "age": int,
   @set "name": string,
@@ -142,7 +142,7 @@ You can spread one object type definition into another using `...`:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type point2d = {
   "x": float,
   "y": float,
@@ -179,7 +179,7 @@ Since objects don't require type declarations, and since ReScript infers all the
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // The type of document is just some random type 'a
 // that we won't bother to specify
 @val external document: 'a = "document"

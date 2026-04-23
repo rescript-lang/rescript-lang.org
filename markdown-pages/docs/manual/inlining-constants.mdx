@@ -30,7 +30,7 @@ So, in ReScript, producing that example `if (process.env.mode === 'development')
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @val external process: 'a = "process"
 
 let mode = "development"
@@ -56,7 +56,7 @@ The JS output shows `if (process.env.mode === mode)`, which isn't what we wanted
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @val external process: 'a = "process"
 
 @inline

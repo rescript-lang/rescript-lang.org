@@ -27,7 +27,7 @@ module Comp = {
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let props = {Comp.b: "b"}
 <Comp {...props} a="a" />
 ```
@@ -79,7 +79,7 @@ You can control the definition of the `props` type by passing as argument to `@r
 
 <CodeTab labels={["Decorated", "Expanded"]}>
 
-```res example
+```res
 type sharedProps<'x, 'y> = {x: 'x, y: 'y, z:string}
 
 module C1 = {
@@ -99,7 +99,7 @@ module C3 = {
 }
 ```
 
-```res example
+```res
 type sharedProps<'x, 'y> = {x: 'x, y: 'y, z: string}
 
 module C1 = {

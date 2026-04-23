@@ -192,7 +192,7 @@ let default: unit => React.element
 - Documentation content is in `markdown-pages/` organized by section (blog, docs, community, syntax-lookup).
 - MDX is processed by `react-router-mdx` with remark/rehype plugins.
 - Custom MDX components are mapped in `app/routes/MdxRoute.res` (e.g. `<Info>`, `<Warn>`, `<CodeTab>`, `<Video>`).
-- Code examples in markdown use ` ```res example ` (runnable), ` ```res sig ` (signature), and ` ```res prelude ` (shared context).
+- Code examples in markdown use ` ```res ` (runnable), ` ```res sig ` (signature), and ` ```res prelude ` (shared context).
 
 ## Formatting & Git Hooks
 

@@ -14,7 +14,7 @@ Arrays are the main ordered data structure in ReScript. They can be randomly acc
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let myArray = ["hello", "world", "how are you"]
 ```
 
@@ -36,7 +36,7 @@ Accessing items in an array will return an `option` and can be done like so:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let myArray = ["hello", "world", "how are you"]
 
 let firstItem = myArray[0] // Some("hello")
@@ -62,7 +62,7 @@ Items in an array can be updated by assigning a value to an index or using a fun
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let myArray = ["hello", "world", "how are you"]
 
 myArray[0] = "hey" // now ["hey", "world", "how are you"]
@@ -94,7 +94,7 @@ You can spread arrays of the same type into new arrays:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let y = [1, 2]
 let x = [4, 5, ...y]
 let x2 = [4, 5, ...y, 7, ...y]
@@ -128,7 +128,7 @@ ReScript provides a singly linked list too. Lists are:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let myList = list{1, 2, 3}
 ```
 
@@ -200,7 +200,7 @@ var anotherList = {
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let message =
   switch myList {
   | list{} => "This list is empty"

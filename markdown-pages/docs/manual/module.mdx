@@ -21,7 +21,7 @@ inside a module definition's `{}` block.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 module School = {
   type profession = Teacher | Director
 
@@ -74,7 +74,7 @@ Nested modules work too.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 module MyModule = {
   module NestedModule = {
     let message = "hello"
@@ -213,7 +213,7 @@ Using `include` in a module statically "spreads" a module's content into a new o
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 module BaseComponent = {
   let defaultGreeting = "Hello"
   let getAudience = (~excited) => excited ? "world!" : "world"
@@ -281,7 +281,7 @@ inside a signature definition's `{}` block.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 /* Using the types defined above */
 module type EstablishmentType = {
   type profession
@@ -368,7 +368,7 @@ Like modules themselves, module signatures can also be extended by other module 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 module type BaseComponent = {
   let defaultGreeting: string
   let getAudience: (~excited: bool) => string
@@ -396,7 +396,7 @@ type.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 module type MyList = {
   include (module type of List)
   let myListFun: list<'a> => list<'a>
@@ -419,7 +419,7 @@ in the ecosystem to also document the public API of their corresponding modules.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 /* file React.res (implementation. Compiles to module React) */
 type state = int
 let render = (str) => str
@@ -516,7 +516,7 @@ creating a set, whose items are pairs of integers.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 module IntPair = {
   type t = (int, int)
   let equal = ((x1: int, y1: int), (x2, y2)) => x1 == x2 && y1 == y2

@@ -18,7 +18,7 @@ To reuse a React component in ReScript, create a new module, specify the compone
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 module Confetti = {
   @module("react-confetti") @react.component
   external make: (~width: int, ~height: int) => React.element = "default"
@@ -60,7 +60,7 @@ Use "default" to indicate the default export, or specify a named export if neede
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // Equivalent of import { Foo } from "bar"
 module Foo = {
   @module("bar") @react.component
@@ -84,7 +84,7 @@ You can define a separate type for your component's props within the module.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 module Confetti = {
   type confettiProps = {
     width: int,
@@ -127,7 +127,7 @@ To define optional props, use the `?` symbol.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 module Confetti = {
   type confettiProps = {
     width: int,
@@ -172,7 +172,7 @@ To accept existing DOM props for a component, extend the `JsxDOM.domProps` type.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 module Foo = {
   type fooProps = {
     ...JsxDOM.domProps,

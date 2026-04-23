@@ -12,7 +12,7 @@ Binding a JS function is like binding any other value:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // Import nodejs' path.dirname
 @module("path") external dirname: string => string = "dirname"
 let root = dirname("/User/github") // returns "User"
@@ -48,7 +48,7 @@ It'd be nice if on ReScript's side, we can bind & call `draw` while labeling thi
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @module("MyGame")
 external draw: (~x: int, ~y: int, ~border: bool=?) => unit = "draw"
 
@@ -72,7 +72,7 @@ Note that you can freely reorder the labels on the ReScript side; they'll always
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @module("MyGame")
 external draw: (~x: int, ~y: int, ~border: bool=?) => unit = "draw"
 
@@ -96,7 +96,7 @@ Functions attached to JS objects (other than JS modules) require a special way o
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type document // abstract type for a document object
 @send external getElementById: (document, string) => Dom.element = "getElementById"
 @val external doc: document = "document"
@@ -123,7 +123,7 @@ Ever used `foo().bar().baz()` chaining ("fluent api") in JS OOP? We can model th
 `@send` can also accept a `@scope(("itemOne","itemTwo"))` to access a function on a nested property.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
-```res example
+```res
 type stripe
 
 @module("stripe") @new
@@ -163,7 +163,7 @@ You might have JS functions that take an arbitrary amount of arguments. ReScript
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @module("path") @variadic
 external join: array<string> => string = "join"
 
@@ -192,7 +192,7 @@ If you can exhaustively enumerate the many forms an overloaded JS function can t
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @module("MyGame") external drawCat: unit => unit = "draw"
 @module("MyGame") external drawDog: (~giveName: string) => unit = "draw"
 @module("MyGame") external draw: (string, ~useRandomAnimal: bool) => unit = "draw"
@@ -226,7 +226,7 @@ Here, `padding` is really conceptually a variant. Let's model it as such.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @val
 external padLeft: (
   string,
@@ -255,7 +255,7 @@ Consider the Node `fs.readFileSync`'s second argument. It can take a string, but
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @module("fs")
 external readFileSync: (
   ~name: string,
@@ -285,7 +285,7 @@ Aside from string, you can also compile an argument to an int, using `int` inste
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @val
 external testIntType: (
   @int [
@@ -313,7 +313,7 @@ Consider the example below of two external functions that access the value of a 
 
 The `getPropertySafe` function returns an `unknown`, which could be `null` or a `string` or anything else. But ReScript prevents you from using this value inappropriately until it has been safely parsed.
 
-```res example
+```res
 @get_index external getPropertyUnsafe: ({..}, string) => 'a = ""
 @get_index external getPropertySafe: ({..}, string) => unknown = ""
 
@@ -329,7 +329,7 @@ One last trick with polymorphic variants:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type readline
 
 @send
@@ -370,7 +370,7 @@ Sometimes it's convenient to bind to a function using an `external`, while passi
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @val
 external processOnExit: (
   @as("exit") _,
@@ -426,7 +426,7 @@ Here, `this` would point to `x` (actually, it depends on how `onload` is called,
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type x
 @val external x: x = "x"
 @set external setOnload: (x, @this ((x, int) => unit)) => unit = "onload"
@@ -451,7 +451,7 @@ For JS functions that return a value that can also be `undefined` or `null`, we 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type element
 type dom
 
@@ -502,7 +502,7 @@ You add the `@taggedTemplate` annotation and you're good to go!
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // see https://bun.sh/docs/runtime/shell
 type result = {exitCode: int}
 @module("bun") @taggedTemplate

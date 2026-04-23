@@ -39,7 +39,7 @@ Avoid using refs for anything that can be done declaratively.
 
 A React ref is represented as a `React.ref('value)` type, a container managing a mutable value of type `'value`. You can create this kind of ref with the [React.useRef](./hooks-ref.mdx) hook:
 
-```res example
+```res
 @react.component
 let make = () => {
   let clicks = React.useRef(0)
@@ -78,7 +78,7 @@ This code uses a `React.ref` to store a reference to an `input` DOM node to put 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // CustomTextInput.res
 
 @send external focus: Dom.element => unit = "focus"
@@ -198,7 +198,7 @@ The example below implements a common pattern: using the ref callback to store a
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // CustomTextInput.res
 
 @send external focus: Dom.element => unit = "focus"
@@ -267,7 +267,7 @@ You can pass callback refs between components like you can with object refs that
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // Parent.res
 
 @send external focus: Dom.element => unit = "focus"

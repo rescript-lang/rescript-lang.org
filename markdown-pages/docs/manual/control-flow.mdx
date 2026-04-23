@@ -118,7 +118,7 @@ for (var i = startValueInclusive; i <= endValueInclusive; ++i) {
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // prints: 1 2 3, one per line
 for x in 1 to 3 {
   Console.log(x)
@@ -153,7 +153,7 @@ for (var i = startValueInclusive; i >= endValueInclusive; --i) {
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // prints: 3 2 1, one per line
 for x in 3 downto 1 {
   Console.log(x)
@@ -194,7 +194,7 @@ There's no loop-breaking `break` keyword (nor early `return` from functions, for
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let break = ref(false)
 
 while !break.contents {

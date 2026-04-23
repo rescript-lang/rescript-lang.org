@@ -42,7 +42,7 @@ The `setState` function can be passed down to other components as well, which is
 
 ### Using State for a Text Input
 
-```res example
+```res
 @react.component
 let make = () => {
   let (text, setText) = React.useState(_ => "");
@@ -65,7 +65,7 @@ In this example, we are creating a `ThemeContainer` component that manages a `da
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // ThemeContainer.res
 module ControlPanel = {
   @react.component

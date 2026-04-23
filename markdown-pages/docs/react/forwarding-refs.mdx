@@ -18,7 +18,7 @@ Ref forwarding is a technique for automatically passing a [React.ref](./refs-and
 
 Consider a FancyButton component that renders the native button DOM element:
 
-```res example
+```res
 // FancyButton.res
 
 @react.component
@@ -45,7 +45,7 @@ A `React.ref` can be passed down like any other prop. The component will take ca
 
 In the example below, `FancyInput` defines a prop `inputRef` that will be forwarded to its `input` element:
 
-```res example
+```res
 // App.res
 
 module FancyInput = {
@@ -85,7 +85,7 @@ This is how the previous example would look like with the `React.forwardRef` app
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // App.res
 
 module FancyInput = {

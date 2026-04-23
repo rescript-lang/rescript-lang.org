@@ -42,7 +42,7 @@ First, copy the entire file content over to a new file called `src/Main.res` by 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 %%raw(`
 const school = require('school');
 
@@ -93,7 +93,7 @@ Let's turn the `defaultId` variable into a ReScript let-binding:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let defaultId = 10
 
 %%raw(`
@@ -188,7 +188,7 @@ Now this triggers the next type error, that `school` isn't found. Let's use [`ex
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @module external school: 'whatever = "school"
 
 let defaultId = 10
@@ -232,7 +232,7 @@ If you prefer more advanced, rigidly typed `payload` and `school`, feel free to 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type school
 type student
 type payload = {

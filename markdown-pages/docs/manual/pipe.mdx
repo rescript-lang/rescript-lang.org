@@ -112,7 +112,7 @@ You'd use them like this:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let result = Array.filter(
   Array.map([1, 2, 3], a => a + 1),
   a => mod(a, 2) == 0
@@ -135,7 +135,7 @@ This looks much worse than the JS counterpart! Clean it up visually with pipe:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let result = [1, 2, 3]
   ->Array.map(a => a + 1)
   ->Array.filter(a => mod(a, 2) == 0)

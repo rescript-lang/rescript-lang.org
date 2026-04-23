@@ -14,7 +14,7 @@ Most data structures in most languages are about "this **and** that". A variant 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type myResponse =
   | Yes
   | No
@@ -41,7 +41,7 @@ If the variant you're using is in a different file, bring it into scope [record]
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // Zoo.res
 type animal = Dog | Cat | Bird
 ```
@@ -91,7 +91,7 @@ Here, `Instagram` holds a `string`, and `Facebook` holds a `string` and an `int`
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let myAccount = Facebook("Josh", 26)
 let friendAccount = Instagram("Jenny")
 ```
@@ -119,7 +119,7 @@ If a variant payload has multiple fields, you can use a record-like syntax to la
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type user =
   | Number(int)
   | Id({name: string, password: string})
@@ -145,7 +145,7 @@ Of course, you can just put a regular record type in a variant too:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type u = {name: string, password: string}
 type user =
   | Number(int)
@@ -209,7 +209,7 @@ Check the output in these examples:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type greeting = Hello | Goodbye
 let g1 = Hello
 let g2 = Goodbye
@@ -691,7 +691,7 @@ This works because the variant is unboxed **and** has a catch-all case. So, if y
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type accountWithTwoArguments =
   | Facebook(string, int) // 2 arguments
 type accountWithTupleArgument =
@@ -716,7 +716,7 @@ Quite a few JS libraries use functions that can accept many types of arguments. 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // reserved for internal usage
 @module("myLibrary") external draw : 'a => unit = "draw"
 
@@ -754,7 +754,7 @@ export { betterDraw };
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // reserved for internal usage
 @module("myLibrary") external draw : 'a => unit = "draw"
 
@@ -790,7 +790,7 @@ Alternatively, define two `external`s that both compile to the same JS call:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @module("myLibrary") external drawFloat: float => unit = "draw"
 @module("myLibrary") external drawString: string => unit = "draw"
 ```
@@ -833,7 +833,7 @@ There's a linear amount of branch checking here (`O(n)`). Compare this to using 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type animal = Dog | Cat | Bird
 let data = Dog
 let logData = data => {

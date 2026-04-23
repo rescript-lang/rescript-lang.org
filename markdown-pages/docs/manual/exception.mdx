@@ -14,7 +14,7 @@ You can create your own exceptions like you'd make a variant (exceptions need to
 
 <CodeTab labels={["ReScript", "JS Output"]}>
   
-```res example
+```res
 exception InputClosed(string)
 // later on
 throw(InputClosed("The stream has closed!"))
@@ -149,7 +149,7 @@ if (exit === 1) {
 Used to check if argument is valid. This exception takes a string.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
-```res example
+```res
 let divide = (a, b) =>
   if b == 0 {
     throw(Invalid_argument("Denominator is zero"))
@@ -259,7 +259,7 @@ are the location of the `assert` in the source code (file name, line number, col
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let decodeUser = (json: JSON.t) =>
   switch json {
   | Object(userDict) =>
@@ -377,7 +377,7 @@ Exception thrown to signal that the given arguments do not make sense. This
 exception takes a string as an argument.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
-```res example
+```res
 let isValidEmail = email => {
   let hasAtSign = String.includes(email, "@")
   let hasDot = String.includes(email, ".")
@@ -495,7 +495,7 @@ export {
 Exception thrown by integer division and remainder operations when their second argument is zero.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
-```res example
+```res
 // ReScript throws `Division_by_zero` if the denominator is zero
 let result = try Some(10 / 0) catch {
 | Division_by_zero => None
@@ -625,7 +625,7 @@ or use [`Type.Classify.classify`](/docs/manual/api/stdlib/type/classify#value-cl
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let myTest = () => {
   JsError.throwWithMessage("Hello!")
 }
@@ -717,7 +717,7 @@ If you want to throw any value that is not a valid JS Error, use `JsExn.throw`:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let myTest = () => {
   JsExn.throw("some non-error value!")
 }
@@ -808,7 +808,7 @@ To let JavaScript code work with exception-throwing ReScript code, you don't nee
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 exception BadArgument({myMessage: string})
 
 let myTest = () => {

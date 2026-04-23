@@ -57,7 +57,7 @@ This is a glossary with examples. All the features are described by later pages.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let add = %raw("(a, b) => a + b")
 %%raw("const a = 1")
 ```
@@ -75,7 +75,7 @@ export { add };
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @val external setTimeout: (unit => unit, int) => float = "setTimeout"
 ```
 
@@ -89,7 +89,7 @@ export { add };
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @val @scope("Math")
 external random: unit => float = "random"
 
@@ -111,7 +111,7 @@ export { someNumber };
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let a = Some(5) // compiles to 5
 let b = None // compiles to undefined
 ```
@@ -130,7 +130,7 @@ Handling a value that can be `undefined` and `null`, by ditching the `option` ty
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let jsNull = Nullable.null
 let jsUndefined = Nullable.undefined
 let result1: Nullable.t<string> = Nullable.make("hello")
@@ -169,7 +169,7 @@ export { jsNull, jsUndefined, result1, result2, result3 };
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @send external map: (array<'a>, 'a => 'b) => array<'b> = "map"
 @send external filter: (array<'a>, 'a => 'b) => array<'b> = "filter"
 [1, 2, 3]
@@ -188,7 +188,7 @@ console.log([1, 2, 3].map((a) => (a + 1) | 0).filter((a) => a % 2 === 0));
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @module("path") @variadic
 external join: array<string> => string = "join"
 ```
@@ -203,7 +203,7 @@ external join: array<string> => string = "join"
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // see https://bun.sh/docs/runtime/shell
 type result = {exitCode: int}
 @module("bun") @taggedTemplate
@@ -229,7 +229,7 @@ export { filename, result };
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @module("Drawing") external drawCat: unit => unit = "draw"
 @module("Drawing") external drawDog: (~giveName: string) => unit = "draw"
 ```
@@ -242,7 +242,7 @@ export { filename, result };
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @val
 external padLeft: (
   string,
@@ -274,7 +274,7 @@ Final escape hatch converter. Do not abuse.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 external convertToFloat: int => float = "%identity"
 let age = 10
 let gpa = 2.1 + convertToFloat(age)
