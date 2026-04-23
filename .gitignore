@@ -11,11 +11,9 @@ out/
 index_data/*.json
 
 # Generated via test examples script
-_tempFile.cmi
-_tempFile.cmj
-_tempFile.cmt
-_tempFile.res
 temp
+temp-js-output
+temp-jsx-preserve
 
 .bsb.lock
 .merlin
