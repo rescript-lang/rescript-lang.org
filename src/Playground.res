@@ -81,7 +81,7 @@ module SelectionOption = {
       className={"playground-selection-option mr-1 px-2 py-1 rounded inline-block " ++ if isActive {
         "playground-selection-option-active font-bold"
       } else {
-        "opacity-50 hover:opacity-80"
+        "opacity-90 hover:opacity-100"
       }}
       onClick
       disabled

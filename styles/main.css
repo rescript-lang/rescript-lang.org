@@ -311,17 +311,17 @@
   }
 
   .playground-text-primary {
-    color: var(--playground-text-primary);
+    color: var(--playground-text-primary) !important;
   }
 
   .playground-text-secondary {
-    color: var(--playground-text-secondary);
+    color: var(--playground-text-secondary) !important;
   }
 
   .playground-select {
     background-color: var(--playground-elevated-bg);
     border-color: var(--playground-border);
-    color: var(--playground-text-primary);
+    color: var(--playground-text-primary) !important;
   }
 
   .playground-selection-option {
