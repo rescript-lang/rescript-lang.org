@@ -12,7 +12,7 @@ module Intro = {
           {React.string("JavaScript Made Simple for Humans and AI")}
         </h1>
         <h2 className="ubuntu-mono-bold hl-1 text-center text-gray-60 my-4 max-w-md">
-          {React.string(`types > vibes`)}
+          {React.string(`Types > Vibes`)}
         </h2>
         <p className="body-lg text-center text-gray-60 mt-4 max-w-md">
           {React.string(`ReScript is a strongly typed language that compiles to clean,
