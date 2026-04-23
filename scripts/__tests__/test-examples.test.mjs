@@ -223,7 +223,6 @@ let visibleValue = 1
 <CodeTab labels={["ReScript", "TypeScript Output"]}>
 
 \`\`\`res
-@genType
 let value = 1
 \`\`\`
 
@@ -480,33 +479,29 @@ console.log("leave me alone");
   assert.equal(result.warningCount, 0);
 });
 
-test("collectCodeTabPairs ignores plain res fences inside a matching CodeTab", () => {
+test("collectCodeTabPairs collects plain res fences in a checked ReScript CodeTab", () => {
   let fixture = `# Demo
-
-\`\`\`res example
-let keepCompilerPathAlive = 1
-\`\`\`
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 \`\`\`res
-let hiddenValue = 1
-\`\`\`
-
-\`\`\`js
-console.log("leave me alone");
-\`\`\`
-
-</CodeTab>
-
-<CodeTab labels={["ReScript", "JS Output"]}>
-
-\`\`\`res example
-let visibleValue = 2
+let visibleValue = 1
 \`\`\`
 
 \`\`\`js
 console.log("stale");
+\`\`\`
+
+</CodeTab>
+
+<CodeTab labels={["ReScript", "TypeScript Output"]}>
+
+\`\`\`res nocheck
+let ignoredValue = 2
+\`\`\`
+
+\`\`\`ts
+export const ignoredValue: number
 \`\`\`
 
 </CodeTab>
@@ -516,7 +511,7 @@ console.log("stale");
 
   assert.equal(warnings.length, 0);
   assert.equal(pairs.length, 1);
-  assert.equal(pairs[0].res.content, "let visibleValue = 2");
+  assert.equal(pairs[0].res.content, "let visibleValue = 1");
   assert.equal(pairs[0].js.content, 'console.log("stale");');
 });
 
