@@ -24,7 +24,9 @@ let areYouCrushingIt = Yes
 ```
 
 ```js
-var areYouCrushingIt = "Yes";
+let areYouCrushingIt = "Yes";
+
+export { areYouCrushingIt };
 ```
 
 </CodeTab>
@@ -45,7 +47,7 @@ type animal = Dog | Cat | Bird
 ```
 
 ```js
-// Empty output
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>
@@ -95,15 +97,18 @@ let friendAccount = Instagram("Jenny")
 ```
 
 ```js
-var myAccount = {
+let myAccount = {
   TAG: "Facebook",
   _0: "Josh",
   _1: 26,
 };
-var friendAccount = {
+
+let friendAccount = {
   TAG: "Instagram",
   _0: "Jenny",
 };
+
+export { myAccount, friendAccount };
 ```
 
 </CodeTab>
@@ -123,11 +128,13 @@ let me = Id({name: "Joe", password: "123"})
 ```
 
 ```js
-var me = {
+let me = {
   TAG: "Id",
   name: "Joe",
   password: "123",
 };
+
+export { me };
 ```
 
 </CodeTab>
@@ -148,13 +155,15 @@ let me = Id({name: "Joe", password: "123"})
 ```
 
 ```js
-var me = {
+let me = {
   TAG: "Id",
   _0: {
     name: "Joe",
     password: "123",
   },
 };
+
+export { me };
 ```
 
 </CodeTab>
@@ -225,48 +234,50 @@ let a2 = Wizard("Joe")
 ```
 
 ```js
-var g1 = "Hello";
+let g1 = "Hello";
 
-var g2 = "Goodbye";
+let g2 = "Goodbye";
 
-var o1 = "Good";
+let o1 = "Good";
 
-var o2 = {
+let o2 = {
   TAG: "Error",
   _0: "oops!",
 };
 
-var f1 = "Child";
+let f1 = "Child";
 
-var f2 = {
+let f2 = {
   TAG: "Mom",
   _0: 30,
   _1: "Jane",
 };
 
-var f3 = {
+let f3 = {
   TAG: "Dad",
   _0: 32,
 };
 
-var p1 = "Teacher";
+let p1 = "Teacher";
 
-var p2 = {
+let p2 = {
   TAG: "Student",
   gpa: 99.5,
 };
 
-var a1 = {
+let a1 = {
   TAG: "Warrior",
   _0: {
     score: 10.5,
   },
 };
 
-var a2 = {
+let a2 = {
   TAG: "Wizard",
   _0: "Joe",
 };
+
+export { g1, g2, o1, o2, f1, f2, f3, p1, p2, a1, a2 };
 ```
 
 </CodeTab>
@@ -681,14 +692,14 @@ This works because the variant is unboxed **and** has a catch-all case. So, if y
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res example
-type account =
+type accountWithTwoArguments =
   | Facebook(string, int) // 2 arguments
-type account2 =
+type accountWithTupleArgument =
   | Instagram((string, int)) // 1 argument - happens to be a 2-tuple
 ```
 
 ```js
-// Empty output
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>

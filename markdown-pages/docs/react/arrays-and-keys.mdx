@@ -36,8 +36,10 @@ let make = () => {
 ```
 
 ```js
-function Playground(props) {
-  var todos = [
+import * as JsxRuntime from "react/jsx-runtime";
+
+function _tempFile(props) {
+  let todos = [
     {
       id: "todo1",
       text: "Todo 1",
@@ -47,19 +49,23 @@ function Playground(props) {
       text: "Todo 2",
     },
   ];
-  var items = todos.map(function (todo) {
-    return JsxRuntime.jsx(
+  let items = todos.map((todo) =>
+    JsxRuntime.jsx(
       "li",
       {
         children: todo.text,
       },
       todo.id,
-    );
-  });
+    ),
+  );
   return JsxRuntime.jsx("ul", {
     children: items,
   });
 }
+
+let make = _tempFile;
+
+export { make };
 ```
 
 </CodeTab>
@@ -79,17 +85,21 @@ let items = Array.map(numbers, (number) => {
 ```
 
 ```js
-var numbers = [1, 2, 3, 4, 5];
+import * as JsxRuntime from "react/jsx-runtime";
 
-var items = numbers.map(function (number) {
-  return JsxRuntime.jsx(
+let numbers = [1, 2, 3, 4, 5];
+
+let items = numbers.map((number) =>
+  JsxRuntime.jsx(
     "li",
     {
       children: number,
     },
     number.toString(),
-  );
-});
+  ),
+);
+
+export { numbers, items };
 ```
 
 </CodeTab>
@@ -150,15 +160,40 @@ let items = Array.mapWithIndex(todos, (todo, i) => {
 ```
 
 ```js
-var items = todos.map(function (todo, i) {
-  return JsxRuntime.jsx(
+import * as JsxRuntime from "react/jsx-runtime";
+
+let todos = [
+  {
+    id: "todo1",
+    text: "Todo 1",
+  },
+  {
+    id: "todo2",
+    text: "Todo 2",
+  },
+];
+
+todos.map((todo) =>
+  JsxRuntime.jsx(
+    "li",
+    {
+      children: todo.text,
+    },
+    todo.id,
+  ),
+);
+
+let items = todos.map((todo, i) =>
+  JsxRuntime.jsx(
     "li",
     {
       children: todo.text,
     },
     i.toString(),
-  );
-});
+  ),
+);
+
+export { todos, items };
 ```
 
 </CodeTab>
@@ -214,21 +249,44 @@ let blog = <Blog posts />
 ```
 
 ```js
-function Playground$Blog(props) {
-  var posts = props.posts;
-  var sidebar = JsxRuntime.jsx("ul", {
-    children: posts.map(function (post) {
-      return JsxRuntime.jsx(
+import * as JsxRuntime from "react/jsx-runtime";
+
+let todos = [
+  {
+    id: "todo1",
+    text: "Todo 1",
+  },
+  {
+    id: "todo2",
+    text: "Todo 2",
+  },
+];
+
+let items = todos.map((todo) =>
+  JsxRuntime.jsx(
+    "li",
+    {
+      children: todo.text,
+    },
+    todo.id,
+  ),
+);
+
+function _tempFile$Blog(props) {
+  let posts = props.posts;
+  let sidebar = JsxRuntime.jsx("ul", {
+    children: posts.map((post) =>
+      JsxRuntime.jsx(
         "li",
         {
           children: post.title,
         },
         post.id,
-      );
-    }),
+      ),
+    ),
   });
-  var content = posts.map(function (post) {
-    return JsxRuntime.jsxs(
+  let content = posts.map((post) =>
+    JsxRuntime.jsxs(
       "div",
       {
         children: [
@@ -241,18 +299,18 @@ function Playground$Blog(props) {
         ],
       },
       post.id,
-    );
-  });
+    ),
+  );
   return JsxRuntime.jsxs("div", {
     children: [sidebar, JsxRuntime.jsx("hr", {}), content],
   });
 }
 
-var Blog = {
-  make: Playground$Blog,
+let Blog = {
+  make: _tempFile$Blog,
 };
 
-var posts = [
+let posts = [
   {
     id: "1",
     title: "Hello World",
@@ -265,9 +323,11 @@ var posts = [
   },
 ];
 
-var blog = JsxRuntime.jsx(Playground$Blog, {
+let blog = JsxRuntime.jsx(_tempFile$Blog, {
   posts: posts,
 });
+
+export { todos, items, Blog, posts, blog };
 ```
 
 </CodeTab>
@@ -279,8 +339,6 @@ In case you ever want to render a `list` of items, you can do something like thi
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res example
-type todo = {id: string, text: string}
-
 @react.component
 let make = () => {
   let todoList = list{
@@ -301,8 +359,32 @@ let make = () => {
 ```
 
 ```js
-function Playground(props) {
-  var items = Core__List.toArray({
+import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let todos = [
+  {
+    id: "todo1",
+    text: "Todo 1",
+  },
+  {
+    id: "todo2",
+    text: "Todo 2",
+  },
+];
+
+let items = todos.map((todo) =>
+  JsxRuntime.jsx(
+    "li",
+    {
+      children: todo.text,
+    },
+    todo.id,
+  ),
+);
+
+function _tempFile(props) {
+  let items = Stdlib_List.toArray({
     hd: {
       id: "todo1",
       text: "Todo 1",
@@ -314,19 +396,23 @@ function Playground(props) {
       },
       tl: /* [] */ 0,
     },
-  }).map(function (todo) {
-    return JsxRuntime.jsx(
+  }).map((todo) =>
+    JsxRuntime.jsx(
       "li",
       {
         children: todo.text,
       },
       todo.id,
-    );
-  });
+    ),
+  );
   return JsxRuntime.jsx("div", {
     children: items,
   });
 }
+
+let make = _tempFile;
+
+export { todos, items, make };
 ```
 
 </CodeTab>

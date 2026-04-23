@@ -37,7 +37,7 @@ You can also nest definitions of records.
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res example
-type person = {
+type nestedPerson = {
   age: int,
   name: string,
   notificationSettings: {
@@ -66,6 +66,8 @@ let person = {
     allowPasswordLogin: false,
   },
 };
+
+export { person };
 ```
 
 </CodeTab>
@@ -87,7 +89,7 @@ type personNotificationSettings = {
   allowPasswordLogin: bool,
 }
 
-type person = {
+type explicitPerson = {
   age: int,
   name: string,
   notificationSettings: personNotificationSettings
@@ -113,6 +115,8 @@ let person = {
     allowPasswordLogin: false,
   },
 };
+
+export { person };
 ```
 
 </CodeTab>
@@ -147,11 +151,16 @@ The type is found by looking above the `me` value. **Note**: if the type instead
 
 ```res example
 // School.res
-type person = {age: int, name: string}
+type schoolPerson = {age: int, name: string}
 ```
 
 ```js
-// Empty output
+let me = {
+  age: 5,
+  name: "Big ReScript",
+};
+
+export { me };
 ```
 
 </CodeTab>
@@ -161,7 +170,7 @@ type person = {age: int, name: string}
 ```res
 // Example.res
 
-let me: School.person = {age: 20, name: "Big ReScript"}
+let me: School.schoolPerson = {age: 20, name: "Big ReScript"}
 /* or */
 let me2 = {School.age: 20, name: "Big ReScript"}
 ```
@@ -192,7 +201,14 @@ let name = me.name
 ```
 
 ```js
-var name = "Big ReScript";
+let me = {
+  age: 5,
+  name: "Big ReScript",
+};
+
+let name = "Big ReScript";
+
+export { me, name };
 ```
 
 </CodeTab>
@@ -208,10 +224,17 @@ let meNextYear = {...me, age: me.age + 1}
 ```
 
 ```js
-var meNextYear = {
-  age: 21,
+let meNextYear = {
+  age: 6,
   name: "Big ReScript",
 };
+
+let me = {
+  age: 5,
+  name: "Big ReScript",
+};
+
+export { me, meNextYear };
 ```
 
 </CodeTab>
@@ -225,22 +248,29 @@ Record fields can optionally be mutable. This allows you to efficiently update t
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res example
-type person = {
+type mutablePerson = {
   name: string,
   mutable age: int
 }
 
-let baby = {name: "Baby ReScript", age: 5}
+let baby: mutablePerson = {name: "Baby ReScript", age: 5}
 baby.age = baby.age + 1 // `baby.age` is now 6. Happy birthday!
 ```
 
 ```js
-var baby = {
+let baby = {
   name: "Baby ReScript",
   age: 5,
 };
 
 baby.age = (baby.age + 1) | 0;
+
+let me = {
+  age: 5,
+  name: "Big ReScript",
+};
+
+export { me, baby };
 ```
 
 </CodeTab>
@@ -258,14 +288,19 @@ ReScript [`v10`](../../blog/release-10-0-0.mdx#experimental-optional-record-fiel
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res example
-type person = {
+type optionalPerson = {
   age: int,
   name?: string
 }
 ```
 
 ```js
-// Empty output
+let me = {
+  age: 5,
+  name: "Big ReScript",
+};
+
+export { me };
 ```
 
 </CodeTab>
@@ -279,30 +314,32 @@ You can omit any optional fields when creating a record. Not setting an optional
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res example
-type person = {
+type optionalPerson = {
   age: int,
   name?: string
 }
 
-let me = {
+let me: optionalPerson = {
   age: 5,
   name: "Big ReScript"
 }
 
-let friend = {
+let friend: optionalPerson = {
   age: 7
 }
 ```
 
 ```js
-var me = {
+let me = {
   age: 5,
   name: "Big ReScript",
 };
 
-var friend = {
+let friend = {
   age: 7,
 };
+
+export { me, friend };
 ```
 
 </CodeTab>
@@ -316,12 +353,12 @@ Updating an optional field via an immutable update above lets you set that field
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res example
-type person = {
+type personWithOptionalName = {
   age: int,
   name?: string
 }
 
-let me = {
+let me: personWithOptionalName = {
   age: 123,
   name: "Hello"
 }
@@ -333,18 +370,18 @@ let withoutName = {
 ```
 
 ```js
-import * as Caml_obj from "./stdlib/caml_obj.js";
-
-var me = {
+let me = {
   age: 123,
   name: "Hello",
 };
 
-var newrecord = Caml_obj.obj_dup(me);
+let newrecord = { ...me };
 
 newrecord.name = "New Name";
 
-var withoutName = newrecord;
+let withoutName = newrecord;
+
+export { me, withoutName };
 ```
 
 </CodeTab>
@@ -354,12 +391,12 @@ However, if you want to set the field to an optional value, you prefix that valu
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res example
-type person = {
+type personWithOptionalName = {
   age: int,
   name?: string
 }
 
-let me = {
+let me: personWithOptionalName = {
   age: 123,
   name: "Hello"
 }
@@ -373,20 +410,20 @@ let withoutName = {
 ```
 
 ```js
-import * as Caml_obj from "./stdlib/caml_obj.js";
-
-var me = {
+let me = {
   age: 123,
   name: "Hello",
 };
 
-var maybeName = "My Name";
+let maybeName = "My Name";
 
-var newrecord = Caml_obj.obj_dup(me);
+let newrecord = { ...me };
 
 newrecord.name = maybeName;
 
-var withoutName = newrecord;
+let withoutName = newrecord;
+
+export { me, maybeName, withoutName };
 ```
 
 </CodeTab>

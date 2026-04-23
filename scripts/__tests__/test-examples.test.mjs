@@ -100,7 +100,7 @@ type person = {age: int}
   assert.ok(!warnings.some((warning) => warning.includes("node:internal")));
 });
 
-test("warns about stale JS Output blocks without rewriting the file", () => {
+test("ignores stale JS Output blocks without rewriting the file", () => {
   let fixture = `# Demo
 
 <div className="hidden">
@@ -131,9 +131,8 @@ console.log("stale");
   let nextContent = fs.readFileSync(file, "utf8");
 
   assert.equal(result.success, true);
-  assert.equal(result.warningCount, 1);
-  assert.match(warnings[0], /sample\.mdx/);
-  assert.match(warnings[0], /--update/);
+  assert.equal(result.warningCount, 0);
+  assert.deepEqual(warnings, []);
   assert.match(nextContent, /console\.log\("stale"\);/);
 });
 

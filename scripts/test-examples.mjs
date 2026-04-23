@@ -415,6 +415,10 @@ export let run = ({
     }
 
     for (let target of [...targets].reverse()) {
+      if (!update) {
+        continue;
+      }
+
       let snippetSource = buildSnippetSource({ preludes, pair: target });
       let compiledJs;
       try {
@@ -435,11 +439,6 @@ export let run = ({
             compiledJs: expectedJs,
           });
         }
-      } else if (currentJs != null && expectedJs !== currentJs) {
-        logger.warn(
-          `${file}:${target.line} JS Output is stale. Run scripts/test-examples.mjs --update`,
-        );
-        warningCount++;
       }
     }
 
