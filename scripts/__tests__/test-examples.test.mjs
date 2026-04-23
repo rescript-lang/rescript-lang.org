@@ -250,6 +250,117 @@ export const value: number
   );
 });
 
+test("update adds JSX Preserved Output for a JSX-producing single-label ReScript CodeTab", () => {
+  let fixture = `# Demo
+
+<CodeTab labels={["ReScript"]}>
+
+\`\`\`res
+let view = <div className="greeting"> {React.string("Hello")} </div>
+\`\`\`
+
+</CodeTab>
+`;
+
+  let { docsRoot, tempRoot, file } = makeWorkspace(fixture);
+  let { logger } = makeLogger();
+
+  let result = run({ docsRoot, tempRoot, logger, update: true });
+  let nextContent = fs.readFileSync(file, "utf8");
+
+  assert.equal(result.success, true);
+  assert.match(
+    nextContent,
+    /labels=\{\["ReScript", "JS Output", "JSX Preserved Output"\]\}/,
+  );
+  assert.match(nextContent, /\`\`\`js[\s\S]*JsxRuntime\./);
+  assert.match(nextContent, /\`\`\`jsx/);
+  assert.match(nextContent, /<div[\s\S]*className[\s\S]*Hello/);
+});
+
+test("update appends JSX Preserved Output without renaming JS Output (Module)", () => {
+  let fixture = `# Demo
+
+<CodeTab labels={["ReScript", "JS Output (Module)"]}>
+
+\`\`\`res
+let view = <div> {React.string("Hello")} </div>
+\`\`\`
+
+</CodeTab>
+`;
+
+  let { docsRoot, tempRoot, file } = makeWorkspace(fixture);
+  let { logger } = makeLogger();
+
+  let result = run({ docsRoot, tempRoot, logger, update: true });
+  let nextContent = fs.readFileSync(file, "utf8");
+
+  assert.equal(result.success, true);
+  assert.match(
+    nextContent,
+    /labels=\{\["ReScript", "JS Output \(Module\)", "JSX Preserved Output"\]\}/,
+  );
+  assert.match(nextContent, /\`\`\`js[\s\S]*JsxRuntime\./);
+  assert.match(nextContent, /\`\`\`jsx/);
+});
+
+test("update removes an existing JSX Preserved Output tab when runtime JS no longer uses JsxRuntime", () => {
+  let fixture = `# Demo
+
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
+
+\`\`\`res
+let value = 1
+\`\`\`
+
+\`\`\`js
+console.log("stale runtime");
+\`\`\`
+
+\`\`\`jsx
+<div>{"stale preserve"}</div>;
+\`\`\`
+
+</CodeTab>
+`;
+
+  let { docsRoot, tempRoot, file } = makeWorkspace(fixture);
+  let { logger } = makeLogger();
+
+  let result = run({ docsRoot, tempRoot, logger, update: true });
+  let nextContent = fs.readFileSync(file, "utf8");
+
+  assert.equal(result.success, true);
+  assert.match(nextContent, /labels=\{\["ReScript", "JS Output"\]\}/);
+  assert.doesNotMatch(nextContent, /JSX Preserved Output/);
+  assert.doesNotMatch(nextContent, /\`\`\`jsx/);
+});
+
+test("update ignores JSX preserved output generation for res nocheck fences", () => {
+  let fixture = `# Demo
+
+<CodeTab labels={["ReScript"]}>
+
+\`\`\`res nocheck
+let view = <div> {React.string("Hello")} </div>
+\`\`\`
+
+</CodeTab>
+`;
+
+  let { docsRoot, tempRoot, file } = makeWorkspace(fixture);
+  let { logger } = makeLogger();
+
+  let result = run({ docsRoot, tempRoot, logger, update: true });
+  let nextContent = fs.readFileSync(file, "utf8");
+
+  assert.equal(result.success, true);
+  assert.match(nextContent, /labels=\{\["ReScript"\]\}/);
+  assert.doesNotMatch(nextContent, /\`\`\`js/);
+  assert.doesNotMatch(nextContent, /\`\`\`jsx/);
+});
+
 test("run reports cleaned compiler errors without raw Node stack traces", () => {
   let fixture = `# Demo
 
