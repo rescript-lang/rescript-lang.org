@@ -253,7 +253,7 @@ export const value: number
 test("run reports cleaned compiler errors without raw Node stack traces", () => {
   let fixture = `# Demo
 
-\`\`\`res example
+\`\`\`res
 type person = {name: string}
 type person = {age: int}
 \`\`\`
@@ -271,7 +271,8 @@ type person = {age: int}
       warning.includes("Multiple definition of the type name person"),
     ),
   );
-  assert.ok(warnings.some((warning) => warning.includes("```res example")));
+  assert.ok(warnings.some((warning) => warning.includes("```res")));
+  assert.ok(!warnings.some((warning) => warning.includes("```res example")));
   assert.ok(
     !warnings.some((warning) => warning.includes("Error: Command failed")),
   );

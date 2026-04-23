@@ -96,7 +96,7 @@ let parseFile = (content) => {
 
       if (kind === "res") {
         inWrappedBlock = true;
-        return `/* _MODULE_EXAMPLE_START */ module M_${moduleId++} = {`;
+        return `/* _MODULE_CHECKED_START */ module M_${moduleId++} = {`;
       }
 
       if (kind === "res-prelude") {
@@ -149,13 +149,18 @@ let parseCodeTabLabels = (line) => {
   }
 };
 
+let isEligibleReScriptCodeTab = (labels) =>
+  labels?.at(0) === "ReScript" && labels.at(1) !== "TypeScript Output";
+
 let fenceKind = (line) => {
-  if (classifyFence(line) === "js") {
+  let kind = classifyFence(line);
+
+  if (kind === "js") {
     return "js";
   }
 
-  if (line.startsWith("```res example")) {
-    return "res-example";
+  if (kind === "res") {
+    return "res";
   }
 
   return null;
@@ -202,7 +207,7 @@ let collectCodeTabTargets = ({ content, allowInsertions = false }) => {
     let line = lines[i];
     let parsedLabels = parseCodeTabLabels(line);
 
-    if (parsedLabels != null && parsedLabels.at(0) === "ReScript") {
+    if (parsedLabels != null && isEligibleReScriptCodeTab(parsedLabels)) {
       inTargetTab = true;
       tabStart = i;
       tabEnd = null;
@@ -252,7 +257,7 @@ let collectCodeTabTargets = ({ content, allowInsertions = false }) => {
 
     let kind = fenceKind(line);
 
-    if (kind === "res-example") {
+    if (kind === "res") {
       let start = i + 1;
       let end = start;
       while (end < lines.length && !lines[end].startsWith("```")) {
@@ -326,16 +331,13 @@ let formatCompilerError = ({ file, error }) => {
   return stderr
     .replace(tempFileRegex, path.relative(".", file))
     .replace(
-      /\/\* _MODULE_(EXAMPLE|PRELUDE|SIG)_START \*\/.+/g,
+      /\/\* _MODULE_(CHECKED|EXAMPLE|PRELUDE|SIG)_START \*\/.+/g,
       (_, capture) => {
-        return (
-          "```res " +
-          (capture === "EXAMPLE"
-            ? "example"
-            : capture === "PRELUDE"
-              ? "prelude"
-              : "sig")
-        );
+        if (capture === "CHECKED" || capture === "EXAMPLE") {
+          return "```res";
+        }
+
+        return "```res " + (capture === "PRELUDE" ? "prelude" : "sig");
       },
     )
     .replace(/(.*)\}(.*)\/\/ _MODULE_END/g, (_, before, after) => {
