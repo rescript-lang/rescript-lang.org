@@ -88,7 +88,7 @@ export {
           <div className="relative z-2 mx-auto mb-10 max-w-3xl text-center">
             <h2 className="hl-2 text-gray-80"> {React.string("Readable in. Predictable out.")} </h2>
             <p className="body-lg text-gray-60 mt-4">
-              {React.string(`Readable source, predictable output, and fast compiler feedback make ReScript easier to work with. That matters while learning, debugging, reviewing changes, and iterating with coding agents.`)}
+              {React.string(`Readable source, predictable output, and fast compiler feedback make ReScript easier to work with. Those qualities help while learning, debugging, reviewing changes, or bringing coding agents into the workflow.`)}
             </p>
           </div>
           // Playground widget
@@ -453,16 +453,16 @@ module AgenticWorkflows = {
 
   let points = [
     {
-      title: "Readable code helps agents stay on track",
-      body: "ReScript's syntax is small, consistent, and easy to scan, which makes generated edits easier to inspect and prompts easier to ground in real code.",
+      title: "Clear code is easier to guide",
+      body: "ReScript's small, consistent syntax makes prompts easier to ground and generated edits easier to review.",
     },
     {
-      title: "Compiler errors create a tighter repair loop",
-      body: "Instead of vague runtime failures, agents get concrete feedback about what is wrong and where the contract broke. That makes iterative repair much more reliable.",
+      title: "Compiler feedback helps close the loop",
+      body: "When a change breaks a contract, the compiler points to it directly. That gives both humans and tools a faster path to a correct fix.",
     },
     {
-      title: "Humans can still review the result",
-      body: "ReScript compiles to straightforward JavaScript, so teams can inspect output, debug behavior, and keep handoff between human and agent work understandable.",
+      title: "The output stays readable",
+      body: "ReScript compiles to straightforward JavaScript, so teams can inspect behavior, debug issues, and hand work back and forth without losing the thread.",
     },
   ]
 
@@ -471,11 +471,9 @@ module AgenticWorkflows = {
     <section className="flex justify-center w-full bg-fire-5 px-5 sm:px-8 lg:px-16 py-24 lg:py-32">
       <div className="max-w-1060 w-full">
         <div className="max-w-3xl">
-          <h2 className="hl-1 text-gray-80">
-            {React.string("Why ReScript works well with coding agents")}
-          </h2>
+          <h2 className="hl-1 text-gray-80"> {React.string("Working with coding agents")} </h2>
           <p className="body-lg text-gray-60 mt-4">
-            {React.string(`Coding agents tend to work best when the surrounding system is readable, predictable, and easy to review. ReScript helps by keeping the source language simple, the compiler feedback fast, and the generated output understandable.`)}
+            {React.string(`The same qualities that make ReScript pleasant for people also make it a good fit for coding agents: clear source, fast feedback, and JavaScript output that stays easy to inspect.`)}
           </p>
         </div>
         <div className="grid gap-6 mt-12 lg:mt-16 md:grid-cols-3">
@@ -495,7 +493,7 @@ module AgenticWorkflows = {
           className="mt-12 lg:mt-16 rounded-2xl border border-fire-10 bg-white px-6 py-6 lg:px-8 lg:py-7 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between"
         >
           <p className="body-lg text-gray-60 max-w-2xl">
-            {React.string(`Read a short guide on why readable source, strong types, and fast compiler feedback help when humans and coding agents work together.`)}
+            {React.string(`Read a short guide about using ReScript alongside coding agents.`)}
           </p>
           <ReactRouter.Link.String
             to="/docs/manual/agentic-workflows" className="self-start shrink-0"
