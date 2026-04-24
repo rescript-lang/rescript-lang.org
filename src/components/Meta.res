@@ -14,7 +14,7 @@ let make = (
   ~ogTitle=?,
   ~ogImage=?,
 ) => {
-  let description = description->MetaDescription.shortenForMetaTag
+  let description = description->MetaDescription.shortenForSocialPreview
 
   let title = switch title {
   | None
