@@ -257,6 +257,12 @@ module QuickInstall = {
     @react.component
     let make = () => {
       <div className="w-full max-w-400">
+        <h2 className="hl-3 lg:mt-12"> {React.string("Quick Install")} </h2>
+        <div className="captions x text-gray-40 mb-2 mt-1">
+          {React.string(
+            "You can quickly add ReScript to your existing JavaScript codebase via npm / yarn:",
+          )}
+        </div>
         <div className="w-full space-y-2"> {copyBox("npm install rescript")} </div>
         <div className="captions x text-gray-40 mb-2 mt-2">
           {React.string("Or generate a new project from the official template with npx:")}
@@ -269,15 +275,26 @@ module QuickInstall = {
   @react.component
   let make = () => {
     <section className="my-32 sm:px-4 sm:flex sm:justify-center">
-      <div className="max-w-1060 flex flex-col gap-12 w-full px-5 md:px-8 lg:px-8 lg:box-content">
-        <div className="w-full flex flex-col lg:flex-row lg:justify-between lg:items-end gap-12">
-          <div className="max-w-2xl">
-            <h2 className="hl-2 text-gray-80 mb-4"> {React.string("Quick Install")} </h2>
-            <p className="body-lg text-gray-60">
-              {React.string(`You can quickly add ReScript to an existing JavaScript codebase in minutes.`)}
-            </p>
-          </div>
-          <div className="self-start lg:self-end max-w-400">
+      <div className="max-w-1060 flex flex-col w-full px-5 md:px-8 lg:px-8 lg:box-content ">
+        //---Textblock on the left side---
+        <div className="relative max-w-112">
+          <p
+            className="relative z-1 space-y-12 text-gray-80 font-semibold text-24 md:text-32 leading-2"
+          >
+            <span className="bg-fire-5 rounded-lg border border-fire-10 p-1 ">
+              {React.string(`Leverage the full power`)}
+            </span>
+            {React.string(` of JavaScript in a robustly typed language without the fear of \`any\` types.`)}
+          </p>
+        </div>
+        //spacing between columns
+        <div className="w-full mt-12 md:flex flex-col lg:flex-row md:justify-between ">
+          <p
+            className="relative z-1 text-gray-80 font-semibold text-24 md:text-32 leading-2 max-w-lg"
+          >
+            {React.string(`ReScript is used to ship and maintain mission-critical products with good UI and UX.`)}
+          </p>
+          <div className="mt-16 lg:mt-0 self-end max-w-400">
             <Instructions />
           </div>
         </div>
