@@ -14,6 +14,8 @@ let make = (
   ~ogTitle=?,
   ~ogImage=?,
 ) => {
+  let description = description->MetaDescription.shortenForMetaTag
+
   let title = switch title {
   | None
   | Some("") => siteName
@@ -33,8 +35,8 @@ let make = (
   }
 
   let ogDescription = switch ogDescription {
-  | None => MetaDescription.shortenForSocialPreview(description)
-  | Some(description) => description->MetaDescription.shortenForSocialPreview
+  | None => description
+  | Some(description) => description
   }
 
   <>
