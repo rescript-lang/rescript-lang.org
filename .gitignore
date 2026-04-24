@@ -1,6 +1,7 @@
 .DS_Store
 *.swp
 *.swo
+.worktrees/
 
 # Generated via update-index script
 public/blog/feed.xml
