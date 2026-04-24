@@ -1,13 +1,9 @@
 {
   "name": "rescript-lang.org",
-  "private": true,
   "version": "1.0.0",
-  "author": "Patrick Ecker <ryyppy@users.noreply.github.com>",
+  "private": true,
   "license": "MIT",
-  "engines": {
-    "node": ">=22"
-  },
-  "packageManager": "yarn@4.13.0",
+  "author": "Patrick Ecker <ryyppy@users.noreply.github.com>",
   "type": "module",
   "scripts": {
     "build:scripts": "yarn dlx tsdown@0.21.7 scripts/*.jsx -d _scripts --no-clean --ext .mjs",
@@ -17,7 +13,7 @@
     "build:update-index": "yarn build:generate-llms && node _scripts/generate_feed.mjs > public/blog/feed.xml",
     "build:vite": "react-router build",
     "build": "yarn build:res && yarn build:scripts && yarn build:update-index && yarn build:vite",
-    "ci:format": "prettier . --check --experimental-cli",
+    "ci:format": "oxfmt --check",
     "ci:test": "yarn vitest --run --browser.headless",
     "clean:res": "rescript clean",
     "convert-images": "auto-convert-images",
@@ -25,7 +21,7 @@
     "dev:vite": "react-router dev --host",
     "dev:wrangler": "yarn wrangler pages dev build/client",
     "dev": "yarn prepare && yarn dev:res & yarn dev:vite & yarn dev:wrangler",
-    "format": "prettier . --write --experimental-cli && rescript format",
+    "format": "oxfmt && rescript format",
     "prepare": "yarn build:res && yarn build:scripts && yarn build:update-index",
     "preview": "yarn build && static-server build/client",
     "reanalyze": "rescript-tools reanalyze -all-cmt .",
@@ -84,11 +80,7 @@
     "unified": "^11.0.5",
     "vfile-matter": "^5.0.1"
   },
-  "resolutions": {
-    "marked": "4.0.10"
-  },
   "devDependencies": {
-    "@prettier/plugin-oxc": "^0.1.3",
     "@react-router/dev": "^7.14.0",
     "@tailwindcss/vite": "^4.2.2",
     "@types/react": "^19.2.14",
@@ -101,8 +93,8 @@
     "jsdom": "^26.1.0",
     "lefthook": "^2.1.4",
     "lightningcss": "^1.32.0",
+    "oxfmt": "^0.46.0",
     "playwright": "^1.59.1",
-    "prettier": "^3.8.1",
     "remark-cli": "^12.0.1",
     "search-insights": "^2.17.3",
     "tailwindcss": "^4",
@@ -115,5 +107,12 @@
     "vitest": "^4.1.2",
     "vitest-browser-react": "^2.2.0",
     "wrangler": "^4.85.0"
-  }
+  },
+  "resolutions": {
+    "marked": "4.0.10"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "yarn@4.13.0"
 }

@@ -1,5 +1,26 @@
+glob_matcher: doublestar
+
 pre-commit:
   parallel: true
   jobs:
-    - run: yarn format
+    - name: oxfmt staged
+      glob:
+        - "**/*.js"
+        - "**/*.mjs"
+        - "**/*.cjs"
+        - "**/*.json"
+        - "**/*.md"
+        - "**/*.mdx"
+        - "**/*.html"
+        - "**/*.css"
+        - "**/*.yml"
+        - "**/*.yaml"
+      run: ./node_modules/.bin/oxfmt {staged_files}
+      stage_fixed: true
+
+    - name: rescript format staged
+      glob:
+        - "**/*.res"
+        - "**/*.resi"
+      run: ./node_modules/.bin/rescript format {staged_files}
       stage_fixed: true
