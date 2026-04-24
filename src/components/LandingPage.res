@@ -695,7 +695,11 @@ let make = (~components=MarkdownComponents.default) => {
   <>
     <Meta
       title="The ReScript Programming Language"
-      description="Fast, Simple, Fully Typed JavaScript from the Future"
+      description={`JavaScript Made Simple for Humans and AI. ReScript is a strongly typed language that compiles to clean,
+        efficient JavaScript that humans and AI tools can read and understand.
+        Its fast compiler and static type system keep feedback loops tight,
+        so you can move quickly with AI assistance while maintaining
+        confidence as your codebase grows.`}
       keywords=["ReScript", "rescriptlang", "JavaScript", "JS", "TypeScript"]
     />
     <div className="mt-4 xs:mt-16">
