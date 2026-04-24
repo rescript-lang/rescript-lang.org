@@ -10,7 +10,7 @@ let make = (
   ~title=?,
   ~ogLocale="en_US",
   ~ogSiteName=siteName,
-  ~ogDescription=description,
+  ~ogDescription=?,
   ~ogTitle=?,
   ~ogImage=?,
 ) => {
@@ -30,6 +30,11 @@ let make = (
   | Some("") =>
     Util.Url.makeOpenGraphImageUrl(title, description)
   | Some(ogImage) => ogImage
+  }
+
+  let ogDescription = switch ogDescription {
+  | None => description->String.split(".")->Array.get(0)->Option.getOr("")
+  | Some(description) => description
   }
 
   <>
@@ -58,8 +63,8 @@ let make = (
     <meta key="og:image" property="og:image" content=ogImage />
 
     /* Twitter Meta */
-    <meta key="twitter:title" name="twitter:title" content=title />
-    <meta key="twitter:description" name="twitter:description" content=description />
+    <meta key="twitter:title" name="twitter:title" content=ogTitle />
+    <meta key="twitter:description" name="twitter:description" content=ogDescription />
     <meta key="twitter:site" name="twitter:site" content="@rescriptlang" />
     <meta key="twitter:image" property="og:image" content=ogImage />
     <meta key="twitter:creator" name="twitter:creator" content="@ReScriptAssoc" />
