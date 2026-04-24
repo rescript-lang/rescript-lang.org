@@ -1,11 +1,11 @@
-/*
-    canonical: Set a canonical URL pointing to the original content.
- */
 @react.component
 let make = (
   ~siteName="ReScript Documentation",
   ~keywords: array<string>=[],
   ~description="The ReScript language and ecosystem docs",
+  /*
+   * canonical: Set a canonical URL pointing to the original content.
+   */
   ~canonical=?,
   ~title=?,
   ~ogLocale="en_US",
@@ -33,7 +33,7 @@ let make = (
   }
 
   let ogDescription = switch ogDescription {
-  | None => description->String.split(".")->Array.get(0)->Option.getOr("")
+  | None => MetaDescription.shortenForSocialPreview(description)
   | Some(description) => description
   }
 
