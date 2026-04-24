@@ -42,9 +42,13 @@ A `Hello world` ReScript program generates **20 bytes** of JS code. Additionally
 
 ReScript's build time is **one or two orders of magnitude** faster than alternatives. In its watcher mode, the build system usually finishes before you switch screen from the editor to the terminal tab (two digits of milliseconds). A fast iteration cycle reduces the need of keeping one's mental state around longer; this in turn allows one to stay in the flow longer and more often.
 
+That same fast loop is also useful in AI-assisted workflows, where small edits need to be checked and repaired quickly.
+
 ### Readable Output
 
 ReScript's JS output is very readable. This is especially important while learning, where users might want to understand how the code's compiled, and to audit for bugs.
+
+It also helps when teams use coding agents but still want the generated result to stay easy to inspect and review.
 
 This characteristic, combined with a fully-featured JS interop system, allows ReScript code to be inserted into an existing JavaScript codebase almost unnoticed.
 

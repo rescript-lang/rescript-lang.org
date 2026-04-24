@@ -68,6 +68,8 @@ That compiles your ReScript into JavaScript, then uses Node.js to run said JavaS
 
 **When taking your first steps with ReScript, we recommend you use our unique workflow of keeping a tab open for the generated JS file** (`.res.js`/`.res.mjs`), so that you can learn how ReScript transforms into JavaScript. Not many languages output clean JavaScript code you can inspect and learn from! With our [VS Code extension](https://marketplace.visualstudio.com/items?itemName=chenglou92.rescript-vscode), use the command "ReScript: Open the compiled JS file for this implementation file" to open the generated JS file for the currently active ReScript source file.
 
+That workflow is also handy when experimenting with coding agents, since both the source and generated JS stay easy to inspect.
+
 During development, instead of running `npm run res:build` each time to compile, use `npm run res:dev` to start a watcher that recompiles automatically after file changes.
 
 ## Integrate Into an Existing JS Project
@@ -171,6 +173,8 @@ bun create rescript-app
   ```
 
 Since ReScript compiles to clean readable JS files, the rest of your existing toolchain (e.g. Vite, Rspack, Rollup) should just work!
+
+That low setup overhead also makes it practical to try ReScript in fast-moving teams, including ones exploring AI-assisted workflows.
 
 Helpful guides:
 
