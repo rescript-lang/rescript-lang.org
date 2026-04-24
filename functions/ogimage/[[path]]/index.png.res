@@ -99,11 +99,13 @@ let onRequest = async ({params}: context) => {
       <p
         style={{
           fontFamily: "text",
-          fontSize: "32px",
+          fontSize: "28px",
+          lineHeight: "36px",
           opacity: "0.9",
-          maxWidth: "900px",
-          textWrap: "balance",
           // extra space since X wants to overlay the text
+          maxWidth: "900px",
+          maxHeight: "108px",
+          textWrap: "pretty",
         }}
       >
         {React.string(description)}
