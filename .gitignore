@@ -71,6 +71,9 @@ _scripts
 # Local env files
 .env.local
 
+# Local git worktrees
+.worktrees
+
 # Vitest screenshots
 !__tests__/__screenshots__/**/*
 .vitest-attachments

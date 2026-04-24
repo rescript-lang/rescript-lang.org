@@ -21,7 +21,7 @@ jobs:
       # pull-requests: write, so we can't post PR comments here.
       - name: Fetch PR info
         id: pr
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9.0.0
         with:
           script: |
             const inputRaw = core.getInput("pr_number") || (context.payload.inputs && context.payload.inputs.pr_number) || "";
