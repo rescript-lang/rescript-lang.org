@@ -11,7 +11,8 @@ let ensurePeriod = sentence =>
 
 let shortenForSocialPreview = description => {
   let normalized = collapseWhitespace(description)
-  let sentences = normalized->String.split(".")->Array.map(String.trim)->Array.filter(sentence => sentence != "")
+  let sentences =
+    normalized->String.split(".")->Array.map(String.trim)->Array.filter(sentence => sentence != "")
 
   switch (sentences->Array.get(0), sentences->Array.get(1)) {
   | (Some(firstSentence), Some(secondSentence))

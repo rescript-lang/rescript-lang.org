@@ -13,6 +13,7 @@
 ### Task 1: Create the utility and prove the base behavior with a failing test
 
 **Files:**
+
 - Create: `src/common/MetaDescription.res`
 - Test: `__tests__/MetaDescription_.test.res`
 
@@ -75,6 +76,7 @@ git commit -m "feat: add meta description utility"
 ### Task 2: Extend the tests and utility to cover sentence-length and whitespace rules
 
 **Files:**
+
 - Modify: `src/common/MetaDescription.res`
 - Modify: `__tests__/MetaDescription_.test.res`
 
@@ -187,6 +189,7 @@ git commit -m "test: cover meta description shortening rules"
 ### Task 3: Replace the inline `Meta` helper with the shared utility
 
 **Files:**
+
 - Modify: `src/components/Meta.res`
 - Test: `__tests__/MetaDescription_.test.res`
 
