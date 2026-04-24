@@ -34,7 +34,7 @@ let make = (
 
   let ogDescription = switch ogDescription {
   | None => MetaDescription.shortenForSocialPreview(description)
-  | Some(description) => description
+  | Some(description) => description->MetaDescription.shortenForSocialPreview
   }
 
   <>
