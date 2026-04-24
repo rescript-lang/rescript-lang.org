@@ -1,6 +1,7 @@
 .DS_Store
 *.swp
 *.swo
+.worktrees/
 
 # Generated via update-index script
 public/blog/feed.xml
@@ -70,6 +71,9 @@ _scripts
 
 # Local env files
 .env.local
+
+# Local git worktrees
+.worktrees
 
 # Vitest screenshots
 !__tests__/__screenshots__/**/*

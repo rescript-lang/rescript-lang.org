@@ -106,7 +106,7 @@
     "vite-plugin-page-reload": "^0.2.3",
     "vitest": "^4.1.2",
     "vitest-browser-react": "^2.2.0",
-    "wrangler": "^4.80.0"
+    "wrangler": "^4.85.0"
   },
   "resolutions": {
     "marked": "4.0.10"
