@@ -17,14 +17,21 @@ type context = {request: FetchAPI.request, params: {path: array<string>}}
 
 let onRequest = async ({params}: context) => {
   let title = params.path[0]->Option.getOr("ReScript")->decodeURIComponent
-  //   let url = WebAPI.URL.make(~url=request.url)
-  //   let title = url.searchParams->URLSearchParams.get("title")
   let descripton = params.path[1]->Option.getOr("ReScript")->decodeURIComponent
+
+  // if the description contains a `.` we want to split it up and use the first sentence as the subTitle
+  let (descripton, subTitle) = {
+    let segments = descripton->String.split(".")
+    switch segments->Array.length > 1 {
+    | true => (segments[1]->Option.getOr(""), segments[0])
+    | false => (descripton, None)
+    }
+  }
 
   // we want to split the title if it contains a |
   let (title, subTitle) = {
     let segments = title->String.split("|")
-    (segments[0]->Option.getOr(""), segments[1])
+    (segments[0]->Option.getOr(""), segments[1]->Option.orElse(subTitle))
   }
 
   Cloudflare.imageResponse(
