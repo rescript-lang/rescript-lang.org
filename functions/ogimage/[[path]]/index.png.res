@@ -17,14 +17,24 @@ type context = {request: FetchAPI.request, params: {path: array<string>}}
 
 let onRequest = async ({params}: context) => {
   let title = params.path[0]->Option.getOr("ReScript")->decodeURIComponent
-  //   let url = WebAPI.URL.make(~url=request.url)
-  //   let title = url.searchParams->URLSearchParams.get("title")
-  let descripton = params.path[1]->Option.getOr("ReScript")->decodeURIComponent
+  let description = params.path[1]->Option.getOr("ReScript")->decodeURIComponent
 
   // we want to split the title if it contains a |
-  let (title, subTitle) = {
-    let segments = title->String.split("|")
-    (segments[0]->Option.getOr(""), segments[1])
+  let (title, subTitle, description) = {
+    let titleSegments = title->String.split("|")
+    // if the description contains a `.` we want to split it up and use the first sentence as the subTitle
+    let descriptionSegments = description->String.split(".")
+
+    let (subTitle, description) = switch titleSegments[1] {
+    | Some(subTitle) => (Some(subTitle), description)
+    | None =>
+      switch descriptionSegments[1] {
+      | Some(description) => (descriptionSegments[0], description)
+      | None => (None, description)
+      }
+    }
+
+    (titleSegments[0]->Option.getOr(""), subTitle, description)
   }
 
   Cloudflare.imageResponse(
@@ -89,14 +99,16 @@ let onRequest = async ({params}: context) => {
       <p
         style={{
           fontFamily: "text",
-          fontSize: "32px",
+          fontSize: "28px",
+          lineHeight: "36px",
           opacity: "0.9",
-          maxWidth: "900px",
-          textWrap: "balance",
           // extra space since X wants to overlay the text
+          maxWidth: "900px",
+          maxHeight: "108px",
+          textWrap: "pretty",
         }}
       >
-        {React.string(descripton)}
+        {React.string(description)}
       </p>
     </div>,
     {
