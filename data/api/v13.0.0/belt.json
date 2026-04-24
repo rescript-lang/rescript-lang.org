@@ -864,25 +864,11 @@
         "signature": "let minKey: t<'a> => option<key>"
       },
       {
-        "id": "Belt.MutableMap.String.minKeyUndefined",
-        "kind": "value",
-        "name": "minKeyUndefined",
-        "docstrings": [],
-        "signature": "let minKeyUndefined: t<'a> => Js.undefined<key>"
-      },
-      {
         "id": "Belt.MutableMap.String.maxKey",
         "kind": "value",
         "name": "maxKey",
         "docstrings": [],
         "signature": "let maxKey: t<'a> => option<key>"
-      },
-      {
-        "id": "Belt.MutableMap.String.maxKeyUndefined",
-        "kind": "value",
-        "name": "maxKeyUndefined",
-        "docstrings": [],
-        "signature": "let maxKeyUndefined: t<'a> => Js.undefined<key>"
       },
       {
         "id": "Belt.MutableMap.String.minimum",
@@ -892,13 +878,6 @@
         "signature": "let minimum: t<'a> => option<(key, 'a)>"
       },
       {
-        "id": "Belt.MutableMap.String.minUndefined",
-        "kind": "value",
-        "name": "minUndefined",
-        "docstrings": [],
-        "signature": "let minUndefined: t<'a> => Js.undefined<(key, 'a)>"
-      },
-      {
         "id": "Belt.MutableMap.String.maximum",
         "kind": "value",
         "name": "maximum",
@@ -906,25 +885,11 @@
         "signature": "let maximum: t<'a> => option<(key, 'a)>"
       },
       {
-        "id": "Belt.MutableMap.String.maxUndefined",
-        "kind": "value",
-        "name": "maxUndefined",
-        "docstrings": [],
-        "signature": "let maxUndefined: t<'a> => Js.undefined<(key, 'a)>"
-      },
-      {
         "id": "Belt.MutableMap.String.get",
         "kind": "value",
         "name": "get",
         "docstrings": [],
         "signature": "let get: (t<'a>, key) => option<'a>"
-      },
-      {
-        "id": "Belt.MutableMap.String.getUndefined",
-        "kind": "value",
-        "name": "getUndefined",
-        "docstrings": [],
-        "signature": "let getUndefined: (t<'a>, key) => Js.undefined<'a>"
       },
       {
         "id": "Belt.MutableMap.String.getWithDefault",
@@ -1233,25 +1198,11 @@
         "signature": "let minKey: t<'a> => option<key>"
       },
       {
-        "id": "Belt.MutableMap.Int.minKeyUndefined",
-        "kind": "value",
-        "name": "minKeyUndefined",
-        "docstrings": [],
-        "signature": "let minKeyUndefined: t<'a> => Js.undefined<key>"
-      },
-      {
         "id": "Belt.MutableMap.Int.maxKey",
         "kind": "value",
         "name": "maxKey",
         "docstrings": [],
         "signature": "let maxKey: t<'a> => option<key>"
-      },
-      {
-        "id": "Belt.MutableMap.Int.maxKeyUndefined",
-        "kind": "value",
-        "name": "maxKeyUndefined",
-        "docstrings": [],
-        "signature": "let maxKeyUndefined: t<'a> => Js.undefined<key>"
       },
       {
         "id": "Belt.MutableMap.Int.minimum",
@@ -1261,13 +1212,6 @@
         "signature": "let minimum: t<'a> => option<(key, 'a)>"
       },
       {
-        "id": "Belt.MutableMap.Int.minUndefined",
-        "kind": "value",
-        "name": "minUndefined",
-        "docstrings": [],
-        "signature": "let minUndefined: t<'a> => Js.undefined<(key, 'a)>"
-      },
-      {
         "id": "Belt.MutableMap.Int.maximum",
         "kind": "value",
         "name": "maximum",
@@ -1275,25 +1219,11 @@
         "signature": "let maximum: t<'a> => option<(key, 'a)>"
       },
       {
-        "id": "Belt.MutableMap.Int.maxUndefined",
-        "kind": "value",
-        "name": "maxUndefined",
-        "docstrings": [],
-        "signature": "let maxUndefined: t<'a> => Js.undefined<(key, 'a)>"
-      },
-      {
         "id": "Belt.MutableMap.Int.get",
         "kind": "value",
         "name": "get",
         "docstrings": [],
         "signature": "let get: (t<'a>, key) => option<'a>"
-      },
-      {
-        "id": "Belt.MutableMap.Int.getUndefined",
-        "kind": "value",
-        "name": "getUndefined",
-        "docstrings": [],
-        "signature": "let getUndefined: (t<'a>, key) => Js.undefined<'a>"
       },
       {
         "id": "Belt.MutableMap.Int.getWithDefault",
@@ -1686,13 +1616,6 @@
         "signature": "let minimum: t => option<value>"
       },
       {
-        "id": "Belt.MutableSet.String.minUndefined",
-        "kind": "value",
-        "name": "minUndefined",
-        "docstrings": [],
-        "signature": "let minUndefined: t => Js.undefined<value>"
-      },
-      {
         "id": "Belt.MutableSet.String.maximum",
         "kind": "value",
         "name": "maximum",
@@ -1700,25 +1623,11 @@
         "signature": "let maximum: t => option<value>"
       },
       {
-        "id": "Belt.MutableSet.String.maxUndefined",
-        "kind": "value",
-        "name": "maxUndefined",
-        "docstrings": [],
-        "signature": "let maxUndefined: t => Js.undefined<value>"
-      },
-      {
         "id": "Belt.MutableSet.String.get",
         "kind": "value",
         "name": "get",
         "docstrings": [],
         "signature": "let get: (t, value) => option<value>"
-      },
-      {
-        "id": "Belt.MutableSet.String.getUndefined",
-        "kind": "value",
-        "name": "getUndefined",
-        "docstrings": [],
-        "signature": "let getUndefined: (t, value) => Js.undefined<value>"
       },
       {
         "id": "Belt.MutableSet.String.getExn",
@@ -2041,13 +1950,6 @@
         "signature": "let minimum: t => option<value>"
       },
       {
-        "id": "Belt.MutableSet.Int.minUndefined",
-        "kind": "value",
-        "name": "minUndefined",
-        "docstrings": [],
-        "signature": "let minUndefined: t => Js.undefined<value>"
-      },
-      {
         "id": "Belt.MutableSet.Int.maximum",
         "kind": "value",
         "name": "maximum",
@@ -2055,25 +1957,11 @@
         "signature": "let maximum: t => option<value>"
       },
       {
-        "id": "Belt.MutableSet.Int.maxUndefined",
-        "kind": "value",
-        "name": "maxUndefined",
-        "docstrings": [],
-        "signature": "let maxUndefined: t => Js.undefined<value>"
-      },
-      {
         "id": "Belt.MutableSet.Int.get",
         "kind": "value",
         "name": "get",
         "docstrings": [],
         "signature": "let get: (t, value) => option<value>"
-      },
-      {
-        "id": "Belt.MutableSet.Int.getUndefined",
-        "kind": "value",
-        "name": "getUndefined",
-        "docstrings": [],
-        "signature": "let getUndefined: (t, value) => Js.undefined<value>"
       },
       {
         "id": "Belt.MutableSet.Int.getExn",
@@ -2320,25 +2208,11 @@
         "signature": "let minKey: t<'k, 'a, 'b> => option<'k>"
       },
       {
-        "id": "Belt.Map.Dict.minKeyUndefined",
-        "kind": "value",
-        "name": "minKeyUndefined",
-        "docstrings": [],
-        "signature": "let minKeyUndefined: t<'k, 'a, 'b> => Js.undefined<'k>"
-      },
-      {
         "id": "Belt.Map.Dict.maxKey",
         "kind": "value",
         "name": "maxKey",
         "docstrings": [],
         "signature": "let maxKey: t<'k, 'a, 'b> => option<'k>"
-      },
-      {
-        "id": "Belt.Map.Dict.maxKeyUndefined",
-        "kind": "value",
-        "name": "maxKeyUndefined",
-        "docstrings": [],
-        "signature": "let maxKeyUndefined: t<'k, 'a, 'b> => Js.undefined<'k>"
       },
       {
         "id": "Belt.Map.Dict.minimum",
@@ -2348,13 +2222,6 @@
         "signature": "let minimum: t<'k, 'a, 'b> => option<('k, 'a)>"
       },
       {
-        "id": "Belt.Map.Dict.minUndefined",
-        "kind": "value",
-        "name": "minUndefined",
-        "docstrings": [],
-        "signature": "let minUndefined: t<'k, 'a, 'b> => Js.undefined<('k, 'a)>"
-      },
-      {
         "id": "Belt.Map.Dict.maximum",
         "kind": "value",
         "name": "maximum",
@@ -2362,25 +2229,11 @@
         "signature": "let maximum: t<'k, 'a, 'b> => option<('k, 'a)>"
       },
       {
-        "id": "Belt.Map.Dict.maxUndefined",
-        "kind": "value",
-        "name": "maxUndefined",
-        "docstrings": [],
-        "signature": "let maxUndefined: t<'k, 'a, 'b> => Js.undefined<('k, 'a)>"
-      },
-      {
         "id": "Belt.Map.Dict.get",
         "kind": "value",
         "name": "get",
         "docstrings": [],
         "signature": "let get: (t<'k, 'a, 'id>, 'k, ~cmp: cmp<'k, 'id>) => option<'a>"
-      },
-      {
-        "id": "Belt.Map.Dict.getUndefined",
-        "kind": "value",
-        "name": "getUndefined",
-        "docstrings": [],
-        "signature": "let getUndefined: (t<'k, 'a, 'id>, 'k, ~cmp: cmp<'k, 'id>) => Js.undefined<'a>"
       },
       {
         "id": "Belt.Map.Dict.getWithDefault",
@@ -2762,25 +2615,11 @@
         "signature": "let minKey: t<'a> => option<key>"
       },
       {
-        "id": "Belt.Map.String.minKeyUndefined",
-        "kind": "value",
-        "name": "minKeyUndefined",
-        "docstrings": [],
-        "signature": "let minKeyUndefined: t<'a> => Js.undefined<key>"
-      },
-      {
         "id": "Belt.Map.String.maxKey",
         "kind": "value",
         "name": "maxKey",
         "docstrings": [],
         "signature": "let maxKey: t<'a> => option<key>"
-      },
-      {
-        "id": "Belt.Map.String.maxKeyUndefined",
-        "kind": "value",
-        "name": "maxKeyUndefined",
-        "docstrings": [],
-        "signature": "let maxKeyUndefined: t<'a> => Js.undefined<key>"
       },
       {
         "id": "Belt.Map.String.minimum",
@@ -2790,13 +2629,6 @@
         "signature": "let minimum: t<'v> => option<(key, 'v)>"
       },
       {
-        "id": "Belt.Map.String.minUndefined",
-        "kind": "value",
-        "name": "minUndefined",
-        "docstrings": [],
-        "signature": "let minUndefined: t<'v> => Js.undefined<(key, 'v)>"
-      },
-      {
         "id": "Belt.Map.String.maximum",
         "kind": "value",
         "name": "maximum",
@@ -2804,25 +2636,11 @@
         "signature": "let maximum: t<'v> => option<(key, 'v)>"
       },
       {
-        "id": "Belt.Map.String.maxUndefined",
-        "kind": "value",
-        "name": "maxUndefined",
-        "docstrings": [],
-        "signature": "let maxUndefined: t<'v> => Js.undefined<(key, 'v)>"
-      },
-      {
         "id": "Belt.Map.String.get",
         "kind": "value",
         "name": "get",
         "docstrings": [],
         "signature": "let get: (t<'v>, key) => option<'v>"
-      },
-      {
-        "id": "Belt.Map.String.getUndefined",
-        "kind": "value",
-        "name": "getUndefined",
-        "docstrings": [],
-        "signature": "let getUndefined: (t<'v>, key) => Js.undefined<'v>"
       },
       {
         "id": "Belt.Map.String.getWithDefault",
@@ -3208,25 +3026,11 @@
         "signature": "let minKey: t<'a> => option<key>"
       },
       {
-        "id": "Belt.Map.Int.minKeyUndefined",
-        "kind": "value",
-        "name": "minKeyUndefined",
-        "docstrings": [],
-        "signature": "let minKeyUndefined: t<'a> => Js.undefined<key>"
-      },
-      {
         "id": "Belt.Map.Int.maxKey",
         "kind": "value",
         "name": "maxKey",
         "docstrings": [],
         "signature": "let maxKey: t<'a> => option<key>"
-      },
-      {
-        "id": "Belt.Map.Int.maxKeyUndefined",
-        "kind": "value",
-        "name": "maxKeyUndefined",
-        "docstrings": [],
-        "signature": "let maxKeyUndefined: t<'a> => Js.undefined<key>"
       },
       {
         "id": "Belt.Map.Int.minimum",
@@ -3236,13 +3040,6 @@
         "signature": "let minimum: t<'v> => option<(key, 'v)>"
       },
       {
-        "id": "Belt.Map.Int.minUndefined",
-        "kind": "value",
-        "name": "minUndefined",
-        "docstrings": [],
-        "signature": "let minUndefined: t<'v> => Js.undefined<(key, 'v)>"
-      },
-      {
         "id": "Belt.Map.Int.maximum",
         "kind": "value",
         "name": "maximum",
@@ -3250,25 +3047,11 @@
         "signature": "let maximum: t<'v> => option<(key, 'v)>"
       },
       {
-        "id": "Belt.Map.Int.maxUndefined",
-        "kind": "value",
-        "name": "maxUndefined",
-        "docstrings": [],
-        "signature": "let maxUndefined: t<'v> => Js.undefined<(key, 'v)>"
-      },
-      {
         "id": "Belt.Map.Int.get",
         "kind": "value",
         "name": "get",
         "docstrings": [],
         "signature": "let get: (t<'v>, key) => option<'v>"
-      },
-      {
-        "id": "Belt.Map.Int.getUndefined",
-        "kind": "value",
-        "name": "getUndefined",
-        "docstrings": [],
-        "signature": "let getUndefined: (t<'v>, key) => Js.undefined<'v>"
       },
       {
         "id": "Belt.Map.Int.getWithDefault",
@@ -3743,15 +3526,6 @@
         "signature": "let minimum: t<'value, 'id> => option<'value>"
       },
       {
-        "id": "Belt.Set.Dict.minUndefined",
-        "kind": "value",
-        "name": "minUndefined",
-        "docstrings": [
-          "Returns minimum value of the collection. `undefined` if collection is empty.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.Set.Dict.empty\nlet s1 = Belt.Set.Dict.fromArray([3, 2, 1, 5], ~cmp=IntCmp.cmp)\n\ns0->Belt.Set.Dict.minUndefined == Js.undefined\ns1->Belt.Set.Dict.minUndefined == Js.Undefined.return(1)\n```"
-        ],
-        "signature": "let minUndefined: t<'value, 'id> => Js.undefined<'value>"
-      },
-      {
         "id": "Belt.Set.Dict.maximum",
         "kind": "value",
         "name": "maximum",
@@ -3761,15 +3535,6 @@
         "signature": "let maximum: t<'value, 'id> => option<'value>"
       },
       {
-        "id": "Belt.Set.Dict.maxUndefined",
-        "kind": "value",
-        "name": "maxUndefined",
-        "docstrings": [
-          "Returns maximum value of the collection. `undefined` if collection is empty.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.Set.Dict.empty\nlet s1 = Belt.Set.Dict.fromArray([3, 2, 1, 5], ~cmp=IntCmp.cmp)\n\ns0->Belt.Set.Dict.maxUndefined == Js.undefined\ns1->Belt.Set.Dict.maxUndefined == Js.Undefined.return(5)\n```"
-        ],
-        "signature": "let maxUndefined: t<'value, 'id> => Js.undefined<'value>"
-      },
-      {
         "id": "Belt.Set.Dict.get",
         "kind": "value",
         "name": "get",
@@ -3777,15 +3542,6 @@
           "Returns the reference of the value which is equivalent to value using the comparator\nspecifiecd by this collection. Returns `None` if element does not exist.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.Set.Dict.fromArray([1, 2, 3, 4, 5], ~cmp=IntCmp.cmp)\n\ns0->Belt.Set.Dict.get(3, ~cmp=IntCmp.cmp) == Some(3)\ns0->Belt.Set.Dict.get(20, ~cmp=IntCmp.cmp) == None\n```"
         ],
         "signature": "let get: (\n  t<'value, 'id>,\n  'value,\n  ~cmp: cmp<'value, 'id>,\n) => option<'value>"
-      },
-      {
-        "id": "Belt.Set.Dict.getUndefined",
-        "kind": "value",
-        "name": "getUndefined",
-        "docstrings": [
-          "Same as [get](#get) but returns `undefined` when element does not exist."
-        ],
-        "signature": "let getUndefined: (\n  t<'value, 'id>,\n  'value,\n  ~cmp: cmp<'value, 'id>,\n) => Js.undefined<'value>"
       },
       {
         "id": "Belt.Set.Dict.getExn",
@@ -4099,13 +3855,6 @@
         "signature": "let minimum: t => option<value>"
       },
       {
-        "id": "Belt.Set.String.minUndefined",
-        "kind": "value",
-        "name": "minUndefined",
-        "docstrings": [],
-        "signature": "let minUndefined: t => Js.undefined<value>"
-      },
-      {
         "id": "Belt.Set.String.maximum",
         "kind": "value",
         "name": "maximum",
@@ -4113,25 +3862,11 @@
         "signature": "let maximum: t => option<value>"
       },
       {
-        "id": "Belt.Set.String.maxUndefined",
-        "kind": "value",
-        "name": "maxUndefined",
-        "docstrings": [],
-        "signature": "let maxUndefined: t => Js.undefined<value>"
-      },
-      {
         "id": "Belt.Set.String.get",
         "kind": "value",
         "name": "get",
         "docstrings": [],
         "signature": "let get: (t, value) => option<value>"
-      },
-      {
-        "id": "Belt.Set.String.getUndefined",
-        "kind": "value",
-        "name": "getUndefined",
-        "docstrings": [],
-        "signature": "let getUndefined: (t, value) => Js.undefined<value>"
       },
       {
         "id": "Belt.Set.String.getExn",
@@ -4441,13 +4176,6 @@
         "signature": "let minimum: t => option<value>"
       },
       {
-        "id": "Belt.Set.Int.minUndefined",
-        "kind": "value",
-        "name": "minUndefined",
-        "docstrings": [],
-        "signature": "let minUndefined: t => Js.undefined<value>"
-      },
-      {
         "id": "Belt.Set.Int.maximum",
         "kind": "value",
         "name": "maximum",
@@ -4455,25 +4183,11 @@
         "signature": "let maximum: t => option<value>"
       },
       {
-        "id": "Belt.Set.Int.maxUndefined",
-        "kind": "value",
-        "name": "maxUndefined",
-        "docstrings": [],
-        "signature": "let maxUndefined: t => Js.undefined<value>"
-      },
-      {
         "id": "Belt.Set.Int.get",
         "kind": "value",
         "name": "get",
         "docstrings": [],
         "signature": "let get: (t, value) => option<value>"
-      },
-      {
-        "id": "Belt.Set.Int.getUndefined",
-        "kind": "value",
-        "name": "getUndefined",
-        "docstrings": [],
-        "signature": "let getUndefined: (t, value) => Js.undefined<value>"
       },
       {
         "id": "Belt.Set.Int.getExn",
@@ -5903,25 +5617,11 @@
         "signature": "let minKey: t<'k, 'a, 'b> => option<'k>"
       },
       {
-        "id": "Belt.MutableMap.minKeyUndefined",
-        "kind": "value",
-        "name": "minKeyUndefined",
-        "docstrings": [],
-        "signature": "let minKeyUndefined: t<'k, 'a, 'b> => Js.undefined<'k>"
-      },
-      {
         "id": "Belt.MutableMap.maxKey",
         "kind": "value",
         "name": "maxKey",
         "docstrings": [],
         "signature": "let maxKey: t<'k, 'a, 'b> => option<'k>"
-      },
-      {
-        "id": "Belt.MutableMap.maxKeyUndefined",
-        "kind": "value",
-        "name": "maxKeyUndefined",
-        "docstrings": [],
-        "signature": "let maxKeyUndefined: t<'k, 'a, 'b> => Js.undefined<'k>"
       },
       {
         "id": "Belt.MutableMap.minimum",
@@ -5931,13 +5631,6 @@
         "signature": "let minimum: t<'k, 'a, 'b> => option<('k, 'a)>"
       },
       {
-        "id": "Belt.MutableMap.minUndefined",
-        "kind": "value",
-        "name": "minUndefined",
-        "docstrings": [],
-        "signature": "let minUndefined: t<'k, 'a, 'b> => Js.undefined<('k, 'a)>"
-      },
-      {
         "id": "Belt.MutableMap.maximum",
         "kind": "value",
         "name": "maximum",
@@ -5945,25 +5638,11 @@
         "signature": "let maximum: t<'k, 'a, 'b> => option<('k, 'a)>"
       },
       {
-        "id": "Belt.MutableMap.maxUndefined",
-        "kind": "value",
-        "name": "maxUndefined",
-        "docstrings": [],
-        "signature": "let maxUndefined: t<'k, 'a, 'b> => Js.undefined<('k, 'a)>"
-      },
-      {
         "id": "Belt.MutableMap.get",
         "kind": "value",
         "name": "get",
         "docstrings": [],
         "signature": "let get: (t<'k, 'a, 'id>, 'k) => option<'a>"
-      },
-      {
-        "id": "Belt.MutableMap.getUndefined",
-        "kind": "value",
-        "name": "getUndefined",
-        "docstrings": [],
-        "signature": "let getUndefined: (t<'k, 'a, 'id>, 'k) => Js.undefined<'a>"
       },
       {
         "id": "Belt.MutableMap.getWithDefault",
@@ -6401,15 +6080,6 @@
         "signature": "let minimum: t<'value, 'id> => option<'value>"
       },
       {
-        "id": "Belt.MutableSet.minUndefined",
-        "kind": "value",
-        "name": "minUndefined",
-        "docstrings": [
-          "Returns minimum value of the collection. `undefined` if collection is empty.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.MutableSet.make(~id=module(IntCmp))\nlet s1 = Belt.MutableSet.fromArray([3, 2, 1, 5], ~id=module(IntCmp))\n\ns0->Belt.MutableSet.minUndefined == Js.undefined\ns1->Belt.MutableSet.minUndefined == Js.Undefined.return(1)\n```"
-        ],
-        "signature": "let minUndefined: t<'value, 'id> => Js.undefined<'value>"
-      },
-      {
         "id": "Belt.MutableSet.maximum",
         "kind": "value",
         "name": "maximum",
@@ -6419,15 +6089,6 @@
         "signature": "let maximum: t<'value, 'id> => option<'value>"
       },
       {
-        "id": "Belt.MutableSet.maxUndefined",
-        "kind": "value",
-        "name": "maxUndefined",
-        "docstrings": [
-          "Returns maximum value of the collection. `undefined` if collection is empty.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.MutableSet.make(~id=module(IntCmp))\nlet s1 = Belt.MutableSet.fromArray([3, 2, 1, 5], ~id=module(IntCmp))\n\ns0->Belt.MutableSet.maxUndefined == Js.undefined\ns1->Belt.MutableSet.maxUndefined == Js.Undefined.return(5)\n```"
-        ],
-        "signature": "let maxUndefined: t<'value, 'id> => Js.undefined<'value>"
-      },
-      {
         "id": "Belt.MutableSet.get",
         "kind": "value",
         "name": "get",
@@ -6435,15 +6096,6 @@
           "Returns the reference of the value which is equivalent to value using the comparator specifiecd by this collection. Returns `None` if element does not exist.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.MutableSet.fromArray([1, 2, 3, 4, 5], ~id=module(IntCmp))\n\ns0->Belt.MutableSet.get(3) == Some(3)\ns0->Belt.MutableSet.get(20) == None\n```"
         ],
         "signature": "let get: (t<'value, 'id>, 'value) => option<'value>"
-      },
-      {
-        "id": "Belt.MutableSet.getUndefined",
-        "kind": "value",
-        "name": "getUndefined",
-        "docstrings": [
-          "Same as `Belt.MutableSet.get` but returns `undefined` when element does not exist."
-        ],
-        "signature": "let getUndefined: (t<'value, 'id>, 'value) => Js.undefined<'value>"
       },
       {
         "id": "Belt.MutableSet.getExn",
@@ -6719,15 +6371,6 @@
         "signature": "let minKey: t<'k, 'a, 'b> => option<'k>"
       },
       {
-        "id": "Belt.Map.minKeyUndefined",
-        "kind": "value",
-        "name": "minKeyUndefined",
-        "docstrings": [
-          "See `Belt.Map.minKey`"
-        ],
-        "signature": "let minKeyUndefined: t<'k, 'a, 'b> => Js.undefined<'k>"
-      },
-      {
         "id": "Belt.Map.maxKey",
         "kind": "value",
         "name": "maxKey",
@@ -6735,15 +6378,6 @@
           "`maxKey(s)` returns the maximum key, None if not exist."
         ],
         "signature": "let maxKey: t<'k, 'a, 'b> => option<'k>"
-      },
-      {
-        "id": "Belt.Map.maxKeyUndefined",
-        "kind": "value",
-        "name": "maxKeyUndefined",
-        "docstrings": [
-          "See `Belt.Map.maxKey`"
-        ],
-        "signature": "let maxKeyUndefined: t<'k, 'a, 'b> => Js.undefined<'k>"
       },
       {
         "id": "Belt.Map.minimum",
@@ -6755,15 +6389,6 @@
         "signature": "let minimum: t<'k, 'v, 'a> => option<('k, 'v)>"
       },
       {
-        "id": "Belt.Map.minUndefined",
-        "kind": "value",
-        "name": "minUndefined",
-        "docstrings": [
-          "See `Belt.Map.minimum`"
-        ],
-        "signature": "let minUndefined: t<'k, 'v, 'a> => Js.undefined<('k, 'v)>"
-      },
-      {
         "id": "Belt.Map.maximum",
         "kind": "value",
         "name": "maximum",
@@ -6773,15 +6398,6 @@
         "signature": "let maximum: t<'k, 'v, 'a> => option<('k, 'v)>"
       },
       {
-        "id": "Belt.Map.maxUndefined",
-        "kind": "value",
-        "name": "maxUndefined",
-        "docstrings": [
-          "See `Belt.Map.maximum`"
-        ],
-        "signature": "let maxUndefined: t<'k, 'v, 'a> => Js.undefined<('k, 'v)>"
-      },
-      {
         "id": "Belt.Map.get",
         "kind": "value",
         "name": "get",
@@ -6789,15 +6405,6 @@
           "`get(s, k)`\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = (a, b) => Pervasives.compare(a, b)\n})\n\nBelt.Map.get(Belt.Map.fromArray([(2, \"2\"), (1, \"1\"), (3, \"3\")], ~id=module(IntCmp)), 2) == Some(\"2\")\n\nBelt.Map.get(Belt.Map.fromArray([(2, \"2\"), (1, \"1\"), (3, \"3\")], ~id=module(IntCmp)), 4) == None\n```"
         ],
         "signature": "let get: (t<'k, 'v, 'id>, 'k) => option<'v>"
-      },
-      {
-        "id": "Belt.Map.getUndefined",
-        "kind": "value",
-        "name": "getUndefined",
-        "docstrings": [
-          "See `Belt.Map.get`. Returns `undefined` when not found"
-        ],
-        "signature": "let getUndefined: (t<'k, 'v, 'id>, 'k) => Js.undefined<'v>"
       },
       {
         "id": "Belt.Map.getWithDefault",
@@ -7313,15 +6920,6 @@
         "signature": "let minimum: t<'value, 'id> => option<'value>"
       },
       {
-        "id": "Belt.Set.minUndefined",
-        "kind": "value",
-        "name": "minUndefined",
-        "docstrings": [
-          "Returns minimum value of the collection. `undefined` if collection is empty.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.Set.make(~id=module(IntCmp))\nlet s1 = Belt.Set.fromArray([3, 2, 1, 5], ~id=module(IntCmp))\n\ns0->Belt.Set.minUndefined->Js.Undefined.toOption == None\ns1->Belt.Set.minUndefined->Js.Undefined.toOption == Some(1)\n```"
-        ],
-        "signature": "let minUndefined: t<'value, 'id> => Js.undefined<'value>"
-      },
-      {
         "id": "Belt.Set.maximum",
         "kind": "value",
         "name": "maximum",
@@ -7331,15 +6929,6 @@
         "signature": "let maximum: t<'value, 'id> => option<'value>"
       },
       {
-        "id": "Belt.Set.maxUndefined",
-        "kind": "value",
-        "name": "maxUndefined",
-        "docstrings": [
-          "Returns maximum value of the collection. `undefined` if collection is empty.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.Set.make(~id=module(IntCmp))\nlet s1 = Belt.Set.fromArray([3, 2, 1, 5], ~id=module(IntCmp))\n\ns0\n->Belt.Set.maxUndefined\n->Js.Undefined.toOption == None\n\ns1\n->Belt.Set.maxUndefined\n->Js.Undefined.toOption == Some(5)\n```"
-        ],
-        "signature": "let maxUndefined: t<'value, 'id> => Js.undefined<'value>"
-      },
-      {
         "id": "Belt.Set.get",
         "kind": "value",
         "name": "get",
@@ -7347,15 +6936,6 @@
           "Returns the reference of the value which is equivalent to value using the comparator specifiecd by this collection. Returns `None` if element does not exist.\n\n## Examples\n\n```rescript\nmodule IntCmp = Belt.Id.MakeComparable({\n  type t = int\n  let cmp = Pervasives.compare\n})\n\nlet s0 = Belt.Set.fromArray([1, 2, 3, 4, 5], ~id=module(IntCmp))\n\ns0->Belt.Set.get(3) == Some(3)\ns0->Belt.Set.get(20) == None\n```"
         ],
         "signature": "let get: (t<'value, 'id>, 'value) => option<'value>"
-      },
-      {
-        "id": "Belt.Set.getUndefined",
-        "kind": "value",
-        "name": "getUndefined",
-        "docstrings": [
-          "Same as [get](#get) but returns `undefined` when element does not exist."
-        ],
-        "signature": "let getUndefined: (t<'value, 'id>, 'value) => Js.undefined<'value>"
       },
       {
         "id": "Belt.Set.getExn",
@@ -8438,13 +8018,6 @@
         "signature": "let push: (t<'a>, 'a) => unit"
       },
       {
-        "id": "Belt.MutableStack.popUndefined",
-        "kind": "value",
-        "name": "popUndefined",
-        "docstrings": [],
-        "signature": "let popUndefined: t<'a> => Js.undefined<'a>"
-      },
-      {
         "id": "Belt.MutableStack.pop",
         "kind": "value",
         "name": "pop",
@@ -8452,11 +8025,11 @@
         "signature": "let pop: t<'a> => option<'a>"
       },
       {
-        "id": "Belt.MutableStack.topUndefined",
+        "id": "Belt.MutableStack.popOrThrow",
         "kind": "value",
-        "name": "topUndefined",
+        "name": "popOrThrow",
         "docstrings": [],
-        "signature": "let topUndefined: t<'a> => Js.undefined<'a>"
+        "signature": "let popOrThrow: t<'a> => 'a"
       },
       {
         "id": "Belt.MutableStack.top",
@@ -8585,15 +8158,6 @@
         "signature": "let peek: t<'a> => option<'a>"
       },
       {
-        "id": "Belt.MutableQueue.peekUndefined",
-        "kind": "value",
-        "name": "peekUndefined",
-        "docstrings": [
-          "`peekUndefined(q)` returns `undefined` if not found."
-        ],
-        "signature": "let peekUndefined: t<'a> => Js.undefined<'a>"
-      },
-      {
         "id": "Belt.MutableQueue.peekExn",
         "kind": "value",
         "name": "peekExn",
@@ -8619,15 +8183,6 @@
           "`pop(q)` removes and returns the first element in queue `q`."
         ],
         "signature": "let pop: t<'a> => option<'a>"
-      },
-      {
-        "id": "Belt.MutableQueue.popUndefined",
-        "kind": "value",
-        "name": "popUndefined",
-        "docstrings": [
-          "`popUndefined(q)` removes and returns the first element in queue `q`. it will\nreturn `undefined` if it is already empty."
-        ],
-        "signature": "let popUndefined: t<'a> => Js.undefined<'a>"
       },
       {
         "id": "Belt.MutableQueue.popExn",
@@ -8944,15 +8499,6 @@
           "`getUnsafe(arr, i)`\n\n**Unsafe**\n\nno bounds checking; this would cause type error if `i` does not stay within range"
         ],
         "signature": "let getUnsafe: (t<'a>, int) => 'a"
-      },
-      {
-        "id": "Belt.Array.getUndefined",
-        "kind": "value",
-        "name": "getUndefined",
-        "docstrings": [
-          "`getUndefined(arr, i)`\n\nIt does the samething in the runtime as [`getUnsafe`]();\nit is _type safe_ since the return type still track whether it is\nin range or not"
-        ],
-        "signature": "let getUndefined: (t<'a>, int) => Js.undefined<'a>"
       },
       {
         "id": "Belt.Array.set",

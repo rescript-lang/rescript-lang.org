@@ -10159,7 +10159,7 @@
         "kind": "value",
         "name": "lastIndex",
         "docstrings": [
-          "Returns the index where the next match will start its search. This property\nwill be modified when the RegExp object is used, if the global (\"g\") flag is\nset.\n\n## Examples\n\n```rescript\nlet re = /ab*TODO/g\nlet str = \"abbcdefabh\"\n\nlet break = ref(false)\nwhile !break.contents {\n  switch Js.Re.exec_(re, str) {\n  | Some(result) =>\n    Js.Nullable.iter(Js.Re.captures(result)[0], match_ => {\n      let next = Belt.Int.toString(Js.Re.lastIndex(re))\n      Js.log(\"Found \" ++ (match_ ++ (\". Next match starts at \" ++ next)))\n    })\n  | None => break := true\n  }\n}\n```\n\nSee\n[`RegExp: lastIndex`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/lastIndex)\non MDN."
+          "Returns the index where the next match will start its search. This property\nwill be modified when the RegExp object is used, if the global (\"g\") flag is\nset.\n\n## Examples\n\n```rescript\nlet re = /ab*TODO/g\nlet str = \"abbcdefabh\"\n\nlet break_ = ref(false)\nwhile !break_.contents {\n  switch Js.Re.exec_(re, str) {\n  | Some(result) =>\n    Js.Nullable.iter(Js.Re.captures(result)[0], match_ => {\n      let next = Belt.Int.toString(Js.Re.lastIndex(re))\n      Js.log(\"Found \" ++ (match_ ++ (\". Next match starts at \" ++ next)))\n    })\n  | None => break_ := true\n  }\n}\n```\n\nSee\n[`RegExp: lastIndex`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/lastIndex)\non MDN."
         ],
         "signature": "let lastIndex: t => int",
         "deprecated": ""
