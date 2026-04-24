@@ -57,17 +57,17 @@ module PlaygroundHero = {
       js: `import * as JsxRuntime from "react/jsx-runtime";
 
 function Playground$Button(props) {
-  var count = props.count;
-  var times = count !== 1 ? (
+  let count = props.count;
+  let times = count !== 1 ? (
     count !== 2 ? count.toString() + " times" : "twice"
   ) : "once";
-  var text = "Click me " + times;
+  let text = "Click me " + times;
   return JsxRuntime.jsx("button", {
     children: text
   });
 }
 
-var Button = {
+let Button = {
   make: Playground$Button
 };
 
@@ -118,7 +118,7 @@ export {
           /* ---Link to Playground--- */
           <div>
             <ReactRouter.Link.String
-              to={`/try?code=${encodeURIComponent(example.res)}`}
+              to={`/try?code=${LzString.lzString.compressToEncodedURIComponent(example.res)}`}
               className="captions md:px-0 border-b border-gray-40 hover:border-gray-60 text-gray-60"
             >
               {React.string("Edit this example in Playground")}

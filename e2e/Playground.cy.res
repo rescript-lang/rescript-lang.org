@@ -65,6 +65,28 @@ describe("Playground", () => {
     ->ignore
   })
 
+  it("should open the landing page example in the playground with code and compiled output", () => {
+    containsSelector("a", "Edit this example in Playground")
+    ->scrollIntoView
+    ->should("be.visible")
+    ->click
+    ->ignore
+
+    url()->shouldInclude("/try?code=")->ignore
+    waitForPlayground()
+
+    get(".cm-content")
+    ->shouldContainText("module Button = {")
+    ->shouldContainText("Click me")
+    ->ignore
+
+    get("pre.whitespace-pre-wrap")
+    ->should("be.visible")
+    ->shouldContainText("react/jsx-runtime")
+    ->shouldContainText("Click me")
+    ->ignore
+  })
+
   it("should switch to light mode from toast and back to dark mode in settings", () => {
     // Navigate to playground and wait for initial render
     clickNavLink(~testId="navbar-primary-left-content", ~text="Playground")
