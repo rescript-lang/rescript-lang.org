@@ -17,21 +17,24 @@ type context = {request: FetchAPI.request, params: {path: array<string>}}
 
 let onRequest = async ({params}: context) => {
   let title = params.path[0]->Option.getOr("ReScript")->decodeURIComponent
-  let descripton = params.path[1]->Option.getOr("ReScript")->decodeURIComponent
-
-  // if the description contains a `.` we want to split it up and use the first sentence as the subTitle
-  let (descripton, subTitle) = {
-    let segments = descripton->String.split(".")
-    switch segments->Array.length > 1 {
-    | true => (segments[1]->Option.getOr(""), segments[0])
-    | false => (descripton, None)
-    }
-  }
+  let description = params.path[1]->Option.getOr("ReScript")->decodeURIComponent
 
   // we want to split the title if it contains a |
-  let (title, subTitle) = {
-    let segments = title->String.split("|")
-    (segments[0]->Option.getOr(""), segments[1]->Option.orElse(subTitle))
+  let (title, subTitle, description) = {
+    let titleSegments = title->String.split("|")
+    // if the description contains a `.` we want to split it up and use the first sentence as the subTitle
+    let descriptionSegments = description->String.split(".")
+
+    let (subTitle, description) = switch titleSegments[1] {
+    | Some(subTitle) => (Some(subTitle), description)
+    | None =>
+      switch descriptionSegments[1] {
+      | Some(description) => (descriptionSegments[0], description)
+      | None => (None, description)
+      }
+    }
+
+    (titleSegments[0]->Option.getOr(""), subTitle, description)
   }
 
   Cloudflare.imageResponse(
@@ -103,7 +106,7 @@ let onRequest = async ({params}: context) => {
           // extra space since X wants to overlay the text
         }}
       >
-        {React.string(descripton)}
+        {React.string(description)}
       </p>
     </div>,
     {
