@@ -40,6 +40,7 @@ public/playground-bundles/
 dist
 build
 .react-router
+.worktrees/
 mdx-manifest.json
 
 app/**/*.mjs

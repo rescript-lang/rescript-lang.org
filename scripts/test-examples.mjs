@@ -508,7 +508,9 @@ let ensureTempProject = ({ tempRoot, preserve = false }) => {
     fs.cpSync(
       path.join(projectRoot, "node_modules", "@rescript", "react"),
       tempReactPackage,
-      { recursive: true },
+      {
+        recursive: true,
+      },
     );
   }
 };
