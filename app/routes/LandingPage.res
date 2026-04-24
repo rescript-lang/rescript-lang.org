@@ -85,6 +85,12 @@ export {
     <section className="relative mt-20 bg-gray-10">
       <div className="relative flex justify-center w-full">
         <div className="relative w-full pt-6 pb-8 sm:px-8 md:px-16 max-w-[1400px]">
+          <div className="relative z-2 mx-auto mb-10 max-w-3xl text-center">
+            <h2 className="hl-2 text-gray-80"> {React.string("Readable in. Predictable out.")} </h2>
+            <p className="body-lg text-gray-60 mt-4">
+              {React.string(`Readable source, predictable output, and fast compiler feedback are useful whether changes come from a person or a coding agent. ReScript keeps the edit-review-fix loop tight for both humans and tools.`)}
+            </p>
+          </div>
           // Playground widget
           <div
             className="relative z-2 flex flex-col md:flex-row bg-gray-90 mx-auto sm:rounded-lg max-w-1280"
@@ -251,12 +257,6 @@ module QuickInstall = {
     @react.component
     let make = () => {
       <div className="w-full max-w-400">
-        <h2 className="hl-3 lg:mt-12"> {React.string("Quick Install")} </h2>
-        <div className="captions x text-gray-40 mb-2 mt-1">
-          {React.string(
-            "You can quickly add ReScript to your existing JavaScript codebase via npm / yarn:",
-          )}
-        </div>
         <div className="w-full space-y-2"> {copyBox("npm install rescript")} </div>
         <div className="captions x text-gray-40 mb-2 mt-2">
           {React.string("Or generate a new project from the official template with npx:")}
@@ -269,26 +269,15 @@ module QuickInstall = {
   @react.component
   let make = () => {
     <section className="my-32 sm:px-4 sm:flex sm:justify-center">
-      <div className="max-w-1060 flex flex-col w-full px-5 md:px-8 lg:px-8 lg:box-content ">
-        //---Textblock on the left side---
-        <div className="relative max-w-112">
-          <p
-            className="relative z-1 space-y-12 text-gray-80 font-semibold text-24 md:text-32 leading-2"
-          >
-            <span className="bg-fire-5 rounded-lg border border-fire-10 p-1 ">
-              {React.string(`Leverage the full power`)}
-            </span>
-            {React.string(` of JavaScript in a robustly typed language without the fear of \`any\` types.`)}
-          </p>
-        </div>
-        //spacing between columns
-        <div className="w-full mt-12 md:flex flex-col lg:flex-row md:justify-between ">
-          <p
-            className="relative z-1 text-gray-80 font-semibold text-24 md:text-32 leading-2 max-w-lg"
-          >
-            {React.string(`ReScript is used to ship and maintain mission-critical products with good UI and UX.`)}
-          </p>
-          <div className="mt-16 lg:mt-0 self-end max-w-400">
+      <div className="max-w-1060 flex flex-col gap-12 w-full px-5 md:px-8 lg:px-8 lg:box-content">
+        <div className="w-full flex flex-col lg:flex-row lg:justify-between lg:items-end gap-12">
+          <div className="max-w-2xl">
+            <h2 className="hl-2 text-gray-80 mb-4"> {React.string("Quick Install")} </h2>
+            <p className="body-lg text-gray-60">
+              {React.string(`You can quickly add ReScript to an existing JavaScript codebase in minutes. That low setup overhead also makes it easy to experiment in fast-moving teams, including ones trying AI-assisted workflows.`)}
+            </p>
+          </div>
+          <div className="self-start lg:self-end max-w-400">
             <Instructions />
           </div>
         </div>
@@ -379,22 +368,7 @@ module MainUSP = {
       media={<video className="rounded-lg" controls={true} poster={"/lp/fast-build-preview.avif"}>
         <source src="https://assets-17077.kxcdn.com/videos/fast-build-3.mp4" type_="video/mp4" />
       </video>}
-      paragraph={<>
-        <p>
-          {React.string(`ReScript cares about a consistent and fast
-      feedback loop for any codebase size. Refactor code, pull complex changes,
-      or switch to feature branches as you please. No sluggish CI builds, stale
-      caches, wrong type hints, or memory hungry language servers that slow you
-      down.`)}
-        </p>
-        <p className="mt-6">
-          // <ReactRouter.Link to={("/docs/manual/build-performance" :> ReactRouter.Link.to)}>
-          //   <Button size={Button.Small} kind={Button.PrimaryBlue}>
-          //     {React.string("Learn more")}
-          //   </Button>
-          // </ReactRouter.Link>
-        </p>
-      </>}
+      paragraph={React.string(`ReScript cares about a consistent and fast feedback loop for any codebase size. Refactor code, pull complex changes, or switch to feature branches as you please. That same speed also makes AI-assisted iteration much easier to validate and keep moving.`)}
     />
 
   let item2 =
@@ -409,12 +383,7 @@ module MainUSP = {
         <source src="https://assets-17077.kxcdn.com/videos/type-better-3.mp4" type_="video/mp4" />
       </video>}
       polygonDirection=Up
-      paragraph={React.string(`Every ReScript app is fully typed and provides
-      reliable type information for any given value in your program. We
-      prioritize simpler types over complex types for the sake of
-      clarity and easy debugability. No \`any\`, no magic types, no surprise
-      \`undefined\`.
-      `)}
+      paragraph={React.string(`Every ReScript app is fully typed and provides reliable type information for any given value in your program. We prioritize simpler types over complex types for the sake of clarity and easy debugability. That also makes AI-generated changes easier to review and correct.`)}
     />
 
   let item3 =
@@ -431,9 +400,7 @@ module MainUSP = {
           src="https://assets-17077.kxcdn.com/videos/interop-example-2.mp4" type_="video/mp4"
         />
       </video>}
-      paragraph={React.string(`Use any library from JavaScript, export ReScript
-      libraries to JavaScript, automatically generate TypeScript types. It's
-      like you've never left the good parts of JavaScript at all.`)}
+      paragraph={React.string(`Use any library from JavaScript, export ReScript libraries to JavaScript, automatically generate TypeScript types. It's like you've never left the good parts of JavaScript at all, including the SDKs and tools that power modern AI products.`)}
     />
 
   @react.component
@@ -442,6 +409,57 @@ module MainUSP = {
       item1
       item2
       item3
+    </section>
+  }
+}
+
+module AgenticWorkflows = {
+  type point = {
+    title: string,
+    body: string,
+  }
+
+  let points = [
+    {
+      title: "Readable code helps agents stay on track",
+      body: "ReScript's syntax is small, consistent, and easy to scan, which makes generated edits easier to inspect and prompts easier to ground in real code.",
+    },
+    {
+      title: "Compiler errors create a tighter repair loop",
+      body: "Instead of vague runtime failures, agents get concrete feedback about what is wrong and where the contract broke. That makes iterative repair much more reliable.",
+    },
+    {
+      title: "Humans can still review the result",
+      body: "ReScript compiles to straightforward JavaScript, so teams can inspect output, debug behavior, and keep handoff between human and agent work understandable.",
+    },
+  ]
+
+  @react.component
+  let make = () => {
+    <section className="flex justify-center w-full bg-fire-5 px-5 sm:px-8 lg:px-16 py-24 lg:py-32">
+      <div className="max-w-1060 w-full">
+        <div className="max-w-3xl">
+          <h2 className="hl-1 text-gray-80">
+            {React.string("Why ReScript works well with coding agents")}
+          </h2>
+          <p className="body-lg text-gray-60 mt-4">
+            {React.string(`Coding agents tend to work best when the surrounding system is readable, predictable, and easy to review. ReScript helps by keeping the source language simple, the compiler feedback fast, and the generated output understandable.`)}
+          </p>
+        </div>
+        <div className="grid gap-6 mt-12 lg:mt-16 md:grid-cols-3">
+          {points
+          ->Array.mapWithIndex((point, i) =>
+            <div
+              key={Int.toString(i)}
+              className="rounded-xl border border-fire-10 bg-white px-6 py-6 shadow-[0px_12px_40px_0px_rgba(230,72,79,0.08)]"
+            >
+              <h3 className="hl-4 text-gray-80 mb-3"> {React.string(point.title)} </h3>
+              <p className="body-md text-gray-60"> {React.string(point.body)} </p>
+            </div>
+          )
+          ->React.array}
+        </div>
+      </div>
     </section>
   }
 }
@@ -467,11 +485,7 @@ module OtherSellingPoints = {
             {React.string(`A community of programmers who value getting things done`)}
           </h3>
           <p className="body-md text-gray-40">
-            {React.string(`No language can be popular without a solid
-            community. A great type system isn't useful if library authors
-            abuse it. Performance doesn't show if all the libraries are slow.
-            Join the ReScript community — A group of companies and individuals
-            who deeply care about simplicity, speed and practicality.`)}
+            {React.string(`No language can be popular without a solid community. A great type system isn't useful if library authors abuse it. Performance doesn't show if all the libraries are slow. That pragmatic mindset matters even more when teams start using coding agents and need changes to stay understandable.`)}
           </p>
           <div className="mt-6">
             <a href="https://forum.rescript-lang.org">
@@ -492,10 +506,7 @@ module OtherSellingPoints = {
             {React.string(`Tooling that just works out of the box`)}
           </h3>
           <p className="body-md text-gray-40">
-            {React.string(`A builtin pretty printer, memory friendly
-            VSCode & Vim plugins, a stable type system and compiler that doesn't require lots
-            of extra configuration. ReScript brings all the tools you need to
-            build reliable JavaScript, Node and ReactJS applications.`)}
+            {React.string(`A builtin pretty printer, memory friendly VSCode and Vim plugins, and a stable compiler keep the workflow tight without lots of extra configuration. That's especially useful when both humans and AI tools are contributing changes.`)}
           </p>
         </div>
         // Item 3
@@ -551,6 +562,31 @@ module TrustedBy = {
       </a>
       <div className="self-start mt-10 max-w-320 overflow-hidden opacity-50 max-h-24">
         <img className="w-full h-full" src="/lp/grid.svg" />
+      </div>
+    </section>
+  }
+}
+
+module AgenticGuideCTA = {
+  @react.component
+  let make = () => {
+    <section className="px-5 sm:px-8 lg:px-16 py-20">
+      <div
+        className="max-w-1060 mx-auto rounded-2xl border border-gray-80 bg-gray-90 px-8 py-10 lg:px-12 lg:py-12 flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between"
+      >
+        <div className="max-w-2xl">
+          <h2 className="hl-2 text-gray-10 mb-3">
+            {React.string("Learn more about ReScript and coding agents")}
+          </h2>
+          <p className="body-lg text-gray-30">
+            {React.string(`Read a short guide on why readable source, strong types, and fast compiler feedback help when humans and coding agents work together.`)}
+          </p>
+        </div>
+        <ReactRouter.Link.String
+          to="/docs/manual/agentic-workflows" className="self-start shrink-0"
+        >
+          <Button kind={Button.PrimaryBlue}> {React.string("Read the guide")} </Button>
+        </ReactRouter.Link.String>
       </div>
     </section>
   }
@@ -723,8 +759,10 @@ let make = (~components=MarkdownComponents.default) => {
                   <PlaygroundHero />
                   <QuickInstall />
                   <MainUSP />
+                  <AgenticWorkflows />
                   <OtherSellingPoints />
                   <TrustedBy />
+                  <AgenticGuideCTA />
                   <CuratedResources />
                 </div>
               </div>
