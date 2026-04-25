@@ -28,6 +28,7 @@ scripts/gendocs.mjs
 scripts/generate_*.mjs
 scripts/gendocs.jsx
 scripts/generate_*.jsx
+scripts/LogAlgoliaEnvStatus.jsx
 
 # Generated via generate-llms script
 public/llms/manual/**/llm*.txt
