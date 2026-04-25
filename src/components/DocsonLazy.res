@@ -1,1 +1,1 @@
-let make = React.lazy_(() => import(Docson.make))
+let make = Docson.make

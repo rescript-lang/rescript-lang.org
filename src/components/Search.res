@@ -1,8 +1,7 @@
-let apiKey = Env.algolia_read_api_key
-let indexName = Env.algolia_index_name
-let appId = Env.algolia_app_id
-
 type state = Active | Inactive
+
+let unavailableText = "Search unavailable"
+let unavailableLabel = "Search unavailable for this build"
 
 let navigator: DocSearch.navigator = {
   navigate: ({itemUrl}) => {
@@ -94,6 +93,7 @@ let hitComponent = ({hit, children: _}: DocSearch.hitComponent): React.element =
 @react.component
 let make = () => {
   let (state, setState) = React.useState(_ => Inactive)
+  let algoliaConfig = Env.algoliaPublicConfig
 
   let handleCloseModal = () => {
     let () = switch WebAPI.Document.querySelector(document, ".DocSearch-Modal") {
@@ -111,32 +111,36 @@ let make = () => {
   }
 
   React.useEffect(() => {
-    let isEditableTag = (el: WebAPI.DOMAPI.element) =>
-      switch el.tagName {
-      | "TEXTAREA" | "SELECT" | "INPUT" => true
-      | _ => false
+    switch algoliaConfig {
+    | None => None
+    | Some(_) =>
+      let isEditableTag = (el: WebAPI.DOMAPI.element) =>
+        switch el.tagName {
+        | "TEXTAREA" | "SELECT" | "INPUT" => true
+        | _ => false
+        }
+
+      let focusSearch = (e: WebAPI.UIEventsAPI.keyboardEvent) => {
+        switch document.activeElement {
+        | Value(el)
+          if el->isEditableTag || (Obj.magic(el): WebAPI.DOMAPI.htmlElement).isContentEditable => ()
+        | _ =>
+          setState(_ => Active)
+          WebAPI.KeyboardEvent.preventDefault(e)
+        }
       }
 
-    let focusSearch = (e: WebAPI.UIEventsAPI.keyboardEvent) => {
-      switch document.activeElement {
-      | Value(el)
-        if el->isEditableTag || (Obj.magic(el): WebAPI.DOMAPI.htmlElement).isContentEditable => ()
-      | _ =>
-        setState(_ => Active)
-        WebAPI.KeyboardEvent.preventDefault(e)
+      let handleGlobalKeyDown = (e: WebAPI.UIEventsAPI.keyboardEvent) => {
+        switch e.key {
+        | "/" => focusSearch(e)
+        | "k" if e.ctrlKey || e.metaKey => focusSearch(e)
+        | _ => ()
+        }
       }
+      WebAPI.Window.addEventListener(window, Keydown, handleGlobalKeyDown)
+      Some(() => WebAPI.Window.removeEventListener(window, Keydown, handleGlobalKeyDown))
     }
-
-    let handleGlobalKeyDown = (e: WebAPI.UIEventsAPI.keyboardEvent) => {
-      switch e.key {
-      | "/" => focusSearch(e)
-      | "k" if e.ctrlKey || e.metaKey => focusSearch(e)
-      | _ => ()
-      }
-    }
-    WebAPI.Window.addEventListener(window, Keydown, handleGlobalKeyDown)
-    Some(() => WebAPI.Window.removeEventListener(window, Keydown, handleGlobalKeyDown))
-  }, [setState])
+  }, [algoliaConfig])
 
   let onClick = _ => {
     setState(_ => Active)
@@ -146,35 +150,53 @@ let make = () => {
     handleCloseModal()
   }, [setState])
 
-  <>
+  switch algoliaConfig {
+  | None =>
     <button
-      onClick
       type_="button"
-      className="text-gray-60 hover:text-fire-50 cursor-pointer"
-      ariaLabel="Search"
+      disabled=true
+      className="text-gray-50 cursor-not-allowed inline-flex items-center gap-2"
+      ariaLabel=unavailableLabel
+      title="Search is disabled for this build"
     >
       <Icon.MagnifierGlass className="fill-current" />
+      <span> {React.string(unavailableText)} </span>
     </button>
-    {switch state {
-    | Active =>
-      switch ReactDOM.querySelector("body") {
-      | Some(element) =>
-        ReactDOM.createPortal(
-          <DocSearch
-            apiKey
-            appId
-            indexName
-            navigator
-            hitComponent
-            onClose
-            initialScrollY={window.scrollY->Float.toInt}
-            searchParameters={distinct: 3, hitsPerPage: 20, attributesToSnippet: ["content:9999"]}
-          />,
-          element,
-        )
-      | None => React.null
-      }
-    | Inactive => React.null
-    }}
-  </>
+  | Some({appId, indexName, searchApiKey}) =>
+    <>
+      <button
+        onClick
+        type_="button"
+        className="text-gray-60 hover:text-fire-50 cursor-pointer"
+        ariaLabel="Search"
+      >
+        <Icon.MagnifierGlass className="fill-current" />
+      </button>
+      {switch state {
+      | Active =>
+        switch ReactDOM.querySelector("body") {
+        | Some(element) =>
+          ReactDOM.createPortal(
+            <DocSearch
+              apiKey=searchApiKey
+              appId
+              indexName
+              navigator
+              hitComponent
+              onClose
+              initialScrollY={window.scrollY->Float.toInt}
+              searchParameters={
+                distinct: 3,
+                hitsPerPage: 20,
+                attributesToSnippet: ["content:9999"],
+              }
+            />,
+            element,
+          )
+        | None => React.null
+        }
+      | Inactive => React.null
+      }}
+    </>
+  }
 }
