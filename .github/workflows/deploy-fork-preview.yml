@@ -21,7 +21,7 @@ jobs:
       # pull-requests: write, so we can't post PR comments here.
       - name: Fetch PR info
         id: pr
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9.0.0
         with:
           script: |
             const inputRaw = core.getInput("pr_number") || (context.payload.inputs && context.payload.inputs.pr_number) || "";
@@ -49,18 +49,20 @@ jobs:
             core.setOutput("is_fork", pr.head.repo.fork ? "true" : "false");
 
       - name: Checkout PR head
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.2
         with:
           repository: ${{ steps.pr.outputs.repo }}
           ref: ${{ steps.pr.outputs.sha }}
           persist-credentials: false
 
-      - name: Setup yarn
-        uses: actions/setup-node@v4
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6.3.0
         with:
           node-version-file: ".node-version"
           cache: "yarn"
 
+      - name: Enable Corepack
+        run: corepack enable
       - name: Install dependencies
         run: yarn install
 

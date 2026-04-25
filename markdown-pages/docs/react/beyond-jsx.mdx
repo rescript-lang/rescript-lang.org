@@ -24,7 +24,7 @@ A plain React component is defined as a `('props) => React.element` function. Yo
 
 Here are some examples on how to define your own component types (often useful when interoping with existing JS code, or passing around components):
 
-```res example
+```res
 // Plain function type
 type friend = {name: string, online: bool}
 type friendComp = friend => React.element
@@ -58,7 +58,7 @@ module Container = {
 
 <CodeTab labels={["Decorated", "Expanded", "JS Output"]}>
 
-```res example
+```res
 module Friend = {
   @react.component
   let make = (~name: string, ~children) => {
@@ -70,7 +70,7 @@ module Friend = {
 }
 ```
 
-```res example
+```res nocheck
 module Friend = {
   type props<'name, 'children> = {
     name: 'name,
@@ -108,7 +108,7 @@ The `@react.component` decorator also works for `React.forwardRef` calls:
 
 <CodeTab labels={["Decorated", "Expanded"]}>
 
-```res
+```res nocheck
 module FancyInput = {
   @react.component
   let make = React.forwardRef((~className=?, ~children, ref) =>
@@ -119,7 +119,7 @@ module FancyInput = {
 }
 ```
 
-```res
+```res nocheck
 // Simplified Output
 type props<'className, 'children, 'ref> = {
   className?: 'className,
@@ -145,11 +145,11 @@ Whenever we are using JSX with a custom component ("capitalized JSX"), we are ac
 
 <CodeTab labels={["JSX", "Without JSX", "JS Output"]}>
 
-```res example
+```res
 let _ = <Friend name="Fred" age=20 />
 ```
 
-```res example
+```res
 // classic
 React.createElement(Friend.make, {name: "Fred", age:20})
 
@@ -167,14 +167,14 @@ As you can see, it uses `Friend.make` to call the `React.createElement` API. In 
 
 <CodeTab labels={["JSX", "Without JSX", "JS Output"]}>
 
-```res example
+```res
 <Container width=200>
   {React.string("Hello")}
   {React.string("World")}
 </Container>
 ```
 
-```res example
+```res
 // classic
 React.createElementVariadic(
   Container.make,
@@ -203,11 +203,11 @@ Note that the `children: React.null` field has no relevance since React will onl
 
 <CodeTab labels={["JSX", "Without JSX", "JS Output"]}>
 
-```res example
+```res
 <div title="test"/>
 ```
 
-```res example
+```res
 // classic
 ReactDOM.createDOMElementVariadic("div", ~props={title: "test"}, [])
 
@@ -225,13 +225,13 @@ The same goes for uncapitalized JSX with children:
 
 <CodeTab labels={["JSX", "Without JSX", "JSX Output", "Without JSX Output"]}>
 
-```res example
+```res
 <div title="test">
   <span/>
 </div>
 ```
 
-```res example
+```res
 // classic
 ReactDOM.createDOMElementVariadic(
   "div",

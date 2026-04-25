@@ -5,12 +5,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/checkout@v6.0.2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6.3.0
         with:
           node-version-file: ".node-version"
           cache: yarn
+      - name: Enable Corepack
+        run: corepack enable
       - name: Install dependencies
         run: yarn
       - name: Format check
@@ -19,31 +21,36 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/checkout@v6.0.2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6.3.0
         with:
           node-version-file: ".node-version"
           cache: yarn
+      - name: Enable Corepack
+        run: corepack enable
       - name: Install dependencies
         run: yarn
       - name: Test examples and hrefs
         run: yarn test
   Vitest:
     runs-on: ubuntu-latest
+    container:
+      # Keep this image tag aligned with package.json's playwright version.
+      image: mcr.microsoft.com/playwright:v1.59.1-noble
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/checkout@v6.0.2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6.3.0
         with:
           node-version-file: ".node-version"
           cache: yarn
+      - name: Enable Corepack
+        run: corepack enable
       - name: Install dependencies
         run: yarn
       - name: Build ReScript
         run: yarn build:res
-      - name: Install Playwright
-        run: yarn playwright install --with-deps
       - name: Vitest
         run: yarn ci:test

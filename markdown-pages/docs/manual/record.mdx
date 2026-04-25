@@ -36,8 +36,8 @@ You can also nest definitions of records.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
-type person = {
+```res
+type nestedPerson = {
   age: int,
   name: string,
   notificationSettings: {
@@ -66,6 +66,8 @@ let person = {
     allowPasswordLogin: false,
   },
 };
+
+export { person };
 ```
 
 </CodeTab>
@@ -81,13 +83,13 @@ So if we in the example above ended up needing to refer to `person.notificationS
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type personNotificationSettings = {
   sendEmails: bool,
   allowPasswordLogin: bool,
 }
 
-type person = {
+type explicitPerson = {
   age: int,
   name: string,
   notificationSettings: personNotificationSettings
@@ -113,6 +115,8 @@ let person = {
     allowPasswordLogin: false,
   },
 };
+
+export { person };
 ```
 
 </CodeTab>
@@ -145,23 +149,28 @@ The type is found by looking above the `me` value. **Note**: if the type instead
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // School.res
-type person = {age: int, name: string}
+type schoolPerson = {age: int, name: string}
 ```
 
 ```js
-// Empty output
+let me = {
+  age: 5,
+  name: "Big ReScript",
+};
+
+export { me };
 ```
 
 </CodeTab>
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 // Example.res
 
-let me: School.person = {age: 20, name: "Big ReScript"}
+let me: School.schoolPerson = {age: 20, name: "Big ReScript"}
 /* or */
 let me2 = {School.age: 20, name: "Big ReScript"}
 ```
@@ -187,12 +196,19 @@ Use the familiar dot notation:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let name = me.name
 ```
 
 ```js
-var name = "Big ReScript";
+let me = {
+  age: 5,
+  name: "Big ReScript",
+};
+
+let name = "Big ReScript";
+
+export { me, name };
 ```
 
 </CodeTab>
@@ -203,15 +219,22 @@ New records can be created from old records with the `...` spread operator. The 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let meNextYear = {...me, age: me.age + 1}
 ```
 
 ```js
-var meNextYear = {
-  age: 21,
+let meNextYear = {
+  age: 6,
   name: "Big ReScript",
 };
+
+let me = {
+  age: 5,
+  name: "Big ReScript",
+};
+
+export { me, meNextYear };
 ```
 
 </CodeTab>
@@ -224,23 +247,30 @@ Record fields can optionally be mutable. This allows you to efficiently update t
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
-type person = {
+```res
+type mutablePerson = {
   name: string,
   mutable age: int
 }
 
-let baby = {name: "Baby ReScript", age: 5}
+let baby: mutablePerson = {name: "Baby ReScript", age: 5}
 baby.age = baby.age + 1 // `baby.age` is now 6. Happy birthday!
 ```
 
 ```js
-var baby = {
+let baby = {
   name: "Baby ReScript",
   age: 5,
 };
 
 baby.age = (baby.age + 1) | 0;
+
+let me = {
+  age: 5,
+  name: "Big ReScript",
+};
+
+export { me, baby };
 ```
 
 </CodeTab>
@@ -257,15 +287,20 @@ ReScript [`v10`](../../blog/release-10-0-0.mdx#experimental-optional-record-fiel
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
-type person = {
+```res
+type optionalPerson = {
   age: int,
   name?: string
 }
 ```
 
 ```js
-// Empty output
+let me = {
+  age: 5,
+  name: "Big ReScript",
+};
+
+export { me };
 ```
 
 </CodeTab>
@@ -278,31 +313,33 @@ You can omit any optional fields when creating a record. Not setting an optional
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
-type person = {
+```res
+type optionalPerson = {
   age: int,
   name?: string
 }
 
-let me = {
+let me: optionalPerson = {
   age: 5,
   name: "Big ReScript"
 }
 
-let friend = {
+let friend: optionalPerson = {
   age: 7
 }
 ```
 
 ```js
-var me = {
+let me = {
   age: 5,
   name: "Big ReScript",
 };
 
-var friend = {
+let friend = {
   age: 7,
 };
+
+export { me, friend };
 ```
 
 </CodeTab>
@@ -315,13 +352,13 @@ Updating an optional field via an immutable update above lets you set that field
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
-type person = {
+```res
+type personWithOptionalName = {
   age: int,
   name?: string
 }
 
-let me = {
+let me: personWithOptionalName = {
   age: 123,
   name: "Hello"
 }
@@ -333,18 +370,18 @@ let withoutName = {
 ```
 
 ```js
-import * as Caml_obj from "./stdlib/caml_obj.js";
-
-var me = {
+let me = {
   age: 123,
   name: "Hello",
 };
 
-var newrecord = Caml_obj.obj_dup(me);
+let newrecord = { ...me };
 
 newrecord.name = "New Name";
 
-var withoutName = newrecord;
+let withoutName = newrecord;
+
+export { me, withoutName };
 ```
 
 </CodeTab>
@@ -353,13 +390,13 @@ However, if you want to set the field to an optional value, you prefix that valu
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
-type person = {
+```res
+type personWithOptionalName = {
   age: int,
   name?: string
 }
 
-let me = {
+let me: personWithOptionalName = {
   age: 123,
   name: "Hello"
 }
@@ -373,20 +410,20 @@ let withoutName = {
 ```
 
 ```js
-import * as Caml_obj from "./stdlib/caml_obj.js";
-
-var me = {
+let me = {
   age: 123,
   name: "Hello",
 };
 
-var maybeName = "My Name";
+let maybeName = "My Name";
 
-var newrecord = Caml_obj.obj_dup(me);
+let newrecord = { ...me };
 
 newrecord.name = maybeName;
 
-var withoutName = newrecord;
+let withoutName = newrecord;
+
+export { me, maybeName, withoutName };
 ```
 
 </CodeTab>
@@ -402,12 +439,12 @@ When matching on the value directly, it's an `option`. Example:
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-type person = {
+type matchedOptionalPerson = {
   age: int,
   name?: string,
 }
 
-let me = {
+let me: matchedOptionalPerson = {
   age: 123,
   name: "Hello",
 }
@@ -419,14 +456,14 @@ let isRescript = switch me.name {
 ```
 
 ```js
-var isRescript;
+let isRescript = "Hello" === "ReScript";
 
-isRescript = "Hello" === "ReScript" ? true : false;
-
-var me = {
+let me = {
   age: 123,
   name: "Hello",
 };
+
+export { me, isRescript };
 ```
 
 </CodeTab>
@@ -436,12 +473,12 @@ But, when matching on the field as part of the general record structure, it's tr
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-type person = {
+type matchedOptionalRecord = {
   age: int,
   name?: string,
 }
 
-let me = {
+let me: matchedOptionalRecord = {
   age: 123,
   name: "Hello",
 }
@@ -454,14 +491,14 @@ let isRescript = switch me {
 ```
 
 ```js
-var isRescript;
+let isRescript = "Hello" === "ReScript";
 
-isRescript = "Hello" === "ReScript" ? true : false;
-
-var me = {
+let me = {
   age: 123,
   name: "Hello",
 };
+
+export { me, isRescript };
 ```
 
 </CodeTab>
@@ -471,12 +508,12 @@ Sometimes you _do_ want to know whether the field was set or not. You can tell t
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-type person = {
+type matchedOptionalPerson = {
   age: int,
   name?: string,
 }
 
-let me = {
+let me: matchedOptionalPerson = {
   age: 123,
   name: "Hello",
 }
@@ -488,12 +525,14 @@ let nameWasSet = switch me {
 ```
 
 ```js
-var nameWasSet = true;
-
-var me = {
+let me = {
   age: 123,
   name: "Hello",
 };
+
+let nameWasSet = true;
+
+export { me, nameWasSet };
 ```
 
 </CodeTab>
@@ -622,7 +661,7 @@ With records, you **cannot** say "I'd like this function to take any record type
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 type person = {age: int, name: string}
 type monster = {age: int, hasTentacles: bool}
 
@@ -639,7 +678,7 @@ function getAge(entity) {
 
 Instead, `getAge` will infer that the parameter `entity` must be of type `monster`, the closest record type with the field `age`. The following code's last line fails:
 
-```res
+```res nocheck
 let kraken = {age: 9999, hasTentacles: true}
 let me = {age: 5, name: "Baby ReScript"}
 
@@ -657,7 +696,7 @@ Optional record fields, introduced in [`v10`](../../blog/release-10-0-0.mdx#expe
 
 ## Design Decisions
 
-After reading the constraints in the previous sections, and if you're coming from a dynamic language background, you might be wondering why one would bother with record in the first place instead of straight using object, since the former needs explicit typing and doesn't allow different records with the same field name to be passed to the same function, etc.
+Why use records instead of objects?
 
 1. The truth is that most of the times in your app, your data's shape is actually fixed, and if it's not, it can potentially be better represented as a combination of variant (introduced next) + record instead.
 

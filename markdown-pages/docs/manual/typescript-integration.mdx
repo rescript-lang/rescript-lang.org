@@ -92,7 +92,7 @@ _Since ReScript `11.0.0`_ modules can be annotated with `@genType` as well. In t
 
 <CodeTab labels={["ReScript", "TypeScript Output"]}>
 
-```res example
+```res
 @genType
 module Size = {
   type t =
@@ -118,6 +118,25 @@ export type Size_t = "Small" | "Medium" | "Large";
 export const Size_getNum: (size: Size_t) => number = MyCompBS.Size.getNum;
 
 export const Size: { getNum: (size: Size_t) => number } = MyCompBS.Size;
+```
+
+```js
+function getNum(size) {
+  switch (size) {
+    case "Small":
+      return 1;
+    case "Medium":
+      return 5;
+    case "Large":
+      return 10;
+  }
+}
+
+let Size = {
+  getNum: getNum,
+};
+
+export { Size };
 ```
 
 </CodeTab>

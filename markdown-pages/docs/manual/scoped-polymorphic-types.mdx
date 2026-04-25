@@ -46,7 +46,7 @@ Now, we can utilize the function obtained from `getLogger`:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let myLogger = getLogger()
 
 myLogger.log("Hello, ReScript!")
@@ -54,10 +54,15 @@ myLogger.log(42)
 ```
 
 ```js
-var myLogger = JsAPI.getLogger();
+import * as JsAPI from "jsAPI";
+
+let myLogger = JsAPI.getLogger();
 
 myLogger.log("Hello, ReScript!");
+
 myLogger.log(42);
+
+export { myLogger };
 ```
 
 </CodeTab>
@@ -91,7 +96,7 @@ In contrast, scoped polymorphic types, such as `'a. 'a => unit`, overcome this l
 
 Scoped polymorphic types work only when they are directly applied to let-bindings or record fields (as demonstrated in the logger example above). They can neither be applied to function bodies, nor to separate type definitions:
 
-```res
+```res nocheck
 exception Abort
 
 let testExn: 'a. unit => 'a = () => throw(Abort) // Works!

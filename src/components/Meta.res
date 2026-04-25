@@ -1,19 +1,21 @@
-/*
-    canonical: Set a canonical URL pointing to the original content.
- */
 @react.component
 let make = (
   ~siteName="ReScript Documentation",
   ~keywords: array<string>=[],
   ~description="The ReScript language and ecosystem docs",
+  /*
+   * canonical: Set a canonical URL pointing to the original content.
+   */
   ~canonical=?,
   ~title=?,
   ~ogLocale="en_US",
   ~ogSiteName=siteName,
-  ~ogDescription=description,
+  ~ogDescription=?,
   ~ogTitle=?,
   ~ogImage=?,
 ) => {
+  let description = description->MetaDescription.shortenForSocialPreview
+
   let title = switch title {
   | None
   | Some("") => siteName
@@ -30,6 +32,11 @@ let make = (
   | Some("") =>
     Util.Url.makeOpenGraphImageUrl(title, description)
   | Some(ogImage) => ogImage
+  }
+
+  let ogDescription = switch ogDescription {
+  | None => description
+  | Some(description) => description
   }
 
   <>
@@ -58,8 +65,8 @@ let make = (
     <meta key="og:image" property="og:image" content=ogImage />
 
     /* Twitter Meta */
-    <meta key="twitter:title" name="twitter:title" content=title />
-    <meta key="twitter:description" name="twitter:description" content=description />
+    <meta key="twitter:title" name="twitter:title" content=ogTitle />
+    <meta key="twitter:description" name="twitter:description" content=ogDescription />
     <meta key="twitter:site" name="twitter:site" content="@rescriptlang" />
     <meta key="twitter:image" property="og:image" content=ogImage />
     <meta key="twitter:creator" name="twitter:creator" content="@ReScriptAssoc" />

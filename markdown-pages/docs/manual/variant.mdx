@@ -14,7 +14,7 @@ Most data structures in most languages are about "this **and** that". A variant 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type myResponse =
   | Yes
   | No
@@ -24,7 +24,9 @@ let areYouCrushingIt = Yes
 ```
 
 ```js
-var areYouCrushingIt = "Yes";
+let areYouCrushingIt = "Yes";
+
+export { areYouCrushingIt };
 ```
 
 </CodeTab>
@@ -39,20 +41,20 @@ If the variant you're using is in a different file, bring it into scope [record]
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // Zoo.res
 type animal = Dog | Cat | Bird
 ```
 
 ```js
-// Empty output
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 // Example.res
 let pet: Zoo.animal = Dog // preferred
 // or
@@ -89,21 +91,24 @@ Here, `Instagram` holds a `string`, and `Facebook` holds a `string` and an `int`
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let myAccount = Facebook("Josh", 26)
 let friendAccount = Instagram("Jenny")
 ```
 
 ```js
-var myAccount = {
+let myAccount = {
   TAG: "Facebook",
   _0: "Josh",
   _1: 26,
 };
-var friendAccount = {
+
+let friendAccount = {
   TAG: "Instagram",
   _0: "Jenny",
 };
+
+export { myAccount, friendAccount };
 ```
 
 </CodeTab>
@@ -114,7 +119,7 @@ If a variant payload has multiple fields, you can use a record-like syntax to la
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type user =
   | Number(int)
   | Id({name: string, password: string})
@@ -123,11 +128,13 @@ let me = Id({name: "Joe", password: "123"})
 ```
 
 ```js
-var me = {
+let me = {
   TAG: "Id",
   name: "Joe",
   password: "123",
 };
+
+export { me };
 ```
 
 </CodeTab>
@@ -138,7 +145,7 @@ Of course, you can just put a regular record type in a variant too:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type u = {name: string, password: string}
 type user =
   | Number(int)
@@ -148,13 +155,15 @@ let me = Id({name: "Joe", password: "123"})
 ```
 
 ```js
-var me = {
+let me = {
   TAG: "Id",
   _0: {
     name: "Joe",
     password: "123",
   },
 };
+
+export { me };
 ```
 
 </CodeTab>
@@ -200,7 +209,7 @@ Check the output in these examples:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type greeting = Hello | Goodbye
 let g1 = Hello
 let g2 = Goodbye
@@ -225,48 +234,50 @@ let a2 = Wizard("Joe")
 ```
 
 ```js
-var g1 = "Hello";
+let g1 = "Hello";
 
-var g2 = "Goodbye";
+let g2 = "Goodbye";
 
-var o1 = "Good";
+let o1 = "Good";
 
-var o2 = {
+let o2 = {
   TAG: "Error",
   _0: "oops!",
 };
 
-var f1 = "Child";
+let f1 = "Child";
 
-var f2 = {
+let f2 = {
   TAG: "Mom",
   _0: 30,
   _1: "Jane",
 };
 
-var f3 = {
+let f3 = {
   TAG: "Dad",
   _0: 32,
 };
 
-var p1 = "Teacher";
+let p1 = "Teacher";
 
-var p2 = {
+let p2 = {
   TAG: "Student",
   gpa: 99.5,
 };
 
-var a1 = {
+let a1 = {
   TAG: "Warrior",
   _0: {
     score: 10.5,
   },
 };
 
-var a2 = {
+let a2 = {
   TAG: "Wizard",
   _0: "Joe",
 };
+
+export { g1, g2, o1, o2, f1, f2, f3, p1, p2, a1, a2 };
 ```
 
 </CodeTab>
@@ -641,7 +652,7 @@ let one: a = One
 let oneAsString = (one :> string)
 ```
 
-If you were to configure all of your construtors to be represented as `int` or `float`, you could coerce to those too:
+If you were to configure all of your constructors to be represented as `int` or `float`, you could coerce to those too:
 
 ```rescript
 type asInt = | @as(1) One | @as(2) Two | @as(3) Three
@@ -652,7 +663,7 @@ let toInt = (oneInt :> int)
 
 ### Advanced: Coercing `string` to Variant
 
-In certain situtations it's possible to coerce a `string` to a variant. This is an advanced technique that you're unlikely to need much, but when you do it's really useful.
+In certain situations it's possible to coerce a `string` to a variant. This is an advanced technique that you're unlikely to need much, but when you do it's really useful.
 
 You can coerce a `string` to a variant when:
 
@@ -680,15 +691,15 @@ This works because the variant is unboxed **and** has a catch-all case. So, if y
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
-type account =
+```res
+type accountWithTwoArguments =
   | Facebook(string, int) // 2 arguments
-type account2 =
+type accountWithTupleArgument =
   | Instagram((string, int)) // 1 argument - happens to be a 2-tuple
 ```
 
 ```js
-// Empty output
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>
@@ -705,7 +716,7 @@ Quite a few JS libraries use functions that can accept many types of arguments. 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // reserved for internal usage
 @module("myLibrary") external draw : 'a => unit = "draw"
 
@@ -723,7 +734,7 @@ betterDraw(MyFloat(1.5))
 ```
 
 ```js
-var MyLibrary = require("myLibrary");
+import * as MyLibrary from "myLibrary";
 
 function betterDraw(animal) {
   MyLibrary.draw(animal._0);
@@ -733,6 +744,8 @@ betterDraw({
   TAG: "MyFloat",
   _0: 1.5,
 });
+
+export { betterDraw };
 ```
 
 </CodeTab>
@@ -741,7 +754,7 @@ betterDraw({
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // reserved for internal usage
 @module("myLibrary") external draw : 'a => unit = "draw"
 
@@ -760,13 +773,15 @@ betterDraw(MyFloat(1.5))
 ```
 
 ```js
-var MyLibrary = require("myLibrary");
+import * as MyLibrary from "myLibrary";
 
 function betterDraw(animal) {
   MyLibrary.draw(animal);
 }
 
 MyLibrary.draw(1.5);
+
+export { betterDraw };
 ```
 
 </CodeTab>
@@ -775,13 +790,13 @@ Alternatively, define two `external`s that both compile to the same JS call:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @module("myLibrary") external drawFloat: float => unit = "draw"
 @module("myLibrary") external drawString: string => unit = "draw"
 ```
 
 ```js
-// Empty output
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>
@@ -818,7 +833,7 @@ There's a linear amount of branch checking here (`O(n)`). Compare this to using 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type animal = Dog | Cat | Bird
 let data = Dog
 let logData = data => {
@@ -848,6 +863,10 @@ function logData(data) {
 }
 
 logData("Dog");
+
+let data = "Dog";
+
+export { data, logData };
 ```
 
 </CodeTab>

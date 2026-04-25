@@ -10,30 +10,30 @@ order: 2
 
 ReScript's built-in values of type `string`, `float`, `array` and a few others have a rather interesting property: they compile to the exact same value in JavaScript!
 
-This means that if you're passing e.g. a ReScript string to the JavaScript side, the JS side can directly use it as a native JS string. It also means that you can import a JS string and pretend it's a native ReScript string.
+This means that if you're passing e.g. a ReScript string to the JavaScript side, the JavaScript side can directly use it as a native string. It also means that you can import a JavaScript string and use it as a native ReScript string.
 
-Unlike most compiled-to-js languages, in ReScript, **you don't need to write data converters back and forth for most of our values**!
+ReScript values compile to their JavaScript equivalents directly, so **no data converters are needed for most types**.
 
 **Shared, bidirectionally usable types**:
 
 - String. ReScript strings are JavaScript strings, vice-versa. (Caveat: only our backtick string `` `hello 👋 ${personName}` `` supports unicode and interpolation).
-- Float. ReScript floats are JS numbers, vice-versa.
-- Array. In addition to the [Array API](/docs/manual/api/stdlib/array), we provide our own [Belt.Array](/docs/manual/api/belt/array#set) API too.
-- Tuple. Compiles to a JS array. You can treat a fixed-sized, heterogenous JS array as ReScript tuple too.
+- Float. ReScript floats are JavaScript numbers, vice-versa.
+- Array. Use the [Array API](/docs/manual/api/stdlib/array) for array operations.
+- Tuple. Compiles to an array at runtime. You can treat a fixed-sized, heterogenous JavaScript array as a ReScript tuple too.
 - Boolean.
-- Record. Record compiles to JS object. Therefore you can also treat JS objects as records. If they're too dynamic, consider modeling them on the ReScript side as a hashmap/dictionary [`Dict`](/docs/manual/api/stdlib/dict) or a ReScript object.
+- Record. Record compiles to a JavaScript object. Therefore you can also treat JavaScript objects as records. If they're too dynamic, consider modeling them on the ReScript side as a hashmap/dictionary [`Dict`](/docs/manual/api/stdlib/dict) or a ReScript object.
 - Object. ReScript objects are JavaScript objects, vice-versa.
-- Function. They compile to clean JS functions.
-- Module. ReScript files are considered top-level modules, and are compiled to JS files 1 to 1. Nested modules are compiled to JavaScript objects.
+- Function. They compile to clean JavaScript functions.
+- Module. ReScript files are considered top-level modules, and are compiled to JavaScript files 1 to 1. Nested modules are compiled to JavaScript objects.
 - Polymorphic variants.
-- Unit. The `unit` type, which has a single value `()`, compiles to `undefined` too. Likewise, you can treat an incoming JS `undefined` as `()` if that's the only value it'll ever be.
+- Unit. The `unit` type, which has a single value `()`, compiles to `undefined` too. Likewise, you can treat an incoming `undefined` as `()` if that's the only value it'll ever be.
 
-**Types that are slightly different than JS, but that you can still use from JS**:
+**Types that are slightly different, but that you can still use from JavaScript**:
 
-- Int. **Ints are 32-bits**! Be careful, you can potentially treat them as JS numbers and vice-versa, but if the number's large, then you better treat JS numbers as floats. For example, we bind to `Date` using `float`s.
-- Option. The `option` type's `None` value compiles into JS `undefined`. The `Some` value, e.g. `Some(5)`, compiles to `5`. Likewise, you can treat an incoming JS `undefined` as `None`. **JS `null` isn't handled here**. If your JS value can be `null`, use [Nullable](/docs/manual/api/stdlib/nullable) helpers.
+- Int. **Ints are 32-bits**! Be careful, you can potentially treat them as JavaScript numbers and vice-versa, but if the number's large, then you better treat JavaScript numbers as floats. For example, we bind to `Date` using `float`s.
+- Option. The `option` type's `None` value compiles into `undefined`. The `Some` value, e.g. `Some(5)`, compiles to `5`. Likewise, you can treat an incoming `undefined` as `None`. **`null` isn't handled here**. If your JavaScript value can be `null`, use [Nullable](/docs/manual/api/stdlib/nullable) helpers.
 - Exception.
-- Variant. Check the compiled JavaScript output of variant to see its shape. We don't recommend exporting a ReScript variant for pure JS usage, since they're harder to read as plain JS code, but you can do it.
+- Variant. Check the compiled JavaScript output of variant to see its shape. We don't recommend exporting a ReScript variant for pure JavaScript usage, since they're harder to read as plain JavaScript code, but you can do it.
 - List, which is just a regular variant.
 
 **Non-shared types (aka internal types)**:
@@ -45,4 +45,4 @@ Unlike most compiled-to-js languages, in ReScript, **you don't need to write dat
 
 Many of these are stable, which means that you can still serialize/deserialize them as-is without manual conversions. But we discourage actively peeking into their structure otherwise.
 
-These types require manual conversions if you want to export them for JS consumption. For a seamless JS/TypeScript integration experience, you might want to use [genType](https://github.com/cristianoc/gentype) instead of doing conversions by hand.
+These types require manual conversions if you want to export them for JavaScript consumption. For a seamless JavaScript/TypeScript integration experience, check out the [TypeScript Integration](./typescript-integration.mdx) page instead of doing conversions by hand.

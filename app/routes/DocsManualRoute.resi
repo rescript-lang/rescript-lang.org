@@ -1,12 +1,10 @@
 type loaderData = {
-  ...Mdx.t,
+  compiledMdx: CompiledMdx.t,
   categories: array<SidebarLayout.Sidebar.Category.t>,
   entries: array<TableOfContents.entry>,
-  mdxSources?: array<SyntaxLookup.item>,
-  activeSyntaxItem?: SyntaxLookup.item,
-  breadcrumbs?: list<Url.breadcrumb>,
   title: string,
-  filePath: option<string>,
+  description: string,
+  filePath: string,
 }
 
 let loader: ReactRouter.Loader.t<loaderData>

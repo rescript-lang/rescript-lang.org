@@ -8,7 +8,7 @@ order: 16
 
 # Pattern Matching / Destructuring
 
-One of ReScript's **best** feature is our pattern matching. Pattern matching combines 3 brilliant features into one:
+One of ReScript's **best** features is our pattern matching. Pattern matching combines 3 brilliant features into one:
 
 - Destructuring.
 - `switch` based on shape of data.
@@ -22,16 +22,20 @@ Even JavaScript has destructuring, which is "opening up" a data structure to ext
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let coordinates = (10, 20, 30)
 let (x, _, _) = coordinates
 Console.log(x) // 10
 ```
 
 ```js
-var coordinates = [10, 20, 30];
-var x = 10;
 console.log(10);
+
+let coordinates = [10, 20, 30];
+
+let x = 10;
+
+export { coordinates, x };
 ```
 
 </CodeTab>
@@ -54,39 +58,21 @@ let Success(message) = myResult // "You did it!" assigned to `message`
 ```
 
 ```js
-var student1 = {
+let student1 = {
   name: "John",
   age: 10,
 };
-var name = "John";
 
-var myResult = /* Success */ {
+let name = "John";
+
+let myResult = {
+  TAG: "Success",
   _0: "You did it!",
 };
-var message = "You did it!";
 
-var myArray = [1, 2, 3];
-if (myArray.length !== 2) {
-  throw {
-    RE_EXN_ID: "Match_failure",
-    _1: ["playground.res", 14, 4],
-    Error: new Error(),
-  };
-}
-var item1 = myArray[0];
-var item2 = myArray[1];
+let message = "You did it!";
 
-var myList = {
-  hd: 1,
-  tl: {
-    hd: 2,
-    tl: {
-      hd: 3,
-      tl: /* [] */ 0,
-    },
-  },
-};
-// ...
+export { student1, name, myResult, message };
 ```
 
 </CodeTab>
@@ -95,7 +81,7 @@ You can also use destructuring anywhere you'd usually put a binding:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type result =
   | Success(string)
 let displayMessage = (Success(m)) => {
@@ -111,11 +97,12 @@ function displayMessage(m) {
   console.log(m._0);
 }
 
-displayMessage(
-  /* Success */ {
-    _0: "You did it!",
-  },
-);
+displayMessage({
+  TAG: "Success",
+  _0: "You did it!",
+});
+
+export { displayMessage };
 ```
 
 </CodeTab>
@@ -124,7 +111,7 @@ For a record, you can rename the field while destructuring:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let {name: n} = student1 // "John" assigned to `n`
 ```
 
@@ -136,7 +123,7 @@ var n = "John";
 
 You _can_ in theory destructure array and list at the top level too:
 
-```res
+```res nocheck
 let myArray = [1, 2, 3]
 let [item1, item2, _] = myArray
 // 1 assigned to `item1`, 2 assigned to `item2`, 3rd item ignored
@@ -175,7 +162,7 @@ In other languages, you'd end up with a series of if-elses that are hard to read
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let data = GoodResult("Product shipped!")
 switch data {
 | GoodResult(theMessage) =>
@@ -188,7 +175,7 @@ switch data {
 ```
 
 ```js
-var data = {
+let data = {
   TAG: "GoodResult",
   _0: "Product shipped!",
 };
@@ -202,6 +189,8 @@ if (typeof data !== "object") {
 } else {
   console.log("Success! Product shipped!");
 }
+
+export { data };
 ```
 
 </CodeTab>
@@ -322,7 +311,7 @@ Here's another example of pattern matching, this time on an inline tuple.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 type animal = Dog | Cat | Bird
 let categoryId = switch (isBig, myAnimal) {
 | (true, Dog) => 1
@@ -386,7 +375,7 @@ If you have a value like `Teacher(payload)` where you just want to pattern match
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 switch person1 {
 | Teacher(_) => Console.log("Hi teacher")
 | Student(_) => Console.log("Hey student")
@@ -394,11 +383,71 @@ switch person1 {
 ```
 
 ```js
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
 if (person1.TAG === "Teacher") {
   console.log("Hi teacher");
 } else {
   console.log("Hey student");
 }
+
+export { person1, message, myStatus };
 ```
 
 </CodeTab>
@@ -407,7 +456,7 @@ if (person1.TAG === "Teacher") {
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 switch myStatus {
 | Vacations(_) => Console.log("Have fun!")
 | _ => Console.log("Ok.")
@@ -415,11 +464,71 @@ switch myStatus {
 ```
 
 ```js
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
 if (typeof myStatus !== "object" || myStatus.TAG !== "Vacations") {
   console.log("Ok.");
 } else {
   console.log("Have fun!");
 }
+
+export { person1, message, myStatus };
 ```
 
 </CodeTab>
@@ -428,7 +537,7 @@ if (typeof myStatus !== "object" || myStatus.TAG !== "Vacations") {
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 switch myStatus {
 | Vacations(_) => Console.log("Have fun!")
 | Sabbatical(_) | Sick | Present => Console.log("Ok.")
@@ -436,11 +545,71 @@ switch myStatus {
 ```
 
 ```js
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
 if (typeof myStatus !== "object" || myStatus.TAG !== "Vacations") {
   console.log("Ok.");
 } else {
   console.log("Have fun!");
 }
+
+export { person1, message, myStatus };
 ```
 
 </CodeTab>
@@ -453,7 +622,7 @@ Sometime, you want to check more than the shape of a value. You want to also run
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 switch person1 {
 | Teacher(_) => () // do nothing
 | Student({reportCard: {gpa}}) =>
@@ -466,6 +635,64 @@ switch person1 {
 ```
 
 ```js
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
 if (person1.TAG !== "Teacher") {
   if ("Jane".reportCard.gpa < 0.5) {
     console.log("What's happening");
@@ -473,6 +700,8 @@ if (person1.TAG !== "Teacher") {
     console.log("Heyo");
   }
 }
+
+export { person1, message, myStatus };
 ```
 
 </CodeTab>
@@ -481,7 +710,7 @@ if (person1.TAG !== "Teacher") {
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 switch person1 {
 | Teacher(_) => () // do nothing
 | Student({reportCard: {gpa}}) if gpa < 0.5 =>
@@ -493,13 +722,73 @@ switch person1 {
 ```
 
 ```js
-if (person1.TAG) {
-  if (person1.reportCard.gpa < 0.5) {
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
+if (person1.TAG !== "Teacher") {
+  if ("Jane".reportCard.gpa < 0.5) {
     console.log("What's happening");
   } else {
     console.log("Heyo");
   }
 }
+
+export { person1, message, myStatus };
 ```
 
 </CodeTab>
@@ -540,6 +829,64 @@ let greetAnimal = (animal: animals) => {
 ```
 
 ```js
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
 function greetPet(pet) {
   if (pet === "Cat") {
     console.log("Hello kitty!");
@@ -566,6 +913,8 @@ function greetAnimal(animal) {
       return greetFish(animal);
   }
 }
+
+export { person1, message, myStatus, greetPet, greetFish, greetAnimal };
 ```
 
 </CodeTab>
@@ -583,7 +932,7 @@ The example above aliases the variant type spread to a variable so we can use it
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let isPet = (animal: animals) => {
   switch animal {
   | ...pets => Console.log("A pet!")
@@ -630,6 +979,64 @@ let isPet = (animal: animals) => {
 ```
 
 ```js
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
 function isPet(animal) {
   if (animal === "Dog") {
     console.log("A dog!");
@@ -637,6 +1044,8 @@ function isPet(animal) {
   }
   console.log("Not a dog...");
 }
+
+export { person1, message, myStatus, isPet };
 ```
 
 </CodeTab>
@@ -664,6 +1073,64 @@ let isPet = (animal: animals) => {
 ```
 
 ```js
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
 function isPet(animal) {
   if (animal === "Dog") {
     console.log("A dog!");
@@ -671,6 +1138,8 @@ function isPet(animal) {
   }
   console.log("Not a dog...");
 }
+
+export { person1, message, myStatus, isPet };
 ```
 
 </CodeTab>
@@ -681,7 +1150,7 @@ If the function throws an exception (covered later), you can also match on _that
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 switch List.find(i => i === theItem, myItems) {
 | item => Console.log(item)
 | exception Not_found => Console.log("No such item found!")
@@ -718,7 +1187,7 @@ if (exit === 1) {
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let students = ["Jane", "Harvey", "Patrick"]
 switch students {
 | [] => Console.log("There are no students")
@@ -731,9 +1200,67 @@ switch students {
 ```
 
 ```js
-var students = ["Jane", "Harvey", "Patrick"];
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
 
-var len = students.length;
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
+let students = ["Jane", "Harvey", "Patrick"];
+
+let len = students.length;
 
 if (len !== 1) {
   if (len !== 0) {
@@ -742,9 +1269,11 @@ if (len !== 1) {
     console.log("There are no students");
   }
 } else {
-  var student1 = students[0];
+  let student1 = students[0];
   console.log("There's a single student here: " + student1);
 }
+
+export { person1, message, myStatus, students };
 ```
 
 </CodeTab>
@@ -755,7 +1284,7 @@ Pattern matching on list is similar to array, but with the extra feature of extr
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let rec printStudents = (students) => {
   switch students {
   | list{} => () // done
@@ -769,15 +1298,73 @@ printStudents(list{"Jane", "Harvey", "Patrick"})
 ```
 
 ```js
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
 function printStudents(_students) {
   while (true) {
-    var students = _students;
-    if (!students) {
+    let students = _students;
+    if (students === 0) {
       return;
     }
-    var otherStudents = students.tl;
-    var student = students.hd;
-    if (otherStudents) {
+    let otherStudents = students.tl;
+    let student = students.hd;
+    if (otherStudents !== 0) {
       console.log(student);
       _students = otherStudents;
       continue;
@@ -797,6 +1384,8 @@ printStudents({
     },
   },
 });
+
+export { person1, message, myStatus, printStudents };
 ```
 
 </CodeTab>
@@ -866,7 +1455,7 @@ However, in the second case, we don't need a catch-all case. That's because the 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let coordinates = (10, 20, 30)
 let centerY = 20
 switch coordinates {
@@ -875,10 +1464,78 @@ switch coordinates {
 ```
 
 ```js
-var coordinates = [10, 20, 30];
-var centerY = 20;
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
+let d = {
+  A: 5,
+  B: 6,
+};
 
 console.log(10);
+
+let b = d.B;
+
+let coordinates = [10, 20, 30];
+
+let centerY = 20;
+
+export { person1, message, myStatus, d, b, coordinates, centerY };
 ```
 
 </CodeTab>
@@ -893,7 +1550,7 @@ Let's revisit one of the above examples:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let message = switch person1 {
 | Teacher({name: "Mary" | "Joe"}) =>
   `Hey, still going to the party on Saturday?`
@@ -964,7 +1621,7 @@ Some({name: ""})
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let myNullableValue = Some(5)
 
 switch myNullableValue {
@@ -974,13 +1631,76 @@ switch myNullableValue {
 ```
 
 ```js
-var myNullableValue = 5;
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
 
-if (myNullableValue !== undefined) {
-  console.log("value is present");
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
 } else {
-  console.log("value is absent");
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
 }
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
+let d = {
+  A: 5,
+  B: 6,
+};
+
+console.log("value is present");
+
+let b = d.B;
+
+let myNullableValue = 5;
+
+export { person1, message, myStatus, d, b, myNullableValue };
 ```
 
 </CodeTab>
@@ -1001,7 +1721,7 @@ Use the `if` clause sparingly.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let optionBoolToBool = opt => {
   if opt == None {
     false
@@ -1014,6 +1734,69 @@ let optionBoolToBool = opt => {
 ```
 
 ```js
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
+let d = {
+  A: 5,
+  B: 6,
+};
+
 function optionBoolToBool(opt) {
   if (opt === undefined) {
     return false;
@@ -1021,6 +1804,10 @@ function optionBoolToBool(opt) {
     return opt === true;
   }
 }
+
+let b = d.B;
+
+export { person1, message, myStatus, d, b, optionBoolToBool };
 ```
 
 </CodeTab>
@@ -1029,7 +1816,7 @@ Now that's just silly =). Let's turn it into pattern-matching:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let optionBoolToBool = opt => {
   switch opt {
   | None => false
@@ -1039,13 +1826,80 @@ let optionBoolToBool = opt => {
 ```
 
 ```js
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
+let d = {
+  A: 5,
+  B: 6,
+};
+
 function optionBoolToBool(opt) {
-  if (opt !== undefined && opt) {
-    return true;
+  if (opt !== undefined) {
+    return opt;
   } else {
     return false;
   }
 }
+
+let b = d.B;
+
+export { person1, message, myStatus, d, b, optionBoolToBool };
 ```
 
 </CodeTab>
@@ -1054,7 +1908,7 @@ Slightly better, but still nested. Pattern-matching allows you to do this:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let optionBoolToBool = opt => {
   switch opt {
   | None => false
@@ -1065,13 +1919,80 @@ let optionBoolToBool = opt => {
 ```
 
 ```js
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
+let d = {
+  A: 5,
+  B: 6,
+};
+
 function optionBoolToBool(opt) {
-  if (opt !== undefined && opt) {
-    return true;
+  if (opt !== undefined) {
+    return opt;
   } else {
     return false;
   }
 }
+
+let b = d.B;
+
+export { person1, message, myStatus, d, b, optionBoolToBool };
 ```
 
 </CodeTab>
@@ -1080,7 +2001,7 @@ Much more linear-looking! Now, you might be tempted to do this:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let optionBoolToBool = opt => {
   switch opt {
   | Some(true) => true
@@ -1090,13 +2011,80 @@ let optionBoolToBool = opt => {
 ```
 
 ```js
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
+let d = {
+  A: 5,
+  B: 6,
+};
+
 function optionBoolToBool(opt) {
-  if (opt !== undefined && opt) {
-    return true;
+  if (opt !== undefined) {
+    return opt;
   } else {
     return false;
   }
 }
+
+let b = d.B;
+
+export { person1, message, myStatus, d, b, optionBoolToBool };
 ```
 
 </CodeTab>
@@ -1105,7 +2093,7 @@ Which is much more concise, but kills the exhaustiveness check mentioned above; 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let optionBoolToBool = opt => {
   switch opt {
   | Some(trueOrFalse) => trueOrFalse
@@ -1115,6 +2103,69 @@ let optionBoolToBool = opt => {
 ```
 
 ```js
+let person1 = {
+  TAG: "Teacher",
+  name: "Jane",
+  age: 35,
+};
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = {
+  TAG: "Vacations",
+  _0: 10,
+};
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
+let d = {
+  A: 5,
+  B: 6,
+};
+
 function optionBoolToBool(opt) {
   if (opt !== undefined) {
     return opt;
@@ -1122,6 +2173,10 @@ function optionBoolToBool(opt) {
     return false;
   }
 }
+
+let b = d.B;
+
+export { person1, message, myStatus, d, b, optionBoolToBool };
 ```
 
 </CodeTab>

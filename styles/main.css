@@ -193,6 +193,242 @@
   }
 }
 
+@layer components {
+  .playground-theme {
+    --playground-bg: var(--color-gray-100);
+    --playground-surface: var(--color-gray-100);
+    --playground-surface-border: transparent;
+    --playground-control-bg: var(--color-gray-100);
+    --playground-control-border: transparent;
+    --playground-elevated-bg: var(--color-gray-100);
+    --playground-overlay-bg: var(--color-gray-90);
+    --playground-overlay-border: var(--color-gray-70);
+    --playground-text-primary: var(--color-gray-20);
+    --playground-text-secondary: var(--color-gray-40);
+    --playground-border: var(--color-gray-60);
+    --playground-border-strong: var(--color-gray-80);
+    --playground-hover-surface: var(--color-gray-40);
+    --playground-hover-elevated: var(--color-gray-80);
+    --playground-active-surface: var(--color-gray-40);
+    --playground-input-bg: var(--color-gray-90);
+    --playground-placeholder: rgba(237, 240, 242, 0.5);
+    --playground-divider-bg: var(--color-gray-70);
+    --playground-divider-border: transparent;
+    --playground-divider-opacity: 0.3;
+    --playground-divider-hover-opacity: 0.5;
+    --playground-divider-handle: var(--color-gray-20);
+    --playground-scrollbar-track: var(--color-gray-100);
+    --playground-scrollbar-thumb: var(--color-gray-70);
+    --playground-scrollbar-thumb-hover: var(--color-gray-60);
+    --playground-toggle-track: #374151;
+    --playground-toggle-track-border: #4b5563;
+    --playground-toggle-thumb: var(--color-white);
+    --playground-toggle-label: #d1d5db;
+    --playground-tab-active: var(--color-white);
+    --playground-editor-bg: var(--color-gray-100);
+    --playground-editor-text: var(--color-gray-20);
+    --playground-editor-cursor: var(--color-orange);
+    --playground-editor-active-line: rgba(255, 255, 255, 0.02);
+    --playground-editor-gutter-bg: transparent;
+    --playground-editor-gutter-text: var(--color-gray-60);
+    --playground-editor-gutter-border: transparent;
+    --playground-editor-active-gutter-bg: transparent;
+    --playground-editor-active-gutter-text: var(--color-white);
+    --playground-editor-selection: rgba(255, 255, 255, 0.2);
+    --playground-editor-selection-match: #aafe661a;
+    --playground-editor-syntax-keyword: var(--color-berry-dark-50);
+    --playground-editor-syntax-variable: var(--color-gray-30);
+    --playground-editor-syntax-type: var(--color-orange-dark);
+    --playground-editor-syntax-string: var(--color-turtle-dark);
+    --playground-editor-syntax-comment: var(--color-gray-60);
+    --playground-editor-syntax-namespace-def: var(--color-orange);
+    --playground-editor-syntax-namespace: var(--color-water-dark);
+    --playground-editor-syntax-property: var(--color-ocean-dark);
+    --playground-editor-syntax-attribute: #bcc9ab;
+  }
+
+  .playground-theme-light {
+    --playground-bg: var(--color-gray-5);
+    --playground-surface: var(--color-white);
+    --playground-surface-border: var(--color-gray-20);
+    --playground-control-bg: #f3f5f7;
+    --playground-control-border: var(--color-gray-20);
+    --playground-elevated-bg: var(--color-white);
+    --playground-overlay-bg: var(--color-white);
+    --playground-overlay-border: var(--color-gray-30);
+    --playground-text-primary: var(--color-gray-80);
+    --playground-text-secondary: var(--color-gray-80);
+    --playground-border: var(--color-gray-30);
+    --playground-border-strong: var(--color-gray-60);
+    --playground-hover-surface: var(--color-gray-20);
+    --playground-hover-elevated: var(--color-gray-10);
+    --playground-active-surface: var(--color-gray-20);
+    --playground-input-bg: var(--color-gray-10);
+    --playground-placeholder: var(--color-gray-60);
+    --playground-divider-bg: #f5f7f9;
+    --playground-divider-border: var(--color-gray-20);
+    --playground-divider-opacity: 1;
+    --playground-divider-hover-opacity: 1;
+    --playground-divider-handle: var(--color-gray-40);
+    --playground-scrollbar-track: #f5f7f9;
+    --playground-scrollbar-thumb: var(--color-gray-30);
+    --playground-scrollbar-thumb-hover: var(--color-gray-40);
+    --playground-toggle-track: var(--color-gray-30);
+    --playground-toggle-track-border: var(--color-gray-40);
+    --playground-toggle-thumb: var(--color-white);
+    --playground-toggle-label: var(--color-gray-80);
+    --playground-tab-active: var(--color-gray-80);
+    --playground-editor-bg: var(--color-white);
+    --playground-editor-text: var(--color-gray-80);
+    --playground-editor-cursor: var(--color-sky-70);
+    --playground-editor-active-line: rgba(34, 88, 195, 0.07);
+    --playground-editor-gutter-bg: var(--color-gray-10);
+    --playground-editor-gutter-text: var(--color-gray-60);
+    --playground-editor-gutter-border: var(--color-gray-20);
+    --playground-editor-active-gutter-bg: var(--color-gray-20);
+    --playground-editor-active-gutter-text: var(--color-gray-80);
+    --playground-editor-selection: rgba(34, 88, 195, 0.22);
+    --playground-editor-selection-match: rgba(94, 94, 222, 0.18);
+    --playground-editor-syntax-keyword: var(--color-berry);
+    --playground-editor-syntax-variable: var(--color-gray-80);
+    --playground-editor-syntax-type: var(--color-orange);
+    --playground-editor-syntax-string: var(--color-turtle);
+    --playground-editor-syntax-comment: var(--color-gray-60);
+    --playground-editor-syntax-namespace-def: var(--color-orange);
+    --playground-editor-syntax-namespace: var(--color-water);
+    --playground-editor-syntax-property: var(--color-sky);
+    --playground-editor-syntax-attribute: #4f5f78;
+  }
+
+  .playground-main {
+    background-color: var(--playground-bg);
+    color: var(--playground-text-secondary);
+  }
+
+  .playground-surface {
+    background-color: var(--playground-surface);
+    border-color: var(--playground-surface-border);
+  }
+
+  .playground-text-primary {
+    color: var(--playground-text-primary) !important;
+  }
+
+  .playground-text-secondary {
+    color: var(--playground-text-secondary) !important;
+  }
+
+  .playground-select {
+    background-color: var(--playground-elevated-bg);
+    border-color: var(--playground-border);
+    color: var(--playground-text-primary) !important;
+  }
+
+  .playground-selection-option {
+    background-color: var(--playground-elevated-bg);
+    border: 1px solid var(--playground-border);
+    color: var(--playground-text-primary);
+  }
+
+  .playground-selection-option:hover {
+    background-color: var(--playground-hover-surface);
+  }
+
+  .playground-selection-option-active {
+    background-color: var(--color-fire);
+    border-color: var(--color-fire);
+    color: var(--color-white);
+  }
+
+  .playground-selection-option-active:hover {
+    background-color: var(--color-fire);
+  }
+
+  .playground-overlay {
+    background-color: var(--playground-overlay-bg);
+    border-color: var(--playground-overlay-border);
+    color: var(--playground-text-primary);
+  }
+
+  .playground-field {
+    border-color: var(--playground-border);
+  }
+
+  .playground-field-active {
+    border-color: var(--playground-text-primary);
+  }
+
+  .playground-icon-button:hover {
+    background-color: var(--playground-hover-surface);
+  }
+
+  .playground-input {
+    background-color: var(--playground-input-bg);
+    color: var(--playground-text-primary);
+  }
+
+  .playground-input::placeholder {
+    color: var(--playground-placeholder);
+  }
+
+  .playground-chip-active {
+    background-color: var(--playground-active-surface);
+  }
+
+  .playground-suggestion-active {
+    background-color: var(--playground-active-surface);
+  }
+
+  .playground-control-panel {
+    background-color: var(--playground-control-bg);
+    border-bottom: 1px solid var(--playground-control-border);
+  }
+
+  .playground-toast {
+    background-color: var(--playground-overlay-bg);
+    border-color: var(--playground-overlay-border);
+    color: var(--playground-text-primary);
+  }
+
+  .playground-toggle-label {
+    color: var(--playground-toggle-label);
+  }
+
+  .playground-toggle-track {
+    background-color: var(--playground-toggle-track);
+    border-color: var(--playground-toggle-track-border);
+  }
+
+  .playground-toggle-track::after {
+    background-color: var(--playground-toggle-thumb);
+    border-color: var(--playground-toggle-track-border);
+  }
+
+  .playground-tab-active {
+    color: var(--playground-tab-active);
+    border-top-color: var(--color-sky-70) !important;
+  }
+
+  .playground-editor-shell {
+    background-color: var(--playground-editor-bg);
+  }
+
+  .playground-divider {
+    background-color: var(--playground-divider-bg);
+    border: 1px solid var(--playground-divider-border);
+    opacity: var(--playground-divider-opacity);
+  }
+
+  .playground-divider:hover {
+    opacity: var(--playground-divider-hover-opacity);
+    background-color: var(--playground-hover-surface);
+  }
+
+  .playground-divider-handle {
+    color: var(--playground-divider-handle);
+  }
+}
+
 @utility hl-title {
   @apply text-[2.5rem] tracking-tighter leading-tight font-semibold text-gray-80;
 
@@ -297,7 +533,8 @@
 
   .playground-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: var(--color-gray-70) var(--color-gray-100);
+    scrollbar-color: var(--playground-scrollbar-thumb)
+      var(--playground-scrollbar-track);
     scrollbar-gutter: stable; /* Reserve only at the scrollbar edge to avoid padding shifts */
   }
 
@@ -307,17 +544,17 @@
   }
 
   .playground-scrollbar::-webkit-scrollbar-track {
-    background: var(--color-gray-100);
+    background: var(--playground-scrollbar-track);
   }
 
   .playground-scrollbar::-webkit-scrollbar-thumb {
-    background-color: var(--color-gray-70);
+    background-color: var(--playground-scrollbar-thumb);
     border-radius: 9999px;
-    border: 2px solid var(--color-gray-100);
+    border: 2px solid var(--playground-scrollbar-track);
   }
 
   .playground-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: var(--color-gray-60);
+    background-color: var(--playground-scrollbar-thumb-hover);
   }
 
   a > code {

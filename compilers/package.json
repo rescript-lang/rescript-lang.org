@@ -1,9 +1,9 @@
 {
   "name": "compilers",
-  "private": true,
   "version": "1.0.0",
-  "main": "index.js",
+  "private": true,
   "license": "MIT",
+  "main": "index.js",
   "dependencies": {
     "@rescript/core": "^1.3.0",
     "@rescript/react": "^0.12.0",

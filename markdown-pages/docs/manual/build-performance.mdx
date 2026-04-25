@@ -68,9 +68,7 @@ The watcher is also just a thin file watcher that calls `rescript.exe`. We don't
 
 ReScript doesn't take whole seconds to run every time. The bulk of the build performance comes from incremental build, aka re-building a previously built project when a few files changed.
 
-In short, thanks to our compiler and the build system's architecture, we're able to **only build what's needed**. E.g. if `MyFile.res` isn't changed, then it's not recompiled. You can roughly emulate such incrementalism in languages like JavaScript, but the degree of correctness is unfortunately low. For example, if you rename or move a JS file, then the watcher might get confused and not pick up the "new" file or fail to clean things up correctly, resulting in you needing to clean your build and restart anew, which defeats the purpose.
-
-Say goodbye to stale build from your JavaScript ecosystem!
+In short, thanks to our compiler and the build system's architecture, we're able to **only build what's needed**. If `MyFile.res` isn't changed, it isn't recompiled. Renaming or moving files is handled automatically, with no stale builds.
 
 ## Speed Up Incremental Build
 

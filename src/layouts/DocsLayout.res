@@ -3,33 +3,10 @@
 
 module Sidebar = SidebarLayout.Sidebar
 
-module NavItem = Sidebar.NavItem
-module Category = Sidebar.Category
-
-let makeBreadcrumbs = (~basePath: string, route: string): list<Url.breadcrumb> => {
-  let url = route->Url.parse
-
-  let (_, rest) = url.pagepath->Array.reduce((basePath, []), (acc, path) => {
-    let (baseHref, ret) = acc
-
-    let href = baseHref ++ ("/" ++ path)
-
-    Array.push(
-      ret,
-      {
-        open Url
-        {name: prettyString(path), href}
-      },
-    )->ignore
-    (href, ret)
-  })
-  rest->List.fromArray
-}
-
 @react.component
 let make = (
   ~activeToc: option<TableOfContents.t>=?,
-  ~categories: array<Category.t>,
+  ~categories: array<Sidebar.Category.t>,
   ~components=MarkdownComponents.default,
   ~theme=#Reason,
   ~children,
@@ -50,9 +27,4 @@ let make = (
   <SidebarLayout theme sidebarState=(isSidebarOpen, setSidebarOpen) sidebar categories>
     children
   </SidebarLayout>
-}
-
-module type StaticContent = {
-  /* let categories: array<SidebarLayout.Sidebar.Category.t>; */
-  let tocData: SidebarLayout.Toc.raw
 }

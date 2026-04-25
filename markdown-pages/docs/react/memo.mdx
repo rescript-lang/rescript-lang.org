@@ -18,9 +18,9 @@ This memoized version of your component will usually not be re-rendered when its
   not a guarantee.
 </small>
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
-```res example
+```res
 @react.component
 let make = React.memo((~a: int, ~b: string) => {
   <div>
@@ -35,11 +35,28 @@ let make = React.memo((~a: int, ~b: string) => {
 import * as React from "react";
 import * as JsxRuntime from "react/jsx-runtime";
 
-var make = React.memo(function (props) {
-  return JsxRuntime.jsxs("div", {
+let make = React.memo((props) =>
+  JsxRuntime.jsxs("div", {
     children: [props.a, JsxRuntime.jsx("br", {}), props.b],
-  });
-});
+  }),
+);
+
+export { make };
+```
+
+```jsx
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let make = React.memo((props) => (
+  <div>
+    {props.a}
+    <br />
+    {props.b}
+  </div>
+));
+
+export { make };
 ```
 
 </CodeTab>
@@ -53,9 +70,9 @@ In ReScript, you can use the `arePropsEqual` function with the `React.memoCustom
 
 To work around this, you can redefine the make binding:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
-```res example
+```res
 @react.component
 let make = (~disabled, ~onClick) => {
   <button
@@ -74,29 +91,48 @@ let make = React.memoCustomCompareProps(make, (p1, p2) =>
 import * as React from "react";
 import * as JsxRuntime from "react/jsx-runtime";
 
-function Playground(props) {
-  var onClick = props.onClick;
+function Example(props) {
+  let onClick = props.onClick;
   return JsxRuntime.jsx("button", {
     children: "My button",
     disabled: props.disabled,
-    onClick: function (ev) {
-      onClick((ev.preventDefault(), undefined));
-    },
+    onClick: (ev) => onClick((ev.preventDefault(), undefined)),
   });
 }
 
-var make = React.memo(Playground, function (p1, p2) {
-  return p1.disabled === p2.disabled;
-});
+let make = React.memo(Example, (p1, p2) => p1.disabled === p2.disabled);
+
+export { make };
+```
+
+```jsx
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example(props) {
+  let onClick = props.onClick;
+  return (
+    <button
+      disabled={props.disabled}
+      onClick={(ev) => onClick((ev.preventDefault(), undefined))}
+    >
+      {"My button"}
+    </button>
+  );
+}
+
+let make = React.memo(Example, (p1, p2) => p1.disabled === p2.disabled);
+
+export { make };
 ```
 
 </CodeTab>
 
 Another approach is to use a custom prop type and remove the `@react.component` annotation.
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
-```res example
+```res
 type props = {
   disabled: bool,
   onClick: JsxEvent.Mouse.t => unit,
@@ -116,21 +152,38 @@ let make = React.memoCustomCompareProps(
 import * as React from "react";
 import * as JsxRuntime from "react/jsx-runtime";
 
-var make = React.memo(
-  function (param) {
-    var onClick = param.onClick;
+let make = React.memo(
+  (param) => {
+    let onClick = param.onClick;
     return JsxRuntime.jsx("button", {
       children: "My button",
       disabled: param.disabled,
-      onClick: function (ev) {
-        onClick(ev);
-      },
+      onClick: (ev) => onClick(ev),
     });
   },
-  function (p1, p2) {
-    return p1.disabled === p2.disabled;
-  },
+  (p1, p2) => p1.disabled === p2.disabled,
 );
+
+export { make };
+```
+
+```jsx
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let make = React.memo(
+  (param) => {
+    let onClick = param.onClick;
+    return (
+      <button disabled={param.disabled} onClick={(ev) => onClick(ev)}>
+        {"My button"}
+      </button>
+    );
+  },
+  (p1, p2) => p1.disabled === p2.disabled,
+);
+
+export { make };
 ```
 
 </CodeTab>

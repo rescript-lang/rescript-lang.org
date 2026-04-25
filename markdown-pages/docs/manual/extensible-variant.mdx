@@ -14,7 +14,7 @@ Variant types are usually constrained to a fixed set of constructors. There may 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type t = ..
 
 type t += Other
@@ -25,13 +25,15 @@ type t +=
 ```
 
 ```js
-var Caml_exceptions = require("./stdlib/caml_exceptions.js");
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
 
-var Other = Caml_exceptions.create("Playground.Other");
+let Other = /* @__PURE__ */ Primitive_exceptions.create("_tempFile.Other");
 
-var Point = Caml_exceptions.create("Playground.Point");
+let Point = /* @__PURE__ */ Primitive_exceptions.create("_tempFile.Point");
 
-var Line = Caml_exceptions.create("Playground.Line");
+let Line = /* @__PURE__ */ Primitive_exceptions.create("_tempFile.Line");
+
+export { Other, Point, Line };
 ```
 
 </CodeTab>
@@ -46,7 +48,7 @@ Extensible variants are open-ended, so the compiler will not be able to exhausti
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let print = v =>
   switch v {
   | Point(x, y) => Console.log2("Point", (x, y))

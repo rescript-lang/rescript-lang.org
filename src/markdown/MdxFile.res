@@ -74,3 +74,33 @@ let scanPaths = (~dir, ~alias) => {
     alias ++ "/" ++ relativePath
   })
 }
+
+// Convert frontmatter JSON dict to Mdx.attributes
+// This is the same unsafe approach as react-router-mdx — frontmatter YAML
+// becomes a JS object that we type as Mdx.attributes. Fields not present
+// in the frontmatter (e.g. blog-specific `author`, `date`) are undefined at
+// runtime, which is fine because docs/community code never accesses them.
+external dictToAttributes: Dict.t<JSON.t> => Mdx.attributes = "%identity"
+
+let loadAllAttributes = async (~dir) => {
+  let files = scanDir(dir, dir)
+  await Promise.all(
+    files->Array.map(async relativePath => {
+      let fullPath = Node.Path.join2(dir, relativePath ++ ".mdx")->String.replaceAll("\\", "/")
+      let raw = await Node.Fs.readFile(fullPath, "utf-8")
+      let {frontmatter}: MarkdownParser.result = MarkdownParser.parseSync(raw)
+
+      let dict = switch frontmatter {
+      | Object(dict) => dict
+      | _ => Dict.make()
+      }
+
+      // Add path and slug fields (same as react-router-mdx does)
+      dict->Dict.set("path", JSON.String(fullPath))
+      let slug = Node.Path.basename(relativePath)
+      dict->Dict.set("slug", JSON.String(slug))
+
+      dictToAttributes(dict)
+    }),
+  )
+}

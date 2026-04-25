@@ -18,7 +18,7 @@ This is a glossary with examples. All the features are described by later pages.
 
 ### Attributes
 
-- `@as`: [here](./attribute.mdx#usage), [here](./bind-to-js-function.mdx#fixed-arguments), [here](./bind-to-js-function.mdx#constrain-arguments-better) and [here](./generate-converters-accessors.mdx#usage-3)
+- `@as`: [here](./variant.mdx#tagged-variants), [here](./attribute.mdx#usage), [here](./bind-to-js-function.mdx#fixed-arguments), [here](./bind-to-js-function.mdx#constrain-arguments-better) and [here](./generate-converters-accessors.mdx#usage-3)
 - [`@deriving`](./generate-converters-accessors.mdx#generate-functions--plain-values-for-variants)
 - [`@get`](./bind-to-js-object.mdx#bind-using-special-bs-getters--setters)
 - [`@get_index`](./bind-to-js-object.mdx#bind-using-special-bs-getters--setters)
@@ -57,14 +57,16 @@ This is a glossary with examples. All the features are described by later pages.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let add = %raw("(a, b) => a + b")
 %%raw("const a = 1")
 ```
 
 ```js
-var add = (a, b) => a + b;
+let add = (a, b) => a + b;
+
 const a = 1;
+export { add };
 ```
 
 </CodeTab>
@@ -73,12 +75,12 @@ const a = 1;
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @val external setTimeout: (unit => unit, int) => float = "setTimeout"
 ```
 
 ```js
-// Empty output
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>
@@ -87,7 +89,7 @@ const a = 1;
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @val @scope("Math")
 external random: unit => float = "random"
 
@@ -98,7 +100,9 @@ external length: int = "length"
 ```
 
 ```js
-var someNumber = Math.random();
+let someNumber = Math.random();
+
+export { someNumber };
 ```
 
 </CodeTab>
@@ -107,14 +111,17 @@ var someNumber = Math.random();
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let a = Some(5) // compiles to 5
 let b = None // compiles to undefined
 ```
 
 ```js
-var a = 5;
-var b;
+let a = 5;
+
+let b;
+
+export { a, b };
 ```
 
 </CodeTab>
@@ -123,7 +130,7 @@ Handling a value that can be `undefined` and `null`, by ditching the `option` ty
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let jsNull = Nullable.null
 let jsUndefined = Nullable.undefined
 let result1: Nullable.t<string> = Nullable.make("hello")
@@ -132,18 +139,20 @@ let result3: option<int> = Nullable.toOption(Nullable.make(10))
 ```
 
 ```js
-import * as Caml_option from "./stdlib/caml_option.js";
-import * as Core__Nullable from "./stdlib/core__Nullable.js";
+import * as Stdlib_Nullable from "@rescript/runtime/lib/es6/Stdlib_Nullable.js";
+import * as Primitive_option from "@rescript/runtime/lib/es6/Primitive_option.js";
 
-var result2 = Core__Nullable.fromOption(10);
+let result2 = Stdlib_Nullable.fromOption(10);
 
-var jsNull = null;
+let jsNull = null;
 
-var jsUndefined;
+let jsUndefined;
 
-var result1 = "hello";
+let result1 = "hello";
 
-var result3 = Caml_option.nullable_to_opt(10);
+let result3 = Primitive_option.fromNullable(10);
+
+export { jsNull, jsUndefined, result1, result2, result3 };
 ```
 
 </CodeTab>
@@ -160,7 +169,7 @@ var result3 = Caml_option.nullable_to_opt(10);
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @send external map: (array<'a>, 'a => 'b) => array<'b> = "map"
 @send external filter: (array<'a>, 'a => 'b) => array<'b> = "filter"
 [1, 2, 3]
@@ -170,15 +179,7 @@ var result3 = Caml_option.nullable_to_opt(10);
 ```
 
 ```js
-console.log(
-  [1, 2, 3]
-    .map(function (a) {
-      return (a + 1) | 0;
-    })
-    .filter(function (a) {
-      return a % 2 === 0;
-    }),
-);
+console.log([1, 2, 3].map((a) => (a + 1) | 0).filter((a) => a % 2 === 0));
 ```
 
 </CodeTab>
@@ -187,13 +188,13 @@ console.log(
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @module("path") @variadic
 external join: array<string> => string = "join"
 ```
 
 ```js
-// Empty output
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>
@@ -202,7 +203,7 @@ external join: array<string> => string = "join"
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // see https://bun.sh/docs/runtime/shell
 type result = {exitCode: int}
 @module("bun") @taggedTemplate
@@ -214,8 +215,12 @@ let result = await sh`ls ${filename}`
 
 ```js
 import * as $$Bun from "bun";
-var filename = "index.res";
-var result = await $$Bun.$`ls ${filename}`;
+
+let filename = "index.res";
+
+let result = await $$Bun.$`ls ${filename}`;
+
+export { filename, result };
 ```
 
 </CodeTab>
@@ -224,20 +229,20 @@ var result = await $$Bun.$`ls ${filename}`;
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @module("Drawing") external drawCat: unit => unit = "draw"
 @module("Drawing") external drawDog: (~giveName: string) => unit = "draw"
 ```
 
 ```js
-// Empty output
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @val
 external padLeft: (
   string,
@@ -253,6 +258,7 @@ padLeft("Hello World", #Str("Message from ReScript: "))
 
 ```js
 padLeft("Hello World", 4);
+
 padLeft("Hello World", "Message from ReScript: ");
 ```
 
@@ -268,15 +274,18 @@ Final escape hatch converter. Do not abuse.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 external convertToFloat: int => float = "%identity"
 let age = 10
-let gpa = 2.1 +. convertToFloat(age)
+let gpa = 2.1 + convertToFloat(age)
 ```
 
 ```js
-var age = 10;
-var gpa = 2.1 + 10;
+let gpa = 2.1 + 10;
+
+let age = 10;
+
+export { age, gpa };
 ```
 
 </CodeTab>

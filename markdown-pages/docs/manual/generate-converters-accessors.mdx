@@ -45,16 +45,17 @@ type action =
 
 ```js
 function submit(param_0) {
-  return /* Submit */ [param_0];
+  return {
+    TAG: "Submit",
+    _0: param_0,
+  };
 }
 
-var click = /* Click */ 0;
+let click = "Click";
 
-var cancel = /* Cancel */ 1;
+let cancel = "Cancel";
 
-exports.click = click;
-exports.submit = submit;
-exports.cancel = cancel;
+export { click, submit, cancel };
 ```
 
 </CodeTab>
@@ -68,7 +69,7 @@ Variants constructors with payloads generate functions, payload-less constructor
 
 ### Usage
 
-```res
+```res nocheck
 let s = submit("hello"); /* gives Submit("hello") */
 ```
 
@@ -102,7 +103,7 @@ function name(param) {
   return param.name;
 }
 
-var pets = [
+let pets = [
   {
     name: "bob",
   },
@@ -111,7 +112,9 @@ var pets = [
   },
 ];
 
-console.log(Belt_Array.map(pets, name).join("&"));
+console.log(pets.map(name).join("&"));
+
+export { name, pets };
 ```
 
 </CodeTab>

@@ -10,16 +10,18 @@ order: 12
 
 ## Array
 
-Arrays are our main ordered data structure. They work the same way as JavaScript arrays: they can be randomly accessed, dynamically resized, updated, etc.
+Arrays are the main ordered data structure in ReScript. They can be randomly accessed, dynamically resized, and updated.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let myArray = ["hello", "world", "how are you"]
 ```
 
 ```js
-var myArray = ["hello", "world", "how are you"];
+let myArray = ["hello", "world", "how are you"];
+
+export { myArray };
 ```
 
 </CodeTab>
@@ -34,7 +36,7 @@ Accessing items in an array will return an `option` and can be done like so:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let myArray = ["hello", "world", "how are you"]
 
 let firstItem = myArray[0] // Some("hello")
@@ -43,11 +45,13 @@ let tenthItem = myArray->Array.get(10) // None
 ```
 
 ```js
-var myArray = ["hello", "world", "how are you"];
+let myArray = ["hello", "world", "how are you"];
 
-var firstItem = myArray[0];
+let firstItem = myArray[0];
 
-var tenthItem = myArray[10];
+let tenthItem = myArray[10];
+
+export { myArray, firstItem, tenthItem };
 ```
 
 </CodeTab>
@@ -58,7 +62,7 @@ Items in an array can be updated by assigning a value to an index or using a fun
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let myArray = ["hello", "world", "how are you"]
 
 myArray[0] = "hey" // now ["hey", "world", "how are you"]
@@ -69,13 +73,15 @@ myArray->Array.set(0, "bye") //  ["bye", "world", "how are you", "?"]
 ```
 
 ```js
-var myArray = ["hello", "world", "how are you"];
+let myArray = ["hello", "world", "how are you"];
 
 myArray[0] = "hey";
 
 myArray.push("?");
 
 myArray[0] = "bye";
+
+export { myArray };
 ```
 
 </CodeTab>
@@ -84,11 +90,11 @@ myArray[0] = "bye";
 
 **Since 11.1**
 
-You can spread arrays of the the same type into new arrays, just like in JavaScript:
+You can spread arrays of the same type into new arrays:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let y = [1, 2]
 let x = [4, 5, ...y]
 let x2 = [4, 5, ...y, 7, ...y]
@@ -96,20 +102,20 @@ let x3 = [...y]
 ```
 
 ```javascript
-var Belt_Array = require("rescript/lib/js/belt_Array.js");
+import * as Belt_Array from "@rescript/runtime/lib/es6/Belt_Array.js";
 
-var y = [1, 2];
+let y = [1, 2];
 
-var x = Belt_Array.concatMany([[4, 5], y]);
+let x = Belt_Array.concatMany([[4, 5], y]);
 
-var x2 = Belt_Array.concatMany([[4, 5], y, [7], y]);
+let x2 = Belt_Array.concatMany([[4, 5], y, [7], y]);
 
-var x3 = Belt_Array.concatMany([y]);
+let x3 = Belt_Array.concatMany([y]);
+
+export { y, x, x2, x3 };
 ```
 
 </CodeTab>
-
-> Note that array spreads compiles to `Belt.Array.concatMany` right now. This is likely to change to native array spreads in the future.
 
 ## List
 
@@ -122,21 +128,23 @@ ReScript provides a singly linked list too. Lists are:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let myList = list{1, 2, 3}
 ```
 
 ```js
-var myList = {
+let myList = {
   hd: 1,
   tl: {
     hd: 2,
     tl: {
       hd: 3,
-      tl: 0,
+      tl: /* [] */ 0,
     },
   },
 };
+
+export { myList };
 ```
 
 </CodeTab>
@@ -192,7 +200,7 @@ var anotherList = {
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let message =
   switch myList {
   | list{} => "This list is empty"
@@ -202,18 +210,30 @@ let message =
 ```
 
 ```js
+let myList = {
+  hd: 1,
+  tl: {
+    hd: 2,
+    tl: {
+      hd: 3,
+      tl: /* [] */ 0,
+    },
+  },
+};
+
+let anotherList = {
+  hd: 0,
+  tl: myList,
+};
+
 let message =
   myList !== 0
-    ? {
-        hd: 2,
-        tl: {
-          hd: 3,
-          tl: /* [] */ 0,
-        },
-      } !== 0
+    ? myList.tl !== 0
       ? "The list two items and a potenial remainder of items"
       : "The head of the list is the string " + (1).toString()
     : "This list is empty";
+
+export { myList, anotherList, message };
 ```
 
 </CodeTab>

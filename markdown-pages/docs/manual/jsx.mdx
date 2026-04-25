@@ -18,7 +18,7 @@ ReScript supports the JSX syntax, with some slight differences compared to the o
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 <MyComponent name={"ReScript"} />
 ```
 
@@ -36,7 +36,7 @@ becomes
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 React.jsx(MyComponent.make, {name: {"ReScript"}})
 ```
 
@@ -54,7 +54,7 @@ JsxRuntime.jsx(MyComponent, {
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 <div onClick={handler}> child1 child2 </div>
 ```
 
@@ -73,7 +73,7 @@ becomes
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 ReactDOM.jsxs("div", {onClick: {handler}, children: React.array([child1, child2])})
 ```
 
@@ -92,7 +92,7 @@ JsxRuntime.jsxs("div", {
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 <> child1 child2 </>
 ```
 
@@ -110,7 +110,7 @@ becomes
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 React.jsxs(React.jsxFragment, {children: React.array([child1, child2])})
 ```
 
@@ -128,7 +128,7 @@ JsxRuntime.jsxs(JsxRuntime.Fragment, {
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 <MyComponent> child1 child2 </MyComponent>
 ```
 
@@ -146,7 +146,7 @@ This is the syntax for passing a list of two items, `child1` and `child2`, to th
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 React.jsxs(MyComponent.make, {children: React.array([child1, child2])})
 ```
 
@@ -172,7 +172,7 @@ Here's a JSX tag that shows most of the features.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 <MyComponent
   booleanAttribute={true}
   stringAttribute="string"
@@ -211,11 +211,11 @@ JsxRuntime.jsx(Playground$MyComponent, {
 
 **Since 10.1**
 
-JSX props spread is supported now, but in a stricter way than in JS.
+JSX props spread is supported with type safety.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 <Comp {...props} a="a" />
 ```
 
@@ -234,7 +234,7 @@ Multiple spreads are not allowed:
 
 <CodeTab labels={["ReScript"]}>
 
-```res
+```res nocheck
 <NotAllowed {...props1} {...props2} />
 ```
 
@@ -244,7 +244,7 @@ The spread must be at the first position, followed by other props:
 
 <CodeTab labels={["ReScript"]}>
 
-```res
+```res nocheck
 <NotAllowed a="a" {...props} />
 ```
 
@@ -258,7 +258,7 @@ JSX supports punning. `<input checked />` is just a shorthand for `<input checke
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 <MyComponent isLoading text onClick />
 ```
 
@@ -290,7 +290,7 @@ such props in your custom `JsxDOM.domProps` type ([see generic JSX transform](#g
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 <model-viewer src touchActions="pan-y"></model-viewer>
 ```
 
@@ -478,7 +478,7 @@ JSX Preserve Mode keeps JSX syntax in the compiled JavaScript output instead of 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let c1 = <div className="foo"> {React.string("Hello")} </div>
 let c2 = <MyComponent text="hey" isLoading=true onClick />
 ```

@@ -18,12 +18,12 @@ order: 3
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @val external setTimeout: (unit => unit, int) => float = "setTimeout"
 ```
 
 ```js
-// Empty output
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>
@@ -48,7 +48,7 @@ Once declared, you can use an `external` as a normal value, just like a let bind
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // The type of document is just some random type 'a
 // that we won't bother to specify
 @val external document: 'a = "document"
@@ -66,20 +66,22 @@ document["location"]["href"] = "rescript-lang.org"
 ```
 
 ```js
-document.addEventListener("mouseup", function (_event) {
+document.addEventListener("mouseup", (_event) => {
   console.log("clicked!");
 });
 
-var loc = document.location;
+let loc = document.location;
 
 document.location.href = "rescript-lang.org";
+
+export { loc };
 ```
 
 </CodeTab>
 
-We've specified `document`'s type as `'a`, aka a placeholder type that's polymorphic. Any value can be passed there, so you're not getting much type safety (except the inferences at various call sites). However, this is excellent for quickly getting started using a JavaScript library in ReScript **without needing the equivalent of a repository of typed bindings** like TypeScript's `DefinitelyTyped` repo.
+We've specified `document`'s type as `'a`, a placeholder type that's polymorphic. Any value can be passed there, so you're not getting much type safety (except the inferences at various call sites). This is useful for quickly getting started with a JavaScript library in ReScript since you can write bindings directly for any API you need.
 
-However, if you want to more rigidly bind to the JavaScript library you want, keep reading the next few interop pages.
+For more rigidly typed bindings, see the other interop pages in this section.
 
 ## Performance & Output Readability
 

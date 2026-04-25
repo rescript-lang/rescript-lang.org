@@ -3,7 +3,7 @@ title: "Migrate to v12"
 description: "Instructions on upgrading to ReScript 12"
 canonical: "/docs/manual/migrate-to-v12"
 section: "Overview"
-order: 4
+order: 5
 ---
 
 # Migrate to ReScript 12
@@ -51,7 +51,17 @@ if you had `@rescript/std` installed, remove it as well:
 npm uninstall @rescript/std
 ```
 
-this is replaced by `@rescript/runtime`, which is a installed as a dependency of `rescript` now.
+this is replaced by `@rescript/runtime`, which is installed as a dependency of `rescript` now.
+
+<Info>
+  **pnpm users:** since pnpm does not hoist transitive dependencies, you may need to install `@rescript/runtime` as a direct dependency (`pnpm add @rescript/runtime`), or hoist it by adding the following to `pnpm-workspace.yaml`:
+
+```yaml
+publicHoistPattern:
+  - "*@rescript/runtime*"
+```
+
+</Info>
 
 ## Replacements
 
@@ -79,7 +89,7 @@ rescript-tools migrate <file> [--stdout]
 
 v11:
 
-```res
+```res nocheck
 let w = lnot(a)     // bitwise NOT
 let x = lxor(a, b)  // bitwise XOR
 let y = land(a, b)  // bitwise AND
@@ -88,7 +98,7 @@ let z = lor(a, b)   // bitwise OR
 
 v12:
 
-```res
+```res nocheck
 let w = ~~~a     // bitwise NOT
 let x = a ^^^ b  // bitwise XOR
 let y = a &&& b  // bitwise AND
@@ -99,7 +109,7 @@ let z = a ||| b  // bitwise OR
 
 v11:
 
-```res
+```res nocheck
 let x = lsl(a, b)  // logical left shift
 let y = lsr(a, b)  // logical right shift
 let z = asr(a, b)  // unsigned right shift
@@ -107,7 +117,7 @@ let z = asr(a, b)  // unsigned right shift
 
 v12:
 
-```res
+```res nocheck
 let x = a << b  // logical left shift
 let y = a >> b  // logical right shift
 let z = a >>> b  // unsigned right shift
@@ -117,13 +127,13 @@ let z = a >>> b  // unsigned right shift
 
 v11:
 
-```res
+```res nocheck
 <div> ...children </div>
 ```
 
 v12:
 
-```res
+```res nocheck
 <div> children </div>
 ```
 
@@ -131,7 +141,7 @@ v12:
 
 v11:
 
-```res
+```res nocheck
 @bs.as("foo")
 @bs.send
 @bs.new
@@ -141,7 +151,7 @@ v11:
 
 v12:
 
-```res
+```res nocheck
 @as("foo")
 @send
 @new
@@ -155,13 +165,13 @@ v12:
 
 v11:
 
-```res
+```res nocheck
 assert 1 == 2
 ```
 
 v12:
 
-```res
+```res nocheck
 assert(1 == 2)  // Now a regular function call
 ```
 

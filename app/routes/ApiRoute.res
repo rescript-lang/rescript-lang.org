@@ -97,6 +97,27 @@ let groupItems = apiDocs => {
   rootItems
 }
 
+let makeBreadcrumbs = (~prefix: Url.breadcrumb, route: Path.t): list<Url.breadcrumb> => {
+  let url = Url.parse((route :> string))
+
+  let (_, rest) = // Strip the "api" part of the url before creating the rest of the breadcrumbs
+  Array.slice(url.pagepath, ~start=1)->Array.reduce((prefix.href, []), (acc, path) => {
+    let (baseHref, ret) = acc
+
+    let href = baseHref ++ ("/" ++ path)
+
+    Array.push(
+      ret,
+      {
+        Url.name: Url.prettyString(path),
+        href,
+      },
+    )->ignore
+    (href, ret)
+  })
+  Array.concat([prefix], rest)->List.fromArray
+}
+
 let loader: ReactRouter.Loader.t<loaderData> = async args => {
   let path =
     WebAPI.URL.make(~url=args.request.url).pathname
@@ -162,7 +183,7 @@ let default = () => {
 
   let breadcrumbs = {
     let prefix = {Url.name: "API", href: "/docs/manual/api"}
-    let crumbs = ApiLayout.makeBreadcrumbs(~prefix, pathname)
+    let crumbs = makeBreadcrumbs(~prefix, pathname)
     list{{Url.name: "Docs", href: "/docs/manual/api"}, ...crumbs}
   }
 
@@ -186,7 +207,6 @@ let default = () => {
 
   <>
     <Meta title description=?docstrings />
-    <NavbarSecondary />
     <NavbarTertiary sidebar=sidebarContent>
       <SidebarLayout.BreadCrumbs crumbs=breadcrumbs />
     </NavbarTertiary>

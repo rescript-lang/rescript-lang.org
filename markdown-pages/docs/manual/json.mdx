@@ -14,7 +14,7 @@ Bind to JavaScript's `JSON.parse` and type the return value as the type you're e
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // declare the shape of the json you're binding to
 type data = {names: array<string>}
 
@@ -27,8 +27,11 @@ let name1 = result.names[0]
 ```
 
 ```js
-var result = JSON.parse('{"names": ["Luke", "Christine"]}');
-var name1 = result.names[0];
+let result = JSON.parse(`{"names": ["Luke", "Christine"]}`);
+
+let name1 = result.names[0];
+
+export { result, name1 };
 ```
 
 </CodeTab>
@@ -41,7 +44,7 @@ Use [`JSON.stringify`](/docs/manual/api/stdlib/json#value-stringify) if your dat
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 Console.log(JSON.stringifyAny(["Amy", "Joe"]))
 ```
 
@@ -57,7 +60,7 @@ Use the `@module` attribute to import JSON files directly.
 
 <CodeTab labels={["ReScript", "JS Output (Module)", "JS Output (CommonJS)"]}>
 
-```res example
+```res
 @module external studentNames: JSON.t = "./students.json"
 Console.log(studentNames)
 ```
@@ -65,9 +68,11 @@ Console.log(studentNames)
 ```js
 import * as StudentsJson from "./students.json";
 
-var studentNames = StudentsJson;
+let studentNames = StudentsJson;
 
 console.log(studentNames);
+
+export { studentNames };
 ```
 
 ```js

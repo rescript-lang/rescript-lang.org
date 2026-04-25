@@ -1,6 +1,7 @@
 .DS_Store
 *.swp
 *.swo
+.worktrees/
 
 # Generated via update-index script
 public/blog/feed.xml
@@ -11,11 +12,9 @@ out/
 index_data/*.json
 
 # Generated via test examples script
-_tempFile.cmi
-_tempFile.cmj
-_tempFile.cmt
-_tempFile.res
 temp
+temp-js-output
+temp-jsx-preserve
 
 .bsb.lock
 .merlin
@@ -42,6 +41,7 @@ public/playground-bundles/
 dist
 build
 .react-router
+.worktrees/
 mdx-manifest.json
 
 app/**/*.mjs
@@ -50,6 +50,8 @@ functions/**/*.mjs
 functions/**/*.jsx
 __tests__/**/*.mjs
 __tests__/**/*.jsx
+e2e/**/*.mjs
+e2e/**/*.jsx
 !_shims.mjs
 !_shims.jsx
 
@@ -69,6 +71,9 @@ _scripts
 
 # Local env files
 .env.local
+
+# Local git worktrees
+.worktrees
 
 # Vitest screenshots
 !__tests__/__screenshots__/**/*

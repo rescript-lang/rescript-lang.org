@@ -48,7 +48,7 @@ To create a new object:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let me = {
   "age": 5,
   "name": "Big ReScript"
@@ -56,10 +56,12 @@ let me = {
 ```
 
 ```js
-var me = {
+let me = {
   age: 5,
   name: "Big ReScript",
 };
+
+export { me };
 ```
 
 </CodeTab>
@@ -68,7 +70,7 @@ var me = {
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 type person = {
   "age": int
 };
@@ -88,7 +90,7 @@ var me = {
 
 Since the type checker doesn't try to match `me` with the type `person`. If you ever want to force an object value to be of a predeclared object type, just annotate the value:
 
-```res
+```res nocheck
 let me: person = {
   "age": "hello!"
 }
@@ -100,7 +102,7 @@ Now the type system will error properly.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let age = me["age"]
 ```
 
@@ -116,7 +118,7 @@ Disallowed unless the object is a binding that comes from the JavaScript side. I
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type student = {
   @set "age": int,
   @set "name": string,
@@ -127,7 +129,8 @@ student1["name"] = "Mary"
 ```
 
 ```js
-var MyJSFile = require("MyJSFile");
+import * as MyJSFile from "MyJSFile";
+
 MyJSFile.student1.name = "Mary";
 ```
 
@@ -139,7 +142,7 @@ You can spread one object type definition into another using `...`:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type point2d = {
   "x": float,
   "y": float,
@@ -157,11 +160,13 @@ let myPoint: point3d = {
 ```
 
 ```js
-var myPoint = {
+let myPoint = {
   x: 1.0,
   y: 2.0,
   z: 3.0,
 };
+
+export { myPoint };
 ```
 
 </CodeTab>
@@ -174,7 +179,7 @@ Since objects don't require type declarations, and since ReScript infers all the
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // The type of document is just some random type 'a
 // that we won't bother to specify
 @val external document: 'a = "document"
@@ -192,11 +197,15 @@ document["location"]["href"] = "rescript-lang.org"
 ```
 
 ```js
-document.addEventListener("mouseup", function (_event) {
+document.addEventListener("mouseup", (_event) => {
   console.log("clicked!");
 });
-var loc = document.location;
+
+let loc = document.location;
+
 document.location.href = "rescript-lang.org";
+
+export { loc };
 ```
 
 </CodeTab>

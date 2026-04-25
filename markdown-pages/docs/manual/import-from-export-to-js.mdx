@@ -12,7 +12,7 @@ You've seen how ReScript's idiomatic [Import & Export](./import-export.mdx) work
 
 If you're looking for react-specific interop guidance, check out the [React JS Interop guide](../react/import-export-reactjs.mdx).
 
-**Note**: due to JS ecosystem's module compatibility issues, our advice of keeping your ReScript file's compiled JS output open in a tab applies here **more than ever**, as you don't want to subtly output the wrong JS module import/export code, on top of having to deal with Babel/Webpack/Jest/Node's CommonJS \<-> JavaScript module compatibility shims.
+**Tip**: keep your compiled JS output open in a tab to verify the generated import/export code.
 
 In short: **make sure your bindings below output what you'd have manually written in JS**.
 
@@ -33,7 +33,7 @@ Use the `module` [external](./external.mdx):
 
 <CodeTab labels={["ReScript", "JS Output (Module)", "JS Output (CommonJS)"]}>
 
-```res example
+```res
 // Import nodejs' path.dirname
 @module("path") external dirname: string => string = "dirname"
 let root = dirname("/User/github") // returns "User"
@@ -41,12 +41,17 @@ let root = dirname("/User/github") // returns "User"
 
 ```js
 import * as Path from "path";
-var root = Path.dirname("/User/github");
+
+let root = Path.dirname("/User/github");
+
+export { root };
 ```
 
 ```js
 var Path = require("path");
 var root = Path.dirname("/User/github");
+
+exports.root = root;
 ```
 
 </CodeTab>
@@ -65,14 +70,21 @@ By omitting the string argument to `module`, you bind to the whole JS module:
 
 <CodeTab labels={["ReScript", "JS Output (Module)", "JS Output (CommonJS)"]}>
 
-```res example
+```res
 @module external leftPad: (string, int) => string = "./leftPad"
 let paddedResult = leftPad("hi", 5)
 ```
 
 ```js
 import * as LeftPad from "./leftPad";
-var paddedResult = LeftPad("hi", 5);
+
+function leftPad(prim0, prim1) {
+  return LeftPad(prim0, prim1);
+}
+
+let paddedResult = LeftPad("hi", 5);
+
+export { leftPad, paddedResult };
 ```
 
 ```js
@@ -90,14 +102,19 @@ Use the value `default` on the right hand side:
 
 <CodeTab labels={["ReScript", "JS Output (Module)"]}>
 
-```res example
+```res
 @module("./student") external studentName: string = "default"
 Console.log(studentName)
 ```
 
 ```js
 import Student from "./student";
-var studentName = Student;
+
+let studentName = Student;
+
+console.log(studentName);
+
+export { studentName };
 ```
 
 </CodeTab>
@@ -229,18 +246,15 @@ A JavaScript default export is really just syntax sugar for a named export impli
 
 <CodeTab labels={["ReScript", "JS Output (Module)", "JS Output (CommonJS)"]}>
 
-```res example
+```res
 // ReScriptStudent.res
 let default = "Bob"
 ```
 
 ```js
-var $$default = "Bob";
+let $$default = "Bob";
 
-exports.$$default = $$default;
-exports.default = $$default;
-// informal transpiler-compatible marker of a default export compiled from JavaScript module
-exports.__esModule = true;
+export { $$default as default };
 ```
 
 ```js

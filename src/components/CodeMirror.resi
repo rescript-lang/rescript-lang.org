@@ -4,6 +4,12 @@ module KeyMap: {
   let fromString: string => t
 }
 
+module Theme: {
+  type t = Dark | Light
+  let toString: t => string
+  let fromString: string => t
+}
+
 module Error: {
   type kind = [#Error | #Warning]
 
@@ -41,6 +47,7 @@ type editorConfig = {
   readOnly: bool,
   lineNumbers: bool,
   lineWrapping: bool,
+  theme: Theme.t,
   keyMap: KeyMap.t,
   onChange?: string => unit,
   errors: array<Error.t>,
@@ -54,6 +61,7 @@ let createEditor: editorConfig => editorInstance
 let editorSetErrors: (editorInstance, array<Error.t>) => unit
 let editorSetMode: (editorInstance, string) => unit
 let editorSetKeyMap: (editorInstance, KeyMap.t) => unit
+let editorSetTheme: (editorInstance, Theme.t) => unit
 let editorDestroy: editorInstance => unit
 let editorSetValue: (editorInstance, string) => unit
 let editorGetValue: editorInstance => string

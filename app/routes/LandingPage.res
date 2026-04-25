@@ -2,15 +2,27 @@ module Intro = {
   @react.component
   let make = () => {
     <section className="flex justify-center">
+      // We only need this font on the homepage, so we load it here instead of globally to save some bandwidth for users who navigate to other pages directly
+      <link
+        href="https://fonts.googleapis.com/css2?family=Red+Hat+Mono:wght@700&display=swap"
+        rel="stylesheet"
+      />
       <div className="max-w-1060 flex flex-col items-center px-5 sm:px-8 lg:box-content">
         <h1 className="hl-title text-center max-w-212">
-          {React.string("Fast, Simple, Fully Typed JavaScript from the Future")}
+          {React.string("JavaScript Made Simple for Humans and AI")}
         </h1>
-        <h2 className="body-lg text-center text-gray-60 my-4 max-w-md">
-          {React.string(`ReScript is a robustly typed language that compiles to efficient
-            and human-readable JavaScript. It comes with a lightning fast
-            compiler toolchain that scales to any codebase size.`)}
+        <h2 className="red-hat-mono-bold hl-1 text-center text-gray-60 my-4 max-w-md">
+          {React.string(`Types > Vibes`)}
         </h2>
+        <p className="body-lg text-center text-gray-60 mt-4 max-w-md">
+          {React.string(`ReScript is a strongly typed language that compiles to clean,
+            efficient JavaScript that humans and AI tools can read and understand.`)}
+        </p>
+        <p className="body-lg text-center text-gray-60 my-4 max-w-md">
+          {React.string(`Its fast compiler and static type system keep feedback loops tight,
+            so you can move quickly with AI assistance while maintaining
+            confidence as your codebase grows.`)}
+        </p>
         <div className="mt-4 mb-2">
           <ReactRouter.Link to=#"/docs/manual/installation" prefetch=#viewport>
             <Button> {React.string("Get started")} </Button>
@@ -45,17 +57,17 @@ module PlaygroundHero = {
       js: `import * as JsxRuntime from "react/jsx-runtime";
 
 function Playground$Button(props) {
-  var count = props.count;
-  var times = count !== 1 ? (
+  let count = props.count;
+  let times = count !== 1 ? (
     count !== 2 ? count.toString() + " times" : "twice"
   ) : "once";
-  var text = "Click me " + times;
+  let text = "Click me " + times;
   return JsxRuntime.jsx("button", {
     children: text
   });
 }
 
-var Button = {
+let Button = {
   make: Playground$Button
 };
 
@@ -106,7 +118,7 @@ export {
           /* ---Link to Playground--- */
           <div>
             <ReactRouter.Link.String
-              to={`/try?code=${encodeURIComponent(example.res)}`}
+              to={`/try?code=${LzString.lzString.compressToEncodedURIComponent(example.res)}`}
               className="captions md:px-0 border-b border-gray-40 hover:border-gray-60 text-gray-60"
             >
               {React.string("Edit this example in Playground")}
@@ -683,19 +695,24 @@ let make = (~components=MarkdownComponents.default) => {
   <>
     <Meta
       title="The ReScript Programming Language"
-      description="Fast, Simple, Fully Typed JavaScript from the Future"
+      description={`JavaScript Made Simple for Humans and AI. ReScript is a strongly typed language that compiles to clean,
+        efficient JavaScript that humans and AI tools can read and understand.
+        Its fast compiler and static type system keep feedback loops tight,
+        so you can move quickly with AI assistance while maintaining
+        confidence as your codebase grows.`}
       keywords=["ReScript", "rescriptlang", "JavaScript", "JS", "TypeScript"]
     />
     <div className="mt-4 xs:mt-16">
       <div className="text-gray-80 text-18 z">
         <div className="absolute w-full top-16">
-          <Banner>
-            {React.string("ReScript 12 is out! Read the ")}
-            <ReactRouter.Link to=#"/blog/release-12-0-0" className="underline">
-              {React.string("announcement blog post")}
-            </ReactRouter.Link>
-            {React.string(".")}
-          </Banner>
+          // Enable this when v13 is released
+          // <Banner>
+          //   {React.string("ReScript 12 is out! Read the ")}
+          //   <ReactRouter.Link to=#"/blog/release-12-0-0" className="underline">
+          //     {React.string("announcement blog post")}
+          //   </ReactRouter.Link>
+          //   {React.string(".")}
+          // </Banner>
           <div className="relative overflow-hidden pb-32">
             <main className="mt-10 min-w-320 lg:align-center w-full">
               <div className="">

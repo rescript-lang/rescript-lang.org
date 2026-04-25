@@ -24,3 +24,9 @@ let compileMdx: (
   ~filePath: string,
   ~remarkPlugins: array<Mdx.remarkPlugin>=?,
 ) => promise<CompiledMdx.t>
+
+/** Scan all .mdx files in a directory, parse frontmatter only, and return
+ * as Mdx.attributes with `path` and `slug` fields populated.
+ * Replaces `react-router-mdx`'s `loadAllMdx`.
+ */
+let loadAllAttributes: (~dir: string) => promise<array<Mdx.attributes>>

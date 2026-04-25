@@ -4,7 +4,7 @@ metaTitle: "Editor"
 description: "Documentation about ReScript editor plugins and code analysis"
 canonical: "/docs/manual/editor-plugins"
 section: "Overview"
-order: 3
+order: 4
 ---
 
 # Editor
@@ -40,14 +40,14 @@ The code analysis provides extra checks for your ReScript project, such as detec
 ### Configuration
 
 Add a `reanalyze` section to your `rescript.json` to control what the analyzer checks or ignores. You'll get autocomplete for config options in the editor.  
-More details: [reanalyze config docs](https://github.com/rescript-association/reanalyze#configuration-via-bsconfigjson)
+More details: [reanalyze configuration docs](https://github.com/rescript-association/reanalyze#configuration-via-bsconfigjson)
 
 ### Exception analysis
 
 The exception analysis is designed to keep track statically of the exceptions that might be thrown at runtime. It works by issuing warnings and recognizing annotations. Warnings are issued whenever an exception is thrown and not immediately caught. Annotations are used to push warnings from he local point where the exception is thrown, to the outside context: callers of the current function.
 Nested functions need to be annotated separately.
 
-Instructions on how to run the exception analysis using the `-exception` and `-exception-cmt` command-line arguments, or how to add `"analysis": ["exception"]` in `rescript.json` are contained in the [reanalyze config docs](https://github.com/rescript-association/reanalyze#configuration-via-bsconfigjson).
+Instructions on how to run the exception analysis using the `-exception` and `-exception-cmt` command-line arguments, or how to add `"analysis": ["exception"]` in `rescript.json` are contained in the [reanalyze configuration docs](https://github.com/rescript-association/reanalyze#configuration-via-bsconfigjson).
 
 Here's an example, where the analysis reports a warning any time an exception is thrown, and not caught:
 
@@ -142,12 +142,11 @@ There is a way to enhance this behavior via configuration, described further dow
 
 ### Dot completion enhancements
 
-In ReScript, using a dot (`.`) normally means "access record field". But, because using `.` to trigger completions is so pervasive in for example JavaScript, we extend `.` to trigger completions in more scenarios than just for record field access.
+In ReScript, using a dot (`.`) normally means "access record field". The editor extends dot (`.`) to trigger completions in more scenarios beyond record field access.
 
 This behavior has the following important implications:
 
 - Improves discoverability (E.g. using a `.` will reveal important pipe completions)
-- Enables a more natural completion flow for people used to JavaScript, where dots power more completions naturally
 
 Below is a list of all the scenarios where using dots trigger completion in addition to the normal record field completion.
 
@@ -155,7 +154,7 @@ Below is a list of all the scenarios where using dots trigger completion in addi
 
 When writing a `.` on something that's a [structural object](./object.mdx), you'll get completions for those object properties. Example:
 
-```res
+```res nocheck
 let obj = {
   "first": true,
   "second": false
@@ -172,7 +171,7 @@ let x = obj.
 
 When writing `.` on _anything_, the editor will try to do pipe completion for the value on the left of the `.`. Example:
 
-```res
+```res nocheck
 let arr = [1, 2, 3]
 
 let x = arr.
@@ -192,7 +191,7 @@ You can configure any type you have control over to draw pipe completions from a
 
 Let's look at an example:
 
-```res
+```res nocheck
 // Types.res
 // In this example types need to live separately in their own file, for various reasons
 type htmlInput
@@ -209,7 +208,7 @@ In the example above, if we try and pipe on something of the type `Types.htmlInp
 
 With `@editor.completeFrom`, we can fix this. Let's look at an updated example:
 
-```res
+```res nocheck
 // Types.res
 @editor.completeFrom(Utils.HtmlInput)
 type htmlInput
@@ -259,7 +258,7 @@ First, let's look at including our own `ArrayExtra` in all completions for `arra
 
 Now, when using pipes on arrays, you'll get completions both from the standard library array functions, and also from your own `ArrayExtra` module.
 
-```res
+```res nocheck
 let x = [1, 2, 3]->
 
 // Example of what completing at the pipe might look like

@@ -2427,9 +2427,9 @@
         "kind": "value",
         "name": "compare",
         "docstrings": [
-          "`compare(collator, a, b)` compares two strings using the rules of `collator`. Returns a negative number when `a` comes before `b`, `0` when equal, and a positive number otherwise.\n\n## Examples\n\n```rescript\nlet collator = Intl.Collator.make(~locales=[\"en-US\"])\ncollator->Intl.Collator.compare(\"apple\", \"banana\") < 0\n```"
+          "`compare(collator, a, b)` compares two strings using the rules of `collator`. Returns a negative number when `a` comes before `b`, `0` when equal, and a positive number otherwise.\n\n## Examples\n\n```rescript\nlet collator = Intl.Collator.make(~locales=[\"en-US\"])\nOrdering.isLess(collator->Intl.Collator.compare(\"apple\", \"banana\"))\n```"
         ],
-        "signature": "let compare: (t, string, string) => int"
+        "signature": "let compare: (t, string, string) => Ordering.t"
       },
       {
         "id": "Stdlib.Intl.Collator.ignore",
@@ -4493,6 +4493,15 @@
         "signature": "type t<'a>"
       },
       {
+        "id": "Stdlib.Set.asIterable",
+        "kind": "value",
+        "name": "asIterable",
+        "docstrings": [
+          "`asIterable(set)` views `set` as an `Iterable.t`."
+        ],
+        "signature": "let asIterable: t<'a> => Iterable.t<'a>"
+      },
+      {
         "id": "Stdlib.Set.make",
         "kind": "value",
         "name": "make",
@@ -4511,13 +4520,13 @@
         "signature": "let fromArray: array<'a> => t<'a>"
       },
       {
-        "id": "Stdlib.Set.fromIterator",
+        "id": "Stdlib.Set.fromIterable",
         "kind": "value",
-        "name": "fromIterator",
+        "name": "fromIterable",
         "docstrings": [
-          "Turns an iterator into a `Set`.\n\n## Examples\n\n```rescript\n// Let's pretend we have an interator\nlet iterator: Iterator.t<string> = %raw(`\n  (() => {\n    var array1 = ['a', 'b', 'c'];\n    var iterator1 = array1[Symbol.iterator]();\n    return iterator1\n  })()\n`)\n\niterator\n->Set.fromIterator\n->Set.size == 3\n```"
+          "Turns an iterable into a `Set`.\n\n## Examples\n\n```rescript\nlet iterable: Iterable.t<string> = [\"a\", \"b\", \"c\"]->Array.asIterable\n\niterable\n->Set.fromIterable\n->Set.size == 3\n```"
         ],
-        "signature": "let fromIterator: Iterator.t<'a> => t<'a>"
+        "signature": "let fromIterable: Iterable.t<'a> => t<'a>"
       },
       {
         "id": "Stdlib.Set.size",
@@ -4587,9 +4596,9 @@
         "kind": "value",
         "name": "values",
         "docstrings": [
-          "Returns an iterator that holds all values of the set.\n\nSee [`Set.values`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/values) on MDN.\n\n## Examples\n```rescript\nlet set = Set.make()\nset->Set.add(\"someValue\")\nset->Set.add(\"anotherValue\")\n\nlet values = set->Set.values\n\n// Logs the first value\nConsole.log(Iterator.next(values).value)\n\n// You can also turn the iterator into an array.\n// Remember that an iterator consumes values. We'll need a fresh values iterator to get an array of all values, since we consumed a value via `next` above already.\nConsole.log(set->Set.values->Iterator.toArray)\n```"
+          "Returns an iterator that holds all values of the set.\n\nSee [`Set.values`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/values) on MDN.\n\n## Examples\n```rescript\nlet set = Set.make()\nset->Set.add(\"someValue\")\nset->Set.add(\"anotherValue\")\n\nlet values = set->Set.values\n\n// Logs the first value\nswitch values->IteratorObject.next {\n| Yield({value}) => Console.log(value)\n| Return(_) => ()\n}\n\n// You can also turn the iterator into an array. Remember that iterators are consumed, so use a fresh one.\nConsole.log(set->Set.values->IteratorObject.toArray)\n```"
         ],
-        "signature": "let values: t<'a> => Iterator.t<'a>"
+        "signature": "let values: t<'a> => IteratorObject.t<'a, unit, unknown>"
       },
       {
         "id": "Stdlib.Set.difference",
@@ -4763,6 +4772,15 @@
         "signature": "type t<'k, 'v>"
       },
       {
+        "id": "Stdlib.Map.asIterable",
+        "kind": "value",
+        "name": "asIterable",
+        "docstrings": [
+          "`asIterable(map)` views `map` as an `Iterable.t` of key/value pairs."
+        ],
+        "signature": "let asIterable: t<'k, 'v> => Iterable.t<('k, 'v)>"
+      },
+      {
         "id": "Stdlib.Map.make",
         "kind": "value",
         "name": "make",
@@ -4781,13 +4799,13 @@
         "signature": "let fromArray: array<('k, 'v)> => t<'k, 'v>"
       },
       {
-        "id": "Stdlib.Map.fromIterator",
+        "id": "Stdlib.Map.fromIterable",
         "kind": "value",
-        "name": "fromIterator",
+        "name": "fromIterable",
         "docstrings": [
-          "Turns an iterator in the shape of `('key, 'value)` into a `Map`.\n\n## Examples\n\n```rescript\n// Let's pretend we have an interator in the correct shape\nlet iterator: Iterator.t<(string, string)> = %raw(`\n  (() => {\n    var map1 = new Map();\n\n    map1.set('first', '1');\n    map1.set('second', '2');\n\n    var iterator1 = map1[Symbol.iterator]();\n    return iterator1;\n  })()\n`)\n\niterator\n->Map.fromIterator\n->Map.size == 2\n```"
+          "Turns an iterable in the shape of `('key, 'value)` into a `Map`.\n\n## Examples\n\n```rescript\nlet iterable: Iterable.t<(string, string)> = [(\"first\", \"1\"), (\"second\", \"2\")]->Array.asIterable\n\niterable\n->Map.fromIterable\n->Map.size == 2\n```"
         ],
-        "signature": "let fromIterator: Iterator.t<('k, 'v)> => t<'k, 'v>"
+        "signature": "let fromIterable: Iterable.t<('k, 'v)> => t<'k, 'v>"
       },
       {
         "id": "Stdlib.Map.size",
@@ -4875,27 +4893,27 @@
         "kind": "value",
         "name": "keys",
         "docstrings": [
-          "Returns an iterator that holds all keys of the map.\n\n## Examples\n```rescript\nlet map = Map.make()\nmap->Map.set(\"someKey\", \"someValue\")\nmap->Map.set(\"anotherKey\", \"anotherValue\")\n\nlet keys = map->Map.keys\n\n// Logs the first key\nConsole.log(Iterator.next(keys).value)\n\n// You can also turn the iterator into an array.\n// Remember that an iterator consumes values. We'll need a fresh keys iterator to get an array of all keys, since we consumed a value via `next` above already.\nConsole.log(map->Map.keys->Iterator.toArray)\n```"
+          "Returns an iterator that holds all keys of the map.\n\n## Examples\n```rescript\nlet map = Map.make()\nmap->Map.set(\"someKey\", \"someValue\")\nmap->Map.set(\"anotherKey\", \"anotherValue\")\n\nlet keys = map->Map.keys\n\n// Logs the first key\nswitch keys->IteratorObject.next {\n| Yield({value}) => Console.log(value)\n| Return(_) => ()\n}\n\n// You can also turn the iterator into an array. Remember that iterators are consumed, so use a fresh one.\nConsole.log(map->Map.keys->IteratorObject.toArray)\n```"
         ],
-        "signature": "let keys: t<'k, 'v> => Iterator.t<'k>"
+        "signature": "let keys: t<'k, 'v> => IteratorObject.t<'k, unit, unknown>"
       },
       {
         "id": "Stdlib.Map.values",
         "kind": "value",
         "name": "values",
         "docstrings": [
-          "Returns an iterator that holds all values of the map.\n\n## Examples\n```rescript\nlet map = Map.make()\nmap->Map.set(\"someKey\", \"someValue\")\nmap->Map.set(\"anotherKey\", \"anotherValue\")\n\nlet values = map->Map.values\n\n// Logs the first value\nConsole.log(Iterator.next(values).value)\n\n// You can also turn the iterator into an array.\n// Remember that an iterator consumes values. We'll need a fresh values iterator to get an array of all values, since we consumed a value via `next` above already.\nConsole.log(map->Map.values->Iterator.toArray)\n```"
+          "Returns an iterator that holds all values of the map.\n\n## Examples\n```rescript\nlet map = Map.make()\nmap->Map.set(\"someKey\", \"someValue\")\nmap->Map.set(\"anotherKey\", \"anotherValue\")\n\nlet values = map->Map.values\n\n// Logs the first value\nswitch values->IteratorObject.next {\n| Yield({value}) => Console.log(value)\n| Return(_) => ()\n}\n\n// You can also turn the iterator into an array. Remember that iterators are consumed, so use a fresh one.\nConsole.log(map->Map.values->IteratorObject.toArray)\n```"
         ],
-        "signature": "let values: t<'k, 'v> => Iterator.t<'v>"
+        "signature": "let values: t<'k, 'v> => IteratorObject.t<'v, unit, unknown>"
       },
       {
         "id": "Stdlib.Map.entries",
         "kind": "value",
         "name": "entries",
         "docstrings": [
-          "Returns an iterator that holds all entries of the map.\nAn entry is represented as a tuple of `('key, 'value)`,\n\n## Examples\n```rescript\nlet map = Map.make()\nmap->Map.set(\"someKey\", \"someValue\")\nmap->Map.set(\"anotherKey\", \"anotherValue\")\n\nlet entries = map->Map.entries\n\n// Logs the first value\nConsole.log(Iterator.next(entries).value)\n\n// You can also turn the iterator into an array.\n// Remember that an iterator consumes entries. We'll need a fresh entries iterator to get an array of all entries, since we consumed a value via `next` above already.\nConsole.log(map->Map.entries->Iterator.toArray)\n```"
+          "Returns an iterator that holds all entries of the map.\nAn entry is represented as a tuple of `('key, 'value)`,\n\n## Examples\n```rescript\nlet map = Map.make()\nmap->Map.set(\"someKey\", \"someValue\")\nmap->Map.set(\"anotherKey\", \"anotherValue\")\n\nlet entries = map->Map.entries\n\n// Logs the first value\nswitch entries->IteratorObject.next {\n| Yield({value}) => Console.log(value)\n| Return(_) => ()\n}\n\n// You can also turn the iterator into an array. Remember that iterators are consumed, so use a fresh one.\nConsole.log(map->Map.entries->IteratorObject.toArray)\n```"
         ],
-        "signature": "let entries: t<'k, 'v> => Iterator.t<('k, 'v)>"
+        "signature": "let entries: t<'k, 'v> => IteratorObject.t<('k, 'v), unit, unknown>"
       },
       {
         "id": "Stdlib.Map.ignore",
@@ -4908,11 +4926,173 @@
       }
     ]
   },
+  "stdlib/asyncgenerator": {
+    "id": "Stdlib.AsyncGenerator",
+    "name": "AsyncGenerator",
+    "docstrings": [
+      "A JavaScript async generator object.\n\nAsync generators are built-in async iterable iterators with additional\n`return()` and `throw()` capabilities.\n\nSee [`AsyncGenerator`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AsyncGenerator) on MDN."
+    ],
+    "items": [
+      {
+        "id": "Stdlib.AsyncGenerator.t",
+        "kind": "type",
+        "name": "t",
+        "docstrings": [
+          "Type representing an async generator object."
+        ],
+        "signature": "type t<'yield, 'return, 'next> = AsyncIterable.t<'yield>"
+      },
+      {
+        "id": "Stdlib.AsyncGenerator.asAsyncIterable",
+        "kind": "value",
+        "name": "asAsyncIterable",
+        "docstrings": [
+          "`asAsyncIterable(generator)` views `generator` as an `AsyncIterable.t`."
+        ],
+        "signature": "let asAsyncIterable: t<'yield, 'return, 'next> => AsyncIterable.t<'yield>"
+      },
+      {
+        "id": "Stdlib.AsyncGenerator.asAsyncIterableIterator",
+        "kind": "value",
+        "name": "asAsyncIterableIterator",
+        "docstrings": [
+          "`asAsyncIterableIterator(generator)` views `generator` as an `AsyncIterableIterator.t`."
+        ],
+        "signature": "let asAsyncIterableIterator: t<\n  'yield,\n  'return,\n  'next,\n> => AsyncIterableIterator.t<'yield, 'return, 'next>"
+      },
+      {
+        "id": "Stdlib.AsyncGenerator.asAsyncIterator",
+        "kind": "value",
+        "name": "asAsyncIterator",
+        "docstrings": [
+          "`asAsyncIterator(generator)` views `generator` as an `AsyncIterator.t`."
+        ],
+        "signature": "let asAsyncIterator: t<\n  'yield,\n  'return,\n  'next,\n> => AsyncIterator.t<'yield, 'return, 'next>"
+      },
+      {
+        "id": "Stdlib.AsyncGenerator.next",
+        "kind": "value",
+        "name": "next",
+        "docstrings": [
+          "`next(generator)` advances `generator` without sending a value back in."
+        ],
+        "signature": "let next: t<\n  'yield,\n  'return,\n  'next,\n> => promise<AsyncIterator.result<'yield, 'return>>"
+      },
+      {
+        "id": "Stdlib.AsyncGenerator.nextValue",
+        "kind": "value",
+        "name": "nextValue",
+        "docstrings": [
+          "`nextValue(generator, value)` advances `generator`, sending `value` back into it."
+        ],
+        "signature": "let nextValue: (\n  t<'yield, 'return, 'next>,\n  'next,\n) => promise<AsyncIterator.result<'yield, 'return>>"
+      },
+      {
+        "id": "Stdlib.AsyncGenerator.returnValue",
+        "kind": "value",
+        "name": "returnValue",
+        "docstrings": [
+          "`returnValue(generator, value)` completes `generator` with the final return `value`."
+        ],
+        "signature": "let returnValue: (\n  t<'yield, 'return, 'next>,\n  'return,\n) => promise<AsyncIterator.result<'yield, 'return>>"
+      },
+      {
+        "id": "Stdlib.AsyncGenerator.throwError",
+        "kind": "value",
+        "name": "throwError",
+        "docstrings": [
+          "`throwError(generator, error)` throws `error` into `generator`."
+        ],
+        "signature": "let throwError: (\n  t<'yield, 'return, 'next>,\n  exn,\n) => promise<AsyncIterator.result<'yield, 'return>>"
+      }
+    ]
+  },
+  "stdlib/asynciterableiterator": {
+    "id": "Stdlib.AsyncIterableIterator",
+    "name": "AsyncIterableIterator",
+    "docstrings": [
+      "A JavaScript async iterable iterator.\n\nThis models values that satisfy both the async iterable and async iterator\nprotocols without assuming any additional helper methods are available.\n\nSee [`AsyncIterator`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AsyncIterator) on MDN."
+    ],
+    "items": [
+      {
+        "id": "Stdlib.AsyncIterableIterator.t",
+        "kind": "type",
+        "name": "t",
+        "docstrings": [
+          "Type representing an async iterable iterator."
+        ],
+        "signature": "type t<'yield, 'return, 'next> = AsyncIterable.t<'yield>"
+      },
+      {
+        "id": "Stdlib.AsyncIterableIterator.make",
+        "kind": "value",
+        "name": "make",
+        "docstrings": [
+          "`make(nextFn)` creates an async iterable iterator from a function returning the next result.\n\nThe returned value is both an async iterator and an async iterable.\n\n## Examples\n\n```rescript\nlet current = ref(0)\n\nlet asyncIterableIterator = AsyncIterableIterator.make(async () => {\n  let value = current.contents\n  current := value + 1\n\n  if value >= 3 {\n    AsyncIterator.done()\n  } else {\n    AsyncIterator.value(value)\n  }\n})\n\nlet main = async () =>\n  await asyncIterableIterator->AsyncIterableIterator.forEach(value => Console.log(value))\n\nmain()->ignore\n```"
+        ],
+        "signature": "let make: (\n  unit => promise<Iterator.result<'yield, 'return>>,\n) => t<'yield, 'return, unit>"
+      },
+      {
+        "id": "Stdlib.AsyncIterableIterator.asAsyncIterable",
+        "kind": "value",
+        "name": "asAsyncIterable",
+        "docstrings": [
+          "`asAsyncIterable(value)` views `value` as an `AsyncIterable.t`."
+        ],
+        "signature": "let asAsyncIterable: t<'yield, 'return, 'next> => AsyncIterable.t<'yield>"
+      },
+      {
+        "id": "Stdlib.AsyncIterableIterator.asAsyncIterator",
+        "kind": "value",
+        "name": "asAsyncIterator",
+        "docstrings": [
+          "`asAsyncIterator(value)` views `value` as an `AsyncIterator.t`."
+        ],
+        "signature": "let asAsyncIterator: t<\n  'yield,\n  'return,\n  'next,\n> => AsyncIterator.t<'yield, 'return, 'next>"
+      },
+      {
+        "id": "Stdlib.AsyncIterableIterator.next",
+        "kind": "value",
+        "name": "next",
+        "docstrings": [
+          "`next(iterator)` advances `iterator` without sending a value back in."
+        ],
+        "signature": "let next: t<\n  'yield,\n  'return,\n  'next,\n> => promise<Iterator.result<'yield, 'return>>"
+      },
+      {
+        "id": "Stdlib.AsyncIterableIterator.nextValue",
+        "kind": "value",
+        "name": "nextValue",
+        "docstrings": [
+          "`nextValue(iterator, value)` advances `iterator`, sending `value` back into it."
+        ],
+        "signature": "let nextValue: (\n  t<'yield, 'return, 'next>,\n  'next,\n) => promise<Iterator.result<'yield, 'return>>"
+      },
+      {
+        "id": "Stdlib.AsyncIterableIterator.forEach",
+        "kind": "value",
+        "name": "forEach",
+        "docstrings": [
+          "`forEach(iterator, f)` consumes all yielded values in `iterator` and runs `f`\nfor each yielded value.\n\nThe final return value is not passed to `f`."
+        ],
+        "signature": "let forEach: (t<'yield, 'return, 'next>, 'yield => unit) => promise<unit>"
+      },
+      {
+        "id": "Stdlib.AsyncIterableIterator.ignore",
+        "kind": "value",
+        "name": "ignore",
+        "docstrings": [
+          "`ignore(iterator)` marks `iterator` as intentionally unused."
+        ],
+        "signature": "let ignore: t<'yield, 'return, 'next> => unit"
+      }
+    ]
+  },
   "stdlib/asynciterator": {
     "id": "Stdlib.AsyncIterator",
     "name": "AsyncIterator",
     "docstrings": [
-      "Bindings to async iterators, a way to do async iteration in JavaScript.\n\nSee [async iterator protocols](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#the_async_iterator_and_async_iterable_protocols) on MDN."
+      "A JavaScript async iterator protocol object.\n\nThis models the async iterator protocol: an object with a `next()` method that\nreturns a promise resolving to an iterator result.\n\nSee [`AsyncIterator`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AsyncIterator) on MDN."
     ],
     "items": [
       {
@@ -4920,70 +5100,493 @@
         "kind": "type",
         "name": "t",
         "docstrings": [
-          "The type representing an async iterator."
+          "Type representing an async iterator protocol object.\n\n- `'yield` is the type produced while iterating\n- `'return` is the final completion value once iteration is done\n- `'next` is the type that can be sent back into `next(value)`"
         ],
-        "signature": "type t<'a>"
+        "signature": "type t<'yield, 'return, 'next>"
       },
       {
-        "id": "Stdlib.AsyncIterator.value",
+        "id": "Stdlib.AsyncIterator.result",
         "kind": "type",
-        "name": "value",
-        "docstrings": [],
-        "signature": "type value<'a> = {done: bool, value: option<'a>}"
+        "name": "result",
+        "docstrings": [
+          "Result returned by `AsyncIterator.next`."
+        ],
+        "signature": "type result<'yield, 'return> = Iterator.result<\n  'yield,\n  'return,\n>"
       },
       {
-        "id": "Stdlib.AsyncIterator.make",
+        "id": "Stdlib.AsyncIterator.rawResult",
+        "kind": "type",
+        "name": "rawResult",
+        "docstrings": [],
+        "signature": "type rawResult<'yield, 'return>"
+      },
+      {
+        "id": "Stdlib.AsyncIterator.normalizeResult",
         "kind": "value",
-        "name": "make",
+        "name": "normalizeResult",
         "docstrings": [
-          "`make(nextFn)`\n\nCreates an async iterator from a function that returns the next value of the iterator.\n\n## Examples\n\n- A simple example, creating an async iterator that returns 1, 2, 3:\n\n```rescript\nlet context = ref(0)\n\nlet asyncIterator = AsyncIterator.make(async () => {\n  let currentValue = context.contents\n  // Increment current value\n  context := currentValue + 1\n\n  {\n    AsyncIterator.value: Some(currentValue),\n    done: currentValue >= 3,\n  }\n})\n\n// This will log 1, 2, 3\nlet main = async () =>\n  await asyncIterator->AsyncIterator.forEach(value =>\n    switch value {\n    | Some(value) => Console.log(value)\n    | None => ()\n    }\n  )\n\nmain()->ignore\n```"
+          "Low-level raw JavaScript async iterator result shape.\n\nThis is mainly intended for internal use and protocol-level interop. Prefer\n`AsyncIterator.result`, `AsyncIterator.next`, and `AsyncIterator.nextValue` in\nnormal ReScript code."
         ],
-        "signature": "let make: (unit => promise<value<'value>>) => t<'value>"
+        "signature": "let normalizeResult: rawResult<'yield, 'return> => result<'yield, 'return>"
       },
       {
         "id": "Stdlib.AsyncIterator.value",
         "kind": "value",
         "name": "value",
         "docstrings": [
-          "`value(value)`\n\nShorthand for creating a value object with the provided value, and the `done` property set to false.\n\n## Examples\n\n```rescript\nlet context = ref(0)\n\nlet asyncIterator = AsyncIterator.make(async () => {\n  let currentValue = context.contents\n  // Increment current value\n  context := currentValue + 1\n\n  if currentValue >= 3 {\n    AsyncIterator.done()\n  } else {\n    AsyncIterator.value(currentValue)\n  }\n})\n```"
+          "`value(value)` creates a yielded iterator result.\n\n## Examples\n\n```rescript\nlet current = ref(0)\n\nlet asyncIterableIterator = AsyncIterator.make(async () => {\n  let value = current.contents\n  current := value + 1\n\n  if value >= 3 {\n    AsyncIterator.done()\n  } else {\n    AsyncIterator.value(value)\n  }\n})\n```"
         ],
-        "signature": "let value: 'value => value<'value>"
+        "signature": "let value: 'yield => result<'yield, 'return>"
       },
       {
         "id": "Stdlib.AsyncIterator.done",
         "kind": "value",
         "name": "done",
         "docstrings": [
-          "`done(~finalValue=?)`\n\n Shorthand for creating a value object with the `done` property set to true, and the provided value as the final value, if any.\n\n  ## Examples\n  ```rescript\n  let context = ref(0)\n  \n  let asyncIterator = AsyncIterator.make(async () => {\n    let currentValue = context.contents\n    // Increment current value\n    context := currentValue + 1\n  \n    if currentValue >= 3 {\n      AsyncIterator.done()\n    } else {\n      AsyncIterator.value(currentValue)\n    }\n  })\n  ```"
+          "`done()` creates a completed iterator result with `unit` as the final value."
         ],
-        "signature": "let done: (~finalValue: 'value=?) => value<'value>"
+        "signature": "let done: unit => result<'yield, unit>"
+      },
+      {
+        "id": "Stdlib.AsyncIterator.doneWithValue",
+        "kind": "value",
+        "name": "doneWithValue",
+        "docstrings": [
+          "`doneWithValue(value)` creates a completed iterator result with the provided final value."
+        ],
+        "signature": "let doneWithValue: 'return => result<'yield, 'return>"
+      },
+      {
+        "id": "Stdlib.AsyncIterator.nextRaw",
+        "kind": "value",
+        "name": "nextRaw",
+        "docstrings": [
+          "`nextRaw(asyncIterator)` advances `asyncIterator` and returns a promise for the raw\nJavaScript iterator result object.\n\nThis is mainly intended for internal use and protocol-level interop."
+        ],
+        "signature": "let nextRaw: t<\n  'yield,\n  'return,\n  'next,\n> => promise<rawResult<'yield, 'return>>"
       },
       {
         "id": "Stdlib.AsyncIterator.next",
         "kind": "value",
         "name": "next",
         "docstrings": [
-          "`next(asyncIterator)`\n\nReturns the next value of the iterator, if any.\n\nSee [async iterator protocols](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#the_async_iterator_and_async_iterable_protocols) on MDN.\n\n## Examples\n\n- A simple example, getting the next value:\n\n```rescript\nlet asyncIterator: AsyncIterator.t<(string, string)> = %raw(`\n  (() => {\n    var map1 = new Map();\n\n    map1.set('first', '1');\n    map1.set('second', '2');\n\n    var iterator1 = map1[Symbol.iterator]();\n    return iterator1;\n  })()\n`)\n\nlet processMyAsyncIterator = async () => {\n  // ReScript doesn't have `for ... of` loops, but it's easy to mimic using a while loop.\n  let break = ref(false)\n\n  while !break.contents {\n    // Await the next iterator value\n    let {value, done} = await asyncIterator->AsyncIterator.next\n\n    // Exit the while loop if the iterator says it's done\n    break := done\n\n    if done {\n      value->Option.isNone == true\n    }\n  }\n}\n\nprocessMyAsyncIterator()->ignore\n```"
+          "`next(asyncIterator)` advances `asyncIterator` without sending a value back in.\n\n## Examples\n\n```rescript\nlet asyncIterator: AsyncIterator.t<int, unit, unit> = %raw(`({\n  current: 0,\n  next() {\n    if (this.current < 2) {\n      return Promise.resolve({done: false, value: this.current++})\n    }\n    return Promise.resolve({done: true, value: undefined})\n  }\n})`)\n\nlet process = async () => {\n  switch await asyncIterator->AsyncIterator.next {\n  | Yield({value: 0}) => ()\n  | _ => ()\n  }\n}\n\nprocess()->ignore\n```"
         ],
-        "signature": "let next: t<'a> => promise<value<'a>>"
+        "signature": "let next: t<\n  'yield,\n  'return,\n  'next,\n> => promise<result<'yield, 'return>>"
+      },
+      {
+        "id": "Stdlib.AsyncIterator.nextValueRaw",
+        "kind": "value",
+        "name": "nextValueRaw",
+        "docstrings": [
+          "`nextValueRaw(asyncIterator, value)` advances `asyncIterator`, sends `value` back\ninto it, and returns a promise for the raw JavaScript iterator result object.\n\nThis is mainly intended for internal use and protocol-level interop."
+        ],
+        "signature": "let nextValueRaw: (\n  t<'yield, 'return, 'next>,\n  'next,\n) => promise<rawResult<'yield, 'return>>"
+      },
+      {
+        "id": "Stdlib.AsyncIterator.nextValue",
+        "kind": "value",
+        "name": "nextValue",
+        "docstrings": [
+          "`nextValue(asyncIterator, value)` advances `asyncIterator`, sending `value` back into it."
+        ],
+        "signature": "let nextValue: (\n  t<'yield, 'return, 'next>,\n  'next,\n) => promise<result<'yield, 'return>>"
       },
       {
         "id": "Stdlib.AsyncIterator.forEach",
         "kind": "value",
         "name": "forEach",
         "docstrings": [
-          "`forEach(iterator, fn)` consumes all values in the async iterator and runs the callback `fn` for each value.\n\nSee [iterator protocols](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols) on MDN.\n\n## Examples\n\n```rescript\n// Let's pretend we get an async iterator returning ints from somewhere.\nlet asyncIterator: AsyncIterator.t<(string, string)> = %raw(`\n  (() => {\n    var map1 = new Map();\n\n    map1.set('first', '1');\n    map1.set('second', '2');\n\n    var iterator1 = map1[Symbol.iterator]();\n    return iterator1;\n  })()\n`)\n\nlet main = async () =>\n  await asyncIterator->AsyncIterator.forEach(v => {\n    switch v {\n    | Some((\"second\", value)) => value == \"2\"\n    | _ => ()\n    }\n  })\n\nmain()->ignore\n```"
+          "`forEach(asyncIterator, f)` consumes all yielded values in `asyncIterator` and runs `f`\nfor each yielded value.\n\nThe final return value is not passed to `f`."
         ],
-        "signature": "let forEach: (t<'a>, option<'a> => unit) => promise<unit>"
+        "signature": "let forEach: (t<'yield, 'return, 'next>, 'yield => unit) => promise<unit>"
+      },
+      {
+        "id": "Stdlib.AsyncIterator.make",
+        "kind": "value",
+        "name": "make",
+        "docstrings": [
+          "`make(nextFn)` creates an async iterator protocol object from a function returning\nthe next result.\n\nThe returned value is not automatically async iterable.\n\n## Examples\n\n```rescript\nlet current = ref(0)\n\nlet asyncIterator = AsyncIterator.make(async () => {\n  let value = current.contents\n  current := value + 1\n\n  if value >= 3 {\n    AsyncIterator.done()\n  } else {\n    AsyncIterator.value(value)\n  }\n})\n\nlet main = async () =>\n  await asyncIterator->AsyncIterator.forEach(value => Console.log(value))\n\nmain()->ignore\n```"
+        ],
+        "signature": "let make: (\n  unit => promise<result<'yield, 'return>>,\n) => t<'yield, 'return, unit>"
       },
       {
         "id": "Stdlib.AsyncIterator.ignore",
         "kind": "value",
         "name": "ignore",
         "docstrings": [
-          "`ignore(iterator)` ignores the provided async iterator and returns unit.\n\n  This helper is useful when you want to discard a value (for example, the result of an operation with side effects)\n  without having to store or process it further."
+          "`ignore(asyncIterator)` marks `asyncIterator` as intentionally unused."
         ],
-        "signature": "let ignore: t<'a> => unit"
+        "signature": "let ignore: t<'yield, 'return, 'next> => unit"
+      }
+    ]
+  },
+  "stdlib/asynciterable": {
+    "id": "Stdlib.AsyncIterable",
+    "name": "AsyncIterable",
+    "docstrings": [
+      "A JavaScript async iterable.\n\nValues of this type implement the async iterable protocol and can be consumed\nby `for await...of` and other JavaScript APIs that expect async iterables.\n\nSee [`AsyncIterator`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AsyncIterator) on MDN."
+    ],
+    "items": [
+      {
+        "id": "Stdlib.AsyncIterable.t",
+        "kind": "type",
+        "name": "t",
+        "docstrings": [
+          "Type representing an async iterable that yields values of type `'yield`."
+        ],
+        "signature": "type t<'yield> = asyncIterable<'yield>"
+      },
+      {
+        "id": "Stdlib.AsyncIterable.ignore",
+        "kind": "value",
+        "name": "ignore",
+        "docstrings": [
+          "`ignore(asyncIterable)` marks `asyncIterable` as intentionally unused."
+        ],
+        "signature": "let ignore: t<'yield> => unit"
+      }
+    ]
+  },
+  "stdlib/generator": {
+    "id": "Stdlib.Generator",
+    "name": "Generator",
+    "docstrings": [
+      "A JavaScript generator object.\n\nGenerators are built-in iterable iterators with additional `return()` and\n`throw()` capabilities.\n\nSee [`Generator`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator) on MDN."
+    ],
+    "items": [
+      {
+        "id": "Stdlib.Generator.t",
+        "kind": "type",
+        "name": "t",
+        "docstrings": [
+          "Type representing a generator object."
+        ],
+        "signature": "type t<'yield, 'return, 'next> = Iterable.t<'yield>"
+      },
+      {
+        "id": "Stdlib.Generator.asIterator",
+        "kind": "value",
+        "name": "asIterator",
+        "docstrings": [
+          "`asIterator(generator)` views `generator` as an `Iterator.t`."
+        ],
+        "signature": "let asIterator: t<\n  'yield,\n  'return,\n  'next,\n> => Iterator.t<'yield, 'return, 'next>"
+      },
+      {
+        "id": "Stdlib.Generator.asIterable",
+        "kind": "value",
+        "name": "asIterable",
+        "docstrings": [
+          "`asIterable(generator)` views `generator` as an `Iterable.t`."
+        ],
+        "signature": "let asIterable: t<'yield, 'return, 'next> => Iterable.t<'yield>"
+      },
+      {
+        "id": "Stdlib.Generator.asIteratorObject",
+        "kind": "value",
+        "name": "asIteratorObject",
+        "docstrings": [
+          "`asIteratorObject(generator)` views `generator` as an `IteratorObject.t`."
+        ],
+        "signature": "let asIteratorObject: t<\n  'yield,\n  'return,\n  'next,\n> => IteratorObject.t<'yield, 'return, 'next>"
+      },
+      {
+        "id": "Stdlib.Generator.next",
+        "kind": "value",
+        "name": "next",
+        "docstrings": [
+          "`next(generator)` advances `generator` without sending a value back in."
+        ],
+        "signature": "let next: t<\n  'yield,\n  'return,\n  'next,\n> => Iterator.result<'yield, 'return>"
+      },
+      {
+        "id": "Stdlib.Generator.nextValue",
+        "kind": "value",
+        "name": "nextValue",
+        "docstrings": [
+          "`nextValue(generator, value)` advances `generator`, sending `value` back into it."
+        ],
+        "signature": "let nextValue: (\n  t<'yield, 'return, 'next>,\n  'next,\n) => Iterator.result<'yield, 'return>"
+      },
+      {
+        "id": "Stdlib.Generator.returnValue",
+        "kind": "value",
+        "name": "returnValue",
+        "docstrings": [
+          "`returnValue(generator, value)` completes `generator` with the final return `value`."
+        ],
+        "signature": "let returnValue: (\n  t<'yield, 'return, 'next>,\n  'return,\n) => Iterator.result<'yield, 'return>"
+      },
+      {
+        "id": "Stdlib.Generator.throwError",
+        "kind": "value",
+        "name": "throwError",
+        "docstrings": [
+          "`throwError(generator, error)` throws `error` into `generator`."
+        ],
+        "signature": "let throwError: (\n  t<'yield, 'return, 'next>,\n  exn,\n) => Iterator.result<'yield, 'return>"
+      }
+    ]
+  },
+  "stdlib/iterableiterator": {
+    "id": "Stdlib.IterableIterator",
+    "name": "IterableIterator",
+    "docstrings": [
+      "A JavaScript iterable iterator.\n\nThis models values that satisfy both the iterable and iterator protocols\nwithout assuming iterator helper methods are available.\n\nUnlike `IteratorObject.t`, this is only the iterable iterator protocol shape. It\ndoes not imply that iterator helper methods such as `map`, `filter`, or\n`toArray` are available.\n\nSee [Iteration protocols](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols) on MDN."
+    ],
+    "items": [
+      {
+        "id": "Stdlib.IterableIterator.t",
+        "kind": "type",
+        "name": "t",
+        "docstrings": [
+          "Type representing an iterable iterator."
+        ],
+        "signature": "type t<'yield, 'return, 'next> = Iterable.t<'yield>"
+      },
+      {
+        "id": "Stdlib.IterableIterator.make",
+        "kind": "value",
+        "name": "make",
+        "docstrings": [
+          "`make(nextFn)` creates an iterable iterator from a function returning the next result.\n\nThe returned value is both an iterator and an iterable.\n\n## Examples\n\n```rescript\nlet current = ref(0)\n\nlet iterableIterator = IterableIterator.make(() => {\n  let value = current.contents\n  current := value + 1\n\n  if value >= 2 {\n    Iterator.doneWithValue(\"done\")\n  } else {\n    Iterator.value(value)\n  }\n})\n\niterableIterator->IterableIterator.next == Yield({value: 0})\n```"
+        ],
+        "signature": "let make: (\n  unit => Iterator.result<'yield, 'return>,\n) => t<'yield, 'return, unit>"
+      },
+      {
+        "id": "Stdlib.IterableIterator.asIterator",
+        "kind": "value",
+        "name": "asIterator",
+        "docstrings": [
+          "`asIterator(value)` views an iterable iterator as an `Iterator.t`."
+        ],
+        "signature": "let asIterator: t<\n  'yield,\n  'return,\n  'next,\n> => Iterator.t<'yield, 'return, 'next>"
+      },
+      {
+        "id": "Stdlib.IterableIterator.asIterable",
+        "kind": "value",
+        "name": "asIterable",
+        "docstrings": [
+          "`asIterable(value)` views an iterable iterator as an `Iterable.t`."
+        ],
+        "signature": "let asIterable: t<'yield, 'return, 'next> => Iterable.t<'yield>"
+      },
+      {
+        "id": "Stdlib.IterableIterator.next",
+        "kind": "value",
+        "name": "next",
+        "docstrings": [
+          "`next(iterator)` advances `iterator` without sending a value back in."
+        ],
+        "signature": "let next: t<\n  'yield,\n  'return,\n  'next,\n> => Iterator.result<'yield, 'return>"
+      },
+      {
+        "id": "Stdlib.IterableIterator.nextValue",
+        "kind": "value",
+        "name": "nextValue",
+        "docstrings": [
+          "`nextValue(iterator, value)` advances `iterator`, sending `value` back into it."
+        ],
+        "signature": "let nextValue: (\n  t<'yield, 'return, 'next>,\n  'next,\n) => Iterator.result<'yield, 'return>"
+      },
+      {
+        "id": "Stdlib.IterableIterator.toArrayWithMapper",
+        "kind": "value",
+        "name": "toArrayWithMapper",
+        "docstrings": [
+          "`toArrayWithMapper(iterator, mapper)` consumes `iterator`, applies `mapper` to each yielded\nvalue, and returns the mapped values as an array."
+        ],
+        "signature": "let toArrayWithMapper: (\n  t<'yield, 'return, 'next>,\n  'yield => 'mapped,\n) => array<'mapped>"
+      },
+      {
+        "id": "Stdlib.IterableIterator.ignore",
+        "kind": "value",
+        "name": "ignore",
+        "docstrings": [
+          "`ignore(iterator)` marks `iterator` as intentionally unused."
+        ],
+        "signature": "let ignore: t<'yield, 'return, 'next> => unit"
+      }
+    ]
+  },
+  "stdlib/iteratorobject": {
+    "id": "Stdlib.IteratorObject",
+    "name": "IteratorObject",
+    "docstrings": [
+      "A JavaScript iterator object that inherits from `Iterator.prototype`.\n\nThis models a helper-enabled iterator object that conforms to the iterator\nprotocol and also inherits from `Iterator.prototype`, providing the standard\niterator helper methods. This is stricter than `IterableIterator.t`, which only\nmodels the structural protocol shape.\n\nSee [`Iterator`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator) on MDN."
+    ],
+    "items": [
+      {
+        "id": "Stdlib.IteratorObject.t",
+        "kind": "type",
+        "name": "t",
+        "docstrings": [
+          "Type representing an `IteratorObject` instance."
+        ],
+        "signature": "type t<'yield, 'return, 'next> = Iterable.t<'yield>"
+      },
+      {
+        "id": "Stdlib.IteratorObject.result",
+        "kind": "type",
+        "name": "result",
+        "docstrings": [
+          "Result returned by `IteratorObject.next`."
+        ],
+        "signature": "type result<'yield, 'return> = Iterator.result<\n  'yield,\n  'return,\n>"
+      },
+      {
+        "id": "Stdlib.IteratorObject.asIterator",
+        "kind": "value",
+        "name": "asIterator",
+        "docstrings": [
+          "`asIterator(iteratorObject)` views `iteratorObject` as a bare `Iterator.t`."
+        ],
+        "signature": "let asIterator: t<\n  'yield,\n  'return,\n  'next,\n> => Iterator.t<'yield, 'return, 'next>"
+      },
+      {
+        "id": "Stdlib.IteratorObject.asIterable",
+        "kind": "value",
+        "name": "asIterable",
+        "docstrings": [
+          "`asIterable(iteratorObject)` views `iteratorObject` as an `Iterable.t`."
+        ],
+        "signature": "let asIterable: t<'yield, 'return, 'next> => Iterable.t<'yield>"
+      },
+      {
+        "id": "Stdlib.IteratorObject.next",
+        "kind": "value",
+        "name": "next",
+        "docstrings": [
+          "`next(iteratorObject)` advances `iteratorObject` without sending a value back in."
+        ],
+        "signature": "let next: t<\n  'yield,\n  'return,\n  'next,\n> => Iterator.result<'yield, 'return>"
+      },
+      {
+        "id": "Stdlib.IteratorObject.nextValue",
+        "kind": "value",
+        "name": "nextValue",
+        "docstrings": [
+          "`nextValue(iteratorObject, value)` advances `iteratorObject`, sending `value` back into it."
+        ],
+        "signature": "let nextValue: (\n  t<'yield, 'return, 'next>,\n  'next,\n) => Iterator.result<'yield, 'return>"
+      },
+      {
+        "id": "Stdlib.IteratorObject.toArray",
+        "kind": "value",
+        "name": "toArray",
+        "docstrings": [
+          "`toArray(iteratorObject)` consumes `iteratorObject` and returns its yielded values as an array."
+        ],
+        "signature": "let toArray: t<'yield, 'return, 'next> => array<'yield>"
+      },
+      {
+        "id": "Stdlib.IteratorObject.toArrayWithMapper",
+        "kind": "value",
+        "name": "toArrayWithMapper",
+        "docstrings": [
+          "`toArrayWithMapper(iteratorObject, mapper)` consumes `iteratorObject`, applies `mapper`\nto each yielded value, and returns the mapped values as an array."
+        ],
+        "signature": "let toArrayWithMapper: (\n  t<'yield, 'return, 'next>,\n  'yield => 'mapped,\n) => array<'mapped>"
+      },
+      {
+        "id": "Stdlib.IteratorObject.forEach",
+        "kind": "value",
+        "name": "forEach",
+        "docstrings": [
+          "`forEach(iteratorObject, f)` consumes `iteratorObject` and runs `f` for each yielded value."
+        ],
+        "signature": "let forEach: (t<'yield, 'return, 'next>, 'yield => unit) => unit"
+      },
+      {
+        "id": "Stdlib.IteratorObject.ignore",
+        "kind": "value",
+        "name": "ignore",
+        "docstrings": [
+          "`ignore(iteratorObject)` marks `iteratorObject` as intentionally unused."
+        ],
+        "signature": "let ignore: t<'yield, 'return, 'next> => unit"
+      },
+      {
+        "id": "Stdlib.IteratorObject.drop",
+        "kind": "value",
+        "name": "drop",
+        "docstrings": [
+          "`drop(iteratorObject, count)` returns a new iterator helper that skips the first `count`\nyielded values."
+        ],
+        "signature": "let drop: (t<'yield, 'return, 'next>, int) => t<'yield, unit, unknown>"
+      },
+      {
+        "id": "Stdlib.IteratorObject.every",
+        "kind": "value",
+        "name": "every",
+        "docstrings": [
+          "`every(iteratorObject, predicate)` returns `true` if `predicate` is true for every yielded value."
+        ],
+        "signature": "let every: (t<'yield, 'return, 'next>, 'yield => bool) => bool"
+      },
+      {
+        "id": "Stdlib.IteratorObject.filter",
+        "kind": "value",
+        "name": "filter",
+        "docstrings": [
+          "`filter(iteratorObject, predicate)` returns a new iterator helper containing only the\nyielded values that satisfy `predicate`."
+        ],
+        "signature": "let filter: (\n  t<'yield, 'return, 'next>,\n  'yield => bool,\n) => t<'yield, unit, unknown>"
+      },
+      {
+        "id": "Stdlib.IteratorObject.find",
+        "kind": "value",
+        "name": "find",
+        "docstrings": [
+          "`find(iteratorObject, predicate)` returns the first yielded value that satisfies\n`predicate`, or `None` if nothing matches."
+        ],
+        "signature": "let find: (\n  t<'yield, 'return, 'next>,\n  'yield => bool,\n) => option<'yield>"
+      },
+      {
+        "id": "Stdlib.IteratorObject.flatMap",
+        "kind": "value",
+        "name": "flatMap",
+        "docstrings": [
+          "`flatMap(iteratorObject, f)` maps each yielded value to another iterable and flattens the result."
+        ],
+        "signature": "let flatMap: (\n  t<'yield, 'return, 'next>,\n  'yield => Iterable.t<'mapped>,\n) => t<'mapped, unit, unknown>"
+      },
+      {
+        "id": "Stdlib.IteratorObject.map",
+        "kind": "value",
+        "name": "map",
+        "docstrings": [
+          "`map(iteratorObject, f)` returns a new iterator helper whose yielded values are\nproduced by applying `f`."
+        ],
+        "signature": "let map: (\n  t<'yield, 'return, 'next>,\n  'yield => 'mapped,\n) => t<'mapped, unit, unknown>"
+      },
+      {
+        "id": "Stdlib.IteratorObject.reduce",
+        "kind": "value",
+        "name": "reduce",
+        "docstrings": [
+          "`reduce(iteratorObject, reducer, ~initialValue)` combines all yielded values using\n`reducer`.\n\nIf `~initialValue` is omitted, the first yielded value becomes the initial accumulator,\nso the accumulator type must match the yielded value type."
+        ],
+        "signature": "let reduce: (\n  t<'yield, 'return, 'next>,\n  ('acc, 'yield) => 'acc,\n  ~initialValue: 'acc=?,\n) => 'acc"
+      },
+      {
+        "id": "Stdlib.IteratorObject.some",
+        "kind": "value",
+        "name": "some",
+        "docstrings": [
+          "`some(iteratorObject, predicate)` returns `true` if at least one yielded value\nsatisfies `predicate`."
+        ],
+        "signature": "let some: (t<'yield, 'return, 'next>, 'yield => bool) => bool"
+      },
+      {
+        "id": "Stdlib.IteratorObject.take",
+        "kind": "value",
+        "name": "take",
+        "docstrings": [
+          "`take(iteratorObject, count)` returns a new iterator helper that yields at most `count`\nvalues."
+        ],
+        "signature": "let take: (t<'yield, 'return, 'next>, int) => t<'yield, unit, unknown>"
       }
     ]
   },
@@ -4991,7 +5594,7 @@
     "id": "Stdlib.Iterator",
     "name": "Iterator",
     "docstrings": [
-      "Bindings to JavaScript iterators.\n\nSee [`Iterator`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator) on MDN."
+      "A JavaScript iterator protocol object.\n\nThis is the minimal protocol shape: an object with a `next()` method that\nproduces yielded values until it eventually completes with a final return value.\n\nSee [`Iterator`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator) on MDN."
     ],
     "items": [
       {
@@ -4999,144 +5602,142 @@
         "kind": "type",
         "name": "t",
         "docstrings": [
-          "The type representing an iterator."
+          "Type representing an iterator protocol object.\n\n- `'yield` is the type produced while iterating\n- `'return` is the final completion value once iteration is done\n- `'next` is the type that can be sent back into `next(value)`"
         ],
-        "signature": "type t<'a>"
+        "signature": "type t<'yield, 'return, 'next>"
+      },
+      {
+        "id": "Stdlib.Iterator.result",
+        "kind": "type",
+        "name": "result",
+        "docstrings": [
+          "Result returned by `Iterator.next`."
+        ],
+        "signature": "type result<'yield, 'return> =\n  | Yield({value: 'yield})\n  | Return({value: 'return})"
+      },
+      {
+        "id": "Stdlib.Iterator.rawResult",
+        "kind": "type",
+        "name": "rawResult",
+        "docstrings": [],
+        "signature": "type rawResult<'yield, 'return>"
+      },
+      {
+        "id": "Stdlib.Iterator.normalizeResult",
+        "kind": "value",
+        "name": "normalizeResult",
+        "docstrings": [
+          "Low-level raw JavaScript iterator result shape.\n\nThis is mainly intended for internal use and protocol-level interop. Prefer\n`Iterator.result`, `Iterator.next`, and `Iterator.nextValue` in normal ReScript code."
+        ],
+        "signature": "let normalizeResult: rawResult<'yield, 'return> => result<'yield, 'return>"
       },
       {
         "id": "Stdlib.Iterator.value",
-        "kind": "type",
+        "kind": "value",
         "name": "value",
         "docstrings": [
-          "The current value of an iterator."
+          "`value(value)` creates a yielded iterator result."
         ],
-        "signature": "type value<'a> = {done: bool, value: option<'a>}"
+        "signature": "let value: 'yield => result<'yield, 'return>"
+      },
+      {
+        "id": "Stdlib.Iterator.done",
+        "kind": "value",
+        "name": "done",
+        "docstrings": [
+          "`done()` creates a completed iterator result with `unit` as the final value."
+        ],
+        "signature": "let done: unit => result<'yield, unit>"
+      },
+      {
+        "id": "Stdlib.Iterator.doneWithValue",
+        "kind": "value",
+        "name": "doneWithValue",
+        "docstrings": [
+          "`doneWithValue(value)` creates a completed iterator result with the provided final value."
+        ],
+        "signature": "let doneWithValue: 'return => result<'yield, 'return>"
+      },
+      {
+        "id": "Stdlib.Iterator.nextRaw",
+        "kind": "value",
+        "name": "nextRaw",
+        "docstrings": [
+          "`nextRaw(iterator)` advances `iterator` and returns the raw JavaScript iterator result object.\n\nThis is mainly intended for internal use and protocol-level interop."
+        ],
+        "signature": "let nextRaw: t<'yield, 'return, 'next> => rawResult<'yield, 'return>"
       },
       {
         "id": "Stdlib.Iterator.next",
         "kind": "value",
         "name": "next",
         "docstrings": [
-          "Returns the next value of the iterator, if any.\n\nSee [iterator protocols](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols) on MDN.\n\n## Examples\n\n```rescript\nlet iterator: Iterator.t<string> = %raw(`\n  (() => {\n    var array1 = ['a'];\n    var iterator1 = array1[Symbol.iterator]();\n    return iterator1\n  })()\n`)\n(iterator->Iterator.next).done == false\n(iterator->Iterator.next).done == true\n```"
+          "`next(iterator)` advances `iterator` without sending a value back in.\n\n## Examples\n\n```rescript\nlet iterator: Iterator.t<int, string, unit> = %raw(`({\n  current: 0,\n  next() {\n    if (this.current < 2) {\n      return {done: false, value: this.current++}\n    }\n    return {done: true, value: \"done\"}\n  }\n})`)\n\niterator->Iterator.next == Yield({value: 0})\n```"
         ],
-        "signature": "let next: t<'a> => value<'a>"
+        "signature": "let next: t<'yield, 'return, 'next> => result<'yield, 'return>"
       },
       {
-        "id": "Stdlib.Iterator.toArray",
+        "id": "Stdlib.Iterator.nextValueRaw",
         "kind": "value",
-        "name": "toArray",
+        "name": "nextValueRaw",
         "docstrings": [
-          "Turns an iterator into an array of the remaining values.\nRemember that each invocation of `next` of an iterator consumes a value. `Iterator.toArray` will consume all remaining values of the iterator and return them in an array to you.\n\nSee [Iterator.prototype.toArray](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/toArray) on MDN.\n\n## Examples\n```rescript\nlet map = Map.make()\nmap->Map.set(\"someKey\", \"someValue\")\nmap->Map.set(\"someKey2\", \"someValue2\")\n\n// `Map.keys` returns all keys of the map as an iterator.\nlet mapKeysAsArray = map->Map.keys->Iterator.toArray\n\nmapKeysAsArray == [\"someKey\", \"someKey2\"]\n```\n\n## Remark\n\nSince March 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers."
+          "`nextValueRaw(iterator, value)` advances `iterator`, sending `value` back into it,\nand returns the raw JavaScript iterator result object.\n\nThis is mainly intended for internal use and protocol-level interop."
         ],
-        "signature": "let toArray: t<'a> => array<'a>"
+        "signature": "let nextValueRaw: (\n  t<'yield, 'return, 'next>,\n  'next,\n) => rawResult<'yield, 'return>"
       },
       {
-        "id": "Stdlib.Iterator.toArrayWithMapper",
+        "id": "Stdlib.Iterator.nextValue",
         "kind": "value",
-        "name": "toArrayWithMapper",
+        "name": "nextValue",
         "docstrings": [
-          "`toArray(iterator)` turns `iterator` into an array of its remaining values, applying the provided mapper function on each item.\nRemember that each invocation of `next` of an iterator consumes a value. `Iterator.toArrayWithMapper` will consume all remaining values of the iterator and return them in an array to you.\n\nSee [Iterator.prototype.toArray](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/toArray) on MDN.\n\n## Examples\n```rescript\nlet map = Map.make()\nmap->Map.set(\"someKey\", \"someValue\")\nmap->Map.set(\"someKey2\", \"someValue2\")\n\n// `Map.keys` returns all keys of the map as an iterator.\nlet mapKeysAsArray =\n  map\n  ->Map.keys\n  ->Iterator.toArrayWithMapper(key => key->String.length)\n\nmapKeysAsArray == [7, 8]\n```"
+          "`nextValue(iterator, value)` advances `iterator`, sending `value` back into it."
         ],
-        "signature": "let toArrayWithMapper: (t<'a>, 'a => 'b) => array<'b>"
+        "signature": "let nextValue: (\n  t<'yield, 'return, 'next>,\n  'next,\n) => result<'yield, 'return>"
       },
       {
-        "id": "Stdlib.Iterator.forEach",
+        "id": "Stdlib.Iterator.make",
         "kind": "value",
-        "name": "forEach",
+        "name": "make",
         "docstrings": [
-          "`forEach(iterator, fn)` consumes all values in the iterator and runs the callback `fn` for each value.\n\nSee [iterator protocols](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols) on MDN.\n\n## Examples\n```rescript\nlet iterator: Iterator.t<string> = [\"a\", \"b\", \"c\"]->Array.values\nlet acc = ref(\"\")\niterator->Iterator.forEach(v => {\n  acc := acc.contents ++ v\n})\n\nacc.contents == \"abc\"\n```\n\n## Remark\n\nSince March 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers."
+          "`make(nextFn)` creates a bare iterator protocol object from a function returning\nthe next result.\n\nThe returned value is not automatically iterable.\n\n## Examples\n\n```rescript\nlet current = ref(0)\n\nlet iterator = Iterator.make(() => {\n  let value = current.contents\n  current := value + 1\n\n  if value >= 2 {\n    Iterator.doneWithValue(\"done\")\n  } else {\n    Iterator.value(value)\n  }\n})\n\niterator->Iterator.next == Yield({value: 0})\n```"
         ],
-        "signature": "let forEach: (t<'a>, 'a => unit) => unit"
+        "signature": "let make: (\n  unit => result<'yield, 'return>,\n) => t<'yield, 'return, unit>"
       },
       {
         "id": "Stdlib.Iterator.ignore",
         "kind": "value",
         "name": "ignore",
         "docstrings": [
-          "`ignore(iterator)` ignores the provided iterator and returns unit.\n\n  This helper is useful when you want to discard a value (for example, the result of an operation with side effects)\n  without having to store or process it further."
+          "`ignore(iterator)` marks `iterator` as intentionally unused."
+        ],
+        "signature": "let ignore: t<'yield, 'return, 'next> => unit"
+      }
+    ]
+  },
+  "stdlib/iterable": {
+    "id": "Stdlib.Iterable",
+    "name": "Iterable",
+    "docstrings": [
+      "A JavaScript iterable.\n\nValues of this type implement the iterable protocol and can be consumed by\n`for...of`, `Array.from`, and other JavaScript APIs that expect iterables.\n\nSee [Iteration protocols](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols) on MDN."
+    ],
+    "items": [
+      {
+        "id": "Stdlib.Iterable.t",
+        "kind": "type",
+        "name": "t",
+        "docstrings": [
+          "Type representing an iterable that yields values of type `'a`."
+        ],
+        "signature": "type t<'a> = iterable<'a>"
+      },
+      {
+        "id": "Stdlib.Iterable.ignore",
+        "kind": "value",
+        "name": "ignore",
+        "docstrings": [
+          "`ignore(iterable)` marks `iterable` as intentionally unused."
         ],
         "signature": "let ignore: t<'a> => unit"
-      },
-      {
-        "id": "Stdlib.Iterator.drop",
-        "kind": "value",
-        "name": "drop",
-        "docstrings": [
-          "`drop(iterator, n)` returns a new iterator helper object that skips the given number of elements at the start of this iterator.\n\nSee [Iterator.prototype.drop](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/drop) on MDN.\n\n## Examples\n```rescript\nlet fibonacci: Iterator.t<int> = [1, 1, 2, 3, 5, 8, 13, 21]->Array.values\n\nlet seq = fibonacci->Iterator.drop(2)\nseq->Iterator.next == {done: false, value: Some(2)}\nseq->Iterator.next == {done: false, value: Some(3)}\n```\n\n## Remark\n\nSince March 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers."
-        ],
-        "signature": "let drop: (t<'a>, int) => t<'a>"
-      },
-      {
-        "id": "Stdlib.Iterator.every",
-        "kind": "value",
-        "name": "every",
-        "docstrings": [
-          "`every(iterator, fn)` tests whether all elements in the iterator pass the test implemented by the provided function.\n\nSee [Iterator.prototype.every](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/every) on MDN.\n\n## Examples\n```rescript\nlet fibonacci: Iterator.t<int> = [1, 1, 2, 3, 5, 8, 13, 21]->Array.values\n\nlet areAllEven = fibonacci->Iterator.every(n => n % 2 == 0)\nareAllEven == false\n```\n\n## Remark\n\nSince March 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers."
-        ],
-        "signature": "let every: (t<'a>, 'a => bool) => bool"
-      },
-      {
-        "id": "Stdlib.Iterator.filter",
-        "kind": "value",
-        "name": "filter",
-        "docstrings": [
-          "`filter(iterator, fn)` returns a new iterator helper object that contains the elements of the original iterator that pass the test implemented by the provided function.\n\nSee [Iterator.prototype.filter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/filter) on MDN.\n\n## Examples\n```rescript\nlet fibonacci: Iterator.t<int> = [1, 1, 2, 3, 5, 8, 13, 21]->Array.values\n\nlet seq = fibonacci->Iterator.filter(n => n % 2 == 0)\nseq->Iterator.next == {done: false, value: Some(2)}\nseq->Iterator.next == {done: false, value: Some(8)}\n```\n\n## Remark\n\nSince March 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers."
-        ],
-        "signature": "let filter: (t<'a>, 'a => bool) => t<'a>"
-      },
-      {
-        "id": "Stdlib.Iterator.find",
-        "kind": "value",
-        "name": "find",
-        "docstrings": [
-          "`find(iterator, fn)` returns the value of the first element in the iterator that satisfies the provided testing function.\n\nSee [Iterator.prototype.find](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/find) on MDN.\n\n## Examples\n```rescript\nlet fibonacci: Iterator.t<int> = [1, 1, 2, 3, 5, 8, 13, 21]->Array.values\n\nlet seq = fibonacci->Iterator.find(n => n % 2 == 0)\nseq == Some(2)\n```\n\n## Remark\n\nSince March 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers."
-        ],
-        "signature": "let find: (t<'a>, 'a => bool) => option<'a>"
-      },
-      {
-        "id": "Stdlib.Iterator.flatMap",
-        "kind": "value",
-        "name": "flatMap",
-        "docstrings": [
-          "`flatMap(iterator, fn)` returns a new iterator helper object that contains the elements of the original iterator that pass the test implemented by the provided function.\n\nSee [Iterator.prototype.flatMap](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/flatMap) on MDN.\n\n## Examples\n```rescript\nlet map1 = Map.fromArray([(\"a\", 1), (\"b\", 2), (\"c\", 3)])\nlet map2 = Map.fromArray([(\"d\", 4), (\"e\", 5), (\"f\", 6)])\n\nlet letters =\n  [map1, map2]\n  ->Array.values\n  ->Iterator.flatMap(m => Map.keys(m))\n  ->Array.fromIterator\nletters == [\"a\", \"b\", \"c\", \"d\", \"e\", \"f\"]\n```\n\n## Remark\n\nSince March 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers."
-        ],
-        "signature": "let flatMap: (t<'a>, 'a => t<'b>) => t<'b>"
-      },
-      {
-        "id": "Stdlib.Iterator.map",
-        "kind": "value",
-        "name": "map",
-        "docstrings": [
-          "`map(iterator, fn)` returns a new iterator helper object that yields elements of the iterator, each transformed by a mapping function.\n\nSee [Iterator.prototype.map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/map) on MDN.\n\n## Examples\n```rescript\nlet map = Map.fromArray([(\"a\", 1), (\"b\", 2), (\"c\", 3)])\nlet letters = map->Map.keys->Iterator.map(v => v->String.toUpperCase)->Array.fromIterator\nletters == [\"A\", \"B\", \"C\"]\n```\n\n## Remark\n\nSince March 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers."
-        ],
-        "signature": "let map: (t<'a>, 'a => 'b) => t<'b>"
-      },
-      {
-        "id": "Stdlib.Iterator.reduce",
-        "kind": "value",
-        "name": "reduce",
-        "docstrings": [
-          "`reduce(iterator, fn, initialValue)` applies a function against an accumulator and each element in the iterator (from left to right) to reduce it to a single value.\n\nSee [Iterator.prototype.reduce](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/reduce) on MDN.\n\n## Examples\n```rescript\nlet numbers: Iterator.t<int> = [1, 2, 3]->Array.values\n\nlet sum = numbers->Iterator.reduce((acc, n) => acc + n, ~initialValue=0)\nsum == 6\n```\n\n## Remark\n\nSince March 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers."
-        ],
-        "signature": "let reduce: (t<'a>, ('acc, 'a) => 'acc, ~initialValue: 'acc=?) => 'acc"
-      },
-      {
-        "id": "Stdlib.Iterator.some",
-        "kind": "value",
-        "name": "some",
-        "docstrings": [
-          "`some(iterator, fn)` The some() method of Iterator instances is similar to Array.some:\nit tests whether at least one element produced by the iterator passes the test implemented by the provided function.\nIt returns a boolean value.\n\nSee [Iterator.prototype.some](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/some) on MDN.\n\n## Examples\n```rescript\nlet numbers: Iterator.t<int> = [1, 2, 3]->Array.values\n\nlet hasEven = numbers->Iterator.some(n => n % 2 == 0)\nhasEven == true\n```\n\n## Remark\n\nSince March 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers."
-        ],
-        "signature": "let some: (t<'a>, 'a => bool) => bool"
-      },
-      {
-        "id": "Stdlib.Iterator.take",
-        "kind": "value",
-        "name": "take",
-        "docstrings": [
-          "`take((iterator, n))` returns a new iterator helper object that contains the first `n` elements of this iterator.\n\nSee [Iterator.prototype.take](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/take) on MDN.\n\n## Examples\n```rescript\nlet fibonacci: Iterator.t<int> = [1, 1, 2, 3, 5, 8, 13, 21]->Array.values\n\nlet seq = fibonacci->Iterator.take(2)\nseq->Iterator.next == {done: false, value: Some(1)}\nseq->Iterator.next == {done: false, value: Some(1)}\nseq->Iterator.next == {done: true, value: None}\n```\n\n## Remark\n\nSince March 2025, this feature works across the latest devices and browser versions.\nThis feature might not work in older devices or browsers."
-        ],
-        "signature": "let take: (t<'a>, int) => t<'a>"
       }
     ]
   },
@@ -5984,9 +6585,9 @@
         "kind": "value",
         "name": "localeCompare",
         "docstrings": [
-          "`localeCompare(referenceStr, compareStr)` returns a float than indicatings\nwhether a reference string comes before or after, or is the same as the given\nstring in sort order. If `referenceStr` occurs before `compareStr` positive if\nthe `referenceStr` occurs after `compareStr`, `0` if they are equivalent.\nDo not rely on exact return values of `-1` or `1`\nSee [`String.localeCompare`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare) on MDN.\n\n## Examples\n\n```rescript\nString.localeCompare(\"a\", \"c\") < 0.0 == true\nString.localeCompare(\"a\", \"a\") == 0.0\n```"
+          "`localeCompare(referenceStr, compareStr, ~locales=?, ~options=?)` returns a float indicating\nwhether a reference string comes before or after, or is the same as the given\nstring in sort order. Returns a negative value if `referenceStr` occurs before `compareStr`,\npositive if `referenceStr` occurs after `compareStr`, `0` if they are equivalent.\nDo not rely on exact return values of `-1` or `1`.\n\nOptionally takes `~locales` to specify locale(s) and `~options` to customize comparison behavior\n(e.g., sensitivity, case ordering, numeric sorting). These correspond to the `Intl.Collator` options.\nSee [`String.localeCompare`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare) on MDN.\n\n## Examples\n\n```rescript\nString.localeCompare(\"a\", \"c\") < 0.0 == true\nString.localeCompare(\"a\", \"a\") == 0.0\nString.localeCompare(\"a\", \"b\", ~locales=[\"en-US\"]) < 0.0 == true\nString.localeCompare(\"a\", \"A\", ~locales=[\"en-US\"], ~options={sensitivity: #base}) == 0.0\n```"
         ],
-        "signature": "let localeCompare: (string, string) => float"
+        "signature": "let localeCompare: (\n  string,\n  string,\n  ~locales: array<string>=?,\n  ~options: Intl_Collator.options=?,\n) => float"
       },
       {
         "id": "Stdlib.String.ignore",
@@ -5998,11 +6599,20 @@
         "signature": "let ignore: string => unit"
       },
       {
+        "id": "Stdlib.String.asIterable",
+        "kind": "value",
+        "name": "asIterable",
+        "docstrings": [
+          "`asIterable(str)` views `str` as an `Iterable.t<string>` where each yielded\nvalue is one string element."
+        ],
+        "signature": "let asIterable: string => Iterable.t<string>"
+      },
+      {
         "id": "Stdlib.String.getSymbolUnsafe",
         "kind": "value",
         "name": "getSymbolUnsafe",
         "docstrings": [
-          "`getSymbolUnsafe(str, symbol)` returns the value of the symbol property of a string.\n\n## Examples\n\n```rescript\nlet it: Iterator.t<string> = (\"foo\"->String.getSymbolUnsafe(Symbol.iterator))()\nNullable.make(it)->Nullable.isNullable == false\n```"
+          "`getSymbolUnsafe(str, symbol)` returns the value of the symbol property of a string.\n\n## Examples\n\n```rescript\nlet it: IteratorObject.t<string, unit, unknown> = (\"foo\"->String.getSymbolUnsafe(Symbol.iterator))()\nNullable.make(it)->Nullable.isNullable == false\n```"
         ],
         "signature": "let getSymbolUnsafe: (string, Symbol.t) => 'a"
       }
@@ -7319,7 +7929,7 @@
         "kind": "value",
         "name": "fromOption",
         "docstrings": [
-          "Turns an `option` into a `Nullable.t`.\n\n## Examples\n```rescript\nlet optString = Some(\"Hello\")\nlet asNullable = optString->Nullable.fromOption // Nullable.t<string>\n```"
+          "Turns an `option` into a `Nullable.t`.\n`None` compiles to `undefined` and after running `Nullable.fromOption` on it, it will continue to be `undefined`.\n\n## Examples\n```rescript\nlet optString = Some(\"Hello\")\nlet asNullable = optString->Nullable.fromOption // Nullable.t<string>\n```"
         ],
         "signature": "let fromOption: option<'a> => t<'a>"
       },
@@ -7498,7 +8108,7 @@
         "kind": "value",
         "name": "fromOption",
         "docstrings": [
-          "Turns an `option` into a `Null.t`. `None` will be converted to `null`.\n\n## Examples\n```rescript\nlet optString: option<string> = None\nlet asNull = optString->Null.fromOption // Null.t<string>\nConsole.log(asNull == Null.null) // Logs `true` to the console.\n```"
+          "Turns an `option` into a `Null.t`. `None` will be converted to `null`.\n`None` compiles to `undefined`, but after calling `Null.fromOption`, the result will be `null` instead of `undefined`.\n\n## Examples\n```rescript\nlet optString: option<string> = None\nlet asNull = optString->Null.fromOption // Null.t<string>, will compile to 'null'\nConsole.log(asNull == Null.null) // Logs `true` to the console.\n```"
         ],
         "signature": "let fromOption: option<'a> => t<'a>"
       },
@@ -9832,13 +10442,13 @@
         "signature": "let fromArray: array<(string, 'a)> => dict<'a>"
       },
       {
-        "id": "Stdlib.Dict.fromIterator",
+        "id": "Stdlib.Dict.fromIterable",
         "kind": "value",
-        "name": "fromIterator",
+        "name": "fromIterable",
         "docstrings": [
-          "`fromIterator(entries)` creates a new dictionary from the provided iterator of key/value pairs.\n\n## Examples\n\n```rescript\nlet iterator: Iterator.t<(string, int)> = %raw(`\n  (() => {\n    var map1 = new Map();\n    map1.set('first', 1);\n    map1.set('second', 2);\n    var iterator1 = map1[Symbol.iterator]();\n    return iterator1;\n  })()\n`)\niterator\n->Dict.fromIterator\n->Dict.valuesToArray == [1, 2]\n```"
+          "`fromIterable(entries)` creates a new dictionary from the provided iterable of key/value pairs.\n\n## Examples\n\n```rescript\nlet iterable: Iterable.t<(string, int)> = [(\"first\", 1), (\"second\", 2)]->Array.asIterable\niterable\n->Dict.fromIterable\n->Dict.valuesToArray == [1, 2]\n```"
         ],
-        "signature": "let fromIterator: Iterator.t<(string, 'a)> => dict<'a>"
+        "signature": "let fromIterable: Iterable.t<(string, 'a)> => dict<'a>"
       },
       {
         "id": "Stdlib.Dict.toArray",
@@ -9890,9 +10500,45 @@
         "kind": "value",
         "name": "assign",
         "docstrings": [
-          "`assign(dictionary1, dictionary2)` [shallowly](https://developer.mozilla.org/en-US/docs/Glossary/Shallow_copy) merges dictionary2 into dictionary1, and returns dictionary1.\n\nBeware this will *mutate* dictionary1. If you're looking for a way to copy a dictionary, check out `Dict.copy`.\n\n## Examples\n```rescript\nlet dict1 = Dict.make()\ndict1->Dict.set(\"firstKey\", 1)\nConsole.log(dict1->Dict.keysToArray) // Logs `[\"firstKey\"]`\n\nlet dict2 = Dict.make()\ndict2->Dict.set(\"someKey\", 2)\ndict2->Dict.set(\"someKey2\", 3)\n\nlet dict1 = dict1->Dict.assign(dict2)\n\nConsole.log(dict1->Dict.keysToArray) // Logs `[\"firstKey\", \"someKey\", \"someKey2\"]`\n```"
+          "`assign(dictionary1, dictionary2)` [shallowly](https://developer.mozilla.org/en-US/docs/Glossary/Shallow_copy) merges dictionary2 into dictionary1, and returns dictionary1.\n\nBeware this will *mutate* dictionary1. If you're looking for a fresh merged dictionary instead, check out `Dict.concat`.\n\n## Examples\n```rescript\nlet dict1 = Dict.make()\ndict1->Dict.set(\"firstKey\", 1)\nConsole.log(dict1->Dict.keysToArray) // Logs `[\"firstKey\"]`\n\nlet dict2 = Dict.make()\ndict2->Dict.set(\"someKey\", 2)\ndict2->Dict.set(\"someKey2\", 3)\n\nlet dict1 = dict1->Dict.assign(dict2)\n\nConsole.log(dict1->Dict.keysToArray) // Logs `[\"firstKey\", \"someKey\", \"someKey2\"]`\n```"
         ],
         "signature": "let assign: (dict<'a>, dict<'a>) => dict<'a>"
+      },
+      {
+        "id": "Stdlib.Dict.assignMany",
+        "kind": "value",
+        "name": "assignMany",
+        "docstrings": [
+          "`assignMany(target, sources)` [shallowly](https://developer.mozilla.org/en-US/docs/Glossary/Shallow_copy) merges each dictionary in `sources` into `target`, and returns `target`.\n\nBeware this will *mutate* `target`. Later dictionaries overwrite earlier ones. If you're looking for a fresh merged dictionary instead, check out `Dict.concatMany`.\n\n## Examples\n```rescript\nlet target = dict{\"firstKey\": 1}\nlet result = target->Dict.assignMany([\n  dict{\"someKey\": 2},\n  dict{\"someKey\": 3, \"someKey2\": 4},\n])\n\nresult == dict{\"firstKey\": 1, \"someKey\": 3, \"someKey2\": 4}\n(result === target) == true\n```"
+        ],
+        "signature": "let assignMany: (dict<'a>, array<dict<'a>>) => dict<'a>"
+      },
+      {
+        "id": "Stdlib.Dict.concat",
+        "kind": "value",
+        "name": "concat",
+        "docstrings": [
+          "`concat(dictionary1, dictionary2)` [shallowly](https://developer.mozilla.org/en-US/docs/Glossary/Shallow_copy) merges `dictionary1` and `dictionary2` into a fresh dictionary, and returns the new dictionary.\n\nNeither input dictionary is mutated. If both dictionaries contain the same key, the value from `dictionary2` overwrites the one from `dictionary1`.\n\n## Examples\n```rescript\nlet dict1 = dict{\"firstKey\": 1}\nlet dict2 = dict{\"firstKey\": 2, \"someKey\": 3}\n\nlet merged = dict1->Dict.concat(dict2)\n\ndict1 == dict{\"firstKey\": 1}\nmerged == dict{\"firstKey\": 2, \"someKey\": 3}\n(merged === dict1) == false\n```"
+        ],
+        "signature": "let concat: (dict<'a>, dict<'a>) => dict<'a>"
+      },
+      {
+        "id": "Stdlib.Dict.concatMany",
+        "kind": "value",
+        "name": "concatMany",
+        "docstrings": [
+          "`concatMany(target, sources)` [shallowly](https://developer.mozilla.org/en-US/docs/Glossary/Shallow_copy) merges `target` and each dictionary in `sources` into a fresh dictionary, and returns the new dictionary.\n\nNeither `target` nor any dictionary in `sources` is mutated. Later dictionaries overwrite earlier ones when they contain the same key.\n\n## Examples\n```rescript\nlet target = dict{\"firstKey\": 1}\nlet merged = target->Dict.concatMany([\n  dict{\"someKey\": 2},\n  dict{\"someKey\": 3, \"someKey2\": 4},\n])\n\ntarget == dict{\"firstKey\": 1}\nmerged == dict{\"firstKey\": 1, \"someKey\": 3, \"someKey2\": 4}\n(merged === target) == false\n```"
+        ],
+        "signature": "let concatMany: (dict<'a>, array<dict<'a>>) => dict<'a>"
+      },
+      {
+        "id": "Stdlib.Dict.concatAll",
+        "kind": "value",
+        "name": "concatAll",
+        "docstrings": [
+          "`concatAll(dictionaries)` [shallowly](https://developer.mozilla.org/en-US/docs/Glossary/Shallow_copy) merges all dictionaries in `dictionaries` into a fresh dictionary, and returns the new dictionary.\n\nNone of the input dictionaries are mutated. Later dictionaries overwrite earlier ones when they contain the same key. If `dictionaries` is empty, an empty dictionary is returned.\n\n## Examples\n```rescript\nlet dict1 = dict{\"firstKey\": 1}\nlet dict2 = dict{\"someKey\": 2}\nlet dict3 = dict{\"someKey\": 3, \"someKey2\": 4}\n\nlet merged = Dict.concatAll([dict1, dict2, dict3])\n\ndict1 == dict{\"firstKey\": 1}\nmerged == dict{\"firstKey\": 1, \"someKey\": 3, \"someKey2\": 4}\n(merged === dict1) == false\n```"
+        ],
+        "signature": "let concatAll: array<dict<'a>> => dict<'a>"
       },
       {
         "id": "Stdlib.Dict.copy",
@@ -11867,13 +12513,22 @@
         "signature": "type arrayLike<'a>"
       },
       {
-        "id": "Stdlib.Array.fromIterator",
+        "id": "Stdlib.Array.asIterable",
         "kind": "value",
-        "name": "fromIterator",
+        "name": "asIterable",
         "docstrings": [
-          "`fromIterator(iterator)` creates an array from the provided `iterator`\n\n## Examples\n\n```rescript\nMap.fromArray([(\"foo\", 1), (\"bar\", 2)])\n->Map.values\n->Array.fromIterator == [1, 2]\n```"
+          "`asIterable(array)` views `array` as an `Iterable.t`.\n\nThis is useful when passing an array to APIs that consume iterables, such as\n`Array.from` or `for...of` in JavaScript."
         ],
-        "signature": "let fromIterator: Iterator.t<'a> => array<'a>"
+        "signature": "let asIterable: array<'a> => Iterable.t<'a>"
+      },
+      {
+        "id": "Stdlib.Array.fromIterable",
+        "kind": "value",
+        "name": "fromIterable",
+        "docstrings": [
+          "`fromIterable(iterable)` creates an array from the provided `iterable`\n\n## Examples\n\n```rescript\nMap.fromArray([(\"foo\", 1), (\"bar\", 2)])\n->Map.values\n->IteratorObject.asIterable\n->Array.fromIterable == [1, 2]\n```"
+        ],
+        "signature": "let fromIterable: Iterable.t<'a> => array<'a>"
       },
       {
         "id": "Stdlib.Array.fromArrayLike",
@@ -12157,6 +12812,15 @@
           "`concatMany(array1, arrays)` concatenates array1 with several other arrays, creating a new array.\n\nSee [`Array.concat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat) on MDN.\n\n## Examples\n```rescript\nlet array1 = [\"hi\", \"hello\"]\nlet array2 = [\"yay\"]\nlet array3 = [\"wehoo\"]\n\nlet someArray = array1->Array.concatMany([array2, array3])\n\nConsole.log(someArray) // [\"hi\", \"hello\", \"yay\", \"wehoo\"]\n```"
         ],
         "signature": "let concatMany: (array<'a>, array<array<'a>>) => array<'a>"
+      },
+      {
+        "id": "Stdlib.Array.concatAll",
+        "kind": "value",
+        "name": "concatAll",
+        "docstrings": [
+          "`concatAll(arrays)` concatenates all arrays in `arrays`, creating a new array.\n\nSee [`Array.concat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat) on MDN.\n\n## Examples\n```rescript\nlet arrays = [[\"hi\", \"hello\"], [\"yay\"], [\"wehoo\"]]\n\nlet result = Array.concatAll(arrays)\n\narrays == [[\"hi\", \"hello\"], [\"yay\"], [\"wehoo\"]]\nresult == [\"hi\", \"hello\", \"yay\", \"wehoo\"]\n```"
+        ],
+        "signature": "let concatAll: array<array<'a>> => array<'a>"
       },
       {
         "id": "Stdlib.Array.flat",
@@ -12748,18 +13412,18 @@
         "kind": "value",
         "name": "entries",
         "docstrings": [
-          "`entries(array)` returns a new array iterator object that contains the key/value pairs for each index in the array.\n\nSee [Array.prototype.entries](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/entries) on MDN.\n\n## Examples\n\n```rescript\nlet array = [5, 6, 7]\nlet iterator: Iterator.t<(int, int)> = array->Array.entries\niterator->Iterator.next == {done: false, value: Some((0, 5))}\niterator->Iterator.next == {done: false, value: Some((1, 6))}\n```"
+          "`entries(array)` returns a new array iterator object that contains the key/value pairs for each index in the array.\n\nSee [Array.prototype.entries](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/entries) on MDN.\n\n## Examples\n\n```rescript\nlet array = [5, 6, 7]\nlet iterator: IteratorObject.t<(int, int), unit, unknown> = array->Array.entries\niterator->IteratorObject.toArray == [(0, 5), (1, 6), (2, 7)]\n```"
         ],
-        "signature": "let entries: array<'a> => Iterator.t<(int, 'a)>"
+        "signature": "let entries: array<'a> => IteratorObject.t<(int, 'a), unit, unknown>"
       },
       {
         "id": "Stdlib.Array.values",
         "kind": "value",
         "name": "values",
         "docstrings": [
-          "`values(array)` returns a new array iterator object that contains the values for each index in the array.\n\nSee [Array.prototype.values](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/values) on MDN.\n\n## Examples\n\n```rescript\nlet array = [5, 6, 7]\nlet iterator: Iterator.t<int> = array->Array.values\niterator->Iterator.next == {done: false, value: Some(5)}\niterator->Iterator.next == {done: false, value: Some(6)}\n```"
+          "`values(array)` returns a new array iterator object that contains the values for each index in the array.\n\nSee [Array.prototype.values](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/values) on MDN.\n\n## Examples\n\n```rescript\nlet array = [5, 6, 7]\nlet iterator: IteratorObject.t<int, unit, unknown> = array->Array.values\niterator->IteratorObject.toArray == [5, 6, 7]\n```"
         ],
-        "signature": "let values: array<'a> => Iterator.t<'a>"
+        "signature": "let values: array<'a> => IteratorObject.t<'a, unit, unknown>"
       }
     ]
   },

@@ -1,6 +1,4 @@
 open ReactRouter
-open Mdx
-
 type loaderData = {mdxSources: array<SyntaxLookup.item>}
 
 let convert = (mdx: Mdx.attributes): SyntaxLookup.item => {
@@ -16,14 +14,8 @@ let convert = (mdx: Mdx.attributes): SyntaxLookup.item => {
 }
 
 let loader: Loader.t<loaderData> = async _ => {
-  let allMdx = await Shims.runWithoutLogging(() => loadAllMdx())
-
   let mdxSources =
-    allMdx
-    ->Array.filter(page =>
-      page.path->Option.map(String.includes(_, "syntax-lookup"))->Option.getOr(false)
-    )
-    ->Array.map(convert)
+    (await MdxFile.loadAllAttributes(~dir="markdown-pages/syntax-lookup"))->Array.map(convert)
 
   {
     mdxSources: mdxSources,
@@ -34,7 +26,6 @@ let default = () => {
   let {mdxSources} = useLoaderData()
   <>
     <title> {React.string("Syntax Lookup | ReScript API")} </title>
-    <NavbarSecondary />
     <SyntaxLookup mdxSources />
   </>
 }

@@ -24,7 +24,7 @@ There are two common kinds of side effects in React components: those that donâ€
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // Runs after every completed render
 React.useEffectOnEveryRender(() => {
   // Run effects
@@ -59,11 +59,25 @@ React.useEffect(() => {
 ```
 
 ```js
-React.useEffect(function () {});
-React.useEffect(function () {}, []);
-React.useEffect(function () {}, [prop1]);
-React.useEffect(function () {}, [prop1, prop2]);
-React.useEffect(function () {}, [prop1, prop2, prop3]);
+import * as React from "react";
+
+React.useEffect(() => {});
+
+React.useEffect(() => {}, []);
+
+React.useEffect(() => {}, [1]);
+
+React.useEffect(() => {}, [1, 2]);
+
+React.useEffect(() => {}, [1, 2, 3]);
+
+let prop1 = 1;
+
+let prop2 = 2;
+
+let prop3 = 3;
+
+export { prop1, prop2, prop3 };
 ```
 
 </CodeTab>
@@ -93,9 +107,9 @@ module Document = {
 }
 ```
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
-```res example
+```res
 
 @react.component
 let make = () => {
@@ -121,41 +135,71 @@ let make = () => {
 ```
 
 ```js
-function Counter(Props) {
-  var match = React.useState(function () {
-    return 0;
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let Document = {};
+
+function Example(props) {
+  let match = React.useState(() => 0);
+  let setCount = match[1];
+  let count = match[0];
+  React.useEffect(() => {
+    document.title = `You clicked ` + String(count) + ` times!`;
   });
-  var setCount = match[1];
-  var count = match[0];
-  React.useEffect(function () {
-    document.title = "You clicked " + String(count) + " times!";
-  });
-  var onClick = function (_evt) {
-    return Curry._1(setCount, function (prev) {
-      return (prev + 1) | 0;
-    });
-  };
-  var msg = "You clicked" + String(count) + "times";
-  return React.createElement(
-    "div",
-    undefined,
-    React.createElement("p", undefined, msg),
-    React.createElement(
-      "button",
-      {
+  let onClick = (_evt) => setCount((prev) => (prev + 1) | 0);
+  let msg = "You clicked" + String(count) + "times";
+  return JsxRuntime.jsxs("div", {
+    children: [
+      JsxRuntime.jsx("p", {
+        children: msg,
+      }),
+      JsxRuntime.jsx("button", {
+        children: "Click me",
         onClick: onClick,
-      },
-      "Click me",
-    ),
+      }),
+    ],
+  });
+}
+
+let make = Example;
+
+export { Document, make };
+```
+
+```jsx
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let Document = {};
+
+function Example(props) {
+  let match = React.useState(() => 0);
+  let setCount = match[1];
+  let count = match[0];
+  React.useEffect(() => {
+    document.title = `You clicked ` + String(count) + ` times!`;
+  });
+  let onClick = (_evt) => setCount((prev) => (prev + 1) | 0);
+  let msg = "You clicked" + String(count) + "times";
+  return (
+    <div>
+      <p>{msg}</p>
+      <button onClick={onClick}>{"Click me"}</button>
+    </div>
   );
 }
+
+let make = Example;
+
+export { Document, make };
 ```
 
 </CodeTab>
 
 In case we want to make the effects dependent on `count`, we can just use following `useEffect` call instead:
 
-```res
+```res nocheck
  React.useEffect(() => {
     open! Document
     document->setTitle(`You clicked ${Belt.Int.toString(count)} times!`)
@@ -182,7 +226,7 @@ module ChatAPI = {
 type state = Offline | Loading | Online
 ```
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 {/* TODO: fix this example */}
 
@@ -222,44 +266,99 @@ let make = (~friendId: string) => {
 ```
 
 ```js
-function FriendStatus(Props) {
-  var friendId = Props.friendId;
-  var match = React.useState(function () {
-    return /* Offline */ 0;
-  });
-  var setState = match[1];
-  React.useEffect(function () {
-    var handleStatusChange = function (status) {
-      return Curry._1(setState, function (param) {
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let Document = {};
+
+let ChatAPI = {};
+
+function Example(props) {
+  let friendId = props.friendId;
+  let match = React.useState(() => "Offline");
+  let setState = match[1];
+  React.useEffect(() => {
+    let handleStatusChange = (status) =>
+      setState((param) => {
         if (status.isOnline) {
-          return /* Online */ 2;
+          return "Online";
         } else {
-          return /* Offline */ 0;
+          return "Offline";
         }
       });
-    };
     subscribeToFriendStatus(friendId, handleStatusChange);
-    Curry._1(setState, function (param) {
-      return /* Loading */ 1;
-    });
-    return function (param) {
+    setState((param) => "Loading");
+    return () => {
       unsubscribeFromFriendStatus(friendId, handleStatusChange);
     };
   });
-  var text;
+  let text;
   switch (match[0]) {
-    case /* Offline */ 0:
+    case "Offline":
       text = friendId + " is offline";
       break;
-    case /* Loading */ 1:
+    case "Loading":
       text = "loading...";
       break;
-    case /* Online */ 2:
+    case "Online":
       text = friendId + " is online";
       break;
   }
-  return React.createElement("div", undefined, text);
+  return JsxRuntime.jsx("div", {
+    children: text,
+  });
 }
+
+let make = Example;
+
+export { Document, ChatAPI, make };
+```
+
+```jsx
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let Document = {};
+
+let ChatAPI = {};
+
+function Example(props) {
+  let friendId = props.friendId;
+  let match = React.useState(() => "Offline");
+  let setState = match[1];
+  React.useEffect(() => {
+    let handleStatusChange = (status) =>
+      setState((param) => {
+        if (status.isOnline) {
+          return "Online";
+        } else {
+          return "Offline";
+        }
+      });
+    subscribeToFriendStatus(friendId, handleStatusChange);
+    setState((param) => "Loading");
+    return () => {
+      unsubscribeFromFriendStatus(friendId, handleStatusChange);
+    };
+  });
+  let text;
+  switch (match[0]) {
+    case "Offline":
+      text = friendId + " is offline";
+      break;
+    case "Loading":
+      text = "loading...";
+      break;
+    case "Online":
+      text = friendId + " is online";
+      break;
+  }
+  return <div>{text}</div>;
+}
+
+let make = Example;
+
+export { Document, ChatAPI, make };
 ```
 
 </CodeTab>
@@ -268,7 +367,7 @@ function FriendStatus(Props) {
 
 In some cases, cleaning up or applying the effect after every render might create a performance problem. Let's look at a concrete example to see what `useEffect` does:
 
-```res
+```res nocheck
 // from a previous example above
 React.useEffect(() => {
   open! Document
@@ -285,7 +384,7 @@ This also works for effects that have a cleanup phase:
 
 {/* TODO fix this example */}
 
-```res
+```res nocheck
 @react.component
 let make = (~friendId: string) => {
   let (state, setState) = React.useState(_ => Offline)

@@ -20,7 +20,7 @@ Elements are the smallest building blocks of React apps. This page will explain 
 
 Let's start out by creating our first React element.
 
-```res example
+```res
 let element = <h1> {React.string("Hello World")} </h1>
 ```
 
@@ -28,7 +28,7 @@ The binding `element` and the expression `{React.string("Hello World")}` are bot
 
 Let's say you want to create a function that handles another React element, such as `children`, you can annotate it as `React.element`:
 
-```res example
+```res
 let wrapChildren = (children: React.element) => {
   <div>
     <h1> {React.string("Overview")} </h1>
@@ -47,7 +47,7 @@ Fortunately our React bindings bring all necessary functionality to represent al
 
 You can compose elements into more complex structures by using JSX:
 
-```res example
+```res
 let greeting = React.string("Hello ")
 let name = React.string("Stranger")
 
@@ -66,7 +66,7 @@ Sometimes, when doing a lot of interop with existing ReactJS codebases, you'll f
 
 Apart from using JSX to create our React elements or React components, the `React` module offers various functions to create elements from primitive data types:
 
-```res example
+```res
 React.string("Hello") // new element representing "Hello"
 
 React.int(1) // new element representing "1"
@@ -76,7 +76,7 @@ React.float(1.0) // new element representing "1.0"
 
 It also offers `React.array` to represent multiple elements as one single element (useful for rendering a list of data, or passing children):
 
-```res example
+```res
 let element = React.array([
   React.string("element 1"),
   React.string("element 2"),
@@ -90,9 +90,9 @@ let element = React.array([
 
 ReScript doesn't allow `element || null` constraints due to it's strongly typed nature. Whenever you are expressing conditionals where a value might, or might not be rendered, you will need the `React.null` constant to represent _Nothingness_:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
-```res example
+```res
 let name = Some("Andrea")
 
 let element = switch name {
@@ -104,14 +104,31 @@ let element = switch name {
 ```
 
 ```js
-var name = "Andrea";
+import * as JsxRuntime from "react/jsx-runtime";
 
-var element =
-  name !== undefined
-    ? React.createElement("div", undefined, "Hello " + name)
-    : null;
+let name = "Andrea";
 
-React.createElement("div", undefined, element);
+let element = JsxRuntime.jsx("div", {
+  children: "Hello " + name,
+});
+
+JsxRuntime.jsx("div", {
+  children: element,
+});
+
+export { name, element };
+```
+
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+let name = "Andrea";
+
+let element = <div>{"Hello " + name}</div>;
+
+<div>{element}</div>;
+
+export { name, element };
 ```
 
 </CodeTab>
@@ -126,7 +143,7 @@ React.createElement("div", undefined, element);
 
 Sometimes it's necessary to pass around component functions to have more control over `React.element` creation. Use the `React.createElement` function to instantiate your elements:
 
-```res example
+```res
 type props = {name: string}
 
 let render = (myComp: props => React.element) => {
@@ -136,7 +153,7 @@ let render = (myComp: props => React.element) => {
 
 This feature is often used when interacting with existing JS / ReactJS code. In pure ReScript React applications, you would rather pass a function that does the rendering for you (also called a "render prop"):
 
-```res example
+```res
 let render = (renderMyComp: (~name: string) => React.element) => {
   <div> {renderMyComp(~name="Franz")} </div>
 }
@@ -148,7 +165,7 @@ There is also a `React.createElementVariadic` function, which takes an array of 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type props = {title: string, children: React.element}
 
 let render = (article: props => React.element) => {
@@ -161,18 +178,18 @@ let render = (article: props => React.element) => {
 ```
 
 ```js
+import * as React from "react";
+
 function render(article) {
-  var children = ["Introduction", "Body"];
-  var props = {
+  let children = ["Introduction", "Body"];
+  let props = {
     title: "Article #1",
     children: null,
   };
-  return Caml_splice_call.spliceApply(React.createElement, [
-    article,
-    props,
-    children,
-  ]);
+  return React.createElement(article, props, ...children);
 }
+
+export { render };
 ```
 
 </CodeTab>
@@ -185,7 +202,7 @@ This function is mostly used by our JSX transformations, so usually you want to 
 
 To create DOM elements (`<div>`, `<span>`, etc.), use `ReactDOM.createDOMElementVariadic`:
 
-```res example
+```res
 ReactDOM.createDOMElementVariadic("div", ~props={className: "card"}, [])
 ```
 
@@ -197,9 +214,9 @@ ReScript can make sure that we are only passing valid dom props. You can find an
 
 Sometimes it's required to clone an existing element to set, overwrite or add prop values to a new instance, or if you want to set invalid prop names such as `data-name`. You can use `React.cloneElement` for that:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
-```res example
+```res
 let original = <div className="hello"/>
 
 // Will return a new React.element with className set to "world"
@@ -207,7 +224,10 @@ React.cloneElement(original, {"className": "world", "data-name": "some name"})
 ```
 
 ```js
-var original = React.createElement("div", {
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let original = JsxRuntime.jsx("div", {
   className: "hello",
 });
 
@@ -215,6 +235,22 @@ React.cloneElement(original, {
   className: "world",
   "data-name": "some name",
 });
+
+export { original };
+```
+
+```jsx
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let original = <div className={"hello"} />;
+
+React.cloneElement(original, {
+  className: "world",
+  "data-name": "some name",
+});
+
+export { original };
 ```
 
 </CodeTab>

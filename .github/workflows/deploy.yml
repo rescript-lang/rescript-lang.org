@@ -20,13 +20,17 @@ jobs:
       contents: read
       deployments: write
       pull-requests: write
+    outputs:
+      deployment-url: ${{ steps.deploy.outputs.deployment-url }}
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup yarn
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v6.0.2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6.3.0
         with:
+          node-version-file: ".node-version"
           cache: "yarn"
-          node-version: "24"
+      - name: Enable Corepack
+        run: corepack enable
       - name: Install dependencies
         run: yarn install
       - name: Sync playground bundles
@@ -40,9 +44,9 @@ jobs:
              echo "VITE_DEPLOYMENT_URL=" >> "$GITHUB_ENV"
           else
              SAFE_BRANCH="${RAW_BRANCH//\//-}"
-             
+
              SAFE_BRANCH=$(echo "$SAFE_BRANCH" | tr '[:upper:]' '[:lower:]')
-             
+
              echo "SAFE_BRANCH=$SAFE_BRANCH" >> "$GITHUB_ENV"
              echo "VITE_DEPLOYMENT_URL=https://${SAFE_BRANCH}.rescript-lang.pages.dev" >> "$GITHUB_ENV"
           fi
@@ -83,6 +87,7 @@ jobs:
         env:
           VITE_DEPLOYMENT_URL: ${{ env.VITE_DEPLOYMENT_URL }}
       - name: Deploy
+        if: ${{ github.actor != 'dependabot[bot]' }}
         id: deploy
         uses: cloudflare/wrangler-action@v3
         with:
@@ -94,6 +99,7 @@ jobs:
         env:
           FORCE_COLOR: 0
       - name: Comment PR with deployment link
+        if: ${{ github.actor != 'dependabot[bot]' }}
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           recreate: true
@@ -104,3 +110,28 @@ jobs:
             Deployment Environment: ${{ steps.deploy.outputs.pages-environment }}
 
             ${{ steps.deploy.outputs.command-output }}
+
+  e2e:
+    runs-on: ubuntu-latest
+    name: E2E Tests
+    needs: deploy
+    if: ${{ github.actor != 'dependabot[bot]' }}
+    steps:
+      - uses: actions/checkout@v6.0.2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6.3.0
+        with:
+          node-version-file: ".node-version"
+          cache: "yarn"
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install dependencies
+        run: yarn install
+      - name: Build ReScript
+        run: yarn build:res
+      - name: Cypress E2E tests
+        uses: cypress-io/github-action@v7
+        with:
+          install: false
+          browser: chrome
+          config: baseUrl=${{ needs.deploy.outputs.deployment-url }}

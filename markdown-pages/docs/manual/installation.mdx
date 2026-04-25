@@ -133,6 +133,15 @@ bun create rescript-app
 
   </CodeTab>
 
+  <Info>
+    **pnpm users:** ReScript-compiled JS imports from `@rescript/runtime` directly, but pnpm's strict isolation does not expose transitive dependencies at the app root. Either install the runtime as a direct dependency (`pnpm add @rescript/runtime`), or hoist it by adding the following to `pnpm-workspace.yaml`:
+
+    ```yaml
+    publicHoistPattern:
+      - "*@rescript/runtime*"
+    ```
+  </Info>
+
 - Create a ReScript build configuration file (called `rescript.json`) at the root:
   ```json
   {

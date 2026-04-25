@@ -1,13 +1,9 @@
 {
   "name": "rescript-lang.org",
-  "private": true,
   "version": "1.0.0",
-  "author": "Patrick Ecker <ryyppy@users.noreply.github.com>",
+  "private": true,
   "license": "MIT",
-  "engines": {
-    "node": ">=22"
-  },
-  "packageManager": "yarn@4.13.0",
+  "author": "Patrick Ecker <ryyppy@users.noreply.github.com>",
   "type": "module",
   "scripts": {
     "build:scripts": "yarn dlx tsdown@0.21.7 scripts/*.jsx -d _scripts --no-clean --ext .mjs",
@@ -19,19 +15,22 @@
     "build:vite": "react-router build",
     "check:algolia-public-env": "node scripts/log_algolia_env_status.mjs",
     "build": "yarn check:algolia-public-env && yarn build:res && yarn build:scripts && yarn build:update-index && yarn build:vite",
-    "ci:format": "prettier . --check --experimental-cli",
+    "ci:format": "oxfmt --check",
     "ci:test": "yarn vitest --run --browser.headless",
     "clean:res": "rescript clean",
-    "convert-images": "auto-image-converter",
+    "convert-images": "auto-convert-images",
     "dev:res": "rescript watch",
     "dev:vite": "react-router dev --host",
     "dev:wrangler": "yarn wrangler pages dev build/client",
     "dev": "yarn prepare && yarn dev:res & yarn dev:vite & yarn dev:wrangler",
-    "format": "prettier . --write --experimental-cli && rescript format",
+    "format": "oxfmt && rescript format",
     "prepare": "yarn check:algolia-public-env && yarn build:res && yarn build:scripts && yarn build:update-index",
     "preview": "yarn build && static-server build/client",
     "reanalyze": "rescript-tools reanalyze -all-cmt .",
-    "test": "node scripts/test-examples.mjs && node scripts/test-hrefs.mjs",
+    "test": "node scripts/test.mjs",
+    "cy:open": "yarn build:res && cypress open --e2e --browser electron",
+    "cy:run": "yarn build:res && cypress run",
+    "cy:e2e": "yarn build:res && cypress run --browser chrome",
     "vitest": "vitest",
     "vitest:update": "vitest --run --browser.headless --update"
   },
@@ -72,7 +71,6 @@
     "react-markdown": "^10.1.0",
     "react-router": "^7.14.0",
     "react-router-dom": "^7.14.0",
-    "react-router-mdx": "patch:react-router-mdx@npm%3A1.0.8#~/.yarn/patches/react-router-mdx-npm-1.0.8-d4402c3003.patch",
     "rehype-slug": "^6.0.0",
     "rehype-stringify": "^10.0.1",
     "remark": "^15.0.1",
@@ -86,7 +84,6 @@
     "vfile-matter": "^5.0.1"
   },
   "devDependencies": {
-    "@prettier/plugin-oxc": "^0.1.3",
     "@react-router/dev": "^7.14.0",
     "@tailwindcss/vite": "^4.2.2",
     "@types/react": "^19.2.14",
@@ -94,12 +91,13 @@
     "@vitest/browser-playwright": "^4.1.2",
     "auto-image-converter": "^2.2.0",
     "chokidar": "^4.0.3",
+    "cypress": "^15.13.1",
     "dotenv": "^16.6.1",
     "jsdom": "^26.1.0",
     "lefthook": "^2.1.4",
     "lightningcss": "^1.32.0",
+    "oxfmt": "^0.46.0",
     "playwright": "^1.59.1",
-    "prettier": "^3.8.1",
     "remark-cli": "^12.0.1",
     "search-insights": "^2.17.3",
     "tailwindcss": "^4",
@@ -111,6 +109,13 @@
     "vite-plugin-page-reload": "^0.2.3",
     "vitest": "^4.1.2",
     "vitest-browser-react": "^2.2.0",
-    "wrangler": "^4.80.0"
-  }
+    "wrangler": "^4.85.0"
+  },
+  "resolutions": {
+    "marked": "4.0.10"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "yarn@4.13.0"
 }

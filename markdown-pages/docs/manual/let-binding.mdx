@@ -12,19 +12,25 @@ A "let binding", in other languages, might be called a "variable declaration". `
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let greeting = "hello!"
 let score = 10
 let newScore = 10 + score
 ```
 
 ```js
-var greeting = "hello!";
-var score = 10;
-var newScore = 20;
+let newScore = 20;
+
+let greeting = "hello!";
+
+let score = 10;
+
+export { greeting, score, newScore };
 ```
 
 </CodeTab>
+
+Because these bindings are pure and known up front, the JS output can inline the calculation and emit `20` directly for `newScore`.
 
 ## Block Scope
 
@@ -32,7 +38,7 @@ Bindings can be scoped through `{}`.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let message = {
   let part1 = "hello"
   let part2 = "world"
@@ -42,10 +48,14 @@ let message = {
 ```
 
 ```js
-var message = "hello world";
+let message = "hello world";
+
+export { message };
 ```
 
 </CodeTab>
+
+The whole block is pure too, so the generated JS can collapse it to the final string literal.
 
 The value of the last line of a scope is implicitly returned.
 
@@ -55,7 +65,7 @@ ReScript's `if`, `while` and functions all use the same block scoping mechanism.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 if displayGreeting {
   let message = "Enjoying the docs so far?"
   Console.log(message)
@@ -99,7 +109,7 @@ In ReScript, this obviously works too:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let result1 = 0
 let result2 = calculate(result1)
 let result3 = calculateSomeMore(result2)
@@ -117,7 +127,7 @@ Additionally, reusing the same let binding name overshadows the previous binding
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let result = 0
 let result = calculate(result)
 let result = calculateSomeMore(result)
@@ -136,7 +146,7 @@ As a matter of fact, even this is valid code:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 let result = "hello"
 Console.log(result) // prints "hello"
 let result = 1
@@ -144,9 +154,13 @@ Console.log(result) // prints 1
 ```
 
 ```js
-var result = 1;
 console.log("hello");
+
 console.log(1);
+
+let result = 1;
+
+export { result };
 ```
 
 </CodeTab>

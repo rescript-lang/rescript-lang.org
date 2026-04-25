@@ -192,7 +192,7 @@ let default: unit => React.element
 - Documentation content is in `markdown-pages/` organized by section (blog, docs, community, syntax-lookup).
 - MDX is processed by `react-router-mdx` with remark/rehype plugins.
 - Custom MDX components are mapped in `app/routes/MdxRoute.res` (e.g. `<Info>`, `<Warn>`, `<CodeTab>`, `<Video>`).
-- Code examples in markdown use ` ```res example ` (runnable), ` ```res sig ` (signature), and ` ```res prelude ` (shared context).
+- Code examples in markdown use ` ```res ` (runnable), ` ```res sig ` (signature), and ` ```res prelude ` (shared context).
 
 ## Formatting & Git Hooks
 
@@ -200,6 +200,12 @@ let default: unit => React.element
 - **ReScript formatter** (`rescript format`) for `.res` files.
 - **Lefthook** runs `yarn format` on pre-commit (auto-stages fixed files).
 - Generated `.mjs`/`.jsx` output files from ReScript are git-tracked but excluded from Prettier.
+
+## Pull Requests and Commits
+
+- Use conventional commits format for commit messages (e.g. `feat: add new API docs`, `fix: resolve loader data issue`).
+- Commit bodies should explain what changed with some concise details
+- PR descriptions should provide context for the change, a summary of the changes with descriptions, and reference any related issues.
 
 ## Important Warnings
 

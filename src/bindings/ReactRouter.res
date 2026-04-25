@@ -114,9 +114,6 @@ module Routes = {
 
   @module("@react-router/dev/routes")
   external layout: (string, array<t>) => t = "layout"
-
-  @module("react-router-mdx/server")
-  external mdxRoutes: string => array<t> = "routes"
 }
 
 module BrowserRouter = {

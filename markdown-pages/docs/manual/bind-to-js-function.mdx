@@ -12,15 +12,18 @@ Binding a JS function is like binding any other value:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // Import nodejs' path.dirname
 @module("path") external dirname: string => string = "dirname"
 let root = dirname("/User/github") // returns "User"
 ```
 
 ```js
-var Path = require("path");
-var root = Path.dirname("/User/github");
+import * as Path from "path";
+
+let root = Path.dirname("/User/github");
+
+export { root };
 ```
 
 </CodeTab>
@@ -45,7 +48,7 @@ It'd be nice if on ReScript's side, we can bind & call `draw` while labeling thi
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @module("MyGame")
 external draw: (~x: int, ~y: int, ~border: bool=?) => unit = "draw"
 
@@ -54,10 +57,11 @@ draw(~x=10, ~y=20)
 ```
 
 ```js
-var MyGame = require("MyGame");
+import * as MyGame from "MyGame";
 
 MyGame.draw(10, 20, true);
-MyGame.draw(10, 20, undefined);
+
+MyGame.draw(10, 20);
 ```
 
 </CodeTab>
@@ -68,7 +72,7 @@ Note that you can freely reorder the labels on the ReScript side; they'll always
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @module("MyGame")
 external draw: (~x: int, ~y: int, ~border: bool=?) => unit = "draw"
 
@@ -77,10 +81,11 @@ draw(~y=20, ~x=10)
 ```
 
 ```js
-var MyGame = require("MyGame");
+import * as MyGame from "MyGame";
 
-MyGame.draw(10, 20, undefined);
-MyGame.draw(10, 20, undefined);
+MyGame.draw(10, 20);
+
+MyGame.draw(10, 20);
 ```
 
 </CodeTab>
@@ -91,7 +96,7 @@ Functions attached to JS objects (other than JS modules) require a special way o
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type document // abstract type for a document object
 @send external getElementById: (document, string) => Dom.element = "getElementById"
 @val external doc: document = "document"
@@ -100,7 +105,9 @@ let el = getElementById(doc, "myId")
 ```
 
 ```js
-var el = document.getElementById("myId");
+let el = document.getElementById("myId");
+
+export { el };
 ```
 
 </CodeTab>
@@ -116,7 +123,7 @@ Ever used `foo().bar().baz()` chaining ("fluent api") in JS OOP? We can model th
 `@send` can also accept a `@scope(("itemOne","itemTwo"))` to access a function on a nested property.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
-```res example
+```res
 type stripe
 
 @module("stripe") @new
@@ -138,8 +145,14 @@ let session = stripe->createCheckoutSession({})
 ```js
 import Stripe from "stripe";
 
-var stripe = new Stripe("sk_...");
-var session = stripe.checkout.sessions.create({});
+let stripe = new Stripe("sk\_...");
+
+let session = stripe.checkout.sessions.create({});
+
+export {
+  stripe,
+  session,
+}
 ````
 
 </CodeTab>
@@ -150,7 +163,7 @@ You might have JS functions that take an arbitrary amount of arguments. ReScript
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @module("path") @variadic
 external join: array<string> => string = "join"
 
@@ -158,8 +171,11 @@ let v = join(["a", "b"])
 ```
 
 ```js
-var Path = require("path");
-var v = Path.join("a", "b");
+import * as Path from "path";
+
+let v = Path.join("a", "b");
+
+export { v };
 ```
 
 </CodeTab>
@@ -176,14 +192,14 @@ If you can exhaustively enumerate the many forms an overloaded JS function can t
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @module("MyGame") external drawCat: unit => unit = "draw"
 @module("MyGame") external drawDog: (~giveName: string) => unit = "draw"
 @module("MyGame") external draw: (string, ~useRandomAnimal: bool) => unit = "draw"
 ```
 
 ```js
-// Empty output
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>
@@ -210,7 +226,7 @@ Here, `padding` is really conceptually a variant. Let's model it as such.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @val
 external padLeft: (
   string,
@@ -225,6 +241,7 @@ padLeft("Hello World", #Str("Message from ReScript: "))
 
 ```js
 padLeft("Hello World", 4);
+
 padLeft("Hello World", "Message from ReScript: ");
 ```
 
@@ -238,7 +255,7 @@ Consider the Node `fs.readFileSync`'s second argument. It can take a string, but
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @module("fs")
 external readFileSync: (
   ~name: string,
@@ -252,7 +269,8 @@ readFileSync(~name="xx.txt", #useAscii)
 ```
 
 ```js
-var Fs = require("fs");
+import * as Fs from "fs";
+
 Fs.readFileSync("xx.txt", "ascii");
 ```
 
@@ -267,7 +285,7 @@ Aside from string, you can also compile an argument to an int, using `int` inste
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @val
 external testIntType: (
   @int [
@@ -295,7 +313,7 @@ Consider the example below of two external functions that access the value of a 
 
 The `getPropertySafe` function returns an `unknown`, which could be `null` or a `string` or anything else. But ReScript prevents you from using this value inappropriately until it has been safely parsed.
 
-```res example
+```res
 @get_index external getPropertyUnsafe: ({..}, string) => 'a = ""
 @get_index external getPropertySafe: ({..}, string) => unknown = ""
 
@@ -311,7 +329,7 @@ One last trick with polymorphic variants:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type readline
 
 @send
@@ -333,11 +351,13 @@ let register = rl =>
 ```js
 function register(rl) {
   return rl
-    .on("close", function ($$event) {})
-    .on("line", function (line) {
+    .on("close", (event) => {})
+    .on("line", (line) => {
       console.log(line);
     });
 }
+
+export { register };
 ```
 
 </CodeTab>
@@ -350,7 +370,7 @@ Sometimes it's convenient to bind to a function using an `external`, while passi
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @val
 external processOnExit: (
   @as("exit") _,
@@ -363,7 +383,7 @@ processOnExit(exitCode =>
 ```
 
 ```js
-process.on("exit", function (exitCode) {
+process.on("exit", (exitCode) => {
   console.log("error code: " + exitCode.toString());
 });
 ```
@@ -406,7 +426,7 @@ Here, `this` would point to `x` (actually, it depends on how `onload` is called,
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type x
 @val external x: x = "x"
 @set external setOnload: (x, @this ((x, int) => unit)) => unit = "onload"
@@ -416,7 +436,7 @@ setOnload(x, @this (o, v) => Console.log(resp(o) + v))
 
 ```js
 x.onload = function (v) {
-  var o = this;
+  let o = this;
   console.log((o.response + v) | 0);
 };
 ```
@@ -431,7 +451,7 @@ For JS functions that return a value that can also be `undefined` or `null`, we 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type element
 type dom
 
@@ -449,14 +469,15 @@ let test = dom => {
 
 ```js
 function test(dom) {
-  var elem = dom.getElementById("haha");
+  let elem = dom.getElementById("haha");
   if (elem == null) {
     return 1;
   } else {
-    console.log(elem);
     return 2;
   }
 }
+
+export { test };
 ```
 
 </CodeTab>
@@ -481,7 +502,7 @@ You add the `@taggedTemplate` annotation and you're good to go!
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 // see https://bun.sh/docs/runtime/shell
 type result = {exitCode: int}
 @module("bun") @taggedTemplate
@@ -493,8 +514,12 @@ let result = await sh`ls ${filename}`
 
 ```js
 import * as $$Bun from "bun";
-var filename = "index.res";
-var result = await $$Bun.$`ls ${filename}`;
+
+let filename = "index.res";
+
+let result = await $$Bun.$`ls ${filename}`;
+
+export { filename, result };
 ```
 
 </CodeTab>

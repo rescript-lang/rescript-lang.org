@@ -22,7 +22,7 @@ GADTs usually are overkill, but when you need them, you need them! Understanding
 
 Suppose a simple variant type that represents the current timezone of a date value. This handles both daylight savings and standard time:
 
-```res example
+```res nocheck
 type timezone =
  | EST // standard time
  | EDT // daylight time
@@ -35,7 +35,7 @@ Using this variant type, we will end up having functions like this:
 
 {/* TODO: fix this example, it has an error because it doesn't have access to the previous snippet */}
 
-```res
+```res nocheck
 let convertToDaylight = tz => {
   switch tz {
   | EST => EDT
@@ -51,7 +51,7 @@ Let's see if we can find a way for the compiler to help us with normal variants.
 
 {/* TODO: fix this example, it has an error because it doesn't have access to the previous snippet */}
 
-```res
+```res nocheck
 type daylightOrStandard =
   | Daylight(timezone)
   | Standard(timezone)
@@ -61,7 +61,7 @@ This has a lot of problems. For one, it's cumbersome and redundant. We would now
 
 {/* TODO: fix this example, it has an error because it doesn't have access to the previous snippet */}
 
-```res
+```res nocheck
 let invalidTz1 = Daylight(EST)
 let invalidTz2 = Standard(EDT)
 ```
@@ -70,7 +70,7 @@ Consequently, we still have to write our redundant catchall cases. We could defi
 That could be a passable solution, but what we would really like to do is implement some kind of subtyping relationship.
 We have two _kinds_ of timezone. This is where GADTs are handy:
 
-```res example
+```res nocheck
 type standard
 type daylight
 
@@ -86,7 +86,7 @@ but we've added another level of specificity using a type parameter. Constructor
 
 {/* TODO: fix this example, it has an error because it doesn't have access to the previous snippet */}
 
-```res
+```res nocheck
 let convertToDaylight = tz => {
   switch tz {
   | EST => EDT
@@ -102,7 +102,7 @@ we still want to be able to match on all cases of the variant sometimes, and a n
 
 {/* TODO: fix this example, it has an error because it doesn't have access to the previous snippet */}
 
-```res
+```res nocheck
 let convertToDaylight = tz =>
   switch tz {
   | EST => EDT
@@ -116,7 +116,7 @@ This will complain that `daylight` and `standard` are incompatible. To fix this,
 
 {/* TODO: fix this example, it has an error because it doesn't have access to the previous snippet */}
 
-```res
+```res nocheck
 let convertToDaylight : type a. timezone<a> => timezone<daylight> =  // ...
 ```
 
@@ -125,19 +125,17 @@ GADTs give us is that the compiler less able to help us with type inference.
 
 ## Varying return type
 
-Sometimes, a function should have a different return type based on what you give it, and GADTs are how we can do this in a type-safe way. We can implement a generic `add` function[^1] that works on both `int` or `float`:
-
-[^1]: In ReScript v12, the built-in operators are already generic, but we use them in this example for simplicity.
+Sometimes, a function should have a different return type based on what you give it, and GADTs are how we can do this in a type-safe way. We can implement a generic `add` function that works on both `int` or `float`:
 
 {/* this example purposefully has an error so it is not marked as an example */}
 
-```res
+```res nocheck
 type rec number<_> = Int(int): number<int> | Float(float): number<float>
 
 let add = (type a, x: number<a>, y: number<a>): a =>
   switch (x, y) {
   | (Int(x), Int(y)) => x + y
-  | (Float(x), Float(y)) => x +. y
+  | (Float(x), Float(y)) => x + y
   }
 
 let foo = add(Int(1), Int(2))
@@ -151,7 +149,7 @@ We can also use this to avoid returning `option` unnecessarily. We create an arr
 
 [^2]: This example is adapted from [here](https://dev.realworldocaml.org/gadts.html).
 
-```res example
+```res nocheck
 module IfNotFound = {
   type rec t<_, _> =
     | Raise: t<'a, 'a>
@@ -191,7 +189,7 @@ interchangeably, hiding the implementation type rather than exposing it. This is
 `numTy` serves as a type-witness, making it
 possible to recover type information that was hidden dynamically. Matching on `numTy` will "reveal" the type of the other value in the pair. We can use this to write a generic sum function over arrays of numbers:
 
-```res example
+```res nocheck
 type rec numTy<'a> =
   | Int: numTy<int>
   | Float: numTy<float>
@@ -199,7 +197,7 @@ and num = Num(numTy<'a>, 'a): num
 and num_array = Narray(numTy<'a>, array<'a>): num_array
 
 let addInt = (x, y) => x + y
-let addFloat = (x, y) => x +. y
+let addFloat = (x: float, y: float) => x + y
 
 let sum = (Narray(witness, array)) => {
   switch witness {
@@ -220,7 +218,7 @@ separate method for each stream event to wrap the unsafe version of `on`.
 
 {/* TODO: fix this example, it has an error */}
 
-```res
+```res nocheck
 module Stream = {
     type t
 
@@ -251,7 +249,7 @@ to if you need and it will soon become clear.
 
 {/* TODO: fix this example, it has an error */}
 
-```res
+```res nocheck
 
 module Stream = {
   type t<'a>

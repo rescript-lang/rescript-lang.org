@@ -47,12 +47,12 @@ let logUserDetails = async (userId: string) => {
 
 ```js
 async function logUserDetails(userId) {
-  var email = await GlobalAPI.fetchUserMail(userId);
-  await GlobalAPI.sendAnalytics(
-    "User details have been logged for " + userId + "",
-  );
-  console.log("Email address for user " + userId + ": " + email + "");
+  let email = await GlobalAPI.fetchUserMail(userId);
+  await GlobalAPI.sendAnalytics(`User details have been logged for ` + userId);
+  console.log(`Email address for user ` + userId + `: ` + email);
 }
+
+export { logUserDetails };
 ```
 
 </CodeTab>
@@ -67,7 +67,7 @@ You will probably notice that this looks very similar to `async` / `await` in JS
 - `await` may only be called on a `promise` value
 - `await` calls are expressions, therefore they can be used in pattern matching (`switch`)
 - A function returning a `promise<'a>` is equivalent to an `async` function returning a value `'a` (important for writing signature files and bindings)
-- `promise` values and types returned from an `async` function don't auto-collapse into a "flat promise" like in JS (more on this later)
+- `promise` values and types returned from an `async` function don't auto-collapse into a flat promise. See the details below.
 
 ## Types and `async` functions
 
@@ -83,7 +83,7 @@ let fetchUserMail: string => promise<string>
 
 The same logic applies to type definitions in `.res` files:
 
-```res example
+```res
 // function type
 type someAsyncFn = int => promise<int>
 
@@ -105,7 +105,7 @@ let fetchData = async (userId: string): string => {
 
 For completeness reasons, let's expand the full signature and inline type definitions in one code snippet:
 
-```res
+```res nocheck
 // Note how the inline return type uses `string`, while the type definition uses `promise<string>`
 let fetchData: string => promise<string> = async (userId: string): string {
   await fetchUserMail(userId)
@@ -179,7 +179,7 @@ This can be done by wrapping your `await` calls in a new `{}` closure.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @val external fetchUserMail: string => promise<string> = "GlobalAPI.fetchUserMail"
 
 let fetchData = async () => {
@@ -189,10 +189,12 @@ let fetchData = async () => {
 ```
 
 ```js
-async function fetchData(param) {
-  var mail = (await GlobalAPI.fetchUserMail("1234")).toUpperCase();
-  console.log("All upper-cased mail: " + mail + "");
+async function fetchData() {
+  let mail = (await GlobalAPI.fetchUserMail("1234")).toUpperCase();
+  console.log(`All upper-cased mail: ` + mail);
 }
+
+export { fetchData };
 ```
 
 </CodeTab>
@@ -205,7 +207,7 @@ Note how the original closure was removed in the final JS output. No extra alloc
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @val external fetchUserMail: string => promise<string> = "GlobalAPI.fetchUserMail"
 
 let fetchData = async () => {
@@ -221,15 +223,17 @@ let fetchData = async () => {
 ```
 
 ```js
-async function fetchData(param) {
-  var val;
-  var val$1;
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
+
+async function fetchData() {
+  let val;
+  let val$1;
   try {
     val = await GlobalAPI.fetchUserMail("user1");
     val$1 = await GlobalAPI.fetchUserMail("user2");
   } catch (raw_err) {
-    var err = Caml_js_exceptions.internalToOCamlException(raw_err);
-    if (err.RE_EXN_ID === "JsError") {
+    let err = Primitive_exceptions.internalToException(raw_err);
+    if (err.RE_EXN_ID === "JsExn") {
       console.log("Some error occurred", err._1);
       return;
     }
@@ -238,6 +242,8 @@ async function fetchData(param) {
   console.log("user 1 mail: " + val);
   console.log("user 2 mail: " + val$1);
 }
+
+export { fetchData };
 ```
 
 </CodeTab>
@@ -275,7 +281,7 @@ let logMultipleValues = async () => {
 
 Here's a full example of using the MDN `fetch` API, using `async` / `await` to simulate a login:
 
-```res
+```res nocheck
 // A generic Response type for typing our fetch requests
 module Response = {
   type t<'data>

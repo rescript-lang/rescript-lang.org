@@ -14,13 +14,13 @@ Some JS values, like `setTimeout`, live in the global scope. You can bind to the
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @val external setTimeout: (unit => unit, int) => float = "setTimeout"
 @val external clearTimeout: float => unit = "clearTimeout"
 ```
 
 ```js
-// Empty output
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>
@@ -41,7 +41,7 @@ We're in a language with a great type system now! Let's leverage a popular featu
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 type timerId
 @val external setTimeout: (unit => unit, int) => timerId = "setTimeout"
 @val external clearTimeout: timerId => unit = "clearTimeout"
@@ -51,11 +51,13 @@ clearTimeout(id)
 ```
 
 ```js
-var id = setTimeout(function (param) {
+let id = setTimeout(() => {
   console.log("hello");
 }, 100);
 
 clearTimeout(id);
+
+export { id };
 ```
 
 </CodeTab>
@@ -70,13 +72,15 @@ If you want to bind to a value inside a global module, e.g. `Math.random`, attac
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @scope("Math") @val external random: unit => float = "random"
 let someNumber = random()
 ```
 
 ```js
-var someNumber = Math.random();
+let someNumber = Math.random();
+
+export { someNumber };
 ```
 
 </CodeTab>
@@ -85,13 +89,13 @@ you can bind to an arbitrarily deep object by passing a tuple to `scope`:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 @val @scope(("window", "location", "ancestorOrigins"))
 external length: int = "length"
 ```
 
 ```js
-// Empty output
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>
@@ -106,7 +110,7 @@ For these troublesome global values, ReScript provides a special approach: `%ext
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 switch %external(__DEV__) {
 | Some(_) => Console.log("dev mode")
 | None => Console.log("production mode")
@@ -114,7 +118,11 @@ switch %external(__DEV__) {
 ```
 
 ```js
-var match = typeof __DEV__ === "undefined" ? undefined : __DEV__;
+import * as Js from "@rescript/runtime/lib/es6/Js.js";
+
+let match = Js.undefinedToOption(
+  typeof __DEV__ === "undefined" ? undefined : __DEV__,
+);
 
 if (match !== undefined) {
   console.log("dev mode");
@@ -131,7 +139,7 @@ Another example:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res
 switch %external(__filename) {
 | Some(f) => Console.log(f)
 | None => Console.log("non-node environment")
@@ -139,10 +147,15 @@ switch %external(__filename) {
 ```
 
 ```js
-var match = typeof __filename === "undefined" ? undefined : __filename;
+import * as Js from "@rescript/runtime/lib/es6/Js.js";
+import * as Primitive_option from "@rescript/runtime/lib/es6/Primitive_option.js";
 
-if (match !== undefined) {
-  console.log(match);
+let f = Js.undefinedToOption(
+  typeof __filename === "undefined" ? undefined : __filename,
+);
+
+if (f !== undefined) {
+  console.log(Primitive_option.valFromOption(f));
 } else {
   console.log("non-node environment");
 }

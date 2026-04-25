@@ -21,7 +21,7 @@ inside a module definition's `{}` block.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res nocheck
 module School = {
   type profession = Teacher | Director
 
@@ -36,17 +36,19 @@ module School = {
 
 ```js
 function getProfession(person) {
-  if (person) {
-    return "A director";
-  } else {
+  if (person === "Teacher") {
     return "A teacher";
+  } else {
+    return "A director";
   }
 }
 
-var School = {
-  person1: /* Teacher */ 0,
+let School = {
+  person1: "Teacher",
   getProfession: getProfession,
 };
+
+export { School };
 ```
 
 </CodeTab>
@@ -56,7 +58,7 @@ using the `.` notation. This demonstrates modules' utility for namespacing.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let anotherPerson: School.profession = School.Teacher
 Console.log(School.getProfession(anotherPerson)) /* "A teacher" */
 ```
@@ -72,7 +74,7 @@ Nested modules work too.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res nocheck
 module MyModule = {
   module NestedModule = {
     let message = "hello"
@@ -83,15 +85,17 @@ let message = MyModule.NestedModule.message
 ```
 
 ```js
-var NestedModule = {
+let message = "hello";
+
+let NestedModule = {
   message: message,
 };
 
-var MyModule = {
+let MyModule = {
   NestedModule: NestedModule,
 };
 
-var message = MyModule.NestedModule.message;
+export { MyModule, message };
 ```
 
 </CodeTab>
@@ -103,7 +107,7 @@ module's name. Instead of writing:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let p = School.getProfession(School.person1)
 ```
 
@@ -117,7 +121,7 @@ We can write:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 open School
 let p = getProfession(person1)
 ```
@@ -134,7 +138,7 @@ The content of `School` module are made visible (**not** copied into the file, b
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 let p = {
   open School
   getProfession(person1)
@@ -152,7 +156,7 @@ var p = School.getProfession(School.person1);
 
 There are situations where `open` will cause a warning due to existing identifiers (bindings, types) being redefined. Use `open!` to explicitly tell the compiler that this is desired behavior.
 
-```res
+```res nocheck
 let map = (arr, value) => {
   value
 }
@@ -173,7 +177,7 @@ As an alternative to `open`ing a module, you can also destructure a module's fun
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 module User = {
   let user1 = "Anna"
   let user2 = "Franz"
@@ -209,7 +213,7 @@ Using `include` in a module statically "spreads" a module's content into a new o
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res nocheck
 module BaseComponent = {
   let defaultGreeting = "Hello"
   let getAudience = (~excited) => excited ? "world!" : "world"
@@ -233,22 +237,24 @@ function getAudience(excited) {
   }
 }
 
-var BaseComponent = {
+let BaseComponent = {
   defaultGreeting: "Hello",
   getAudience: getAudience,
 };
 
-var defaultGreeting = "Hey";
+let defaultGreeting = "Hey";
 
-function render(param) {
-  return "Hey world!";
+function render() {
+  return defaultGreeting + " world!";
 }
 
-var ActualComponent = {
+let ActualComponent = {
   getAudience: getAudience,
   defaultGreeting: defaultGreeting,
   render: render,
 };
+
+export { BaseComponent, ActualComponent };
 ```
 
 </CodeTab>
@@ -275,8 +281,8 @@ inside a signature definition's `{}` block.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
-/* Picking up previous section's example */
+```res nocheck
+/* Using the types defined above */
 module type EstablishmentType = {
   type profession
   let getProfession: profession => string
@@ -284,7 +290,7 @@ module type EstablishmentType = {
 ```
 
 ```js
-// Empty output
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>
@@ -305,7 +311,7 @@ To illustrate the various kinds of type entries, consider the above signature
 **Note**:
 
 Modules of the type `EstablishmentType` can contain more fields than the
-signature declares, just like the module `School` in the previous section (if we
+signature declares, just like the module `School` defined above (if we
 choose to assign it the type `EstablishmentType`. Otherwise, `School` exposes
 every field). This effectively makes the `person1` field an enforced
 implementation detail! Outsiders can't access it, since it's not present in the
@@ -318,7 +324,7 @@ interface:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 module Company: EstablishmentType = {
   type profession = CEO | Designer | Engineer | ...
 
@@ -362,7 +368,7 @@ Like modules themselves, module signatures can also be extended by other module 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res nocheck
 module type BaseComponent = {
   let defaultGreeting: string
   let getAudience: (~excited: bool) => string
@@ -376,7 +382,7 @@ module type ActualComponent = {
 ```
 
 ```js
-// Empty output
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>
@@ -390,7 +396,7 @@ type.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res nocheck
 module type MyList = {
   include (module type of List)
   let myListFun: list<'a> => list<'a>
@@ -398,7 +404,7 @@ module type MyList = {
 ```
 
 ```js
-// Empty output
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>
@@ -413,7 +419,7 @@ in the ecosystem to also document the public API of their corresponding modules.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res nocheck
 /* file React.res (implementation. Compiles to module React) */
 type state = int
 let render = (str) => str
@@ -423,6 +429,8 @@ let render = (str) => str
 function render(str) {
   return str;
 }
+
+export { render };
 ```
 
 </CodeTab>
@@ -508,7 +516,7 @@ creating a set, whose items are pairs of integers.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res example
+```res nocheck
 module IntPair = {
   type t = (int, int)
   let equal = ((x1: int, y1: int), (x2, y2)) => x1 == x2 && y1 == y2
@@ -520,6 +528,25 @@ module SetOfIntPairs = MakeSet(IntPair)
 ```
 
 ```js
+import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
+
+function MakeSet(Item) {
+  let add = (currentSet, newItem) => {
+    if (Stdlib_List.some(currentSet, (x) => Item.equal(x, newItem))) {
+      return currentSet;
+    } else {
+      return {
+        hd: newItem,
+        tl: currentSet,
+      };
+    }
+  };
+  return {
+    empty: /* [] */ 0,
+    add: add,
+  };
+}
+
 function equal(param, param$1) {
   if (param[0] === param$1[0]) {
     return param[1] === param$1[1];
@@ -532,15 +559,28 @@ function create(x, y) {
   return [x, y];
 }
 
-var IntPair = {
+let IntPair = {
   equal: equal,
   create: create,
 };
 
-var SetOfIntPairs = {
+function add(currentSet, newItem) {
+  if (Stdlib_List.some(currentSet, (x) => equal(x, newItem))) {
+    return currentSet;
+  } else {
+    return {
+      hd: newItem,
+      tl: currentSet,
+    };
+  }
+}
+
+let SetOfIntPairs = {
   empty: /* [] */ 0,
   add: add,
 };
+
+export { MakeSet, IntPair, SetOfIntPairs };
 ```
 
 </CodeTab>
@@ -556,7 +596,7 @@ a functor signature, we can hide the underlying data structure!
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res nocheck
 module type Comparable = ...
 
 module type MakeSetType = (Item: Comparable) => {
