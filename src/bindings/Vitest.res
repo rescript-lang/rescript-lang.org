@@ -9,9 +9,6 @@ type mock
 @module("vitest")
 external test: (string, unit => promise<unit>) => unit = "test"
 
-@module("vitest")
-external describe: (string, unit => unit) => unit = "describe"
-
 @module("vitest") @scope("vi")
 external fn: unit => 'a => 'b = "fn"
 
