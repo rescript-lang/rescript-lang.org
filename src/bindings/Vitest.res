@@ -21,11 +21,17 @@ external expect: 'a => expect = "expect"
 @module("vitest/browser") @scope("page")
 external viewport: (int, int) => promise<unit> = "viewport"
 
+@module("vitest/browser") @scope("page")
+external pageGetByTestId: string => element = "getByTestId"
+
 /**
  * vitest-browser-react
  */
 @module("vitest-browser-react")
 external render: Jsx.element => promise<element> = "render"
+
+@send
+external unmount: element => promise<unit> = "unmount"
 
 @module("vitest") @scope("expect")
 external element: 'a => element = "element"

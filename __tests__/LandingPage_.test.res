@@ -18,47 +18,68 @@ let expectedExample = `module Button = {
   }
 }`
 
-let renderSection = async (~width, ~height, ~renderId, ~sectionTestId) => {
+let snapshotSection = async (~width, ~height, ~sectionTestId, ~screenshotName) => {
   await viewport(width, height)
 
   let screen = await render(
     <MemoryRouter initialEntries=["/"]>
-      <div dataTestId=renderId>
-        <LandingPage />
-      </div>
+      <LandingPage />
     </MemoryRouter>,
   )
 
-  let renderRoot = await screen->getByTestId(renderId)
-  let section = await renderRoot->getByTestId(sectionTestId)
-  await element(section)->toBeVisible
-  section
+  let sourceSection = switch document->WebAPI.Document.querySelector(
+    `[data-testid="${sectionTestId}"]`,
+  ) {
+  | Value(section) => section
+  | Null => failwith(`expected to find section ${sectionTestId}`)
+  }
+
+  let body = switch document->WebAPI.Document.querySelector("body") {
+  | Value(body) => body
+  | Null => failwith("expected document body to exist")
+  }
+
+  let sandbox = document->WebAPI.Document.createElement("div")
+  let sandboxTestId = `${sectionTestId}-snapshot`
+  let clonedSection = (sourceSection :> WebAPI.DOMAPI.node)->WebAPI.Node.cloneNode(~deep=true)
+
+  sandbox->WebAPI.Element.setAttribute(~qualifiedName="data-testid", ~value=sandboxTestId)
+  sandbox->WebAPI.Element.setAttribute(
+    ~qualifiedName="style",
+    ~value="position: absolute; left: 0; top: 0; width: 100%; margin: 0;",
+  )
+
+  (sandbox :> WebAPI.DOMAPI.node)->WebAPI.Node.appendChild(clonedSection)->ignore
+  (body :> WebAPI.DOMAPI.node)->WebAPI.Node.appendChild(sandbox)->ignore
+  await screen->unmount
+
+  let snapshotTarget = pageGetByTestId(sandboxTestId)
+  await element(snapshotTarget)->toBeVisible
+  await element(snapshotTarget)->toMatchScreenshot(screenshotName)
+  body->WebAPI.Element.removeChild(sandbox)->ignore
 }
 
 let snapshotResponsive = async (~sectionTestId, ~screenshotBase) => {
-  let desktop = await renderSection(
+  await snapshotSection(
     ~width=1440,
-    ~height=900,
-    ~renderId={`${sectionTestId}-desktop-render`},
+    ~height=1800,
     ~sectionTestId,
+    ~screenshotName={`${screenshotBase}-desktop`},
   )
-  await element(desktop)->toMatchScreenshot(`${screenshotBase}-desktop`)
 
-  let tablet = await renderSection(
+  await snapshotSection(
     ~width=900,
-    ~height=900,
-    ~renderId={`${sectionTestId}-tablet-render`},
+    ~height=1800,
     ~sectionTestId,
+    ~screenshotName={`${screenshotBase}-tablet`},
   )
-  await element(tablet)->toMatchScreenshot(`${screenshotBase}-tablet`)
 
-  let mobile = await renderSection(
+  await snapshotSection(
     ~width=600,
     ~height=1800,
-    ~renderId={`${sectionTestId}-mobile-render`},
     ~sectionTestId,
+    ~screenshotName={`${screenshotBase}-mobile`},
   )
-  await element(mobile)->toMatchScreenshot(`${screenshotBase}-mobile`)
 }
 
 testWithTimeout(
