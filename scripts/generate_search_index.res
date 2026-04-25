@@ -2,10 +2,11 @@
 // Runs as a standalone Node script via: node --env-file-if-exists=.env --env-file-if-exists=.env.local _scripts/generate_search_index.mjs
 //
 // Required env vars:
+//   ALGOLIA_APP_ID       -- Algolia application ID
 //   ALGOLIA_ADMIN_API_KEY -- API key with addObject/deleteObject/editSettings ACLs
 //   ALGOLIA_INDEX_NAME    -- e.g. "rescript-lang-dev" or "rescript-lang"
 //
-// If either is missing, the script logs a warning and exits 0 (graceful skip).
+// If any are missing, the script logs a warning and exits 0 (graceful skip).
 
 let getEnv = (key: string): option<string> =>
   Node.Process.env
@@ -74,9 +75,10 @@ let main = async () => {
   let appId = getEnv("ALGOLIA_APP_ID")
   let adminApiKey = getEnv("ALGOLIA_ADMIN_API_KEY")
   let indexName = getEnv("ALGOLIA_INDEX_NAME")
+  let publisherConfig = AlgoliaConfig.publisherConfigFrom(~appId, ~indexName, ~adminApiKey)
 
-  switch (appId, adminApiKey, indexName) {
-  | (Some(appId), Some(apiKey), Some(idx)) => {
+  switch publisherConfig {
+  | Some({appId, indexName, adminApiKey}) => {
       Console.log("[search-index] Building search index records...")
 
       let apiDir = resolveApiDir()->Option.getOr("markdown-pages/docs/api")
@@ -176,11 +178,11 @@ let main = async () => {
       let jsonRecords = allRecords->Array.map(SearchIndex.toJson)
 
       // 4. Initialize Algolia client and upload
-      let client = Algolia.make(appId, apiKey)
+      let client = Algolia.make(appId, adminApiKey)
 
-      Console.log(`[search-index] Uploading to index "${idx}"...`)
+      Console.log(`[search-index] Uploading to index "${indexName}"...`)
       let _ = await client->Algolia.replaceAllObjects({
-        indexName: idx,
+        indexName,
         objects: jsonRecords,
         batchSize: 1000,
       })
@@ -189,7 +191,7 @@ let main = async () => {
       // 5. Configure index settings
       Console.log("[search-index] Updating index settings...")
       let _ = await client->Algolia.setSettings({
-        indexName: idx,
+        indexName,
         indexSettings: {
           searchableAttributes: [
             "hierarchy.lvl0",
@@ -213,10 +215,10 @@ let main = async () => {
 
       Console.log("[search-index] Done.")
     }
-  | (None, _, _) => Console.log("[search-index] ALGOLIA_APP_ID not set, skipping index upload.")
-  | (_, None, _) =>
-    Console.log("[search-index] ALGOLIA_ADMIN_API_KEY not set, skipping index upload.")
-  | (_, _, None) => Console.log("[search-index] ALGOLIA_INDEX_NAME not set, skipping index upload.")
+  | None =>
+    AlgoliaConfig.missingPublisherVars(~appId, ~indexName, ~adminApiKey)->Array.forEach(name => {
+      Console.log(`[search-index] ${name} not set, skipping index upload.`)
+    })
   }
 }
 

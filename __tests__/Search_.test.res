@@ -424,3 +424,12 @@ describe("isChildHit", () => {
     )
   })
 })
+
+test("renders disabled search copy when Algolia config is missing", async () => {
+  await viewport(1440, 500)
+
+  let screen = await render(<Search />)
+
+  await element(await screen->getByText("Search unavailable"))->toBeVisible
+  await element(await screen->getByLabelText("Search unavailable for this build"))->toBeVisible
+})

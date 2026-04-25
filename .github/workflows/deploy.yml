@@ -46,6 +46,38 @@ jobs:
              echo "SAFE_BRANCH=$SAFE_BRANCH" >> "$GITHUB_ENV"
              echo "VITE_DEPLOYMENT_URL=https://${SAFE_BRANCH}.rescript-lang.pages.dev" >> "$GITHUB_ENV"
           fi
+      - name: Set Algolia env
+        shell: bash
+        env:
+          ALGOLIA_APP_ID: ${{ vars.ALGOLIA_APP_ID }}
+          ALGOLIA_INDEX_BASENAME: ${{ vars.ALGOLIA_INDEX_BASENAME }}
+          ALGOLIA_SEARCH_API_KEY_DEV: ${{ vars.ALGOLIA_SEARCH_API_KEY_DEV }}
+          ALGOLIA_SEARCH_API_KEY_PROD: ${{ vars.ALGOLIA_SEARCH_API_KEY_PROD }}
+          ALGOLIA_ADMIN_API_KEY_DEV: ${{ secrets.ALGOLIA_ADMIN_API_KEY_DEV }}
+          ALGOLIA_ADMIN_API_KEY_PROD: ${{ secrets.ALGOLIA_ADMIN_API_KEY_PROD }}
+        run: |
+          if [[ "${{ github.event_name }}" == "push" && "${{ github.ref_name }}" == "master" ]]; then
+            INDEX_PREFIX="prod"
+            SEARCH_KEY="$ALGOLIA_SEARCH_API_KEY_PROD"
+            ADMIN_KEY="$ALGOLIA_ADMIN_API_KEY_PROD"
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.environment }}" == "production" ]]; then
+            INDEX_PREFIX="prod"
+            SEARCH_KEY="$ALGOLIA_SEARCH_API_KEY_PROD"
+            ADMIN_KEY="$ALGOLIA_ADMIN_API_KEY_PROD"
+          else
+            INDEX_PREFIX="dev"
+            SEARCH_KEY="$ALGOLIA_SEARCH_API_KEY_DEV"
+            ADMIN_KEY="$ALGOLIA_ADMIN_API_KEY_DEV"
+          fi
+
+          INDEX_NAME="${INDEX_PREFIX}_${ALGOLIA_INDEX_BASENAME}"
+
+          echo "VITE_ALGOLIA_APP_ID=$ALGOLIA_APP_ID" >> "$GITHUB_ENV"
+          echo "VITE_ALGOLIA_INDEX_NAME=$INDEX_NAME" >> "$GITHUB_ENV"
+          echo "VITE_ALGOLIA_SEARCH_API_KEY=$SEARCH_KEY" >> "$GITHUB_ENV"
+          echo "ALGOLIA_APP_ID=$ALGOLIA_APP_ID" >> "$GITHUB_ENV"
+          echo "ALGOLIA_INDEX_NAME=$INDEX_NAME" >> "$GITHUB_ENV"
+          echo "ALGOLIA_ADMIN_API_KEY=$ADMIN_KEY" >> "$GITHUB_ENV"
       - name: Build
         run: yarn build
         env:
