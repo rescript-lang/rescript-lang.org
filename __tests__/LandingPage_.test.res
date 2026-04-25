@@ -18,42 +18,45 @@ let expectedExample = `module Button = {
   }
 }`
 
-let renderSection = async (~width, ~height, ~testId, component) => {
+let renderSection = async (~width, ~height, ~renderId, ~sectionTestId) => {
   await viewport(width, height)
 
   let screen = await render(
     <MemoryRouter initialEntries=["/"]>
-      <div dataTestId=testId> component </div>
+      <div dataTestId=renderId>
+        <LandingPage />
+      </div>
     </MemoryRouter>,
   )
 
-  let wrapper = await screen->getByTestId(testId)
-  await element(wrapper)->toBeVisible
-  wrapper
+  let renderRoot = await screen->getByTestId(renderId)
+  let section = await renderRoot->getByTestId(sectionTestId)
+  await element(section)->toBeVisible
+  section
 }
 
-let snapshotResponsive = async (~testId, ~screenshotBase, component) => {
+let snapshotResponsive = async (~sectionTestId, ~screenshotBase) => {
   let desktop = await renderSection(
     ~width=1440,
     ~height=900,
-    ~testId={`${testId}-desktop`},
-    component(),
+    ~renderId={`${sectionTestId}-desktop-render`},
+    ~sectionTestId,
   )
   await element(desktop)->toMatchScreenshot(`${screenshotBase}-desktop`)
 
   let tablet = await renderSection(
     ~width=900,
     ~height=900,
-    ~testId={`${testId}-tablet`},
-    component(),
+    ~renderId={`${sectionTestId}-tablet-render`},
+    ~sectionTestId,
   )
   await element(tablet)->toMatchScreenshot(`${screenshotBase}-tablet`)
 
   let mobile = await renderSection(
     ~width=600,
-    ~height=1200,
-    ~testId={`${testId}-mobile`},
-    component(),
+    ~height=1800,
+    ~renderId={`${sectionTestId}-mobile-render`},
+    ~sectionTestId,
   )
   await element(mobile)->toMatchScreenshot(`${screenshotBase}-mobile`)
 }
@@ -61,11 +64,7 @@ let snapshotResponsive = async (~testId, ~screenshotBase, component) => {
 testWithTimeout(
   "landing intro snapshots",
   async () => {
-    await snapshotResponsive(
-      ~testId="landing-intro-test-wrapper",
-      ~screenshotBase="landing-page-intro",
-      LandingPage.introForTest,
-    )
+    await snapshotResponsive(~sectionTestId="landing-intro", ~screenshotBase="landing-page-intro")
   },
   30000,
 )
@@ -74,9 +73,8 @@ testWithTimeout(
   "landing playground hero snapshots",
   async () => {
     await snapshotResponsive(
-      ~testId="landing-playground-hero-test-wrapper",
+      ~sectionTestId="landing-playground-hero",
       ~screenshotBase="landing-page-playground-hero",
-      LandingPage.playgroundHeroForTest,
     )
   },
   30000,
@@ -86,9 +84,8 @@ testWithTimeout(
   "landing quick install snapshots",
   async () => {
     await snapshotResponsive(
-      ~testId="landing-quick-install-test-wrapper",
+      ~sectionTestId="landing-quick-install",
       ~screenshotBase="landing-page-quick-install",
-      LandingPage.quickInstallForTest,
     )
   },
   30000,
@@ -98,9 +95,8 @@ testWithTimeout(
   "landing other selling points snapshots",
   async () => {
     await snapshotResponsive(
-      ~testId="landing-other-selling-points-test-wrapper",
+      ~sectionTestId="landing-other-selling-points",
       ~screenshotBase="landing-page-other-selling-points",
-      LandingPage.otherSellingPointsForTest,
     )
   },
   30000,
@@ -110,9 +106,8 @@ testWithTimeout(
   "landing trusted by snapshots",
   async () => {
     await snapshotResponsive(
-      ~testId="landing-trusted-by-test-wrapper",
+      ~sectionTestId="landing-trusted-by",
       ~screenshotBase="landing-page-trusted-by",
-      LandingPage.trustedByForTest,
     )
   },
   30000,
@@ -122,9 +117,8 @@ testWithTimeout(
   "landing curated resources snapshots",
   async () => {
     await snapshotResponsive(
-      ~testId="landing-curated-resources-test-wrapper",
+      ~sectionTestId="landing-curated-resources",
       ~screenshotBase="landing-page-curated-resources",
-      LandingPage.curatedResourcesForTest,
     )
   },
   30000,

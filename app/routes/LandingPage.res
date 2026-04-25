@@ -1,7 +1,7 @@
 module Intro = {
   @react.component
   let make = () => {
-    <section className="flex justify-center">
+    <section dataTestId="landing-intro" className="flex justify-center">
       // We only need this font on the homepage, so we load it here instead of globally to save some bandwidth for users who navigate to other pages directly
       <link
         href="https://fonts.googleapis.com/css2?family=Red+Hat+Mono:wght@700&display=swap"
@@ -83,7 +83,7 @@ export {
     let (example, _setExample) = React.useState(_ => examples->Array.getUnsafe(0))
 
     //Playground Section & Background
-    <section className="relative mt-20 bg-gray-10">
+    <section dataTestId="landing-playground-hero" className="relative mt-20 bg-gray-10">
       <div className="relative mx-auto w-full pt-6 pb-8 sm:px-8 md:px-16 max-w-[1400px]">
         // `mx-auto` preserves the removed centering wrapper's max-width behavior for the playground frame.
         // Playground widget
@@ -264,7 +264,7 @@ module QuickInstall = {
 
   @react.component
   let make = () => {
-    <section className="my-32 sm:px-4 sm:flex sm:justify-center">
+    <section dataTestId="landing-quick-install" className="my-32 sm:px-4 sm:flex sm:justify-center">
       <div className="max-w-1060 flex flex-col w-full px-5 md:px-8 lg:px-8 lg:box-content ">
         //---Textblock on the left side---
         // Keep the width clamp on the paragraph itself now that the wrapper is gone.
@@ -442,6 +442,7 @@ module OtherSellingPoints = {
   @react.component
   let make = () => {
     <section
+      dataTestId="landing-other-selling-points"
       className="flex justify-center w-full bg-gray-90 border-t border-gray-80
             px-4 sm:px-8 lg:px-16 pt-24 pb-20 "
     >
@@ -514,7 +515,7 @@ module OtherSellingPoints = {
 module TrustedBy = {
   @react.component
   let make = () => {
-    <section className="mt-20 flex flex-col items-center">
+    <section dataTestId="landing-trusted-by" className="mt-20 flex flex-col items-center">
       <h3 className="hl-1 text-gray-80 text-center max-w-576 mx-auto">
         {React.string("Trusted by our users")}
       </h3>
@@ -612,7 +613,7 @@ module CuratedResources = {
 
   @react.component
   let make = () => {
-    <section className="bg-gray-100 w-full pb-40 pt-20 ">
+    <section dataTestId="landing-curated-resources" className="bg-gray-100 w-full pb-40 pt-20 ">
       //headline container
       <div
         className="mb-10 max-w-1280 flex flex-col justify-center items-center mx-5 md:mx-8 lg:mx-auto"
@@ -678,13 +679,6 @@ module CuratedResources = {
     </section>
   }
 }
-
-@warning("-32") let introForTest = () => <Intro />
-@warning("-32") let playgroundHeroForTest = () => <PlaygroundHero />
-@warning("-32") let quickInstallForTest = () => <QuickInstall />
-@warning("-32") let otherSellingPointsForTest = () => <OtherSellingPoints />
-@warning("-32") let trustedByForTest = () => <TrustedBy />
-@warning("-32") let curatedResourcesForTest = () => <CuratedResources />
 
 @react.component
 let make = (~components=MarkdownComponents.default) => {
