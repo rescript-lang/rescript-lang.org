@@ -108,9 +108,6 @@
     "vitest-browser-react": "^2.2.0",
     "wrangler": "^4.85.0"
   },
-  "resolutions": {
-    "marked": "4.0.10"
-  },
   "engines": {
     "node": ">=22"
   }

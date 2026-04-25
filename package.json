@@ -14,10 +14,8 @@
     "build:generate-llms": "yarn workspace @rescript-lang/docs build:generate-llms",
     "build:res": "yarn workspace @rescript-lang/docs build:res",
     "build:sync-bundles": "yarn workspace @rescript-lang/docs build:sync-bundles",
-    "build:search-index": "yarn workspace @rescript-lang/docs build:search-index",
     "build:update-index": "yarn workspace @rescript-lang/docs build:update-index",
     "build:vite": "yarn workspace @rescript-lang/docs build:vite",
-    "check:algolia-public-env": "yarn workspace @rescript-lang/docs check:algolia-public-env",
     "build": "yarn workspace @rescript-lang/docs build",
     "ci:format": "oxfmt --check",
     "ci:test": "yarn workspace @rescript-lang/docs ci:test",
@@ -42,6 +40,9 @@
     "lefthook": "^2.1.4",
     "oxfmt": "^0.46.0",
     "rescript": "^12.2.0"
+  },
+  "resolutions": {
+    "marked": "4.0.10"
   },
   "engines": {
     "node": ">=22"

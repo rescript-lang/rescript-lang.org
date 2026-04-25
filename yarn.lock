@@ -7325,12 +7325,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"marked@npm:^0.3.14":
-  version: 0.3.19
-  resolution: "marked@npm:0.3.19"
+"marked@npm:4.0.10":
+  version: 4.0.10
+  resolution: "marked@npm:4.0.10"
   bin:
-    marked: ./bin/marked
-  checksum: 10c0/ee5e268716de56a7543c245268d72e5eb1a66f67022e0392cab9744b3b38768d1db289c173679ff696cdbf1bcd82ff10520cae2296f3293989e07a17f9218705
+    marked: bin/marked.js
+  checksum: 10c0/137660cd1eca54cfcdcec9d9c7dea786fc57ba3663da9043b721aff4c1419fc869d21bc38f6d5907062b82d4ef354f4fcac6605cac5f4f9dc1595a743b856d91
   languageName: node
   linkType: hard
 
