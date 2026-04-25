@@ -2,10 +2,12 @@ SHELL = /bin/bash
 
 node_modules/.bin/rescript:
 	yarn install
+	yarn build:scripts
 	yarn build:update-index
 
 build: node_modules/.bin/rescript
 	yarn build:res
+	yarn build:scripts
 	yarn build:update-index
 
 dev: build
