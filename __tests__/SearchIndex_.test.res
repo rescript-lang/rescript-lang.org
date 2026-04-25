@@ -411,6 +411,46 @@ test("weightToJson serializes zero values correctly", async () => {
 })
 
 // ---------------------------------------------------------------------------
+// withBaseUrl
+// ---------------------------------------------------------------------------
+
+test("withBaseUrl prepends the site URL to relative record URLs", async () => {
+  let record: SearchIndex.record = {
+    objectID: "docs/manual/introduction",
+    url: "/docs/manual/introduction#what-is-rescript",
+    url_without_anchor: "/docs/manual/introduction",
+    anchor: Some("what-is-rescript"),
+    content: Some("Intro"),
+    type_: "lvl2",
+    hierarchy: SearchIndex.makeHierarchy(~lvl0="Docs", ~lvl1="Introduction", ()),
+    weight: {pageRank: 5, level: 80, position: 1},
+  }
+
+  let result = SearchIndex.withBaseUrl(record, ~siteUrl="https://rescript-lang.org")
+
+  expect(result.url)->toBe("https://rescript-lang.org/docs/manual/introduction#what-is-rescript")
+  expect(result.url_without_anchor)->toBe("https://rescript-lang.org/docs/manual/introduction")
+})
+
+test("withBaseUrl avoids double slashes when the site URL ends with /", async () => {
+  let record: SearchIndex.record = {
+    objectID: "docs/manual/api",
+    url: "/docs/manual/api",
+    url_without_anchor: "/docs/manual/api",
+    anchor: None,
+    content: None,
+    type_: "lvl1",
+    hierarchy: SearchIndex.makeHierarchy(~lvl0="Docs", ~lvl1="API", ()),
+    weight: {pageRank: 5, level: 100, position: 0},
+  }
+
+  let result = SearchIndex.withBaseUrl(record, ~siteUrl="https://rescript-lang.org/")
+
+  expect(result.url)->toBe("https://rescript-lang.org/docs/manual/api")
+  expect(result.url_without_anchor)->toBe("https://rescript-lang.org/docs/manual/api")
+})
+
+// ---------------------------------------------------------------------------
 // toJson
 // ---------------------------------------------------------------------------
 

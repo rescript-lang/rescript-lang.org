@@ -3,9 +3,32 @@ type state = Active | Inactive
 let unavailableText = "Search unavailable"
 let unavailableLabel = "Search unavailable for this build"
 
-let navigator: DocSearch.navigator = {
+let toRelativeSiteUrl = (url: string, ~siteUrl: string): string => {
+  let normalizedSiteUrl = siteUrl->String.replaceRegExp(RegExp.fromString("/+$", ~flags=""), "")
+  if String.startsWith(url, normalizedSiteUrl) {
+    let relativePath = String.slice(url, ~start=String.length(normalizedSiteUrl))
+    if relativePath === "" {
+      "/"
+    } else if String.startsWith(relativePath, "/") {
+      relativePath
+    } else {
+      "/" ++ relativePath
+    }
+  } else {
+    url
+  }
+}
+
+let normalizeHitUrls = (items: array<DocSearch.docSearchHit>, ~siteUrl: string) =>
+  items->Array.map(hit => {
+    let url = toRelativeSiteUrl(hit.url, ~siteUrl)
+    let url_without_anchor = toRelativeSiteUrl(hit.url_without_anchor, ~siteUrl)
+    {...hit, url, url_without_anchor}
+  })
+
+let navigator = (~siteUrl: string): DocSearch.navigator => {
   navigate: ({itemUrl}) => {
-    ReactRouter.navigate(itemUrl)
+    ReactRouter.navigate(toRelativeSiteUrl(itemUrl, ~siteUrl))
   },
 }
 
@@ -181,7 +204,8 @@ let make = () => {
               apiKey=searchApiKey
               appId
               indexName
-              navigator
+              navigator={navigator(~siteUrl=Env.root_url)}
+              transformItems={items => normalizeHitUrls(items, ~siteUrl=Env.root_url)}
               hitComponent
               onClose
               initialScrollY={window.scrollY->Float.toInt}

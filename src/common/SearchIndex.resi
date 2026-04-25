@@ -62,6 +62,8 @@ let hierarchyToJson: hierarchy => JSON.t
 
 let weightToJson: weight => JSON.t
 
+let withBaseUrl: (record, ~siteUrl: string) => record
+
 let buildMarkdownRecords: (
   ~category: string,
   ~basePath: string,

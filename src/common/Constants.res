@@ -46,14 +46,12 @@ let dropdownLabelNext = "--- Next ---"
 let dropdownLabelReleased = "--- Released ---"
 
 // Used for the DocsOverview and collapsible navigation
-let languageManual = version => {
-  [
-    ("Overview", `/docs/manual/${version}/introduction`),
-    ("Language Features", `/docs/manual/${version}/overview`),
-    ("JS Interop", `/docs/manual/${version}/embed-raw-javascript`),
-    ("Build System", `/docs/manual/${version}/build-overview`),
-  ]
-}
+let languageManual = [
+  ("Overview", "/docs/manual/introduction"),
+  ("Language Features", "/docs/manual/overview"),
+  ("JS Interop", "/docs/manual/embed-raw-javascript"),
+  ("Build System", "/docs/manual/build-overview"),
+]
 
 let tools = [("Syntax Lookup", "/syntax-lookup")]
 

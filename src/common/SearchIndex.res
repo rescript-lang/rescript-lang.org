@@ -491,6 +491,23 @@ let weightToJson = (w: weight): JSON.t => {
   JSON.Object(dict)
 }
 
+let withBaseUrl = (record: record, ~siteUrl: string): record => {
+  let normalizedSiteUrl = siteUrl->String.replaceRegExp(RegExp.fromString("/+$", ~flags=""), "")
+  let absolutize = (url: string) =>
+    if RegExp.test(RegExp.fromString("^https?://", ~flags=""), url) {
+      url
+    } else {
+      let normalizedPath = String.startsWith(url, "/") ? url : "/" ++ url
+      normalizedSiteUrl ++ normalizedPath
+    }
+
+  {
+    ...record,
+    url: absolutize(record.url),
+    url_without_anchor: absolutize(record.url_without_anchor),
+  }
+}
+
 let toJson = (r: record): JSON.t => {
   let dict = Dict.make()
   dict->Dict.set("objectID", JSON.String(r.objectID))

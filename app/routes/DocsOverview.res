@@ -16,17 +16,12 @@ module Card = {
 
 @react.component
 let default = (~showVersionSelect=true) => {
-  let {pathname} = ReactRouter.useLocation()
-  let url = (pathname :> string)->Url.parse
-
-  let version = url->Url.getVersionString
-
-  let languageManual = Constants.languageManual(version)
+  let languageManual = Constants.languageManual
 
   let ecosystem = [
     ("Package Index", "/packages"),
     ("rescript-react", "/docs/react/introduction"),
-    ("GenType", `/docs/manual/${version}/typescript-integration`),
+    ("GenType", "/docs/manual/typescript-integration"),
     ("Reanalyze", "https://github.com/rescript-lang/reanalyze"),
   ]
 

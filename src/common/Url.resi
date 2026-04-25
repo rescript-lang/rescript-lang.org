@@ -1,13 +1,6 @@
-type version =
-  | Latest
-  | Next
-  | NoVersion
-  | Version(string)
-
 type t = {
   fullpath: array<string>,
   base: array<string>,
-  version: version,
   pagepath: array<string>,
 }
 
@@ -28,8 +21,6 @@ type storageKey =
   | @as("playground_version") Playground
 
 let getVersionFromStorage: storageKey => option<string>
-
-let getVersionString: t => string
 
 let normalizePath: string => string
 

@@ -71,6 +71,9 @@ let resolveApiDir = (): option<string> => {
   }
 }
 
+let resolveSiteUrl = (): string =>
+  getEnv("VITE_DEPLOYMENT_URL")->Option.getOr("https://rescript-lang.org")
+
 let main = async () => {
   let appId = getEnv("ALGOLIA_APP_ID")
   let adminApiKey = getEnv("ALGOLIA_ADMIN_API_KEY")
@@ -82,6 +85,7 @@ let main = async () => {
       Console.log("[search-index] Building search index records...")
 
       let apiDir = resolveApiDir()->Option.getOr("markdown-pages/docs/api")
+      let siteUrl = resolveSiteUrl()
 
       // 1. Build records from all content sources
       let manualRecords = SearchIndex.buildMarkdownRecords(
@@ -175,7 +179,10 @@ let main = async () => {
       Console.log(`[search-index] Total: ${Int.toString(totalCount)} records`)
 
       // 3. Convert to JSON for Algolia
-      let jsonRecords = allRecords->Array.map(SearchIndex.toJson)
+      let jsonRecords =
+        allRecords
+        ->Array.map(record => SearchIndex.withBaseUrl(record, ~siteUrl))
+        ->Array.map(SearchIndex.toJson)
 
       // 4. Initialize Algolia client and upload
       let client = Algolia.make(appId, adminApiKey)

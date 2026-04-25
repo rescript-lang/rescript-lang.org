@@ -234,6 +234,30 @@ test("isChildHit treats Lvl1 with an empty URL as not a child hit", async () => 
   expect(Search.isChildHit(makeHit(~type_=Lvl1, ~url="")))->toBe(false)
 })
 
+test("toRelativeSiteUrl strips the site origin from an absolute URL", async () => {
+  let result = Search.toRelativeSiteUrl(
+    "https://rescript-lang.org/docs/manual/introduction#what-is-rescript",
+    ~siteUrl="https://rescript-lang.org/",
+  )
+
+  expect(result)->toBe("/docs/manual/introduction#what-is-rescript")
+})
+
+test("normalizeHitUrls rewrites absolute site URLs to relative paths", async () => {
+  let hit = makeHit(
+    ~type_=Lvl1,
+    ~url="https://rescript-lang.org/docs/manual/typescript-integration#gentype",
+  )
+  let result = Search.normalizeHitUrls([hit], ~siteUrl="https://rescript-lang.org/")
+
+  expect(result[0]->Option.map(hit => hit.url))->toEqual(
+    Some("/docs/manual/typescript-integration#gentype"),
+  )
+  expect(result[0]->Option.map(hit => hit.url_without_anchor))->toEqual(
+    Some("/docs/manual/typescript-integration#gentype"),
+  )
+})
+
 test("renders disabled search copy when Algolia config is missing", async () => {
   await viewport(1440, 500)
 
