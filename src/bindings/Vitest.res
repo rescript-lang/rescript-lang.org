@@ -21,9 +21,6 @@ external expect: 'a => expect = "expect"
 @module("vitest/browser") @scope("page")
 external viewport: (int, int) => promise<unit> = "viewport"
 
-@module("vitest/browser") @scope("page")
-external pageGetByTestId: string => element = "getByTestId"
-
 /**
  * vitest-browser-react
  */
