@@ -42,6 +42,7 @@ let loader = async () => {
     None
   }
 }
+
 module ClientOnly = {
   @react.component
   let make = (~bundleBaseUrl, ~versions) => {

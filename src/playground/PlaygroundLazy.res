@@ -1,1 +1,1 @@
-let make = Playground.make
+let make = React.lazy_(() => import(Playground.make))
