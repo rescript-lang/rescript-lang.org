@@ -183,3 +183,97 @@ test(
     expect(decodedCode->Option.getOrThrow)->toBe(expectedExample)
   },
 )
+
+test("landing page playground hero renders highlighted code tokens", async () => {
+  let screen = await render(
+    <MemoryRouter initialEntries=["/"]>
+      <LandingPage />
+    </MemoryRouter>,
+  )
+
+  let _ = await screen->getByText("Write in ReScript")
+
+  let codeBlock = switch document->WebAPI.Document.querySelector(
+    "[data-testid='landing-playground-hero'] code",
+  ) {
+  | Value(codeBlock) => codeBlock
+  | Null => failwith("expected landing playground hero to render a highlighted code block")
+  }
+
+  let highlightedToken = switch document->WebAPI.Document.querySelector(
+    "[data-testid='landing-playground-hero'] code span",
+  ) {
+  | Value(highlightedToken) => highlightedToken
+  | Null => failwith("expected landing playground hero to render highlighted code token spans")
+  }
+
+  let codeColor =
+    getComputedStyle(~elt=codeBlock)->WebAPI.CSSStyleDeclaration.getPropertyValue("color")
+  let highlightedTokenColor =
+    getComputedStyle(~elt=highlightedToken)->WebAPI.CSSStyleDeclaration.getPropertyValue("color")
+
+  expect(codeColor === highlightedTokenColor)->toBe(false)
+})
+
+test(
+  "landing page playground hero keeps highlight styling in the sandboxed snapshot copy",
+  async () => {
+    await viewport(1440, 1800)
+
+    let screen = await render(
+      <MemoryRouter initialEntries=["/"]>
+        <LandingPage />
+      </MemoryRouter>,
+    )
+
+    let sourceSection = switch document->WebAPI.Document.querySelector(
+      "[data-testid='landing-playground-hero']",
+    ) {
+    | Value(section) => section
+    | Null => failwith("expected to find the landing playground hero section")
+    }
+
+    let body = switch document->WebAPI.Document.querySelector("body") {
+    | Value(body) => body
+    | Null => failwith("expected document body to exist")
+    }
+
+    let sandbox = document->WebAPI.Document.createElement("div")
+    let sandboxTestId = "landing-playground-hero-sandbox"
+    let clonedSection = (sourceSection :> WebAPI.DOMAPI.node)->WebAPI.Node.cloneNode(~deep=true)
+
+    sandbox->WebAPI.Element.setAttribute(~qualifiedName="data-testid", ~value=sandboxTestId)
+    sandbox->WebAPI.Element.setAttribute(
+      ~qualifiedName="style",
+      ~value="position: absolute; left: 0; top: 0; width: 100%; margin: 0;",
+    )
+
+    (sandbox :> WebAPI.DOMAPI.node)->WebAPI.Node.appendChild(clonedSection)->ignore
+    (body :> WebAPI.DOMAPI.node)->WebAPI.Node.appendChild(sandbox)->ignore
+    await screen->unmount
+
+    let codeBlock = switch document->WebAPI.Document.querySelector(
+      "[data-testid='landing-playground-hero-sandbox'] code",
+    ) {
+    | Value(codeBlock) => codeBlock
+    | Null =>
+      failwith("expected sandboxed landing playground hero to render a highlighted code block")
+    }
+
+    let highlightedToken = switch document->WebAPI.Document.querySelector(
+      "[data-testid='landing-playground-hero-sandbox'] code span",
+    ) {
+    | Value(highlightedToken) => highlightedToken
+    | Null =>
+      failwith("expected sandboxed landing playground hero to render highlighted code token spans")
+    }
+
+    let codeColor =
+      getComputedStyle(~elt=codeBlock)->WebAPI.CSSStyleDeclaration.getPropertyValue("color")
+    let highlightedTokenColor =
+      getComputedStyle(~elt=highlightedToken)->WebAPI.CSSStyleDeclaration.getPropertyValue("color")
+
+    expect(codeColor === highlightedTokenColor)->toBe(false)
+    body->WebAPI.Element.removeChild(sandbox)->ignore
+  },
+)
