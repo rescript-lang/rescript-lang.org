@@ -523,6 +523,8 @@ module OtherSellingPoints = {
 module TrustedBy = {
   @react.component
   let make = () => {
+    let ourUsersSourcePath = "apps/docs/src/common/OurUsers.res"
+
     <section className="mt-20 flex flex-col items-center">
       <h3 className="hl-1 text-gray-80 text-center max-w-576 mx-auto">
         {React.string("Trusted by our users")}
@@ -545,7 +547,7 @@ module TrustedBy = {
         ->React.array}
       </div>
       <a
-        href="https://github.com/rescript-lang/rescript-lang.org/blob/master/src/common/OurUsers.res"
+        href={`https://github.com/rescript-lang/rescript-lang.org/blob/master/${ourUsersSourcePath}`}
       >
         <Button> {React.string("Add Your Logo")} </Button>
       </a>

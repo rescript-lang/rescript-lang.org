@@ -1,5 +1,5 @@
 {
-  "name": "rescript-lang.org",
+  "name": "@rescript-lang/docs",
   "namespace": false,
   "jsx": {
     "preserve": true,
