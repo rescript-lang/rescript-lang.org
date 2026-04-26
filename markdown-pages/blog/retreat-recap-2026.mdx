@@ -1,0 +1,238 @@
+---
+author: rescript-association
+date: "2026-04-26"
+previewImg: /blog/retreat-recap-2026-group-01.avif
+articleImg: /blog/retreat-recap-2026-group-01.avif
+title: ReScript Retreat 2026 Recap
+description: |
+  Thirteen ReScript contributors met in Vienna to work on the compiler, build system, standard library, AI-assisted coding, and the wider ecosystem.
+---
+
+The ReScript Retreat 2026 has concluded.
+This year, thirteen developers from around the world came together in Vienna to work on the ReScript compiler and ecosystem.
+For three full days we worked from a large office close to the city center, focusing on the language, tooling, standard library, documentation, and the developer experience around AI-assisted coding.
+
+As with previous retreats, the goal was simple: give contributors uninterrupted time together.
+ReScript is still built by people spread across different countries, companies, and time zones.
+Meeting in person helps us unblock long-running issues, compare ideas quickly, and turn plans into working pull requests while everyone has the same context.
+
+## Kickoff
+
+On the first day, we started by discussing the current state of the ReScript compiler and ecosystem.
+Before diving into working groups, Robin Ricard from [Jane Street](https://www.janestreet.com/) joined us for a presentation and a technical exchange.
+We had very good discussions about JavaScript compilation challenges, and Robin showed us some of the tools he is building at Jane Street.
+He also presented [OxCaml](https://oxcaml.org/) and showcased the Bonsai web framework.
+
+<Image
+  src="/blog/retreat-recap-2026-jane-street-talk.avif"
+  caption="Robin Ricard from Jane Street presenting at the ReScript Retreat"
+  withShadow={true}
+/>
+
+Those conversations were a useful reminder that, while ReScript has diverged significantly from the OCaml ecosystem over the years, we still share several goals: strong static typing, predictable compilation, and tooling that can support large codebases and agentic development workflows.
+
+## Working Groups
+
+After the kickoff, we identified blockers and improvements that would have the highest impact for ReScript users.
+We then split into three working groups.
+
+<figure className="my-8 md:-mx-16">
+  <div className="grid gap-4 md:grid-cols-3">
+    <img
+      className="h-full w-full rounded-md object-cover shadow-md"
+      src="/blog/retreat-recap-2026-work-01.avif"
+      alt="ReScript contributors working together during the retreat"
+    />
+    <img
+      className="h-full w-full rounded-md object-cover shadow-md"
+      src="/blog/retreat-recap-2026-work-02.avif"
+      alt="ReScript contributors discussing implementation details at a table"
+    />
+    <img
+      className="h-full w-full rounded-md object-cover shadow-md"
+      src="/blog/retreat-recap-2026-work-03.avif"
+      alt="ReScript contributors collaborating in the retreat office"
+    />
+  </div>
+  <figcaption className="mt-4 text-14 text-gray-60 md:ml-16">
+    Contributors split into focused groups to work on the compiler, build
+    system, Web API bindings, and AI-assisted coding.
+  </figcaption>
+</figure>
+
+### Web API Bindings
+
+One group focused on the experimental ReScript Web API bindings.
+Compile times had become longer than we wanted, and the package had grown broad enough that splitting it up made sense.
+The group worked on moving the bindings into multiple focused packages, such as DOM, Fetch, and Storage, under a dedicated npm organization.
+
+This should make the packages easier to maintain, faster to compile, and more practical to adopt incrementally.
+
+### Build System
+
+Another group returned to the build system.
+There was a long-standing issue where the build system locked its build state while a watcher was running.
+That meant a second build, for example one triggered by an AI agent or another parallel tool, could fail because the lock file prevented it from proceeding.
+
+We prioritized this over several other build-system improvements because it directly affects modern development workflows.
+The group also worked on performance improvements and better terminal output.
+
+### AI-Assisted Coding
+
+A third group explored how ReScript can become better suited for AI-assisted coding.
+One idea was an "AI mode": a strict linter that can run as a separate phase after regular compilation and type checking.
+The goal is to catch patterns that are technically valid but undesirable in generated or agent-edited code, and to give agents tighter feedback loops when working inside a ReScript project.
+
+We also worked on documentation and project generation improvements, since high-quality examples and predictable project structure are especially important when tools need to understand a codebase quickly.
+
+## Talks
+
+On the second day, several contributors presented work they had prepared before the retreat.
+The talks covered both concrete ecosystem projects and larger compiler or language experiments:
+
+- Dmitry Zakharov: ReScript & Sury
+- Gabriel Nordeborn: ResX - PHP meets JSX and type safety
+- Jaap Frolich: Rewriting the ReScript compiler in Rust / comptime evaluation
+- Woonki Moon: ReScript Comptime PoC
+- Paul Tsnobiladzé: ReScript-Shadcn
+- Bernardo Gurgel: Signals all the way down
+
+We also live-streamed the talks on YouTube.
+You can watch the recording here: https://www.youtube.com/watch?v=f7rQBpQpxnA.
+
+After the talks, we continued with the working groups and wrapped up that work on the third day.
+
+## Results
+
+By the end of the retreat, a number of features and improvements had been implemented.
+The compiler work from the retreat is now available in `13.0.0-alpha.4`.
+Some smaller changes, especially build-system improvements, are likely to be backported to ReScript `12.3.0` as well.
+
+### Compiler
+
+- Added support for `for...of` and `for await...of` loops.
+- Added `break` and `continue` for use in loops.
+- Added dictionary spread support.
+
+### Standard Library
+
+- Fixed iterator and iterable type definitions.
+- Added generator type definitions.
+- Added `Dict.assignMany`.
+- Added `Dict.concat`.
+- Added `Dict.concatMany`.
+- Added `Dict.concatAll`.
+- Added `Array.concatAll`.
+
+### Build System
+
+- Added a `--prod` flag to the build, watch, and clean commands. This skips dev dependencies and dev sources, enabling builds in environments where dev packages are not installed.
+- Added feature-gated source directories, so packages can include optional slices of their source tree at build time.
+- Solved the long-standing issue where rebuilds were blocked while watchers were already running.
+- Improved watch output and added a `--clear-screen` option.
+- Preserved warnings across atomic-save full rebuilds and incremental watch builds.
+- Restored backward compatibility for `bsconfig.json`.
+- Replaced the wave-based compile scheduler with a work-stealing DAG dispatcher ordered by critical-path priority.
+
+### Ecosystem
+
+- Split the Web API bindings into multiple packages, including DOM, Fetch, and Storage, and moved them into a dedicated npm organization.
+- Released `rescript-react-signals`, a specialized package for using `rescript-signals` together with React.
+
+## Discussions
+
+Naturally, a lot of retreat time was also spent discussing how ReScript should move forward.
+Some topics are not ready to become language features yet, but the in-person format helped us clarify tradeoffs and narrow down possible directions.
+
+We had a long discussion about early returns.
+The feature is tricky because it sits directly between readability, expression-oriented control flow, and practical ergonomics in longer functions.
+Some contributors prefer something closer to Rust, while others prefer a more functional style closer to Haskell.
+No final decision was made, but the discussion clarified what any proposal would need to address.
+
+We also discussed generator functions.
+There is clear value in being able to bind to JavaScript generators well, but it is still unclear whether ReScript needs full generator syntax beyond interop support.
+
+Another recurring topic was a bindings management platform.
+The work around `rescript-shadcn`, presented by Paul Tsnobiladzé, is already a step in that direction.
+We are still exploring prototypes for a larger repository and CLI-based workflow for finding and fetching bindings.
+
+Other topics under active discussion include:
+
+- Some form of comptime evaluation.
+- Early returns or related control-flow ergonomics.
+- Syntax for generator functions.
+- A bindings repository with a CLI fetcher.
+
+## What's Next
+
+We are aiming to release ReScript 13 in late summer.
+The current goals include removing legacy namespaces such as `Js` and `Dom`, with Web API functionality moving toward the newer package structure.
+We also want ReScript 13 to include dedicated linting support for AI-assisted coding.
+
+Other candidates include immutable arrays and additional record ergonomics, such as record rest destructuring.
+In the meantime, we expect some of the smaller retreat results, mostly build-system fixes and polish, to make their way into a ReScript `12.3.0` release.
+As always, the exact release contents will depend on implementation progress, review, and migration risk.
+
+## Sponsors
+
+<Image
+  externalLink="https://www.janestreet.com"
+  src="/partners/jane-street.svg"
+  size="small"
+  className="[&_img]:rounded-md [&_img]:bg-white [&_img]:p-6"
+  caption="Thanks to Jane Street for sponsoring the retreat"
+/>
+
+We want to thank [Jane Street](https://www.janestreet.com/) for sponsoring the retreat and helping make another event possible next year.
+We appreciated the technical exchange with Robin Ricard and the chance to compare notes with people working on related ML-family tooling.
+
+<Image
+  externalLink="https://www.cca.io"
+  src="/lp/cca-io-color.svg"
+  size="small"
+  className="[&_img]:rounded-md [&_img]:bg-white [&_img]:p-6"
+  caption="Thanks to Control Center Apps for their continued support"
+/>
+
+[Control Center Apps](https://www.cca.io/) returned as a sponsor this year as well.
+Thank you for your continued support of the ReScript project.
+
+<Image
+  externalLink="https://www.ketryx.com"
+  src="/partners/ketryx.svg"
+  size="small"
+  className="[&_img]:rounded-md [&_img]:bg-white [&_img]:p-6"
+  caption="Thanks to Ketryx for providing this year's venue"
+/>
+
+We also want to thank [Ketryx](https://www.ketryx.com/) for providing this year's venue.
+The office is close to the center of Vienna, and the modern equipment, including height-adjustable desks, was very appreciated throughout the retreat.
+
+Finally, thanks to OpenAI for the generous "Codex for OSS" sponsorship.
+This was the first retreat where every developer had at least three months of access, and it contributed directly to the productivity of the working groups.
+
+## Acknowledgements
+
+Thank you to all attendees.
+This accelerated way of developing a programming language would not be possible without contributors willing to travel, discuss difficult tradeoffs, review each other's work, and spend several focused days improving ReScript together.
+
+The attendees were very happy with the outcome.
+We felt productive, the working groups made concrete progress, and several longer-running topics are now much closer to being ready for users.
+
+<figure className="my-8 md:-mx-16">
+  <div className="grid gap-4 md:grid-cols-2">
+    <img
+      className="h-full w-full rounded-md object-cover shadow-md"
+      src="/blog/retreat-recap-2026-group-01.avif"
+      alt="The ReScript team at the 2026 retreat in Vienna"
+    />
+    <img
+      className="h-full w-full rounded-md object-cover shadow-md"
+      src="/blog/retreat-recap-2026-group-02.avif"
+      alt="The ReScript team celebrating at the 2026 retreat in Vienna"
+    />
+  </div>
+  <figcaption className="mt-4 text-14 text-gray-60 md:ml-16">
+    The ReScript team at the 2026 retreat in Vienna.
+  </figcaption>
+</figure>
