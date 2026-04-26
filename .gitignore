@@ -38,7 +38,7 @@ apps/docs/scripts/generate_*.jsx
 # Generated via generate-llms script
 apps/docs/public/llms/manual/**/llm*.txt
 apps/docs/public/llms/react/**/llm*.txt
-apps/docs/pages/docs/**/**/llms.mdx
+apps/docs/markdown-pages/docs/**/**/llms.mdx
 
 apps/docs/public/playground-bundles/
 !apps/docs/public/_redirects
