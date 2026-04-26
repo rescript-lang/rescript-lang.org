@@ -66,7 +66,9 @@ One group focused on the experimental ReScript Web API bindings.
 Compile times had become longer than we wanted, and the package had grown broad enough that splitting it up made sense.
 The group worked on moving the bindings into multiple focused packages, such as DOM, Fetch, and Storage, under a dedicated npm organization.
 
-This should make the packages easier to maintain, faster to compile, and more practical to adopt incrementally.
+This work pairs with feature-gated source directories in the build system, which let large libraries expose optional parts of their source tree only when needed.
+For broad packages like Web API bindings, this is important: users should not pay compile-time costs for browser APIs they never import.
+Together, these changes should make the packages easier to maintain, faster to compile, and more practical to adopt incrementally.
 
 ### Build System
 
@@ -90,12 +92,21 @@ We also worked on documentation and project generation improvements, since high-
 On the second day, several contributors presented work they had prepared before the retreat.
 The talks covered both concrete ecosystem projects and larger compiler or language experiments:
 
-- Dmitry Zakharov: ReScript & Sury
-- Gabriel Nordeborn: ResX - PHP meets JSX and type safety
-- Jaap Frolich: Rewriting the ReScript compiler in Rust / comptime evaluation
-- Woonki Moon: ReScript Comptime PoC
-- Paul Tsnobiladzé: ReScript-Shadcn
-- Bernardo Gurgel: Signals all the way down
+- Dmitry Zakharov: ReScript & Sury.
+- Gabriel Nordeborn: ResX, PHP meets JSX and type safety.
+- Jaap Frolich: Rewriting the compiler in Rust and comptime evaluation.
+- Woonki Moon: ReScript Comptime PoC, a lighter metaprogramming alternative to PPX.
+  - [Design doc](https://github.com/mununki/rescript/blob/poc-comptime/docs/comptime_design.md)
+  - [Examples](https://github.com/mununki/rescript-comptime-poc)
+  - [Slides](https://rescript-comptime-ppt.pages.dev/)
+- Paul Tsnobiladzé: ReScript-Shadcn, shadcn for ReScript and rescript-react.
+  - [Slides](https://tsnobip.github.io/rescript-shadcn-presentation)
+  - [Demo source](https://github.com/tsnobip/rescript-shadcn-presentation/)
+- Bernardo Gurgel: Signals All The Way Down, reactive UIs with Xote and ReScript Signals.
+  - [Xote](https://xote.dev/)
+  - [ReScript Signals](https://brnrdog.github.io/rescript-signals/)
+  - [Demo](https://brnrdog.github.io/reslides)
+  - [Repositories](https://github.com/brnrdog/xote), [rescript-signals](https://github.com/brnrdog/rescript-signals), [reslides](https://github.com/brnrdog/reslides)
 
 We also live-streamed the talks on YouTube.
 
@@ -109,7 +120,7 @@ After the talks, we continued with the working groups and wrapped up that work o
 ## Results
 
 By the end of the retreat, a number of features and improvements had been implemented.
-The compiler work from the retreat is now available in `13.0.0-alpha.4`.
+The compiler work from the retreat is now available in [`13.0.0-alpha.4`](https://github.com/rescript-lang/rescript/releases/tag/v13.0.0-alpha.4).
 Some smaller changes, especially build-system improvements, are likely to be backported to ReScript `12.3.0` as well.
 
 ### Compiler
@@ -117,6 +128,56 @@ Some smaller changes, especially build-system improvements, are likely to be bac
 - Added support for `for...of` and `for await...of` loops.
 - Added `break` and `continue` for use in loops.
 - Added dictionary spread support.
+
+For example, arrays and other iterable values can now be consumed directly:
+
+```res
+let arr = [1, 2, 3]
+let count = ref(0)
+
+for _ of arr {
+  count := count.contents + 1
+}
+```
+
+Async iterables work with `for await...of` as well:
+
+```res
+let consume = async iterable => {
+  for await item of iterable {
+    let result = await Promise.resolve(item + 1)
+    Console.log(result)
+  }
+}
+```
+
+Loops can now use `break` and `continue`:
+
+```res
+for i in 0 to 10 {
+  switch i {
+  | 3 => continue
+  | 8 => break
+  | _ => work()
+  }
+}
+```
+
+Dictionary literals also support spreads:
+
+```res
+let foo = dict{
+  "a": 1,
+  "b": 2,
+}
+
+let baz = dict{
+  "b": 4,
+  "c": 5,
+}
+
+let result = dict{...foo, "b": 3, ...baz, "d": 6}
+```
 
 ### Standard Library
 
@@ -131,7 +192,7 @@ Some smaller changes, especially build-system improvements, are likely to be bac
 ### Build System
 
 - Added a `--prod` flag to the build, watch, and clean commands. This skips dev dependencies and dev sources, enabling builds in environments where dev packages are not installed.
-- Added feature-gated source directories, so packages can include optional slices of their source tree at build time.
+- Added feature-gated source directories, so packages can include optional slices of their source tree at build time and large libraries can avoid compiling unused areas by default.
 - Solved the long-standing issue where rebuilds were blocked while watchers were already running.
 - Improved watch output and added a `--clear-screen` option.
 - Preserved warnings across atomic-save full rebuilds and incremental watch builds.
@@ -212,7 +273,7 @@ Thank you for your continued support of the ReScript project.
 We also want to thank [Ketryx](https://www.ketryx.com/) for providing this year's venue.
 The office is close to the center of Vienna, and the modern equipment, including height-adjustable desks, was very appreciated throughout the retreat.
 
-Finally, thanks to OpenAI for the generous "Codex for OSS" sponsorship.
+Finally, thanks to [OpenAI](https://openai.com/) for the generous "Codex for OSS" sponsorship.
 This was the first retreat where every developer had at least three months of access, and it contributed directly to the productivity of the working groups.
 
 ## Acknowledgements
