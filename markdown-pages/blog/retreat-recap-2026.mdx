@@ -188,7 +188,7 @@ The compiler work from the retreat is now available in [`13.0.0-alpha.4`](https:
 - Improved watch output and added a `--clear-screen` option.
 - Preserved warnings across atomic-save full rebuilds and incremental watch builds.
 - Restored backward compatibility for `bsconfig.json`.
-- Replaced the wave-based compile scheduler with a work-stealing DAG dispatcher ordered by critical-path priority.
+- Improved build scheduling so larger projects can rebuild more efficiently.
 
 ### Ecosystem
 
@@ -202,7 +202,6 @@ Some topics are not ready to become language features yet, but the in-person for
 
 We had a long discussion about early returns.
 The feature is tricky because it sits directly between readability, expression-oriented control flow, and practical ergonomics in longer functions.
-Some contributors prefer something closer to Rust, while others prefer a more functional style closer to Haskell.
 No final decision was made, but the discussion clarified what any proposal would need to address.
 
 We also discussed generator functions.
