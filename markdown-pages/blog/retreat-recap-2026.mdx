@@ -121,63 +121,54 @@ After the talks, we continued with the working groups and wrapped up that work o
 
 By the end of the retreat, a number of features and improvements had been implemented.
 The compiler work from the retreat is now available in [`13.0.0-alpha.4`](https://github.com/rescript-lang/rescript/releases/tag/v13.0.0-alpha.4).
-Some smaller changes, especially build-system improvements, are likely to be backported to ReScript `12.3.0` as well.
 
 ### Compiler
 
 - Added support for `for...of` and `for await...of` loops.
+
+  ```res
+  let arr = [1, 2, 3]
+  let count = ref(0)
+
+  for _ of arr {
+    count := count.contents + 1
+  }
+
+  let consume = async iterable => {
+    for await item of iterable {
+      let result = await Promise.resolve(item + 1)
+      Console.log(result)
+    }
+  }
+  ```
+
 - Added `break` and `continue` for use in loops.
+
+  ```res
+  for i in 0 to 10 {
+    switch i {
+    | 3 => continue
+    | 8 => break
+    | _ => work()
+    }
+  }
+  ```
+
 - Added dictionary spread support.
 
-For example, arrays and other iterable values can now be consumed directly:
-
-```res
-let arr = [1, 2, 3]
-let count = ref(0)
-
-for _ of arr {
-  count := count.contents + 1
-}
-```
-
-Async iterables work with `for await...of` as well:
-
-```res
-let consume = async iterable => {
-  for await item of iterable {
-    let result = await Promise.resolve(item + 1)
-    Console.log(result)
+  ```res
+  let foo = dict{
+    "a": 1,
+    "b": 2,
   }
-}
-```
 
-Loops can now use `break` and `continue`:
-
-```res
-for i in 0 to 10 {
-  switch i {
-  | 3 => continue
-  | 8 => break
-  | _ => work()
+  let baz = dict{
+    "b": 4,
+    "c": 5,
   }
-}
-```
 
-Dictionary literals also support spreads:
-
-```res
-let foo = dict{
-  "a": 1,
-  "b": 2,
-}
-
-let baz = dict{
-  "b": 4,
-  "c": 5,
-}
-
-let result = dict{...foo, "b": 3, ...baz, "d": 6}
-```
+  let result = dict{...foo, "b": 3, ...baz, "d": 6}
+  ```
 
 ### Standard Library
 
@@ -221,13 +212,6 @@ Another recurring topic was a bindings management platform.
 The work around `rescript-shadcn`, presented by Paul Tsnobiladzé, is already a step in that direction.
 We are still exploring prototypes for a larger repository and CLI-based workflow for finding and fetching bindings.
 
-Other topics under active discussion include:
-
-- Some form of comptime evaluation.
-- Early returns or related control-flow ergonomics.
-- Syntax for generator functions.
-- A bindings repository with a CLI fetcher.
-
 ## What's Next
 
 We are aiming to release ReScript 13 in late summer.
@@ -245,7 +229,7 @@ As always, the exact release contents will depend on implementation progress, re
   src="/partners/jane-street.svg"
   size="small"
   className="[&_img]:w-1/2 [&_img]:rounded-md [&_img]:bg-white [&_img]:p-6"
-  caption="Thanks to Jane Street for sponsoring the retreat"
+  caption="Retreat sponsor"
 />
 
 We want to thank [Jane Street](https://www.janestreet.com/) for sponsoring the retreat and helping make another event possible next year.
@@ -256,7 +240,7 @@ We appreciated the technical exchange with Robin Ricard and the chance to compar
   src="/lp/cca-io-color.svg"
   size="small"
   className="[&_img]:rounded-md [&_img]:bg-white [&_img]:p-6"
-  caption="Thanks to Control Center Apps for their continued support"
+  caption="Long-term project sponsor"
 />
 
 [Control Center Apps](https://www.cca.io/) returned as a sponsor this year as well.
@@ -267,7 +251,7 @@ Thank you for your continued support of the ReScript project.
   src="/partners/ketryx.svg"
   size="small"
   className="[&_img]:w-1/2 [&_img]:rounded-md [&_img]:bg-white [&_img]:p-6"
-  caption="Thanks to Ketryx for providing this year's venue"
+  caption="Venue sponsor"
 />
 
 We also want to thank [Ketryx](https://www.ketryx.com/) for providing this year's venue.
