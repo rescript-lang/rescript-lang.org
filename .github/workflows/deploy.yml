@@ -61,6 +61,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: apps/docs
           command: pages deploy out --project-name=rescript-lang-org --branch=${{ env.SAFE_BRANCH }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           wranglerVersion: 4.63.0
@@ -101,5 +102,6 @@ jobs:
         uses: cypress-io/github-action@v7
         with:
           install: false
+          working-directory: apps/docs
           browser: chrome
           config: baseUrl=${{ needs.deploy.outputs.deployment-url }}
