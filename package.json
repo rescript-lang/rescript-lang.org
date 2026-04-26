@@ -25,7 +25,7 @@
     "dev:vite": "yarn workspace @rescript-lang/docs dev:vite",
     "dev:wrangler": "yarn workspace @rescript-lang/docs dev:wrangler",
     "dev": "yarn workspace @rescript-lang/docs dev",
-    "format": "oxfmt && yarn workspace @rescript-lang/docs format",
+    "format": "yarn workspace @rescript-lang/docs format",
     "prepare": "yarn workspace @rescript-lang/docs prepare",
     "preview": "yarn workspace @rescript-lang/docs preview",
     "reanalyze": "yarn workspace @rescript-lang/docs reanalyze",
