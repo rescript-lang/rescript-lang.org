@@ -22,7 +22,11 @@ let toRelativeSiteUrl = (url: string, ~siteUrl: string): string => {
 let normalizeHitUrls = (items: array<DocSearch.docSearchHit>, ~siteUrl: string) =>
   items->Array.map(hit => {
     let url = toRelativeSiteUrl(hit.url, ~siteUrl)
-    let url_without_anchor = toRelativeSiteUrl(hit.url_without_anchor, ~siteUrl)
+    let urlWithoutAnchor =
+      hit.url_without_anchor
+      ->Nullable.toOption
+      ->Option.getOr(hit.url->String.split("#")->Array.get(0)->Option.getOr(hit.url))
+    let url_without_anchor = toRelativeSiteUrl(urlWithoutAnchor, ~siteUrl)->Nullable.make
     {...hit, url, url_without_anchor}
   })
 

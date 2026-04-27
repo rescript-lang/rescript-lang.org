@@ -23,7 +23,7 @@ type docSearchHit = {
   objectID: string,
   content: Nullable.t<string>,
   url: string,
-  url_without_anchor: string,
+  url_without_anchor: Nullable.t<string>,
   @as("type") type_: contentType,
   anchor: Nullable.t<string>,
   hierarchy: hierarchy,

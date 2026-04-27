@@ -8,7 +8,7 @@ let makeHit = (~type_: DocSearch.contentType, ~url: string): DocSearch.docSearch
   objectID: "test",
   content: Nullable.null,
   url,
-  url_without_anchor: url,
+  url_without_anchor: Nullable.make(url),
   type_,
   anchor: Nullable.null,
   hierarchy: {
@@ -262,8 +262,28 @@ test("normalizeHitUrls rewrites absolute site URLs to relative paths", async () 
   expect(result[0]->Option.map(hit => hit.url))->toEqual(
     Some("/docs/manual/typescript-integration#gentype"),
   )
-  expect(result[0]->Option.map(hit => hit.url_without_anchor))->toEqual(
+  expect(result[0]->Option.flatMap(hit => hit.url_without_anchor->Nullable.toOption))->toEqual(
     Some("/docs/manual/typescript-integration#gentype"),
+  )
+})
+
+test("normalizeHitUrls tolerates crawler hits without url_without_anchor", async () => {
+  let hit: DocSearch.docSearchHit = Obj.magic(
+    Dict.fromArray([
+      ("objectID", "crawler-hit"),
+      ("content", "map(array, fn) returns a new array."),
+      ("url", "https://rescript-lang.org/docs/manual/api/stdlib/array/#value-map"),
+      ("type", "content"),
+    ]),
+  )
+
+  let result = Search.normalizeHitUrls([hit], ~siteUrl="https://rescript-lang.org/")
+
+  expect(result[0]->Option.map(hit => hit.url))->toEqual(
+    Some("/docs/manual/api/stdlib/array/#value-map"),
+  )
+  expect(result[0]->Option.flatMap(hit => hit.url_without_anchor->Nullable.toOption))->toEqual(
+    Some("/docs/manual/api/stdlib/array/"),
   )
 })
 
