@@ -19,6 +19,26 @@ type hierarchy = {
   lvl6: Nullable.t<string>,
 }
 
+type highlightedValue = {value: string}
+
+type highlightedHierarchy = {
+  lvl0: Nullable.t<highlightedValue>,
+  lvl1: Nullable.t<highlightedValue>,
+  lvl2: Nullable.t<highlightedValue>,
+  lvl3: Nullable.t<highlightedValue>,
+  lvl4: Nullable.t<highlightedValue>,
+  lvl5: Nullable.t<highlightedValue>,
+  lvl6: Nullable.t<highlightedValue>,
+}
+
+type highlightResult = {
+  hierarchy: Nullable.t<highlightedHierarchy>,
+}
+
+type snippetResult = {
+  content: Nullable.t<highlightedValue>,
+}
+
 type docSearchHit = {
   objectID: string,
   content: Nullable.t<string>,
@@ -30,8 +50,8 @@ type docSearchHit = {
   // Additional field for deprecation information
   deprecated: option<string>,
   // NOTE: docsearch need these two fields to highlight results
-  _highlightResult: {.},
-  _snippetResult: {.},
+  _highlightResult: highlightResult,
+  _snippetResult: snippetResult,
 }
 type transformItems = array<docSearchHit>
 

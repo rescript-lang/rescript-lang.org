@@ -36,22 +36,6 @@ let navigator = (~siteUrl: string): DocSearch.navigator => {
   },
 }
 
-let getHighlightedTitle: DocSearch.docSearchHit => string = %raw(`
-  function(hit) {
-    var type = hit.type;
-    var h = hit._highlightResult && hit._highlightResult.hierarchy;
-    var raw = hit.hierarchy;
-    try {
-      if (type && type !== 'lvl1' && type !== 'lvl0') {
-        var lvl = h && h[type] && h[type].value;
-        if (lvl) return lvl;
-      }
-      if (h && h.lvl1 && h.lvl1.value) return h.lvl1.value;
-    } catch(e) {}
-    return (raw && raw.lvl1) || '';
-  }
-`)
-
 let getSubtitle: DocSearch.docSearchHit => option<string> = %raw(`
   function(hit) {
     var type = hit.type;
@@ -62,6 +46,120 @@ let getSubtitle: DocSearch.docSearchHit => option<string> = %raw(`
     return undefined;
   }
 `)
+
+let highlightedValue = (value: Nullable.t<DocSearch.highlightedValue>): option<string> =>
+  value->Nullable.toOption->Option.map(value => value.value)
+
+let highlightedValueWithMarkup = (value: Nullable.t<DocSearch.highlightedValue>): option<string> =>
+  switch highlightedValue(value) {
+  | Some(value) if value->String.includes("<mark>") => Some(value)
+  | _ => None
+  }
+
+let highlightedHierarchyValue = (
+  hierarchy: DocSearch.highlightedHierarchy,
+  type_: DocSearch.contentType,
+): option<string> =>
+  switch type_ {
+  | Lvl0 => hierarchy.lvl0->highlightedValue
+  | Lvl1 => hierarchy.lvl1->highlightedValue
+  | Lvl2 => hierarchy.lvl2->highlightedValue
+  | Lvl3 => hierarchy.lvl3->highlightedValue
+  | Lvl4 => hierarchy.lvl4->highlightedValue
+  | Lvl5 => hierarchy.lvl5->highlightedValue
+  | Lvl6 => hierarchy.lvl6->highlightedValue
+  | Content => None
+  }
+
+let highlightedHierarchyValueWithMarkup = (
+  hierarchy: DocSearch.highlightedHierarchy,
+  type_: DocSearch.contentType,
+): option<string> =>
+  switch type_ {
+  | Lvl0 => hierarchy.lvl0->highlightedValueWithMarkup
+  | Lvl1 => hierarchy.lvl1->highlightedValueWithMarkup
+  | Lvl2 => hierarchy.lvl2->highlightedValueWithMarkup
+  | Lvl3 => hierarchy.lvl3->highlightedValueWithMarkup
+  | Lvl4 => hierarchy.lvl4->highlightedValueWithMarkup
+  | Lvl5 => hierarchy.lvl5->highlightedValueWithMarkup
+  | Lvl6 => hierarchy.lvl6->highlightedValueWithMarkup
+  | Content => None
+  }
+
+let firstMarkedText = (html: string): option<string> => {
+  switch RegExp.exec(/<mark>([^<]+)<\/mark>/, html) {
+  | Some(result) =>
+    let matches = RegExp.Result.matches(result)
+    switch matches[0] {
+    | Some(Some(markedText)) => Some(markedText)
+    | _ => None
+    }
+  | None => None
+  }
+}
+
+let markTitlePrefix = (title: string, markedText: string): string => {
+  let markedLength = String.length(markedText)
+  if (
+    markedLength > 0 && title->String.toLowerCase->String.startsWith(markedText->String.toLowerCase)
+  ) {
+    let prefix = String.slice(title, ~start=0, ~end=markedLength)
+    let suffix = String.slice(title, ~start=markedLength)
+    `<mark>${prefix}</mark>${suffix}`
+  } else {
+    title
+  }
+}
+
+let getSnippetContent = (hit: DocSearch.docSearchHit): option<string> =>
+  hit._snippetResult.content->highlightedValue
+
+let getApiTitle = (hit: DocSearch.docSearchHit): option<string> => {
+  if hit.url->String.includes("/docs/manual/api/") {
+    switch (hit.hierarchy.lvl0->Nullable.toOption, hit.hierarchy.lvl1->Nullable.toOption) {
+    | (Some(moduleName), Some(valueName)) if moduleName !== "" && valueName !== "" =>
+      let title = `${moduleName}.${valueName}`
+      switch hit->getSnippetContent->Option.flatMap(firstMarkedText) {
+      | Some(markedText) => Some(markTitlePrefix(title, markedText))
+      | None => Some(title)
+      }
+    | _ => None
+    }
+  } else {
+    None
+  }
+}
+
+let getHighlightedTitle = (hit: DocSearch.docSearchHit): string => {
+  let highlightedHierarchy = hit._highlightResult.hierarchy->Nullable.toOption
+  let highlightedTitleWithMarkup = highlightedHierarchy->Option.flatMap(hierarchy =>
+    switch hit.type_ {
+    | Lvl0 | Lvl1 => None
+    | _ => highlightedHierarchyValueWithMarkup(hierarchy, hit.type_)
+    }
+  )
+
+  switch highlightedTitleWithMarkup {
+  | Some(title) => title
+  | None =>
+    switch highlightedHierarchy->Option.flatMap(hierarchy =>
+      hierarchy.lvl1->highlightedValueWithMarkup
+    ) {
+    | Some(title) => title
+    | None =>
+      switch getApiTitle(hit) {
+      | Some(title) => title
+      | None =>
+        switch highlightedHierarchy->Option.flatMap(hierarchy =>
+          highlightedHierarchyValue(hierarchy, hit.type_)
+        ) {
+        | Some(title) => title
+        | None => hit.hierarchy.lvl1->Nullable.toOption->Option.getOr("")
+        }
+      }
+    }
+  }
+}
 
 let markdownToHtml = (text: string): string =>
   text
@@ -90,10 +188,16 @@ let isChildHit = (hit: DocSearch.docSearchHit) =>
   | Lvl0 | Lvl1 => hit.url->String.includes("#")
   }
 
+let getContentHtml = (hit: DocSearch.docSearchHit): option<string> =>
+  switch getSnippetContent(hit) {
+  | Some(content) => Some(content->markdownToHtml)
+  | None => hit.content->Nullable.toOption->Option.map(markdownToHtml)
+  }
+
 let hitComponent = ({hit, children: _}: DocSearch.hitComponent): React.element => {
   let titleHtml = getHighlightedTitle(hit)
   let subtitle = getSubtitle(hit)
-  let contentHtml = hit.content->Nullable.toOption->Option.map(markdownToHtml)
+  let contentHtml = getContentHtml(hit)
   let isChild = isChildHit(hit)
 
   <a href={hit.url}>

@@ -4,6 +4,8 @@ open Vitest
 // Helper
 // ---------------------------------------------------------------------------
 
+let highlightedValue = (value: string): DocSearch.highlightedValue => {value: value}
+
 let makeHit = (~type_: DocSearch.contentType, ~url: string): DocSearch.docSearchHit => {
   objectID: "test",
   content: Nullable.null,
@@ -21,8 +23,8 @@ let makeHit = (~type_: DocSearch.contentType, ~url: string): DocSearch.docSearch
     lvl6: Nullable.null,
   },
   deprecated: None,
-  _highlightResult: Obj.magic(Dict.make()),
-  _snippetResult: Obj.magic(Dict.make()),
+  _highlightResult: {hierarchy: Nullable.null},
+  _snippetResult: {content: Nullable.null},
 }
 
 // ---------------------------------------------------------------------------
@@ -159,6 +161,64 @@ test(
     expect(Search.markdownToHtml("`**notbold**`"))->toBe("<code><strong>notbold</strong></code>")
   },
 )
+
+test("getHighlightedTitle rebuilds crawler API titles and preserves marked prefixes", async () => {
+  let hit = {
+    ...makeHit(
+      ~type_=Content,
+      ~url="https://rescript-lang.org/docs/manual/api/stdlib/array/#value-mapWithIndex",
+    ),
+    hierarchy: {
+      lvl0: Nullable.make("Array"),
+      lvl1: Nullable.make("mapWithIndex"),
+      lvl2: Nullable.null,
+      lvl3: Nullable.null,
+      lvl4: Nullable.null,
+      lvl5: Nullable.null,
+      lvl6: Nullable.null,
+    },
+    _snippetResult: {
+      content: Nullable.make(highlightedValue("See <mark>Array.map</mark> on MDN.")),
+    },
+  }
+
+  expect(Search.getHighlightedTitle(hit))->toBe("<mark>Array.map</mark>WithIndex")
+})
+
+test(
+  "getHighlightedTitle prefers real hierarchy highlights when Algolia returns them",
+  async () => {
+    let highlightedHierarchy: DocSearch.highlightedHierarchy = {
+      lvl0: Nullable.null,
+      lvl1: Nullable.null,
+      lvl2: Nullable.make(highlightedValue("<mark>Section</mark> title")),
+      lvl3: Nullable.null,
+      lvl4: Nullable.null,
+      lvl5: Nullable.null,
+      lvl6: Nullable.null,
+    }
+    let hit = {
+      ...makeHit(~type_=Lvl2, ~url="https://rescript-lang.org/docs/manual/page#section"),
+      _highlightResult: {hierarchy: Nullable.make(highlightedHierarchy)},
+    }
+
+    expect(Search.getHighlightedTitle(hit))->toBe("<mark>Section</mark> title")
+  },
+)
+
+test("getContentHtml prefers crawler snippet markup over plain content", async () => {
+  let hit = {
+    ...makeHit(~type_=Content, ~url="https://rescript-lang.org/docs/manual/api/stdlib/array/"),
+    content: Nullable.make("map(array, fn) returns a new array."),
+    _snippetResult: {
+      content: Nullable.make(highlightedValue("map(array, fn) returns a new <mark>array</mark>.")),
+    },
+  }
+
+  expect(Search.getContentHtml(hit))->toEqual(
+    Some("map(array, fn) returns a new <mark>array</mark>."),
+  )
+})
 
 // ---------------------------------------------------------------------------
 // isChildHit
