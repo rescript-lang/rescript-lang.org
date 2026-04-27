@@ -33,6 +33,40 @@ yarn dev
 
 `yarn dev` prepares generated assets, starts the ReScript watcher, runs the React Router/Vite dev server, and serves the built client through Wrangler Pages.
 
+## Search and DocSearch
+
+Search is powered by Algolia DocSearch. The DocSearch crawler owns indexing and index settings; site builds and deployments do not upload records, replace indexes, or use an Algolia admin/write key.
+
+The frontend only needs public DocSearch runtime variables:
+
+```sh
+VITE_ALGOLIA_APP_ID="..."
+VITE_ALGOLIA_INDEX_NAME="..."
+VITE_ALGOLIA_SEARCH_API_KEY="..."
+```
+
+DocSearch crawl quality comes from the generated HTML. Searchable page bodies use `DocSearch-content`, each crawlable section provides a hidden `DocSearch-lvl0` marker such as `Manual`, `API`, `React`, `Syntax Lookup`, `Community`, or `Blog`, and headings own unique `id` attributes for section links.
+
+The crawler configuration should use selectors shaped like this:
+
+```js
+recordProps: {
+  lvl0: {
+    selectors: ".DocSearch-lvl0",
+    defaultValue: "Documentation",
+  },
+  lvl1: [".DocSearch-content h1", "main h1", "h1", "head > title"],
+  lvl2: [".DocSearch-content h2", "main h2", "h2"],
+  lvl3: [".DocSearch-content h3", "main h3", "h3"],
+  lvl4: [".DocSearch-content h4", "main h4", "h4"],
+  lvl5: [".DocSearch-content h5", "main h5", "h5"],
+  lvl6: [".DocSearch-content h6", "main h6", "h6"],
+  content: [".DocSearch-content p, .DocSearch-content li"],
+}
+```
+
+Production crawler start URLs, sitemap settings, ranking, and crawler schedules live in the Algolia dashboard.
+
 ## Project Structure Overview
 
 - `app/`: React Router app shell, layouts, route definitions, and route modules

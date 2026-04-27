@@ -116,7 +116,6 @@ module Anchor = {
         title=?title
         className="scroll-mt-30 invisible text-gray-60 opacity-50 hover:opacity-100 hover:text-gray-60 hover:cursor-pointer group-hover:visible"
         href={"#" ++ id}
-        id={id}
       >
         <Icon.Hyperlink className="inline-block align-middle text-gray-40" />
       </a>
@@ -127,7 +126,8 @@ module Anchor = {
 
 module H1 = {
   @react.component
-  let make = (~children) => <h1 className="hl-1 mb-6 scroll-mt-0"> children </h1>
+  let make = (~id=?, ~title=?, ~children) =>
+    <h1 ?id ?title className="hl-1 mb-6 scroll-mt-0"> children </h1>
 }
 
 module H2 = {

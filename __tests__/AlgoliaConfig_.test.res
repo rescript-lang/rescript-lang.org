@@ -25,13 +25,3 @@ test("publicConfigFrom reports missing public vars in declaration order", async 
 
   expect(result)->toEqual(["VITE_ALGOLIA_APP_ID", "VITE_ALGOLIA_SEARCH_API_KEY"])
 })
-
-test("publisherConfigFrom reports missing publisher vars in declaration order", async () => {
-  let result = AlgoliaConfig.missingPublisherVars(
-    ~appId=Some("app_123"),
-    ~indexName=None,
-    ~adminApiKey=None,
-  )
-
-  expect(result)->toEqual(["ALGOLIA_INDEX_NAME", "ALGOLIA_ADMIN_API_KEY"])
-})

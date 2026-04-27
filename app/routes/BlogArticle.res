@@ -142,7 +142,10 @@ let make = (props: props) => {
       <div className="flex justify-center">
         <div className="max-w-740 w-full">
           archivedNote
-          <div className="markdown-body"> children </div>
+          <article className="DocSearch-content markdown-body">
+            <span className="DocSearch-lvl0 sr-only" ariaHidden=true> {React.string("Blog")} </span>
+            children
+          </article>
           <div className="mt-12">
             <Line />
             <div className="pt-20 flex flex-col items-center">

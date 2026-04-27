@@ -25,3 +25,9 @@ let getVersionFromStorage: storageKey => option<string>
 let normalizePath: string => string
 
 let normalizeAnchor: string => string
+
+type anchorIdState
+
+let makeAnchorIdState: unit => anchorIdState
+
+let makeUniqueAnchorId: (~state: anchorIdState, ~title: string) => string

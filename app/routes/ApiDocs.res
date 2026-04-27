@@ -288,7 +288,7 @@ let make = (props: props) => {
       })
 
       <>
-        <H1> {name->React.string} </H1>
+        <H1 id={id->Url.normalizeAnchor}> {name->React.string} </H1>
         <DocstringsStylize docstrings slugPrefix=id />
         {valuesAndType->React.array}
       </>
@@ -333,7 +333,7 @@ let make = (props: props) => {
     }
   }
 
-  <SidebarLayout theme=#Reason sidebar rightSidebar> children </SidebarLayout>
+  <SidebarLayout theme=#Reason sidebar rightSidebar docSearchLvl0="API"> children </SidebarLayout>
 }
 
 module Data = {

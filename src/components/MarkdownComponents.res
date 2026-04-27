@@ -27,7 +27,7 @@ type t = {
   /* Common markdown elements */
   p?: P.props<React.element> => React.element,
   li?: Li.props<React.element> => React.element,
-  h1?: H1.props<React.element> => React.element,
+  h1?: H1.props<string, string, React.element> => React.element,
   h2?: H2.props<string, React.element, string> => React.element,
   h3?: H3.props<string, React.element, string> => React.element,
   h4?: H4.props<string, React.element, string> => React.element,

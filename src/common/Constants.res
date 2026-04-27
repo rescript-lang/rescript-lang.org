@@ -19,6 +19,11 @@ let versions = {
 
 let latestVersion = (versions.latest, versions.latest->Semver.tryGetMajorString)
 
+let docSearchVersionTokens = {
+  let (_, majorVersion) = latestVersion
+  [majorVersion, "latest"]
+}
+
 // This is used for the version dropdown in the manual layouts
 let allManualVersions = [
   latestVersion,

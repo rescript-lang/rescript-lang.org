@@ -5,7 +5,7 @@ let unavailableLabel = "Search unavailable for this build"
 
 let toRelativeSiteUrl = (url: string, ~siteUrl: string): string => {
   let normalizedSiteUrl = siteUrl->String.replaceRegExp(RegExp.fromString("/+$", ~flags=""), "")
-  if String.startsWith(url, normalizedSiteUrl) {
+  if normalizedSiteUrl !== "" && String.startsWith(url, normalizedSiteUrl) {
     let relativePath = String.slice(url, ~start=String.length(normalizedSiteUrl))
     if relativePath === "" {
       "/"

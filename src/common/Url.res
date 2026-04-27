@@ -53,3 +53,15 @@ let normalizeAnchor = string => {
   ->String.replaceAllRegExp(/[^a-zA-Z0-9-]/g, "")
   ->String.toLocaleLowerCase
 }
+
+type anchorIdState = Dict.t<int>
+
+let makeAnchorIdState = () => Dict.make()
+
+let makeUniqueAnchorId = (~state, ~title) => {
+  let baseId = title->normalizeAnchor
+  let count = state->Dict.get(baseId)->Option.getOr(0)
+  state->Dict.set(baseId, count + 1)
+
+  count === 0 ? baseId : `${baseId}-${count->Int.toString}`
+}

@@ -243,6 +243,15 @@ test("toRelativeSiteUrl strips the site origin from an absolute URL", async () =
   expect(result)->toBe("/docs/manual/introduction#what-is-rescript")
 })
 
+test("toRelativeSiteUrl leaves absolute URLs unchanged when siteUrl is empty", async () => {
+  let result = Search.toRelativeSiteUrl(
+    "https://rescript-lang.org/docs/manual/introduction#what-is-rescript",
+    ~siteUrl="",
+  )
+
+  expect(result)->toBe("https://rescript-lang.org/docs/manual/introduction#what-is-rescript")
+})
+
 test("normalizeHitUrls rewrites absolute site URLs to relative paths", async () => {
   let hit = makeHit(
     ~type_=Lvl1,

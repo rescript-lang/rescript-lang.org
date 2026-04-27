@@ -21,6 +21,34 @@ test("renders headings h1 through h5", async () => {
   await element(wrapper)->toMatchScreenshot("markdown-headings")
 })
 
+test("h1 keeps the generated markdown id for DocSearch", async () => {
+  await viewport(1440, 900)
+
+  let _screen = await render(
+    <div>
+      <Markdown.H1 id="heading-level-1"> {React.string("Heading Level 1")} </Markdown.H1>
+    </div>,
+  )
+
+  switch document->WebAPI.Document.querySelector("h1#heading-level-1") {
+  | Value(_) => ()
+  | Null => failwith("expected markdown h1 to keep the generated id")
+  }
+})
+
+test("heading anchor links do not duplicate heading ids", async () => {
+  await viewport(1440, 900)
+
+  let _screen = await render(
+    <div>
+      <Markdown.H2 id="duplicate-check"> {React.string("Duplicate Check")} </Markdown.H2>
+    </div>,
+  )
+
+  let matches = document->WebAPI.Document.querySelectorAll("[id='duplicate-check']")
+  expect(matches.length)->toBe(1)
+})
+
 test("renders paragraph, strong, and intro", async () => {
   await viewport(1440, 900)
 
