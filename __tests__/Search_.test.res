@@ -220,6 +220,36 @@ test("getContentHtml prefers crawler snippet markup over plain content", async (
   )
 })
 
+test(
+  "getContentHtml falls back to plain content when crawler hit has no snippet result",
+  async () => {
+    let hit: DocSearch.docSearchHit = Obj.magic(
+      Dict.fromArray([
+        ("objectID", "crawler-hit"),
+        ("content", "map(array, fn) returns a new array."),
+        ("url", "https://rescript-lang.org/docs/manual/api/stdlib/array/#value-map"),
+        ("type", "content"),
+        (
+          "hierarchy",
+          Obj.magic(
+            Dict.fromArray([
+              ("lvl0", Obj.magic("Array")),
+              ("lvl1", Obj.magic("map")),
+              ("lvl2", Obj.magic(Nullable.null)),
+              ("lvl3", Obj.magic(Nullable.null)),
+              ("lvl4", Obj.magic(Nullable.null)),
+              ("lvl5", Obj.magic(Nullable.null)),
+              ("lvl6", Obj.magic(Nullable.null)),
+            ]),
+          ),
+        ),
+      ]),
+    )
+
+    expect(Search.getContentHtml(hit))->toEqual(Some("map(array, fn) returns a new array."))
+  },
+)
+
 // ---------------------------------------------------------------------------
 // isChildHit
 // ---------------------------------------------------------------------------

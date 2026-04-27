@@ -112,7 +112,10 @@ let markTitlePrefix = (title: string, markedText: string): string => {
 }
 
 let getSnippetContent = (hit: DocSearch.docSearchHit): option<string> =>
-  hit._snippetResult.content->highlightedValue
+  switch hit._snippetResult {
+  | Some(snippetResult) => snippetResult.content->highlightedValue
+  | None => None
+  }
 
 let getApiTitle = (hit: DocSearch.docSearchHit): option<string> => {
   if hit.url->String.includes("/docs/manual/api/") {
@@ -131,7 +134,10 @@ let getApiTitle = (hit: DocSearch.docSearchHit): option<string> => {
 }
 
 let getHighlightedTitle = (hit: DocSearch.docSearchHit): string => {
-  let highlightedHierarchy = hit._highlightResult.hierarchy->Nullable.toOption
+  let highlightedHierarchy =
+    hit._highlightResult->Option.flatMap(highlightResult =>
+      highlightResult.hierarchy->Nullable.toOption
+    )
   let highlightedTitleWithMarkup = highlightedHierarchy->Option.flatMap(hierarchy =>
     switch hit.type_ {
     | Lvl0 | Lvl1 => None

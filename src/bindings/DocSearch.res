@@ -50,8 +50,8 @@ type docSearchHit = {
   // Additional field for deprecation information
   deprecated: option<string>,
   // NOTE: docsearch need these two fields to highlight results
-  _highlightResult: highlightResult,
-  _snippetResult: snippetResult,
+  _highlightResult?: highlightResult,
+  _snippetResult?: snippetResult,
 }
 type transformItems = array<docSearchHit>
 
