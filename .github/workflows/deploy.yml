@@ -20,8 +20,6 @@ jobs:
       contents: read
       deployments: write
       pull-requests: write
-    outputs:
-      deployment-url: ${{ steps.deploy.outputs.deployment-url }}
     steps:
       - uses: actions/checkout@v6.0.2
       - name: Setup Node.js environment
@@ -100,9 +98,22 @@ jobs:
         run: yarn install
       - name: Build ReScript
         run: yarn build:res
+      - name: Set Cypress base URL
+        shell: bash
+        run: |
+          RAW_BRANCH="${{ github.head_ref || github.ref_name }}"
+
+          if [[ "$RAW_BRANCH" == "master" ]]; then
+             echo "CYPRESS_BASE_URL=https://rescript-lang.org" >> "$GITHUB_ENV"
+          else
+             SAFE_BRANCH="${RAW_BRANCH//\//-}"
+
+             SAFE_BRANCH=$(echo "$SAFE_BRANCH" | tr '[:upper:]' '[:lower:]')
+
+             echo "CYPRESS_BASE_URL=https://${SAFE_BRANCH}.rescript-lang.pages.dev" >> "$GITHUB_ENV"
+          fi
       - name: Cypress E2E tests
         uses: cypress-io/github-action@v7
         with:
           install: false
-          browser: chrome
-          config: baseUrl=${{ needs.deploy.outputs.deployment-url }}
+          command: yarn cypress run --browser chrome --config baseUrl="$CYPRESS_BASE_URL"
