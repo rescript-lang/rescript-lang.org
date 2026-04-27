@@ -53,22 +53,32 @@ jobs:
       - name: Set Algolia env
         shell: bash
         env:
-          ALGOLIA_APP_ID: ${{ vars.ALGOLIA_APP_ID }}
-          ALGOLIA_INDEX_BASENAME: ${{ vars.ALGOLIA_INDEX_BASENAME }}
-          ALGOLIA_SEARCH_API_KEY_DEV: ${{ vars.ALGOLIA_SEARCH_API_KEY_DEV }}
-          ALGOLIA_SEARCH_API_KEY_PROD: ${{ vars.ALGOLIA_SEARCH_API_KEY_PROD }}
+          VITE_ALGOLIA_APP_ID: ${{ vars.VITE_ALGOLIA_APP_ID || secrets.VITE_ALGOLIA_APP_ID }}
+          VITE_ALGOLIA_INDEX_NAME: ${{ vars.VITE_ALGOLIA_INDEX_NAME || secrets.VITE_ALGOLIA_INDEX_NAME }}
+          VITE_ALGOLIA_SEARCH_API_KEY: ${{ vars.VITE_ALGOLIA_SEARCH_API_KEY || secrets.VITE_ALGOLIA_SEARCH_API_KEY }}
         run: |
-          if [[ "${{ github.event_name }}" == "push" && "${{ github.ref_name }}" == "master" ]]; then
-            SEARCH_KEY="$ALGOLIA_SEARCH_API_KEY_PROD"
-          elif [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.environment }}" == "production" ]]; then
-            SEARCH_KEY="$ALGOLIA_SEARCH_API_KEY_PROD"
-          else
-            SEARCH_KEY="$ALGOLIA_SEARCH_API_KEY_DEV"
+          missing=()
+
+          if [[ -z "$VITE_ALGOLIA_APP_ID" ]]; then
+            missing+=("VITE_ALGOLIA_APP_ID")
           fi
 
-          echo "VITE_ALGOLIA_APP_ID=$ALGOLIA_APP_ID" >> "$GITHUB_ENV"
-          echo "VITE_ALGOLIA_INDEX_NAME=$ALGOLIA_INDEX_BASENAME" >> "$GITHUB_ENV"
-          echo "VITE_ALGOLIA_SEARCH_API_KEY=$SEARCH_KEY" >> "$GITHUB_ENV"
+          if [[ -z "$VITE_ALGOLIA_INDEX_NAME" ]]; then
+            missing+=("VITE_ALGOLIA_INDEX_NAME")
+          fi
+
+          if [[ -z "$VITE_ALGOLIA_SEARCH_API_KEY" ]]; then
+            missing+=("VITE_ALGOLIA_SEARCH_API_KEY")
+          fi
+
+          if (( ${#missing[@]} > 0 )); then
+            echo "Missing Algolia public deploy env: ${missing[*]}" >&2
+            exit 1
+          fi
+
+          echo "VITE_ALGOLIA_APP_ID=$VITE_ALGOLIA_APP_ID" >> "$GITHUB_ENV"
+          echo "VITE_ALGOLIA_INDEX_NAME=$VITE_ALGOLIA_INDEX_NAME" >> "$GITHUB_ENV"
+          echo "VITE_ALGOLIA_SEARCH_API_KEY=$VITE_ALGOLIA_SEARCH_API_KEY" >> "$GITHUB_ENV"
       - name: Build
         run: yarn build
         env:
