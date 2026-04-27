@@ -227,10 +227,45 @@ let hitComponent = ({hit, children: _}: DocSearch.hitComponent): React.element =
   </a>
 }
 
+module ErrorBoundary = {
+  @react.component
+  let make = (~children: React.element, ~onClose: unit => unit) => {
+    <RescriptReactErrorBoundary
+      fallback={_ =>
+        <div
+          role="alert"
+          className="fixed top-6 left-1/2 z-1000 flex w-[calc(100%-2rem)] max-w-2xl -translate-x-1/2 items-center justify-between gap-4 rounded-sm border border-gray-20 bg-white px-4 py-3 shadow-lg"
+        >
+          <span className="text-14 font-medium text-gray-80">
+            {React.string(unavailableText)}
+          </span>
+          <button
+            type_="button"
+            ariaLabel="Close search"
+            className="text-gray-60 hover:text-fire-50 cursor-pointer"
+            onClick={_ => onClose()}
+          >
+            <Icon.Close className="h-4 w-4 stroke-current" />
+          </button>
+        </div>}
+    >
+      children
+    </RescriptReactErrorBoundary>
+  }
+}
+
 @react.component
 let make = () => {
   let (state, setState) = React.useState(_ => Inactive)
   let algoliaConfig = Env.algoliaPublicConfig
+
+  let deactivateSearch = () => {
+    switch WebAPI.Document.querySelector(document, "body") {
+    | Value(body) => WebAPI.DOMTokenList.remove(body.classList, "DocSearch--active")
+    | Null => ()
+    }
+    setState(_ => Inactive)
+  }
 
   let handleCloseModal = () => {
     let () = switch WebAPI.Document.querySelector(document, ".DocSearch-Modal") {
@@ -243,7 +278,7 @@ let make = () => {
         })
       | Null => setState(_ => Inactive)
       }
-    | Null => ()
+    | Null => deactivateSearch()
     }
   }
 
@@ -314,21 +349,23 @@ let make = () => {
         switch ReactDOM.querySelector("body") {
         | Some(element) =>
           ReactDOM.createPortal(
-            <DocSearch
-              apiKey=searchApiKey
-              appId
-              indexName
-              navigator={navigator(~siteUrl=Env.root_url)}
-              transformItems={items => normalizeHitUrls(items, ~siteUrl=Env.root_url)}
-              hitComponent
-              onClose
-              initialScrollY={window.scrollY->Float.toInt}
-              searchParameters={
-                distinct: 3,
-                hitsPerPage: 20,
-                attributesToSnippet: ["content:9999"],
-              }
-            />,
+            <ErrorBoundary onClose=deactivateSearch>
+              <DocSearch
+                apiKey=searchApiKey
+                appId
+                indexName
+                navigator={navigator(~siteUrl=Env.root_url)}
+                transformItems={items => normalizeHitUrls(items, ~siteUrl=Env.root_url)}
+                hitComponent
+                onClose
+                initialScrollY={window.scrollY->Float.toInt}
+                searchParameters={
+                  distinct: 3,
+                  hitsPerPage: 20,
+                  attributesToSnippet: ["content:9999"],
+                }
+              />
+            </ErrorBoundary>,
             element,
           )
         | None => React.null

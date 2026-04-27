@@ -27,6 +27,11 @@ let makeHit = (~type_: DocSearch.contentType, ~url: string): DocSearch.docSearch
   _snippetResult: {content: Nullable.null},
 }
 
+module ThrowsOnRender = {
+  @react.component
+  let make = (): React.element => failwith("search render exploded")
+}
+
 // ---------------------------------------------------------------------------
 // markdownToHtml
 // ---------------------------------------------------------------------------
@@ -249,6 +254,22 @@ test(
     expect(Search.getContentHtml(hit))->toEqual(Some("map(array, fn) returns a new array."))
   },
 )
+
+test("search error boundary catches render errors without replacing surrounding page", async () => {
+  await viewport(1440, 500)
+
+  let screen = await render(
+    <div>
+      <span> {React.string("Docs page stays rendered")} </span>
+      <Search.ErrorBoundary onClose={() => ()}>
+        <ThrowsOnRender />
+      </Search.ErrorBoundary>
+    </div>,
+  )
+
+  await element(await screen->getByText("Docs page stays rendered"))->toBeVisible
+  await element(await screen->getByText("Search unavailable"))->toBeVisible
+})
 
 // ---------------------------------------------------------------------------
 // isChildHit
