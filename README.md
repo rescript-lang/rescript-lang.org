@@ -45,7 +45,7 @@ VITE_ALGOLIA_INDEX_NAME="..."
 VITE_ALGOLIA_SEARCH_API_KEY="..."
 ```
 
-The GitHub deploy workflow maps the existing public repository variables (`ALGOLIA_APP_ID`, `ALGOLIA_INDEX_BASENAME`, `ALGOLIA_SEARCH_API_KEY_DEV`, and `ALGOLIA_SEARCH_API_KEY_PROD`) into those `VITE_` variables at build time. Builds and deployments should not configure or export Algolia admin/write keys.
+The GitHub deploy workflow maps the existing public repository variables (`ALGOLIA_APP_ID`, `ALGOLIA_INDEX_BASENAME`, `ALGOLIA_SEARCH_API_KEY_DEV`, and `ALGOLIA_SEARCH_API_KEY_PROD`) into those `VITE_` variables at build time. `ALGOLIA_INDEX_BASENAME` is passed through as the full runtime index name; the workflow does not add `prod_` or `dev_` prefixes. Builds and deployments should not configure or export Algolia admin/write keys.
 
 DocSearch crawl quality comes from the generated HTML. Searchable page bodies use `DocSearch-content`, each crawlable section provides a hidden `DocSearch-lvl0` marker such as `Manual`, `API`, `React`, `Syntax Lookup`, `Community`, or `Blog`, and headings own unique `id` attributes for section links.
 
@@ -67,7 +67,7 @@ recordProps: {
 }
 ```
 
-Production crawler start URLs, sitemap settings, ranking, and crawler schedules live in the Algolia dashboard.
+Production crawler start URLs, ranking, and crawler schedules live in the Algolia dashboard. The build generates `sitemap.xml` from the prerendered HTML pages so the crawler can use the deployed sitemap.
 
 ## Project Structure Overview
 
