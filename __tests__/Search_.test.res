@@ -27,6 +27,15 @@ let makeHit = (~type_: DocSearch.contentType, ~url: string): DocSearch.docSearch
   _snippetResult: {content: Nullable.null},
 }
 
+let withHierarchy = (
+  hit: DocSearch.docSearchHit,
+  ~lvl0: string,
+  ~lvl1: string,
+): DocSearch.docSearchHit => {
+  ...hit,
+  hierarchy: {...hit.hierarchy, lvl0: Nullable.make(lvl0), lvl1: Nullable.make(lvl1)},
+}
+
 module ThrowsOnRender = {
   @react.component
   let make = (): React.element => failwith("search render exploded")
@@ -167,27 +176,23 @@ test(
   },
 )
 
-test("getHighlightedTitle rebuilds crawler API titles and preserves marked prefixes", async () => {
-  let hit = {
-    ...makeHit(
+test("getHighlightedTitle renders crawler API titles as value names", async () => {
+  let hit = withHierarchy(
+    makeHit(
       ~type_=Content,
       ~url="https://rescript-lang.org/docs/manual/api/stdlib/array/#value-mapWithIndex",
     ),
-    hierarchy: {
-      lvl0: Nullable.make("Array"),
-      lvl1: Nullable.make("mapWithIndex"),
-      lvl2: Nullable.null,
-      lvl3: Nullable.null,
-      lvl4: Nullable.null,
-      lvl5: Nullable.null,
-      lvl6: Nullable.null,
-    },
+    ~lvl0="Array",
+    ~lvl1="mapWithIndex",
+  )
+  let hit = {
+    ...hit,
     _snippetResult: {
       content: Nullable.make(highlightedValue("See <mark>Array.map</mark> on MDN.")),
     },
   }
 
-  expect(Search.getHighlightedTitle(hit))->toBe("<mark>Array.map</mark>WithIndex")
+  expect(Search.getHighlightedTitle(hit))->toBe("<mark>map</mark>WithIndex")
 })
 
 test(
@@ -385,6 +390,20 @@ test("normalizeHitUrls tolerates crawler hits without url_without_anchor", async
       ("content", "map(array, fn) returns a new array."),
       ("url", "https://rescript-lang.org/docs/manual/api/stdlib/array/#value-map"),
       ("type", "content"),
+      (
+        "hierarchy",
+        Obj.magic(
+          Dict.fromArray([
+            ("lvl0", Obj.magic("Array")),
+            ("lvl1", Obj.magic("map")),
+            ("lvl2", Obj.magic(Nullable.null)),
+            ("lvl3", Obj.magic(Nullable.null)),
+            ("lvl4", Obj.magic(Nullable.null)),
+            ("lvl5", Obj.magic(Nullable.null)),
+            ("lvl6", Obj.magic(Nullable.null)),
+          ]),
+        ),
+      ),
     ]),
   )
 
@@ -395,6 +414,42 @@ test("normalizeHitUrls tolerates crawler hits without url_without_anchor", async
   )
   expect(result[0]->Option.flatMap(hit => hit.url_without_anchor->Nullable.toOption))->toEqual(
     Some("/docs/manual/api/stdlib/array/"),
+  )
+})
+
+test("normalizeHitUrls keeps API hit order while separating Belt group labels", async () => {
+  let beltHit = withHierarchy(
+    {
+      ...makeHit(
+        ~type_=Content,
+        ~url="https://rescript-lang.org/docs/manual/api/belt/array/#value-map",
+      ),
+      objectID: "belt-array-map",
+    },
+    ~lvl0="Array",
+    ~lvl1="map",
+  )
+  let stdlibHit = withHierarchy(
+    {
+      ...makeHit(
+        ~type_=Content,
+        ~url="https://rescript-lang.org/docs/manual/api/stdlib/array/#value-map",
+      ),
+      objectID: "stdlib-array-map",
+    },
+    ~lvl0="Array",
+    ~lvl1="map",
+  )
+
+  let result = Search.normalizeHitUrls([beltHit, stdlibHit], ~siteUrl="https://rescript-lang.org/")
+
+  expect(result[0]->Option.map(hit => hit.objectID))->toEqual(Some("belt-array-map"))
+  expect(result[0]->Option.flatMap(hit => hit.hierarchy.lvl0->Nullable.toOption))->toEqual(
+    Some("Belt.Array"),
+  )
+  expect(result[1]->Option.map(hit => hit.objectID))->toEqual(Some("stdlib-array-map"))
+  expect(result[1]->Option.flatMap(hit => hit.hierarchy.lvl0->Nullable.toOption))->toEqual(
+    Some("Array"),
   )
 })
 

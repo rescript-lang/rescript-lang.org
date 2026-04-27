@@ -19,6 +19,40 @@ let toRelativeSiteUrl = (url: string, ~siteUrl: string): string => {
   }
 }
 
+type apiNamespace = StdlibApi | BeltApi
+
+let apiNamespaceForUrl = (url: string): option<apiNamespace> =>
+  if url->String.includes("/docs/manual/api/stdlib/") {
+    Some(StdlibApi)
+  } else if url->String.includes("/docs/manual/api/belt/") {
+    Some(BeltApi)
+  } else {
+    None
+  }
+
+let stripCaseInsensitivePrefix = (value: string, prefix: string): string => {
+  if (
+    prefix->String.length > 0 &&
+      value->String.toLowerCase->String.startsWith(prefix->String.toLowerCase)
+  ) {
+    String.slice(value, ~start=String.length(prefix))
+  } else {
+    value
+  }
+}
+
+let baseApiModuleName = (moduleName: string): string =>
+  moduleName->stripCaseInsensitivePrefix("Stdlib.")->stripCaseInsensitivePrefix("Belt.")
+
+let apiGroupName = (hit: DocSearch.docSearchHit): option<string> =>
+  switch (apiNamespaceForUrl(hit.url), hit.hierarchy.lvl0->Nullable.toOption) {
+  | (Some(StdlibApi), Some(moduleName)) if moduleName !== "" =>
+    Some(moduleName->stripCaseInsensitivePrefix("Stdlib."))
+  | (Some(BeltApi), Some(moduleName)) if moduleName !== "" =>
+    Some(`Belt.${moduleName->baseApiModuleName}`)
+  | _ => None
+  }
+
 let normalizeHitUrls = (items: array<DocSearch.docSearchHit>, ~siteUrl: string) =>
   items->Array.map(hit => {
     let url = toRelativeSiteUrl(hit.url, ~siteUrl)
@@ -27,7 +61,11 @@ let normalizeHitUrls = (items: array<DocSearch.docSearchHit>, ~siteUrl: string) 
       ->Nullable.toOption
       ->Option.getOr(hit.url->String.split("#")->Array.get(0)->Option.getOr(hit.url))
     let url_without_anchor = toRelativeSiteUrl(urlWithoutAnchor, ~siteUrl)->Nullable.make
-    {...hit, url, url_without_anchor}
+    let hierarchy = switch hit->apiGroupName {
+    | Some(lvl0) => {...hit.hierarchy, lvl0: Nullable.make(lvl0)}
+    | None => hit.hierarchy
+    }
+    {...hit, url, url_without_anchor, hierarchy}
   })
 
 let navigator = (~siteUrl: string): DocSearch.navigator => {
@@ -111,6 +149,14 @@ let markTitlePrefix = (title: string, markedText: string): string => {
   }
 }
 
+let stripApiModulePrefix = (markedText: string, moduleName: string): string => {
+  let moduleName = moduleName->baseApiModuleName
+  markedText
+  ->stripCaseInsensitivePrefix(`Stdlib.${moduleName}.`)
+  ->stripCaseInsensitivePrefix(`Belt.${moduleName}.`)
+  ->stripCaseInsensitivePrefix(`${moduleName}.`)
+}
+
 let getSnippetContent = (hit: DocSearch.docSearchHit): option<string> =>
   switch hit._snippetResult {
   | Some(snippetResult) => snippetResult.content->highlightedValue
@@ -121,9 +167,10 @@ let getApiTitle = (hit: DocSearch.docSearchHit): option<string> => {
   if hit.url->String.includes("/docs/manual/api/") {
     switch (hit.hierarchy.lvl0->Nullable.toOption, hit.hierarchy.lvl1->Nullable.toOption) {
     | (Some(moduleName), Some(valueName)) if moduleName !== "" && valueName !== "" =>
-      let title = `${moduleName}.${valueName}`
+      let title = valueName
       switch hit->getSnippetContent->Option.flatMap(firstMarkedText) {
-      | Some(markedText) => Some(markTitlePrefix(title, markedText))
+      | Some(markedText) =>
+        Some(markTitlePrefix(title, stripApiModulePrefix(markedText, moduleName)))
       | None => Some(title)
       }
     | _ => None
