@@ -1,10 +1,6 @@
 {
   "name": "@rescript-lang/docs",
   "namespace": false,
-  "jsx": {
-    "preserve": true,
-    "version": 4
-  },
   "dependencies": ["@rescript/react", "@rescript/webapi"],
   "compiler-flags": ["-open WebAPI.Global"],
   "sources": [
@@ -35,14 +31,9 @@
       "subdirs": true
     }
   ],
-  "package-specs": {
-    "module": "esmodule",
-    "in-source": true
-  },
   "warnings": {
     "error": "+8"
   },
-  "suffix": ".jsx",
   "gentypeconfig": {
     "language": "untyped",
     "shims": [],

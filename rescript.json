@@ -1,0 +1,14 @@
+{
+  "name": "rescript-lang.org-monorepo",
+  "dependencies": ["@rescript-lang/docs"],
+  "sources": [],
+  "jsx": {
+    "preserve": true,
+    "version": 4
+  },
+  "package-specs": {
+    "module": "esmodule",
+    "in-source": true
+  },
+  "suffix": ".jsx"
+}
