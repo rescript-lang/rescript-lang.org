@@ -12,10 +12,10 @@ test("renders sorted unique sitemap URLs with a normalized base URL", async () =
     <loc>https://preview.example.com/</loc>
   </url>
   <url>
-    <loc>https://preview.example.com/blog</loc>
+    <loc>https://preview.example.com/blog/</loc>
   </url>
   <url>
-    <loc>https://preview.example.com/docs/manual/introduction</loc>
+    <loc>https://preview.example.com/docs/manual/introduction/</loc>
   </url>
 </urlset>
 `)

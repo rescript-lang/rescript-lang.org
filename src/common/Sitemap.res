@@ -49,8 +49,16 @@ let normalizePaths = paths =>
     }
   })
 
+let withTrailingSlash = path => {
+  if path === "/" || path->String.endsWith("/") {
+    path
+  } else {
+    path ++ "/"
+  }
+}
+
 let renderUrl = (~baseUrl, path) => {
-  let loc = baseUrl ++ path
+  let loc = baseUrl ++ path->withTrailingSlash
 
   `  <url>
     <loc>${loc->escapeXml}</loc>
