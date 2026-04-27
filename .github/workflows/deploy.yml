@@ -50,39 +50,13 @@ jobs:
              echo "SAFE_BRANCH=$SAFE_BRANCH" >> "$GITHUB_ENV"
              echo "VITE_DEPLOYMENT_URL=https://${SAFE_BRANCH}.rescript-lang.pages.dev" >> "$GITHUB_ENV"
           fi
-      - name: Set Algolia env
-        shell: bash
-        env:
-          VITE_ALGOLIA_APP_ID: ${{ vars.VITE_ALGOLIA_APP_ID || secrets.VITE_ALGOLIA_APP_ID }}
-          VITE_ALGOLIA_INDEX_NAME: ${{ vars.VITE_ALGOLIA_INDEX_NAME || secrets.VITE_ALGOLIA_INDEX_NAME }}
-          VITE_ALGOLIA_SEARCH_API_KEY: ${{ vars.VITE_ALGOLIA_SEARCH_API_KEY || secrets.VITE_ALGOLIA_SEARCH_API_KEY }}
-        run: |
-          missing=()
-
-          if [[ -z "$VITE_ALGOLIA_APP_ID" ]]; then
-            missing+=("VITE_ALGOLIA_APP_ID")
-          fi
-
-          if [[ -z "$VITE_ALGOLIA_INDEX_NAME" ]]; then
-            missing+=("VITE_ALGOLIA_INDEX_NAME")
-          fi
-
-          if [[ -z "$VITE_ALGOLIA_SEARCH_API_KEY" ]]; then
-            missing+=("VITE_ALGOLIA_SEARCH_API_KEY")
-          fi
-
-          if (( ${#missing[@]} > 0 )); then
-            echo "Missing Algolia public deploy env: ${missing[*]}" >&2
-            exit 1
-          fi
-
-          echo "VITE_ALGOLIA_APP_ID=$VITE_ALGOLIA_APP_ID" >> "$GITHUB_ENV"
-          echo "VITE_ALGOLIA_INDEX_NAME=$VITE_ALGOLIA_INDEX_NAME" >> "$GITHUB_ENV"
-          echo "VITE_ALGOLIA_SEARCH_API_KEY=$VITE_ALGOLIA_SEARCH_API_KEY" >> "$GITHUB_ENV"
       - name: Build
         run: yarn build
         env:
           VITE_DEPLOYMENT_URL: ${{ env.VITE_DEPLOYMENT_URL }}
+          VITE_ALGOLIA_APP_ID: ${{ secrets.VITE_ALGOLIA_APP_ID }}
+          VITE_ALGOLIA_INDEX_NAME: ${{ secrets.VITE_ALGOLIA_INDEX_NAME }}
+          VITE_ALGOLIA_SEARCH_API_KEY: ${{ secrets.VITE_ALGOLIA_SEARCH_API_KEY }}
       - name: Deploy
         if: ${{ github.actor != 'dependabot[bot]' }}
         id: deploy

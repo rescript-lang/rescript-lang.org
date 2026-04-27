@@ -45,7 +45,7 @@ VITE_ALGOLIA_INDEX_NAME="..."
 VITE_ALGOLIA_SEARCH_API_KEY="..."
 ```
 
-The GitHub deploy workflow maps the public GitHub secrets named `VITE_ALGOLIA_APP_ID`, `VITE_ALGOLIA_INDEX_NAME`, and `VITE_ALGOLIA_SEARCH_API_KEY` into the build environment. Repository variables with the same names may also be used. `VITE_ALGOLIA_INDEX_NAME` is the full runtime index name; the workflow does not add `prod_` or `dev_` prefixes. Builds and deployments should not configure or export Algolia admin/write keys.
+The GitHub deploy workflow passes the public GitHub secrets named `VITE_ALGOLIA_APP_ID`, `VITE_ALGOLIA_INDEX_NAME`, and `VITE_ALGOLIA_SEARCH_API_KEY` to the `yarn build` step. `VITE_ALGOLIA_INDEX_NAME` is the full runtime index name; the workflow does not add `prod_` or `dev_` prefixes. Builds and deployments should not configure or export Algolia admin/write keys.
 
 DocSearch crawl quality comes from the generated HTML. Searchable page bodies use `DocSearch-content`, each crawlable section provides a hidden `DocSearch-lvl0` marker such as `Manual`, `API`, `React`, `Syntax Lookup`, `Community`, or `Blog`, and headings own unique `id` attributes for section links.
 
