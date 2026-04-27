@@ -28,14 +28,14 @@ for (const file of files) {
 
     // Skip warnings about files that exist in public/ (served at root by Vite)
     const missingFileMatches = [
-      ...warningMessage.matchAll(/`\.\.\/\.\.\/(.*?)`/g),
+      ...warningMessage.matchAll(/`((?:\.\.\/)+.*?)`/g),
     ];
     let allMissingExistInPublic = false;
     if (missingFileMatches.length > 0) {
       allMissingExistInPublic = (
         await Promise.all(
           missingFileMatches.map(([, p]) =>
-            fs.access("public/" + p).then(
+            fs.access("public/" + p.replace(/^(?:\.\.\/)+/, "")).then(
               () => true,
               () => false,
             ),
