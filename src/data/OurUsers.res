@@ -194,4 +194,9 @@ let companies = [
     url: "https://frontman.sh",
     path: "/lp/frontman.svg",
   }),
+  Logo({
+    name: "miriad",
+    url: "https://www.miriad.studio/",
+    path: "/lp/miriad.svg",
+  }),
 ]
