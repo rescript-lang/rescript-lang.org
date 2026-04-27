@@ -538,7 +538,7 @@ module Video = {
       {switch caption {
       | None => React.null
       | Some(caption) =>
-        <div className="mt-4 text-14 text-gray-80 md:ml-16"> {React.string(caption)} </div>
+        <div className="mt-4 text-14 text-gray-60 md:ml-16"> {React.string(caption)} </div>
       }}
     </div>
   }
