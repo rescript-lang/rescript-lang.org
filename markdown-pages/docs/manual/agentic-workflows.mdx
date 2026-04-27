@@ -1,0 +1,33 @@
+---
+title: "ReScript and Coding Agents"
+description: "How ReScript supports teams working with coding agents"
+canonical: "/docs/manual/agentic-workflows"
+section: "Guides"
+order: 4
+---
+
+# ReScript and Coding Agents
+
+ReScript is a strong fit for teams working with coding agents because it reduces ambiguity in the source language, surfaces errors early through the compiler, and keeps generated output understandable. This guide explains why those properties matter in real development workflows.
+
+## Readable code is easier to steer
+
+Agents do better when the language they are editing is small, regular, and easy to inspect. ReScript keeps the syntax compact and consistent, which makes prompts easier to ground in the actual code and makes generated changes easier for humans to review.
+
+## Compiler feedback tightens the repair loop
+
+When an agent makes an incorrect assumption, fast compiler feedback matters. ReScript turns many mistakes into concrete, local errors instead of vague runtime failures, which gives both the agent and the human reviewer a clearer path to the next fix.
+
+## Reviewable JavaScript keeps handoff practical
+
+ReScript compiles to straightforward JavaScript, so teams can still inspect output, debug behavior, and understand how a change behaves in the wider JavaScript ecosystem. That keeps the handoff between agent-written code and human review practical.
+
+## You can keep your existing stack
+
+Using ReScript does not mean walking away from the JavaScript ecosystem your product already depends on. You can keep using the SDKs, APIs, frameworks, and deployment tooling your team already knows while adding stronger guarantees where correctness and maintainability matter most.
+
+## Where to start
+
+- For setup, see [Installation](./installation.mdx).
+- For adding ReScript to an existing codebase, see [Converting from JS](./converting-from-js.mdx).
+- For editor and compiler feedback loops, see [Code Analysis](./editor-code-analysis.mdx).

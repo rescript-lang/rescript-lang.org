@@ -87,6 +87,8 @@ Open an editor tab for `src/Main.res.js`. Do a command-line `diff -u src/main.js
 
 **Always make sure** that at each step, you keep the ReScript output `.res.js` file open to compare against the existing JavaScript file. Our compilation output is very close to your hand-written JavaScript; you can simply eye the difference to catch conversion bugs!
 
+This step-by-step workflow also pairs well with AI-assisted migrations: a tool can make a small change, and you can review the generated JS against the original file at each step.
+
 ## Step 3: Extract Parts into Idiomatic ReScript
 
 Let's turn the `defaultId` variable into a ReScript let-binding:

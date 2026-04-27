@@ -70,6 +70,8 @@ ReScript doesn't take whole seconds to run every time. The bulk of the build per
 
 In short, thanks to our compiler and the build system's architecture, we're able to **only build what's needed**. If `MyFile.res` isn't changed, it isn't recompiled. Renaming or moving files is handled automatically, with no stale builds.
 
+That kind of tight, correct incremental feedback is especially useful in coding-agent workflows, where small edits need to be validated quickly.
+
 ## Speed Up Incremental Build
 
 ReScript uses the concept of interface files (`.resi`) (or, equivalently, [module signatures](./module.mdx#signatures)). Exposing only what you need naturally speeds up incremental builds. E.g. if you change a `.res` file whose corresponding `.resi` file doesn't expose the changed part, then you've reduced the amount of dependent files you have to rebuild.

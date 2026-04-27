@@ -85,6 +85,12 @@ export {
     <section className="relative mt-20 bg-gray-10">
       <div className="relative flex justify-center w-full">
         <div className="relative w-full pt-6 pb-8 sm:px-8 md:px-16 max-w-[1400px]">
+          <div className="relative z-2 mx-auto mb-10 max-w-3xl text-center">
+            <h2 className="hl-2 text-gray-80"> {React.string("Readable in. Predictable out.")} </h2>
+            <p className="body-lg text-gray-60 mt-4">
+              {React.string(`Readable source, predictable output, and fast compiler feedback make ReScript easier to work with. Those qualities help while learning, debugging, reviewing changes, or bringing coding agents into the workflow.`)}
+            </p>
+          </div>
           // Playground widget
           <div
             className="relative z-2 flex flex-col md:flex-row bg-gray-90 mx-auto sm:rounded-lg max-w-1280"
@@ -387,13 +393,6 @@ module MainUSP = {
       caches, wrong type hints, or memory hungry language servers that slow you
       down.`)}
         </p>
-        <p className="mt-6">
-          // <ReactRouter.Link to={("/docs/manual/build-performance" :> ReactRouter.Link.to)}>
-          //   <Button size={Button.Small} kind={Button.PrimaryBlue}>
-          //     {React.string("Learn more")}
-          //   </Button>
-          // </ReactRouter.Link>
-        </p>
       </>}
     />
 
@@ -442,6 +441,67 @@ module MainUSP = {
       item1
       item2
       item3
+    </section>
+  }
+}
+
+module AgenticWorkflows = {
+  type point = {
+    title: string,
+    body: string,
+  }
+
+  let points = [
+    {
+      title: "Clear code is easier to guide",
+      body: "ReScript's small, consistent syntax makes prompts easier to ground and generated edits easier to review.",
+    },
+    {
+      title: "Compiler feedback helps close the loop",
+      body: "When a change breaks a contract, the compiler points to it directly. That gives both humans and tools a faster path to a correct fix.",
+    },
+    {
+      title: "The output stays readable",
+      body: "ReScript compiles to straightforward JavaScript, so teams can inspect behavior, debug issues, and hand work back and forth without losing the thread.",
+    },
+  ]
+
+  @react.component
+  let make = () => {
+    <section className="flex justify-center w-full bg-fire-5 px-5 sm:px-8 lg:px-16 py-24 lg:py-32">
+      <div className="max-w-1060 w-full">
+        <div className="max-w-3xl">
+          <h2 className="hl-1 text-gray-80"> {React.string("Working with coding agents")} </h2>
+          <p className="body-lg text-gray-60 mt-4">
+            {React.string(`The same qualities that make ReScript pleasant for people also make it a good fit for coding agents: clear source, fast feedback, and JavaScript output that stays easy to inspect.`)}
+          </p>
+        </div>
+        <div className="grid gap-6 mt-12 lg:mt-16 md:grid-cols-3">
+          {points
+          ->Array.mapWithIndex((point, i) =>
+            <div
+              key={Int.toString(i)}
+              className="rounded-xl border border-fire-10 bg-white px-6 py-6 shadow-[0px_12px_40px_0px_rgba(230,72,79,0.08)]"
+            >
+              <h3 className="hl-4 text-gray-80 mb-3"> {React.string(point.title)} </h3>
+              <p className="body-md text-gray-60"> {React.string(point.body)} </p>
+            </div>
+          )
+          ->React.array}
+        </div>
+        <div
+          className="mt-12 lg:mt-16 rounded-2xl border border-fire-10 bg-white px-6 py-6 lg:px-8 lg:py-7 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between"
+        >
+          <p className="body-lg text-gray-60 max-w-2xl">
+            {React.string(`Read a short guide about using ReScript alongside coding agents.`)}
+          </p>
+          <ReactRouter.Link.String
+            to="/docs/manual/agentic-workflows" className="self-start shrink-0"
+          >
+            <Button kind={Button.PrimaryBlue}> {React.string("Read the guide")} </Button>
+          </ReactRouter.Link.String>
+        </div>
+      </div>
     </section>
   }
 }
@@ -723,6 +783,7 @@ let make = (~components=MarkdownComponents.default) => {
                   <PlaygroundHero />
                   <QuickInstall />
                   <MainUSP />
+                  <AgenticWorkflows />
                   <OtherSellingPoints />
                   <TrustedBy />
                   <CuratedResources />
