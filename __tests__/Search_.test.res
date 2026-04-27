@@ -41,6 +41,14 @@ module ThrowsOnRender = {
   let make = (): React.element => failwith("search render exploded")
 }
 
+module CurrentPath = {
+  @react.component
+  let make = () => {
+    let location = ReactRouter.useLocation()
+    <span> {React.string((location.pathname :> string))} </span>
+  }
+}
+
 // ---------------------------------------------------------------------------
 // markdownToHtml
 // ---------------------------------------------------------------------------
@@ -228,6 +236,23 @@ test("getContentHtml prefers crawler snippet markup over plain content", async (
   expect(Search.getContentHtml(hit))->toEqual(
     Some("map(array, fn) returns a new <mark>array</mark>."),
   )
+})
+
+test("hitComponent routes relative hit URLs through React Router", async () => {
+  await viewport(1440, 500)
+
+  let hit = makeHit(~type_=Lvl1, ~url="/docs/manual/api/stdlib/list/")
+
+  let screen = await render(
+    <ReactRouter.MemoryRouter initialEntries=["/"]>
+      <CurrentPath />
+      {Search.hitComponent({hit, children: React.null})}
+    </ReactRouter.MemoryRouter>,
+  )
+
+  await element(await screen->getByText("/"))->toBeVisible
+  await (await screen->getByText("Test Page"))->click
+  await element(await screen->getByText("/docs/manual/api/stdlib/list/"))->toBeVisible
 })
 
 test(

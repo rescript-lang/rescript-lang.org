@@ -253,7 +253,7 @@ let hitComponent = ({hit, children: _}: DocSearch.hitComponent): React.element =
   let contentHtml = getContentHtml(hit)
   let isChild = isChildHit(hit)
 
-  <a href={hit.url}>
+  <ReactRouter.Link.String to=hit.url>
     <div className="DocSearch-Hit-Container">
       {isChild ? <Icon.DocTree /> : React.null}
       {isChild ? <Icon.DocHash /> : <Icon.DocPage />}
@@ -271,7 +271,7 @@ let hitComponent = ({hit, children: _}: DocSearch.hitComponent): React.element =
       </div>
       <Icon.DocSelect />
     </div>
-  </a>
+  </ReactRouter.Link.String>
 }
 
 module ErrorBoundary = {
