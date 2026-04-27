@@ -53,13 +53,27 @@ jobs:
       - name: Set Algolia env
         shell: bash
         env:
-          VITE_ALGOLIA_APP_ID: ${{ vars.VITE_ALGOLIA_APP_ID }}
-          VITE_ALGOLIA_INDEX_NAME: ${{ vars.VITE_ALGOLIA_INDEX_NAME }}
-          VITE_ALGOLIA_SEARCH_API_KEY: ${{ vars.VITE_ALGOLIA_SEARCH_API_KEY }}
+          ALGOLIA_APP_ID: ${{ vars.ALGOLIA_APP_ID }}
+          ALGOLIA_INDEX_BASENAME: ${{ vars.ALGOLIA_INDEX_BASENAME }}
+          ALGOLIA_SEARCH_API_KEY_DEV: ${{ vars.ALGOLIA_SEARCH_API_KEY_DEV }}
+          ALGOLIA_SEARCH_API_KEY_PROD: ${{ vars.ALGOLIA_SEARCH_API_KEY_PROD }}
         run: |
-          echo "VITE_ALGOLIA_APP_ID=$VITE_ALGOLIA_APP_ID" >> "$GITHUB_ENV"
-          echo "VITE_ALGOLIA_INDEX_NAME=$VITE_ALGOLIA_INDEX_NAME" >> "$GITHUB_ENV"
-          echo "VITE_ALGOLIA_SEARCH_API_KEY=$VITE_ALGOLIA_SEARCH_API_KEY" >> "$GITHUB_ENV"
+          if [[ "${{ github.event_name }}" == "push" && "${{ github.ref_name }}" == "master" ]]; then
+            INDEX_PREFIX="prod"
+            SEARCH_KEY="$ALGOLIA_SEARCH_API_KEY_PROD"
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.environment }}" == "production" ]]; then
+            INDEX_PREFIX="prod"
+            SEARCH_KEY="$ALGOLIA_SEARCH_API_KEY_PROD"
+          else
+            INDEX_PREFIX="dev"
+            SEARCH_KEY="$ALGOLIA_SEARCH_API_KEY_DEV"
+          fi
+
+          INDEX_NAME="${INDEX_PREFIX}_${ALGOLIA_INDEX_BASENAME}"
+
+          echo "VITE_ALGOLIA_APP_ID=$ALGOLIA_APP_ID" >> "$GITHUB_ENV"
+          echo "VITE_ALGOLIA_INDEX_NAME=$INDEX_NAME" >> "$GITHUB_ENV"
+          echo "VITE_ALGOLIA_SEARCH_API_KEY=$SEARCH_KEY" >> "$GITHUB_ENV"
       - name: Build
         run: yarn build
         env:

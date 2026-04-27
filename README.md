@@ -45,6 +45,8 @@ VITE_ALGOLIA_INDEX_NAME="..."
 VITE_ALGOLIA_SEARCH_API_KEY="..."
 ```
 
+The GitHub deploy workflow maps the existing public repository variables (`ALGOLIA_APP_ID`, `ALGOLIA_INDEX_BASENAME`, `ALGOLIA_SEARCH_API_KEY_DEV`, and `ALGOLIA_SEARCH_API_KEY_PROD`) into those `VITE_` variables at build time. Builds and deployments should not configure or export Algolia admin/write keys.
+
 DocSearch crawl quality comes from the generated HTML. Searchable page bodies use `DocSearch-content`, each crawlable section provides a hidden `DocSearch-lvl0` marker such as `Manual`, `API`, `React`, `Syntax Lookup`, `Community`, or `Blog`, and headings own unique `id` attributes for section links.
 
 The crawler configuration should use selectors shaped like this:
