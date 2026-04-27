@@ -25,11 +25,14 @@ apps/docs/temp-jsx-preserve
 .merlin
 lib/
 apps/docs/lib/
+packages/*/lib/
 
 .vercel
 
 apps/docs/src/**/*.mjs
 apps/docs/src/**/*.jsx
+packages/*/src/**/*.mjs
+packages/*/src/**/*.jsx
 apps/docs/scripts/gendocs.mjs
 apps/docs/scripts/generate_*.mjs
 apps/docs/scripts/gendocs.jsx

@@ -64,7 +64,7 @@ jobs:
           workingDirectory: apps/docs
           command: pages deploy out --project-name=rescript-lang-org --branch=${{ env.SAFE_BRANCH }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          wranglerVersion: 4.63.0
+          wranglerVersion: 4.85.0
         env:
           FORCE_COLOR: 0
       - name: Comment PR with deployment link

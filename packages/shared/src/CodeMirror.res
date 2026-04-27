@@ -572,7 +572,7 @@ module CM6 = {
   }
 
   module CustomLanguages = {
-    @module("../../plugins/cm6-reason-mode.js") @val
+    @module("../plugins/cm6-reason-mode.js") @val
     external reasonLanguage: extension = "reasonLanguage"
   }
 }
