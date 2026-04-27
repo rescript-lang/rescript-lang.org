@@ -34,7 +34,7 @@ Those conversations were a useful reminder that, while ReScript has diverged sig
 ## Working Groups
 
 After the kickoff, we identified blockers and improvements that would have the highest impact for ReScript users.
-We then split into three working groups.
+We then split into four working groups.
 
 <figure className="my-8 md:-mx-16">
   <div className="grid gap-4 md:grid-cols-3">
@@ -56,7 +56,7 @@ We then split into three working groups.
   </div>
   <figcaption className="mt-4 text-14 text-gray-60 md:ml-16">
     Contributors split into focused groups to work on the compiler, build
-    system, Web API bindings, and AI-assisted coding.
+    system, Web API bindings, iterators, and AI-assisted coding.
   </figcaption>
 </figure>
 
@@ -79,9 +79,15 @@ That meant a second build, for example one triggered by an AI agent or another p
 We prioritized this over several other build-system improvements because it directly affects modern development workflows.
 The group also worked on performance improvements and better terminal output.
 
+### Iterators
+
+Another group focused on iterator and iterable support in the standard library.
+The immediate goal was to make the type definitions line up better with JavaScript's iteration protocols, including generator values.
+This work supports the new `for...of` and `for await...of` syntax and makes interop with iterable JavaScript APIs more predictable.
+
 ### AI-Assisted Coding
 
-A third group explored how ReScript can become better suited for AI-assisted coding.
+The final group explored how ReScript can become better suited for AI-assisted coding.
 One idea was an "AI mode": a strict linter that can run as a separate phase after regular compilation and type checking.
 The goal is to catch patterns that are technically valid but undesirable in generated or agent-edited code, and to give agents tighter feedback loops when working inside a ReScript project.
 
@@ -187,7 +193,7 @@ By the end of the retreat, a number of features and improvements had been implem
 - Improved watch output and added a `--clear-screen` option.
 - Preserved warnings across atomic-save full rebuilds and incremental watch builds.
 - Restored backward compatibility for `bsconfig.json`.
-- Improved build scheduling so larger projects can rebuild more efficiently.
+- Improved build scheduling so larger projects can rebuild more efficiently. In some tests, this was around 30% faster.
 
 ### Ecosystem
 
@@ -216,7 +222,10 @@ We are aiming to release ReScript 13 in late summer.
 The current goals include removing legacy namespaces such as `Js` and `Dom`, with Web API functionality moving toward the newer package structure.
 We also want ReScript 13 to include dedicated linting support for AI-assisted coding.
 
-Other candidates include immutable arrays and additional record ergonomics, such as record rest destructuring.
+In the full v13 release, `Jsx.component` will be an abstract type.
+This better models React components that are not plain functions, such as memoized or lazy components, and gives clearer errors when a regular function is used where JSX expects a component.
+
+Other candidates include source map support, immutable arrays, and additional record ergonomics, such as record rest destructuring.
 In the meantime, we expect some of the smaller retreat results, mostly build-system fixes and polish, to make their way into a ReScript `12.3.0` release.
 As always, the exact release contents will depend on implementation progress, review, and migration risk.
 
