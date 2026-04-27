@@ -545,7 +545,7 @@ module TrustedBy = {
         ->React.array}
       </div>
       <a
-        href="https://github.com/rescript-lang/rescript-lang.org/blob/master/src/common/OurUsers.res"
+        href="https://github.com/rescript-lang/rescript-lang.org/blob/master/src/data/OurUsers.res"
       >
         <Button> {React.string("Add Your Logo")} </Button>
       </a>
