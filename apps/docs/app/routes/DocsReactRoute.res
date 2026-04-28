@@ -64,7 +64,8 @@ let default = () => {
     },
   }
 
-  let editHref = `https://github.com/rescript-lang/rescript-lang.org/blob/master/${filePath}`
+  let docsAppRoot = "apps/docs"
+  let editHref = `https://github.com/rescript-lang/rescript-lang.org/blob/master/${docsAppRoot}/${filePath}`
 
   let activeToc = {TableOfContents.title, entries}
 

@@ -3,55 +3,63 @@
 *.swo
 .worktrees/
 
-# Generated via update-index script
-public/blog/feed.xml
+# Generated via docs update-index script
+apps/docs/public/blog/feed.xml
 
 node_modules/
 .next/
 out/
+apps/docs/out/
 index_data/*.json
+apps/docs/index_data/*.json
 
-# Generated via test examples script
+# Generated via docs test examples script
 temp
 temp-js-output
 temp-jsx-preserve
+apps/docs/temp
+apps/docs/temp-js-output
+apps/docs/temp-jsx-preserve
 
 .bsb.lock
 .merlin
 lib/
+apps/docs/lib/
 
 .vercel
 
-src/**/*.mjs
-src/**/*.jsx
-scripts/gendocs.mjs
-scripts/generate_*.mjs
-scripts/gendocs.jsx
-scripts/generate_*.jsx
+apps/docs/src/**/*.mjs
+apps/docs/src/**/*.jsx
+apps/docs/scripts/gendocs.mjs
+apps/docs/scripts/generate_*.mjs
+apps/docs/scripts/gendocs.jsx
+apps/docs/scripts/generate_*.jsx
 
 # Generated via generate-llms script
-public/llms/manual/**/llm*.txt
-public/llms/react/**/llm*.txt
-pages/docs/**/**/llms.mdx
+apps/docs/public/llms/manual/**/llm*.txt
+apps/docs/public/llms/react/**/llm*.txt
+apps/docs/markdown-pages/docs/**/**/llms.mdx
 
-public/playground-bundles/
-!public/_redirects
-
+apps/docs/public/playground-bundles/
+!apps/docs/public/_redirects
 
 dist
 build
+apps/docs/dist
+apps/docs/build
 .react-router
-.worktrees/
+apps/docs/.react-router
 mdx-manifest.json
+apps/docs/mdx-manifest.json
 
-app/**/*.mjs
-app/**/*.jsx
-functions/**/*.mjs
-functions/**/*.jsx
-__tests__/**/*.mjs
-__tests__/**/*.jsx
-e2e/**/*.mjs
-e2e/**/*.jsx
+apps/docs/app/**/*.mjs
+apps/docs/app/**/*.jsx
+apps/docs/functions/**/*.mjs
+apps/docs/functions/**/*.jsx
+apps/docs/__tests__/**/*.mjs
+apps/docs/__tests__/**/*.jsx
+apps/docs/e2e/**/*.mjs
+apps/docs/e2e/**/*.jsx
 !_shims.mjs
 !_shims.jsx
 
@@ -65,16 +73,20 @@ e2e/**/*.jsx
 
 # wrangler
 .wrangler
+apps/docs/.wrangler
 
-# Scripts generated from rolldown to convert them from .jsx files to .mjs files
+# Scripts generated from tsdown to convert them from .jsx files to .mjs files
 _scripts
+apps/docs/_scripts
 
 # Local env files
 .env.local
+apps/docs/.env.local
 
 # Local git worktrees
 .worktrees
 
 # Vitest screenshots
-!__tests__/__screenshots__/**/*
+!apps/docs/__tests__/__screenshots__/**/*
 .vitest-attachments
+apps/docs/.vitest-attachments
