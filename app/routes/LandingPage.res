@@ -1,7 +1,7 @@
 module Intro = {
   @react.component
   let make = () => {
-    <section className="flex justify-center">
+    <section dataTestId="landing-intro" className="flex justify-center">
       // We only need this font on the homepage, so we load it here instead of globally to save some bandwidth for users who navigate to other pages directly
       <link
         href="https://fonts.googleapis.com/css2?family=Red+Hat+Mono:wght@700&display=swap"
@@ -23,11 +23,12 @@ module Intro = {
             so you can move quickly with AI assistance while maintaining
             confidence as your codebase grows.`)}
         </p>
-        <div className="mt-4 mb-2">
-          <ReactRouter.Link to=#"/docs/manual/installation" prefetch=#viewport>
-            <Button> {React.string("Get started")} </Button>
-          </ReactRouter.Link>
-        </div>
+        // Keep the CTA link block-level so the moved top/bottom margins still affect layout after removing its wrapper.
+        <ReactRouter.Link
+          to=#"/docs/manual/installation" prefetch=#viewport className="mt-4 mb-2 block"
+        >
+          <Button> {React.string("Get started")} </Button>
+        </ReactRouter.Link>
       </div>
     </section>
   }
@@ -82,60 +83,55 @@ export {
     let (example, _setExample) = React.useState(_ => examples->Array.getUnsafe(0))
 
     //Playground Section & Background
-    <section className="relative mt-20 bg-gray-10">
-      <div className="relative flex justify-center w-full">
-        <div className="relative w-full pt-6 pb-8 sm:px-8 md:px-16 max-w-[1400px]">
-          // Playground widget
-          <div
-            className="relative z-2 flex flex-col md:flex-row bg-gray-90 mx-auto sm:rounded-lg max-w-1280"
-          >
-            //Left Side (ReScript)
-            <div className="md:w-1/2">
-              <div
-                className="body-sm text-gray-40 text-center py-3 sm:rounded-t-lg md:rounded-tl-lg bg-gray-100"
-              >
-                {React.string("Write in ReScript")}
-              </div>
-              <pre className="text-14 px-8 pt-6 pb-12 whitespace-pre-wrap">
-                {HighlightJs.renderHLJS(~darkmode=true, ~code=example.res, ~lang="res", ())}
-              </pre>
-            </div>
-            //Right Side (JavaScript)
-            <div className="md:w-1/2 ">
-              <div
-                className="body-sm text-gray-40 py-3 text-center md:border-l border-gray-80 bg-gray-100 sm:rounded-tr-lg"
-              >
-                {React.string("Compile to JavaScript")}
-              </div>
-              <pre
-                className="text-14 px-8 pt-6 pb-14 md:border-l border-gray-80 whitespace-pre-wrap"
-              >
-                {HighlightJs.renderHLJS(~darkmode=true, ~code=example.js, ~lang="js", ())}
-              </pre>
-            </div>
-          </div>
-
-          /* ---Link to Playground--- */
-          <div>
-            <ReactRouter.Link.String
-              to={`/try?code=${LzString.lzString.compressToEncodedURIComponent(example.res)}`}
-              className="captions md:px-0 border-b border-gray-40 hover:border-gray-60 text-gray-60"
+    <section dataTestId="landing-playground-hero" className="relative mt-20 bg-gray-10">
+      <div className="relative mx-auto w-full pt-6 pb-8 sm:px-8 md:px-16 max-w-[1400px]">
+        // `mx-auto` preserves the removed centering wrapper's max-width behavior for the playground frame.
+        // Playground widget
+        <div
+          className="relative z-2 flex flex-col md:flex-row bg-gray-90 mx-auto sm:rounded-lg max-w-1280"
+        >
+          //Left Side (ReScript)
+          <div className="md:w-1/2">
+            <div
+              className="body-sm text-gray-40 text-center py-3 sm:rounded-t-lg md:rounded-tl-lg bg-gray-100"
             >
-              {React.string("Edit this example in Playground")}
-            </ReactRouter.Link.String>
+              {React.string("Write in ReScript")}
+            </div>
+            <pre className="text-14 px-8 pt-6 pb-12 whitespace-pre-wrap">
+              {HighlightJs.renderHLJS(~darkmode=true, ~code=example.res, ~lang="res", ())}
+            </pre>
           </div>
-          //
-          <div className="hidden md:block">
-            <img className="absolute z-0 left-0 top-0 -ml-10 -mt-6 h-96 w-96" src="/lp/grid.svg" />
-            <img className="absolute z-0 left-0 top-0 -ml-10 mt-10" src="/lp/illu_left.avif" />
+          //Right Side (JavaScript)
+          <div className="md:w-1/2 ">
+            <div
+              className="body-sm text-gray-40 py-3 text-center md:border-l border-gray-80 bg-gray-100 sm:rounded-tr-lg"
+            >
+              {React.string("Compile to JavaScript")}
+            </div>
+            <pre className="text-14 px-8 pt-6 pb-14 md:border-l border-gray-80 whitespace-pre-wrap">
+              {HighlightJs.renderHLJS(~darkmode=true, ~code=example.js, ~lang="js", ())}
+            </pre>
           </div>
-          <div className="hidden md:block">
-            <img
-              className="absolute z-0 right-0 bottom-0 -mb-10 mt-24 -mr-10 h-96 w-96"
-              src="/lp/grid.svg"
-            />
-            <img className="absolute z-3 right-0 bottom-0 -mr-2 mb-10" src="/lp/illu_right.avif" />
-          </div>
+        </div>
+
+        /* ---Link to Playground--- */
+        <ReactRouter.Link.String
+          to={`/try?code=${LzString.lzString.compressToEncodedURIComponent(example.res)}`}
+          className="captions md:px-0 border-b border-gray-40 hover:border-gray-60 text-gray-60"
+        >
+          {React.string("Edit this example in Playground")}
+        </ReactRouter.Link.String>
+        //
+        <div className="hidden md:block">
+          <img className="absolute z-0 left-0 top-0 -ml-10 -mt-6 h-96 w-96" src="/lp/grid.svg" />
+          <img className="absolute z-0 left-0 top-0 -ml-10 mt-10" src="/lp/illu_left.avif" />
+        </div>
+        <div className="hidden md:block">
+          <img
+            className="absolute z-0 right-0 bottom-0 -mb-10 mt-24 -mr-10 h-96 w-96"
+            src="/lp/grid.svg"
+          />
+          <img className="absolute z-3 right-0 bottom-0 -mr-2 mb-10" src="/lp/illu_right.avif" />
         </div>
       </div>
     </section>
@@ -249,38 +245,37 @@ module QuickInstall = {
       </div>
     }
     @react.component
-    let make = () => {
-      <div className="w-full max-w-400">
+    let make = (~className: string="") => {
+      <div className={`w-full max-w-400 ${className}`}>
         <h2 className="hl-3 lg:mt-12"> {React.string("Quick Install")} </h2>
         <div className="captions x text-gray-40 mb-2 mt-1">
           {React.string(
             "You can quickly add ReScript to your existing JavaScript codebase via npm / yarn:",
           )}
         </div>
-        <div className="w-full space-y-2"> {copyBox("npm install rescript")} </div>
+        {copyBox("npm install rescript")}
         <div className="captions x text-gray-40 mb-2 mt-2">
           {React.string("Or generate a new project from the official template with npx:")}
         </div>
-        <div className="w-full space-y-2"> {copyBox("npx create-rescript-app")} </div>
+        {copyBox("npx create-rescript-app")}
       </div>
     }
   }
 
   @react.component
   let make = () => {
-    <section className="my-32 sm:px-4 sm:flex sm:justify-center">
+    <section dataTestId="landing-quick-install" className="my-32 sm:px-4 sm:flex sm:justify-center">
       <div className="max-w-1060 flex flex-col w-full px-5 md:px-8 lg:px-8 lg:box-content ">
         //---Textblock on the left side---
-        <div className="relative max-w-112">
-          <p
-            className="relative z-1 space-y-12 text-gray-80 font-semibold text-24 md:text-32 leading-2"
-          >
-            <span className="bg-fire-5 rounded-lg border border-fire-10 p-1 ">
-              {React.string(`Leverage the full power`)}
-            </span>
-            {React.string(` of JavaScript in a robustly typed language without the fear of \`any\` types.`)}
-          </p>
-        </div>
+        // Keep the width clamp on the paragraph itself now that the wrapper is gone.
+        <p
+          className="relative z-1 max-w-112 space-y-12 text-gray-80 font-semibold text-24 md:text-32 leading-2"
+        >
+          <span className="bg-fire-5 rounded-lg border border-fire-10 p-1 ">
+            {React.string(`Leverage the full power`)}
+          </span>
+          {React.string(` of JavaScript in a robustly typed language without the fear of \`any\` types.`)}
+        </p>
         //spacing between columns
         <div className="w-full mt-12 md:flex flex-col lg:flex-row md:justify-between ">
           <p
@@ -288,9 +283,8 @@ module QuickInstall = {
           >
             {React.string(`ReScript is used to ship and maintain mission-critical products with good UI and UX.`)}
           </p>
-          <div className="mt-16 lg:mt-0 self-end max-w-400">
-            <Instructions />
-          </div>
+          // The alignment classes move onto the instructions root so the column still hugs the lower edge without an extra wrapper.
+          <Instructions className="mt-16 lg:mt-0 self-end" />
         </div>
       </div>
     </section>
@@ -335,9 +329,7 @@ module MainUSP = {
           <div className="max-w-96 flex flex-col justify-center mb-6 lg:mb-2">
             <div className="hl-overline text-gray-20 mb-4"> {React.string(caption)} </div>
             <h3 className="text-gray-10 mb-4 hl-2 font-semibold"> title </h3>
-            <div className="flex">
-              <div className="text-gray-30 body-md pr-8"> paragraph </div>
-            </div>
+            <div className="text-gray-30 body-md pr-8"> paragraph </div>
           </div>
           //image (right)
           <div className="relative mt-10 lg:mt-0">
@@ -450,6 +442,7 @@ module OtherSellingPoints = {
   @react.component
   let make = () => {
     <section
+      dataTestId="landing-other-selling-points"
       className="flex justify-center w-full bg-gray-90 border-t border-gray-80
             px-4 sm:px-8 lg:px-16 pt-24 pb-20 "
     >
@@ -473,13 +466,12 @@ module OtherSellingPoints = {
             Join the ReScript community — A group of companies and individuals
             who deeply care about simplicity, speed and practicality.`)}
           </p>
-          <div className="mt-6">
-            <a href="https://forum.rescript-lang.org">
-              <Button size={Button.Small} kind={Button.PrimaryBlue}>
-                {React.string("Join our Forum")}
-              </Button>
-            </a>
-          </div>
+          // The forum link becomes inline-block so the moved top margin still participates in the card flow.
+          <a href="https://forum.rescript-lang.org" className="mt-6 inline-block">
+            <Button size={Button.Small} kind={Button.PrimaryBlue}>
+              {React.string("Join our Forum")}
+            </Button>
+          </a>
         </div>
         // 2 small items
         // Item 2
@@ -523,7 +515,7 @@ module OtherSellingPoints = {
 module TrustedBy = {
   @react.component
   let make = () => {
-    <section className="mt-20 flex flex-col items-center">
+    <section dataTestId="landing-trusted-by" className="mt-20 flex flex-col items-center">
       <h3 className="hl-1 text-gray-80 text-center max-w-576 mx-auto">
         {React.string("Trusted by our users")}
       </h3>
@@ -531,17 +523,14 @@ module TrustedBy = {
         className="flex flex-wrap mx-4 gap-8 justify-center items-center max-w-xl lg:mx-auto mt-16 mb-16"
       >
         {OurUsers.companies
-        ->Array.map(company => {
-          let (companyKey, renderedCompany) = switch company {
-          | Logo({name, path, url}) => (
-              name,
-              <a href=url rel="noopener noreferrer">
-                <img className="hover:opacity-75 max-w-sm h-12" src=path loading=#lazy />
-              </a>,
-            )
+        ->Array.map(company =>
+          switch company {
+          | Logo({name, path, url}) =>
+            <a key=name href=url rel="noopener noreferrer">
+              <img className="hover:opacity-75 max-w-sm h-12" src=path loading=#lazy />
+            </a>
           }
-          <div key=companyKey> renderedCompany </div>
-        })
+        )
         ->React.array}
       </div>
       <a
@@ -549,9 +538,8 @@ module TrustedBy = {
       >
         <Button> {React.string("Add Your Logo")} </Button>
       </a>
-      <div className="self-start mt-10 max-w-320 overflow-hidden opacity-50 max-h-24">
-        <img className="w-full h-full" src="/lp/grid.svg" />
-      </div>
+      // The grid image now owns the alignment classes directly because the wrapper only clipped a single child.
+      <img className="self-start mt-10 max-w-320 opacity-50 max-h-24 w-full" src="/lp/grid.svg" />
     </section>
   }
 }
@@ -595,8 +583,8 @@ module CuratedResources = {
     {
       imgSrc: "/nextjs_starter_logo.svg",
       title: <>
-        <div> {React.string("ReScript & ")} </div>
-        <div className="text-gray-40"> {React.string("NextJS")} </div>
+        <span className="block"> {React.string("ReScript & ")} </span>
+        <span className="block text-gray-40"> {React.string("NextJS")} </span>
       </>,
       descr: "Get started with our NextJS starter template.",
       href: "https://github.com/rescript-lang/create-rescript-app/blob/master/templates/rescript-template-nextjs/README.md",
@@ -604,8 +592,8 @@ module CuratedResources = {
     {
       imgSrc: "/vitejs_starter_logo.svg",
       title: <>
-        <div> {React.string("ReScript & ")} </div>
-        <div className="text-[#6571FB]"> {React.string("ViteJS")} </div>
+        <span className="block"> {React.string("ReScript & ")} </span>
+        <span className="block text-[#6571FB]"> {React.string("ViteJS")} </span>
       </>,
       descr: "Get started with ViteJS and ReScript.",
       href: "https://github.com/rescript-lang/create-rescript-app/blob/master/templates/rescript-template-vite/README.md",
@@ -613,8 +601,10 @@ module CuratedResources = {
     {
       imgSrc: "/nodejs_starter_logo.svg",
       title: <>
-        <div> {React.string("ReScript & ")} </div>
-        <div className="text-gray-40" style={{color: "#699D65"}}> {React.string("NodeJS")} </div>
+        <span className="block"> {React.string("ReScript & ")} </span>
+        <span className="block text-gray-40" style={{color: "#699D65"}}>
+          {React.string("NodeJS")}
+        </span>
       </>,
       descr: "Get started with ReScript targeting the Node platform.",
       href: "/",
@@ -623,7 +613,7 @@ module CuratedResources = {
 
   @react.component
   let make = () => {
-    <section className="bg-gray-100 w-full pb-40 pt-20 ">
+    <section dataTestId="landing-curated-resources" className="bg-gray-100 w-full pb-40 pt-20 ">
       //headline container
       <div
         className="mb-10 max-w-1280 flex flex-col justify-center items-center mx-5 md:mx-8 lg:mx-auto"
@@ -702,37 +692,30 @@ let make = (~components=MarkdownComponents.default) => {
         confidence as your codebase grows.`}
       keywords=["ReScript", "rescriptlang", "JavaScript", "JS", "TypeScript"]
     />
-    <div className="mt-4 xs:mt-16">
-      <div className="text-gray-80 text-18 z">
-        <div className="absolute w-full top-16">
-          // Enable this when v13 is released
-          // <Banner>
-          //   {React.string("ReScript 12 is out! Read the ")}
-          //   <ReactRouter.Link to=#"/blog/release-12-0-0" className="underline">
-          //     {React.string("announcement blog post")}
-          //   </ReactRouter.Link>
-          //   {React.string(".")}
-          // </Banner>
-          <div className="relative overflow-hidden pb-32">
-            <main className="mt-10 min-w-320 lg:align-center w-full">
-              <div className="">
-                <div className="w-full">
-                  <div className="mt-16 md:mt-32 lg:mt-40 mb-12">
-                    <Intro />
-                  </div>
-                  <PlaygroundHero />
-                  <QuickInstall />
-                  <MainUSP />
-                  <OtherSellingPoints />
-                  <TrustedBy />
-                  <CuratedResources />
-                </div>
-              </div>
-            </main>
+    // Keep the inherited typography and stacking context on the absolute shell while removing the inert wrapper chain around the page content.
+    <div className="absolute top-16 z w-full text-18 text-gray-80">
+      // Enable this when v13 is released
+      // <Banner>
+      //   {React.string("ReScript 12 is out! Read the ")}
+      //   <ReactRouter.Link to=#"/blog/release-12-0-0" className="underline">
+      //     {React.string("announcement blog post")}
+      //   </ReactRouter.Link>
+      //   {React.string(".")}
+      // </Banner>
+      <div className="relative overflow-hidden pb-32">
+        <main className="mt-10 min-w-320 w-full lg:align-center">
+          <div className="mt-16 md:mt-32 lg:mt-40 mb-12">
+            <Intro />
           </div>
-          <Footer />
-        </div>
+          <PlaygroundHero />
+          <QuickInstall />
+          <MainUSP />
+          <OtherSellingPoints />
+          <TrustedBy />
+          <CuratedResources />
+        </main>
       </div>
+      <Footer />
     </div>
   </>
 }

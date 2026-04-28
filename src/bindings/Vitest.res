@@ -27,6 +27,9 @@ external viewport: (int, int) => promise<unit> = "viewport"
 @module("vitest-browser-react")
 external render: Jsx.element => promise<element> = "render"
 
+@send
+external unmount: element => promise<unit> = "unmount"
+
 @module("vitest") @scope("expect")
 external element: 'a => element = "element"
 
