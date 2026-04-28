@@ -2180,7 +2180,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   })
 
   <main
-    className={"playground-theme playground-main flex flex-col text-14 " ++
+    className={"playground-theme playground-main flex min-h-[calc(100vh-4rem)] flex-col text-14 " ++
     playgroundThemeClass(theme)}
   >
     <ControlPanel
