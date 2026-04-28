@@ -310,7 +310,11 @@ let make = (
   | ShowFiltered(_, _)
   | ShowAll => React.null
   | ShowDetails(item) =>
-    <div className="mb-16">
+    <div className="DocSearch-content mb-16">
+      <span className="DocSearch-lvl0 sr-only" ariaHidden=true>
+        {React.string("Syntax Lookup")}
+      </span>
+      <h1 className="sr-only"> {React.string(item.name)} </h1>
       <DetailBox summary={item.summary}> children </DetailBox>
     </div>
   }

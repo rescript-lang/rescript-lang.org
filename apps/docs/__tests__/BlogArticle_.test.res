@@ -1,6 +1,8 @@
 open ReactRouter
 open Vitest
 
+@get external textContent: WebAPI.DOMAPI.element => string = "textContent"
+
 let mockAuthor: BlogFrontmatter.author = {
   username: "test-author",
   fullname: "Test Author",
@@ -44,6 +46,30 @@ test("desktop blog article renders header, author, date, and body", async () => 
 
   let wrapper = await screen->getByTestId("blog-article-wrapper")
   await element(wrapper)->toMatchScreenshot("desktop-blog-article")
+})
+
+test("blog article marks body content for DocSearch crawling", async () => {
+  await viewport(1440, 900)
+
+  let _screen = await render(
+    <BrowserRouter>
+      <BlogArticle frontmatter=mockFrontmatter isArchived=false path="/blog/test-article">
+        <p> {React.string("This is the blog post body content for testing.")} </p>
+      </BlogArticle>
+    </BrowserRouter>,
+  )
+
+  switch document->WebAPI.Document.querySelector("article.DocSearch-content") {
+  | Value(_) => ()
+  | Null => failwith("expected blog article body to be marked as DocSearch content")
+  }
+
+  let lvl0 = switch document->WebAPI.Document.querySelector("article .DocSearch-lvl0") {
+  | Value(element) => element
+  | Null => failwith("expected blog article to render a DocSearch lvl0 marker")
+  }
+
+  expect(lvl0->textContent)->toBe("Blog")
 })
 
 test("desktop archived blog article shows warning banner", async () => {

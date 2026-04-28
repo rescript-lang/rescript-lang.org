@@ -72,8 +72,8 @@ let make = (
     <meta key="twitter:creator" name="twitter:creator" content="@ReScriptAssoc" />
     <meta key="twitter:card" name="twitter:card" content="summary_large_image" />
     <link rel="alternate" type_="application/rss+xml" title="ReScript Blog" href="/blog/feed.xml" />
-    // Docsearch meta tags
-    <meta name="docsearch:version" content="v12" />
+    <meta name="docsearch:language" content="en" />
+    <meta name="docsearch:version" content={Constants.docSearchVersionTokens->Array.join(",")} />
     // Robots meta tag
     <meta name="robots" content="index, follow" />
   </>

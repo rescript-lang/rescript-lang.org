@@ -87,6 +87,9 @@ external click: element => promise<unit> = "click"
 external toBe: (expect, 'a) => unit = "toBe"
 
 @send
+external toEqual: (expect, 'a) => unit = "toEqual"
+
+@send
 external toHaveBeenCalled: expect => unit = "toHaveBeenCalled"
 
 /**

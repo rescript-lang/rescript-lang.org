@@ -37,6 +37,7 @@ apps/docs/scripts/gendocs.mjs
 apps/docs/scripts/generate_*.mjs
 apps/docs/scripts/gendocs.jsx
 apps/docs/scripts/generate_*.jsx
+apps/docs/scripts/LogAlgoliaEnvStatus.jsx
 
 # Generated via generate-llms script
 apps/docs/public/llms/manual/**/llm*.txt

@@ -1,13 +1,6 @@
-type version =
-  | Latest
-  | Next
-  | NoVersion
-  | Version(string)
-
 type t = {
   fullpath: array<string>,
   base: array<string>,
-  version: version,
   pagepath: array<string>,
 }
 
@@ -29,8 +22,12 @@ type storageKey =
 
 let getVersionFromStorage: storageKey => option<string>
 
-let getVersionString: t => string
-
 let normalizePath: string => string
 
 let normalizeAnchor: string => string
+
+type anchorIdState
+
+let makeAnchorIdState: unit => anchorIdState
+
+let makeUniqueAnchorId: (~state: anchorIdState, ~title: string) => string

@@ -116,7 +116,6 @@ module Anchor = {
         title=?title
         className="scroll-mt-30 invisible text-gray-60 opacity-50 hover:opacity-100 hover:text-gray-60 hover:cursor-pointer group-hover:visible"
         href={"#" ++ id}
-        id={id}
       >
         <Icon.Hyperlink className="inline-block align-middle text-gray-40" />
       </a>
@@ -127,7 +126,8 @@ module Anchor = {
 
 module H1 = {
   @react.component
-  let make = (~children) => <h1 className="hl-1 mb-6 scroll-mt-0"> children </h1>
+  let make = (~id=?, ~title=?, ~children) =>
+    <h1 ?id ?title className="DocSearch-lvl1 hl-1 mb-6 scroll-mt-0"> children </h1>
 }
 
 module H2 = {
@@ -136,7 +136,7 @@ module H2 = {
     // Children may not be a string
 
     <>
-      <h2 id className="group mt-16 mb-3 hl-3 md:scroll-mt-32 scroll-mt-20">
+      <h2 id className="DocSearch-lvl2 group mt-16 mb-3 hl-3 md:scroll-mt-32 scroll-mt-20">
         children
         <span className="ml-2">
           <Anchor ?title id />
@@ -149,7 +149,7 @@ module H2 = {
 module H3 = {
   @react.component
   let make = (~id, ~children, ~title=?) => {
-    <h3 id className="group mt-8 mb-4 hl-4 scroll-mt-32">
+    <h3 id className="DocSearch-lvl3 group mt-8 mb-4 hl-4 scroll-mt-32">
       children
       <span className="ml-2">
         <Anchor ?title id={id} />
@@ -161,7 +161,7 @@ module H3 = {
 module H4 = {
   @react.component
   let make = (~id, ~children, ~title=?) => {
-    <h4 id className="group mt-8 hl-5 scroll-mt-32">
+    <h4 id className="DocSearch-lvl4 group mt-8 hl-5 scroll-mt-32">
       children
       <span className="ml-2">
         <Anchor ?title id />
@@ -175,7 +175,7 @@ module H5 = {
   let make = (~id, ~children, ~title=?) => {
     <h5
       id
-      className="group mt-12 mb-3 text-12 leading-2 font-sans font-semibold uppercase tracking-wide text-gray-80"
+      className="DocSearch-lvl5 group mt-12 mb-3 text-12 leading-2 font-sans font-semibold uppercase tracking-wide text-gray-80"
     >
       children
       <span className="ml-2">

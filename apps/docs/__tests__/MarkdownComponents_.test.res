@@ -21,6 +21,69 @@ test("renders headings h1 through h5", async () => {
   await element(wrapper)->toMatchScreenshot("markdown-headings")
 })
 
+test("h1 keeps the generated markdown id for DocSearch", async () => {
+  await viewport(1440, 900)
+
+  let _screen = await render(
+    <div>
+      <Markdown.H1 id="heading-level-1"> {React.string("Heading Level 1")} </Markdown.H1>
+    </div>,
+  )
+
+  switch document->WebAPI.Document.querySelector("h1#heading-level-1") {
+  | Value(_) => ()
+  | Null => failwith("expected markdown h1 to keep the generated id")
+  }
+})
+
+test("markdown headings expose explicit DocSearch hierarchy markers", async () => {
+  await viewport(1440, 900)
+
+  let _screen = await render(
+    <div>
+      <Markdown.H1 id="heading-level-1"> {React.string("Heading Level 1")} </Markdown.H1>
+      <Markdown.H2 id="heading-level-2"> {React.string("Heading Level 2")} </Markdown.H2>
+      <Markdown.H3 id="heading-level-3"> {React.string("Heading Level 3")} </Markdown.H3>
+      <Markdown.H4 id="heading-level-4"> {React.string("Heading Level 4")} </Markdown.H4>
+      <Markdown.H5 id="heading-level-5"> {React.string("Heading Level 5")} </Markdown.H5>
+    </div>,
+  )
+
+  switch document->WebAPI.Document.querySelector("h1.DocSearch-lvl1#heading-level-1") {
+  | Value(_) => ()
+  | Null => failwith("expected h1 to expose DocSearch lvl1")
+  }
+  switch document->WebAPI.Document.querySelector("h2.DocSearch-lvl2#heading-level-2") {
+  | Value(_) => ()
+  | Null => failwith("expected h2 to expose DocSearch lvl2")
+  }
+  switch document->WebAPI.Document.querySelector("h3.DocSearch-lvl3#heading-level-3") {
+  | Value(_) => ()
+  | Null => failwith("expected h3 to expose DocSearch lvl3")
+  }
+  switch document->WebAPI.Document.querySelector("h4.DocSearch-lvl4#heading-level-4") {
+  | Value(_) => ()
+  | Null => failwith("expected h4 to expose DocSearch lvl4")
+  }
+  switch document->WebAPI.Document.querySelector("h5.DocSearch-lvl5#heading-level-5") {
+  | Value(_) => ()
+  | Null => failwith("expected h5 to expose DocSearch lvl5")
+  }
+})
+
+test("heading anchor links do not duplicate heading ids", async () => {
+  await viewport(1440, 900)
+
+  let _screen = await render(
+    <div>
+      <Markdown.H2 id="duplicate-check"> {React.string("Duplicate Check")} </Markdown.H2>
+    </div>,
+  )
+
+  let matches = document->WebAPI.Document.querySelectorAll("[id='duplicate-check']")
+  expect(matches.length)->toBe(1)
+})
+
 test("renders paragraph, strong, and intro", async () => {
   await viewport(1440, 900)
 
