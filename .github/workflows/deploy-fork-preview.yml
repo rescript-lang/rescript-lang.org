@@ -81,7 +81,7 @@ jobs:
           workingDirectory: apps/docs
           command: pages deploy out --project-name=rescript-lang-org
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          wranglerVersion: 4.61.1
+          wranglerVersion: 4.85.0
         continue-on-error: true
         env:
           FORCE_COLOR: 0
