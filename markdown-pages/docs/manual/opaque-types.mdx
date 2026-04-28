@@ -1,0 +1,107 @@
+---
+title: "Opaque Types"
+description: "Opaque types syntax and examples for ReScript"
+canonical: "/docs/manual/opaque-types"
+section: "Language Features"
+order: 29
+---
+
+An "opaque type" is a powerful language feature that allows you to hide implementation details from outside a module and to add meaning and safety to primitive types like `string` or `int`.
+
+Real software often has data that needs to be more than just a `string` or an `int`. We have email address, numbers between 1-100, auth tokens, etc... Most of the time we can just say that `type email = string` and move on, but we leave ourselves open to bugs this way. Is `""` a valiud email? Is `-1` a number between 1-00? No. We can add in runtime checks to prevent against these issues, but ReScript can also use opaque types to add type level guardrails for these types of data.
+
+Let's start with out email example using an imaginary `EmailApi` that sends a message to an email address we provide it.
+
+```res
+let sendEmail = (email: string, message: string) => EmailAPI.send(email, string)
+```
+
+We would get failures is we tried to send a message to an invalid email address.
+
+```res
+sendEmail("not_an_email**123")
+```
+
+By using an opaque type we can only allow this function to accept valid email addresses. To create an opaque type you must either create a typed module definition or use a `.resi` file. To make a type opaque we simply provide details to the module itself and limit what we expose through the modules type declaration. By using the `private` keyword in the `.resi` file or module type we can choose if we want outside consumers to see what the primitive type is while still keeping it opaque.
+
+```res
+module Email: {
+  type t // type definition will show up as `type Email.t`
+} = {
+  type t = string
+}
+```
+
+```res
+module Email: {
+  type t = private string // type definition will show up as `type Email.t = string`
+} = {
+  type t = string
+}
+```
+
+Or with `.resi` files.
+
+```res
+// Email.res
+type t = string
+```
+
+```res
+// Email.resi
+type t // or type t = private string
+```
+
+Any of these approaches are valid and it depends on what internal details you want to be visible and if you prefer interface files or module type definitions.
+
+Now let's refactor our `sendEmail` function to use our opaque type.
+
+```res
+module Email: {
+  type t // type definition will show up as `type Email.t`
+  let sendEmail: (t, string) => unit
+} = {
+  type t = string
+  let sendEmail = (email: t, message: t) => EmailAPI.send((email :> string), string)
+}
+```
+
+`:>` is the type coercion operator It cannot be used to change a type to a different primitive value, such as `(42 :> string)`, but we can use it to allow our opaque type to be passed to functions that work on the primitive type that it's based on. Once this is done, the value is now longer the opaque type and it will become the type we coerced it to.n We can always use an opaque type as a primitive type, but we cannot use a primitive type as an opaque type.
+
+We will see a type error if we try and send a primitive `string` to our `sendEmail` function.
+
+```res
+let handleSend = (email: string) => Email.sendEmail(email, "Welcome!") // ERROR! This has type: string But this function argument is expecting: Email.t
+```
+
+But how can we create an `Email.t` now? We have to add a `make` function to our `Email` module that will validate if a string is a valid email.
+
+```res
+module Email: {
+  type t
+  let make: string => Result.t<t, JsError.t>
+  let sendEmail: (t, string) => unit
+} = {
+  type t = string
+  let emailRegex = /^[^@]+@[^@]+\.[^@]+$/
+  let make = (unvalidatedEmail: string) => {
+    switch emailRegex->RegExp.test(unvalidatedEmail) {
+    | true => Ok(unvalidatedEmail)
+    | false => Error(JsError.make("Invalid email address"))
+    }
+  }
+  let sendEmail = (email: t, message: string) => EmailAPI.send((email :> string), message)
+}
+```
+
+When we write our `handleSend` function we now are forced to deal with situation where the email not be valid before we even try to send it.
+
+```res
+let handleSend = (email: string) =>
+  switch email->Email.make {
+  | Ok(email) => Email.sendEmail(email, "Welcome!")
+  | Error(error) => Console.error(error)
+  }
+```
+
+You usually want to try and validate opaque types near the edges of the program, such as reading from a database or user input, so you don't have to make constant checks throughout your code.
