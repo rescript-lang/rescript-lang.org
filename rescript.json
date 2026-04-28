@@ -1,6 +1,10 @@
 {
   "name": "rescript-lang.org-monorepo",
-  "dependencies": ["@rescript-lang/docs"],
+  "dependencies": [
+    "@rescript-lang/shared",
+    "@rescript-lang/playground",
+    "@rescript-lang/docs"
+  ],
   "sources": [],
   "jsx": {
     "preserve": true,

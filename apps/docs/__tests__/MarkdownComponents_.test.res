@@ -204,7 +204,7 @@ test("renders Image with caption", async () => {
     <div dataTestId="image-wrapper">
       <Markdown.Image
         className="rounded-lg border border-gray-90/5 text-gray-60"
-        src="https://rescript-lang.org/lp/community-3.avif"
+        src="/lp/community-3.avif"
         caption="A sample image caption"
       />
     </div>,
@@ -214,6 +214,7 @@ test("renders Image with caption", async () => {
   await element(caption)->toBeVisible
 
   let wrapper = await screen->getByTestId("image-wrapper")
+  await waitForImages("[data-testid='image-wrapper']")
   await element(wrapper)->toMatchScreenshot("markdown-image")
 })
 

@@ -2234,29 +2234,18 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@rescript-lang/docs@workspace:apps/docs"
   dependencies:
-    "@babel/generator": "npm:^7.29.1"
-    "@babel/parser": "npm:^7.29.2"
-    "@babel/traverse": "npm:^7.29.0"
     "@cloudflare/pages-plugin-vercel-og": "npm:^0.1.2"
-    "@codemirror/commands": "npm:^6.10.3"
-    "@codemirror/lang-javascript": "npm:^6.2.5"
-    "@codemirror/language": "npm:^6.12.3"
-    "@codemirror/lint": "npm:^6.9.5"
-    "@codemirror/search": "npm:^6.6.0"
-    "@codemirror/state": "npm:^6.6.0"
-    "@codemirror/view": "npm:^6.41.0"
     "@docsearch/react": "npm:^4.6.2"
     "@headlessui/react": "npm:^2.2.9"
-    "@lezer/highlight": "npm:^1.2.3"
     "@mdx-js/mdx": "npm:^3.1.1"
     "@node-cli/static-server": "npm:^3.1.10"
     "@react-router/dev": "npm:^7.14.0"
     "@react-router/node": "npm:^7.14.0"
-    "@replit/codemirror-vim": "npm:^6.3.0"
+    "@rescript-lang/playground": "workspace:*"
+    "@rescript-lang/shared": "workspace:*"
     "@rescript/react": "npm:^0.14.2"
     "@rescript/webapi": "npm:0.1.0-experimental-29db5f4"
     "@tailwindcss/vite": "npm:^4.2.2"
-    "@tsnobip/rescript-lezer": "npm:^0.8.0"
     "@types/react": "npm:^19.2.14"
     "@vitejs/plugin-react": "npm:^6.0.1"
     "@vitest/browser-playwright": "npm:^4.1.2"
@@ -2272,7 +2261,6 @@ __metadata:
     jsdom: "npm:^26.1.0"
     lefthook: "npm:^2.1.4"
     lightningcss: "npm:^1.32.0"
-    lz-string: "npm:^1.5.0"
     mdast-util-from-markdown: "npm:^2.0.3"
     mdast-util-to-string: "npm:^4.0.0"
     mdast-util-toc: "npm:^7.1.0"
@@ -2306,6 +2294,45 @@ __metadata:
     vitest: "npm:^4.1.2"
     vitest-browser-react: "npm:^2.2.0"
     wrangler: "npm:^4.85.0"
+  languageName: unknown
+  linkType: soft
+
+"@rescript-lang/playground@workspace:*, @rescript-lang/playground@workspace:packages/playground":
+  version: 0.0.0-use.local
+  resolution: "@rescript-lang/playground@workspace:packages/playground"
+  dependencies:
+    "@rescript-lang/shared": "workspace:*"
+    "@rescript/react": "npm:^0.14.2"
+    "@rescript/webapi": "npm:0.1.0-experimental-29db5f4"
+    lz-string: "npm:^1.5.0"
+    react: "npm:^19.2.4"
+    react-dom: "npm:^19.2.4"
+    react-router: "npm:^7.14.0"
+  languageName: unknown
+  linkType: soft
+
+"@rescript-lang/shared@workspace:*, @rescript-lang/shared@workspace:packages/shared":
+  version: 0.0.0-use.local
+  resolution: "@rescript-lang/shared@workspace:packages/shared"
+  dependencies:
+    "@babel/generator": "npm:^7.29.1"
+    "@babel/parser": "npm:^7.29.2"
+    "@babel/traverse": "npm:^7.29.0"
+    "@codemirror/commands": "npm:^6.10.3"
+    "@codemirror/lang-javascript": "npm:^6.2.5"
+    "@codemirror/language": "npm:^6.12.3"
+    "@codemirror/lint": "npm:^6.9.5"
+    "@codemirror/search": "npm:^6.6.0"
+    "@codemirror/state": "npm:^6.6.0"
+    "@codemirror/view": "npm:^6.41.0"
+    "@lezer/highlight": "npm:^1.2.3"
+    "@replit/codemirror-vim": "npm:^6.3.0"
+    "@rescript/react": "npm:^0.14.2"
+    "@rescript/webapi": "npm:0.1.0-experimental-29db5f4"
+    "@tsnobip/rescript-lezer": "npm:^0.8.0"
+    highlight.js: "npm:^11.11.1"
+    react: "npm:^19.2.4"
+    react-dom: "npm:^19.2.4"
   languageName: unknown
   linkType: soft
 
