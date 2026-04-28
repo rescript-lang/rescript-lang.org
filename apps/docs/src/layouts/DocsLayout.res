@@ -8,7 +8,6 @@ let make = (
   ~activeToc: option<TableOfContents.t>=?,
   ~categories: array<Sidebar.Category.t>,
   ~components=MarkdownComponents.default,
-  ~theme=#Reason,
   ~children,
 ) => {
   let {pathname: route} = ReactRouter.useLocation()
@@ -24,7 +23,7 @@ let make = (
   let sidebar =
     <Sidebar isOpen=isSidebarOpen toggle=toggleSidebar preludeSection ?activeToc categories route />
 
-  <SidebarLayout theme sidebarState=(isSidebarOpen, setSidebarOpen) sidebar categories>
+  <SidebarLayout sidebarState=(isSidebarOpen, setSidebarOpen) sidebar categories>
     children
   </SidebarLayout>
 }

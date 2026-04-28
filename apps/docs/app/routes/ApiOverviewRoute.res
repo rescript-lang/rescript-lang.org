@@ -56,7 +56,7 @@ let default = () => {
     <NavbarTertiary sidebar={<DocsSidebar categories />}>
       <SidebarLayout.BreadCrumbs crumbs=breadcrumbs />
     </NavbarTertiary>
-    <DocsLayout categories theme=#Js>
+    <DocsLayout categories>
       <div className="markdown-body">
         <MdxContent compiledMdx />
       </div>

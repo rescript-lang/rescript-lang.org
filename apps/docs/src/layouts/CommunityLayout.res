@@ -23,7 +23,6 @@ let make = (~children, ~categories, ~entries) => {
         activeToc={title: "Overview", entries}
       />}
       sidebarState=(isSidebarOpen, setSidebarOpen)
-      theme=#Reason
     >
       children
     </SidebarLayout>

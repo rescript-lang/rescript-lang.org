@@ -2,7 +2,8 @@ let langShortname = (lang: string) =>
   switch lang {
   | "ocaml" => "ml"
   | "reasonml"
-  | "reason" => "re"
+  | "reason"
+  | "rescript" => "res"
   | "bash" => "sh"
   | "text" => ""
   | rest => rest
