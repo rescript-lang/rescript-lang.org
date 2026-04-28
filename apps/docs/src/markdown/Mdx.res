@@ -188,18 +188,17 @@ let remarkLinkPlugin = makePlugin(_options => (tree, vfile) => remarkLinkPlugin(
 
 // converts the inner text of headings to kebab-case IDs
 let anchorLinkPlugin = (tree, _vfile) => {
+  let headingIds = Url.makeAnchorIdState()
+
   visit(tree, "heading", node => {
     let planText = childrenToString(node)
-    let nodeData = switch node["data"] {
-    | Some(data) => data
-    | None => {
-        "hProperties": {
-          "id": planText->Url.normalizeAnchor,
-          "title": planText,
-        },
-      }
+    let id = Url.makeUniqueAnchorId(~state=headingIds, ~title=planText)
+    node["data"] = {
+      "hProperties": {
+        "id": id,
+        "title": planText,
+      },
     }
-    node["data"] = nodeData
   })
 }
 

@@ -8,6 +8,7 @@ let make = (
   ~activeToc: option<TableOfContents.t>=?,
   ~categories: array<Sidebar.Category.t>,
   ~components=MarkdownComponents.default,
+  ~docSearchLvl0=?,
   ~theme=#Reason,
   ~children,
 ) => {
@@ -24,7 +25,9 @@ let make = (
   let sidebar =
     <Sidebar isOpen=isSidebarOpen toggle=toggleSidebar preludeSection ?activeToc categories route />
 
-  <SidebarPageLayout theme sidebarState=(isSidebarOpen, setSidebarOpen) sidebar categories>
+  <SidebarPageLayout
+    theme sidebarState=(isSidebarOpen, setSidebarOpen) sidebar categories ?docSearchLvl0
+  >
     children
   </SidebarPageLayout>
 }

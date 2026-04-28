@@ -40,7 +40,7 @@ module Anchor: {
 
 module H1: {
   @react.component
-  let make: (~children: React.element) => React.element
+  let make: (~id: string=?, ~title: string=?, ~children: React.element) => React.element
 }
 
 module H2: {

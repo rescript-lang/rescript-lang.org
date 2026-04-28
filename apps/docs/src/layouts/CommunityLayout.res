@@ -24,6 +24,7 @@ let make = (~children, ~categories, ~entries) => {
       />}
       sidebarState=(isSidebarOpen, setSidebarOpen)
       theme=#Reason
+      docSearchLvl0="Community"
     >
       children
     </SidebarPageLayout>

@@ -251,7 +251,7 @@ let useCompilerManager = (
   ~versions: array<Semver.t>,
 ) => {
   let (state, setState) = React.useState(_ => Init)
-  let {pathname} = ReactRouter.useLocation()
+  let {pathname} = PlaygroundReactRouter.useLocation()
 
   // Dispatch method for the public interface
   let dispatch = React.useCallback((action: action): unit => {

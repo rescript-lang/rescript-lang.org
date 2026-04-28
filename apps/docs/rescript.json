@@ -1,7 +1,12 @@
 {
   "name": "@rescript-lang/docs",
   "namespace": false,
-  "dependencies": ["@rescript/react", "@rescript/webapi"],
+  "dependencies": [
+    "@rescript-lang/shared",
+    "@rescript-lang/playground",
+    "@rescript/react",
+    "@rescript/webapi"
+  ],
   "compiler-flags": ["-open WebAPI.Global"],
   "sources": [
     {

@@ -1,0 +1,26 @@
+{
+  "name": "@rescript-lang/shared",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@babel/generator": "^7.29.1",
+    "@babel/parser": "^7.29.2",
+    "@babel/traverse": "^7.29.0",
+    "@codemirror/commands": "^6.10.3",
+    "@codemirror/lang-javascript": "^6.2.5",
+    "@codemirror/language": "^6.12.3",
+    "@codemirror/lint": "^6.9.5",
+    "@codemirror/search": "^6.6.0",
+    "@codemirror/state": "^6.6.0",
+    "@codemirror/view": "^6.41.0",
+    "@lezer/highlight": "^1.2.3",
+    "@replit/codemirror-vim": "^6.3.0",
+    "@rescript/react": "^0.14.2",
+    "@rescript/webapi": "0.1.0-experimental-29db5f4",
+    "@tsnobip/rescript-lezer": "^0.8.0",
+    "highlight.js": "^11.11.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  }
+}

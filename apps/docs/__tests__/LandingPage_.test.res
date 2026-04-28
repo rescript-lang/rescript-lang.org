@@ -48,6 +48,7 @@ let snapshotSection = async (~width, ~height, ~sectionTestId, ~screenshotName) =
 
   let snapshotTarget = await snapshotScreen->getByTestId(sandboxTestId)
   await element(snapshotTarget)->toBeVisible
+  await waitForImages(`[data-testid="${sandboxTestId}"]`)
   await element(snapshotTarget)->toMatchScreenshot(screenshotName)
   await snapshotScreen->unmount
 }

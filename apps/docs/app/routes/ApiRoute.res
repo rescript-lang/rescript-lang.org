@@ -98,23 +98,26 @@ let groupItems = apiDocs => {
 }
 
 let makeBreadcrumbs = (~prefix: Url.breadcrumb, route: Path.t): list<Url.breadcrumb> => {
-  let url = Url.parse((route :> string))
+  let (_, rest) =
+    // Strip the "/docs/manual/api" base path before creating the rest of the breadcrumbs
+    (route :> string)
+    ->String.split("/")
+    ->Array.filter(s => s !== "")
+    ->Array.slice(~start=3)
+    ->Array.reduce((prefix.href, []), (acc, path) => {
+      let (baseHref, ret) = acc
 
-  let (_, rest) = // Strip the "api" part of the url before creating the rest of the breadcrumbs
-  Array.slice(url.pagepath, ~start=1)->Array.reduce((prefix.href, []), (acc, path) => {
-    let (baseHref, ret) = acc
+      let href = baseHref ++ ("/" ++ path)
 
-    let href = baseHref ++ ("/" ++ path)
-
-    Array.push(
-      ret,
-      {
-        Url.name: Url.prettyString(path),
-        href,
-      },
-    )->ignore
-    (href, ret)
-  })
+      Array.push(
+        ret,
+        {
+          Url.name: Url.prettyString(path),
+          href,
+        },
+      )->ignore
+      (href, ret)
+    })
   Array.concat([prefix], rest)->List.fromArray
 }
 

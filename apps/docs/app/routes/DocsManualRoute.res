@@ -86,7 +86,7 @@ let default = () => {
         {React.string("Edit")}
       </a>
     </NavbarTertiary>
-    <DocsLayout categories activeToc>
+    <DocsLayout categories activeToc docSearchLvl0="Manual">
       <div className="markdown-body">
         <MdxContent compiledMdx />
       </div>
