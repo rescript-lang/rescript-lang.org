@@ -1,7 +1,7 @@
 open ReactRouter
 open Vitest
 
-let categories: array<SidebarLayout.Sidebar.Category.t> = [
+let categories: array<SidebarNav.Category.t> = [
   {
     name: "Overview",
     items: [

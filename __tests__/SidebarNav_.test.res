@@ -1,7 +1,7 @@
 open ReactRouter
 open Vitest
 
-let mockCategory: SidebarLayout.Sidebar.Category.t = {
+let mockCategory: SidebarNav.Category.t = {
   name: "Overview",
   items: [
     {name: "Introduction", href: "/docs/manual/introduction"},
@@ -10,18 +10,13 @@ let mockCategory: SidebarLayout.Sidebar.Category.t = {
   ],
 }
 
-let mockBreadcrumbs: list<Url.breadcrumb> = list{
-  {Url.name: "Docs", href: "/docs/"},
-  {Url.name: "Language Manual", href: "/docs/manual/introduction"},
-}
-
 test("sidebar category renders title and nav items", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
     <BrowserRouter>
       <div dataTestId="category-wrapper">
-        <SidebarLayout.Sidebar.Category category=mockCategory onClick={_ => ()} />
+        <SidebarNav.Category category=mockCategory onClick={_ => ()} />
       </div>
     </BrowserRouter>,
   )
@@ -45,7 +40,7 @@ test("sidebar category highlights active item", async () => {
   let screen = await render(
     <BrowserRouter>
       <div dataTestId="category-wrapper">
-        <SidebarLayout.Sidebar.Category
+        <SidebarNav.Category
           category=mockCategory
           isItemActive={item => item.href == "/docs/manual/introduction"}
           onClick={_ => ()}
@@ -59,27 +54,6 @@ test("sidebar category highlights active item", async () => {
 
   let wrapper = await screen->getByTestId("category-wrapper")
   await element(wrapper)->toMatchScreenshot("sidebar-category-active-item")
-})
-
-test("breadcrumbs render path segments", async () => {
-  await viewport(1440, 900)
-
-  let screen = await render(
-    <BrowserRouter>
-      <div dataTestId="breadcrumbs-wrapper">
-        <SidebarLayout.BreadCrumbs crumbs=mockBreadcrumbs />
-      </div>
-    </BrowserRouter>,
-  )
-
-  let docs = await screen->getByText("Docs")
-  await element(docs)->toBeVisible
-
-  let languageManual = await screen->getByText("Language Manual")
-  await element(languageManual)->toBeVisible
-
-  let wrapper = await screen->getByTestId("breadcrumbs-wrapper")
-  await element(wrapper)->toMatchScreenshot("sidebar-breadcrumbs")
 })
 
 let mockTocEntries: TableOfContents.t = {
@@ -97,7 +71,7 @@ test("sidebar category with active TOC renders entries", async () => {
   let screen = await render(
     <MemoryRouter initialEntries=["/docs/manual/introduction"]>
       <div dataTestId="toc-wrapper">
-        <SidebarLayout.Sidebar.Category
+        <SidebarNav.Category
           category=mockCategory
           isItemActive={item => item.href == "/docs/manual/introduction"}
           getActiveToc={item =>
@@ -128,7 +102,7 @@ test("sidebar category with active TOC renders entries", async () => {
 test("sidebar category with many items", async () => {
   await viewport(1440, 900)
 
-  let largeCategory: SidebarLayout.Sidebar.Category.t = {
+  let largeCategory: SidebarNav.Category.t = {
     name: "All Types",
     items: [
       {name: "String", href: "/docs/manual/string"},
@@ -145,7 +119,7 @@ test("sidebar category with many items", async () => {
   let screen = await render(
     <BrowserRouter>
       <div dataTestId="category-wrapper">
-        <SidebarLayout.Sidebar.Category category=largeCategory onClick={_ => ()} />
+        <SidebarNav.Category category=largeCategory onClick={_ => ()} />
       </div>
     </BrowserRouter>,
   )
@@ -158,34 +132,4 @@ test("sidebar category with many items", async () => {
 
   let wrapper = await screen->getByTestId("category-wrapper")
   await element(wrapper)->toMatchScreenshot("sidebar-category-many-items")
-})
-
-test("breadcrumbs with deep path", async () => {
-  await viewport(1440, 900)
-
-  let deepBreadcrumbs: list<Url.breadcrumb> = list{
-    {Url.name: "Docs", href: "/docs/"},
-    {Url.name: "Language Manual", href: "/docs/manual/introduction"},
-    {Url.name: "Advanced", href: "/docs/manual/advanced"},
-  }
-
-  let screen = await render(
-    <BrowserRouter>
-      <div dataTestId="breadcrumbs-wrapper">
-        <SidebarLayout.BreadCrumbs crumbs=deepBreadcrumbs />
-      </div>
-    </BrowserRouter>,
-  )
-
-  let docs = await screen->getByText("Docs")
-  await element(docs)->toBeVisible
-
-  let languageManual = await screen->getByText("Language Manual")
-  await element(languageManual)->toBeVisible
-
-  let advanced = await screen->getByText("Advanced")
-  await element(advanced)->toBeVisible
-
-  let wrapper = await screen->getByTestId("breadcrumbs-wrapper")
-  await element(wrapper)->toMatchScreenshot("sidebar-breadcrumbs-deep")
 })

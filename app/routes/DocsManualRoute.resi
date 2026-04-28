@@ -1,6 +1,6 @@
 type loaderData = {
   compiledMdx: CompiledMdx.t,
-  categories: array<SidebarLayout.Sidebar.Category.t>,
+  categories: array<SidebarNav.Category.t>,
   entries: array<TableOfContents.entry>,
   title: string,
   description: string,

@@ -1,7 +1,7 @@
 // This module is used for all plain prose text related
 // Docs, mostly /docs/manual and similar sections
 
-module Sidebar = SidebarLayout.Sidebar
+module Sidebar = SidebarNav
 
 @react.component
 let make = (
@@ -24,7 +24,7 @@ let make = (
   let sidebar =
     <Sidebar isOpen=isSidebarOpen toggle=toggleSidebar preludeSection ?activeToc categories route />
 
-  <SidebarLayout theme sidebarState=(isSidebarOpen, setSidebarOpen) sidebar categories>
+  <SidebarPageLayout theme sidebarState=(isSidebarOpen, setSidebarOpen) sidebar categories>
     children
-  </SidebarLayout>
+  </SidebarPageLayout>
 }

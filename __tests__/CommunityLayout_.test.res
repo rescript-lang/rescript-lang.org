@@ -1,7 +1,7 @@
 open ReactRouter
 open Vitest
 
-let mockCategories: array<SidebarLayout.Sidebar.Category.t> = [
+let mockCategories: array<SidebarNav.Category.t> = [
   {
     name: "Resources",
     items: [
@@ -66,7 +66,7 @@ test("mobile community layout hides sidebar", async () => {
   await element(wrapper)->toMatchScreenshot("mobile-community-layout")
 })
 
-let mockMultipleCategories: array<SidebarLayout.Sidebar.Category.t> = [
+let mockMultipleCategories: array<SidebarNav.Category.t> = [
   {
     name: "Resources",
     items: [

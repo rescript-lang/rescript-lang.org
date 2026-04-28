@@ -11,7 +11,7 @@ type t = {
   pagepath: array<string>,
 }
 
-// Moved here from original SidebarLayout.UrlPath
+// Moved here from the original sidebar URL helper.
 type breadcrumb = {
   name: string,
   href: string,

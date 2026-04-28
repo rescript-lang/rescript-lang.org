@@ -19,7 +19,7 @@ src/              → Core ReScript source code
   common/         → Shared utilities, hooks, helpers (non-component modules)
   components/     → Reusable React components
   ffi/            → Plain JS interop files (prefer %raw over adding new files here)
-  layouts/        → Page layout components (DocsLayout, SidebarLayout, etc.)
+  layouts/        → Page layout components (DocsLayout, SidebarPageLayout, SidebarNav, etc.)
 markdown-pages/   → MDX content (blog posts, docs, community pages, syntax-lookup)
 data/             → Hand-curated data (API docs JSON, sidebar ordering)
 styles/           → CSS files (Tailwind v4 config in main.css, custom utilities)

@@ -38,7 +38,7 @@ let default = () => {
 
   let editHref = `https://github.com/rescript-lang/rescript-lang.org/blob/master/${filePath}`
 
-  let categories: array<SidebarLayout.Sidebar.Category.t> = []
+  let categories: array<SidebarNav.Category.t> = []
 
   <>
     <Meta title description />

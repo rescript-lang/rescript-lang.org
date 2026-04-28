@@ -1,7 +1,7 @@
 open ReactRouter
 open Vitest
 
-let mockCategories: array<SidebarLayout.Sidebar.Category.t> = [
+let mockCategories: array<SidebarNav.Category.t> = [
   {
     name: "Overview",
     items: [

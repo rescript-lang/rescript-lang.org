@@ -1,8 +1,5 @@
 @react.component
-let make = (
-  ~categories: array<SidebarLayout.Sidebar.Category.t>,
-  ~activeToc: option<TableOfContents.t>=?,
-) => {
+let make = (~categories: array<SidebarNav.Category.t>, ~activeToc: option<TableOfContents.t>=?) => {
   let {pathname} = ReactRouter.useLocation()
   let currentRoute = (pathname :> string)->Url.normalizePath
 
@@ -18,16 +15,16 @@ let make = (
     <div className="mb-56">
       {categories
       ->Array.map(category => {
-        let isItemActive = (navItem: SidebarLayout.Sidebar.NavItem.t) =>
+        let isItemActive = (navItem: SidebarNav.NavItem.t) =>
           navItem.href->Url.normalizePath === currentRoute
-        let getActiveToc = (navItem: SidebarLayout.Sidebar.NavItem.t) =>
+        let getActiveToc = (navItem: SidebarNav.NavItem.t) =>
           if navItem.href->Url.normalizePath === currentRoute {
             activeToc
           } else {
             None
           }
         <div key=category.name>
-          <SidebarLayout.Sidebar.Category
+          <SidebarNav.Category
             isItemActive
             getActiveToc
             category

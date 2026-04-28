@@ -4,7 +4,7 @@ type loaderData = {
   title: string,
   description: string,
   filePath: string,
-  categories: array<SidebarLayout.Sidebar.Category.t>,
+  categories: array<SidebarNav.Category.t>,
 }
 
 let loader: ReactRouter.Loader.t<loaderData>
