@@ -62,7 +62,7 @@ let authors = [
     username: "rescript-association",
     fullname: "ReScript Association",
     role: "Foundation",
-    imgUrl: "https://pbs.twimg.com/profile_images/1045362176117100545/MioTQoTp_400x400.avif",
+    imgUrl: "/brand/rescript-association-mark-inverted-centered.svg",
     social: X("ReScriptAssoc"),
   },
   {
