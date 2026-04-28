@@ -10,6 +10,11 @@ const excludedFiles = ["lib/**", "**/*.res", "**/*.resi"];
 
 export default defineConfig({
   envDir: "../..",
+  // Some older browser-targeted dependencies, notably docson, still reference
+  // Node's `global` identifier. Rewrite it to the standards-based browser global.
+  define: {
+    global: "globalThis",
+  },
   plugins: [
     tailwindcss(),
     reactRouter(),
