@@ -141,7 +141,7 @@ let mockFrontmatterWithArticleImg: BlogFrontmatter.t = {
   co_authors: [],
   date: DateStr.fromString("2025-06-01"),
   previewImg: Nullable.null,
-  articleImg: Nullable.Value("https://rescript-lang.org/brand/rescript-brandmark.svg"),
+  articleImg: Nullable.Value("/brand/rescript-brandmark.svg"),
   title: "Blog Post With Article Image",
   badge: Nullable.Value(Release),
   description: Nullable.Value("A post with an article image."),
@@ -166,6 +166,7 @@ test("desktop blog article with article image shows image", async () => {
   await element(title)->toBeVisible
 
   let wrapper = await screen->getByTestId("blog-article-wrapper")
+  await waitForImages("[data-testid='blog-article-wrapper']")
   await element(wrapper)->toMatchScreenshot("desktop-blog-article-with-image")
 })
 
