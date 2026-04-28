@@ -1,0 +1,42 @@
+{
+  "name": "@rescript-lang/docs",
+  "namespace": false,
+  "dependencies": ["@rescript/react", "@rescript/webapi"],
+  "compiler-flags": ["-open WebAPI.Global"],
+  "sources": [
+    {
+      "dir": "__tests__",
+      "subdirs": true,
+      "type": "dev"
+    },
+    {
+      "dir": "e2e",
+      "subdirs": true,
+      "type": "dev"
+    },
+    {
+      "dir": "app",
+      "subdirs": true
+    },
+    {
+      "dir": "src",
+      "subdirs": true
+    },
+    {
+      "dir": "scripts",
+      "subdirs": true
+    },
+    {
+      "dir": "functions",
+      "subdirs": true
+    }
+  ],
+  "warnings": {
+    "error": "+8"
+  },
+  "gentypeconfig": {
+    "language": "untyped",
+    "shims": [],
+    "module": "es6"
+  }
+}

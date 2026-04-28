@@ -36,7 +36,8 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
 let default = () => {
   let {compiledMdx, entries, title, description, filePath} = ReactRouter.useLoaderData()
 
-  let editHref = `https://github.com/rescript-lang/rescript-lang.org/blob/master/${filePath}`
+  let docsAppRoot = "apps/docs"
+  let editHref = `https://github.com/rescript-lang/rescript-lang.org/blob/master/${docsAppRoot}/${filePath}`
 
   let categories: array<SidebarLayout.Sidebar.Category.t> = []
 

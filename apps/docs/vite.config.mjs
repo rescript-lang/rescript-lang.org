@@ -9,6 +9,7 @@ import pageReload from "vite-plugin-page-reload";
 const excludedFiles = ["lib/**", "**/*.res", "**/*.resi"];
 
 export default defineConfig({
+  envDir: "../..",
   plugins: [
     tailwindcss(),
     reactRouter(),

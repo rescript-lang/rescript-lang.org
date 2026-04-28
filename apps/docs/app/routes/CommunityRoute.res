@@ -52,7 +52,8 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
 let default = () => {
   let {compiledMdx, entries, filePath, categories} = ReactRouter.useLoaderData()
 
-  let editHref = `https://github.com/rescript-lang/rescript-lang.org/blob/master/${filePath}`
+  let docsAppRoot = "apps/docs"
+  let editHref = `https://github.com/rescript-lang/rescript-lang.org/blob/master/${docsAppRoot}/${filePath}`
 
   <>
     <CommunityLayout categories entries>

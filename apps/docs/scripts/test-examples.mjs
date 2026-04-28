@@ -16,6 +16,9 @@ const rescriptCliPath = path.join(
   "cli",
   "rescript.js",
 );
+const rescriptReactPackageRoot = path.dirname(
+  require.resolve("@rescript/react/package.json"),
+);
 
 let makeRescriptJson = ({ preserve = false } = {}) => `{
   "name": "temp",
@@ -505,13 +508,9 @@ let ensureTempProject = ({ tempRoot, preserve = false }) => {
   let tempReactPackage = path.join(tempNodeModules, "react");
   if (!fs.existsSync(tempReactPackage)) {
     fs.mkdirSync(tempNodeModules, { recursive: true });
-    fs.cpSync(
-      path.join(projectRoot, "node_modules", "@rescript", "react"),
-      tempReactPackage,
-      {
-        recursive: true,
-      },
-    );
+    fs.cpSync(rescriptReactPackageRoot, tempReactPackage, {
+      recursive: true,
+    });
   }
 };
 
