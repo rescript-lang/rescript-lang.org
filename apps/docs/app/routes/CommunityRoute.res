@@ -4,14 +4,27 @@ type loaderData = {
   title: string,
   description: string,
   filePath: string,
+  categories: array<SidebarNav.Category.t>,
+}
+
+let communityTableOfContents = async () => {
+  let groups =
+    (await MdxFile.loadAllAttributes(~dir="markdown-pages/community"))
+    ->Mdx.filterMdxPages("community")
+    ->Mdx.groupBySection
+    ->Dict.mapValues(values =>
+      values->Mdx.sortSection->SidebarHelpers.convertToNavItems("/community")
+    )
+
+  SidebarHelpers.getAllGroups(groups, ["Resources"])
 }
 
 let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
   let {pathname} = WebAPI.URL.make(~url=request.url)
   let filePath = MdxFile.resolveFilePath(
     (pathname :> string),
-    ~dir="markdown-pages/docs/guidelines",
-    ~alias="docs/guidelines",
+    ~dir="markdown-pages/community",
+    ~alias="community",
   )
 
   let raw = await Node.Fs.readFile(filePath, "utf-8")
@@ -24,35 +37,34 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
 
   let entries = TocUtils.buildEntries(raw)
 
+  let categories = await communityTableOfContents()
+
   {
     compiledMdx,
     entries,
-    title: `${title} | ReScript Guidelines`,
+    title: `${title} | ReScript Community`,
     description,
     filePath,
+    categories,
   }
 }
 
 let default = () => {
-  let {compiledMdx, entries, title, description, filePath} = ReactRouter.useLoaderData()
+  let {compiledMdx, entries, filePath, categories} = ReactRouter.useLoaderData()
 
-  let editHref = `https://github.com/rescript-lang/rescript-lang.org/blob/master/${filePath}`
-
-  let categories: array<SidebarNav.Category.t> = []
+  let docsAppRoot = "apps/docs"
+  let editHref = `https://github.com/rescript-lang/rescript-lang.org/blob/master/${docsAppRoot}/${filePath}`
 
   <>
-    <Meta title description />
-    <NavbarTertiary>
+    <CommunityLayout categories entries>
+      <div className="markdown-body">
+        <MdxContent compiledMdx />
+      </div>
       <a
         href=editHref className="inline text-14 hover:underline text-fire" rel="noopener noreferrer"
       >
         {React.string("Edit")}
       </a>
-    </NavbarTertiary>
-    <DocsLayout categories activeToc={title, entries}>
-      <div className="markdown-body">
-        <MdxContent compiledMdx />
-      </div>
-    </DocsLayout>
+    </CommunityLayout>
   </>
 }
