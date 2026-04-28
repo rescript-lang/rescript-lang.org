@@ -1,15 +1,6 @@
 module Link = ReactRouter.Link
 
 module Toc = {
-  type raw = Dict.t<{
-    "title": string,
-    "category": Nullable.t<string>,
-    "headers": array<{
-      "name": string,
-      "href": Path.t,
-    }>,
-  }>
-
   @react.component
   let make = (~entries: array<TableOfContents.entry>, ~onClick) =>
     <ul className="mt-3 py-1 mb-4 border-l border-fire-10">

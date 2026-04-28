@@ -1,15 +1,3 @@
-module Toc: {
-  // the plain data coming from the toc file
-  type raw = Dict.t<{
-    "title": string,
-    "category": Nullable.t<string>,
-    "headers": array<{
-      "name": string,
-      "href": Path.t,
-    }>,
-  }>
-}
-
 module NavItem: {
   type t = {
     name: string,
