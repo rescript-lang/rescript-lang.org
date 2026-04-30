@@ -249,6 +249,7 @@ let make = (
   ~sidebar: React.element,
   ~rightSidebar: option<React.element>=?,
   ~categories: option<array<Sidebar.Category.t>>=?,
+  ~docSearchLvl0: option<string>=?,
   ~children,
 ) => {
   let location = ReactRouter.useLocation()
@@ -300,8 +301,15 @@ let make = (
           sidebar
           <main
             dataTestId="side-layout-children"
-            className="px-4 w-full pt-4 md:ml-12 lg:mr-8 mb-32 md:max-w-576 lg:max-w-740 md:pt-8"
+            className="DocSearch-content px-4 w-full pt-4 md:ml-12 lg:mr-8 mb-32 md:max-w-576 lg:max-w-740 md:pt-8"
           >
+            {switch docSearchLvl0 {
+            | Some(value) =>
+              <span className="DocSearch-lvl0 sr-only" ariaHidden=true>
+                {React.string(value)}
+              </span>
+            | None => React.null
+            }}
             children
             pagination
           </main>

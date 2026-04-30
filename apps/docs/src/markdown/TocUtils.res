@@ -1,15 +1,17 @@
 let buildEntries = (raw: string) => {
   let markdownTree = Mdast.fromMarkdown(raw)
-  let tocResult = Mdast.toc(markdownTree, {maxDepth: 2})
+  let headingIds = Url.makeAnchorIdState()
+  let entries: array<TableOfContents.entry> = []
 
-  let headers = Dict.make()
-  Mdast.reduceHeaders(tocResult.map, headers)
-
-  headers
-  ->Dict.toArray
-  ->Array.map(((header, url)): TableOfContents.entry => {
-    header,
-    href: (url :> string),
+  Mdast.visit(markdownTree, "heading", node => {
+    if node["depth"] <= 2 {
+      let header = Mdast.toString(node)
+      entries->Array.push({
+        header,
+        href: "#" ++ Url.makeUniqueAnchorId(~state=headingIds, ~title=header),
+      })
+    }
   })
-  ->Array.slice(~start=2)
+
+  entries->Array.slice(~start=2)
 }

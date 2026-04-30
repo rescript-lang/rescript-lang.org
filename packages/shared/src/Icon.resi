@@ -82,3 +82,23 @@ module Clipboard: {
   @react.component
   let make: (~className: string=?) => React.element
 }
+
+module DocPage: {
+  @react.component
+  let make: unit => React.element
+}
+
+module DocHash: {
+  @react.component
+  let make: unit => React.element
+}
+
+module DocTree: {
+  @react.component
+  let make: unit => React.element
+}
+
+module DocSelect: {
+  @react.component
+  let make: unit => React.element
+}

@@ -20,8 +20,6 @@ jobs:
       contents: read
       deployments: write
       pull-requests: write
-    outputs:
-      deployment-url: ${{ steps.deploy.outputs.deployment-url }}
     steps:
       - uses: actions/checkout@v6.0.2
       - name: Setup Node.js environment
@@ -54,6 +52,9 @@ jobs:
         run: yarn build
         env:
           VITE_DEPLOYMENT_URL: ${{ env.VITE_DEPLOYMENT_URL }}
+          VITE_ALGOLIA_APP_ID: ${{ secrets.VITE_ALGOLIA_APP_ID }}
+          VITE_ALGOLIA_INDEX_NAME: ${{ secrets.VITE_ALGOLIA_INDEX_NAME }}
+          VITE_ALGOLIA_SEARCH_API_KEY: ${{ secrets.VITE_ALGOLIA_SEARCH_API_KEY }}
       - name: Deploy
         if: ${{ github.actor != 'dependabot[bot]' }}
         id: deploy
@@ -64,7 +65,7 @@ jobs:
           workingDirectory: apps/docs
           command: pages deploy out --project-name=rescript-lang-org --branch=${{ env.SAFE_BRANCH }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          wranglerVersion: 4.63.0
+          wranglerVersion: 4.85.0
         env:
           FORCE_COLOR: 0
       - name: Comment PR with deployment link
@@ -98,10 +99,27 @@ jobs:
         run: yarn install
       - name: Build ReScript
         run: yarn build:res
+      - name: Set Cypress base URL
+        id: cypress-base-url
+        shell: bash
+        run: |
+          RAW_BRANCH="${{ github.head_ref || github.ref_name }}"
+
+          if [[ "$RAW_BRANCH" == "master" ]]; then
+             CYPRESS_BASE_URL="https://rescript-lang.org"
+          else
+             SAFE_BRANCH="${RAW_BRANCH//\//-}"
+
+             SAFE_BRANCH=$(echo "$SAFE_BRANCH" | tr '[:upper:]' '[:lower:]')
+
+             CYPRESS_BASE_URL="https://${SAFE_BRANCH}.rescript-lang.pages.dev"
+          fi
+
+          echo "url=$CYPRESS_BASE_URL" >> "$GITHUB_OUTPUT"
       - name: Cypress E2E tests
         uses: cypress-io/github-action@v7
         with:
           install: false
           working-directory: apps/docs
           browser: chrome
-          config: baseUrl=${{ needs.deploy.outputs.deployment-url }}
+          config: baseUrl=${{ steps.cypress-base-url.outputs.url }}

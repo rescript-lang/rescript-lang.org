@@ -23,6 +23,7 @@ let make = (~children, ~categories, ~entries) => {
         activeToc={title: "Overview", entries}
       />}
       sidebarState=(isSidebarOpen, setSidebarOpen)
+      docSearchLvl0="Community"
     >
       children
     </SidebarLayout>

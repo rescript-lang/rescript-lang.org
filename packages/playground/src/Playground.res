@@ -37,7 +37,42 @@ module ExperimentalFeatures = {
 
 let breakingPoint = 1024
 let playgroundThemeStorageKey = "playgroundTheme"
+let playgroundVersionStorageKey = "playground_version"
 let newLightModeToastSeenStorageKey = "playgroundLightModeToastSeen"
+let dropdownLabelNext = "--- Next ---"
+let dropdownLabelReleased = "--- Released ---"
+
+let getLocalStorageItem = key => {
+  try {
+    WebAPI.Storage.getItem(window.localStorage, key)->Null.toOption
+  } catch {
+  | JsExn(_) => None
+  }
+}
+
+let setLocalStorageItem = (~key, ~value) => {
+  try {
+    WebAPI.Storage.setItem(window.localStorage, ~key, ~value)
+  } catch {
+  | JsExn(_) => ()
+  }
+}
+
+let getSessionStorageItem = key => {
+  try {
+    WebAPI.Storage.getItem(window.sessionStorage, key)->Null.toOption
+  } catch {
+  | JsExn(_) => None
+  }
+}
+
+let setSessionStorageItem = (~key, ~value) => {
+  try {
+    WebAPI.Storage.setItem(window.sessionStorage, ~key, ~value)
+  } catch {
+  | JsExn(_) => ()
+  }
+}
 
 let isDarkTheme = (theme: CodeMirror.Theme.t): bool =>
   switch theme {
@@ -124,6 +159,12 @@ module ToggleSelection = {
       ->React.array}
     </div>
   }
+}
+
+module SelectSectionHeader = {
+  @react.component
+  let make = (~value) =>
+    <option disabled=true key=value className="py-4"> {React.string(value)} </option>
 }
 
 module ResultPane = {
@@ -317,9 +358,13 @@ module ResultPane = {
           {React.string(
             "The compiler bundle API returned a result that couldn't be interpreted. Please open an issue on our ",
           )}
-          <Markdown.A href="https://github.com/rescript-lang/rescript-lang.org/issues">
+          <a
+            href="https://github.com/rescript-lang/rescript-lang.org/issues"
+            rel="noopener noreferrer"
+            className="no-underline text-fire hover:underline"
+          >
             {React.string("issue tracker")}
-          </Markdown.A>
+          </a>
           {React.string(".")}
         </PreWrap>
         <div className="mt-4">
@@ -960,7 +1005,7 @@ module Settings = {
             switch id->Semver.parse {
             | Some(v) =>
               onCompilerSelect(v)
-              WebAPI.Storage.setItem(localStorage, ~key=(Url.Playground :> string), ~value=id)
+              setLocalStorageItem(~key=playgroundVersionStorageKey, ~value=id)
             | None => ()
             }
           }}
@@ -1009,7 +1054,7 @@ module Settings = {
                   }->Float.fromInt
                 })
                 <>
-                  <VersionSelect.SectionHeader value=Constants.dropdownLabelNext />
+                  <SelectSectionHeader value=dropdownLabelNext />
                   {versionByOrder
                   ->Array.map(version => {
                     let version = Semver.toString(version)
@@ -1018,7 +1063,7 @@ module Settings = {
                     </option>
                   })
                   ->React.array}
-                  <VersionSelect.SectionHeader value=Constants.dropdownLabelReleased />
+                  <SelectSectionHeader value=dropdownLabelReleased />
                 </>
               }}
               {switch stableVersions {
@@ -1599,7 +1644,7 @@ let initialReContent = `Js.log("Hello Reason 3.6!");`
 
 @react.component
 let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
-  let (searchParams, _) = ReactRouter.useSearchParams()
+  let (searchParams, _) = PlaygroundReactRouter.useSearchParams()
   let containerRef = React.useRef(Nullable.null)
   let editorRef: React.ref<option<CodeMirror.editorInstance>> = React.useRef(None)
   let (_, setScrollLock) = ScrollLockContext.useScrollLock()
@@ -1647,7 +1692,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
       ) {
       | Nullable.Value(version) => version->Semver.parse
       | _ =>
-        switch Url.getVersionFromStorage(Playground) {
+        switch getLocalStorageItem(playgroundVersionStorageKey) {
         | Some(v) => v->Semver.parse
         | None => lastStableVersion
         }
@@ -1711,8 +1756,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
 
   let (keyMap, setKeyMap) = React.useState(() => CodeMirror.KeyMap.Default)
   let (theme, setTheme) = React.useState(() =>
-    WebAPI.Storage.getItem(window.localStorage, playgroundThemeStorageKey)
-    ->Null.toOption
+    getLocalStorageItem(playgroundThemeStorageKey)
     ->Option.map(CodeMirror.Theme.fromString)
     ->Option.getOr(CodeMirror.Theme.Dark)
   )
@@ -1722,8 +1766,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
 
   React.useEffect(() => {
     setKeyMap(_ =>
-      WebAPI.Storage.getItem(window.localStorage, "vimMode")
-      ->Null.toOption
+      getLocalStorageItem("vimMode")
       ->Option.map(CodeMirror.KeyMap.fromString)
       ->Option.getOr(CodeMirror.KeyMap.Default)
     )
@@ -1731,10 +1774,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   }, [])
 
   React.useEffect(() => {
-    let hasSeenToast =
-      WebAPI.Storage.getItem(window.sessionStorage, newLightModeToastSeenStorageKey)
-      ->Null.toOption
-      ->Option.isSome
+    let hasSeenToast = getSessionStorageItem(newLightModeToastSeenStorageKey)->Option.isSome
 
     if hasSeenToast {
       None
@@ -1743,11 +1783,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
 
       let hideToast = () => {
         setShowNewLightModeToast(_ => false)
-        WebAPI.Storage.setItem(
-          window.sessionStorage,
-          ~key=newLightModeToastSeenStorageKey,
-          ~value="true",
-        )
+        setSessionStorageItem(~key=newLightModeToastSeenStorageKey, ~value="true")
       }
 
       let timer = setTimeout(~handler=hideToast, ~timeout=10000)
@@ -1796,21 +1832,13 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   }, [])
 
   React.useEffect(() => {
-    WebAPI.Storage.setItem(
-      window.localStorage,
-      ~key="vimMode",
-      ~value=CodeMirror.KeyMap.toString(keyMap),
-    )
+    setLocalStorageItem(~key="vimMode", ~value=CodeMirror.KeyMap.toString(keyMap))
     editorRef.current->Option.forEach(CodeMirror.editorSetKeyMap(_, keyMap))
     None
   }, [keyMap])
 
   React.useEffect(() => {
-    WebAPI.Storage.setItem(
-      window.localStorage,
-      ~key=playgroundThemeStorageKey,
-      ~value=theme->CodeMirror.Theme.toString,
-    )
+    setLocalStorageItem(~key=playgroundThemeStorageKey, ~value=theme->CodeMirror.Theme.toString)
     editorRef.current->Option.forEach(CodeMirror.editorSetTheme(_, theme))
     None
   }, [theme])
@@ -2152,7 +2180,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   })
 
   <main
-    className={"playground-theme playground-main flex flex-col text-14 " ++
+    className={"playground-theme playground-main flex min-h-[calc(100vh-4rem)] flex-col text-14 " ++
     playgroundThemeClass(theme)}
   >
     <ControlPanel

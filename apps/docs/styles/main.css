@@ -7,6 +7,8 @@
 @source '../src/**/*.{jsx,res}';
 @source '../pages/**/*.{jsx,mdx}';
 @source '../app/**/*.{jsx,mdx}';
+/* Include workspace packages that render inside the docs app, e.g. the playground. */
+@source '../../../packages/*/src/**/*.{jsx,res}';
 
 @theme {
   --radius-*: initial;

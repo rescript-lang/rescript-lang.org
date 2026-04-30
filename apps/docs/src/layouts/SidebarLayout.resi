@@ -65,5 +65,6 @@ let make: (
   ~sidebar: React.element,
   ~rightSidebar: React.element=?,
   ~categories: array<Sidebar.Category.t>=?,
+  ~docSearchLvl0: string=?,
   ~children: React.element,
 ) => React.element
