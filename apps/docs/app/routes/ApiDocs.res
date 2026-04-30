@@ -333,7 +333,7 @@ let make = (props: props) => {
     }
   }
 
-  <SidebarLayout theme=#Reason sidebar rightSidebar docSearchLvl0="API"> children </SidebarLayout>
+  <SidebarLayout sidebar rightSidebar docSearchLvl0="API"> children </SidebarLayout>
 }
 
 module Data = {
