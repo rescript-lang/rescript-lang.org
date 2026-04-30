@@ -9,7 +9,6 @@ let make = (
   ~categories: array<Sidebar.Category.t>,
   ~components=MarkdownComponents.default,
   ~docSearchLvl0=?,
-  ~theme=#Reason,
   ~children,
 ) => {
   let {pathname: route} = ReactRouter.useLocation()
@@ -25,9 +24,7 @@ let make = (
   let sidebar =
     <Sidebar isOpen=isSidebarOpen toggle=toggleSidebar preludeSection ?activeToc categories route />
 
-  <SidebarPageLayout
-    theme sidebarState=(isSidebarOpen, setSidebarOpen) sidebar categories ?docSearchLvl0
-  >
+  <SidebarPageLayout sidebarState=(isSidebarOpen, setSidebarOpen) sidebar categories ?docSearchLvl0>
     children
   </SidebarPageLayout>
 }

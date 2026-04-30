@@ -2,7 +2,6 @@ module Link = ReactRouter.Link
 
 @react.component
 let make = (
-  ~theme: ColorTheme.t,
   ~sidebarState: (bool, (bool => bool) => unit)=(false, _ => ()),
   // (Sidebar, toggleSidebar) ... for toggling sidebar in mobile view
   ~sidebar: React.element,
@@ -12,8 +11,6 @@ let make = (
   ~children,
 ) => {
   let location = ReactRouter.useLocation()
-
-  let theme = ColorTheme.toCN(theme)
 
   let pagination = switch categories {
   | Some(categories) =>
@@ -55,7 +52,7 @@ let make = (
   | None => React.null
   }
 
-  <div className={"min-w-320 " ++ theme}>
+  <div className="min-w-320">
     <div className="w-full">
       <div className="flex lg:justify-center">
         <div className="flex w-full max-w-1280 md:mx-10 ">
