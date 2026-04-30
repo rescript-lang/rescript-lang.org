@@ -44,6 +44,7 @@ jobs:
              SAFE_BRANCH="${RAW_BRANCH//\//-}"
 
              SAFE_BRANCH=$(echo "$SAFE_BRANCH" | tr '[:upper:]' '[:lower:]')
+             SAFE_BRANCH="${SAFE_BRANCH:0:28}"
 
              echo "SAFE_BRANCH=$SAFE_BRANCH" >> "$GITHUB_ENV"
              echo "VITE_DEPLOYMENT_URL=https://${SAFE_BRANCH}.rescript-lang.pages.dev" >> "$GITHUB_ENV"
@@ -111,6 +112,7 @@ jobs:
              SAFE_BRANCH="${RAW_BRANCH//\//-}"
 
              SAFE_BRANCH=$(echo "$SAFE_BRANCH" | tr '[:upper:]' '[:lower:]')
+             SAFE_BRANCH="${SAFE_BRANCH:0:28}"
 
              CYPRESS_BASE_URL="https://${SAFE_BRANCH}.rescript-lang.pages.dev"
           fi
