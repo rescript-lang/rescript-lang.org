@@ -1,6 +1,6 @@
 type loaderData = {
   compiledMdx: CompiledMdx.t,
-  categories: array<SidebarLayout.Sidebar.Category.t>,
+  categories: array<SidebarNav.Category.t>,
   entries: array<TableOfContents.entry>,
   title: string,
   description: string,
@@ -79,7 +79,7 @@ let default = () => {
   <>
     <Meta title description />
     <NavbarTertiary sidebar={<DocsSidebar categories activeToc />}>
-      <SidebarLayout.BreadCrumbs crumbs=breadcrumbs />
+      <Breadcrumbs crumbs=breadcrumbs />
       <a
         href=editHref className="inline text-14 hover:underline text-fire" rel="noopener noreferrer"
       >

@@ -1,4 +1,4 @@
-let categories: array<SidebarLayout.Sidebar.Category.t> = [
+let categories: array<SidebarNav.Category.t> = [
   {
     name: "Overview",
     items: [
@@ -54,7 +54,7 @@ let default = () => {
   <>
     <Meta title description />
     <NavbarTertiary sidebar={<DocsSidebar categories />}>
-      <SidebarLayout.BreadCrumbs crumbs=breadcrumbs />
+      <Breadcrumbs crumbs=breadcrumbs />
     </NavbarTertiary>
     <DocsLayout categories docSearchLvl0="API">
       <div className="markdown-body">

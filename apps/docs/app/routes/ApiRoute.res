@@ -211,7 +211,7 @@ let default = () => {
   <>
     <Meta title description=?docstrings />
     <NavbarTertiary sidebar=sidebarContent>
-      <SidebarLayout.BreadCrumbs crumbs=breadcrumbs />
+      <Breadcrumbs crumbs=breadcrumbs />
     </NavbarTertiary>
     <ApiDocs {...loaderData} />
   </>

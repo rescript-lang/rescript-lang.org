@@ -17,9 +17,9 @@ app/              → React Router app shell (root layout, route definitions, ro
 src/              → Core ReScript source code
   bindings/       → Zero-cost bindings to JS libraries (@module externals)
   common/         → Shared utilities, hooks, helpers (non-component modules)
-  components/     → Reusable React components
+  components/     → Reusable React components (e.g. SidebarNav, Breadcrumbs)
   ffi/            → Plain JS interop files (prefer %raw over adding new files here)
-  layouts/        → Page layout components (DocsLayout, SidebarLayout, etc.)
+  layouts/        → Page layout components (DocsLayout, SidebarPageLayout, etc.)
 markdown-pages/   → MDX content (blog posts, docs, community pages, syntax-lookup)
 data/             → Hand-curated data (API docs JSON, sidebar ordering)
 styles/           → CSS files (Tailwind v4 config in main.css, custom utilities)

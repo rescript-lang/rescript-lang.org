@@ -14,8 +14,8 @@ let make = (~children, ~categories, ~entries) => {
   let (isSidebarOpen, setSidebarOpen) = React.useState(_ => false)
   <>
     <Meta title={`${activePage} | ReScript Community`} />
-    <SidebarLayout
-      sidebar={<SidebarLayout.Sidebar
+    <SidebarPageLayout
+      sidebar={<SidebarNav
         categories
         isOpen={isSidebarOpen}
         route=pathname
@@ -26,6 +26,6 @@ let make = (~children, ~categories, ~entries) => {
       docSearchLvl0="Community"
     >
       children
-    </SidebarLayout>
+    </SidebarPageLayout>
   </>
 }

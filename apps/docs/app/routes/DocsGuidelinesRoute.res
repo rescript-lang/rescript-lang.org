@@ -39,7 +39,7 @@ let default = () => {
   let docsAppRoot = "apps/docs"
   let editHref = `https://github.com/rescript-lang/rescript-lang.org/blob/master/${docsAppRoot}/${filePath}`
 
-  let categories: array<SidebarLayout.Sidebar.Category.t> = []
+  let categories: array<SidebarNav.Category.t> = []
 
   <>
     <Meta title description />

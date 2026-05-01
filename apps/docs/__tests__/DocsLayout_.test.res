@@ -3,7 +3,7 @@ open Vitest
 
 @get external textContent: WebAPI.DOMAPI.element => string = "textContent"
 
-let mockCategories: array<SidebarLayout.Sidebar.Category.t> = [
+let mockCategories: array<SidebarNav.Category.t> = [
   {
     name: "Overview",
     items: [

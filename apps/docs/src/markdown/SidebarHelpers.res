@@ -1,5 +1,5 @@
 let convertToNavItems = (items, rootPath) =>
-  Array.map(items, (item): SidebarLayout.Sidebar.NavItem.t => {
+  Array.map(items, (item): SidebarNav.NavItem.t => {
     let href = switch item.Mdx.slug {
     | Some(slug) => `${rootPath}/${slug}`
     | None => rootPath
@@ -10,7 +10,7 @@ let convertToNavItems = (items, rootPath) =>
     }
   })
 
-let getGroup = (groups, groupName): SidebarLayout.Sidebar.Category.t => {
+let getGroup = (groups, groupName): SidebarNav.Category.t => {
   {
     name: groupName,
     items: groups
@@ -19,5 +19,5 @@ let getGroup = (groups, groupName): SidebarLayout.Sidebar.Category.t => {
   }
 }
 
-let getAllGroups = (groups, groupNames): array<SidebarLayout.Sidebar.Category.t> =>
+let getAllGroups = (groups, groupNames): array<SidebarNav.Category.t> =>
   groupNames->Array.map(item => getGroup(groups, item))
