@@ -19,9 +19,9 @@ module Intro = {
             efficient JavaScript that humans and AI tools can read and understand.`)}
         </p>
         <p className="body-lg text-center text-gray-60 my-4 max-w-md">
-          {React.string(`Its fast compiler and static type system keep feedback loops tight,
-            so you can move quickly with AI assistance while maintaining
-            confidence as your codebase grows.`)}
+          {React.string(`Its fast compiler and static type system keep feedback loops tight for
+            teams using AI tools or coding agents, while maintaining confidence
+            as your codebase grows.`)}
         </p>
         <div className="mt-4 mb-2">
           <ReactRouter.Link to=#"/docs/manual/installation" prefetch=#viewport>
@@ -85,12 +85,6 @@ export {
     <section className="relative mt-20 bg-gray-10">
       <div className="relative flex justify-center w-full">
         <div className="relative w-full pt-6 pb-8 sm:px-8 md:px-16 max-w-[1400px]">
-          <div className="relative z-2 mx-auto mb-10 max-w-3xl text-center">
-            <h2 className="hl-2 text-gray-80"> {React.string("Readable in. Predictable out.")} </h2>
-            <p className="body-lg text-gray-60 mt-4">
-              {React.string(`Readable source, predictable output, and fast compiler feedback make ReScript easier to work with. Those qualities help while learning, debugging, reviewing changes, or bringing coding agents into the workflow.`)}
-            </p>
-          </div>
           // Playground widget
           <div
             className="relative z-2 flex flex-col md:flex-row bg-gray-90 mx-auto sm:rounded-lg max-w-1280"
@@ -391,7 +385,8 @@ module MainUSP = {
       feedback loop for any codebase size. Refactor code, pull complex changes,
       or switch to feature branches as you please. No sluggish CI builds, stale
       caches, wrong type hints, or memory hungry language servers that slow you
-      down.`)}
+      down. The same tight loop helps developers using coding agents validate
+      small edits without leaving the normal build workflow.`)}
         </p>
       </>}
     />
@@ -454,11 +449,11 @@ module AgenticWorkflows = {
   let points = [
     {
       title: "Clear code is easier to guide",
-      body: "ReScript's small, consistent syntax makes prompts easier to ground and generated edits easier to review.",
+      body: "ReScript's small, consistent syntax helps developers give agents grounded context and keeps generated edits easier to review.",
     },
     {
       title: "Compiler feedback helps close the loop",
-      body: "When a change breaks a contract, the compiler points to it directly. That gives both humans and tools a faster path to a correct fix.",
+      body: "When a change breaks a contract, the compiler points to it directly. That gives developers and agents a faster path to a correct fix.",
     },
     {
       title: "The output stays readable",
@@ -473,7 +468,7 @@ module AgenticWorkflows = {
         <div className="max-w-3xl">
           <h2 className="hl-1 text-gray-80"> {React.string("Working with coding agents")} </h2>
           <p className="body-lg text-gray-60 mt-4">
-            {React.string(`The same qualities that make ReScript pleasant for people also make it a good fit for coding agents: clear source, fast feedback, and JavaScript output that stays easy to inspect.`)}
+            {React.string(`For teams using coding agents, the same qualities that make ReScript pleasant for people also keep generated changes easier to guide and review: clear source, fast feedback, and JavaScript output that stays easy to inspect.`)}
           </p>
         </div>
         <div className="grid gap-6 mt-12 lg:mt-16 md:grid-cols-3">
@@ -757,9 +752,9 @@ let make = (~components=MarkdownComponents.default) => {
       title="The ReScript Programming Language"
       description={`JavaScript Made Simple for Humans and AI. ReScript is a strongly typed language that compiles to clean,
         efficient JavaScript that humans and AI tools can read and understand.
-        Its fast compiler and static type system keep feedback loops tight,
-        so you can move quickly with AI assistance while maintaining
-        confidence as your codebase grows.`}
+        Its fast compiler and static type system keep feedback loops tight for
+        teams using AI tools or coding agents, while maintaining confidence
+        as your codebase grows.`}
       keywords=["ReScript", "rescriptlang", "JavaScript", "JS", "TypeScript"]
     />
     <div className="mt-4 xs:mt-16">
