@@ -9,12 +9,14 @@ canonical: "/docs/manual/api"
 
 ## Stdlib
 
-[Stdlib](/docs/manual/api/stdlib) is ReScript's new builtin standard library.
-It will cover just about you need for day-to-day programming in ReScript and covers most of the built in JavaScript API.
+[Stdlib](/docs/manual/api/stdlib) is ReScript's builtin standard library.
+It contains just what you need for day-to-day programming in ReScript and covers most of the built in JavaScript API along with extra functions that work well in ReScript.
+When possible it will compile directly to the equivelent JavaScript API, for example `[1, 2, 3]->Array.map(a => a + 1)` compiles to `[1, 2, 3].map(a => a + 1)`.
 
 ## Additional Libraries
 
 ReScript ships with these two additional modules in its standard library:
 
-- [Belt](/docs/manual/api/belt): immutable collections and extra helpers not available in JavaScript / [Stdlib](/docs/manual/api/stdlib).
-- [Dom](/docs/manual/api/stdlibdom): Dom related types and modules. Contains our standardized types used by various userland DOM bindings.
+- [WebAPI](https://rescript-lang.github.io/experimental-rescript-webapi/): Experimental, but we expect it to be stable very soon.
+- [Belt](/docs/manual/api/belt): Immutable collections and extra helpers not available in JavaScript / [Stdlib](/docs/manual/api/stdlib).
+- [Dom](/docs/manual/api/stdlibdom): Deprecated Dom related types and modules. You should use the `WebAPI` library instead.
