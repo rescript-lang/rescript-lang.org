@@ -36,6 +36,12 @@ let copyFile = (sourcePath: string, targetPath: string): unit => {
   writeTextFile(targetPath, readMarkdownFile(sourcePath))
 }
 
+let removeLlmsTextFiles = (~llmsDirectory: string): unit => {
+  removeFileIfExists(llmsDirectory->Node.Path.join2("llms.txt"))
+  removeFileIfExists(llmsDirectory->Node.Path.join2("llm-full.txt"))
+  removeFileIfExists(llmsDirectory->Node.Path.join2("llm-small.txt"))
+}
+
 let createDirectoryIfNotExists = (dirPath: string): unit => {
   if !Node.Fs.existsSync(dirPath) {
     Node.Fs.mkdirSync(dirPath)
@@ -129,6 +135,7 @@ let generateFile = (
   ~currentVersion: string,
   ~txtFilePath: string,
   ~staleTxtFilePath: option<string>=?,
+  ~staleVersion: option<string>=?,
   docsDirectory: string,
   llmsDirectory: string,
 ): unit => {
@@ -145,6 +152,11 @@ let generateFile = (
 
   switch staleTxtFilePath {
   | Some(filePath) => removeFileIfExists(filePath)
+  | None => ()
+  }
+
+  switch staleVersion {
+  | Some(version) => removeLlmsTextFiles(~llmsDirectory=llmsDirectory->Node.Path.join2(version))
   | None => ()
   }
 
@@ -172,7 +184,7 @@ let generateFile = (
 }
 
 let currentManualVersion = "v12"
-let currentReactVersion = "latest"
+let currentReactVersion = "v0.14.2"
 
 let manualDocsDirectory = "markdown-pages/docs/manual"
 let reactDocsDirectory = "markdown-pages/docs/react"
@@ -190,6 +202,7 @@ generateFile(
 generateFile(
   ~currentVersion=currentReactVersion,
   ~txtFilePath=reactLlmsDirectory->Node.Path.join2("llms.txt"),
+  ~staleVersion="latest",
   reactDocsDirectory,
   reactLlmsDirectory,
 )

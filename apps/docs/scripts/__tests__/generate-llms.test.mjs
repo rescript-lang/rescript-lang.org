@@ -133,3 +133,40 @@ test("generate_llms writes the default manual index at the site root", () => {
     readFile(root, "public/llms/manual/llm-small.txt"),
   );
 });
+
+test("generate_llms writes versioned ReScript React files", () => {
+  let root = makeWorkspace();
+
+  child_process.execFileSync(process.execPath, [generatorPath], {
+    cwd: root,
+    stdio: "pipe",
+  });
+
+  let currentLlms = readFile(root, "public/llms/react/llms.txt");
+  let versionedLlms = readFile(root, "public/llms/react/v0.14.2/llms.txt");
+
+  assert.doesNotMatch(currentLlms, /<VERSION>/);
+  assert.match(currentLlms, /Current version: v0\.14\.2/);
+  assert.match(
+    currentLlms,
+    /https:\/\/rescript-lang\.org\/llms\/react\/v0\.14\.2\/llm-full\.txt/,
+  );
+  assert.match(
+    currentLlms,
+    /https:\/\/rescript-lang\.org\/llms\/react\/v0\.14\.2\/llm-small\.txt/,
+  );
+
+  assert.equal(
+    fs.existsSync(path.join(root, "public/llms/react/latest/llms.txt")),
+    false,
+  );
+  assert.equal(versionedLlms, currentLlms);
+  assert.equal(
+    readFile(root, "public/llms/react/v0.14.2/llm-full.txt"),
+    readFile(root, "public/llms/react/llm-full.txt"),
+  );
+  assert.equal(
+    readFile(root, "public/llms/react/v0.14.2/llm-small.txt"),
+    readFile(root, "public/llms/react/llm-small.txt"),
+  );
+});
