@@ -4,8 +4,21 @@
 
 ## Documentation Sets
 
-- [Complete documentation](https://rescript-lang.org/llms/manual/<VERSION>/llm-full.txt): The complete ReScript documentation including all examples and additional content
-- [Abridged documentation](https://rescript-lang.org/llms/manual/<VERSION>/llm-small.txt): A minimal version of the ReScript documentation, with the essential content for quick reference
+Current ReScript manual version: <VERSION>.
+
+The root `/llms.txt` file is the default entry point and always describes the current stable manual. Use the versioned files under `/llms/manual/<VERSION>/` when you want a stable path for this manual version.
+
+### Default Current Files
+
+- [LLMs index](https://rescript-lang.org/llms.txt): This file
+- [Complete current documentation](https://rescript-lang.org/llms/manual/llm-full.txt): The complete current ReScript documentation including all examples and additional content
+- [Abridged current documentation](https://rescript-lang.org/llms/manual/llm-small.txt): A minimal current version of the ReScript documentation, with the essential content for quick reference
+
+### Versioned Files
+
+- [<VERSION> LLMs index](https://rescript-lang.org/llms/manual/<VERSION>/llms.txt): This file for ReScript <VERSION>
+- [<VERSION> complete documentation](https://rescript-lang.org/llms/manual/<VERSION>/llm-full.txt): The complete ReScript <VERSION> documentation including all examples and additional content
+- [<VERSION> abridged documentation](https://rescript-lang.org/llms/manual/<VERSION>/llm-small.txt): A minimal ReScript <VERSION> reference with the essential content
 
 ## Individual Package Documentation
 
@@ -13,7 +26,7 @@
 
 ## Notes
 
-- The abridged documentation excludes the detailed examples, and supplementary information
+- The abridged documentation excludes the detailed examples and supplementary information
 - The complete documentation includes all content from the official documentation
 - Package-specific documentation files contain only the content relevant to that package
 - The content is automatically generated from the same source as the official documentation for the specific version

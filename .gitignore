@@ -40,6 +40,7 @@ apps/docs/scripts/generate_*.jsx
 apps/docs/scripts/LogAlgoliaEnvStatus.jsx
 
 # Generated via generate-llms script
+apps/docs/public/llms.txt
 apps/docs/public/llms/manual/**/llm*.txt
 apps/docs/public/llms/react/**/llm*.txt
 apps/docs/markdown-pages/docs/**/**/llms.mdx
