@@ -41,9 +41,7 @@ jobs:
           if [[ "$RAW_BRANCH" == "master" ]]; then
              echo "VITE_DEPLOYMENT_URL=" >> "$GITHUB_ENV"
           else
-             SAFE_BRANCH="${RAW_BRANCH//\//-}"
-
-             SAFE_BRANCH=$(echo "$SAFE_BRANCH" | tr '[:upper:]' '[:lower:]')
+             SAFE_BRANCH=$(echo "$RAW_BRANCH" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9-]+/-/g; s/^-+//; s/-+$//; s/-+/-/g')
              SAFE_BRANCH="${SAFE_BRANCH:0:28}"
 
              echo "SAFE_BRANCH=$SAFE_BRANCH" >> "$GITHUB_ENV"
@@ -109,9 +107,7 @@ jobs:
           if [[ "$RAW_BRANCH" == "master" ]]; then
              CYPRESS_BASE_URL="https://rescript-lang.org"
           else
-             SAFE_BRANCH="${RAW_BRANCH//\//-}"
-
-             SAFE_BRANCH=$(echo "$SAFE_BRANCH" | tr '[:upper:]' '[:lower:]')
+             SAFE_BRANCH=$(echo "$RAW_BRANCH" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9-]+/-/g; s/^-+//; s/-+$//; s/-+/-/g')
              SAFE_BRANCH="${SAFE_BRANCH:0:28}"
 
              CYPRESS_BASE_URL="https://${SAFE_BRANCH}.rescript-lang.pages.dev"
