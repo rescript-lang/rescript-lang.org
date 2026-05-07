@@ -100,6 +100,17 @@ React version: <REACT_VERSION>
 let readFile = (root, filePath) =>
   fs.readFileSync(path.join(root, filePath), "utf8");
 
+let assertOccursInOrder = (content, parts) => {
+  let lastIndex = -1;
+
+  for (let part of parts) {
+    let index = content.indexOf(part);
+    assert.notEqual(index, -1);
+    assert.ok(index > lastIndex);
+    lastIndex = index;
+  }
+};
+
 test("generate_llms writes the default manual index at the site root", () => {
   let root = makeWorkspace();
 
@@ -151,6 +162,15 @@ test("generate_llms writes the default manual index at the site root", () => {
   }
 
   assert.doesNotMatch(currentLlms, /v10\.|v11\.|v12\.|v13\./);
+  let majorVersionLinks = currentLlms.slice(
+    currentLlms.indexOf("v13 LLMs index"),
+  );
+  assertOccursInOrder(majorVersionLinks, [
+    "/llms/manual/v13/llm-full.txt",
+    "/llms/manual/v12/llm-full.txt",
+    "/llms/manual/v11/llm-full.txt",
+    "/llms/manual/v10/llm-full.txt",
+  ]);
 });
 
 test("generate_llms writes versioned ReScript React files", () => {

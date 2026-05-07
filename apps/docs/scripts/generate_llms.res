@@ -243,18 +243,18 @@ let manualMajorVersions = ["v10", "v11", "v12", "v13"]
 let currentReactVersion = "v0.14.2"
 let currentReactRuntimeVersion = "v19.2.4"
 
-let manualVersionLinks = `- [v10 LLMs index](https://rescript-lang.org/llms/manual/v10/llms.txt): The LLM file list for the latest ReScript v10 documentation
-- [v10 complete documentation](https://rescript-lang.org/llms/manual/v10/llm-full.txt): The complete latest ReScript v10 documentation
-- [v10 abridged documentation](https://rescript-lang.org/llms/manual/v10/llm-small.txt): A minimal latest ReScript v10 reference
-- [v11 LLMs index](https://rescript-lang.org/llms/manual/v11/llms.txt): The LLM file list for the latest ReScript v11 documentation
-- [v11 complete documentation](https://rescript-lang.org/llms/manual/v11/llm-full.txt): The complete latest ReScript v11 documentation
-- [v11 abridged documentation](https://rescript-lang.org/llms/manual/v11/llm-small.txt): A minimal latest ReScript v11 reference
+let manualVersionLinks = `- [v13 LLMs index](https://rescript-lang.org/llms/manual/v13/llms.txt): The LLM file list for the latest ReScript v13 documentation
+- [v13 complete documentation](https://rescript-lang.org/llms/manual/v13/llm-full.txt): The complete latest ReScript v13 documentation
+- [v13 abridged documentation](https://rescript-lang.org/llms/manual/v13/llm-small.txt): A minimal latest ReScript v13 reference
 - [v12 LLMs index](https://rescript-lang.org/llms/manual/v12/llms.txt): The LLM file list for the latest ReScript v12 documentation
 - [v12 complete documentation](https://rescript-lang.org/llms/manual/v12/llm-full.txt): The complete latest ReScript v12 documentation
 - [v12 abridged documentation](https://rescript-lang.org/llms/manual/v12/llm-small.txt): A minimal latest ReScript v12 reference
-- [v13 LLMs index](https://rescript-lang.org/llms/manual/v13/llms.txt): The LLM file list for the latest ReScript v13 documentation
-- [v13 complete documentation](https://rescript-lang.org/llms/manual/v13/llm-full.txt): The complete latest ReScript v13 documentation
-- [v13 abridged documentation](https://rescript-lang.org/llms/manual/v13/llm-small.txt): A minimal latest ReScript v13 reference`
+- [v11 LLMs index](https://rescript-lang.org/llms/manual/v11/llms.txt): The LLM file list for the latest ReScript v11 documentation
+- [v11 complete documentation](https://rescript-lang.org/llms/manual/v11/llm-full.txt): The complete latest ReScript v11 documentation
+- [v11 abridged documentation](https://rescript-lang.org/llms/manual/v11/llm-small.txt): A minimal latest ReScript v11 reference
+- [v10 LLMs index](https://rescript-lang.org/llms/manual/v10/llms.txt): The LLM file list for the latest ReScript v10 documentation
+- [v10 complete documentation](https://rescript-lang.org/llms/manual/v10/llm-full.txt): The complete latest ReScript v10 documentation
+- [v10 abridged documentation](https://rescript-lang.org/llms/manual/v10/llm-small.txt): A minimal latest ReScript v10 reference`
 
 let manualDocsDirectory = "markdown-pages/docs/manual"
 let reactDocsDirectory = "markdown-pages/docs/react"
