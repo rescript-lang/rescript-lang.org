@@ -55,6 +55,7 @@ Current version: <VERSION>
 
 - [Complete documentation](https://rescript-lang.org/llms/manual/<VERSION>/llm-full.txt)
 - [Abridged documentation](https://rescript-lang.org/llms/manual/<VERSION>/llm-small.txt)
+<MANUAL_VERSION_LINKS>
 `,
   );
   writeFile(root, "public/llms/manual/llms.txt", "stale manual index");
@@ -75,6 +76,8 @@ Current version: <VERSION>
     `# React LLMs
 
 Current version: <VERSION>
+ReScript React package version: <RESCRIPT_REACT_VERSION>
+React version: <REACT_VERSION>
 
 - [Complete documentation](https://rescript-lang.org/llms/react/<VERSION>/llm-full.txt)
 - [Abridged documentation](https://rescript-lang.org/llms/react/<VERSION>/llm-small.txt)
@@ -107,6 +110,7 @@ test("generate_llms writes the default manual index at the site root", () => {
 
   let currentLlms = readFile(root, "public/llms.txt");
   let versionedLlms = readFile(root, "public/llms/manual/v12/llms.txt");
+  let manualVersions = ["v10", "v11", "v12", "v13"];
 
   assert.doesNotMatch(currentLlms, /<VERSION>/);
   assert.match(currentLlms, /Current version: v12/);
@@ -124,14 +128,29 @@ test("generate_llms writes the default manual index at the site root", () => {
     false,
   );
   assert.equal(versionedLlms, currentLlms);
-  assert.equal(
-    readFile(root, "public/llms/manual/v12/llm-full.txt"),
-    readFile(root, "public/llms/manual/llm-full.txt"),
-  );
-  assert.equal(
-    readFile(root, "public/llms/manual/v12/llm-small.txt"),
-    readFile(root, "public/llms/manual/llm-small.txt"),
-  );
+
+  for (let version of manualVersions) {
+    assert.match(
+      currentLlms,
+      new RegExp(
+        `https://rescript-lang\\.org/llms/manual/${version}/llm-full\\.txt`,
+      ),
+    );
+    assert.equal(
+      readFile(root, `public/llms/manual/${version}/llm-full.txt`),
+      readFile(root, "public/llms/manual/llm-full.txt"),
+    );
+    assert.equal(
+      readFile(root, `public/llms/manual/${version}/llm-small.txt`),
+      readFile(root, "public/llms/manual/llm-small.txt"),
+    );
+    assert.match(
+      readFile(root, `public/llms/manual/${version}/llms.txt`),
+      new RegExp(`Current version: ${version}`),
+    );
+  }
+
+  assert.doesNotMatch(currentLlms, /v10\.|v11\.|v12\.|v13\./);
 });
 
 test("generate_llms writes versioned ReScript React files", () => {
@@ -146,7 +165,10 @@ test("generate_llms writes versioned ReScript React files", () => {
   let versionedLlms = readFile(root, "public/llms/react/v0.14.2/llms.txt");
 
   assert.doesNotMatch(currentLlms, /<VERSION>/);
+  assert.doesNotMatch(currentLlms, /<RESCRIPT_REACT_VERSION>|<REACT_VERSION>/);
   assert.match(currentLlms, /Current version: v0\.14\.2/);
+  assert.match(currentLlms, /ReScript React package version: v0\.14\.2/);
+  assert.match(currentLlms, /React version: v19\.2\.4/);
   assert.match(
     currentLlms,
     /https:\/\/rescript-lang\.org\/llms\/react\/v0\.14\.2\/llm-full\.txt/,

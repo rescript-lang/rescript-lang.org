@@ -88,13 +88,30 @@ let createSmallFile = (content: string, filePath: string): unit => {
   Node.Fs.appendFileSync(filePath, smallContent, "utf8")
 }
 
-let replaceVersionPlaceholder = (content: string, version: string): string => {
-  let regex = RegExp.fromString("<VERSION>", ~flags="g")
-  String.replaceRegExp(content, regex, version)
+let replacePlaceholder = (content: string, placeholder: string, value: string): string => {
+  let regex = RegExp.fromString(placeholder, ~flags="g")
+  String.replaceRegExp(content, regex, value)
+}
+
+let renderTemplate = (
+  content: string,
+  ~version: string,
+  ~manualVersionLinks: string,
+  ~rescriptReactVersion: string,
+  ~reactVersion: string,
+): string => {
+  content
+  ->replacePlaceholder("<VERSION>", version)
+  ->replacePlaceholder("<MANUAL_VERSION_LINKS>", manualVersionLinks)
+  ->replacePlaceholder("<RESCRIPT_REACT_VERSION>", rescriptReactVersion)
+  ->replacePlaceholder("<REACT_VERSION>", reactVersion)
 }
 
 let createLlmsFiles = (
   ~version: string,
+  ~manualVersionLinks: string,
+  ~rescriptReactVersion: string,
+  ~reactVersion: string,
   ~txtFilePath: string,
   docsDirectory: string,
   llmsDirectory: string,
@@ -107,12 +124,22 @@ let createLlmsFiles = (
 
   writeTextFile(
     mdxFilePath,
-    readMarkdownFile(mdxFileTemplatePath)->replaceVersionPlaceholder(version),
+    readMarkdownFile(mdxFileTemplatePath)->renderTemplate(
+      ~version,
+      ~manualVersionLinks,
+      ~rescriptReactVersion,
+      ~reactVersion,
+    ),
   )
 
   writeTextFile(
     txtFilePath,
-    readMarkdownFile(txtFileTemplatePath)->replaceVersionPlaceholder(version),
+    readMarkdownFile(txtFileTemplatePath)->renderTemplate(
+      ~version,
+      ~manualVersionLinks,
+      ~rescriptReactVersion,
+      ~reactVersion,
+    ),
   )
 }
 
@@ -121,18 +148,33 @@ let copyCurrentFilesToVersion = (
   ~llmsDirectory: string,
   ~fullFilePath: string,
   ~smallFilePath: string,
-  ~txtFilePath: string,
+  ~manualVersionLinks: string,
+  ~rescriptReactVersion: string,
+  ~reactVersion: string,
 ): unit => {
   let versionedLlmsDirectory = llmsDirectory->Node.Path.join2(version)
+  let txtFileTemplatePath = llmsDirectory->Node.Path.join2("template.txt")
 
   createDirectoryIfNotExists(versionedLlmsDirectory)
-  copyFile(txtFilePath, versionedLlmsDirectory->Node.Path.join2("llms.txt"))
+  writeTextFile(
+    versionedLlmsDirectory->Node.Path.join2("llms.txt"),
+    readMarkdownFile(txtFileTemplatePath)->renderTemplate(
+      ~version,
+      ~manualVersionLinks,
+      ~rescriptReactVersion,
+      ~reactVersion,
+    ),
+  )
   copyFile(fullFilePath, versionedLlmsDirectory->Node.Path.join2("llm-full.txt"))
   copyFile(smallFilePath, versionedLlmsDirectory->Node.Path.join2("llm-small.txt"))
 }
 
 let generateFile = (
   ~currentVersion: string,
+  ~copyVersions: array<string>,
+  ~manualVersionLinks: string,
+  ~rescriptReactVersion: string,
+  ~reactVersion: string,
   ~txtFilePath: string,
   ~staleTxtFilePath: option<string>=?,
   ~staleVersion: option<string>=?,
@@ -160,7 +202,15 @@ let generateFile = (
   | None => ()
   }
 
-  createLlmsFiles(~version=currentVersion, ~txtFilePath, docsDirectory, llmsDirectory)
+  createLlmsFiles(
+    ~version=currentVersion,
+    ~manualVersionLinks,
+    ~rescriptReactVersion,
+    ~reactVersion,
+    ~txtFilePath,
+    docsDirectory,
+    llmsDirectory,
+  )
 
   docsDirectory
   ->collectFiles
@@ -174,17 +224,37 @@ let generateFile = (
     }
   })
 
-  copyCurrentFilesToVersion(
-    ~version=currentVersion,
-    ~llmsDirectory,
-    ~fullFilePath,
-    ~smallFilePath,
-    ~txtFilePath,
+  copyVersions->Array.forEach(version =>
+    copyCurrentFilesToVersion(
+      ~version,
+      ~llmsDirectory,
+      ~fullFilePath,
+      ~smallFilePath,
+      ~manualVersionLinks,
+      ~rescriptReactVersion,
+      ~reactVersion,
+    )
   )
 }
 
 let currentManualVersion = "v12"
+let manualMajorVersions = ["v10", "v11", "v12", "v13"]
+
 let currentReactVersion = "v0.14.2"
+let currentReactRuntimeVersion = "v19.2.4"
+
+let manualVersionLinks = `- [v10 LLMs index](https://rescript-lang.org/llms/manual/v10/llms.txt): The LLM file list for the latest ReScript v10 documentation
+- [v10 complete documentation](https://rescript-lang.org/llms/manual/v10/llm-full.txt): The complete latest ReScript v10 documentation
+- [v10 abridged documentation](https://rescript-lang.org/llms/manual/v10/llm-small.txt): A minimal latest ReScript v10 reference
+- [v11 LLMs index](https://rescript-lang.org/llms/manual/v11/llms.txt): The LLM file list for the latest ReScript v11 documentation
+- [v11 complete documentation](https://rescript-lang.org/llms/manual/v11/llm-full.txt): The complete latest ReScript v11 documentation
+- [v11 abridged documentation](https://rescript-lang.org/llms/manual/v11/llm-small.txt): A minimal latest ReScript v11 reference
+- [v12 LLMs index](https://rescript-lang.org/llms/manual/v12/llms.txt): The LLM file list for the latest ReScript v12 documentation
+- [v12 complete documentation](https://rescript-lang.org/llms/manual/v12/llm-full.txt): The complete latest ReScript v12 documentation
+- [v12 abridged documentation](https://rescript-lang.org/llms/manual/v12/llm-small.txt): A minimal latest ReScript v12 reference
+- [v13 LLMs index](https://rescript-lang.org/llms/manual/v13/llms.txt): The LLM file list for the latest ReScript v13 documentation
+- [v13 complete documentation](https://rescript-lang.org/llms/manual/v13/llm-full.txt): The complete latest ReScript v13 documentation
+- [v13 abridged documentation](https://rescript-lang.org/llms/manual/v13/llm-small.txt): A minimal latest ReScript v13 reference`
 
 let manualDocsDirectory = "markdown-pages/docs/manual"
 let reactDocsDirectory = "markdown-pages/docs/react"
@@ -194,6 +264,10 @@ let reactLlmsDirectory = "public/llms/react"
 
 generateFile(
   ~currentVersion=currentManualVersion,
+  ~copyVersions=manualMajorVersions,
+  ~manualVersionLinks,
+  ~rescriptReactVersion="",
+  ~reactVersion="",
   ~txtFilePath="public/llms.txt",
   ~staleTxtFilePath="public/llms/manual/llms.txt",
   manualDocsDirectory,
@@ -201,6 +275,10 @@ generateFile(
 )
 generateFile(
   ~currentVersion=currentReactVersion,
+  ~copyVersions=[currentReactVersion],
+  ~manualVersionLinks="",
+  ~rescriptReactVersion=currentReactVersion,
+  ~reactVersion=currentReactRuntimeVersion,
   ~txtFilePath=reactLlmsDirectory->Node.Path.join2("llms.txt"),
   ~staleVersion="latest",
   reactDocsDirectory,
