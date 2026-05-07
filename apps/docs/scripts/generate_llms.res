@@ -93,6 +93,14 @@ let replacePlaceholder = (content: string, placeholder: string, value: string): 
   String.replaceRegExp(content, regex, value)
 }
 
+let manualVersionLabel = (version: string): string => {
+  switch version {
+  | "v12" => "v12 (current version)"
+  | "v13" => "v13 (pre-release version)"
+  | version => version
+  }
+}
+
 let renderTemplate = (
   content: string,
   ~version: string,
@@ -102,6 +110,7 @@ let renderTemplate = (
 ): string => {
   content
   ->replacePlaceholder("<VERSION>", version)
+  ->replacePlaceholder("<MANUAL_VERSION_LABEL>", version->manualVersionLabel)
   ->replacePlaceholder("<MANUAL_VERSION_LINKS>", manualVersionLinks)
   ->replacePlaceholder("<RESCRIPT_REACT_VERSION>", rescriptReactVersion)
   ->replacePlaceholder("<REACT_VERSION>", reactVersion)
@@ -243,12 +252,12 @@ let manualMajorVersions = ["v10", "v11", "v12", "v13"]
 let currentReactVersion = "v0.14.2"
 let currentReactRuntimeVersion = "v19.2.4"
 
-let manualVersionLinks = `- [v13 LLMs index](https://rescript-lang.org/llms/manual/v13/llms.txt): The LLM file list for the latest ReScript v13 documentation
-- [v13 complete documentation](https://rescript-lang.org/llms/manual/v13/llm-full.txt): The complete latest ReScript v13 documentation
-- [v13 abridged documentation](https://rescript-lang.org/llms/manual/v13/llm-small.txt): A minimal latest ReScript v13 reference
-- [v12 LLMs index](https://rescript-lang.org/llms/manual/v12/llms.txt): The LLM file list for the latest ReScript v12 documentation
-- [v12 complete documentation](https://rescript-lang.org/llms/manual/v12/llm-full.txt): The complete latest ReScript v12 documentation
-- [v12 abridged documentation](https://rescript-lang.org/llms/manual/v12/llm-small.txt): A minimal latest ReScript v12 reference
+let manualVersionLinks = `- [v13 pre-release LLMs index](https://rescript-lang.org/llms/manual/v13/llms.txt): The LLM file list for the latest ReScript v13 pre-release documentation
+- [v13 pre-release complete documentation](https://rescript-lang.org/llms/manual/v13/llm-full.txt): The complete latest ReScript v13 pre-release documentation
+- [v13 pre-release abridged documentation](https://rescript-lang.org/llms/manual/v13/llm-small.txt): A minimal latest ReScript v13 pre-release reference
+- [v12 current LLMs index](https://rescript-lang.org/llms/manual/v12/llms.txt): The LLM file list for the current ReScript v12 documentation
+- [v12 current complete documentation](https://rescript-lang.org/llms/manual/v12/llm-full.txt): The complete current ReScript v12 documentation
+- [v12 current abridged documentation](https://rescript-lang.org/llms/manual/v12/llm-small.txt): A minimal current ReScript v12 reference
 - [v11 LLMs index](https://rescript-lang.org/llms/manual/v11/llms.txt): The LLM file list for the latest ReScript v11 documentation
 - [v11 complete documentation](https://rescript-lang.org/llms/manual/v11/llm-full.txt): The complete latest ReScript v11 documentation
 - [v11 abridged documentation](https://rescript-lang.org/llms/manual/v11/llm-small.txt): A minimal latest ReScript v11 reference

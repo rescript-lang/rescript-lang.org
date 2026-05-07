@@ -52,6 +52,7 @@ title: "React Introduction"
     `# Manual LLMs
 
 Current version: <VERSION>
+Version label: <MANUAL_VERSION_LABEL>
 
 - [Complete documentation](https://rescript-lang.org/llms/manual/<VERSION>/llm-full.txt)
 - [Abridged documentation](https://rescript-lang.org/llms/manual/<VERSION>/llm-small.txt)
@@ -121,10 +122,15 @@ test("generate_llms writes the default manual index at the site root", () => {
 
   let currentLlms = readFile(root, "public/llms.txt");
   let versionedLlms = readFile(root, "public/llms/manual/v12/llms.txt");
+  let preReleaseLlms = readFile(root, "public/llms/manual/v13/llms.txt");
   let manualVersions = ["v10", "v11", "v12", "v13"];
 
   assert.doesNotMatch(currentLlms, /<VERSION>/);
+  assert.doesNotMatch(currentLlms, /<MANUAL_VERSION_LABEL>/);
   assert.match(currentLlms, /Current version: v12/);
+  assert.match(currentLlms, /Version label: v12 \(current version\)/);
+  assert.match(currentLlms, /v12 current/i);
+  assert.match(currentLlms, /v13 pre-release/i);
   assert.match(
     currentLlms,
     /https:\/\/rescript-lang\.org\/llms\/manual\/v12\/llm-full\.txt/,
@@ -139,6 +145,7 @@ test("generate_llms writes the default manual index at the site root", () => {
     false,
   );
   assert.equal(versionedLlms, currentLlms);
+  assert.match(preReleaseLlms, /Version label: v13 \(pre-release version\)/);
 
   for (let version of manualVersions) {
     assert.match(
@@ -163,7 +170,7 @@ test("generate_llms writes the default manual index at the site root", () => {
 
   assert.doesNotMatch(currentLlms, /v10\.|v11\.|v12\.|v13\./);
   let majorVersionLinks = currentLlms.slice(
-    currentLlms.indexOf("v13 LLMs index"),
+    currentLlms.indexOf("v13 pre-release LLMs index"),
   );
   assertOccursInOrder(majorVersionLinks, [
     "/llms/manual/v13/llm-full.txt",
