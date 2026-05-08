@@ -3,6 +3,7 @@ type t = [
   | #"/undefined"
   | #"/packages"
   | #"/try"
+  | #"/brand"
   | #"/syntax-lookup"
   | #"/blog"
   | #"/blog/archived"

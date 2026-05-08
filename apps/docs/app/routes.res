@@ -77,6 +77,7 @@ let default = [
   index("./routes/LandingPageRoute.jsx"),
   route("packages", "./routes/PackagesRoute.jsx"),
   route("try", "./routes/TryRoute.jsx"),
+  route("brand", "./routes/BrandRoute.jsx"),
   route("blog", "./routes/BlogRoute.jsx", ~options={id: "blog-index"}),
   route("blog/archived", "./routes/BlogRoute.jsx", ~options={id: "blog-archived"}),
   ...blogArticleRoutes,
