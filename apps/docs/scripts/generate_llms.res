@@ -186,7 +186,7 @@ let generateFile = (
   ~reactVersion: string,
   ~txtFilePath: string,
   ~staleTxtFilePath: option<string>=?,
-  ~staleVersion: option<string>=?,
+  ~staleVersions: array<string>,
   docsDirectory: string,
   llmsDirectory: string,
 ): unit => {
@@ -206,10 +206,9 @@ let generateFile = (
   | None => ()
   }
 
-  switch staleVersion {
-  | Some(version) => removeLlmsTextFiles(~llmsDirectory=llmsDirectory->Node.Path.join2(version))
-  | None => ()
-  }
+  staleVersions->Array.forEach(version =>
+    removeLlmsTextFiles(~llmsDirectory=llmsDirectory->Node.Path.join2(version))
+  )
 
   createLlmsFiles(
     ~version=currentVersion,
@@ -247,7 +246,7 @@ let generateFile = (
 }
 
 let currentManualVersion = "v12"
-let manualMajorVersions = ["v10", "v11", "v12", "v13"]
+let manualMajorVersions = ["v11", "v12", "v13"]
 
 let currentReactVersion = "v0.14.2"
 let currentReactRuntimeVersion = "v19.2.4"
@@ -260,10 +259,7 @@ let manualVersionLinks = `- [v13 pre-release LLMs index](https://rescript-lang.o
 - [v12 current abridged documentation](https://rescript-lang.org/llms/manual/v12/llm-small.txt): A minimal current ReScript v12 reference
 - [v11 LLMs index](https://rescript-lang.org/llms/manual/v11/llms.txt): The LLM file list for the latest ReScript v11 documentation
 - [v11 complete documentation](https://rescript-lang.org/llms/manual/v11/llm-full.txt): The complete latest ReScript v11 documentation
-- [v11 abridged documentation](https://rescript-lang.org/llms/manual/v11/llm-small.txt): A minimal latest ReScript v11 reference
-- [v10 LLMs index](https://rescript-lang.org/llms/manual/v10/llms.txt): The LLM file list for the latest ReScript v10 documentation
-- [v10 complete documentation](https://rescript-lang.org/llms/manual/v10/llm-full.txt): The complete latest ReScript v10 documentation
-- [v10 abridged documentation](https://rescript-lang.org/llms/manual/v10/llm-small.txt): A minimal latest ReScript v10 reference`
+- [v11 abridged documentation](https://rescript-lang.org/llms/manual/v11/llm-small.txt): A minimal latest ReScript v11 reference`
 
 let manualDocsDirectory = "markdown-pages/docs/manual"
 let reactDocsDirectory = "markdown-pages/docs/react"
@@ -279,6 +275,7 @@ generateFile(
   ~reactVersion="",
   ~txtFilePath="public/llms.txt",
   ~staleTxtFilePath="public/llms/manual/llms.txt",
+  ~staleVersions=["v10"],
   manualDocsDirectory,
   manualLlmsDirectory,
 )
@@ -289,7 +286,7 @@ generateFile(
   ~rescriptReactVersion=currentReactVersion,
   ~reactVersion=currentReactRuntimeVersion,
   ~txtFilePath=reactLlmsDirectory->Node.Path.join2("llms.txt"),
-  ~staleVersion="latest",
+  ~staleVersions=["latest"],
   reactDocsDirectory,
   reactLlmsDirectory,
 )

@@ -60,6 +60,9 @@ Version label: <MANUAL_VERSION_LABEL>
 `,
   );
   writeFile(root, "public/llms/manual/llms.txt", "stale manual index");
+  writeFile(root, "public/llms/manual/v10/llms.txt", "stale v10 index");
+  writeFile(root, "public/llms/manual/v10/llm-full.txt", "stale v10 full");
+  writeFile(root, "public/llms/manual/v10/llm-small.txt", "stale v10 small");
 
   writeFile(
     root,
@@ -123,7 +126,7 @@ test("generate_llms writes the default manual index at the site root", () => {
   let currentLlms = readFile(root, "public/llms.txt");
   let versionedLlms = readFile(root, "public/llms/manual/v12/llms.txt");
   let preReleaseLlms = readFile(root, "public/llms/manual/v13/llms.txt");
-  let manualVersions = ["v10", "v11", "v12", "v13"];
+  let manualVersions = ["v11", "v12", "v13"];
 
   assert.doesNotMatch(currentLlms, /<VERSION>/);
   assert.doesNotMatch(currentLlms, /<MANUAL_VERSION_LABEL>/);
@@ -139,9 +142,22 @@ test("generate_llms writes the default manual index at the site root", () => {
     currentLlms,
     /https:\/\/rescript-lang\.org\/llms\/manual\/v12\/llm-small\.txt/,
   );
+  assert.doesNotMatch(currentLlms, /\/llms\/manual\/v10\//);
 
   assert.equal(
     fs.existsSync(path.join(root, "public/llms/manual/llms.txt")),
+    false,
+  );
+  assert.equal(
+    fs.existsSync(path.join(root, "public/llms/manual/v10/llms.txt")),
+    false,
+  );
+  assert.equal(
+    fs.existsSync(path.join(root, "public/llms/manual/v10/llm-full.txt")),
+    false,
+  );
+  assert.equal(
+    fs.existsSync(path.join(root, "public/llms/manual/v10/llm-small.txt")),
     false,
   );
   assert.equal(versionedLlms, currentLlms);
@@ -176,7 +192,6 @@ test("generate_llms writes the default manual index at the site root", () => {
     "/llms/manual/v13/llm-full.txt",
     "/llms/manual/v12/llm-full.txt",
     "/llms/manual/v11/llm-full.txt",
-    "/llms/manual/v10/llm-full.txt",
   ]);
 });
 
