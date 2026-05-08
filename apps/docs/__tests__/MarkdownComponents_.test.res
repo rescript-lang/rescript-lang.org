@@ -360,11 +360,7 @@ test("renders Image with small size", async () => {
 
   let screen = await render(
     <div dataTestId="image-small-wrapper">
-      <Markdown.Image
-        src="https://rescript-lang.org/brand/rescript-brandmark.svg"
-        size=#small
-        caption="Small image"
-      />
+      <Markdown.Image src="/brand/rescript-brandmark.svg" size=#small caption="Small image" />
     </div>,
   )
 
@@ -372,6 +368,7 @@ test("renders Image with small size", async () => {
   await element(caption)->toBeVisible
 
   let wrapper = await screen->getByTestId("image-small-wrapper")
+  await waitForImages("[data-testid='image-small-wrapper']")
   await element(wrapper)->toMatchScreenshot("markdown-image-small")
 })
 

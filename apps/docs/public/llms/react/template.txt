@@ -4,16 +4,95 @@
 
 ## ReScript React Documentation
 
-- [Complete documentation](https://rescript-lang.org/llms/react/<VERSION>/llm-full.txt): The complete ReScript React documentation including all examples and additional content
-- [Abridged documentation](https://rescript-lang.org/llms/react/<VERSION>/llm-small.txt): A minimal version of the ReScript React documentation, with the essential content for quick reference
+Current ReScript React documentation version: <VERSION>.
+ReScript React package version: <RESCRIPT_REACT_VERSION>.
+React version: <REACT_VERSION>.
+
+The unversioned files under `/llms/react/` are the default entry points and always describe the current ReScript React docs. Use the versioned files under `/llms/react/<VERSION>/` when you want a stable path for this ReScript React documentation version.
+
+### Default Current Files
+
+- [LLMs index](https://rescript-lang.org/llms/react/llms.txt): This file
+- [Complete current documentation](https://rescript-lang.org/llms/react/llm-full.txt): The complete current ReScript React documentation including all examples and additional content
+- [Abridged current documentation](https://rescript-lang.org/llms/react/llm-small.txt): A minimal current version of the ReScript React documentation, with the essential content for quick reference
+
+### Versioned Files
+
+- [<VERSION> LLMs index](https://rescript-lang.org/llms/react/<VERSION>/llms.txt): This file for ReScript React <VERSION>
+- [<VERSION> complete documentation](https://rescript-lang.org/llms/react/<VERSION>/llm-full.txt): The complete ReScript React <VERSION> documentation including all examples and additional content
+- [<VERSION> abridged documentation](https://rescript-lang.org/llms/react/<VERSION>/llm-small.txt): A minimal ReScript React <VERSION> reference with the essential content
 
 ## Language Documentation
 
-- [ReScript documentation](https://rescript-lang.org/llms/manual/llms.txt): This is the developer documentation for ReScript.
+- [ReScript documentation](https://rescript-lang.org/llms.txt): This is the developer documentation for ReScript.
+
+## General Guidelines for Agents
+
+### Coding best practices
+
+- Prefer small functions with a single purpose.
+- Use a functional style, but keep code straightforward and readable.
+- Keep files and modules focused.
+- Use the pipe-first operator (`->`) for chaining.
+- Resolve warnings rather than working around them.
+- Do not add type annotations unless they are needed for clarity or to resolve an error. ReScript's type inference is strong.
+
+### ReScript rules
+
+- Target ReScript v12 syntax and APIs.
+- Do not use the legacy `Belt` or `Js` modules. Use the modern standard library and core modules instead.
+- Use the `JSON.t` type for JSON values.
+- Prefer `async` and `await` when working with promises.
+- Do not use `@genType`.
+- Do not use `%raw` unless explicitly asked or there is no clean binding-based alternative.
+- Do not use `Object.magic`.
+- `.res` files should be PascalCase to match ReScript module conventions.
+- Never edit generated `.jsx` or `.mjs` files directly. Edit the corresponding `.res` source and regenerate.
+
+### ReScript v12 syntax traps
+
+- Do not use a `return` keyword. Pattern-match arms must be expressions, not statements.
+  - Wrong: `| Some(_) => return Error(InvalidCompleted)`
+  - Right: `| Some(_) => Error(InvalidCompleted)`
+- Do not use inline record types in function signatures. Declare the type first.
+  - Wrong: `let f = (j: Result.t<{title: string}, e>) => ...`
+  - Right: `type parsed = {title: string}; let f = (j: Result.t<parsed, e>) => ...`
+- The JSON boolean variant is `JSON.Boolean`, not `JSON.Bool`.
+- Use `JSON.parseOrThrow`, not deprecated `JSON.parseExn`.
+- Single-field record values need the field name: `{status: status}`, not `{status}`.
+- `Int.fromString` takes 2 arguments in v12: `Int.fromString(~radix=10, s)`. Wrap it as `s => Int.fromString(~radix=10, s)` when passing it as a callback.
+
+### ReScript React rules
+
+- Use ReScript JSX v4 syntax.
+- `React.useState` takes an initializer function: `let (age, setAge) = React.useState(_ => 4)`.
+- Every expression inside an interpolated string must be a `string`.
+  - Wrong: `` `age = ${42}` ``
+  - Right: `` `age = ${42->Int.toString}` ``
+- `type` is a ReScript keyword. Use `type_` for JSX props: `<button type_="submit" />`.
+- Do not add primitive text directly as a child of a React component. Wrap primitives with `React.string`, `React.int`, `React.float`, or `React.array`.
+  - Wrong: `<h1>Hello</h1>`
+  - Right: `<h1>{React.string("Hello")}</h1>`
+- Use `React.null` to render nothing.
+- Optional props use `?` syntax, such as `<button ?onClick>`.
+- Route modules should expose a loader and default component, and should have matching `.res` and `.resi` files when used by React Router.
+- Only expose a single React component from a module's JavaScript output.
+
+### JavaScript interop rules
+
+- Prefer `@module` externals for npm package bindings.
+- Use `@module` with `@react.component` for external React components.
+- Use `@scope` for binding to object properties.
+- Use `external ... = "%identity"` for zero-cost type coercions when appropriate.
+- Put new reusable bindings in a dedicated bindings module.
+
+### Workflow
+
+Read the relevant bindings and documentation first, then write code. Build and fix one error at a time. Avoid speculative rewrites before confirming the actual API shape. Follow existing project patterns before introducing a new abstraction.
 
 ## Notes
 
-- The abridged documentation excludes the detailed examples, and supplementary information
+- The abridged documentation excludes the detailed examples and supplementary information
 - The complete documentation includes all content from the official documentation
 - Package-specific documentation files contain only the content relevant to that package
 - The content is automatically generated from the same source as the official documentation for the specific version

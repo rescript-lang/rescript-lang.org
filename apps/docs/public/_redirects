@@ -5,6 +5,9 @@
 /docs/manual/next/*  /docs/manual/:splat  308
 /docs/react/latest/* /docs/react/:splat 308
 
+/llms/manual/llms.txt  /llms.txt  307
+/llms/manual/latest/llms.txt  /llms.txt  307
+/llms/manual/next/llms.txt  /llms.txt  307
 /llms/manual/latest/*  /llms/manual/:splat  307
 /llms/manual/next/*  /llms/manual/:splat  307
 

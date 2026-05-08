@@ -22,6 +22,10 @@ export let run = ({
       script: scriptPath("test-hrefs.mjs"),
       args: [],
     },
+    {
+      script: scriptPath("test-redirects.mjs"),
+      args: [],
+    },
   ];
 
   for (let command of commands) {
