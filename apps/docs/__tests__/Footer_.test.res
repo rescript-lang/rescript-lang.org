@@ -15,6 +15,9 @@ test("desktop footer shows all sections and links", async () => {
   let community = await screen->getByText("Community")
   await element(community)->toBeVisible
 
+  let brandAssets = await screen->getByText("Brand Assets")
+  await element(brandAssets)->toBeVisible
+
   let association = await screen->getByText("ReScript Association")
   await element(association)->toBeVisible
 
@@ -41,6 +44,9 @@ test("mobile footer stacks sections vertically", async () => {
 
   let community = await screen->getByText("Community")
   await element(community)->toBeVisible
+
+  let brandAssets = await screen->getByText("Brand Assets")
+  await element(brandAssets)->toBeVisible
 
   let association = await screen->getByText("ReScript Association")
   await element(association)->toBeVisible

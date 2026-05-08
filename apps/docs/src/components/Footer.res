@@ -38,6 +38,9 @@ let make = () => {
                 {React.string("Community")}
               </Link>
             </li>
+            <li>
+              <Link to=#"/brand" className={linkClass}> {React.string("Brand Assets")} </Link>
+            </li>
 
             <li>
               <a href="https://rescript-association.org" className=linkClass>
