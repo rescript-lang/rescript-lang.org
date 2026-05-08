@@ -1,0 +1,381 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: #f6f4ef;
+  color: #1f2933;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+.guide-shell {
+  --guide-page-bg: #f6f4ef;
+  --guide-surface-bg: #ffffff;
+  --guide-panel-bg: #ffffff;
+  --guide-border: #d8d6cf;
+  --guide-border-soft: #e4e1d8;
+  --guide-heading: #102a43;
+  --guide-text: #1f2933;
+  --guide-muted: #52606d;
+  --guide-button-bg: #102a43;
+  --guide-button-border: #102a43;
+  --guide-button-hover-bg: #1f4e79;
+  --guide-button-hover-border: #1f4e79;
+  --guide-button-text: #ffffff;
+  --guide-toggle-bg: #ffffff;
+  --guide-toggle-text: #102a43;
+  --guide-toggle-border: #cbd5e1;
+  --guide-resize-bg: #edeae2;
+  --guide-resize-hover-bg: #93c5fd;
+  display: grid;
+  grid-template-columns:
+    minmax(320px, var(--guide-instructions-width, 50%))
+    8px minmax(480px, 1fr);
+  min-height: 100vh;
+  background: var(--guide-page-bg);
+  color: var(--guide-text);
+}
+
+.guide-screen-size-message {
+  background: #0f172a;
+  color: #cbd5e1;
+  display: none;
+  min-height: 100vh;
+  padding: 32px;
+  place-content: center;
+  text-align: center;
+}
+
+.guide-screen-size-message h1 {
+  color: #f8fafc;
+  font-size: 30px;
+  line-height: 1.2;
+  margin: 0 0 12px;
+}
+
+.guide-screen-size-message p {
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.guide-theme-dark {
+  --guide-page-bg: #0f172a;
+  --guide-surface-bg: #101827;
+  --guide-panel-bg: #0f172a;
+  --guide-border: #334155;
+  --guide-border-soft: #1f2937;
+  --guide-heading: #e5e7eb;
+  --guide-text: #cbd5e1;
+  --guide-muted: #94a3b8;
+  --guide-button-bg: #38bdf8;
+  --guide-button-border: #38bdf8;
+  --guide-button-hover-bg: #0ea5e9;
+  --guide-button-hover-border: #0ea5e9;
+  --guide-button-text: #082f49;
+  --guide-toggle-bg: #111827;
+  --guide-toggle-text: #e5e7eb;
+  --guide-toggle-border: #475569;
+  --guide-resize-bg: #1f2937;
+  --guide-resize-hover-bg: #38bdf8;
+}
+
+.guide-instructions {
+  background: var(--guide-page-bg);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.guide-copy {
+  max-width: 620px;
+}
+
+.guide-copy h1 {
+  color: var(--guide-heading);
+  font-size: 34px;
+  line-height: 1.15;
+  margin: 0 0 22px;
+}
+
+.guide-copy p {
+  margin: 0 0 18px;
+}
+
+.guide-check-status {
+  border-left: 3px solid var(--guide-border);
+  color: var(--guide-muted);
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  gap: 5px;
+  line-height: 1.35;
+  margin-top: 28px;
+  padding-left: 14px;
+}
+
+.guide-check-status-complete {
+  border-color: #16a34a;
+  color: var(--guide-text);
+}
+
+.guide-check-label {
+  color: var(--guide-muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.guide-kicker {
+  color: var(--guide-muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.guide-topbar {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.guide-theme-toggle {
+  background: var(--guide-toggle-bg);
+  border: 1px solid var(--guide-toggle-border);
+  color: var(--guide-toggle-text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 8px 10px;
+}
+
+.guide-theme-toggle:hover {
+  border-color: var(--guide-resize-hover-bg);
+}
+
+.guide-lesson-actions {
+  align-self: flex-start;
+  display: flex;
+  gap: 12px;
+}
+
+.guide-back-button,
+.guide-next-button {
+  background: var(--guide-button-bg);
+  border: 1px solid var(--guide-button-border);
+  color: var(--guide-button-text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 12px 18px;
+}
+
+.guide-back-button {
+  background: transparent;
+  color: var(--guide-text);
+}
+
+.guide-back-button:hover:not(:disabled),
+.guide-next-button:hover:not(:disabled) {
+  background: var(--guide-button-hover-bg);
+  border-color: var(--guide-button-hover-border);
+}
+
+.guide-back-button:disabled,
+.guide-next-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.guide-resize-handle {
+  background: var(--guide-resize-bg);
+  min-height: 0;
+  min-width: 0;
+  transition: background-color 120ms ease;
+}
+
+.guide-resize-handle:hover {
+  background: var(--guide-resize-hover-bg);
+}
+
+.guide-resize-handle-columns {
+  cursor: col-resize;
+}
+
+.guide-resize-handle-rows {
+  cursor: row-resize;
+}
+
+.guide-workspace {
+  display: grid;
+  grid-template-rows: minmax(180px, 1fr) 8px var(--guide-output-height, 220px);
+  min-height: 100vh;
+  background: var(--guide-panel-bg);
+}
+
+.guide-editor-panel,
+.guide-output-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.guide-editor-panel {
+  background: var(--guide-surface-bg);
+}
+
+.guide-label {
+  background: var(--guide-surface-bg);
+  border-bottom: 1px solid var(--guide-border-soft);
+  color: var(--guide-muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0;
+  padding: 10px 14px;
+  text-transform: uppercase;
+}
+
+.guide-editor {
+  flex: 1;
+  font-family: "Roboto Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 0;
+  --playground-editor-bg: #ffffff;
+  --playground-editor-text: #102a43;
+  --playground-editor-cursor: #1f4e79;
+  --playground-editor-active-line: rgba(31, 78, 121, 0.07);
+  --playground-editor-gutter-bg: #f8fafc;
+  --playground-editor-gutter-text: #829ab1;
+  --playground-editor-gutter-border: #d8d6cf;
+  --playground-editor-active-gutter-bg: #eef2f6;
+  --playground-editor-active-gutter-text: #102a43;
+  --playground-editor-selection: rgba(31, 78, 121, 0.2);
+  --playground-editor-selection-match: rgba(45, 125, 210, 0.16);
+  --playground-editor-syntax-keyword: #7b2cbf;
+  --playground-editor-syntax-variable: #102a43;
+  --playground-editor-syntax-type: #b45309;
+  --playground-editor-syntax-string: #0f766e;
+  --playground-editor-syntax-comment: #6b7280;
+  --playground-editor-syntax-namespace-def: #b45309;
+  --playground-editor-syntax-namespace: #2563eb;
+  --playground-editor-syntax-property: #1f4e79;
+  --playground-editor-syntax-attribute: #475569;
+}
+
+.guide-theme-dark .guide-editor {
+  --playground-editor-bg: #101827;
+  --playground-editor-text: #dbeafe;
+  --playground-editor-cursor: #38bdf8;
+  --playground-editor-active-line: rgba(56, 189, 248, 0.12);
+  --playground-editor-gutter-bg: #0f172a;
+  --playground-editor-gutter-text: #64748b;
+  --playground-editor-gutter-border: #334155;
+  --playground-editor-active-gutter-bg: #172033;
+  --playground-editor-active-gutter-text: #e5e7eb;
+  --playground-editor-selection: rgba(56, 189, 248, 0.28);
+  --playground-editor-selection-match: rgba(56, 189, 248, 0.18);
+  --playground-editor-syntax-keyword: #c084fc;
+  --playground-editor-syntax-variable: #dbeafe;
+  --playground-editor-syntax-type: #fbbf24;
+  --playground-editor-syntax-string: #5eead4;
+  --playground-editor-syntax-comment: #94a3b8;
+  --playground-editor-syntax-namespace-def: #fbbf24;
+  --playground-editor-syntax-namespace: #7dd3fc;
+  --playground-editor-syntax-property: #93c5fd;
+  --playground-editor-syntax-attribute: #cbd5e1;
+}
+
+.guide-editor .cm-editor {
+  height: 100%;
+}
+
+.guide-editor .cm-scroller {
+  font-family: inherit;
+}
+
+.guide-output-frame {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.guide-output {
+  background: #111827;
+  color: #d1fae5;
+  flex: 1;
+  font-family: "Roboto Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0;
+  overflow: auto;
+  padding: 18px;
+}
+
+.guide-output-status {
+  color: #e5e7eb;
+  margin-bottom: 14px;
+}
+
+.guide-output-group {
+  margin-top: 18px;
+}
+
+.guide-output-heading {
+  color: #93c5fd;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.guide-output-line {
+  color: inherit;
+  font: inherit;
+  margin: 0 0 8px;
+  white-space: pre-wrap;
+}
+
+.guide-output-line-error {
+  color: #fca5a5;
+}
+
+.guide-output-line-warning {
+  color: #fde68a;
+}
+
+.guide-runtime-frame {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .guide-screen-size-message {
+    display: grid;
+  }
+
+  .guide-shell {
+    display: none;
+  }
+}

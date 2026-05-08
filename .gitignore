@@ -10,6 +10,7 @@ node_modules/
 .next/
 out/
 apps/docs/out/
+apps/guide/out/
 index_data/*.json
 apps/docs/index_data/*.json
 
@@ -25,12 +26,15 @@ apps/docs/temp-jsx-preserve
 .merlin
 lib/
 apps/docs/lib/
+apps/guide/lib/
 packages/*/lib/
 
 .vercel
 
 apps/docs/src/**/*.mjs
 apps/docs/src/**/*.jsx
+apps/guide/src/**/*.mjs
+apps/guide/src/**/*.jsx
 packages/*/src/**/*.mjs
 packages/*/src/**/*.jsx
 apps/docs/scripts/gendocs.mjs
@@ -52,17 +56,26 @@ dist
 build
 apps/docs/dist
 apps/docs/build
+apps/guide/dist
+apps/guide/build
 .react-router
 apps/docs/.react-router
+apps/guide/.react-router
 mdx-manifest.json
 apps/docs/mdx-manifest.json
 
 apps/docs/app/**/*.mjs
 apps/docs/app/**/*.jsx
+apps/guide/app/**/*.mjs
+apps/guide/app/**/*.jsx
+!apps/guide/app/root.jsx
+!apps/guide/app/routes.jsx
 apps/docs/functions/**/*.mjs
 apps/docs/functions/**/*.jsx
 apps/docs/__tests__/**/*.mjs
 apps/docs/__tests__/**/*.jsx
+apps/guide/__tests__/**/*.mjs
+apps/guide/__tests__/**/*.jsx
 apps/docs/e2e/**/*.mjs
 apps/docs/e2e/**/*.jsx
 !_shims.mjs
@@ -95,3 +108,4 @@ apps/docs/.env.local
 !apps/docs/__tests__/__screenshots__/**/*
 .vitest-attachments
 apps/docs/.vitest-attachments
+apps/guide/.vitest-attachments
