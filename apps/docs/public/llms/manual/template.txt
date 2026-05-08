@@ -6,7 +6,7 @@
 
 This ReScript manual major version: <MANUAL_VERSION_LABEL>.
 
-The root `/llms.txt` file is the default entry point and always describes the current stable manual. Use the files under `/llms/manual/v13/` (pre-release version), `/llms/manual/v12/` (current version), or `/llms/manual/v11/` when you want an explicit major-version path. These major-version paths use the latest generated documentation for that major version and avoid full patch numbers in the URL.
+The root `/llms.txt` file is the default entry point and always describes the current stable manual. Use the files under `/llms/manual/v13/` (pre-release version) or `/llms/manual/v12/` (current version) when you want an explicit major-version path. These major-version paths use the latest generated documentation for that major version and avoid full patch numbers in the URL.
 
 ### Default Current Files
 

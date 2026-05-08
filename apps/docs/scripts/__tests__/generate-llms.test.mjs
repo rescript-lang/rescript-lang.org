@@ -63,6 +63,9 @@ Version label: <MANUAL_VERSION_LABEL>
   writeFile(root, "public/llms/manual/v10/llms.txt", "stale v10 index");
   writeFile(root, "public/llms/manual/v10/llm-full.txt", "stale v10 full");
   writeFile(root, "public/llms/manual/v10/llm-small.txt", "stale v10 small");
+  writeFile(root, "public/llms/manual/v11/llms.txt", "stale v11 index");
+  writeFile(root, "public/llms/manual/v11/llm-full.txt", "stale v11 full");
+  writeFile(root, "public/llms/manual/v11/llm-small.txt", "stale v11 small");
 
   writeFile(
     root,
@@ -126,7 +129,7 @@ test("generate_llms writes the default manual index at the site root", () => {
   let currentLlms = readFile(root, "public/llms.txt");
   let versionedLlms = readFile(root, "public/llms/manual/v12/llms.txt");
   let preReleaseLlms = readFile(root, "public/llms/manual/v13/llms.txt");
-  let manualVersions = ["v11", "v12", "v13"];
+  let manualVersions = ["v12", "v13"];
 
   assert.doesNotMatch(currentLlms, /<VERSION>/);
   assert.doesNotMatch(currentLlms, /<MANUAL_VERSION_LABEL>/);
@@ -143,6 +146,7 @@ test("generate_llms writes the default manual index at the site root", () => {
     /https:\/\/rescript-lang\.org\/llms\/manual\/v12\/llm-small\.txt/,
   );
   assert.doesNotMatch(currentLlms, /\/llms\/manual\/v10\//);
+  assert.doesNotMatch(currentLlms, /\/llms\/manual\/v11\//);
 
   assert.equal(
     fs.existsSync(path.join(root, "public/llms/manual/llms.txt")),
@@ -158,6 +162,18 @@ test("generate_llms writes the default manual index at the site root", () => {
   );
   assert.equal(
     fs.existsSync(path.join(root, "public/llms/manual/v10/llm-small.txt")),
+    false,
+  );
+  assert.equal(
+    fs.existsSync(path.join(root, "public/llms/manual/v11/llms.txt")),
+    false,
+  );
+  assert.equal(
+    fs.existsSync(path.join(root, "public/llms/manual/v11/llm-full.txt")),
+    false,
+  );
+  assert.equal(
+    fs.existsSync(path.join(root, "public/llms/manual/v11/llm-small.txt")),
     false,
   );
   assert.equal(versionedLlms, currentLlms);
@@ -191,7 +207,6 @@ test("generate_llms writes the default manual index at the site root", () => {
   assertOccursInOrder(majorVersionLinks, [
     "/llms/manual/v13/llm-full.txt",
     "/llms/manual/v12/llm-full.txt",
-    "/llms/manual/v11/llm-full.txt",
   ]);
 });
 
