@@ -6,7 +6,7 @@ export default {
   ssr: false,
 
   prerender: {
-    concurrency: 4,
+    concurrency: 12,
     async paths({ getStaticPaths }) {
       return [...(await getStaticPaths()), ...stdlibPaths];
     },
