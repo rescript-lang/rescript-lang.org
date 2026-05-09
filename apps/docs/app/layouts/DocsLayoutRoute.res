@@ -1,7 +1,9 @@
 @react.component
 let default = () => {
+  let location = ReactRouter.useLocation()
+
   <>
-    <NavbarSecondary />
+    <NavbarSecondary key={(location.pathname :> string)} />
     <ReactRouter.Outlet />
   </>
 }
