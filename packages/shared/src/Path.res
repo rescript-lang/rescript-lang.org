@@ -310,6 +310,7 @@ type t = [
   | #"/docs/manual/async-await"
   | #"/docs/manual/array-and-list"
   | #"/docs/manual/api"
+  | #"/docs/guides/overview"
   | #"/docs/guidelines/publishing-packages"
   | #"/community/translations"
   | #"/community/roadmap"

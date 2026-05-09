@@ -33,6 +33,13 @@ let make = () => {
       </Link>
       <Link
         prefetch=#intent
+        to=#"/docs/guides/overview"
+        className={isActiveLink(~includes="/docs/guides/", ~route)}
+      >
+        {React.string("Guides")}
+      </Link>
+      <Link
+        prefetch=#intent
         to=#"/syntax-lookup"
         className={isActiveLink(~includes="/syntax-lookup", ~route)}
       >

@@ -105,6 +105,11 @@ describe("Desktop Navigation", () => {
         clickNavLink(~testId="navbar-secondary", ~text="API")
         url()->shouldInclude("/docs/manual/api")->ignore
 
+        // Guides
+        clickNavLink(~testId="navbar-secondary", ~text="Guides")
+        url()->shouldInclude("/docs/guides/overview")->ignore
+        get("h1")->shouldContainText("Guides")->ignore
+
         // Syntax Lookup
         clickNavLink(~testId="navbar-secondary", ~text="Syntax Lookup")
         url()->shouldInclude("/syntax-lookup")->ignore
@@ -197,6 +202,12 @@ describe("Mobile Navigation", () => {
         cyScrollTo("top")
         clickNavLink(~testId="navbar-secondary", ~text="API")
         url()->shouldInclude("/docs/manual/api")->ignore
+
+        // Guides
+        cyScrollTo("top")
+        clickNavLink(~testId="navbar-secondary", ~text="Guides")
+        url()->shouldInclude("/docs/guides/overview")->ignore
+        get("h1")->shouldContainText("Guides")->ignore
 
         // Syntax Lookup
         cyScrollTo("top")
