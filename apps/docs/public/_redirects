@@ -8,6 +8,22 @@
 /llms/manual/llms.txt  /llms.txt  307
 /llms/manual/latest/llms.txt  /llms.txt  307
 /llms/manual/next/llms.txt  /llms.txt  307
+/llms/manual/v13.0.0/llms.txt  /llms/manual/v13/llms.txt  307
+/llms/manual/v13.0.0/llms-full.txt  /llms/manual/v13/llm-full.txt  307
+/llms/manual/v13.0.0/llms-small.txt  /llms/manual/v13/llm-small.txt  307
+/llms/manual/v13.0.0/*  /llms/manual/v13/:splat  307
+/llms/manual/v12.0.0/llms.txt  /llms/manual/v12/llms.txt  307
+/llms/manual/v12.0.0/llms-full.txt  /llms/manual/v12/llm-full.txt  307
+/llms/manual/v12.0.0/llms-small.txt  /llms/manual/v12/llm-small.txt  307
+/llms/manual/v12.0.0/*  /llms/manual/v12/:splat  307
+/llms/manual/v11/llms.txt  /llms/manual/v12/llms.txt  307
+/llms/manual/v11/llms-full.txt  /llms/manual/v12/llm-full.txt  307
+/llms/manual/v11/llms-small.txt  /llms/manual/v12/llm-small.txt  307
+/llms/manual/v11/*  /llms/manual/v12/:splat  307
+/llms/manual/v11.0.0/llms.txt  /llms/manual/v12/llms.txt  307
+/llms/manual/v11.0.0/llms-full.txt  /llms/manual/v12/llm-full.txt  307
+/llms/manual/v11.0.0/llms-small.txt  /llms/manual/v12/llm-small.txt  307
+/llms/manual/v11.0.0/*  /llms/manual/v12/:splat  307
 /llms/manual/latest/*  /llms/manual/:splat  307
 /llms/manual/next/*  /llms/manual/:splat  307
 
