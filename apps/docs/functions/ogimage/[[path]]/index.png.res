@@ -15,119 +15,241 @@ let loadGoogleFont = async (family: string) => {
 
 type context = {request: FetchAPI.request, params: {path: array<string>}}
 
-let onRequest = async ({params}: context) => {
-  let title = params.path[0]->Option.getOr("ReScript")->decodeURIComponent
-  let description = params.path[1]->Option.getOr("ReScript")->decodeURIComponent
+let textResponse = (~status, message) => Response.fromString(message, ~init={status: status})
 
-  // we want to split the title if it contains a |
-  let (title, subTitle, description) = {
-    let titleSegments = title->String.split("|")
-    // if the description contains a `.` we want to split it up and use the first sentence as the subTitle
-    let descriptionSegments = description->String.split(".")
+let parseUrl = url => {
+  try {
+    Some(URL.make(~url))
+  } catch {
+  | _ => None
+  }
+}
 
-    let (subTitle, description) = switch titleSegments[1] {
-    | Some(subTitle) => (Some(subTitle), description)
-    | None =>
-      switch descriptionSegments[1] {
-      | Some(description) => (descriptionSegments[0], description)
-      | None => (None, description)
-      }
-    }
+let normalizeText = value => value->String.trim->String.replaceAllRegExp(/\s+/g, " ")
 
-    (titleSegments[0]->Option.getOr(""), subTitle, description)
+let nonEmptyText = value => {
+  let value = value->normalizeText
+  value == "" ? None : Some(value)
+}
+
+let prefer = (primary, fallback) =>
+  switch primary {
+  | Some(_) => primary
+  | None => fallback
   }
 
-  Cloudflare.imageResponse(
-    <div
-      style={{
-        width: "1200px",
-        height: "630px",
-        background: "#0B0D22",
-        backgroundImage: "linear-gradient(45deg, #0B0D22 70%, #14162c)",
-        color: "#efefef",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-start",
-        textAlign: "left",
-        position: "relative",
-        padding: "0 60px",
-        boxSizing: "border-box",
-      }}
-    >
-      <img
-        src="https://rescript-lang.org/brand/rescript-logo.svg"
-        style={{
-          maxWidth: "300px",
-          objectFit: "contain",
-          marginBottom: "10px",
-        }}
-      />
-      <h1
-        style={{
-          fontSize: "64px",
-          fontWeight: "600",
-          marginBottom: "20px",
-          maxWidth: "996px",
-          fontFamily: "heading",
-          textWrap: "balance",
-        }}
-      >
-        {React.string(title)}
-      </h1>
-      {switch subTitle {
-      | Some(subTitle) =>
-        <h2
-          style={{
-            fontSize: "40px",
-            fontWeight: "600",
-            marginBottom: "20px",
-            maxWidth: "996px",
-            fontFamily: "heading",
-            textWrap: "balance",
-          }}
-        >
-          {React.string(subTitle)}
-        </h2>
-      | None => React.null
-      }}
-      <hr
-        style={{
-          borderTop: "2px solid #efefef",
-          width: "100%",
-        }}
-      />
-      <p
-        style={{
-          fontFamily: "text",
-          fontSize: "28px",
-          lineHeight: "36px",
-          opacity: "0.9",
-          // extra space since X wants to overlay the text
-          maxWidth: "900px",
-          maxHeight: "108px",
-          textWrap: "pretty",
-        }}
-      >
-        {React.string(description)}
-      </p>
-    </div>,
-    {
-      height: 630,
-      width: 1200,
-      fonts: [
-        {
-          data: await loadGoogleFont("Inter:opsz,wght@14..32,600&display=swap"),
-          name: "heading",
-          style: #normal,
-          weight: 600,
-        },
-        {
-          data: await loadGoogleFont("Inter:opsz,wght@14..32,400&display=swap"),
-          name: "text",
-          style: #normal,
-          weight: 400,
-        },
-      ],
-    },
+let readMetaContent = element =>
+  element->Cloudflare.getAttribute("content")->Null.toOption->Option.flatMap(nonEmptyText)
+
+let readMetaKey = element =>
+  switch element->Cloudflare.getAttribute("property")->Null.toOption {
+  | Some(property) => Some(property->String.toLowerCase)
+  | None => element->Cloudflare.getAttribute("name")->Null.toOption->Option.map(String.toLowerCase)
+  }
+
+let extractDocumentText = async response => {
+  let titleText = ref("")
+  let ogTitle = ref(None)
+  let documentTitle = ref(None)
+  let ogDescription = ref(None)
+  let documentDescription = ref(None)
+
+  let rewriter =
+    Cloudflare.htmlRewriter()
+    ->Cloudflare.onElement(
+      "meta",
+      {
+        element: element =>
+          switch (element->readMetaKey, element->readMetaContent) {
+          | (Some("og:title"), Some(content)) => ogTitle := Some(content)
+          | (Some("twitter:title"), Some(content)) => ogTitle := Some(content)
+          | (Some("description"), Some(content)) => documentDescription := Some(content)
+          | (Some("og:description"), Some(content)) => ogDescription := Some(content)
+          | (Some("twitter:description"), Some(content)) => ogDescription := Some(content)
+          | _ => ()
+          },
+      },
+    )
+    ->Cloudflare.onText(
+      "title",
+      {
+        text: chunk => titleText := titleText.contents ++ chunk.text,
+      },
+    )
+
+  let _ = await rewriter->Cloudflare.transform(response)->Response.text
+
+  titleText.contents->nonEmptyText->Option.forEach(title => documentTitle := Some(title))
+
+  let title = prefer(ogTitle.contents, documentTitle.contents)->Option.getOr("ReScript")
+  let description =
+    prefer(ogDescription.contents, documentDescription.contents)->Option.getOr("ReScript")
+
+  (title, description)
+}
+
+let splitPreviewText = (~title, ~description) => {
+  let titleSegments = title->String.split("|")
+  let descriptionSegments = description->String.split(".")
+
+  let (subTitle, description) = switch titleSegments[1] {
+  | Some(subTitle) => (Some(subTitle->normalizeText), description)
+  | None =>
+    switch descriptionSegments[1] {
+    | Some(description) => (descriptionSegments[0]->Option.map(normalizeText), description)
+    | None => (None, description)
+    }
+  }
+
+  (titleSegments[0]->Option.getOr("")->normalizeText, subTitle, description->normalizeText)
+}
+
+let requestedUrl = (~requestUrl: URLAPI.url, ~params) => {
+  switch requestUrl.searchParams->URLSearchParams.get("url")->Nullable.make->Nullable.toOption {
+  | Some(url) => Some(url)
+  | None => params.path[0]->Option.map(decodeURIComponent)
+  }
+}
+
+let isHtmlResponse = (response: FetchAPI.response) =>
+  response.headers
+  ->Headers.get("content-type")
+  ->Null.toOption
+  ->Option.mapOr(false, contentType =>
+    contentType->String.toLowerCase->String.includes("text/html")
   )
+
+let renderImage = async (~requestUrl: URLAPI.url, ~targetUrl: URLAPI.url) => {
+  if targetUrl.origin != requestUrl.origin {
+    textResponse(~status=400, "Open Graph image URL must be same-origin")
+  } else if targetUrl.pathname->String.startsWith("/ogimage/") {
+    textResponse(~status=400, "Open Graph image URL cannot point at the image endpoint")
+  } else {
+    let pageResponse = try {
+      Some(await fetch(targetUrl.href, ~init={redirect: FetchAPI.Error}))
+    } catch {
+    | _ => None
+    }
+
+    switch pageResponse {
+    | None => textResponse(~status=502, "Could not fetch Open Graph image URL")
+    | Some(pageResponse) if !pageResponse.ok =>
+      textResponse(~status=pageResponse.status, "Could not fetch Open Graph image URL")
+    | Some(pageResponse) =>
+      switch pageResponse.url->parseUrl {
+      | Some(responseUrl) if responseUrl.origin != requestUrl.origin =>
+        textResponse(~status=400, "Fetched Open Graph image URL must be same-origin")
+      | Some(_) | None =>
+        if !(pageResponse->isHtmlResponse) {
+          textResponse(~status=415, "Open Graph image URL must return an HTML document")
+        } else {
+          let (title, description) = await pageResponse->extractDocumentText
+          let (title, subTitle, description) = splitPreviewText(~title, ~description)
+
+          await Cloudflare.imageResponse(
+            <div
+              style={{
+                width: "1200px",
+                height: "630px",
+                background: "#0B0D22",
+                backgroundImage: "linear-gradient(45deg, #0B0D22 70%, #14162c)",
+                color: "#efefef",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                textAlign: "left",
+                position: "relative",
+                padding: "0 60px",
+                boxSizing: "border-box",
+              }}
+            >
+              <img
+                src="https://rescript-lang.org/brand/rescript-logo.svg"
+                style={{
+                  maxWidth: "300px",
+                  objectFit: "contain",
+                  marginBottom: "10px",
+                }}
+              />
+              <h1
+                style={{
+                  fontSize: "64px",
+                  fontWeight: "600",
+                  marginBottom: "20px",
+                  maxWidth: "996px",
+                  fontFamily: "heading",
+                  textWrap: "balance",
+                }}
+              >
+                {React.string(title)}
+              </h1>
+              {switch subTitle {
+              | Some(subTitle) =>
+                <h2
+                  style={{
+                    fontSize: "40px",
+                    fontWeight: "600",
+                    marginBottom: "20px",
+                    maxWidth: "996px",
+                    fontFamily: "heading",
+                    textWrap: "balance",
+                  }}
+                >
+                  {React.string(subTitle)}
+                </h2>
+              | None => React.null
+              }}
+              <hr
+                style={{
+                  borderTop: "2px solid #efefef",
+                  width: "100%",
+                }}
+              />
+              <p
+                style={{
+                  fontFamily: "text",
+                  fontSize: "28px",
+                  lineHeight: "36px",
+                  opacity: "0.9",
+                  // extra space since X wants to overlay the text
+                  maxWidth: "900px",
+                  maxHeight: "108px",
+                  textWrap: "pretty",
+                }}
+              >
+                {React.string(description)}
+              </p>
+            </div>,
+            {
+              height: 630,
+              width: 1200,
+              fonts: [
+                {
+                  data: await loadGoogleFont("Inter:opsz,wght@14..32,600&display=swap"),
+                  name: "heading",
+                  style: #normal,
+                  weight: 600,
+                },
+                {
+                  data: await loadGoogleFont("Inter:opsz,wght@14..32,400&display=swap"),
+                  name: "text",
+                  style: #normal,
+                  weight: 400,
+                },
+              ],
+            },
+          )
+        }
+      }
+    }
+  }
+}
+
+let onRequest = async ({request, params}: context) => {
+  let requestUrl = URL.make(~url=request.url)
+
+  switch requestedUrl(~requestUrl, ~params)->Option.flatMap(parseUrl) {
+  | None => textResponse(~status=400, "Missing or invalid url")
+  | Some(targetUrl) => await renderImage(~requestUrl, ~targetUrl)
+  }
 }
