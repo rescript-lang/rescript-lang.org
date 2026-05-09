@@ -14,6 +14,14 @@ let make = (
   ~ogTitle=?,
   ~ogImage=?,
 ) => {
+  let location = ReactRouter.useLocation()
+  let search = location.search->Option.getOr("")
+  let currentUrl = Util.Url.makeAbsoluteUrl((location.pathname :> string) ++ (search :> string))
+  let pageUrl = switch canonical {
+  | Some("") | None => currentUrl
+  | Some(canonical) => Util.Url.makeAbsoluteUrl(canonical)
+  }
+
   let description = description->MetaDescription.shortenForSocialPreview
 
   let title = switch title {
@@ -30,7 +38,7 @@ let make = (
   let ogImage = switch ogImage {
   | None
   | Some("") =>
-    Util.Url.makeOpenGraphImageUrl(title, description)
+    Util.Url.makeOpenGraphImageUrl(pageUrl)
   | Some(ogImage) => ogImage
   }
 

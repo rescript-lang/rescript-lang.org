@@ -127,7 +127,6 @@ let make = (props: props) => {
         siteName="ReScript Blog"
         title={title ++ " | ReScript Blog"}
         description=?{description->Nullable.toOption}
-        ogImage={Util.Url.makeOpenGraphImageUrl(title, description->Nullable.getOr(""))}
       />
       <div className="mb-10 md:mb-20">
         <BlogHeader

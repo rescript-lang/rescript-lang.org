@@ -32,6 +32,24 @@ module Url = {
     regex->RegExp.test(str)
   }
 
+  let baseUrl = () => {
+    let baseUrl = Env.deployment_url->Option.getOr(Env.root_url)
+    baseUrl->Stdlib.String.endsWith("/") ? baseUrl : baseUrl ++ "/"
+  }
+
+  let makeAbsoluteUrl = pathOrUrl => {
+    if isAbsolute(pathOrUrl) {
+      pathOrUrl
+    } else {
+      let path =
+        pathOrUrl->Stdlib.String.startsWith("/")
+          ? pathOrUrl->Stdlib.String.slice(~start=1)
+          : pathOrUrl
+
+      baseUrl() ++ path
+    }
+  }
+
   let getRootPath = path => {
     if path->Stdlib.String.includes("docs/manual") {
       "/docs/manual"
@@ -60,11 +78,8 @@ module Url = {
     }
   }
 
-  let makeOpenGraphImageUrl = (title, description) => {
-    let baseUrl = Env.deployment_url->Option.getOr(Env.root_url)
-    `${baseUrl}${baseUrl->Stdlib.String.endsWith("/") ? "" : "/"}ogimage/${encodeURIComponent(
-        title,
-      )}/${encodeURIComponent(description)}/index.png`
+  let makeOpenGraphImageUrl = url => {
+    `${baseUrl()}ogimage/index.png?url=${encodeURIComponent(url)}`
   }
 }
 
