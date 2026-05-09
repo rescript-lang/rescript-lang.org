@@ -30,6 +30,44 @@ let assertRedirect = (source, destination, status) => {
   return entry;
 };
 
+let assertManualLlmsVersionRedirects = (sourceVersion, destinationVersion) => {
+  const sourcePrefix = `/llms/manual/${sourceVersion}`;
+  const destinationPrefix = `/llms/manual/${destinationVersion}`;
+  const index = assertRedirect(
+    `${sourcePrefix}/llms.txt`,
+    `${destinationPrefix}/llms.txt`,
+    "307",
+  );
+  const full = assertRedirect(
+    `${sourcePrefix}/llms-full.txt`,
+    `${destinationPrefix}/llm-full.txt`,
+    "307",
+  );
+  const small = assertRedirect(
+    `${sourcePrefix}/llms-small.txt`,
+    `${destinationPrefix}/llm-small.txt`,
+    "307",
+  );
+  const wildcard = assertRedirect(
+    `${sourcePrefix}/*`,
+    `${destinationPrefix}/:splat`,
+    "307",
+  );
+
+  assert.ok(
+    index.index < wildcard.index,
+    `${sourcePrefix}/llms.txt must be listed before ${sourcePrefix}/*`,
+  );
+  assert.ok(
+    full.index < wildcard.index,
+    `${sourcePrefix}/llms-full.txt must be listed before ${sourcePrefix}/*`,
+  );
+  assert.ok(
+    small.index < wildcard.index,
+    `${sourcePrefix}/llms-small.txt must be listed before ${sourcePrefix}/*`,
+  );
+};
+
 assertRedirect("/llms/manual/llms.txt", "/llms.txt", "307");
 const latestAlias = assertRedirect(
   "/llms/manual/latest/llms.txt",
@@ -41,6 +79,10 @@ const nextAlias = assertRedirect(
   "/llms.txt",
   "307",
 );
+assertManualLlmsVersionRedirects("v13.0.0", "v13");
+assertManualLlmsVersionRedirects("v12.0.0", "v12");
+assertManualLlmsVersionRedirects("v11", "v12");
+assertManualLlmsVersionRedirects("v11.0.0", "v12");
 
 assert.ok(
   latestAlias.index < findEntry("/llms/manual/latest/*").index,
