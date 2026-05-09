@@ -4,6 +4,13 @@ open Vitest
 @module("vitest")
 external testWithTimeout: (string, unit => promise<unit>, int) => unit = "test"
 
+let sleep = ms =>
+  Promise.make((resolve, _) => {
+    let _timeoutId = setTimeout(~handler=() => {
+      resolve()
+    }, ~timeout=ms)
+  })
+
 let snapshotSection = async (~width, ~height, ~sectionTestId, ~screenshotName) => {
   await viewport(width, height)
 
@@ -18,6 +25,15 @@ let snapshotSection = async (~width, ~height, ~sectionTestId, ~screenshotName) =
   ) {
   | Value(section) => section
   | Null => failwith(`expected to find section ${sectionTestId}`)
+  }
+
+  if sectionTestId == "landing-other-selling-points" {
+    let sourceSelector = `[data-testid="${sectionTestId}"]`
+    await waitForImages(sourceSelector)
+    // Headless UI's appear transition mutates classes after first render. Since
+    // these tests snapshot a cloned outerHTML string, wait for the live section
+    // to settle so the clone does not preserve a transient opacity-0 state.
+    await sleep(1100)
   }
 
   let sandboxTestId = `${sectionTestId}-snapshot`
