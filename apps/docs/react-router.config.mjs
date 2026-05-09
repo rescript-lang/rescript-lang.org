@@ -1,4 +1,5 @@
 import * as fs from "node:fs";
+import * as os from "node:os";
 
 const { stdlibPaths } = await import("./app/DocsRoutes.jsx");
 
@@ -6,7 +7,7 @@ export default {
   ssr: false,
 
   prerender: {
-    concurrency: 12,
+    concurrency: os.availableParallelism(),
     async paths({ getStaticPaths }) {
       return [...(await getStaticPaths()), ...stdlibPaths];
     },
