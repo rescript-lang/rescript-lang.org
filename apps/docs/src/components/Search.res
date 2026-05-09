@@ -68,9 +68,9 @@ let normalizeHitUrls = (items: array<DocSearch.docSearchHit>, ~siteUrl: string) 
     {...hit, url, url_without_anchor, hierarchy}
   })
 
-let navigator = (~siteUrl: string): DocSearch.navigator => {
+let navigator = (~siteUrl: string, ~navigate: ReactRouter.navigate): DocSearch.navigator => {
   navigate: ({itemUrl}) => {
-    ReactRouter.navigate(toRelativeSiteUrl(itemUrl, ~siteUrl))
+    navigate(toRelativeSiteUrl(itemUrl, ~siteUrl))
   },
 }
 
@@ -301,6 +301,44 @@ module ErrorBoundary = {
   }
 }
 
+module ActiveDocSearch = {
+  @react.component
+  let make = (
+    ~apiKey,
+    ~appId,
+    ~indexName,
+    ~deactivateSearch: unit => unit,
+    ~onClose: unit => unit,
+  ) => {
+    let navigate = ReactRouter.useNavigate()
+
+    switch ReactDOM.querySelector("body") {
+    | Some(element) =>
+      ReactDOM.createPortal(
+        <ErrorBoundary onClose=deactivateSearch>
+          <DocSearch
+            apiKey
+            appId
+            indexName
+            navigator={navigator(~siteUrl=Env.root_url, ~navigate)}
+            transformItems={items => normalizeHitUrls(items, ~siteUrl=Env.root_url)}
+            hitComponent
+            onClose
+            initialScrollY={window.scrollY->Float.toInt}
+            searchParameters={
+              distinct: 3,
+              hitsPerPage: 20,
+              attributesToSnippet: ["content:9999"],
+            }
+          />
+        </ErrorBoundary>,
+        element,
+      )
+    | None => React.null
+    }
+  }
+}
+
 @react.component
 let make = () => {
   let (state, setState) = React.useState(_ => Inactive)
@@ -392,31 +430,7 @@ let make = () => {
         <Icon.MagnifierGlass className="fill-current" />
       </button>
       {switch state {
-      | Active =>
-        switch ReactDOM.querySelector("body") {
-        | Some(element) =>
-          ReactDOM.createPortal(
-            <ErrorBoundary onClose=deactivateSearch>
-              <DocSearch
-                apiKey=searchApiKey
-                appId
-                indexName
-                navigator={navigator(~siteUrl=Env.root_url)}
-                transformItems={items => normalizeHitUrls(items, ~siteUrl=Env.root_url)}
-                hitComponent
-                onClose
-                initialScrollY={window.scrollY->Float.toInt}
-                searchParameters={
-                  distinct: 3,
-                  hitsPerPage: 20,
-                  attributesToSnippet: ["content:9999"],
-                }
-              />
-            </ErrorBoundary>,
-            element,
-          )
-        | None => React.null
-        }
+      | Active => <ActiveDocSearch apiKey=searchApiKey appId indexName deactivateSearch onClose />
       | Inactive => React.null
       }}
     </>

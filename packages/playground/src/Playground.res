@@ -1644,7 +1644,7 @@ let initialReContent = `Js.log("Hello Reason 3.6!");`
 
 @react.component
 let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
-  let (searchParams, _) = PlaygroundReactRouter.useSearchParams()
+  let (searchParams, _) = ReactRouter.useSearchParams()
   let containerRef = React.useRef(Nullable.null)
   let editorRef: React.ref<option<CodeMirror.editorInstance>> = React.useRef(None)
   let (_, setScrollLock) = ScrollLockContext.useScrollLock()

@@ -102,4 +102,25 @@ external toBeVisible: element => promise<unit> = "toBeVisible"
 external notToBeVisible: element => promise<unit> = "toBeVisible"
 
 @send
+external toBeDisabled: element => promise<unit> = "toBeDisabled"
+
+@send @scope("not")
+external notToBeDisabled: element => promise<unit> = "toBeDisabled"
+
+@send
+external toHaveValue: (element, string) => promise<unit> = "toHaveValue"
+
+@send
+external toHaveTextContent: (element, string) => promise<unit> = "toHaveTextContent"
+
+@send
+external toHaveClass: (element, string) => promise<unit> = "toHaveClass"
+
+@send
 external toMatchScreenshot: (element, string) => promise<unit> = "toMatchScreenshot"
+
+@get
+external container: element => Dom.element = "container"
+
+@get
+external textContent: Dom.element => Nullable.t<string> = "textContent"

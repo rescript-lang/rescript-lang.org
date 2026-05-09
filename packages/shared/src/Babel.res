@@ -1,5 +1,7 @@
 module Ast = {
-  type t
+  type statement
+  type program = {mutable body: array<statement>}
+  type t = {program: program}
 
   @tag("type")
   type lval = Identifier({name: string})
@@ -37,6 +39,16 @@ module Ast = {
     type t = ImportDeclaration({specifiers: array<Specifier.t>, source: StringLiteral.t})
   }
 
+  module ExpressionStatement = {
+    @tag("type")
+    type t = ExpressionStatement({expression: expression})
+  }
+
+  module FunctionDeclaration = {
+    @tag("type")
+    type t = FunctionDeclaration({id: lval})
+  }
+
   module Identifier = {
     @tag("type")
     type t = Identifier({mutable name: string})
@@ -49,9 +61,40 @@ module Ast = {
     | ...VariableDeclarator.t
     | ...VariableDeclaration.t
     | ...ImportDeclaration.t
+    | ...ExpressionStatement.t
+    | ...FunctionDeclaration.t
     | ...Identifier.t
 
   type nodePath<'nodeType> = {node: 'nodeType}
+
+  @get external nodeType: statement => string = "type"
+  @get external expression: statement => expression = "expression"
+  @get external source: statement => StringLiteral.t = "source"
+  @get external specifiers: statement => array<Specifier.t> = "specifiers"
+  @get external declarations: statement => array<VariableDeclarator.t> = "declarations"
+  @get external statementId: statement => lval = "id"
+
+  let lvalName = (lval: lval) =>
+    switch lval {
+    | Identifier({name}) => name
+    }
+
+  let stringLiteralValue = (stringLiteral: StringLiteral.t) =>
+    switch stringLiteral {
+    | StringLiteral({value}) => value
+    }
+
+  let specifierLocal = (specifier: Specifier.t) =>
+    switch specifier {
+    | ImportSpecifier({local})
+    | ImportDefaultSpecifier({local})
+    | ImportNamespaceSpecifier({local}) => local
+    }
+
+  let variableDeclaratorId = (variableDeclarator: VariableDeclarator.t) =>
+    switch variableDeclarator {
+    | VariableDeclarator({id}) => id
+    }
 }
 
 module Parser = {
@@ -67,7 +110,21 @@ module Generator = {
   @send external remove: Ast.nodePath<'nodeType> => unit = "remove"
 
   type t = {code: string}
-  @module("@babel/generator") external generator: Ast.t => t = "default"
+  @module("@babel/generator") external generator: Ast.t => t = "generate"
+}
+
+module Types = {
+  @module("@babel/types") external identifier: string => Ast.expression = "identifier"
+
+  @module("@babel/types")
+  external memberExpression: (Ast.expression, Ast.expression) => Ast.expression = "memberExpression"
+
+  @module("@babel/types")
+  external callExpression: (Ast.expression, array<Ast.expression>) => Ast.expression =
+    "callExpression"
+
+  @module("@babel/types")
+  external expressionStatement: Ast.expression => Ast.statement = "expressionStatement"
 }
 
 module PlaygroundValidator = {
