@@ -38,52 +38,57 @@ let prefer = (primary, fallback) =>
   | None => fallback
   }
 
-let readMetaContent = element =>
-  element->Cloudflare.getAttribute("content")->Null.toOption->Option.flatMap(nonEmptyText)
-
-let readMetaKey = element =>
-  switch element->Cloudflare.getAttribute("property")->Null.toOption {
-  | Some(property) => Some(property->String.toLowerCase)
-  | None => element->Cloudflare.getAttribute("name")->Null.toOption->Option.map(String.toLowerCase)
+let firstCapture = (value, regexp) => {
+  switch regexp->RegExp.exec(value) {
+  | Some(result) =>
+    let matches = result->RegExp.Result.matches
+    switch matches[0] {
+    | Some(Some(match)) => match->nonEmptyText
+    | Some(None) | None => None
+    }
+  | None => None
   }
+}
+
+let decodeHtmlEntities = value =>
+  value
+  ->String.replaceAll("&amp;", "&")
+  ->String.replaceAll("&quot;", "\"")
+  ->String.replaceAll("&#39;", "'")
+  ->String.replaceAll("&apos;", "'")
+  ->String.replaceAll("&lt;", "<")
+  ->String.replaceAll("&gt;", ">")
+
+let extractMetaContent = (html, key) => {
+  let escapedKey = key->RegExp.escape
+  let regexp = RegExp.fromString(
+    `<meta\\b(?=[^>]*(?:property|name)\\s*=\\s*["']${escapedKey}["'])(?=[^>]*content\\s*=\\s*["']([^"']*)["'])[^>]*>`,
+    ~flags="i",
+  )
+
+  html->firstCapture(regexp)->Option.map(decodeHtmlEntities)
+}
+
+let extractTitle = html =>
+  html
+  ->firstCapture(RegExp.fromString("<title\\b[^>]*>([\\s\\S]*?)</title>", ~flags="i"))
+  ->Option.map(decodeHtmlEntities)
 
 let extractDocumentText = async response => {
-  let titleText = ref("")
-  let ogTitle = ref(None)
-  let documentTitle = ref(None)
-  let ogDescription = ref(None)
-  let documentDescription = ref(None)
-
-  let rewriter =
-    Cloudflare.htmlRewriter()
-    ->Cloudflare.onElement(
-      "meta",
-      {
-        element: element =>
-          switch (element->readMetaKey, element->readMetaContent) {
-          | (Some("og:title"), Some(content)) => ogTitle := Some(content)
-          | (Some("twitter:title"), Some(content)) => ogTitle := Some(content)
-          | (Some("description"), Some(content)) => documentDescription := Some(content)
-          | (Some("og:description"), Some(content)) => ogDescription := Some(content)
-          | (Some("twitter:description"), Some(content)) => ogDescription := Some(content)
-          | _ => ()
-          },
-      },
-    )
-    ->Cloudflare.onText(
-      "title",
-      {
-        text: chunk => titleText := titleText.contents ++ chunk.text,
-      },
-    )
-
-  let _ = await rewriter->Cloudflare.transform(response)->Response.text
-
-  titleText.contents->nonEmptyText->Option.forEach(title => documentTitle := Some(title))
-
-  let title = prefer(ogTitle.contents, documentTitle.contents)->Option.getOr("ReScript")
+  let html = await response->Response.text
+  let title =
+    prefer(
+      html->extractMetaContent("og:title"),
+      prefer(html->extractMetaContent("twitter:title"), html->extractTitle),
+    )->Option.getOr("ReScript")
   let description =
-    prefer(ogDescription.contents, documentDescription.contents)->Option.getOr("ReScript")
+    prefer(
+      html->extractMetaContent("og:description"),
+      prefer(
+        html->extractMetaContent("twitter:description"),
+        html->extractMetaContent("description"),
+      ),
+    )->Option.getOr("ReScript")
 
   (title, description)
 }
