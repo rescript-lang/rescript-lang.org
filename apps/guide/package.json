@@ -16,7 +16,7 @@
     "@babel/generator": "^7.29.1",
     "@babel/parser": "^7.29.2",
     "@babel/types": "^7.29.0",
-    "@react-router/node": "^7.14.0",
+    "@react-router/node": "^7.15.0",
     "@rescript-lang/playground": "workspace:*",
     "@rescript-lang/shared": "workspace:*",
     "@rescript/react": "^0.14.2",
@@ -25,8 +25,8 @@
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-markdown": "^10.1.0",
-    "react-router": "^7.14.0",
-    "react-router-dom": "^7.14.0",
+    "react-router": "^7.15.0",
+    "react-router-dom": "^7.15.0",
     "remark-comment": "^1.0.0",
     "remark-frontmatter": "^5.0.0",
     "remark-gfm": "^4.0.1",
@@ -37,14 +37,14 @@
     "vfile-matter": "^5.0.1"
   },
   "devDependencies": {
-    "@react-router/dev": "^7.14.0",
+    "@react-router/dev": "^7.15.0",
     "@vitejs/plugin-react": "^6.0.1",
-    "@vitest/browser-playwright": "^4.1.2",
+    "@vitest/browser-playwright": "^4.1.5",
     "lightningcss": "^1.32.0",
     "playwright": "^1.59.1",
-    "vite": "^8.0.3",
+    "vite": "^8.0.11",
     "vite-plugin-env-compatible": "^2.0.1",
-    "vitest": "^4.1.2",
+    "vitest": "^4.1.5",
     "vitest-browser-react": "^2.2.0"
   },
   "engines": {
