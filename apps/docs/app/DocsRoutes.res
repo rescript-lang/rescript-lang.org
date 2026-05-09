@@ -62,12 +62,6 @@ let docsGuidesRoutes =
     route(path, "./routes/DocsGuidesRoute.jsx", ~options={id: path})
   )
 
-let docsGuidelinesRoutes =
-  MdxFile.scanPaths(
-    ~dir="markdown-pages/docs/guidelines",
-    ~alias="docs/guidelines",
-  )->Array.map(path => route(path, "./routes/DocsGuidelinesRoute.jsx", ~options={id: path}))
-
 let communityRoutes =
   MdxFile.scanPaths(~dir="markdown-pages/community", ~alias="community")->Array.map(path =>
     route(path, "./routes/CommunityRoute.jsx", ~options={id: path})
@@ -102,7 +96,6 @@ let default = [
       ...docsManualRoutes,
       ...docsGuidesRoutes,
       ...docsReactRoutes,
-      ...docsGuidelinesRoutes,
       route("syntax-lookup", "./routes/SyntaxLookupRoute.jsx", ~options={id: "syntax-lookup"}),
       ...syntaxLookupDetailRoutes,
     ],

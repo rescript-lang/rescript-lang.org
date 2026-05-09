@@ -16,7 +16,7 @@ let guidesTableOfContents = async () => {
       values->Mdx.sortSection->SidebarHelpers.convertToNavItems("/docs/guides")
     )
 
-  SidebarHelpers.getAllGroups(groups, ["Overview"])
+  SidebarHelpers.getAllGroups(groups, ["Overview", "Packages"])
 }
 
 let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {

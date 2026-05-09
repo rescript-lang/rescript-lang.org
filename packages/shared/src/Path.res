@@ -311,7 +311,7 @@ type t = [
   | #"/docs/manual/array-and-list"
   | #"/docs/manual/api"
   | #"/docs/guides/overview"
-  | #"/docs/guidelines/publishing-packages"
+  | #"/docs/guides/publishing-packages"
   | #"/community/translations"
   | #"/community/roadmap"
   | #"/community/overview"

@@ -1,5 +1,6 @@
 /community  /community/overview  308
 /bucklescript-rebranding  /blog/bucklescript-is-rebranding  308
+/docs/guidelines/publishing-packages  /docs/guides/publishing-packages  308
 
 /docs/manual/v12.0.0/*  /docs/manual/:splat  308
 /docs/manual/next/*  /docs/manual/:splat  308

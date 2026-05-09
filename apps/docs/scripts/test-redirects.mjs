@@ -69,6 +69,11 @@ let assertManualLlmsVersionRedirects = (sourceVersion, destinationVersion) => {
 };
 
 assertRedirect("/llms/manual/llms.txt", "/llms.txt", "307");
+assertRedirect(
+  "/docs/guidelines/publishing-packages",
+  "/docs/guides/publishing-packages",
+  "308",
+);
 const latestAlias = assertRedirect(
   "/llms/manual/latest/llms.txt",
   "/llms.txt",
