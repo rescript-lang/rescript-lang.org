@@ -80,6 +80,7 @@ external make: (
   ~hitComponent: hitComponent => React.element=?,
   ~navigator: navigator=?,
   ~onClose: unit => unit=?,
+  ~insights: bool=?,
   ~searchParameters: searchParameters=?,
   ~initialScrollY: int=?,
 ) => React.element = "DocSearchModal"
