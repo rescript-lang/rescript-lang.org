@@ -13,7 +13,11 @@ let loadGoogleFont = async (family: string) => {
   await response->Response.arrayBuffer
 }
 
-type context = {request: FetchAPI.request, params: {path: array<string>}}
+type assets
+type env = {@as("ASSETS") assets: assets}
+type context = {request: FetchAPI.request, params: {path: array<string>}, env: env}
+
+@send external fetchAsset: (assets, string) => promise<FetchAPI.response> = "fetch"
 
 let textResponse = (~status, message) => Response.fromString(message, ~init={status: status})
 
@@ -124,14 +128,14 @@ let isHtmlResponse = (response: FetchAPI.response) =>
     contentType->String.toLowerCase->String.includes("text/html")
   )
 
-let renderImage = async (~requestUrl: URLAPI.url, ~targetUrl: URLAPI.url) => {
+let renderImage = async (~assets, ~requestUrl: URLAPI.url, ~targetUrl: URLAPI.url) => {
   if targetUrl.origin != requestUrl.origin {
     textResponse(~status=400, "Open Graph image URL must be same-origin")
   } else if targetUrl.pathname->String.startsWith("/ogimage/") {
     textResponse(~status=400, "Open Graph image URL cannot point at the image endpoint")
   } else {
     let pageResponse = try {
-      Some(await fetch(targetUrl.href, ~init={redirect: FetchAPI.Error}))
+      Some(await assets->fetchAsset(targetUrl.href))
     } catch {
     | _ => None
     }
@@ -250,11 +254,11 @@ let renderImage = async (~requestUrl: URLAPI.url, ~targetUrl: URLAPI.url) => {
   }
 }
 
-let onRequest = async ({request, params}: context) => {
+let onRequest = async ({request, params, env}: context) => {
   let requestUrl = URL.make(~url=request.url)
 
   switch requestedUrl(~requestUrl, ~params)->Option.flatMap(parseUrl) {
   | None => textResponse(~status=400, "Missing or invalid url")
-  | Some(targetUrl) => await renderImage(~requestUrl, ~targetUrl)
+  | Some(targetUrl) => await renderImage(~assets=env.assets, ~requestUrl, ~targetUrl)
   }
 }
