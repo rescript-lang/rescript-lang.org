@@ -84,6 +84,41 @@ test("heading anchor links do not duplicate heading ids", async () => {
   expect(matches.length)->toBe(1)
 })
 
+test("heading anchor scroll offset clears the sticky docs nav", async () => {
+  await viewport(1000, 515)
+
+  let screen = await render(
+    <div>
+      <nav dataTestId="anchor-primary" className="sticky top-0 h-16 bg-gray-90" />
+      <nav dataTestId="anchor-secondary" className="sticky top-16 h-12 bg-white" />
+      <nav dataTestId="anchor-tertiary" className="sticky top-28 h-12 bg-white" />
+      <div style={{height: "500px"}} />
+      <Markdown.H2 id="anchor-offset-target"> {React.string("Anchor Target")} </Markdown.H2>
+      <div style={{height: "1000px"}} />
+    </div>,
+  )
+
+  let target = switch document->WebAPI.Document.querySelector("#anchor-offset-target") {
+  | Value(target) => target
+  | Null => failwith("expected heading anchor target")
+  }
+
+  let tertiaryNav = switch document->WebAPI.Document.querySelector(
+    "[data-testid='anchor-tertiary']",
+  ) {
+  | Value(nav) => nav
+  | Null => failwith("expected tertiary nav")
+  }
+
+  target->WebAPI.Element.scrollIntoView_alignToTop
+
+  let targetRect: WebAPI.DOMAPI.domRect = target->WebAPI.Element.getBoundingClientRect
+  let tertiaryNavRect: WebAPI.DOMAPI.domRect = tertiaryNav->WebAPI.Element.getBoundingClientRect
+
+  expect(targetRect.top >= tertiaryNavRect.bottom)->toBe(true)
+  await screen->unmount
+})
+
 test("renders paragraph, strong, and intro", async () => {
   await viewport(1440, 900)
 
