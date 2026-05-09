@@ -5,8 +5,11 @@ const { stdlibPaths } = await import("./app/routes.jsx");
 export default {
   ssr: false,
 
-  async prerender({ getStaticPaths }) {
-    return [...(await getStaticPaths()), ...stdlibPaths];
+  prerender: {
+    concurrency: 4,
+    async paths({ getStaticPaths }) {
+      return [...(await getStaticPaths()), ...stdlibPaths];
+    },
   },
   buildEnd: async () => {
     fs.cpSync("./build/client", "./out", { recursive: true });

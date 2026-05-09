@@ -68,9 +68,9 @@ let normalizeHitUrls = (items: array<DocSearch.docSearchHit>, ~siteUrl: string) 
     {...hit, url, url_without_anchor, hierarchy}
   })
 
-let navigator = (~siteUrl: string): DocSearch.navigator => {
+let navigator = (~siteUrl: string, ~navigate: string => unit): DocSearch.navigator => {
   navigate: ({itemUrl}) => {
-    ReactRouter.navigate(toRelativeSiteUrl(itemUrl, ~siteUrl))
+    navigate(toRelativeSiteUrl(itemUrl, ~siteUrl))
   },
 }
 
@@ -305,6 +305,7 @@ module ErrorBoundary = {
 let make = () => {
   let (state, setState) = React.useState(_ => Inactive)
   let algoliaConfig = Env.algoliaPublicConfig
+  let navigate = ReactRouter.useNavigate()
 
   let deactivateSearch = () => {
     switch WebAPI.Document.querySelector(document, "body") {
@@ -401,7 +402,7 @@ let make = () => {
                 apiKey=searchApiKey
                 appId
                 indexName
-                navigator={navigator(~siteUrl=Env.root_url)}
+                navigator={navigator(~siteUrl=Env.root_url, ~navigate)}
                 transformItems={items => normalizeHitUrls(items, ~siteUrl=Env.root_url)}
                 hitComponent
                 onClose

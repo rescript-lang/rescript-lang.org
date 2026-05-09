@@ -1,8 +1,3 @@
-type navigateOptions = {replace?: bool}
-
-@module("react-router-dom")
-external navigate: (string, ~options: navigateOptions=?) => unit = "navigate"
-
 // https://api.reactrouter.com/v7/functions/react_router.useNavigate.html
 @module("react-router")
 external useNavigate: unit => string => unit = "useNavigate"
