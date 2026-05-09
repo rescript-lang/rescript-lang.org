@@ -57,10 +57,12 @@ type sectionLlmFile = {
   slug: string,
   section: string,
   description: string,
+  excludedSlugs: array<string>,
 }
 
 type mdxDocument = {
   title: string,
+  slug: string,
   section: string,
   order: option<float>,
   content: string,
@@ -98,6 +100,7 @@ let readMdxDocument = (filePath: string): mdxDocument => {
   let {frontmatter}: MarkdownParser.result = rawContent->MarkdownParser.parseSync
   {
     title: frontmatter->getFrontmatterString("title"),
+    slug: filePath->Node.Path.basename->String.replace(".mdx", ""),
     section: frontmatter->getFrontmatterString("section"),
     order: frontmatter->getFrontmatterNumber("order"),
     content: rawContent->removeFrontmatter->String.trim,
@@ -127,7 +130,10 @@ let createSectionLlmFiles = (
 ): unit => {
   sectionFiles->Array.forEach(sectionFile => {
     let sectionDocuments =
-      documents->Array.filter(document => document.section === sectionFile.section)
+      documents->Array.filter(document =>
+        document.section === sectionFile.section &&
+          !(sectionFile.excludedSlugs->Array.some(excludedSlug => excludedSlug === document.slug))
+      )
     let content =
       sectionDocuments
       ->Array.map(document => document.content)
@@ -385,12 +391,28 @@ let manualSectionLlmFiles = [
     slug: "language-overview",
     section: "Language Features",
     description: "Focused documentation for ReScript syntax, data types, control flow, modules, and core language features.",
+    excludedSlugs: [],
   },
   {
     title: "ReScript JavaScript Interop",
     slug: "javascript-interop",
     section: "JavaScript Interop",
     description: "Focused documentation for binding to JavaScript values, modules, functions, objects, JSON, TypeScript, and other runtime interop patterns.",
+    excludedSlugs: [],
+  },
+  {
+    title: "ReScript Build System",
+    slug: "build-system",
+    section: "Build System",
+    description: "Focused documentation for ReScript build configuration, project structure, monorepo setup, compiler performance, and build-tool integration.",
+    excludedSlugs: [],
+  },
+  {
+    title: "ReScript Getting Started",
+    slug: "getting-started",
+    section: "Overview",
+    description: "Focused documentation for installing ReScript, editor setup, migration notes, and onboarding from JavaScript.",
+    excludedSlugs: ["llms"],
   },
 ]
 
@@ -399,11 +421,15 @@ let manualVersionLinks = `- [v13 pre-release LLMs index](https://rescript-lang.o
 - [v13 pre-release abridged documentation](https://rescript-lang.org/llms/manual/v13/llm-small.txt): A minimal latest ReScript v13 pre-release reference
 - [v13 pre-release language overview](https://rescript-lang.org/llms/manual/v13/language-overview/llm.txt): Focused latest ReScript v13 pre-release language overview
 - [v13 pre-release JavaScript interop](https://rescript-lang.org/llms/manual/v13/javascript-interop/llm.txt): Focused latest ReScript v13 pre-release JavaScript interop reference
+- [v13 pre-release build system](https://rescript-lang.org/llms/manual/v13/build-system/llm.txt): Focused latest ReScript v13 pre-release build system reference
+- [v13 pre-release getting started](https://rescript-lang.org/llms/manual/v13/getting-started/llm.txt): Focused latest ReScript v13 pre-release onboarding reference
 - [v12 current LLMs index](https://rescript-lang.org/llms/manual/v12/llms.txt): The LLM file list for the current ReScript v12 documentation
 - [v12 current complete documentation](https://rescript-lang.org/llms/manual/v12/llm-full.txt): The complete current ReScript v12 documentation
 - [v12 current abridged documentation](https://rescript-lang.org/llms/manual/v12/llm-small.txt): A minimal current ReScript v12 reference
 - [v12 current language overview](https://rescript-lang.org/llms/manual/v12/language-overview/llm.txt): Focused current ReScript v12 language overview
-- [v12 current JavaScript interop](https://rescript-lang.org/llms/manual/v12/javascript-interop/llm.txt): Focused current ReScript v12 JavaScript interop reference`
+- [v12 current JavaScript interop](https://rescript-lang.org/llms/manual/v12/javascript-interop/llm.txt): Focused current ReScript v12 JavaScript interop reference
+- [v12 current build system](https://rescript-lang.org/llms/manual/v12/build-system/llm.txt): Focused current ReScript v12 build system reference
+- [v12 current getting started](https://rescript-lang.org/llms/manual/v12/getting-started/llm.txt): Focused current ReScript v12 onboarding reference`
 
 let manualDocsDirectory = "markdown-pages/docs/manual"
 let reactDocsDirectory = "markdown-pages/docs/react"

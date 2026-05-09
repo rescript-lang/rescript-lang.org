@@ -15,6 +15,8 @@ The root `/llms.txt` file is the default entry point and always describes the cu
 - [Abridged current documentation](https://rescript-lang.org/llms/manual/llm-small.txt): A minimal current version of the ReScript documentation, with the essential content for quick reference
 - [Language overview](https://rescript-lang.org/llms/manual/language-overview/llm.txt): Focused documentation for ReScript syntax and core language features
 - [JavaScript interop](https://rescript-lang.org/llms/manual/javascript-interop/llm.txt): Focused documentation for binding to JavaScript and TypeScript code
+- [Build system](https://rescript-lang.org/llms/manual/build-system/llm.txt): Focused documentation for build configuration, project structure, and build-tool integration
+- [Getting started](https://rescript-lang.org/llms/manual/getting-started/llm.txt): Focused documentation for installation, editor setup, migrations, and JavaScript onboarding
 
 ## Individual Package Documentation
 
