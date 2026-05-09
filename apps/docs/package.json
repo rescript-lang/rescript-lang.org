@@ -16,7 +16,9 @@
     "check:algolia-public-env": "node _scripts/LogAlgoliaEnvStatus.mjs",
     "build": "yarn build:res && yarn build:scripts && yarn check:algolia-public-env && yarn build:update-index && yarn build:vite && yarn build:generate-sitemap",
     "ci:format": "cd ../.. && oxfmt --check",
-    "ci:test": "yarn vitest --run --browser.headless",
+    "ci:test": "vitest --run --browser.headless",
+    "ci:test:visual": "VISUAL_TESTS=1 vitest --run --browser.headless",
+    "ci:test:visual:update": "VISUAL_TESTS=1 VISUAL_BASELINE_UPDATE=1 vitest --run --browser.headless --update",
     "clean:res": "rescript clean",
     "convert-images": "auto-convert-images",
     "dev:res": "rescript watch",
@@ -32,7 +34,8 @@
     "cy:run": "yarn build:res && cypress run",
     "cy:e2e": "yarn build:res && cypress run --browser chrome",
     "vitest": "vitest",
-    "vitest:update": "vitest --run --browser.headless --update"
+    "vitest:visual": "VISUAL_TESTS=1 vitest",
+    "vitest:update": "VISUAL_TESTS=1 VISUAL_BASELINE_UPDATE=1 vitest --run --browser.headless --update"
   },
   "dependencies": {
     "@cloudflare/pages-plugin-vercel-og": "^0.1.2",

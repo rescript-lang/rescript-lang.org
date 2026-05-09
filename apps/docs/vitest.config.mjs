@@ -3,6 +3,19 @@ import { playwright } from "@vitest/browser-playwright";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 
+const isUpdatingSnapshots = process.argv.some(
+  (arg) => arg === "-u" || arg === "--update" || arg.startsWith("--update="),
+);
+const isRunningVisualTests = process.env.VISUAL_TESTS === "1";
+const canUpdateVisualBaselines =
+  process.env.CI === "true" && process.env.VISUAL_BASELINE_UPDATE === "1";
+
+if (isUpdatingSnapshots && !canUpdateVisualBaselines) {
+  throw new Error(
+    "Visual screenshot baselines are CI-owned. Run the Update Visual Regression Screenshots GitHub Actions workflow instead.",
+  );
+}
+
 const setupDeps = [
   "highlight.js/lib/core",
   "highlight.js/lib/languages/bash",
@@ -24,7 +37,9 @@ export default defineConfig({
     include: setupDeps,
   },
   test: {
-    include: ["__tests__/*.jsx"],
+    include: isRunningVisualTests
+      ? ["__tests__/visual/*.jsx"]
+      : ["__tests__/*.jsx"],
     setupFiles: ["./vitest.setup.mjs"],
     browser: {
       enabled: true,
@@ -34,8 +49,6 @@ export default defineConfig({
         },
       }),
       ui: false,
-      // https://vitest.dev/config/browser/playwright
-      provider: playwright(),
       instances: [
         {
           browser: "chromium",

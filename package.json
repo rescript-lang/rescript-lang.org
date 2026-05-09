@@ -20,6 +20,7 @@
     "build": "yarn workspace @rescript-lang/docs build",
     "ci:format": "oxfmt --check",
     "ci:test": "yarn workspace @rescript-lang/docs ci:test && yarn workspace @rescript-lang/guide ci:test",
+    "ci:test:visual": "yarn workspace @rescript-lang/docs ci:test:visual",
     "clean:res": "rescript clean",
     "convert-images": "yarn workspace @rescript-lang/docs convert-images",
     "dev:res": "rescript watch",
@@ -36,6 +37,7 @@
     "cy:run": "yarn workspace @rescript-lang/docs cy:run",
     "cy:e2e": "yarn workspace @rescript-lang/docs cy:e2e",
     "vitest": "yarn workspace @rescript-lang/docs vitest",
+    "vitest:visual": "yarn workspace @rescript-lang/docs vitest:visual",
     "vitest:guide": "yarn workspace @rescript-lang/guide vitest",
     "vitest:update": "yarn workspace @rescript-lang/docs vitest:update"
   },

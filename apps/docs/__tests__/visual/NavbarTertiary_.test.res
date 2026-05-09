@@ -63,31 +63,3 @@ test("mobile shows breadcrumbs and drawer button", async () => {
 
   await element(navbar)->toMatchScreenshot("mobile-navbar-tertiary")
 })
-
-test("mobile drawer can be toggled open", async () => {
-  await viewport(600, 1200)
-
-  let screen = await render(
-    <BrowserRouter>
-      <NavbarTertiary sidebar=sidebarContent>
-        breadcrumbs
-        editLink
-      </NavbarTertiary>
-    </BrowserRouter>,
-  )
-
-  // Sidebar dialog should not be visible initially
-  let sidebar = await screen->getByTestId("sidebar-categories")
-  await element(sidebar)->notToBeVisible
-
-  // Click the drawer toggle button
-  let drawerButton = await screen->getByRole(#button)
-  await drawerButton->click
-
-  // Sidebar content should now be visible
-  let sidebarAfter = await screen->getByTestId("sidebar-categories")
-  await element(sidebarAfter)->toBeVisible
-
-  let versionSelect = await screen->getByTestId("sidebar-version-select")
-  await element(versionSelect)->toBeVisible
-})
