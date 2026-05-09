@@ -1,0 +1,65 @@
+name: Update Visual Regression Screenshots
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  Update_Visual_Screenshots:
+    runs-on: ubuntu-latest
+    container:
+      # Keep this image tag aligned with package.json's playwright version.
+      image: mcr.microsoft.com/playwright:v1.59.1-noble
+    steps:
+      - name: Refuse default branch
+        if: github.ref_name == github.event.repository.default_branch
+        run: |
+          echo "Visual screenshot baselines must be updated from a feature branch."
+          exit 1
+      - name: Checkout
+        uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ github.ref }}
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6.3.0
+        with:
+          node-version-file: ".node-version"
+          cache: yarn
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install dependencies
+        run: yarn
+      - name: Build ReScript
+        run: yarn build:res
+      - name: Update visual screenshot baselines
+        run: yarn workspace @rescript-lang/docs ci:test:visual:update
+      - name: Commit changed baselines
+        id: commit-baselines
+        run: |
+          git add apps/docs/__tests__/visual/__screenshots__
+
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No visual screenshot baseline changes were produced." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git commit \
+            -m "test: update visual regression screenshots" \
+            -m "Updated from the GitHub Actions visual baseline workflow."
+
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+      - name: Push changed baselines
+        if: steps.commit-baselines.outputs.changed == 'true'
+        run: git push origin HEAD:${{ github.ref_name }}
+      - name: Summarize changed baselines
+        if: steps.commit-baselines.outputs.changed == 'true'
+        run: |
+          echo "## Visual screenshot baseline changes" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          git diff --name-only HEAD~1 HEAD -- apps/docs/__tests__/visual/__screenshots__ \
+            | sed 's/^/- /' >> "$GITHUB_STEP_SUMMARY"

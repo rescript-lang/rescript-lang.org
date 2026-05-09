@@ -105,7 +105,7 @@ apps/docs/.env.local
 .worktrees
 
 # Vitest screenshots
-!apps/docs/__tests__/__screenshots__/**/*
+!apps/docs/__tests__/**/__screenshots__/**/*
 .vitest-attachments
 apps/docs/.vitest-attachments
 apps/guide/.vitest-attachments
