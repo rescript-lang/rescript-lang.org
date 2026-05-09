@@ -37,6 +37,36 @@ let answer = 42
 
   writeFile(
     root,
+    "markdown-pages/docs/manual/overview.mdx",
+    `---
+title: "Language Overview"
+section: "Language Features"
+order: 1
+---
+
+# Language Overview
+
+Language feature content.
+`,
+  );
+
+  writeFile(
+    root,
+    "markdown-pages/docs/manual/bind-to-js-function.mdx",
+    `---
+title: "Bind to JS Function"
+section: "JavaScript Interop"
+order: 1
+---
+
+# Bind to JS Function
+
+JavaScript interop content.
+`,
+  );
+
+  writeFile(
+    root,
     "markdown-pages/docs/react/introduction.mdx",
     `---
 title: "React Introduction"
@@ -56,6 +86,8 @@ Version label: <MANUAL_VERSION_LABEL>
 
 - [Complete documentation](https://rescript-lang.org/llms/manual/<VERSION>/llm-full.txt)
 - [Abridged documentation](https://rescript-lang.org/llms/manual/<VERSION>/llm-small.txt)
+- [Language overview](https://rescript-lang.org/llms/manual/language-overview/llm.txt)
+- [JavaScript interop](https://rescript-lang.org/llms/manual/javascript-interop/llm.txt)
 <MANUAL_VERSION_LINKS>
 `,
   );
@@ -74,6 +106,8 @@ Version label: <MANUAL_VERSION_LABEL>
 
 - [/llms/manual/<VERSION>/llm-full.txt](/llms/manual/<VERSION>/llm-full.txt)
 - [/llms/manual/<VERSION>/llm-small.txt](/llms/manual/<VERSION>/llm-small.txt)
+- [/llms/manual/language-overview/llm.txt](/llms/manual/language-overview/llm.txt)
+- [/llms/manual/javascript-interop/llm.txt](/llms/manual/javascript-interop/llm.txt)
 `,
   );
 
@@ -129,6 +163,14 @@ test("generate_llms writes the default manual index at the site root", () => {
   let currentLlms = readFile(root, "public/llms.txt");
   let versionedLlms = readFile(root, "public/llms/manual/v12/llms.txt");
   let preReleaseLlms = readFile(root, "public/llms/manual/v13/llms.txt");
+  let languageOverview = readFile(
+    root,
+    "public/llms/manual/language-overview/llm.txt",
+  );
+  let javascriptInterop = readFile(
+    root,
+    "public/llms/manual/javascript-interop/llm.txt",
+  );
   let manualVersions = ["v12", "v13"];
 
   assert.doesNotMatch(currentLlms, /<VERSION>/);
@@ -145,8 +187,23 @@ test("generate_llms writes the default manual index at the site root", () => {
     currentLlms,
     /https:\/\/rescript-lang\.org\/llms\/manual\/v12\/llm-small\.txt/,
   );
+  assert.match(
+    currentLlms,
+    /https:\/\/rescript-lang\.org\/llms\/manual\/language-overview\/llm\.txt/,
+  );
+  assert.match(
+    currentLlms,
+    /https:\/\/rescript-lang\.org\/llms\/manual\/javascript-interop\/llm\.txt/,
+  );
   assert.doesNotMatch(currentLlms, /\/llms\/manual\/v10\//);
   assert.doesNotMatch(currentLlms, /\/llms\/manual\/v11\//);
+  assert.match(languageOverview, /# ReScript Language Overview/);
+  assert.match(languageOverview, /Language feature content/);
+  assert.doesNotMatch(languageOverview, /JavaScript interop content/);
+  assert.doesNotMatch(languageOverview, /Manual Introduction/);
+  assert.match(javascriptInterop, /# ReScript JavaScript Interop/);
+  assert.match(javascriptInterop, /JavaScript interop content/);
+  assert.doesNotMatch(javascriptInterop, /Language feature content/);
 
   assert.equal(
     fs.existsSync(path.join(root, "public/llms/manual/llms.txt")),
@@ -193,6 +250,17 @@ test("generate_llms writes the default manual index at the site root", () => {
     assert.equal(
       readFile(root, `public/llms/manual/${version}/llm-small.txt`),
       readFile(root, "public/llms/manual/llm-small.txt"),
+    );
+    assert.equal(
+      readFile(root, `public/llms/manual/${version}/language-overview/llm.txt`),
+      languageOverview,
+    );
+    assert.equal(
+      readFile(
+        root,
+        `public/llms/manual/${version}/javascript-interop/llm.txt`,
+      ),
+      javascriptInterop,
     );
     assert.match(
       readFile(root, `public/llms/manual/${version}/llms.txt`),

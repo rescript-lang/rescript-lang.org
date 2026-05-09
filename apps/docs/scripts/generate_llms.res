@@ -42,10 +42,119 @@ let removeLlmsTextFiles = (~llmsDirectory: string): unit => {
   removeFileIfExists(llmsDirectory->Node.Path.join2("llm-small.txt"))
 }
 
-let createDirectoryIfNotExists = (dirPath: string): unit => {
+let rec createDirectoryIfNotExists = (dirPath: string): unit => {
   if !Node.Fs.existsSync(dirPath) {
+    let parentPath = Node.Path.dirname(dirPath)
+    if parentPath !== "" && parentPath !== dirPath {
+      createDirectoryIfNotExists(parentPath)
+    }
     Node.Fs.mkdirSync(dirPath)
   }
+}
+
+type sectionLlmFile = {
+  title: string,
+  slug: string,
+  section: string,
+  description: string,
+}
+
+type mdxDocument = {
+  title: string,
+  section: string,
+  order: option<float>,
+  content: string,
+}
+
+let getFrontmatterString = (frontmatter: JSON.t, fieldName: string): string => {
+  switch frontmatter {
+  | Object(dict) =>
+    switch dict->Dict.get(fieldName) {
+    | Some(String(value)) => value
+    | _ => ""
+    }
+  | _ => ""
+  }
+}
+
+let getFrontmatterNumber = (frontmatter: JSON.t, fieldName: string): option<float> => {
+  switch frontmatter {
+  | Object(dict) =>
+    switch dict->Dict.get(fieldName) {
+    | Some(Number(value)) => Some(value)
+    | _ => None
+    }
+  | _ => None
+  }
+}
+
+let removeFrontmatter = (content: string): string => {
+  let regex = RegExp.fromString("^---[\\s\\S]*?---\\s*", ~flags="")
+  String.replaceRegExp(content, regex, "")
+}
+
+let readMdxDocument = (filePath: string): mdxDocument => {
+  let rawContent = filePath->readMarkdownFile
+  let {frontmatter}: MarkdownParser.result = rawContent->MarkdownParser.parseSync
+  {
+    title: frontmatter->getFrontmatterString("title"),
+    section: frontmatter->getFrontmatterString("section"),
+    order: frontmatter->getFrontmatterNumber("order"),
+    content: rawContent->removeFrontmatter->String.trim,
+  }
+}
+
+let compareMdxDocuments = (a: mdxDocument, b: mdxDocument): float => {
+  switch (a.order, b.order) {
+  | (Some(orderA), Some(orderB)) =>
+    switch Float.compare(orderA, orderB) {
+    | 0. => String.compare(a.title, b.title)
+    | result => result
+    }
+  | (Some(_), None) => -1.0
+  | (None, Some(_)) => 1.0
+  | (None, None) => String.compare(a.title, b.title)
+  }
+}
+
+let sectionLlmFilePath = (~llmsDirectory: string, sectionFile: sectionLlmFile): string =>
+  llmsDirectory->Node.Path.join2(sectionFile.slug)->Node.Path.join2("llm.txt")
+
+let createSectionLlmFiles = (
+  ~llmsDirectory: string,
+  ~sectionFiles: array<sectionLlmFile>,
+  ~documents: array<mdxDocument>,
+): unit => {
+  sectionFiles->Array.forEach(sectionFile => {
+    let sectionDocuments =
+      documents->Array.filter(document => document.section === sectionFile.section)
+    let content =
+      sectionDocuments
+      ->Array.map(document => document.content)
+      ->Array.join("\n")
+      ->String.trim
+
+    let filePath = sectionLlmFilePath(~llmsDirectory, sectionFile)
+    createDirectoryIfNotExists(Node.Path.dirname(filePath))
+    writeTextFile(
+      filePath,
+      `# ${sectionFile.title}
+
+${sectionFile.description}
+
+${content}
+`,
+    )
+  })
+}
+
+let removeSectionLlmFiles = (
+  ~llmsDirectory: string,
+  ~sectionFiles: array<sectionLlmFile>,
+): unit => {
+  sectionFiles->Array.forEach(sectionFile =>
+    removeFileIfExists(sectionLlmFilePath(~llmsDirectory, sectionFile))
+  )
 }
 
 let removeCodeTabTags = (content: string): string => {
@@ -157,6 +266,7 @@ let copyCurrentFilesToVersion = (
   ~llmsDirectory: string,
   ~fullFilePath: string,
   ~smallFilePath: string,
+  ~sectionFiles: array<sectionLlmFile>,
   ~manualVersionLinks: string,
   ~rescriptReactVersion: string,
   ~reactVersion: string,
@@ -176,6 +286,15 @@ let copyCurrentFilesToVersion = (
   )
   copyFile(fullFilePath, versionedLlmsDirectory->Node.Path.join2("llm-full.txt"))
   copyFile(smallFilePath, versionedLlmsDirectory->Node.Path.join2("llm-small.txt"))
+  sectionFiles->Array.forEach(sectionFile => {
+    let sectionFilePath = sectionLlmFilePath(~llmsDirectory, sectionFile)
+    let versionedSectionFilePath = sectionLlmFilePath(
+      ~llmsDirectory=versionedLlmsDirectory,
+      sectionFile,
+    )
+    createDirectoryIfNotExists(Node.Path.dirname(versionedSectionFilePath))
+    copyFile(sectionFilePath, versionedSectionFilePath)
+  })
 }
 
 let generateFile = (
@@ -187,6 +306,7 @@ let generateFile = (
   ~txtFilePath: string,
   ~staleTxtFilePath: option<string>=?,
   ~staleVersions: array<string>,
+  ~sectionFiles: array<sectionLlmFile>=[],
   docsDirectory: string,
   llmsDirectory: string,
 ): unit => {
@@ -206,9 +326,11 @@ let generateFile = (
   | None => ()
   }
 
-  staleVersions->Array.forEach(version =>
-    removeLlmsTextFiles(~llmsDirectory=llmsDirectory->Node.Path.join2(version))
-  )
+  staleVersions->Array.forEach(version => {
+    let versionedLlmsDirectory = llmsDirectory->Node.Path.join2(version)
+    removeLlmsTextFiles(~llmsDirectory=versionedLlmsDirectory)
+    removeSectionLlmFiles(~llmsDirectory=versionedLlmsDirectory, ~sectionFiles)
+  })
 
   createLlmsFiles(
     ~version=currentVersion,
@@ -220,9 +342,10 @@ let generateFile = (
     llmsDirectory,
   )
 
-  docsDirectory
-  ->collectFiles
-  ->Array.forEach(filePath => {
+  let mdxFilePaths =
+    docsDirectory->collectFiles->Array.filter(filePath => String.endsWith(filePath, ".mdx"))
+
+  mdxFilePaths->Array.forEach(filePath => {
     if String.endsWith(filePath, ".mdx") {
       let content = readMarkdownFile(filePath)
 
@@ -232,12 +355,17 @@ let generateFile = (
     }
   })
 
+  let documents = mdxFilePaths->Array.map(readMdxDocument)->Array.toSorted(compareMdxDocuments)
+
+  createSectionLlmFiles(~llmsDirectory, ~sectionFiles, ~documents)
+
   copyVersions->Array.forEach(version =>
     copyCurrentFilesToVersion(
       ~version,
       ~llmsDirectory,
       ~fullFilePath,
       ~smallFilePath,
+      ~sectionFiles,
       ~manualVersionLinks,
       ~rescriptReactVersion,
       ~reactVersion,
@@ -251,12 +379,31 @@ let manualMajorVersions = ["v12", "v13"]
 let currentReactVersion = "v0.14.2"
 let currentReactRuntimeVersion = "v19.2.4"
 
+let manualSectionLlmFiles = [
+  {
+    title: "ReScript Language Overview",
+    slug: "language-overview",
+    section: "Language Features",
+    description: "Focused documentation for ReScript syntax, data types, control flow, modules, and core language features.",
+  },
+  {
+    title: "ReScript JavaScript Interop",
+    slug: "javascript-interop",
+    section: "JavaScript Interop",
+    description: "Focused documentation for binding to JavaScript values, modules, functions, objects, JSON, TypeScript, and other runtime interop patterns.",
+  },
+]
+
 let manualVersionLinks = `- [v13 pre-release LLMs index](https://rescript-lang.org/llms/manual/v13/llms.txt): The LLM file list for the latest ReScript v13 pre-release documentation
 - [v13 pre-release complete documentation](https://rescript-lang.org/llms/manual/v13/llm-full.txt): The complete latest ReScript v13 pre-release documentation
 - [v13 pre-release abridged documentation](https://rescript-lang.org/llms/manual/v13/llm-small.txt): A minimal latest ReScript v13 pre-release reference
+- [v13 pre-release language overview](https://rescript-lang.org/llms/manual/v13/language-overview/llm.txt): Focused latest ReScript v13 pre-release language overview
+- [v13 pre-release JavaScript interop](https://rescript-lang.org/llms/manual/v13/javascript-interop/llm.txt): Focused latest ReScript v13 pre-release JavaScript interop reference
 - [v12 current LLMs index](https://rescript-lang.org/llms/manual/v12/llms.txt): The LLM file list for the current ReScript v12 documentation
 - [v12 current complete documentation](https://rescript-lang.org/llms/manual/v12/llm-full.txt): The complete current ReScript v12 documentation
-- [v12 current abridged documentation](https://rescript-lang.org/llms/manual/v12/llm-small.txt): A minimal current ReScript v12 reference`
+- [v12 current abridged documentation](https://rescript-lang.org/llms/manual/v12/llm-small.txt): A minimal current ReScript v12 reference
+- [v12 current language overview](https://rescript-lang.org/llms/manual/v12/language-overview/llm.txt): Focused current ReScript v12 language overview
+- [v12 current JavaScript interop](https://rescript-lang.org/llms/manual/v12/javascript-interop/llm.txt): Focused current ReScript v12 JavaScript interop reference`
 
 let manualDocsDirectory = "markdown-pages/docs/manual"
 let reactDocsDirectory = "markdown-pages/docs/react"
@@ -273,6 +420,7 @@ generateFile(
   ~txtFilePath="public/llms.txt",
   ~staleTxtFilePath="public/llms/manual/llms.txt",
   ~staleVersions=["v10", "v11"],
+  ~sectionFiles=manualSectionLlmFiles,
   manualDocsDirectory,
   manualLlmsDirectory,
 )
