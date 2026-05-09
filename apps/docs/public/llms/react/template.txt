@@ -2,19 +2,11 @@
 
 > ReScript React is a strongly typed interface for React, designed to integrate seamlessly with modern React (>= v18.0) while compiling to idiomatic JavaScript, enabling robust and scalable React applications.
 
-## ReScript React Documentation
-
-Current ReScript React documentation version: <VERSION>.
-ReScript React package version: <RESCRIPT_REACT_VERSION>.
-React version: <REACT_VERSION>.
-
-The unversioned files under `/llms/react/` are the default entry points and always describe the current ReScript React docs.
-
-### Default Current Files
+## Files
 
 - [LLMs index](https://rescript-lang.org/llms/react/llms.txt): This file
-- [Complete current documentation](https://rescript-lang.org/llms/react/llm-full.txt): The complete current ReScript React documentation including all examples and additional content
-- [Abridged current documentation](https://rescript-lang.org/llms/react/llm-small.txt): A minimal current version of the ReScript React documentation, with the essential content for quick reference
+- [Complete documentation](https://rescript-lang.org/llms/react/llm-full.txt): The complete ReScript React documentation including all examples and additional content
+- [Abridged documentation](https://rescript-lang.org/llms/react/llm-small.txt): A minimal ReScript React documentation file with the essential content for quick reference
 
 ## Language Documentation
 

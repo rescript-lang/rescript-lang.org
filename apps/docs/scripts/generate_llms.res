@@ -423,13 +423,13 @@ let manualVersionLinks = `- [v13 pre-release LLMs index](https://rescript-lang.o
 - [v13 pre-release JavaScript interop](https://rescript-lang.org/llms/manual/v13/javascript-interop/llm.txt): Focused latest ReScript v13 pre-release JavaScript interop reference
 - [v13 pre-release build system](https://rescript-lang.org/llms/manual/v13/build-system/llm.txt): Focused latest ReScript v13 pre-release build system reference
 - [v13 pre-release getting started](https://rescript-lang.org/llms/manual/v13/getting-started/llm.txt): Focused latest ReScript v13 pre-release onboarding reference
-- [v12 current LLMs index](https://rescript-lang.org/llms/manual/v12/llms.txt): The LLM file list for the current ReScript v12 documentation
-- [v12 current complete documentation](https://rescript-lang.org/llms/manual/v12/llm-full.txt): The complete current ReScript v12 documentation
-- [v12 current abridged documentation](https://rescript-lang.org/llms/manual/v12/llm-small.txt): A minimal current ReScript v12 reference
-- [v12 current language overview](https://rescript-lang.org/llms/manual/v12/language-overview/llm.txt): Focused current ReScript v12 language overview
-- [v12 current JavaScript interop](https://rescript-lang.org/llms/manual/v12/javascript-interop/llm.txt): Focused current ReScript v12 JavaScript interop reference
-- [v12 current build system](https://rescript-lang.org/llms/manual/v12/build-system/llm.txt): Focused current ReScript v12 build system reference
-- [v12 current getting started](https://rescript-lang.org/llms/manual/v12/getting-started/llm.txt): Focused current ReScript v12 onboarding reference`
+- [v12 LLMs index](https://rescript-lang.org/llms/manual/v12/llms.txt): The LLM file list for ReScript v12 documentation
+- [v12 complete documentation](https://rescript-lang.org/llms/manual/v12/llm-full.txt): The complete ReScript v12 documentation
+- [v12 abridged documentation](https://rescript-lang.org/llms/manual/v12/llm-small.txt): A minimal ReScript v12 reference
+- [v12 language overview](https://rescript-lang.org/llms/manual/v12/language-overview/llm.txt): Focused ReScript v12 language overview
+- [v12 JavaScript interop](https://rescript-lang.org/llms/manual/v12/javascript-interop/llm.txt): Focused ReScript v12 JavaScript interop reference
+- [v12 build system](https://rescript-lang.org/llms/manual/v12/build-system/llm.txt): Focused ReScript v12 build system reference
+- [v12 getting started](https://rescript-lang.org/llms/manual/v12/getting-started/llm.txt): Focused ReScript v12 onboarding reference`
 
 let manualDocsDirectory = "markdown-pages/docs/manual"
 let reactDocsDirectory = "markdown-pages/docs/react"
