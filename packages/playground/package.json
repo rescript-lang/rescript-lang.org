@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "@babel/parser": "^7.29.2",
     "@rescript-lang/shared": "workspace:*",
     "@rescript/react": "^0.14.2",
     "@rescript/webapi": "0.1.0-experimental-29db5f4",

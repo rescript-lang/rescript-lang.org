@@ -64,10 +64,12 @@ let useCompilerManager: (
   ~bundleBaseUrl: string,
   ~initialVersion: Semver.t=?,
   ~initialModuleSystem: string=?,
+  ~initialWarnFlags: string=?,
   ~initialJsxPreserveMode: bool=?,
   ~initialExperimentalFeatures: array<string>=?,
   ~initialLang: Lang.t=?,
   ~onAction: action => unit=?,
+  ~syncUrl: bool=?,
   ~versions: array<Semver.t>,
 ) => (state, action => unit)
 

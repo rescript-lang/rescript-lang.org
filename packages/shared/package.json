@@ -7,6 +7,7 @@
     "@babel/generator": "^7.29.1",
     "@babel/parser": "^7.29.2",
     "@babel/traverse": "^7.29.0",
+    "@babel/types": "^7.29.0",
     "@codemirror/commands": "^6.10.3",
     "@codemirror/lang-javascript": "^6.2.5",
     "@codemirror/language": "^6.12.3",
@@ -21,6 +22,13 @@
     "@tsnobip/rescript-lezer": "^0.8.0",
     "highlight.js": "^11.11.1",
     "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "react-dom": "^19.2.4",
+    "remark-comment": "^1.0.0",
+    "remark-frontmatter": "^5.0.0",
+    "remark-gfm": "^4.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-stringify": "^11.0.0",
+    "unified": "^11.0.5",
+    "vfile-matter": "^5.0.1"
   }
 }

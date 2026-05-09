@@ -6,7 +6,7 @@
   "author": "Patrick Ecker <ryyppy@users.noreply.github.com>",
   "type": "module",
   "scripts": {
-    "build:scripts": "yarn dlx tsdown@0.22.0 scripts/*.jsx -d _scripts --no-clean --ext .mjs",
+    "build:scripts": "cd ../.. && yarn dlx tsdown@0.22.0 apps/docs/scripts/*.jsx -d apps/docs/_scripts --no-clean --ext .mjs",
     "build:generate-llms": "node _scripts/generate_llms.mjs",
     "build:generate-sitemap": "node _scripts/generate_sitemap.mjs build/client out",
     "build:res": "rescript build --warn-error +3+8+11+12+26+27+31+32+33+34+35+39+44+45+110",

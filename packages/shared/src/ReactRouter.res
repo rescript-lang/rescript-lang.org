@@ -1,6 +1,9 @@
+type navigateOptions = {replace?: bool}
+type navigate = (string, ~options: navigateOptions=?) => unit
+
 // https://api.reactrouter.com/v7/functions/react_router.useNavigate.html
 @module("react-router")
-external useNavigate: unit => string => unit = "useNavigate"
+external useNavigate: unit => navigate = "useNavigate"
 
 @module("react-router")
 external useSearchParams: unit => (WebAPI.URLAPI.urlSearchParams, {..} => unit) = "useSearchParams"

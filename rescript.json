@@ -3,6 +3,7 @@
   "dependencies": [
     "@rescript-lang/shared",
     "@rescript-lang/playground",
+    "@rescript-lang/guide",
     "@rescript-lang/docs"
   ],
   "sources": [],

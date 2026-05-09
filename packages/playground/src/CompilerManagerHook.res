@@ -244,14 +244,16 @@ let useCompilerManager = (
   ~bundleBaseUrl: string,
   ~initialVersion: option<Semver.t>=?,
   ~initialModuleSystem=defaultModuleSystem,
+  ~initialWarnFlags=?,
   ~initialJsxPreserveMode=false,
   ~initialExperimentalFeatures=[],
   ~initialLang: Lang.t=Res,
   ~onAction: option<action => unit>=?,
+  ~syncUrl=true,
   ~versions: array<Semver.t>,
 ) => {
   let (state, setState) = React.useState(_ => Init)
-  let {pathname} = PlaygroundReactRouter.useLocation()
+  let {pathname} = ReactRouter.useLocation()
 
   // Dispatch method for the public interface
   let dispatch = React.useCallback((action: action): unit => {
@@ -444,9 +446,11 @@ let useCompilerManager = (
               // should default to esmodule. So we override the config
               // and use the `setConfig` function to sync up the
               // internal compiler state with our playground state.
+              let defaultConfig = instance->Compiler.getConfig
               let config = {
-                ...instance->Compiler.getConfig,
+                ...defaultConfig,
                 moduleSystem: initialModuleSystem,
+                warnFlags: initialWarnFlags->Option.getOr(defaultConfig.warnFlags),
                 experimentalFeatures: initialExperimentalFeatures,
                 jsxPreserveMode: initialJsxPreserveMode,
                 ?openModules,
@@ -507,9 +511,11 @@ let useCompilerManager = (
           let apiVersion = apiVersion->Version.fromString
           let openModules = getOpenModules(~apiVersion, ~libraries)
 
+          let defaultConfig = instance->Compiler.getConfig
           let config = {
-            ...instance->Compiler.getConfig,
+            ...defaultConfig,
             moduleSystem: defaultModuleSystem,
+            warnFlags: initialWarnFlags->Option.getOr(defaultConfig.warnFlags),
             ?openModules,
           }
 
@@ -619,9 +625,10 @@ let useCompilerManager = (
           : EvalIFrame.sendOutput(code, imports)
         setState(_ => Ready({...state, logs: [], validReactCode: entryPointExists}))
       | SetupFailed(_) => ()
-      | Ready(ready) =>
+      | Ready(ready) if syncUrl =>
         let url = createUrl((pathname :> string), ready)
         WebAPI.History.replaceState(history, ~data=JSON.Null, ~unused="", ~url)
+      | Ready(_) => ()
       }
     }
 
@@ -632,11 +639,13 @@ let useCompilerManager = (
     dispatchError,
     initialVersion,
     initialModuleSystem,
+    initialWarnFlags,
     initialJsxPreserveMode,
     initialExperimentalFeatures,
     initialLang,
     versions,
     pathname,
+    syncUrl,
   ))
 
   (state, dispatch)

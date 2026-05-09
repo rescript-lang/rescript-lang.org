@@ -1,6 +1,6 @@
 import * as fs from "node:fs";
 
-const { stdlibPaths } = await import("./app/routes.jsx");
+const { stdlibPaths } = await import("./app/DocsRoutes.jsx");
 
 export default {
   ssr: false,
