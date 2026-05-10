@@ -20,6 +20,11 @@
       "type": "dev"
     },
     {
+      "dir": "test-utils",
+      "subdirs": true,
+      "type": "dev"
+    },
+    {
       "dir": "app",
       "subdirs": true
     },

@@ -166,7 +166,7 @@ test("desktop blog article with article image shows image", async () => {
   await element(title)->toBeVisible
 
   let wrapper = await screen->getByTestId("blog-article-wrapper")
-  await waitForImages("[data-testid='blog-article-wrapper']")
+  await TestUtils.waitForImages("[data-testid='blog-article-wrapper']")
   await element(wrapper)->toMatchScreenshot("desktop-blog-article-with-image")
 })
 
