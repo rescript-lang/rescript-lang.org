@@ -15,15 +15,21 @@ let waitForHydration = () => {
 // re-query from the DOM root on each retry.
 
 let clickNavLink = (~testId, ~text) => {
-  get(`[data-testid="${testId}"] a:visible`)
-  ->containsChainable(text)
+  getByTestId(testId)
+  ->should("be.visible")
+  ->containsSelectorChainable("a", text)
+  ->scrollIntoView
+  ->should("be.visible")
   ->click
   ->ignore
 }
 
 let clickMobileNavLink = text => {
-  get(`[data-testid="mobile-nav"] a:visible`)
-  ->containsChainable(text)
+  getByTestId("mobile-nav")
+  ->should("be.visible")
+  ->containsSelectorChainable("a", text)
+  ->scrollIntoView
+  ->should("be.visible")
   ->click
   ->ignore
 }

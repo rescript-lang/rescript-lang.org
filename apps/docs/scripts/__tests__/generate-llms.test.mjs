@@ -25,6 +25,8 @@ let makeWorkspace = () => {
     "markdown-pages/docs/manual/introduction.mdx",
     `---
 title: "Introduction"
+section: "Overview"
+order: 1
 ---
 
 # Manual Introduction
@@ -32,6 +34,51 @@ title: "Introduction"
 \`\`\`res
 let answer = 42
 \`\`\`
+`,
+  );
+
+  writeFile(
+    root,
+    "markdown-pages/docs/manual/overview.mdx",
+    `---
+title: "Language Overview"
+section: "Language Features"
+order: 1
+---
+
+# Language Overview
+
+Language feature content.
+`,
+  );
+
+  writeFile(
+    root,
+    "markdown-pages/docs/manual/bind-to-js-function.mdx",
+    `---
+title: "Bind to JS Function"
+section: "JavaScript Interop"
+order: 1
+---
+
+# Bind to JS Function
+
+JavaScript interop content.
+`,
+  );
+
+  writeFile(
+    root,
+    "markdown-pages/docs/manual/build-overview.mdx",
+    `---
+title: "Build Overview"
+section: "Build System"
+order: 1
+---
+
+# Build Overview
+
+Build system content.
 `,
   );
 
@@ -51,12 +98,14 @@ title: "React Introduction"
     "public/llms/manual/template.txt",
     `# Manual LLMs
 
-Current version: <VERSION>
-Version label: <MANUAL_VERSION_LABEL>
+## Files
 
-- [Complete documentation](https://rescript-lang.org/llms/manual/<VERSION>/llm-full.txt)
-- [Abridged documentation](https://rescript-lang.org/llms/manual/<VERSION>/llm-small.txt)
-<MANUAL_VERSION_LINKS>
+- [Complete documentation](https://rescript-lang.org/llms/manual/llm-full.txt)
+- [Abridged documentation](https://rescript-lang.org/llms/manual/llm-small.txt)
+- [Language overview](https://rescript-lang.org/llms/manual/language-overview/llm.txt)
+- [JavaScript interop](https://rescript-lang.org/llms/manual/javascript-interop/llm.txt)
+- [Build system](https://rescript-lang.org/llms/manual/build-system/llm.txt)
+- [Getting started](https://rescript-lang.org/llms/manual/getting-started/llm.txt)
 `,
   );
   writeFile(root, "public/llms/manual/llms.txt", "stale manual index");
@@ -66,14 +115,42 @@ Version label: <MANUAL_VERSION_LABEL>
   writeFile(root, "public/llms/manual/v11/llms.txt", "stale v11 index");
   writeFile(root, "public/llms/manual/v11/llm-full.txt", "stale v11 full");
   writeFile(root, "public/llms/manual/v11/llm-small.txt", "stale v11 small");
+  writeFile(root, "public/llms/manual/v12/llms.txt", "stale v12 index");
+  writeFile(root, "public/llms/manual/v12/llm-full.txt", "stale v12 full");
+  writeFile(root, "public/llms/manual/v12/llm-small.txt", "stale v12 small");
+  writeFile(
+    root,
+    "public/llms/manual/v12/language-overview/llm.txt",
+    "stale v12 language overview",
+  );
+  writeFile(root, "public/llms/manual/v13/llms.txt", "stale v13 index");
+  writeFile(root, "public/llms/manual/v13/llm-full.txt", "stale v13 full");
+  writeFile(root, "public/llms/manual/v13/llm-small.txt", "stale v13 small");
+  writeFile(
+    root,
+    "public/llms/manual/v13/language-overview/llm.txt",
+    "stale v13 language overview",
+  );
 
   writeFile(
     root,
     "public/llms/manual/template.mdx",
-    `# Manual LLMs
+    `---
+title: "LLMs"
+section: "Overview"
+order: 4
+---
 
-- [/llms/manual/<VERSION>/llm-full.txt](/llms/manual/<VERSION>/llm-full.txt)
-- [/llms/manual/<VERSION>/llm-small.txt](/llms/manual/<VERSION>/llm-small.txt)
+# Manual LLMs
+
+## Files
+
+- [/llms/manual/llm-full.txt](/llms/manual/llm-full.txt)
+- [/llms/manual/llm-small.txt](/llms/manual/llm-small.txt)
+- [/llms/manual/language-overview/llm.txt](/llms/manual/language-overview/llm.txt)
+- [/llms/manual/javascript-interop/llm.txt](/llms/manual/javascript-interop/llm.txt)
+- [/llms/manual/build-system/llm.txt](/llms/manual/build-system/llm.txt)
+- [/llms/manual/getting-started/llm.txt](/llms/manual/getting-started/llm.txt)
 `,
   );
 
@@ -82,12 +159,10 @@ Version label: <MANUAL_VERSION_LABEL>
     "public/llms/react/template.txt",
     `# React LLMs
 
-Current version: <VERSION>
-ReScript React package version: <RESCRIPT_REACT_VERSION>
-React version: <REACT_VERSION>
+## Files
 
-- [Complete documentation](https://rescript-lang.org/llms/react/<VERSION>/llm-full.txt)
-- [Abridged documentation](https://rescript-lang.org/llms/react/<VERSION>/llm-small.txt)
+- [Complete documentation](https://rescript-lang.org/llms/react/llm-full.txt)
+- [Abridged documentation](https://rescript-lang.org/llms/react/llm-small.txt)
 `,
   );
 
@@ -96,9 +171,33 @@ React version: <REACT_VERSION>
     "public/llms/react/template.mdx",
     `# React LLMs
 
-- [/llms/react/<VERSION>/llm-full.txt](/llms/react/<VERSION>/llm-full.txt)
-- [/llms/react/<VERSION>/llm-small.txt](/llms/react/<VERSION>/llm-small.txt)
+## Files
+
+- [/llms/react/llm-full.txt](/llms/react/llm-full.txt)
+- [/llms/react/llm-small.txt](/llms/react/llm-small.txt)
 `,
+  );
+  writeFile(
+    root,
+    "public/llms/react/v0.14.2/llms.txt",
+    "stale react versioned index",
+  );
+  writeFile(
+    root,
+    "public/llms/react/v0.14.2/llm-full.txt",
+    "stale react versioned full",
+  );
+  writeFile(
+    root,
+    "public/llms/react/v0.14.2/llm-small.txt",
+    "stale react versioned small",
+  );
+  writeFile(root, "public/llms/react/latest/llms.txt", "stale latest index");
+  writeFile(root, "public/llms/react/latest/llm-full.txt", "stale latest full");
+  writeFile(
+    root,
+    "public/llms/react/latest/llm-small.txt",
+    "stale latest small",
   );
 
   return root;
@@ -106,17 +205,6 @@ React version: <REACT_VERSION>
 
 let readFile = (root, filePath) =>
   fs.readFileSync(path.join(root, filePath), "utf8");
-
-let assertOccursInOrder = (content, parts) => {
-  let lastIndex = -1;
-
-  for (let part of parts) {
-    let index = content.indexOf(part);
-    assert.notEqual(index, -1);
-    assert.ok(index > lastIndex);
-    lastIndex = index;
-  }
-};
 
 test("generate_llms writes the default manual index at the site root", () => {
   let root = makeWorkspace();
@@ -127,26 +215,75 @@ test("generate_llms writes the default manual index at the site root", () => {
   });
 
   let currentLlms = readFile(root, "public/llms.txt");
-  let versionedLlms = readFile(root, "public/llms/manual/v12/llms.txt");
-  let preReleaseLlms = readFile(root, "public/llms/manual/v13/llms.txt");
-  let manualVersions = ["v12", "v13"];
+  let humanLlmsPage = readFile(root, "markdown-pages/docs/manual/llms.mdx");
+  let languageOverview = readFile(
+    root,
+    "public/llms/manual/language-overview/llm.txt",
+  );
+  let javascriptInterop = readFile(
+    root,
+    "public/llms/manual/javascript-interop/llm.txt",
+  );
+  let buildSystem = readFile(root, "public/llms/manual/build-system/llm.txt");
+  let gettingStarted = readFile(
+    root,
+    "public/llms/manual/getting-started/llm.txt",
+  );
 
   assert.doesNotMatch(currentLlms, /<VERSION>/);
   assert.doesNotMatch(currentLlms, /<MANUAL_VERSION_LABEL>/);
-  assert.match(currentLlms, /Current version: v12/);
-  assert.match(currentLlms, /Version label: v12 \(current version\)/);
-  assert.match(currentLlms, /v12 current/i);
-  assert.match(currentLlms, /v13 pre-release/i);
+  assert.doesNotMatch(currentLlms, /Current version/i);
+  assert.doesNotMatch(currentLlms, /Version label/i);
+  assert.doesNotMatch(currentLlms, /Default Current Files/i);
+  assert.doesNotMatch(currentLlms, /default entry point/i);
+  assert.doesNotMatch(humanLlmsPage, /This ReScript manual major version/i);
+  assert.doesNotMatch(humanLlmsPage, /Default Current Files/i);
+  assert.doesNotMatch(humanLlmsPage, /default entry point/i);
+  assert.doesNotMatch(humanLlmsPage, /## Versioned Files/);
   assert.match(
     currentLlms,
-    /https:\/\/rescript-lang\.org\/llms\/manual\/v12\/llm-full\.txt/,
+    /https:\/\/rescript-lang\.org\/llms\/manual\/llm-full\.txt/,
   );
   assert.match(
     currentLlms,
-    /https:\/\/rescript-lang\.org\/llms\/manual\/v12\/llm-small\.txt/,
+    /https:\/\/rescript-lang\.org\/llms\/manual\/llm-small\.txt/,
   );
+  assert.match(
+    currentLlms,
+    /https:\/\/rescript-lang\.org\/llms\/manual\/language-overview\/llm\.txt/,
+  );
+  assert.match(
+    currentLlms,
+    /https:\/\/rescript-lang\.org\/llms\/manual\/javascript-interop\/llm\.txt/,
+  );
+  assert.match(
+    currentLlms,
+    /https:\/\/rescript-lang\.org\/llms\/manual\/build-system\/llm\.txt/,
+  );
+  assert.match(
+    currentLlms,
+    /https:\/\/rescript-lang\.org\/llms\/manual\/getting-started\/llm\.txt/,
+  );
+  assert.doesNotMatch(currentLlms, /\/llms\/manual\/v12\//);
+  assert.doesNotMatch(currentLlms, /\/llms\/manual\/v13\//);
   assert.doesNotMatch(currentLlms, /\/llms\/manual\/v10\//);
   assert.doesNotMatch(currentLlms, /\/llms\/manual\/v11\//);
+  assert.doesNotMatch(humanLlmsPage, /\/llms\/manual\/v13\//);
+  assert.doesNotMatch(humanLlmsPage, /\/llms\/manual\/v12\//);
+  assert.match(languageOverview, /# ReScript Language Overview/);
+  assert.match(languageOverview, /Language feature content/);
+  assert.doesNotMatch(languageOverview, /JavaScript interop content/);
+  assert.doesNotMatch(languageOverview, /Manual Introduction/);
+  assert.match(javascriptInterop, /# ReScript JavaScript Interop/);
+  assert.match(javascriptInterop, /JavaScript interop content/);
+  assert.doesNotMatch(javascriptInterop, /Language feature content/);
+  assert.match(buildSystem, /# ReScript Build System/);
+  assert.match(buildSystem, /Build system content/);
+  assert.doesNotMatch(buildSystem, /Manual Introduction/);
+  assert.match(gettingStarted, /# ReScript Getting Started/);
+  assert.match(gettingStarted, /Manual Introduction/);
+  assert.doesNotMatch(gettingStarted, /Manual LLMs/);
+  assert.doesNotMatch(gettingStarted, /Build system content/);
 
   assert.equal(
     fs.existsSync(path.join(root, "public/llms/manual/llms.txt")),
@@ -176,41 +313,38 @@ test("generate_llms writes the default manual index at the site root", () => {
     fs.existsSync(path.join(root, "public/llms/manual/v11/llm-small.txt")),
     false,
   );
-  assert.equal(versionedLlms, currentLlms);
-  assert.match(preReleaseLlms, /Version label: v13 \(pre-release version\)/);
-
-  for (let version of manualVersions) {
-    assert.match(
-      currentLlms,
-      new RegExp(
-        `https://rescript-lang\\.org/llms/manual/${version}/llm-full\\.txt`,
+  for (let version of ["v12", "v13"]) {
+    assert.equal(
+      fs.existsSync(path.join(root, `public/llms/manual/${version}/llms.txt`)),
+      false,
+    );
+    assert.equal(
+      fs.existsSync(
+        path.join(root, `public/llms/manual/${version}/llm-full.txt`),
       ),
+      false,
     );
     assert.equal(
-      readFile(root, `public/llms/manual/${version}/llm-full.txt`),
-      readFile(root, "public/llms/manual/llm-full.txt"),
+      fs.existsSync(
+        path.join(root, `public/llms/manual/${version}/llm-small.txt`),
+      ),
+      false,
     );
     assert.equal(
-      readFile(root, `public/llms/manual/${version}/llm-small.txt`),
-      readFile(root, "public/llms/manual/llm-small.txt"),
-    );
-    assert.match(
-      readFile(root, `public/llms/manual/${version}/llms.txt`),
-      new RegExp(`Current version: ${version}`),
+      fs.existsSync(
+        path.join(
+          root,
+          `public/llms/manual/${version}/language-overview/llm.txt`,
+        ),
+      ),
+      false,
     );
   }
 
   assert.doesNotMatch(currentLlms, /v10\.|v11\.|v12\.|v13\./);
-  let majorVersionLinks = currentLlms.slice(
-    currentLlms.indexOf("v13 pre-release LLMs index"),
-  );
-  assertOccursInOrder(majorVersionLinks, [
-    "/llms/manual/v13/llm-full.txt",
-    "/llms/manual/v12/llm-full.txt",
-  ]);
 });
 
-test("generate_llms writes versioned ReScript React files", () => {
+test("generate_llms writes ReScript React files", () => {
   let root = makeWorkspace();
 
   child_process.execFileSync(process.execPath, [generatorPath], {
@@ -219,33 +353,55 @@ test("generate_llms writes versioned ReScript React files", () => {
   });
 
   let currentLlms = readFile(root, "public/llms/react/llms.txt");
-  let versionedLlms = readFile(root, "public/llms/react/v0.14.2/llms.txt");
+  let humanLlmsPage = readFile(root, "markdown-pages/docs/react/llms.mdx");
 
   assert.doesNotMatch(currentLlms, /<VERSION>/);
   assert.doesNotMatch(currentLlms, /<RESCRIPT_REACT_VERSION>|<REACT_VERSION>/);
-  assert.match(currentLlms, /Current version: v0\.14\.2/);
-  assert.match(currentLlms, /ReScript React package version: v0\.14\.2/);
-  assert.match(currentLlms, /React version: v19\.2\.4/);
+  assert.doesNotMatch(currentLlms, /Current version/i);
+  assert.doesNotMatch(currentLlms, /ReScript React package version/i);
+  assert.doesNotMatch(currentLlms, /React version/i);
+  assert.doesNotMatch(currentLlms, /Default Current Files/i);
+  assert.doesNotMatch(currentLlms, /default entry point/i);
+  assert.doesNotMatch(
+    humanLlmsPage,
+    /Current ReScript React documentation version/i,
+  );
+  assert.doesNotMatch(humanLlmsPage, /Default Current Files/i);
+  assert.doesNotMatch(humanLlmsPage, /default entry point/i);
+  assert.doesNotMatch(humanLlmsPage, /## Versioned Files/);
   assert.match(
     currentLlms,
-    /https:\/\/rescript-lang\.org\/llms\/react\/v0\.14\.2\/llm-full\.txt/,
+    /https:\/\/rescript-lang\.org\/llms\/react\/llm-full\.txt/,
   );
   assert.match(
     currentLlms,
-    /https:\/\/rescript-lang\.org\/llms\/react\/v0\.14\.2\/llm-small\.txt/,
+    /https:\/\/rescript-lang\.org\/llms\/react\/llm-small\.txt/,
   );
+  assert.doesNotMatch(currentLlms, /\/llms\/react\/v0\.14\.2\//);
+  assert.doesNotMatch(humanLlmsPage, /\/llms\/react\/v0\.14\.2\//);
 
   assert.equal(
     fs.existsSync(path.join(root, "public/llms/react/latest/llms.txt")),
     false,
   );
-  assert.equal(versionedLlms, currentLlms);
   assert.equal(
-    readFile(root, "public/llms/react/v0.14.2/llm-full.txt"),
-    readFile(root, "public/llms/react/llm-full.txt"),
+    fs.existsSync(path.join(root, "public/llms/react/latest/llm-full.txt")),
+    false,
   );
   assert.equal(
-    readFile(root, "public/llms/react/v0.14.2/llm-small.txt"),
-    readFile(root, "public/llms/react/llm-small.txt"),
+    fs.existsSync(path.join(root, "public/llms/react/latest/llm-small.txt")),
+    false,
+  );
+  assert.equal(
+    fs.existsSync(path.join(root, "public/llms/react/v0.14.2/llms.txt")),
+    false,
+  );
+  assert.equal(
+    fs.existsSync(path.join(root, "public/llms/react/v0.14.2/llm-full.txt")),
+    false,
+  );
+  assert.equal(
+    fs.existsSync(path.join(root, "public/llms/react/v0.14.2/llm-small.txt")),
+    false,
   );
 });
