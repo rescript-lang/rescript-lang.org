@@ -324,6 +324,7 @@ module ActiveDocSearch = {
             transformItems={items => normalizeHitUrls(items, ~siteUrl=Env.root_url)}
             hitComponent
             onClose
+            insights=true
             initialScrollY={window.scrollY->Float.toInt}
             searchParameters={
               distinct: 3,

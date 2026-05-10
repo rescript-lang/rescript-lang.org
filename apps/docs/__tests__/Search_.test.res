@@ -486,3 +486,29 @@ test("renders disabled search copy when Algolia config is missing", async () => 
   await element(await screen->getByText("Search unavailable"))->toBeVisible
   await element(await screen->getByLabelText("Search unavailable for this build"))->toBeVisible
 })
+
+test("active DocSearch enables Algolia Insights", async () => {
+  await viewport(1440, 500)
+
+  let _screen = await render(
+    <ReactRouter.MemoryRouter initialEntries=["/"]>
+      <Search.ActiveDocSearch
+        apiKey="test-api-key"
+        appId="TESTAPP"
+        indexName="test_index"
+        deactivateSearch={() => ()}
+        onClose={() => ()}
+      />
+    </ReactRouter.MemoryRouter>,
+  )
+
+  let hasInsightsScript = switch WebAPI.Document.querySelector(
+    document,
+    "script[src*='search-insights']",
+  ) {
+  | Value(_) => true
+  | Null => false
+  }
+
+  expect(hasInsightsScript)->toBe(true)
+})
