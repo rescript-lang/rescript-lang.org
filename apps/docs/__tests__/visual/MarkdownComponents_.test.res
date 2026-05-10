@@ -214,7 +214,7 @@ test("renders Image with caption", async () => {
   await element(caption)->toBeVisible
 
   let wrapper = await screen->getByTestId("image-wrapper")
-  await waitForImages("[data-testid='image-wrapper']")
+  await TestUtils.waitForImages("[data-testid='image-wrapper']")
   await element(wrapper)->toMatchScreenshot("markdown-image")
 })
 
@@ -292,7 +292,7 @@ test("renders Image with small size", async () => {
   await element(caption)->toBeVisible
 
   let wrapper = await screen->getByTestId("image-small-wrapper")
-  await waitForImages("[data-testid='image-small-wrapper']")
+  await TestUtils.waitForImages("[data-testid='image-small-wrapper']")
   await element(wrapper)->toMatchScreenshot("markdown-image-small")
 })
 

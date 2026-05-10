@@ -1,9 +1,6 @@
 open ReactRouter
 open Vitest
 
-@module("vitest")
-external testWithTimeout: (string, unit => promise<unit>, int) => unit = "test"
-
 let snapshotSection = async (~width, ~height, ~sectionTestId, ~screenshotName) => {
   await viewport(width, height)
 
@@ -20,6 +17,15 @@ let snapshotSection = async (~width, ~height, ~sectionTestId, ~screenshotName) =
   | Null => failwith(`expected to find section ${sectionTestId}`)
   }
 
+  if sectionTestId == "landing-other-selling-points" {
+    let sourceSelector = `[data-testid="${sectionTestId}"]`
+    await TestUtils.waitForImages(sourceSelector)
+    // Headless UI's appear transition mutates classes after first render. Since
+    // these tests snapshot a cloned outerHTML string, wait for the live section
+    // to settle so the clone does not preserve a transient opacity-0 state.
+    await TestUtils.sleep(1100)
+  }
+
   let sandboxTestId = `${sectionTestId}-snapshot`
   let snapshotHtml = sourceSection.outerHTML
   await screen->unmount
@@ -34,7 +40,7 @@ let snapshotSection = async (~width, ~height, ~sectionTestId, ~screenshotName) =
 
   let snapshotTarget = await snapshotScreen->getByTestId(sandboxTestId)
   await element(snapshotTarget)->toBeVisible
-  await waitForImages(`[data-testid="${sandboxTestId}"]`)
+  await TestUtils.waitForImages(`[data-testid="${sandboxTestId}"]`)
   await element(snapshotTarget)->toMatchScreenshot(screenshotName)
   await snapshotScreen->unmount
 }

@@ -9,6 +9,9 @@ type mock
 @module("vitest")
 external test: (string, unit => promise<unit>) => unit = "test"
 
+@module("vitest")
+external testWithTimeout: (string, unit => promise<unit>, int) => unit = "test"
+
 @module("vitest") @scope("vi")
 external fn: unit => 'a => 'b = "fn"
 
@@ -45,8 +48,6 @@ external getByText: (element, string) => promise<element> = "getByText"
 @send
 external getByTextWithOptions: (element, string, {"exact": bool}) => promise<element> = "getByText"
 
-let getByTextExact = (element, text) => getByTextWithOptions(element, text, {"exact": true})
-
 @send
 external getByLabelText: (element, string) => promise<element> = "getByLabelText"
 
@@ -55,24 +56,6 @@ external getAllByLabelText: (element, string) => promise<array<element>> = "getA
 
 @send
 external getByRole: (element, [#button]) => promise<element> = "getByRole"
-
-external imageFromNode: WebAPI.DOMAPI.node => WebAPI.DOMAPI.htmlImageElement = "%identity"
-
-let waitForImages = async (selector: string) => {
-  let root = switch document->WebAPI.Document.querySelector(selector) {
-  | Value(root) => root
-  | Null => failwith(`expected to find screenshot target ${selector}`)
-  }
-
-  let images = root->WebAPI.Element.querySelectorAll("img")
-
-  if images.length > 0 {
-    for i in 0 to images.length - 1 {
-      let image = images->WebAPI.NodeList.item(i)->imageFromNode
-      await image->WebAPI.HTMLImageElement.decode
-    }
-  }
-}
 
 /**
  * Actions

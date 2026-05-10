@@ -7,7 +7,7 @@ let beltRoutes: array<ReactRouter.Routes.t>
 let blogArticleRoutes: array<ReactRouter.Routes.t>
 let docsManualRoutes: array<ReactRouter.Routes.t>
 let docsReactRoutes: array<ReactRouter.Routes.t>
-let docsGuidelinesRoutes: array<ReactRouter.Routes.t>
+let docsGuidesRoutes: array<ReactRouter.Routes.t>
 let communityRoutes: array<ReactRouter.Routes.t>
 let syntaxLookupDetailRoutes: array<ReactRouter.Routes.t>
 let default: array<ReactRouter.Routes.t>

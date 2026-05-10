@@ -14,6 +14,7 @@ test("desktop secondary navbar shows all doc section links", async () => {
 
   await element(await navbar->getByText("Language Manual"))->toBeVisible
   await element(await navbar->getByText("API"))->toBeVisible
+  await element(await navbar->getByText("Guides"))->toBeVisible
   await element(await navbar->getByText("Syntax Lookup"))->toBeVisible
   await element(await navbar->getByText("React"))->toBeVisible
 
@@ -33,6 +34,7 @@ test("mobile secondary navbar shows all links", async () => {
 
   await element(await navbar->getByText("Language Manual"))->toBeVisible
   await element(await navbar->getByText("API"))->toBeVisible
+  await element(await navbar->getByText("Guides"))->toBeVisible
   await element(await navbar->getByText("Syntax Lookup"))->toBeVisible
   await element(await navbar->getByText("React"))->toBeVisible
 
@@ -52,6 +54,7 @@ test("secondary navbar highlights active section", async () => {
 
   await element(await navbar->getByText("React"))->toBeVisible
   await element(await navbar->getByText("Language Manual"))->toBeVisible
+  await element(await navbar->getByText("Guides"))->toBeVisible
 
   await element(navbar)->toMatchScreenshot("desktop-navbar-secondary-react-active")
 })

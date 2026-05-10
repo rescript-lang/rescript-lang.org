@@ -74,6 +74,8 @@ apps/docs/functions/**/*.mjs
 apps/docs/functions/**/*.jsx
 apps/docs/__tests__/**/*.mjs
 apps/docs/__tests__/**/*.jsx
+apps/docs/test-utils/**/*.mjs
+apps/docs/test-utils/**/*.jsx
 apps/guide/__tests__/**/*.mjs
 apps/guide/__tests__/**/*.jsx
 apps/docs/e2e/**/*.mjs
