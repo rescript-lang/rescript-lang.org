@@ -83,9 +83,11 @@ jobs:
   deploy-guide:
     runs-on: ubuntu-latest
     name: Deploy Guide Worker
-    if: ${{ github.event_name != 'pull_request' && github.actor != 'dependabot[bot]' }}
+    if: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false) && github.actor != 'dependabot[bot]' }}
     permissions:
       contents: read
+      deployments: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v6.0.2
       - name: Setup Node.js environment
@@ -100,6 +102,7 @@ jobs:
       - name: Build guide
         run: yarn build:guide
       - name: Deploy guide
+        id: deploy-guide
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -109,6 +112,16 @@ jobs:
           wranglerVersion: 4.85.0
         env:
           FORCE_COLOR: 0
+      - name: Comment PR with guide deployment link
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          recreate: true
+          header: guide-deployment
+          message: |
+            ## Guide Cloudflare deployment
+
+            ${{ steps.deploy-guide.outputs.command-output }}
 
   e2e:
     runs-on: ubuntu-latest
