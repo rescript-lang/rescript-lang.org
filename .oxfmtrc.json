@@ -13,6 +13,7 @@
     "*.swp",
     "apps/docs/app/**/*.mjs",
     "build",
+    "data/api/**/*.json",
     "apps/docs/data/api/**/*.json",
     "dist",
     "apps/docs/index_data/*.json",
