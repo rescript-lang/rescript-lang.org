@@ -737,9 +737,7 @@
         "id": "Belt.MutableMap.String.eq",
         "kind": "value",
         "name": "eq",
-        "docstrings": [
-          "`eq(m1, m2, cmp)`"
-        ],
+        "docstrings": ["`eq(m1, m2, cmp)`"],
         "signature": "let eq: (t<'a>, t<'a>, ('a, 'a) => bool) => bool"
       },
       {
@@ -821,18 +819,14 @@
         "id": "Belt.MutableMap.String.toList",
         "kind": "value",
         "name": "toList",
-        "docstrings": [
-          "In increasing order"
-        ],
+        "docstrings": ["In increasing order"],
         "signature": "let toList: t<'a> => list<(key, 'a)>"
       },
       {
         "id": "Belt.MutableMap.String.toArray",
         "kind": "value",
         "name": "toArray",
-        "docstrings": [
-          "In increasing order"
-        ],
+        "docstrings": ["In increasing order"],
         "signature": "let toArray: t<'a> => array<(key, 'a)>"
       },
       {
@@ -951,18 +945,14 @@
         "id": "Belt.MutableMap.String.checkInvariantInternal",
         "kind": "value",
         "name": "checkInvariantInternal",
-        "docstrings": [
-          "**throw** when invariant is not held"
-        ],
+        "docstrings": ["**throw** when invariant is not held"],
         "signature": "let checkInvariantInternal: t<'a> => unit"
       },
       {
         "id": "Belt.MutableMap.String.remove",
         "kind": "value",
         "name": "remove",
-        "docstrings": [
-          "`remove(m, x)` do the in-place modification"
-        ],
+        "docstrings": ["`remove(m, x)` do the in-place modification"],
         "signature": "let remove: (t<'a>, key) => unit"
       },
       {
@@ -1106,9 +1096,7 @@
         "id": "Belt.MutableMap.Int.eq",
         "kind": "value",
         "name": "eq",
-        "docstrings": [
-          "`eq(m1, m2, cmp)`"
-        ],
+        "docstrings": ["`eq(m1, m2, cmp)`"],
         "signature": "let eq: (t<'a>, t<'a>, ('a, 'a) => bool) => bool"
       },
       {
@@ -1190,18 +1178,14 @@
         "id": "Belt.MutableMap.Int.toList",
         "kind": "value",
         "name": "toList",
-        "docstrings": [
-          "In increasing order"
-        ],
+        "docstrings": ["In increasing order"],
         "signature": "let toList: t<'a> => list<(key, 'a)>"
       },
       {
         "id": "Belt.MutableMap.Int.toArray",
         "kind": "value",
         "name": "toArray",
-        "docstrings": [
-          "In increasing order"
-        ],
+        "docstrings": ["In increasing order"],
         "signature": "let toArray: t<'a> => array<(key, 'a)>"
       },
       {
@@ -1320,18 +1304,14 @@
         "id": "Belt.MutableMap.Int.checkInvariantInternal",
         "kind": "value",
         "name": "checkInvariantInternal",
-        "docstrings": [
-          "**Throw** when invariant is not held"
-        ],
+        "docstrings": ["**Throw** when invariant is not held"],
         "signature": "let checkInvariantInternal: t<'a> => unit"
       },
       {
         "id": "Belt.MutableMap.Int.remove",
         "kind": "value",
         "name": "remove",
-        "docstrings": [
-          "`remove(m, x)` do the in-place modification"
-        ],
+        "docstrings": ["`remove(m, x)` do the in-place modification"],
         "signature": "let remove: (t<'a>, key) => unit"
       },
       {
@@ -1411,18 +1391,14 @@
         "id": "Belt.MutableSet.String.value",
         "kind": "type",
         "name": "value",
-        "docstrings": [
-          "The type of the set elements."
-        ],
+        "docstrings": ["The type of the set elements."],
         "signature": "type value = string"
       },
       {
         "id": "Belt.MutableSet.String.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "The type of sets."
-        ],
+        "docstrings": ["The type of sets."],
         "signature": "type t"
       },
       {
@@ -1563,9 +1539,7 @@
         "id": "Belt.MutableSet.String.forEach",
         "kind": "value",
         "name": "forEach",
-        "docstrings": [
-          "In increasing order"
-        ],
+        "docstrings": ["In increasing order"],
         "signature": "let forEach: (t, value => unit) => unit"
       },
       {
@@ -1580,9 +1554,7 @@
         "id": "Belt.MutableSet.String.reduce",
         "kind": "value",
         "name": "reduce",
-        "docstrings": [
-          "Iterate in increasing order."
-        ],
+        "docstrings": ["Iterate in increasing order."],
         "signature": "let reduce: (t, 'a, ('a, value) => 'a) => 'a"
       },
       {
@@ -1664,18 +1636,14 @@
         "id": "Belt.MutableSet.String.toList",
         "kind": "value",
         "name": "toList",
-        "docstrings": [
-          "In increasing order with respect"
-        ],
+        "docstrings": ["In increasing order with respect"],
         "signature": "let toList: t => list<value>"
       },
       {
         "id": "Belt.MutableSet.String.toArray",
         "kind": "value",
         "name": "toArray",
-        "docstrings": [
-          "In increasing order with respect"
-        ],
+        "docstrings": ["In increasing order with respect"],
         "signature": "let toArray: t => array<value>"
       },
       {
@@ -1738,18 +1706,14 @@
         "id": "Belt.MutableSet.String.split",
         "kind": "value",
         "name": "split",
-        "docstrings": [
-          "`split(s, key)` return a fresh copy of each"
-        ],
+        "docstrings": ["`split(s, key)` return a fresh copy of each"],
         "signature": "let split: (t, value) => ((t, t), bool)"
       },
       {
         "id": "Belt.MutableSet.String.checkInvariantInternal",
         "kind": "value",
         "name": "checkInvariantInternal",
-        "docstrings": [
-          "**throw** when invariant is not held"
-        ],
+        "docstrings": ["**throw** when invariant is not held"],
         "signature": "let checkInvariantInternal: t => unit"
       }
     ]
@@ -1766,18 +1730,14 @@
         "id": "Belt.MutableSet.Int.value",
         "kind": "type",
         "name": "value",
-        "docstrings": [
-          "The type of the set elements."
-        ],
+        "docstrings": ["The type of the set elements."],
         "signature": "type value = int"
       },
       {
         "id": "Belt.MutableSet.Int.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "The type of sets."
-        ],
+        "docstrings": ["The type of sets."],
         "signature": "type t"
       },
       {
@@ -1918,9 +1878,7 @@
         "id": "Belt.MutableSet.Int.forEach",
         "kind": "value",
         "name": "forEach",
-        "docstrings": [
-          "In increasing order"
-        ],
+        "docstrings": ["In increasing order"],
         "signature": "let forEach: (t, value => unit) => unit"
       },
       {
@@ -1935,9 +1893,7 @@
         "id": "Belt.MutableSet.Int.reduce",
         "kind": "value",
         "name": "reduce",
-        "docstrings": [
-          "Iterate in increasing order."
-        ],
+        "docstrings": ["Iterate in increasing order."],
         "signature": "let reduce: (t, 'a, ('a, value) => 'a) => 'a"
       },
       {
@@ -2019,18 +1975,14 @@
         "id": "Belt.MutableSet.Int.toList",
         "kind": "value",
         "name": "toList",
-        "docstrings": [
-          "In increasing order with respect"
-        ],
+        "docstrings": ["In increasing order with respect"],
         "signature": "let toList: t => list<value>"
       },
       {
         "id": "Belt.MutableSet.Int.toArray",
         "kind": "value",
         "name": "toArray",
-        "docstrings": [
-          "In increasing order with respect"
-        ],
+        "docstrings": ["In increasing order with respect"],
         "signature": "let toArray: t => array<value>"
       },
       {
@@ -2093,18 +2045,14 @@
         "id": "Belt.MutableSet.Int.split",
         "kind": "value",
         "name": "split",
-        "docstrings": [
-          "`split(s, key)` return a fresh copy of each"
-        ],
+        "docstrings": ["`split(s, key)` return a fresh copy of each"],
         "signature": "let split: (t, value) => ((t, t), bool)"
       },
       {
         "id": "Belt.MutableSet.Int.checkInvariantInternal",
         "kind": "value",
         "name": "checkInvariantInternal",
-        "docstrings": [
-          "**throw** when invariant is not held"
-        ],
+        "docstrings": ["**throw** when invariant is not held"],
         "signature": "let checkInvariantInternal: t => unit"
       }
     ]
@@ -2279,9 +2227,7 @@
         "id": "Belt.Map.Dict.toList",
         "kind": "value",
         "name": "toList",
-        "docstrings": [
-          "In increasing order."
-        ],
+        "docstrings": ["In increasing order."],
         "signature": "let toList: t<'k, 'a, 'id> => list<('k, 'a)>"
       },
       {
@@ -2567,9 +2513,7 @@
         "id": "Belt.Map.String.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "The type of maps from type `key` to type `'value`."
-        ],
+        "docstrings": ["The type of maps from type `key` to type `'value`."],
         "signature": "type t<'value>"
       },
       {
@@ -2721,9 +2665,7 @@
         "id": "Belt.Map.String.toList",
         "kind": "value",
         "name": "toList",
-        "docstrings": [
-          "In increasing order."
-        ],
+        "docstrings": ["In increasing order."],
         "signature": "let toList: t<'v> => list<(key, 'v)>"
       },
       {
@@ -2849,9 +2791,7 @@
         "id": "Belt.Map.String.checkInvariantInternal",
         "kind": "value",
         "name": "checkInvariantInternal",
-        "docstrings": [
-          "**throw** when invariant is not held"
-        ],
+        "docstrings": ["**throw** when invariant is not held"],
         "signature": "let checkInvariantInternal: t<'a> => unit"
       },
       {
@@ -3013,9 +2953,7 @@
         "id": "Belt.Map.Int.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "The type of maps from type `key` to type `'value`."
-        ],
+        "docstrings": ["The type of maps from type `key` to type `'value`."],
         "signature": "type t<'value>"
       },
       {
@@ -3167,9 +3105,7 @@
         "id": "Belt.Map.Int.toList",
         "kind": "value",
         "name": "toList",
-        "docstrings": [
-          "In increasing order."
-        ],
+        "docstrings": ["In increasing order."],
         "signature": "let toList: t<'v> => list<(key, 'v)>"
       },
       {
@@ -3295,9 +3231,7 @@
         "id": "Belt.Map.Int.checkInvariantInternal",
         "kind": "value",
         "name": "checkInvariantInternal",
-        "docstrings": [
-          "**throw** when invariant is not held"
-        ],
+        "docstrings": ["**throw** when invariant is not held"],
         "signature": "let checkInvariantInternal: t<'a> => unit"
       },
       {
@@ -3462,9 +3396,7 @@
         "id": "Belt.Set.Dict.cmp",
         "kind": "type",
         "name": "cmp",
-        "docstrings": [
-          "Type of compare function."
-        ],
+        "docstrings": ["Type of compare function."],
         "signature": "type cmp<'value, 'id> = Belt_Id.cmp<'value, 'id>"
       },
       {
@@ -3818,9 +3750,7 @@
         "id": "Belt.Set.Dict.checkInvariantInternal",
         "kind": "value",
         "name": "checkInvariantInternal",
-        "docstrings": [
-          "**throw** when invariant is not held"
-        ],
+        "docstrings": ["**throw** when invariant is not held"],
         "signature": "let checkInvariantInternal: t<'a, 'b> => unit"
       }
     ]
@@ -3837,18 +3767,14 @@
         "id": "Belt.Set.String.value",
         "kind": "type",
         "name": "value",
-        "docstrings": [
-          "The type of the set elements."
-        ],
+        "docstrings": ["The type of the set elements."],
         "signature": "type value = string"
       },
       {
         "id": "Belt.Set.String.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "The type of sets."
-        ],
+        "docstrings": ["The type of sets."],
         "signature": "type t"
       },
       {
@@ -3995,9 +3921,7 @@
         "id": "Belt.Set.String.reduce",
         "kind": "value",
         "name": "reduce",
-        "docstrings": [
-          "Iterate in increasing order."
-        ],
+        "docstrings": ["Iterate in increasing order."],
         "signature": "let reduce: (t, 'a, ('a, value) => 'a) => 'a"
       },
       {
@@ -4079,9 +4003,7 @@
         "id": "Belt.Set.String.toList",
         "kind": "value",
         "name": "toList",
-        "docstrings": [
-          "In increasing order"
-        ],
+        "docstrings": ["In increasing order"],
         "signature": "let toList: t => list<value>"
       },
       {
@@ -4160,9 +4082,7 @@
         "id": "Belt.Set.String.checkInvariantInternal",
         "kind": "value",
         "name": "checkInvariantInternal",
-        "docstrings": [
-          "**throw** when invariant is not held"
-        ],
+        "docstrings": ["**throw** when invariant is not held"],
         "signature": "let checkInvariantInternal: t => unit"
       }
     ]
@@ -4179,18 +4099,14 @@
         "id": "Belt.Set.Int.value",
         "kind": "type",
         "name": "value",
-        "docstrings": [
-          "The type of the set elements."
-        ],
+        "docstrings": ["The type of the set elements."],
         "signature": "type value = int"
       },
       {
         "id": "Belt.Set.Int.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "The type of sets."
-        ],
+        "docstrings": ["The type of sets."],
         "signature": "type t"
       },
       {
@@ -4337,9 +4253,7 @@
         "id": "Belt.Set.Int.reduce",
         "kind": "value",
         "name": "reduce",
-        "docstrings": [
-          "Iterate in increasing order."
-        ],
+        "docstrings": ["Iterate in increasing order."],
         "signature": "let reduce: (t, 'a, ('a, value) => 'a) => 'a"
       },
       {
@@ -4421,9 +4335,7 @@
         "id": "Belt.Set.Int.toList",
         "kind": "value",
         "name": "toList",
-        "docstrings": [
-          "In increasing order"
-        ],
+        "docstrings": ["In increasing order"],
         "signature": "let toList: t => list<value>"
       },
       {
@@ -4502,9 +4414,7 @@
         "id": "Belt.Set.Int.checkInvariantInternal",
         "kind": "value",
         "name": "checkInvariantInternal",
-        "docstrings": [
-          "**throw** when invariant is not held"
-        ],
+        "docstrings": ["**throw** when invariant is not held"],
         "signature": "let checkInvariantInternal: t => unit"
       }
     ]
@@ -5128,9 +5038,7 @@
         "id": "Belt.Option.keepU",
         "kind": "value",
         "name": "keepU",
-        "docstrings": [
-          "Uncurried version of `keep`"
-        ],
+        "docstrings": ["Uncurried version of `keep`"],
         "signature": "let keepU: (option<'a>, 'a => bool) => option<'a>",
         "deprecated": "Use `keep` instead"
       },
@@ -5147,9 +5055,7 @@
         "id": "Belt.Option.forEachU",
         "kind": "value",
         "name": "forEachU",
-        "docstrings": [
-          "Uncurried version of `forEach`"
-        ],
+        "docstrings": ["Uncurried version of `forEach`"],
         "signature": "let forEachU: (option<'a>, 'a => unit) => unit",
         "deprecated": "Use `forEach` instead"
       },
@@ -5193,9 +5099,7 @@
         "id": "Belt.Option.mapWithDefaultU",
         "kind": "value",
         "name": "mapWithDefaultU",
-        "docstrings": [
-          "Uncurried version of `mapWithDefault`"
-        ],
+        "docstrings": ["Uncurried version of `mapWithDefault`"],
         "signature": "let mapWithDefaultU: (option<'a>, 'b, 'a => 'b) => 'b",
         "deprecated": "Use `mapWithDefault` instead"
       },
@@ -5212,9 +5116,7 @@
         "id": "Belt.Option.mapU",
         "kind": "value",
         "name": "mapU",
-        "docstrings": [
-          "Uncurried version of `map`"
-        ],
+        "docstrings": ["Uncurried version of `map`"],
         "signature": "let mapU: (option<'a>, 'a => 'b) => option<'b>",
         "deprecated": "Use `map` instead"
       },
@@ -5231,9 +5133,7 @@
         "id": "Belt.Option.flatMapU",
         "kind": "value",
         "name": "flatMapU",
-        "docstrings": [
-          "Uncurried version of `flatMap`"
-        ],
+        "docstrings": ["Uncurried version of `flatMap`"],
         "signature": "let flatMapU: (option<'a>, 'a => option<'b>) => option<'b>",
         "deprecated": "Use `flatMap` instead"
       },
@@ -5286,9 +5186,7 @@
         "id": "Belt.Option.eqU",
         "kind": "value",
         "name": "eqU",
-        "docstrings": [
-          "Uncurried version of `eq`"
-        ],
+        "docstrings": ["Uncurried version of `eq`"],
         "signature": "let eqU: (option<'a>, option<'b>, ('a, 'b) => bool) => bool",
         "deprecated": "Use `eq` instead"
       },
@@ -5305,9 +5203,7 @@
         "id": "Belt.Option.cmpU",
         "kind": "value",
         "name": "cmpU",
-        "docstrings": [
-          "Uncurried version of `cmp`"
-        ],
+        "docstrings": ["Uncurried version of `cmp`"],
         "signature": "let cmpU: (option<'a>, option<'b>, ('a, 'b) => int) => int",
         "deprecated": "Use `cmp` instead"
       },
@@ -5343,9 +5239,7 @@
         "id": "Belt.HashMap.id",
         "kind": "type",
         "name": "id",
-        "docstrings": [
-          "The identity needed for making an empty hash map."
-        ],
+        "docstrings": ["The identity needed for making an empty hash map."],
         "signature": "type id<'a, 'id> = Belt_Id.hashable<'a, 'id>"
       },
       {
@@ -5568,9 +5462,7 @@
         "id": "Belt.HashSet.id",
         "kind": "type",
         "name": "id",
-        "docstrings": [
-          "The type of hash tables from type `'a` to type `'b`."
-        ],
+        "docstrings": ["The type of hash tables from type `'a` to type `'b`."],
         "signature": "type id<'a, 'id> = Belt_Id.hashable<'a, 'id>"
       },
       {
@@ -5634,9 +5526,7 @@
         "id": "Belt.HashSet.forEach",
         "kind": "value",
         "name": "forEach",
-        "docstrings": [
-          "Order unspecified."
-        ],
+        "docstrings": ["Order unspecified."],
         "signature": "let forEach: (t<'a, 'id>, 'a => unit) => unit"
       },
       {
@@ -5651,9 +5541,7 @@
         "id": "Belt.HashSet.reduce",
         "kind": "value",
         "name": "reduce",
-        "docstrings": [
-          "Order unspecified."
-        ],
+        "docstrings": ["Order unspecified."],
         "signature": "let reduce: (t<'a, 'id>, 'c, ('c, 'a) => 'c) => 'c"
       },
       {
@@ -5862,9 +5750,7 @@
         "id": "Belt.MutableMap.toList",
         "kind": "value",
         "name": "toList",
-        "docstrings": [
-          "In increasing order."
-        ],
+        "docstrings": ["In increasing order."],
         "signature": "let toList: t<'k, 'a, 'id> => list<('k, 'a)>"
       },
       {
@@ -5990,18 +5876,14 @@
         "id": "Belt.MutableMap.checkInvariantInternal",
         "kind": "value",
         "name": "checkInvariantInternal",
-        "docstrings": [
-          "Throw when invariant is not held."
-        ],
+        "docstrings": ["Throw when invariant is not held."],
         "signature": "let checkInvariantInternal: t<'a, 'b, 'c> => unit"
       },
       {
         "id": "Belt.MutableMap.remove",
         "kind": "value",
         "name": "remove",
-        "docstrings": [
-          "`remove(m, x)` do the in-place modification."
-        ],
+        "docstrings": ["`remove(m, x)` do the in-place modification."],
         "signature": "let remove: (t<'k, 'a, 'id>, 'k) => unit"
       },
       {
@@ -6015,9 +5897,7 @@
         "id": "Belt.MutableMap.set",
         "kind": "value",
         "name": "set",
-        "docstrings": [
-          "`set(m, x, y)` do the in-place modification"
-        ],
+        "docstrings": ["`set(m, x, y)` do the in-place modification"],
         "signature": "let set: (t<'k, 'a, 'id>, 'k, 'a) => unit"
       },
       {
@@ -6097,18 +5977,14 @@
         "id": "Belt.MutableSet.id",
         "kind": "type",
         "name": "id",
-        "docstrings": [
-          "The identity needed for making a set from scratch"
-        ],
+        "docstrings": ["The identity needed for making a set from scratch"],
         "signature": "type id<'value, 'id> = Belt_Id.comparable<'value, 'id>"
       },
       {
         "id": "Belt.MutableSet.make",
         "kind": "value",
         "name": "make",
-        "docstrings": [
-          "Creates a new set by taking in the comparator"
-        ],
+        "docstrings": ["Creates a new set by taking in the comparator"],
         "signature": "let make: (~id: id<'value, 'id>) => t<'value, 'id>"
       },
       {
@@ -6476,9 +6352,7 @@
         "id": "Belt.MutableSet.checkInvariantInternal",
         "kind": "value",
         "name": "checkInvariantInternal",
-        "docstrings": [
-          "**throw** when invariant is not held"
-        ],
+        "docstrings": ["**throw** when invariant is not held"],
         "signature": "let checkInvariantInternal: t<'a, 'b> => unit"
       }
     ]
@@ -6504,9 +6378,7 @@
         "id": "Belt.Map.id",
         "kind": "type",
         "name": "id",
-        "docstrings": [
-          "The identity needed for making an empty map."
-        ],
+        "docstrings": ["The identity needed for making an empty map."],
         "signature": "type id<'key, 'id> = Belt_Id.comparable<'key, 'id>"
       },
       {
@@ -6677,9 +6549,7 @@
         "id": "Belt.Map.toList",
         "kind": "value",
         "name": "toList",
-        "docstrings": [
-          "In increasing order. See `Belt.Map.toArray`"
-        ],
+        "docstrings": ["In increasing order. See `Belt.Map.toArray`"],
         "signature": "let toList: t<'k, 'v, 'id> => list<('k, 'v)>"
       },
       {
@@ -6722,9 +6592,7 @@
         "id": "Belt.Map.minKeyUndefined",
         "kind": "value",
         "name": "minKeyUndefined",
-        "docstrings": [
-          "See `Belt.Map.minKey`"
-        ],
+        "docstrings": ["See `Belt.Map.minKey`"],
         "signature": "let minKeyUndefined: t<'k, 'a, 'b> => Js.undefined<'k>"
       },
       {
@@ -6740,9 +6608,7 @@
         "id": "Belt.Map.maxKeyUndefined",
         "kind": "value",
         "name": "maxKeyUndefined",
-        "docstrings": [
-          "See `Belt.Map.maxKey`"
-        ],
+        "docstrings": ["See `Belt.Map.maxKey`"],
         "signature": "let maxKeyUndefined: t<'k, 'a, 'b> => Js.undefined<'k>"
       },
       {
@@ -6758,9 +6624,7 @@
         "id": "Belt.Map.minUndefined",
         "kind": "value",
         "name": "minUndefined",
-        "docstrings": [
-          "See `Belt.Map.minimum`"
-        ],
+        "docstrings": ["See `Belt.Map.minimum`"],
         "signature": "let minUndefined: t<'k, 'v, 'a> => Js.undefined<('k, 'v)>"
       },
       {
@@ -6776,9 +6640,7 @@
         "id": "Belt.Map.maxUndefined",
         "kind": "value",
         "name": "maxUndefined",
-        "docstrings": [
-          "See `Belt.Map.maximum`"
-        ],
+        "docstrings": ["See `Belt.Map.maximum`"],
         "signature": "let maxUndefined: t<'k, 'v, 'a> => Js.undefined<('k, 'v)>"
       },
       {
@@ -6986,9 +6848,7 @@
         "id": "Belt.Map.getId",
         "kind": "value",
         "name": "getId",
-        "docstrings": [
-          "Advanced usage only. Returns the identity of s0."
-        ],
+        "docstrings": ["Advanced usage only. Returns the identity of s0."],
         "signature": "let getId: t<'k, 'v, 'id> => id<'k, 'id>"
       },
       {
@@ -7004,9 +6864,7 @@
         "id": "Belt.Map.checkInvariantInternal",
         "kind": "value",
         "name": "checkInvariantInternal",
-        "docstrings": [
-          "**throw** when invariant is not held"
-        ],
+        "docstrings": ["**throw** when invariant is not held"],
         "signature": "let checkInvariantInternal: t<'a, 'b, 'c> => unit"
       }
     ]
@@ -7032,9 +6890,7 @@
         "id": "Belt.Set.id",
         "kind": "type",
         "name": "id",
-        "docstrings": [
-          "The identity needed for making a set from scratch"
-        ],
+        "docstrings": ["The identity needed for making a set from scratch"],
         "signature": "type id<'value, 'id> = Belt_Id.comparable<'value, 'id>"
       },
       {
@@ -7388,9 +7244,7 @@
         "id": "Belt.Set.checkInvariantInternal",
         "kind": "value",
         "name": "checkInvariantInternal",
-        "docstrings": [
-          "**throw** when invariant is not held"
-        ],
+        "docstrings": ["**throw** when invariant is not held"],
         "signature": "let checkInvariantInternal: t<'a, 'b> => unit"
       },
       {
@@ -7529,9 +7383,7 @@
         "id": "Belt.List.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "`'a t` is compatible with built-in `list` type"
-        ],
+        "docstrings": ["`'a t` is compatible with built-in `list` type"],
         "signature": "type t<'a> = list<'a>"
       },
       {
@@ -7547,9 +7399,7 @@
         "id": "Belt.List.size",
         "kind": "value",
         "name": "size",
-        "docstrings": [
-          "See `Belt.List.length`"
-        ],
+        "docstrings": ["See `Belt.List.length`"],
         "signature": "let size: t<'a> => int"
       },
       {
@@ -7655,9 +7505,7 @@
         "id": "Belt.List.makeByU",
         "kind": "value",
         "name": "makeByU",
-        "docstrings": [
-          "Uncurried version of [makeBy](#makeBy)"
-        ],
+        "docstrings": ["Uncurried version of [makeBy](#makeBy)"],
         "signature": "let makeByU: (int, int => 'a) => t<'a>",
         "deprecated": "Use `makeBy` instead"
       },
@@ -7746,9 +7594,7 @@
         "id": "Belt.List.mapU",
         "kind": "value",
         "name": "mapU",
-        "docstrings": [
-          "Uncurried version of [map](#map)."
-        ],
+        "docstrings": ["Uncurried version of [map](#map)."],
         "signature": "let mapU: (t<'a>, 'a => 'b) => t<'b>",
         "deprecated": "Use `map` instead"
       },
@@ -7774,9 +7620,7 @@
         "id": "Belt.List.zipByU",
         "kind": "value",
         "name": "zipByU",
-        "docstrings": [
-          "Uncurried version of [zipBy](#zipBy)."
-        ],
+        "docstrings": ["Uncurried version of [zipBy](#zipBy)."],
         "signature": "let zipByU: (t<'a>, t<'b>, ('a, 'b) => 'c) => t<'c>",
         "deprecated": "Use `zipBy` instead"
       },
@@ -7793,9 +7637,7 @@
         "id": "Belt.List.mapWithIndexU",
         "kind": "value",
         "name": "mapWithIndexU",
-        "docstrings": [
-          "Uncurried version of [mapWithIndex](#mapWithIndex)."
-        ],
+        "docstrings": ["Uncurried version of [mapWithIndex](#mapWithIndex)."],
         "signature": "let mapWithIndexU: (t<'a>, (int, 'a) => 'b) => t<'b>",
         "deprecated": "Use `mapWithIndex` instead"
       },
@@ -7839,9 +7681,7 @@
         "id": "Belt.List.mapReverseU",
         "kind": "value",
         "name": "mapReverseU",
-        "docstrings": [
-          "Uncurried version of [mapReverse](#mapReverse)."
-        ],
+        "docstrings": ["Uncurried version of [mapReverse](#mapReverse)."],
         "signature": "let mapReverseU: (t<'a>, 'a => 'b) => t<'b>",
         "deprecated": "Use `mapReverse` instead"
       },
@@ -7858,9 +7698,7 @@
         "id": "Belt.List.forEachU",
         "kind": "value",
         "name": "forEachU",
-        "docstrings": [
-          "Uncurried version of [forEach](#forEach)."
-        ],
+        "docstrings": ["Uncurried version of [forEach](#forEach)."],
         "signature": "let forEachU: (t<'a>, 'a => 'b) => unit",
         "deprecated": "Use `forEach` instead"
       },
@@ -7896,9 +7734,7 @@
         "id": "Belt.List.reduceU",
         "kind": "value",
         "name": "reduceU",
-        "docstrings": [
-          "Uncurried version of [reduce](#reduce)."
-        ],
+        "docstrings": ["Uncurried version of [reduce](#reduce)."],
         "signature": "let reduceU: (t<'a>, 'b, ('b, 'a) => 'b) => 'b",
         "deprecated": "Use `reduce` instead"
       },
@@ -7934,9 +7770,7 @@
         "id": "Belt.List.reduceReverseU",
         "kind": "value",
         "name": "reduceReverseU",
-        "docstrings": [
-          "Uncurried version of [reduceReverse](#reduceReverse)."
-        ],
+        "docstrings": ["Uncurried version of [reduceReverse](#reduceReverse)."],
         "signature": "let reduceReverseU: (t<'a>, 'b, ('b, 'a) => 'b) => 'b",
         "deprecated": "Use `reduceReverse` instead"
       },
@@ -7953,9 +7787,7 @@
         "id": "Belt.List.mapReverse2U",
         "kind": "value",
         "name": "mapReverse2U",
-        "docstrings": [
-          "Uncurried version of [mapReverse2](#mapReverse2)."
-        ],
+        "docstrings": ["Uncurried version of [mapReverse2](#mapReverse2)."],
         "signature": "let mapReverse2U: (t<'a>, t<'b>, ('a, 'b) => 'c) => t<'c>",
         "deprecated": "Use `mapReverse2` instead"
       },
@@ -7972,9 +7804,7 @@
         "id": "Belt.List.forEach2U",
         "kind": "value",
         "name": "forEach2U",
-        "docstrings": [
-          "Uncurried version of [forEach2](#forEach2)."
-        ],
+        "docstrings": ["Uncurried version of [forEach2](#forEach2)."],
         "signature": "let forEach2U: (t<'a>, t<'b>, ('a, 'b) => 'c) => unit",
         "deprecated": "Use `forEach2` instead"
       },
@@ -7991,9 +7821,7 @@
         "id": "Belt.List.reduce2U",
         "kind": "value",
         "name": "reduce2U",
-        "docstrings": [
-          "Uncurried version of [reduce2](#reduce2)."
-        ],
+        "docstrings": ["Uncurried version of [reduce2](#reduce2)."],
         "signature": "let reduce2U: (t<'b>, t<'c>, 'a, ('a, 'b, 'c) => 'a) => 'a",
         "deprecated": "Use `reduce2` instead"
       },
@@ -8029,9 +7857,7 @@
         "id": "Belt.List.everyU",
         "kind": "value",
         "name": "everyU",
-        "docstrings": [
-          "Uncurried version of [every](#every)."
-        ],
+        "docstrings": ["Uncurried version of [every](#every)."],
         "signature": "let everyU: (t<'a>, 'a => bool) => bool",
         "deprecated": "Use `every` instead"
       },
@@ -8048,9 +7874,7 @@
         "id": "Belt.List.someU",
         "kind": "value",
         "name": "someU",
-        "docstrings": [
-          "Uncurried version of [some](#some)."
-        ],
+        "docstrings": ["Uncurried version of [some](#some)."],
         "signature": "let someU: (t<'a>, 'a => bool) => bool",
         "deprecated": "Use `some` instead"
       },
@@ -8067,9 +7891,7 @@
         "id": "Belt.List.every2U",
         "kind": "value",
         "name": "every2U",
-        "docstrings": [
-          "Uncurried version of [every2](#every2)."
-        ],
+        "docstrings": ["Uncurried version of [every2](#every2)."],
         "signature": "let every2U: (t<'a>, t<'b>, ('a, 'b) => bool) => bool",
         "deprecated": "Use `every2` instead"
       },
@@ -8086,9 +7908,7 @@
         "id": "Belt.List.some2U",
         "kind": "value",
         "name": "some2U",
-        "docstrings": [
-          "Uncurried version of [some2](#some2)."
-        ],
+        "docstrings": ["Uncurried version of [some2](#some2)."],
         "signature": "let some2U: (t<'a>, t<'b>, ('a, 'b) => bool) => bool",
         "deprecated": "Use `some2` instead"
       },
@@ -8114,9 +7934,7 @@
         "id": "Belt.List.cmpU",
         "kind": "value",
         "name": "cmpU",
-        "docstrings": [
-          "Uncurried version of [cmp](#cmp)."
-        ],
+        "docstrings": ["Uncurried version of [cmp](#cmp)."],
         "signature": "let cmpU: (t<'a>, t<'a>, ('a, 'a) => int) => int",
         "deprecated": "Use `cmp` instead"
       },
@@ -8133,9 +7951,7 @@
         "id": "Belt.List.eqU",
         "kind": "value",
         "name": "eqU",
-        "docstrings": [
-          "Uncurried version of [eq](#eq)."
-        ],
+        "docstrings": ["Uncurried version of [eq](#eq)."],
         "signature": "let eqU: (t<'a>, t<'a>, ('a, 'a) => bool) => bool",
         "deprecated": "Use `eq` instead"
       },
@@ -8152,9 +7968,7 @@
         "id": "Belt.List.hasU",
         "kind": "value",
         "name": "hasU",
-        "docstrings": [
-          "Uncurried version of [has](#has)."
-        ],
+        "docstrings": ["Uncurried version of [has](#has)."],
         "signature": "let hasU: (t<'a>, 'b, ('a, 'b) => bool) => bool",
         "deprecated": "Use `has` instead"
       },
@@ -8171,9 +7985,7 @@
         "id": "Belt.List.getByU",
         "kind": "value",
         "name": "getByU",
-        "docstrings": [
-          "Uncurried version of [getBy](#getBy)."
-        ],
+        "docstrings": ["Uncurried version of [getBy](#getBy)."],
         "signature": "let getByU: (t<'a>, 'a => bool) => option<'a>",
         "deprecated": "Use `getBy` instead"
       },
@@ -8190,9 +8002,7 @@
         "id": "Belt.List.keepU",
         "kind": "value",
         "name": "keepU",
-        "docstrings": [
-          "Uncurried version of [keep](#keep)."
-        ],
+        "docstrings": ["Uncurried version of [keep](#keep)."],
         "signature": "let keepU: (t<'a>, 'a => bool) => t<'a>",
         "deprecated": "Use `keep` instead"
       },
@@ -8219,9 +8029,7 @@
         "id": "Belt.List.keepWithIndexU",
         "kind": "value",
         "name": "keepWithIndexU",
-        "docstrings": [
-          "Uncurried version of [keepWithIndex](#keepWithIndex)."
-        ],
+        "docstrings": ["Uncurried version of [keepWithIndex](#keepWithIndex)."],
         "signature": "let keepWithIndexU: (t<'a>, ('a, int) => bool) => t<'a>",
         "deprecated": "Use `keepWithIndex` instead"
       },
@@ -8248,9 +8056,7 @@
         "id": "Belt.List.keepMapU",
         "kind": "value",
         "name": "keepMapU",
-        "docstrings": [
-          "Uncurried version of [keepMap](#keepMap)."
-        ],
+        "docstrings": ["Uncurried version of [keepMap](#keepMap)."],
         "signature": "let keepMapU: (t<'a>, 'a => option<'b>) => t<'b>",
         "deprecated": "Use `keepMap` instead"
       },
@@ -8267,9 +8073,7 @@
         "id": "Belt.List.partitionU",
         "kind": "value",
         "name": "partitionU",
-        "docstrings": [
-          "Uncurried version of [partition](#partition)."
-        ],
+        "docstrings": ["Uncurried version of [partition](#partition)."],
         "signature": "let partitionU: (t<'a>, 'a => bool) => (t<'a>, t<'a>)",
         "deprecated": "Use `partition` instead"
       },
@@ -8295,9 +8099,7 @@
         "id": "Belt.List.getAssocU",
         "kind": "value",
         "name": "getAssocU",
-        "docstrings": [
-          "Uncurried version of [getAssoc](#getAssoc)."
-        ],
+        "docstrings": ["Uncurried version of [getAssoc](#getAssoc)."],
         "signature": "let getAssocU: (t<('a, 'c)>, 'b, ('a, 'b) => bool) => option<'c>",
         "deprecated": "Use `getAssoc` instead"
       },
@@ -8314,9 +8116,7 @@
         "id": "Belt.List.hasAssocU",
         "kind": "value",
         "name": "hasAssocU",
-        "docstrings": [
-          "Uncurried version of [hasAssoc](#hasAssoc)."
-        ],
+        "docstrings": ["Uncurried version of [hasAssoc](#hasAssoc)."],
         "signature": "let hasAssocU: (t<('a, 'c)>, 'b, ('a, 'b) => bool) => bool",
         "deprecated": "Use `hasAssoc` instead"
       },
@@ -8333,9 +8133,7 @@
         "id": "Belt.List.removeAssocU",
         "kind": "value",
         "name": "removeAssocU",
-        "docstrings": [
-          "Uncurried version of [removeAssoc](#removeAssoc)."
-        ],
+        "docstrings": ["Uncurried version of [removeAssoc](#removeAssoc)."],
         "signature": "let removeAssocU: (t<('a, 'c)>, 'b, ('a, 'b) => bool) => t<('a, 'c)>",
         "deprecated": "Use `removeAssoc` instead"
       },
@@ -8352,9 +8150,7 @@
         "id": "Belt.List.setAssocU",
         "kind": "value",
         "name": "setAssocU",
-        "docstrings": [
-          "Uncurried version of [setAssoc](#setAssoc)."
-        ],
+        "docstrings": ["Uncurried version of [setAssoc](#setAssoc)."],
         "signature": "let setAssocU: (t<('a, 'c)>, 'a, 'c, ('a, 'a) => bool) => t<('a, 'c)>",
         "deprecated": "Use `setAssoc` instead"
       },
@@ -8371,9 +8167,7 @@
         "id": "Belt.List.sortU",
         "kind": "value",
         "name": "sortU",
-        "docstrings": [
-          "Uncurried version of [sort](#sort)."
-        ],
+        "docstrings": ["Uncurried version of [sort](#sort)."],
         "signature": "let sortU: (t<'a>, ('a, 'a) => int) => t<'a>",
         "deprecated": "Use `sort` instead"
       },
@@ -8407,27 +8201,21 @@
         "id": "Belt.MutableStack.make",
         "kind": "value",
         "name": "make",
-        "docstrings": [
-          "Returns a new stack, initially empty."
-        ],
+        "docstrings": ["Returns a new stack, initially empty."],
         "signature": "let make: unit => t<'a>"
       },
       {
         "id": "Belt.MutableStack.clear",
         "kind": "value",
         "name": "clear",
-        "docstrings": [
-          "Discard all elements from the stack."
-        ],
+        "docstrings": ["Discard all elements from the stack."],
         "signature": "let clear: t<'a> => unit"
       },
       {
         "id": "Belt.MutableStack.copy",
         "kind": "value",
         "name": "copy",
-        "docstrings": [
-          "`copy(x)` O(1) operation, return a new stack."
-        ],
+        "docstrings": ["`copy(x)` O(1) operation, return a new stack."],
         "signature": "let copy: t<'a> => t<'a>"
       },
       {
@@ -8525,27 +8313,21 @@
         "id": "Belt.MutableQueue.t",
         "kind": "type",
         "name": "t",
-        "docstrings": [
-          "The type of queues containing elements of `type('a)`."
-        ],
+        "docstrings": ["The type of queues containing elements of `type('a)`."],
         "signature": "type t<'a>"
       },
       {
         "id": "Belt.MutableQueue.make",
         "kind": "value",
         "name": "make",
-        "docstrings": [
-          "Returns a new queue, initially empty."
-        ],
+        "docstrings": ["Returns a new queue, initially empty."],
         "signature": "let make: unit => t<'a>"
       },
       {
         "id": "Belt.MutableQueue.clear",
         "kind": "value",
         "name": "clear",
-        "docstrings": [
-          "Discard all elements from the queue."
-        ],
+        "docstrings": ["Discard all elements from the queue."],
         "signature": "let clear: t<'a> => unit"
       },
       {
@@ -8588,27 +8370,21 @@
         "id": "Belt.MutableQueue.peekUndefined",
         "kind": "value",
         "name": "peekUndefined",
-        "docstrings": [
-          "`peekUndefined(q)` returns `undefined` if not found."
-        ],
+        "docstrings": ["`peekUndefined(q)` returns `undefined` if not found."],
         "signature": "let peekUndefined: t<'a> => Js.undefined<'a>"
       },
       {
         "id": "Belt.MutableQueue.peekExn",
         "kind": "value",
         "name": "peekExn",
-        "docstrings": [
-          "`peekExn(q)` throws an exception if `q` is empty."
-        ],
+        "docstrings": ["`peekExn(q)` throws an exception if `q` is empty."],
         "signature": "let peekExn: t<'a> => 'a"
       },
       {
         "id": "Belt.MutableQueue.peekOrThrow",
         "kind": "value",
         "name": "peekOrThrow",
-        "docstrings": [
-          "`peekOrThrow(q)` throws an exception if `q` is empty."
-        ],
+        "docstrings": ["`peekOrThrow(q)` throws an exception if `q` is empty."],
         "signature": "let peekOrThrow: t<'a> => 'a"
       },
       {
@@ -8633,36 +8409,28 @@
         "id": "Belt.MutableQueue.popExn",
         "kind": "value",
         "name": "popExn",
-        "docstrings": [
-          "`popExn(q)` throw an exception if q is empty."
-        ],
+        "docstrings": ["`popExn(q)` throw an exception if q is empty."],
         "signature": "let popExn: t<'a> => 'a"
       },
       {
         "id": "Belt.MutableQueue.popOrThrow",
         "kind": "value",
         "name": "popOrThrow",
-        "docstrings": [
-          "`popOrThrow(q)` throw an exception if q is empty."
-        ],
+        "docstrings": ["`popOrThrow(q)` throw an exception if q is empty."],
         "signature": "let popOrThrow: t<'a> => 'a"
       },
       {
         "id": "Belt.MutableQueue.copy",
         "kind": "value",
         "name": "copy",
-        "docstrings": [
-          "`copy(q)` returns a fresh queue."
-        ],
+        "docstrings": ["`copy(q)` returns a fresh queue."],
         "signature": "let copy: t<'a> => t<'a>"
       },
       {
         "id": "Belt.MutableQueue.size",
         "kind": "value",
         "name": "size",
-        "docstrings": [
-          "Returns the number of elements in a queue."
-        ],
+        "docstrings": ["Returns the number of elements in a queue."],
         "signature": "let size: t<'a> => int"
       },
       {
@@ -8727,9 +8495,7 @@
         "id": "Belt.MutableQueue.toArray",
         "kind": "value",
         "name": "toArray",
-        "docstrings": [
-          "First added will be in the beginning of the array."
-        ],
+        "docstrings": ["First added will be in the beginning of the array."],
         "signature": "let toArray: t<'a> => array<'a>"
       }
     ]
@@ -8904,9 +8670,7 @@
         "id": "Belt.Array.size",
         "kind": "value",
         "name": "size",
-        "docstrings": [
-          "See [`Belt.Array.length`]()"
-        ],
+        "docstrings": ["See [`Belt.Array.length`]()"],
         "signature": "let size: t<'a> => int"
       },
       {
@@ -9098,9 +8862,7 @@
         "id": "Belt.Array.makeByAndShuffle",
         "kind": "value",
         "name": "makeByAndShuffle",
-        "docstrings": [
-          "Equivalent to `shuffle(makeBy(n, f))`"
-        ],
+        "docstrings": ["Equivalent to `shuffle(makeBy(n, f))`"],
         "signature": "let makeByAndShuffle: (int, int => 'a) => t<'a>"
       },
       {
@@ -9205,9 +8967,7 @@
         "id": "Belt.Array.blitUnsafe",
         "kind": "value",
         "name": "blitUnsafe",
-        "docstrings": [
-          "Unsafe blit without bounds checking."
-        ],
+        "docstrings": ["Unsafe blit without bounds checking."],
         "signature": "let blitUnsafe: (\n  ~src: t<'a>,\n  ~srcOffset: int,\n  ~dst: t<'a>,\n  ~dstOffset: int,\n  ~len: int,\n) => unit"
       },
       {
