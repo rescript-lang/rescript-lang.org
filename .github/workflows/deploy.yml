@@ -101,6 +101,18 @@ jobs:
         run: yarn install
       - name: Build guide
         run: yarn build:guide
+      - name: Set guide deployment command
+        shell: bash
+        run: |
+          RAW_BRANCH="${{ github.head_ref || github.ref_name }}"
+          SAFE_BRANCH=$(echo "$RAW_BRANCH" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9-]+/-/g; s/^-+//; s/-+$//; s/-+/-/g')
+          SAFE_BRANCH="${SAFE_BRANCH:0:28}"
+
+          if [[ "${{ github.event_name }}" == "push" && "$RAW_BRANCH" == "master" ]] || [[ "${{ inputs.environment }}" == "production" ]]; then
+            echo "GUIDE_DEPLOY_COMMAND=deploy" >> "$GITHUB_ENV"
+          else
+            echo "GUIDE_DEPLOY_COMMAND=versions upload --preview-alias=$SAFE_BRANCH" >> "$GITHUB_ENV"
+          fi
       - name: Deploy guide
         id: deploy-guide
         uses: cloudflare/wrangler-action@v3
@@ -108,7 +120,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: apps/guide
-          command: deploy
+          command: ${{ env.GUIDE_DEPLOY_COMMAND }}
           wranglerVersion: 4.85.0
         env:
           FORCE_COLOR: 0
