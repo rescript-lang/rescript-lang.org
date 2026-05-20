@@ -80,6 +80,36 @@ jobs:
 
             ${{ steps.deploy.outputs.command-output }}
 
+  deploy-guide:
+    runs-on: ubuntu-latest
+    name: Deploy Guide Worker
+    if: ${{ github.event_name != 'pull_request' && github.actor != 'dependabot[bot]' }}
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6.0.2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6.3.0
+        with:
+          node-version-file: ".node-version"
+          cache: "yarn"
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install dependencies
+        run: yarn install
+      - name: Build guide
+        run: yarn build:guide
+      - name: Deploy guide
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: apps/guide
+          command: deploy
+          wranglerVersion: 4.85.0
+        env:
+          FORCE_COLOR: 0
+
   e2e:
     runs-on: ubuntu-latest
     name: E2E Tests
