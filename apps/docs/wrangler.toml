@@ -1,0 +1,4 @@
+name = "rescript-lang-org"
+compatibility_date = "2026-05-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = "out"
