@@ -9,7 +9,7 @@ test("h1 keeps the generated markdown id for DocSearch", async () => {
     </div>,
   )
 
-  switch document->WebAPI.Document.querySelector("h1#heading-level-1") {
+  switch document->Document.querySelector("h1#heading-level-1") {
   | Value(_) => ()
   | Null => failwith("expected markdown h1 to keep the generated id")
   }
@@ -28,23 +28,23 @@ test("markdown headings expose explicit DocSearch hierarchy markers", async () =
     </div>,
   )
 
-  switch document->WebAPI.Document.querySelector("h1.DocSearch-lvl1#heading-level-1") {
+  switch document->Document.querySelector("h1.DocSearch-lvl1#heading-level-1") {
   | Value(_) => ()
   | Null => failwith("expected h1 to expose DocSearch lvl1")
   }
-  switch document->WebAPI.Document.querySelector("h2.DocSearch-lvl2#heading-level-2") {
+  switch document->Document.querySelector("h2.DocSearch-lvl2#heading-level-2") {
   | Value(_) => ()
   | Null => failwith("expected h2 to expose DocSearch lvl2")
   }
-  switch document->WebAPI.Document.querySelector("h3.DocSearch-lvl3#heading-level-3") {
+  switch document->Document.querySelector("h3.DocSearch-lvl3#heading-level-3") {
   | Value(_) => ()
   | Null => failwith("expected h3 to expose DocSearch lvl3")
   }
-  switch document->WebAPI.Document.querySelector("h4.DocSearch-lvl4#heading-level-4") {
+  switch document->Document.querySelector("h4.DocSearch-lvl4#heading-level-4") {
   | Value(_) => ()
   | Null => failwith("expected h4 to expose DocSearch lvl4")
   }
-  switch document->WebAPI.Document.querySelector("h5.DocSearch-lvl5#heading-level-5") {
+  switch document->Document.querySelector("h5.DocSearch-lvl5#heading-level-5") {
   | Value(_) => ()
   | Null => failwith("expected h5 to expose DocSearch lvl5")
   }
@@ -59,7 +59,7 @@ test("heading anchor links do not duplicate heading ids", async () => {
     </div>,
   )
 
-  let matches = document->WebAPI.Document.querySelectorAll("[id='duplicate-check']")
+  let matches = document->Document.querySelectorAll("[id='duplicate-check']")
   expect(matches.length)->toBe(1)
 })
 
@@ -77,22 +77,20 @@ test("heading anchor scroll offset clears the sticky docs nav", async () => {
     </div>,
   )
 
-  let target = switch document->WebAPI.Document.querySelector("#anchor-offset-target") {
+  let target = switch document->Document.querySelector("#anchor-offset-target") {
   | Value(target) => target
   | Null => failwith("expected heading anchor target")
   }
 
-  let tertiaryNav = switch document->WebAPI.Document.querySelector(
-    "[data-testid='anchor-tertiary']",
-  ) {
+  let tertiaryNav = switch document->Document.querySelector("[data-testid='anchor-tertiary']") {
   | Value(nav) => nav
   | Null => failwith("expected tertiary nav")
   }
 
-  target->WebAPI.Element.scrollIntoView_alignToTop
+  target->Element.scrollIntoViewAlignToTop
 
-  let targetRect: WebAPI.DOMAPI.domRect = target->WebAPI.Element.getBoundingClientRect
-  let tertiaryNavRect: WebAPI.DOMAPI.domRect = tertiaryNav->WebAPI.Element.getBoundingClientRect
+  let targetRect: DomTypes.domRect = target->Element.getBoundingClientRect
+  let tertiaryNavRect: DomTypes.domRect = tertiaryNav->Element.getBoundingClientRect
 
   expect(targetRect.top >= tertiaryNavRect.bottom)->toBe(true)
   await screen->unmount

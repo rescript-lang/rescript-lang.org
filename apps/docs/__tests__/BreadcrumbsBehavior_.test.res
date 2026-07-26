@@ -1,7 +1,7 @@
 open ReactRouter
 open Vitest
 
-@get external textContent: WebAPI.DOMAPI.element => string = "textContent"
+@get external textContent: DomTypes.element => string = "textContent"
 
 test("breadcrumbs do not repeat the current page crumb when it is already included", async () => {
   await viewport(1440, 900)
@@ -21,7 +21,7 @@ test("breadcrumbs do not repeat the current page crumb when it is already includ
   )
 
   let _breadcrumbs = await screen->getByTestId("breadcrumbs")
-  let breadcrumbs = switch document->WebAPI.Document.querySelector("[data-testid='breadcrumbs']") {
+  let breadcrumbs = switch document->Document.querySelector("[data-testid='breadcrumbs']") {
   | Value(breadcrumbs) => breadcrumbs
   | Null => failwith("expected breadcrumbs")
   }

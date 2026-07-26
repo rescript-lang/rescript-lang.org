@@ -15,7 +15,7 @@ node scripts/gendocs.mjs path/to/rescript-compiler latest true
 */
 @val @scope(("import", "meta")) external url: string = "url"
 
-open Node
+open NodeJs
 module Docgen = RescriptTools.Docgen
 
 let args = Process.argv->Array.slice(~start=2)

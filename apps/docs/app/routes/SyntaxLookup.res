@@ -174,7 +174,7 @@ type state =
   | ShowFiltered(string, array<Item.t>) // (search, filteredItems)
   | ShowDetails(Item.t)
 
-let scrollToTop = () => WebAPI.Window.scrollTo(window, ~options={left: 0.0, top: 0.0})
+let scrollToTop = () => Window.scrollTo(window, ~options={left: 0.0, top: 0.0})
 
 type params = {slug: string}
 
@@ -219,11 +219,7 @@ type item = {
 }
 
 @react.component
-let make = (
-  ~mdxSources: array<item>,
-  ~children: option<React.element>=React.null,
-  ~activeItem: option<item>=?,
-) => {
+let make = (~mdxSources: array<item>, ~children=React.null, ~activeItem: option<item>=?) => {
   let allItems = mdxSources->Array.map(mdxSource => {
     let {id, keywords, category, summary, name, status, href} = mdxSource
     {

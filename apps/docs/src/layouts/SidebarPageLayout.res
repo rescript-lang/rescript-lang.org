@@ -2,8 +2,6 @@ module Link = ReactRouter.Link
 
 @react.component
 let make = (
-  ~sidebarState: (bool, (bool => bool) => unit)=(false, _ => ()),
-  // (Sidebar, toggleSidebar) ... for toggling sidebar in mobile view
   ~sidebar: React.element,
   ~rightSidebar: option<React.element>=?,
   ~categories: option<array<SidebarNav.Category.t>>=?,

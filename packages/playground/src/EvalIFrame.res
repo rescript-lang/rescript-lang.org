@@ -70,20 +70,20 @@ let srcDoc = `
   `
 
 let sendOutput = (code, imports) => {
-  let frame = document->WebAPI.Document.querySelector("#iframe-eval")
+  let frame = document->Document.querySelector("#iframe-eval")
 
   switch frame {
   | Value(element) =>
-    let element: WebAPI.DOMAPI.htmliFrameElement = element->Obj.magic
+    let element: DomTypes.htmliFrameElement = element->Obj.magic
     switch element.contentWindow {
-    | Value({window}) =>
+    | Value(window) =>
       let message = JSON.Object(
         dict{
           "code": JSON.String(code),
           "imports": JSON.Object(imports->Dict.mapValues(v => JSON.String(v))),
         },
       )
-      window->WebAPI.Window.postMessage(~message, ~targetOrigin="*")
+      window->Window.postMessage(~message, ~targetOrigin="*")
     | Null => Console.error("contentWindow not found")
     }
   | Null => Console.error("iframe not found")

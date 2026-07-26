@@ -310,6 +310,7 @@ type state =
   | All
   | Filtered(string) // search term
 
+@react.componentWithProps
 let make = (props: props) => {
   open Markdown
 
@@ -369,7 +370,7 @@ let make = (props: props) => {
   })
 
   let onKeywordSelect = keyword => {
-    WebAPI.Window.scrollTo(window, ~options={left: 0.0, top: 0.0, behavior: Smooth})
+    Window.scrollTo(window, ~options={left: 0.0, top: 0.0, behavior: Smooth})
     setState(_ => {
       Filtered(keyword)
     })
@@ -519,14 +520,14 @@ let getStaticProps = async (): props => {
   let baseUrl = "https://registry.npmjs.org/-/v1/search?text=keywords:rescript&size=250&maintenance=1.0&popularity=0.5&quality=0.9"
 
   let (one, two, three) = await Promise.all3((
-    fetch(baseUrl),
-    fetch(baseUrl ++ "&from=250"),
-    fetch(baseUrl ++ "&from=500"),
+    Fetch.fetch(baseUrl),
+    Fetch.fetch(baseUrl ++ "&from=250"),
+    Fetch.fetch(baseUrl ++ "&from=500"),
   ))
 
   let responseToOption = async response => {
     try {
-      let json = await response->WebAPI.Response.json
+      let json = await response->Response.json
       Some(json)
     } catch {
     | _ =>

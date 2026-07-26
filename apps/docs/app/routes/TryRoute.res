@@ -5,8 +5,8 @@ type props = {
 
 let loader = async () => {
   let (bundleBaseUrl, versionsBaseUrl) = switch (
-    Node.Process.Env.playgroundBundleEndpoint,
-    Node.Process.Env.nodeEnv,
+    NodeJs.Process.Env.playgroundBundleEndpoint,
+    NodeJs.Process.Env.nodeEnv,
   ) {
   | (Some(baseUrl), _) => (baseUrl, baseUrl)
   | (None, "development") => {
@@ -24,8 +24,8 @@ let loader = async () => {
 
   try {
     let versions = {
-      let response = await fetch(versionsBaseUrl + "/playground-bundles/versions.json")
-      let json = await WebAPI.Response.json(response)
+      let response = await Fetch.fetch(versionsBaseUrl + "/playground-bundles/versions.json")
+      let json = await Response.json(response)
       json
       ->JSON.Decode.array
       ->Option.getOrThrow

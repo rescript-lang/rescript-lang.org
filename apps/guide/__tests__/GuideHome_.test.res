@@ -78,10 +78,10 @@ test("navigates to the function argument page", async () => {
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
 })
 
-let guideTestUrl = hash => window.location.pathname ++ window.location.search ++ hash
+let guideTestUrl = hash => location.pathname ++ location.search ++ hash
 
 let resetGuideTestUrl = () =>
-  WebAPI.History.replaceState(window.history, ~data=JSON.Null, ~unused="", ~url=guideTestUrl(""))
+  History.replaceState(history, ~data=JSON.Null, ~unused="", ~url=guideTestUrl(""))
 
 test("shows Back before lesson forward actions and returns to the previous lesson", async () => {
   await viewport(1440, 900)
@@ -168,18 +168,8 @@ test("browser back returns to the previous guide lesson", async () => {
   GuideLayout.clearCompletedExercises()
   GuideLayout.clearExerciseCode(firstLesson.exercise.id)
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
-  WebAPI.History.replaceState(
-    window.history,
-    ~data=JSON.Null,
-    ~unused="",
-    ~url=guideTestUrl("#guide-test-start"),
-  )
-  WebAPI.History.pushState(
-    window.history,
-    ~data=JSON.Null,
-    ~unused="",
-    ~url=guideTestUrl("#first-contact"),
-  )
+  History.replaceState(history, ~data=JSON.Null, ~unused="", ~url=guideTestUrl("#guide-test-start"))
+  History.pushState(history, ~data=JSON.Null, ~unused="", ~url=guideTestUrl("#first-contact"))
 
   let screen = await renderGuideHomeInBrowser()
 
@@ -187,7 +177,7 @@ test("browser back returns to the previous guide lesson", async () => {
   await (await screen->getByText("Next"))->click
   await (await screen->getByText("Call A Function"))->element->toBeVisible
 
-  WebAPI.History.back(window.history)
+  History.back(history)
 
   await (await screen->getByText("Learn ReScript Guide"))->element->toBeVisible
 

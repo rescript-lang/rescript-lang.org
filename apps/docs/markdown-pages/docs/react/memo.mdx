@@ -128,7 +128,7 @@ export { make };
 
 </CodeTab>
 
-Another approach is to use a custom prop type and remove the `@react.component` annotation.
+Another approach is to use a custom prop type and wrap the component function with `React.component`.
 
 <CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
@@ -139,11 +139,11 @@ type props = {
 }
 
 let make = React.memoCustomCompareProps(
-  ({disabled, onClick}) => {
+  React.component(({disabled, onClick}: props) => {
     <button disabled={disabled} onClick={ev => ev->onClick}>
       {React.string("My button")}
     </button>
-  },
+  }),
   (p1, p2) => p1.disabled == p2.disabled,
 )
 ```

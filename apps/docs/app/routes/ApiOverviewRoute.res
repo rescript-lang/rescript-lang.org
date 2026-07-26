@@ -22,14 +22,14 @@ type loaderData = {
 }
 
 let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
-  let {pathname} = WebAPI.URL.make(~url=request.url)
+  let {pathname} = URL.make(~url=request.url)
   let filePath = MdxFile.resolveFilePath(
     (pathname :> string),
     ~dir="markdown-pages/docs/manual",
     ~alias="docs/manual",
   )
 
-  let raw = await Node.Fs.readFile(filePath, "utf-8")
+  let raw = await NodeJs.Fs.readFile(filePath, "utf-8")
   let {frontmatter}: MarkdownParser.result = MarkdownParser.parseSync(raw)
 
   let description = FrontmatterUtils.getField(frontmatter, "description")

@@ -1,5 +1,5 @@
 @react.component
-let make = (~components=MarkdownComponents.default, ~children) => {
+let make = (~children) => {
   <>
     <div className={"mt-4"}>
       <div className="text-gray-80">

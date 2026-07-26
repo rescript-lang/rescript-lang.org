@@ -7,7 +7,7 @@
     "@rescript/react",
     "@rescript/webapi"
   ],
-  "compiler-flags": ["-open WebAPI.Global"],
+  "compiler-flags": ["-open DomGlobal"],
   "sources": [
     {
       "dir": "__tests__",

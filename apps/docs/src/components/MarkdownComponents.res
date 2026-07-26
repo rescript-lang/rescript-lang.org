@@ -3,50 +3,41 @@ open Markdown
 type t = {
   /* MDX shortnames for more advanced components */
   @as("Cite")
-  cite?: React.componentLike<Cite.props<option<string>, React.element>, React.element>,
+  cite?: React.component<Cite.props<option<string>, React.element>>,
   @as("Info")
-  info?: React.componentLike<Info.props<React.element>, React.element>,
+  info?: React.component<Info.props<React.element>>,
   @as("Warn")
-  warn?: React.componentLike<Warn.props<React.element>, React.element>,
+  warn?: React.component<Warn.props<React.element>>,
   @as("Intro")
-  intro?: React.componentLike<Intro.props<React.element>, React.element>,
+  intro?: React.component<Intro.props<React.element>>,
   @as("Image")
-  image?: React.componentLike<
-    Image.props<string, [#large | #small], bool, string, string, string>,
-    React.element,
-  >,
+  image?: React.component<Image.props<string, [#large | #small], bool, string, string, string>>,
   @as("Video")
-  video?: React.componentLike<Video.props<string, string>, React.element>,
+  video?: React.component<Video.props<string, string>>,
   @as("UrlBox")
-  urlBox?: React.componentLike<
-    UrlBox.props<string, string, MdxLegacy.MdxChildren.t>,
-    React.element,
-  >,
+  urlBox?: React.component<UrlBox.props<string, string, MdxLegacy.MdxChildren.t>>,
   @as("CodeTab")
-  codeTab?: CodeTab.props<MdxLegacy.MdxChildren.t, array<string>> => React.element,
+  codeTab?: React.component<CodeTab.props<MdxLegacy.MdxChildren.t, array<string>>>,
   /* Common markdown elements */
-  p?: P.props<React.element> => React.element,
-  li?: Li.props<React.element> => React.element,
-  h1?: H1.props<string, string, React.element> => React.element,
-  h2?: H2.props<string, React.element, string> => React.element,
-  h3?: H3.props<string, React.element, string> => React.element,
-  h4?: H4.props<string, React.element, string> => React.element,
-  h5?: H5.props<string, React.element, string> => React.element,
-  ul?: Ul.props<React.element> => React.element,
-  ol?: Ol.props<React.element> => React.element,
-  table?: Table.props<React.element> => React.element,
-  thead?: Thead.props<React.element> => React.element,
-  th?: Th.props<React.element> => React.element,
-  td?: Td.props<React.element> => React.element,
-  blockquote?: Blockquote.props<React.element> => React.element,
-  strong?: Strong.props<React.element> => React.element,
-  hr?: Hr.props => React.element,
-  code?: React.componentLike<
-    Code.props<string, option<string>, MdxLegacy.Components.unknown>,
-    React.element,
-  >,
-  pre?: Pre.props<React.element> => React.element,
-  a?: A.props<string, string, React.element> => React.element,
+  p?: React.component<P.props<React.element>>,
+  li?: React.component<Li.props<React.element>>,
+  h1?: React.component<H1.props<string, string, React.element>>,
+  h2?: React.component<H2.props<string, React.element, string>>,
+  h3?: React.component<H3.props<string, React.element, string>>,
+  h4?: React.component<H4.props<string, React.element, string>>,
+  h5?: React.component<H5.props<string, React.element, string>>,
+  ul?: React.component<Ul.props<React.element>>,
+  ol?: React.component<Ol.props<React.element>>,
+  table?: React.component<Table.props<React.element>>,
+  thead?: React.component<Thead.props<React.element>>,
+  th?: React.component<Th.props<React.element>>,
+  td?: React.component<Td.props<React.element>>,
+  blockquote?: React.component<Blockquote.props<React.element>>,
+  strong?: React.component<Strong.props<React.element>>,
+  hr?: React.component<Hr.props>,
+  code?: React.component<Code.props<string, option<string>, MdxLegacy.Components.unknown>>,
+  pre?: React.component<Pre.props<React.element>>,
+  a?: React.component<A.props<string, string, React.element>>,
 }
 
 let default = {

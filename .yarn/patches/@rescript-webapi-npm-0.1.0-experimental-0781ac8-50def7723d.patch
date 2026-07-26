@@ -1,0 +1,60 @@
+diff --git a/package.json b/package.json
+index 2f84ef58d1bf7f2f6782aeb7240fd0724b225ffa..80140c3cc8d345e09e64705ef07982091bf5534e 100644
+--- a/package.json
++++ b/package.json
+@@ -53,6 +53,6 @@
+     "sharp": "^0.34.0"
+   },
+   "peerDependencies": {
+-    "rescript": ">=12.0.0 <13"
++    "rescript": ">=12.0.0 <14"
+   }
+ }
+diff --git a/src/Fetch/FormData.res b/src/Fetch/FormData.res
+index 709f31077b8daf3e7a4c136bfb61b3b9df4e31d9..478f1b2b2bf2f3f95e787d1f320c226a0cede535 100644
+--- a/src/Fetch/FormData.res
++++ b/src/Fetch/FormData.res
+@@ -50,13 +50,13 @@ external has: (t, string) => bool = "has"
+ [Read more on MDN](https://developer.mozilla.org/docs/Web/API/FormData/entries)
+ */
+ @send
+-external entries: t => Iterator.t<(string, formDataEntryValue)> = "entries"
++external entries: t => Iterator.t<(string, formDataEntryValue), unit, unknown> = "entries"
+ 
+ /**
+ [Read more on MDN](https://developer.mozilla.org/docs/Web/API/FormData/keys)
+ */
+ @send
+-external keys: t => Iterator.t<string> = "keys"
++external keys: t => Iterator.t<string, unit, unknown> = "keys"
+ 
+ /**
+ [Read more on MDN](https://developer.mozilla.org/docs/Web/API/FormData/set)
+diff --git a/src/URL/URLSearchParams.res b/src/URL/URLSearchParams.res
+index 845a9f1654fb17e545e0dbd1716c7784f2029192..0e0d64287d1397e8d50b796317ccf4407f5ef8f2 100644
+--- a/src/URL/URLSearchParams.res
++++ b/src/URL/URLSearchParams.res
+@@ -46,7 +46,7 @@ Returns key/value pairs in the same order as they appear in the query string.
+ [Read more on MDN](https://developer.mozilla.org/docs/Web/API/URLSearchParams/entries)
+ */
+ @send
+-external entries: t => Iterator.t<(string, string)> = "entries"
++external entries: t => Iterator.t<(string, string), unit, unknown> = "entries"
+ 
+ /**
+ Returns the first value associated to the given search parameter.
+@@ -74,7 +74,7 @@ Returns an iterator allowing iteration through all keys contained in this object
+ [Read more on MDN](https://developer.mozilla.org/docs/Web/API/URLSearchParams/keys)
+ */
+ @send
+-external keys: t => Iterator.t<string> = "keys"
++external keys: t => Iterator.t<string, unit, unknown> = "keys"
+ 
+ /**
+ Sets the value associated to a given search parameter to the given value. If there were several values, delete the others.
+@@ -101,4 +101,4 @@ Returns an iterator allowing iteration through all values contained in this obje
+ [Read more on MDN](https://developer.mozilla.org/docs/Web/API/URLSearchParams/values)
+ */
+ @send
+-external values: t => Iterator.t<string> = "values"
++external values: t => Iterator.t<string, unit, unknown> = "values"

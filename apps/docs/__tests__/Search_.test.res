@@ -502,7 +502,7 @@ test("active DocSearch enables Algolia Insights", async () => {
     </ReactRouter.MemoryRouter>,
   )
 
-  let hasInsightsScript = switch WebAPI.Document.querySelector(
+  let hasInsightsScript = switch Document.querySelector(
     document,
     "script[src*='search-insights']",
   ) {

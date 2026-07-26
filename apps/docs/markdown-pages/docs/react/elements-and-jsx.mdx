@@ -146,7 +146,7 @@ Sometimes it's necessary to pass around component functions to have more control
 ```res
 type props = {name: string}
 
-let render = (myComp: props => React.element) => {
+let render = (myComp: React.component<props>) => {
   <div> {React.createElement(myComp, {name: "Franz"})} </div>
 }
 ```
@@ -168,7 +168,7 @@ There is also a `React.createElementVariadic` function, which takes an array of 
 ```res
 type props = {title: string, children: React.element}
 
-let render = (article: props => React.element) => {
+let render = (article: React.component<props>) => {
   let children = [React.string("Introduction"), React.string("Body")]
 
   let props = {title: "Article #1", children: React.null}

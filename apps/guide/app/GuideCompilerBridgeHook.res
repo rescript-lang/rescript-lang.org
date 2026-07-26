@@ -59,8 +59,8 @@ let useCompilerBridge = (
       | _ => ()
       }
     }
-    WebAPI.Window.addEventListener(window, Custom("message"), cb)
-    Some(() => WebAPI.Window.removeEventListener(window, Custom("message"), cb))
+    Window.addEventListener(window, Custom("message"), cb)
+    Some(() => Window.removeEventListener(window, Custom("message"), cb))
   }, [setOutput])
 
   React.useEffect(() => {

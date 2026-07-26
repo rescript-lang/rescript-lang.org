@@ -32,10 +32,10 @@ let resolveFilePath = (pathname, ~dir, ~alias) => {
   }
   let relativePath = if path->String.startsWith(alias ++ "/") {
     let rest = path->String.slice(~start=String.length(alias) + 1, ~end=String.length(path))
-    Node.Path.join2(dir, rest)
+    NodeJs.Path.join2(dir, rest)
   } else if path->String.startsWith(alias) {
     let rest = path->String.slice(~start=String.length(alias), ~end=String.length(path))
-    Node.Path.join2(dir, rest)
+    NodeJs.Path.join2(dir, rest)
   } else {
     path
   }
@@ -43,19 +43,19 @@ let resolveFilePath = (pathname, ~dir, ~alias) => {
 }
 
 let loadFile = async filePath => {
-  let raw = await Node.Fs.readFile(filePath, "utf-8")
+  let raw = await NodeJs.Fs.readFile(filePath, "utf-8")
   let {frontmatter, content}: MarkdownParser.result = MarkdownParser.parseSync(raw)
   {content, frontmatter}
 }
 
 // Recursively scan a directory for .mdx files
 let rec scanDir = (baseDir, currentDir) => {
-  let entries = Node.Fs.readdirSync(currentDir)
+  let entries = NodeJs.Fs.readdirSync(currentDir)
   entries->Array.flatMap(entry => {
-    let fullPath = Node.Path.join2(currentDir, entry)
-    if Node.Fs.statSync(fullPath)["isDirectory"]() {
+    let fullPath = NodeJs.Path.join2(currentDir, entry)
+    if NodeJs.Fs.statSync(fullPath)["isDirectory"]() {
       scanDir(baseDir, fullPath)
-    } else if Node.Path.extname(entry) === ".mdx" {
+    } else if NodeJs.Path.extname(entry) === ".mdx" {
       // Get the relative path from baseDir
       let relativePath =
         fullPath
@@ -86,8 +86,8 @@ let loadAllAttributes = async (~dir) => {
   let files = scanDir(dir, dir)
   await Promise.all(
     files->Array.map(async relativePath => {
-      let fullPath = Node.Path.join2(dir, relativePath ++ ".mdx")->String.replaceAll("\\", "/")
-      let raw = await Node.Fs.readFile(fullPath, "utf-8")
+      let fullPath = NodeJs.Path.join2(dir, relativePath ++ ".mdx")->String.replaceAll("\\", "/")
+      let raw = await NodeJs.Fs.readFile(fullPath, "utf-8")
       let {frontmatter}: MarkdownParser.result = MarkdownParser.parseSync(raw)
 
       let dict = switch frontmatter {
@@ -97,7 +97,7 @@ let loadAllAttributes = async (~dir) => {
 
       // Add path and slug fields (same as react-router-mdx does)
       dict->Dict.set("path", JSON.String(fullPath))
-      let slug = Node.Path.basename(relativePath)
+      let slug = NodeJs.Path.basename(relativePath)
       dict->Dict.set("slug", JSON.String(slug))
 
       dictToAttributes(dict)

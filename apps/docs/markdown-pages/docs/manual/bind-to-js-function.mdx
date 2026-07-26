@@ -494,19 +494,18 @@ Currently 4 directives are supported: `null_to_opt`, `undefined_to_opt`, `nullab
 
 **Since 11.1**
 
-**Experimental** You can easily bind to [JS tagged template functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates).
+You can easily bind to [JS tagged template functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates).
 Tag functions in JS expect as input an array of strings and variadic parameters for the arguments of the interpolation.
-To bind to those functions in ReScript, the binding signature must have two arrays as arguments,
-the first one being an array of strings and the second can be an array of anything.
-You add the `@taggedTemplate` annotation and you're good to go!
+To bind to those functions in ReScript, use the built-in `taggedTemplate<'param, 'output>` type.
+The first type parameter describes the interpolated values, and the second describes the tag's return value.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
 // see https://bun.sh/docs/runtime/shell
 type result = {exitCode: int}
-@module("bun") @taggedTemplate
-external sh: (array<string>, array<string>) => promise<result> = "$"
+@module("bun")
+external sh: taggedTemplate<string, promise<result>> = "$"
 
 let filename = "index.res"
 let result = await sh`ls ${filename}`

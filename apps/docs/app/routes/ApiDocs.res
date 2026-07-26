@@ -343,13 +343,13 @@ module Data = {
   }
 
   let dir = try {
-    Node.Path.resolve("data", "api")
+    NodeJs.Path.resolve("data", "api")
   } catch {
   | _ => ""
   }
 
   let getVersion = (~moduleName: string) => {
-    open Node
+    open NodeJs
 
     let moduleContent =
       Fs.readFileSync(`markdown-pages/docs/api/${moduleName}.json`)->JSON.parseOrThrow

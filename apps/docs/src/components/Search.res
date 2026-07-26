@@ -325,7 +325,7 @@ module ActiveDocSearch = {
             hitComponent
             onClose
             insights=true
-            initialScrollY={window.scrollY->Float.toInt}
+            initialScrollY={scrollY->Float.toInt}
             searchParameters={
               distinct: 3,
               hitsPerPage: 20,
@@ -346,20 +346,21 @@ let make = () => {
   let algoliaConfig = Env.algoliaPublicConfig
 
   let deactivateSearch = () => {
-    switch WebAPI.Document.querySelector(document, "body") {
-    | Value(body) => WebAPI.DOMTokenList.remove(body.classList, "DocSearch--active")
+    switch Document.querySelector(document, "body") {
+    | Value(body) =>
+      DOMTokenList.remove((body.classList :> DomTypes.domTokenList), "DocSearch--active")
     | Null => ()
     }
     setState(_ => Inactive)
   }
 
   let handleCloseModal = () => {
-    let () = switch WebAPI.Document.querySelector(document, ".DocSearch-Modal") {
+    let () = switch Document.querySelector(document, ".DocSearch-Modal") {
     | Value(modal) =>
-      switch WebAPI.Document.querySelector(document, "body") {
+      switch Document.querySelector(document, "body") {
       | Value(body) =>
-        WebAPI.DOMTokenList.remove(body.classList, "DocSearch--active")
-        modal->WebAPI.Element.addEventListener(Transitionend, () => {
+        DOMTokenList.remove((body.classList :> DomTypes.domTokenList), "DocSearch--active")
+        modal->Element.addEventListener(Transitionend, () => {
           setState(_ => Inactive)
         })
       | Null => setState(_ => Inactive)
@@ -372,31 +373,31 @@ let make = () => {
     switch algoliaConfig {
     | None => None
     | Some(_) =>
-      let isEditableTag = (el: WebAPI.DOMAPI.element) =>
+      let isEditableTag = (el: DomTypes.element) =>
         switch el.tagName {
         | "TEXTAREA" | "SELECT" | "INPUT" => true
         | _ => false
         }
 
-      let focusSearch = (e: WebAPI.UIEventsAPI.keyboardEvent) => {
+      let focusSearch = (e: UiEventsTypes.keyboardEvent) => {
         switch document.activeElement {
         | Value(el)
-          if el->isEditableTag || (Obj.magic(el): WebAPI.DOMAPI.htmlElement).isContentEditable => ()
+          if el->isEditableTag || (Obj.magic(el): DomTypes.htmlElement).isContentEditable => ()
         | _ =>
           setState(_ => Active)
-          WebAPI.KeyboardEvent.preventDefault(e)
+          KeyboardEvent.preventDefault(e)
         }
       }
 
-      let handleGlobalKeyDown = (e: WebAPI.UIEventsAPI.keyboardEvent) => {
+      let handleGlobalKeyDown = (e: UiEventsTypes.keyboardEvent) => {
         switch e.key {
         | "/" => focusSearch(e)
         | "k" if e.ctrlKey || e.metaKey => focusSearch(e)
         | _ => ()
         }
       }
-      WebAPI.Window.addEventListener(window, Keydown, handleGlobalKeyDown)
-      Some(() => WebAPI.Window.removeEventListener(window, Keydown, handleGlobalKeyDown))
+      Window.addEventListener(window, Keydown, handleGlobalKeyDown)
+      Some(() => Window.removeEventListener(window, Keydown, handleGlobalKeyDown))
     }
   }, [algoliaConfig])
 

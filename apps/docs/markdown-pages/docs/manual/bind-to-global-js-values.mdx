@@ -104,25 +104,24 @@ This binds to `window.location.ancestorOrigins.length`.
 
 ## Special Global Values
 
-Global values like `__filename` and `__DEV__` don't always exist; you can't even model them as an `option`, since the mere act of referring to them in ReScript (then compiled into JS) would trigger the usual `Uncaught ReferenceError: __filename is not defined` error in e.g. the browser environment.
+Global values like `__filename` and `__DEV__` don't always exist. Referring to them directly could trigger an `Uncaught ReferenceError` in environments where they aren't defined.
 
-For these troublesome global values, ReScript provides a special approach: `%external(a_single_identifier)`.
+Access these values as optional properties of `globalThis` instead:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-switch %external(__DEV__) {
+@scope("globalThis")
+external dev: option<bool> = "__DEV__"
+
+switch dev {
 | Some(_) => Console.log("dev mode")
 | None => Console.log("production mode")
 }
 ```
 
 ```js
-import * as Js from "@rescript/runtime/lib/es6/Js.js";
-
-let match = Js.undefinedToOption(
-  typeof __DEV__ === "undefined" ? undefined : __DEV__,
-);
+let match = globalThis.__DEV__;
 
 if (match !== undefined) {
   console.log("dev mode");
@@ -133,34 +132,30 @@ if (match !== undefined) {
 
 </CodeTab>
 
-That first line's `typeof` check won't trigger a JS ReferenceError.
+Property access through `globalThis` safely produces `undefined` when the property doesn't exist.
 
 Another example:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-switch %external(__filename) {
+@scope("globalThis")
+external filename: option<string> = "__filename"
+
+switch filename {
 | Some(f) => Console.log(f)
 | None => Console.log("non-node environment")
 };
 ```
 
 ```js
-import * as Js from "@rescript/runtime/lib/es6/Js.js";
-import * as Primitive_option from "@rescript/runtime/lib/es6/Primitive_option.js";
-
-let f = Js.undefinedToOption(
-  typeof __filename === "undefined" ? undefined : __filename,
-);
+let f = globalThis.__filename;
 
 if (f !== undefined) {
-  console.log(Primitive_option.valFromOption(f));
+  console.log(f);
 } else {
   console.log("non-node environment");
 }
 ```
 
 </CodeTab>
-
-{/* TODO: revamp this page. Not good. Tell to use globalThis["foo"], and look in our stdlib */}

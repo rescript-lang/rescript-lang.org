@@ -123,16 +123,16 @@ let makeBreadcrumbs = (~prefix: Url.breadcrumb, route: Path.t): list<Url.breadcr
 
 let loader: ReactRouter.Loader.t<loaderData> = async args => {
   let path =
-    WebAPI.URL.make(~url=args.request.url).pathname
+    URL.make(~url=args.request.url).pathname
     ->String.replace("/docs/manual/api/", "")
     ->String.split("/")
 
   let basePath = path[0]->Option.getUnsafe
 
   let apiDocs = switch basePath {
-  | "belt" => parseApi(await Node.Fs.readFile("./markdown-pages/docs/api/belt.json", "utf-8"))
-  | "dom" => parseApi(await Node.Fs.readFile("./markdown-pages/docs/api/dom.json", "utf-8"))
-  | _ => parseApi(await Node.Fs.readFile("./markdown-pages/docs/api/stdlib.json", "utf-8"))
+  | "belt" => parseApi(await NodeJs.Fs.readFile("./markdown-pages/docs/api/belt.json", "utf-8"))
+  | "dom" => parseApi(await NodeJs.Fs.readFile("./markdown-pages/docs/api/dom.json", "utf-8"))
+  | _ => parseApi(await NodeJs.Fs.readFile("./markdown-pages/docs/api/stdlib.json", "utf-8"))
   }
 
   let toctree = groupItems(apiDocs)

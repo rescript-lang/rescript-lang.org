@@ -6,7 +6,7 @@ type navigate = (string, ~options: navigateOptions=?) => unit
 external useNavigate: unit => navigate = "useNavigate"
 
 @module("react-router")
-external useSearchParams: unit => (WebAPI.URLAPI.urlSearchParams, {..} => unit) = "useSearchParams"
+external useSearchParams: unit => (URLSearchParams.t, {..} => unit) = "useSearchParams"
 
 @module("react-router")
 external useLoaderData: unit => 'a = "useLoaderData"
@@ -15,7 +15,7 @@ external useLoaderData: unit => 'a = "useLoaderData"
 type path = {pathname: Path.t, search?: string, hash?: string}
 
 module Loader = {
-  type loaderArgs = {request: WebAPI.FetchAPI.request}
+  type loaderArgs = {request: Request.t}
   type t<'a> = loaderArgs => promise<'a>
 }
 

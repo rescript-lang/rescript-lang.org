@@ -166,7 +166,7 @@ let remarkLinkPlugin = (tree, vfile) => {
 
       // Strip put any file extensions from internal links
       node["url"] =
-        Node.Path.resolve(filePath, path)
+        NodeJs.Path.resolve(filePath, path)
         ->String.replace(vfile["cwd"] ++ "/markdown-pages", "")
         ->String.replaceAll(".mdx", "")
         ->String.replaceAll(".md", "") ++ hash

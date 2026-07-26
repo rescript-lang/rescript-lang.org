@@ -1,5 +1,5 @@
-type window = {document: WebAPI.DOMAPI.document}
-type t = {window: WebAPI.DOMAPI.window}
+type window = {document: DomTypes.document}
+type t = {window: window}
 
 @module("jsdom") @new
 external make: string => t = "JSDOM"

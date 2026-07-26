@@ -23,8 +23,7 @@ let make = (
     onClear()
   }
 
-  let focusInput = () =>
-    textInput.current->Nullable.forEach(el => el->WebAPI.HTMLInputElement.focus)
+  let focusInput = () => textInput.current->Nullable.forEach(el => el->HTMLInputElement.focus)
 
   let onAreaFocus = evt => {
     let el = ReactEvent.Focus.target(evt)

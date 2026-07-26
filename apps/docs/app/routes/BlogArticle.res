@@ -100,6 +100,7 @@ module BlogHeader = {
   }
 }
 
+@react.componentWithProps
 let make = (props: props) => {
   let {children, isArchived, frontmatter} = props
 

@@ -64,21 +64,27 @@ module CopyButton = {
         // For Tailwind transitions to behave correctly, we need to first paint the DOM element in the tree,
         // and in the next tick, add the opacity-100 class, so the transition animation actually takes place.
         // If we don't do that, the banner will essentially pop up without any animation
-        let bannerEl = WebAPI.Document.createElement(document, "div")
+        let bannerEl = Document.createElement(document, "div")
         bannerEl.className = "opacity-0 absolute -top-6 right-0 -mt-5 -mr-4 px-4 py-2 w-40 rounded-lg captions text-white bg-gray-100 text-gray-80-tr transition-all duration-1000 ease-in-out "
 
-        let textNode = WebAPI.Document.createTextNode(document, "Copied to clipboard")
+        let textNode = Document.createTextNode(document, "Copied to clipboard")
 
-        WebAPI.Element.appendChild(bannerEl, textNode)->ignore
-        WebAPI.Element.appendChild(buttonEl, bannerEl)->ignore
+        Element.appendChild(bannerEl, textNode)->ignore
+        Element.appendChild(buttonEl, bannerEl)->ignore
 
-        let nextFrameId = WebAPI.Window.requestAnimationFrame(window, _ => {
-          WebAPI.DOMTokenList.toggle(bannerEl.classList, ~token="opacity-0")->ignore
-          WebAPI.DOMTokenList.toggle(bannerEl.classList, ~token="opacity-100")->ignore
+        let nextFrameId = Window.requestAnimationFrame(window, _ => {
+          DOMTokenList.toggle(
+            (bannerEl.classList :> DomTypes.domTokenList),
+            ~token="opacity-0",
+          )->ignore
+          DOMTokenList.toggle(
+            (bannerEl.classList :> DomTypes.domTokenList),
+            ~token="opacity-100",
+          )->ignore
         })
 
         let timeoutId = setTimeout(~handler=() => {
-          buttonEl->WebAPI.Element.removeChild(bannerEl)->ignore
+          buttonEl->Element.removeChild(bannerEl)->ignore
           setState(_ => Init)
         }, ~timeout=3000)
 
@@ -105,8 +111,7 @@ module CopyButton = {
   }
 }
 
-@react.component
-let make = (
+let render = (
   ~highlightedLines=[],
   ~code: string,
   ~showLabel=true,
@@ -155,6 +160,15 @@ let make = (
   </div>
 }
 
+@react.component
+let make = (
+  ~highlightedLines=[],
+  ~code: string,
+  ~showLabel=true,
+  ~lang="text",
+  ~showCopyButton=false,
+) => render(~highlightedLines, ~code, ~showLabel, ~lang, ~showCopyButton)
+
 module Toggle = {
   type tab = {
     highlightedLines: option<array<int>>,
@@ -169,13 +183,14 @@ module Toggle = {
 
     switch tabs {
     | [tab] =>
-      make({
-        highlightedLines: ?tab.highlightedLines,
-        code: tab.code,
-        lang: ?tab.lang,
-        showLabel: true,
-        showCopyButton: true,
-      })
+      let {highlightedLines, code, lang} = tab
+      render(
+        ~highlightedLines=highlightedLines->Option.getOr([]),
+        ~code,
+        ~lang=lang->Option.getOr("text"),
+        ~showLabel=true,
+        ~showCopyButton=true,
+      )
     | multiple =>
       let numberOfItems = Array.length(multiple)
       let tabElements = Array.mapWithIndex(multiple, (tab, i) => {

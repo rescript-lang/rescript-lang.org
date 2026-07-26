@@ -194,22 +194,28 @@ module QuickInstall = {
           // For Tailwind transitions to behave correctly, we need to first paint the DOM element in the tree,
           // and in the next tick, add the opacity-100 class, so the transition animation actually takes place.
           // If we don't do that, the banner will essentially pop up without any animation
-          let bannerEl = WebAPI.Document.createElement(document, "div")
+          let bannerEl = Document.createElement(document, "div")
           bannerEl.className = "foobar opacity-0 absolute top-0 mt-4 -mr-1 px-2 rounded right-0
             bg-turtle text-gray-80-tr body-sm
             transition-all duration-500 ease-in-out "
-          let textNode = WebAPI.Document.createTextNode(document, "Copied!")
+          let textNode = Document.createTextNode(document, "Copied!")
 
-          WebAPI.Element.appendChild(bannerEl, textNode)->ignore
-          WebAPI.Element.appendChild(buttonEl, bannerEl)->ignore
+          Element.appendChild(bannerEl, textNode)->ignore
+          Element.appendChild(buttonEl, bannerEl)->ignore
 
-          let nextFrameId = WebAPI.Window.requestAnimationFrame(window, _ => {
-            WebAPI.DOMTokenList.toggle(bannerEl.classList, ~token="opacity-0")->ignore
-            WebAPI.DOMTokenList.toggle(bannerEl.classList, ~token="opacity-100")->ignore
+          let nextFrameId = Window.requestAnimationFrame(window, _ => {
+            DOMTokenList.toggle(
+              (bannerEl.classList :> DomTypes.domTokenList),
+              ~token="opacity-0",
+            )->ignore
+            DOMTokenList.toggle(
+              (bannerEl.classList :> DomTypes.domTokenList),
+              ~token="opacity-100",
+            )->ignore
           })
 
           let timeoutId = setTimeout(~handler=() => {
-            buttonEl->WebAPI.Element.removeChild(bannerEl)->ignore
+            buttonEl->Element.removeChild(bannerEl)->ignore
             setState(_ => Init)
           }, ~timeout=2000)
 
@@ -683,7 +689,7 @@ module CuratedResources = {
 }
 
 @react.component
-let make = (~components=MarkdownComponents.default) => {
+let make = () => {
   <>
     <Meta
       title="The ReScript Programming Language"

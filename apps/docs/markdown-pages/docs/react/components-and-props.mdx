@@ -612,9 +612,9 @@ export { Greeting, make };
 
 **Note:** React components are capitalized; primitive DOM elements like `div` or `button` are uncapitalized. More infos on the JSX specifics and code transformations can be found in our [JSX language manual section](../manual/jsx.mdx#capitalized-tag).
 
-### Handwritten Components
+### Components with a Props Record
 
-You don't need to use the `@react.component` decorator to write components that can be used in JSX. Instead you can write the `make` function with type `props` and these will always work as React components. But then you will have the issue with the component name being "make" in the React dev tools.
+Use `@react.componentWithProps` when a component takes a single props record instead of labeled arguments.
 
 For example:
 
@@ -624,6 +624,7 @@ For example:
 module Link = {
   type props = {href: string, children: React.element};
 
+  @react.componentWithProps
   let make = (props: props) => {
     <a href={props.href}>
      {props.children}

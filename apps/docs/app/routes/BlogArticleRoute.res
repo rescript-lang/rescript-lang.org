@@ -5,14 +5,14 @@ type loaderData = {
 }
 
 let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
-  let {pathname} = WebAPI.URL.make(~url=request.url)
+  let {pathname} = URL.make(~url=request.url)
   let filePath = MdxFile.resolveFilePath(
     (pathname :> string),
     ~dir="markdown-pages/blog",
     ~alias="blog",
   )
 
-  let raw = await Node.Fs.readFile(filePath, "utf-8")
+  let raw = await NodeJs.Fs.readFile(filePath, "utf-8")
   let {frontmatter}: MarkdownParser.result = MarkdownParser.parseSync(raw)
 
   let frontmatter = switch BlogFrontmatter.decode(frontmatter) {
@@ -26,7 +26,7 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
 
   let slug =
     filePath
-    ->Node.Path.basename
+    ->NodeJs.Path.basename
     ->String.replace(".mdx", "")
     ->String.replaceRegExp(/^\d\d\d\d-\d\d-\d\d-/, "")
 

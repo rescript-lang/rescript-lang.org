@@ -34,16 +34,16 @@ let blogPathToSlug = path => {
 }
 
 let mdxFiles = dir => {
-  Node.Fs.readdirSync(dir)->Array.filter(path => Node.Path.extname(path) === ".mdx")
+  NodeJs.Fs.readdirSync(dir)->Array.filter(path => NodeJs.Path.extname(path) === ".mdx")
 }
 
 let getAllPosts = () => {
-  let postsDirectory = Node.Path.join2(Node.Process.cwd(), "markdown-pages/blog")
-  let archivedPostsDirectory = Node.Path.join2(postsDirectory, "archived")
+  let postsDirectory = NodeJs.Path.join2(NodeJs.Process.cwd(), "markdown-pages/blog")
+  let archivedPostsDirectory = NodeJs.Path.join2(postsDirectory, "archived")
 
   let nonArchivedPosts = mdxFiles(postsDirectory)->Array.map(path => {
     let {frontmatter} =
-      Node.Path.join2(postsDirectory, path)->Node.Fs.readFileSync->MarkdownParser.parseSync
+      NodeJs.Path.join2(postsDirectory, path)->NodeJs.Fs.readFileSync->MarkdownParser.parseSync
     switch BlogFrontmatter.decode(frontmatter) {
     | Error(msg) => JsError.throwWithMessage(msg)
     | Ok(d) => {
@@ -56,11 +56,13 @@ let getAllPosts = () => {
 
   let archivedPosts = mdxFiles(archivedPostsDirectory)->Array.map(path => {
     let {frontmatter} =
-      Node.Path.join2(archivedPostsDirectory, path)->Node.Fs.readFileSync->MarkdownParser.parseSync
+      NodeJs.Path.join2(archivedPostsDirectory, path)
+      ->NodeJs.Fs.readFileSync
+      ->MarkdownParser.parseSync
     switch BlogFrontmatter.decode(frontmatter) {
     | Error(msg) => JsError.throwWithMessage(msg)
     | Ok(d) => {
-        path: Node.Path.join2("archived", path),
+        path: NodeJs.Path.join2("archived", path),
         frontmatter: d,
         archived: true,
       }
@@ -68,16 +70,16 @@ let getAllPosts = () => {
   })
 
   Array.concat(nonArchivedPosts, archivedPosts)->Array.toSorted((a, b) =>
-    String.compare(Node.Path.basename(b.path), Node.Path.basename(a.path))
+    String.compare(NodeJs.Path.basename(b.path), NodeJs.Path.basename(a.path))
   )
 }
 
 let getLivePosts = () => {
-  let postsDirectory = Node.Path.join2(Node.Process.cwd(), "markdown-pages/blog")
+  let postsDirectory = NodeJs.Path.join2(NodeJs.Process.cwd(), "markdown-pages/blog")
 
   let livePosts = mdxFiles(postsDirectory)->Array.map(path => {
     let {frontmatter} =
-      Node.Path.join2(postsDirectory, path)->Node.Fs.readFileSync->MarkdownParser.parseSync
+      NodeJs.Path.join2(postsDirectory, path)->NodeJs.Fs.readFileSync->MarkdownParser.parseSync
     switch BlogFrontmatter.decode(frontmatter) {
     | Error(msg) => JsError.throwWithMessage(msg)
     | Ok(d) => {
@@ -89,21 +91,23 @@ let getLivePosts = () => {
   })
 
   livePosts->Array.toSorted((a, b) =>
-    String.compare(Node.Path.basename(b.path), Node.Path.basename(a.path))
+    String.compare(NodeJs.Path.basename(b.path), NodeJs.Path.basename(a.path))
   )
 }
 
 let getArchivedPosts = () => {
-  let postsDirectory = Node.Path.join2(Node.Process.cwd(), "markdown-pages/blog")
-  let archivedPostsDirectory = Node.Path.join2(postsDirectory, "archived")
+  let postsDirectory = NodeJs.Path.join2(NodeJs.Process.cwd(), "markdown-pages/blog")
+  let archivedPostsDirectory = NodeJs.Path.join2(postsDirectory, "archived")
 
   let archivedPosts = mdxFiles(archivedPostsDirectory)->Array.map(path => {
     let {frontmatter} =
-      Node.Path.join2(archivedPostsDirectory, path)->Node.Fs.readFileSync->MarkdownParser.parseSync
+      NodeJs.Path.join2(archivedPostsDirectory, path)
+      ->NodeJs.Fs.readFileSync
+      ->MarkdownParser.parseSync
     switch BlogFrontmatter.decode(frontmatter) {
     | Error(msg) => JsError.throwWithMessage(msg)
     | Ok(d) => {
-        path: Node.Path.join2("archived", path),
+        path: NodeJs.Path.join2("archived", path),
         frontmatter: d,
         archived: true,
       }
@@ -111,7 +115,7 @@ let getArchivedPosts = () => {
   })
 
   archivedPosts->Array.toSorted((a, b) =>
-    String.compare(Node.Path.basename(b.path), Node.Path.basename(a.path))
+    String.compare(NodeJs.Path.basename(b.path), NodeJs.Path.basename(a.path))
   )
 }
 

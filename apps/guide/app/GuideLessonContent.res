@@ -48,7 +48,7 @@ let exerciseFromFrontmatter = (~dict, ~sourcePath): GuideLesson.exercise => {
 }
 
 let lessonFromFile = sourcePath => {
-  let raw = Node.Fs.readFileSync(sourcePath)
+  let raw = NodeJs.Fs.readFileSync(sourcePath)
   let {frontmatter, content}: MarkdownParser.result = MarkdownParser.parseSync(raw)
   let dict = frontmatterObject(~frontmatter, ~sourcePath)
   let exerciseDict = readObject(~dict, ~sourcePath, ~key="exercise")
@@ -66,18 +66,18 @@ let lessonFromFile = sourcePath => {
 }
 
 let rec scanDir = currentDir =>
-  Node.Fs.readdirSync(currentDir)->Array.flatMap(entry => {
-    let fullPath = Node.Path.join2(currentDir, entry)
+  NodeJs.Fs.readdirSync(currentDir)->Array.flatMap(entry => {
+    let fullPath = NodeJs.Path.join2(currentDir, entry)
 
-    if Node.Fs.statSync(fullPath)["isDirectory"]() {
+    if NodeJs.Fs.statSync(fullPath)["isDirectory"]() {
       scanDir(fullPath)
-    } else if Node.Path.extname(entry) === ".mdx" {
+    } else if NodeJs.Path.extname(entry) === ".mdx" {
       [fullPath]
     } else {
       []
     }
   })
 
-let lessonsDir = () => Node.Path.join2(Node.Process.cwd(), "app/lessons")
+let lessonsDir = () => NodeJs.Path.join2(NodeJs.Process.cwd(), "app/lessons")
 
 let load = (~dir=lessonsDir()) => scanDir(dir)->Array.map(lessonFromFile)->GuideLesson.sort
