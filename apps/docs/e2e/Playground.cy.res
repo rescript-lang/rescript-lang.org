@@ -19,6 +19,43 @@ let clickNavLink = (~testId, ~text) => {
   ->ignore
 }
 
+let compileAndRunImportedCode = () => {
+  waitForPlayground()
+
+  get(".cm-content")
+  ->typeWithOptions(
+    "{selectall}{backspace}@module(\"react\") external reactVersion: string = \"version\"{enter}Console.log(\"React \" ++ reactVersion)",
+    {"force": true, "delay": 20},
+  )
+  ->ignore
+
+  wait(3000)
+
+  contains("JavaScript")->click->ignore
+  get("pre.whitespace-pre-wrap")
+  ->shouldContainText("from \"react\"")
+  ->shouldContainText("console.log")
+  ->ignore
+
+  getByTestId("control-panel")
+  ->find("button")
+  ->containsChainable("Run")
+  ->click
+  ->ignore
+
+  get("div.whitespace-pre-wrap pre")
+  ->shouldContainText("React 18.2.0")
+  ->ignore
+}
+
+let v13Versions = [
+  "v13.0.0-alpha.1",
+  "v13.0.0-alpha.2",
+  "v13.0.0-alpha.3",
+  "v13.0.0-alpha.4",
+  "v13.0.0-alpha.5",
+]
+
 describe("Playground", () => {
   beforeEach(() => {
     viewport(1280, 720)
@@ -26,43 +63,30 @@ describe("Playground", () => {
     waitForHydration()
   })
 
-  it("should compile and run Console.log in the playground", () => {
+  it("should compile and run imported code in the playground", () => {
     // Navigate to the playground from the homepage
     clickNavLink(~testId="navbar-primary-left-content", ~text="Playground")
     url()->shouldInclude("/try")->ignore
 
-    // Wait for the playground editor and compiler to fully load
-    waitForPlayground()
+    compileAndRunImportedCode()
+  })
 
-    // Clear all existing code and type new ReScript source
-    get(".cm-content")
-    ->typeWithOptions(
-      "{selectall}{backspace}Console.log(\"Hello ReScript!\")",
-      {"force": true, "delay": 20},
+  Array.forEach(v13Versions, version => {
+    it(
+      `should compile and run imported code with ${version}`,
+      () => {
+        clickNavLink(~testId="navbar-primary-left-content", ~text="Playground")
+        waitForPlayground()
+
+        contains("Settings")->click->ignore
+        get(`select[name="compilerVersions"]`)
+        ->select(version)
+        ->shouldWithValue("have.value", version)
+        ->ignore
+
+        compileAndRunImportedCode()
+      },
     )
-    ->ignore
-
-    // Allow time for the compiler to process
-    wait(3000)
-
-    // Switch to the JavaScript tab and verify compiled output
-    contains("JavaScript")->click->ignore
-    get("pre.whitespace-pre-wrap")
-    ->shouldContainText("console.log")
-    ->ignore
-
-    // Click the Run button in the control panel
-    getByTestId("control-panel")
-    ->find("button")
-    ->containsChainable("Run")
-    ->click
-    ->ignore
-
-    // The Run button auto-switches to the Output tab.
-    // Verify the console output panel contains the logged text.
-    get("div.whitespace-pre-wrap pre")
-    ->shouldContainText("Hello ReScript!")
-    ->ignore
   })
 
   it("should open the landing page example in the playground with code and compiled output", () => {

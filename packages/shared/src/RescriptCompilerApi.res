@@ -35,6 +35,7 @@ module Version = {
     | @as(4) V4
     | @as(5) V5
     | @as(6) V6
+    | @as(7) V7
 
   type t =
     | ...numbered
@@ -62,6 +63,7 @@ module Version = {
     | list{"4"} => V4
     | list{"5"} => V5
     | list{"6"} => V6
+    | list{"7"} => V7
     | _ => UnknownVersion(apiVersion)
     }
 
@@ -73,6 +75,7 @@ module Version = {
     | V4 => "4.0"
     | V5 => "5.0"
     | V6 => "6.0"
+    | V7 => "7.0"
     | UnknownVersion(version) => version
     }
 
@@ -81,7 +84,7 @@ module Version = {
   let availableLanguages = t =>
     switch t {
     | V1 => [Lang.Reason, Res]
-    | V2 | V3 | V4 | V5 | V6 => [Lang.Res]
+    | V2 | V3 | V4 | V5 | V6 | V7 => [Lang.Res]
     | UnknownVersion(_) => [Res]
     }
 
@@ -476,8 +479,16 @@ module Compiler = {
 
   @send external setFilename: (t, string) => bool = "setFilename"
 
-  @send
-  external setModuleSystem: (t, [#es6 | #nodejs]) => bool = "setModuleSystem"
+  @send external setModuleSystemRaw: (t, string) => bool = "setModuleSystem"
+
+  let setModuleSystem = (t, moduleSystem: [#es6 | #nodejs]) => {
+    let (current, legacy) = switch moduleSystem {
+    | #es6 => ("esmodule", "es6")
+    | #nodejs => ("commonjs", "nodejs")
+    }
+
+    t->setModuleSystemRaw(current) || t->setModuleSystemRaw(legacy)
+  }
 
   @send external setWarnFlags: (t, string) => bool = "setWarnFlags"
 
