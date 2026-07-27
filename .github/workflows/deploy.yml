@@ -64,7 +64,7 @@ jobs:
           workingDirectory: apps/docs
           command: pages deploy out --project-name=rescript-lang-org --branch=${{ env.SAFE_BRANCH }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          wranglerVersion: 4.85.0
+          wranglerVersion: 4.114.0
         env:
           FORCE_COLOR: 0
       - name: Comment PR with deployment link
@@ -121,7 +121,7 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: apps/guide
           command: ${{ env.GUIDE_DEPLOY_COMMAND }}
-          wranglerVersion: 4.85.0
+          wranglerVersion: 4.114.0
         env:
           FORCE_COLOR: 0
       - name: Comment PR with guide deployment link

@@ -93,13 +93,13 @@
     "tailwindcss": "^4",
     "to-vfile": "^8.0.0",
     "vfile-reporter": "^8.1.1",
-    "vite": "^8.0.11",
-    "vite-plugin-devtools-json": "^1.0.0",
+    "vite": "^8.1.5",
+    "vite-plugin-devtools-json": "^1.1.0",
     "vite-plugin-env-compatible": "^2.0.1",
     "vite-plugin-page-reload": "^0.2.3",
     "vitest": "^4.1.5",
     "vitest-browser-react": "^2.2.0",
-    "wrangler": "^4.85.0"
+    "wrangler": "^4.114.0"
   },
   "engines": {
     "node": ">=22"
