@@ -47,7 +47,8 @@
     "rescript": "^12.2.0"
   },
   "resolutions": {
-    "marked": "4.0.10"
+    "marked": "4.0.10",
+    "sharp": "0.35.2"
   },
   "engines": {
     "node": ">=22"
