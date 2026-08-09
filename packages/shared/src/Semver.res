@@ -31,7 +31,7 @@ let make = (
   | #dev(v) => `dev.${v->Int.toString}`
   }
   NpmSemver.make(
-    `${major->Int.toString}.${minor->Int.toString}.${patch->Int.toString}-${pre}`,
+    `v${major->Int.toString}.${minor->Int.toString}.${patch->Int.toString}-${pre}`,
   )->Null.getOrThrow
 }
 
