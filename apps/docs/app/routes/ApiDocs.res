@@ -339,40 +339,69 @@ let make = (props: props) => {
 module Data = {
   type t = {
     mainModule: Dict.t<JSON.t>,
-    tree: Dict.t<JSON.t>,
   }
 
-  let dir = try {
-    Node.Path.resolve("data", "api")
-  } catch {
-  | _ => ""
-  }
+  open Node
+  let dir = Path.resolve("data", "api")
 
-  let getVersion = (~moduleName: string) => {
-    open Node
+  let versions = Fs.readdirSync(dir)
 
-    let moduleContent =
-      Fs.readFileSync(`markdown-pages/docs/api/${moduleName}.json`)->JSON.parseOrThrow
-
-    let content = switch moduleContent {
-    | Object(dict) => dict->Some
-    | _ => None
+  let normalizeVersion = version =>
+    switch version {
+    | "latest" => Constants.versions.latest
+    | "next" => Constants.versions.next
+    | version => version
     }
 
-    switch content {
-    | Some(content) => Some({mainModule: content, tree: Dict.make()})
-    | _ => None
+  let getVersion = (~version: string, ~moduleName: string) => {
+    let version = version->normalizeVersion
+    let selectedVersion = Semver.parse(version)->Option.getOrThrow
+
+    let latest =
+      versions
+      ->Array.filterMap(v =>
+        switch Semver.parse(v) {
+        | Some(v) if v.major == selectedVersion.major => Some(v.raw)
+        | _ => None
+        }
+      )
+      ->Array.toSorted((a, b) => Semver.rcompare(b, a)->Int.toFloat)
+      ->Array.last
+      ->Option.getOr(version)
+
+    let moduleFilePath = Path.join([dir, latest, `${moduleName}.json`])
+
+    if !Fs.existsSync(moduleFilePath) {
+      None
+    } else {
+      let moduleContent = Fs.readFileSync2(moduleFilePath, "utf-8")->JSON.parseOrThrow
+
+      let content = switch moduleContent {
+      | Object(dict) => dict->Some
+      | _ => None
+      }
+
+      switch content {
+      | Some(content) => Some({mainModule: content})
+      | _ => None
+      }
     }
   }
 }
 
-let processStaticProps = (~slug: array<string>) => {
-  let moduleName = slug->Belt.Array.getExn(0)
+let processStaticProps = (~version: string, ~slug: array<string>) => {
+  let moduleName = switch slug->Array.get(0) {
+  | Some("belt") => "belt"
+  | Some("dom") => "dom"
+  | Some("js") => "js"
+  | Some("stdlib") => "stdlib"
+  | _ => "stdlib"
+  }
   let modulePath = slug->Array.join("/")
 
   let content =
     // TODO post RR7: rename this to getByModuleName
-    Data.getVersion(~moduleName)
+    Data.getVersion(~version, ~moduleName)
     ->Option.map(data => data.mainModule)
     ->Option.flatMap(Dict.get(_, modulePath))
 
@@ -458,12 +487,11 @@ let processStaticProps = (~slug: array<string>) => {
 
     Ok({module_, toctree: Obj.magic({name: "root", path: [], children: []})})
 
-  | None => Error(`Failed to get API Data for module ${moduleName}`)
+  | None => Error(`Failed to get API Data for module ${moduleName} in version ${version}`)
   }
 }
 
-let getStaticProps = async slug => {
-  let result = processStaticProps(~slug)
-
+let getStaticProps = async (~version, slug) => {
+  let result = processStaticProps(~version, ~slug)
   {"props": result}
 }

@@ -31,6 +31,51 @@ let rec rawApiItemToNode = (apiItem: apiItem): ApiDocs.node => {
 @scope("JSON") @val
 external parseApi: string => Dict.t<apiItem> = "parse"
 
+type apiRequestPath = {
+  version: string,
+  slug: array<string>,
+}
+
+let normalizeVersion = version =>
+  switch version {
+  | "latest" => Constants.versions.latest
+  | "next" => Constants.versions.next
+  | version => version
+  }
+
+let isVersionSegment = segment =>
+  segment === "latest" || segment === "next" || segment->Semver.parse->Option.isSome
+
+let getApiRequestPath = (pathname: string): apiRequestPath => {
+  let segments = pathname->String.split("/")->Array.filter(segment => segment !== "")
+  let apiIndex = segments->Array.findIndex(segment => segment === "api")
+
+  let version = switch apiIndex {
+  | -1 => Constants.versions.latest
+  | index =>
+    switch segments->Array.get(index - 1) {
+    | Some(segment) if segment->isVersionSegment => segment->normalizeVersion
+    | _ => Constants.versions.latest
+    }
+  }
+
+  let slug = switch apiIndex {
+  | -1 => []
+  | index => segments->Array.slice(~start=index + 1)
+  }
+
+  {version, slug}
+}
+
+let getApiModuleName = slug =>
+  switch slug->Array.get(0) {
+  | Some("belt") => "belt"
+  | Some("dom") => "dom"
+  | Some("js") => "js"
+  | Some("stdlib") => "stdlib"
+  | _ => "stdlib"
+  }
+
 let groupItems = apiDocs => {
   let parsedItems =
     apiDocs
@@ -122,18 +167,13 @@ let makeBreadcrumbs = (~prefix: Url.breadcrumb, route: Path.t): list<Url.breadcr
 }
 
 let loader: ReactRouter.Loader.t<loaderData> = async args => {
-  let path =
-    WebAPI.URL.make(~url=args.request.url).pathname
-    ->String.replace("/docs/manual/api/", "")
-    ->String.split("/")
+  let {pathname} = WebAPI.URL.make(~url=args.request.url)
+  let apiRequestPath = getApiRequestPath((pathname :> string))
+  let version = apiRequestPath.version
+  let path = apiRequestPath.slug
+  let basePath = path->getApiModuleName
 
-  let basePath = path[0]->Option.getUnsafe
-
-  let apiDocs = switch basePath {
-  | "belt" => parseApi(await Node.Fs.readFile("./markdown-pages/docs/api/belt.json", "utf-8"))
-  | "dom" => parseApi(await Node.Fs.readFile("./markdown-pages/docs/api/dom.json", "utf-8"))
-  | _ => parseApi(await Node.Fs.readFile("./markdown-pages/docs/api/stdlib.json", "utf-8"))
-  }
+  let apiDocs = parseApi(await Node.Fs.readFile(`data/api/${version}/${basePath}.json`, "utf-8"))
 
   let toctree = groupItems(apiDocs)
 
@@ -141,7 +181,7 @@ let loader: ReactRouter.Loader.t<loaderData> = async args => {
     // TODO POST RR7: refactor this function to only return the module and not the toctree
     // or move the toc logic to this function
     try {
-      await ApiDocs.getStaticProps(path)
+      await ApiDocs.getStaticProps(~version, path)
     } catch {
     | err => {"props": Error(JSON.stringifyAny(err)->Option.getOr("Error loading API data"))}
     }
