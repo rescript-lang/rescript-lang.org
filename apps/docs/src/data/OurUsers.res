@@ -199,4 +199,9 @@ let companies = [
     url: "https://www.miriad.studio/",
     path: "/lp/miriad.svg",
   }),
+  Logo({
+    name: "Cangjie Workbook",
+    url: "https://www.cangjieworkbook.com/",
+    path: "/lp/cangjieworkbook.svg",
+  }),
 ]
