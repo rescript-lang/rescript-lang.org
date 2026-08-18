@@ -204,4 +204,9 @@ let companies = [
     url: "https://www.cangjieworkbook.com/",
     path: "/lp/cangjieworkbook.svg",
   }),
+  Logo({
+    name: "ReactiveNET",
+    url: "https://reactivenet.ai",
+    path: "/lp/reactivenet.svg",
+  }),
 ]
