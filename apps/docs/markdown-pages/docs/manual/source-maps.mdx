@@ -61,17 +61,17 @@ Use `"enabled": "always"` to generate source maps during both `rescript build` a
 
 `"mode": "linked"` writes a separate map next to each generated JavaScript file and adds a `sourceMappingURL` comment to the JavaScript output.
 
-For example, `Demo.mjs` produces:
+For example, `Demo.res.mjs` produces:
 
 ```text
-Demo.mjs
-Demo.mjs.map
+Demo.res.mjs
+Demo.res.mjs.map
 ```
 
-The end of `Demo.mjs` references the sibling map:
+The end of `Demo.res.mjs` references the sibling map:
 
 ```js
-//# sourceMappingURL=Demo.mjs.map
+//# sourceMappingURL=Demo.res.mjs.map
 ```
 
 Linked maps are a good default for local browser or Node.js debugging because developer tools can discover them automatically.
@@ -161,7 +161,7 @@ The `build.sourcemap` option tells Vite to emit source maps for the final produc
 Node.js can use linked or inline maps to report `.res` locations in stack traces:
 
 ```sh
-node --enable-source-maps ./src/Main.mjs
+node --enable-source-maps ./src/Main.res.mjs
 ```
 
 Hidden maps are not discovered automatically because the generated JavaScript does not reference them. Pass them directly to the error-monitoring or deployment tool that consumes them.
