@@ -209,4 +209,9 @@ let companies = [
     url: "https://reactivenet.ai",
     path: "/lp/reactivenet.svg",
   }),
+  Logo({
+    name: "LMDmax",
+    url: "https://lmdmax.com",
+    path: "/lp/lmdmax.svg",
+  }),
 ]
