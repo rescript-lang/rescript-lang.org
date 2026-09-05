@@ -166,6 +166,8 @@ node --enable-source-maps ./src/Main.res.mjs
 
 Hidden maps are not discovered automatically because the generated JavaScript does not reference them. Pass them directly to the error-monitoring or deployment tool that consumes them.
 
+See the source map upload guides for [Sentry](https://docs.sentry.io/platforms/javascript/sourcemaps/), [New Relic](https://docs.newrelic.com/docs/browser/new-relic-browser/browser-pro-features/upload-source-maps-api/), and [Datadog](https://docs.datadoghq.com/real_user_monitoring/guide/upload-javascript-source-maps/) for service-specific instructions.
+
 ## Disable Source Maps
 
 Source maps are disabled when the `sourceMap` field is omitted. You can also disable them explicitly:
