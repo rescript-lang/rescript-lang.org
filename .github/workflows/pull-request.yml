@@ -33,6 +33,25 @@ jobs:
         run: yarn
       - name: Test examples and hrefs
         run: yarn test
+  Wrangler:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6.3.0
+        with:
+          node-version-file: ".node-version"
+          cache: yarn
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install dependencies
+        run: yarn
+      - name: Build ReScript
+        run: yarn build:res
+      - name: Validate Wrangler Pages runtime
+        working-directory: apps/docs
+        run: timeout 15s yarn wrangler pages dev public --port 8788 || [ $? -eq 124 ]
   Vitest:
     runs-on: ubuntu-latest
     container:
