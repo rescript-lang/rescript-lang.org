@@ -1,23 +1,21 @@
-open WebAPI
-
 %%raw("import React from 'react'")
 
 let loadGoogleFont = async (family: string) => {
   let url = `https://fonts.googleapis.com/css2?family=${family}`
-  let css = await (await fetch(url))->Response.text
+  let css = await (await Fetch.fetch(url))->Response.text
 
   // this function should fail if we can't load the font
   let resource =
     css->String.match(/src: url\((.+)\) format\('(opentype|truetype)'\)/)->Option.getOrThrow
-  let response = await fetch(resource[1]->Option.getOrThrow->Option.getOrThrow)
+  let response = await Fetch.fetch(resource[1]->Option.getOrThrow->Option.getOrThrow)
   await response->Response.arrayBuffer
 }
 
 type assets
 type env = {@as("ASSETS") assets: assets}
-type context = {request: FetchAPI.request, params: {path: array<string>}, env: env}
+type context = {request: Request.t, params: {path: array<string>}, env: env}
 
-@send external fetchAsset: (assets, string) => promise<FetchAPI.response> = "fetch"
+@send external fetchAsset: (assets, string) => promise<Response.t> = "fetch"
 
 let textResponse = (~status, message) => Response.fromString(message, ~init={status: status})
 
@@ -113,14 +111,14 @@ let splitPreviewText = (~title, ~description) => {
   (titleSegments[0]->Option.getOr("")->normalizeText, subTitle, description->normalizeText)
 }
 
-let requestedUrl = (~requestUrl: URLAPI.url, ~params) => {
-  switch requestUrl.searchParams->URLSearchParams.get("url")->Nullable.make->Nullable.toOption {
+let requestedUrl = (~requestUrl: UrlTypes.url, ~params) => {
+  switch requestUrl.searchParams->URLSearchParams.get("url")->Null.toOption {
   | Some(url) => Some(url)
   | None => params.path[0]->Option.map(decodeURIComponent)
   }
 }
 
-let isHtmlResponse = (response: FetchAPI.response) =>
+let isHtmlResponse = (response: Response.t) =>
   response.headers
   ->Headers.get("content-type")
   ->Null.toOption
@@ -128,7 +126,7 @@ let isHtmlResponse = (response: FetchAPI.response) =>
     contentType->String.toLowerCase->String.includes("text/html")
   )
 
-let renderImage = async (~assets, ~requestUrl: URLAPI.url, ~targetUrl: URLAPI.url) => {
+let renderImage = async (~assets, ~requestUrl: UrlTypes.url, ~targetUrl: UrlTypes.url) => {
   if targetUrl.origin != requestUrl.origin {
     textResponse(~status=400, "Open Graph image URL must be same-origin")
   } else if targetUrl.pathname->String.startsWith("/ogimage/") {

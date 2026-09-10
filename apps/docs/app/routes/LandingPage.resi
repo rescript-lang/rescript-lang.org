@@ -1,2 +1,2 @@
 @react.component
-let make: (~components: MarkdownComponents.t=?) => React.element
+let make: unit => React.element

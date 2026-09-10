@@ -1,5 +1,3 @@
-open WebAPI
-
 type font = {
   name: string,
   data: ArrayBuffer.t,
@@ -13,7 +11,7 @@ type ogImageOptions = {
   fonts: array<font>,
 }
 
-type t = FetchAPI.response
+type t = Response.t
 
 @new @module("@cloudflare/pages-plugin-vercel-og/api")
 external imageResponse: (Jsx.element, ogImageOptions) => promise<t> = "ImageResponse"

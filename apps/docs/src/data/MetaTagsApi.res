@@ -6,30 +6,30 @@ type t = {
 
 /**
  This function uses JSDOM to fetch a webpage and extract the meta tags from it.
- JSDOM is required since this runs on Node.
+ JSDOM is required since this runs on NodeJs.
  */
 let extractMetaTags = async (url: string) => {
   try {
-    let response = await fetch(url)
+    let response = await Fetch.fetch(url)
 
-    let html = await response->WebAPI.Response.text
+    let html = await response->Response.text
     let dom = Jsdom.make(html)
     let document = dom.window.document
 
-    let nodeList = document->WebAPI.Document.querySelectorAll("meta")
+    let nodeList = document->Document.querySelectorAll("meta")
 
     let elements = []
 
     for i in 0 to nodeList.length {
-      let node = WebAPI.NodeList.item(nodeList, i)
+      let node = NodeList.item(nodeList, i)
       // cast Node elements to Element
-      elements->Array.push((Obj.magic(node): WebAPI.DOMAPI.element))
+      elements->Array.push((Obj.magic(node): DomTypes.element))
     }
 
     let metaTags = elements->Array.reduce(Dict.fromArray([]), (tags, meta) => {
-      let name = meta->WebAPI.Element.getAttribute("name")
-      let property = meta->WebAPI.Element.getAttribute("property")
-      let itemprop = meta->WebAPI.Element.getAttribute("itemprop")
+      let name = meta->Element.getAttribute("name")
+      let property = meta->Element.getAttribute("property")
+      let itemprop = meta->Element.getAttribute("itemprop")
 
       let name = switch (name, property, itemprop) {
       | (Value(name), _, _) => Some(name)
@@ -38,7 +38,7 @@ let extractMetaTags = async (url: string) => {
       | _ => None
       }
 
-      let content = meta->WebAPI.Element.getAttribute("content")
+      let content = meta->Element.getAttribute("content")
 
       switch (name, content) {
       | (Some(name), Value(content)) => tags->Dict.set(name, content)

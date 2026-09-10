@@ -63,8 +63,8 @@ let useScrollDirection = (~topMargin=80, ~threshold=20) => {
 
     // let onScroll = Util.debounce(onScroll, 50)
 
-    WebAPI.Window.addEventListener(window, Scroll, onScroll)
-    Some(() => WebAPI.Window.removeEventListener(window, Scroll, onScroll))
+    Window.addEventListener(window, Scroll, onScroll)
+    Some(() => Window.removeEventListener(window, Scroll, onScroll))
   }, [topMargin, threshold])
 
   scrollDir
@@ -78,13 +78,13 @@ let useMediaQuery = (query: string) => {
   })
 
   React.useEffect(() => {
-    let mediaQueryList = WebAPI.Window.matchMedia(window, query)
+    let mediaQueryList = Window.matchMedia(window, query)
     setMatches(_ => mediaQueryList.matches)
 
     let listener = (e: mediaQueryListEvent) => setMatches(_ => e.matches)
 
-    WebAPI.MediaQueryList.addEventListener(mediaQueryList, Change, listener)
-    Some(() => WebAPI.MediaQueryList.removeEventListener(mediaQueryList, Change, listener))
+    MediaQueryList.addEventListener(mediaQueryList, Change, listener)
+    Some(() => MediaQueryList.removeEventListener(mediaQueryList, Change, listener))
   }, [query])
 
   matches

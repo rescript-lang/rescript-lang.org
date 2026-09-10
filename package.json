@@ -44,7 +44,7 @@
   "devDependencies": {
     "lefthook": "^2.1.4",
     "oxfmt": "^0.46.0",
-    "rescript": "^12.2.0"
+    "rescript": "https://pkg.pr.new/rescript@8425"
   },
   "resolutions": {
     "marked": "4.0.10",

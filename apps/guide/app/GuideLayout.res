@@ -101,7 +101,7 @@ let themeToggleText = theme =>
 // for the guide, so storage failures fall back to the current UI state.
 let getLocalStorageItem = key => {
   try {
-    WebAPI.Storage.getItem(window.localStorage, key)->Null.toOption
+    Storage.getItem(localStorage, key)->Null.toOption
   } catch {
   | JsExn(_) => None
   }
@@ -109,7 +109,7 @@ let getLocalStorageItem = key => {
 
 let setLocalStorageItem = (~key, ~value) => {
   try {
-    WebAPI.Storage.setItem(window.localStorage, ~key, ~value)
+    Storage.setItem(localStorage, ~key, ~value)
   } catch {
   | JsExn(_) => ()
   }
@@ -117,7 +117,7 @@ let setLocalStorageItem = (~key, ~value) => {
 
 let removeLocalStorageItem = key => {
   try {
-    WebAPI.Storage.removeItem(window.localStorage, key)
+    Storage.removeItem(localStorage, key)
   } catch {
   | JsExn(_) => ()
   }

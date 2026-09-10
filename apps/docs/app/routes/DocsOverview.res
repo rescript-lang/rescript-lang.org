@@ -15,7 +15,7 @@ module Card = {
 }
 
 @react.component
-let default = (~showVersionSelect=true) => {
+let default = () => {
   let languageManual = Constants.languageManual
 
   let ecosystem = [

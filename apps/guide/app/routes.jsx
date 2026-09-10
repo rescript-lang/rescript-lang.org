@@ -4,5 +4,7 @@ import * as Routes from "@react-router/dev/routes";
 
 let $$default = [Routes.index("./GuideHomeRoute.jsx")];
 
-export { $$default as default };
+export {
+  $$default as default,
+}
 /* default Not a pure module */

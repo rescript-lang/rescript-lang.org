@@ -161,7 +161,7 @@ module CM6 = {
   module EditorView = {
     module Tooltip = {
       module View = {
-        type t = {dom: WebAPI.DOMAPI.element, offset?: {x: int, y: int}}
+        type t = {dom: DomTypes.element, offset?: {x: int, y: int}}
       }
       type t = {
         pos: int,
@@ -174,13 +174,13 @@ module CM6 = {
       }
     }
 
-    type createConfig = {state: editorState, parent: WebAPI.DOMAPI.element}
+    type createConfig = {state: editorState, parent: DomTypes.element}
     @module("@codemirror/view") @new
     external create: createConfig => editorView = "EditorView"
 
     @send external destroy: editorView => unit = "destroy"
     @get external state: editorView => editorState = "state"
-    @get external dom: editorView => WebAPI.DOMAPI.htmlElement = "dom"
+    @get external dom: editorView => DomTypes.htmlElement = "dom"
 
     type change = {from: int, to: int, insert: string}
     type dispatchArg = {changes: change, selection?: EditorSelection.t}
@@ -588,7 +588,7 @@ type editorInstance = {
 }
 
 type editorConfig = {
-  parent: WebAPI.DOMAPI.element,
+  parent: DomTypes.element,
   initialValue: string,
   mode: string,
   readOnly: bool,
@@ -672,7 +672,7 @@ let createHoverHintExtension = (hoverHints: array<HoverHint.t>) => {
     | Some({hint, start, end}) =>
       let pos = CM6.Text.line(doc, start.line).from + start.col
       let end = CM6.Text.line(doc, end.line).from + end.col
-      let dom = WebAPI.Global.document->WebAPI.Document.createElement("div")
+      let dom = DomGlobal.document->Document.createElement("div")
       dom.textContent = Value(hint)
       dom.className = "p-1 border"
       Value({

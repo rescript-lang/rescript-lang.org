@@ -22,6 +22,6 @@ type props = {
   unmaintained: array<npmPackage>,
 }
 
-let make: props => React.element
+let make: React.component<props>
 
 let getStaticProps: unit => promise<props>

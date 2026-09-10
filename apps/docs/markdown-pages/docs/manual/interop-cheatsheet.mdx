@@ -38,7 +38,7 @@ This is a glossary with examples. All the features are described by later pages.
 - [`@uncurry`](./bind-to-js-function.mdx#extra-solution)
 - [`@unwrap`](./bind-to-js-function.mdx#trick-2-polymorphic-variant--bsunwrap)
 - [`@val`](./bind-to-global-js-values.mdx#global-modules)
-- [`@taggedTemplate`](./bind-to-js-function.mdx#tagged_template-functions)
+- [`taggedTemplate`](./bind-to-js-function.mdx#tagged-template-functions)
 - [`@deprecated`](./attribute.mdx#usage)
 - [`genType`](https://github.com/reason-association/genType)
 - [`@JSX`](./jsx.mdx)
@@ -49,7 +49,6 @@ This is a glossary with examples. All the features are described by later pages.
 ### Extension Points
 
 - [`%debugger`](./embed-raw-javascript.mdx#debugger)
-- [`%external`](./bind-to-global-js-values.mdx#special-global-values)
 - [`%raw`](./embed-raw-javascript.mdx#paste-raw-js-code)
 - [`%todo`](../../syntax-lookup/extension_todo.mdx)
 
@@ -206,8 +205,8 @@ external join: array<string> => string = "join"
 ```res
 // see https://bun.sh/docs/runtime/shell
 type result = {exitCode: int}
-@module("bun") @taggedTemplate
-external sh: (array<string>, array<string>) => promise<result> = "$"
+@module("bun")
+external sh: taggedTemplate<string, promise<result>> = "$"
 
 let filename = "index.res"
 let result = await sh`ls ${filename}`

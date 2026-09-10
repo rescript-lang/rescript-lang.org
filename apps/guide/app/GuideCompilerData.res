@@ -10,8 +10,8 @@ module Env = {
 }
 
 let fetchVersions = async versionsBaseUrl => {
-  let response = await fetch(versionsBaseUrl ++ "/playground-bundles/versions.json")
-  let json = await WebAPI.Response.json(response)
+  let response = await Fetch.fetch(versionsBaseUrl ++ "/playground-bundles/versions.json")
+  let json = await Response.json(response)
   json
   ->JSON.Decode.array
   ->Option.getOrThrow

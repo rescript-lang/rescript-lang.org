@@ -50,19 +50,18 @@ let p3 = Promise.reject(MyOwnError("some rejection"))
 
 ```res
 let logAsyncMessage = () => {
-  open Promise
   Promise.resolve("hello world")
-  ->then(msg => {
+  ->Promise.then(msg => {
     // then callbacks require the result to be resolved explicitly
-    resolve("Message: " ++ msg)
+    Promise.resolve("Message: " ++ msg)
   })
-  ->then(msg => {
+  ->Promise.then(msg => {
     Console.log(msg)
 
     // Even if there is no result, we need to use resolve() to return a promise
-    resolve()
+    Promise.resolve()
   })
-  ->ignore // Requires ignoring due to unhandled return value
+  ->Promise.ignore // Requires ignoring due to unhandled return value
 }
 ```
 
@@ -94,7 +93,7 @@ external fetchMessage: string => promise<string> = "global.fetchMessage"
 let logAsyncMessage = async () => {
   let messages = await Promise.all([fetchMessage("message1"), fetchMessage("message2")])
 
-  Console.log(messages->Array.joinWith(", "))
+  Console.log(messages->Array.join(", "))
 }
 ```
 

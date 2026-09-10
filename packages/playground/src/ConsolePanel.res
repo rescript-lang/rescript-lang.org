@@ -6,7 +6,7 @@ type logLevel = [
 type log = {level: logLevel, content: array<string>}
 
 @react.component
-let make = (~logs, ~appendLog) => {
+let make = (~logs, ~appendLog: (logLevel, array<string>) => unit) => {
   React.useEffect(() => {
     let cb = e => {
       let data = e["data"]
@@ -17,8 +17,8 @@ let make = (~logs, ~appendLog) => {
       | _ => ()
       }
     }
-    WebAPI.Window.addEventListener(window, Custom("message"), cb)
-    Some(() => WebAPI.Window.removeEventListener(window, Custom("message"), cb))
+    Window.addEventListener(window, Custom("message"), cb)
+    Some(() => Window.removeEventListener(window, Custom("message"), cb))
   }, [appendLog])
 
   <div className="px-2 py-6 relative flex flex-col flex-1 overflow-y-hidden">

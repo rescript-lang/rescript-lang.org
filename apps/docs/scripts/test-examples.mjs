@@ -506,12 +506,11 @@ let ensureTempProject = ({ tempRoot, preserve = false }) => {
   fs.writeFileSync(tempModulePath(tempRoot, "res"), "");
   let tempNodeModules = path.join(tempRoot, "node_modules", "@rescript");
   let tempReactPackage = path.join(tempNodeModules, "react");
-  if (!fs.existsSync(tempReactPackage)) {
-    fs.mkdirSync(tempNodeModules, { recursive: true });
-    fs.cpSync(rescriptReactPackageRoot, tempReactPackage, {
-      recursive: true,
-    });
-  }
+  fs.rmSync(tempReactPackage, { recursive: true, force: true });
+  fs.mkdirSync(tempNodeModules, { recursive: true });
+  fs.cpSync(rescriptReactPackageRoot, tempReactPackage, {
+    recursive: true,
+  });
 };
 
 export let collectCodeTabPairs = (content) => {

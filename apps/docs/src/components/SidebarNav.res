@@ -10,10 +10,9 @@ module Toc = {
             prefetch={#intent}
             onClick={evt => {
               evt->ReactEvent.Mouse.preventDefault
-              WebAPI.Document.getElementById(
-                document,
-                href->String.replace("#", ""),
-              )->WebAPI.Element.scrollIntoView_alignToTop
+              Document.getElementById(document, href->String.replace("#", ""))
+              ->Null.toOption
+              ->Option.forEach(element => element->Element.scrollIntoViewAlignToTop)
               onClick()
             }}
             to={"#" ++ href->Url.normalizeAnchor}

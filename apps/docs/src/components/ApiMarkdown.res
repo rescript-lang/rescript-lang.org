@@ -24,7 +24,7 @@ let default = {
   p: P.make,
   li: Li.make,
   h1: H1.make,
-  h2: H2.make->asMarkdownH2,
+  h2: H2.make->asMarkdownH2->React.component,
   h3: H3.make,
   h4: H4.make,
   h5: H5.make,

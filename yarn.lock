@@ -2272,8 +2272,8 @@ __metadata:
     "@react-router/node": "npm:^7.15.0"
     "@rescript-lang/playground": "workspace:*"
     "@rescript-lang/shared": "workspace:*"
-    "@rescript/react": "npm:^0.14.2"
-    "@rescript/webapi": "npm:0.1.0-experimental-29db5f4"
+    "@rescript/react": "patch:@rescript/react@npm%3A0.14.2#~/.yarn/patches/@rescript-react-npm-0.14.2-b830f5af4f.patch"
+    "@rescript/webapi": "patch:@rescript/webapi@npm%3A0.1.0-experimental-0781ac8#~/.yarn/patches/@rescript-webapi-npm-0.1.0-experimental-0781ac8-50def7723d.patch"
     "@tailwindcss/vite": "npm:^4.3.0"
     "@types/react": "npm:^19.2.14"
     "@vitejs/plugin-react": "npm:^6.0.1"
@@ -2308,7 +2308,7 @@ __metadata:
     remark-frontmatter: "npm:^5.0.0"
     remark-gfm: "npm:^4.0.1"
     remark-validate-links: "npm:^13.1.0"
-    rescript: "npm:^12.2.0"
+    rescript: "https://pkg.pr.new/rescript@8425"
     search-insights: "npm:^2.17.3"
     tailwindcss: "npm:^4"
     tinyglobby: "npm:^0.2.15"
@@ -2337,8 +2337,8 @@ __metadata:
     "@react-router/node": "npm:^7.15.0"
     "@rescript-lang/playground": "workspace:*"
     "@rescript-lang/shared": "workspace:*"
-    "@rescript/react": "npm:^0.14.2"
-    "@rescript/webapi": "npm:0.1.0-experimental-29db5f4"
+    "@rescript/react": "patch:@rescript/react@npm%3A0.14.2#~/.yarn/patches/@rescript-react-npm-0.14.2-b830f5af4f.patch"
+    "@rescript/webapi": "patch:@rescript/webapi@npm%3A0.1.0-experimental-0781ac8#~/.yarn/patches/@rescript-webapi-npm-0.1.0-experimental-0781ac8-50def7723d.patch"
     "@vitejs/plugin-react": "npm:^6.0.1"
     "@vitest/browser-playwright": "npm:^4.1.5"
     isbot: "npm:^5"
@@ -2354,7 +2354,7 @@ __metadata:
     remark-gfm: "npm:^4.0.1"
     remark-parse: "npm:^11.0.0"
     remark-stringify: "npm:^11.0.0"
-    rescript: "npm:^12.2.0"
+    rescript: "https://pkg.pr.new/rescript@8425"
     unified: "npm:^11.0.5"
     vfile-matter: "npm:^5.0.1"
     vite: "npm:^8.1.5"
@@ -2370,8 +2370,8 @@ __metadata:
   dependencies:
     "@babel/parser": "npm:^7.29.2"
     "@rescript-lang/shared": "workspace:*"
-    "@rescript/react": "npm:^0.14.2"
-    "@rescript/webapi": "npm:0.1.0-experimental-29db5f4"
+    "@rescript/react": "patch:@rescript/react@npm%3A0.14.2#~/.yarn/patches/@rescript-react-npm-0.14.2-b830f5af4f.patch"
+    "@rescript/webapi": "patch:@rescript/webapi@npm%3A0.1.0-experimental-0781ac8#~/.yarn/patches/@rescript-webapi-npm-0.1.0-experimental-0781ac8-50def7723d.patch"
     lz-string: "npm:^1.5.0"
     react: "npm:^19.2.4"
     react-dom: "npm:^19.2.4"
@@ -2396,8 +2396,8 @@ __metadata:
     "@codemirror/view": "npm:^6.41.0"
     "@lezer/highlight": "npm:^1.2.3"
     "@replit/codemirror-vim": "npm:^6.3.0"
-    "@rescript/react": "npm:^0.14.2"
-    "@rescript/webapi": "npm:0.1.0-experimental-29db5f4"
+    "@rescript/react": "patch:@rescript/react@npm%3A0.14.2#~/.yarn/patches/@rescript-react-npm-0.14.2-b830f5af4f.patch"
+    "@rescript/webapi": "patch:@rescript/webapi@npm%3A0.1.0-experimental-0781ac8#~/.yarn/patches/@rescript-webapi-npm-0.1.0-experimental-0781ac8-50def7723d.patch"
     "@tsnobip/rescript-lezer": "npm:^0.8.0"
     highlight.js: "npm:^11.11.1"
     react: "npm:^19.2.4"
@@ -2412,35 +2412,35 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@rescript/darwin-arm64@npm:12.2.0":
-  version: 12.2.0
-  resolution: "@rescript/darwin-arm64@npm:12.2.0"
+"@rescript/darwin-arm64@https://pkg.pr.new/rescript-lang/rescript/@rescript/darwin-arm64@9c999ee":
+  version: 13.0.0-alpha.6
+  resolution: "@rescript/darwin-arm64@https://pkg.pr.new/rescript-lang/rescript/@rescript/darwin-arm64@9c999ee"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@rescript/darwin-x64@npm:12.2.0":
-  version: 12.2.0
-  resolution: "@rescript/darwin-x64@npm:12.2.0"
+"@rescript/darwin-x64@https://pkg.pr.new/rescript-lang/rescript/@rescript/darwin-x64@9c999ee":
+  version: 13.0.0-alpha.6
+  resolution: "@rescript/darwin-x64@https://pkg.pr.new/rescript-lang/rescript/@rescript/darwin-x64@9c999ee"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@rescript/linux-arm64@npm:12.2.0":
-  version: 12.2.0
-  resolution: "@rescript/linux-arm64@npm:12.2.0"
+"@rescript/linux-arm64@https://pkg.pr.new/rescript-lang/rescript/@rescript/linux-arm64@9c999ee":
+  version: 13.0.0-alpha.6
+  resolution: "@rescript/linux-arm64@https://pkg.pr.new/rescript-lang/rescript/@rescript/linux-arm64@9c999ee"
   conditions: os=linux & cpu=arm64
   languageName: node
   linkType: hard
 
-"@rescript/linux-x64@npm:12.2.0":
-  version: 12.2.0
-  resolution: "@rescript/linux-x64@npm:12.2.0"
+"@rescript/linux-x64@https://pkg.pr.new/rescript-lang/rescript/@rescript/linux-x64@9c999ee":
+  version: 13.0.0-alpha.6
+  resolution: "@rescript/linux-x64@https://pkg.pr.new/rescript-lang/rescript/@rescript/linux-x64@9c999ee"
   conditions: os=linux & cpu=x64
   languageName: node
   linkType: hard
 
-"@rescript/react@npm:^0.14.2":
+"@rescript/react@npm:0.14.2":
   version: 0.14.2
   resolution: "@rescript/react@npm:0.14.2"
   peerDependencies:
@@ -2450,25 +2450,44 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rescript/runtime@npm:12.2.0":
-  version: 12.2.0
-  resolution: "@rescript/runtime@npm:12.2.0"
-  checksum: 10c0/59c0194ae52fbbaadc736bbf1cfac1ed6ffde92b2346e36b9f1a29bb136e38b7ef203c780647203912fa657d293eab5c4e208f04dd65ed4bf47d53843980f7e1
+"@rescript/react@patch:@rescript/react@npm%3A0.14.2#~/.yarn/patches/@rescript-react-npm-0.14.2-b830f5af4f.patch":
+  version: 0.14.2
+  resolution: "@rescript/react@patch:@rescript/react@npm%3A0.14.2#~/.yarn/patches/@rescript-react-npm-0.14.2-b830f5af4f.patch::version=0.14.2&hash=c22f9e"
+  peerDependencies:
+    react: ">=19.1.0"
+    react-dom: ">=19.1.0"
+  checksum: 10c0/dd9247f838b3e6a7040cbb1d366d244ab72f21dd9a49df84c4b00e15a5506bb1d2753ad476c37b1d463f1c0381d40e504ae1129ec794a95bdcc65f8b6589bd04
   languageName: node
   linkType: hard
 
-"@rescript/webapi@npm:0.1.0-experimental-29db5f4":
-  version: 0.1.0-experimental-29db5f4
-  resolution: "@rescript/webapi@npm:0.1.0-experimental-29db5f4"
-  dependencies:
-    rescript: "npm:^12.0.0-beta.3"
-  checksum: 10c0/0ef8538fe59b2c058217dd17a5e653ac4902a87caad3b78bde2efc8099538c33e8c1fc7cef41595fd385a78de2ca172c60bdd36a100839f8983da7a40ebd9560
+"@rescript/runtime@https://pkg.pr.new/rescript-lang/rescript/@rescript/runtime@9c999ee":
+  version: 13.0.0-alpha.6
+  resolution: "@rescript/runtime@https://pkg.pr.new/rescript-lang/rescript/@rescript/runtime@9c999ee"
+  checksum: 10c0/7da651746d837afe2f14aab6e2e7f34b2489ae06e64738a7204416055e29776cfd2a64429f017e9748b71eb2e9ff2a4982cd2e765b841eca9445448f8551a698
   languageName: node
   linkType: hard
 
-"@rescript/win32-x64@npm:12.2.0":
-  version: 12.2.0
-  resolution: "@rescript/win32-x64@npm:12.2.0"
+"@rescript/webapi@npm:0.1.0-experimental-0781ac8":
+  version: 0.1.0-experimental-0781ac8
+  resolution: "@rescript/webapi@npm:0.1.0-experimental-0781ac8"
+  peerDependencies:
+    rescript: ">=12.0.0 <13"
+  checksum: 10c0/2e5524b1609b82c70d735ce7b105ecb51ebc9af476c5e765d91ca066d4a12aeb21e1ca76db460955b5b58293fd251552dd7b438a10250d3c9b79f6ee671897cb
+  languageName: node
+  linkType: hard
+
+"@rescript/webapi@patch:@rescript/webapi@npm%3A0.1.0-experimental-0781ac8#~/.yarn/patches/@rescript-webapi-npm-0.1.0-experimental-0781ac8-50def7723d.patch":
+  version: 0.1.0-experimental-0781ac8
+  resolution: "@rescript/webapi@patch:@rescript/webapi@npm%3A0.1.0-experimental-0781ac8#~/.yarn/patches/@rescript-webapi-npm-0.1.0-experimental-0781ac8-50def7723d.patch::version=0.1.0-experimental-0781ac8&hash=fc1254"
+  peerDependencies:
+    rescript: ">=12.0.0 <13"
+  checksum: 10c0/7ac8e28fa93abe601c57ecf699f03f428e5ec295ff98433c72dedce2ecb2e98b7d0f4de47a37a973cae2ec1d9bff855dfcad5d70a2455e8479473d3e34626012
+  languageName: node
+  linkType: hard
+
+"@rescript/win32-x64@https://pkg.pr.new/rescript-lang/rescript/@rescript/win32-x64@9c999ee":
+  version: 13.0.0-alpha.6
+  resolution: "@rescript/win32-x64@https://pkg.pr.new/rescript-lang/rescript/@rescript/win32-x64@9c999ee"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -9690,20 +9709,20 @@ __metadata:
   dependencies:
     lefthook: "npm:^2.1.4"
     oxfmt: "npm:^0.46.0"
-    rescript: "npm:^12.2.0"
+    rescript: "https://pkg.pr.new/rescript@8425"
   languageName: unknown
   linkType: soft
 
-"rescript@npm:^12.0.0-beta.3, rescript@npm:^12.2.0":
-  version: 12.2.0
-  resolution: "rescript@npm:12.2.0"
+"rescript@https://pkg.pr.new/rescript@8425":
+  version: 13.0.0-alpha.6
+  resolution: "rescript@https://pkg.pr.new/rescript@8425"
   dependencies:
-    "@rescript/darwin-arm64": "npm:12.2.0"
-    "@rescript/darwin-x64": "npm:12.2.0"
-    "@rescript/linux-arm64": "npm:12.2.0"
-    "@rescript/linux-x64": "npm:12.2.0"
-    "@rescript/runtime": "npm:12.2.0"
-    "@rescript/win32-x64": "npm:12.2.0"
+    "@rescript/darwin-arm64": "https://pkg.pr.new/rescript-lang/rescript/@rescript/darwin-arm64@9c999ee"
+    "@rescript/darwin-x64": "https://pkg.pr.new/rescript-lang/rescript/@rescript/darwin-x64@9c999ee"
+    "@rescript/linux-arm64": "https://pkg.pr.new/rescript-lang/rescript/@rescript/linux-arm64@9c999ee"
+    "@rescript/linux-x64": "https://pkg.pr.new/rescript-lang/rescript/@rescript/linux-x64@9c999ee"
+    "@rescript/runtime": "https://pkg.pr.new/rescript-lang/rescript/@rescript/runtime@9c999ee"
+    "@rescript/win32-x64": "https://pkg.pr.new/rescript-lang/rescript/@rescript/win32-x64@9c999ee"
   dependenciesMeta:
     "@rescript/darwin-arm64":
       optional: true
@@ -9717,11 +9736,9 @@ __metadata:
       optional: true
   bin:
     bsc: cli/bsc.js
-    bstracing: cli/bstracing.js
     rescript: cli/rescript.js
-    rescript-legacy: cli/rescript-legacy.js
     rescript-tools: cli/rescript-tools.js
-  checksum: 10c0/7650a77a66e2f2ba2523eac54fd930f0b70bad922e9b498678e701e842a56c7b6facd0daf1ef9c7b71d344d9483a0293d17db72a67515a22d07856bdfc34fb46
+  checksum: 10c0/a9edf9affafb476e51d6fdb76138f35e97c5c8e0dcf1c4d4ef8ff8ed7b2104afef5b1fb07139f0903ca8b3c92b62e7a61f948f84cee90bd330c71b33bd31a5d5
   languageName: node
   linkType: hard
 

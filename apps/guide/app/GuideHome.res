@@ -1,4 +1,4 @@
-let navigateToDocsIntro = url => window.location->WebAPI.Location.assign(url)
+let navigateToDocsIntro = url => location->Location.assign(url)
 
 @react.component
 let make = (

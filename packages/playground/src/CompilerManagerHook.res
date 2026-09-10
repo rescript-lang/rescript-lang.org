@@ -627,7 +627,7 @@ let useCompilerManager = (
       | SetupFailed(_) => ()
       | Ready(ready) if syncUrl =>
         let url = createUrl((pathname :> string), ready)
-        WebAPI.History.replaceState(history, ~data=JSON.Null, ~unused="", ~url)
+        History.replaceState(history, ~data=JSON.Null, ~unused="", ~url)
       | Ready(_) => ()
       }
     }

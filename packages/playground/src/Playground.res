@@ -44,7 +44,7 @@ let dropdownLabelReleased = "--- Released ---"
 
 let getLocalStorageItem = key => {
   try {
-    WebAPI.Storage.getItem(window.localStorage, key)->Null.toOption
+    Storage.getItem(localStorage, key)->Null.toOption
   } catch {
   | JsExn(_) => None
   }
@@ -52,7 +52,7 @@ let getLocalStorageItem = key => {
 
 let setLocalStorageItem = (~key, ~value) => {
   try {
-    WebAPI.Storage.setItem(window.localStorage, ~key, ~value)
+    Storage.setItem(localStorage, ~key, ~value)
   } catch {
   | JsExn(_) => ()
   }
@@ -60,7 +60,7 @@ let setLocalStorageItem = (~key, ~value) => {
 
 let getSessionStorageItem = key => {
   try {
-    WebAPI.Storage.getItem(window.sessionStorage, key)->Null.toOption
+    Storage.getItem(sessionStorage, key)->Null.toOption
   } catch {
   | JsExn(_) => None
   }
@@ -68,7 +68,7 @@ let getSessionStorageItem = key => {
 
 let setSessionStorageItem = (~key, ~value) => {
   try {
-    WebAPI.Storage.setItem(window.sessionStorage, ~key, ~value)
+    Storage.setItem(sessionStorage, ~key, ~value)
   } catch {
   | JsExn(_) => ()
   }
@@ -127,8 +127,7 @@ module SelectionOption = {
 }
 
 module ToggleSelection = {
-  @react.component
-  let make = (
+  let render = (
     ~onChange: 'a => unit,
     ~values: array<'a>,
     ~toLabel: 'a => string,
@@ -445,10 +444,7 @@ module ResultPane = {
 module WarningFlagsWidget = {
   // Inspired by MUI (who got inspired by WAI best practise examples)
   // https://github.com/mui-org/material-ui/blob/next/packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js#L327
-  let scrollToElement = (
-    ~parent: WebAPI.DOMAPI.htmlElement,
-    element: WebAPI.DOMAPI.htmlElement,
-  ): unit =>
+  let scrollToElement = (~parent: DomTypes.htmlElement, element: DomTypes.htmlElement): unit =>
     if parent.scrollHeight > parent.clientHeight {
       let scrollBottom = parent.clientHeight + Float.toInt(parent.scrollTop)
       let elementBottom = element.offsetTop + element.offsetHeight
@@ -608,11 +604,9 @@ module WarningFlagsWidget = {
     // Used for the text input
     let inputRef = React.useRef(Nullable.null)
 
-    let focusInput = () =>
-      inputRef.current->Nullable.forEach(el => WebAPI.HTMLInputElement.focus(el))
+    let focusInput = () => inputRef.current->Nullable.forEach(el => HTMLInputElement.focus(el))
 
-    let blurInput = () =>
-      inputRef.current->Nullable.forEach(el => WebAPI.HTMLInputElement.focus(el))
+    let blurInput = () => inputRef.current->Nullable.forEach(el => HTMLInputElement.focus(el))
 
     let chips = Array.mapWithIndex(flags, (token, i) => {
       let {WarningFlagDescription.Parser.flag: flag, enabled} = token
@@ -781,7 +775,7 @@ module WarningFlagsWidget = {
 
               switch (parent, el) {
               | (Some(parent), Some(el)) =>
-                Some(() => scrollToElement(~parent, (Obj.magic(el): WebAPI.DOMAPI.htmlElement)))
+                Some(() => scrollToElement(~parent, (Obj.magic(el): DomTypes.htmlElement)))
               | _ => None
               }
             })->Some
@@ -1083,57 +1077,57 @@ module Settings = {
       {if availableTargetLangs->Array.length > 1 {
         <div className="mt-6">
           <div className=titleClass> {React.string("Syntax")} </div>
-          <ToggleSelection
-            values=availableTargetLangs
-            toLabel={lang => lang->Api.Lang.toExt->String.toUpperCase}
-            selected=readyState.targetLang
-            onChange=onTargetLangSelect
-          />
+          {ToggleSelection.render(
+            ~values=availableTargetLangs,
+            ~toLabel=lang => lang->Api.Lang.toExt->String.toUpperCase,
+            ~selected=readyState.targetLang,
+            ~onChange=onTargetLangSelect,
+          )}
         </div>
       } else {
         React.null
       }}
       <div className="mt-6">
         <div className=titleClass> {React.string("Use Vim Keymap")} </div>
-        <ToggleSelection
-          values=[CodeMirror.KeyMap.Default, CodeMirror.KeyMap.Vim]
-          toLabel={enabled =>
+        {ToggleSelection.render(
+          ~values=[CodeMirror.KeyMap.Default, CodeMirror.KeyMap.Vim],
+          ~toLabel=enabled =>
             switch enabled {
             | CodeMirror.KeyMap.Vim => "On"
             | CodeMirror.KeyMap.Default => "Off"
-            }}
-          selected=keyMap
-          onChange={value => setKeyMap(_ => value)}
-        />
+            },
+          ~selected=keyMap,
+          ~onChange=value => setKeyMap(_ => value),
+        )}
       </div>
       <div className="mt-6">
         <div className=titleClass> {React.string("Module-System")} </div>
-        <ToggleSelection
-          values=["commonjs", "esmodule"]
-          toLabel={value => value}
-          selected=config.moduleSystem
-          onChange=onModuleSystemUpdate
-        />
+        {ToggleSelection.render(
+          ~values=["commonjs", "esmodule"],
+          ~toLabel=value => value,
+          ~selected=config.moduleSystem,
+          ~onChange=onModuleSystemUpdate,
+        )}
       </div>
       <div className="mt-6">
         <div className=titleClass> {React.string("Playground Theme")} </div>
-        <ToggleSelection
-          values=[CodeMirror.Theme.Dark, CodeMirror.Theme.Light]
-          toLabel=themeLabel
-          selected=theme
-          onChange={value => setTheme(_ => value)}
-        />
+        {ToggleSelection.render(
+          ~values=[CodeMirror.Theme.Dark, CodeMirror.Theme.Light],
+          ~toLabel=themeLabel,
+          ~selected=theme,
+          ~onChange=value => setTheme(_ => value),
+        )}
       </div>
       {readyState.selected.apiVersion->RescriptCompilerApi.Version.isMinimumVersion(V6)
         ? <>
             <div className="mt-6">
               <div className=titleClass> {React.string("JSX")} </div>
-              <ToggleSelection
-                values=[JsxCompilation.Plain, PreserveJsx]
-                toLabel=JsxCompilation.getLabel
-                selected={config.jsxPreserveMode->Option.getOr(false)->JsxCompilation.fromBool}
-                onChange=onJsxPreserveModeUpdate
-              />
+              {ToggleSelection.render(
+                ~values=[JsxCompilation.Plain, PreserveJsx],
+                ~toLabel=JsxCompilation.getLabel,
+                ~selected=config.jsxPreserveMode->Option.getOr(false)->JsxCompilation.fromBool,
+                ~onChange=onJsxPreserveModeUpdate,
+              )}
             </div>
             <div className="mt-6">
               <div className=titleClass> {React.string("Experimental Features")} </div>
@@ -1168,7 +1162,8 @@ module Settings = {
         <div className=titleClass>
           {React.string("Warning Flags")}
           <button
-            onClick=onWarningFlagsResetClick className={"ml-6 text-12 " ++ Text.Link.standalone}
+            onClick=onWarningFlagsResetClick
+            className={"ml-6 text-12 " ++ TextStyles.Link.standalone}
           >
             {React.string("[reset]")}
           </button>
@@ -1235,7 +1230,7 @@ module ControlPanel = {
 
       let onClick = evt => {
         ReactEvent.Mouse.preventDefault(evt)
-        let ret = copyToClipboard(window.location.href)
+        let ret = copyToClipboard(location.href)
         if ret {
           setState(_ => CopySuccess)
         }
@@ -1258,7 +1253,7 @@ module ControlPanel = {
   }
 
   let commandWithKeyboardShortcut = (commandName, ~key) => {
-    let userAgent = window.navigator.userAgent
+    let userAgent = navigator->Navigator.userAgent
     if userAgent->String.includes("iPhone") || userAgent->String.includes("Android") {
       commandName
     } else if userAgent->String.includes("Mac") {
@@ -1301,8 +1296,8 @@ module ControlPanel = {
           }
         }
 
-        WebAPI.Window.addEventListener(window, Keydown, onKeyDown)
-        Some(() => WebAPI.Window.removeEventListener(window, Keydown, onKeyDown))
+        Window.addEventListener(window, Keydown, onKeyDown)
+        Some(() => Window.removeEventListener(window, Keydown, onKeyDown))
       | _ => None
       }
     }, (state, dispatch, setCurrentTab))
@@ -1687,11 +1682,11 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   | [v] => Some(v) // only single version available. maybe local dev.
   | versions => {
       let lastStableVersion = versions->Array.find(version => version.preRelease->Option.isNone)
-      switch Nullable.make(
-        searchParams->WebAPI.URLSearchParams.get((CompilerManagerHook.Version :> string)),
-      ) {
-      | Nullable.Value(version) => version->Semver.parse
-      | _ =>
+      switch searchParams
+      ->URLSearchParams.get((CompilerManagerHook.Version :> string))
+      ->Null.toOption {
+      | Some(version) => version->Semver.parse
+      | None =>
         switch getLocalStorageItem(playgroundVersionStorageKey) {
         | Some(v) => v->Semver.parse
         | None => lastStableVersion
@@ -1700,33 +1695,28 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     }
   }
 
-  let initialLang = switch Nullable.make(
-    searchParams->WebAPI.URLSearchParams.get((CompilerManagerHook.Ext :> string)),
-  ) {
-  | Nullable.Value("re") => Api.Lang.Reason
+  let initialLang = switch searchParams
+  ->URLSearchParams.get((CompilerManagerHook.Ext :> string))
+  ->Null.toOption {
+  | Some("re") => Api.Lang.Reason
   | _ => Api.Lang.Res
   }
 
-  let initialModuleSystem =
-    Nullable.make(searchParams->WebAPI.URLSearchParams.get((Module :> string)))->Nullable.toOption
+  let initialModuleSystem = searchParams->URLSearchParams.get((Module :> string))->Null.toOption
 
-  let initialJsxPreserveMode = !(
-    Nullable.make(
-      searchParams->WebAPI.URLSearchParams.get((JsxPreserve :> string)),
-    )->Nullable.isNullable
-  )
+  let initialJsxPreserveMode =
+    searchParams->URLSearchParams.get((JsxPreserve :> string))->Null.toOption->Option.isSome
 
   let initialExperimentalFeatures =
-    Nullable.make(
-      searchParams->WebAPI.URLSearchParams.get((Experiments :> string)),
-    )->Nullable.mapOr([], str => str->String.split(",")->Array.map(String.trim))
+    searchParams
+    ->URLSearchParams.get((Experiments :> string))
+    ->Null.mapOr([], str => str->String.split(",")->Array.map(String.trim))
 
   let initialContent = switch (
-    Nullable.make(searchParams->WebAPI.URLSearchParams.get((Code :> string))),
+    searchParams->URLSearchParams.get((Code :> string))->Null.toOption,
     initialLang,
   ) {
-  | (Nullable.Value(compressedCode), _) =>
-    LzString.lzString.decompressFromEncodedURIComponent(compressedCode)
+  | (Some(compressedCode), _) => LzString.lzString.decompressFromEncodedURIComponent(compressedCode)
   | (_, Reason) => initialReContent
   | (_, Res) =>
     switch initialVersion {
@@ -1942,7 +1932,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   let (layout, setLayout) = React.useState(() => Row)
 
   React.useEffect(() => {
-    setLayout(_ => window.innerWidth < breakingPoint ? Column : Row)
+    setLayout(_ => innerWidth < breakingPoint ? Column : Row)
     None
   }, [])
 
@@ -1956,12 +1946,12 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   let subPanelRef = React.useRef(Nullable.null)
 
   let onResize = () => {
-    let newLayout = window.innerWidth < breakingPoint ? Column : Row
+    let newLayout = innerWidth < breakingPoint ? Column : Row
     setLayout(_ => newLayout)
     switch panelRef.current->Nullable.toOption {
     | Some(element) =>
-      let offsetTop = WebAPI.Element.getBoundingClientRect(element).top
-      WebAPI.Element.setAttribute(
+      let offsetTop = Element.getBoundingClientRect(element).top
+      Element.setAttribute(
         element,
         ~qualifiedName="style",
         ~value=`height: calc(100vh - ${offsetTop->Float.toString}px)`,
@@ -1971,8 +1961,8 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
 
     switch subPanelRef.current->Nullable.toOption {
     | Some(element) =>
-      let offsetTop = WebAPI.Element.getBoundingClientRect(element).top
-      WebAPI.Element.setAttribute(
+      let offsetTop = Element.getBoundingClientRect(element).top
+      Element.setAttribute(
         element,
         ~qualifiedName="style",
         ~value=`height: calc(100vh - ${offsetTop->Float.toString}px)`,
@@ -1982,8 +1972,8 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   }
 
   React.useEffect(() => {
-    WebAPI.Window.addEventListener(window, Resize, onResize)
-    Some(() => WebAPI.Window.removeEventListener(window, Resize, onResize))
+    Window.addEventListener(window, Resize, onResize)
+    Some(() => Window.removeEventListener(window, Resize, onResize))
   }, [])
 
   // To force CodeMirror render scrollbar on first render
@@ -2006,11 +1996,11 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
           subPanelRef.current->Nullable.toOption,
         ) {
         | (Some(panelElement), Some(leftElement), Some(rightElement), Some(subElement)) =>
-          let rectPanel = WebAPI.Element.getBoundingClientRect(panelElement)
+          let rectPanel = Element.getBoundingClientRect(panelElement)
 
           // Update OutputPanel height
-          let offsetTop = WebAPI.Element.getBoundingClientRect(subElement).top
-          WebAPI.Element.setAttribute(
+          let offsetTop = Element.getBoundingClientRect(subElement).top
+          Element.setAttribute(
             subElement,
             ~qualifiedName="style",
             ~value=`height: calc(100vh - ${offsetTop->Float.toString}px)`,
@@ -2023,12 +2013,12 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
             let leftWidth = delta /. rectPanel.width *. 100.0
             let rightWidth = (rectPanel.width -. delta) /. rectPanel.width *. 100.0
 
-            WebAPI.Element.setAttribute(
+            Element.setAttribute(
               leftElement,
               ~qualifiedName="style",
               ~value=`width: ${leftWidth->Float.toString}%`,
             )
-            WebAPI.Element.setAttribute(
+            Element.setAttribute(
               rightElement,
               ~qualifiedName="style",
               ~value=`width: ${rightWidth->Float.toString}%`,
@@ -2040,12 +2030,12 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
             let topHeight = delta /. rectPanel.height *. 100.
             let bottomHeight = (rectPanel.height -. delta) /. rectPanel.height *. 100.
 
-            WebAPI.Element.setAttribute(
+            Element.setAttribute(
               leftElement,
               ~qualifiedName="style",
               ~value=`height: ${topHeight->Float.toString}%`,
             )
-            WebAPI.Element.setAttribute(
+            Element.setAttribute(
               rightElement,
               ~qualifiedName="style",
               ~value=`height: ${bottomHeight->Float.toString}%`,
@@ -2068,15 +2058,15 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
       onMove(position)
     }
 
-    WebAPI.Window.addEventListener(window, Mousemove, onMouseMove)
-    WebAPI.Window.addEventListener(window, Touchmove, onTouchMove)
-    WebAPI.Window.addEventListener(window, Mouseup, onMouseUp)
+    Window.addEventListener(window, Mousemove, onMouseMove)
+    Window.addEventListener(window, Touchmove, onTouchMove)
+    Window.addEventListener(window, Mouseup, onMouseUp)
 
     Some(
       () => {
-        WebAPI.Window.removeEventListener(window, Mousemove, onMouseMove)
-        WebAPI.Window.removeEventListener(window, Touchmove, onTouchMove)
-        WebAPI.Window.removeEventListener(window, Mouseup, onMouseUp)
+        Window.removeEventListener(window, Mousemove, onMouseMove)
+        Window.removeEventListener(window, Touchmove, onTouchMove)
+        Window.removeEventListener(window, Mouseup, onMouseUp)
       },
     )
   }, [layout])
@@ -2085,11 +2075,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
 
   let hideNewLightModeToast = () => {
     setShowNewLightModeToast(_ => false)
-    WebAPI.Storage.setItem(
-      window.sessionStorage,
-      ~key=newLightModeToastSeenStorageKey,
-      ~value="true",
-    )
+    Storage.setItem(sessionStorage, ~key=newLightModeToastSeenStorageKey, ~value="true")
   }
 
   let tryLightModeFromToast = () => {

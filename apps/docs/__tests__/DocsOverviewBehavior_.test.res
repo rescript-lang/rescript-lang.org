@@ -12,7 +12,7 @@ test("docs overview uses unversioned docs links", async () => {
     </MemoryRouter>,
   )
 
-  let overviewLink = switch document->WebAPI.Document.querySelector(
+  let overviewLink = switch document->Document.querySelector(
     "a[href='/docs/manual/introduction']",
   ) {
   | Value(link) => link
@@ -20,7 +20,7 @@ test("docs overview uses unversioned docs links", async () => {
   }
   await element(overviewLink)->toBeVisible
 
-  let genTypeLink = switch document->WebAPI.Document.querySelector(
+  let genTypeLink = switch document->Document.querySelector(
     "a[href='/docs/manual/typescript-integration']",
   ) {
   | Value(link) => link
@@ -28,7 +28,7 @@ test("docs overview uses unversioned docs links", async () => {
   }
   await element(genTypeLink)->toBeVisible
 
-  switch document->WebAPI.Document.querySelector("a[href*='/docs/manual/v']") {
+  switch document->Document.querySelector("a[href*='/docs/manual/v']") {
   | Value(_) => failwith("expected docs overview to avoid versioned manual links")
   | Null => ()
   }

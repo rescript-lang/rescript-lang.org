@@ -1,0 +1,117 @@
+diff --git a/rescript.json b/rescript.json
+index 599e1f6777dcf8806780daba11ad6745d088aced..1ed044b3005d9941b62ae4ba0c1f339dded4ef03 100644
+--- a/rescript.json
++++ b/rescript.json
+@@ -7,6 +7,6 @@
+   "sources": [{ "dir": "src", "subdirs": true }],
+   "package-specs": [{ "module": "commonjs", "in-source": true }],
+   "suffix": ".bs.js",
+-  "bs-dev-dependencies": [],
+-  "bsc-flags": []
++  "dev-dependencies": [],
++  "compiler-flags": []
+ }
+diff --git a/src/React.res b/src/React.res
+index 4eb876a264c10e0b0f08f97162386ddebf798cd9..0e5f16c887056ff2d162028577656349cab1a4a4 100644
+--- a/src/React.res
++++ b/src/React.res
+@@ -47,7 +47,7 @@ type fragmentProps = {children?: element}
+ type ref<'value> = {mutable current: 'value}
+ 
+ @module("react")
+-external createRef: unit => ref<Js.nullable<'a>> = "createRef"
++external createRef: unit => ref<Nullable.t<'a>> = "createRef"
+ 
+ module Children = {
+   @module("react") @scope("Children")
+@@ -82,7 +82,7 @@ module Context = {
+ external createContext: 'a => Context.t<'a> = "createContext"
+ 
+ @module("react")
+-external forwardRef: (('props, Js.Nullable.t<ref<'a>>) => element) => component<'props> =
++external forwardRef: (('props, Nullable.t<ref<'a>>) => element) => component<'props> =
+   "forwardRef"
+ 
+ @module("react")
+@@ -257,56 +257,56 @@ external usePromise: promise<'a> => 'a = "use"
+ @module("react") external useRef: 'value => ref<'value> = "useRef"
+ 
+ @module("react")
+-external useImperativeHandleOnEveryRender: (Js.Nullable.t<ref<'value>>, unit => 'value) => unit =
++external useImperativeHandleOnEveryRender: (Nullable.t<ref<'value>>, unit => 'value) => unit =
+   "useImperativeHandle"
+ 
+ @module("react")
+-external useImperativeHandle: (Js.Nullable.t<ref<'value>>, unit => 'value, 'deps) => unit =
++external useImperativeHandle: (Nullable.t<ref<'value>>, unit => 'value, 'deps) => unit =
+   "useImperativeHandle"
+ 
+ @module("react")
+ external useImperativeHandle0: (
+-  Js.Nullable.t<ref<'value>>,
++  Nullable.t<ref<'value>>,
+   unit => 'value,
+   @as(json`[]`) _,
+ ) => unit = "useImperativeHandle"
+ 
+ @module("react")
+-external useImperativeHandle1: (Js.Nullable.t<ref<'value>>, unit => 'value, array<'a>) => unit =
++external useImperativeHandle1: (Nullable.t<ref<'value>>, unit => 'value, array<'a>) => unit =
+   "useImperativeHandle"
+ 
+ @module("react")
+-external useImperativeHandle2: (Js.Nullable.t<ref<'value>>, unit => 'value, ('a, 'b)) => unit =
++external useImperativeHandle2: (Nullable.t<ref<'value>>, unit => 'value, ('a, 'b)) => unit =
+   "useImperativeHandle"
+ 
+ @module("react")
+-external useImperativeHandle3: (Js.Nullable.t<ref<'value>>, unit => 'value, ('a, 'b, 'c)) => unit =
++external useImperativeHandle3: (Nullable.t<ref<'value>>, unit => 'value, ('a, 'b, 'c)) => unit =
+   "useImperativeHandle"
+ 
+ @module("react")
+ external useImperativeHandle4: (
+-  Js.Nullable.t<ref<'value>>,
++  Nullable.t<ref<'value>>,
+   unit => 'value,
+   ('a, 'b, 'c, 'd),
+ ) => unit = "useImperativeHandle"
+ 
+ @module("react")
+ external useImperativeHandle5: (
+-  Js.Nullable.t<ref<'value>>,
++  Nullable.t<ref<'value>>,
+   unit => 'value,
+   ('a, 'b, 'c, 'd, 'e),
+ ) => unit = "useImperativeHandle"
+ 
+ @module("react")
+ external useImperativeHandle6: (
+-  Js.Nullable.t<ref<'value>>,
++  Nullable.t<ref<'value>>,
+   unit => 'value,
+   ('a, 'b, 'c, 'd, 'e, 'f),
+ ) => unit = "useImperativeHandle"
+ 
+ @module("react")
+ external useImperativeHandle7: (
+-  Js.Nullable.t<ref<'value>>,
++  Nullable.t<ref<'value>>,
+   unit => 'value,
+   ('a, 'b, 'c, 'd, 'e, 'f, 'g),
+ ) => unit = "useImperativeHandle"
+diff --git a/src/ReactDOM.res b/src/ReactDOM.res
+index fbd564bf4d35eb044eae8b5c7f06b11b4e7358de..c5a9e6381c83ebef9729510ebed67398c17378ea 100644
+--- a/src/ReactDOM.res
++++ b/src/ReactDOM.res
+@@ -82,8 +82,8 @@ type domRef = JsxDOM.domRef
+ 
+ module Ref = {
+   type t = domRef
+-  type currentDomRef = React.ref<Js.nullable<Dom.element>>
+-  type callbackDomRef = Js.nullable<Dom.element> => option<unit => unit>
++  type currentDomRef = React.ref<Nullable.t<Dom.element>>
++  type callbackDomRef = Nullable.t<Dom.element> => option<unit => unit>
+ 
+   external domRef: currentDomRef => domRef = "%identity"
+   external callbackDomRef: callbackDomRef => domRef = "%identity"

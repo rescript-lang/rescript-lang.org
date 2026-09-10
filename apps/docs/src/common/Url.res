@@ -33,7 +33,7 @@ type storageKey =
 
 let getVersionFromStorage = (key: storageKey) => {
   try {
-    WebAPI.Storage.getItem(window.localStorage, (key :> string))->Null.toOption
+    Storage.getItem(localStorage, (key :> string))->Null.toOption
   } catch {
   | JsExn(_) => None
   }

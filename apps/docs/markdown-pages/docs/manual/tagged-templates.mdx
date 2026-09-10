@@ -18,13 +18,14 @@ to learn more about them.
 
 ## Define a tag function
 
-Tag functions in ReScript have the following signature:
+Tagged template values in ReScript have the following type:
 
 ```res sig
-let myTagFunction : (array<string>, array<'param>) => 'output
+let myTagFunction: taggedTemplate<'param, 'output>
 ```
 
 As you can see, you can have any type you want both for the placeholder array and for the output.
+Use `TaggedTemplate.make` to create a tagged template value from a ReScript function.
 
 Given how string interpolation works, you'll always have the following invariant:
 
@@ -44,7 +45,7 @@ type params =
   | S(string)
   | Bool(bool)
 
-let s = (strings, parameters) => {
+let s = TaggedTemplate.make((strings, parameters) => {
   let text = Array.reduceWithIndex(parameters, Array.getUnsafe(strings, 0), (
     acc,
     param,
@@ -61,35 +62,32 @@ let s = (strings, parameters) => {
     acc ++ p ++ s
   })
   React.string(text)
-}
+})
 ```
 
 ```js
-import * as Core__Array from "./stdlib/core__Array.js";
+import * as Stdlib_Array from "@rescript/runtime/lib/es6/Stdlib_Array.mjs";
+import * as Stdlib_TaggedTemplate from "@rescript/runtime/lib/es6/Stdlib_TaggedTemplate.mjs";
 
-function s(strings, parameters) {
-  return Core__Array.reduceWithIndex(
-    parameters,
-    strings[0],
-    function (acc, param, i) {
-      var s = strings[(i + 1) | 0];
-      var p;
-      switch (param.TAG) {
-        case "I":
-        case "F":
-          p = param._0.toString();
-          break;
-        case "S":
-          p = param._0;
-          break;
-        case "Bool":
-          p = param._0 ? "true" : "false";
-          break;
-      }
-      return acc + p + s;
-    },
-  );
-}
+let s = Stdlib_TaggedTemplate.make((strings, parameters) =>
+  Stdlib_Array.reduceWithIndex(parameters, strings[0], (acc, param, i) => {
+    let s = strings[(i + 1) | 0];
+    let p;
+    switch (param.TAG) {
+      case "I":
+      case "F":
+        p = param._0.toString();
+        break;
+      case "S":
+        p = param._0;
+        break;
+      case "Bool":
+        p = param._0 ? "true" : "false";
+        break;
+    }
+    return acc + p + s;
+  }),
+);
 ```
 
 </CodeTab>
@@ -110,48 +108,39 @@ module Greetings = {
 ```
 
 ```js
-import * as Stdlib_Array from "@rescript/runtime/lib/es6/Stdlib_Array.js";
+import * as Stdlib_Array from "@rescript/runtime/lib/es6/Stdlib_Array.mjs";
 import * as JsxRuntime from "react/jsx-runtime";
+import * as Stdlib_TaggedTemplate from "@rescript/runtime/lib/es6/Stdlib_TaggedTemplate.mjs";
 
-function s(strings, parameters) {
-  return Stdlib_Array.reduceWithIndex(
-    parameters,
-    strings[0],
-    (acc, param, i) => {
-      let s = strings[(i + 1) | 0];
-      let p;
-      switch (param.TAG) {
-        case "I":
-        case "F":
-          p = param._0.toString();
-          break;
-        case "S":
-          p = param._0;
-          break;
-        case "Bool":
-          p = param._0 ? "true" : "false";
-          break;
-      }
-      return acc + p + s;
-    },
-  );
-}
+let s = Stdlib_TaggedTemplate.make((strings, parameters) =>
+  Stdlib_Array.reduceWithIndex(parameters, strings[0], (acc, param, i) => {
+    let s = strings[(i + 1) | 0];
+    let p;
+    switch (param.TAG) {
+      case "I":
+      case "F":
+        p = param._0.toString();
+        break;
+      case "S":
+        p = param._0;
+        break;
+      case "Bool":
+        p = param._0 ? "true" : "false";
+        break;
+    }
+    return acc + p + s;
+  }),
+);
 
 function Example$Greetings(props) {
   return JsxRuntime.jsx("div", {
-    children: s(
-      [`hello `, ` you're `, ` year old!`],
-      [
-        {
-          TAG: "S",
-          _0: props.name,
-        },
-        {
-          TAG: "I",
-          _0: props.age,
-        },
-      ],
-    ),
+    children: s`hello ${{
+      TAG: "S",
+      _0: props.name,
+    }} you're ${{
+      TAG: "I",
+      _0: props.age,
+    }} year old!`,
   });
 }
 
@@ -163,49 +152,40 @@ export { s, Greetings };
 ```
 
 ```jsx
-import * as Stdlib_Array from "@rescript/runtime/lib/es6/Stdlib_Array.js";
+import * as Stdlib_Array from "@rescript/runtime/lib/es6/Stdlib_Array.mjs";
 import * as JsxRuntime from "react/jsx-runtime";
+import * as Stdlib_TaggedTemplate from "@rescript/runtime/lib/es6/Stdlib_TaggedTemplate.mjs";
 
-function s(strings, parameters) {
-  return Stdlib_Array.reduceWithIndex(
-    parameters,
-    strings[0],
-    (acc, param, i) => {
-      let s = strings[(i + 1) | 0];
-      let p;
-      switch (param.TAG) {
-        case "I":
-        case "F":
-          p = param._0.toString();
-          break;
-        case "S":
-          p = param._0;
-          break;
-        case "Bool":
-          p = param._0 ? "true" : "false";
-          break;
-      }
-      return acc + p + s;
-    },
-  );
-}
+let s = Stdlib_TaggedTemplate.make((strings, parameters) =>
+  Stdlib_Array.reduceWithIndex(parameters, strings[0], (acc, param, i) => {
+    let s = strings[(i + 1) | 0];
+    let p;
+    switch (param.TAG) {
+      case "I":
+      case "F":
+        p = param._0.toString();
+        break;
+      case "S":
+        p = param._0;
+        break;
+      case "Bool":
+        p = param._0 ? "true" : "false";
+        break;
+    }
+    return acc + p + s;
+  }),
+);
 
 function Example$Greetings(props) {
   return (
     <div>
-      {s(
-        [`hello `, ` you're `, ` year old!`],
-        [
-          {
-            TAG: "S",
-            _0: props.name,
-          },
-          {
-            TAG: "I",
-            _0: props.age,
-          },
-        ],
-      )}
+      {s`hello ${{
+        TAG: "S",
+        _0: props.name,
+      }} you're ${{
+        TAG: "I",
+        _0: props.age,
+      }} year old!`}
     </div>
   );
 }

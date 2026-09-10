@@ -1,9 +1,9 @@
 open Vitest
 
 let getMetaContent = name => {
-  switch document->WebAPI.Document.querySelector(`meta[name='${name}']`) {
+  switch document->Document.querySelector(`meta[name='${name}']`) {
   | Value(element) =>
-    switch element->WebAPI.Element.getAttribute("content") {
+    switch element->Element.getAttribute("content") {
     | Value(content) => content
     | Null => failwith(`expected ${name} meta tag to have content`)
     }
@@ -12,9 +12,9 @@ let getMetaContent = name => {
 }
 
 let getMetaPropertyContent = property => {
-  switch document->WebAPI.Document.querySelector(`meta[property='${property}']`) {
+  switch document->Document.querySelector(`meta[property='${property}']`) {
   | Value(element) =>
-    switch element->WebAPI.Element.getAttribute("content") {
+    switch element->Element.getAttribute("content") {
     | Value(content) => content
     | Null => failwith(`expected ${property} meta tag to have content`)
     }

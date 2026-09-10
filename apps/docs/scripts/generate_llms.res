@@ -1,13 +1,13 @@
 let readMarkdownFile = (filePath: string): string => {
-  let fileContent = Node.Fs.readFileSync2(filePath, "utf8")
+  let fileContent = NodeJs.Fs.readFileSync2(filePath, "utf8")
   fileContent
 }
 
 let rec collectFiles = (dirPath: string): array<string> => {
-  let entries = Node.Fs.readdirSync(dirPath)
+  let entries = NodeJs.Fs.readdirSync(dirPath)
   entries->Array.reduce([], (acc, entry) => {
-    let fullPath = Node.Path.join([dirPath, entry])
-    let stats = Node.Fs.statSync(fullPath)
+    let fullPath = NodeJs.Path.join([dirPath, entry])
+    let stats = NodeJs.Fs.statSync(fullPath)
     switch stats["isDirectory"]() {
     | true => acc->Array.concat(collectFiles(fullPath))
     | false => {
@@ -19,32 +19,32 @@ let rec collectFiles = (dirPath: string): array<string> => {
 }
 
 let clearFile = (filePath: string): unit => {
-  Node.Fs.writeFileSync(filePath, "")
+  NodeJs.Fs.writeFileSync(filePath, "")
 }
 
 let removeFileIfExists = (filePath: string): unit => {
-  if Node.Fs.existsSync(filePath) {
-    Node.Fs.unlinkSync(filePath)
+  if NodeJs.Fs.existsSync(filePath) {
+    NodeJs.Fs.unlinkSync(filePath)
   }
 }
 
 let writeTextFile = (filePath: string, content: string): unit => {
-  Node.Fs.writeFileSync(filePath, content, ~encoding="utf8")
+  NodeJs.Fs.writeFileSync(filePath, content, ~encoding="utf8")
 }
 
 let removeLlmsTextFiles = (~llmsDirectory: string): unit => {
-  removeFileIfExists(llmsDirectory->Node.Path.join2("llms.txt"))
-  removeFileIfExists(llmsDirectory->Node.Path.join2("llm-full.txt"))
-  removeFileIfExists(llmsDirectory->Node.Path.join2("llm-small.txt"))
+  removeFileIfExists(llmsDirectory->NodeJs.Path.join2("llms.txt"))
+  removeFileIfExists(llmsDirectory->NodeJs.Path.join2("llm-full.txt"))
+  removeFileIfExists(llmsDirectory->NodeJs.Path.join2("llm-small.txt"))
 }
 
 let rec createDirectoryIfNotExists = (dirPath: string): unit => {
-  if !Node.Fs.existsSync(dirPath) {
-    let parentPath = Node.Path.dirname(dirPath)
+  if !NodeJs.Fs.existsSync(dirPath) {
+    let parentPath = NodeJs.Path.dirname(dirPath)
     if parentPath !== "" && parentPath !== dirPath {
       createDirectoryIfNotExists(parentPath)
     }
-    Node.Fs.mkdirSync(dirPath)
+    NodeJs.Fs.mkdirSync(dirPath)
   }
 }
 
@@ -96,7 +96,7 @@ let readMdxDocument = (filePath: string): mdxDocument => {
   let {frontmatter}: MarkdownParser.result = rawContent->MarkdownParser.parseSync
   {
     title: frontmatter->getFrontmatterString("title"),
-    slug: filePath->Node.Path.basename->String.replace(".mdx", ""),
+    slug: filePath->NodeJs.Path.basename->String.replace(".mdx", ""),
     section: frontmatter->getFrontmatterString("section"),
     order: frontmatter->getFrontmatterNumber("order"),
     content: rawContent->removeFrontmatter->String.trim,
@@ -117,7 +117,7 @@ let compareMdxDocuments = (a: mdxDocument, b: mdxDocument): float => {
 }
 
 let sectionLlmFilePath = (~llmsDirectory: string, sectionFile: sectionLlmFile): string =>
-  llmsDirectory->Node.Path.join2(sectionFile.slug)->Node.Path.join2("llm.txt")
+  llmsDirectory->NodeJs.Path.join2(sectionFile.slug)->NodeJs.Path.join2("llm.txt")
 
 let createSectionLlmFiles = (
   ~llmsDirectory: string,
@@ -137,7 +137,7 @@ let createSectionLlmFiles = (
       ->String.trim
 
     let filePath = sectionLlmFilePath(~llmsDirectory, sectionFile)
-    createDirectoryIfNotExists(Node.Path.dirname(filePath))
+    createDirectoryIfNotExists(NodeJs.Path.dirname(filePath))
     writeTextFile(
       filePath,
       `# ${sectionFile.title}
@@ -185,7 +185,7 @@ let removeToDos = (content: string): string => {
 }
 
 let createFullFile = (content: string, filePath: string): unit => {
-  Node.Fs.appendFileSync(filePath, content ++ "\n", "utf8")
+  NodeJs.Fs.appendFileSync(filePath, content ++ "\n", "utf8")
 }
 
 let createSmallFile = (content: string, filePath: string): unit => {
@@ -196,7 +196,7 @@ let createSmallFile = (content: string, filePath: string): unit => {
     ->removeToDos
     ->removeCodeBlocks
     ->removeUnnecessaryBreaks
-  Node.Fs.appendFileSync(filePath, smallContent, "utf8")
+  NodeJs.Fs.appendFileSync(filePath, smallContent, "utf8")
 }
 
 let replacePlaceholder = (content: string, placeholder: string, value: string): string => {
@@ -224,9 +224,9 @@ let createLlmsFiles = (
   docsDirectory: string,
   llmsDirectory: string,
 ): unit => {
-  let mdxFileTemplatePath = llmsDirectory->Node.Path.join2("template.mdx")
-  let mdxFilePath = docsDirectory->Node.Path.join2("llms.mdx")
-  let txtFileTemplatePath = llmsDirectory->Node.Path.join2("template.txt")
+  let mdxFileTemplatePath = llmsDirectory->NodeJs.Path.join2("template.mdx")
+  let mdxFilePath = docsDirectory->NodeJs.Path.join2("llms.mdx")
+  let txtFileTemplatePath = llmsDirectory->NodeJs.Path.join2("template.txt")
 
   Console.log(txtFilePath)
 
@@ -264,8 +264,8 @@ let generateFile = (
   let smallFileName = "llm-small.txt"
 
   let llmsDir = llmsDirectory
-  let fullFilePath = llmsDir->Node.Path.join2(fullFileName)
-  let smallFilePath = llmsDir->Node.Path.join2(smallFileName)
+  let fullFilePath = llmsDir->NodeJs.Path.join2(fullFileName)
+  let smallFilePath = llmsDir->NodeJs.Path.join2(smallFileName)
 
   createDirectoryIfNotExists(llmsDir)
   clearFile(fullFilePath)
@@ -277,7 +277,7 @@ let generateFile = (
   }
 
   staleVersions->Array.forEach(version => {
-    let versionedLlmsDirectory = llmsDirectory->Node.Path.join2(version)
+    let versionedLlmsDirectory = llmsDirectory->NodeJs.Path.join2(version)
     removeLlmsTextFiles(~llmsDirectory=versionedLlmsDirectory)
     removeSectionLlmFiles(~llmsDirectory=versionedLlmsDirectory, ~sectionFiles)
   })
@@ -366,7 +366,7 @@ generateFile(
   ~currentVersion=currentReactVersion,
   ~rescriptReactVersion=currentReactVersion,
   ~reactVersion=currentReactRuntimeVersion,
-  ~txtFilePath=reactLlmsDirectory->Node.Path.join2("llms.txt"),
+  ~txtFilePath=reactLlmsDirectory->NodeJs.Path.join2("llms.txt"),
   ~staleVersions=["latest", currentReactVersion],
   reactDocsDirectory,
   reactLlmsDirectory,

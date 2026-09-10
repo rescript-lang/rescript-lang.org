@@ -22,7 +22,6 @@ let make = (~children, ~categories, ~entries) => {
         toggle={() => setSidebarOpen(prev => !prev)}
         activeToc={title: "Overview", entries}
       />}
-      sidebarState=(isSidebarOpen, setSidebarOpen)
       docSearchLvl0="Community"
     >
       children

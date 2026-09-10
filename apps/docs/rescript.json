@@ -7,7 +7,7 @@
     "@rescript/react",
     "@rescript/webapi"
   ],
-  "compiler-flags": ["-open WebAPI.Global"],
+  "compiler-flags": ["-open DomGlobal"],
   "sources": [
     {
       "dir": "__tests__",
@@ -45,8 +45,7 @@
     "error": "+8"
   },
   "gentypeconfig": {
-    "language": "untyped",
     "shims": [],
-    "module": "es6"
+    "module": "esmodule"
   }
 }

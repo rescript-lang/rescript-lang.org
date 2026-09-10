@@ -9,4 +9,4 @@ type props = {
   frontmatter: BlogFrontmatter.t,
 }
 
-let make: props => React.element
+let make: React.component<props>

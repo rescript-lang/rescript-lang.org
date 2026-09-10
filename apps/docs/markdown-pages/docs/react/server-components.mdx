@@ -296,7 +296,7 @@ export { ClientComp, data, getData, make$1 as make };
 @@directive("'use client'")
 
 @react.component
-let make = (~submit) => <button> {React.string("yow from client")} </button>
+let make = (~submit: unit => unit) => <button> {React.string("yow from client")} </button>
 ```
 
 ```js
