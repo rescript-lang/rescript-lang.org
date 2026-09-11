@@ -48,6 +48,6 @@
     "vitest-browser-react": "^2.2.0"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=26"
   }
 }
