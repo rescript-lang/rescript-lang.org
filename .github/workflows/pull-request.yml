@@ -11,6 +11,8 @@ jobs:
         with:
           node-version-file: ".node-version"
           cache: yarn
+      - name: Install Corepack
+        run: npm install --global corepack
       - name: Enable Corepack
         run: corepack enable
       - name: Install dependencies
@@ -27,6 +29,8 @@ jobs:
         with:
           node-version-file: ".node-version"
           cache: yarn
+      - name: Install Corepack
+        run: npm install --global corepack
       - name: Enable Corepack
         run: corepack enable
       - name: Install dependencies
@@ -46,6 +50,8 @@ jobs:
         with:
           node-version-file: ".node-version"
           cache: yarn
+      - name: Install Corepack
+        run: npm install --global corepack
       - name: Enable Corepack
         run: corepack enable
       - name: Install dependencies
@@ -67,6 +73,8 @@ jobs:
         with:
           node-version-file: ".node-version"
           cache: yarn
+      - name: Install Corepack
+        run: npm install --global corepack
       - name: Enable Corepack
         run: corepack enable
       - name: Install dependencies

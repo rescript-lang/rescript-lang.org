@@ -19,13 +19,13 @@ Route modules live in `app/routes/`, shared ReScript UI code lives in `src/`, an
 ## System Requirements
 
 - `node@26` or higher
-- `corepack` enabled
 
 This repository uses `yarn@4.13.0` via Corepack.
 
 ## Setup
 
 ```sh
+npm install --global corepack
 corepack enable
 yarn install
 yarn dev
