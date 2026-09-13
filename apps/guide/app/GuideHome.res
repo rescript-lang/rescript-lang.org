@@ -92,7 +92,17 @@ let make = (
       />
       <section className="guide-workspace" ariaLabel="Guide workspace">
         <div className="guide-editor-panel">
-          <div className="guide-label"> {React.string("Editor")} </div>
+          <div className="guide-editor-header">
+            <div className="guide-label"> {React.string("Editor")} </div>
+            <button
+              ariaLabel="Reset exercise code"
+              className="guide-reset-button"
+              onClick={editor.reset}
+              type_="button"
+            >
+              {React.string("Reset")}
+            </button>
+          </div>
           <div
             ariaLabel="Guide code"
             className="guide-editor"
