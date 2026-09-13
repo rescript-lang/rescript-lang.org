@@ -6,15 +6,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
+      - name: Install Corepack
+        run: npm install --global corepack
+      - name: Enable Corepack
+        run: corepack enable
       - name: Setup Node.js environment
         uses: actions/setup-node@v6.3.0
         with:
           node-version-file: ".node-version"
           cache: yarn
-      - name: Install Corepack
-        run: npm install --global corepack
-      - name: Enable Corepack
-        run: corepack enable
       - name: Install dependencies
         run: yarn
       - name: Format check
@@ -24,15 +24,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
+      - name: Install Corepack
+        run: npm install --global corepack
+      - name: Enable Corepack
+        run: corepack enable
       - name: Setup Node.js environment
         uses: actions/setup-node@v6.3.0
         with:
           node-version-file: ".node-version"
           cache: yarn
-      - name: Install Corepack
-        run: npm install --global corepack
-      - name: Enable Corepack
-        run: corepack enable
       - name: Install dependencies
         run: yarn
       - name: Test examples and hrefs
@@ -45,15 +45,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
+      - name: Install Corepack
+        run: npm install --global corepack
+      - name: Enable Corepack
+        run: corepack enable
       - name: Setup Node.js environment
         uses: actions/setup-node@v6.3.0
         with:
           node-version-file: ".node-version"
           cache: yarn
-      - name: Install Corepack
-        run: npm install --global corepack
-      - name: Enable Corepack
-        run: corepack enable
       - name: Install dependencies
         run: yarn
       - name: Build ReScript
@@ -68,15 +68,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
+      - name: Install Corepack
+        run: npm install --global corepack
+      - name: Enable Corepack
+        run: corepack enable
       - name: Setup Node.js environment
         uses: actions/setup-node@v6.3.0
         with:
           node-version-file: ".node-version"
           cache: yarn
-      - name: Install Corepack
-        run: npm install --global corepack
-      - name: Enable Corepack
-        run: corepack enable
       - name: Install dependencies
         run: yarn
       - name: Build ReScript

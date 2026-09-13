@@ -22,15 +22,15 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v6.0.2
+      - name: Install Corepack
+        run: npm install --global corepack
+      - name: Enable Corepack
+        run: corepack enable
       - name: Setup Node.js environment
         uses: actions/setup-node@v6.3.0
         with:
           node-version-file: ".node-version"
           cache: "yarn"
-      - name: Install Corepack
-        run: npm install --global corepack
-      - name: Enable Corepack
-        run: corepack enable
       - name: Install dependencies
         run: yarn install
       - name: Sync playground bundles
@@ -92,15 +92,15 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v6.0.2
+      - name: Install Corepack
+        run: npm install --global corepack
+      - name: Enable Corepack
+        run: corepack enable
       - name: Setup Node.js environment
         uses: actions/setup-node@v6.3.0
         with:
           node-version-file: ".node-version"
           cache: "yarn"
-      - name: Install Corepack
-        run: npm install --global corepack
-      - name: Enable Corepack
-        run: corepack enable
       - name: Install dependencies
         run: yarn install
       - name: Build guide
@@ -146,15 +146,15 @@ jobs:
     if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
       - uses: actions/checkout@v6.0.2
+      - name: Install Corepack
+        run: npm install --global corepack
+      - name: Enable Corepack
+        run: corepack enable
       - name: Setup Node.js environment
         uses: actions/setup-node@v6.3.0
         with:
           node-version-file: ".node-version"
           cache: "yarn"
-      - name: Install Corepack
-        run: npm install --global corepack
-      - name: Enable Corepack
-        run: corepack enable
       - name: Install dependencies
         run: yarn install
       - name: Build ReScript
