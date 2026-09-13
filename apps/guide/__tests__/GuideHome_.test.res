@@ -14,9 +14,9 @@ test("loads saved guide editor code into the editor", async () => {
   GuideLayout.saveExerciseCode(~exerciseId, ~code="let sisko = \"emissary\"")
 
   let screen = await renderGuideHome()
-  let editor = await screen->getByTestId("guide-code-editor")
+  let savedCode = await screen->getByText("let sisko = \"emissary\"")
 
-  await editor->element->toHaveTextContent("let sisko = \"emissary\"")
+  await savedCode->element->toBeVisible
 
   GuideLayout.clearExerciseCode(exerciseId)
 })
@@ -87,9 +87,9 @@ test("shows the first checkpoint as complete when output matches", async () => {
   await viewport(1440, 900)
 
   let screen = await renderGuideHome()
-  let checkpoint = await screen->getByTestId("guide-check-status")
+  let checkpoint = await screen->getByText("Checkpoint complete")
 
-  await checkpoint->element->toHaveTextContent("Checkpoint complete")
+  await checkpoint->element->toBeVisible
 })
 
 test("navigates to the function argument page", async () => {
@@ -106,11 +106,12 @@ test("navigates to the function argument page", async () => {
   await (await screen->getByText("Change the argument passed to greet from ReScript to Spock."))
   ->element
   ->toBeVisible
-  let editor = await screen->getByTestId("guide-code-editor")
-  await editor->element->toHaveTextContent(`let greet = name => "Hello, " ++ name ++ "!"`)
-  await editor->element->toHaveTextContent(`let greeting = greet("ReScript")`)
-  let checkpoint = await screen->getByTestId("guide-check-status")
-  await checkpoint->element->toHaveTextContent("Waiting for matching output")
+  let greetCode = await screen->getByText(`let greet = name => "Hello, " ++ name ++ "!"`)
+  await greetCode->element->toBeVisible
+  let greetingCode = await screen->getByText(`let greeting = greet("ReScript")`)
+  await greetingCode->element->toBeVisible
+  let checkpoint = await screen->getByText("Waiting for matching output")
+  await checkpoint->element->toBeVisible
 
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
 })
@@ -256,11 +257,9 @@ test("renders the first guide MVP exercise and output", async () => {
   ->element
   ->toBeVisible
   await (await screen->getByText("Next"))->element->toBeVisible
-  let editor = await screen->getByTestId("guide-code-editor")
-  await editor->element->toBeVisible
-  await editor->element->toHaveTextContent("let greeting = \"hello, world!\"")
-  let output = await screen->getByTestId("guide-output")
+  let editorCode = await screen->getByText("let greeting = \"hello, world!\"")
+  await editorCode->element->toBeVisible
+  let outputPanel = await screen->getByTestId("guide-output")
+  let output = await outputPanel->getByText("hello, world!")
   await output->element->toBeVisible
-
-  await output->element->toHaveTextContent("hello, world!")
 })
