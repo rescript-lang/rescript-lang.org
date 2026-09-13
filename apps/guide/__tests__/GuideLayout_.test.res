@@ -20,6 +20,11 @@ test("serializes pane sizes as guide CSS variables", async () => {
   expect(style->String.includes("--guide-output-height: 250px"))->toBe(true)
 })
 
+test("uses a browser chrome color for each theme", async () => {
+  expect(GuideLayout.Light->GuideLayout.themeColor)->toBe("#f6f4ef")
+  expect(GuideLayout.Dark->GuideLayout.themeColor)->toBe("#0f172a")
+})
+
 test("stores resized pane dimensions in local storage", async () => {
   GuideLayout.clearPaneSizes()
 
