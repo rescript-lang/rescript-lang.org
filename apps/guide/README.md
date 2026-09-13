@@ -21,23 +21,26 @@ contract only. Lesson copy belongs to the guide author.
 ## Lesson Contract
 
 Every `.mdx` file under `app/lessons/` is discovered recursively and ordered by
-its numeric `position`. The build requires these frontmatter fields:
+its integer `position`. The build requires these frontmatter fields:
 
-| Field                     | Required | Meaning                                                 |
-| ------------------------- | -------- | ------------------------------------------------------- |
-| `position`                | Yes      | Numeric lesson order                                    |
-| `id`                      | Yes      | Stable URL hash and lesson identifier                   |
-| `missionLabel`            | Yes      | Short lesson label                                      |
-| `title`                   | Yes      | Lesson heading                                          |
-| `description`             | Yes      | Lesson summary used by the lesson model                 |
-| `exercise.id`             | Yes      | Stable identifier for saved code and completion         |
-| `exercise.title`          | Yes      | Exercise label                                          |
-| `exercise.initialCode`    | Yes      | Initial editor contents                                 |
-| `exercise.expectedOutput` | No       | Exact runtime output required to unlock the next lesson |
+| Field                     | Required | Meaning                                                |
+| ------------------------- | -------- | ------------------------------------------------------ |
+| `position`                | Yes      | Integer lesson order                                   |
+| `id`                      | Yes      | Stable URL-safe hash and lesson identifier             |
+| `missionLabel`            | Yes      | Short lesson label                                     |
+| `title`                   | Yes      | Lesson heading                                         |
+| `description`             | Yes      | Lesson summary used by the lesson model                |
+| `exercise.id`             | Yes      | Stable identifier for saved code and completion        |
+| `exercise.title`          | Yes      | Exercise label                                         |
+| `exercise.initialCode`    | Yes      | Initial editor contents                                |
+| `exercise.expectedOutput` | No       | Matching runtime log line that unlocks the next lesson |
 
 Lesson and exercise identifiers are durable client-side storage keys. Do not
 rename a published identifier without a migration or an explicit decision to
 discard existing learner progress.
+
+Lesson IDs must be URL-safe slugs made from lowercase ASCII letters, digits,
+and hyphens. Exercise IDs may use the established slash-delimited form.
 
 An exercise without `expectedOutput` is parsed as a manual check, but manual
 checks are not currently completable. Published lessons therefore need a
@@ -48,7 +51,18 @@ deterministic `expectedOutput` until another completion mechanism exists.
 From the repository root:
 
 ```sh
+yarn dev:res
+```
+
+In a second terminal:
+
+```sh
 yarn dev:guide
+```
+
+For a production build and test run:
+
+```sh
 yarn build:guide
 yarn workspace @rescript-lang/guide ci:test
 ```
@@ -104,5 +118,5 @@ Before launch, complete and verify the following:
 
 The `deploy-guide` job in `.github/workflows/deploy.yml` builds the guide and
 deploys it with Wrangler. Pushes to `master` deploy the production Worker;
-pull requests in this repository receive a preview Worker version and a link
-in the pull request.
+non-Dependabot pull requests from this repository receive a preview Worker
+version and a link in the pull request.

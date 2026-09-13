@@ -44,7 +44,7 @@ cover writing or editing lesson content.
       accessible alternative.
 - [ ] Add visible focus styles and announce compiler errors, output changes,
       and checkpoint state changes to assistive technology.
-- [ ] Add a clear small-screen warning that the guide requires a desktop
+- [x] Show a clear small-screen warning that the guide requires a desktop
       browser.
 
 ## 5. Reduce Delivery Risk
