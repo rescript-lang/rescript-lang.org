@@ -42,6 +42,8 @@ export default defineConfig(({ mode }) => {
 
   return {
     envDir: "../..",
+    // Reuse the official favicon set without duplicating branding assets.
+    publicDir: "../docs/public/favicon",
     plugins: [
       env({ prefix: "PUBLIC_" }),
       ...(isTest ? [] : [reactRouter()]),
