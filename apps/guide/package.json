@@ -37,7 +37,7 @@
     "vfile-matter": "^5.0.1"
   },
   "devDependencies": {
-    "@react-router/dev": "^7.15.0",
+    "@react-router/dev": "patch:@react-router/dev@npm%3A7.15.0#~/.yarn/patches/@react-router-dev-npm-7.15.0-9201fe1a8f.patch",
     "@vitejs/plugin-react": "^6.0.1",
     "@vitest/browser-playwright": "^4.1.5",
     "lightningcss": "^1.32.0",
