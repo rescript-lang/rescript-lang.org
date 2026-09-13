@@ -2361,6 +2361,7 @@ __metadata:
     vite-plugin-env-compatible: "npm:^2.0.1"
     vitest: "npm:^4.1.5"
     vitest-browser-react: "npm:^2.2.0"
+    wrangler: "npm:^4.130.0"
   languageName: unknown
   linkType: soft
 

@@ -65,6 +65,24 @@ jobs:
 
           cat wrangler.log
           exit 1
+      - name: Build guide
+        run: yarn build:guide
+      - name: Validate Wrangler guide runtime
+        working-directory: apps/guide
+        run: |
+          yarn wrangler dev --port 8789 > wrangler.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+
+          for _ in {1..15}; do
+            if curl --fail --silent http://127.0.0.1:8789/ > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+
+          cat wrangler.log
+          exit 1
   Vitest:
     runs-on: ubuntu-latest
     container:
