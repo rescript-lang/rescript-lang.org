@@ -182,9 +182,9 @@ body {
 :where(
   .guide-theme-toggle,
   .guide-back-button,
-  .guide-next-button,
-  .guide-editor .cm-editor
-):focus-visible {
+  .guide-next-button
+):focus-visible,
+:where(.guide-editor .cm-editor.cm-focused) {
   outline: 3px solid var(--guide-focus-ring);
   outline-offset: 3px;
 }
