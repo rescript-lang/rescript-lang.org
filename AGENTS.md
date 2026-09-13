@@ -6,7 +6,7 @@ This is the official documentation website for the [ReScript](https://rescript-l
 
 ## System Requirements
 
-- Node.js ≥ 22
+- Node.js ≥ 26
 - Yarn 4.12.0 (via Corepack)
 
 ## Project Structure

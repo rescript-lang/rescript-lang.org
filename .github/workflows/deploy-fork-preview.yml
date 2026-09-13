@@ -55,14 +55,18 @@ jobs:
           ref: ${{ steps.pr.outputs.sha }}
           persist-credentials: false
 
+      - name: Install Corepack
+        run: npm install --global corepack
+
+      - name: Enable Corepack
+        run: corepack enable
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v6.3.0
         with:
           node-version-file: ".node-version"
           cache: "yarn"
 
-      - name: Enable Corepack
-        run: corepack enable
       - name: Install dependencies
         run: yarn install
 
