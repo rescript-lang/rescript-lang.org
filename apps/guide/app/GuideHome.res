@@ -13,10 +13,12 @@ let make = (
   let editor = GuideEditorHook.useEditor(~exercise, ~theme=layout.theme)
 
   <>
-    <div className="guide-screen-size-message">
-      <h1> {React.string("This guide needs a wider screen.")} </h1>
-      <p> {React.string("Use a desktop browser or resize this window to continue.")} </p>
-    </div>
+    <section className="guide-screen-size-message" ariaLabel="Desktop browser required">
+      <h1> {React.string("This interactive guide is available on desktop.")} </h1>
+      <p>
+        {React.string("Open it in a desktop browser or widen this window to at least 1024 pixels.")}
+      </p>
+    </section>
     <main
       className={"guide-shell " ++ layout.theme->GuideLayout.themeClass}
       dataTestId="guide-mvp"

@@ -37,13 +37,26 @@ test("renders resize handles and toggles dark mode", async () => {
   await shell->element->toHaveClass("guide-theme-dark")
 })
 
-test("shows a minimum screen size message on narrow viewports", async () => {
-  await viewport(800, 900)
+test("requires a desktop browser on narrow viewports", async () => {
+  await viewport(1023, 900)
 
   let screen = await renderGuideHome()
-  let message = await screen->getByText("This guide needs a wider screen.")
+  let message = await screen->getByText("This interactive guide is available on desktop.")
+  let shell = await screen->getByTestId("guide-mvp")
 
   await message->element->toBeVisible
+  await shell->element->notToBeVisible
+})
+
+test("shows the guide workspace at the desktop minimum width", async () => {
+  await viewport(1024, 900)
+
+  let screen = await renderGuideHome()
+  let message = await screen->getByText("This interactive guide is available on desktop.")
+  let shell = await screen->getByTestId("guide-mvp")
+
+  await message->element->notToBeVisible
+  await shell->element->toBeVisible
 })
 
 test("shows the first checkpoint as complete when output matches", async () => {
