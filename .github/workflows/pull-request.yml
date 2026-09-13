@@ -38,6 +38,9 @@ jobs:
     container:
       # Keep this image tag aligned with package.json's playwright version.
       image: mcr.microsoft.com/playwright:v1.59.1-noble
+    env:
+      # The pinned Playwright image provides Chromium from this browser cache.
+      PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
@@ -52,8 +55,10 @@ jobs:
         run: yarn
       - name: Build ReScript
         run: yarn build:res
-      - name: Vitest
-        run: yarn ci:test
+      - name: Docs Vitest
+        run: yarn workspace @rescript-lang/docs ci:test
+      - name: Guide Vitest
+        run: yarn workspace @rescript-lang/guide ci:test
   Visual_Regression:
     runs-on: ubuntu-latest
     container:
