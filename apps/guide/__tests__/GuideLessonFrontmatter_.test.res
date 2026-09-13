@@ -52,6 +52,28 @@ test("rejects guide lesson frontmatter without a lesson id", async () => {
   )
 })
 
+test("collects parsed guide lessons", async () => {
+  let firstLesson = completeLessonResult()
+  let secondLesson = {
+    ...firstLesson,
+    id: "second-lesson",
+    sourcePath: "test/second-lesson.mdx",
+    exercise: {...firstLesson.exercise, id: "second-lesson/example"},
+  }
+
+  expect(GuideLessonContent.collect([Ok(firstLesson), Ok(secondLesson)]))->toEqual(
+    Ok([firstLesson, secondLesson]),
+  )
+})
+
+test("preserves the first frontmatter error while collecting lessons", async () => {
+  let firstLesson = completeLessonResult()
+
+  expect(
+    GuideLessonContent.collect([Ok(firstLesson), Error("first error"), Error("second error")]),
+  )->toEqual(Error("first error"))
+})
+
 test("accepts a guide lesson collection with distinct identifiers and positions", async () => {
   let firstLesson = completeLessonResult()
   let secondLesson = {

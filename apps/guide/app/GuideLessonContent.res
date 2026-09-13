@@ -1,10 +1,22 @@
 let lessonFromFile = sourcePath => {
   let raw = Node.Fs.readFileSync(sourcePath)
-  switch GuideLessonFrontmatter.parse(~raw, ~sourcePath) {
-  | Ok(lesson) => lesson
-  | Error(message) => throw(GuideLessonFrontmatter.InvalidFrontmatter(message))
-  }
+  GuideLessonFrontmatter.parse(~raw, ~sourcePath)
 }
+
+let collect = results =>
+  results->Array.reduce(Ok([]), (accumulator, result) =>
+    switch (accumulator, result) {
+    | (Ok(lessons), Ok(lesson)) => Ok([...lessons, lesson])
+    | (Error(message), _) => Error(message)
+    | (_, Error(message)) => Error(message)
+    }
+  )
+
+let validateAndSort = lessons =>
+  switch GuideLessonFrontmatter.validate(lessons) {
+  | Ok() => Ok(lessons->GuideLesson.sort)
+  | Error(error) => Error(GuideLessonFrontmatter.validationErrorMessage(error))
+  }
 
 let rec scanDir = currentDir =>
   Node.Fs.readdirSync(currentDir)->Array.flatMap(entry => {
@@ -22,4 +34,4 @@ let rec scanDir = currentDir =>
 let lessonsDir = () => Node.Path.join2(Node.Process.cwd(), "app/lessons")
 
 let load = (~dir=lessonsDir()) =>
-  scanDir(dir)->Array.map(lessonFromFile)->GuideLessonFrontmatter.validateOrFail->GuideLesson.sort
+  scanDir(dir)->Array.map(lessonFromFile)->collect->Result.flatMap(validateAndSort)
