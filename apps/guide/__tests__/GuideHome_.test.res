@@ -21,6 +21,30 @@ test("loads saved guide editor code into the editor", async () => {
   GuideLayout.clearExerciseCode(exerciseId)
 })
 
+test("resets the current exercise code without clearing its completion", async () => {
+  await viewport(1440, 900)
+  let exerciseId = secondLesson.exercise.id
+  GuideLayout.clearCompletedExercises()
+  GuideLayout.clearExerciseCode(exerciseId)
+  GuideLayout.saveExerciseCode(~exerciseId, ~code="let greeting = \"changed\"")
+  GuideLayout.saveCompletedExercise(exerciseId)
+
+  let screen = await renderGuideHome(~initialEntries=["/#functions"], ())
+  let resetButton = await screen->getByLabelText("Reset exercise code")
+
+  await resetButton->element->toBeVisible
+  await resetButton->click
+
+  let editor = await screen->getByTestId("guide-code-editor")
+  await editor->element->toHaveTextContent(`let greet = name => "Hello, " ++ name ++ "!"`)
+  await editor->element->toHaveTextContent(`let greeting = greet("ReScript")`)
+  expect(GuideLayout.loadExerciseCode(exerciseId)->Option.isNone)->toBe(true)
+  expect(GuideLayout.isExerciseCompleted(exerciseId))->toBe(true)
+
+  GuideLayout.clearCompletedExercises()
+  GuideLayout.clearExerciseCode(exerciseId)
+})
+
 test("renders resize handles and toggles dark mode", async () => {
   await viewport(1440, 900)
 
