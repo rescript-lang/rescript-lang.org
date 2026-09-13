@@ -37,6 +37,7 @@ body {
   --guide-toggle-border: #cbd5e1;
   --guide-resize-bg: #edeae2;
   --guide-resize-hover-bg: #93c5fd;
+  --guide-focus-ring: #0369a1;
   display: grid;
   grid-template-columns:
     minmax(320px, var(--guide-instructions-width, 50%))
@@ -47,26 +48,30 @@ body {
 }
 
 .guide-screen-size-message {
-  background: #0f172a;
-  color: #cbd5e1;
+  background: #102a43;
+  color: #d9e2ec;
   display: none;
-  min-height: 100vh;
-  padding: 32px;
+  min-block-size: 100dvh;
+  padding: 2rem;
   place-content: center;
   text-align: center;
 }
 
 .guide-screen-size-message h1 {
+  border-block-start: 4px solid #38bdf8;
   color: #f8fafc;
-  font-size: 30px;
+  font-size: 1.875rem;
   line-height: 1.2;
-  margin: 0 0 12px;
+  margin: 0 auto 0.75rem;
+  max-inline-size: 34rem;
+  padding-block-start: 1rem;
 }
 
 .guide-screen-size-message p {
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 1.5;
-  margin: 0;
+  margin: 0 auto;
+  max-inline-size: 36rem;
 }
 
 .guide-theme-dark {
@@ -88,6 +93,7 @@ body {
   --guide-toggle-border: #475569;
   --guide-resize-bg: #1f2937;
   --guide-resize-hover-bg: #38bdf8;
+  --guide-focus-ring: #7dd3fc;
 }
 
 .guide-instructions {
@@ -171,6 +177,16 @@ body {
 
 .guide-theme-toggle:hover {
   border-color: var(--guide-resize-hover-bg);
+}
+
+:where(
+  .guide-theme-toggle,
+  .guide-back-button,
+  .guide-next-button,
+  .guide-editor .cm-editor
+):focus-visible {
+  outline: 3px solid var(--guide-focus-ring);
+  outline-offset: 3px;
 }
 
 .guide-lesson-actions {
