@@ -2339,6 +2339,7 @@ __metadata:
     "@rescript-lang/shared": "workspace:*"
     "@rescript/react": "npm:^0.14.2"
     "@rescript/webapi": "npm:0.1.0-experimental-29db5f4"
+    "@types/react": "npm:^19.2.14"
     "@vitejs/plugin-react": "npm:^6.0.1"
     "@vitest/browser-playwright": "npm:^4.1.5"
     isbot: "npm:^5"
