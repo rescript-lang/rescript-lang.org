@@ -35,9 +35,13 @@ its integer `position`. The build requires these frontmatter fields:
 | `exercise.initialCode`    | Yes      | Initial editor contents                                |
 | `exercise.expectedOutput` | No       | Matching runtime log line that unlocks the next lesson |
 
-Lesson and exercise identifiers are durable client-side storage keys. Do not
-rename a published identifier without a migration or an explicit decision to
-discard existing learner progress.
+Lesson IDs determine durable hash-based deep links. Renaming a published lesson
+ID requires a redirect or an explicit decision to let existing deep links fall
+back to the first lesson.
+
+Exercise IDs are durable client-side storage keys for saved code and completion.
+Do not rename a published exercise ID without a migration or an explicit
+decision to discard existing learner progress.
 
 Lesson IDs must be URL-safe slugs made from lowercase ASCII letters, digits,
 and hyphens. Exercise IDs may use the established slash-delimited form.
