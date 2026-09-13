@@ -16,7 +16,6 @@ let default = () => {
       <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.avif" />
       <link rel="icon" type_="image/avif" sizes="32x32" href="/favicon-32x32.avif" />
       <link rel="icon" type_="image/avif" sizes="16x16" href="/favicon-16x16.avif" />
-      <link rel="manifest" href="/site.webmanifest" />
       <title> {React.string("ReScript Guide")} </title>
     </head>
     <body>

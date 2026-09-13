@@ -53,10 +53,6 @@ function Root$default(props) {
         sizes={"16x16"}
         type={"image/avif"}
       />
-      <link
-        href={"/site.webmanifest"}
-        rel={"manifest"}
-      />
       <title>
         {"ReScript Guide"}
       </title>
