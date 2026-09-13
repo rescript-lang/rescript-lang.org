@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       # Keep this image tag aligned with package.json's playwright version.
-      image: mcr.microsoft.com/playwright:v1.59.1-noble
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
     env:
       # The pinned Playwright image provides Chromium from this browser cache.
       PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
@@ -69,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       # Keep this image tag aligned with package.json's playwright version.
-      image: mcr.microsoft.com/playwright:v1.59.1-noble
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
