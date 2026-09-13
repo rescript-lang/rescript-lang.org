@@ -51,7 +51,20 @@ jobs:
         run: yarn build:res
       - name: Validate Wrangler Pages runtime
         working-directory: apps/docs
-        run: timeout 15s yarn wrangler pages dev public --port 8788 || [ $? -eq 124 ]
+        run: |
+          yarn wrangler pages dev public --port 8788 > wrangler.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+
+          for _ in {1..15}; do
+            if curl --fail --silent http://127.0.0.1:8788/favicon.ico > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+
+          cat wrangler.log
+          exit 1
   Vitest:
     runs-on: ubuntu-latest
     container:
