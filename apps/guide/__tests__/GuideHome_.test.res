@@ -35,9 +35,10 @@ test("resets the current exercise code without clearing its completion", async (
   await resetButton->element->toBeVisible
   await resetButton->click
 
-  let editor = await screen->getByTestId("guide-code-editor")
-  await editor->element->toHaveTextContent(`let greet = name => "Hello, " ++ name ++ "!"`)
-  await editor->element->toHaveTextContent(`let greeting = greet("ReScript")`)
+  let greetCode = await screen->getByText(`let greet = name => "Hello, " ++ name ++ "!"`)
+  await greetCode->element->toBeVisible
+  let greetingCode = await screen->getByText(`let greeting = greet("ReScript")`)
+  await greetingCode->element->toBeVisible
   expect(GuideLayout.loadExerciseCode(exerciseId)->Option.isNone)->toBe(true)
   expect(GuideLayout.isExerciseCompleted(exerciseId))->toBe(true)
 
