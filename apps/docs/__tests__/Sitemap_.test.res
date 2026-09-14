@@ -1,7 +1,7 @@
 open Vitest
 
 test("renders sorted unique sitemap URLs with a normalized base URL", async () => {
-  let xml = Sitemap.render(
+  let xml = Sitemap.renderWithRuntimePaths(
     ~baseUrl="https://preview.example.com/",
     ["/docs/manual/introduction", "blog", "/", "/docs/manual/introduction"],
   )
@@ -16,6 +16,9 @@ test("renders sorted unique sitemap URLs with a normalized base URL", async () =
   </url>
   <url>
     <loc>https://preview.example.com/docs/manual/introduction/</loc>
+  </url>
+  <url>
+    <loc>https://preview.example.com/try/</loc>
   </url>
 </urlset>
 `)
