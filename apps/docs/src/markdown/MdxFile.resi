@@ -3,6 +3,9 @@ type fileData = {
   frontmatter: JSON.t,
 }
 
+/** Removes React Router's `.data` request suffix from a route pathname. */
+let normalizePathname: string => string
+
 /** Maps a URL pathname to an .mdx file path on disk.
  * e.g. `/blog/release-12-0-0` with ~dir="markdown-pages/blog" ~alias="blog"
  * → `markdown-pages/blog/release-12-0-0.mdx`

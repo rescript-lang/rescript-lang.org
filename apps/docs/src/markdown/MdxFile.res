@@ -24,7 +24,21 @@ let compileMdx = async (content, ~filePath, ~remarkPlugins=[]) => {
   compiled->CompiledMdx.fromCompileResult
 }
 
+let normalizePathname = pathname => {
+  let pathname =
+    pathname->String.endsWith("/_.data")
+      ? pathname->String.slice(~start=0, ~end=String.length(pathname) - String.length("/_.data"))
+      : pathname->String.endsWith(".data")
+      ? pathname->String.slice(~start=0, ~end=String.length(pathname) - String.length(".data"))
+      : pathname
+
+  pathname !== "/" && pathname->String.endsWith("/")
+    ? pathname->String.slice(~start=0, ~end=String.length(pathname) - 1)
+    : pathname
+}
+
 let resolveFilePath = (pathname, ~dir, ~alias) => {
+  let pathname = pathname->normalizePathname
   let path = if pathname->String.startsWith("/") {
     pathname->String.slice(~start=1, ~end=String.length(pathname))
   } else {

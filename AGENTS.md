@@ -98,7 +98,7 @@ The project uses several patterns for JavaScript interop. Follow the existing co
 
 ## ReScript React
 
-- This project uses **React 19** and **React Router v7** (framework mode).
+- This project uses **React 19** and **React Router v8** (framework mode).
 - The site is **pre-rendered** (`ssr: false`), so loaders have access to the filesystem during build. Loaders do **not** run on a server after the build.
 - Route modules live in `app/routes/` and export a `loader` and a `default` component.
 - Route modules **require** both a `.res` and a `.resi` (interface) file for Vite HMR to work.
@@ -164,7 +164,7 @@ let default: unit => React.element
 
 ## Testing
 
-- Tests use **Vitest 4** in browser mode with **Playwright** (Chromium).
+- Tests use **Vitest 5** in browser mode with **Playwright** (Chromium).
 - Test files live in `__tests__/` and are named `ComponentName_.test.res` (compiled to `.test.jsx`).
 - Tests use custom ReScript bindings in `src/bindings/Vitest.res`.
 - Tests are visual/integration tests that render components and assert visibility, interactions, and screenshots.
