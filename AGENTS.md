@@ -164,7 +164,7 @@ let default: unit => React.element
 
 ## Testing
 
-- Tests use **Vitest 4** in browser mode with **Playwright** (Chromium).
+- Tests use **Vitest 5** in browser mode with **Playwright** (Chromium).
 - Test files live in `__tests__/` and are named `ComponentName_.test.res` (compiled to `.test.jsx`).
 - Tests use custom ReScript bindings in `src/bindings/Vitest.res`.
 - Tests are visual/integration tests that render components and assert visibility, interactions, and screenshots.
