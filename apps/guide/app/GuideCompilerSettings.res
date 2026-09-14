@@ -5,11 +5,11 @@ let isSupportedVersion = (version: Semver.t) =>
   switch version.major {
   | 8 | 9 => false
   | 10 => version.minor >= 1
-  | 11 => version.minor >= 1 && version.preRelease->Option.isNone
+  | 11 => version.minor >= 1 && version.prerelease->Array.isEmpty
   | 12 =>
-    switch version.preRelease {
-    | None => true
-    | Some(_) => version.minor > 1
+    switch version.prerelease->Array.isEmpty {
+    | true => true
+    | false => version.minor > 1
     }
   | _ => true
   }
@@ -42,6 +42,6 @@ let supportedVersions = versions =>
   ->Array.toSorted(compareVersionDescending)
 
 let latestStableParsedVersion = (versions: array<Semver.t>) =>
-  versions->Array.find(version => version.preRelease->Option.isNone)
+  versions->Array.find(version => version.prerelease->Array.isEmpty)
 
 let latestStableVersion = versions => versions->supportedVersions->latestStableParsedVersion

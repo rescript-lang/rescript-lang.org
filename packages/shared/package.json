@@ -28,6 +28,7 @@
     "remark-gfm": "^4.0.1",
     "remark-parse": "^11.0.0",
     "remark-stringify": "^11.0.0",
+    "semver": "^7.8.5",
     "unified": "^11.0.5",
     "vfile-matter": "^5.0.1"
   }

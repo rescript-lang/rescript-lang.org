@@ -1015,7 +1015,7 @@ module Settings = {
               ([], []),
               (acc, item) => {
                 let (lhs, rhs) = acc
-                if item.preRelease->Option.isSome {
+                if !(item.prerelease->Array.isEmpty) {
                   Array.push(lhs, item)
                 } else {
                   Array.push(rhs, item)
@@ -1036,20 +1036,18 @@ module Settings = {
                   } else if a.patch != b.patch {
                     a.patch - b.patch
                   } else {
-                    switch (a.preRelease, b.preRelease)->Option.all2 {
-                    | Some((prereleaseA, prereleaseB)) =>
-                      switch (prereleaseA, prereleaseB) {
-                      | (Rc(rcA), Rc(rcB)) => rcA - rcB
-                      | (Rc(rcA), _) => rcA
-                      | (Beta(betaA), Beta(betaB)) => betaA - betaB
-                      | (Beta(betaA), _) => betaA
-                      | (Alpha(alphaA), Alpha(alphaB)) => alphaA - alphaB
-                      | (Alpha(alphaA), _) => alphaA
-                      | (Dev(devA), Dev(devB)) => devA - devB
-                      | (Dev(devA), _) => devA
-                      }
-
-                    | None => 0
+                    switch (a.prerelease, b.prerelease) {
+                    | ([String("rc"), Number(rcA)], [String("rc"), Number(rcB)]) => rcA - rcB
+                    | ([String("rc"), Number(rcA)], _) => rcA
+                    | ([String("beta"), Number(betaA)], [String("beta"), Number(betaB)]) =>
+                      betaA - betaB
+                    | ([String("beta"), Number(betaA)], _) => betaA
+                    | ([String("alpha"), Number(alphaA)], [String("alpha"), Number(alphaB)]) =>
+                      alphaA - alphaB
+                    | ([String("alpha"), Number(alphaA)], _) => alphaA
+                    | ([String("dev"), Number(devA)], [String("dev"), Number(devB)]) => devA - devB
+                    | ([String("dev"), Number(devA)], _) => devA
+                    | _ => 0
                     }
                   }->Float.fromInt
                 })
@@ -1662,11 +1660,11 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
       | 8 | 9 => false
       | 10 => v.minor >= 1
       | 11 =>
-        v.minor >= 1 && v.preRelease->Option.isNone && (v.minor == 1 && v.patch >= 4) ? true : false
+        v.minor >= 1 && v.prerelease->Array.isEmpty && (v.minor == 1 && v.patch >= 4) ? true : false
       | 12 =>
-        switch v.preRelease {
-        | None => true
-        | Some(_) => v.minor > 1
+        switch v.prerelease->Array.isEmpty {
+        | true => true
+        | false => v.minor > 1
         }
       | _ => true
       }
@@ -1686,7 +1684,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   let initialVersion = switch versions {
   | [v] => Some(v) // only single version available. maybe local dev.
   | versions => {
-      let lastStableVersion = versions->Array.find(version => version.preRelease->Option.isNone)
+      let lastStableVersion = versions->Array.find(version => version.prerelease->Array.isEmpty)
       switch Nullable.make(
         searchParams->WebAPI.URLSearchParams.get((CompilerManagerHook.Version :> string)),
       ) {

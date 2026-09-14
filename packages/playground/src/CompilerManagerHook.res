@@ -73,7 +73,7 @@ let getLibrariesForVersion = (~version: Semver.t): array<string> => {
   // From version 11 to 12.0.0-alpha.3 @rescript/core is an external package
   switch version {
   | {major: 11}
-  | {major: 12, minor: 0, patch: 0, preRelease: Some(Alpha(1 | 2 | 3))} =>
+  | {major: 12, minor: 0, patch: 0, prerelease: [String("alpha"), Number(1 | 2 | 3)]} =>
     libraries->Array.push("@rescript/core")
   | _ => ()
   }
@@ -591,7 +591,8 @@ let useCompilerManager = (
         let imports = imports->Dict.mapValues(path => {
           let filename = path->String.slice(~start=9) // the part after "./stdlib/"
           let filename = switch state.selected.id {
-          | {major: 12, minor: 0, patch: 0, preRelease: Some(Alpha(alpha))} if alpha < 8 =>
+          | {major: 12, minor: 0, patch: 0, prerelease: [String("alpha"), Number(alpha)]}
+            if alpha < 8 =>
             let filename = if filename->String.startsWith("core__") {
               filename->String.slice(~start=6)
             } else {
@@ -603,18 +604,11 @@ let useCompilerManager = (
           | _ => filename
           }
           let compilerVersion = switch state.selected.id {
-          | {major: 12, minor: 0, patch: 0, preRelease: Some(Alpha(alpha))} if alpha < 9 => {
-              Semver.major: 12,
-              minor: 0,
-              patch: 0,
-              preRelease: Some(Alpha(9)),
-            }
-          | {major, minor} if (major === 11 && minor < 2) || major < 11 => {
-              major: 11,
-              minor: 2,
-              patch: 0,
-              preRelease: Some(Beta(2)),
-            }
+          | {major: 12, minor: 0, patch: 0, prerelease: [String("alpha"), Number(alpha)]}
+            if alpha < 9 =>
+            Semver.make(~major=12, ~minor=0, ~patch=0, ~prerelease=#alpha(9))
+          | {major, minor} if (major === 11 && minor < 2) || major < 11 =>
+            Semver.make(~major=11, ~minor=2, ~patch=0, ~prerelease=#beta(2))
           | version => version
           }
           CdnMeta.getStdlibRuntimeUrl(bundleBaseUrl, compilerVersion, filename)

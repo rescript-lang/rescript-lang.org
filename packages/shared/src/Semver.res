@@ -1,75 +1,53 @@
-type preRelease = Alpha(int) | Beta(int) | Dev(int) | Rc(int)
+// https://github.com/DefinitelyTyped/DefinitelyTyped/blob/e9bf31782c3f5b69a778ab4077c3e48a781e33cb/types/semver/classes/semver.d.ts#L4
 
-type t = {major: int, minor: int, patch: int, preRelease: option<preRelease>}
+@unboxed
+type prerelease = String(string) | Number(int)
+
+type t = {
+  raw: string,
+  major: int,
+  minor: int,
+  patch: int,
+  prerelease: array<prerelease>,
+  build: array<string>,
+  version: string,
+}
+
+module NpmSemver = {
+  @module("semver") external parse: string => Null.t<t> = "parse"
+  @new @module("semver") external make: string => Null.t<t> = "SemVer"
+}
+
+let make = (
+  ~major,
+  ~minor,
+  ~patch,
+  ~prerelease: [#alpha(int) | #beta(int) | #rc(int) | #dev(int)],
+) => {
+  let pre = switch prerelease {
+  | #alpha(v) => `alpha.${v->Int.toString}`
+  | #beta(v) => `beta.${v->Int.toString}`
+  | #rc(v) => `rc.${v->Int.toString}`
+  | #dev(v) => `dev.${v->Int.toString}`
+  }
+  NpmSemver.make(
+    `v${major->Int.toString}.${minor->Int.toString}.${patch->Int.toString}-${pre}`,
+  )->Null.getOrThrow
+}
 
 /**
-  Takes a `version` string starting with a "v" and ending in major.minor.patch or
-  major.minor.patch-prerelease.identifier (e.g. "v10.1.0" or "v10.1.0-alpha.2")
+  Takes a semver string accepted by the npm `semver` package, including strings
+  prefixed with "v", and adapts it to the local version record.
   */
-let parse = (versionStr: string) => {
-  let parsePreRelease = str => {
-    switch str->String.split("-") {
-    | [_, identifier] =>
-      switch identifier->String.split(".") {
-      | [name, number] =>
-        switch Int.fromString(number) {
-        | None => None
-        | Some(buildIdentifier) =>
-          switch name {
-          | "dev" => buildIdentifier->Dev->Some
-          | "beta" => buildIdentifier->Beta->Some
-          | "alpha" => buildIdentifier->Alpha->Some
-          | "rc" => buildIdentifier->Rc->Some
-          | _ => None
-          }
-        }
-      | _ => None
-      }
-    | _ => None
-    }
-  }
+let parse = (versionStr: string) => versionStr->NpmSemver.parse->Null.toOption
 
-  // Some version contain a suffix. Example: v11.0.0-alpha.5, v11.0.0-beta.1
-  let isPrerelease = versionStr->String.search(/-/) != -1
-
-  // Get the first part i.e vX.Y.Z
-  let versionNumber = versionStr->String.split("-")->Array.get(0)->Option.getOr(versionStr)
-
-  switch versionNumber->String.replace("v", "")->String.split(".") {
-  | [major, minor, patch] =>
-    switch (major->Int.fromString, minor->Int.fromString, patch->Int.fromString) {
-    | (Some(major), Some(minor), Some(patch)) =>
-      let preReleaseIdentifier = if isPrerelease {
-        parsePreRelease(versionStr)
-      } else {
-        None
-      }
-      Some({major, minor, patch, preRelease: preReleaseIdentifier})
-    | _ => None
-    }
-  | _ => None
-  }
-}
-
-let toString = ({major, minor, patch, preRelease}) => {
-  let mainVersion = `v${major->Int.toString}.${minor->Int.toString}.${patch->Int.toString}`
-
-  switch preRelease {
-  | None => mainVersion
-  | Some(identifier) =>
-    let identifier = switch identifier {
-    | Dev(number) => `dev.${number->Int.toString}`
-    | Alpha(number) => `alpha.${number->Int.toString}`
-    | Beta(number) => `beta.${number->Int.toString}`
-    | Rc(number) => `rc.${number->Int.toString}`
-    }
-
-    `${mainVersion}-${identifier}`
-  }
-}
+let toString = t => t.raw
 
 let tryGetMajorString = (versionStr: string) =>
   switch versionStr->parse {
-  | None => versionStr // fallback to given version if it cannot be parsed
+  | None => versionStr
   | Some({major}) => "v" ++ major->Int.toString
   }
+
+@module("semver")
+external rcompare: (string, string) => int = "rcompare"
