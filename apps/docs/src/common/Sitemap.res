@@ -1,4 +1,5 @@
 let defaultBaseUrl = "https://rescript-lang.org"
+let runtimePaths = ["/try"]
 
 let normalizeBaseUrl = baseUrl => {
   let trimmed = baseUrl->String.trim
@@ -79,3 +80,6 @@ ${urls}
 </urlset>
 `
 }
+
+let renderWithRuntimePaths = (~baseUrl, staticPaths) =>
+  [...staticPaths, ...runtimePaths]->render(~baseUrl)
