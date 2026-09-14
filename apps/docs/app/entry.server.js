@@ -11,6 +11,8 @@ export default async function handleRequest(
   responseHeaders,
   routerContext,
 ) {
+  responseHeaders.set("Content-Type", "text/html");
+
   if (request.method.toUpperCase() === "HEAD") {
     return new Response(null, {
       status: responseStatusCode,
@@ -45,8 +47,6 @@ export default async function handleRequest(
   ) {
     await body.allReady;
   }
-
-  responseHeaders.set("Content-Type", "text/html");
 
   return new Response(body, {
     headers: responseHeaders,
