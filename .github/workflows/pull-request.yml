@@ -33,6 +33,8 @@ jobs:
         run: yarn
       - name: Test examples and hrefs
         run: yarn test
+  # Confirms that Wrangler can start the Docs Pages and Guide local dev servers.
+  # This startup check intentionally excludes route-level application and Pages Function behavior.
   Wrangler:
     runs-on: ubuntu-latest
     steps:
@@ -49,7 +51,7 @@ jobs:
         run: yarn
       - name: Build ReScript
         run: yarn build:res
-      - name: Validate Wrangler Pages runtime
+      - name: Validate Docs Wrangler dev server
         working-directory: apps/docs
         run: |
           yarn wrangler pages dev public --port 8788 > wrangler.log 2>&1 &
@@ -67,7 +69,7 @@ jobs:
           exit 1
       - name: Build guide
         run: yarn build:guide
-      - name: Validate Wrangler guide runtime
+      - name: Validate Guide Wrangler dev server
         working-directory: apps/guide
         run: |
           yarn wrangler dev --port 8789 > wrangler.log 2>&1 &
