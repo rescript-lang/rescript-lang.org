@@ -19,7 +19,6 @@ jobs:
     permissions:
       contents: read
       deployments: write
-      pull-requests: write
     steps:
       - uses: actions/checkout@v6.0.2
       - name: Install Corepack
@@ -69,19 +68,6 @@ jobs:
           wranglerVersion: 4.130.0
         env:
           FORCE_COLOR: 0
-      - name: Comment PR with deployment link
-        if: ${{ github.actor != 'dependabot[bot]' }}
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          recreate: true
-          header: deploymemt
-          message: |
-            ## Cloudflare deployment
-            Deployement ID: ${{ steps.deploy.outputs.pages-deployment-id }}
-            Deployment Environment: ${{ steps.deploy.outputs.pages-environment }}
-
-            ${{ steps.deploy.outputs.command-output }}
-
   deploy-guide:
     runs-on: ubuntu-latest
     name: Deploy Guide Worker
@@ -89,7 +75,6 @@ jobs:
     permissions:
       contents: read
       deployments: write
-      pull-requests: write
     steps:
       - uses: actions/checkout@v6.0.2
       - name: Install Corepack
@@ -114,8 +99,12 @@ jobs:
 
           if [[ "${{ github.event_name }}" == "push" && "$RAW_BRANCH" == "master" ]] || [[ "${{ inputs.environment }}" == "production" ]]; then
             echo "GUIDE_DEPLOY_COMMAND=deploy" >> "$GITHUB_ENV"
+            echo "GUIDE_DEPLOYMENT_ENVIRONMENT=guide-production" >> "$GITHUB_ENV"
+            echo "GUIDE_PRODUCTION_ENVIRONMENT=true" >> "$GITHUB_ENV"
           else
             echo "GUIDE_DEPLOY_COMMAND=versions upload --preview-alias=$SAFE_BRANCH" >> "$GITHUB_ENV"
+            echo "GUIDE_DEPLOYMENT_ENVIRONMENT=guide-preview" >> "$GITHUB_ENV"
+            echo "GUIDE_PRODUCTION_ENVIRONMENT=false" >> "$GITHUB_ENV"
           fi
       - name: Deploy guide
         id: deploy-guide
@@ -128,16 +117,40 @@ jobs:
           wranglerVersion: 4.130.0
         env:
           FORCE_COLOR: 0
-      - name: Comment PR with guide deployment link
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: marocchino/sticky-pull-request-comment@v2
+      - name: Publish guide deployment to GitHub
+        uses: actions/github-script@v9.0.0
         with:
-          recreate: true
-          header: guide-deployment
-          message: |
-            ## Guide Cloudflare deployment
+          script: |
+            const environment = process.env.GUIDE_DEPLOYMENT_ENVIRONMENT;
+            const productionEnvironment = process.env.GUIDE_PRODUCTION_ENVIRONMENT === "true";
+            const deployment = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.sha,
+              auto_merge: false,
+              required_contexts: [],
+              environment,
+              production_environment: productionEnvironment,
+              transient_environment: !productionEnvironment,
+              description: "Cloudflare Guide",
+            });
 
-            ${{ steps.deploy-guide.outputs.command-output }}
+            await github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: deployment.data.id,
+              state: "success",
+              environment,
+              environment_url: process.env.GUIDE_DEPLOYMENT_URL,
+              log_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              description: "Cloudflare Guide deployed",
+              production_environment: productionEnvironment,
+              auto_inactive: false,
+            });
+        env:
+          GUIDE_DEPLOYMENT_ENVIRONMENT: ${{ env.GUIDE_DEPLOYMENT_ENVIRONMENT }}
+          GUIDE_DEPLOYMENT_URL: ${{ steps.deploy-guide.outputs.deployment-url }}
+          GUIDE_PRODUCTION_ENVIRONMENT: ${{ env.GUIDE_PRODUCTION_ENVIRONMENT }}
 
   e2e:
     runs-on: ubuntu-latest
