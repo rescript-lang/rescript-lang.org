@@ -1,0 +1,94 @@
+---
+author: rescript-team
+date: "2025-11-18"
+badge: roadmap
+title: "Refined regex, dicts and variant type spreads"
+description: |
+  ReScript 12 comes with plenty of quality-of-life improvements like native regex and dict syntax and refined variant variant type spread.
+---
+
+# ReScript v12 — Simpler, Safer, Smarter
+
+ReScript 12 has landed with a fresh batch of quality-of-life improvements that make your code cleaner, safer, and more expressive. The stars of this release: **first-class regex**, **native dictionaries with pattern matching**, and **refined variant type spreads**.
+
+Each of these features makes ReScript smoother to write, easier to read, and a lot more fun to work with.
+
+---
+
+## 1. First-Class Regex
+
+ReScript v12 introduces **native regex literals**, using the same syntax as JavaScript:
+
+```res
+let pattern = /foo-bar(\d+)/g
+let result = String.match("foo-bar123 and foo-bar456", pattern)
+```
+
+It feels just like JS — but with ReScript’s type safety on your side. Perfect for validating user input, parsing filenames, or searching through text, without having to rely on interop wrappers.
+
+In short: the power of JS regex, now fully typed and built right in.
+
+---
+
+## 2. `dict{}` Literals and Pattern Matching
+
+Meet `dict{}` — ReScript’s new, native syntax to handle dynamic key/value data. Define and destructure dictionaries with the same simplicity and safety you expect from the language:
+
+```res
+let d = dict{"A": 5, "B": 6}
+
+let maybeB = d->Dict.get("B")
+
+let result = switch d {
+| dict{"B": b, "C": ?c} => Some((b, c))
+| _ => None
+}
+```
+
+- `dict{...}` creates a dictionary literal.
+- `dict{"B": b}` extracts a specific key’s value.
+- `?c` marks a key as optional, returning an `option` type.
+
+Whether you’re dealing with JSON, metadata, or flexible configuration objects, this syntax keeps things clean and type-safe.
+
+---
+
+## 3. Variant Type Spreads
+
+Variants (sum types) are among ReScript’s most powerful features — and they just leveled up.
+
+Before v12, you could reuse constructors from another variant with type spread. That was already handy, but often you also wanted to reuse the functions tied to those base types. Starting in v12, you can pattern-match and cast to the base types all at once, with a clean new syntax:
+
+```res
+type pets = Cat | Dog
+type fish = Cod | Salmon
+type animals = | ...pets | ...fish
+
+let greet = (a: animals) =>
+  switch a {
+  | ...pets as pet => greetPet(pet)
+  | ...fish as f => greetFish(f)
+  }
+```
+
+It’s now easier than ever to compose, extend, and organize your types — without sacrificing clarity or exhaustiveness.
+
+---
+
+## Wrapping Up
+
+ReScript v12 focuses on developer happiness: small changes that make a big difference in daily coding.
+
+| Feature                         | What It Brings                           |
+| ------------------------------- | ---------------------------------------- |
+| **Regex literals**              | Native syntax, no interop needed         |
+| **`dict{}`\*\*** + matching\*\* | Safer, more expressive dynamic data      |
+| **Variant spreads**             | Reusable and composable type hierarchies |
+
+Whether you’re parsing data, modelling complex states, or cleaning up old interop code, these new tools help you write expressive, reliable ReScript with less effort.
+
+---
+
+### Final Thought
+
+ReScript 12 isn’t just an update — it’s a smoother, friendlier version of the language you already love. Give it a try, and you’ll feel the difference right away.
