@@ -57,7 +57,7 @@ jobs:
           trap 'kill "$server_pid"' EXIT
 
           for _ in {1..15}; do
-            if curl --fail --silent http://127.0.0.1:8788/favicon.ico > /dev/null; then
+            if curl --max-time 2 --fail --silent http://127.0.0.1:8788/favicon.ico > /dev/null; then
               exit 0
             fi
             sleep 1
@@ -75,7 +75,7 @@ jobs:
           trap 'kill "$server_pid"' EXIT
 
           for _ in {1..15}; do
-            if curl --fail --silent http://127.0.0.1:8789/ > /dev/null; then
+            if curl --max-time 2 --fail --silent http://127.0.0.1:8789/ > /dev/null; then
               exit 0
             fi
             sleep 1
