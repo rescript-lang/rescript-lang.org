@@ -145,7 +145,6 @@ jobs:
               environment_url: process.env.GUIDE_DEPLOYMENT_URL,
               log_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               description: "Cloudflare Guide deployed",
-              production_environment: productionEnvironment,
               auto_inactive: false,
             });
         env:
