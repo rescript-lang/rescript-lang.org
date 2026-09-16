@@ -123,10 +123,11 @@ jobs:
           script: |
             const environment = process.env.GUIDE_DEPLOYMENT_ENVIRONMENT;
             const productionEnvironment = process.env.GUIDE_PRODUCTION_ENVIRONMENT === "true";
+            const ref = context.payload.pull_request?.head.ref ?? context.ref;
             const deployment = await github.rest.repos.createDeployment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: context.sha,
+              ref,
               auto_merge: false,
               required_contexts: [],
               environment,
