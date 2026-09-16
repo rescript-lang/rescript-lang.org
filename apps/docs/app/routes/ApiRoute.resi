@@ -8,6 +8,7 @@ type rec apiItem = {
   docStrings: array<string>,
 }
 
+/** Loads API documentation after normalizing React Router data-request pathnames. */
 let loader: ReactRouter.Loader.t<loaderData>
 
 let default: unit => React.element
