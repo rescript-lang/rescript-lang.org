@@ -39,6 +39,7 @@ jobs:
       - name: Commit changed baselines
         id: commit-baselines
         run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git add apps/docs/__tests__/visual/__screenshots__
 
           if git diff --cached --quiet; then
