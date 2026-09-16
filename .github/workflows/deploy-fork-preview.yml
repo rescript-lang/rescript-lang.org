@@ -17,8 +17,8 @@ jobs:
       deployments: write
       pull-requests: read
     steps:
-      # Fork PR workflows receive a read-only GITHUB_TOKEN, so deployments cannot
-      # be published back to the pull request.
+      # The `ok-to-deploy` label permits the base-repository workflow to deploy
+      # the checked-out fork commit and publish its preview to GitHub.
       - name: Fetch PR info
         id: pr
         uses: actions/github-script@v9.0.0
@@ -84,8 +84,38 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: apps/docs
           command: pages deploy out --project-name=rescript-lang-org
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           wranglerVersion: 4.130.0
         continue-on-error: true
         env:
           FORCE_COLOR: 0
+      - name: Publish fork preview deployment to GitHub
+        if: ${{ steps.deploy.outcome == 'success' }}
+        uses: actions/github-script@v9.0.0
+        with:
+          script: |
+            const deployment = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: process.env.PR_HEAD_SHA,
+              auto_merge: false,
+              required_contexts: [],
+              environment: "fork-preview",
+              production_environment: false,
+              transient_environment: true,
+              description: "Cloudflare fork preview",
+            });
+
+            await github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: deployment.data.id,
+              state: "success",
+              environment: "fork-preview",
+              environment_url: process.env.DEPLOYMENT_URL,
+              log_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              description: "Cloudflare fork preview deployed",
+              auto_inactive: false,
+            });
+        env:
+          DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment-url }}
+          PR_HEAD_SHA: ${{ steps.pr.outputs.sha }}
