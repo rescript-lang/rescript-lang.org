@@ -15,6 +15,38 @@ let expectedExample = `module Button = {
   }
 }`
 
+let getOpenGraphImageUrl = () => {
+  switch document->WebAPI.Document.querySelector("meta[property='og:image']") {
+  | Value(meta) =>
+    switch meta->WebAPI.Element.getAttribute("content") {
+    | Value(content) => WebAPI.URL.make(~url=content)
+    | Null => failwith("expected Open Graph image metadata to have content")
+    }
+  | Null => failwith("expected Open Graph image metadata")
+  }
+}
+
+test("landing page Open Graph image targets its absolute page URL", async () => {
+  let _screen = await render(
+    <MemoryRouter initialEntries=["/"]>
+      <LandingPage />
+    </MemoryRouter>,
+  )
+  let pageUrl = WebAPI.URL.make(~url=Env.root_url)
+  let imageUrl = getOpenGraphImageUrl()
+  let targetUrl = switch imageUrl.searchParams
+  ->WebAPI.URLSearchParams.get("url")
+  ->Nullable.make
+  ->Nullable.toOption {
+  | Some(targetUrl) => WebAPI.URL.make(~url=targetUrl)
+  | None => failwith("expected Open Graph image URL to include a page URL")
+  }
+
+  expect(imageUrl.origin)->toBe(pageUrl.origin)
+  expect(imageUrl.pathname)->toBe("/ogimage/index.png")
+  expect(targetUrl.href)->toBe(pageUrl.href)
+})
+
 test(
   "landing page playground link uses compressed code that the playground can decode",
   async () => {
