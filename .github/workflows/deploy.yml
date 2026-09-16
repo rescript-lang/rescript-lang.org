@@ -19,6 +19,7 @@ jobs:
     permissions:
       contents: read
       deployments: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v6.0.2
       - name: Install Corepack
@@ -68,6 +69,14 @@ jobs:
           wranglerVersion: 4.130.0
         env:
           FORCE_COLOR: 0
+      - name: Comment with docs preview link
+        if: ${{ github.event_name == 'pull_request' && steps.deploy.outcome == 'success' }}
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          recreate: true
+          header: docs-deployment
+          message: |
+            [Docs preview](${{ steps.deploy.outputs.deployment-url }})
   deploy-guide:
     runs-on: ubuntu-latest
     name: Deploy Guide Worker
