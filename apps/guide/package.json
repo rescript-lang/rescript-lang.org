@@ -45,7 +45,8 @@
     "vite": "^8.3.0",
     "vite-plugin-env-compatible": "^2.0.1",
     "vitest": "^5.0.0",
-    "vitest-browser-react": "^2.3.0"
+    "vitest-browser-react": "^2.3.0",
+    "wrangler": "^4.130.0"
   },
   "engines": {
     "node": ">=26"

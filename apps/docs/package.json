@@ -98,7 +98,7 @@
     "vite-plugin-page-reload": "^0.2.3",
     "vitest": "^5.0.0",
     "vitest-browser-react": "^2.3.0",
-    "wrangler": "^4.114.0"
+    "wrangler": "^4.130.0"
   },
   "engines": {
     "node": ">=26"

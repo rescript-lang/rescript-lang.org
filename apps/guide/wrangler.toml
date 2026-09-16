@@ -1,7 +1,7 @@
 name = "guide"
-compatibility_date = "2026-05-20"
+compatibility_date = "2026-09-10"
 workers_dev = true
 
 [assets]
-directory = "./out"
+directory = "./build/client"
 not_found_handling = "single-page-application"
