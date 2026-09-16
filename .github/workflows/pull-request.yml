@@ -37,6 +37,58 @@ jobs:
         run: yarn
       - name: Test examples and hrefs
         run: yarn test
+  # Confirms that Wrangler can start the Docs Pages and Guide local dev servers.
+  # This startup check intentionally excludes route-level application and Pages Function behavior.
+  Wrangler:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6.3.0
+        with:
+          node-version-file: ".node-version"
+          cache: yarn
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install dependencies
+        run: yarn
+      - name: Build ReScript
+        run: yarn build:res
+      - name: Validate Docs Wrangler dev server
+        working-directory: apps/docs
+        run: |
+          yarn wrangler pages dev public --port 8788 > wrangler.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+
+          for _ in {1..15}; do
+            if curl --max-time 2 --fail --silent http://127.0.0.1:8788/favicon.ico > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+
+          cat wrangler.log
+          exit 1
+      - name: Build guide
+        run: yarn build:guide
+      - name: Validate Guide Wrangler dev server
+        working-directory: apps/guide
+        run: |
+          yarn wrangler dev --port 8789 > wrangler.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+
+          for _ in {1..15}; do
+            if curl --max-time 2 --fail --silent http://127.0.0.1:8789/ > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+
+          cat wrangler.log
+          exit 1
   Vitest:
     runs-on: ubuntu-latest
     container:
