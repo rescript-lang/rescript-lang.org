@@ -33,8 +33,7 @@ module Url = {
   }
 
   let baseUrl = () => {
-    let baseUrl = Env.deployment_url->Option.getOr(Env.root_url)
-    baseUrl->Stdlib.String.endsWith("/") ? baseUrl : baseUrl ++ "/"
+    Env.root_url->Stdlib.String.endsWith("/") ? Env.root_url : Env.root_url ++ "/"
   }
 
   let makeAbsoluteUrl = pathOrUrl => {
