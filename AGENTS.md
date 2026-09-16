@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This is the official documentation website for the [ReScript](https://rescript-lang.org) programming language. It is a **fully pre-rendered static site** (no server-side rendering at runtime) built with **ReScript v12 + React 19 + React Router v7 + Vite 7 + Tailwind CSS v4**, deployed to **Cloudflare Pages**.
+This is the official documentation website for the [ReScript](https://rescript-lang.org) programming language. It is a **fully pre-rendered static site** (no server-side rendering at runtime) built with **ReScript v12 + React 19 + React Router v8 + Vite 8 + Tailwind CSS v4**, deployed to **Cloudflare Pages**.
 
 ## System Requirements
 
@@ -212,5 +212,5 @@ let default: unit => React.element
 - Do **not** modify generated `.jsx` / `.mjs` files directly — they are ReScript compiler output.
 - Do **not** use `@genType` — the project does not use it.
 - The `src/ffi/` directory is legacy; prefer `%raw` statements for new JS interop.
-- The README references some outdated structures (Next.js, `pages/` directory) — ignore those references. The project has migrated to React Router v7.
+- The README references some outdated structures (Next.js, `pages/` directory) — ignore those references. The project has migrated to React Router v8.
 - When editing route files, always update both the `.res` and `.resi` files.
