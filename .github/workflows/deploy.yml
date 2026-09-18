@@ -13,7 +13,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: Deploy
     if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false }}
     permissions:
@@ -37,8 +37,10 @@ jobs:
         run: yarn build:sync-bundles
       - name: Set VITE_DEPLOYMENT_URL
         shell: bash
+        env:
+          RAW_BRANCH_INPUT: ${{ github.head_ref || github.ref_name }}
         run: |
-          RAW_BRANCH="${{ github.head_ref || github.ref_name }}"
+          RAW_BRANCH="$RAW_BRANCH_INPUT"
 
           if [[ "$RAW_BRANCH" == "master" ]]; then
              echo "VITE_DEPLOYMENT_URL=" >> "$GITHUB_ENV"
@@ -59,7 +61,7 @@ jobs:
       - name: Deploy
         if: ${{ github.actor != 'dependabot[bot]' }}
         id: deploy
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -71,14 +73,14 @@ jobs:
           FORCE_COLOR: 0
       - name: Comment with docs preview link
         if: ${{ github.event_name == 'pull_request' && steps.deploy.outcome == 'success' }}
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@v3
         with:
           recreate: true
           header: docs-deployment
           message: |
             [Docs preview](${{ steps.deploy.outputs.deployment-url }})
   deploy-guide:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: Deploy Guide Worker
     if: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false) && github.actor != 'dependabot[bot]' }}
     permissions:
@@ -101,8 +103,10 @@ jobs:
         run: yarn build:guide
       - name: Set guide deployment command
         shell: bash
+        env:
+          RAW_BRANCH_INPUT: ${{ github.head_ref || github.ref_name }}
         run: |
-          RAW_BRANCH="${{ github.head_ref || github.ref_name }}"
+          RAW_BRANCH="$RAW_BRANCH_INPUT"
           SAFE_BRANCH=$(echo "$RAW_BRANCH" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9-]+/-/g; s/^-+//; s/-+$//; s/-+/-/g')
           SAFE_BRANCH="${SAFE_BRANCH:0:28}"
 
@@ -117,7 +121,7 @@ jobs:
           fi
       - name: Deploy guide
         id: deploy-guide
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -162,7 +166,7 @@ jobs:
           GUIDE_PRODUCTION_ENVIRONMENT: ${{ env.GUIDE_PRODUCTION_ENVIRONMENT }}
 
   e2e:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: E2E Tests
     needs: deploy
     if: ${{ github.actor != 'dependabot[bot]' }}
@@ -184,8 +188,10 @@ jobs:
       - name: Set Cypress base URL
         id: cypress-base-url
         shell: bash
+        env:
+          RAW_BRANCH_INPUT: ${{ github.head_ref || github.ref_name }}
         run: |
-          RAW_BRANCH="${{ github.head_ref || github.ref_name }}"
+          RAW_BRANCH="$RAW_BRANCH_INPUT"
 
           if [[ "$RAW_BRANCH" == "master" ]]; then
              CYPRESS_BASE_URL="https://rescript-lang.org"
