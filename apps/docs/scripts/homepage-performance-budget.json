@@ -1,0 +1,21 @@
+{
+  "javascript": {
+    "requests": 22,
+    "rawBytes": 1402061,
+    "gzipBytes": 274525
+  },
+  "css": {
+    "requests": 3,
+    "rawBytes": 80214,
+    "gzipBytes": 14725
+  },
+  "bodyElements": 418,
+  "media": {
+    "images": 63,
+    "imagesMissingWidth": 61,
+    "imagesMissingHeight": 63,
+    "videos": 3,
+    "videosMissingWidth": 3,
+    "videosMissingHeight": 3
+  }
+}
