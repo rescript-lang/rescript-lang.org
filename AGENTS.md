@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This is the official documentation website for the [ReScript](https://rescript-lang.org) programming language. It is primarily pre-rendered at build time, with runtime server-side rendering for `/try` through Cloudflare Pages Functions. It is built with **ReScript v12 + React 19 + React Router v7 + Vite 7 + Tailwind CSS v4**, deployed to **Cloudflare Pages**.
+This is the official documentation website for the [ReScript](https://rescript-lang.org) programming language. It is primarily pre-rendered at build time, with runtime server-side rendering for `/try` through Cloudflare Pages Functions. It is built with **ReScript v12 + React 19 + React Router v8 + Vite 8 + Tailwind CSS v4**, deployed to **Cloudflare Pages**.
 
 ## System Requirements
 
@@ -98,7 +98,7 @@ The project uses several patterns for JavaScript interop. Follow the existing co
 
 ## ReScript React
 
-- This project uses **React 19** and **React Router v7** (framework mode).
+- This project uses **React 19** and **React Router v8** (framework mode).
 - The site uses hybrid rendering: most routes are pre-rendered during the build, while `/try` is server-rendered by Cloudflare Pages Functions at runtime.
 - Loaders for pre-rendered routes can access the filesystem during the build. Runtime SSR loaders, including shared loader code reachable from `/try`, execute in Cloudflare and must not depend on Node-only filesystem APIs or other build-time-only operations.
 - Route modules live in `app/routes/` and export a `loader` and a `default` component.
@@ -165,7 +165,7 @@ let default: unit => React.element
 
 ## Testing
 
-- Tests use **Vitest 4** in browser mode with **Playwright** (Chromium).
+- Tests use **Vitest 5** in browser mode with **Playwright** (Chromium).
 - Test files live in `__tests__/` and are named `ComponentName_.test.res` (compiled to `.test.jsx`).
 - Tests use custom ReScript bindings in `src/bindings/Vitest.res`.
 - Tests are visual/integration tests that render components and assert visibility, interactions, and screenshots.
@@ -213,5 +213,5 @@ let default: unit => React.element
 - Do **not** modify generated `.jsx` / `.mjs` files directly — they are ReScript compiler output.
 - Do **not** use `@genType` — the project does not use it.
 - The `src/ffi/` directory is legacy; prefer `%raw` statements for new JS interop.
-- The README references some outdated structures (Next.js, `pages/` directory) — ignore those references. The project has migrated to React Router v7.
+- The README references some outdated structures (Next.js, `pages/` directory) — ignore those references. The project has migrated to React Router v8.
 - When editing route files, always update both the `.res` and `.resi` files.

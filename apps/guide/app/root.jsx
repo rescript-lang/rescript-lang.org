@@ -13,11 +13,34 @@ function Root$default(props) {
         <link href={mainCss} rel={"stylesheet"} />
         <ReactRouter.Links />
         <ReactRouter.Meta />
+        <meta charSet={"UTF-8"} />
         <meta
           content={"width=device-width, initial-scale=1"}
           name={"viewport"}
         />
-        <meta charSet={"UTF-8"} />
+        <meta content={"ReScript Guide"} name={"application-name"} />
+        <meta
+          content={"An interactive guide to learning ReScript."}
+          name={"description"}
+        />
+        <meta content={"#f6f4ef"} name={"theme-color"} />
+        <link
+          href={"/apple-touch-icon.avif"}
+          rel={"apple-touch-icon"}
+          sizes={"180x180"}
+        />
+        <link
+          href={"/favicon-32x32.avif"}
+          rel={"icon"}
+          sizes={"32x32"}
+          type={"image/avif"}
+        />
+        <link
+          href={"/favicon-16x16.avif"}
+          rel={"icon"}
+          sizes={"16x16"}
+          type={"image/avif"}
+        />
         <title>{"ReScript Guide"}</title>
       </head>
       <body>

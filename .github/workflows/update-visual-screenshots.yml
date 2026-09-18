@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       # Keep this image tag aligned with package.json's playwright version.
-      image: mcr.microsoft.com/playwright:v1.59.1-noble
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
     steps:
       - name: Refuse default branch
         if: github.ref_name == github.event.repository.default_branch
@@ -39,6 +39,7 @@ jobs:
       - name: Commit changed baselines
         id: commit-baselines
         run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git add apps/docs/__tests__/visual/__screenshots__
 
           if git diff --cached --quiet; then

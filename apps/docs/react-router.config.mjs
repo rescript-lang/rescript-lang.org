@@ -1,5 +1,4 @@
 import * as fs from "node:fs";
-import * as os from "node:os";
 
 const { stdlibPaths } = await import("./app/DocsRoutes.jsx");
 
@@ -8,7 +7,8 @@ export default {
   routeDiscovery: { mode: "initial" },
 
   prerender: {
-    concurrency: os.availableParallelism(),
+    // Restore os.availableParallelism() after https://github.com/remix-run/react-router/issues/15255 is fixed.
+    concurrency: 1,
     async paths({ getStaticPaths }) {
       return [
         ...(await getStaticPaths()).filter(
