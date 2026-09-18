@@ -115,3 +115,6 @@ apps/guide/.vitest-attachments
 # Playwright artifacts
 apps/docs/playwright-report/
 apps/docs/test-results/
+
+# Lighthouse artifacts
+.lighthouseci/

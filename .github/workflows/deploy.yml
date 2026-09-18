@@ -69,6 +69,14 @@ jobs:
           wranglerVersion: 4.130.0
         env:
           FORCE_COLOR: 0
+      - name: Audit homepage with Lighthouse
+        if: ${{ github.actor != 'dependabot[bot]' }}
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: ${{ steps.deploy.outputs.deployment-url }}
+          configPath: ./apps/docs/lighthouserc.json
+          uploadArtifacts: true
+          artifactName: homepage-lighthouse-reports
       - name: Comment with docs preview link
         if: ${{ github.event_name == 'pull_request' && steps.deploy.outcome == 'success' }}
         uses: marocchino/sticky-pull-request-comment@v2
