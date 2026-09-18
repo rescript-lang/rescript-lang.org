@@ -1,4 +1,4 @@
-import { createRequestHandler } from "react-router";
+import { createRequestHandler, RouterContextProvider } from "react-router";
 
 const mode = globalThis.process?.env?.NODE_ENV ?? "production";
 
@@ -8,9 +8,5 @@ const handleReactRouterRequest = createRequestHandler(
 );
 
 export function onRequest(context) {
-  return handleReactRouterRequest(context.request, {
-    cloudflare: {
-      env: context.env,
-    },
-  });
+  return handleReactRouterRequest(context.request, new RouterContextProvider());
 }
