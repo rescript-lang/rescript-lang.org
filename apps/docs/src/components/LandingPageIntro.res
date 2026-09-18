@@ -1,11 +1,6 @@
 @react.component
 let make = () => {
   <section dataTestId="landing-intro" className="flex justify-center">
-    // This font is only needed on the homepage.
-    <link
-      href="https://fonts.googleapis.com/css2?family=Red+Hat+Mono:wght@700&display=swap"
-      rel="stylesheet"
-    />
     <div className="max-w-1060 flex flex-col items-center px-5 sm:px-8 lg:box-content">
       <h1 className="hl-title text-center max-w-212">
         {React.string("JavaScript Made Simple for Humans and AI")}
