@@ -2,7 +2,7 @@ name: Pull Request
 on: [pull_request]
 jobs:
   Format:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
@@ -20,7 +20,7 @@ jobs:
       - name: Format check
         run: yarn ci:format
   Site_Checks:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
@@ -40,7 +40,7 @@ jobs:
   # Confirms that Wrangler can start the Docs Pages and Guide local dev servers.
   # This startup check intentionally excludes route-level application and Pages Function behavior.
   Wrangler:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
@@ -92,7 +92,7 @@ jobs:
           cat wrangler.log
           exit 1
   Vitest:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     container:
       # Keep this image tag aligned with package.json's playwright version.
       image: mcr.microsoft.com/playwright:v1.63.0-noble
@@ -120,7 +120,7 @@ jobs:
       - name: Guide Vitest
         run: yarn workspace @rescript-lang/guide ci:test
   Visual_Regression:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     container:
       # Keep this image tag aligned with package.json's playwright version.
       image: mcr.microsoft.com/playwright:v1.63.0-noble
@@ -144,7 +144,7 @@ jobs:
         run: yarn ci:test:visual
       - name: Upload visual regression artifacts
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: visual-regression-artifacts
           path: |
