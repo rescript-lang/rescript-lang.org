@@ -43,11 +43,16 @@ jobs:
         shell: bash
         run: |
           RAW_BRANCH="${{ github.head_ref || github.ref_name }}"
+          RAW_TARGET_BRANCH="${{ github.base_ref || github.head_ref || github.ref_name }}"
           ARTIFACT_BRANCH=$(echo "$RAW_BRANCH" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9-]+/-/g; s/^-+//; s/-+$//; s/-+/-/g')
           ARTIFACT_BRANCH="${ARTIFACT_BRANCH:0:80}"
+          TARGET_ARTIFACT_BRANCH=$(echo "$RAW_TARGET_BRANCH" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9-]+/-/g; s/^-+//; s/-+$//; s/-+/-/g')
+          TARGET_ARTIFACT_BRANCH="${TARGET_ARTIFACT_BRANCH:0:80}"
 
           echo "LIGHTHOUSE_ARTIFACT_NAME=homepage-lighthouse-${ARTIFACT_BRANCH}" >> "$GITHUB_ENV"
           echo "LIGHTHOUSE_BRANCH=$RAW_BRANCH" >> "$GITHUB_ENV"
+          echo "LIGHTHOUSE_TARGET_ARTIFACT_NAME=homepage-lighthouse-${TARGET_ARTIFACT_BRANCH}" >> "$GITHUB_ENV"
+          echo "LIGHTHOUSE_TARGET_BRANCH=$RAW_TARGET_BRANCH" >> "$GITHUB_ENV"
 
           if [[ "$RAW_BRANCH" == "master" ]]; then
              echo "VITE_DEPLOYMENT_URL=" >> "$GITHUB_ENV"
@@ -78,27 +83,27 @@ jobs:
           wranglerVersion: 4.130.0
         env:
           FORCE_COLOR: 0
-      - name: Restore previous Lighthouse baseline
+      - name: Restore target branch Lighthouse baseline
         if: ${{ github.actor != 'dependabot[bot]' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
         run: |
-          mkdir -p .lighthouse-baseline
+          mkdir -p .lighthouse-target
 
           ARTIFACT_ID=$(gh api --method GET \
             "/repos/${GITHUB_REPOSITORY}/actions/artifacts" \
-            -f name="$LIGHTHOUSE_ARTIFACT_NAME" \
+            -f name="$LIGHTHOUSE_TARGET_ARTIFACT_NAME" \
             -f per_page=100 \
             --jq '.artifacts | map(select(.expired == false)) | sort_by(.created_at) | last | .id // empty')
 
           if [[ -z "$ARTIFACT_ID" ]]; then
-            echo "No previous Lighthouse baseline found for $LIGHTHOUSE_BRANCH"
+            echo "No Lighthouse baseline found for target branch $LIGHTHOUSE_TARGET_BRANCH"
             exit 0
           fi
 
-          gh api "/repos/${GITHUB_REPOSITORY}/actions/artifacts/${ARTIFACT_ID}/zip" > "$RUNNER_TEMP/lighthouse-baseline.zip"
-          unzip -q "$RUNNER_TEMP/lighthouse-baseline.zip" -d .lighthouse-baseline
+          gh api "/repos/${GITHUB_REPOSITORY}/actions/artifacts/${ARTIFACT_ID}/zip" > "$RUNNER_TEMP/lighthouse-target.zip"
+          unzip -q "$RUNNER_TEMP/lighthouse-target.zip" -d .lighthouse-target
       - name: Audit homepage with Lighthouse
         if: ${{ github.actor != 'dependabot[bot]' }}
         uses: treosh/lighthouse-ci-action@v12

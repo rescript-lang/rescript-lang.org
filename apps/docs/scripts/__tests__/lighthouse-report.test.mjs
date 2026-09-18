@@ -82,8 +82,9 @@ test("formatComment compares scores and links the full artifact", () => {
     commit: "1234567890abcdef",
     url: "https://1234.rescript-lang.pages.dev",
   });
-  const previous = {
+  const target = {
     ...current,
+    branch: "test/homepage-performance-guardrails",
     commit: "abcdef1234567890",
     scores: {
       performance: 78,
@@ -94,11 +95,16 @@ test("formatComment compares scores and links the full artifact", () => {
   };
   const comment = formatComment({
     current,
-    previous,
+    target,
+    targetBranch: "test/homepage-performance-guardrails",
     artifactUrl: "https://github.com/example/actions/runs/1/artifacts/2",
   });
 
-  assert.match(comment, /Compared with commit `abcdef1`/);
+  assert.match(
+    comment,
+    /Compared with target branch `test\/homepage-performance-guardrails` at commit `abcdef1`/,
+  );
+  assert.match(comment, /\| Category \| Target \| Current \| Change \|/);
   assert.match(comment, /\| Performance \| 78 \| \*\*80\*\* \| \+2 \|/);
   assert.match(comment, /\| Accessibility \| 74 \| \*\*73\*\* \| -1 \|/);
   assert.match(
@@ -107,7 +113,7 @@ test("formatComment compares scores and links the full artifact", () => {
   );
 });
 
-test("formatComment identifies the first branch baseline", () => {
+test("formatComment identifies a missing target branch baseline", () => {
   const current = createBaseline({
     reports,
     branch: "perf/homepage",
@@ -116,10 +122,14 @@ test("formatComment identifies the first branch baseline", () => {
   });
   const comment = formatComment({
     current,
-    previous: undefined,
+    target: undefined,
+    targetBranch: "master",
     artifactUrl: "https://github.com/example/actions/runs/1/artifacts/2",
   });
 
-  assert.match(comment, /No previous baseline was available/);
-  assert.match(comment, /\| Performance \| - \| \*\*80\*\* \| - \|/);
+  assert.match(
+    comment,
+    /No Lighthouse baseline is available for target branch `master`/,
+  );
+  assert.match(comment, /\| Performance \| N\/A \| \*\*80\*\* \| N\/A \|/);
 });

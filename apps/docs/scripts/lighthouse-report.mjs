@@ -81,8 +81,8 @@ export function createBaseline({ reports, branch, commit, url }) {
   };
 }
 
-function formatDelta(previous, current) {
-  const delta = current - previous;
+function formatDelta(target, current) {
+  const delta = current - target;
   return delta > 0 ? `+${delta}` : String(delta);
 }
 
@@ -90,16 +90,16 @@ function shortCommit(commit) {
   return commit.slice(0, 7);
 }
 
-export function formatComment({ current, previous, artifactUrl }) {
-  const comparison = previous
-    ? `Compared with commit \`${shortCommit(previous.commit)}\` on this branch.`
-    : "No previous baseline was available for this branch.";
+export function formatComment({ current, target, targetBranch, artifactUrl }) {
+  const comparison = target
+    ? `Compared with target branch \`${target.branch}\` at commit \`${shortCommit(target.commit)}\`.`
+    : `No Lighthouse baseline is available for target branch \`${targetBranch}\`.`;
   const scoreRows = scoreDefinitions.map(([key, label]) => {
-    const previousScore = previous?.scores[key];
-    return `| ${label} | ${previousScore ?? "-"} | **${current.scores[key]}** | ${
-      previousScore === undefined
-        ? "-"
-        : formatDelta(previousScore, current.scores[key])
+    const targetScore = target?.scores[key];
+    return `| ${label} | ${targetScore ?? "N/A"} | **${current.scores[key]}** | ${
+      targetScore === undefined
+        ? "N/A"
+        : formatDelta(targetScore, current.scores[key])
     } |`;
   });
 
@@ -108,7 +108,7 @@ export function formatComment({ current, previous, artifactUrl }) {
     "",
     `${comparison} Scores are the median of ${current.runs} runs against the deployed Cloudflare preview.`,
     "",
-    "| Category | Previous | Current | Change |",
+    "| Category | Target | Current | Change |",
     "| --- | ---: | ---: | ---: |",
     ...scoreRows,
     "",
@@ -158,16 +158,13 @@ async function writeBaseline() {
   const baselinePath =
     process.env.LIGHTHOUSE_BASELINE_PATH ??
     path.join(reportDirectory, "baseline.json");
-  const previousBaselinePath =
-    process.env.LIGHTHOUSE_PREVIOUS_BASELINE_PATH ??
-    path.join(".lighthouse-baseline", "baseline.json");
-  const previousSnapshotPath = path.join(
-    reportDirectory,
-    "previous-baseline.json",
-  );
-  const [reports, previous] = await Promise.all([
+  const targetBaselinePath =
+    process.env.LIGHTHOUSE_TARGET_BASELINE_PATH ??
+    path.join(".lighthouse-target", "baseline.json");
+  const targetSnapshotPath = path.join(reportDirectory, "target-baseline.json");
+  const [reports, target] = await Promise.all([
     readReports(reportDirectory),
-    readOptionalJson(previousBaselinePath),
+    readOptionalJson(targetBaselinePath),
   ]);
   const baseline = createBaseline({
     reports,
@@ -177,11 +174,8 @@ async function writeBaseline() {
   });
 
   await writeFile(baselinePath, `${JSON.stringify(baseline, null, 2)}\n`);
-  if (previous) {
-    await writeFile(
-      previousSnapshotPath,
-      `${JSON.stringify(previous, null, 2)}\n`,
-    );
+  if (target) {
+    await writeFile(targetSnapshotPath, `${JSON.stringify(target, null, 2)}\n`);
   }
 }
 
@@ -191,15 +185,15 @@ async function writeComment() {
   const baselinePath =
     process.env.LIGHTHOUSE_BASELINE_PATH ??
     path.join(reportDirectory, "baseline.json");
-  const previousBaselinePath =
-    process.env.LIGHTHOUSE_PREVIOUS_BASELINE_PATH ??
-    path.join(".lighthouse-baseline", "baseline.json");
+  const targetBaselinePath =
+    process.env.LIGHTHOUSE_TARGET_BASELINE_PATH ??
+    path.join(".lighthouse-target", "baseline.json");
   const commentPath =
     process.env.LIGHTHOUSE_COMMENT_PATH ??
     path.join(reportDirectory, "comment.md");
-  const [current, previous] = await Promise.all([
+  const [current, target] = await Promise.all([
     readOptionalJson(baselinePath),
-    readOptionalJson(previousBaselinePath),
+    readOptionalJson(targetBaselinePath),
   ]);
 
   if (!current) {
@@ -210,7 +204,8 @@ async function writeComment() {
     commentPath,
     formatComment({
       current,
-      previous,
+      target,
+      targetBranch: requiredEnvironment("LIGHTHOUSE_TARGET_BRANCH"),
       artifactUrl: requiredEnvironment("LIGHTHOUSE_ARTIFACT_URL"),
     }),
   );
