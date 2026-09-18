@@ -1,8 +1,8 @@
 {
   "javascript": {
     "requests": 20,
-    "rawBytes": 1422538,
-    "gzipBytes": 279532
+    "rawBytes": 1422586,
+    "gzipBytes": 279540
   },
   "css": {
     "requests": 3,
