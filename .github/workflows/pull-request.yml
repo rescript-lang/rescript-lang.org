@@ -121,11 +121,7 @@ jobs:
         run: yarn workspace @rescript-lang/guide ci:test
   Homepage_E2E:
     runs-on: ubuntu-latest
-    container:
-      # Keep this image tag aligned with package.json's playwright version.
-      image: mcr.microsoft.com/playwright:v1.63.0-noble
     env:
-      PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
       VITE_ALGOLIA_APP_ID: test-app-id
       VITE_ALGOLIA_INDEX_NAME: test-index
       VITE_ALGOLIA_SEARCH_API_KEY: test-search-key
@@ -143,6 +139,8 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn
+      - name: Install Playwright Chromium
+        run: yarn workspace @rescript-lang/docs playwright install --with-deps chromium
       - name: Build docs
         run: yarn workspace @rescript-lang/docs build
       - name: Check homepage performance budgets
