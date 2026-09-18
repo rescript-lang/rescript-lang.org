@@ -55,6 +55,8 @@ jobs:
         run: yarn
       - name: Build ReScript
         run: yarn build:res
+      - name: Build docs
+        run: yarn build:vite
       - name: Validate Docs Wrangler dev server
         working-directory: apps/docs
         run: |
