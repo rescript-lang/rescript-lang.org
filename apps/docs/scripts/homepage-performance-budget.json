@@ -1,12 +1,12 @@
 {
   "javascript": {
-    "requests": 22,
-    "rawBytes": 1402061,
-    "gzipBytes": 274525
+    "requests": 21,
+    "rawBytes": 1410064,
+    "gzipBytes": 284515
   },
   "css": {
     "requests": 3,
-    "rawBytes": 80214,
+    "rawBytes": 80247,
     "gzipBytes": 14725
   },
   "bodyElements": 418,

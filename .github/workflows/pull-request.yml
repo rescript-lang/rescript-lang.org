@@ -121,7 +121,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       # Keep this image tag aligned with package.json's playwright version.
-      image: mcr.microsoft.com/playwright:v1.59.1-noble
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
     env:
       PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
       VITE_ALGOLIA_APP_ID: test-app-id
