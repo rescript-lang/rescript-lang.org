@@ -23,7 +23,7 @@
     "convert-images": "auto-convert-images",
     "dev:res": "rescript watch",
     "dev:vite": "react-router dev --host",
-    "dev:wrangler": "yarn wrangler pages dev build/client",
+    "dev:wrangler": "yarn build:vite && yarn wrangler pages dev build/client",
     "dev": "yarn prepare && yarn dev:res & yarn dev:vite & yarn dev:wrangler",
     "format": "cd ../.. && oxfmt && cd apps/docs && rescript format",
     "prepare": "yarn build:res && yarn build:scripts && yarn check:algolia-public-env && yarn build:update-index",

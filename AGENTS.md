@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This is the official documentation website for the [ReScript](https://rescript-lang.org) programming language. It is a **fully pre-rendered static site** (no server-side rendering at runtime) built with **ReScript v12 + React 19 + React Router v8 + Vite 8 + Tailwind CSS v4**, deployed to **Cloudflare Pages**.
+This is the official documentation website for the [ReScript](https://rescript-lang.org) programming language. It is primarily pre-rendered at build time, with runtime server-side rendering for `/try` through Cloudflare Pages Functions. It is built with **ReScript v12 + React 19 + React Router v8 + Vite 8 + Tailwind CSS v4**, deployed to **Cloudflare Pages**.
 
 ## System Requirements
 
@@ -99,7 +99,8 @@ The project uses several patterns for JavaScript interop. Follow the existing co
 ## ReScript React
 
 - This project uses **React 19** and **React Router v8** (framework mode).
-- The site is **pre-rendered** (`ssr: false`), so loaders have access to the filesystem during build. Loaders do **not** run on a server after the build.
+- The site uses hybrid rendering: most routes are pre-rendered during the build, while `/try` is server-rendered by Cloudflare Pages Functions at runtime.
+- Loaders for pre-rendered routes can access the filesystem during the build. Runtime SSR loaders, including shared loader code reachable from `/try`, execute in Cloudflare and must not depend on Node-only filesystem APIs or other build-time-only operations.
 - Route modules live in `app/routes/` and export a `loader` and a `default` component.
 - Route modules **require** both a `.res` and a `.resi` (interface) file for Vite HMR to work.
 - Only a single React component can be exposed from a module's JS output.
