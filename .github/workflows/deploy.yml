@@ -40,10 +40,17 @@ jobs:
       - name: Sync playground bundles
         run: yarn build:sync-bundles
       - name: Set VITE_DEPLOYMENT_URL
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
         run: |
           RAW_BRANCH="${{ github.head_ref || github.ref_name }}"
-          RAW_TARGET_BRANCH="${{ github.base_ref || github.head_ref || github.ref_name }}"
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            RAW_TARGET_BRANCH=$(gh api "/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }}" --jq '.base.ref')
+          else
+            RAW_TARGET_BRANCH="$RAW_BRANCH"
+          fi
+
           ARTIFACT_BRANCH=$(echo "$RAW_BRANCH" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9-]+/-/g; s/^-+//; s/-+$//; s/-+/-/g')
           ARTIFACT_BRANCH="${ARTIFACT_BRANCH:0:80}"
           TARGET_ARTIFACT_BRANCH=$(echo "$RAW_TARGET_BRANCH" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9-]+/-/g; s/^-+//; s/-+$//; s/-+/-/g')
