@@ -111,3 +111,7 @@ apps/docs/.env.local
 .vitest-attachments
 apps/docs/.vitest-attachments
 apps/guide/.vitest-attachments
+
+# Playwright artifacts
+apps/docs/playwright-report/
+apps/docs/test-results/
