@@ -1,6 +1,13 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import {
+  mkdtemp,
+  mkdir,
+  readFile,
+  readdir,
+  rm,
+  writeFile,
+} from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -20,8 +27,24 @@ async function fixture(context, overrides = {}) {
     `#!${process.execPath}
 const fs = require("node:fs");
 const args = process.argv.slice(2);
+const callIndex = fs.existsSync(process.env.CALLS)
+  ? fs.readFileSync(process.env.CALLS, "utf8").trim().split("\\n").length
+  : 0;
 fs.appendFileSync(process.env.CALLS, JSON.stringify(args) + "\\n");
 if (process.env.GH_FAIL === "1") process.exit(1);
+if (process.env.GH_STEPS) {
+  const step = JSON.parse(process.env.GH_STEPS)[callIndex];
+  if (!step) process.exit(99);
+  if (step.error) {
+    process.stdout.write(step.stdout || "");
+    process.stderr.write(step.error);
+    process.exit(step.status ?? 1);
+  }
+  if (step.stdout !== undefined) {
+    process.stdout.write(step.stdout);
+    process.exit(0);
+  }
+}
 if (args.some(arg => arg.endsWith("/zip"))) {
   process.stdout.write(fs.readFileSync(process.env.ARCHIVE));
 } else if (!args.includes("DELETE")) {
@@ -34,6 +57,7 @@ if (args.some(arg => arg.endsWith("/zip"))) {
     path.join(directory, "bin/unzip"),
     `#!${process.execPath}
 require("node:fs").appendFileSync(process.env.CALLS, JSON.stringify(["unzip", ...process.argv.slice(2)]) + "\\n");
+process.exit(Number(process.env.UNZIP_STATUS || 0));
 `,
     { mode: 0o755 },
   );
@@ -156,6 +180,141 @@ test("restores the selected baseline archive", async (context) => {
     "-d",
     ".lighthouse-target",
   ]);
+});
+
+for (const status of [404, 410]) {
+  test(`restore re-queries after a disappearing artifact returns HTTP ${status}`, async (context) => {
+    const state = await fixture(context, {
+      GH_STEPS: JSON.stringify([
+        { stdout: "42\n" },
+        {
+          error: `gh: Artifact unavailable (HTTP ${status})\n`,
+          stdout: '{"message":"Artifact unavailable"}',
+        },
+        { stdout: "43\n" },
+        {},
+      ]),
+    });
+    const archive = path.join(state.directory, "fixture.zip");
+    const archiveBytes = Buffer.from([80, 75, 3, 4, 0, 255]);
+    await writeFile(archive, archiveBytes);
+    const result = run("lighthouse-restore.sh", {
+      ...state,
+      env: { ...state.env, ARCHIVE: archive },
+    });
+    assert.equal(result.status, 0, result.stderr);
+    const requests = await calls(state);
+    assert.deepEqual(requests[0], requests[2]);
+    assert.deepEqual(requests[3], [
+      "api",
+      "/repos/owner/site/actions/artifacts/43/zip",
+    ]);
+    assert.equal(requests[4][0], "unzip");
+    assert.equal(requests.length, 5);
+    assert.deepEqual(
+      await readFile(path.join(state.directory, "lighthouse-target.zip")),
+      archiveBytes,
+    );
+  });
+}
+
+test("restore allows a baseline that disappears without a replacement", async (context) => {
+  const state = await fixture(context, {
+    GH_STEPS: JSON.stringify([
+      { stdout: "42\n" },
+      { error: "gh: Not Found (HTTP 404)\n" },
+      { stdout: "" },
+    ]),
+  });
+  const result = run("lighthouse-restore.sh", state);
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /No Lighthouse baseline found/);
+  assert.equal((await calls(state)).length, 3);
+  assert.deepEqual(
+    await readdir(path.join(state.directory, ".lighthouse-target")),
+    [],
+  );
+  assert.ok(
+    !(await readdir(state.directory)).includes("lighthouse-target.zip"),
+  );
+});
+
+test("restore stops after three missing downloads and allows no baseline", async (context) => {
+  const state = await fixture(context, {
+    GH_STEPS: JSON.stringify(
+      [42, 43, 44].flatMap((id) => [
+        { stdout: `${id}\n` },
+        { error: "gh: Not Found (HTTP 404)\n" },
+      ]),
+    ),
+  });
+  const result = run("lighthouse-restore.sh", state);
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(
+    result.stdout,
+    /No Lighthouse baseline available .* after 3 attempts/,
+  );
+  const requests = await calls(state);
+  assert.equal(requests.length, 6);
+  assert.deepEqual(
+    requests.filter((args) => args.some((arg) => arg.endsWith("/zip"))),
+    [42, 43, 44].map((id) => [
+      "api",
+      `/repos/owner/site/actions/artifacts/${id}/zip`,
+    ]),
+  );
+  assert.deepEqual(
+    await readdir(path.join(state.directory, ".lighthouse-target")),
+    [],
+  );
+  assert.ok(
+    !(await readdir(state.directory)).includes("lighthouse-target.zip"),
+  );
+});
+
+for (const error of [
+  "gh: Bad credentials (HTTP 401)\n",
+  "gh: Resource not accessible by integration (HTTP 403)\n",
+  "gh: API rate limit exceeded (HTTP 429)\n",
+  "gh: Internal Server Error (HTTP 500)\n",
+  "error connecting to api.github.com\n",
+]) {
+  test(`restore propagates download failure: ${error.trim()}`, async (context) => {
+    const state = await fixture(context, {
+      GH_STEPS: JSON.stringify([{ stdout: "42\n" }, { error, status: 7 }]),
+    });
+    const result = run("lighthouse-restore.sh", state);
+    assert.equal(result.status, 7);
+    assert.equal(result.stderr, error);
+    assert.equal((await calls(state)).length, 2);
+  });
+}
+
+test("restore propagates a failed artifact re-query", async (context) => {
+  const state = await fixture(context, {
+    GH_STEPS: JSON.stringify([
+      { stdout: "42\n" },
+      { error: "gh: Not Found (HTTP 404)\n" },
+      { error: "error connecting to api.github.com\n", status: 7 },
+    ]),
+  });
+  assert.equal(run("lighthouse-restore.sh", state).status, 7);
+  assert.equal((await calls(state)).length, 3);
+});
+
+test("restore propagates invalid archive failures without retrying", async (context) => {
+  const state = await fixture(context, {
+    GH_RESPONSE: "42\n",
+    UNZIP_STATUS: "9",
+  });
+  const archive = path.join(state.directory, "fixture.zip");
+  await writeFile(archive, "not an archive");
+  const result = run("lighthouse-restore.sh", {
+    ...state,
+    env: { ...state.env, ARCHIVE: archive },
+  });
+  assert.equal(result.status, 9);
+  assert.equal((await calls(state)).length, 3);
 });
 
 test("cleanup preserves the newly uploaded artifact", async (context) => {
