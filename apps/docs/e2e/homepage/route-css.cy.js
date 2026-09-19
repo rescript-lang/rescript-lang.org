@@ -1,5 +1,12 @@
 import { headline } from "./helpers.js";
 
+const homepageLayoutSelectors = [
+  ".max-w-1060",
+  ".md\\:grid-cols-10",
+  ".md\\:col-span-6",
+  ".min-h-148",
+];
+
 function expectDesktopLogo() {
   cy.get('a[aria-label="homepage"]')
     .should("have.css", "width", "128px")
@@ -67,6 +74,9 @@ function expectContentStyles() {
   loadedStyles().then((styles) => {
     expect(styles).to.include(".markdown-body");
     expect(styles).not.to.include(".playground-theme");
+    for (const selector of homepageLayoutSelectors) {
+      expect(styles).not.to.include(selector);
+    }
   });
 }
 
@@ -75,6 +85,9 @@ it("homepage styles exclude content, search, and playground rules", () => {
   cy.contains("h1", headline).should("be.visible");
   loadedStyles().then((styles) => {
     expect(styles).to.include(".gallery-selector");
+    for (const selector of homepageLayoutSelectors) {
+      expect(styles).to.include(selector);
+    }
     for (const selector of [
       ".markdown-body",
       ".playground-theme",

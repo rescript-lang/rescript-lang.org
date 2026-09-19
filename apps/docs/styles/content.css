@@ -8,6 +8,7 @@
 @source not "../app/routes/TryRoute.{res,jsx}";
 @source "../app/layouts/**/*.{res,jsx}";
 @source "../src/**/*.{res,jsx,js,mjs}";
+@source not "../src/components/LandingPage*.{res,jsx}";
 @source "../markdown-pages/**/*.mdx";
 @source "../../../packages/shared/src/**/*.{res,jsx}";
 

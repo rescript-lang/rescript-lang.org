@@ -3,6 +3,7 @@
 @import "./_shared-sources.css";
 
 @source "../app/routes/LandingPage*.{res,jsx}";
+@source "../src/components/LandingPage*.{res,jsx}";
 @source "../src/components/{Footer,Button,ImageGallery,ResponsiveImage}.{res,jsx}";
 
 .gallery-selector::after {
