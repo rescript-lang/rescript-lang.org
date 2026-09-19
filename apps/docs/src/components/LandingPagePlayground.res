@@ -45,14 +45,36 @@ let make = (~playgroundData: playgroundData) => {
         {React.string("Edit this example in Playground")}
       </ReactRouter.Link.String>
       <div className="hidden md:block">
-        <img className="absolute z-0 left-0 top-0 -ml-10 -mt-6 h-96 w-96" src="/lp/grid.svg" />
-        <img className="absolute z-0 left-0 top-0 -ml-10 mt-10" src="/lp/illu_left.avif" />
+        <img
+          className="absolute z-0 left-0 top-0 -ml-10 -mt-6 h-96 w-96"
+          src="/lp/grid.svg"
+          alt=""
+          width="384"
+          height="384"
+        />
+        <img
+          className="absolute z-0 left-0 top-0 -ml-10 mt-10"
+          src="/lp/illu_left.avif"
+          alt=""
+          width="108"
+          height="118"
+        />
       </div>
       <div className="hidden md:block">
         <img
-          className="absolute z-0 right-0 bottom-0 -mb-10 mt-24 -mr-10 h-96 w-96" src="/lp/grid.svg"
+          className="absolute z-0 right-0 bottom-0 -mb-10 mt-24 -mr-10 h-96 w-96"
+          src="/lp/grid.svg"
+          alt=""
+          width="384"
+          height="384"
         />
-        <img className="absolute z-3 right-0 bottom-0 -mr-2 mb-10" src="/lp/illu_right.avif" />
+        <img
+          className="absolute z-3 right-0 bottom-0 -mr-2 mb-10"
+          src="/lp/illu_right.avif"
+          alt=""
+          width="123"
+          height="118"
+        />
       </div>
     </div>
   </section>

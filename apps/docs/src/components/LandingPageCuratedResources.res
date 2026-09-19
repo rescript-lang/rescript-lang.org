@@ -9,6 +9,8 @@ type templateKind = NextJs | ViteJs | NodeJs
 
 type template = {
   imgSrc: string,
+  width: int,
+  height: int,
   kind: templateKind,
   descr: string,
   href: string,
@@ -44,18 +46,24 @@ let cards = [
 let templates = [
   {
     imgSrc: "/nextjs_starter_logo.svg",
+    width: 53,
+    height: 53,
     kind: NextJs,
     descr: "Get started with our NextJS starter template.",
     href: "https://github.com/rescript-lang/create-rescript-app/blob/master/templates/rescript-template-nextjs/README.md",
   },
   {
     imgSrc: "/vitejs_starter_logo.svg",
+    width: 410,
+    height: 404,
     kind: ViteJs,
     descr: "Get started with ViteJS and ReScript.",
     href: "https://github.com/rescript-lang/create-rescript-app/blob/master/templates/rescript-template-vite/README.md",
   },
   {
     imgSrc: "/nodejs_starter_logo.svg",
+    width: 53,
+    height: 53,
     kind: NodeJs,
     descr: "Get started with ReScript targeting the Node platform.",
     href: "/",
@@ -112,7 +120,14 @@ let make = () => {
             to=card.href
             className="hover:bg-gray-80 bg-gray-90 px-4 md:px-8 pb-0 md:pb-8 relative rounded-xl md:min-w-[196px]"
           >
-            <img className="h-[53px] absolute mt-6" src=card.imgSrc loading=#lazy />
+            <img
+              className="h-[53px] w-auto absolute mt-6"
+              src=card.imgSrc
+              alt=""
+              width="70"
+              height="70"
+              loading=#lazy
+            />
             <h5 className="text-gray-10 hl-4 mt-32 h-12"> {React.string(card.title)} </h5>
             <div className="text-gray-40 mt-2 mb-8 body-sm"> {React.string(card.descr)} </div>
           </ReactRouter.Link.String>
@@ -135,7 +150,14 @@ let make = () => {
             href=template.href
             className="hover:bg-gray-80 bg-gray-90 px-5 pb-8 relative rounded-xl min-w-[200px]"
           >
-            <img className="h-12 absolute mt-5" src=template.imgSrc loading=#lazy />
+            <img
+              className="h-12 w-auto absolute mt-5"
+              src=template.imgSrc
+              alt=""
+              width={template.width->Int.toString}
+              height={template.height->Int.toString}
+              loading=#lazy
+            />
             <h5 className="text-gray-10 hl-4 mt-32 h-12"> {renderTemplateTitle(template.kind)} </h5>
             <div className="text-gray-40 mt-4 body-sm"> {React.string(template.descr)} </div>
           </a>

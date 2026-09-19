@@ -10,7 +10,8 @@ let make = () => {
         <ImageGallery
           className="w-full "
           imgClassName="w-full h-[25.9rem] object-cover rounded-lg"
-          imgSrcs={["/lp/community-3.avif", "/lp/community-2.avif", "/lp/community-1.avif"]}
+          images=LandingPageImages.community
+          imgSizes=LandingPageImages.communitySizes
           imgLoading=#lazy
         />
         <h3 className="hl-3 text-gray-20 mt-4 mb-2">
@@ -30,8 +31,12 @@ let make = () => {
         </a>
       </div>
       <div className="col-span-4 lg:row-start-1">
-        <img
-          className="w-full rounded-lg border-2 border-turtle-dark" src="/lp/editor-tooling-1.avif"
+        <ResponsiveImage
+          className="w-full rounded-lg border-2 border-turtle-dark"
+          image=LandingPageImages.tooling
+          sizes=LandingPageImages.screenshotSizes
+          alt="ReScript editor tooling"
+          loading=#lazy
         />
         <h3 className="hl-3 text-gray-20 mt-6 mb-2">
           {React.string(`Tooling that just works out of the box`)}
@@ -44,7 +49,13 @@ let make = () => {
         </p>
       </div>
       <div className="col-span-4 lg:row-start-2">
-        <img className="w-full rounded-lg border-2 border-fire-30" src="/lp/easy-to-unadopt.avif" />
+        <ResponsiveImage
+          className="w-full rounded-lg border-2 border-fire-30"
+          image=LandingPageImages.unadopt
+          sizes=LandingPageImages.screenshotSizes
+          alt="ReScript JavaScript output"
+          loading=#lazy
+        />
         <h3 className="hl-3 text-gray-20 mt-6 mb-2">
           {React.string(`Easy to adopt — without any lock-in`)}
         </h3>

@@ -4,6 +4,6 @@ type playgroundData = {
   playgroundHref: string,
 }
 
-/** Render only trusted highlighted markup produced by the homepage loader. */
+/** Render trusted loader markup and reserve space for the decorative images. */
 @react.component
 let make: (~playgroundData: playgroundData) => React.element
