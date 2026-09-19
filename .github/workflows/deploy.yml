@@ -19,8 +19,9 @@ jobs:
     concurrency:
       group: docs-deploy-${{ github.head_ref || github.ref_name }}
       cancel-in-progress: true
+    outputs:
+      url: ${{ steps.deploy.outputs.deployment-url }}
     permissions:
-      actions: write
       contents: read
       deployments: write
       pull-requests: write
@@ -41,11 +42,9 @@ jobs:
         run: yarn build:sync-bundles
       - name: Set VITE_DEPLOYMENT_URL
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RAW_BRANCH: ${{ github.head_ref || github.ref_name }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
         shell: bash
-        run: bash .github/scripts/lighthouse-environment.sh
+        run: bash .github/scripts/deployment-environment.sh
       - name: Build
         run: yarn build
         env:
@@ -66,25 +65,54 @@ jobs:
           wranglerVersion: 4.130.0
         env:
           FORCE_COLOR: 0
+      - name: Comment with docs preview link
+        if: ${{ github.event_name == 'pull_request' && steps.deploy.outcome == 'success' }}
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          recreate: true
+          header: docs-deployment
+          message: |
+            [Docs preview](${{ steps.deploy.outputs.deployment-url }})
+
+  lighthouse:
+    runs-on: ubuntu-latest
+    name: Lighthouse
+    needs: deploy
+    if: ${{ github.actor != 'dependabot[bot]' }}
+    concurrency:
+      group: docs-lighthouse-${{ github.head_ref || github.ref_name }}
+      cancel-in-progress: true
+    permissions:
+      actions: write
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v6.0.2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6.3.0
+        with:
+          node-version-file: ".node-version"
+      - name: Set Lighthouse environment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RAW_BRANCH: ${{ github.head_ref || github.ref_name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: bash .github/scripts/lighthouse-environment.sh
       - name: Restore target branch Lighthouse baseline
-        if: ${{ github.actor != 'dependabot[bot]' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
         run: bash .github/scripts/lighthouse-restore.sh
       - name: Audit homepage with Lighthouse
-        if: ${{ github.actor != 'dependabot[bot]' }}
         uses: treosh/lighthouse-ci-action@v12
         with:
-          urls: ${{ steps.deploy.outputs.deployment-url }}
+          urls: ${{ needs.deploy.outputs.url }}
           configPath: ./apps/docs/lighthouserc.json
       - name: Create Lighthouse baseline
-        if: ${{ github.actor != 'dependabot[bot]' }}
         run: node apps/docs/scripts/lighthouse-report.mjs baseline
         env:
-          LIGHTHOUSE_URL: ${{ steps.deploy.outputs.deployment-url }}
+          LIGHTHOUSE_URL: ${{ needs.deploy.outputs.url }}
       - name: Upload Lighthouse reports
-        if: ${{ github.actor != 'dependabot[bot]' }}
         id: lighthouse-artifact
         uses: actions/upload-artifact@v4
         with:
@@ -95,33 +123,23 @@ jobs:
           overwrite: true
           retention-days: 90
       - name: Summarize Lighthouse baseline
-        if: ${{ github.actor != 'dependabot[bot]' }}
         run: |
           node apps/docs/scripts/lighthouse-report.mjs comment
           cat .lighthouseci/comment.md >> "$GITHUB_STEP_SUMMARY"
         env:
           LIGHTHOUSE_ARTIFACT_URL: ${{ steps.lighthouse-artifact.outputs.artifact-url }}
       - name: Comment PR with Lighthouse baseline
-        if: ${{ github.event_name == 'pull_request' && github.actor != 'dependabot[bot]' }}
+        if: ${{ github.event_name == 'pull_request' }}
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: lighthouse-baseline
           path: .lighthouseci/comment.md
       - name: Remove superseded Lighthouse artifacts
-        if: ${{ github.actor != 'dependabot[bot]' }}
         env:
           CURRENT_ARTIFACT_ID: ${{ steps.lighthouse-artifact.outputs.artifact-id }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
         run: bash .github/scripts/lighthouse-cleanup.sh
-      - name: Comment with docs preview link
-        if: ${{ github.event_name == 'pull_request' && steps.deploy.outcome == 'success' }}
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          recreate: true
-          header: docs-deployment
-          message: |
-            [Docs preview](${{ steps.deploy.outputs.deployment-url }})
   deploy-guide:
     runs-on: ubuntu-latest
     name: Deploy Guide Worker
@@ -226,26 +244,10 @@ jobs:
         run: yarn install
       - name: Build ReScript
         run: yarn build:res
-      - name: Set Cypress base URL
-        id: cypress-base-url
-        shell: bash
-        run: |
-          RAW_BRANCH="${{ github.head_ref || github.ref_name }}"
-
-          if [[ "$RAW_BRANCH" == "master" ]]; then
-             CYPRESS_BASE_URL="https://rescript-lang.org"
-          else
-             SAFE_BRANCH=$(echo "$RAW_BRANCH" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9-]+/-/g; s/^-+//; s/-+$//; s/-+/-/g')
-             SAFE_BRANCH="${SAFE_BRANCH:0:28}"
-
-             CYPRESS_BASE_URL="https://${SAFE_BRANCH}.rescript-lang.pages.dev"
-          fi
-
-          echo "url=$CYPRESS_BASE_URL" >> "$GITHUB_OUTPUT"
       - name: Cypress E2E tests
         uses: cypress-io/github-action@v7
         with:
           install: false
           working-directory: apps/docs
           browser: chrome
-          config: baseUrl=${{ steps.cypress-base-url.outputs.url }}
+          config: baseUrl=${{ needs.deploy.outputs.url }}
