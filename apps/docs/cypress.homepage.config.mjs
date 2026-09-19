@@ -9,7 +9,8 @@ export default defineConfig({
   e2e: {
     ...config.e2e,
     baseUrl: "http://127.0.0.1:4173",
-    specPattern: "e2e/homepage/**/*.cy.js",
+    specPattern: "e2e/homepage/**/*.cy.jsx",
+    excludeSpecPattern: [],
     supportFile: "cypress/support/homepage.js",
     screenshotOnRunFailure: true,
   },
