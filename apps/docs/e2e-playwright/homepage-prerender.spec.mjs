@@ -22,6 +22,7 @@ test("homepage response contains prerendered content and highlighted examples", 
       href: link.getAttribute("href"),
       type: link.getAttribute("type"),
       crossOrigin: link.getAttribute("crossorigin"),
+      media: link.getAttribute("media"),
     }),
   );
 
@@ -30,21 +31,25 @@ test("homepage response contains prerendered content and highlighted examples", 
       href: "/fonts/subset-Inter-Regular.woff2",
       type: "font/woff2",
       crossOrigin: "anonymous",
+      media: null,
     },
     {
       href: "/fonts/subset-Inter-SemiBold.woff2",
       type: "font/woff2",
       crossOrigin: "anonymous",
+      media: null,
     },
     {
       href: "/fonts/subset-Inter-Bold.woff2",
       type: "font/woff2",
       crossOrigin: "anonymous",
+      media: "(min-width: 1024px)",
     },
     {
       href: "/fonts/red-hat-mono-700.woff2",
       type: "font/woff2",
       crossOrigin: "anonymous",
+      media: null,
     },
   ]);
   expect(html).not.toContain("fonts.googleapis.com");
