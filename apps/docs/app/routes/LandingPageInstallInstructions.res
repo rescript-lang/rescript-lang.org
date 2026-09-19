@@ -1,6 +1,6 @@
 let copyBox = text => {
   <div
-    className="flex justify-between items-center pl-6 pr-3 py-3 w-full bg-gray-10 border border-gray-20 rounded max-w-400"
+    className="relative flex justify-between items-center pl-6 pr-3 py-3 w-full bg-gray-10 border border-gray-20 rounded max-w-400"
   >
     <span className="font-mono text-14 text-gray-70"> {React.string(text)} </span>
     <LandingPageCopyButton code=text />
