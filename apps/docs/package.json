@@ -68,6 +68,7 @@
     "remark-gfm": "^4.0.1",
     "remark-validate-links": "^13.1.0",
     "rescript": "^12.2.0",
+    "shiki": "^4.4.3",
     "tinyglobby": "^0.2.15",
     "unified": "^11.0.5",
     "vfile-matter": "^5.0.1"

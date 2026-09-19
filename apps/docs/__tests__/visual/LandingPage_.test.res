@@ -6,7 +6,7 @@ let snapshotSection = async (~width, ~height, ~sectionTestId, ~screenshotName) =
 
   let screen = await render(
     <MemoryRouter initialEntries=["/"]>
-      <LandingPage />
+      <LandingPage highlightedExample={LandingPageFixture.highlightedExample} />
     </MemoryRouter>,
   )
 

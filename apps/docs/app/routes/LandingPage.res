@@ -34,15 +34,18 @@ module Intro = {
   }
 }
 
-module PlaygroundHero = {
-  type example = {
-    res: string,
-    js: string,
-  }
+type example = {
+  res: string,
+  js: string,
+}
 
-  let examples = [
-    {
-      res: `module Button = {
+type highlightedExample = {
+  res: string,
+  js: string,
+}
+
+let playgroundExample: example = {
+  res: `module Button = {
   @react.component
   let make = (~count) => {
     let times = switch count {
@@ -55,7 +58,7 @@ module PlaygroundHero = {
     <button> {text->React.string} </button>
   }
 }`,
-      js: `import * as JsxRuntime from "react/jsx-runtime";
+  js: `import * as JsxRuntime from "react/jsx-runtime";
 
 function Playground$Button(props) {
   let count = props.count;
@@ -75,13 +78,11 @@ let Button = {
 export {
   Button,
 }`,
-    },
-  ]
+}
 
+module PlaygroundHero = {
   @react.component
-  let make = () => {
-    let (example, _setExample) = React.useState(_ => examples->Array.getUnsafe(0))
-
+  let make = (~highlightedExample: highlightedExample) => {
     //Playground Section & Background
     <section dataTestId="landing-playground-hero" className="relative mt-20 bg-gray-10">
       <div className="relative mx-auto w-full pt-6 pb-8 sm:px-8 md:px-16 max-w-[1400px]">
@@ -98,7 +99,10 @@ export {
               {React.string("Write in ReScript")}
             </div>
             <pre className="text-14 px-8 pt-6 pb-12 whitespace-pre-wrap">
-              {HighlightJs.renderHLJS(~darkmode=true, ~code=example.res, ~lang="res", ())}
+              <code
+                className="hljs lang-res dark"
+                dangerouslySetInnerHTML={"__html": highlightedExample.res}
+              />
             </pre>
           </div>
           //Right Side (JavaScript)
@@ -109,14 +113,17 @@ export {
               {React.string("Compile to JavaScript")}
             </div>
             <pre className="text-14 px-8 pt-6 pb-14 md:border-l border-gray-80 whitespace-pre-wrap">
-              {HighlightJs.renderHLJS(~darkmode=true, ~code=example.js, ~lang="js", ())}
+              <code
+                className="hljs lang-js dark"
+                dangerouslySetInnerHTML={"__html": highlightedExample.js}
+              />
             </pre>
           </div>
         </div>
 
         /* ---Link to Playground--- */
         <ReactRouter.Link.String
-          to={`/try?code=${LzString.lzString.compressToEncodedURIComponent(example.res)}`}
+          to={`/try?code=${LzString.lzString.compressToEncodedURIComponent(playgroundExample.res)}`}
           className="captions md:px-0 border-b border-gray-40 hover:border-gray-60 text-gray-60"
         >
           {React.string("Edit this example in Playground")}
@@ -683,7 +690,7 @@ module CuratedResources = {
 }
 
 @react.component
-let make = (~components=MarkdownComponents.default) => {
+let make = (~components=MarkdownComponents.default, ~highlightedExample: highlightedExample) => {
   <>
     <Meta
       title="The ReScript Programming Language"
@@ -709,7 +716,7 @@ let make = (~components=MarkdownComponents.default) => {
           <div className="mt-16 md:mt-32 lg:mt-40 mb-12">
             <Intro />
           </div>
-          <PlaygroundHero />
+          <PlaygroundHero highlightedExample />
           <QuickInstall />
           <MainUSP />
           <OtherSellingPoints />
