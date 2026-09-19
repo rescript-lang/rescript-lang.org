@@ -3,6 +3,7 @@ import { playwright } from "@vitest/browser-playwright";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { responsiveImage } from "@responsive-image/vite-plugin";
+import { homepageReactCompiler } from "./vite-react-compiler.mjs";
 
 const isUpdatingSnapshots = process.argv.some(
   (arg) => arg === "-u" || arg === "--update" || arg.startsWith("--update="),
@@ -35,7 +36,7 @@ const setupDeps = [
 
 export default defineConfig({
   envDir: "../..",
-  plugins: [responsiveImage(), react(), tailwindcss()],
+  plugins: [responsiveImage(), react(), homepageReactCompiler(), tailwindcss()],
   optimizeDeps: {
     include: setupDeps,
   },

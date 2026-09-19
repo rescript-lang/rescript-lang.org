@@ -224,6 +224,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/types@npm:^7.26.0":
+  version: 7.29.8
+  resolution: "@babel/types@npm:7.29.8"
+  dependencies:
+    "@babel/helper-string-parser": "npm:^7.29.7"
+    "@babel/helper-validator-identifier": "npm:^7.29.7"
+  checksum: 10c0/be7c279f0abf2a086c633e21b49c7ca80275d05283cc5a268b67a708c9914bd0c944f1422b3eb3cb37682a2af5d560abf520ccf9b01b53ecbfe6b71fbc3fdde6
+  languageName: node
+  linkType: hard
+
 "@blazediff/core@npm:1.10.0":
   version: 1.10.0
   resolution: "@blazediff/core@npm:1.10.0"
@@ -1928,6 +1938,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@rescript-lang/docs@workspace:apps/docs"
   dependencies:
+    "@babel/core": "npm:^7.29.7"
     "@cloudflare/pages-plugin-vercel-og": "npm:^0.1.2"
     "@docsearch/react": "npm:^4.6.2"
     "@headlessui/react": "npm:^2.2.9"
@@ -1941,11 +1952,13 @@ __metadata:
     "@rescript/webapi": "npm:0.1.0-experimental-29db5f4"
     "@responsive-image/core": "npm:2.1.0"
     "@responsive-image/vite-plugin": "npm:3.0.1"
+    "@rolldown/plugin-babel": "npm:^0.2.4"
     "@tailwindcss/vite": "npm:^4.3.0"
     "@types/react": "npm:^19.2.14"
     "@vitejs/plugin-react": "npm:^6.0.1"
     "@vitest/browser-playwright": "npm:^5.0.0"
     auto-image-converter: "npm:^2.2.0"
+    babel-plugin-react-compiler: "npm:^1.0.0"
     chokidar: "npm:^4.0.3"
     cypress: "npm:^15.13.1"
     cypress-real-events: "npm:^1.15.1"
@@ -1976,6 +1989,7 @@ __metadata:
     remark-gfm: "npm:^4.0.1"
     remark-validate-links: "npm:^13.1.0"
     rescript: "npm:^12.2.0"
+    rolldown: "npm:1.2.8"
     search-insights: "npm:^2.17.3"
     tailwindcss: "npm:^4"
     tinyglobby: "npm:^0.2.15"
@@ -2290,6 +2304,28 @@ __metadata:
   version: 1.2.8
   resolution: "@rolldown/binding-win32-x64-msvc@npm:1.2.8"
   conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@rolldown/plugin-babel@npm:^0.2.4":
+  version: 0.2.4
+  resolution: "@rolldown/plugin-babel@npm:0.2.4"
+  dependencies:
+    picomatch: "npm:^4.0.7"
+  peerDependencies:
+    "@babel/core": ^7.29.0 || ^8.0.0-rc.1
+    "@babel/plugin-transform-runtime": ^7.29.0 || ^8.0.0-rc.1
+    "@babel/runtime": ^7.27.0 || ^8.0.0-rc.1
+    rolldown: ^1.0.0-rc.5
+    vite: ^8.0.0
+  peerDependenciesMeta:
+    "@babel/plugin-transform-runtime":
+      optional: true
+    "@babel/runtime":
+      optional: true
+    vite:
+      optional: true
+  checksum: 10c0/1283804c979f32c24adf3e80177ff3ebb7f8db749660235ed0a511cd4e1a3c129bea4209dee5f9ee67b1709a6efc65986349ca10ff2f5557c86623d1eebd7b42
   languageName: node
   linkType: hard
 
@@ -3217,6 +3253,15 @@ __metadata:
     "@babel/traverse": "npm:^7.23.7"
     "@babel/types": "npm:^7.23.6"
   checksum: 10c0/9289b66ce202a5f2b8c160f6a0ed16b97c42a9e06e92ea997df4e34d6a8309a01cf641b21467ee6a2713efd7e158b4b770e04a07f3f9d30eb05d428d186f7a60
+  languageName: node
+  linkType: hard
+
+"babel-plugin-react-compiler@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "babel-plugin-react-compiler@npm:1.0.0"
+  dependencies:
+    "@babel/types": "npm:^7.26.0"
+  checksum: 10c0/9406267ada8d7dbdfe8906b40ecadb816a5f4cee2922bee23f7729293b369624ee135b5a9b0f263851c263c9787522ac5d97016c9a2b82d1668300e42b18aff8
   languageName: node
   linkType: hard
 
@@ -9390,7 +9435,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rolldown@npm:~1.2.6":
+"rolldown@npm:1.2.8, rolldown@npm:~1.2.6":
   version: 1.2.8
   resolution: "rolldown@npm:1.2.8"
   dependencies:
