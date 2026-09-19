@@ -1,20 +1,6 @@
 open ReactRouter
 open Vitest
 
-let expectedExample = `module Button = {
-  @react.component
-  let make = (~count) => {
-    let times = switch count {
-    | 1 => "once"
-    | 2 => "twice"
-    | n => n->Int.toString ++ " times"
-    }
-    let text = \`Click me $\{times\}\`
-
-    <button> {text->React.string} </button>
-  }
-}`
-
 let getOpenGraphImageUrl = () => {
   switch document->WebAPI.Document.querySelector("meta[property='og:image']") {
   | Value(meta) =>
@@ -29,7 +15,7 @@ let getOpenGraphImageUrl = () => {
 test("landing page Open Graph image targets its absolute page URL", async () => {
   let _screen = await render(
     <MemoryRouter initialEntries=["/"]>
-      <LandingPage />
+      <LandingPage playgroundData=LandingPageFixture.playgroundData />
     </MemoryRouter>,
   )
   let pageUrl = WebAPI.URL.make(~url=Env.root_url)
@@ -52,7 +38,7 @@ test(
   async () => {
     let screen = await render(
       <MemoryRouter initialEntries=["/"]>
-        <LandingPage />
+        <LandingPage playgroundData=LandingPageFixture.playgroundData />
       </MemoryRouter>,
     )
 
@@ -82,14 +68,14 @@ test(
       ->Nullable.toOption
 
     expect(decodedCode->Option.isSome)->toBe(true)
-    expect(decodedCode->Option.getOrThrow)->toBe(expectedExample)
+    expect(decodedCode->Option.getOrThrow)->toBe(LandingPageFixture.expectedExample)
   },
 )
 
 test("landing page playground hero renders highlighted code tokens", async () => {
   let screen = await render(
     <MemoryRouter initialEntries=["/"]>
-      <LandingPage />
+      <LandingPage playgroundData=LandingPageFixture.playgroundData />
     </MemoryRouter>,
   )
 
@@ -111,12 +97,21 @@ test("landing page playground hero renders highlighted code tokens", async () =>
 
   expect(rescriptCodeBlock.innerHTML->String.includes("<span"))->toBe(true)
   expect(javascriptCodeBlock.innerHTML->String.includes("<span"))->toBe(true)
+  expect(rescriptCodeBlock.textContent->Null.toOption)->toEqual(
+    Some(LandingPageFixture.expectedExample),
+  )
+  expect(javascriptCodeBlock.textContent->Null.toOption)->toEqual(
+    Some(LandingPageFixture.expectedJavascript),
+  )
+  expect(rescriptCodeBlock.className)->toBe("hljs lang-res dark")
+  expect(javascriptCodeBlock.className)->toBe("hljs lang-js dark")
+  expect(rescriptCodeBlock->WebAPI.Element.querySelector("button")->Null.toOption)->toEqual(None)
 })
 
 test("landing page renders its critical sections", async () => {
   let screen = await render(
     <MemoryRouter initialEntries=["/"]>
-      <LandingPage />
+      <LandingPage playgroundData=LandingPageFixture.playgroundData />
     </MemoryRouter>,
   )
 
@@ -142,7 +137,7 @@ test("landing page renders its critical sections", async () => {
 test("landing page copy button shows success feedback", async () => {
   let screen = await render(
     <MemoryRouter initialEntries=["/"]>
-      <LandingPage />
+      <LandingPage playgroundData=LandingPageFixture.playgroundData />
     </MemoryRouter>,
   )
 
@@ -160,7 +155,7 @@ test(
 
     let screen = await render(
       <MemoryRouter initialEntries=["/"]>
-        <LandingPage />
+        <LandingPage playgroundData=LandingPageFixture.playgroundData />
       </MemoryRouter>,
     )
 

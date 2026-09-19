@@ -1,5 +1,5 @@
 @react.component
-let make = () => {
+let make = (~playgroundData) => {
   <>
     <Meta
       title="The ReScript Programming Language"
@@ -16,7 +16,7 @@ let make = () => {
           <div className="mt-16 md:mt-32 lg:mt-40 mb-12">
             <LandingPageIntro />
           </div>
-          <LandingPagePlayground />
+          <LandingPagePlayground playgroundData />
           <LandingPageQuickInstall />
           <LandingPageMainSellingPoints />
           <LandingPageOtherSellingPoints />
