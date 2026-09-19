@@ -66,6 +66,8 @@ describe("Playground", () => {
   it("should highlight JavaScript after a direct playground load", () => {
     visit("/try")
     get(".cm-editor")->shouldBeVisible->ignore
+    get("main")->shouldWithKeyValue("have.css", "background-color", "rgb(11, 13, 34)")->ignore
+    get(".cm-editor")->shouldWithKeyValue("have.css", "background-color", "rgb(11, 13, 34)")->ignore
     get("pre.whitespace-pre-wrap")->shouldContainText("react/jsx-runtime")->ignore
     get("pre code.lang-js span[class^='hljs-']")->should("exist")->ignore
   })
@@ -134,6 +136,10 @@ describe("Playground", () => {
 
     // Verify playground shell is in light mode
     get("main")->shouldWithValue("have.class", "playground-theme-light")->ignore
+    get("main")->shouldWithKeyValue("have.css", "background-color", "rgb(250, 251, 252)")->ignore
+    get(".cm-editor")
+    ->shouldWithKeyValue("have.css", "background-color", "rgb(255, 255, 255)")
+    ->ignore
     cyWindow()
     ->its("localStorage")
     ->invokeWithArg("getItem", "playgroundTheme")
@@ -150,6 +156,8 @@ describe("Playground", () => {
 
     // Verify playground shell is back to dark mode
     get("main")->shouldWithValue("have.class", "playground-theme-dark")->ignore
+    get("main")->shouldWithKeyValue("have.css", "background-color", "rgb(11, 13, 34)")->ignore
+    get(".cm-editor")->shouldWithKeyValue("have.css", "background-color", "rgb(11, 13, 34)")->ignore
     cyWindow()
     ->its("localStorage")
     ->invokeWithArg("getItem", "playgroundTheme")

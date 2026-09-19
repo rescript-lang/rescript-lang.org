@@ -1,0 +1,88 @@
+@reference "./_theme.css";
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+@import "./_shared-sources.css";
+@import "./_markdown.css" layer(base);
+
+@source "../app/routes/**/*.{res,jsx}";
+@source not "../app/routes/LandingPage*.{res,jsx}";
+@source not "../app/routes/TryRoute.{res,jsx}";
+@source "../app/layouts/**/*.{res,jsx}";
+@source "../src/**/*.{res,jsx,js,mjs}";
+@source "../markdown-pages/**/*.mdx";
+@source "../../../packages/shared/src/**/*.{res,jsx}";
+
+@layer components {
+  a > code {
+    @apply text-fire;
+  }
+}
+
+.wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.version-popover[popover] {
+  inset: unset;
+  width: 100%;
+  height: auto;
+  /* padding: 0; */
+  background: transparent;
+  border: none;
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  pointer-events: none;
+
+  overlay: none;
+  /* this alone would do the trick, but its not supported yet in all major browsers*/
+}
+
+.menu {
+  visibility: hidden;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  opacity: 0;
+  transition:
+    visibility 0s ease,
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.version-popover[popover]:popover-open ~ .menu {
+  opacity: 1;
+  visibility: visible;
+}
+
+.trigger {
+  svg {
+    display: inline-block;
+    height: 0.75rem;
+    width: 0.75rem;
+    transform: rotate(0);
+  }
+}
+
+.version-popover[popover]:popover-open ~ .trigger {
+  svg {
+    transform: rotate(180deg);
+  }
+}
+
+#sidebar[popover] {
+  inset: unset;
+  width: unset;
+  border: none;
+  position: relative;
+  top: 0px;
+  left: 0px;
+  overlay: none;
+  height: 100%;
+  @apply min-w-64 bg-white border-gray-20 border-r-2 overflow-y-scroll h-full md:block;
+}
+
+#mobile-tertiary-drawer {
+  max-width: 100%;
+  margin: 0;
+}

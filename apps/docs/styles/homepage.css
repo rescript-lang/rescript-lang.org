@@ -1,0 +1,29 @@
+@reference "./_theme.css";
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+@import "./_shared-sources.css";
+
+@source "../app/routes/LandingPage*.{res,jsx}";
+@source "../src/components/{Footer,Button,ImageGallery,ResponsiveImage}.{res,jsx}";
+
+.gallery-selector::after {
+  content: "";
+  inline-size: 100%;
+  block-size: 1px;
+  background-color: currentColor;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .gallery-photo {
+    animation: gallery-fade-in 1s ease-in-out;
+  }
+}
+
+@keyframes gallery-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
