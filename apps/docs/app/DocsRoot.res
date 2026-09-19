@@ -4,9 +4,6 @@ external mainCss: string = "default"
 @module("../styles/_hljs.css?url")
 external hljsCss: string = "default"
 
-@module("../styles/utils.css?url")
-external utilsCss: string = "default"
-
 %%raw(`
   import hljs from 'highlight.js/lib/core';
   import bash from 'highlight.js/lib/languages/bash';
@@ -45,7 +42,6 @@ let default = () => {
       <link rel="preload" href={mainCss} as_="style" />
       <link rel="stylesheet" href={mainCss} />
       <link rel="stylesheet" href={hljsCss} />
-      <link rel="stylesheet" href={utilsCss} />
       <link rel="icon" href="/favicon.ico" />
       <Links />
       <ReactRouter.Meta />
