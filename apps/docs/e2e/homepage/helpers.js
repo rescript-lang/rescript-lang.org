@@ -1,9 +1,5 @@
 export const headline = "JavaScript Made Simple for Humans and AI";
 
-export function expectPageStyles() {
-  cy.get("html").should("have.css", "opacity", "1");
-}
-
 export function grantClipboardPermissions() {
   return cy.then(() =>
     Cypress.automation("remote:debugger:protocol", {

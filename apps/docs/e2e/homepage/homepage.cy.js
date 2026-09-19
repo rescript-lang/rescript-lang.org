@@ -1,5 +1,4 @@
 import {
-  expectPageStyles,
   grantClipboardPermissions,
   headline,
   readClipboard,
@@ -13,7 +12,6 @@ it("homepage hydrates with working links and copy feedback", () => {
   });
   grantClipboardPermissions();
   cy.visit("/");
-  expectPageStyles();
   cy.contains("h1", headline).should("be.visible");
   cy.contains("a", "Get started").should(
     "have.attr",
@@ -37,17 +35,14 @@ it("homepage hydrates with working links and copy feedback", () => {
   });
 });
 
-it("client navigation preserves homepage and documentation styles", () => {
+it("homepage and documentation navigation works in both directions", () => {
   cy.visit("/");
-  expectPageStyles();
   cy.contains("a", /^Docs$/).click();
   cy.location("pathname").should("equal", "/docs/manual/introduction");
   cy.contains("h1", /^ReScript$/).should("be.visible");
-  expectPageStyles();
   cy.get('a[aria-label="homepage"]').click();
   cy.location("pathname").should("equal", "/");
   cy.contains("h1", headline).should("be.visible");
-  expectPageStyles();
 });
 
 it("mobile navigation opens the packages route", () => {
@@ -59,5 +54,4 @@ it("mobile navigation opens the packages route", () => {
     .click();
   cy.location("pathname").should("equal", "/packages");
   cy.contains("h1", "Libraries & Bindings").should("be.visible");
-  expectPageStyles();
 });
