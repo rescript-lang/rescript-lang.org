@@ -41,14 +41,16 @@ let make = (~code, ~writeClipboard=Clipboard.writeText) => {
     </span>
   }
 
-  <button
-    type_="button"
-    disabled={state === Pending || state === Copied}
-    className="relative h-10 w-10 flex justify-center items-center"
-    onClick={_ => copy()->ignore}
-    ariaLabel={"Copy " ++ code ++ " command"}
-  >
-    <Icon.Copy className="w-6 h-6 mt-px text-gray-40 hover:cursor-pointer hover:text-gray-80" />
-    <span role="status"> feedback </span>
-  </button>
+  <>
+    <button
+      type_="button"
+      disabled={state === Pending || state === Copied}
+      className="h-10 w-10 flex justify-center items-center"
+      onClick={_ => copy()->ignore}
+      ariaLabel={"Copy " ++ code ++ " command"}
+    >
+      <Icon.Copy className="w-6 h-6 mt-px text-gray-40 hover:cursor-pointer hover:text-gray-80" />
+    </button>
+    <span role="status" className="absolute top-3 right-3 pointer-events-none"> feedback </span>
+  </>
 }

@@ -42,7 +42,12 @@ test("clipboard denial can recover and both install commands can be copied repea
   const firstCopyButton = page.getByRole("button", {
     name: "Copy npm install rescript command",
   });
+  await expect(page.getByRole("status")).toHaveCount(2);
+  await expect(page.getByRole("button").getByRole("status")).toHaveCount(0);
   await firstCopyButton.click();
+  await expect(page.getByRole("status")).toContainText([
+    "Could not copy. Try again.",
+  ]);
   await expect(
     page.getByText("Could not copy. Try again.", { exact: true }),
   ).toBeVisible();
@@ -58,6 +63,7 @@ test("clipboard denial can recover and both install commands can be copied repea
 
     await copyButton.click();
     await expect(page.getByRole("status")).toContainText(["Copied!"]);
+    await expect(copyButton).toBeDisabled();
     await expect
       .poll(() => page.evaluate(() => navigator.clipboard.readText()))
       .toBe(command);
