@@ -11,7 +11,6 @@ let default = () => {
   <html lang="en">
     <head>
       {CypressBootstrap.element()}
-      <style> {React.string("html {opacity:0;}")} </style>
       <link rel="preload" href={mainCss} as_="style" />
       <link rel="stylesheet" href={mainCss} />
       <link rel="stylesheet" href={hljsCss} />

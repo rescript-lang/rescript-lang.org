@@ -60,9 +60,3 @@ body {
   height: 100%;
   min-height: 100vh;
 }
-
-/* This has to stay at the end! */
-/* This is to prevent FOUC (flash of unstyled content) */
-html {
-  opacity: 1;
-}
