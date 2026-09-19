@@ -117,6 +117,8 @@ jobs:
         run: yarn build:res
       - name: Docs Vitest
         run: yarn workspace @rescript-lang/docs ci:test
+      - name: Docs script tests (Node)
+        run: yarn workspace @rescript-lang/docs ci:test:scripts
       - name: Guide Vitest
         run: yarn workspace @rescript-lang/guide ci:test
   Homepage_E2E:
