@@ -6,14 +6,15 @@ import { parseSync, transformAsync, traverse, types } from "@babel/core";
 import { homepageCompilerOptions } from "../../vite-react-compiler.mjs";
 
 const optedInComponents = [
-  "LandingPageIntro",
-  "LandingPageInstallInstructions",
-  "LandingPageTrustedBy",
+  { name: "LandingPageIntro", directory: "src/components" },
+  { name: "LandingPageInstallInstructions", directory: "app/routes" },
+  { name: "LandingPageTrustedBy", directory: "src/components" },
 ];
+const optedInNames = optedInComponents.map(({ name }) => name);
 
-async function transformComponent(name) {
+async function transformComponent({ name, directory }) {
   const filename = fileURLToPath(
-    new URL(`../../app/routes/${name}.jsx`, import.meta.url),
+    new URL(`../../${directory}/${name}.jsx`, import.meta.url),
   );
   const result = await transformAsync(await readFile(filename, "utf8"), {
     filename,
@@ -94,16 +95,19 @@ function memoizedFunctionCount(ast) {
   return functions.size;
 }
 
-for (const name of optedInComponents) {
-  test(`${name} opts in to React 19 compiler memoization`, async () => {
-    const ast = await transformComponent(name);
-    assert.deepEqual(cachedComponentNames(ast), [name]);
+for (const component of optedInComponents) {
+  test(`${component.name} opts in to React 19 compiler memoization`, async () => {
+    const ast = await transformComponent(component);
+    assert.deepEqual(cachedComponentNames(ast), [component.name]);
     assert.equal(memoizedFunctionCount(ast), 1);
   });
 }
 
 test("unannotated interactive homepage components remain uncompiled", async () => {
-  const ast = await transformComponent("LandingPageCopyButton");
+  const ast = await transformComponent({
+    name: "LandingPageCopyButton",
+    directory: "app/routes",
+  });
   assert.deepEqual(cacheBindings(ast), []);
   assert.deepEqual(cachedComponentNames(ast), []);
   assert.equal(memoizedFunctionCount(ast), 0);
@@ -118,6 +122,9 @@ test("compiler file filtering includes only generated homepage application modul
     "/repo/apps/docs/app/routes/LandingPageIntro.jsx",
     "/repo/apps/docs/app/routes/LandingPageTrustedBy.jsx?import",
     "C:\\repo\\apps\\docs\\app\\routes\\LandingPageIntro.jsx",
+    "/repo/apps/docs/src/components/LandingPageIntro.jsx",
+    "/repo/apps/docs/src/components/LandingPageTrustedBy.jsx?import",
+    "C:\\repo\\apps\\docs\\src\\components\\LandingPageIntro.jsx",
   ]) {
     assert.equal(matches(filename), true, filename);
   }
@@ -129,6 +136,11 @@ test("compiler file filtering includes only generated homepage application modul
     "/repo/apps/guide/app/routes/LandingPageIntro.jsx",
     "/repo/node_modules/example/apps/docs/app/routes/LandingPageIntro.jsx",
     "C:\\repo\\node_modules\\example\\apps\\docs\\app\\routes\\LandingPageIntro.jsx",
+    "/repo/apps/docs/src/components/LandingPageIntro.res",
+    "/repo/apps/docs/src/components/LandingPageIntro.jsx.map",
+    "/repo/apps/docs/src/components/Search.jsx",
+    "/repo/apps/guide/src/components/LandingPageIntro.jsx",
+    "/repo/node_modules/example/apps/docs/src/components/LandingPageIntro.jsx",
     "\0rolldown/runtime.js",
   ]) {
     assert.equal(matches(filename), false, filename);
@@ -182,7 +194,7 @@ test("the production server leaves the annotated components uncompiled", async (
   traverse(ast, {
     FunctionDeclaration(path) {
       if (
-        optedInComponents.includes(path.node.id?.name) &&
+        optedInNames.includes(path.node.id?.name) &&
         path.node.body.directives.some(
           (directive) => directive.value.value === "use memo",
         )
@@ -191,7 +203,7 @@ test("the production server leaves the annotated components uncompiled", async (
       }
     },
   });
-  assert.deepEqual(annotatedComponents.sort(), [...optedInComponents].sort());
+  assert.deepEqual(annotatedComponents.sort(), [...optedInNames].sort());
   assert.deepEqual(cacheBindings(ast), []);
   assert.equal(memoizedFunctionCount(ast), 0);
 });
