@@ -16,7 +16,11 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy
     if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false }}
+    concurrency:
+      group: docs-deploy-${{ github.head_ref || github.ref_name }}
+      cancel-in-progress: true
     permissions:
+      actions: write
       contents: read
       deployments: write
       pull-requests: write
@@ -36,9 +40,24 @@ jobs:
       - name: Sync playground bundles
         run: yarn build:sync-bundles
       - name: Set VITE_DEPLOYMENT_URL
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
         run: |
           RAW_BRANCH="${{ github.head_ref || github.ref_name }}"
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            RAW_TARGET_BRANCH=$(gh api "/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }}" --jq '.base.ref')
+          else
+            RAW_TARGET_BRANCH="$RAW_BRANCH"
+          fi
+
+          ARTIFACT_NAME=$(node apps/docs/scripts/lighthouse-report.mjs artifact-name "$RAW_BRANCH")
+          TARGET_ARTIFACT_NAME=$(node apps/docs/scripts/lighthouse-report.mjs artifact-name "$RAW_TARGET_BRANCH")
+
+          echo "LIGHTHOUSE_ARTIFACT_NAME=$ARTIFACT_NAME" >> "$GITHUB_ENV"
+          echo "LIGHTHOUSE_BRANCH=$RAW_BRANCH" >> "$GITHUB_ENV"
+          echo "LIGHTHOUSE_TARGET_ARTIFACT_NAME=$TARGET_ARTIFACT_NAME" >> "$GITHUB_ENV"
+          echo "LIGHTHOUSE_TARGET_BRANCH=$RAW_TARGET_BRANCH" >> "$GITHUB_ENV"
 
           if [[ "$RAW_BRANCH" == "master" ]]; then
              echo "VITE_DEPLOYMENT_URL=" >> "$GITHUB_ENV"
@@ -69,6 +88,78 @@ jobs:
           wranglerVersion: 4.130.0
         env:
           FORCE_COLOR: 0
+      - name: Restore target branch Lighthouse baseline
+        if: ${{ github.actor != 'dependabot[bot]' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          mkdir -p .lighthouse-target
+
+          ARTIFACT_ID=$(gh api --method GET \
+            "/repos/${GITHUB_REPOSITORY}/actions/artifacts" \
+            -f name="$LIGHTHOUSE_TARGET_ARTIFACT_NAME" \
+            -f per_page=100 \
+            --jq '.artifacts | map(select(.expired == false)) | sort_by(.created_at) | last | .id // empty')
+
+          if [[ -z "$ARTIFACT_ID" ]]; then
+            echo "No Lighthouse baseline found for target branch $LIGHTHOUSE_TARGET_BRANCH"
+            exit 0
+          fi
+
+          gh api "/repos/${GITHUB_REPOSITORY}/actions/artifacts/${ARTIFACT_ID}/zip" > "$RUNNER_TEMP/lighthouse-target.zip"
+          unzip -q "$RUNNER_TEMP/lighthouse-target.zip" -d .lighthouse-target
+      - name: Audit homepage with Lighthouse
+        if: ${{ github.actor != 'dependabot[bot]' }}
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: ${{ steps.deploy.outputs.deployment-url }}
+          configPath: ./apps/docs/lighthouserc.json
+      - name: Create Lighthouse baseline
+        if: ${{ github.actor != 'dependabot[bot]' }}
+        run: node apps/docs/scripts/lighthouse-report.mjs baseline
+        env:
+          LIGHTHOUSE_URL: ${{ steps.deploy.outputs.deployment-url }}
+      - name: Upload Lighthouse reports
+        if: ${{ github.actor != 'dependabot[bot]' }}
+        id: lighthouse-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.LIGHTHOUSE_ARTIFACT_NAME }}
+          path: .lighthouseci/
+          if-no-files-found: error
+          include-hidden-files: true
+          overwrite: true
+          retention-days: 90
+      - name: Summarize Lighthouse baseline
+        if: ${{ github.actor != 'dependabot[bot]' }}
+        run: |
+          node apps/docs/scripts/lighthouse-report.mjs comment
+          cat .lighthouseci/comment.md >> "$GITHUB_STEP_SUMMARY"
+        env:
+          LIGHTHOUSE_ARTIFACT_URL: ${{ steps.lighthouse-artifact.outputs.artifact-url }}
+      - name: Comment PR with Lighthouse baseline
+        if: ${{ github.event_name == 'pull_request' && github.actor != 'dependabot[bot]' }}
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: lighthouse-baseline
+          path: .lighthouseci/comment.md
+      - name: Remove superseded Lighthouse artifacts
+        if: ${{ github.actor != 'dependabot[bot]' }}
+        env:
+          CURRENT_ARTIFACT_ID: ${{ steps.lighthouse-artifact.outputs.artifact-id }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          gh api --method GET \
+            "/repos/${GITHUB_REPOSITORY}/actions/artifacts" \
+            -f name="$LIGHTHOUSE_ARTIFACT_NAME" \
+            -f per_page=100 \
+            --jq '.artifacts[].id' | while read -r ARTIFACT_ID; do
+              if [[ "$ARTIFACT_ID" != "$CURRENT_ARTIFACT_ID" ]]; then
+                gh api --method DELETE "/repos/${GITHUB_REPOSITORY}/actions/artifacts/${ARTIFACT_ID}"
+              fi
+            done
       - name: Comment with docs preview link
         if: ${{ github.event_name == 'pull_request' && steps.deploy.outcome == 'success' }}
         uses: marocchino/sticky-pull-request-comment@v2

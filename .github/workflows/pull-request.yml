@@ -119,6 +119,42 @@ jobs:
         run: yarn workspace @rescript-lang/docs ci:test
       - name: Guide Vitest
         run: yarn workspace @rescript-lang/guide ci:test
+  Homepage_E2E:
+    runs-on: ubuntu-latest
+    env:
+      VITE_ALGOLIA_APP_ID: test-app-id
+      VITE_ALGOLIA_INDEX_NAME: test-index
+      VITE_ALGOLIA_SEARCH_API_KEY: test-search-key
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.2
+      - name: Install Corepack
+        run: npm install --global corepack
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6.3.0
+        with:
+          node-version-file: ".node-version"
+          cache: yarn
+      - name: Install dependencies
+        run: yarn
+      - name: Install Playwright Chromium
+        run: yarn workspace @rescript-lang/docs playwright install --with-deps chromium
+      - name: Build docs
+        run: yarn workspace @rescript-lang/docs build
+      - name: Check homepage performance budgets
+        run: yarn workspace @rescript-lang/docs ci:homepage-performance
+      - name: Run homepage Playwright tests
+        run: yarn workspace @rescript-lang/docs ci:test:e2e
+      - name: Upload Playwright artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: homepage-playwright-artifacts
+          path: |
+            apps/docs/playwright-report
+            apps/docs/test-results/playwright
   Visual_Regression:
     runs-on: ubuntu-latest
     container:
