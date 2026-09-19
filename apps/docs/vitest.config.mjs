@@ -27,6 +27,7 @@ const setupDeps = [
   "highlight.js/lib/languages/plaintext",
   "highlight.js/lib/languages/typescript",
   "highlight.js/lib/languages/xml",
+  "highlight.js/lib/languages/yaml",
   "highlightjs-rescript",
 ];
 

@@ -22,6 +22,9 @@ external text: HighlightLanguages.definition = "default"
 @module("highlight.js/lib/languages/xml")
 external html: HighlightLanguages.definition = "default"
 
+@module("highlight.js/lib/languages/yaml")
+external yaml: HighlightLanguages.definition = "default"
+
 @module("highlight.js/lib/languages/ini")
 external toml: HighlightLanguages.definition = "default"
 
@@ -41,4 +44,5 @@ let register = highlighter => {
   highlighter->HighlightLanguages.ensureRegistered("html", html)
   highlighter->HighlightLanguages.ensureRegistered("diff", diff)
   highlighter->HighlightLanguages.ensureRegistered("typescript", typescript)
+  highlighter->HighlightLanguages.ensureRegistered("yaml", yaml)
 }

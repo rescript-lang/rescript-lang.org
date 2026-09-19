@@ -50,6 +50,8 @@ let aliases = [
   "svg",
   "diff",
   "patch",
+  "yaml",
+  "yml",
 ]
 
 test("content registration preserves every established language name and alias", async () => {
@@ -85,4 +87,16 @@ test("repeated content initialization leaves registered grammars unchanged", asy
   expect(highlighter->getLanguage("javascript"))->toBe(original)
   expect(highlighter->getLanguage("js"))->toBe(original)
   expect(after.value)->toBe(before.value)
+})
+
+test("content registration highlights YAML installation examples and their alias", async () => {
+  let highlighter = createHighlighter()
+  highlighter->ContentHighlighting.register
+  let code = "packages:\n  - apps/*"
+
+  let yaml = highlighter->highlight(code, {language: "yaml"})
+  let alias = highlighter->highlight(code, {language: "yml"})
+
+  expect(yaml.value->String.includes("<span class=\"hljs-attr\">packages:</span>"))->toBe(true)
+  expect(alias.value)->toBe(yaml.value)
 })
