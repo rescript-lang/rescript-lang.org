@@ -29,7 +29,7 @@ let getOpenGraphImageUrl = () => {
 test("landing page Open Graph image targets its absolute page URL", async () => {
   let _screen = await render(
     <MemoryRouter initialEntries=["/"]>
-      <LandingPage />
+      <LandingPage highlightedExample={LandingPageFixture.highlightedExample} />
     </MemoryRouter>,
   )
   let pageUrl = WebAPI.URL.make(~url=Env.root_url)
@@ -52,7 +52,7 @@ test(
   async () => {
     let screen = await render(
       <MemoryRouter initialEntries=["/"]>
-        <LandingPage />
+        <LandingPage highlightedExample={LandingPageFixture.highlightedExample} />
       </MemoryRouter>,
     )
 
@@ -89,7 +89,7 @@ test(
 test("landing page playground hero renders highlighted code tokens", async () => {
   let screen = await render(
     <MemoryRouter initialEntries=["/"]>
-      <LandingPage />
+      <LandingPage highlightedExample={LandingPageFixture.highlightedExample} />
     </MemoryRouter>,
   )
 
@@ -120,7 +120,7 @@ test(
 
     let screen = await render(
       <MemoryRouter initialEntries=["/"]>
-        <LandingPage />
+        <LandingPage highlightedExample={LandingPageFixture.highlightedExample} />
       </MemoryRouter>,
     )
 
