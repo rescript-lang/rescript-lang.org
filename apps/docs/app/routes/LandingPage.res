@@ -10,7 +10,7 @@ let make = () => {
         confidence as your codebase grows.`}
       keywords=["ReScript", "rescriptlang", "JavaScript", "JS", "TypeScript"]
     />
-    <div className="absolute top-16 z w-full text-18 text-gray-80">
+    <div className="homepage-fonts absolute top-16 z w-full text-18 text-gray-80">
       <div className="relative overflow-hidden pb-32">
         <main className="mt-10 min-w-320 w-full lg:align-center">
           <div className="mt-16 md:mt-32 lg:mt-40 mb-12">

@@ -103,15 +103,15 @@ test("homepage hydrates with working links and copy feedback", async ({
     .poll(() =>
       page.evaluate(async () => {
         await Promise.all([
-          document.fonts.load('400 1rem "Inter"'),
-          document.fonts.load('600 1rem "Inter"'),
-          document.fonts.load('700 1rem "Inter"'),
+          document.fonts.load('400 1rem "Homepage Inter"'),
+          document.fonts.load('600 1rem "Homepage Inter"'),
+          document.fonts.load('700 1rem "Homepage Inter"'),
           document.fonts.load('700 1rem "Red Hat Mono"'),
         ]);
         return [
-          document.fonts.check('400 1rem "Inter"'),
-          document.fonts.check('600 1rem "Inter"'),
-          document.fonts.check('700 1rem "Inter"'),
+          document.fonts.check('400 1rem "Homepage Inter"'),
+          document.fonts.check('600 1rem "Homepage Inter"'),
+          document.fonts.check('700 1rem "Homepage Inter"'),
           document.fonts.check('700 1rem "Red Hat Mono"'),
         ];
       }),
