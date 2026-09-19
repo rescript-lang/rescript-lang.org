@@ -11,7 +11,7 @@ export default defineConfig({
     baseUrl: "http://127.0.0.1:4173",
     specPattern: "e2e/homepage/**/*.cy.jsx",
     excludeSpecPattern: [],
-    supportFile: "cypress/support/homepage.js",
+    supportFile: "e2e/homepage/HomepageSupport.jsx",
     screenshotOnRunFailure: true,
   },
 });
