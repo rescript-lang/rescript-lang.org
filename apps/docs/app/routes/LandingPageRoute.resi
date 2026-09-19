@@ -6,6 +6,7 @@ type fontPreload = {
   crossOrigin: string,
 }
 
+/** Preload the Inter 400/600/700 and Red Hat Mono 700 faces used above the fold. */
 let links: unit => array<fontPreload>
 
 let default: unit => React.element

@@ -93,22 +93,30 @@ test("homepage hydrates with working links and copy feedback", async ({
       name: "JavaScript Made Simple for Humans and AI",
     }),
   ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      level: 1,
+      name: "JavaScript Made Simple for Humans and AI",
+    }),
+  ).toHaveCSS("font-weight", "700");
   await expect
     .poll(() =>
       page.evaluate(async () => {
         await Promise.all([
           document.fonts.load('400 1rem "Inter"'),
           document.fonts.load('600 1rem "Inter"'),
+          document.fonts.load('700 1rem "Inter"'),
           document.fonts.load('700 1rem "Red Hat Mono"'),
         ]);
         return [
           document.fonts.check('400 1rem "Inter"'),
           document.fonts.check('600 1rem "Inter"'),
+          document.fonts.check('700 1rem "Inter"'),
           document.fonts.check('700 1rem "Red Hat Mono"'),
         ];
       }),
     )
-    .toEqual([true, true, true]);
+    .toEqual([true, true, true, true]);
   await expect(
     page.getByRole("link", { name: "Get started", exact: true }),
   ).toHaveAttribute("href", "/docs/manual/installation");
@@ -131,6 +139,7 @@ test("homepage hydrates with working links and copy feedback", async ({
   expect(fontRequests.map((url) => url.pathname)).toEqual(
     expect.arrayContaining([
       "/fonts/red-hat-mono-700.woff2",
+      "/fonts/subset-Inter-Bold.woff2",
       "/fonts/subset-Inter-Regular.woff2",
       "/fonts/subset-Inter-SemiBold.woff2",
     ]),

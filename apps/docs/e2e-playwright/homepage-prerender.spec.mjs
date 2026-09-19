@@ -37,6 +37,11 @@ test("homepage response contains prerendered content and highlighted examples", 
       crossOrigin: "anonymous",
     },
     {
+      href: "/fonts/subset-Inter-Bold.woff2",
+      type: "font/woff2",
+      crossOrigin: "anonymous",
+    },
+    {
       href: "/fonts/red-hat-mono-700.woff2",
       type: "font/woff2",
       crossOrigin: "anonymous",
