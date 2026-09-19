@@ -4,9 +4,10 @@ type fontPreload = {
   @as("as") as_: string,
   @as("type") type_: string,
   crossOrigin: string,
+  media?: string,
 }
 
-/** Preload the Inter 400/600/700 and Red Hat Mono 700 faces used above the fold. */
+/** Preload above-the-fold faces, including Inter 700 only at the desktop breakpoint. */
 let links: unit => array<fontPreload>
 
 let default: unit => React.element
