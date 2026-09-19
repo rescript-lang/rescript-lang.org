@@ -20,18 +20,31 @@ beforeEach(() => {
 afterEach(() => {
   alias("@consoleSpies")
   ->then(spies => {
-    let errors = spies.contents
-    ->Array.flatMap(getCalls)
-    ->Array.map(call => call.args->Array.get(0)->consoleArgumentString)
-    alias("@expectedConsoleErrors")->then(expected => {
-      let unexpected = errors->Array.filter(error =>
-        !(expected->Array.some(pattern => pattern->RegExp.test(error)))
-      )
-      expect(unexpected->Array.length, ~message=`unexpected console errors: ${unexpected->Array.joinWith("; ")}`)->equal(0)
-      expected->Array.forEach(pattern =>
-        expect(errors->Array.some(error => pattern->RegExp.test(error)), ~message="expected console error occurred")->equal(true)
-      )
-    })->ignore
+    let errors =
+      spies.contents
+      ->Array.flatMap(getCalls)
+      ->Array.map(call => call.args->Array.get(0)->consoleArgumentString)
+    alias("@expectedConsoleErrors")
+    ->then(
+      expected => {
+        let unexpected =
+          errors->Array.filter(
+            error => !(expected->Array.some(pattern => pattern->RegExp.test(error))),
+          )
+        expect(
+          unexpected->Array.length,
+          ~message=`unexpected console errors: ${unexpected->Array.join("; ")}`,
+        )->equal(0)
+        expected->Array.forEach(
+          pattern =>
+            expect(
+              errors->Array.some(error => pattern->RegExp.test(error)),
+              ~message="expected console error occurred",
+            )->equal(true),
+        )
+      },
+    )
+    ->ignore
   })
   ->ignore
 })
