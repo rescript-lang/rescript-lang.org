@@ -2,6 +2,10 @@ type chain<'a>
 type elements
 type assertion
 type spy
+type consoleArgument
+type consoleCall = {args: array<consoleArgument>}
+@send external getCalls: spy => array<consoleCall> = "getCalls"
+@val external consoleArgumentString: option<consoleArgument> => string = "String"
 type console
 type rec window = {document: Dom.document, console: console, navigator: {clipboard: clipboard}}
 and clipboard
