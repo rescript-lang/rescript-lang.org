@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
@@ -15,6 +16,18 @@ const reportCategoryKeys = {
   bestPractices: "best-practices",
   seo: "seo",
 };
+
+export function lighthouseArtifactName(branch) {
+  const slug = branch
+    .toLowerCase()
+    .replace(/[^a-z0-9-]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-+/g, "-")
+    .slice(0, 80);
+  const digest = createHash("sha256").update(branch, "utf8").digest("hex");
+
+  return `homepage-lighthouse-${slug || "branch"}-${digest}`;
+}
 
 function getFiniteNumber(value, description) {
   if (!Number.isFinite(value)) {
@@ -211,7 +224,16 @@ async function writeComment() {
   );
 }
 
-async function main(command) {
+async function main(command, branch) {
+  if (command === "artifact-name") {
+    if (!branch) {
+      throw new Error("A branch name is required for artifact-name");
+    }
+
+    console.log(lighthouseArtifactName(branch));
+    return;
+  }
+
   if (command === "baseline") {
     await writeBaseline();
     return;
@@ -230,5 +252,5 @@ const entryPath = process.argv[1]
   : "";
 
 if (import.meta.url === entryPath) {
-  await main(process.argv[2]);
+  await main(process.argv[2], process.argv[3]);
 }

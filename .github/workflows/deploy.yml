@@ -51,14 +51,12 @@ jobs:
             RAW_TARGET_BRANCH="$RAW_BRANCH"
           fi
 
-          ARTIFACT_BRANCH=$(echo "$RAW_BRANCH" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9-]+/-/g; s/^-+//; s/-+$//; s/-+/-/g')
-          ARTIFACT_BRANCH="${ARTIFACT_BRANCH:0:80}"
-          TARGET_ARTIFACT_BRANCH=$(echo "$RAW_TARGET_BRANCH" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9-]+/-/g; s/^-+//; s/-+$//; s/-+/-/g')
-          TARGET_ARTIFACT_BRANCH="${TARGET_ARTIFACT_BRANCH:0:80}"
+          ARTIFACT_NAME=$(node apps/docs/scripts/lighthouse-report.mjs artifact-name "$RAW_BRANCH")
+          TARGET_ARTIFACT_NAME=$(node apps/docs/scripts/lighthouse-report.mjs artifact-name "$RAW_TARGET_BRANCH")
 
-          echo "LIGHTHOUSE_ARTIFACT_NAME=homepage-lighthouse-${ARTIFACT_BRANCH}" >> "$GITHUB_ENV"
+          echo "LIGHTHOUSE_ARTIFACT_NAME=$ARTIFACT_NAME" >> "$GITHUB_ENV"
           echo "LIGHTHOUSE_BRANCH=$RAW_BRANCH" >> "$GITHUB_ENV"
-          echo "LIGHTHOUSE_TARGET_ARTIFACT_NAME=homepage-lighthouse-${TARGET_ARTIFACT_BRANCH}" >> "$GITHUB_ENV"
+          echo "LIGHTHOUSE_TARGET_ARTIFACT_NAME=$TARGET_ARTIFACT_NAME" >> "$GITHUB_ENV"
           echo "LIGHTHOUSE_TARGET_BRANCH=$RAW_TARGET_BRANCH" >> "$GITHUB_ENV"
 
           if [[ "$RAW_BRANCH" == "master" ]]; then
