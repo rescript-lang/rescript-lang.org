@@ -30,6 +30,23 @@ function observeFailedLocalImages(page) {
   return failures;
 }
 
+function observeFontRequests(page) {
+  const requests = [];
+
+  page.on("request", (request) => {
+    const url = new URL(request.url());
+    if (
+      request.resourceType() === "font" ||
+      url.hostname === "fonts.googleapis.com" ||
+      url.hostname === "fonts.gstatic.com"
+    ) {
+      requests.push(url);
+    }
+  });
+
+  return requests;
+}
+
 async function expectPageStyles(page) {
   await expect
     .poll(() =>
@@ -62,6 +79,7 @@ test("homepage hydrates with working links and copy feedback", async ({
 }) => {
   const runtimeErrors = observeRuntimeErrors(page);
   const failedImages = observeFailedLocalImages(page);
+  const fontRequests = observeFontRequests(page);
 
   await context.grantPermissions(["clipboard-read", "clipboard-write"], {
     origin: "http://127.0.0.1:4173",
@@ -75,6 +93,30 @@ test("homepage hydrates with working links and copy feedback", async ({
       name: "JavaScript Made Simple for Humans and AI",
     }),
   ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      level: 1,
+      name: "JavaScript Made Simple for Humans and AI",
+    }),
+  ).toHaveCSS("font-weight", "700");
+  await expect
+    .poll(() =>
+      page.evaluate(async () => {
+        await Promise.all([
+          document.fonts.load('400 1rem "Homepage Inter"'),
+          document.fonts.load('600 1rem "Homepage Inter"'),
+          document.fonts.load('700 1rem "Homepage Inter"'),
+          document.fonts.load('700 1rem "Red Hat Mono"'),
+        ]);
+        return [
+          document.fonts.check('400 1rem "Homepage Inter"'),
+          document.fonts.check('600 1rem "Homepage Inter"'),
+          document.fonts.check('700 1rem "Homepage Inter"'),
+          document.fonts.check('700 1rem "Red Hat Mono"'),
+        ];
+      }),
+    )
+    .toEqual([true, true, true, true]);
   await expect(
     page.getByRole("link", { name: "Get started", exact: true }),
   ).toHaveAttribute("href", "/docs/manual/installation");
@@ -94,6 +136,17 @@ test("homepage hydrates with working links and copy feedback", async ({
 
   expect(brokenLoadedImages).toEqual([]);
   expect(failedImages).toEqual([]);
+  expect(fontRequests.map((url) => url.pathname)).toEqual(
+    expect.arrayContaining([
+      "/fonts/red-hat-mono-700.woff2",
+      "/fonts/subset-Inter-Bold.woff2",
+      "/fonts/subset-Inter-Regular.woff2",
+      "/fonts/subset-Inter-SemiBold.woff2",
+    ]),
+  );
+  expect(
+    fontRequests.every((url) => url.origin === "http://127.0.0.1:4173"),
+  ).toBe(true);
   expect(runtimeErrors).toEqual([]);
 });
 

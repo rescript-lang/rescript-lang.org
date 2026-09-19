@@ -15,4 +15,43 @@ test("homepage response contains prerendered content and highlighted examples", 
   expect(document.querySelector("code.lang-js span")).not.toBeNull();
   expect(html).toContain('href="/docs/manual/installation"');
   expect(html).toMatch(/href="\/try\?code=[^"]+"/);
+
+  const fontPreloads = Array.from(
+    document.querySelectorAll('head link[rel="preload"][as="font"]'),
+    (link) => ({
+      href: link.getAttribute("href"),
+      type: link.getAttribute("type"),
+      crossOrigin: link.getAttribute("crossorigin"),
+      media: link.getAttribute("media"),
+    }),
+  );
+
+  expect(fontPreloads).toEqual([
+    {
+      href: "/fonts/subset-Inter-Regular.woff2",
+      type: "font/woff2",
+      crossOrigin: "anonymous",
+      media: null,
+    },
+    {
+      href: "/fonts/subset-Inter-SemiBold.woff2",
+      type: "font/woff2",
+      crossOrigin: "anonymous",
+      media: null,
+    },
+    {
+      href: "/fonts/subset-Inter-Bold.woff2",
+      type: "font/woff2",
+      crossOrigin: "anonymous",
+      media: "(min-width: 1024px)",
+    },
+    {
+      href: "/fonts/red-hat-mono-700.woff2",
+      type: "font/woff2",
+      crossOrigin: "anonymous",
+      media: null,
+    },
+  ]);
+  expect(html).not.toContain("fonts.googleapis.com");
+  expect(html).not.toContain("fonts.gstatic.com");
 });
