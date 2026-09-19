@@ -139,22 +139,25 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn
-      - name: Install Playwright Chromium
-        run: yarn workspace @rescript-lang/docs playwright install --with-deps chromium
       - name: Build docs
         run: yarn workspace @rescript-lang/docs build
       - name: Check homepage performance budgets
         run: yarn workspace @rescript-lang/docs ci:homepage-performance
-      - name: Run homepage Playwright tests
-        run: yarn workspace @rescript-lang/docs ci:test:e2e
-      - name: Upload Playwright artifacts
+      - name: Run homepage Cypress tests
+        uses: cypress-io/github-action@v7
+        with:
+          install: false
+          working-directory: apps/docs
+          browser: chrome
+          config-file: cypress.homepage.config.mjs
+          start: yarn serve:build
+          wait-on: http://127.0.0.1:4173
+      - name: Upload Cypress artifacts
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: homepage-playwright-artifacts
-          path: |
-            apps/docs/playwright-report
-            apps/docs/test-results/playwright
+          name: homepage-cypress-artifacts
+          path: apps/docs/test-results/cypress
   Visual_Regression:
     runs-on: ubuntu-latest
     container:

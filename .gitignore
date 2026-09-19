@@ -112,8 +112,7 @@ apps/docs/.env.local
 apps/docs/.vitest-attachments
 apps/guide/.vitest-attachments
 
-# Playwright artifacts
-apps/docs/playwright-report/
+# Browser test artifacts
 apps/docs/test-results/
 
 # Lighthouse artifacts
