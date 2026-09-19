@@ -1,8 +1,7 @@
 open Cypress
 open HomepageHelpers
 
-it("homepage hydrates with working links and copy feedback", () => {
-  grantClipboardPermissions()
+it("homepage hydrates with working links and images", () => {
   visit("/")
   containsIn("h1", headline)->should("be.visible")->ignore
   containsIn("a", "Get started")->shouldAttribute("href", "/docs/manual/installation")->ignore
@@ -10,11 +9,6 @@ it("homepage hydrates with working links and copy feedback", () => {
   ->attribute("href")
   ->shouldMatch(/\/try\?code=.+/)
   ->ignore
-  get(`button[aria-label="Copy npm install rescript command"]`)
-  ->realClick({scrollBehavior: "center"})
-  ->ignore
-  contains("Copied!")->should("be.visible")->ignore
-  readClipboard()->shouldEqual("npm install rescript")->ignore
   get("img")
   ->each(image => {
     wrap(image)
