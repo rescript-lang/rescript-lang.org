@@ -80,6 +80,8 @@ external shouldCssProperty: (chain<elements>, @as("have.css") _, string) => chai
 @send external shouldInt: (chain<'a>, string, int) => chain<'a> = "should"
 @send
 external shouldValue: (chain<elements>, @as("have.value") _, string) => chain<elements> = "should"
+@send
+external shouldText: (chain<elements>, @as("have.text") _, string) => chain<elements> = "should"
 @send external shouldEqual: (chain<'a>, @as("equal") _, 'a) => chain<'a> = "should"
 @send external shouldDeepEqual: (chain<'a>, @as("deep.equal") _, 'a) => chain<'a> = "should"
 @send external shouldMatch: (chain<'a>, @as("match") _, RegExp.t) => chain<'a> = "should"
@@ -95,6 +97,7 @@ external shouldProperty: (chain<elements>, @as("have.prop") _, string, string) =
 @send external propertyInt: (chain<'a>, string) => chain<int> = "its"
 @send external shouldSatisfy: (chain<'a>, 'a => unit) => chain<'a> = "should"
 @send external click: chain<elements> => chain<elements> = "click"
+@send external first: chain<elements> => chain<elements> = "first"
 @send external typeText: (chain<elements>, string) => chain<elements> = "type"
 @send
 external containsChildRegex: (chain<elements>, string, RegExp.t) => chain<elements> = "contains"
