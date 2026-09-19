@@ -1,13 +1,13 @@
 {
   "javascript": {
     "requests": 20,
-    "rawBytes": 1422692,
-    "gzipBytes": 279544
+    "rawBytes": 1422735,
+    "gzipBytes": 279574
   },
   "css": {
     "requests": 3,
-    "rawBytes": 80496,
-    "gzipBytes": 14741
+    "rawBytes": 82065,
+    "gzipBytes": 14806
   },
   "bodyElements": 418,
   "media": {
