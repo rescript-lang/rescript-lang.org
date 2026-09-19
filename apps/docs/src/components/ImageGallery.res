@@ -4,6 +4,10 @@ let make = (~className="", ~imgClassName="", ~imgSrcs: array<string>, ~imgLoadin
   let count = Array.length(imgSrcs)
   let index = selected < count ? selected : 0
 
+  if selected !== index {
+    setSelected(_ => index)
+  }
+
   switch imgSrcs->Array.get(index) {
   | None => React.null
   | Some(src) =>

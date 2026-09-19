@@ -44,3 +44,38 @@ test("gallery returns to the first image when the selected image is removed", as
   await next->click
   await element(firstImage)->toHaveAttribute("src", "/lp/community-3.avif")
 })
+
+test("gallery keeps the first image selected when a shortened list grows again", async () => {
+  let screen = await render(<ImageGallery imgSrcs=images />)
+  let third = await screen->getByLabelText("Show community photo 3")
+  await third->click
+
+  await screen->rerender(<ImageGallery imgSrcs=["/lp/community-3.avif"] />)
+  let first = await screen->getByLabelText("Show community photo 1")
+  await element(first)->toHaveAttribute("aria-pressed", "true")
+
+  await screen->rerender(<ImageGallery imgSrcs=images />)
+
+  await element(first)->toHaveAttribute("aria-pressed", "true")
+  await element(third)->toHaveAttribute("aria-pressed", "false")
+  let firstImage = await screen->getByAltText("ReScript community photo 1")
+  await element(firstImage)->toHaveAttribute("src", "/lp/community-3.avif")
+})
+
+test("gallery keeps the first image selected after an empty list is restored", async () => {
+  let screen = await render(<ImageGallery imgSrcs=images />)
+  let third = await screen->getByLabelText("Show community photo 3")
+  await third->click
+
+  await screen->rerender(<ImageGallery imgSrcs=[] />)
+  let next = await screen->getByLabelText("Next community photo")
+  await element(next)->notToBeInTheDocument
+
+  await screen->rerender(<ImageGallery imgSrcs=images />)
+
+  let first = await screen->getByLabelText("Show community photo 1")
+  await element(first)->toHaveAttribute("aria-pressed", "true")
+  await element(third)->toHaveAttribute("aria-pressed", "false")
+  let firstImage = await screen->getByAltText("ReScript community photo 1")
+  await element(firstImage)->toHaveAttribute("src", "/lp/community-3.avif")
+})
