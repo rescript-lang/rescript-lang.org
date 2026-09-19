@@ -31,6 +31,26 @@ it("initial homepage assets exclude the search implementation and styles", () =>
 });
 
 it("search loads on activation, stays styled, and supports keyboard reopening", () => {
+  cy.intercept(
+    { hostname: /\.(algolia\.net|algolianet\.com)$/, pathname: /\/queries$/ },
+    {
+      statusCode: 200,
+      body: {
+        results: [
+          {
+            hits: [],
+            nbHits: 0,
+            page: 0,
+            nbPages: 0,
+            hitsPerPage: 20,
+            processingTimeMS: 1,
+            query: "/",
+            index: "test-index",
+          },
+        ],
+      },
+    },
+  ).as("keyboardSearch");
   const requests = [];
   cy.intercept("**", (request) => {
     if (
@@ -59,6 +79,7 @@ it("search loads on activation, stays styled, and supports keyboard reopening", 
   cy.get(input).should("be.focused");
   cy.realPress("/");
   cy.get(input).should("have.value", "/");
+  cy.wait("@keyboardSearch").its("response.statusCode").should("equal", 200);
   cy.realPress("Escape");
   cy.get(input).should("have.value", "").and("be.focused");
   cy.realPress("Escape");
