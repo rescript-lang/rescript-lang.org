@@ -63,6 +63,13 @@ describe("Playground", () => {
     waitForHydration()
   })
 
+  it("should highlight JavaScript after a direct playground load", () => {
+    visit("/try")
+    get(".cm-editor")->shouldBeVisible->ignore
+    get("pre.whitespace-pre-wrap")->shouldContainText("react/jsx-runtime")->ignore
+    get("pre code.lang-js span[class^='hljs-']")->should("exist")->ignore
+  })
+
   it("should compile and run imported code in the playground", () => {
     // Navigate to the playground from the homepage
     clickNavLink(~testId="navbar-primary-left-content", ~text="Playground")

@@ -1,4 +1,4 @@
-/** Shared shell styles and the stable Cypress bootstrap slot.
-Feature-specific styles load with their components. */
+/** Shared shell, token styles, and the stable Cypress bootstrap slot.
+Runtime grammars belong to content routes and the playground. */
 @react.component
 let default: unit => Jsx.element

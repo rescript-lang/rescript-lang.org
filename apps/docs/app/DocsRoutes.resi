@@ -10,4 +10,5 @@ let docsReactRoutes: array<ReactRouter.Routes.t>
 let docsGuidesRoutes: array<ReactRouter.Routes.t>
 let communityRoutes: array<ReactRouter.Routes.t>
 let syntaxLookupDetailRoutes: array<ReactRouter.Routes.t>
+/** Keep home, the lazy playground, and not-found outside the content highlighting boundary. */
 let default: array<ReactRouter.Routes.t>
