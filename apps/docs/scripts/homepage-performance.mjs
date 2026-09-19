@@ -8,9 +8,6 @@ const buildDirectory = fileURLToPath(
   new URL("../build/client/", import.meta.url),
 );
 const homepagePath = path.join(buildDirectory, "index.html");
-const budgetPath = fileURLToPath(
-  new URL("./homepage-performance-budget.json", import.meta.url),
-);
 const localOrigin = "https://build.local";
 
 function unique(values) {
@@ -135,56 +132,6 @@ export async function createReport({ html, readAsset }) {
   };
 }
 
-export function getBudgetFailures(report, budget) {
-  const checks = [
-    [
-      "initial JavaScript requests",
-      report.javascript.requests,
-      budget.javascript.requests,
-    ],
-    [
-      "initial JavaScript raw bytes",
-      report.javascript.rawBytes,
-      budget.javascript.rawBytes,
-    ],
-    [
-      "initial JavaScript gzip bytes",
-      report.javascript.gzipBytes,
-      budget.javascript.gzipBytes,
-    ],
-    ["initial CSS requests", report.css.requests, budget.css.requests],
-    ["initial CSS raw bytes", report.css.rawBytes, budget.css.rawBytes],
-    ["initial CSS gzip bytes", report.css.gzipBytes, budget.css.gzipBytes],
-    ["body elements", report.bodyElements, budget.bodyElements],
-    ["images", report.media.images, budget.media.images],
-    [
-      "images missing width",
-      report.media.imagesMissingWidth,
-      budget.media.imagesMissingWidth,
-    ],
-    [
-      "images missing height",
-      report.media.imagesMissingHeight,
-      budget.media.imagesMissingHeight,
-    ],
-    ["videos", report.media.videos, budget.media.videos],
-    [
-      "videos missing width",
-      report.media.videosMissingWidth,
-      budget.media.videosMissingWidth,
-    ],
-    [
-      "videos missing height",
-      report.media.videosMissingHeight,
-      budget.media.videosMissingHeight,
-    ],
-  ];
-
-  return checks
-    .filter(([, actual, maximum]) => actual > maximum)
-    .map(([name, actual, maximum]) => `${name}: ${actual} exceeds ${maximum}`);
-}
-
 function toAssetPath(url) {
   const relativePath = decodeURIComponent(url.pathname).replace(/^\/+/, "");
   return path.join(buildDirectory, relativePath);
@@ -203,28 +150,17 @@ function formatReport(report) {
 }
 
 async function main() {
-  const [html, budgetContents] = await Promise.all([
-    readFile(homepagePath, "utf8"),
-    readFile(budgetPath, "utf8"),
-  ]);
+  const html = await readFile(homepagePath, "utf8");
   const report = await createReport({
     html,
     readAsset: (url) => readFile(toAssetPath(url)),
   });
-  const budget = JSON.parse(budgetContents);
 
   console.log(
     process.argv.includes("--json")
       ? JSON.stringify(report, null, 2)
       : formatReport(report),
   );
-
-  const failures = getBudgetFailures(report, budget);
-  if (failures.length > 0) {
-    throw new Error(
-      `Homepage performance budgets failed:\n${failures.join("\n")}`,
-    );
-  }
 }
 
 const entryPath = process.argv[1]

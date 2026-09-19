@@ -141,7 +141,7 @@ jobs:
         run: yarn
       - name: Build docs
         run: yarn workspace @rescript-lang/docs build
-      - name: Check homepage performance budgets
+      - name: Report homepage asset sizes
         run: yarn workspace @rescript-lang/docs ci:homepage-performance
       - name: Run homepage Cypress tests
         uses: cypress-io/github-action@v7
