@@ -46,6 +46,7 @@ export default defineConfig({
       provider: playwright({
         contextOptions: {
           deviceScaleFactor: 1,
+          permissions: ["clipboard-read", "clipboard-write"],
         },
       }),
       ui: false,

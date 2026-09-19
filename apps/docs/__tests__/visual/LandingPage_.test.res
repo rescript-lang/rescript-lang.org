@@ -20,10 +20,6 @@ let snapshotSection = async (~width, ~height, ~sectionTestId, ~screenshotName) =
   if sectionTestId == "landing-other-selling-points" {
     let sourceSelector = `[data-testid="${sectionTestId}"]`
     await TestUtils.waitForImages(sourceSelector)
-    // Headless UI's appear transition mutates classes after first render. Since
-    // these tests snapshot a cloned outerHTML string, wait for the live section
-    // to settle so the clone does not preserve a transient opacity-0 state.
-    await TestUtils.sleep(1100)
   }
 
   let sandboxTestId = `${sectionTestId}-snapshot`
