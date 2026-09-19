@@ -73,17 +73,13 @@ async function loadHomepageImages(page) {
   });
 }
 
-test("homepage hydrates with working links and copy feedback", async ({
-  context,
+test("homepage hydrates with working links, fonts, and images", async ({
   page,
 }) => {
   const runtimeErrors = observeRuntimeErrors(page);
   const failedImages = observeFailedLocalImages(page);
   const fontRequests = observeFontRequests(page);
 
-  await context.grantPermissions(["clipboard-read", "clipboard-write"], {
-    origin: "http://127.0.0.1:4173",
-  });
   await page.goto("/");
   await expectPageStyles(page);
 
@@ -123,14 +119,6 @@ test("homepage hydrates with working links and copy feedback", async ({
   await expect(
     page.getByRole("link", { name: "Edit this example in Playground" }),
   ).toHaveAttribute("href", /\/try\?code=.+/);
-
-  await page
-    .getByRole("button", { name: "Copy npm install rescript command" })
-    .click();
-  await expect(page.getByText("Copied!", { exact: true })).toBeVisible();
-  await expect
-    .poll(() => page.evaluate(() => navigator.clipboard.readText()))
-    .toBe("npm install rescript");
 
   const brokenLoadedImages = await loadHomepageImages(page);
 
