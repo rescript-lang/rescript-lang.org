@@ -7,7 +7,7 @@ import { homepageCompilerOptions } from "../../vite-react-compiler.mjs";
 
 const optedInComponents = [
   { name: "LandingPageIntro", directory: "src/components" },
-  { name: "LandingPageInstallInstructions", directory: "app/routes" },
+  { name: "LandingPageInstallInstructions", directory: "src/components" },
   { name: "LandingPageTrustedBy", directory: "src/components" },
 ];
 const optedInNames = optedInComponents.map(({ name }) => name);
@@ -106,7 +106,7 @@ for (const component of optedInComponents) {
 test("unannotated interactive homepage components remain uncompiled", async () => {
   const ast = await transformComponent({
     name: "LandingPageCopyButton",
-    directory: "app/routes",
+    directory: "src/components",
   });
   assert.deepEqual(cacheBindings(ast), []);
   assert.deepEqual(cachedComponentNames(ast), []);
