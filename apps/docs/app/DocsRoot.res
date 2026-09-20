@@ -14,6 +14,7 @@ external hljsCss: string = "default"
   import json from 'highlight.js/lib/languages/json';
   import text from 'highlight.js/lib/languages/plaintext';
   import html from 'highlight.js/lib/languages/xml';
+  import yaml from 'highlight.js/lib/languages/yaml';
   import toml from 'highlight.js/lib/languages/ini';
   import rescript from 'highlightjs-rescript';
 
@@ -29,6 +30,7 @@ external hljsCss: string = "default"
   hljs.registerLanguage('html', html)
   hljs.registerLanguage('diff', diff)
   hljs.registerLanguage('typescript', typescript)
+  hljs.registerLanguage('yaml', yaml)
 `)
 
 open ReactRouter
