@@ -7,15 +7,24 @@ type consoleCall = {args: array<consoleArgument>}
 @send external getCalls: spy => array<consoleCall> = "getCalls"
 @val external consoleArgumentString: option<consoleArgument> => string = "String"
 type console
-type rec window = {document: Dom.document, console: console, navigator: {clipboard: clipboard}}
+type rec window = {
+  document: Dom.document,
+  console: console,
+  navigator: {clipboard: clipboard},
+  scrollY: float,
+}
 and clipboard
-type response = {status: int, body: string}
+type response = {status: int, body: string, headers: Dict.t<string>}
 type automation = {command: string, params?: {permissions: array<string>, origin: string}}
 type request = {url: string, resourceType: string}
 type routeMatcher = {resourceType?: string, pathname?: string}
 type searchRouteMatcher = {hostname: RegExp.t, pathname: RegExp.t}
 type staticResponse = {statusCode: int, body: JSON.t}
 type wrapOptions = {log: bool}
+type requestOptions = {url: string, encoding: string}
+type visitOptions = {onBeforeLoad: window => unit}
+type listenerOptions = {once: bool}
+type bounds = {width: float, height: float, top: float}
 type url
 type elementList
 type fontFaceSet
@@ -30,6 +39,7 @@ type cssStyle
 @val external beforeEach: (unit => unit) => unit = "beforeEach"
 @val external afterEach: (unit => unit) => unit = "afterEach"
 @val @scope("cy") external visit: string => unit = "visit"
+@val @scope("cy") external visitWithOptions: (string, visitOptions) => unit = "visit"
 @val @scope("cy") external viewport: (int, int) => unit = "viewport"
 @val @scope("cy") external get: string => chain<elements> = "get"
 @val @scope("cy") external alias: string => chain<'a> = "get"
@@ -40,6 +50,7 @@ type cssStyle
 @val @scope("cy") external cyWindow: unit => chain<window> = "window"
 @val @scope("cy") external cyDocument: unit => chain<Dom.document> = "document"
 @val @scope("cy") external request: string => chain<response> = "request"
+@val @scope("cy") external requestWithOptions: requestOptions => chain<response> = "request"
 @val @scope("cy") external intercept: (routeMatcher, request => unit) => chain<unit> = "intercept"
 @val @scope("cy") external interceptAll: (string, request => unit) => chain<unit> = "intercept"
 @val @scope("cy") external interceptRoute: routeMatcher => chain<unit> = "intercept"
@@ -49,10 +60,14 @@ external interceptStatic: (searchRouteMatcher, staticResponse) => chain<unit> = 
 external interceptPattern: (RegExp.t, request => unit) => chain<unit> = "intercept"
 @val @scope("cy")
 external interceptDeferred: (RegExp.t, unit => promise<unit>) => chain<unit> = "intercept"
+@val @scope("cy")
+external interceptDeferredRequest: (routeMatcher, request => promise<unit>) => chain<unit> =
+  "intercept"
 @val @scope("cy") external wait: string => chain<response> = "wait"
 @val @scope("cy") external wrap: 'a => chain<'a> = "wrap"
 @val @scope("cy") external wrapWithOptions: ('a, wrapOptions) => chain<'a> = "wrap"
 @val @scope("cy") external run: (unit => promise<unit>) => chain<unit> = "then"
+@val @scope("cy") external runPromise: (unit => promise<'a>) => chain<'a> = "then"
 @val @scope("cy") external do_: (unit => unit) => chain<unit> = "then"
 @val @scope("cy") external realPressKey: string => chain<unit> = "realPress"
 @val @scope("cy") external realPressKeys: array<string> => chain<unit> = "realPress"
@@ -120,6 +135,9 @@ external containsChildRegex: (chain<elements>, string, RegExp.t) => chain<elemen
 @send @scope(("to", "deep")) external deepEqual: (assertion, 'a) => unit = "equal"
 @send @scope(("to", "include")) external includeMembers: (assertion, array<'a>) => unit = "members"
 @send @scope(("to", "be")) external greaterThan: (assertion, int) => unit = "greaterThan"
+@send @scope(("to", "be")) external greaterThanFloat: (assertion, float) => unit = "greaterThan"
+@send @scope(("to", "be", "at")) external atLeast: (assertion, float) => unit = "least"
+@send @scope(("to", "be")) external closeTo: (assertion, float, float) => unit = "closeTo"
 @send @scope("to") external match_: (assertion, RegExp.t) => unit = "match"
 
 type parser
@@ -127,6 +145,13 @@ type parser
 @send external parseHtml: (parser, string, @as("text/html") _) => Dom.document = "parseFromString"
 @send external querySelector: (Dom.document, string) => Null.t<Dom.element> = "querySelector"
 @send external querySelectorAll: (Dom.document, string) => elementList = "querySelectorAll"
+@send
+external querySelectorFromElement: (Dom.element, string) => Null.t<Dom.element> = "querySelector"
+@send
+external querySelectorAllFromElement: (Dom.element, string) => elementList = "querySelectorAll"
+@send
+external addEventListenerOnce: (Dom.document, string, unit => unit, listenerOptions) => unit =
+  "addEventListener"
 @get external body: Dom.document => Dom.element = "body"
 @get external documentElement: Dom.document => Dom.element = "documentElement"
 @get external currentScript: Dom.document => Null.t<Dom.element> = "currentScript"
@@ -134,17 +159,30 @@ type parser
 @get external innerHTML: Dom.element => string = "innerHTML"
 @get external outerHTML: Dom.element => string = "outerHTML"
 @send external getAttribute: (Dom.element, string) => Null.t<string> = "getAttribute"
+@send external boundingRect: Dom.element => bounds = "getBoundingClientRect"
+@get external alt: Dom.element => string = "alt"
+@get external baseURI: Dom.element => string = "baseURI"
+@get external currentSrc: Dom.element => string = "currentSrc"
+@get external parentElement: Dom.element => Nullable.t<Dom.element> = "parentElement"
+@send external decode: Dom.element => promise<unit> = "decode"
 
 @val @scope("Array") external elementsFrom: elementList => array<Dom.element> = "from"
 @new external url: string => url = "URL"
+@new external urlWithBase: (string, string) => url = "URL"
 @get external pathname: url => string = "pathname"
 @get external hostname: url => string = "hostname"
 @get external urlOrigin: url => string = "origin"
+@get external href: url => string = "href"
 
 @get external fonts: Dom.document => fontFaceSet = "fonts"
 @get external fontsReady: fontFaceSet => promise<fontFaceSet> = "ready"
 @send external loadFont: (fontFaceSet, string) => promise<array<fontFace>> = "load"
 @send external checkFont: (fontFaceSet, string) => bool = "check"
+@val @scope("Array") external fontFacesFrom: fontFaceSet => array<fontFace> = "from"
+@get external fontStatus: fontFace => string = "status"
+@get external fontLoaded: fontFace => promise<fontFace> = "loaded"
+
+@send external windowRequestAnimationFrame: (window, float => unit) => int = "requestAnimationFrame"
 
 @get external styleSheets: Dom.document => styleSheetList = "styleSheets"
 @val @scope("Array") external styleSheetsFrom: styleSheetList => array<styleSheet> = "from"
