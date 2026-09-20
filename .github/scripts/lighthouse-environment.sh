@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Export stable artifact keys for the current branch and its comparison branch;
+# pull requests compare against their live base branch.
 REPOSITORY_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 
 if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then

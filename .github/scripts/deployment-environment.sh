@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Export the canonical production URL or the branch-specific Pages preview URL
+# for later GitHub Actions steps.
 if [[ "$RAW_BRANCH" == "master" ]]; then
   {
     echo "VITE_DEPLOYMENT_URL="

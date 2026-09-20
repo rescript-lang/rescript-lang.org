@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Restore the newest Lighthouse baseline for the comparison branch, tolerating
+# artifacts removed by a concurrent workflow while retaining other failures.
 mkdir -p .lighthouse-target
 
 ARCHIVE_PATH="$RUNNER_TEMP/lighthouse-target.zip"

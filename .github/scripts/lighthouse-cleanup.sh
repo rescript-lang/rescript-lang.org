@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Remove older Lighthouse artifacts for this branch after preserving the
+# artifact uploaded by the current workflow run.
 gh api --method GET \
   "/repos/${GITHUB_REPOSITORY}/actions/artifacts" \
   -f name="$LIGHTHOUSE_ARTIFACT_NAME" \

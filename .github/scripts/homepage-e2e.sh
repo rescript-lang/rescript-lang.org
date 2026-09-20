@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Serve the production docs build on Cypress's fixed test port, wait until it is
+# reachable, then run the homepage E2E command with any caller-provided options.
 # The static server otherwise silently selects a different occupied port.
 node --input-type=module -e '
   import {createServer} from "node:net";
