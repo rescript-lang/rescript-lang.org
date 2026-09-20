@@ -88,6 +88,9 @@ external shouldValue: (chain<elements>, @as("have.value") _, string) => chain<el
 @send
 external shouldAttribute: (chain<elements>, @as("have.attr") _, string, string) => chain<elements> =
   "should"
+@send
+external shouldProperty: (chain<elements>, @as("have.prop") _, string, string) => chain<elements> =
+  "should"
 @send external attribute: (chain<elements>, @as("attr") _, string) => chain<string> = "invoke"
 @send external propertyInt: (chain<'a>, string) => chain<int> = "its"
 @send external shouldSatisfy: (chain<'a>, 'a => unit) => chain<'a> = "should"
@@ -125,6 +128,7 @@ type parser
 @get external documentElement: Dom.document => Dom.element = "documentElement"
 @get external currentScript: Dom.document => Null.t<Dom.element> = "currentScript"
 @get external textContent: Dom.element => Null.t<string> = "textContent"
+@get external innerHTML: Dom.element => string = "innerHTML"
 @get external outerHTML: Dom.element => string = "outerHTML"
 @send external getAttribute: (Dom.element, string) => Null.t<string> = "getAttribute"
 
