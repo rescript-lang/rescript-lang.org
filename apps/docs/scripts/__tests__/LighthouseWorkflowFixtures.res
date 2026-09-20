@@ -30,10 +30,29 @@ if (args.some(arg => arg.endsWith("/zip"))) {
 }
 `
 
+let unzipFixture = `
+const fs = require("node:fs");
+const path = require("node:path");
+const args = process.argv.slice(2);
+fs.appendFileSync(process.env.CALLS, JSON.stringify(["unzip", ...args]) + "\\n");
+const status = Number(process.env.UNZIP_STATUS || 0);
+if (status !== 0) process.exit(status);
+const destination = args[args.indexOf("-d") + 1];
+fs.mkdirSync(destination, {recursive: true});
+fs.writeFileSync(path.join(destination, "baseline.json"), '{"branch":"master"}');
+`
+
 let fixture = async (~overrides=[], ()) => {
   let directory = await temporaryDirectory("lighthouse-workflow-")
   await mkdir(join([directory, "bin"]), {recursive: true})
   await writeExecutable(join([directory, "bin/gh"]), `#!${executable}\n${ghFixture}`, {mode: 0o755})
+  await writeExecutable(
+    join([directory, "bin/unzip"]),
+    `#!${executable}\n${unzipFixture}`,
+    {
+      mode: 0o755,
+    },
+  )
   {
     directory,
     env: withEnvironment(
@@ -54,6 +73,7 @@ let fixture = async (~overrides=[], ()) => {
         ("GH_FAIL", "0"),
         ("GH_RESPONSE", ""),
         ("GH_STEPS", ""),
+        ("UNZIP_STATUS", "0"),
         ...overrides,
       ],
     ),
@@ -78,15 +98,20 @@ let calls = async state => {
 let environmentContents = state => read(join([state.directory, "environment"]))
 let steps = (steps: array<step>) => [("GH_STEPS", LighthouseFixtures.json(steps))]
 
-// Use a real ZIP so the restore tests exercise extraction as well as download.
 let withArchive = async state => {
   let archive = join([state.directory, "fixture.zip"])
-  let contents = base64Buffer(
-    "UEsDBBQAAAAAAAAAIVyGLD62EwAAABMAAAANAAAAYmFzZWxpbmUuanNvbnsiYnJhbmNoIjoibWFzdGVyIn1QSwECFAMUAAAAAAAAACFchiw+thMAAAATAAAADQAAAAAAAAAAAAAAgAEAAAAAYmFzZWxpbmUuanNvblBLBQYAAAAAAQABADsAAAA+AAAAAAA=",
-  )
-  await writeBuffer(archive, contents)
+  await write(archive, "archive fixture")
   {...state, env: withEnvironment(state.env, [("ARCHIVE", archive)])}
 }
+
+let unzipCall = state =>
+  LighthouseFixtures.jsonValue([
+    "unzip",
+    "-q",
+    join([state.directory, "lighthouse-target.zip"]),
+    "-d",
+    ".lighthouse-target",
+  ])
 
 let expectRestored = async state => {
   expect(

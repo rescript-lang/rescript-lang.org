@@ -62,9 +62,11 @@ test("restores and extracts the selected baseline archive", async () => {
   expectSuccess(Workflow.run("lighthouse-restore.sh", state))
   await Workflow.expectRestored(state)
   let requests = await Workflow.calls(state)
+  expect(requests->Array.length)->toBe(3)
   expect(requests->Array.get(1))->toStrictEqual(
     Some(LighthouseFixtures.jsonValue(["api", "/repos/owner/site/actions/artifacts/42/zip"])),
   )
+  expect(requests->Array.get(2))->toStrictEqual(Some(Workflow.unzipCall(state)))
 })
 
 for_([404, 410])(
@@ -83,11 +85,12 @@ for_([404, 410])(
     let state = await Workflow.withArchive(state)
     expectSuccess(Workflow.run("lighthouse-restore.sh", state))
     let requests = await Workflow.calls(state)
-    expect(requests->Array.length)->toBe(4)
+    expect(requests->Array.length)->toBe(5)
     expect(requests->Array.get(0))->toStrictEqual(requests->Array.get(2))
     expect(requests->Array.get(3))->toStrictEqual(
       Some(LighthouseFixtures.jsonValue(["api", "/repos/owner/site/actions/artifacts/43/zip"])),
     )
+    expect(requests->Array.get(4))->toStrictEqual(Some(Workflow.unzipCall(state)))
     await Workflow.expectRestored(state)
   },
 )
@@ -155,13 +158,16 @@ test("restore propagates a failed artifact re-query", async () => {
   expect((await Workflow.calls(state))->Array.length)->toBe(3)
 })
 
-test("restore propagates invalid archive failures without retrying", async () => {
-  let state = await Workflow.fixture(~overrides=[("GH_RESPONSE", "42\n")], ())
-  let archive = join([state.directory, "fixture.zip"])
-  await write(archive, "not an archive")
-  let state = {...state, env: withEnvironment(state.env, [("ARCHIVE", archive)])}
+test("restore propagates extraction failures without retrying", async () => {
+  let state = await Workflow.fixture(
+    ~overrides=[("GH_RESPONSE", "42\n"), ("UNZIP_STATUS", "9")],
+    (),
+  )
+  let state = await Workflow.withArchive(state)
   expectStatus(Workflow.run("lighthouse-restore.sh", state), 9)
-  expect((await Workflow.calls(state))->Array.length)->toBe(2)
+  let requests = await Workflow.calls(state)
+  expect(requests->Array.length)->toBe(3)
+  expect(requests->Array.get(2))->toStrictEqual(Some(Workflow.unzipCall(state)))
 })
 
 test("cleanup preserves the newly uploaded artifact", async () => {

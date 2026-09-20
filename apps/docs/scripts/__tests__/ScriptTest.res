@@ -21,8 +21,6 @@ type mkdirOptions = {recursive: bool}
 type removeOptions = {recursive: bool, force: bool}
 type writeOptions = {mode: int}
 @module("node:buffer") @scope("Buffer") external buffer: string => buffer = "from"
-@module("node:buffer") @scope("Buffer")
-external base64Buffer: (string, @as("base64") _) => buffer = "from"
 @get external byteLength: buffer => int = "byteLength"
 @module("node:zlib") external gzip: (buffer, compressionOptions) => buffer = "gzipSync"
 @module("node:os") external tmpdir: unit => string = "tmpdir"
@@ -33,7 +31,6 @@ external base64Buffer: (string, @as("base64") _) => buffer = "from"
 @module("node:fs/promises") external read: (string, @as("utf8") _) => promise<string> = "readFile"
 @module("node:fs/promises") external readBuffer: string => promise<buffer> = "readFile"
 @module("node:fs/promises") external write: (string, string) => promise<unit> = "writeFile"
-@module("node:fs/promises") external writeBuffer: (string, buffer) => promise<unit> = "writeFile"
 @module("node:fs/promises")
 external writeExecutable: (string, string, writeOptions) => promise<unit> = "writeFile"
 @module("node:fs/promises") external readdir: string => promise<array<string>> = "readdir"
