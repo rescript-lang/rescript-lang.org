@@ -32,8 +32,8 @@ for_([
   ("master", "VITE_DEPLOYMENT_URL=\n", "DOCS_DEPLOYMENT_URL=https://rescript-lang.org\n"),
   (
     "Perf/Homepage",
-    "VITE_DEPLOYMENT_URL=https://perf-homepage.rescript-lang.pages.dev\n",
-    "DOCS_DEPLOYMENT_URL=https://perf-homepage.rescript-lang.pages.dev\n",
+    "VITE_DEPLOYMENT_URL=https://perf-homepage-19ab1c0e.rescript-lang.pages.dev\n",
+    "DOCS_DEPLOYMENT_URL=https://perf-homepage-19ab1c0e.rescript-lang.pages.dev\n",
   ),
 ])("deployment environment for %s does not depend on GitHub artifact access", async ((
   branch,
@@ -46,6 +46,29 @@ for_([
   expect(environment)->toContain(expectedViteUrl)
   expect(environment)->toContain(expectedDocsUrl)
   expect(exists(join([state.directory, "calls.jsonl"])))->toBe(false)
+})
+
+for_([
+  ("perf/fonts", "perf-fonts", "perf-fonts-a9ef7a11", "perf-fonts-a7ec124a"),
+  (
+    "this-is-a-very-long-branch-name-with-shared-prefix-one",
+    "this-is-a-very-long-branch-name-with-shared-prefix-two",
+    "this-is-a-very-long-a2c602e0",
+    "this-is-a-very-long-7407bc97",
+  ),
+])("deployment aliases remain unique for colliding branch names %#j", async ((
+  firstBranch,
+  secondBranch,
+  firstAlias,
+  secondAlias,
+)) => {
+  let firstState = await Workflow.fixture(~overrides=[("RAW_BRANCH", firstBranch)], ())
+  let secondState = await Workflow.fixture(~overrides=[("RAW_BRANCH", secondBranch)], ())
+
+  expectSuccess(Workflow.run("deployment-environment.sh", firstState))
+  expectSuccess(Workflow.run("deployment-environment.sh", secondState))
+  expect(await Workflow.environmentContents(firstState))->toContain(`SAFE_BRANCH=${firstAlias}\n`)
+  expect(await Workflow.environmentContents(secondState))->toContain(`SAFE_BRANCH=${secondAlias}\n`)
 })
 
 test("missing target artifacts are allowed", async () => {
