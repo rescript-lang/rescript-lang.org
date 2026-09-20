@@ -13,6 +13,9 @@ type response = {status: int, body: string}
 type automation = {command: string, params?: {permissions: array<string>, origin: string}}
 type request = {url: string, resourceType: string}
 type routeMatcher = {resourceType?: string, pathname?: string}
+type searchRouteMatcher = {hostname: RegExp.t, pathname: RegExp.t}
+type staticResponse = {statusCode: int, body: JSON.t}
+type wrapOptions = {log: bool}
 type url
 type elementList
 type fontFaceSet
@@ -40,9 +43,20 @@ type cssStyle
 @val @scope("cy") external intercept: (routeMatcher, request => unit) => chain<unit> = "intercept"
 @val @scope("cy") external interceptAll: (string, request => unit) => chain<unit> = "intercept"
 @val @scope("cy") external interceptRoute: routeMatcher => chain<unit> = "intercept"
+@val @scope("cy")
+external interceptStatic: (searchRouteMatcher, staticResponse) => chain<unit> = "intercept"
+@val @scope("cy")
+external interceptPattern: (RegExp.t, request => unit) => chain<unit> = "intercept"
+@val @scope("cy")
+external interceptDeferred: (RegExp.t, unit => promise<unit>) => chain<unit> = "intercept"
 @val @scope("cy") external wait: string => chain<response> = "wait"
 @val @scope("cy") external wrap: 'a => chain<'a> = "wrap"
+@val @scope("cy") external wrapWithOptions: ('a, wrapOptions) => chain<'a> = "wrap"
 @val @scope("cy") external run: (unit => promise<unit>) => chain<unit> = "then"
+@val @scope("cy") external do_: (unit => unit) => chain<unit> = "then"
+@val @scope("cy") external realPressKey: string => chain<unit> = "realPress"
+@val @scope("cy") external realPressKeys: array<string> => chain<unit> = "realPress"
+@val @scope("cy") external reload: unit => unit = "reload"
 @val @scope("cy")
 external onBeforeLoad: (@as("window:before:load") _, window => unit) => unit = "on"
 @val @scope("cy") external spy: (console, @as("error") _) => spy = "spy"
@@ -64,6 +78,8 @@ external shouldCss: (chain<elements>, @as("have.css") _, string, string) => chai
 @send
 external shouldCssProperty: (chain<elements>, @as("have.css") _, string) => chain<string> = "should"
 @send external shouldInt: (chain<'a>, string, int) => chain<'a> = "should"
+@send
+external shouldValue: (chain<elements>, @as("have.value") _, string) => chain<elements> = "should"
 @send external shouldEqual: (chain<'a>, @as("equal") _, 'a) => chain<'a> = "should"
 @send external shouldDeepEqual: (chain<'a>, @as("deep.equal") _, 'a) => chain<'a> = "should"
 @send external shouldMatch: (chain<'a>, @as("match") _, RegExp.t) => chain<'a> = "should"
@@ -76,6 +92,9 @@ external shouldAttribute: (chain<elements>, @as("have.attr") _, string, string) 
 @send external propertyInt: (chain<'a>, string) => chain<int> = "its"
 @send external shouldSatisfy: (chain<'a>, 'a => unit) => chain<'a> = "should"
 @send external click: chain<elements> => chain<elements> = "click"
+@send external typeText: (chain<elements>, string) => chain<elements> = "type"
+@send
+external containsChildRegex: (chain<elements>, string, RegExp.t) => chain<elements> = "contains"
 @send external focusElement: chain<elements> => chain<elements> = "focus"
 @send external realClick: chain<elements> => chain<elements> = "realClick"
 @send external realPress: (chain<elements>, string) => chain<elements> = "realPress"
@@ -86,6 +105,7 @@ external shouldAttribute: (chain<elements>, @as("have.attr") _, string, string) 
 @get external complete: Dom.element => bool = "complete"
 @get external naturalWidth: Dom.element => int = "naturalWidth"
 @send external readText: clipboard => promise<string> = "readText"
+@send external destroy: request => unit = "destroy"
 
 @val external expect: ('a, ~message: string=?) => assertion = "expect"
 @send @scope("to") external equal: (assertion, 'a) => unit = "equal"
