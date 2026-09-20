@@ -6,11 +6,34 @@ import { parseSync, transformAsync, traverse, types } from "@babel/core";
 import { homepageCompilerOptions } from "../../vite-react-compiler.mjs";
 
 const optedInComponents = [
-  { name: "LandingPageIntro", directory: "src/components" },
-  { name: "LandingPageInstallInstructions", directory: "src/components" },
-  { name: "LandingPageTrustedBy", directory: "src/components" },
+  {
+    name: "LandingPageIntro",
+    directory: "src/components",
+    compiledNames: ["LandingPageIntro"],
+  },
+  {
+    name: "LandingPageInstallInstructions",
+    directory: "src/components",
+    compiledNames: ["LandingPageInstallInstructions"],
+  },
+  {
+    name: "LandingPageTrustedBy",
+    directory: "src/components",
+    compiledNames: ["LandingPageTrustedBy"],
+  },
+  {
+    name: "NavbarPrimary",
+    directory: "src/components",
+    compiledNames: [
+      "NavbarPrimary",
+      "NavbarPrimary$LeftContent",
+      "NavbarPrimary$RightContent",
+    ],
+  },
 ];
-const optedInNames = optedInComponents.map(({ name }) => name);
+const optedInNames = optedInComponents.flatMap(
+  ({ compiledNames }) => compiledNames,
+);
 
 async function transformComponent({ name, directory }) {
   const filename = fileURLToPath(
@@ -98,8 +121,8 @@ function memoizedFunctionCount(ast) {
 for (const component of optedInComponents) {
   test(`${component.name} opts in to React 19 compiler memoization`, async () => {
     const ast = await transformComponent(component);
-    assert.deepEqual(cachedComponentNames(ast), [component.name]);
-    assert.equal(memoizedFunctionCount(ast), 1);
+    assert.deepEqual(cachedComponentNames(ast), component.compiledNames);
+    assert.equal(memoizedFunctionCount(ast), component.compiledNames.length);
   });
 }
 
@@ -113,7 +136,7 @@ test("unannotated interactive homepage components remain uncompiled", async () =
   assert.equal(memoizedFunctionCount(ast), 0);
 });
 
-test("compiler file filtering includes only generated homepage application modules", () => {
+test("compiler file filtering includes only opted-in generated application modules", () => {
   const { include, exclude } = homepageCompilerOptions();
   const matches = (filename) =>
     include.test(filename) &&
@@ -125,6 +148,9 @@ test("compiler file filtering includes only generated homepage application modul
     "/repo/apps/docs/src/components/LandingPageIntro.jsx",
     "/repo/apps/docs/src/components/LandingPageTrustedBy.jsx?import",
     "C:\\repo\\apps\\docs\\src\\components\\LandingPageIntro.jsx",
+    "/repo/apps/docs/src/components/NavbarPrimary.jsx",
+    "/repo/apps/docs/src/components/NavbarPrimary.jsx?import",
+    "C:\\repo\\apps\\docs\\src\\components\\NavbarPrimary.jsx",
   ]) {
     assert.equal(matches(filename), true, filename);
   }
@@ -139,6 +165,7 @@ test("compiler file filtering includes only generated homepage application modul
     "/repo/apps/docs/src/components/LandingPageIntro.res",
     "/repo/apps/docs/src/components/LandingPageIntro.jsx.map",
     "/repo/apps/docs/src/components/Search.jsx",
+    "/repo/apps/docs/src/components/NavbarSecondary.jsx",
     "/repo/apps/guide/src/components/LandingPageIntro.jsx",
     "/repo/node_modules/example/apps/docs/src/components/LandingPageIntro.jsx",
     "\0rolldown/runtime.js",
@@ -171,7 +198,7 @@ test("the shared preset preserves annotation mode and excludes server compilatio
   assert.deepEqual(rolldown.optimizeDeps.include, ["react/compiler-runtime"]);
 });
 
-test("the production homepage bundle contains all three compiled components", async () => {
+test("the production homepage bundle contains its three compiled components", async () => {
   const directory = new URL("../../build/client/assets/", import.meta.url);
   const filenames = (await readdir(directory)).filter((filename) =>
     /^LandingPageRoute-[^/]+\.js$/.test(filename),
@@ -180,7 +207,29 @@ test("the production homepage bundle contains all three compiled components", as
   const contents = await readFile(new URL(filenames[0], directory), "utf8");
   const ast = parseSync(contents, { babelrc: false, configFile: false });
   assert.ok(ast);
-  assert.equal(memoizedFunctionCount(ast), optedInComponents.length);
+  assert.equal(memoizedFunctionCount(ast), 3);
+});
+
+test("the production client bundle contains the compiled primary navbar", async () => {
+  const directory = new URL("../../build/client/assets/", import.meta.url);
+  const assets = await Promise.all(
+    (await readdir(directory))
+      .filter((filename) => filename.endsWith(".js"))
+      .map(async (filename) => ({
+        filename,
+        contents: await readFile(new URL(filename, directory), "utf8"),
+      })),
+  );
+  const matches = assets.filter(({ contents }) =>
+    contents.includes("navbar-primary-left-content"),
+  );
+  assert.equal(matches.length, 1, "the production primary navbar must exist");
+  const ast = parseSync(matches[0].contents, {
+    babelrc: false,
+    configFile: false,
+  });
+  assert.ok(ast);
+  assert.equal(memoizedFunctionCount(ast), 3);
 });
 
 test("the production server leaves the annotated components uncompiled", async () => {
