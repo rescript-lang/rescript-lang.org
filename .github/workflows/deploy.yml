@@ -19,8 +19,6 @@ jobs:
     concurrency:
       group: docs-deploy-${{ github.head_ref || github.ref_name }}
       cancel-in-progress: true
-    outputs:
-      url: ${{ steps.deploy.outputs.deployment-url }}
     permissions:
       contents: read
       deployments: write
@@ -92,6 +90,11 @@ jobs:
         uses: actions/setup-node@v6.3.0
         with:
           node-version-file: ".node-version"
+      - name: Set deployment URL
+        env:
+          RAW_BRANCH: ${{ github.head_ref || github.ref_name }}
+        shell: bash
+        run: bash .github/scripts/deployment-environment.sh
       - name: Set Lighthouse environment
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -106,12 +109,12 @@ jobs:
       - name: Audit homepage with Lighthouse
         uses: treosh/lighthouse-ci-action@v12
         with:
-          urls: ${{ needs.deploy.outputs.url }}
+          urls: ${{ env.DOCS_DEPLOYMENT_URL }}
           configPath: ./apps/docs/lighthouserc.json
       - name: Create Lighthouse baseline
         run: node apps/docs/scripts/lighthouse-report.mjs baseline
         env:
-          LIGHTHOUSE_URL: ${{ needs.deploy.outputs.url }}
+          LIGHTHOUSE_URL: ${{ env.DOCS_DEPLOYMENT_URL }}
       - name: Upload Lighthouse reports
         id: lighthouse-artifact
         uses: actions/upload-artifact@v4
@@ -244,10 +247,15 @@ jobs:
         run: yarn install
       - name: Build ReScript
         run: yarn build:res
+      - name: Set deployment URL
+        env:
+          RAW_BRANCH: ${{ github.head_ref || github.ref_name }}
+        shell: bash
+        run: bash .github/scripts/deployment-environment.sh
       - name: Cypress E2E tests
         uses: cypress-io/github-action@v7
         with:
           install: false
           working-directory: apps/docs
           browser: chrome
-          config: baseUrl=${{ needs.deploy.outputs.url }}
+          config: baseUrl=${{ env.DOCS_DEPLOYMENT_URL }}

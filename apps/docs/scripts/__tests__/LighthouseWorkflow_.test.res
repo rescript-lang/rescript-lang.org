@@ -29,15 +29,22 @@ test("production uses its own baseline without a PR lookup", async () => {
 })
 
 for_([
-  ("master", "VITE_DEPLOYMENT_URL=\n"),
-  ("Perf/Homepage", "VITE_DEPLOYMENT_URL=https://perf-homepage.rescript-lang.pages.dev\n"),
+  ("master", "VITE_DEPLOYMENT_URL=\n", "DOCS_DEPLOYMENT_URL=https://rescript-lang.org\n"),
+  (
+    "Perf/Homepage",
+    "VITE_DEPLOYMENT_URL=https://perf-homepage.rescript-lang.pages.dev\n",
+    "DOCS_DEPLOYMENT_URL=https://perf-homepage.rescript-lang.pages.dev\n",
+  ),
 ])("deployment environment for %s does not depend on GitHub artifact access", async ((
   branch,
-  expected,
+  expectedViteUrl,
+  expectedDocsUrl,
 )) => {
   let state = await Workflow.fixture(~overrides=[("RAW_BRANCH", branch), ("GH_FAIL", "1")], ())
   expectSuccess(Workflow.run("deployment-environment.sh", state))
-  expect(await Workflow.environmentContents(state))->toContain(expected)
+  let environment = await Workflow.environmentContents(state)
+  expect(environment)->toContain(expectedViteUrl)
+  expect(environment)->toContain(expectedDocsUrl)
   expect(exists(join([state.directory, "calls.jsonl"])))->toBe(false)
 })
 
