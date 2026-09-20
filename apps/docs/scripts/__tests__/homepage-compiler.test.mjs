@@ -5,7 +5,17 @@ import { fileURLToPath } from "node:url";
 import { parseSync, transformAsync, traverse, types } from "@babel/core";
 import { homepageCompilerOptions } from "../../vite-react-compiler.mjs";
 
-const optedInComponents = [
+const homepageComponents = [
+  {
+    name: "LandingPage",
+    directory: "app/routes",
+    compiledNames: ["LandingPage"],
+  },
+  {
+    name: "LandingPageCopyButton",
+    directory: "src/components",
+    compiledNames: ["LandingPageCopyButton"],
+  },
   {
     name: "LandingPageIntro",
     directory: "src/components",
@@ -21,6 +31,8 @@ const optedInComponents = [
     directory: "src/components",
     compiledNames: ["LandingPageTrustedBy"],
   },
+];
+const navbarComponents = [
   {
     name: "NavbarPrimary",
     directory: "src/components",
@@ -31,6 +43,7 @@ const optedInComponents = [
     ],
   },
 ];
+const optedInComponents = [...homepageComponents, ...navbarComponents];
 const optedInNames = optedInComponents.flatMap(
   ({ compiledNames }) => compiledNames,
 );
@@ -126,9 +139,9 @@ for (const component of optedInComponents) {
   });
 }
 
-test("unannotated interactive homepage components remain uncompiled", async () => {
+test("unannotated eligible application components remain uncompiled", async () => {
   const ast = await transformComponent({
-    name: "LandingPageCopyButton",
+    name: "NavbarSecondary",
     directory: "src/components",
   });
   assert.deepEqual(cacheBindings(ast), []);
@@ -136,38 +149,35 @@ test("unannotated interactive homepage components remain uncompiled", async () =
   assert.equal(memoizedFunctionCount(ast), 0);
 });
 
-test("compiler file filtering includes only opted-in generated application modules", () => {
+test("compiler file filtering includes generated docs application modules", () => {
   const { include, exclude } = homepageCompilerOptions();
   const matches = (filename) =>
     include.test(filename) &&
     !exclude.some((pattern) => pattern.test(filename));
   for (const filename of [
-    "/repo/apps/docs/app/routes/LandingPageIntro.jsx",
-    "/repo/apps/docs/app/routes/LandingPageTrustedBy.jsx?import",
-    "C:\\repo\\apps\\docs\\app\\routes\\LandingPageIntro.jsx",
-    "/repo/apps/docs/src/components/LandingPageIntro.jsx",
-    "/repo/apps/docs/src/components/LandingPageTrustedBy.jsx?import",
-    "C:\\repo\\apps\\docs\\src\\components\\LandingPageIntro.jsx",
-    "/repo/apps/docs/src/components/NavbarPrimary.jsx",
-    "/repo/apps/docs/src/components/NavbarPrimary.jsx?import",
-    "C:\\repo\\apps\\docs\\src\\components\\NavbarPrimary.jsx",
+    "/repo/apps/docs/app/routes/LandingPageRoute.jsx",
+    "/repo/apps/docs/app/routes/TryRoute.jsx?import",
+    "/repo/apps/docs/app/layouts/HomepageLayoutRoute.jsx",
+    "C:\\repo\\apps\\docs\\app\\routes\\LandingPageRoute.jsx",
+    "/repo/apps/docs/src/components/NavbarSecondary.jsx",
+    "/repo/apps/docs/src/common/Hooks.jsx?import",
+    "/repo/apps/docs/src/data/BlogApi.jsx",
+    "C:\\repo\\apps\\docs\\src\\components\\NavbarSecondary.jsx",
   ]) {
     assert.equal(matches(filename), true, filename);
   }
   for (const filename of [
-    "/repo/apps/docs/app/routes/LandingPageIntro.res",
-    "/repo/apps/docs/app/routes/LandingPageIntro.mjs",
-    "/repo/apps/docs/app/routes/LandingPageIntro.jsx.map",
-    "/repo/apps/docs/app/routes/TryRoute.jsx",
-    "/repo/apps/guide/app/routes/LandingPageIntro.jsx",
-    "/repo/node_modules/example/apps/docs/app/routes/LandingPageIntro.jsx",
-    "C:\\repo\\node_modules\\example\\apps\\docs\\app\\routes\\LandingPageIntro.jsx",
-    "/repo/apps/docs/src/components/LandingPageIntro.res",
-    "/repo/apps/docs/src/components/LandingPageIntro.jsx.map",
-    "/repo/apps/docs/src/components/Search.jsx",
-    "/repo/apps/docs/src/components/NavbarSecondary.jsx",
-    "/repo/apps/guide/src/components/LandingPageIntro.jsx",
-    "/repo/node_modules/example/apps/docs/src/components/LandingPageIntro.jsx",
+    "/repo/apps/docs/app/routes/LandingPageRoute.res",
+    "/repo/apps/docs/app/routes/LandingPageRoute.resi",
+    "/repo/apps/docs/app/routes/LandingPageRoute.mjs",
+    "/repo/apps/docs/app/routes/LandingPageRoute.jsx.map",
+    "/repo/apps/docs/__tests__/LandingPage_.test.jsx",
+    "/repo/apps/docs/build/client/LandingPageRoute.jsx",
+    "/repo/apps/guide/app/routes/LandingPageRoute.jsx",
+    "/repo/node_modules/example/apps/docs/app/routes/LandingPageRoute.jsx",
+    "C:\\repo\\node_modules\\example\\apps\\docs\\app\\routes\\LandingPageRoute.jsx",
+    "/repo/apps/guide/src/components/NavbarSecondary.jsx",
+    "/repo/node_modules/example/apps/docs/src/components/NavbarSecondary.jsx",
     "\0rolldown/runtime.js",
   ]) {
     assert.equal(matches(filename), false, filename);
@@ -198,7 +208,7 @@ test("the shared preset preserves annotation mode and excludes server compilatio
   assert.deepEqual(rolldown.optimizeDeps.include, ["react/compiler-runtime"]);
 });
 
-test("the production homepage bundle contains its three compiled components", async () => {
+test("the production homepage bundle contains its compiled components", async () => {
   const directory = new URL("../../build/client/assets/", import.meta.url);
   const filenames = (await readdir(directory)).filter((filename) =>
     /^LandingPageRoute-[^/]+\.js$/.test(filename),
@@ -207,7 +217,10 @@ test("the production homepage bundle contains its three compiled components", as
   const contents = await readFile(new URL(filenames[0], directory), "utf8");
   const ast = parseSync(contents, { babelrc: false, configFile: false });
   assert.ok(ast);
-  assert.equal(memoizedFunctionCount(ast), 3);
+  assert.equal(
+    memoizedFunctionCount(ast),
+    homepageComponents.flatMap(({ compiledNames }) => compiledNames).length,
+  );
 });
 
 test("the production client bundle contains the compiled primary navbar", async () => {
@@ -229,7 +242,10 @@ test("the production client bundle contains the compiled primary navbar", async 
     configFile: false,
   });
   assert.ok(ast);
-  assert.equal(memoizedFunctionCount(ast), 3);
+  assert.equal(
+    memoizedFunctionCount(ast),
+    navbarComponents.flatMap(({ compiledNames }) => compiledNames).length,
+  );
 });
 
 test("the production server leaves the annotated components uncompiled", async () => {
