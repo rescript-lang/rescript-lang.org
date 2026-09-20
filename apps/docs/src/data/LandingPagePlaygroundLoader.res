@@ -1,23 +1,3 @@
-type highlighter
-type language
-type highlightOptions = {language: string}
-type highlightResult = {value: string}
-
-@module("highlight.js/lib/core") @scope("default")
-external createHighlighter: unit => highlighter = "newInstance"
-
-@module("highlight.js/lib/languages/javascript")
-external javascript: language = "default"
-
-@module("highlightjs-rescript")
-external rescript: language = "default"
-
-@send
-external registerLanguage: (highlighter, string, language) => unit = "registerLanguage"
-
-@send
-external highlight: (highlighter, string, highlightOptions) => highlightResult = "highlight"
-
 type example = {
   res: string,
   js: string,
@@ -61,13 +41,17 @@ export {
 
 let build = (): LandingPagePlayground.playgroundData => {
   // Keep prerendering independent of global language registration and other routes.
-  let highlighter = createHighlighter()
-  highlighter->registerLanguage("rescript", rescript)
-  highlighter->registerLanguage("javascript", javascript)
+  let highlighter = HighlightJsBindings.make()
+  highlighter->HighlightJsBindings.registerLanguage("rescript", HighlightJsBindings.rescript)
+  highlighter->HighlightJsBindings.registerLanguage("javascript", HighlightJsBindings.javascript)
 
   {
-    rescriptHtml: (highlighter->highlight(example.res, {language: "rescript"})).value,
-    javascriptHtml: (highlighter->highlight(example.js, {language: "javascript"})).value,
+    rescriptHtml: (
+      highlighter->HighlightJsBindings.highlight(example.res, {language: "rescript"})
+    ).value,
+    javascriptHtml: (
+      highlighter->HighlightJsBindings.highlight(example.js, {language: "javascript"})
+    ).value,
     playgroundHref: `/try?code=${LzString.lzString.compressToEncodedURIComponent(example.res)}`,
   }
 }
