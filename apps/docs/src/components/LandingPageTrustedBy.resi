@@ -1,3 +1,3 @@
-/** Company logos retain their intrinsic aspect ratio at the existing display height. */
+/** Retain intrinsic logo ratios and opt in to React Compiler for the browser build. */
 @react.component
 let make: unit => React.element

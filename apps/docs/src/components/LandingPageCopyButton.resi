@@ -1,3 +1,4 @@
+/** Copy a homepage command and opt in to React Compiler for client builds. */
 @react.component
 let make: (
   ~code: string,
