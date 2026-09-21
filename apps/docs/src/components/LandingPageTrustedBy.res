@@ -12,9 +12,16 @@ let make = () => {
       {OurUsers.companies
       ->Array.map(company =>
         switch company {
-        | Logo({name, path, url}) =>
+        | Logo({name, path, url, width, height}) =>
           <a key=name href=url rel="noopener noreferrer">
-            <img className="hover:opacity-75 max-w-sm h-12" src=path loading=#lazy />
+            <img
+              className="hover:opacity-75 max-w-sm h-12 w-auto"
+              src=path
+              alt=name
+              width={width->Int.toString}
+              height={height->Int.toString}
+              loading=#lazy
+            />
           </a>
         }
       )
@@ -25,6 +32,12 @@ let make = () => {
     >
       <Button> {React.string("Add Your Logo")} </Button>
     </a>
-    <img className="self-start mt-10 max-w-320 opacity-50 max-h-24 w-full" src="/lp/grid.svg" />
+    <img
+      className="self-start mt-10 max-w-320 opacity-50 max-h-24 w-full"
+      src="/lp/grid.svg"
+      alt=""
+      width="384"
+      height="384"
+    />
   </section>
 }

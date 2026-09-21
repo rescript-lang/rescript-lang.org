@@ -2,6 +2,7 @@ import { defineConfig } from "vitest/config";
 import { playwright } from "@vitest/browser-playwright";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+import { responsiveImage } from "@responsive-image/vite-plugin";
 
 const isUpdatingSnapshots = process.argv.some(
   (arg) => arg === "-u" || arg === "--update" || arg.startsWith("--update="),
@@ -17,6 +18,7 @@ if (isUpdatingSnapshots && !canUpdateVisualBaselines) {
 }
 
 const setupDeps = [
+  "@responsive-image/core",
   "highlight.js/lib/core",
   "highlight.js/lib/languages/bash",
   "highlight.js/lib/languages/css",
@@ -33,7 +35,7 @@ const setupDeps = [
 
 export default defineConfig({
   envDir: "../..",
-  plugins: [react(), tailwindcss()],
+  plugins: [responsiveImage(), react(), tailwindcss()],
   optimizeDeps: {
     include: setupDeps,
   },

@@ -42,6 +42,9 @@ module Item = {
           <img
             className="absolute z-1 bottom-0 right-0 -mb-12 -mr-12 max-w-[20rem]"
             src="/lp/grid2.svg"
+            alt=""
+            width="384"
+            height="384"
           />
         </div>
       </div>
@@ -69,9 +72,10 @@ let make = () => {
     <Item
       caption="Fast and simple"
       title={React.string("The fastest build system on the web")}
-      media={<video className="rounded-lg" controls={true} poster={"/lp/fast-build-preview.avif"}>
-        <source src="https://assets-17077.kxcdn.com/videos/fast-build-3.mp4" type_="video/mp4" />
-      </video>}
+      media={<LandingPageVideo
+        poster="/lp/fast-build-preview.avif"
+        src="https://assets-17077.kxcdn.com/videos/fast-build-3.mp4"
+      />}
       paragraph={<>
         <p>
           {React.string(`ReScript cares about a consistent and fast
@@ -90,9 +94,10 @@ let make = () => {
       >
         {React.string("Type Better")}
       </span>}
-      media={<video className="rounded-lg" controls={true} poster={"/lp/type-better-preview.avif"}>
-        <source src="https://assets-17077.kxcdn.com/videos/type-better-3.mp4" type_="video/mp4" />
-      </video>}
+      media={<LandingPageVideo
+        poster="/lp/type-better-preview.avif"
+        src="https://assets-17077.kxcdn.com/videos/type-better-3.mp4"
+      />}
       polygonDirection=Up
       paragraph={React.string(`Every ReScript app is fully typed and provides
       reliable type information for any given value in your program. We
@@ -107,13 +112,10 @@ let make = () => {
         <span className="text-orange-dark"> {React.string("The familiar JS ecosystem")} </span>
         {React.string(" at your fingertips")}
       </>}
-      media={<video
-        className="rounded-lg" controls={true} poster={"/lp/interop-example-preview.avif"}
-      >
-        <source
-          src="https://assets-17077.kxcdn.com/videos/interop-example-2.mp4" type_="video/mp4"
-        />
-      </video>}
+      media={<LandingPageVideo
+        poster="/lp/interop-example-preview.avif"
+        src="https://assets-17077.kxcdn.com/videos/interop-example-2.mp4"
+      />}
       paragraph={React.string(`Use any library from JavaScript, export ReScript
       libraries to JavaScript, automatically generate TypeScript types. It's
       like you've never left the good parts of JavaScript at all.`)}

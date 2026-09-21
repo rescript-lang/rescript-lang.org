@@ -161,8 +161,8 @@ If you are writing a blog post, refer to the [blog post guide](https://rescript-
 If your company uses ReScript and should appear in the "Trusted by our users" section on the front page:
 
 - Add a black and white `.svg` logo using `#979AAD` as the fill color.
-- Put the file in [`public/lp`](public/lp).
-- Update [`src/common/OurUsers.res`](src/common/OurUsers.res).
+- Put the file in [`apps/docs/public/lp`](apps/docs/public/lp).
+- Update [`apps/docs/src/data/OurUsers.res`](apps/docs/src/data/OurUsers.res), including the logo's intrinsic `width` and `height`. For SVGs without explicit dimensions, use their `viewBox` dimensions; scale fractional dimensions together to integers without changing the aspect ratio.
 - Commit, push, and open a PR.
 
 ## Contributing

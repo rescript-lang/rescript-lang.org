@@ -1,16 +1,22 @@
 @react.component
-let make = (~className="", ~imgClassName="", ~imgSrcs: array<string>, ~imgLoading=?) => {
+let make = (
+  ~className="",
+  ~imgClassName="",
+  ~images: array<ImageAsset.t>,
+  ~imgSizes="100vw",
+  ~imgLoading=?,
+) => {
   let (selected, setSelected) = React.useState(_ => 0)
-  let count = Array.length(imgSrcs)
+  let count = Array.length(images)
   let index = selected < count ? selected : 0
 
   if selected !== index {
     setSelected(_ => index)
   }
 
-  switch imgSrcs->Array.get(index) {
+  switch images->Array.get(index) {
   | None => React.null
-  | Some(src) =>
+  | Some(image) =>
     <div className>
       <button
         type_="button"
@@ -18,20 +24,21 @@ let make = (~className="", ~imgClassName="", ~imgSrcs: array<string>, ~imgLoadin
         ariaLabel="Next community photo"
         onClick={_ => setSelected(_ => index + 1 < count ? index + 1 : 0)}
       >
-        <img
-          key=src
+        <ResponsiveImage
+          key=image.src
           className={`gallery-photo ${imgClassName}`}
-          src
+          image
+          sizes=imgSizes
           alt={`ReScript community photo ${(index + 1)->Int.toString}`}
           loading=?imgLoading
         />
       </button>
       <div className="flex space-x-2 mt-4">
-        {imgSrcs
-        ->Array.mapWithIndex((src, i) => {
+        {images
+        ->Array.mapWithIndex((image, i) => {
           let color = i === index ? "text-gray-40" : "text-gray-70"
           <button
-            key=src
+            key=image.src
             type_="button"
             ariaLabel={`Show community photo ${(i + 1)->Int.toString}`}
             ariaPressed={i === index ? #"true" : #"false"}

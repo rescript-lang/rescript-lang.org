@@ -17,10 +17,18 @@ module LeftContent = {
     >
       <Link to=#"/" className="h-8 w-8 lg:h-10 lg:w-32 flex items-center" ariaLabel="homepage">
         <img
-          className="lg:hidden" alt="ReScript Home" src="/brand/rescript-brandmark.svg" width="128"
+          className="lg:hidden"
+          alt="ReScript Home"
+          src="/brand/rescript-brandmark.svg"
+          width="250"
+          height="250"
         />
         <img
-          className="hidden lg:block" alt="ReScript Home" src="/brand/rescript-logo.svg" width="116"
+          className="hidden lg:block w-[116px]"
+          alt="ReScript Home"
+          src="/brand/rescript-logo.svg"
+          width="816"
+          height="193"
         />
       </Link>
       <Link to=#"/docs/manual/introduction" className={isActive(~url="/docs", ~pathname)}>
