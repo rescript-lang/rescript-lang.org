@@ -23,8 +23,14 @@ let links = () => [
   fontPreload("/fonts/red-hat-mono-700.woff2"),
 ]
 
+type loaderData = {playgroundData: LandingPagePlayground.playgroundData}
+
+let loader: ReactRouter.Loader.t<loaderData> = async _ => {
+  playgroundData: LandingPagePlaygroundLoader.build(),
+}
+
+@react.component
 let default = () => {
-  <>
-    <LandingPage />
-  </>
+  let {playgroundData}: loaderData = ReactRouter.useLoaderData()
+  <LandingPage playgroundData />
 }

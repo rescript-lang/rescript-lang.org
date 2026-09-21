@@ -10,4 +10,10 @@ type fontPreload = {
 /** Preload above-the-fold faces, including Inter 700 only at the desktop breakpoint. */
 let links: unit => array<fontPreload>
 
+type loaderData = {playgroundData: LandingPagePlayground.playgroundData}
+
+/** Prerender the fixed example so highlighting and URL compression stay off the client. */
+let loader: ReactRouter.Loader.t<loaderData>
+
+@react.component
 let default: unit => React.element
