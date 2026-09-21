@@ -18,7 +18,7 @@ let make = () => {
             confidence as your codebase grows.`)}
       </p>
       <ReactRouter.Link
-        to=#"/docs/manual/installation" prefetch=#viewport className="mt-4 mb-2 block"
+        to=#"/docs/manual/installation" prefetch=#intent className="mt-4 mb-2 block"
       >
         <Button> {React.string("Get started")} </Button>
       </ReactRouter.Link>

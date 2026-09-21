@@ -15,6 +15,9 @@ type rec window = {
 }
 and clipboard
 type response = {status: int, body: string, headers: Dict.t<string>}
+type replyResponse = {statusCode: int, headers: Dict.t<string>, body: string}
+type networkError = {forceNetworkError: bool}
+type fetchResponse
 type automation = {command: string, params?: {permissions: array<string>, origin: string}}
 type request = {url: string, resourceType: string}
 type routeMatcher = {resourceType?: string, pathname?: string}
@@ -58,6 +61,10 @@ type cssStyle
 external interceptStatic: (searchRouteMatcher, staticResponse) => chain<unit> = "intercept"
 @val @scope("cy")
 external interceptPattern: (RegExp.t, request => unit) => chain<unit> = "intercept"
+@val @scope("cy")
+external interceptFailurePattern: (RegExp.t, networkError) => chain<unit> = "intercept"
+@val @scope("cy")
+external interceptFailureString: (string, networkError) => chain<unit> = "intercept"
 @val @scope("cy")
 external interceptDeferred: (RegExp.t, unit => promise<unit>) => chain<unit> = "intercept"
 @val @scope("cy")
@@ -110,6 +117,9 @@ external shouldProperty: (chain<elements>, @as("have.prop") _, string, string) =
   "should"
 @send external attribute: (chain<elements>, @as("attr") _, string) => chain<string> = "invoke"
 @send external propertyInt: (chain<'a>, string) => chain<int> = "its"
+@send external propertyString: (chain<'a>, string) => chain<string> = "its"
+@send
+external shouldPropertyExist: (chain<'a>, @as("have.property") _, string) => chain<'a> = "should"
 @send external shouldSatisfy: (chain<'a>, 'a => unit) => chain<'a> = "should"
 @send external click: chain<elements> => chain<elements> = "click"
 @send external first: chain<elements> => chain<elements> = "first"
@@ -127,6 +137,8 @@ external containsChildRegex: (chain<elements>, string, RegExp.t) => chain<elemen
 @get external naturalWidth: Dom.element => int = "naturalWidth"
 @send external readText: clipboard => promise<string> = "readText"
 @send external destroy: request => unit = "destroy"
+@set external setRequestAlias: (request, string) => unit = "alias"
+@send external reply: (request, replyResponse) => unit = "reply"
 
 @val external expect: ('a, ~message: string=?) => assertion = "expect"
 @send @scope("to") external equal: (assertion, 'a) => unit = "equal"
@@ -164,6 +176,7 @@ external addEventListenerOnce: (Dom.document, string, unit => unit, listenerOpti
 @get external baseURI: Dom.element => string = "baseURI"
 @get external currentSrc: Dom.element => string = "currentSrc"
 @get external parentElement: Dom.element => Nullable.t<Dom.element> = "parentElement"
+@get external elementHref: Dom.element => string = "href"
 @send external decode: Dom.element => promise<unit> = "decode"
 
 @val @scope("Array") external elementsFrom: elementList => array<Dom.element> = "from"
@@ -183,6 +196,9 @@ external addEventListenerOnce: (Dom.document, string, unit => unit, listenerOpti
 @get external fontLoaded: fontFace => promise<fontFace> = "loaded"
 
 @send external windowRequestAnimationFrame: (window, float => unit) => int = "requestAnimationFrame"
+@send external windowFetch: (window, string) => promise<fetchResponse> = "fetch"
+@get external fetchStatus: fetchResponse => int = "status"
+@send external responseText: fetchResponse => promise<string> = "text"
 
 @get external styleSheets: Dom.document => styleSheetList = "styleSheets"
 @val @scope("Array") external styleSheetsFrom: styleSheetList => array<styleSheet> = "from"
@@ -190,7 +206,10 @@ external addEventListenerOnce: (Dom.document, string, unit => unit, listenerOpti
 @val @scope("Array") external rulesFrom: cssRuleList => array<cssRule> = "from"
 @get external ruleType: cssRule => int = "type"
 @get external nestedRules: cssRule => Nullable.t<cssRuleList> = "cssRules"
+@get external cssText: cssRule => string = "cssText"
+@get external selectorText: cssRule => string = "selectorText"
 @get external ruleStyle: cssRule => cssStyle = "style"
+@get external boxSizing: cssStyle => string = "boxSizing"
 @get external fontFamily: cssStyle => string = "fontFamily"
 @get external fontWeight: cssStyle => string = "fontWeight"
 @get external fontStyle: cssStyle => string = "fontStyle"

@@ -73,7 +73,7 @@ let syntaxLookupDetailRoutes =
   )
 
 let default = [
-  index("./routes/LandingPageRoute.jsx"),
+  layout("./layouts/HomepageLayoutRoute.jsx", [index("./routes/LandingPageRoute.jsx")]),
   route("try", "./routes/TryRoute.jsx"),
   layout(
     "./layouts/ContentLayoutRoute.jsx",
