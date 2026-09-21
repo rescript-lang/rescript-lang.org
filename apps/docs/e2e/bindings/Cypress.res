@@ -7,7 +7,6 @@ type rec window = {document: Dom.document, console: console, navigator: {clipboa
 and clipboard
 type response = {status: int, body: string}
 type automation = {command: string, params?: {permissions: array<string>, origin: string}}
-type clickOptions = {scrollBehavior: string}
 type request = {url: string, resourceType: string}
 type routeMatcher = {resourceType?: string, pathname?: string}
 type url
@@ -60,6 +59,7 @@ external shouldCss: (chain<elements>, @as("have.css") _, string, string) => chai
   "should"
 @send
 external shouldCssProperty: (chain<elements>, @as("have.css") _, string) => chain<string> = "should"
+@send external shouldInt: (chain<'a>, string, int) => chain<'a> = "should"
 @send external shouldEqual: (chain<'a>, @as("equal") _, 'a) => chain<'a> = "should"
 @send external shouldDeepEqual: (chain<'a>, @as("deep.equal") _, 'a) => chain<'a> = "should"
 @send external shouldMatch: (chain<'a>, @as("match") _, RegExp.t) => chain<'a> = "should"
@@ -72,8 +72,9 @@ external shouldAttribute: (chain<elements>, @as("have.attr") _, string, string) 
 @send external propertyInt: (chain<'a>, string) => chain<int> = "its"
 @send external shouldSatisfy: (chain<'a>, 'a => unit) => chain<'a> = "should"
 @send external click: chain<elements> => chain<elements> = "click"
-@send
-external realClick: (chain<elements>, clickOptions) => chain<elements> = "realClick"
+@send external focusElement: chain<elements> => chain<elements> = "focus"
+@send external realClick: chain<elements> => chain<elements> = "realClick"
+@send external realPress: (chain<elements>, string) => chain<elements> = "realPress"
 @send external scrollIntoView: chain<elements> => chain<elements> = "scrollIntoView"
 @send external each: (chain<elements>, elements => unit) => chain<elements> = "each"
 @send external as_: (chain<'a>, string) => chain<'a> = "as"

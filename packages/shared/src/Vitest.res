@@ -33,6 +33,9 @@ external render: Jsx.element => promise<element> = "render"
 @send
 external unmount: element => promise<unit> = "unmount"
 
+@send
+external rerender: (element, Jsx.element) => promise<unit> = "rerender"
+
 @module("vitest") @scope("expect")
 external element: 'a => element = "element"
 
@@ -50,6 +53,9 @@ external getByTextWithOptions: (element, string, {"exact": bool}) => promise<ele
 
 @send
 external getByLabelText: (element, string) => promise<element> = "getByLabelText"
+
+@send
+external getByAltText: (element, string) => promise<element> = "getByAltText"
 
 @send
 external getAllByLabelText: (element, string) => promise<array<element>> = "getAllByLabelText"
@@ -84,6 +90,9 @@ external toBeVisible: element => promise<unit> = "toBeVisible"
 @send @scope("not")
 external notToBeVisible: element => promise<unit> = "toBeVisible"
 
+@send @scope("not")
+external notToBeInTheDocument: element => promise<unit> = "toBeInTheDocument"
+
 @send
 external toBeDisabled: element => promise<unit> = "toBeDisabled"
 
@@ -98,6 +107,9 @@ external toHaveTextContent: (element, string) => promise<unit> = "toHaveTextCont
 
 @send
 external toHaveClass: (element, string) => promise<unit> = "toHaveClass"
+
+@send
+external toHaveAttribute: (element, string, string) => promise<unit> = "toHaveAttribute"
 
 @send
 external toMatchScreenshot: (element, string) => promise<unit> = "toMatchScreenshot"

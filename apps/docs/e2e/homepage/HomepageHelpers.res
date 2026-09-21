@@ -14,6 +14,15 @@ let grantClipboardPermissions = () => {
   )->ignore
 }
 
+let denyClipboardPermissions = () => {
+  run(() =>
+    automate({
+      command: "Browser.grantPermissions",
+      params: {permissions: [], origin: baseUrl()},
+    })
+  )->ignore
+}
+
 let readClipboard = () => cyWindow()->thenPromise(window => window.navigator.clipboard->readText)
 
 let homepageDocument = callback => {
