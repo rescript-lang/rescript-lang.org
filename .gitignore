@@ -42,6 +42,7 @@ apps/docs/scripts/generate_*.mjs
 apps/docs/scripts/gendocs.jsx
 apps/docs/scripts/generate_*.jsx
 apps/docs/scripts/LogAlgoliaEnvStatus.jsx
+apps/docs/scripts/__tests__/**/*.jsx
 
 # Generated via generate-llms script
 apps/docs/public/llms.txt
@@ -111,3 +112,9 @@ apps/docs/.env.local
 .vitest-attachments
 apps/docs/.vitest-attachments
 apps/guide/.vitest-attachments
+
+# Browser test artifacts
+apps/docs/test-results/
+
+# Lighthouse artifacts
+.lighthouseci/

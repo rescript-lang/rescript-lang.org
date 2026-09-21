@@ -113,6 +113,46 @@ test("landing page playground hero renders highlighted code tokens", async () =>
   expect(javascriptCodeBlock.innerHTML->String.includes("<span"))->toBe(true)
 })
 
+test("landing page renders its critical sections", async () => {
+  let screen = await render(
+    <MemoryRouter initialEntries=["/"]>
+      <LandingPage />
+    </MemoryRouter>,
+  )
+
+  let intro = await screen->getByText("JavaScript Made Simple for Humans and AI")
+  let playground = await screen->getByText("Write in ReScript")
+  let install = await screen->getByText("Quick Install")
+  let mainSellingPoint = await screen->getByText("The fastest build system on the web")
+  let community = await screen->getByText(
+    "A community of programmers who value getting things done",
+  )
+  let users = await screen->getByText("Trusted by our users")
+  let resources = await screen->getByText("Curated resources")
+
+  await element(intro)->toBeVisible
+  await element(playground)->toBeVisible
+  await element(install)->toBeVisible
+  await element(mainSellingPoint)->toBeVisible
+  await element(community)->toBeVisible
+  await element(users)->toBeVisible
+  await element(resources)->toBeVisible
+})
+
+test("landing page copy button shows success feedback", async () => {
+  let screen = await render(
+    <MemoryRouter initialEntries=["/"]>
+      <LandingPage />
+    </MemoryRouter>,
+  )
+
+  let copyButton = await screen->getByLabelText("Copy npm install rescript command")
+  await copyButton->click
+
+  let feedback = await screen->getByText("Copied!")
+  await element(feedback)->toBeVisible
+})
+
 test(
   "landing page playground hero keeps highlight styling in the sandboxed snapshot copy",
   async () => {

@@ -1946,6 +1946,7 @@ __metadata:
     auto-image-converter: "npm:^2.2.0"
     chokidar: "npm:^4.0.3"
     cypress: "npm:^15.13.1"
+    cypress-real-events: "npm:^1.15.1"
     docson: "npm:^2.1.0"
     dotenv: "npm:^16.6.1"
     fuse.js: "npm:^6.6.2"
@@ -3829,6 +3830,15 @@ __metadata:
   version: 3.2.3
   resolution: "csstype@npm:3.2.3"
   checksum: 10c0/cd29c51e70fa822f1cecd8641a1445bed7063697469d35633b516e60fe8c1bde04b08f6c5b6022136bb669b64c63d4173af54864510fbb4ee23281801841a3ce
+  languageName: node
+  linkType: hard
+
+"cypress-real-events@npm:^1.15.1":
+  version: 1.15.1
+  resolution: "cypress-real-events@npm:1.15.1"
+  peerDependencies:
+    cypress: ^4.x || ^5.x || ^6.x || ^7.x || ^8.x || ^9.x || ^10.x || ^11.x || ^12.x || ^13.x || ^14.x || ^15.x || ^16.x
+  checksum: 10c0/4d6e83eea4e2f57b1839c72a5ae76bb2dd9d8371f0cace2b23dd9abf200bb80714fe97c3a546e01ca693b9eb01809e0ca5eec8b3c3d5d93fe40cf1ac6d060d5c
   languageName: node
   linkType: hard
 

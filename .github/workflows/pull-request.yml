@@ -117,8 +117,49 @@ jobs:
         run: yarn build:res
       - name: Docs Vitest
         run: yarn workspace @rescript-lang/docs ci:test
+      - name: Docs script tests (Node)
+        run: yarn workspace @rescript-lang/docs ci:test:scripts
       - name: Guide Vitest
         run: yarn workspace @rescript-lang/guide ci:test
+  Homepage_E2E:
+    runs-on: ubuntu-latest
+    env:
+      VITE_ALGOLIA_APP_ID: test-app-id
+      VITE_ALGOLIA_INDEX_NAME: test-index
+      VITE_ALGOLIA_SEARCH_API_KEY: test-search-key
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.2
+      - name: Install Corepack
+        run: npm install --global corepack
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6.3.0
+        with:
+          node-version-file: ".node-version"
+          cache: yarn
+      - name: Install dependencies
+        run: yarn
+      - name: Build docs
+        run: yarn workspace @rescript-lang/docs build
+      - name: Report homepage asset sizes
+        run: yarn workspace @rescript-lang/docs ci:homepage-performance
+      - name: Run homepage Cypress tests
+        uses: cypress-io/github-action@v7
+        with:
+          install: false
+          working-directory: apps/docs
+          browser: chrome
+          config-file: cypress.homepage.config.mjs
+          start: yarn serve:build
+          wait-on: http://127.0.0.1:4173
+      - name: Upload Cypress artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: homepage-cypress-artifacts
+          path: apps/docs/test-results/cypress
   Visual_Regression:
     runs-on: ubuntu-latest
     container:
