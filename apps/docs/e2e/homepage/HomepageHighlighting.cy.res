@@ -1,7 +1,7 @@
 open Cypress
 open HomepageHelpers
 
-it("initial homepage scripts do not include example preparation or compression", () => {
+it("initial homepage scripts exclude example preparation and the syntax runtime", () => {
   homepageDocument(document => {
     let scripts = document->initialScriptUrls
     expect(scripts->Array.length)->greaterThan(0)
@@ -12,12 +12,43 @@ it("initial homepage scripts do not include example preparation or compression",
           response => {
             expect(response.status, ~message=asset)->equal(200)
             expect(response.body, ~message=asset)->notInclude("compressToEncodedURIComponent")
+            expect(response.body, ~message=asset)->notInclude("registerLanguage")
             expect(response.body, ~message=asset)->notInclude("function Playground$Button(props)")
           },
         )
         ->ignore,
     )
   })
+})
+
+it("content routes highlight JSON on direct loads and cold homepage navigation", () => {
+  let path = "/docs/manual/build-configuration"
+  request(`${path}/`)
+  ->then(response => {
+    expect(response.status)->equal(200)
+    let document = parser()->parseHtml(response.body)
+    let text =
+      document
+      ->querySelector("code.lang-json .hljs-attr")
+      ->Null.toOption
+      ->Option.flatMap(element => element->textContent->Null.toOption)
+    expect(text)->equal(Some(`"sources"`))
+  })
+  ->ignore
+  visit(`${path}/`)
+  get("code.lang-json .hljs-attr")->first->shouldText(`"sources"`)->ignore
+  visit("/")
+  cyLocation("pathname")->shouldEqual("/")->ignore
+  containsIn("h1", headline)->should("be.visible")->ignore
+  containsInRegex("a", /^Docs$/)->click->ignore
+  containsInRegex("h1", /^ReScript$/)->should("be.visible")->ignore
+  get("aside:visible")
+  ->containsChildRegex("a", /^Configuration$/)
+  ->scrollIntoView
+  ->click
+  ->ignore
+  cyLocation("pathname")->shouldEqual(path)->ignore
+  get("code.lang-json .hljs-attr")->first->shouldText(`"sources"`)->ignore
 })
 
 it("prepared examples survive hydration and navigation back from documentation", () => {

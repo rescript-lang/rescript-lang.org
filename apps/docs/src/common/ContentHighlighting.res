@@ -1,0 +1,15 @@
+let register = highlighter => {
+  highlighter->HighlightLanguages.ensureRegistered("rescript", HighlightJsBindings.rescript)
+  highlighter->HighlightLanguages.ensureRegistered("javascript", HighlightJsBindings.javascript)
+  highlighter->HighlightLanguages.ensureRegistered("css", HighlightJsBindings.css)
+  highlighter->HighlightLanguages.ensureRegistered("ts", HighlightJsBindings.typescript)
+  highlighter->HighlightLanguages.ensureRegistered("sh", HighlightJsBindings.bash)
+  highlighter->HighlightLanguages.ensureRegistered("bash", HighlightJsBindings.bash)
+  highlighter->HighlightLanguages.ensureRegistered("toml", HighlightJsBindings.toml)
+  highlighter->HighlightLanguages.ensureRegistered("json", HighlightJsBindings.json)
+  highlighter->HighlightLanguages.ensureRegistered("text", HighlightJsBindings.text)
+  highlighter->HighlightLanguages.ensureRegistered("html", HighlightJsBindings.html)
+  highlighter->HighlightLanguages.ensureRegistered("diff", HighlightJsBindings.diff)
+  highlighter->HighlightLanguages.ensureRegistered("typescript", HighlightJsBindings.typescript)
+  highlighter->HighlightLanguages.ensureRegistered("yaml", HighlightJsBindings.yaml)
+}

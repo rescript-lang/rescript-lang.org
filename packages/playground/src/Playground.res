@@ -1,6 +1,9 @@
 open CompilerManagerHook
 module Api = RescriptCompilerApi
 
+// The lazy playground must highlight direct visits without loading a content route first.
+let () = JavaScriptHighlighting.register(HighlightLanguages.defaultInstance)
+
 type layout = Column | Row
 type tab = JavaScript | Output | Problems | Settings
 
