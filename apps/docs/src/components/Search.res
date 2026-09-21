@@ -1,412 +1,95 @@
-type state = Active | Inactive
+type modal = React.component<SearchModal.props<string, string, string, unit => unit>>
+type state = Inactive | Active(modal)
+type action = Open(modal) | Close
+
+let reduce = (state, action) =>
+  switch (state, action) {
+  | (Inactive, Open(modal)) => Active(modal)
+  | (Active(_), Open(_)) => state
+  | (_, Close) => Inactive
+  }
 
 let unavailableText = "Search unavailable"
 let unavailableLabel = "Search unavailable for this build"
 
-let toRelativeSiteUrl = (url: string, ~siteUrl: string): string => {
-  let normalizedSiteUrl = siteUrl->String.replaceRegExp(RegExp.fromString("/+$", ~flags=""), "")
-  if normalizedSiteUrl !== "" && String.startsWith(url, normalizedSiteUrl) {
-    let relativePath = String.slice(url, ~start=String.length(normalizedSiteUrl))
-    if relativePath === "" {
-      "/"
-    } else if String.startsWith(relativePath, "/") {
-      relativePath
-    } else {
-      "/" ++ relativePath
-    }
-  } else {
-    url
-  }
-}
+@get external isContentEditable: WebAPI.DOMAPI.element => option<bool> = "isContentEditable"
+@get external focusMethod: WebAPI.DOMAPI.element => option<unit => unit> = "focus"
+@get external inputValue: WebAPI.DOMAPI.element => option<string> = "value"
+@send external focusElement: WebAPI.DOMAPI.element => unit = "focus"
 
-type apiNamespace = StdlibApi | BeltApi
-
-let apiNamespaceForUrl = (url: string): option<apiNamespace> =>
-  if url->String.includes("/docs/manual/api/stdlib/") {
-    Some(StdlibApi)
-  } else if url->String.includes("/docs/manual/api/belt/") {
-    Some(BeltApi)
-  } else {
-    None
+let isEditable = (element: WebAPI.DOMAPI.element) =>
+  switch element.tagName {
+  | "TEXTAREA" | "SELECT" | "INPUT" => true
+  | _ => element->isContentEditable->Option.getOr(false)
   }
 
-let stripCaseInsensitivePrefix = (value: string, prefix: string): string => {
-  if (
-    prefix->String.length > 0 &&
-      value->String.toLowerCase->String.startsWith(prefix->String.toLowerCase)
-  ) {
-    String.slice(value, ~start=String.length(prefix))
-  } else {
-    value
-  }
-}
-
-let baseApiModuleName = (moduleName: string): string =>
-  moduleName->stripCaseInsensitivePrefix("Stdlib.")->stripCaseInsensitivePrefix("Belt.")
-
-let apiGroupName = (hit: DocSearch.docSearchHit): option<string> =>
-  switch (apiNamespaceForUrl(hit.url), hit.hierarchy.lvl0->Nullable.toOption) {
-  | (Some(StdlibApi), Some(moduleName)) if moduleName !== "" =>
-    Some(moduleName->stripCaseInsensitivePrefix("Stdlib."))
-  | (Some(BeltApi), Some(moduleName)) if moduleName !== "" =>
-    Some(`Belt.${moduleName->baseApiModuleName}`)
-  | _ => None
+let restoreFocus = element =>
+  switch element->focusMethod {
+  | Some(_) => element->focusElement
+  | None => ()
   }
 
-let normalizeHitUrls = (items: array<DocSearch.docSearchHit>, ~siteUrl: string) =>
-  items->Array.map(hit => {
-    let url = toRelativeSiteUrl(hit.url, ~siteUrl)
-    let urlWithoutAnchor =
-      hit.url_without_anchor
-      ->Nullable.toOption
-      ->Option.getOr(hit.url->String.split("#")->Array.get(0)->Option.getOr(hit.url))
-    let url_without_anchor = toRelativeSiteUrl(urlWithoutAnchor, ~siteUrl)->Nullable.make
-    let hierarchy = switch hit->apiGroupName {
-    | Some(lvl0) => {...hit.hierarchy, lvl0: Nullable.make(lvl0)}
-    | None => hit.hierarchy
-    }
-    {...hit, url, url_without_anchor, hierarchy}
-  })
-
-let navigator = (~siteUrl: string, ~navigate: ReactRouter.navigate): DocSearch.navigator => {
-  navigate: ({itemUrl}) => {
-    navigate(toRelativeSiteUrl(itemUrl, ~siteUrl))
-  },
-}
-
-let getSubtitle: DocSearch.docSearchHit => option<string> = %raw(`
-  function(hit) {
-    var type = hit.type;
-    if (type && type !== 'lvl1' && type !== 'lvl0') {
-      var raw = hit.hierarchy;
-      if (raw && raw.lvl1) return raw.lvl1;
-    }
-    return undefined;
-  }
-`)
-
-let highlightedValue = (value: Nullable.t<DocSearch.highlightedValue>): option<string> =>
-  value->Nullable.toOption->Option.map(value => value.value)
-
-let highlightedValueWithMarkup = (value: Nullable.t<DocSearch.highlightedValue>): option<string> =>
-  switch highlightedValue(value) {
-  | Some(value) if value->String.includes("<mark>") => Some(value)
-  | _ => None
+let hasSearchQuery = () =>
+  switch document.activeElement {
+  | Value(element) =>
+    WebAPI.DOMTokenList.contains(element.classList, "DocSearch-Input") &&
+    element->inputValue->Option.map(value => value !== "")->Option.getOr(false)
+  | Null => false
   }
 
-let highlightedHierarchyValue = (
-  hierarchy: DocSearch.highlightedHierarchy,
-  type_: DocSearch.contentType,
-): option<string> =>
-  switch type_ {
-  | Lvl0 => hierarchy.lvl0->highlightedValue
-  | Lvl1 => hierarchy.lvl1->highlightedValue
-  | Lvl2 => hierarchy.lvl2->highlightedValue
-  | Lvl3 => hierarchy.lvl3->highlightedValue
-  | Lvl4 => hierarchy.lvl4->highlightedValue
-  | Lvl5 => hierarchy.lvl5->highlightedValue
-  | Lvl6 => hierarchy.lvl6->highlightedValue
-  | Content => None
+let activateSearch = (~dispatch, ~returnFocus: React.ref<option<WebAPI.DOMAPI.element>>) => {
+  if returnFocus.current->Option.isNone {
+    returnFocus.current = document.activeElement->Null.toOption
   }
-
-let highlightedHierarchyValueWithMarkup = (
-  hierarchy: DocSearch.highlightedHierarchy,
-  type_: DocSearch.contentType,
-): option<string> =>
-  switch type_ {
-  | Lvl0 => hierarchy.lvl0->highlightedValueWithMarkup
-  | Lvl1 => hierarchy.lvl1->highlightedValueWithMarkup
-  | Lvl2 => hierarchy.lvl2->highlightedValueWithMarkup
-  | Lvl3 => hierarchy.lvl3->highlightedValueWithMarkup
-  | Lvl4 => hierarchy.lvl4->highlightedValueWithMarkup
-  | Lvl5 => hierarchy.lvl5->highlightedValueWithMarkup
-  | Lvl6 => hierarchy.lvl6->highlightedValueWithMarkup
-  | Content => None
-  }
-
-let firstMarkedText = (html: string): option<string> => {
-  switch RegExp.exec(/<mark>([^<]+)<\/mark>/, html) {
-  | Some(result) =>
-    let matches = RegExp.Result.matches(result)
-    switch matches[0] {
-    | Some(Some(markedText)) => Some(markedText)
-    | _ => None
-    }
-  | None => None
-  }
-}
-
-let markTitlePrefix = (title: string, markedText: string): string => {
-  let markedLength = String.length(markedText)
-  if (
-    markedLength > 0 && title->String.toLowerCase->String.startsWith(markedText->String.toLowerCase)
-  ) {
-    let prefix = String.slice(title, ~start=0, ~end=markedLength)
-    let suffix = String.slice(title, ~start=markedLength)
-    `<mark>${prefix}</mark>${suffix}`
-  } else {
-    title
-  }
-}
-
-let stripApiModulePrefix = (markedText: string, moduleName: string): string => {
-  let moduleName = moduleName->baseApiModuleName
-  markedText
-  ->stripCaseInsensitivePrefix(`Stdlib.${moduleName}.`)
-  ->stripCaseInsensitivePrefix(`Belt.${moduleName}.`)
-  ->stripCaseInsensitivePrefix(`${moduleName}.`)
-}
-
-let getSnippetContent = (hit: DocSearch.docSearchHit): option<string> =>
-  switch hit._snippetResult {
-  | Some(snippetResult) => snippetResult.content->highlightedValue
-  | None => None
-  }
-
-let getApiTitle = (hit: DocSearch.docSearchHit): option<string> => {
-  if hit.url->String.includes("/docs/manual/api/") {
-    switch (hit.hierarchy.lvl0->Nullable.toOption, hit.hierarchy.lvl1->Nullable.toOption) {
-    | (Some(moduleName), Some(valueName)) if moduleName !== "" && valueName !== "" =>
-      let title = valueName
-      switch hit->getSnippetContent->Option.flatMap(firstMarkedText) {
-      | Some(markedText) =>
-        Some(markTitlePrefix(title, stripApiModulePrefix(markedText, moduleName)))
-      | None => Some(title)
-      }
-    | _ => None
-    }
-  } else {
-    None
-  }
-}
-
-let getHighlightedTitle = (hit: DocSearch.docSearchHit): string => {
-  let highlightedHierarchy =
-    hit._highlightResult->Option.flatMap(highlightResult =>
-      highlightResult.hierarchy->Nullable.toOption
-    )
-  let highlightedTitleWithMarkup = highlightedHierarchy->Option.flatMap(hierarchy =>
-    switch hit.type_ {
-    | Lvl0 | Lvl1 => None
-    | _ => highlightedHierarchyValueWithMarkup(hierarchy, hit.type_)
-    }
-  )
-
-  switch highlightedTitleWithMarkup {
-  | Some(title) => title
-  | None =>
-    switch highlightedHierarchy->Option.flatMap(hierarchy =>
-      hierarchy.lvl1->highlightedValueWithMarkup
-    ) {
-    | Some(title) => title
-    | None =>
-      switch getApiTitle(hit) {
-      | Some(title) => title
-      | None =>
-        switch highlightedHierarchy->Option.flatMap(hierarchy =>
-          highlightedHierarchyValue(hierarchy, hit.type_)
-        ) {
-        | Some(title) => title
-        | None => hit.hierarchy.lvl1->Nullable.toOption->Option.getOr("")
-        }
-      }
-    }
-  }
-}
-
-let markdownToHtml = (text: string): string =>
-  text
-  // Strip stray backslashes from MDX processing
-  ->String.replaceRegExp(RegExp.fromString("^\\\\\\s+", ~flags=""), "")
-  ->String.replaceRegExp(RegExp.fromString("\\\\\\s+", ~flags="g"), " ")
-  ->String.replaceRegExp(
-    RegExp.fromString("See\\s+\\[([^\\]]+)\\]\\([^)]*\\)\\s+on MDN\\.?", ~flags="g"),
-    "",
-  )
-  ->String.replaceRegExp(RegExp.fromString("See\\s+\\S+\\s+on MDN\\.?", ~flags="g"), "")
-  ->String.replaceRegExp(RegExp.fromString("\\[([^\\]]+)\\]\\([^)]*\\)", ~flags="g"), "$1")
-  ->String.replaceRegExp(RegExp.fromString("\\x60([^\\x60]+)\\x60", ~flags="g"), "<code>$1</code>")
-  ->String.replaceRegExp(
-    RegExp.fromString("\\*\\*([^*]+)\\*\\*", ~flags="g"),
-    "<strong>$1</strong>",
-  )
-  ->String.replaceRegExp(RegExp.fromString("\\*([^*]+)\\*", ~flags="g"), "<em>$1</em>")
-  ->String.replaceRegExp(RegExp.fromString("\\n{2,}", ~flags="g"), "<br />")
-  ->String.replaceRegExp(RegExp.fromString("\\n", ~flags="g"), " ")
-  ->String.trim
-
-let isChildHit = (hit: DocSearch.docSearchHit) =>
-  switch hit.type_ {
-  | Lvl2 | Lvl3 | Lvl4 | Lvl5 | Lvl6 | Content => true
-  | Lvl0 | Lvl1 => hit.url->String.includes("#")
-  }
-
-let getContentHtml = (hit: DocSearch.docSearchHit): option<string> =>
-  switch getSnippetContent(hit) {
-  | Some(content) => Some(content->markdownToHtml)
-  | None => hit.content->Nullable.toOption->Option.map(markdownToHtml)
-  }
-
-let hitComponent = ({hit, children: _}: DocSearch.hitComponent): React.element => {
-  let titleHtml = getHighlightedTitle(hit)
-  let subtitle = getSubtitle(hit)
-  let contentHtml = getContentHtml(hit)
-  let isChild = isChildHit(hit)
-
-  <ReactRouter.Link.String to=hit.url>
-    <div className="DocSearch-Hit-Container">
-      {isChild ? <Icon.DocTree /> : React.null}
-      {isChild ? <Icon.DocHash /> : <Icon.DocPage />}
-      <div className="DocSearch-Hit-content-wrapper">
-        <span className="DocSearch-Hit-title" dangerouslySetInnerHTML={{"__html": titleHtml}} />
-        {switch subtitle {
-        | Some(s) => <span className="DocSearch-Hit-subtitle"> {React.string(s)} </span>
-        | None => React.null
-        }}
-        {switch contentHtml {
-        | Some(c) if String.length(c) > 0 =>
-          <span className="DocSearch-Hit-path" dangerouslySetInnerHTML={{"__html": c}} />
-        | _ => React.null
-        }}
-      </div>
-      <Icon.DocSelect />
-    </div>
-  </ReactRouter.Link.String>
-}
-
-module ErrorBoundary = {
-  @react.component
-  let make = (~children: React.element, ~onClose: unit => unit) => {
-    <RescriptReactErrorBoundary
-      fallback={_ =>
-        <div
-          role="alert"
-          className="fixed top-6 left-1/2 z-1000 flex w-[calc(100%-2rem)] max-w-2xl -translate-x-1/2 items-center justify-between gap-4 rounded-sm border border-gray-20 bg-white px-4 py-3 shadow-lg"
-        >
-          <span className="text-14 font-medium text-gray-80">
-            {React.string(unavailableText)}
-          </span>
-          <button
-            type_="button"
-            ariaLabel="Close search"
-            className="text-gray-60 hover:text-fire-50 cursor-pointer"
-            onClick={_ => onClose()}
-          >
-            <Icon.Close className="h-4 w-4 stroke-current" />
-          </button>
-        </div>}
-    >
-      children
-    </RescriptReactErrorBoundary>
-  }
-}
-
-module ActiveDocSearch = {
-  @react.component
-  let make = (
-    ~apiKey,
-    ~appId,
-    ~indexName,
-    ~deactivateSearch: unit => unit,
-    ~onClose: unit => unit,
-  ) => {
-    let navigate = ReactRouter.useNavigate()
-
-    switch ReactDOM.querySelector("body") {
-    | Some(element) =>
-      ReactDOM.createPortal(
-        <ErrorBoundary onClose=deactivateSearch>
-          <DocSearch
-            apiKey
-            appId
-            indexName
-            navigator={navigator(~siteUrl=Env.root_url, ~navigate)}
-            transformItems={items => normalizeHitUrls(items, ~siteUrl=Env.root_url)}
-            hitComponent
-            onClose
-            insights=true
-            initialScrollY={window.scrollY->Float.toInt}
-            searchParameters={
-              distinct: 3,
-              hitsPerPage: 20,
-              attributesToSnippet: ["content:9999"],
-            }
-          />
-        </ErrorBoundary>,
-        element,
-      )
-    | None => React.null
-    }
-  }
+  dispatch(Open(React.lazy_(() => import(SearchModal.make))))
 }
 
 @react.component
 let make = () => {
-  let (state, setState) = React.useState(_ => Inactive)
+  let (state, dispatch) = React.useReducer(reduce, Inactive)
+  let returnFocus = React.useRef(None)
   let algoliaConfig = Env.algoliaPublicConfig
 
-  let deactivateSearch = () => {
+  let onClose = React.useCallback(() => {
     switch WebAPI.Document.querySelector(document, "body") {
     | Value(body) => WebAPI.DOMTokenList.remove(body.classList, "DocSearch--active")
     | Null => ()
     }
-    setState(_ => Inactive)
-  }
+    dispatch(Close)
+    returnFocus.current->Option.forEach(restoreFocus)
+    returnFocus.current = None
+  }, [dispatch])
 
-  let handleCloseModal = () => {
-    let () = switch WebAPI.Document.querySelector(document, ".DocSearch-Modal") {
-    | Value(modal) =>
-      switch WebAPI.Document.querySelector(document, "body") {
-      | Value(body) =>
-        WebAPI.DOMTokenList.remove(body.classList, "DocSearch--active")
-        modal->WebAPI.Element.addEventListener(Transitionend, () => {
-          setState(_ => Inactive)
-        })
-      | Null => setState(_ => Inactive)
-      }
-    | Null => deactivateSearch()
-    }
-  }
-
+  // Synchronize the document-wide shortcuts with search availability.
   React.useEffect(() => {
     switch algoliaConfig {
     | None => None
     | Some(_) =>
-      let isEditableTag = (el: WebAPI.DOMAPI.element) =>
-        switch el.tagName {
-        | "TEXTAREA" | "SELECT" | "INPUT" => true
-        | _ => false
-        }
-
-      let focusSearch = (e: WebAPI.UIEventsAPI.keyboardEvent) => {
-        switch document.activeElement {
-        | Value(el)
-          if el->isEditableTag || (Obj.magic(el): WebAPI.DOMAPI.htmlElement).isContentEditable => ()
-        | _ =>
-          setState(_ => Active)
-          WebAPI.KeyboardEvent.preventDefault(e)
+      let handleGlobalKeyDown = (event: WebAPI.UIEventsAPI.keyboardEvent) => {
+        if event.key === "Escape" && !hasSearchQuery() {
+          onClose()
+        } else if event.key === "/" || (event.key === "k" && (event.ctrlKey || event.metaKey)) {
+          switch document.activeElement {
+          | Value(element) if isEditable(element) => ()
+          | _ =>
+            activateSearch(~dispatch, ~returnFocus)
+            WebAPI.KeyboardEvent.preventDefault(event)
+          }
         }
       }
-
-      let handleGlobalKeyDown = (e: WebAPI.UIEventsAPI.keyboardEvent) => {
-        switch e.key {
-        | "/" => focusSearch(e)
-        | "k" if e.ctrlKey || e.metaKey => focusSearch(e)
-        | _ => ()
-        }
-      }
-      WebAPI.Window.addEventListener(window, Keydown, handleGlobalKeyDown)
-      Some(() => WebAPI.Window.removeEventListener(window, Keydown, handleGlobalKeyDown))
+      // Read Escape's query before autocomplete clears it at the input.
+      WebAPI.Window.addEventListener(window, Keydown, handleGlobalKeyDown, ~options={capture: true})
+      Some(
+        () =>
+          WebAPI.Window.removeEventListener(
+            window,
+            Keydown,
+            handleGlobalKeyDown,
+            ~options={capture: true},
+          ),
+      )
     }
-  }, [algoliaConfig])
-
-  let onClick = _ => {
-    setState(_ => Active)
-  }
-
-  let onClose = React.useCallback(() => {
-    handleCloseModal()
-  }, [setState])
+  }, (algoliaConfig, onClose, dispatch))
 
   switch algoliaConfig {
   | None =>
@@ -423,7 +106,7 @@ let make = () => {
   | Some({appId, indexName, searchApiKey}) =>
     <>
       <button
-        onClick
+        onClick={_ => activateSearch(~dispatch, ~returnFocus)}
         type_="button"
         className="text-gray-60 hover:text-fire-50 cursor-pointer"
         ariaLabel="Search"
@@ -431,7 +114,19 @@ let make = () => {
         <Icon.MagnifierGlass className="fill-current" />
       </button>
       {switch state {
-      | Active => <ActiveDocSearch apiKey=searchApiKey appId indexName deactivateSearch onClose />
+      | Active(modal) =>
+        switch ReactDOM.querySelector("body") {
+        | Some(body) =>
+          ReactDOM.createPortal(
+            <SearchErrorBoundary onClose>
+              <React.Suspense fallback={<SearchNotice kind=#Loading onClose />}>
+                {React.createElement(modal, {apiKey: searchApiKey, appId, indexName, onClose})}
+              </React.Suspense>
+            </SearchErrorBoundary>,
+            body,
+          )
+        | None => React.null
+        }
       | Inactive => React.null
       }}
     </>

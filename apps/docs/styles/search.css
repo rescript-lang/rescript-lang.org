@@ -1,0 +1,3 @@
+/* Reuse tokens and utilities without duplicating the global theme or preflight. */
+@reference "./main.css";
+@import "./_docsearch.css" layer(base);

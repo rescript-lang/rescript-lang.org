@@ -34,6 +34,17 @@ let homepageDocument = callback => {
   ->ignore
 }
 
+let initialScriptUrls = document =>
+  document
+  ->querySelectorAll(`link[rel="modulepreload"][href], script[src]`)
+  ->elementsFrom
+  ->Array.filterMap(element =>
+    element
+    ->getAttribute("href")
+    ->Null.toOption
+    ->Option.orElse(element->getAttribute("src")->Null.toOption)
+  )
+
 let expectElement = (document, selector) => {
   let element = document->querySelector(selector)->Null.toOption
   expect(element->Option.isSome, ~message=selector)->equal(true)

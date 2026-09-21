@@ -1,6 +1,5 @@
 @import "./_markdown.css" layer(base);
 @import "./_fonts.css" layer(base);
-@import "./_docsearch.css" layer(base);
 
 @import "tailwindcss";
 

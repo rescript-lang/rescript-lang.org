@@ -4,9 +4,6 @@ external mainCss: string = "default"
 @module("../styles/_hljs.css?url")
 external hljsCss: string = "default"
 
-@module("../styles/utils.css?url")
-external utilsCss: string = "default"
-
 %%raw(`
   import hljs from 'highlight.js/lib/core';
   import bash from 'highlight.js/lib/languages/bash';
@@ -17,6 +14,7 @@ external utilsCss: string = "default"
   import json from 'highlight.js/lib/languages/json';
   import text from 'highlight.js/lib/languages/plaintext';
   import html from 'highlight.js/lib/languages/xml';
+  import yaml from 'highlight.js/lib/languages/yaml';
   import toml from 'highlight.js/lib/languages/ini';
   import rescript from 'highlightjs-rescript';
 
@@ -32,6 +30,7 @@ external utilsCss: string = "default"
   hljs.registerLanguage('html', html)
   hljs.registerLanguage('diff', diff)
   hljs.registerLanguage('typescript', typescript)
+  hljs.registerLanguage('yaml', yaml)
 `)
 
 open ReactRouter
@@ -45,7 +44,6 @@ let default = () => {
       <link rel="preload" href={mainCss} as_="style" />
       <link rel="stylesheet" href={mainCss} />
       <link rel="stylesheet" href={hljsCss} />
-      <link rel="stylesheet" href={utilsCss} />
       <link rel="icon" href="/favicon.ico" />
       <Links />
       <ReactRouter.Meta />
