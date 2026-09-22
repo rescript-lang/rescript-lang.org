@@ -14,9 +14,10 @@ sizes do not fail CI. Missing profile HTML or referenced local assets still fail
 This is not a complete measurement of browser downloads or runtime performance.
 It does not follow JavaScript imports, count inline scripts or serialized route
 data, or measure later requests, fonts, or external assets. Media checks verify
-local `src` and poster files and count missing dimensions; they do not enumerate
-`srcset` candidates or measure image transfer sizes. Gzip sizes are calculated
-locally, not observed from the deployment.
+local `src` and poster files, record each image/video's declared dimensions, and
+count missing dimensions; they do not enumerate `srcset` candidates or measure
+image transfer sizes. Gzip sizes are calculated locally, not observed from the
+deployment.
 
 Use the production-build Cypress suite for functional regressions and Lighthouse
 for measurements against the deployed site. The route-profile Cypress suite uses
