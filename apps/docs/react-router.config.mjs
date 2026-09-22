@@ -1,6 +1,10 @@
 import * as fs from "node:fs";
+import { routeProfiles } from "./scripts/route-profiles.mjs";
 
 const { stdlibPaths } = await import("./app/DocsRoutes.jsx");
+const auditOnlyPaths = routeProfiles
+  .filter((profile) => profile.htmlSource === "prerendered")
+  .map((profile) => profile.path);
 
 export default {
   ssr: true,
@@ -15,6 +19,7 @@ export default {
           (path) => path !== "/try" && path !== "try",
         ),
         ...stdlibPaths,
+        ...auditOnlyPaths,
       ];
     },
   },
