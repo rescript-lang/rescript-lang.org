@@ -1,34 +1,59 @@
 export const routeProfiles = [
-  { id: "homepage", family: "homepage", path: "/" },
+  { id: "homepage", family: "homepage", path: "/", htmlSource: "prerendered" },
   {
     id: "docs-introduction",
     family: "documentation",
     path: "/docs/manual/introduction",
+    htmlSource: "prerendered",
   },
   {
     id: "api-stdlib-array",
     family: "documentation",
     path: "/docs/manual/api/stdlib/array",
+    htmlSource: "prerendered",
   },
-  { id: "blog-index", family: "blog", path: "/blog" },
+  {
+    id: "blog-index",
+    family: "blog",
+    path: "/blog",
+    htmlSource: "prerendered",
+  },
   {
     id: "blog-current-article",
     family: "blog",
     path: "/blog/reactive-analysis",
+    htmlSource: "prerendered",
   },
   {
     id: "community-overview",
     family: "community",
     path: "/community/overview",
+    htmlSource: "prerendered",
   },
-  { id: "packages", family: "packages", path: "/packages" },
-  { id: "syntax-lookup", family: "syntax", path: "/syntax-lookup" },
-  { id: "playground", family: "playground", path: "/try" },
-  { id: "brand", family: "control", path: "/brand" },
+  {
+    id: "packages",
+    family: "packages",
+    path: "/packages",
+    htmlSource: "prerendered",
+  },
+  {
+    id: "syntax-lookup",
+    family: "syntax",
+    path: "/syntax-lookup",
+    htmlSource: "prerendered",
+  },
+  {
+    id: "playground",
+    family: "playground",
+    path: "/try",
+    htmlSource: "runtime",
+  },
+  { id: "brand", family: "control", path: "/brand", htmlSource: "prerendered" },
   {
     id: "not-found",
     family: "control",
     path: "/__route-profile-not-found",
+    htmlSource: "prerendered",
   },
 ];
 

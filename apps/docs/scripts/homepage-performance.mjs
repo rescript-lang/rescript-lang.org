@@ -3,7 +3,11 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { gzipSync } from "node:zlib";
 import { JSDOM } from "jsdom";
-import { profileHtmlPath, routeProfiles } from "./route-profiles.mjs";
+import {
+  profileHtmlPath,
+  profileUrl,
+  routeProfiles,
+} from "./route-profiles.mjs";
 
 const buildDirectory = fileURLToPath(
   new URL("../build/client/", import.meta.url),
@@ -141,10 +145,11 @@ function validateProfiles(profiles) {
       typeof profile.family !== "string" ||
       profile.family === "" ||
       typeof profile.path !== "string" ||
-      !profile.path.startsWith("/")
+      !profile.path.startsWith("/") ||
+      (profile.htmlSource !== "prerendered" && profile.htmlSource !== "runtime")
     ) {
       throw new Error(
-        "Route profile inputs require an id, family, and absolute path",
+        "Route profile inputs require an id, family, absolute path, and HTML source",
       );
     }
     if (identifiers.has(profile.id)) {
@@ -232,6 +237,20 @@ export async function createReports({ profiles, readPage, readAsset }) {
   };
 }
 
+export async function readRuntimeProfile({ profile, requestHandler }) {
+  const response = await requestHandler({
+    request: new Request(profileUrl(localOrigin, profile)),
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `Runtime route profile ${profile.id} returned HTTP ${response.status}`,
+    );
+  }
+
+  return response.text();
+}
+
 function toAssetPath(url) {
   const relativePath = decodeURIComponent(url.pathname).replace(/^\/+/, "");
   return path.join(buildDirectory, relativePath);
@@ -254,10 +273,20 @@ function formatReport(report) {
 }
 
 async function main() {
+  const readPage = async (profile) => {
+    if (profile.htmlSource === "runtime") {
+      const { onRequest } = await import("../functions/try.js");
+      return readRuntimeProfile({ profile, requestHandler: onRequest });
+    }
+
+    return readFile(
+      path.join(buildDirectory, profileHtmlPath(profile)),
+      "utf8",
+    );
+  };
   const report = await createReports({
     profiles: routeProfiles,
-    readPage: (profile) =>
-      readFile(path.join(buildDirectory, profileHtmlPath(profile)), "utf8"),
+    readPage,
     readAsset: (url) => readFile(toAssetPath(url)),
   });
 

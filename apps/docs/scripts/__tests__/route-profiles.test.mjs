@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createReports } from "../homepage-performance.mjs";
+import { createReports, readRuntimeProfile } from "../homepage-performance.mjs";
+import { routeProfiles } from "../route-profiles.mjs";
 
 const assets = {
   "/assets/root.js": Buffer.from("root"),
@@ -32,10 +33,50 @@ const pages = {
 };
 
 const profiles = [
-  { id: "homepage", family: "homepage", path: "/" },
-  { id: "docs-introduction", family: "documentation", path: "/docs" },
-  { id: "docs-article", family: "documentation", path: "/docs/article" },
+  { id: "homepage", family: "homepage", path: "/", htmlSource: "prerendered" },
+  {
+    id: "docs-introduction",
+    family: "documentation",
+    path: "/docs",
+    htmlSource: "prerendered",
+  },
+  {
+    id: "docs-article",
+    family: "documentation",
+    path: "/docs/article",
+    htmlSource: "prerendered",
+  },
 ];
+
+test("the playground profile reads HTML from the runtime handler", async () => {
+  const profile = routeProfiles.find(({ id }) => id === "playground");
+  assert.ok(profile);
+  let requestedUrl;
+  const html = await readRuntimeProfile({
+    profile,
+    requestHandler: async ({ request }) => {
+      requestedUrl = request.url;
+      return new Response("<html><body>Playground</body></html>");
+    },
+  });
+
+  assert.equal(profile.htmlSource, "runtime");
+  assert.equal(requestedUrl, "https://build.local/try");
+  assert.equal(html, "<html><body>Playground</body></html>");
+});
+
+test("the runtime profile rejects an unsuccessful response", async () => {
+  const profile = routeProfiles.find(({ id }) => id === "playground");
+  assert.ok(profile);
+
+  await assert.rejects(
+    readRuntimeProfile({
+      profile,
+      requestHandler: async () => new Response("Unavailable", { status: 503 }),
+    }),
+    /playground returned HTTP 503/,
+  );
+});
 
 test("createReports measures every profile and exposes asset ownership", async () => {
   const report = await createReports({
@@ -80,7 +121,14 @@ test("createReports measures every profile and exposes asset ownership", async (
 test("createReports rejects malformed and duplicate profile inputs", async () => {
   await assert.rejects(
     createReports({
-      profiles: [{ id: "duplicate", family: "control", path: "not-absolute" }],
+      profiles: [
+        {
+          id: "duplicate",
+          family: "control",
+          path: "not-absolute",
+          htmlSource: "prerendered",
+        },
+      ],
       readPage: async () => pages.homepage,
       readAsset: async (url) => assets[url.pathname],
     }),
@@ -89,8 +137,33 @@ test("createReports rejects malformed and duplicate profile inputs", async () =>
   await assert.rejects(
     createReports({
       profiles: [
-        { id: "duplicate", family: "control", path: "/one" },
-        { id: "duplicate", family: "control", path: "/two" },
+        {
+          id: "invalid-source",
+          family: "control",
+          path: "/invalid-source",
+          htmlSource: "unknown",
+        },
+      ],
+      readPage: async () => pages.homepage,
+      readAsset: async (url) => assets[url.pathname],
+    }),
+    /HTML source/,
+  );
+  await assert.rejects(
+    createReports({
+      profiles: [
+        {
+          id: "duplicate",
+          family: "control",
+          path: "/one",
+          htmlSource: "prerendered",
+        },
+        {
+          id: "duplicate",
+          family: "control",
+          path: "/two",
+          htmlSource: "prerendered",
+        },
       ],
       readPage: async () => pages.homepage,
       readAsset: async (url) => assets[url.pathname],

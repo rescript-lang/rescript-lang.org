@@ -2,7 +2,9 @@ import * as fs from "node:fs";
 import { routeProfiles } from "./scripts/route-profiles.mjs";
 
 const { stdlibPaths } = await import("./app/DocsRoutes.jsx");
-const auditOnlyPaths = routeProfiles.map((profile) => profile.path);
+const auditOnlyPaths = routeProfiles
+  .filter((profile) => profile.htmlSource === "prerendered")
+  .map((profile) => profile.path);
 
 export default {
   ssr: true,
@@ -12,7 +14,13 @@ export default {
     // Restore os.availableParallelism() after https://github.com/remix-run/react-router/issues/15255 is fixed.
     concurrency: 1,
     async paths({ getStaticPaths }) {
-      return [...(await getStaticPaths()), ...stdlibPaths, ...auditOnlyPaths];
+      return [
+        ...(await getStaticPaths()).filter(
+          (path) => path !== "/try" && path !== "try",
+        ),
+        ...stdlibPaths,
+        ...auditOnlyPaths,
+      ];
     },
   },
   buildEnd: async () => {
