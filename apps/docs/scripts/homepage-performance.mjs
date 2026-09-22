@@ -177,9 +177,7 @@ function ownershipFor(profile, assetPath, reports, references) {
   const sharedWithRoot =
     profile.id !== "homepage" &&
     owners.some((owner) => owner.id === "homepage");
-  const sharedWithLayout = owners.some(
-    (owner) => owner.id !== profile.id && owner.family === profile.family,
-  );
+  const sharedWithLayout = sharedWith.length > 0;
 
   return {
     sharedWith,

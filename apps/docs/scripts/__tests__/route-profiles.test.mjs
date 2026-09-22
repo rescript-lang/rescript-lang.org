@@ -30,6 +30,11 @@ const pages = {
     <link rel="stylesheet" href="/assets/site.css">
     <link rel="stylesheet" href="/assets/content.css">
   </head><body><main><img src="/images/article.avif" width="400" height="300"></main></body></html>`,
+  community: `<!doctype html><html><head>
+    <link rel="modulepreload" href="/assets/root.js">
+    <link rel="stylesheet" href="/assets/site.css">
+    <link rel="stylesheet" href="/assets/content.css">
+  </head><body><main>Community</main></body></html>`,
 };
 
 const profiles = [
@@ -44,6 +49,12 @@ const profiles = [
     id: "docs-article",
     family: "documentation",
     path: "/docs/article",
+    htmlSource: "prerendered",
+  },
+  {
+    id: "community-overview",
+    family: "community",
+    path: "/community",
     htmlSource: "prerendered",
   },
 ];
@@ -87,13 +98,15 @@ test("createReports measures every profile and exposes asset ownership", async (
           ? "homepage"
           : profile.id === "docs-introduction"
             ? "docs"
-            : "article"
+            : profile.id === "docs-article"
+              ? "article"
+              : "community"
       ],
     readAsset: async (url) => assets[url.pathname],
   });
 
   assert.equal(report.schemaVersion, 1);
-  assert.equal(report.profiles.length, 3);
+  assert.equal(report.profiles.length, 4);
   const docs = report.profiles[1];
   const article = report.profiles[2];
   assert.equal(docs.html.requests, 1);
@@ -111,10 +124,20 @@ test("createReports measures every profile and exposes asset ownership", async (
       path: "/assets/root.js",
       rawBytes: 4,
       gzipBytes: docs.javascript.assets[1].gzipBytes,
-      sharedWith: ["homepage", "docs-article"],
+      sharedWith: ["homepage", "docs-article", "community-overview"],
       ownership: "root-shared",
     },
   ]);
+  assert.deepEqual(
+    docs.css.assets.find(({ path }) => path === "/assets/content.css"),
+    {
+      path: "/assets/content.css",
+      rawBytes: 7,
+      gzipBytes: docs.css.assets[0].gzipBytes,
+      sharedWith: ["docs-article", "community-overview"],
+      ownership: "layout-shared",
+    },
+  );
   assert.equal(article.media.assets[0].ownership, "route-owned");
 });
 

@@ -5,7 +5,7 @@ the homepage reference, docs, API, blog, community, packages, syntax lookup,
 playground, and the low-complexity controls. It records HTML, JavaScript, CSS,
 and local-media request counts and raw/gzip transfer totals, DOM element count,
 and image/video dimensions. Asset entries identify whether they are route-owned,
-shared with the homepage, or shared by profiles in the same layout family.
+shared with the homepage, or shared by multiple non-homepage profiles.
 
 The JSON output is retained as `test-results/route-profile-performance.json` in
 CI. Measurements are informational: larger bundles, request counts, or DOM
