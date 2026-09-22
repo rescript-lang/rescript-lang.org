@@ -29,6 +29,23 @@ let expectProfile = expectation =>
   | Playground => get(".cm-editor")->should("be.visible")->ignore
   }
 
+let expectLoadedStyles = () =>
+  Cypress.cyWindow()->Cypress.thenPromise(async window => {
+    let styles = await window.document
+    ->Cypress.querySelectorAll(`link[rel="stylesheet"][href]`)
+    ->Cypress.elementsFrom
+    ->Array.map(async link => {
+      let response = await window->Cypress.windowFetch(link->Cypress.elementHref)
+      Cypress.expect(
+        response->Cypress.fetchStatus,
+        ~message=link->Cypress.elementHref,
+      )->Cypress.equal(200)
+      await response->Cypress.responseText
+    })
+    ->Promise.all
+    Cypress.expect(styles->Array.length)->Cypress.greaterThan(0)
+  })
+
 // static-server needs a trailing slash to resolve nested index.html files.
 let directLoadPath = path =>
   Cypress.baseUrl()->String.includes("127.0.0.1:4173") ? path ++ "/" : path
@@ -41,7 +58,7 @@ describe("Route profiles", () => {
       `direct ${name} load has styles and hydrates`,
       () => {
         visit(directLoadPath(path))
-        get(`link[rel="stylesheet"]`)->should("exist")->ignore
+        expectLoadedStyles()->ignore
         expectProfile(expectation)
       },
     )
