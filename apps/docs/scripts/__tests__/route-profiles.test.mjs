@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createReports, readRuntimeProfile } from "../homepage-performance.mjs";
+import {
+  createReport,
+  createReports,
+  readRuntimeProfile,
+} from "../homepage-performance.mjs";
 import { routeProfiles } from "../route-profiles.mjs";
 
 const assets = {
@@ -112,6 +116,14 @@ test("createReports measures every profile and exposes asset ownership", async (
   assert.equal(docs.html.requests, 1);
   assert.equal(docs.html.rawBytes > 0, true);
   assert.equal(article.media.requests, 1);
+  assert.deepEqual(article.media.dimensions, [
+    {
+      type: "image",
+      source: "/images/article.avif",
+      width: 400,
+      height: 300,
+    },
+  ]);
   assert.deepEqual(docs.javascript.assets, [
     {
       path: "/assets/docs.js",
@@ -139,6 +151,34 @@ test("createReports measures every profile and exposes asset ownership", async (
     },
   );
   assert.equal(article.media.assets[0].ownership, "route-owned");
+});
+
+test("createReport preserves declared and missing media dimensions", async () => {
+  const report = await createReport({
+    html: `<!doctype html><html><head>
+      <link rel="modulepreload" href="/assets/root.js">
+      <link rel="stylesheet" href="/assets/site.css">
+    </head><body>
+      <img src="/images/article.avif" width="640" height="360">
+      <video poster="/images/article.avif"></video>
+    </body></html>`,
+    readAsset: async (url) => assets[url.pathname],
+  });
+
+  assert.deepEqual(report.media.dimensions, [
+    {
+      type: "image",
+      source: "/images/article.avif",
+      width: 640,
+      height: 360,
+    },
+    {
+      type: "video",
+      source: "/images/article.avif",
+      width: null,
+      height: null,
+    },
+  ]);
 });
 
 test("createReports rejects malformed and duplicate profile inputs", async () => {

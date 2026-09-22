@@ -59,30 +59,30 @@ test("createReport measures unique local assets and media contracts", async () =
   expect(report.css.requests)->toBe(1)
   expect(report.css.rawBytes)->toBe(css->byteLength)
   expect(report.bodyElements)->toBe(3)
-  expect(report.media)->toStrictEqual({
-    images: 1,
-    imagesMissingWidth: 1,
-    imagesMissingHeight: 1,
-    videos: 1,
-    videosMissingWidth: 1,
-    videosMissingHeight: 1,
-    requests: 2,
-    rawBytes: image->byteLength + poster->byteLength,
-    gzipBytes: gzip(image, {level: 9})->byteLength + gzip(poster, {level: 9})->byteLength,
-    localAssets: 2,
-    assets: [
-      {
-        path: "/images/home.png",
-        rawBytes: image->byteLength,
-        gzipBytes: gzip(image, {level: 9})->byteLength,
-      },
-      {
-        path: "/images/poster.png",
-        rawBytes: poster->byteLength,
-        gzipBytes: gzip(poster, {level: 9})->byteLength,
-      },
-    ],
-  })
+  expect(report.media.images)->toBe(1)
+  expect(report.media.imagesMissingWidth)->toBe(1)
+  expect(report.media.imagesMissingHeight)->toBe(1)
+  expect(report.media.videos)->toBe(1)
+  expect(report.media.videosMissingWidth)->toBe(1)
+  expect(report.media.videosMissingHeight)->toBe(1)
+  expect(report.media.requests)->toBe(2)
+  expect(report.media.rawBytes)->toBe(image->byteLength + poster->byteLength)
+  expect(report.media.gzipBytes)->toBe(
+    gzip(image, {level: 9})->byteLength + gzip(poster, {level: 9})->byteLength,
+  )
+  expect(report.media.localAssets)->toBe(2)
+  expect(report.media.assets)->toStrictEqual([
+    {
+      path: "/images/home.png",
+      rawBytes: image->byteLength,
+      gzipBytes: gzip(image, {level: 9})->byteLength,
+    },
+    {
+      path: "/images/poster.png",
+      rawBytes: poster->byteLength,
+      gzipBytes: gzip(poster, {level: 9})->byteLength,
+    },
+  ])
 })
 
 test("createReport rejects a missing local media asset", async () => {

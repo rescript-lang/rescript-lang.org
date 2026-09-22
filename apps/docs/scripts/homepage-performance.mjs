@@ -88,6 +88,22 @@ function hasPositiveNumericAttribute(element, attribute) {
   return value !== null && Number.isFinite(Number(value)) && Number(value) > 0;
 }
 
+function numericAttribute(element, attribute) {
+  return hasPositiveNumericAttribute(element, attribute)
+    ? Number(element.getAttribute(attribute))
+    : null;
+}
+
+function dimensionEntries(elements, type) {
+  return elements.map((element) => ({
+    type,
+    source:
+      element.getAttribute("src") ?? element.getAttribute("poster") ?? null,
+    width: numericAttribute(element, "width"),
+    height: numericAttribute(element, "height"),
+  }));
+}
+
 function measureMedia(document, assets) {
   const images = [...document.querySelectorAll("img")];
   const videos = [...document.querySelectorAll("video")];
@@ -103,6 +119,10 @@ function measureMedia(document, assets) {
     videos: videos.length,
     videosMissingWidth: countMissing(videos, "width"),
     videosMissingHeight: countMissing(videos, "height"),
+    dimensions: [
+      ...dimensionEntries(images, "image"),
+      ...dimensionEntries(videos, "video"),
+    ],
     requests: assets.requests,
     rawBytes: assets.rawBytes,
     gzipBytes: assets.gzipBytes,
@@ -265,6 +285,7 @@ function formatReport(report) {
       `DOM: ${profile.bodyElements} body elements`,
       `Images: ${profile.media.images} total, ${profile.media.imagesMissingWidth} missing width, ${profile.media.imagesMissingHeight} missing height`,
       `Videos: ${profile.media.videos} total, ${profile.media.videosMissingWidth} missing width, ${profile.media.videosMissingHeight} missing height`,
+      `Media dimensions: ${profile.media.dimensions.length} entries`,
       "",
     ])
     .join("\n");
