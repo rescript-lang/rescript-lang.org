@@ -145,6 +145,13 @@ jobs:
         run: yarn workspace @rescript-lang/docs build
       - name: Report homepage asset sizes
         run: yarn workspace @rescript-lang/docs ci:homepage-performance
+      - name: Upload route profile asset evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: route-profile-performance
+          path: apps/docs/test-results/route-profile-performance.json
+          if-no-files-found: warn
       - name: Run homepage Cypress tests
         uses: cypress-io/github-action@v7
         with:

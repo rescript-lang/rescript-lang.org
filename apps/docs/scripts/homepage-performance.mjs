@@ -3,11 +3,11 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { gzipSync } from "node:zlib";
 import { JSDOM } from "jsdom";
+import { profileHtmlPath, routeProfiles } from "./route-profiles.mjs";
 
 const buildDirectory = fileURLToPath(
   new URL("../build/client/", import.meta.url),
 );
-const homepagePath = path.join(buildDirectory, "index.html");
 const localOrigin = "https://build.local";
 
 function unique(values) {
@@ -42,9 +42,11 @@ function getInitialCssUrls(document) {
 }
 
 function getLocalMediaUrls(document) {
-  return getLocalAssetUrls(document, "img[src], source[src]", "src").concat(
-    getLocalAssetUrls(document, "video[poster]", "poster"),
-  );
+  return getLocalAssetUrls(
+    document,
+    "img[src], source[src], video[src]",
+    "src",
+  ).concat(getLocalAssetUrls(document, "video[poster]", "poster"));
 }
 
 async function readRequiredAsset(readAsset, url) {
@@ -82,7 +84,7 @@ function hasPositiveNumericAttribute(element, attribute) {
   return value !== null && Number.isFinite(Number(value)) && Number(value) > 0;
 }
 
-function measureMedia(document, localAssets) {
+function measureMedia(document, assets) {
   const images = [...document.querySelectorAll("img")];
   const videos = [...document.querySelectorAll("video")];
   const countMissing = (elements, attribute) =>
@@ -97,13 +99,17 @@ function measureMedia(document, localAssets) {
     videos: videos.length,
     videosMissingWidth: countMissing(videos, "width"),
     videosMissingHeight: countMissing(videos, "height"),
-    localAssets,
+    requests: assets.requests,
+    rawBytes: assets.rawBytes,
+    gzipBytes: assets.gzipBytes,
+    localAssets: assets.requests,
+    assets: assets.assets,
   };
 }
 
 function assertMeasuredAssets(name, urls) {
   if (urls.length === 0) {
-    throw new Error(`Homepage report found no local ${name} assets`);
+    throw new Error(`Route profile report found no local ${name} assets`);
   }
 }
 
@@ -115,19 +121,113 @@ export async function createReport({ html, readAsset }) {
 
   assertMeasuredAssets("JavaScript", javascriptUrls);
   assertMeasuredAssets("CSS", cssUrls);
-  await Promise.all(
-    unique(mediaUrls.map((url) => url.href)).map((href) =>
-      readRequiredAsset(readAsset, new URL(href)),
-    ),
-  );
+  const mediaAssets = await measureAssets(mediaUrls, readAsset);
 
   return {
     javascript: await measureAssets(javascriptUrls, readAsset),
     css: await measureAssets(cssUrls, readAsset),
     bodyElements: document.body.querySelectorAll("*").length,
-    media: measureMedia(
-      document,
-      unique(mediaUrls.map((url) => url.href)).length,
+    media: measureMedia(document, mediaAssets),
+  };
+}
+
+function validateProfiles(profiles) {
+  const identifiers = new Set();
+  for (const profile of profiles) {
+    if (
+      !profile ||
+      typeof profile.id !== "string" ||
+      profile.id === "" ||
+      typeof profile.family !== "string" ||
+      profile.family === "" ||
+      typeof profile.path !== "string" ||
+      !profile.path.startsWith("/")
+    ) {
+      throw new Error(
+        "Route profile inputs require an id, family, and absolute path",
+      );
+    }
+    if (identifiers.has(profile.id)) {
+      throw new Error(`Route profile id is duplicated: ${profile.id}`);
+    }
+    identifiers.add(profile.id);
+  }
+}
+
+function assetReferences(report) {
+  return [
+    ...report.javascript.assets,
+    ...report.css.assets,
+    ...report.media.assets,
+  ].map((asset) => asset.path);
+}
+
+function ownershipFor(profile, assetPath, reports, references) {
+  const owners = reports.filter((candidate) =>
+    references.get(candidate.id).includes(assetPath),
+  );
+  const sharedWith = owners
+    .filter((candidate) => candidate.id !== profile.id)
+    .map((candidate) => candidate.id);
+  const sharedWithRoot =
+    profile.id !== "homepage" &&
+    owners.some((owner) => owner.id === "homepage");
+  const sharedWithLayout = owners.some(
+    (owner) => owner.id !== profile.id && owner.family === profile.family,
+  );
+
+  return {
+    sharedWith,
+    ownership: sharedWithRoot
+      ? "root-shared"
+      : sharedWithLayout
+        ? "layout-shared"
+        : "route-owned",
+  };
+}
+
+function withOwnership(profile, report, reports, references) {
+  const annotate = (asset) => ({
+    ...asset,
+    ...ownershipFor(profile, asset.path, reports, references),
+  });
+  return {
+    ...report,
+    javascript: {
+      ...report.javascript,
+      assets: report.javascript.assets.map(annotate),
+    },
+    css: { ...report.css, assets: report.css.assets.map(annotate) },
+    media: { ...report.media, assets: report.media.assets.map(annotate) },
+  };
+}
+
+export async function createReports({ profiles, readPage, readAsset }) {
+  validateProfiles(profiles);
+  const reports = await Promise.all(
+    profiles.map(async (profile) => {
+      const html = await readPage(profile);
+      const report = await createReport({ html, readAsset });
+      const htmlBytes = Buffer.byteLength(html, "utf8");
+      return {
+        ...profile,
+        html: {
+          requests: 1,
+          rawBytes: htmlBytes,
+          gzipBytes: gzipSync(html, { level: 9 }).byteLength,
+        },
+        ...report,
+      };
+    }),
+  );
+  const references = new Map(
+    reports.map((report) => [report.id, assetReferences(report)]),
+  );
+
+  return {
+    schemaVersion: 1,
+    profiles: reports.map((report) =>
+      withOwnership(report, report, reports, references),
     ),
   };
 }
@@ -138,21 +238,26 @@ function toAssetPath(url) {
 }
 
 function formatReport(report) {
-  return [
-    "Homepage performance report",
-    `JavaScript: ${report.javascript.requests} requests, ${report.javascript.rawBytes} raw bytes, ${report.javascript.gzipBytes} gzip bytes`,
-    `CSS: ${report.css.requests} requests, ${report.css.rawBytes} raw bytes, ${report.css.gzipBytes} gzip bytes`,
-    `DOM: ${report.bodyElements} body elements`,
-    `Images: ${report.media.images} total, ${report.media.imagesMissingWidth} missing width, ${report.media.imagesMissingHeight} missing height`,
-    `Videos: ${report.media.videos} total, ${report.media.videosMissingWidth} missing width, ${report.media.videosMissingHeight} missing height`,
-    `Local media assets checked: ${report.media.localAssets}`,
-  ].join("\n");
+  return report.profiles
+    .flatMap((profile) => [
+      `${profile.id} (${profile.path})`,
+      `HTML: ${profile.html.rawBytes} raw bytes, ${profile.html.gzipBytes} gzip bytes`,
+      `JavaScript: ${profile.javascript.requests} requests, ${profile.javascript.rawBytes} raw bytes, ${profile.javascript.gzipBytes} gzip bytes`,
+      `CSS: ${profile.css.requests} requests, ${profile.css.rawBytes} raw bytes, ${profile.css.gzipBytes} gzip bytes`,
+      `Media: ${profile.media.requests} requests, ${profile.media.rawBytes} raw bytes, ${profile.media.gzipBytes} gzip bytes`,
+      `DOM: ${profile.bodyElements} body elements`,
+      `Images: ${profile.media.images} total, ${profile.media.imagesMissingWidth} missing width, ${profile.media.imagesMissingHeight} missing height`,
+      `Videos: ${profile.media.videos} total, ${profile.media.videosMissingWidth} missing width, ${profile.media.videosMissingHeight} missing height`,
+      "",
+    ])
+    .join("\n");
 }
 
 async function main() {
-  const html = await readFile(homepagePath, "utf8");
-  const report = await createReport({
-    html,
+  const report = await createReports({
+    profiles: routeProfiles,
+    readPage: (profile) =>
+      readFile(path.join(buildDirectory, profileHtmlPath(profile)), "utf8"),
     readAsset: (url) => readFile(toAssetPath(url)),
   });
 

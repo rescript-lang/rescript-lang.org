@@ -9,7 +9,11 @@ type media = {
   videos: int,
   videosMissingWidth: int,
   videosMissingHeight: int,
+  requests: int,
+  rawBytes: int,
+  gzipBytes: int,
   localAssets: int,
+  assets: array<asset>,
 }
 type report = {javascript: assetGroup, css: assetGroup, bodyElements: int, media: media}
 type input = {html: string, readAsset: WebAPI.URLAPI.url => promise<buffer>}
@@ -18,6 +22,8 @@ external createReport: input => promise<report> = "createReport"
 
 let javascript = buffer("console.log('home')")
 let css = buffer("body { color: black; }")
+let image = buffer("image")
+let poster = buffer("poster")
 let html = `<!doctype html><html><head>
 <link rel="modulepreload prefetch" href="/assets/home.js">
 <link rel="stylesheet" href="/assets/home.css">
@@ -30,8 +36,8 @@ let readAsset = async (url: WebAPI.URLAPI.url) => {
   switch url.pathname {
   | "/assets/home.js" => javascript
   | "/assets/home.css" => css
-  | "/images/home.png" => buffer("image")
-  | "/images/poster.png" => buffer("poster")
+  | "/images/home.png" => image
+  | "/images/poster.png" => poster
   | _ => await readBuffer(join([tmpdir(), "missing-homepage-fixture", url.pathname]))
   }
 }
@@ -60,7 +66,22 @@ test("createReport measures unique local assets and media contracts", async () =
     videos: 1,
     videosMissingWidth: 1,
     videosMissingHeight: 1,
+    requests: 2,
+    rawBytes: image->byteLength + poster->byteLength,
+    gzipBytes: gzip(image, {level: 9})->byteLength + gzip(poster, {level: 9})->byteLength,
     localAssets: 2,
+    assets: [
+      {
+        path: "/images/home.png",
+        rawBytes: image->byteLength,
+        gzipBytes: gzip(image, {level: 9})->byteLength,
+      },
+      {
+        path: "/images/poster.png",
+        rawBytes: poster->byteLength,
+        gzipBytes: gzip(poster, {level: 9})->byteLength,
+      },
+    ],
   })
 })
 
