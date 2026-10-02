@@ -54,6 +54,7 @@ let v13Versions = [
   "v13.0.0-alpha.3",
   "v13.0.0-alpha.4",
   "v13.0.0-alpha.5",
+  "v13.0.0-alpha.6",
 ]
 
 describe("Playground", () => {
