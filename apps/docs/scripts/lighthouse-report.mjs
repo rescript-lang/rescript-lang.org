@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
+import { profileUrl, routeProfiles } from "./route-profiles.mjs";
 
 const scoreDefinitions = [
   ["performance", "Performance"],
@@ -94,6 +95,55 @@ export function createBaseline({ reports, branch, commit, url }) {
   };
 }
 
+function normalizedPath(url) {
+  const pathname = new URL(url).pathname.replace(/\/+$/, "");
+  return pathname === "" ? "/" : pathname;
+}
+
+function reportsForProfile(reports, profile) {
+  return reports.filter((report) => {
+    const url = report.requestedUrl ?? report.finalUrl;
+    return typeof url === "string" && normalizedPath(url) === profile.path;
+  });
+}
+
+function hasRouteUrls(reports) {
+  return reports.every(
+    (report) =>
+      typeof report.requestedUrl === "string" ||
+      typeof report.finalUrl === "string",
+  );
+}
+
+export function createRouteBaseline({ reports, branch, commit, url }) {
+  return {
+    schemaVersion: 1,
+    branch,
+    commit,
+    collectedAt: latestFetchTime(reports),
+    profiles: routeProfiles.map((profile) => {
+      const profileReports = reportsForProfile(reports, profile);
+      if (profileReports.length === 0) {
+        throw new Error(
+          `No Lighthouse reports were found for route profile ${profile.id}`,
+        );
+      }
+      return {
+        id: profile.id,
+        path: profile.path,
+        url: profileUrl(url, profile),
+        runs: profileReports.length,
+        scores: Object.fromEntries(
+          scoreDefinitions.map(([key]) => [
+            key,
+            medianScore(profileReports, key),
+          ]),
+        ),
+      };
+    }),
+  };
+}
+
 function formatDelta(target, current) {
   const delta = current - target;
   return delta > 0 ? `+${delta}` : String(delta);
@@ -128,6 +178,46 @@ export function formatComment({ current, target, targetBranch, artifactUrl }) {
     `[Download the full Lighthouse reports and baseline](${artifactUrl})`,
     "",
     `<sub>Commit \`${shortCommit(current.commit)}\` · [Cloudflare preview](${current.url})</sub>`,
+    "",
+  ].join("\n");
+}
+
+function scoreComparison(current, target, key) {
+  const targetScore = target?.scores[key];
+  return targetScore === undefined
+    ? `N/A -> **${current.scores[key]}** (N/A)`
+    : `${targetScore} -> **${current.scores[key]}** (${formatDelta(targetScore, current.scores[key])})`;
+}
+
+export function formatRouteComment({
+  current,
+  target,
+  targetBranch,
+  artifactUrl,
+}) {
+  const comparison = target
+    ? `Compared with target branch \`${target.branch}\` at commit \`${shortCommit(target.commit)}\`.`
+    : `No route-profile Lighthouse baseline is available for target branch \`${targetBranch}\`.`;
+  const targetProfiles = new Map(
+    (target?.profiles ?? []).map((profile) => [profile.id, profile]),
+  );
+  const profileRows = current.profiles.map((profile) => {
+    const targetProfile = targetProfiles.get(profile.id);
+    return `| \`${profile.path}\` | ${scoreComparison(profile, targetProfile, "performance")} | ${scoreComparison(profile, targetProfile, "accessibility")} | ${scoreComparison(profile, targetProfile, "bestPractices")} | ${scoreComparison(profile, targetProfile, "seo")} |`;
+  });
+
+  return [
+    "## Lighthouse route profiles",
+    "",
+    `${comparison} Every score is the median of the deployed preview runs for that route.`,
+    "",
+    "| Route | Performance | Accessibility | Best practices | SEO |",
+    "| --- | --- | --- | --- | --- |",
+    ...profileRows,
+    "",
+    `[Download the full Lighthouse reports and baselines](${artifactUrl})`,
+    "",
+    `<sub>Commit \`${shortCommit(current.commit)}\`</sub>`,
     "",
   ].join("\n");
 }
@@ -175,9 +265,19 @@ async function writeBaseline() {
     process.env.LIGHTHOUSE_TARGET_BASELINE_PATH ??
     path.join(".lighthouse-target", "baseline.json");
   const targetSnapshotPath = path.join(reportDirectory, "target-baseline.json");
-  const [reports, target] = await Promise.all([
+  const routeBaselinePath = path.join(reportDirectory, "route-profiles.json");
+  const targetRouteBaselinePath = path.join(
+    ".lighthouse-target",
+    "route-profiles.json",
+  );
+  const targetRouteSnapshotPath = path.join(
+    reportDirectory,
+    "target-route-profiles.json",
+  );
+  const [reports, target, targetRoutes] = await Promise.all([
     readReports(reportDirectory),
     readOptionalJson(targetBaselinePath),
+    readOptionalJson(targetRouteBaselinePath),
   ]);
   const baseline = createBaseline({
     reports,
@@ -185,10 +285,30 @@ async function writeBaseline() {
     commit: requiredEnvironment("GITHUB_SHA"),
     url: requiredEnvironment("LIGHTHOUSE_URL"),
   });
+  const routeBaseline = hasRouteUrls(reports)
+    ? createRouteBaseline({
+        reports,
+        branch: requiredEnvironment("LIGHTHOUSE_BRANCH"),
+        commit: requiredEnvironment("GITHUB_SHA"),
+        url: requiredEnvironment("LIGHTHOUSE_URL"),
+      })
+    : undefined;
 
   await writeFile(baselinePath, `${JSON.stringify(baseline, null, 2)}\n`);
+  if (routeBaseline) {
+    await writeFile(
+      routeBaselinePath,
+      `${JSON.stringify(routeBaseline, null, 2)}\n`,
+    );
+  }
   if (target) {
     await writeFile(targetSnapshotPath, `${JSON.stringify(target, null, 2)}\n`);
+  }
+  if (targetRoutes) {
+    await writeFile(
+      targetRouteSnapshotPath,
+      `${JSON.stringify(targetRoutes, null, 2)}\n`,
+    );
   }
 }
 
@@ -204,9 +324,16 @@ async function writeComment() {
   const commentPath =
     process.env.LIGHTHOUSE_COMMENT_PATH ??
     path.join(reportDirectory, "comment.md");
-  const [current, target] = await Promise.all([
+  const routeBaselinePath = path.join(reportDirectory, "route-profiles.json");
+  const targetRouteBaselinePath = path.join(
+    ".lighthouse-target",
+    "route-profiles.json",
+  );
+  const [current, target, currentRoutes, targetRoutes] = await Promise.all([
     readOptionalJson(baselinePath),
     readOptionalJson(targetBaselinePath),
+    readOptionalJson(routeBaselinePath),
+    readOptionalJson(targetRouteBaselinePath),
   ]);
 
   if (!current) {
@@ -215,12 +342,19 @@ async function writeComment() {
 
   await writeFile(
     commentPath,
-    formatComment({
-      current,
-      target,
-      targetBranch: requiredEnvironment("LIGHTHOUSE_TARGET_BRANCH"),
-      artifactUrl: requiredEnvironment("LIGHTHOUSE_ARTIFACT_URL"),
-    }),
+    currentRoutes
+      ? formatRouteComment({
+          current: currentRoutes,
+          target: targetRoutes,
+          targetBranch: requiredEnvironment("LIGHTHOUSE_TARGET_BRANCH"),
+          artifactUrl: requiredEnvironment("LIGHTHOUSE_ARTIFACT_URL"),
+        })
+      : formatComment({
+          current,
+          target,
+          targetBranch: requiredEnvironment("LIGHTHOUSE_TARGET_BRANCH"),
+          artifactUrl: requiredEnvironment("LIGHTHOUSE_ARTIFACT_URL"),
+        }),
   );
 }
 

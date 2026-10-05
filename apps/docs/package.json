@@ -16,7 +16,7 @@
     "check:algolia-public-env": "node _scripts/LogAlgoliaEnvStatus.mjs",
     "build": "yarn build:res && yarn build:scripts && yarn check:algolia-public-env && yarn build:update-index && yarn build:vite && yarn build:generate-sitemap",
     "ci:format": "cd ../.. && oxfmt --check",
-    "ci:homepage-performance": "node --test scripts/__tests__/homepage-compiler.test.mjs && node scripts/homepage-performance.mjs",
+    "ci:homepage-performance": "node --test scripts/__tests__/homepage-compiler.test.mjs scripts/__tests__/route-profiles.test.mjs scripts/__tests__/lighthouse-route-profiles.test.mjs && mkdir -p test-results && node scripts/homepage-performance.mjs --json > test-results/route-profile-performance.json.tmp && mv test-results/route-profile-performance.json.tmp test-results/route-profile-performance.json && cat test-results/route-profile-performance.json",
     "ci:test": "vitest --run --browser.headless",
     "ci:test:e2e": "cypress run --config-file cypress.homepage.config.mjs --browser chrome",
     "ci:test:scripts": "vitest run --config vitest.scripts.config.mjs",

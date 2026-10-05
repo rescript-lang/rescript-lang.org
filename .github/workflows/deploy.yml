@@ -106,10 +106,13 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
         run: bash .github/scripts/lighthouse-restore.sh
+      - name: Set Lighthouse route profiles
+        shell: bash
+        run: node apps/docs/scripts/route-profiles.mjs lighthouse-urls "$DOCS_DEPLOYMENT_URL" >> "$GITHUB_ENV"
       - name: Audit homepage with Lighthouse
         uses: treosh/lighthouse-ci-action@v12
         with:
-          urls: ${{ env.DOCS_DEPLOYMENT_URL }}
+          urls: ${{ env.LIGHTHOUSE_URLS }}
           configPath: ./apps/docs/lighthouserc.json
       - name: Create Lighthouse baseline
         run: node apps/docs/scripts/lighthouse-report.mjs baseline
@@ -258,4 +261,12 @@ jobs:
           install: false
           working-directory: apps/docs
           browser: chrome
+          config: baseUrl=${{ env.DOCS_DEPLOYMENT_URL }}
+      - name: Route profile Cypress tests
+        uses: cypress-io/github-action@v7
+        with:
+          install: false
+          working-directory: apps/docs
+          browser: chrome
+          config-file: cypress.route-profiles.config.mjs
           config: baseUrl=${{ env.DOCS_DEPLOYMENT_URL }}
