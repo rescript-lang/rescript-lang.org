@@ -41,8 +41,15 @@ module CdnMeta = {
   let getLibraryCmijUrl = (baseUrl, version, libraryName: string): string =>
     `${baseUrl}/${Semver.toString(version)}/${libraryName}/cmij.js`
 
-  let getStdlibRuntimeUrl = (baseUrl, version, filename) =>
+  let getStdlibRuntimeUrl = (baseUrl, version, filename) => {
+    // The compiler emits .mjs imports, while the published runtime bundles use .js.
+    let filename = if filename->String.endsWith(".mjs") {
+      filename->String.slice(~start=0, ~end=-4) ++ ".js"
+    } else {
+      filename
+    }
     `${baseUrl}/${Semver.toString(version)}/compiler-builtins/stdlib/${filename}`
+  }
 }
 
 module FinalResult = {

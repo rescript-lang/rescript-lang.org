@@ -99,6 +99,30 @@ describe("Playground", () => {
     )
   })
 
+  it("should run exception code with v13.0.0-alpha.6", () => {
+    let code = `exception HttpError({status: int})
+
+let isRetriable: exn => bool = error =>
+  switch error {
+  | HttpError({status: 502 | 503 | 504}) => true
+  | _ => false
+  }
+
+Console.log(isRetriable(HttpError({status: 500})))`
+    let compressedCode = LzString.lzString.compressToEncodedURIComponent(code)
+    visit(`/try?version=v13.0.0-alpha.6&code=${compressedCode}`)
+    waitForPlayground()
+
+    get("pre.whitespace-pre-wrap")->shouldContainText("Primitive_exceptions.mjs")->ignore
+    getByTestId("control-panel")
+    ->find("button")
+    ->containsChainable("Run")
+    ->click
+    ->ignore
+
+    get("div.whitespace-pre-wrap pre")->shouldContainText("false")->ignore
+  })
+
   it("should open the landing page example in the playground with code and compiled output", () => {
     containsSelector("a", "Edit this example in Playground")
     ->scrollIntoView
