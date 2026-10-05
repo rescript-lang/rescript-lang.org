@@ -19,7 +19,7 @@
     "@replit/codemirror-vim": "^6.3.0",
     "@rescript/react": "^0.14.2",
     "@rescript/webapi": "0.1.0-experimental-29db5f4",
-    "@tsnobip/rescript-lezer": "^0.8.0",
+    "@tsnobip/rescript-lezer": "^0.9.0",
     "highlight.js": "^11.11.1",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
