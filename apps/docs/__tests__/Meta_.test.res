@@ -50,4 +50,7 @@ test("generates Open Graph image URLs from the current page URL", async () => {
   expect(getMetaPropertyContent("og:image"))->toBe(
     `${rootUrl}ogimage/index.png?url=${encodeURIComponent(pageUrl)}`,
   )
+  expect(getMetaContent("twitter:image"))->toBe(getMetaPropertyContent("og:image"))
+  let images = document->WebAPI.Document.querySelectorAll("meta[property='og:image']")
+  expect(images.length)->toBe(1)
 })
