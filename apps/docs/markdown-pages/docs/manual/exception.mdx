@@ -24,7 +24,7 @@ throw(InputClosed("The stream has closed!"))
 import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
 
 let InputClosed = /* @__PURE__ */ Primitive_exceptions.create(
-  "_tempFile.InputClosed",
+  "Example.InputClosed",
 );
 
 throw {
@@ -64,16 +64,13 @@ let result =
 ```
 
 ```js
-import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js";
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
 
 function getItem(item) {
   if (item === 3) {
     return 1;
   }
-  throw {
-    RE_EXN_ID: "Not_found",
-    Error: new Error(),
-  };
+  throw { RE_EXN_ID: "Not_found", Error: new Error() };
 }
 
 let result;
@@ -88,6 +85,8 @@ try {
     throw exn;
   }
 }
+
+export { getItem, result };
 ```
 
 </CodeTab>
@@ -106,40 +105,53 @@ switch list{1, 2, 3}->List.getOrThrow(4) {
 ```
 
 ```js
-import * as Stdlib_List from "./stdlib/Stdlib_List.js";
-import * as Primitive_exceptions from "./stdlib/Primitive_exceptions.js";
+import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
+
+function getItem(item) {
+  if (item === 3) {
+    return 1;
+  }
+  throw { RE_EXN_ID: "Not_found", Error: new Error() };
+}
+
+let result;
+
+try {
+  result = getItem(2);
+} catch (raw_exn) {
+  let exn = Primitive_exceptions.internalToException(raw_exn);
+  if (exn.RE_EXN_ID === "Not_found") {
+    result = 0;
+  } else {
+    throw exn;
+  }
+}
 
 let exit = 0;
 
 let item;
 
 try {
-  item = Stdlib_List.getExn(
-    {
-      hd: 1,
-      tl: {
-        hd: 2,
-        tl: {
-          hd: 3,
-          tl: /* [] */ 0,
-        },
-      },
-    },
+  item = Stdlib_List.getOrThrow(
+    { hd: 1, tl: { hd: 2, tl: { hd: 3, tl: /* [] */ 0 } } },
     4,
   );
   exit = 1;
-} catch (raw_exn) {
-  let exn = Primitive_exceptions.internalToException(raw_exn);
-  if (exn.RE_EXN_ID === "Not_found") {
+} catch (raw_exn$1) {
+  let exn$1 = Primitive_exceptions.internalToException(raw_exn$1);
+  if (exn$1.RE_EXN_ID === "Not_found") {
     console.log("No such item found!");
   } else {
-    throw exn;
+    throw exn$1;
   }
 }
 
 if (exit === 1) {
   console.log(item);
 }
+
+export { getItem, result };
 ```
 
 </CodeTab>
@@ -173,10 +185,7 @@ function getItem(item) {
   if (item === 3) {
     return 1;
   }
-  throw {
-    RE_EXN_ID: "Not_found",
-    Error: new Error()
-  };
+  throw { RE_EXN_ID: "Not_found", Error: new Error() };
 }
 
 let result;
@@ -197,16 +206,10 @@ let exit = 0;
 let item;
 
 try {
-  item = Stdlib_List.getOrThrow({
-    hd: 1,
-    tl: {
-      hd: 2,
-      tl: {
-        hd: 3,
-        tl: /* [] */0
-      }
-    }
-  }, 4);
+  item = Stdlib_List.getOrThrow(
+    { hd: 1, tl: { hd: 2, tl: { hd: 3, tl: /* [] */ 0 } } },
+    4,
+  );
   exit = 1;
 } catch (raw_exn$1) {
   let exn$1 = Primitive_exceptions.internalToException(raw_exn$1);
@@ -226,7 +229,7 @@ function divide(a, b) {
     throw {
       RE_EXN_ID: "Invalid_argument",
       _1: "Denominator is zero",
-      Error: new Error()
+      Error: new Error(),
     };
   }
   return Primitive_int.div(a, b);
@@ -243,11 +246,7 @@ try {
   }
 }
 
-export {
-  getItem,
-  result,
-  divide,
-}
+export { getItem, result, divide };
 ````
 
 </CodeTab>
@@ -284,10 +283,7 @@ function getItem(item) {
   if (item === 3) {
     return 1;
   }
-  throw {
-    RE_EXN_ID: "Not_found",
-    Error: new Error(),
-  };
+  throw { RE_EXN_ID: "Not_found", Error: new Error() };
 }
 
 let result;
@@ -309,16 +305,7 @@ let item;
 
 try {
   item = Stdlib_List.getOrThrow(
-    {
-      hd: 1,
-      tl: {
-        hd: 2,
-        tl: {
-          hd: 3,
-          tl: /* [] */ 0,
-        },
-      },
-    },
+    { hd: 1, tl: { hd: 2, tl: { hd: 3, tl: /* [] */ 0 } } },
     4,
   );
   exit = 1;
@@ -344,13 +331,13 @@ function decodeUser(json) {
     }
     throw {
       RE_EXN_ID: "Assert_failure",
-      _1: ["_tempFile.res", 26, 11],
+      _1: ["Example.res", 26, 11],
       Error: new Error(),
     };
   }
   throw {
     RE_EXN_ID: "Assert_failure",
-    _1: ["_tempFile.res", 28, 9],
+    _1: ["Example.res", 28, 9],
     Error: new Error(),
   };
 }
@@ -405,10 +392,7 @@ function getItem(item) {
   if (item === 3) {
     return 1;
   }
-  throw {
-    RE_EXN_ID: "Not_found",
-    Error: new Error()
-  };
+  throw { RE_EXN_ID: "Not_found", Error: new Error() };
 }
 
 let result;
@@ -429,16 +413,10 @@ let exit = 0;
 let item;
 
 try {
-  item = Stdlib_List.getOrThrow({
-    hd: 1,
-    tl: {
-      hd: 2,
-      tl: {
-        hd: 3,
-        tl: /* [] */0
-      }
-    }
-  }, 4);
+  item = Stdlib_List.getOrThrow(
+    { hd: 1, tl: { hd: 2, tl: { hd: 3, tl: /* [] */ 0 } } },
+    4,
+  );
   exit = 1;
 } catch (raw_exn$1) {
   let exn$1 = Primitive_exceptions.internalToException(raw_exn$1);
@@ -462,7 +440,7 @@ function isValidEmail(email) {
   throw {
     RE_EXN_ID: "Failure",
     _1: "Invalid email address",
-    Error: new Error()
+    Error: new Error(),
   };
 }
 
@@ -480,12 +458,7 @@ try {
   }
 }
 
-export {
-  getItem,
-  result,
-  isValidEmail,
-  isValid,
-}
+export { getItem, result, isValidEmail, isValid };
 ````
 
 </CodeTab>
@@ -514,10 +487,7 @@ function getItem(item) {
   if (item === 3) {
     return 1;
   }
-  throw {
-    RE_EXN_ID: "Not_found",
-    Error: new Error()
-  };
+  throw { RE_EXN_ID: "Not_found", Error: new Error() };
 }
 
 try {
@@ -534,16 +504,10 @@ let exit = 0;
 let item;
 
 try {
-  item = Stdlib_List.getOrThrow({
-    hd: 1,
-    tl: {
-      hd: 2,
-      tl: {
-        hd: 3,
-        tl: /* [] */0
-      }
-    }
-  }, 4);
+  item = Stdlib_List.getOrThrow(
+    { hd: 1, tl: { hd: 2, tl: { hd: 3, tl: /* [] */ 0 } } },
+    4,
+  );
   exit = 1;
 } catch (raw_exn$1) {
   let exn$1 = Primitive_exceptions.internalToException(raw_exn$1);
@@ -573,10 +537,7 @@ try {
 
 console.log(result);
 
-export {
-  getItem,
-  result,
-}
+export { getItem, result };
 ````
 
 </CodeTab>
@@ -597,14 +558,14 @@ exports.someJsFunctionThatThrows = () => {
 
 Then catch it from ReScript:
 
-```res nocheck
+```res
 // import the method in Example.js
 @module("./Example")
 external someJsFunctionThatThrows: () => unit = "someJsFunctionThatThrows"
 
 try {
   // call the external method
-  someJSFunctionThatThrows()
+  someJsFunctionThatThrows()
 } catch {
 | JsExn(exn) =>
   switch JsExn.message(exn) {
@@ -640,10 +601,7 @@ function getItem(item) {
   if (item === 3) {
     return 1;
   }
-  throw {
-    RE_EXN_ID: "Not_found",
-    Error: new Error(),
-  };
+  throw { RE_EXN_ID: "Not_found", Error: new Error() };
 }
 
 let result;
@@ -665,16 +623,7 @@ let item;
 
 try {
   item = Stdlib_List.getOrThrow(
-    {
-      hd: 1,
-      tl: {
-        hd: 2,
-        tl: {
-          hd: 3,
-          tl: /* [] */ 0,
-        },
-      },
-    },
+    { hd: 1, tl: { hd: 2, tl: { hd: 3, tl: /* [] */ 0 } } },
     4,
   );
   exit = 1;
@@ -731,10 +680,7 @@ function getItem(item) {
   if (item === 3) {
     return 1;
   }
-  throw {
-    RE_EXN_ID: "Not_found",
-    Error: new Error(),
-  };
+  throw { RE_EXN_ID: "Not_found", Error: new Error() };
 }
 
 let result;
@@ -756,16 +702,7 @@ let item;
 
 try {
   item = Stdlib_List.getOrThrow(
-    {
-      hd: 1,
-      tl: {
-        hd: 2,
-        tl: {
-          hd: 3,
-          tl: /* [] */ 0,
-        },
-      },
-    },
+    { hd: 1, tl: { hd: 2, tl: { hd: 3, tl: /* [] */ 0 } } },
     4,
   );
   exit = 1;
@@ -824,10 +761,7 @@ function getItem(item) {
   if (item === 3) {
     return 1;
   }
-  throw {
-    RE_EXN_ID: "Not_found",
-    Error: new Error(),
-  };
+  throw { RE_EXN_ID: "Not_found", Error: new Error() };
 }
 
 let result;
@@ -849,16 +783,7 @@ let item;
 
 try {
   item = Stdlib_List.getOrThrow(
-    {
-      hd: 1,
-      tl: {
-        hd: 2,
-        tl: {
-          hd: 3,
-          tl: /* [] */ 0,
-        },
-      },
-    },
+    { hd: 1, tl: { hd: 2, tl: { hd: 3, tl: /* [] */ 0 } } },
     4,
   );
   exit = 1;
@@ -876,15 +801,11 @@ if (exit === 1) {
 }
 
 let BadArgument = /* @__PURE__ */ Primitive_exceptions.create(
-  "_tempFile.BadArgument",
+  "Example.BadArgument",
 );
 
 function myTest() {
-  throw {
-    RE_EXN_ID: BadArgument,
-    myMessage: "Oops!",
-    Error: new Error(),
-  };
+  throw { RE_EXN_ID: BadArgument, myMessage: "Oops!", Error: new Error() };
 }
 
 export { getItem, result, BadArgument, myTest };

@@ -8,6 +8,16 @@ order: 2
 
 # Let Binding
 
+<div className="hidden">
+
+```res prelude
+@val external displayGreeting: bool = "displayGreeting"
+@val external calculate: int => int = "calculate"
+@val external calculateSomeMore: int => int = "calculateSomeMore"
+```
+
+</div>
+
 A "let binding", in other languages, might be called a "variable declaration". `let` _binds_ values to names. They can be seen and referenced by code that comes _after_ them.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
@@ -65,7 +75,7 @@ ReScript's `if`, `while` and functions all use the same block scoping mechanism.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 if displayGreeting {
   let message = "Enjoying the docs so far?"
   Console.log(message)
@@ -109,16 +119,20 @@ In ReScript, this obviously works too:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 let result1 = 0
 let result2 = calculate(result1)
 let result3 = calculateSomeMore(result2)
 ```
 
 ```js
-var result1 = 0;
-var result2 = calculate(0);
-var result3 = calculateSomeMore(result2);
+let result2 = calculate(0);
+
+let result3 = calculateSomeMore(result2);
+
+let result1 = 0;
+
+export { result1, result2, result3 };
 ```
 
 </CodeTab>
@@ -127,15 +141,18 @@ Additionally, reusing the same let binding name overshadows the previous binding
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 let result = 0
 let result = calculate(result)
 let result = calculateSomeMore(result)
 ```
 
 ```js
-var result = calculate(0);
-var result$1 = calculateSomeMore(result);
+let result = calculate(0);
+
+let result$1 = calculateSomeMore(result);
+
+export { result$1 as result };
 ```
 
 </CodeTab>

@@ -42,9 +42,7 @@ let make = () => {
 import * as JsxRuntime from "react/jsx-runtime";
 
 function Example(props) {
-  return JsxRuntime.jsx("div", {
-    children: "Hello ReScripters!",
-  });
+  return JsxRuntime.jsx("div", { children: "Hello ReScripters!" });
 }
 
 let make = Example;
@@ -98,12 +96,8 @@ function Example(props) {
   let visitorCountMsg = "You are visitor number: " + String(props.visitorCount);
   return JsxRuntime.jsxs("div", {
     children: [
-      JsxRuntime.jsx("div", {
-        children: props.title,
-      }),
-      JsxRuntime.jsx("div", {
-        children: visitorCountMsg,
-      }),
+      JsxRuntime.jsx("div", { children: props.title }),
+      JsxRuntime.jsx("div", { children: visitorCountMsg }),
       props.children,
     ],
   });
@@ -159,9 +153,7 @@ import * as JsxRuntime from "react/jsx-runtime";
 function Example(props) {
   let name = props.name;
   let greeting = name !== undefined ? "Hello " + name + "!" : "Hello stranger!";
-  return JsxRuntime.jsx("div", {
-    children: greeting,
-  });
+  return JsxRuntime.jsx("div", { children: greeting });
 }
 
 let make = Example;
@@ -216,15 +208,11 @@ function Example$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
 }
 
-let Greeting = {
-  make: Example$Greeting,
-};
+let Greeting = { make: Example$Greeting };
 
 let name = "Andrea";
 
-JsxRuntime.jsx(Example$Greeting, {
-  name: name,
-});
+JsxRuntime.jsx(Example$Greeting, { name: name });
 
 export { Greeting, name };
 ```
@@ -237,9 +225,7 @@ function Example$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
 }
 
-let Greeting = {
-  make: Example$Greeting,
-};
+let Greeting = { make: Example$Greeting };
 
 let name = "Andrea";
 
@@ -301,28 +287,18 @@ function Example$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
 }
 
-let Greeting = {
-  make: Example$Greeting,
-};
+let Greeting = { make: Example$Greeting };
 
 function Example$MyList(props) {
-  return JsxRuntime.jsx("ul", {
-    children: props.children,
-  });
+  return JsxRuntime.jsx("ul", { children: props.children });
 }
 
-let MyList = {
-  make: Example$MyList,
-};
+let MyList = { make: Example$MyList };
 
 JsxRuntime.jsxs(Example$MyList, {
   children: [
-    JsxRuntime.jsx("li", {
-      children: "Item 1",
-    }),
-    JsxRuntime.jsx("li", {
-      children: "Item 2",
-    }),
+    JsxRuntime.jsx("li", { children: "Item 1" }),
+    JsxRuntime.jsx("li", { children: "Item 2" }),
   ],
 });
 
@@ -337,17 +313,13 @@ function Example$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
 }
 
-let Greeting = {
-  make: Example$Greeting,
-};
+let Greeting = { make: Example$Greeting };
 
 function Example$MyList(props) {
   return <ul>{props.children}</ul>;
 }
 
-let MyList = {
-  make: Example$MyList,
-};
+let MyList = { make: Example$MyList };
 
 <MyList.make>
   <li>{"Item 1"}</li>
@@ -383,7 +355,7 @@ module StringChildren = {
 
 **Component with an optional `React.element` as children:**
 
-```res nocheck
+```res
 module OptionalChildren = {
   @react.component
   let make = (~children: option<React.element>=?) => {
@@ -432,24 +404,25 @@ It's a decorator that tells the ReScript compiler to treat the function as a Rea
 In JavaScript, a React component is just a function that takes props (an object) and returns JSX. In ReScript, props are typically represented as a record type.
 The `@react.component` decorator automatically generates that record type and wraps the function for you—so you don't have to.
 
-```res nocheck
+```res
 // Counter.res
-
 @react.component
 let make = (~title, ~count) => {
   <h1> {React.string(title)} {React.int(count)} </h1>
 }
+```
 
-// This is equivalent to writing:
+The resulting component takes a props record, similar to this manually defined function:
 
+```res
 type props = {title: string, count: int}
 
-let \"Counter" = ({title, count}: props) => {
+let make = ({title, count}: props) => {
   <h1> {React.string(title)} {React.int(count)} </h1>
 }
 ```
 
-However, writing it manually like this means you lose the `make` function name, which prevents JSX from working as expected when using the component elsewhere.
+The decorator also gives the generated JavaScript component an uppercased name derived from its ReScript module.
 
 Having an uppercased function name also helps distinguish React components from regular functions in [React DevTools](https://react.dev/learn/react-developer-tools).
 
@@ -478,14 +451,10 @@ function Example$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
 }
 
-let Greeting = {
-  make: Example$Greeting,
-};
+let Greeting = { make: Example$Greeting };
 
 function Example(props) {
-  return JsxRuntime.jsxs("h1", {
-    children: [props.title, props.count],
-  });
+  return JsxRuntime.jsxs("h1", { children: [props.title, props.count] });
 }
 
 let make = Example;
@@ -501,9 +470,7 @@ function Example$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
 }
 
-let Greeting = {
-  make: Example$Greeting,
-};
+let Greeting = { make: Example$Greeting };
 
 function Example(props) {
   return (
@@ -527,7 +494,7 @@ The ReScript type system is really good at inferring the prop types just by look
 
 For simple cases, well-scoped usage, or experimentation, it's still fine to omit type annotations:
 
-```res nocheck
+```res
 // Button.res
 
 @react.component
@@ -568,9 +535,7 @@ function Example$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
 }
 
-let Greeting = {
-  make: Example$Greeting,
-};
+let Greeting = { make: Example$Greeting };
 
 function Example(props) {
   return JsxRuntime.jsx("div", {
@@ -591,9 +556,7 @@ function Example$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
 }
 
-let Greeting = {
-  make: Example$Greeting,
-};
+let Greeting = { make: Example$Greeting };
 
 function Example(props) {
   return (
@@ -642,25 +605,15 @@ function Example$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
 }
 
-let Greeting = {
-  make: Example$Greeting,
-};
+let Greeting = { make: Example$Greeting };
 
 function make(props) {
-  return JsxRuntime.jsx("a", {
-    children: props.children,
-    href: props.href,
-  });
+  return JsxRuntime.jsx("a", { children: props.children, href: props.href });
 }
 
-let Link = {
-  make: make,
-};
+let Link = { make: make };
 
-JsxRuntime.jsx(make, {
-  href: "/docs",
-  children: "Docs",
-});
+JsxRuntime.jsx(make, { href: "/docs", children: "Docs" });
 
 export { Greeting, Link };
 ```
@@ -673,17 +626,13 @@ function Example$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
 }
 
-let Greeting = {
-  make: Example$Greeting,
-};
+let Greeting = { make: Example$Greeting };
 
 function make(props) {
   return <a href={props.href}>{props.children}</a>;
 }
 
-let Link = {
-  make: make,
-};
+let Link = { make: make };
 
 <Link.make href={"/docs"}>{"Docs"}</Link.make>;
 
@@ -698,7 +647,7 @@ More details on the `@react.component` decorator and its generated interface can
 
 We can also represent React components as submodules, which makes it very convenient to build more complex UI without the need to create multiple files for each composite component (that's probably only used by the parent component anyways):
 
-```res nocheck
+```res
 // src/Button.res
 module Label = {
   @react.component
