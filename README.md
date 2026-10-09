@@ -124,18 +124,25 @@ Only update screenshots that are intentionally affected by your change.
 
 ### Markdown Example and Link Checks
 
-`yarn test` runs both of the following:
+`yarn test` runs the following:
 
-- `scripts/test-examples.mjs` to validate ReScript code examples in markdown
-- `scripts/test-hrefs.mjs` to validate relative markdown links under `markdown-pages/`
+- `apps/docs/scripts/test-examples.mjs` to compile examples in the manual, React docs, guides and syntax lookup, and compare shown JS and JSX output with the installed compiler
+- `apps/docs/scripts/test-hrefs.mjs` to validate relative markdown links under `markdown-pages/`
+- `apps/docs/scripts/test-redirects.mjs` to validate redirect rules
 
 Supported ReScript markdown code fences:
 
 - ` ```res `
+- ` ```rescript ` (alias for `res`)
 - ` ```res sig `
+- ` ```resi ` (alias for `res sig`)
 - ` ```res prelude `
 
-Refresh generated JS output fences with:
+Indented fences are supported. Prelude blocks provide context for later examples. Use `res nocheck` only for intentionally invalid or incomplete snippets. Malformed CodeTabs fail the check, including missing closing tags and mismatched labels and fences.
+
+Output comparison ignores formatting and comments. `JS Output` and `JS Output (Module)` use ESM, `JS Output (CommonJS)` uses CommonJS, and `JSX Preserved Output` uses preserved JSX. TypeScript output is not generated or compared by this checker; its ReScript input is still compiled.
+
+Refresh generated JS output fences with the installed compiler and format the result:
 
 ```sh
 yarn test --update
@@ -144,11 +151,14 @@ yarn test --update
 You can also run the scripts directly:
 
 ```sh
-node scripts/test-examples.mjs
-node scripts/test-examples.mjs --update
-node scripts/test-hrefs.mjs
-node scripts/test-hrefs.mjs "markdown-pages/docs/manual/**/*.mdx"
+node apps/docs/scripts/test-examples.mjs
+node apps/docs/scripts/test-examples.mjs --update
+node apps/docs/scripts/test-examples.mjs "manual/module-functions.mdx"
+node apps/docs/scripts/test-examples.mjs --include-blog
+node apps/docs/scripts/test-hrefs.mjs
 ```
+
+Example-checker patterns are relative to `apps/docs/markdown-pages/docs`. Historical blog posts describe earlier compiler versions, so the default run reports them as skipped. `--include-blog` audits them with the installed compiler; reported differences need review against the original version. Blog files are never rewritten, even with `--update`.
 
 Run `yarn test` before pushing content changes so CI does not fail on markdown regressions.
 

@@ -160,7 +160,10 @@ let removeSectionLlmFiles = (
 }
 
 let removeCodeTabTags = (content: string): string => {
-  let regex = RegExp.fromString("<CodeTab.*?>[\\s\\S]*?</CodeTab>", ~flags="g")
+  let regex = RegExp.fromString(
+    "<CodeTab\\b[^>]*>(?:(?!<CodeTab\\b)[\\s\\S])*?</\\s*CodeTab\\s*>",
+    ~flags="g",
+  )
   String.replaceRegExp(content, regex, "")
 }
 

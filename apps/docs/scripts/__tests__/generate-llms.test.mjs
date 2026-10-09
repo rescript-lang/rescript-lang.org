@@ -405,3 +405,84 @@ test("generate_llms writes ReScript React files", () => {
     false,
   );
 });
+
+test("abridged output preserves sections after spaced or missing CodeTab closing tags", () => {
+  let root = makeWorkspace();
+  writeFile(
+    root,
+    "markdown-pages/docs/manual/module-functions.mdx",
+    `---
+title: "Module Functions"
+section: "Advanced Features"
+---
+
+# Module Functions
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+\`\`\`res
+let value = 1
+\`\`\`
+
+\`\`\`js
+let value = 1;
+\`\`\`
+
+</ CodeTab>
+
+## Sharing a type with an external binding
+
+Keep this explanation.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+\`\`\`res
+let other = 2
+\`\`\`
+
+</ CodeTab>
+
+## Shared functions
+
+Keep this explanation too.
+
+<CodeTab labels={["ReScript"]}>
+
+\`\`\`res
+let missingClose = 3
+\`\`\`
+
+## Section after an unclosed tab
+
+This text must not disappear with the next tab.
+
+<CodeTab labels={["ReScript"]}>
+
+\`\`\`res
+let followingTab = 4
+\`\`\`
+
+</CodeTab>
+
+## Final section
+`,
+  );
+  child_process.execFileSync(process.execPath, [generatorPath], {
+    cwd: root,
+    stdio: "pipe",
+  });
+  let small = readFile(root, "public/llms/manual/llm-small.txt");
+  for (let heading of [
+    "Sharing a type with an external binding",
+    "Shared functions",
+    "Section after an unclosed tab",
+    "Final section",
+  ])
+    assert.ok(small.includes(`## ${heading}`), heading);
+  assert.match(small, /Keep this explanation/);
+  assert.match(small, /This text must not disappear/);
+  assert.doesNotMatch(
+    small,
+    /let value = 1|let other = 2|let followingTab = 4/,
+  );
+});

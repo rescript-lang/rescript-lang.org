@@ -4,6 +4,8 @@ import path from "path";
 import { createRequire } from "module";
 import { fileURLToPath } from "url";
 import child_process from "child_process";
+import { format } from "oxfmt";
+import { parseSync } from "@babel/core";
 
 const require = createRequire(import.meta.url);
 const __filename = fileURLToPath(import.meta.url);
@@ -20,7 +22,7 @@ const rescriptReactPackageRoot = path.dirname(
   require.resolve("@rescript/react/package.json"),
 );
 
-let makeRescriptJson = ({ preserve = false } = {}) => `{
+let makeRescriptJson = ({ preserve = false, module = "esmodule" } = {}) => `{
   "name": "temp",
   "namespace": false,
   "jsx": {
@@ -30,7 +32,7 @@ let makeRescriptJson = ({ preserve = false } = {}) => `{
     "@rescript/react"
   ],
   "package-specs": {
-    "module": "esmodule"
+    "module": "${module}"
   },
   "warnings": {
     "number": "-109-27-32"
@@ -44,273 +46,187 @@ let makeRescriptJson = ({ preserve = false } = {}) => `{
 
 let splitLines = (content) => content.split("\n");
 
-let isFenceLine = (line, fence) =>
-  new RegExp(`^\\\`\\\`\\\`${fence}(?:\\s|$)`).test(line);
-
-let classifyResFence = (line) => {
-  if (isFenceLine(line, "res prelude")) {
-    return "res-prelude";
-  }
-
-  if (isFenceLine(line, "res sig")) {
-    return "res-sig";
-  }
-
-  if (isFenceLine(line, "res nocheck")) {
-    return "res-nocheck";
-  }
-
-  if (isFenceLine(line, "res")) {
+let classifyFence = (info) => {
+  let [language, modifier] = info.trim().split(/\s+/);
+  if (language === "res" || language === "rescript" || language === "resi") {
+    if (modifier === "nocheck") return "res-nocheck";
+    if (language === "resi" || modifier === "sig") return "res-sig";
+    if (modifier === "prelude") return "res-prelude";
     return "res";
   }
-
+  if (language === "js" || language === "javascript") return "js";
+  if (language === "jsx") return "jsx";
   return null;
 };
 
-let classifyFence = (line) => {
-  let resKind = classifyResFence(line);
-  if (resKind != null) {
-    return resKind;
+// Scan all fences, including unchecked languages, so tags and nested fence text
+// inside examples cannot accidentally become tooling instructions.
+let collectFenceBlocks = (content) => {
+  let lines = splitLines(content);
+  let blocks = [];
+  let warnings = [];
+  for (let i = 0; i < lines.length; i++) {
+    let match = lines[i].match(/^(\s*)(`{3,}|~{3,})(.*)$/);
+    if (match == null) continue;
+    let [, indent, delimiter, info] = match;
+    let end = i + 1;
+    let closing = new RegExp(`^\\s*${delimiter[0]}{${delimiter.length},}\\s*$`);
+    while (end < lines.length && !closing.test(lines[end])) end++;
+    if (end === lines.length) {
+      warnings.push({ line: i + 1, message: "unclosed code fence" });
+    }
+    blocks.push({
+      fenceStart: i,
+      fenceEnd: end,
+      line: i + 1,
+      indent,
+      kind: classifyFence(info),
+      content: lines
+        .slice(i + 1, end)
+        .map((line) =>
+          line.startsWith(indent) ? line.slice(indent.length) : line,
+        )
+        .join("\n"),
+    });
+    i = end;
   }
-
-  if (line.startsWith("```jsx")) {
-    return "jsx";
-  }
-
-  if (line.startsWith("```js") || line.startsWith("```javascript")) {
-    return "js";
-  }
-
-  if (line.startsWith("```ts") || line.startsWith("```typescript")) {
-    return "ts";
-  }
-
-  return null;
+  return { blocks, warnings };
 };
 
-let parseFile = (content) => {
-  if (!/```res(?:\s|$)/.test(content)) {
-    return;
-  }
-
-  let inWrappedBlock = false;
-  let inIgnoredBlock = false;
+let parseFile = (content, blocks) => {
+  let lines = splitLines(content).map(() => "");
   let moduleId = 0;
-
-  return content
-    .split("\n")
-    .map((line) => {
-      let kind = classifyResFence(line);
-
-      if (kind === "res") {
-        inWrappedBlock = true;
-        return `/* _MODULE_CHECKED_START */ module M_${moduleId++} = {`;
-      }
-
-      if (kind === "res-prelude") {
-        inWrappedBlock = true;
-        return "/* _MODULE_PRELUDE_START */ include {";
-      }
-
-      if (kind === "res-sig") {
-        inWrappedBlock = true;
-        return `/* _MODULE_SIG_START */ module type M_${moduleId++} = {`;
-      }
-
-      if (kind === "res-nocheck") {
-        inIgnoredBlock = true;
-        return "";
-      }
-
-      if (line.startsWith("```")) {
-        if (inWrappedBlock) {
-          inWrappedBlock = false;
-          return "} // _MODULE_END";
-        }
-
-        if (inIgnoredBlock) {
-          inIgnoredBlock = false;
-        }
-      }
-
-      if (inIgnoredBlock) {
-        return "";
-      }
-
-      return inWrappedBlock ? line : "";
-    })
-    .join("\n");
+  let checked = false;
+  for (let block of blocks) {
+    let marker;
+    if (block.kind === "res") {
+      marker = `/* _MODULE_CHECKED_START */ module M_${moduleId++} = {`;
+    } else if (block.kind === "res-prelude") {
+      marker = "/* _MODULE_PRELUDE_START */ include {";
+    } else if (block.kind === "res-sig") {
+      marker = `/* _MODULE_SIG_START */ module type M_${moduleId++} = {`;
+    } else {
+      continue;
+    }
+    checked = true;
+    lines[block.fenceStart] = marker;
+    block.content.split("\n").forEach((line, i) => {
+      lines[block.fenceStart + 1 + i] = line;
+    });
+    lines[block.fenceEnd] = "} // _MODULE_END";
+  }
+  return checked ? lines.join("\n") : null;
 };
 
-let parseCodeTabLabels = (line) => {
-  let match = line.match(/<CodeTab labels=\{(\[[^\n]+\])\}>/);
-
-  if (match == null) {
-    return null;
-  }
-
+let parseCodeTabLabels = (tag) => {
+  let match = tag.match(/labels\s*=\s*\{(\[[\s\S]*?\])\}/);
+  if (match == null) return null;
   try {
     let labels = JSON.parse(match[1]);
-    return Array.isArray(labels) ? labels : null;
+    return Array.isArray(labels) &&
+      labels.every((label) => typeof label === "string")
+      ? labels
+      : null;
   } catch {
     return null;
   }
 };
 
-let isEligibleReScriptCodeTab = (labels) =>
-  labels?.at(0) === "ReScript" && labels.at(1) !== "TypeScript Output";
-
-let fenceKind = (line) => {
-  let kind = classifyFence(line);
-
-  if (kind === "js" || kind === "jsx") {
-    return "js";
-  }
-
-  if (kind === "res") {
-    return "res";
-  }
-
+let outputKind = (label) => {
+  if (label === "JS Output" || label === "JS Output (Module)")
+    return "esmodule";
+  if (label === "JS Output (CommonJS)") return "commonjs";
+  if (label === "JSX Preserved Output") return "preserve";
   return null;
 };
 
-let collectPreludeBlocks = (content) => {
-  let lines = splitLines(content);
-  let preludes = [];
-
-  for (let i = 0; i < lines.length; i++) {
-    if (!lines[i].startsWith("```res prelude")) {
-      continue;
-    }
-
-    let start = i + 1;
-    let end = start;
-    while (end < lines.length && !lines[end].startsWith("```")) {
-      end++;
-    }
-
-    preludes.push({
-      line: i + 1,
-      content: lines.slice(start, end).join("\n"),
-    });
-
-    i = end;
-  }
-
-  return preludes;
-};
-
-let collectFenceBlock = (lines, fenceStart) => {
-  let start = fenceStart + 1;
-  let end = start;
-
-  while (end < lines.length && !lines[end].startsWith("```")) {
-    end++;
-  }
-
-  return {
-    fenceStart,
-    fenceEnd: end,
-    content: lines.slice(start, end).join("\n"),
-  };
-};
-
-let collectCodeTabTargets = ({ content, allowInsertions = false }) => {
+let collectCodeTabTargets = ({ content, blocks, allowInsertions = false }) => {
   let lines = splitLines(content);
   let targets = [];
   let warnings = [];
-  let currentTarget = null;
+  let current = null;
+  let blocksByStart = new Map(blocks.map((block) => [block.fenceStart, block]));
+  let warn = (line, message) => warnings.push({ line: line + 1, message });
+
+  let finish = (tabEnd) => {
+    let { labels, tabBlocks } = current;
+    let res = tabBlocks.find(
+      (block) => block.kind === "res" || block.kind === "res-prelude",
+    );
+    let repairableMissingOutput =
+      allowInsertions &&
+      res != null &&
+      tabBlocks.length === 1 &&
+      labels.length > 1 &&
+      labels.slice(1).every((label) => outputKind(label) != null);
+    if (labels.length !== tabBlocks.length && !repairableMissingOutput) {
+      warn(
+        current.tabStart,
+        "CodeTab labels do not match its code blocks (missing paired JS Output block or extra fence)",
+      );
+      return;
+    }
+    if (res == null) return;
+    let outputs = labels.flatMap((label, index) => {
+      let kind = outputKind(label);
+      if (kind == null) return [];
+      let block = tabBlocks[index];
+      if (
+        block != null &&
+        block.kind !== (kind === "preserve" ? "jsx" : "js")
+      ) {
+        warn(
+          block.fenceStart,
+          `expected ${kind === "preserve" ? "jsx" : "js"} fence for ${label}`,
+        );
+        return [];
+      }
+      return [{ label, kind, block }];
+    });
+    if (allowInsertions && labels.length === 1 && tabBlocks.length === 1) {
+      outputs.push({ label: "JS Output", kind: "esmodule", block: null });
+    }
+    if (outputs.length === 0) return;
+    // Comparison tabs may show equivalent ReScript spellings. The first
+    // checked source owns the derived output; page compilation checks all of them.
+    targets.push({ ...current, tabEnd, res, line: res.line, outputs });
+  };
 
   for (let i = 0; i < lines.length; i++) {
-    let line = lines[i];
-    let parsedLabels = parseCodeTabLabels(line);
-
-    if (parsedLabels != null && isEligibleReScriptCodeTab(parsedLabels)) {
-      currentTarget = {
-        tabStart: i,
-        tabEnd: null,
-        labels: parsedLabels,
-        labelLine: i,
-        res: null,
-        js: null,
-        jsx: null,
-      };
-      continue;
-    }
-
-    if (currentTarget != null && line.includes("</CodeTab>")) {
-      currentTarget.tabEnd = i;
-
-      if (currentTarget.res != null) {
-        if (allowInsertions) {
-          targets.push({
-            ...currentTarget,
-            line: currentTarget.res.line,
-          });
-        } else if (
-          currentTarget.js != null ||
-          currentTarget.labels.includes("JS Output") ||
-          currentTarget.labels.includes("JS Output (Module)") ||
-          currentTarget.labels.includes("JS Output (CommonJS)")
-        ) {
-          if (currentTarget.js != null) {
-            targets.push({
-              ...currentTarget,
-              line: currentTarget.res.line,
-            });
-          } else {
-            warnings.push({
-              line: currentTarget.res.line,
-              message: "missing paired JS Output block",
-            });
-          }
-        }
-      }
-
-      currentTarget = null;
-      continue;
-    }
-
-    if (currentTarget == null) {
-      continue;
-    }
-
-    let kind = fenceKind(line);
-
-    if (kind === "res") {
-      let block = collectFenceBlock(lines, i);
-
-      if (currentTarget.res == null) {
-        currentTarget.res = {
-          ...block,
-          line: i + 1,
-        };
-      }
-
+    let block = blocksByStart.get(i);
+    if (block != null) {
+      if (current != null) current.tabBlocks.push(block);
       i = block.fenceEnd;
       continue;
     }
-
-    if (kind === "js" && currentTarget.res != null) {
-      let block = collectFenceBlock(lines, i);
-      let fence = classifyFence(line);
-
-      if (fence === "jsx" && currentTarget.jsx == null) {
-        currentTarget.jsx = {
-          ...block,
-          fenceKind: "jsx",
-        };
-      } else if (fence === "js" && currentTarget.js == null) {
-        currentTarget.js = {
-          ...block,
-          fenceKind: "js",
-        };
+    if (/^\s*<CodeTab\b/.test(lines[i])) {
+      if (current != null)
+        warn(current.tabStart, "unclosed CodeTab before the next CodeTab");
+      let labelEnd = i;
+      while (labelEnd < lines.length && !lines[labelEnd].includes(">"))
+        labelEnd++;
+      let labels = parseCodeTabLabels(lines.slice(i, labelEnd + 1).join("\n"));
+      current = null;
+      if (labels == null) {
+        warn(i, "invalid CodeTab labels");
+      } else {
+        current = { tabStart: i, labelEnd, labels, tabBlocks: [] };
       }
-
-      i = block.fenceEnd;
+      i = labelEnd;
+      continue;
+    }
+    if (/^\s*<\/\s*CodeTab\s*>/.test(lines[i])) {
+      if (!/^\s*<\/CodeTab>\s*$/.test(lines[i])) {
+        warn(i, "malformed CodeTab closing tag; use </CodeTab>");
+      } else if (current == null) {
+        warn(i, "unexpected CodeTab closing tag");
+      } else {
+        finish(i);
+      }
+      current = null;
     }
   }
-
+  if (current != null) warn(current.tabStart, "unclosed CodeTab");
   return { targets, warnings };
 };
 
@@ -320,16 +236,27 @@ let stripCompilerBoilerplate = (output) => {
     "",
   );
 
-  return normalized.replace(/\n\/\*.*\*\/\s*$/s, "").trimEnd();
+  return normalized.replace(/\n\/\*(?:(?!\/\*)[\s\S])*?\*\/\s*$/, "").trimEnd();
 };
 
-let buildSnippetSource = ({ preludes, pair }) => {
-  let visiblePreludes = preludes
-    .filter((prelude) => prelude.line < pair.line)
-    .map((prelude) => prelude.content)
-    .filter(Boolean);
-
-  return [...visiblePreludes, pair.res.content].filter(Boolean).join("\n\n");
+let buildSnippetSource = ({ blocks, target }) => {
+  let preludes = blocks
+    .filter((block) => block.kind === "res-prelude" && block.line < target.line)
+    .map((block) => block.content)
+    .filter(Boolean)
+    .join("\n\n");
+  let source = [preludes, target.res.content].filter(Boolean).join("\n\n");
+  let contextName = "ExamplePrelude";
+  while (source.includes(contextName)) contextName += "Context";
+  return {
+    source,
+    // Page-level examples have a nested scope and can shadow prelude modules
+    // or types. Keep that context available if a flat snippet cannot compile.
+    scopedSource:
+      preludes === ""
+        ? null
+        : `module ${contextName} = {\n${preludes}\n}\nopen ${contextName}\n${target.res.content}`,
+  };
 };
 
 let tempModulePath = (tempRoot, extension) =>
@@ -383,125 +310,125 @@ let readCompiledSnippet = (tempRoot) => {
   return fs.readFileSync(outputPath, "utf8");
 };
 
-let compileSnippet = (tempRoot, source) => {
+let compileSnippet = (tempRoot, { source, scopedSource }) => {
   fs.writeFileSync(tempModulePath(tempRoot, "res"), source);
-  runRescriptBuild(tempRoot);
+  try {
+    runRescriptBuild(tempRoot);
+  } catch (error) {
+    if (
+      scopedSource == null ||
+      !/Multiple definition of the (module|type) name/.test(
+        error.stderr?.toString() ?? "",
+      )
+    )
+      throw error;
+    fs.writeFileSync(tempModulePath(tempRoot, "res"), scopedSource);
+    runRescriptBuild(tempRoot);
+  }
 
   return readCompiledSnippet(tempRoot);
 };
 
-let usesJsxRuntime = (compiledJs) => compiledJs.includes("JsxRuntime");
+let usesJsxRuntime = (compiledJs) =>
+  /from ["']react\/jsx-runtime["']/.test(compiledJs);
 
-let rewriteCodeTabLabels = ({ lines, target, needsPreserveTab }) => {
-  let nextLabels =
-    target.labels.length === 1 && target.labels[0] === "ReScript"
-      ? ["ReScript", "JS Output"]
-      : [...target.labels];
-
-  let withoutPreserve = nextLabels.filter(
-    (label) => label !== "JSX Preserved Output",
+let formatOutput = async (output, preserve = false) => {
+  let { code, errors } = await format(
+    preserve ? "Example.jsx" : "Example.js",
+    output,
+    {
+      printWidth: 80,
+      objectWrap: "collapse",
+    },
   );
-  let finalLabels = needsPreserveTab
-    ? [...withoutPreserve, "JSX Preserved Output"]
-    : withoutPreserve;
-
-  let formattedLabels = `[${finalLabels.map((label) => JSON.stringify(label)).join(", ")}]`;
-
-  lines[target.labelLine] = `<CodeTab labels={${formattedLabels}}>`;
+  if (errors.length > 0)
+    throw new Error(errors.map((error) => error.message).join("\n"));
+  return code.trimEnd();
 };
 
-let splitBlockLines = (content) => (content === "" ? [] : content.split("\n"));
-
-let buildDerivedFenceBlock = ({ fence, content }) => [
-  "",
-  `\`\`\`${fence}`,
-  ...splitBlockLines(content),
-  "```",
-  "",
-];
-
-let expandFenceRangeForBlankLines = ({ lines, fenceStart, fenceEnd }) => {
-  let start = fenceStart;
-  let end = fenceEnd;
-
-  if (start > 0 && lines[start - 1] === "") {
-    start--;
-  }
-
-  if (end + 1 < lines.length && lines[end + 1] === "") {
-    end++;
-  }
-
-  return {
-    start,
-    deleteCount: end - start + 1,
-  };
+// Compare syntax rather than printed lines: quotes, wrapping and explanatory
+// comments can differ without changing the generated program.
+let normalizeOutput = (output) => {
+  if (output == null) return null;
+  let ast = parseSync(output, {
+    babelrc: false,
+    configFile: false,
+    sourceType: "unambiguous",
+    parserOpts: { plugins: ["jsx"] },
+  });
+  let metadata = new Set([
+    "start",
+    "end",
+    "loc",
+    "extra",
+    "leadingComments",
+    "trailingComments",
+    "innerComments",
+  ]);
+  return JSON.stringify(ast.program, (key, value) =>
+    metadata.has(key) ? undefined : value,
+  );
 };
 
-let findCodeTabEnd = ({ lines, target }) => {
-  for (let i = target.tabStart; i < lines.length; i++) {
-    if (lines[i].includes("</CodeTab>")) {
-      return i;
-    }
-  }
-
-  return lines.length;
-};
-
-let applyDerivedOutputUpdate = ({ lines, target, compiledJs, compiledJsx }) => {
+let applyDerivedOutputUpdate = ({ lines, target, outputs }) => {
   let nextLines = [...lines];
-  let needsPreserveTab = compiledJsx != null;
-
-  if (target.jsx != null) {
-    if (needsPreserveTab) {
+  let labels = [...target.labels];
+  for (let { content, label } of outputs) {
+    if (content == null) labels = labels.filter((value) => value !== label);
+    else if (!labels.includes(label)) labels.push(label);
+  }
+  // Work backwards to keep original fence positions valid.
+  for (let output of [...outputs].sort(
+    (a, b) =>
+      (b.block?.fenceStart ?? target.tabEnd) -
+        (a.block?.fenceStart ?? target.tabEnd) ||
+      outputs.indexOf(b) - outputs.indexOf(a),
+  )) {
+    let { block, content, kind } = output;
+    if (block != null) {
+      if (content == null) {
+        nextLines.splice(
+          block.fenceStart,
+          block.fenceEnd - block.fenceStart + 1,
+        );
+      } else {
+        nextLines.splice(
+          block.fenceStart + 1,
+          block.fenceEnd - block.fenceStart - 1,
+          ...content.split("\n").map((line) => block.indent + line),
+        );
+      }
+    } else if (content != null) {
+      let indent = target.res.indent;
       nextLines.splice(
-        target.jsx.fenceStart + 1,
-        target.jsx.fenceEnd - target.jsx.fenceStart - 1,
-        ...splitBlockLines(compiledJsx),
+        target.tabEnd,
+        0,
+        "",
+        `${indent}\`\`\`${kind === "preserve" ? "jsx" : "js"}`,
+        ...content.split("\n").map((line) => indent + line),
+        `${indent}\`\`\``,
+        "",
       );
-    } else {
-      let { start, deleteCount } = expandFenceRangeForBlankLines({
-        lines: nextLines,
-        fenceStart: target.jsx.fenceStart,
-        fenceEnd: target.jsx.fenceEnd,
-      });
-
-      nextLines.splice(start, deleteCount);
     }
   }
-
-  if (target.js != null) {
-    nextLines.splice(
-      target.js.fenceStart + 1,
-      target.js.fenceEnd - target.js.fenceStart - 1,
-      ...splitBlockLines(compiledJs),
-    );
-  } else {
-    nextLines.splice(
-      findCodeTabEnd({ lines: nextLines, target }),
-      0,
-      ...buildDerivedFenceBlock({ fence: "js", content: compiledJs }),
-    );
-  }
-
-  if (needsPreserveTab && target.jsx == null) {
-    nextLines.splice(
-      findCodeTabEnd({ lines: nextLines, target }),
-      0,
-      ...buildDerivedFenceBlock({ fence: "jsx", content: compiledJsx }),
-    );
-  }
-
-  rewriteCodeTabLabels({ lines: nextLines, target, needsPreserveTab });
-
+  let indent = lines[target.tabStart].match(/^\s*/)[0];
+  nextLines.splice(
+    target.tabStart,
+    target.labelEnd - target.tabStart + 1,
+    `${indent}<CodeTab labels={[${labels.map((label) => JSON.stringify(label)).join(", ")}]}>`,
+  );
   return nextLines;
 };
 
-let ensureTempProject = ({ tempRoot, preserve = false }) => {
+let ensureTempProject = ({
+  tempRoot,
+  preserve = false,
+  module = "esmodule",
+}) => {
   fs.mkdirSync(path.join(tempRoot, "src"), { recursive: true });
   fs.writeFileSync(
     path.join(tempRoot, "rescript.json"),
-    makeRescriptJson({ preserve }),
+    makeRescriptJson({ preserve, module }),
   );
   fs.writeFileSync(tempModulePath(tempRoot, "res"), "");
   let tempNodeModules = path.join(tempRoot, "node_modules", "@rescript");
@@ -515,131 +442,196 @@ let ensureTempProject = ({ tempRoot, preserve = false }) => {
 };
 
 export let collectCodeTabPairs = (content) => {
-  let { targets, warnings } = collectCodeTabTargets({ content });
-
+  let { blocks, warnings: fenceWarnings } = collectFenceBlocks(content);
+  let { targets, warnings } = collectCodeTabTargets({ content, blocks });
   return {
     pairs: targets.map((target) => ({
       line: target.line,
-      res: {
-        line: target.res.line,
-        content: target.res.content,
-      },
+      res: { line: target.res.line, content: target.res.content },
       js:
-        target.js == null
-          ? null
-          : {
-              content: target.js.content,
-            },
+        target.outputs.find((output) => output.kind !== "preserve")?.block ??
+        null,
     })),
-    warnings,
+    warnings: [...fenceWarnings, ...warnings],
   };
 };
 
-export let run = ({
+export let run = async ({
   docsRoot = path.join(projectRoot, "markdown-pages", "docs"),
   tempRoot = path.join(projectRoot, "temp"),
   logger = console,
   update = false,
+  includeBlog = false,
+  patterns = ["{manual,react,guides}/**/*.mdx", "../syntax-lookup/**/*.mdx"],
 } = {}) => {
   logger.log("Running tests...");
-  let runtimeTempRoot = path.join(
-    path.dirname(tempRoot),
-    path.basename(tempRoot) + "-js-output",
-  );
-  let preserveTempRoot = path.join(
-    path.dirname(tempRoot),
-    path.basename(tempRoot) + "-jsx-preserve",
-  );
-
   ensureTempProject({ tempRoot });
-  if (update) {
-    ensureTempProject({ tempRoot: runtimeTempRoot });
-    ensureTempProject({ tempRoot: preserveTempRoot, preserve: true });
-  }
-
+  let projects = new Map();
+  let outputProject = (kind) => {
+    if (!projects.has(kind)) {
+      let root = path.join(tempRoot, kind);
+      ensureTempProject({
+        tempRoot: root,
+        preserve: kind === "preserve",
+        module: kind === "commonjs" ? "commonjs" : "esmodule",
+      });
+      projects.set(kind, root);
+    }
+    return projects.get(kind);
+  };
   let success = true;
   let warningCount = 0;
-
-  globSync("{manual,react}/**/*.mdx", {
+  let mismatchCount = 0;
+  let errorCount = 0;
+  let checkedFiles = 0;
+  let blogFiles = globSync("../blog/**/*.mdx", {
     cwd: docsRoot,
     absolute: true,
-  }).forEach((file) => {
-    let content = fs.readFileSync(file, { encoding: "utf-8" });
-    let parsedResult = parseFile(content);
-    if (parsedResult == null) {
-      return;
-    }
+  });
+  let files = globSync(patterns, { cwd: docsRoot, absolute: true });
+  if (includeBlog) files.push(...blogFiles);
+  let blogPaths = new Set(blogFiles.map((file) => path.resolve(file)));
+  let skippedFiles = includeBlog
+    ? 0
+    : blogFiles.filter((file) => !files.includes(file)).length;
+  if (skippedFiles > 0)
+    logger.log(
+      `Skipping ${skippedFiles} historical blog pages; use --include-blog for a read-only compiler audit.`,
+    );
 
-    fs.writeFileSync(tempModulePath(tempRoot, "res"), parsedResult);
+  for (let file of [...new Set(files)].sort()) {
+    let content = fs.readFileSync(file, "utf8");
+    let { blocks, warnings: fenceWarnings } = collectFenceBlocks(content);
+    let isBlog = blogPaths.has(path.resolve(file));
+    let updateFile = update && !isBlog;
+    let { targets, warnings: tabWarnings } = collectCodeTabTargets({
+      content,
+      blocks,
+      allowInsertions: updateFile,
+    });
+    let warnings = [...fenceWarnings, ...tabWarnings];
+    for (let warning of warnings) {
+      logger.warn(`${file}:${warning.line} ${warning.message}`);
+      warningCount++;
+      success = false;
+    }
+    // Never rewrite a malformed page, even if some tabs can be parsed.
+    if (warnings.length > 0) continue;
+    let source = parseFile(content, blocks);
+    if (source == null) continue;
+    checkedFiles++;
+    fs.writeFileSync(tempModulePath(tempRoot, "res"), source);
     try {
       logger.log("testing examples in", file);
       runRescriptBuild(tempRoot);
     } catch (error) {
       reportCompilerError({ logger, file, error });
       success = false;
-      return;
+      errorCount++;
+      continue;
     }
-
-    let preludes = collectPreludeBlocks(content);
-    let { targets, warnings: malformedWarnings } = collectCodeTabTargets({
-      content,
-      allowInsertions: update,
-    });
     let nextLines = splitLines(content);
-
-    for (let warning of malformedWarnings) {
-      logger.warn(`${file}:${warning.line} ${warning.message}`);
-      warningCount++;
-    }
-
+    let fileSuccess = true;
     for (let target of [...targets].reverse()) {
-      if (!update) {
-        continue;
-      }
-
-      let snippetSource = buildSnippetSource({ preludes, pair: target });
-      let compiledJs;
-      let compiledJsx = null;
+      let snippetSource = buildSnippetSource({ blocks, target });
       try {
-        compiledJs = compileSnippet(
-          update ? runtimeTempRoot : tempRoot,
-          snippetSource,
-        );
-        let expectedJs = stripCompilerBoilerplate(compiledJs);
-
-        if (usesJsxRuntime(expectedJs)) {
-          compiledJsx = stripCompilerBoilerplate(
-            compileSnippet(preserveTempRoot, snippetSource),
-          );
+        let outputs = [];
+        let esm = null;
+        let requested = [...target.outputs];
+        // Only add a preserved JSX tab to an ESM example, never to TypeScript
+        // output or unrelated comparison tabs.
+        if (
+          updateFile &&
+          requested.some((output) => output.kind === "esmodule") &&
+          !requested.some((output) => output.kind === "preserve")
+        ) {
+          requested.push({
+            label: "JSX Preserved Output",
+            kind: "preserve",
+            block: null,
+          });
         }
-
-        compiledJs = expectedJs;
+        for (let output of requested) {
+          let compiled;
+          if (output.kind === "preserve") {
+            esm ??= stripCompilerBoilerplate(
+              compileSnippet(outputProject("esmodule"), snippetSource),
+            );
+            compiled = usesJsxRuntime(esm)
+              ? stripCompilerBoilerplate(
+                  compileSnippet(outputProject("preserve"), snippetSource),
+                )
+              : null;
+          } else {
+            compiled = stripCompilerBoilerplate(
+              compileSnippet(outputProject(output.kind), snippetSource),
+            );
+            if (output.kind === "esmodule") esm = compiled;
+          }
+          let expected =
+            compiled == null
+              ? null
+              : await formatOutput(compiled, output.kind === "preserve");
+          outputs.push({ ...output, content: expected });
+          // An absent optional preserved tab is fine during ordinary checks.
+          if (
+            !updateFile &&
+            (output.block != null || output.kind !== "preserve")
+          ) {
+            let shown =
+              output.block == null
+                ? null
+                : stripCompilerBoilerplate(output.block.content);
+            if (normalizeOutput(shown) !== normalizeOutput(expected)) {
+              let advice = isBlog
+                ? "historical blog output needs review against its original compiler version."
+                : "run yarn test --update to refresh generated output.";
+              logger.warn(
+                `${file}:${output.block?.line ?? target.line} stale ${output.label}; ${advice}`,
+              );
+              mismatchCount++;
+              success = false;
+            }
+          }
+        }
+        if (updateFile)
+          nextLines = applyDerivedOutputUpdate({
+            lines: nextLines,
+            target,
+            outputs,
+          });
       } catch (error) {
         reportCompilerError({ logger, file, line: target.line, error });
         success = false;
-        break;
-      }
-
-      if (update) {
-        nextLines = applyDerivedOutputUpdate({
-          lines: nextLines,
-          target,
-          compiledJs,
-          compiledJsx,
-        });
+        fileSuccess = false;
+        errorCount++;
       }
     }
-
     let nextContent = nextLines.join("\n");
-    if (update && nextContent !== content) {
+    if (updateFile && fileSuccess && nextContent !== content)
       fs.writeFileSync(file, nextContent);
-    }
-  });
-
-  return { success, warningCount };
+  }
+  logger.log(
+    `Checked ${checkedFiles} pages: ${mismatchCount} stale outputs, ${warningCount} malformed blocks, ${errorCount} compilation or parsing errors.`,
+  );
+  return {
+    success,
+    warningCount,
+    mismatchCount,
+    errorCount,
+    checkedFiles,
+    skippedFiles,
+  };
 };
 
 if (process.argv[1] && path.resolve(process.argv[1]) === __filename) {
-  let { success } = run({ update: process.argv.includes("--update") });
+  let patterns = process.argv
+    .slice(2)
+    .filter((argument) => !argument.startsWith("--"));
+  let { success } = await run({
+    update: process.argv.includes("--update"),
+    includeBlog: process.argv.includes("--include-blog"),
+    ...(patterns.length > 0 ? { patterns } : {}),
+  });
   process.exit(success ? 0 : 1);
 }

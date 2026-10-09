@@ -24,7 +24,7 @@ const params = useParams<{ tag: string; item: string }>()
 
 In ReScript we can create a module function that will return a typed response for the `useParams` hook.
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 ```res
 module Next = {
   // define our module function
@@ -74,35 +74,49 @@ function MakeParams(Params) {
   return {};
 }
 
-let Next = {
-  MakeParams: MakeParams
-};
+let Next = { MakeParams: MakeParams };
 
-function _tempFile$Component(props) {
+function Example$Component(props) {
   let params = Navigation.useParams();
   return JsxRuntime.jsxs("div", {
     children: [
-      JsxRuntime.jsx("p", {
-        children: "Tag: " + params.tag
-      }),
-      JsxRuntime.jsx("p", {
-        children: "Item: " + params.item
-      })
-    ]
+      JsxRuntime.jsx("p", { children: "Tag: " + params.tag }),
+      JsxRuntime.jsx("p", { children: "Item: " + params.item }),
+    ],
   });
 }
 
-let Component = {
-  make: _tempFile$Component
-};
+let Component = { make: Example$Component };
 
-export {
-  Next,
-  Component,
-}
+export { Next, Component };
 ````
 
-</ CodeTab>
+```jsx
+import * as Navigation from "next/navigation";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function MakeParams(Params) {
+  return {};
+}
+
+let Next = { MakeParams: MakeParams };
+
+function Example$Component(props) {
+  let params = Navigation.useParams();
+  return (
+    <div>
+      <p>{"Tag: " + params.tag}</p>
+      <p>{"Item: " + params.item}</p>
+    </div>
+  );
+}
+
+let Component = { make: Example$Component };
+
+export { Next, Component };
+```
+
+</CodeTab>
 
 ## Sharing a type with an external binding
 
@@ -163,7 +177,7 @@ var Env = {
 var values = import.meta.env;
 ````
 
-</ CodeTab>
+</CodeTab>
 
 ## Shared functions
 
@@ -308,25 +322,22 @@ let updateDb = Db.client.write("new value")
 import * as DatabaseJs from "database.js";
 
 function MakeDbConnection(Config) {
-  let client = DatabaseJs.makeClient(Config.host, Config.database, Config.username, Config.password);
-  return {
-    client: client
-  };
+  let client = DatabaseJs.makeClient(
+    Config.host,
+    Config.database,
+    Config.username,
+    Config.password,
+  );
+  return { client: client };
 }
 
 let client = DatabaseJs.makeClient("localhost", "mydb", "root", "password");
 
-let Db = {
-  client: client
-};
+let Db = { client: client };
 
 let updateDb = client.write("new value");
 
-export {
-  MakeDbConnection,
-  Db,
-  updateDb,
-}
+export { MakeDbConnection, Db, updateDb };
 ````
 
 </CodeTab>
