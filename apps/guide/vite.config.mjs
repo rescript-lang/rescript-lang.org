@@ -73,6 +73,7 @@ export default defineConfig(({ mode }) => {
     },
     test: {
       include: ["__tests__/*_.test.jsx"],
+      exclude: ["__tests__/GuideLessonFrontmatter_.test.jsx"],
       setupFiles: ["./vitest.setup.mjs"],
       browser: {
         enabled: true,

@@ -25,15 +25,17 @@ its integer `position`. The build requires these frontmatter fields:
 
 | Field                     | Required | Meaning                                                |
 | ------------------------- | -------- | ------------------------------------------------------ |
-| `position`                | Yes      | Integer lesson order                                   |
+| `position`                | Yes      | Signed 32-bit integer lesson order                     |
 | `id`                      | Yes      | Stable URL-safe hash and lesson identifier             |
 | `missionLabel`            | Yes      | Short lesson label                                     |
 | `title`                   | Yes      | Lesson heading                                         |
-| `description`             | Yes      | Lesson summary used by the lesson model                |
 | `exercise.id`             | Yes      | Stable identifier for saved code and completion        |
-| `exercise.title`          | Yes      | Exercise label                                         |
 | `exercise.initialCode`    | Yes      | Initial editor contents                                |
-| `exercise.expectedOutput` | No       | Matching runtime log line that unlocks the next lesson |
+| `exercise.expectedOutput` | Yes      | Matching runtime log line that unlocks the next lesson |
+
+The build rejects malformed fields and duplicate positions, lesson IDs, or
+exercise IDs. Errors identify the source lesson file and field. Source paths
+are used for build diagnostics and are excluded from the published loader data.
 
 Lesson IDs determine durable hash-based deep links. Renaming a published lesson
 ID requires a redirect or an explicit decision to let existing deep links fall
@@ -43,12 +45,14 @@ Exercise IDs are durable client-side storage keys for saved code and completion.
 Do not rename a published exercise ID without a migration or an explicit
 decision to discard existing learner progress.
 
-Lesson IDs must be URL-safe slugs made from lowercase ASCII letters, digits,
-and hyphens. Exercise IDs may use the established slash-delimited form.
+Lesson IDs must be URL-safe slugs made from lowercase ASCII letters and digits,
+with single hyphens between words. Exercise IDs may contain one or more such
+slugs separated by single slashes, such as `first-contact/greeting`.
 
-An exercise without `expectedOutput` is parsed as a manual check, but manual
-checks are not currently completable. Published lessons therefore need a
-deterministic `expectedOutput` until another completion mechanism exists.
+Every exercise requires a deterministic `expectedOutput` string. Numeric or
+boolean output must be quoted in YAML, for example `expectedOutput: "42"`.
+Matching is exact: empty strings and whitespace are preserved. Manual checks
+are not supported.
 
 ## Local Development
 
@@ -70,6 +74,10 @@ For a production build and test run:
 yarn build:guide
 yarn workspace @rescript-lang/guide ci:test
 ```
+
+The CI test command validates frontmatter and the complete lesson collection
+in Node before running the browser tests. After compiling ReScript, run
+`yarn workspace @rescript-lang/guide test:lessons` for just the lesson checks.
 
 `yarn build:guide` compiles ReScript, pre-renders `/`, and copies the client
 assets to `apps/guide/out/` for Wrangler. The guide fetches available compiler
@@ -95,7 +103,7 @@ show a stop screen rather than a usable guide.
 Before launch, complete and verify the following:
 
 - [ ] Author, review, and run every lesson using its real expected output.
-- [ ] Add a content-validation test for the complete lesson set, including
+- [x] Add a content-validation test for the complete lesson set, including
       unique `position`, lesson IDs, and exercise IDs.
 - [ ] Decide and implement the completion model for exercises that cannot use
       exact runtime output.
