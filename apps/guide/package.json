@@ -8,9 +8,10 @@
     "build:res": "rescript build --warn-error +3+8+11+12+26+27+31+32+33+34+35+39+44+45+110",
     "build:vite": "react-router build",
     "build": "yarn build:res && yarn build:vite",
-    "ci:test": "yarn build:res && yarn vitest --run --browser.headless",
+    "ci:test": "yarn build:res && yarn test:compiler && yarn vitest --run --browser.headless",
     "dev:vite": "yarn build:res && vite --host",
-    "vitest": "vitest"
+    "vitest": "vitest",
+    "test:compiler": "vitest run --config vitest.compiler.config.mjs"
   },
   "dependencies": {
     "@babel/generator": "^7.29.1",
@@ -40,6 +41,7 @@
     "@types/react": "^19.2.14",
     "@vitejs/plugin-react": "^6.0.1",
     "@vitest/browser-playwright": "^5.0.0",
+    "esbuild": "0.28.1",
     "lightningcss": "^1.32.0",
     "playwright": "^1.63.0",
     "vite": "^8.3.0",

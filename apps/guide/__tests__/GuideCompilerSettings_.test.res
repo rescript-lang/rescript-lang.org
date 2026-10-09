@@ -1,18 +1,8 @@
 open Vitest
 
-test("selects the latest stable ReScript compiler with ESM output", async () => {
-  let version =
-    GuideCompilerSettings.latestStableVersion([
-      "v12.1.0-alpha.1",
-      "v11.1.4",
-      "v12.0.0",
-      "v12.2.0-beta.1",
-      "v12.1.3",
-    ])
-    ->Option.getOrThrow
-    ->Semver.toString
-
-  expect(version)->toBe("v12.1.3")
+test("pins the guide to its validated v12 compiler with ESM output", async () => {
+  expect(GuideCompilerSettings.version)->toBe("v12.3.1")
+  expect(GuideCompilerSettings.parsedVersion->Semver.toString)->toBe(GuideCompilerSettings.version)
   expect(GuideCompilerSettings.moduleSystem)->toBe("esmodule")
   expect(GuideCompilerSettings.warnFlags->String.includes("-109"))->toBe(true)
 })
