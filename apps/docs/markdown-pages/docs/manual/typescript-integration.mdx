@@ -81,7 +81,7 @@ Within our TypeScript application, we can now import and use the function in the
 ```ts
 // src/app.ts
 
-import { printColorMessage } from "./Color.gen";
+import { printColorMessage } from "./Color.gen.js";
 
 printColorMessage("Red", "Hello, genType!");
 ```
@@ -171,16 +171,20 @@ The examples above use ES modules, in-source JavaScript output and the `.res.js`
 }
 ```
 
-In the project's `tsconfig.json`, enable `allowJs` to import the generated JavaScript and set `jsx` to parse the `.gen.tsx` files:
+In the project's `tsconfig.json`, enable `allowJs` to import the generated JavaScript. When TypeScript emits files, use `jsx: "react-jsx"` so that the `.gen.tsx` wrappers compile to `.gen.js`:
 
 ```json
 {
   "compilerOptions": {
     "allowJs": true,
-    "jsx": "preserve"
+    "jsx": "react-jsx"
   }
 }
 ```
+
+The `.js` extension in consumer imports refers to the emitted file; TypeScript resolves it to the `.gen.tsx` source during type-checking. Explicit extensions also work with Node ES modules.
+
+Use `jsx: "preserve"` when a bundler handles emission and TypeScript runs with `noEmit: true`, as shown below.
 
 ### TypeScript Module Resolutions
 
@@ -192,6 +196,7 @@ For example if the TypeScript project uses JavaScript modules with `Node16` / `N
 // tsconfig.json
 {
   "compilerOptions": {
+    "module": "node16",
     "moduleResolution": "node16"
   }
 }
@@ -214,7 +219,10 @@ In case of the TypeScript project using `Bundler` module resolution, `allowImpor
 // tsconfig.json
 {
   "compilerOptions": {
+    "module": "esnext",
     "moduleResolution": "bundler",
+    "jsx": "preserve",
+    "noEmit": true,
     "allowImportingTsExtensions": true
   }
 }
@@ -238,7 +246,7 @@ Save the file and rebuild the project via `npm run build:res` or similar. You sh
 Any values exported from `MyComponent.res` can then be imported from TypeScript. For example:
 
 ```js
-import { make } from "./components/MyComponent.gen";
+import { make } from "./components/MyComponent.gen.js";
 ```
 
 ## Experimental features
