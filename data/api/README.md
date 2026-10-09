@@ -9,6 +9,9 @@ exposed to ReScript as `DocsVersion.current`. Minor and patch
 numbers are compared numerically. Explicit prerelease directory names are ignored.
 The selected snapshot must contain all three libraries; an incomplete or invalid
 publication fails the build instead of mixing versions or using an older copy.
+Each library must include its root module (`stdlib`, `belt`, or `dom`). Every
+module must have nonempty `id` and `name` strings, a `docstrings` array of strings,
+and an `items` array before the snapshot can be cached or used to generate routes.
 
 Route generation, sidebar navigation, and page content use the same snapshot.
 `master` selects v12; when porting this loader to the v13 website branch, update

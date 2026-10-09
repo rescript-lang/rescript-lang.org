@@ -22,6 +22,15 @@ test("missing published API data fails instead of using another major", async ()
   )
 })
 
+let apiModule = (id, name, version) => JSON.Object(
+  Dict.fromArray([
+    ("id", JSON.String(id)),
+    ("name", JSON.String(name)),
+    ("docstrings", JSON.Array([JSON.String(`Docs from ${version}`)])),
+    ("items", JSON.Array([])),
+  ]),
+)
+
 let snapshot = async (directory, version, moduleName) => {
   let target = join([directory, version])
   await mkdir(target, {recursive: true})
@@ -29,17 +38,8 @@ let snapshot = async (directory, version, moduleName) => {
     let modulePath = `${library}/${moduleName->String.toLowerCase}`
     let data = JSON.Object(
       Dict.fromArray([
-        (
-          modulePath,
-          JSON.Object(
-            Dict.fromArray([
-              ("id", JSON.String(`${library->String.capitalize}.${moduleName}`)),
-              ("name", JSON.String(moduleName)),
-              ("docstrings", JSON.Array([JSON.String(`Docs from ${version}`)])),
-              ("items", JSON.Array([])),
-            ]),
-          ),
-        ),
+        (library, apiModule(library->String.capitalize, library->String.capitalize, version)),
+        (modulePath, apiModule(`${library->String.capitalize}.${moduleName}`, moduleName, version)),
       ]),
     )
     await write(join([target, `${library}.json`]), JSON.stringify(data))
@@ -57,7 +57,10 @@ test("routes and module content read the same newest published snapshot", async 
   expect(data.version)->toBe("v12.10.0")
   ["stdlib", "belt", "dom"]->Array.forEach(library => {
     let modules = ApiData.library(data, library)
-    expect(ApiData.paths(modules))->toStrictEqual([`docs/manual/api/${library}/newmodule`])
+    expect(ApiData.paths(modules))->toStrictEqual([
+      `docs/manual/api/${library}`,
+      `docs/manual/api/${library}/newmodule`,
+    ])
     let content = Dict.getUnsafe(modules, `${library}/newmodule`)->JSON.stringify
     expect(content)->toContain("NewModule")
     expect(content)->toContain("Docs from v12.10.0")
@@ -68,7 +71,8 @@ test("an incomplete newest publication fails instead of mixing snapshot versions
   let directory = await temporaryDirectory("api-data-incomplete-")
   await snapshot(directory, "v12.3.0", "OldModule")
   await mkdir(join([directory, "v12.3.1"]), {recursive: true})
-  await write(join([directory, "v12.3.1", "stdlib.json"]), "{}")
+  let stdlib = await read(join([directory, "v12.3.0", "stdlib.json"]))
+  await write(join([directory, "v12.3.1", "stdlib.json"]), stdlib)
   expect(() => ApiData.load(~directory, ~major="v12"))->toThrow("belt.json")
 })
 
@@ -77,6 +81,55 @@ test("a malformed published library fails during loading", async () => {
   await snapshot(directory, "v12.3.1", "NewModule")
   await write(join([directory, "v12.3.1", "dom.json"]), "[]")
   expect(() => ApiData.load(~directory, ~major="v12"))->toThrow("expected an object")
+})
+
+for_(["stdlib", "belt", "dom"])("published %s API requires its root module", async library => {
+  let directory = await temporaryDirectory("api-data-root-")
+  await snapshot(directory, "v12.3.0", "OldModule")
+  await snapshot(directory, "v12.3.1", "NewModule")
+  let path = join([directory, "v12.3.1", `${library}.json`])
+  // A nonempty library without its root and an empty library must both fail.
+  let withoutRoot = JSON.Object(
+    Dict.fromArray([
+      (`${library}/newmodule`, apiModule(`${library}.NewModule`, "NewModule", "v12.3.1")),
+    ]),
+  )
+  await write(path, JSON.stringify(withoutRoot))
+  expect(() => ApiData.load(~directory, ~major="v12"))->toThrow(`missing root module ${library}`)
+  await write(path, "{}")
+  expect(() => ApiData.load(~directory, ~major="v12"))->toThrow(`missing root module ${library}`)
+})
+
+let malformedModules = [
+  ("object", JSON.Null),
+  ("id", JSON.parseOrThrow(`{"name":"Dom","docstrings":[],"items":[]}`)),
+  ("name", JSON.parseOrThrow(`{"id":"Dom","docstrings":[],"items":[]}`)),
+  ("docstrings", JSON.parseOrThrow(`{"id":"Dom","name":"Dom","items":[]}`)),
+  ("docstrings", JSON.parseOrThrow(`{"id":"Dom","name":"Dom","docstrings":[42],"items":[]}`)),
+  ("items", JSON.parseOrThrow(`{"id":"Dom","name":"Dom","docstrings":[]}`)),
+]
+
+let malformedCases =
+  malformedModules->Array.flatMap(((field, invalid)) =>
+    ["dom", "dom/newmodule"]->Array.map(modulePath => (field, modulePath, invalid))
+  )
+
+for_(malformedCases)("published modules validate %s in %s", async ((
+  field,
+  modulePath,
+  invalid,
+)) => {
+  let directory = await temporaryDirectory("api-data-module-")
+  await snapshot(directory, "v12.3.1", "NewModule")
+  let path = join([directory, "v12.3.1", "dom.json"])
+  let modules = Dict.fromArray([
+    ("dom", apiModule("Dom", "Dom", "v12.3.1")),
+    ("dom/newmodule", apiModule("Dom.NewModule", "NewModule", "v12.3.1")),
+  ])
+  Dict.set(modules, modulePath, invalid)
+  await write(path, modules->JSON.Object->JSON.stringify)
+  expect(() => ApiData.load(~directory, ~major="v12"))->toThrow(`invalid module ${modulePath}`)
+  expect(() => ApiData.load(~directory, ~major="v12"))->toThrow(field)
 })
 
 for_(["stdlib", "belt", "dom"])(
