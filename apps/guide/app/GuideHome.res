@@ -128,13 +128,9 @@ let make = (
         </div>
       </section>
       {switch compilerData {
-      | Some({bundleBaseUrl, versions}) =>
+      | Some({bundleBaseUrl}) =>
         <GuideCompilerBridge
-          bundleBaseUrl
-          versions
-          code=editor.code
-          editorRef=editor.editorRef
-          setOutput={navigation.setOutput}
+          bundleBaseUrl code=editor.code editorRef=editor.editorRef setOutput={navigation.setOutput}
         />
       | None => React.null
       }}

@@ -1,22 +1,14 @@
 let useCompilerBridge = (
   ~bundleBaseUrl,
-  ~versions,
   ~code,
   ~editorRef: React.ref<option<CodeMirror.editorInstance>>,
   ~setOutput,
 ) => {
-  let compilerVersions = React.useMemo(
-    () => GuideCompilerSettings.supportedVersions(versions),
-    [versions],
-  )
-  let initialVersion = React.useMemo(
-    () => compilerVersions->GuideCompilerSettings.latestStableParsedVersion,
-    [compilerVersions],
-  )
+  let compilerVersions = React.useMemo(() => [GuideCompilerSettings.parsedVersion], [])
 
   let (compilerState, compilerDispatch) = CompilerManagerHook.useCompilerManager(
     ~bundleBaseUrl,
-    ~initialVersion?,
+    ~initialVersion=GuideCompilerSettings.parsedVersion,
     ~initialModuleSystem=GuideCompilerSettings.moduleSystem,
     ~initialWarnFlags=GuideCompilerSettings.warnFlags,
     ~syncUrl=false,
@@ -26,6 +18,27 @@ let useCompilerBridge = (
   let lastCompiledCode = React.useRef("")
   let lastExecutedJsCode = React.useRef("")
   let isWaitingForRuntimeOutput = React.useRef(false)
+
+  React.useEffect(() => {
+    switch compilerState {
+    | Init =>
+      let timer = setTimeout(
+        ~handler=() =>
+          setOutput(
+            _ =>
+              GuideCompilerFeedback.Output.make(
+                ~status="Compiler setup failed",
+                ~diagnostics=[
+                  `ReScript ${GuideCompilerSettings.version} did not load within 15 seconds. Reload the page to try again.`,
+                ],
+              ),
+          ),
+        ~timeout=GuideCompilerSettings.loadingTimeoutMs,
+      )
+      Some(() => clearTimeout(timer))
+    | _ => None
+    }
+  }, (compilerState, setOutput))
 
   React.useEffect(() => {
     switch compilerState {
@@ -83,18 +96,11 @@ let useCompilerBridge = (
     | Ready({selected, result: Comp(Success({jsCode, typeHints}))})
       if jsCode !== lastExecutedJsCode.current =>
       lastExecutedJsCode.current = jsCode
-      let runtimeJsCode = switch GuideRuntimeSource.instrument(~code, ~typeHints) {
-      | Some(runtimeCode) =>
-        // The instrumented source may fail on compiler internals; fall back to user JS in that case.
-        switch selected.instance->RescriptCompilerApi.Compiler.resCompile(runtimeCode) {
-        | Success({jsCode}) => jsCode
-        | Fail(_) | UnexpectedError(_) | Unknown(_, _) => jsCode
-        }
-      | None => jsCode
-      }
-
-      switch runtimeJsCode->GuideRuntimeTransform.transform(
-        ~resultBindingName=GuideRuntimeSource.resultBindingName,
+      switch GuideRuntimeProgram.fromCompilation(
+        ~compiler=selected.instance,
+        ~code,
+        ~jsCode,
+        ~typeHints,
       ) {
       | Some({code: runtimeCode, imports}) =>
         isWaitingForRuntimeOutput.current = true
