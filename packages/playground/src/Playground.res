@@ -1657,39 +1657,12 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     None
   }, [])
 
-  let versions =
-    versions
-    ->Array.filterMap(v => v->Semver.parse)
-    ->Array.filter(v =>
-      switch v.major {
-      | 8 | 9 => false
-      | 10 => v.minor >= 1
-      | 11 =>
-        v.minor >= 1 && v.preRelease->Option.isNone && (v.minor == 1 && v.patch >= 4) ? true : false
-      | 12 =>
-        switch v.preRelease {
-        | None => true
-        | Some(_) => v.minor > 1
-        }
-      | _ => true
-      }
-    )
-    ->Array.toSorted((a, b) => {
-      let cmp = ({Semver.major: major, minor, patch, _}) => {
-        [major, minor, patch]
-        ->Array.map(v => v->Int.toString)
-        ->Array.join("")
-        ->Int.fromString
-        ->Option.getOr(0)
-      }
-
-      cmp(b) > cmp(a) ? 1.0 : -1.0
-    })
+  let versions = CompilerVersions.supported(versions)
 
   let initialVersion = switch versions {
   | [v] => Some(v) // only single version available. maybe local dev.
   | versions => {
-      let lastStableVersion = versions->Array.find(version => version.preRelease->Option.isNone)
+      let lastStableVersion = versions->CompilerVersions.latestStable
       switch Nullable.make(
         searchParams->WebAPI.URLSearchParams.get((CompilerManagerHook.Version :> string)),
       ) {
