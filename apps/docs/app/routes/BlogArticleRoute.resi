@@ -4,6 +4,8 @@ type loaderData = {
   title: string,
 }
 
+@live
 let loader: ReactRouter.Loader.t<loaderData>
 
+@live
 let default: unit => React.element

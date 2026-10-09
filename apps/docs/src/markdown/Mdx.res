@@ -50,9 +50,6 @@ type tree
 @module("remark-gfm")
 external gfm: remarkPlugin = "default"
 
-@module("remark-validate-links")
-external validateLinks: remarkPlugin = "default"
-
 @module("mdast-util-to-string")
 external childrenToString: {..} => string = "toString"
 

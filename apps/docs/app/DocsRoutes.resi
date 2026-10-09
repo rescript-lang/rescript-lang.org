@@ -1,14 +1,5 @@
+// Consumed by react-router.config.mjs and app/routes.js.
+@live
 let stdlibPaths: array<string>
-let domPaths: array<string>
-let beltPaths: array<string>
-let stdlibRoutes: array<ReactRouter.Routes.t>
-let domRoutes: array<ReactRouter.Routes.t>
-let beltRoutes: array<ReactRouter.Routes.t>
-let blogArticleRoutes: array<ReactRouter.Routes.t>
-let docsManualRoutes: array<ReactRouter.Routes.t>
-let docsReactRoutes: array<ReactRouter.Routes.t>
-let docsGuidesRoutes: array<ReactRouter.Routes.t>
-let communityRoutes: array<ReactRouter.Routes.t>
-let syntaxLookupDetailRoutes: array<ReactRouter.Routes.t>
-/** Keep homepage, playground, and content styles scoped to their route groups. */
+@live
 let default: array<ReactRouter.Routes.t>

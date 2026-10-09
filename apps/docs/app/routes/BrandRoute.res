@@ -22,6 +22,7 @@ let assetCard = (~title, ~description, ~image, ~imageClassName="", ~dark=false, 
   </section>
 }
 
+@live
 let default = () => {
   <MainLayout>
     <Meta

@@ -11,8 +11,6 @@ node_modules/
 out/
 apps/docs/out/
 apps/guide/out/
-index_data/*.json
-apps/docs/index_data/*.json
 
 # Generated via docs test examples script
 temp
@@ -37,9 +35,7 @@ apps/guide/src/**/*.mjs
 apps/guide/src/**/*.jsx
 packages/*/src/**/*.mjs
 packages/*/src/**/*.jsx
-apps/docs/scripts/gendocs.mjs
 apps/docs/scripts/generate_*.mjs
-apps/docs/scripts/gendocs.jsx
 apps/docs/scripts/generate_*.jsx
 apps/docs/scripts/LogAlgoliaEnvStatus.jsx
 apps/docs/scripts/__tests__/**/*.jsx
@@ -81,8 +77,6 @@ apps/guide/__tests__/**/*.mjs
 apps/guide/__tests__/**/*.jsx
 apps/docs/e2e/**/*.mjs
 apps/docs/e2e/**/*.jsx
-!_shims.mjs
-!_shims.jsx
 
 # Yarn
 .yarn/*

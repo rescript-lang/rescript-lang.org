@@ -158,11 +158,6 @@ let savePaneSizes = paneSizes => {
   setLocalStorageItem(~key=outputHeightStorageKey, ~value=paneSizes.outputHeight->Float.toString)
 }
 
-let clearPaneSizes = () => {
-  removeLocalStorageItem(instructionsWidthStorageKey)
-  removeLocalStorageItem(outputHeightStorageKey)
-}
-
 let parseCompletedExerciseIds = value => {
   open JSON
 
@@ -210,8 +205,6 @@ let saveCompletedExercise = exerciseId => {
 }
 
 let isExerciseCompleted = exerciseId => loadCompletedExerciseIds()->Array.includes(exerciseId)
-
-let clearCompletedExercises = () => removeLocalStorageItem(progressStorageKey)
 
 let loadExerciseCode = exerciseId => getLocalStorageItem(exerciseId->exerciseCodeStorageKey)
 

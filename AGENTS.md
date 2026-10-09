@@ -25,7 +25,6 @@ data/             → Hand-curated data (API docs JSON, sidebar ordering)
 styles/           → CSS files (Tailwind v4 config in main.css, custom utilities)
 scripts/          → Build/codegen scripts (ReScript + JS)
 functions/        → Cloudflare Pages Functions (e.g. OG image generation)
-compilers/        → Bundled ReScript compiler versions (for the playground)
 plugins/          → HighlightJS & CodeMirror plugins
 public/           → Static assets (images, fonts, favicons)
 __tests__/        → Vitest browser-mode tests (Playwright)

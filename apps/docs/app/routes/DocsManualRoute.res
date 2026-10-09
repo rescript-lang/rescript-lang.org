@@ -30,6 +30,7 @@ let manualTableOfContents = async () => {
   )
 }
 
+@live
 let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
   let {pathname} = WebAPI.URL.make(~url=request.url)
   let filePath = MdxFile.resolveFilePath(
@@ -60,6 +61,7 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
   }
 }
 
+@live
 let default = () => {
   let {compiledMdx, categories, entries, title, description, filePath} = ReactRouter.useLoaderData()
 

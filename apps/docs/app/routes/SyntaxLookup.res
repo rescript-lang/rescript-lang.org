@@ -51,16 +51,6 @@ module Category = {
     | _ => Other
     }
   }
-
-  @react.component
-  let make = (~title, ~children) => {
-    <div>
-      <h3 className="font-sans font-medium text-gray-100 tracking-wide text-14 uppercase mb-2">
-        {React.string(title)}
-      </h3>
-      <div className="flex flex-wrap"> children </div>
-    </div>
-  }
 }
 
 module Status = {
@@ -119,15 +109,6 @@ module Item = {
     }
 }
 
-type itemInfo = {
-  id: string,
-  keywords: array<string>,
-  name: string,
-  summary: string,
-  category: Category.t,
-  status: Status.t,
-}
-
 module Tag = {
   @react.component
   let make = (~deprecated: bool, ~text: string, ~href) => {
@@ -173,40 +154,6 @@ type state =
   | ShowAll
   | ShowFiltered(string, array<Item.t>) // (search, filteredItems)
   | ShowDetails(Item.t)
-
-let scrollToTop = () => WebAPI.Window.scrollTo(window, ~options={left: 0.0, top: 0.0})
-
-type params = {slug: string}
-
-let decode = (json: JSON.t) => {
-  open JSON
-  switch json {
-  | Object(dict{
-      "id": String(id),
-      "keywords": Array(keywords),
-      "name": String(name),
-      "summary": String(summary),
-      "category": String(category),
-      "status": ?status,
-    }) => {
-      id,
-      name,
-      summary,
-      category: Category.fromString(category),
-      keywords: keywords->Array.filterMap(k =>
-        switch k {
-        | String(k) => Some(k)
-        | _ => None
-        }
-      ),
-      status: switch status {
-      | Some(String(status)) => status->Status.fromString
-      | _ => Status.Active
-      },
-    }
-  | _ => throw(Failure(`Failed to decode SyntaxLookup. ${__LOC__}`))
-  }
-}
 
 type item = {
   id: string,

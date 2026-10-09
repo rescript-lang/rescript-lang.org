@@ -1,7 +1,7 @@
 @module("../styles/main.css?url")
 external mainCss: string = "default"
 
-@react.component
+@react.component @live
 let default = () => {
   <html lang="en">
     <head>

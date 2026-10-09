@@ -5,6 +5,7 @@ type loaderData = {
 
 exception LessonLoadError(string)
 
+@live
 let loader: ReactRouter.Loader.t<loaderData> = async _ => {
   let compilerData = await GuideCompilerData.load()
   let lessons = switch GuideLessonContent.load() {
@@ -15,7 +16,7 @@ let loader: ReactRouter.Loader.t<loaderData> = async _ => {
   {compilerData, lessons}
 }
 
-@react.component
+@react.component @live
 let default = () => {
   let {compilerData, lessons}: loaderData = ReactRouter.useLoaderData()
   <GuideHome ?compilerData lessons />

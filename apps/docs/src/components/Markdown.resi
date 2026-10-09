@@ -30,14 +30,6 @@ module UrlBox: {
   let make: (~text: string, ~href: string, ~children: MdxLegacy.MdxChildren.t) => React.element
 }
 
-// Used for creating invisible, hoverable <a> anchors for url linking
-module Anchor: {
-  /* let idFormat = (id: string): string => id */
-
-  @react.component
-  let make: (~id: string, ~title: string=?) => React.element
-}
-
 module H1: {
   @react.component
   let make: (~id: string=?, ~title: string=?, ~children: React.element) => React.element

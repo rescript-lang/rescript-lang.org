@@ -8,8 +8,6 @@ module Color: {
     | Magenta // fg=35 bg=45
     | Cyan // fg=36 bg=46
     | White // fg=37 bg=47
-
-  let toString: t => string
 }
 
 module Sgr: {
@@ -19,13 +17,7 @@ module Sgr: {
     | Fg(Color.t) // 30 - 37
     | Bg(Color.t) // 40 - 47
     | Unknown(string)
-
-  let paramToString: param => string
 }
-
-let esc: string
-
-let isAscii: string => bool
 
 module Location: {
   type t = {
@@ -37,18 +29,6 @@ module Location: {
     startPos: int,
     endPos: int,
   }
-
-  let fromString: string => t
-
-  let isDone: t => bool
-
-  let next: t => string
-
-  let untilNextEsc: t => option<unit>
-
-  // Look is useful to look ahead without reading the character
-  // from the stream
-  let look: (t, int) => string
 }
 
 module Lexer: {
@@ -61,13 +41,9 @@ module Lexer: {
     | Scan
     | ReadSgr({startPos: int, content: string}) // contains collected data
     | ReadText({startPos: int, content: string})
-
-  let lex: Location.t => array<token>
 }
 
 let parse: string => array<Lexer.token>
-
-let onlyText: array<Lexer.token> => array<Lexer.token>
 
 // A sgr encoded element
 module SgrString: {
@@ -79,14 +55,10 @@ module SgrString: {
   }
 
   let fromTokens: array<token> => array<t>
-
-  let toString: t => string
 }
 
 module Printer: {
   open Lexer
-
-  let tokenString: token => string
 
   let plainString: array<token> => string
 }

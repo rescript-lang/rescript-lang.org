@@ -253,10 +253,6 @@ module CM6 = {
     external highlightSelectionMatches: unit => extension = "highlightSelectionMatches"
   }
 
-  module Common = {
-    type nodePropSource
-  }
-
   module Language = {
     module HighlightStyle = {
       type tag
@@ -513,13 +509,6 @@ module CM6 = {
 
     module LRParser = {
       type t
-
-      module Config = {
-        type t = {props?: array<Common.nodePropSource>}
-      }
-
-      @send
-      external _configure: (t, Config.t) => t = "configure"
     }
 
     module LRLanguage = {
@@ -974,19 +963,6 @@ let editorSetTheme = (instance: editorInstance, theme: Theme.t): unit => {
         (theme->themeToExtension: CM6.extension),
       ),
     },
-  )
-}
-
-let editorSetMode = (instance: editorInstance, mode: string): unit => {
-  let language = switch mode {
-  | "rescript" => ReScript.extension
-  | "reason" => CM6.CustomLanguages.reasonLanguage
-  | _ => CM6.JavaScript.javascript()
-  }
-
-  CM6.EditorView.dispatchEffects(
-    instance.view,
-    {effects: CM6.Compartment.reconfigure(instance.languageConf, (language: CM6.extension))},
   )
 }
 

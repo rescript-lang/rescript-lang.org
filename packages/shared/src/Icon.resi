@@ -20,25 +20,7 @@ module MagnifierGlass: {
   let make: (~className: string) => React.element
 }
 
-module Caret: {
-  type direction = [#Up | #Down]
-  type size = [#Sm | #Md]
-
-  @react.component
-  let make: (~className: string=?, ~size: size=?, ~direction: direction) => React.element
-}
-
 module DrawerDots: {
-  @react.component
-  let make: (~className: string=?) => React.element
-}
-
-module CornerLeftUp: {
-  @react.component
-  let make: (~className: string=?) => React.element
-}
-
-module Table: {
   @react.component
   let make: (~className: string=?) => React.element
 }
@@ -59,11 +41,6 @@ module Discourse: {
 }
 
 module Hyperlink: {
-  @react.component
-  let make: (~className: string=?) => React.element
-}
-
-module TriangleDown: {
   @react.component
   let make: (~className: string=?) => React.element
 }

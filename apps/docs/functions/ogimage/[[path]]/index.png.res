@@ -254,6 +254,7 @@ let renderImage = async (~assets, ~requestUrl: URLAPI.url, ~targetUrl: URLAPI.ur
   }
 }
 
+@live
 let onRequest = async ({request, params, env}: context) => {
   let requestUrl = URL.make(~url=request.url)
 
