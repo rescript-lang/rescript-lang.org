@@ -436,7 +436,9 @@ type rec user = {
   age: int,
   bestFriend: option<user>,
 }
+```
 
+```rescript
 let rec decodeUser = json =>
   switch json {
   | Object(userDict) =>
@@ -508,32 +510,6 @@ switch animal {
 
 ````
 ```javascript
-import * as Stdlib_Array from "@rescript/runtime/lib/es6/Stdlib_Array.js";
-
-function decodeUser(json) {
-  if (typeof json !== "object" || json === null || Array.isArray(json)) {
-    return;
-  }
-  let match = json["name"];
-  let match$1 = json["age"];
-  let match$2 = json["bestFriend"];
-  if (
-    typeof match === "string" &&
-    typeof match$1 === "number" &&
-    match$2 !== undefined
-  ) {
-    return { name: match, age: match$1 | 0, bestFriend: decodeUser(match$2) };
-  }
-}
-
-function decodeUsers(json) {
-  if (Array.isArray(json)) {
-    return Stdlib_Array.keepSome(json.map(decodeUser));
-  } else {
-    return [];
-  }
-}
-
 function greetAnimal(animal) {
   switch (animal) {
     case "Dog":
@@ -545,7 +521,7 @@ function greetAnimal(animal) {
   }
 }
 
-export { decodeUser, decodeUsers, greetAnimal };
+export { greetAnimal };
 ````
 
 </CodeTab>
@@ -593,32 +569,6 @@ switch animal {
 
 ````
 ```javascript
-import * as Stdlib_Array from "@rescript/runtime/lib/es6/Stdlib_Array.js";
-
-function decodeUser(json) {
-  if (typeof json !== "object" || json === null || Array.isArray(json)) {
-    return;
-  }
-  let match = json["name"];
-  let match$1 = json["age"];
-  let match$2 = json["bestFriend"];
-  if (
-    typeof match === "string" &&
-    typeof match$1 === "number" &&
-    match$2 !== undefined
-  ) {
-    return { name: match, age: match$1 | 0, bestFriend: decodeUser(match$2) };
-  }
-}
-
-function decodeUsers(json) {
-  if (Array.isArray(json)) {
-    return Stdlib_Array.keepSome(json.map(decodeUser));
-  } else {
-    return [];
-  }
-}
-
 function greetAnimal(animal) {
   if (animal !== "Dog" && animal !== "Bird" && animal !== "Cat") {
     return `I don't know how to greet animal ` + animal;
@@ -633,7 +583,7 @@ function greetAnimal(animal) {
   }
 }
 
-export { decodeUser, decodeUsers, greetAnimal };
+export { greetAnimal };
 ````
 
 </CodeTab>
@@ -726,33 +676,7 @@ type accountWithTupleArgument =
 ```
 
 ```js
-import * as Stdlib_Array from "@rescript/runtime/lib/es6/Stdlib_Array.js";
-
-function decodeUser(json) {
-  if (typeof json !== "object" || json === null || Array.isArray(json)) {
-    return;
-  }
-  let match = json["name"];
-  let match$1 = json["age"];
-  let match$2 = json["bestFriend"];
-  if (
-    typeof match === "string" &&
-    typeof match$1 === "number" &&
-    match$2 !== undefined
-  ) {
-    return { name: match, age: match$1 | 0, bestFriend: decodeUser(match$2) };
-  }
-}
-
-function decodeUsers(json) {
-  if (Array.isArray(json)) {
-    return Stdlib_Array.keepSome(json.map(decodeUser));
-  } else {
-    return [];
-  }
-}
-
-export { decodeUser, decodeUsers };
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>
@@ -788,31 +712,6 @@ betterDraw(MyFloat(1.5))
 
 ```js
 import * as MyLibrary from "myLibrary";
-import * as Stdlib_Array from "@rescript/runtime/lib/es6/Stdlib_Array.js";
-
-function decodeUser(json) {
-  if (typeof json !== "object" || json === null || Array.isArray(json)) {
-    return;
-  }
-  let match = json["name"];
-  let match$1 = json["age"];
-  let match$2 = json["bestFriend"];
-  if (
-    typeof match === "string" &&
-    typeof match$1 === "number" &&
-    match$2 !== undefined
-  ) {
-    return { name: match, age: match$1 | 0, bestFriend: decodeUser(match$2) };
-  }
-}
-
-function decodeUsers(json) {
-  if (Array.isArray(json)) {
-    return Stdlib_Array.keepSome(json.map(decodeUser));
-  } else {
-    return [];
-  }
-}
 
 function betterDraw(animal) {
   MyLibrary.draw(animal._0);
@@ -820,7 +719,7 @@ function betterDraw(animal) {
 
 betterDraw({ TAG: "MyFloat", _0: 1.5 });
 
-export { decodeUser, decodeUsers, betterDraw };
+export { betterDraw };
 ```
 
 </CodeTab>
@@ -849,31 +748,6 @@ betterDraw(MyFloat(1.5))
 
 ```js
 import * as MyLibrary from "myLibrary";
-import * as Stdlib_Array from "@rescript/runtime/lib/es6/Stdlib_Array.js";
-
-function decodeUser(json) {
-  if (typeof json !== "object" || json === null || Array.isArray(json)) {
-    return;
-  }
-  let match = json["name"];
-  let match$1 = json["age"];
-  let match$2 = json["bestFriend"];
-  if (
-    typeof match === "string" &&
-    typeof match$1 === "number" &&
-    match$2 !== undefined
-  ) {
-    return { name: match, age: match$1 | 0, bestFriend: decodeUser(match$2) };
-  }
-}
-
-function decodeUsers(json) {
-  if (Array.isArray(json)) {
-    return Stdlib_Array.keepSome(json.map(decodeUser));
-  } else {
-    return [];
-  }
-}
 
 function betterDraw(animal) {
   MyLibrary.draw(animal);
@@ -881,7 +755,7 @@ function betterDraw(animal) {
 
 MyLibrary.draw(1.5);
 
-export { decodeUser, decodeUsers, betterDraw };
+export { betterDraw };
 ```
 
 </CodeTab>
@@ -896,33 +770,7 @@ Alternatively, define two `external`s that both compile to the same JS call:
 ```
 
 ```js
-import * as Stdlib_Array from "@rescript/runtime/lib/es6/Stdlib_Array.js";
-
-function decodeUser(json) {
-  if (typeof json !== "object" || json === null || Array.isArray(json)) {
-    return;
-  }
-  let match = json["name"];
-  let match$1 = json["age"];
-  let match$2 = json["bestFriend"];
-  if (
-    typeof match === "string" &&
-    typeof match$1 === "number" &&
-    match$2 !== undefined
-  ) {
-    return { name: match, age: match$1 | 0, bestFriend: decodeUser(match$2) };
-  }
-}
-
-function decodeUsers(json) {
-  if (Array.isArray(json)) {
-    return Stdlib_Array.keepSome(json.map(decodeUser));
-  } else {
-    return [];
-  }
-}
-
-export { decodeUser, decodeUsers };
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>
@@ -974,32 +822,6 @@ logData(data)
 ```
 
 ```js
-import * as Stdlib_Array from "@rescript/runtime/lib/es6/Stdlib_Array.js";
-
-function decodeUser(json) {
-  if (typeof json !== "object" || json === null || Array.isArray(json)) {
-    return;
-  }
-  let match = json["name"];
-  let match$1 = json["age"];
-  let match$2 = json["bestFriend"];
-  if (
-    typeof match === "string" &&
-    typeof match$1 === "number" &&
-    match$2 !== undefined
-  ) {
-    return { name: match, age: match$1 | 0, bestFriend: decodeUser(match$2) };
-  }
-}
-
-function decodeUsers(json) {
-  if (Array.isArray(json)) {
-    return Stdlib_Array.keepSome(json.map(decodeUser));
-  } else {
-    return [];
-  }
-}
-
 function logData(data) {
   switch (data) {
     case "Dog":
@@ -1018,7 +840,7 @@ logData("Dog");
 
 let data = "Dog";
 
-export { decodeUser, decodeUsers, data, logData };
+export { data, logData };
 ```
 
 </CodeTab>
