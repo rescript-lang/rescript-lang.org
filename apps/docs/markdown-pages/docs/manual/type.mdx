@@ -67,25 +67,30 @@ You can also wrap any expression in parentheses and annotate it:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 let myInt = 5
 let myInt: int = 5
 let myInt = (5: int) + (4: int)
 let add = (x: int, y: int) : int => x + y
-let drawCircle = (~radius as r: int): circleType => /* code here */
 ```
 
 ```js
-var myInt = 9;
 function add(x, y) {
   return (x + y) | 0;
 }
-function drawCircle(r) {
-  /* code here */
-}
+
+let myInt = 9;
+
+export { myInt, add };
 ```
 
 </CodeTab>
+
+A function's return type can also be annotated. Here is an incomplete example:
+
+```res nocheck
+let drawCircle = (~radius as r: int): circleType => /* code here */
+```
 
 Note: in the last line, `(~radius as r: int)` is a labeled argument. More on this in the [function](./function.mdx) page.
 

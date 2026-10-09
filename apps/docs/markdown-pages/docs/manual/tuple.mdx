@@ -117,11 +117,13 @@ let getCenterCoordinates = () => {
 ```
 
 ```js
-function getCenterCoordinates(param) {
-  var x = doSomeOperationsHere(undefined);
-  var y = doSomeMoreOperationsHere(undefined);
+function getCenterCoordinates() {
+  let x = doSomeOperationsHere();
+  let y = doSomeMoreOperationsHere();
   return [x, y];
 }
+
+export { getCenterCoordinates };
 ```
 
 </CodeTab>

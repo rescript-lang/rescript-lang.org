@@ -16,6 +16,8 @@ order: 4
 
 ## Usage
 
+Use this call inside a function component or custom hook.
+
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res nocheck
@@ -23,7 +25,11 @@ let (state, dispatch) = React.useReducer(reducer, initialState)
 ```
 
 ```js
-var match = React.useReducer(reducer, initialState);
+let match = React.useReducer(reducer, initialState);
+
+let state = match[0];
+
+let dispatch = match[1];
 ```
 
 </CodeTab>
@@ -429,11 +435,15 @@ export { reducer, initialTodos, make };
 
 ```res nocheck
 let (state, dispatch) =
-  React.useReducerWithMapState(reducer, initialState, initial)
+  React.useReducerWithMapState(reducer, initialState, init)
 ```
 
 ```js
-var match = React.useReducer(reducer, initialState, init);
+let match = React.useReducer(reducer, initialState, init);
+
+let state = match[0];
+
+let dispatch = match[1];
 ```
 
 </CodeTab>

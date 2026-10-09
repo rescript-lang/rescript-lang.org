@@ -16,6 +16,8 @@ order: 3
 
 ## Usage
 
+Use this call inside a function component or custom hook.
+
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res nocheck
@@ -23,13 +25,11 @@ let (state, setState) = React.useState(_ => initialState)
 ```
 
 ```js
-var match = React.useState(function () {
-  return initialState;
-});
+let match = React.useState(() => initialState);
 
-var state = match[0];
+let state = match[0];
 
-var setState = match[1];
+let setState = match[1];
 ```
 
 </CodeTab>
