@@ -16,6 +16,7 @@ contract only. Lesson copy belongs to the guide author.
 | `app/GuideHome.res`               | Guide workspace UI                               |
 | `app/GuideCompilerBridgeHook.res` | Browser compiler and execution integration       |
 | `styles/main.css`                 | Guide-only visual system and responsive behavior |
+| `public/`                         | Guide static assets, including `robots.txt`      |
 | `__tests__/`                      | Browser and unit coverage for the guide          |
 
 ## Lesson Contract
@@ -71,9 +72,12 @@ yarn build:guide
 yarn workspace @rescript-lang/guide ci:test
 ```
 
-`yarn build:guide` compiles ReScript, pre-renders `/`, and copies the client
-assets to `apps/guide/out/` for Wrangler. The guide fetches available compiler
-versions from `https://cdn.rescript-lang.org` during pre-rendering; the
+`yarn build:guide` compiles ReScript and pre-renders `/` into
+`apps/guide/build/client/`, the assets directory configured in `wrangler.toml`.
+Vite serves and copies the guide's `public/` directory, including `robots.txt`.
+The root route imports the shared docs favicons so Vite emits them with the
+guide's other assets. The guide fetches available compiler versions from
+`https://cdn.rescript-lang.org` during pre-rendering; the
 interactive compiler and runtime then run in the learner's browser.
 
 ## Current Capability
@@ -92,7 +96,7 @@ show a stop screen rather than a usable guide.
 
 ## Production Checklist
 
-Before launch, complete and verify the following:
+Track outstanding guide launch work in this checklist:
 
 - [ ] Author, review, and run every lesson using its real expected output.
 - [ ] Add a content-validation test for the complete lesson set, including
@@ -108,6 +112,7 @@ Before launch, complete and verify the following:
       compiler and checkpoint changes.
 - [ ] Choose mobile support or explicitly publish the desktop-only constraint
       with an alternate learning path.
+- [ ] Define the supported browsers and initial page-load performance budget.
 - [ ] Split or defer the initial compiler/editor code so the initial route is
       within the agreed performance budget.
 - [ ] Replace the deprecated Vite `envFile` configuration and resolve the
@@ -121,6 +126,6 @@ Before launch, complete and verify the following:
 ## Deployment
 
 The `deploy-guide` job in `.github/workflows/deploy.yml` builds the guide and
-deploys it with Wrangler. Pushes to `master` deploy the production Worker;
-non-Dependabot pull requests from this repository receive a preview Worker
+deploys its `build/client/` assets with Wrangler. Pushes to `master` deploy the
+production Worker; non-Dependabot pull requests from this repository receive a preview Worker
 version and a link in the pull request.
