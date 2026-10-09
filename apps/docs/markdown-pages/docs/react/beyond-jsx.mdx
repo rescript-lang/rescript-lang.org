@@ -16,7 +16,7 @@ JSX is a syntax sugar that allows us to use React components in an HTML like man
 
 **Note:** This section requires knowledge about the low level apis for [creating elements](./elements-and-jsx.mdx#creating-elements-from-component-functions), such as `React.createElement` or `ReactDOM.createDOMElementVariadic`.
 
-> **Note:** The output shown for the examples on this page assumes your `rescript.json` to be set to `"jsx": { "version": 4, "mode": "classic" }`. We will update it for automatic mode soon.
+> **Note:** These examples use `"jsx": { "version": 4 }` in `rescript.json`. ReScript v12 generates calls to React's automatic JSX runtime, using `jsx` for zero or one child and `jsxs` for multiple children.
 
 ## Component Types
 
@@ -56,7 +56,7 @@ module Container = {
 
 </div>
 
-<CodeTab labels={["Decorated", "Expanded", "JS Output"]}>
+<CodeTab labels={["Decorated", "Without Decorator", "JS Output"]}>
 
 ```res
 module Friend = {
@@ -70,78 +70,67 @@ module Friend = {
 }
 ```
 
-```res nocheck
+```res
 module Friend = {
   type props<'name, 'children> = {
     name: 'name,
     children: 'children,
   }
 
-  let make = ({name, children, _}: props<string, 'children>) => {
-    ReactDOM.createDOMElementVariadic("div", [{React.string(name)}, children])
+  let make = ({name, children}: props<string, React.element>) => {
+    ReactDOM.jsxs("div", {
+      children: ?ReactDOM.someElement(React.array([React.string(name), children])),
+    })
   }
 }
 ```
 
 ```js
-function Playground$Friend(props) {
-  return JsxRuntime.jsxs("div", {
-    children: [props.name, props.children],
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$ExamplePrelude$Friend(props) {
+  return props.name + ", " + props.age.toString();
+}
+
+let Friend = { make: Example$ExamplePrelude$Friend };
+
+function Example$ExamplePrelude$Container(props) {
+  return JsxRuntime.jsxs(JsxRuntime.Fragment, {
+    children: [props.width.toString(), props.children],
   });
 }
 
-var Friend = {
-  make: Playground$Friend,
-};
+let Container = { make: Example$ExamplePrelude$Container };
+
+let ExamplePrelude = { Friend: Friend, Container: Container };
+
+function Example$Friend(props) {
+  return JsxRuntime.jsxs("div", { children: [props.name, props.children] });
+}
+
+let Friend$1 = { make: Example$Friend };
+
+export { ExamplePrelude, Friend$1 as Friend };
 ```
 
 </CodeTab>
 
-In the expanded output:
+The decorator produces the same basic interface:
 
 - `props`: A generated record type that has fields according to the labeled arguments of the `make` function
 - `make`: A converted `make` function that complies to the component interface `(props) => React.element`
 
-### Special Case React.forwardRef
+### Ref Props
 
-The `@react.component` decorator also works for `React.forwardRef` calls:
+React 19 function components can receive `ref` as a normal prop. The decorator supports a `~ref` argument that you can pass to a DOM element, as shown in [Refs and the DOM](./refs-and-the-dom.mdx#refs-and-component-functions).
 
-<CodeTab labels={["Decorated", "Expanded"]}>
-
-```res nocheck
-module FancyInput = {
-  @react.component
-  let make = React.forwardRef((~className=?, ~children, ref) =>
-    <div>
-      // use ref here
-    </div>
-  )
-}
-```
-
-```res nocheck
-// Simplified Output
-type props<'className, 'children, 'ref> = {
-  className?: 'className,
-  children: 'children,
-  ref?: 'ref,
-}
-
-let make = (
-  {?className, children, _}: props<'className, 'children, ReactDOM.Ref.currentDomRef>,
-  ref: Nullable.t<ReactDOM.Ref.currentDomRef>,
-) => make(~className, ~children, ~ref, ())
-```
-
-</CodeTab>
-
-As shown in the expanded output above, our decorator desugars the function passed to `React.forwardRef` in the same manner as a typical component `make` function. It also creates a `props` type with an optional `ref` field, so we can use it in our JSX call (`<FancyInput ref=.../>`).
+The decorator also supports [React.forwardRef](./forwarding-refs.mdx) for existing components that use that API.
 
 So now that we know how the ReScript React component transformation works, let's have a look on how ReScript transforms our JSX constructs.
 
 ## JSX Under the Hood
 
-Whenever we are using JSX with a custom component ("capitalized JSX"), we are actually using `React.createElement` to create a new element. Here is an example of a React component without children:
+JSX with a custom component ("capitalized JSX") uses `React.jsx` or `React.jsxs`, which call the corresponding functions from `react/jsx-runtime`. Here is an example of a React component without children:
 
 <CodeTab labels={["JSX", "Without JSX", "JS Output"]}>
 
@@ -150,20 +139,34 @@ let _ = <Friend name="Fred" age=20 />
 ```
 
 ```res
-// classic
-React.createElement(Friend.make, {name: "Fred", age:20})
-
-// automatic
 React.jsx(Friend.make, {name: "Fred", age: 20})
 ```
 
 ```js
-JsxRuntime.jsx(Playground$Friend, { name: "Fred", age: 20 });
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Friend(props) {
+  return props.name + ", " + props.age.toString();
+}
+
+let Friend = { make: Example$Friend };
+
+function Example$Container(props) {
+  return JsxRuntime.jsxs(JsxRuntime.Fragment, {
+    children: [props.width.toString(), props.children],
+  });
+}
+
+let Container = { make: Example$Container };
+
+JsxRuntime.jsx(Example$Friend, { name: "Fred", age: 20 });
+
+export { Friend, Container };
 ```
 
 </CodeTab>
 
-As you can see, it uses `Friend.make` to call the `React.createElement` API. In case you are providing children, it will use `React.createElementVariadic` instead (which is just a different binding for `React.createElement`):
+The component function is `Friend.make`, and the props are passed as a record. With multiple children, JSX uses `React.jsxs` and includes them in the `children` prop:
 
 <CodeTab labels={["JSX", "Without JSX", "JS Output"]}>
 
@@ -175,14 +178,6 @@ As you can see, it uses `Friend.make` to call the `React.createElement` API. In 
 ```
 
 ```res
-// classic
-React.createElementVariadic(
-  Container.make,
-  {width: 200, children: React.null},
-  [{React.string("Hello")}, {React.string("World")}],
-)
-
-// automatic
 React.jsxs(
   Container.make,
   {width: 200, children: React.array([{React.string("Hello")}, {React.string("World")}])},
@@ -190,16 +185,37 @@ React.jsxs(
 ```
 
 ```js
-JsxRuntime.jsx(Container, { width: 200, children: null }, "Hello", "World");
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Friend(props) {
+  return props.name + ", " + props.age.toString();
+}
+
+let Friend = { make: Example$Friend };
+
+function Example$Container(props) {
+  return JsxRuntime.jsxs(JsxRuntime.Fragment, {
+    children: [props.width.toString(), props.children],
+  });
+}
+
+let Container = { make: Example$Container };
+
+JsxRuntime.jsxs(Example$Container, {
+  width: 200,
+  children: ["Hello", "World"],
+});
+
+export { Friend, Container };
 ```
 
 </CodeTab>
 
-Note that the `children: React.null` field has no relevance since React will only care about the children array passed as a third argument.
+`React.createElement` and `React.createElementVariadic` remain available for manually creating elements. ReScript v12's JSX transformation uses the automatic runtime functions shown above.
 
 ### Dom Elements
 
-"Uncapitalized JSX" expressions are treated as DOM elements and will be converted to `ReactDOM.createDOMElementVariadic` calls:
+"Uncapitalized JSX" expressions are treated as DOM elements and use `ReactDOM.jsx` or `ReactDOM.jsxs`:
 
 <CodeTab labels={["JSX", "Without JSX", "JS Output"]}>
 
@@ -208,22 +224,36 @@ Note that the `children: React.null` field has no relevance since React will onl
 ```
 
 ```res
-// classic
-ReactDOM.createDOMElementVariadic("div", ~props={title: "test"}, [])
-
-// automatic
 ReactDOM.jsx("div", {title: "test"})
 ```
 
 ```js
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Friend(props) {
+  return props.name + ", " + props.age.toString();
+}
+
+let Friend = { make: Example$Friend };
+
+function Example$Container(props) {
+  return JsxRuntime.jsxs(JsxRuntime.Fragment, {
+    children: [props.width.toString(), props.children],
+  });
+}
+
+let Container = { make: Example$Container };
+
 JsxRuntime.jsx("div", { title: "test" });
+
+export { Friend, Container };
 ```
 
 </CodeTab>
 
 The same goes for uncapitalized JSX with children:
 
-<CodeTab labels={["JSX", "Without JSX", "JSX Output", "Without JSX Output"]}>
+<CodeTab labels={["JSX", "Without JSX", "JS Output"]}>
 
 ```res
 <div title="test">
@@ -232,32 +262,29 @@ The same goes for uncapitalized JSX with children:
 ```
 
 ```res
-// classic
-ReactDOM.createDOMElementVariadic(
-  "div",
-  ~props={title: "test"},
-  [ReactDOM.createDOMElementVariadic("span", [])],
-)
-
-// automatic
 ReactDOM.jsx("div", {title: "test", children: ?ReactDOM.someElement(ReactDOM.jsx("span", {}))})
 ```
 
 ```js
-JsxRuntime.jsx("div", {
-  children: JsxRuntime.jsx("span", {}),
-  title: "test",
-});
-```
+import * as JsxRuntime from "react/jsx-runtime";
 
-```js
-React.createElement(
-  "div",
-  {
-    title: "test",
-  },
-  React.createElement("span", undefined),
-);
+function Example$Friend(props) {
+  return props.name + ", " + props.age.toString();
+}
+
+let Friend = { make: Example$Friend };
+
+function Example$Container(props) {
+  return JsxRuntime.jsxs(JsxRuntime.Fragment, {
+    children: [props.width.toString(), props.children],
+  });
+}
+
+let Container = { make: Example$Container };
+
+JsxRuntime.jsx("div", { children: JsxRuntime.jsx("span", {}), title: "test" });
+
+export { Friend, Container };
 ```
 
 </CodeTab>

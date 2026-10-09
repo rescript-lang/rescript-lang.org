@@ -34,10 +34,11 @@ We call this a “root” DOM node because everything inside it will be managed 
 
 Plain React applications usually have a single root DOM node. If you are integrating React into an existing app, you may have as many isolated root DOM nodes as you like.
 
-To render our React application into the `root` div, we need to do two things:
+To render our React application into the `root` div:
 
 - Find our DOM node with `ReactDOM.querySelector`
-- Render our React element to our queried `Dom.element` with `ReactDOM.render`
+- Create a React root for our queried `Dom.element` with `ReactDOM.Client.createRoot`
+- Render our React element with `ReactDOM.Client.Root.render`
 
 Here is a full example rendering our application in our `root` div:
 

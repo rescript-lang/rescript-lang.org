@@ -22,7 +22,7 @@ A `React.ref` is defined like this:
 type t<'value> = { mutable current: 'value }
 ```
 
-> _Note that the `Ref.ref` should not to be confused with the builtin [ref type](../manual/mutation.mdx), the language feature that enables mutation._
+> _Note that `React.ref` should not be confused with the builtin [ref type](../manual/mutation.mdx), the language feature that enables mutation._
 
 ## When to use Refs
 
@@ -37,7 +37,7 @@ Avoid using refs for anything that can be done declaratively.
 
 ## Creating Refs
 
-A React ref is represented as a `React.ref('value)` type, a container managing a mutable value of type `'value`. You can create this kind of ref with the [React.useRef](./hooks-ref.mdx) hook:
+A React ref is represented as a `React.ref<'value>` type, a container managing a mutable value of type `'value`. You can create this kind of ref with the [React.useRef](./hooks-ref.mdx) hook:
 
 ```res
 @react.component
@@ -68,7 +68,7 @@ The value of the ref differs depending on the type of the node:
 
 - When the ref attribute is used on an HTML element, the ref passed via `ReactDOM.Ref.domRef` receives the underlying DOM element as its current property (type of `React.ref<Nullable.t<Dom.element>>`)
 - In case of interop, when the ref attribute is used on a custom class component (based on JS classes), the ref object receives the mounted instance of the component as its current (not discussed in this document).
-- **You may not use the ref attribute on component functions** because they don’t have instances (we don't expose JS classes in ReScript).
+- React 19 function components can receive a `ref` prop. They must pass it to a DOM element or expose an imperative handle for it to provide a value to the parent; function components do not have instances of their own.
 
 Here are some examples:
 
@@ -177,42 +177,38 @@ React will assign the `current` field with the DOM element when the component mo
 
 ### Refs and Component Functions
 
-In React, you **can't** pass a `ref` attribute to a component function:
+In React 19, a function component can receive `ref` as a prop. Define a `~ref` argument and pass it to the DOM element you want to expose:
 
 <CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 module MyComp = {
   @react.component
-  let make = (~ref) => <input />
+  let make = (~ref) => <input ref />
 }
 
 @react.component
 let make = () => {
   let textInput = React.useRef(Nullable.null)
 
-  // This will **not** work
   <MyComp ref={ReactDOM.Ref.domRef(textInput)} />
 }
 ```
 
 ```js
 import * as React from "react";
+import * as Primitive_option from "@rescript/runtime/lib/es6/Primitive_option.js";
 import * as JsxRuntime from "react/jsx-runtime";
 
 function Example$MyComp(props) {
-  return JsxRuntime.jsx("input", {});
+  return JsxRuntime.jsx("input", { ref: Primitive_option.some(props.ref) });
 }
 
-let MyComp = {
-  make: Example$MyComp,
-};
+let MyComp = { make: Example$MyComp };
 
 function Example(props) {
   let textInput = React.useRef(null);
-  return JsxRuntime.jsx(Example$MyComp, {
-    ref: textInput,
-  });
+  return JsxRuntime.jsx(Example$MyComp, { ref: textInput });
 }
 
 let make = Example;
@@ -222,15 +218,14 @@ export { MyComp, make };
 
 ```jsx
 import * as React from "react";
+import * as Primitive_option from "@rescript/runtime/lib/es6/Primitive_option.js";
 import * as JsxRuntime from "react/jsx-runtime";
 
 function Example$MyComp(props) {
-  return <input />;
+  return <input ref={Primitive_option.some(props.ref)} />;
 }
 
-let MyComp = {
-  make: Example$MyComp,
-};
+let MyComp = { make: Example$MyComp };
 
 function Example(props) {
   let textInput = React.useRef(null);
@@ -244,23 +239,21 @@ export { MyComp, make };
 
 </CodeTab>
 
-The snippet above will not compile and output an error that looks like this: `"Ref cannot be passed as a normal prop. Please use forwardRef API instead."`.
-
-As the error message implies, If you want to allow people to take a ref to your component function, you can use [ref forwarding](./forwarding-refs.mdx) (possibly in conjunction with useImperativeHandle) instead.
+React assigns the input DOM node to `textInput.current` when it mounts and clears it when it unmounts. This works without `React.forwardRef`. Merely accepting `~ref` without passing it to an element does not expose that element to the parent.
 
 ## Exposing DOM Refs to Parent Components
 
 In rare cases, you might want to have access to a child’s DOM node from a parent component. This is generally not recommended because it breaks component encapsulation, but it can occasionally be useful for triggering focus or measuring the size or position of a child DOM node.
 
-we recommend to use [ref forwarding](./forwarding-refs.mdx) for these cases. **Ref forwarding lets components opt into exposing any child component's ref as their own**. You can find a detailed example of how to expose a child's DOM node to a parent component in the ref forwarding documentation.
+Pass a `ref` prop through your function component to the child DOM element, as shown above. You can also use `React.useImperativeHandle` to expose a limited set of operations. [React.forwardRef](./forwarding-refs.mdx) remains available for interop with existing components that use that API.
 
 ## Callback Refs
 
-React also supports another way to set refs called “callback refs” (`React.Ref.callbackDomRef`), which gives more fine-grain control over when refs are set and unset.
+React also supports another way to set refs called “callback refs” (`ReactDOM.Ref.callbackDomRef`), which gives more fine-grain control over when refs are set and unset.
 
 Instead of passing a ref value created by `React.useRef()`, you can pass in a callback function. The function receives the target `Dom.element` as its argument, which can be stored and accessed elsewhere.
 
-**Note:** Usually we'd use `React.Ref.domRef()` to pass a ref value, but for callback refs, we use `React.Ref.callbackDomRef()` instead.
+**Note:** Usually we'd use `ReactDOM.Ref.domRef()` to pass a ref value, but for callback refs, we use `ReactDOM.Ref.callbackDomRef()` instead.
 
 The example below implements a common pattern: using the ref callback to store a reference to a DOM node in an instance property.
 

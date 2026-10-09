@@ -135,8 +135,8 @@ From anywhere in your app, just call e.g. `RescriptReactRouter.push("/books/10/e
 
 We might provide better facilities for typed routing + payload carrying in the future!
 
-Note: because of browser limitations, changing the URL through JavaScript (aka pushState) cannot be detected. The solution is to change the URL then fire a "popState" event. This is what Router.push does, and what the event watchUrl listens to.
-So if, for whatever reason (e.g. incremental migration), you want to update the URL outside of `RescriptReactRouter.push`, just do `window.dispatchEvent(new Event('popState'))`.
+Calling `history.pushState` or `history.replaceState` does not emit a `"popstate"` event. `RescriptReactRouter.push` and `RescriptReactRouter.replace` dispatch that event after updating the URL, so `watchUrl` subscribers are notified.
+If you update the URL outside these helpers, dispatch `window.dispatchEvent(new Event('popstate'))` afterward to notify the router.
 
 ## Design Decisions
 

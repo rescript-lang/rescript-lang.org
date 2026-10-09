@@ -252,7 +252,9 @@ export { Greeting, name };
 
 ### Special Props `key` and `ref`
 
-You can't define any props called `key` or `ref`. React treats those props differently and the compiler will yield an error whenever you try to define a `~key` or `~ref` argument in your component function.
+`key` is reserved for React's element identity. The compiler rejects a `~key` argument in a component function.
+
+In React 19, function components can accept a `ref` prop. You can define a `~ref` argument and pass it to a DOM element, as shown in [Refs and the DOM](./refs-and-the-dom.mdx).
 
 Check out the corresponding [Arrays and Keys](./arrays-and-keys.mdx) and [Forwarding React Refs](./forwarding-refs.mdx) sections for more details.
 
@@ -262,7 +264,7 @@ Prop names like `type` (as in `<input type="text" />`) aren't syntactically vali
 
 For `aria-*` use camelCasing, e.g., `ariaLabel`. For DOM components, we'll translate it to `aria-label` under the hood.
 
-For `data-*` this is a bit trickier; words with `-` in them aren't valid in ReScript. When you do want to write them, e.g., `<div data-name="click me" />`, check out the [React.cloneElement](./elements-and-jsx.mdx#cloning-elements) or [React.createDOMElementVariadic](./elements-and-jsx.mdx#creating-dom-elements) section.
+For `data-*` this is a bit trickier; words with `-` in them aren't valid in ReScript. When you do want to write them, e.g., `<div data-name="click me" />`, check out the [React.cloneElement](./elements-and-jsx.mdx#cloning-elements) or [ReactDOM.createDOMElementVariadic](./elements-and-jsx.mdx#creating-dom-elements) section.
 
 ## Children Props
 
@@ -726,24 +728,29 @@ let content = <Label title="Test"/>
 
 ## Component Naming
 
-Because components are actually a pair of functions, they have to belong to a module to be used in JSX. It makes sense to use these modules for identification purposes as well. `@react.component` or `@react.componentWithProps` automatically adds the name for you based on the module you are in.
+Components belong to a module with a `make` function and `props` type to be used in JSX. `@react.component` automatically gives the generated JavaScript component a name based on its module.
 
-```res nocheck
+Each module can contain only one decorated component. Define additional components in submodules or separate files:
+
+```res
 // File.res
 
 // will be named `File` in dev tools
 @react.component
-let make = ...
-
-// will be named `File$component` in dev tools
-@react.component
-let component = ...
+let make = () => <div />
 
 module Nested = {
   // will be named `File$Nested` in dev tools
   @react.component
-  let make = ...
+  let make = () => <span />
 }
+```
+
+```res
+// Other.res
+// will be named `Other$component` in dev tools
+@react.component
+let component = () => <div />
 ```
 
 If you need a dynamic name for higher-order components or you would like to set your own name you can use `React.setDisplayName(make, "NameThatShouldBeInDevTools")`.
