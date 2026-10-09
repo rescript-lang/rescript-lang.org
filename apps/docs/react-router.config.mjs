@@ -36,7 +36,11 @@ export default {
         `Expected the wildcard route to return 404, got ${response.status}`,
       );
     }
-    fs.writeFileSync("./build/client/404.html", await response.text());
+    const html = (await response.text()).replace(
+      "<html",
+      "<html data-static-404",
+    );
+    fs.writeFileSync("./build/client/404.html", html);
 
     // Cloudflare serves prerendered pages at trailing-slash URLs. React Router
     // requests /page/_.data for those URLs, while prerendering emits /page.data.

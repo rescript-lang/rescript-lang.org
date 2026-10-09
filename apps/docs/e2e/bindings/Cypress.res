@@ -7,6 +7,7 @@ type consoleCall = {args: array<consoleArgument>}
 @send external getCalls: spy => array<consoleCall> = "getCalls"
 @val external consoleArgumentString: option<consoleArgument> => string = "String"
 type console
+type history
 type rec window = {
   document: Dom.document,
   console: console,
@@ -14,6 +15,8 @@ type rec window = {
   scrollY: float,
 }
 and clipboard
+@get external windowHistory: window => history = "history"
+@send external replaceState: (history, JSON.t, string, string) => unit = "replaceState"
 type response = {status: int, body: string, headers: Dict.t<string>}
 type replyResponse = {statusCode: int, headers: Dict.t<string>, body: string}
 type networkError = {forceNetworkError: bool}
