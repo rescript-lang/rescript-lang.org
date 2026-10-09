@@ -121,7 +121,7 @@ var n = "John";
 
 </CodeTab>
 
-You _can_ in theory destructure array and list at the top level too:
+Array and list patterns can be non-exhaustive. These destructuring bindings are rejected at the module's top level:
 
 ```res nocheck
 let myArray = [1, 2, 3]
@@ -133,7 +133,7 @@ let list{head, ...tail} = myList
 // 1 assigned to `head`, `list{2, 3}` assigned to tail
 ```
 
-But the array example is **highly disrecommended** (use tuple instead) and the list example will error on you. They're only there for completeness' sake. As you'll see below, the proper way of using destructuring array and list is using `switch`.
+Both examples fail with `Such fragile pattern not allowed in the toplevel`: the array may have a different length, and the list may be empty. Use a tuple for a fixed number of elements, or use `switch` to destructure arrays and lists while handling the remaining cases.
 
 ## `switch` Based on Shape of Data
 
@@ -1612,9 +1612,9 @@ Did you see what we removed? This time, we've omitted the handling of the case w
 Failing to handle every scenario of a value likely constitutes the majority of program bugs out there. This happens very often when you refactor a piece of code someone else wrote. Fortunately for ReScript, the compiler will tell you so:
 
 ```
-Warning 8: this pattern-matching is not exhaustive.
-Here is an example of a value that is not matched:
-Some({name: ""})
+Warning number 8
+You forgot to handle a possible case here, for example:
+| Teacher({name: "", _})
 ```
 
 **BAM**! You've just erased an entire category of important bugs before you even ran the code. In fact, this is how most of nullable values is handled:

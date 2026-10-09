@@ -19,7 +19,7 @@
     "ci:homepage-performance": "node --test scripts/__tests__/homepage-compiler.test.mjs && node scripts/homepage-performance.mjs",
     "ci:test": "vitest --run --browser.headless",
     "ci:test:e2e": "cypress run --config-file cypress.homepage.config.mjs --browser chrome",
-    "ci:test:scripts": "yarn build:scripts && vitest run --config vitest.scripts.config.mjs && node --test scripts/__tests__/generate-llms.test.mjs scripts/__tests__/test-examples.test.mjs scripts/__tests__/test-runner.test.mjs",
+    "ci:test:scripts": "yarn build:scripts && vitest run --config vitest.scripts.config.mjs && node --test scripts/__tests__/generate-llms.test.mjs scripts/__tests__/test-examples.test.mjs scripts/__tests__/test-hrefs.test.mjs scripts/__tests__/test-runner.test.mjs",
     "ci:test:visual": "VISUAL_TESTS=1 vitest --run --browser.headless",
     "ci:test:visual:update": "VISUAL_TESTS=1 VISUAL_BASELINE_UPDATE=1 vitest --run --browser.headless --update",
     "clean:res": "rescript clean",

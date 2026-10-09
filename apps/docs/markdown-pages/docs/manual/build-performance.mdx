@@ -11,9 +11,23 @@ order: 7
 
 ReScript considers performance at install time, build time and run time as a serious feature; it's one of those things you don't notice until you realize it's missing.
 
-## Profile Your Build
+## Under the Hood
 
-Sometime your build can be slow due to some confused infra setups. We provide an interactive visualization of your build's performance via `bstracing`:
+Since ReScript v12, `rescript build` uses a native build system written in Rust. It reads `rescript.json`, tracks dependencies between modules and packages, and invokes the compiler directly. See [Reforging the ReScript Build System](../../blog/reforging-build-system.mdx) for more about its architecture.
+
+## The JS Wrapper
+
+The `rescript` command is a thin Node.js wrapper around the native `rescript.exe` binary. Both building and watching are handled by the native binary.
+
+The binary ships in a platform-specific package at `node_modules/@rescript/{your-platform}/bin/rescript.exe`, for example `node_modules/@rescript/darwin-arm64/bin/rescript.exe` on an Apple Silicon Mac. The wrapper selects the package for your platform and sets `RESCRIPT_RUNTIME` to the installed runtime package's path. Prefer `rescript build` and `rescript watch` so this setup is handled for you.
+
+## Legacy Build System
+
+The pre-v12 build system remains available through `rescript-legacy`. It uses [Ninja](https://ninja-build.org), a cross-platform, low-level build system. It reads `rescript.json`, generates Ninja build files in `lib/bs`, and runs Ninja to execute the compiler commands.
+
+### Profile Legacy Builds
+
+For builds made with `rescript-legacy`, `bstracing` turns Ninja's build log into a performance trace:
 
 ```sh
 ./node_modules/.bin/bstracing
@@ -28,41 +42,23 @@ Run the above command at your ReScript project's root; it'll spit out a JSON fil
   caption="Screenshot of bstracing result"
 />
 
-## Under the Hood
+### Historical Measurements
 
-ReScript itself uses a build system under the hood, called [Ninja](https://ninja-build.org). Ninja is like Make, but cross-platform, minimal, focuses on perf and destined to be more of a low-level building block than a full-blown build system. In this regard, Ninja's a great implementation detail for `rescript`.
+The following measurements were made with the pre-v12 Ninja-based build system. They are not benchmarks of the current build system.
 
-ReScript reads into `rescript.json` and generates the Ninja build file in `lib/bs`. The file contains the low-level compiler commands, namespacing rules, intermediate artifacts generation & others. It then runs `ninja` for the actual build.
+A native build of a small project took around `70ms`, compared with roughly twice that through the old JS wrapper. That wrapper also provided watch mode.
 
-## The JS Wrapper
+A no-op build (when no file changed) took around `15ms`. An incremental rebuild of a single file took around `70ms` too.
 
-`rescript` itself is a Node.js wrapper which takes care of some miscellaneous tasks, plus the watcher. The lower-level, watcher-less, fast native `rescript` is called `rescript.exe`. It's located at `node_modules/rescript/{your-platform}/rescript.exe`.
+#### Extreme Test
 
-If you don't need the watcher, you can run said `rescript.exe`. This side-steps Node.js' long startup time, which can be in the order of `100ms`. Our editor plugin finds and uses this native `rescript.exe` for better performance.
-
-## Numbers
-
-Raw `rescript.exe` build on a small project should be around `70ms`. This doubles when you use the JS `rescript` wrapper which comes with a watcher, which is practically faster since you don't manually run the build at every change (though you should opt for the raw `rescript.exe` for programmatic usage, e.g. inserting rescript into your existing JS build pipeline).
-
-No-op build (when no file's changed) should be around `15ms`. Incremental rebuild (described soon) of a single file in a project is around `70ms` too.
-
-Cleaning the artifacts should be instantaneous.
-
-### Extreme Test
-
-We've stress-tested `rescript.exe` on a big project of 10,000 files (2 directories, 5000 files each, first 5000 no dependencies, last 5000 10 dependencies on files from the former directory) using https://github.com/rescript-lang/build-benchmark, on a Retina Macbook Pro Early 2015 (3.1 GHz Intel Core i7).
+We stress-tested the old native build system on a big project of 10,000 files (2 directories, 5000 files each, first 5000 no dependencies, last 5000 10 dependencies on files from the former directory) using https://github.com/rescript-lang/build-benchmark, on a Retina Macbook Pro Early 2015 (3.1 GHz Intel Core i7).
 
 {/* TODO: better repro */}
 
 - No-op build of 10k files: `800ms` (the minimum amount of time required to check the mtimes of 10k files).
 - Clean build: \<3 minutes.
 - Incremental build: depends on the number of the dependents of the file. No dependent means `1s`.
-
-### Stability
-
-`rescript` is a file-based build system. We don't do in-memory build, even if that speeds up the build a lot. In-memory builds risk memory leaks, out-of-memory errors, corrupt halfway build and others. Our watcher mode stays open for days or months with no leak.
-
-The watcher is also just a thin file watcher that calls `rescript.exe`. We don't like babysitting daemon processes.
 
 ## Incrementality & Correctness
 

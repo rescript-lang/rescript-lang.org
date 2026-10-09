@@ -15,68 +15,28 @@ order: 27
 - `and`
 - `as`
 - `assert`
-
-{/* - `begin` */}
-
-{/* - `class` */}
-
+- `await`
 - `constraint`
-
-{/* - `do` */}
-{/* - `done` */}
-
 - `else`
-  {/* - `end` */}
-  {/* - `esfun` */}
 - `exception`
 - `external`
-
-* `false`
-* `for`
-  {/* - `fun` */}
-  {/* - `function` */}
-  {/* - `functor` */}
-
+- `false`
+- `for`
 - `if`
 - `in`
 - `include`
-  {/* - `inherit` */}
-  {/* - `initializer` */}
-
-* `lazy`
-* `let`
-
+- `let`
 - `module`
 - `mutable`
-
-{/* - `new` */}
-{/* - `nonrec` */}
-
-{/* - `object` */}
-
 - `of`
 - `open`
-  {/* - `or` */}
-
-{/* - `pri` */}
-{/* - `pub` */}
-
+- `private`
 - `rec`
-
-{/* - `sig` */}
-{/* - `struct` */}
-
 - `switch`
-
-{/* - `then` */}
-
 - `true`
 - `try`
 - `type`
-
-{/* - `val` */}
-{/* - `virtual` */}
-
 - `when`
 - `while`
-- `with`
+
+`async`, `break`, and `continue` are recognized in specific syntactic contexts, but can also be used as binding names. `list` and `dict` introduce literals when followed immediately by `{`; they can otherwise be used as names. `lazy` and `with` are not reserved.

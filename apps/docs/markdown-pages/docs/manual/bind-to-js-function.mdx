@@ -15,7 +15,7 @@ Binding a JS function is like binding any other value:
 ```res
 // Import nodejs' path.dirname
 @module("path") external dirname: string => string = "dirname"
-let root = dirname("/User/github") // returns "User"
+let root = dirname("/User/github") // returns "/User"
 ```
 
 ```js
