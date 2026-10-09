@@ -109,7 +109,7 @@ The more you overload the poor string type, the less the type system (or a teamm
 
 ## Char
 
-ReScript has a type for a string with a single letter:
+ReScript has a legacy `char` type:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -127,7 +127,7 @@ export { firstLetterOfAlphabet };
 
 **Note**: Char doesn't support Unicode or UTF-8 and is therefore not recommended.
 
-To convert a String to a Char, use `String.get("a", 0)`. To convert a Char to a String, use `String.make(1, 'a')`.
+Prefer strings and the `String` module for text. `String.get("a", 0)` returns `Some("a")`, an `option<string>`, rather than a `char`. It returns `None` for an out-of-range index. `String.make` converts a single value to a string: `String.make(1)` returns `"1"`. To repeat a string, use `String.repeat("a", 3)`, which returns `"aaa"`.
 
 ## Regular Expression
 
