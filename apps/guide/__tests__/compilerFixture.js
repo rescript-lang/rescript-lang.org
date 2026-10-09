@@ -56,9 +56,12 @@ function finishLoading(result) {
     api_version: "8",
     make: () => ({
       version: "12.2.0",
-      getConfig: () => ({ moduleSystem: "esmodule", warnFlags: "" }),
+      getConfig: () => ({ module_system: "esmodule", warn_flags: "" }),
       setModuleSystem: () => true,
       setWarnFlags: () => true,
+      setOpenModules: () => true,
+      setExperimentalFeatures: () => true,
+      setJsxPreserveMode: () => true,
       rescript: { compile },
     }),
   });
