@@ -7,11 +7,12 @@ exception LessonLoadError(string)
 
 let loader: ReactRouter.Loader.t<loaderData> = async _ => {
   let compilerData = GuideCompilerData.load()
-  await GuideLessonValidation.validate(~bundleBaseUrl=compilerData.bundleBaseUrl)
   let lessons = switch GuideLessonContent.load() {
   | Ok(lessons) => lessons
   | Error(message) => throw(LessonLoadError(message))
   }
+
+  await GuideLessonValidation.validate(~bundleBaseUrl=compilerData.bundleBaseUrl)
 
   {compilerData, lessons}
 }
