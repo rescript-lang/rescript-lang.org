@@ -80,10 +80,21 @@ Production crawler start URLs, ranking, and crawler schedules live in the Algoli
 - `styles/`: Tailwind v4 theme and custom CSS
 - `public/`: Static assets such as images, fonts, and favicons
 - `plugins/`: HighlightJS, CodeMirror, and other content/build plugins
-- `compilers/`: Bundled ReScript compiler versions for playground and example validation
 - `__tests__/`: Vitest browser tests written in ReScript
 
 Tailwind is configured in [`styles/main.css`](styles/main.css). There is no `tailwind.config.js`.
+
+## Dead-code checks
+
+`yarn check:dead-code` compiles every workspace and runs reanalyze across the
+monorepo, including FFI exports. CI fails on unused values and exports. Bindings
+whose names start with `_` are treated as intentional discards. Record fields,
+variant cases, and argument diagnostics remain advisory because JavaScript and
+FFI access can be invisible to the analyzer; inspect them with `yarn reanalyze`.
+
+React Router and Cloudflare call exports from JavaScript. Their entry points are
+marked `@live` individually. Keep these annotations limited to real entry points;
+check JavaScript imports and MDX mappings before removing a reported export.
 
 ## Common Commands
 

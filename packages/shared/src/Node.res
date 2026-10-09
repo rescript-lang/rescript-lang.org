@@ -36,14 +36,3 @@ module Fs = {
   @module("fs") external statSync: string => {.."isDirectory": unit => bool} = "statSync"
   @module("node:fs/promises") external readFile: (string, string) => promise<string> = "readFile"
 }
-
-module Buffer = {
-  type t
-  @send external toString: t => string = "toString"
-}
-
-module ChildProcess = {
-  type options = {maxBuffer?: float}
-  @module("child_process")
-  external execSync: (string, ~options: options=?) => Buffer.t = "execSync"
-}

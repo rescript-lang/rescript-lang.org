@@ -59,7 +59,6 @@ type editorConfig = {
 let createEditor: editorConfig => editorInstance
 
 let editorSetErrors: (editorInstance, array<Error.t>) => unit
-let editorSetMode: (editorInstance, string) => unit
 let editorSetKeyMap: (editorInstance, KeyMap.t) => unit
 let editorSetTheme: (editorInstance, Theme.t) => unit
 let editorDestroy: editorInstance => unit

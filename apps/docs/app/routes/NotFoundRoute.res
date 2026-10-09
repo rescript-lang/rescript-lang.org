@@ -1,4 +1,4 @@
-@react.component
+@react.component @live
 let default = () => {
   let {pathname} = ReactRouter.useLocation()
   let navigate = ReactRouter.useNavigate()

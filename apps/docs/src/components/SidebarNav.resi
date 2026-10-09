@@ -3,14 +3,6 @@ module NavItem: {
     name: string,
     href: string,
   }
-  @react.component
-  let make: (
-    ~getActiveToc: t => option<TableOfContents.t>=?,
-    ~isHidden: bool=?,
-    ~isItemActive: t => bool=?,
-    ~items: array<t>,
-    ~onClick: unit => unit,
-  ) => React.element
 }
 
 module Category: {

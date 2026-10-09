@@ -1,4 +1,4 @@
-@react.component
+@react.component @live
 let default = () => {
   let location = ReactRouter.useLocation()
 

@@ -9,6 +9,8 @@ type rec apiItem = {
 }
 
 /** Loads API documentation after normalizing React Router data-request pathnames. */
+@live
 let loader: ReactRouter.Loader.t<loaderData>
 
+@live
 let default: unit => React.element

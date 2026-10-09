@@ -49,16 +49,10 @@ external getByTestId: (element, string) => promise<element> = "getByTestId"
 external getByText: (element, string) => promise<element> = "getByText"
 
 @send
-external getByTextWithOptions: (element, string, {"exact": bool}) => promise<element> = "getByText"
-
-@send
 external getByLabelText: (element, string) => promise<element> = "getByLabelText"
 
 @send
 external getByAltText: (element, string) => promise<element> = "getByAltText"
-
-@send
-external getAllByLabelText: (element, string) => promise<array<element>> = "getAllByLabelText"
 
 @send
 external getByRole: (element, [#button]) => promise<element> = "getByRole"
@@ -98,12 +92,6 @@ external toBeDisabled: element => promise<unit> = "toBeDisabled"
 
 @send @scope("not")
 external notToBeDisabled: element => promise<unit> = "toBeDisabled"
-
-@send
-external toHaveValue: (element, string) => promise<unit> = "toHaveValue"
-
-@send
-external toHaveTextContent: (element, string) => promise<unit> = "toHaveTextContent"
 
 @send
 external toHaveClass: (element, string) => promise<unit> = "toHaveClass"

@@ -1,5 +1,6 @@
 open ReactRouter.Routes
 
+@live
 let stdlibPaths = {
   let rawFile = await Node.Fs.readFile("./markdown-pages/docs/api/stdlib.json", "utf-8")
   let json = JSON.parseOrThrow(rawFile)
@@ -72,6 +73,7 @@ let syntaxLookupDetailRoutes =
     route(path, "./routes/SyntaxLookupDetailRoute.jsx", ~options={id: path})
   )
 
+@live
 let default = [
   layout("./layouts/HomepageLayoutRoute.jsx", [index("./routes/LandingPageRoute.jsx")]),
   route("try", "./routes/TryRoute.jsx"),
