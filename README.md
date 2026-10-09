@@ -137,10 +137,16 @@ Supported ReScript markdown code fences:
 - ` ```res sig `
 - ` ```resi ` (alias for `res sig`)
 - ` ```res prelude `
+- ` ```res file=MathUtils.res ` (a separate source file for multi-file examples)
+- ` ```resi file=MathUtils.resi ` (its interface)
 
 Indented fences are supported. Prelude blocks provide context for later examples. Use `res nocheck` only for intentionally invalid or incomplete snippets. Malformed CodeTabs fail the check, including missing closing tags and mismatched labels and fences.
 
+Named source files are compiled together with the examples on their page. Filenames must be PascalCase, end in `.res` or `.resi`, and be unique on the page; `Example` is reserved for the checker's main module. Supporting files are removed before checking the next page.
+
 Output comparison ignores formatting and comments. `JS Output` and `JS Output (Module)` use ESM, `JS Output (CommonJS)` uses CommonJS, and `JSX Preserved Output` uses preserved JSX. TypeScript output is not generated or compared by this checker; its ReScript input is still compiled.
+
+Compiler diagnostics embedded in output, such as `%todo`, show the example's filename and source range with the temporary build directory removed.
 
 Refresh generated JS output fences with the installed compiler and format the result:
 

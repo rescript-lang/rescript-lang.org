@@ -986,3 +986,72 @@ test("fails unclosed ReScript fences without rewriting the page", async () => {
   assert.match(warnings[0], /unclosed code fence/);
   assert.equal(fs.readFileSync(file, "utf8"), fixture);
 });
+
+test("compiles multi-file examples and refreshes their dynamic import output", async () => {
+  let fixture =
+    "```resi file=MathUtils.resi\nlet add: (int, int) => int\n```\n" +
+    outputTab("let add = (a, b) => a + b").replace(
+      "```res\n",
+      "```res file=MathUtils.res\n",
+    ) +
+    outputTab(
+      "let main = async () => {\n  let add = await import(MathUtils.add)\n  Console.log(add(1, 1))\n}",
+    );
+  let { docsRoot, tempRoot, file } = makeWorkspace(fixture);
+  let { logger } = makeLogger();
+  assert.equal((await run({ docsRoot, tempRoot, logger })).mismatchCount, 2);
+  assert.equal(
+    (await run({ docsRoot, tempRoot, logger, update: true })).success,
+    true,
+  );
+  assert.match(fs.readFileSync(file, "utf8"), /import\("\.\/MathUtils.js"\)/);
+  assert.equal((await run({ docsRoot, tempRoot, logger })).success, true);
+});
+
+test("does not leak supporting files from one page into another", async () => {
+  let { docsRoot, tempRoot, file } = makeWorkspace(
+    "```res file=Helper.res\nlet value = 1\n```\n\n```res\nlet value = Helper.value\n```",
+  );
+  let other = path.join(path.dirname(file), "z-other.mdx");
+  fs.writeFileSync(other, "```res\nlet value = Helper.value\n```");
+  let { logger, warnings } = makeLogger();
+  let result = await run({ docsRoot, tempRoot, logger });
+  assert.equal(result.success, false);
+  assert.equal(result.errorCount, 1);
+  assert.ok(warnings.some((warning) => warning.includes("Helper")));
+});
+
+test("checks supporting-file errors and rejects invalid filenames", async () => {
+  for (let content of [
+    "```res file=Helper.res\nlet value: string = 1\n```",
+    "```res file=../Helper.res\nlet value = 1\n```",
+  ]) {
+    let { docsRoot, tempRoot } = makeWorkspace(content);
+    let { logger } = makeLogger();
+    assert.equal((await run({ docsRoot, tempRoot, logger })).success, false);
+  }
+});
+
+test("keeps todo diagnostics stable across different build directories", async () => {
+  let { docsRoot, tempRoot, file, root } = makeWorkspace(
+    outputTab('let implementLater = (): string => %todo("Implement this")'),
+  );
+  let { logger } = makeLogger();
+  assert.equal(
+    (await run({ docsRoot, tempRoot, logger, update: true })).success,
+    true,
+  );
+  let output = fs.readFileSync(file, "utf8");
+  assert.match(output, /Example\.res:1:/);
+  assert.ok(!output.includes(tempRoot));
+  assert.equal(
+    (await run({ docsRoot, tempRoot: path.join(root, "other build"), logger }))
+      .success,
+    true,
+  );
+  fs.writeFileSync(
+    file,
+    output.replace("Todo: Implement this", "Todo: Different message"),
+  );
+  assert.equal((await run({ docsRoot, tempRoot, logger })).mismatchCount, 1);
+});

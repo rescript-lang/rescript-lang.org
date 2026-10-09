@@ -42,9 +42,7 @@ let make = () => {
 import * as JsxRuntime from "react/jsx-runtime";
 
 function Example(props) {
-  return JsxRuntime.jsx("div", {
-    children: "Hello ReScripters!",
-  });
+  return JsxRuntime.jsx("div", { children: "Hello ReScripters!" });
 }
 
 let make = Example;
@@ -98,12 +96,8 @@ function Example(props) {
   let visitorCountMsg = "You are visitor number: " + String(props.visitorCount);
   return JsxRuntime.jsxs("div", {
     children: [
-      JsxRuntime.jsx("div", {
-        children: props.title,
-      }),
-      JsxRuntime.jsx("div", {
-        children: visitorCountMsg,
-      }),
+      JsxRuntime.jsx("div", { children: props.title }),
+      JsxRuntime.jsx("div", { children: visitorCountMsg }),
       props.children,
     ],
   });
@@ -159,9 +153,7 @@ import * as JsxRuntime from "react/jsx-runtime";
 function Example(props) {
   let name = props.name;
   let greeting = name !== undefined ? "Hello " + name + "!" : "Hello stranger!";
-  return JsxRuntime.jsx("div", {
-    children: greeting,
-  });
+  return JsxRuntime.jsx("div", { children: greeting });
 }
 
 let make = Example;
@@ -216,15 +208,11 @@ function Example$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
 }
 
-let Greeting = {
-  make: Example$Greeting,
-};
+let Greeting = { make: Example$Greeting };
 
 let name = "Andrea";
 
-JsxRuntime.jsx(Example$Greeting, {
-  name: name,
-});
+JsxRuntime.jsx(Example$Greeting, { name: name });
 
 export { Greeting, name };
 ```
@@ -237,9 +225,7 @@ function Example$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
 }
 
-let Greeting = {
-  make: Example$Greeting,
-};
+let Greeting = { make: Example$Greeting };
 
 let name = "Andrea";
 
@@ -301,28 +287,18 @@ function Example$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
 }
 
-let Greeting = {
-  make: Example$Greeting,
-};
+let Greeting = { make: Example$Greeting };
 
 function Example$MyList(props) {
-  return JsxRuntime.jsx("ul", {
-    children: props.children,
-  });
+  return JsxRuntime.jsx("ul", { children: props.children });
 }
 
-let MyList = {
-  make: Example$MyList,
-};
+let MyList = { make: Example$MyList };
 
 JsxRuntime.jsxs(Example$MyList, {
   children: [
-    JsxRuntime.jsx("li", {
-      children: "Item 1",
-    }),
-    JsxRuntime.jsx("li", {
-      children: "Item 2",
-    }),
+    JsxRuntime.jsx("li", { children: "Item 1" }),
+    JsxRuntime.jsx("li", { children: "Item 2" }),
   ],
 });
 
@@ -337,17 +313,13 @@ function Example$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
 }
 
-let Greeting = {
-  make: Example$Greeting,
-};
+let Greeting = { make: Example$Greeting };
 
 function Example$MyList(props) {
   return <ul>{props.children}</ul>;
 }
 
-let MyList = {
-  make: Example$MyList,
-};
+let MyList = { make: Example$MyList };
 
 <MyList.make>
   <li>{"Item 1"}</li>
@@ -478,14 +450,10 @@ function Example$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
 }
 
-let Greeting = {
-  make: Example$Greeting,
-};
+let Greeting = { make: Example$Greeting };
 
 function Example(props) {
-  return JsxRuntime.jsxs("h1", {
-    children: [props.title, props.count],
-  });
+  return JsxRuntime.jsxs("h1", { children: [props.title, props.count] });
 }
 
 let make = Example;
@@ -501,9 +469,7 @@ function Example$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
 }
 
-let Greeting = {
-  make: Example$Greeting,
-};
+let Greeting = { make: Example$Greeting };
 
 function Example(props) {
   return (
@@ -568,9 +534,7 @@ function Example$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
 }
 
-let Greeting = {
-  make: Example$Greeting,
-};
+let Greeting = { make: Example$Greeting };
 
 function Example(props) {
   return JsxRuntime.jsx("div", {
@@ -591,9 +555,7 @@ function Example$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
 }
 
-let Greeting = {
-  make: Example$Greeting,
-};
+let Greeting = { make: Example$Greeting };
 
 function Example(props) {
   return (
@@ -642,25 +604,15 @@ function Example$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
 }
 
-let Greeting = {
-  make: Example$Greeting,
-};
+let Greeting = { make: Example$Greeting };
 
 function make(props) {
-  return JsxRuntime.jsx("a", {
-    children: props.children,
-    href: props.href,
-  });
+  return JsxRuntime.jsx("a", { children: props.children, href: props.href });
 }
 
-let Link = {
-  make: make,
-};
+let Link = { make: make };
 
-JsxRuntime.jsx(make, {
-  href: "/docs",
-  children: "Docs",
-});
+JsxRuntime.jsx(make, { href: "/docs", children: "Docs" });
 
 export { Greeting, Link };
 ```
@@ -673,17 +625,13 @@ function Example$Greeting(props) {
   return Stdlib_Option.getOr(props.name, "");
 }
 
-let Greeting = {
-  make: Example$Greeting,
-};
+let Greeting = { make: Example$Greeting };
 
 function make(props) {
   return <a href={props.href}>{props.children}</a>;
 }
 
-let Link = {
-  make: make,
-};
+let Link = { make: make };
 
 <Link.make href={"/docs"}>{"Docs"}</Link.make>;
 

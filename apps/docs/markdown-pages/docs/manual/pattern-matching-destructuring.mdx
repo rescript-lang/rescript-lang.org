@@ -58,17 +58,11 @@ let Success(message) = myResult // "You did it!" assigned to `message`
 ```
 
 ```js
-let student1 = {
-  name: "John",
-  age: 10,
-};
+let student1 = { name: "John", age: 10 };
 
 let name = "John";
 
-let myResult = {
-  TAG: "Success",
-  _0: "You did it!",
-};
+let myResult = { TAG: "Success", _0: "You did it!" };
 
 let message = "You did it!";
 
@@ -97,10 +91,7 @@ function displayMessage(m) {
   console.log(m._0);
 }
 
-displayMessage({
-  TAG: "Success",
-  _0: "You did it!",
-});
+displayMessage({ TAG: "Success", _0: "You did it!" });
 
 export { displayMessage };
 ```
@@ -151,7 +142,7 @@ type payload =
 ```
 
 ```js
-// Empty output
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>
@@ -175,10 +166,7 @@ switch data {
 ```
 
 ```js
-let data = {
-  TAG: "GoodResult",
-  _0: "Product shipped!",
-};
+let data = { TAG: "GoodResult", _0: "Product shipped!" };
 
 if (typeof data !== "object") {
   console.log("Bah.");
@@ -215,7 +203,7 @@ type person =
 ```
 
 ```js
-// Empty output
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>
@@ -256,46 +244,44 @@ let message = switch person1 {
 ```
 
 ```js
-var person1 = {
-  TAG: "Teacher",
-  name: "Jane",
-  age: 35,
-};
+let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 
-var message;
+let message;
 
 if (person1.TAG === "Teacher") {
-  message = "Hello Jane.";
+  message = `Hello ` + "Jane" + `.`;
 } else {
-  var match = "Jane";
-  var match$1 = match.status;
-  var name = match.name;
-  var match$2 = match.reportCard;
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
   if (match$2.passing) {
     message =
-      "Congrats " +
+      `Congrats ` +
       name +
-      ", nice GPA of " +
+      `, nice GPA of ` +
       match$2.gpa.toString() +
-      " you got there!";
+      ` you got there!`;
   } else {
-    var exit = 0;
+    let exit = 0;
     if (typeof match$1 !== "object") {
       message =
         match$1 === "Sick"
-          ? "How are you feeling?"
-          : "Good luck next semester " + name + "!";
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
     } else {
       exit = 1;
     }
     if (exit === 1) {
       message =
         match.reportCard.gpa !== 0.0
-          ? "Good luck next semester " + name + "!"
-          : "Come back in " + match$1._0.toString() + " days!";
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
     }
   }
 }
+
+export { person1, message };
 ```
 
 </CodeTab>
@@ -353,41 +339,7 @@ switch myStatus {
 ```
 
 ```js
-var myStatus = {
-  TAG: /* Vacations */ 0,
-  _0: 10,
-};
-
-if (typeof myStatus === "number") {
-  console.log("Hey! How are you?");
-} else {
-  console.log("Come back in " + (10).toString() + " days!");
-}
-```
-
-</CodeTab>
-
-Having multiple cases fall into the same handling can clean up certain types of logic.
-
-### Ignore Part of a Value
-
-If you have a value like `Teacher(payload)` where you just want to pattern match on the `Teacher` part and ignore the `payload` completely, you can use the `_` wildcard like this:
-
-<CodeTab labels={["ReScript", "JS Output"]}>
-
-```res
-switch person1 {
-| Teacher(_) => Console.log("Hi teacher")
-| Student(_) => Console.log("Hey student")
-}
-```
-
-```js
-let person1 = {
-  TAG: "Teacher",
-  name: "Jane",
-  age: 35,
-};
+let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 
 let message;
 
@@ -424,10 +376,79 @@ if (person1.TAG === "Teacher") {
   }
 }
 
-let myStatus = {
-  TAG: "Vacations",
-  _0: 10,
-};
+let myStatus = { TAG: "Vacations", _0: 10 };
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
+export { person1, message, myStatus };
+```
+
+</CodeTab>
+
+Having multiple cases fall into the same handling can clean up certain types of logic.
+
+### Ignore Part of a Value
+
+If you have a value like `Teacher(payload)` where you just want to pattern match on the `Teacher` part and ignore the `payload` completely, you can use the `_` wildcard like this:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+switch person1 {
+| Teacher(_) => Console.log("Hi teacher")
+| Student(_) => Console.log("Hey student")
+}
+```
+
+```js
+let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = { TAG: "Vacations", _0: 10 };
 
 let exit$1 = 0;
 
@@ -464,11 +485,7 @@ switch myStatus {
 ```
 
 ```js
-let person1 = {
-  TAG: "Teacher",
-  name: "Jane",
-  age: 35,
-};
+let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 
 let message;
 
@@ -505,10 +522,7 @@ if (person1.TAG === "Teacher") {
   }
 }
 
-let myStatus = {
-  TAG: "Vacations",
-  _0: 10,
-};
+let myStatus = { TAG: "Vacations", _0: 10 };
 
 let exit$1 = 0;
 
@@ -545,11 +559,7 @@ switch myStatus {
 ```
 
 ```js
-let person1 = {
-  TAG: "Teacher",
-  name: "Jane",
-  age: 35,
-};
+let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 
 let message;
 
@@ -586,10 +596,7 @@ if (person1.TAG === "Teacher") {
   }
 }
 
-let myStatus = {
-  TAG: "Vacations",
-  _0: 10,
-};
+let myStatus = { TAG: "Vacations", _0: 10 };
 
 let exit$1 = 0;
 
@@ -635,11 +642,7 @@ switch person1 {
 ```
 
 ```js
-let person1 = {
-  TAG: "Teacher",
-  name: "Jane",
-  age: 35,
-};
+let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 
 let message;
 
@@ -676,10 +679,7 @@ if (person1.TAG === "Teacher") {
   }
 }
 
-let myStatus = {
-  TAG: "Vacations",
-  _0: 10,
-};
+let myStatus = { TAG: "Vacations", _0: 10 };
 
 let exit$1 = 0;
 
@@ -722,11 +722,7 @@ switch person1 {
 ```
 
 ```js
-let person1 = {
-  TAG: "Teacher",
-  name: "Jane",
-  age: 35,
-};
+let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 
 let message;
 
@@ -763,10 +759,7 @@ if (person1.TAG === "Teacher") {
   }
 }
 
-let myStatus = {
-  TAG: "Vacations",
-  _0: 10,
-};
+let myStatus = { TAG: "Vacations", _0: 10 };
 
 let exit$1 = 0;
 
@@ -829,11 +822,7 @@ let greetAnimal = (animal: animals) => {
 ```
 
 ```js
-let person1 = {
-  TAG: "Teacher",
-  name: "Jane",
-  age: 35,
-};
+let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 
 let message;
 
@@ -870,10 +859,7 @@ if (person1.TAG === "Teacher") {
   }
 }
 
-let myStatus = {
-  TAG: "Vacations",
-  _0: 10,
-};
+let myStatus = { TAG: "Vacations", _0: 10 };
 
 let exit$1 = 0;
 
@@ -979,11 +965,7 @@ let isPet = (animal: animals) => {
 ```
 
 ```js
-let person1 = {
-  TAG: "Teacher",
-  name: "Jane",
-  age: 35,
-};
+let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 
 let message;
 
@@ -1020,10 +1002,7 @@ if (person1.TAG === "Teacher") {
   }
 }
 
-let myStatus = {
-  TAG: "Vacations",
-  _0: 10,
-};
+let myStatus = { TAG: "Vacations", _0: 10 };
 
 let exit$1 = 0;
 
@@ -1073,11 +1052,7 @@ let isPet = (animal: animals) => {
 ```
 
 ```js
-let person1 = {
-  TAG: "Teacher",
-  name: "Jane",
-  age: 35,
-};
+let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 
 let message;
 
@@ -1114,10 +1089,7 @@ if (person1.TAG === "Teacher") {
   }
 }
 
-let myStatus = {
-  TAG: "Vacations",
-  _0: 10,
-};
+let myStatus = { TAG: "Vacations", _0: 10 };
 
 let exit$1 = 0;
 
@@ -1200,11 +1172,7 @@ switch students {
 ```
 
 ```js
-let person1 = {
-  TAG: "Teacher",
-  name: "Jane",
-  age: 35,
-};
+let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 
 let message;
 
@@ -1241,10 +1209,7 @@ if (person1.TAG === "Teacher") {
   }
 }
 
-let myStatus = {
-  TAG: "Vacations",
-  _0: 10,
-};
+let myStatus = { TAG: "Vacations", _0: 10 };
 
 let exit$1 = 0;
 
@@ -1298,11 +1263,7 @@ printStudents(list{"Jane", "Harvey", "Patrick"})
 ```
 
 ```js
-let person1 = {
-  TAG: "Teacher",
-  name: "Jane",
-  age: 35,
-};
+let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 
 let message;
 
@@ -1339,10 +1300,7 @@ if (person1.TAG === "Teacher") {
   }
 }
 
-let myStatus = {
-  TAG: "Vacations",
-  _0: 10,
-};
+let myStatus = { TAG: "Vacations", _0: 10 };
 
 let exit$1 = 0;
 
@@ -1376,13 +1334,7 @@ function printStudents(_students) {
 
 printStudents({
   hd: "Jane",
-  tl: {
-    hd: "Harvey",
-    tl: {
-      hd: "Patrick",
-      tl: /* [] */ 0,
-    },
-  },
+  tl: { hd: "Harvey", tl: { hd: "Patrick", tl: /* [] */ 0 } },
 });
 
 export { person1, message, myStatus, printStudents };
@@ -1409,66 +1361,7 @@ let b = switch d {
 ```
 
 ```js
-let d = {
-  A: 5,
-  B: 6,
-};
-
-let b = d.B;
-
-let b$1 = b !== undefined ? b : undefined;
-```
-
-</CodeTab>
-
-However, there are situations where you want to pull out the value of a key as an option. You can do that using the `?` optional syntax in the pattern match:
-
-<CodeTab labels={["ReScript", "JS Output"]}>
-
-```res prelude
-let d = dict{"A": 5, "B": 6}
-
-// We're pulling out `B` regardless of if it has a value or not, and therefore get `b` as `option<int>`
-let b = switch d {
-| dict{"B": ?b} => b
-}
-```
-
-```js
-let d = {
-  A: 5,
-  B: 6,
-};
-
-let b = d.B;
-```
-
-</CodeTab>
-
-Notice how in the first case, when not using `?`, we had to supply a catch-all case `_`. That's because the pattern match _expects_ `B` to exist in the first case, for the pattern to match. If `B` doesn't exist, the match falls through to the next branch, and therefore we need to catch it to be exhaustive in our matching.
-
-However, in the second case, we don't need a catch-all case. That's because the first branch will _always_ match the dictionary - either `B` exists or it doesn't, but it doesn't matter because we're pulling it out as an optional value.
-
-### Small Pitfall
-
-**Note**: you can only pass literals (i.e. concrete values) as a pattern, not let-binding names or other things. The following doesn't work as expected:
-
-<CodeTab labels={["ReScript", "JS Output"]}>
-
-```res
-let coordinates = (10, 20, 30)
-let centerY = 20
-switch coordinates {
-| (x, _centerY, _) => Console.log(x)
-}
-```
-
-```js
-let person1 = {
-  TAG: "Teacher",
-  name: "Jane",
-  age: 35,
-};
+let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 
 let message;
 
@@ -1505,10 +1398,7 @@ if (person1.TAG === "Teacher") {
   }
 }
 
-let myStatus = {
-  TAG: "Vacations",
-  _0: 10,
-};
+let myStatus = { TAG: "Vacations", _0: 10 };
 
 let exit$1 = 0;
 
@@ -1522,10 +1412,162 @@ if (exit$1 === 1) {
   console.log(`Come back in ` + (10).toString() + ` days!`);
 }
 
-let d = {
-  A: 5,
-  B: 6,
-};
+let d = { A: 5, B: 6 };
+
+let b = d.B;
+
+let b$1 = b !== undefined ? b : undefined;
+
+export { person1, message, myStatus, d, b$1 as b };
+```
+
+</CodeTab>
+
+However, there are situations where you want to pull out the value of a key as an option. You can do that using the `?` optional syntax in the pattern match:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res prelude
+let d = dict{"A": 5, "B": 6}
+
+// We're pulling out `B` regardless of if it has a value or not, and therefore get `b` as `option<int>`
+let b = switch d {
+| dict{"B": ?b} => b
+}
+```
+
+```js
+let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = { TAG: "Vacations", _0: 10 };
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
+let d = { A: 5, B: 6 };
+
+let b = d.B;
+
+export { person1, message, myStatus, d, b };
+```
+
+</CodeTab>
+
+Notice how in the first case, when not using `?`, we had to supply a catch-all case `_`. That's because the pattern match _expects_ `B` to exist in the first case, for the pattern to match. If `B` doesn't exist, the match falls through to the next branch, and therefore we need to catch it to be exhaustive in our matching.
+
+However, in the second case, we don't need a catch-all case. That's because the first branch will _always_ match the dictionary - either `B` exists or it doesn't, but it doesn't matter because we're pulling it out as an optional value.
+
+### Small Pitfall
+
+**Note**: you can only pass literals (i.e. concrete values) as a pattern, not let-binding names or other things. The following doesn't work as expected:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let coordinates = (10, 20, 30)
+let centerY = 20
+switch coordinates {
+| (x, _centerY, _) => Console.log(x)
+}
+```
+
+```js
+let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = { TAG: "Vacations", _0: 10 };
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
+let d = { A: 5, B: 6 };
 
 console.log(10);
 
@@ -1631,11 +1673,7 @@ switch myNullableValue {
 ```
 
 ```js
-let person1 = {
-  TAG: "Teacher",
-  name: "Jane",
-  age: 35,
-};
+let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 
 let message;
 
@@ -1672,10 +1710,7 @@ if (person1.TAG === "Teacher") {
   }
 }
 
-let myStatus = {
-  TAG: "Vacations",
-  _0: 10,
-};
+let myStatus = { TAG: "Vacations", _0: 10 };
 
 let exit$1 = 0;
 
@@ -1689,10 +1724,7 @@ if (exit$1 === 1) {
   console.log(`Come back in ` + (10).toString() + ` days!`);
 }
 
-let d = {
-  A: 5,
-  B: 6,
-};
+let d = { A: 5, B: 6 };
 
 console.log("value is present");
 
@@ -1734,11 +1766,7 @@ let optionBoolToBool = opt => {
 ```
 
 ```js
-let person1 = {
-  TAG: "Teacher",
-  name: "Jane",
-  age: 35,
-};
+let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 
 let message;
 
@@ -1775,10 +1803,7 @@ if (person1.TAG === "Teacher") {
   }
 }
 
-let myStatus = {
-  TAG: "Vacations",
-  _0: 10,
-};
+let myStatus = { TAG: "Vacations", _0: 10 };
 
 let exit$1 = 0;
 
@@ -1792,10 +1817,7 @@ if (exit$1 === 1) {
   console.log(`Come back in ` + (10).toString() + ` days!`);
 }
 
-let d = {
-  A: 5,
-  B: 6,
-};
+let d = { A: 5, B: 6 };
 
 function optionBoolToBool(opt) {
   if (opt === undefined) {
@@ -1826,11 +1848,7 @@ let optionBoolToBool = opt => {
 ```
 
 ```js
-let person1 = {
-  TAG: "Teacher",
-  name: "Jane",
-  age: 35,
-};
+let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 
 let message;
 
@@ -1867,10 +1885,7 @@ if (person1.TAG === "Teacher") {
   }
 }
 
-let myStatus = {
-  TAG: "Vacations",
-  _0: 10,
-};
+let myStatus = { TAG: "Vacations", _0: 10 };
 
 let exit$1 = 0;
 
@@ -1884,10 +1899,7 @@ if (exit$1 === 1) {
   console.log(`Come back in ` + (10).toString() + ` days!`);
 }
 
-let d = {
-  A: 5,
-  B: 6,
-};
+let d = { A: 5, B: 6 };
 
 function optionBoolToBool(opt) {
   if (opt !== undefined) {
@@ -1919,11 +1931,7 @@ let optionBoolToBool = opt => {
 ```
 
 ```js
-let person1 = {
-  TAG: "Teacher",
-  name: "Jane",
-  age: 35,
-};
+let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 
 let message;
 
@@ -1960,10 +1968,7 @@ if (person1.TAG === "Teacher") {
   }
 }
 
-let myStatus = {
-  TAG: "Vacations",
-  _0: 10,
-};
+let myStatus = { TAG: "Vacations", _0: 10 };
 
 let exit$1 = 0;
 
@@ -1977,10 +1982,7 @@ if (exit$1 === 1) {
   console.log(`Come back in ` + (10).toString() + ` days!`);
 }
 
-let d = {
-  A: 5,
-  B: 6,
-};
+let d = { A: 5, B: 6 };
 
 function optionBoolToBool(opt) {
   if (opt !== undefined) {
@@ -2011,11 +2013,7 @@ let optionBoolToBool = opt => {
 ```
 
 ```js
-let person1 = {
-  TAG: "Teacher",
-  name: "Jane",
-  age: 35,
-};
+let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 
 let message;
 
@@ -2052,10 +2050,7 @@ if (person1.TAG === "Teacher") {
   }
 }
 
-let myStatus = {
-  TAG: "Vacations",
-  _0: 10,
-};
+let myStatus = { TAG: "Vacations", _0: 10 };
 
 let exit$1 = 0;
 
@@ -2069,10 +2064,7 @@ if (exit$1 === 1) {
   console.log(`Come back in ` + (10).toString() + ` days!`);
 }
 
-let d = {
-  A: 5,
-  B: 6,
-};
+let d = { A: 5, B: 6 };
 
 function optionBoolToBool(opt) {
   if (opt !== undefined) {
@@ -2103,11 +2095,7 @@ let optionBoolToBool = opt => {
 ```
 
 ```js
-let person1 = {
-  TAG: "Teacher",
-  name: "Jane",
-  age: 35,
-};
+let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 
 let message;
 
@@ -2144,10 +2132,7 @@ if (person1.TAG === "Teacher") {
   }
 }
 
-let myStatus = {
-  TAG: "Vacations",
-  _0: 10,
-};
+let myStatus = { TAG: "Vacations", _0: 10 };
 
 let exit$1 = 0;
 
@@ -2161,10 +2146,7 @@ if (exit$1 === 1) {
   console.log(`Come back in ` + (10).toString() + ` days!`);
 }
 
-let d = {
-  A: 5,
-  B: 6,
-};
+let d = { A: 5, B: 6 };
 
 function optionBoolToBool(opt) {
   if (opt !== undefined) {

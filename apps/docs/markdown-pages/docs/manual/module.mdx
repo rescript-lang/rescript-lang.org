@@ -485,28 +485,20 @@ module MakeSet = (Item: Comparable) => {
 ```
 
 ```js
-var List = require("./stdlib/list.js");
+import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
 
 function MakeSet(Item) {
-  var add = function (currentSet, newItem) {
-    if (
-      List.exists(function (x) {
-        return Item.equal(x, newItem);
-      }, currentSet)
-    ) {
+  let add = (currentSet, newItem) => {
+    if (Stdlib_List.some(currentSet, (x) => Item.equal(x, newItem))) {
       return currentSet;
     } else {
-      return {
-        hd: newItem,
-        tl: currentSet,
-      };
+      return { hd: newItem, tl: currentSet };
     }
   };
-  return {
-    empty: /* [] */ 0,
-    add: add,
-  };
+  return { empty: /* [] */ 0, add: add };
 }
+
+export { MakeSet };
 ```
 
 </CodeTab>

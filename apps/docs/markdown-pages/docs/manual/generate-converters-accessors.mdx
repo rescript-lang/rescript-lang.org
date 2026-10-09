@@ -45,10 +45,7 @@ type action =
 
 ```js
 function submit(param_0) {
-  return {
-    TAG: "Submit",
-    _0: param_0,
-  };
+  return { TAG: "Submit", _0: param_0 };
 }
 
 let click = "Click";
@@ -103,14 +100,7 @@ function name(param) {
   return param.name;
 }
 
-let pets = [
-  {
-    name: "bob",
-  },
-  {
-    name: "bob2",
-  },
-];
+let pets = [{ name: "bob" }, { name: "bob2" }];
 
 console.log(pets.map(name).join("&"));
 

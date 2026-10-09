@@ -20,9 +20,13 @@ module DateUtils = {
 ```
 
 ```js
-var DateUtils = {
-  formatIso: (date) => date,
-};
+function formatIso(date) {
+  return date;
+}
+
+let DateUtils = { formatIso: formatIso };
+
+export { DateUtils };
 ```
 
 </CodeTab>

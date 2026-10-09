@@ -69,6 +69,22 @@ let collectFenceBlocks = (content) => {
     let match = lines[i].match(/^(\s*)(`{3,}|~{3,})(.*)$/);
     if (match == null) continue;
     let [, indent, delimiter, info] = match;
+    let kind = classifyFence(info);
+    let filename = kind?.startsWith("res")
+      ? (info.match(/\bfile=(\S+)/)?.[1] ?? null)
+      : null;
+    if (
+      filename != null &&
+      (!/^[A-Z][A-Za-z0-9_]*\.resi?$/.test(filename) ||
+        filename === `${tempModuleName}.res` ||
+        filename === `${tempModuleName}.resi`)
+    ) {
+      warnings.push({
+        line: i + 1,
+        message:
+          "example file must have a PascalCase .res or .resi filename other than Example",
+      });
+    }
     let end = i + 1;
     let closing = new RegExp(`^\\s*${delimiter[0]}{${delimiter.length},}\\s*$`);
     while (end < lines.length && !closing.test(lines[end])) end++;
@@ -80,7 +96,8 @@ let collectFenceBlocks = (content) => {
       fenceEnd: end,
       line: i + 1,
       indent,
-      kind: classifyFence(info),
+      kind,
+      filename,
       content: lines
         .slice(i + 1, end)
         .map((line) =>
@@ -98,6 +115,10 @@ let parseFile = (content, blocks) => {
   let moduleId = 0;
   let checked = false;
   for (let block of blocks) {
+    if (block.filename != null) {
+      if (block.kind !== "res-nocheck") checked = true;
+      continue;
+    }
     let marker;
     if (block.kind === "res") {
       marker = `/* _MODULE_CHECKED_START */ module M_${moduleId++} = {`;
@@ -240,8 +261,19 @@ let stripCompilerBoilerplate = (output) => {
 };
 
 let buildSnippetSource = ({ blocks, target }) => {
+  if (target.res.filename != null)
+    return {
+      source: "",
+      scopedSource: null,
+      moduleName: target.res.filename.replace(/\.res$/, ""),
+    };
   let preludes = blocks
-    .filter((block) => block.kind === "res-prelude" && block.line < target.line)
+    .filter(
+      (block) =>
+        block.kind === "res-prelude" &&
+        block.filename == null &&
+        block.line < target.line,
+    )
     .map((block) => block.content)
     .filter(Boolean)
     .join("\n\n");
@@ -302,15 +334,20 @@ let runRescriptBuild = (tempRoot, stdio = "pipe") => {
   );
 };
 
-let readCompiledSnippet = (tempRoot) => {
-  let jsxPath = tempModulePath(tempRoot, "jsx");
-  let jsPath = tempModulePath(tempRoot, "js");
+let readCompiledSnippet = (tempRoot, moduleName = tempModuleName) => {
+  let jsxPath = path.join(tempRoot, "src", `${moduleName}.jsx`);
+  let jsPath = path.join(tempRoot, "src", `${moduleName}.js`);
   let outputPath = fs.existsSync(jsxPath) ? jsxPath : jsPath;
-
-  return fs.readFileSync(outputPath, "utf8");
+  let sourcePath = path.resolve(tempRoot, "src", `${moduleName}.res`);
+  let escapedSourcePath = JSON.stringify(sourcePath).slice(1, -1);
+  // %todo embeds the build directory in its diagnostic. Keep the filename and
+  // source range stable when checking the same snippet in a different checkout.
+  return fs
+    .readFileSync(outputPath, "utf8")
+    .replaceAll(`${escapedSourcePath}:`, `${moduleName}.res:`);
 };
 
-let compileSnippet = (tempRoot, { source, scopedSource }) => {
+let compileSnippet = (tempRoot, { source, scopedSource, moduleName }) => {
   fs.writeFileSync(tempModulePath(tempRoot, "res"), source);
   try {
     runRescriptBuild(tempRoot);
@@ -326,7 +363,26 @@ let compileSnippet = (tempRoot, { source, scopedSource }) => {
     runRescriptBuild(tempRoot);
   }
 
-  return readCompiledSnippet(tempRoot);
+  return readCompiledSnippet(tempRoot, moduleName);
+};
+
+let syncExampleFiles = (tempRoot, blocks) => {
+  let manifest = path.join(tempRoot, "example-files.json");
+  let previousFiles = fs.existsSync(manifest)
+    ? JSON.parse(fs.readFileSync(manifest, "utf8"))
+    : [];
+  for (let filename of previousFiles) {
+    fs.unlinkSync(path.join(tempRoot, "src", filename));
+  }
+  let fixtures = blocks.filter(
+    (block) => block.filename != null && block.kind !== "res-nocheck",
+  );
+  for (let block of fixtures)
+    fs.writeFileSync(path.join(tempRoot, "src", block.filename), block.content);
+  fs.writeFileSync(
+    manifest,
+    JSON.stringify(fixtures.map((block) => block.filename)),
+  );
 };
 
 let usesJsxRuntime = (compiledJs) =>
@@ -467,6 +523,7 @@ export let run = async ({
   logger.log("Running tests...");
   ensureTempProject({ tempRoot });
   let projects = new Map();
+  let currentBlocks = [];
   let outputProject = (kind) => {
     if (!projects.has(kind)) {
       let root = path.join(tempRoot, kind);
@@ -476,6 +533,7 @@ export let run = async ({
         module: kind === "commonjs" ? "commonjs" : "esmodule",
       });
       projects.set(kind, root);
+      syncExampleFiles(root, currentBlocks);
     }
     return projects.get(kind);
   };
@@ -502,6 +560,7 @@ export let run = async ({
   for (let file of [...new Set(files)].sort()) {
     let content = fs.readFileSync(file, "utf8");
     let { blocks, warnings: fenceWarnings } = collectFenceBlocks(content);
+    currentBlocks = blocks;
     let isBlog = blogPaths.has(path.resolve(file));
     let updateFile = update && !isBlog;
     let { targets, warnings: tabWarnings } = collectCodeTabTargets({
@@ -517,6 +576,17 @@ export let run = async ({
     }
     // Never rewrite a malformed page, even if some tabs can be parsed.
     if (warnings.length > 0) continue;
+    let filenames = blocks
+      .filter((block) => block.filename != null)
+      .map((block) => block.filename);
+    if (new Set(filenames).size !== filenames.length) {
+      logger.warn(`${file} duplicate example filenames`);
+      warningCount++;
+      success = false;
+      continue;
+    }
+    for (let root of [tempRoot, ...projects.values()])
+      syncExampleFiles(root, blocks);
     let source = parseFile(content, blocks);
     if (source == null) continue;
     checkedFiles++;

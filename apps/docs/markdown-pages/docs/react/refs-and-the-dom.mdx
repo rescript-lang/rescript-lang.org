@@ -204,15 +204,11 @@ function Example$MyComp(props) {
   return JsxRuntime.jsx("input", {});
 }
 
-let MyComp = {
-  make: Example$MyComp,
-};
+let MyComp = { make: Example$MyComp };
 
 function Example(props) {
   let textInput = React.useRef(null);
-  return JsxRuntime.jsx(Example$MyComp, {
-    ref: textInput,
-  });
+  return JsxRuntime.jsx(Example$MyComp, { ref: textInput });
 }
 
 let make = Example;
@@ -228,9 +224,7 @@ function Example$MyComp(props) {
   return <input />;
 }
 
-let MyComp = {
-  make: Example$MyComp,
-};
+let MyComp = { make: Example$MyComp };
 
 function Example(props) {
   let textInput = React.useRef(null);
@@ -407,18 +401,14 @@ function Example$CustomTextInput(props) {
   });
 }
 
-let CustomTextInput = {
-  make: Example$CustomTextInput,
-};
+let CustomTextInput = { make: Example$CustomTextInput };
 
 function Example(props) {
   let textInput = React.useRef(null);
   let setInputRef = (element) => {
     textInput.current = element;
   };
-  return JsxRuntime.jsx(Example$CustomTextInput, {
-    setInputRef: setInputRef,
-  });
+  return JsxRuntime.jsx(Example$CustomTextInput, { setInputRef: setInputRef });
 }
 
 let make = Example;
@@ -439,9 +429,7 @@ function Example$CustomTextInput(props) {
   );
 }
 
-let CustomTextInput = {
-  make: Example$CustomTextInput,
-};
+let CustomTextInput = { make: Example$CustomTextInput };
 
 function Example(props) {
   let textInput = React.useRef(null);

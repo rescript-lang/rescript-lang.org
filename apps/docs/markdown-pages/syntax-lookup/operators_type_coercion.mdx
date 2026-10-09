@@ -38,7 +38,11 @@ let message = "The color is " ++ (color :> string)
 ```
 
 ```js
-var message = "The color is Red";
+let message = "The color is " + "Red";
+
+let color = "Red";
+
+export { color, message };
 ```
 
 </CodeTab>
@@ -54,8 +58,11 @@ let value = (bit :> int)
 ```
 
 ```js
-var bit = 1;
-var value = 1;
+let bit = 1;
+
+let value = 1;
+
+export { bit, value };
 ```
 
 </CodeTab>
@@ -72,12 +79,11 @@ let name = (person :> name)
 ```
 
 ```js
-var person = {
-  id: 10,
-  name: "Gideon",
-};
+let person = { id: 10, name: "Gideon" };
 
-var name = person;
+let name = person;
+
+export { person, name };
 ```
 
 </CodeTab>
@@ -109,21 +115,23 @@ let f = switch y {
 ```
 
 ```js
-var v = "Infinite";
+let v = "Infinite";
 
-var x = "NaN";
+let x = "NaN";
 
 console.log(v);
 
 console.log("One");
 
-var f;
+let f;
 
-f = (x === "One" || x === "Two") && x === "One" ? "One" : "Two";
+f = x === "One" ? "One" : "Two";
 
-var v2 = "One";
+let v2 = "One";
 
-var y = x;
+let y = x;
+
+export { v, v2, x, y, f };
 ```
 
 </CodeTab>

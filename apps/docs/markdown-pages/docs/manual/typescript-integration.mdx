@@ -90,7 +90,7 @@ printColorMessage("Red", "Hello, genType!");
 
 _Since ReScript `11.0.0`_ modules can be annotated with `@genType` as well. In that case, all types and values of the module will be converted to TS types. Example:
 
-<CodeTab labels={["ReScript", "TypeScript Output"]}>
+<CodeTab labels={["ReScript", "TypeScript Output", "JS Output"]}>
 
 ```res
 @genType
@@ -132,9 +132,7 @@ function getNum(size) {
   }
 }
 
-let Size = {
-  getNum: getNum,
-};
+let Size = { getNum: getNum };
 
 export { Size };
 ```

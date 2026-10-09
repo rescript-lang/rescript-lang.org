@@ -19,11 +19,11 @@ counter := counter.contents + 1
 ```
 
 ```js
-var counter = {
-  contents: 0,
-};
+let counter = { contents: 0 };
 
 counter.contents = (counter.contents + 1) | 0;
+
+export { counter };
 ```
 
 </CodeTab>
