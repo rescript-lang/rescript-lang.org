@@ -2,31 +2,51 @@
 /bucklescript-rebranding  /blog/bucklescript-is-rebranding  308
 /docs/guidelines/publishing-packages  /docs/guides/publishing-packages  308
 
+# Legacy aliases serve the current deployment's generated manual text files.
+/llms/manual/llms.txt  /llms.txt  307
+/llms/manual/llms-full.txt  /llms/manual/llm-full.txt  307
+/llms/manual/llms-small.txt  /llms/manual/llm-small.txt  307
+/llms/manual/latest/llms.txt  /llms.txt  307
+/llms/manual/latest/llms-full.txt  /llms/manual/llm-full.txt  307
+/llms/manual/latest/llms-small.txt  /llms/manual/llm-small.txt  307
+/llms/manual/next/llms.txt  /llms.txt  307
+/llms/manual/next/llms-full.txt  /llms/manual/llm-full.txt  307
+/llms/manual/next/llms-small.txt  /llms/manual/llm-small.txt  307
+/llms/manual/v13.0.0/llms.txt  /llms.txt  307
+/llms/manual/v13.0.0/llms-full.txt  /llms/manual/llm-full.txt  307
+/llms/manual/v13.0.0/llms-small.txt  /llms/manual/llm-small.txt  307
+/llms/manual/v13/llms.txt  /llms.txt  307
+/llms/manual/v13/llms-full.txt  /llms/manual/llm-full.txt  307
+/llms/manual/v13/llms-small.txt  /llms/manual/llm-small.txt  307
+/llms/manual/v12.0.0/llms.txt  /llms.txt  307
+/llms/manual/v12.0.0/llms-full.txt  /llms/manual/llm-full.txt  307
+/llms/manual/v12.0.0/llms-small.txt  /llms/manual/llm-small.txt  307
+/llms/manual/v12/llms.txt  /llms.txt  307
+/llms/manual/v12/llms-full.txt  /llms/manual/llm-full.txt  307
+/llms/manual/v12/llms-small.txt  /llms/manual/llm-small.txt  307
+/llms/manual/v11/llms.txt  /llms.txt  307
+/llms/manual/v11/llms-full.txt  /llms/manual/llm-full.txt  307
+/llms/manual/v11/llms-small.txt  /llms/manual/llm-small.txt  307
+/llms/manual/v11.0.0/llms.txt  /llms.txt  307
+/llms/manual/v11.0.0/llms-full.txt  /llms/manual/llm-full.txt  307
+/llms/manual/v11.0.0/llms-small.txt  /llms/manual/llm-small.txt  307
+/llms/manual/v10/llms.txt  /llms.txt  307
+/llms/manual/v10/llms-full.txt  /llms/manual/llm-full.txt  307
+/llms/manual/v10/llms-small.txt  /llms/manual/llm-small.txt  307
+
+# Explicit aliases precede wildcard rules.
 /docs/manual/v12.0.0/*  /docs/manual/:splat  308
 /docs/manual/next/*  /docs/manual/:splat  308
 /docs/react/latest/* /docs/react/:splat 308
-
-/llms/manual/llms.txt  /llms.txt  307
-/llms/manual/latest/llms.txt  /llms.txt  307
-/llms/manual/next/llms.txt  /llms.txt  307
-/llms/manual/v13.0.0/llms.txt  /llms/manual/v13/llms.txt  307
-/llms/manual/v13.0.0/llms-full.txt  /llms/manual/v13/llm-full.txt  307
-/llms/manual/v13.0.0/llms-small.txt  /llms/manual/v13/llm-small.txt  307
-/llms/manual/v13.0.0/*  /llms/manual/v13/:splat  307
-/llms/manual/v12.0.0/llms.txt  /llms/manual/v12/llms.txt  307
-/llms/manual/v12.0.0/llms-full.txt  /llms/manual/v12/llm-full.txt  307
-/llms/manual/v12.0.0/llms-small.txt  /llms/manual/v12/llm-small.txt  307
-/llms/manual/v12.0.0/*  /llms/manual/v12/:splat  307
-/llms/manual/v11/llms.txt  /llms/manual/v12/llms.txt  307
-/llms/manual/v11/llms-full.txt  /llms/manual/v12/llm-full.txt  307
-/llms/manual/v11/llms-small.txt  /llms/manual/v12/llm-small.txt  307
-/llms/manual/v11/*  /llms/manual/v12/:splat  307
-/llms/manual/v11.0.0/llms.txt  /llms/manual/v12/llms.txt  307
-/llms/manual/v11.0.0/llms-full.txt  /llms/manual/v12/llm-full.txt  307
-/llms/manual/v11.0.0/llms-small.txt  /llms/manual/v12/llm-small.txt  307
-/llms/manual/v11.0.0/*  /llms/manual/v12/:splat  307
 /llms/manual/latest/*  /llms/manual/:splat  307
 /llms/manual/next/*  /llms/manual/:splat  307
+/llms/manual/v13.0.0/*  /llms/manual/:splat  307
+/llms/manual/v13/*  /llms/manual/:splat  307
+/llms/manual/v12.0.0/*  /llms/manual/:splat  307
+/llms/manual/v12/*  /llms/manual/:splat  307
+/llms/manual/v11/*  /llms/manual/:splat  307
+/llms/manual/v11.0.0/*  /llms/manual/:splat  307
+/llms/manual/v10/*  /llms/manual/:splat  307
 
 /docs/manual/v11.0.0/* https://v11.rescript-lang.org/docs/manual/v11.0.0/:splat 308
 /docs/manual/v10.0.0/* https://v11.rescript-lang.org/docs/manual/v10.0.0/:splat 308

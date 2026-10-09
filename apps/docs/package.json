@@ -33,7 +33,7 @@
     "preview": "yarn build && static-server build/client",
     "serve:build": "static-server --host 127.0.0.1 --port 4173 build/client",
     "reanalyze": "rescript-tools reanalyze -all-cmt .",
-    "test": "node scripts/test.mjs",
+    "test": "yarn build:res && yarn build:scripts && yarn build:generate-llms && node scripts/test.mjs",
     "test:e2e": "yarn build && bash ../../.github/scripts/homepage-e2e.sh",
     "cy:open": "yarn build:res && cypress open --e2e --browser electron",
     "cy:run": "yarn build:res && cypress run",
