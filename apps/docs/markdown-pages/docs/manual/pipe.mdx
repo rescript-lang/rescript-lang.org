@@ -10,6 +10,8 @@ order: 15
 
 ReScript provides a tiny but surprisingly useful operator `->`, called the "pipe", that allows you to "flip" your code inside-out. `a(b)` becomes `b->a`. It's a simple piece of syntax that doesn't have any runtime cost.
 
+<div className="hidden">
+
 {/* Shared bindings for the illustrative functions and values below. */}
 
 ```res prelude
@@ -31,6 +33,8 @@ type person = {age: int, name: string}
 @val external getName: string => string = "getName"
 @val external personDetails: person = "personDetails"
 ```
+
+</div>
 
 Why would you use it? Imagine you have the following:
 

@@ -238,7 +238,9 @@ export { Greeting, name };
 
 ### Special Props `key` and `ref`
 
-You can't define any props called `key` or `ref`. React treats those props differently and the compiler will yield an error whenever you try to define a `~key` or `~ref` argument in your component function.
+`key` is reserved for React's element identity. The compiler rejects a `~key` argument in a component function.
+
+In React 19, function components can accept a `ref` prop. You can define a `~ref` argument and pass it to a DOM element, as shown in [Refs and the DOM](./refs-and-the-dom.mdx).
 
 Check out the corresponding [Arrays and Keys](./arrays-and-keys.mdx) and [Forwarding React Refs](./forwarding-refs.mdx) sections for more details.
 
