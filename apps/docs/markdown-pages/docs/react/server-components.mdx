@@ -96,15 +96,9 @@ async function make(param) {
   return JsxRuntime.jsx("html", {
     children: JsxRuntime.jsxs("body", {
       children: [
-        JsxRuntime.jsx("h1", {
-          children: "Hello from server component",
-        }),
+        JsxRuntime.jsx("h1", { children: "Hello from server component" }),
         JsxRuntime.jsx("ul", {
-          children: data$1.map((id) =>
-            JsxRuntime.jsx("li", {
-              children: id,
-            }),
-          ),
+          children: data$1.map((id) => JsxRuntime.jsx("li", { children: id })),
         }),
       ],
     }),
@@ -215,19 +209,11 @@ async function make(param) {
   return JsxRuntime.jsx("html", {
     children: JsxRuntime.jsxs("body", {
       children: [
-        JsxRuntime.jsx("h1", {
-          children: "Hello from server component",
-        }),
+        JsxRuntime.jsx("h1", { children: "Hello from server component" }),
         JsxRuntime.jsx("ul", {
-          children: data$1.map((id) =>
-            JsxRuntime.jsx("li", {
-              children: id,
-            }),
-          ),
+          children: data$1.map((id) => JsxRuntime.jsx("li", { children: id })),
         }),
-        JsxRuntime.jsx(SomeModule.SomeClientComp, {
-          submit: addData,
-        }),
+        JsxRuntime.jsx(SomeModule.SomeClientComp, { submit: addData }),
       ],
     }),
   });
@@ -306,9 +292,7 @@ let make = (~submit) => <button> {React.string("yow from client")} </button>
 import * as JsxRuntime from "react/jsx-runtime";
 
 function Example(props) {
-  return JsxRuntime.jsx("button", {
-    children: "yow from client",
-  });
+  return JsxRuntime.jsx("button", { children: "yow from client" });
 }
 
 let make = Example;

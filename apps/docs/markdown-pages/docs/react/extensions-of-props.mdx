@@ -8,7 +8,7 @@ order: 3
 
 # Extensions of Props
 
-> **Note:** The output shown for the examples on this page assumes your `rescript.json` to be set to `"jsx": { "version": 4, "mode": "classic" }`. We will update it for automatic mode soon.
+The examples on this page use JSX v4 with the automatic runtime.
 
 ## Spread props
 
@@ -19,7 +19,7 @@ JSX props spread is supported now, but in a stricter way than in JS.
 ```res prelude
 module Comp = {
   type props = {a?: string, b?: string}
-  external make: React.component<props> = "default"
+  @module("./Comp.js") external make: React.component<props> = "default"
 }
 ```
 
@@ -33,36 +33,35 @@ let props = {Comp.b: "b"}
 ```
 
 ```js
+import CompJs from "./Comp.js";
 import * as JsxRuntime from "react/jsx-runtime";
 
-let Comp = {};
+let make = CompJs;
 
-let props = {
-  b: "b"
-};
+let Comp = { make: make };
 
-let newrecord = {...props};
-
-JsxRuntime.jsx(default, (newrecord.a = "a", newrecord));
-
-export {
-  Comp,
-  props,
-}
-```
-
-```jsx
-import * as JsxRuntime from "react/jsx-runtime";
-
-let Comp = {};
-
-let props = {
-  b: "b",
-};
+let props = { b: "b" };
 
 let newrecord = { ...props };
 
-<default {...newrecord} a={"a"} />;
+JsxRuntime.jsx(make, ((newrecord.a = "a"), newrecord));
+
+export { Comp, props };
+```
+
+```jsx
+import CompJs from "./Comp.js";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let make = CompJs;
+
+let Comp = { make: make };
+
+let props = { b: "b" };
+
+let newrecord = { ...props };
+
+<Comp.make {...newrecord} a={"a"} />;
 
 export { Comp, props };
 ```

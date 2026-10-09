@@ -58,13 +58,8 @@ function Example(props) {
   let msg = "You clicked" + String(match[0]) + "times";
   return JsxRuntime.jsxs("div", {
     children: [
-      JsxRuntime.jsx("p", {
-        children: msg,
-      }),
-      JsxRuntime.jsx("button", {
-        children: "Click me",
-        onClick: onClick,
-      }),
+      JsxRuntime.jsx("p", { children: msg }),
+      JsxRuntime.jsx("button", { children: "Click me", onClick: onClick }),
     ],
   });
 }

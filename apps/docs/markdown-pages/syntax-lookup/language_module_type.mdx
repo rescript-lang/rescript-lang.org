@@ -18,7 +18,7 @@ module type Showable = {
   let show: t => string
 }
 
-module IntShow: Showable = {
+module IntShow: Showable with type t = int = {
   type t = int
   let show = x => Int.toString(x)
 }
@@ -28,14 +28,14 @@ let rendered = IntShow.show(42)
 
 ```js
 function show(x) {
-  return String(x);
+  return x.toString();
 }
 
-var IntShow = {
-  show: show,
-};
+let IntShow = { show: show };
 
-var rendered = show(42);
+let rendered = (42).toString();
+
+export { IntShow, rendered };
 ```
 
 </CodeTab>

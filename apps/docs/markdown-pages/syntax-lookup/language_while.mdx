@@ -28,9 +28,7 @@ while !break.contents {
 ```
 
 ```js
-let $$break = {
-  contents: false,
-};
+let $$break = { contents: false };
 
 while (!$$break.contents) {
   if (Math.random() > 0.3) {
@@ -39,6 +37,8 @@ while (!$$break.contents) {
     console.log("Still running");
   }
 }
+
+export { $$break };
 ```
 
 </CodeTab>
