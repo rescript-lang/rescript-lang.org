@@ -1,5 +1,6 @@
 type stylesheet = {rel: string, href: string}
 
+@live
 let links: unit => array<stylesheet>
 
 type props = {
@@ -7,6 +8,8 @@ type props = {
   versions: array<string>,
 }
 
+@live
 let loader: unit => promise<option<props>>
 
+@live
 let default: unit => React.element

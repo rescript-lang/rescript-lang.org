@@ -1,56 +1,8 @@
-type env = {
-  @as("VITE_VERSION_LATEST")
-  latestVersion: string,
-  @as("VITE_VERSION_NEXT")
-  nextVersion: string,
-}
+external latestVersion: string = "import.meta.env.VITE_VERSION_LATEST"
 
-@scope("import.meta") external env: env = "env"
+let docSearchVersionTokens = [latestVersion->Semver.tryGetMajorString, "latest"]
 
-type versionMapping = {
-  latest: string,
-  next: string,
-}
-
-let versions = {
-  latest: env.latestVersion,
-  next: env.nextVersion,
-}
-
-let latestVersion = (versions.latest, versions.latest->Semver.tryGetMajorString)
-
-let docSearchVersionTokens = {
-  let (_, majorVersion) = latestVersion
-  [majorVersion, "latest"]
-}
-
-// This is used for the version dropdown in the manual layouts
-let allManualVersions = [
-  latestVersion,
-  ("v10.0.0", "v9.1 - v10.1"),
-  ("v9.0.0", "v8.2 - v9.0"),
-  ("v8.0.0", "v6.0 - v8.2"),
-]
-
-let nextVersion =
-  versions.latest === versions.next
-    ? None
-    : Some(versions.next, versions.next->Semver.tryGetMajorString)
-
-let stdlibVersions =
-  versions.latest === "v11.0.0" ? [latestVersion] : [("v11.0.0", "v11"), latestVersion]
-
-let latestReactVersion = "latest"
-let allReactVersions = [
-  ("latest", latestReactVersion),
-  ("v0.11.0", "v0.11.0"),
-  ("v0.10.0", "v0.10.0"),
-]
-
-let dropdownLabelNext = "--- Next ---"
-let dropdownLabelReleased = "--- Released ---"
-
-// Used for the DocsOverview and collapsible navigation
+// Used for the DocsOverview
 let languageManual = [
   ("Overview", "/docs/manual/introduction"),
   ("Language Features", "/docs/manual/overview"),

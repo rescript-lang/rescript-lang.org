@@ -1,12 +1,3 @@
-let getByTextExact = (element, text) => Vitest.getByTextWithOptions(element, text, {"exact": true})
-
-let sleep = ms =>
-  Promise.make((resolve, _) => {
-    let _timeoutId = setTimeout(~handler=() => {
-      resolve()
-    }, ~timeout=ms)
-  })
-
 external imageFromNode: WebAPI.DOMAPI.node => WebAPI.DOMAPI.htmlImageElement = "%identity"
 
 let waitForImages = async (selector: string) => {

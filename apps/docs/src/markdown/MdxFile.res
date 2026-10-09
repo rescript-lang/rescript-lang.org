@@ -1,8 +1,3 @@
-type fileData = {
-  content: string,
-  frontmatter: JSON.t,
-}
-
 type compileInput = {value: string, path: string}
 type compileOptions = {
   outputFormat: string,
@@ -54,12 +49,6 @@ let resolveFilePath = (pathname, ~dir, ~alias) => {
     path
   }
   relativePath ++ ".mdx"
-}
-
-let loadFile = async filePath => {
-  let raw = await Node.Fs.readFile(filePath, "utf-8")
-  let {frontmatter, content}: MarkdownParser.result = MarkdownParser.parseSync(raw)
-  {content, frontmatter}
 }
 
 // Recursively scan a directory for .mdx files

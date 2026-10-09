@@ -73,33 +73,6 @@ module MagnifierGlass = {
     </svg>
 }
 
-module Caret = {
-  type direction = [#Up | #Down]
-
-  type size = [#Sm | #Md]
-
-  @react.component
-  let make = (~className: string="", ~size=#Sm, ~direction: direction) => {
-    let width = switch size {
-    | #Sm => "10"
-    | #Md => "14"
-    }
-    <svg
-      className={"stroke-current " ++ className}
-      viewBox="0 0 10 5"
-      width
-      fill="none"
-      strokeMiterlimit="10"
-      strokeWidth="2"
-    >
-      {switch direction {
-      | #Up => <path d="M.6,4.022,4.509.8,8.476,4.087" fill="none" />
-      | #Down => <path d="M.6.866,4.509,4.087,8.476.8" />
-      }}
-    </svg>
-  }
-}
-
 module DrawerDots = {
   @react.component
   let make = (~className: string="") =>
@@ -113,46 +86,6 @@ module DrawerDots = {
       <circle cx="2" cy="2" r="2" />
       <circle cx="2" cy="2" r="2" transform="translate(9)" />
       <circle cx="2" cy="2" r="2" transform="translate(18)" />
-    </svg>
-}
-
-module CornerLeftUp = {
-  @react.component
-  let make = (~className: string="") =>
-    <svg
-      className={"stroke-current " ++ className}
-      width="18.414"
-      height="18"
-      fill="none"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2px"
-    >
-      <path d="M11.414 6l-5-5-5 5" />
-      <path d="M17.414 17h-7a4 4 0 01-4-4V1" />
-    </svg>
-}
-
-module Table = {
-  @react.component
-  let make = (~className: string="") =>
-    <svg className={"stroke-current " ++ className} width="25" height="23">
-      <defs>
-        <style>
-          {React.string(
-            ".prefix__a,.prefix__b,.prefix__d{fill:none}.prefix__a,.prefix__b{stroke-width:1.5px}.prefix__c{stroke:none}",
-          )}
-        </style>
-      </defs>
-      <g className="prefix__a">
-        <rect className="prefix__c" width="10" height="23" rx="2" />
-        <rect className="prefix__d" x="0.75" y="0.75" width="8.5" height="21.5" rx="1.25" />
-      </g>
-      <g className="prefix__a">
-        <rect className="prefix__c" width="25" height="23" rx="2" />
-        <rect className="prefix__d" x="0.75" y="0.75" width="23.5" height="21.5" rx="1.25" />
-      </g>
-      <path className="prefix__b" d="M2.5 6.5h5M2.5 10.5h5" />
     </svg>
 }
 
@@ -221,14 +154,6 @@ module Hyperlink = {
       <path
         d="M8.076 12.036a4.822 4.822 0 003.967 1.3 5.089 5.089 0 002.922-1.509l3.568-3.568a4.818 4.818 0 00-.192-7.121 5 5 0 00-6.761.4l-3.7 3.777a.108.108 0 00.067.183s.648-.028 1.132-.006a10.151 10.151 0 011.35.226.3.3 0 00.243-.088l2.529-2.608a2.732 2.732 0 013.581-.319 2.638 2.638 0 01.249 3.95l-3.755 3.754a2.706 2.706 0 01-3.654.073.107.107 0 00-.15 0l-1.4 1.4a.113.113 0 00.004.156z"
       />
-    </svg>
-}
-
-module TriangleDown = {
-  @react.component
-  let make = (~className: string="") =>
-    <svg className={"fill-current " ++ className} width="8" height="5" viewBox="0 0 8 5">
-      <path d="M4,0,8,5H0Z" transform="translate(8 5) rotate(180)" />
     </svg>
 }
 

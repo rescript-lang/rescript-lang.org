@@ -121,6 +121,7 @@ let makeBreadcrumbs = (~prefix: Url.breadcrumb, route: Path.t): list<Url.breadcr
   Array.concat([prefix], rest)->List.fromArray
 }
 
+@live
 let loader: ReactRouter.Loader.t<loaderData> = async args => {
   let path =
     WebAPI.URL.make(~url=args.request.url).pathname
@@ -160,6 +161,7 @@ let loader: ReactRouter.Loader.t<loaderData> = async args => {
   })
 }
 
+@live
 let default = () => {
   let loaderData: loaderData = ReactRouter.useLoaderData()
   let {pathname} = ReactRouter.useLocation()

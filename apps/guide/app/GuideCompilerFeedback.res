@@ -11,14 +11,12 @@ module Output = {
   type t = {
     status: string,
     diagnostics: array<string>,
-    typeHints: array<string>,
     runtimeLogs: array<runtimeLog>,
   }
 
-  let make = (~status, ~diagnostics=[], ~typeHints=[], ~runtimeLogs=[]) => {
+  let make = (~status, ~diagnostics=[], ~runtimeLogs=[]) => {
     status,
     diagnostics,
-    typeHints,
     runtimeLogs,
   }
 

@@ -13,6 +13,7 @@ let convert = (mdx: Mdx.attributes): SyntaxLookup.item => {
   }
 }
 
+@live
 let loader: Loader.t<loaderData> = async _ => {
   let mdxSources =
     (await MdxFile.loadAllAttributes(~dir="markdown-pages/syntax-lookup"))->Array.map(convert)
@@ -22,6 +23,7 @@ let loader: Loader.t<loaderData> = async _ => {
   }
 }
 
+@live
 let default = () => {
   let {mdxSources} = useLoaderData()
   <>

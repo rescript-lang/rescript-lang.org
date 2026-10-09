@@ -3,7 +3,6 @@
   "printWidth": 80,
   "sortPackageJson": false,
   "ignorePatterns": [
-    "!_shims.mjs",
     "!apps/docs/public/_redirects",
     ".DS_Store",
     ".worktrees/",
@@ -16,7 +15,6 @@
     "data/api/**/*.json",
     "apps/docs/data/api/**/*.json",
     "dist",
-    "apps/docs/index_data/*.json",
     "node_modules/",
     "apps/docs/out/",
     "apps/docs/public/playground-bundles/",
@@ -32,7 +30,6 @@
     "apps/docs/lib/",
     ".vercel",
     "apps/docs/src/**/*.mjs",
-    "apps/docs/scripts/gendocs.mjs",
     "apps/docs/scripts/generate_*.mjs",
     "apps/docs/public/llms/manual/**/llm*.txt",
     "apps/docs/public/llms/react/**/llm*.txt",

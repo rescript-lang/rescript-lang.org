@@ -82,7 +82,6 @@ external interceptDeferredRequest: (routeMatcher, request => promise<unit>) => c
 @val @scope("cy")
 external onBeforeLoad: (@as("window:before:load") _, window => unit) => unit = "on"
 @val @scope("cy") external spy: (console, @as("error") _) => spy = "spy"
-@get external callCount: spy => int = "callCount"
 @val @scope("Cypress")
 external automate: (@as("remote:debugger:protocol") _, automation) => promise<unit> = "automation"
 @val @scope("Cypress") external baseUrl: @as("baseUrl") _ => string = "config"

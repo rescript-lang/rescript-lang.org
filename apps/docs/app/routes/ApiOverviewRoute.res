@@ -21,6 +21,7 @@ type loaderData = {
   description: string,
 }
 
+@live
 let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
   let {pathname} = WebAPI.URL.make(~url=request.url)
   let filePath = MdxFile.resolveFilePath(
@@ -43,6 +44,7 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
   }
 }
 
+@live
 let default = () => {
   let {compiledMdx, title, description} = ReactRouter.useLoaderData()
 

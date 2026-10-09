@@ -7,6 +7,8 @@ type loaderData = {
   filePath: string,
 }
 
+@live
 let loader: ReactRouter.Loader.t<loaderData>
 
+@live
 let default: unit => React.element

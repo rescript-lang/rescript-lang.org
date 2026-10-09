@@ -258,7 +258,8 @@ module DocstringsStylize = {
   }
 }
 
-@react.componentWithProps
+// reanalyze does not see the JSX props spread call in ApiRoute.
+@live @react.componentWithProps
 let make = (props: props) => {
   let children = {
     open Markdown
@@ -340,12 +341,6 @@ module Data = {
   type t = {
     mainModule: Dict.t<JSON.t>,
     tree: Dict.t<JSON.t>,
-  }
-
-  let dir = try {
-    Node.Path.resolve("data", "api")
-  } catch {
-  | _ => ""
   }
 
   let getVersion = (~moduleName: string) => {

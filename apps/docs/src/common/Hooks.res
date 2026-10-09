@@ -1,19 +1,3 @@
-/* Contains some generic hooks */
-let useOutsideClick: (ReactDOM.Ref.t, unit => unit) => unit = %raw(`(outerRef, trigger) => {
-  function handleClickOutside(event) {
-    if (outerRef.current && !outerRef.current.contains(event.target)) {
-      trigger();
-    }
-  }
-
-  React.useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  });
-}`)
-
 /** scrollDir is not memo-friendly.
   It must be used with pattern matching.
   Do not pass it directly to child components. */
@@ -61,31 +45,9 @@ let useScrollDirection = (~topMargin=80, ~threshold=20) => {
       })
     }
 
-    // let onScroll = Util.debounce(onScroll, 50)
-
     WebAPI.Window.addEventListener(window, Scroll, onScroll)
     Some(() => WebAPI.Window.removeEventListener(window, Scroll, onScroll))
   }, [topMargin, threshold])
 
   scrollDir
-}
-
-type mediaQueryListEvent = {matches: bool}
-
-let useMediaQuery = (query: string) => {
-  let (matches, setMatches) = React.useState(() => {
-    false
-  })
-
-  React.useEffect(() => {
-    let mediaQueryList = WebAPI.Window.matchMedia(window, query)
-    setMatches(_ => mediaQueryList.matches)
-
-    let listener = (e: mediaQueryListEvent) => setMatches(_ => e.matches)
-
-    WebAPI.MediaQueryList.addEventListener(mediaQueryList, Change, listener)
-    Some(() => WebAPI.MediaQueryList.removeEventListener(mediaQueryList, Change, listener))
-  }, [query])
-
-  matches
 }

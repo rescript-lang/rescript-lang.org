@@ -139,9 +139,3 @@ let validationErrorMessage = error =>
   | DuplicatePosition({value, sourcePaths}) =>
     `Duplicate guide lesson position "${value}" in ${sourcePaths->Array.join(" and ")}.`
   }
-
-let validateOrFail = lessons =>
-  switch lessons->validate {
-  | Ok() => lessons
-  | Error(error) => error->validationErrorMessage->fail
-  }
