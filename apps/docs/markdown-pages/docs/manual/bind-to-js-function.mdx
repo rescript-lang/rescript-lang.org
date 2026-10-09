@@ -15,13 +15,22 @@ Binding a JS function is like binding any other value:
 ```res
 // Import nodejs' path.dirname
 @module("path") external dirname: string => string = "dirname"
-let root = dirname("/User/github") // returns "/User"
+let root = dirname("/User/github")
+assert(root === "/User")
 ```
 
 ```js
 import * as Path from "path";
 
 let root = Path.dirname("/User/github");
+
+if (root !== "/User") {
+  throw {
+    RE_EXN_ID: "Assert_failure",
+    _1: ["Example.res", 4, 0],
+    Error: new Error(),
+  };
+}
 
 export { root };
 ```
