@@ -44,6 +44,17 @@ let greeting = greet("ReScript")`)
   )->toBe(false)
 })
 
+test("an empty expected output still requires a runtime log", async () => {
+  let exercise = {...firstLesson.exercise, expectedOutput: ""}
+  let emptyOutput = GuideCompilerFeedback.Output.make(~status="Output")
+  let loggedOutput = GuideCompilerFeedback.Output.make(
+    ~status="Output",
+    ~runtimeLogs=[{GuideCompilerFeedback.Output.level: #log, content: [""]}],
+  )
+  expect(GuideLesson.isExerciseComplete(~exercise, ~output=emptyOutput))->toBe(false)
+  expect(GuideLesson.isExerciseComplete(~exercise, ~output=loggedOutput))->toBe(true)
+})
+
 test("orders guide lessons by position", async () => {
   let ordered = [secondLesson, firstLesson]->GuideLesson.sort
 
