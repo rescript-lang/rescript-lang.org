@@ -1,37 +1,19 @@
 open ReactRouter.Routes
 
-let stdlibPaths = {
-  let rawFile = await Node.Fs.readFile("./markdown-pages/docs/api/stdlib.json", "utf-8")
-  let json = JSON.parseOrThrow(rawFile)
-  switch json {
-  | Object(json) => Dict.keysToArray(json)
-  | _ => []
-  }
-  ->Array.map(key => "docs/manual/api/" ++ key)
+let stdlibPaths =
+  ApiData.current().stdlib
+  ->ApiData.paths
   ->Array.filter(path => path !== "docs/manual/api/stdlib")
-}
 
-let domPaths = {
-  let rawFile = await Node.Fs.readFile("./markdown-pages/docs/api/dom.json", "utf-8")
-  let json = JSON.parseOrThrow(rawFile)
-  switch json {
-  | Object(json) => Dict.keysToArray(json)
-  | _ => []
-  }
-  ->Array.map(key => "docs/manual/api/" ++ key)
+let domPaths =
+  ApiData.current().dom
+  ->ApiData.paths
   ->Array.filter(path => path !== "docs/manual/api/dom")
-}
 
-let beltPaths = {
-  let rawFile = await Node.Fs.readFile("./markdown-pages/docs/api/belt.json", "utf-8")
-  let json = JSON.parseOrThrow(rawFile)
-  switch json {
-  | Object(json) => Dict.keysToArray(json)
-  | _ => []
-  }
-  ->Array.map(key => "docs/manual/api/" ++ key)
+let beltPaths =
+  ApiData.current().belt
+  ->ApiData.paths
   ->Array.filter(path => path !== "docs/manual/api/belt")
-}
 
 let stdlibRoutes =
   stdlibPaths->Array.map(path => route(path, "./routes/ApiRoute.jsx", ~options={id: path}))

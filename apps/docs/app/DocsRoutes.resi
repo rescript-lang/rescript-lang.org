@@ -1,3 +1,4 @@
+/** API paths come from the latest published dataset for DocsVersion.current. */
 let stdlibPaths: array<string>
 let domPaths: array<string>
 let beltPaths: array<string>

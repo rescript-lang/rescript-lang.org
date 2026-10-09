@@ -14,7 +14,6 @@
     "apps/docs/app/**/*.mjs",
     "build",
     "data/api/**/*.json",
-    "apps/docs/data/api/**/*.json",
     "dist",
     "apps/docs/index_data/*.json",
     "node_modules/",
@@ -32,13 +31,11 @@
     "apps/docs/lib/",
     ".vercel",
     "apps/docs/src/**/*.mjs",
-    "apps/docs/scripts/gendocs.mjs",
     "apps/docs/scripts/generate_*.mjs",
     "apps/docs/public/llms/manual/**/llm*.txt",
     "apps/docs/public/llms/react/**/llm*.txt",
     "apps/docs/markdown-pages/docs/**/**/llms.mdx",
     "apps/docs/markdown-pages/docs/manual/installation.mdx",
-    ".yarn/releases/yarn-4.12.0.cjs",
-    "apps/docs/data/api/*"
+    ".yarn/releases/yarn-4.12.0.cjs"
   ]
 }
