@@ -20,8 +20,11 @@ let studentMessage = Student.message
 ```
 
 ```js
-var Student = require("./Student.res.js");
-var studentMessage = Student.message;
+import * as Student from "./Student.res.js";
+
+let studentMessage = Student.message;
+
+export { studentMessage };
 ```
 
 </CodeTab>

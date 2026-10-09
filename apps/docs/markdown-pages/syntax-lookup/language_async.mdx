@@ -32,12 +32,12 @@ let logUserDetails = async (userId: string) => {
 
 ```js
 async function logUserDetails(userId) {
-  var email = await GlobalAPI.fetchUserMail(userId);
-  await GlobalAPI.sendAnalytics(
-    "User details have been logged for " + userId + "",
-  );
-  console.log("Email address for user " + userId + ": " + email + "");
+  let email = await GlobalAPI.fetchUserMail(userId);
+  await GlobalAPI.sendAnalytics(`User details have been logged for ` + userId);
+  console.log(`Email address for user ` + userId + `: ` + email);
 }
+
+export { logUserDetails };
 ```
 
 </CodeTab>

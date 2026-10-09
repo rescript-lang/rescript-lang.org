@@ -24,13 +24,17 @@ f'->Console.log
 ```
 
 ```js
-function f(param) {}
+function f() {}
 
-var pos = ["testmodule.res", 2, 27, 28];
+let pos = ["Example.res", 2, 27, 28];
 
 console.log(pos);
+
 console.log(f);
-var f$p = f;
+
+let f$p = f;
+
+export { f, pos, f$p };
 ```
 
 </CodeTab>

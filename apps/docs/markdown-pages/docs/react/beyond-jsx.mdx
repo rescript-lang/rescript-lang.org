@@ -56,7 +56,7 @@ module Container = {
 
 </div>
 
-<CodeTab labels={["Decorated", "Expanded", "JS Output"]}>
+<CodeTab labels={["Decorated", "Expanded", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 module Friend = {
@@ -70,7 +70,7 @@ module Friend = {
 }
 ```
 
-```res nocheck
+```res
 module Friend = {
   type props<'name, 'children> = {
     name: 'name,
@@ -84,15 +84,67 @@ module Friend = {
 ```
 
 ```js
-function Playground$Friend(props) {
-  return JsxRuntime.jsxs("div", {
-    children: [props.name, props.children],
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$ExamplePrelude$Friend(props) {
+  return props.name + ", " + props.age.toString();
+}
+
+let Friend = { make: Example$ExamplePrelude$Friend };
+
+function Example$ExamplePrelude$Container(props) {
+  return JsxRuntime.jsxs(JsxRuntime.Fragment, {
+    children: [props.width.toString(), props.children],
   });
 }
 
-var Friend = {
-  make: Playground$Friend,
-};
+let Container = { make: Example$ExamplePrelude$Container };
+
+let ExamplePrelude = { Friend: Friend, Container: Container };
+
+function Example$Friend(props) {
+  return JsxRuntime.jsxs("div", { children: [props.name, props.children] });
+}
+
+let Friend$1 = { make: Example$Friend };
+
+export { ExamplePrelude, Friend$1 as Friend };
+```
+
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$ExamplePrelude$Friend(props) {
+  return props.name + ", " + props.age.toString();
+}
+
+let Friend = { make: Example$ExamplePrelude$Friend };
+
+function Example$ExamplePrelude$Container(props) {
+  return (
+    <>
+      {props.width.toString()}
+      {props.children}
+    </>
+  );
+}
+
+let Container = { make: Example$ExamplePrelude$Container };
+
+let ExamplePrelude = { Friend: Friend, Container: Container };
+
+function Example$Friend(props) {
+  return (
+    <div>
+      {props.name}
+      {props.children}
+    </div>
+  );
+}
+
+let Friend$1 = { make: Example$Friend };
+
+export { ExamplePrelude, Friend$1 as Friend };
 ```
 
 </CodeTab>
@@ -143,7 +195,7 @@ So now that we know how the ReScript React component transformation works, let's
 
 Whenever we are using JSX with a custom component ("capitalized JSX"), we are actually using `React.createElement` to create a new element. Here is an example of a React component without children:
 
-<CodeTab labels={["JSX", "Without JSX", "JS Output"]}>
+<CodeTab labels={["JSX", "Without JSX", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 let _ = <Friend name="Fred" age=20 />
@@ -158,14 +210,57 @@ React.jsx(Friend.make, {name: "Fred", age: 20})
 ```
 
 ```js
-JsxRuntime.jsx(Playground$Friend, { name: "Fred", age: 20 });
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Friend(props) {
+  return props.name + ", " + props.age.toString();
+}
+
+let Friend = { make: Example$Friend };
+
+function Example$Container(props) {
+  return JsxRuntime.jsxs(JsxRuntime.Fragment, {
+    children: [props.width.toString(), props.children],
+  });
+}
+
+let Container = { make: Example$Container };
+
+JsxRuntime.jsx(Example$Friend, { name: "Fred", age: 20 });
+
+export { Friend, Container };
+```
+
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Friend(props) {
+  return props.name + ", " + props.age.toString();
+}
+
+let Friend = { make: Example$Friend };
+
+function Example$Container(props) {
+  return (
+    <>
+      {props.width.toString()}
+      {props.children}
+    </>
+  );
+}
+
+let Container = { make: Example$Container };
+
+<Friend.make name={"Fred"} age={20} />;
+
+export { Friend, Container };
 ```
 
 </CodeTab>
 
 As you can see, it uses `Friend.make` to call the `React.createElement` API. In case you are providing children, it will use `React.createElementVariadic` instead (which is just a different binding for `React.createElement`):
 
-<CodeTab labels={["JSX", "Without JSX", "JS Output"]}>
+<CodeTab labels={["JSX", "Without JSX", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 <Container width=200>
@@ -190,7 +285,56 @@ React.jsxs(
 ```
 
 ```js
-JsxRuntime.jsx(Container, { width: 200, children: null }, "Hello", "World");
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Friend(props) {
+  return props.name + ", " + props.age.toString();
+}
+
+let Friend = { make: Example$Friend };
+
+function Example$Container(props) {
+  return JsxRuntime.jsxs(JsxRuntime.Fragment, {
+    children: [props.width.toString(), props.children],
+  });
+}
+
+let Container = { make: Example$Container };
+
+JsxRuntime.jsxs(Example$Container, {
+  width: 200,
+  children: ["Hello", "World"],
+});
+
+export { Friend, Container };
+```
+
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Friend(props) {
+  return props.name + ", " + props.age.toString();
+}
+
+let Friend = { make: Example$Friend };
+
+function Example$Container(props) {
+  return (
+    <>
+      {props.width.toString()}
+      {props.children}
+    </>
+  );
+}
+
+let Container = { make: Example$Container };
+
+<Container.make width={200}>
+  {"Hello"}
+  {"World"}
+</Container.make>;
+
+export { Friend, Container };
 ```
 
 </CodeTab>
@@ -201,7 +345,7 @@ Note that the `children: React.null` field has no relevance since React will onl
 
 "Uncapitalized JSX" expressions are treated as DOM elements and will be converted to `ReactDOM.createDOMElementVariadic` calls:
 
-<CodeTab labels={["JSX", "Without JSX", "JS Output"]}>
+<CodeTab labels={["JSX", "Without JSX", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 <div title="test"/>
@@ -216,7 +360,50 @@ ReactDOM.jsx("div", {title: "test"})
 ```
 
 ```js
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Friend(props) {
+  return props.name + ", " + props.age.toString();
+}
+
+let Friend = { make: Example$Friend };
+
+function Example$Container(props) {
+  return JsxRuntime.jsxs(JsxRuntime.Fragment, {
+    children: [props.width.toString(), props.children],
+  });
+}
+
+let Container = { make: Example$Container };
+
 JsxRuntime.jsx("div", { title: "test" });
+
+export { Friend, Container };
+```
+
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Friend(props) {
+  return props.name + ", " + props.age.toString();
+}
+
+let Friend = { make: Example$Friend };
+
+function Example$Container(props) {
+  return (
+    <>
+      {props.width.toString()}
+      {props.children}
+    </>
+  );
+}
+
+let Container = { make: Example$Container };
+
+<div title={"test"} />;
+
+export { Friend, Container };
 ```
 
 </CodeTab>
