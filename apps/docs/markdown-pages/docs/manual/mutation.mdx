@@ -21,9 +21,9 @@ let myValue = ref(5)
 ```
 
 ```js
-var myValue = {
-  contents: 5,
-};
+let myValue = { contents: 5 };
+
+export { myValue };
 ```
 
 </CodeTab>
@@ -39,9 +39,7 @@ let five = myValue.contents // 5
 ```
 
 ```js
-let myValue = {
-  contents: 5,
-};
+let myValue = { contents: 5 };
 
 let five = myValue.contents;
 
@@ -59,9 +57,7 @@ myValue.contents = 6
 ```
 
 ```js
-let myValue = {
-  contents: 5,
-};
+let myValue = { contents: 5 };
 
 myValue.contents = 6;
 
@@ -79,9 +75,7 @@ myValue := 6
 ```
 
 ```js
-let myValue = {
-  contents: 5,
-};
+let myValue = { contents: 5 };
 
 myValue.contents = 6;
 

@@ -15,11 +15,13 @@ It supports `int`, `float`, and `bigint`.
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-let result = %(7, 4)
+let result = mod(7, 4)
 ```
 
 ```js
-var result = 3;
+let result = 3;
+
+export { result };
 ```
 
 </CodeTab>

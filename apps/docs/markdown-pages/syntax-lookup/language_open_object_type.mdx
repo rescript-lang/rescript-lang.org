@@ -25,7 +25,9 @@ function getName(obj) {
   return obj.name;
 }
 
-var name = "Ada";
+let name = { name: "Ada", age: 36 }.name;
+
+export { getName, name };
 ```
 
 </CodeTab>

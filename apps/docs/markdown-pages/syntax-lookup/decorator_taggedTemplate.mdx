@@ -26,8 +26,12 @@ let result = await sh`ls ${filename}`
 
 ```js
 import * as $$Bun from "bun";
-var filename = "index.res";
-var result = await $$Bun.$`ls ${filename}`;
+
+let filename = "index.res";
+
+let result = await $$Bun.$`ls ${filename}`;
+
+export { filename, result };
 ```
 
 </CodeTab>

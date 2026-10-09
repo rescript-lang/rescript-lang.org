@@ -82,7 +82,7 @@ type account =
 ```
 
 ```js
-// Empty output
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>
@@ -97,16 +97,9 @@ let friendAccount = Instagram("Jenny")
 ```
 
 ```js
-let myAccount = {
-  TAG: "Facebook",
-  _0: "Josh",
-  _1: 26,
-};
+let myAccount = { TAG: "Facebook", _0: "Josh", _1: 26 };
 
-let friendAccount = {
-  TAG: "Instagram",
-  _0: "Jenny",
-};
+let friendAccount = { TAG: "Instagram", _0: "Jenny" };
 
 export { myAccount, friendAccount };
 ```
@@ -128,11 +121,7 @@ let me = Id({name: "Joe", password: "123"})
 ```
 
 ```js
-let me = {
-  TAG: "Id",
-  name: "Joe",
-  password: "123",
-};
+let me = { TAG: "Id", name: "Joe", password: "123" };
 
 export { me };
 ```
@@ -155,13 +144,7 @@ let me = Id({name: "Joe", password: "123"})
 ```
 
 ```js
-let me = {
-  TAG: "Id",
-  _0: {
-    name: "Joe",
-    password: "123",
-  },
-};
+let me = { TAG: "Id", _0: { name: "Joe", password: "123" } };
 
 export { me };
 ```
@@ -240,42 +223,21 @@ let g2 = "Goodbye";
 
 let o1 = "Good";
 
-let o2 = {
-  TAG: "Error",
-  _0: "oops!",
-};
+let o2 = { TAG: "Error", _0: "oops!" };
 
 let f1 = "Child";
 
-let f2 = {
-  TAG: "Mom",
-  _0: 30,
-  _1: "Jane",
-};
+let f2 = { TAG: "Mom", _0: 30, _1: "Jane" };
 
-let f3 = {
-  TAG: "Dad",
-  _0: 32,
-};
+let f3 = { TAG: "Dad", _0: 32 };
 
 let p1 = "Teacher";
 
-let p2 = {
-  TAG: "Student",
-  gpa: 99.5,
-};
+let p2 = { TAG: "Student", gpa: 99.5 };
 
-let a1 = {
-  TAG: "Warrior",
-  _0: {
-    score: 10.5,
-  },
-};
+let a1 = { TAG: "Warrior", _0: { score: 10.5 } };
 
-let a2 = {
-  TAG: "Wizard",
-  _0: "Joe",
-};
+let a2 = { TAG: "Wizard", _0: "Joe" };
 
 export { g1, g2, o1, o2, f1, f2, f3, p1, p2, a1, a2 };
 ```
@@ -459,7 +421,7 @@ let myValidJsonValue = Array([String("Hi"), Number(123.)])
 
 Here's an example of how you could write your own JSON decoders easily using the above, leveraging pattern matching:
 
-```rescript
+```rescript prelude
 @unboxed
 type rec json =
   | @as(null) Null
@@ -474,7 +436,9 @@ type rec user = {
   age: int,
   bestFriend: option<user>,
 }
+```
 
+```rescript
 let rec decodeUser = json =>
   switch json {
   | Object(userDict) =>
@@ -546,6 +510,18 @@ switch animal {
 
 ````
 ```javascript
+function greetAnimal(animal) {
+  switch (animal) {
+    case "Dog":
+      return "Wof";
+    case "Cat":
+      return "Meow";
+    case "Bird":
+      return "Kashiiin";
+  }
+}
+
+export { greetAnimal };
 ````
 
 </CodeTab>
@@ -594,19 +570,20 @@ switch animal {
 ````
 ```javascript
 function greetAnimal(animal) {
-  if (!(animal === "Cat" || animal === "Dog" || animal === "Bird")) {
-    return "I don't know how to greet animal " + animal;
+  if (animal !== "Dog" && animal !== "Bird" && animal !== "Cat") {
+    return `I don't know how to greet animal ` + animal;
   }
   switch (animal) {
-    case "Dog" :
-        return "Wof";
-    case "Cat" :
-        return "Meow";
-    case "Bird" :
-        return "Kashiiin";
-
+    case "Dog":
+      return "Wof";
+    case "Cat":
+      return "Meow";
+    case "Bird":
+      return "Kashiiin";
   }
 }
+
+export { greetAnimal };
 ````
 
 </CodeTab>
@@ -740,10 +717,7 @@ function betterDraw(animal) {
   MyLibrary.draw(animal._0);
 }
 
-betterDraw({
-  TAG: "MyFloat",
-  _0: 1.5,
-});
+betterDraw({ TAG: "MyFloat", _0: 1.5 });
 
 export { betterDraw };
 ```

@@ -13,6 +13,9 @@ Placeholders may be used for [ignoring parts of values](../docs/manual/pattern-m
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
+type person = Teacher(string) | Student(string)
+@val external person1: person = "person1"
+
 switch person1 {
 | Teacher(_) => Console.log("Hi teacher")
 | Student(_) => Console.log("Hey student")
@@ -20,7 +23,9 @@ switch person1 {
 ```
 
 ```js
-if (person1.TAG === "Teacher") {
+let match = person1;
+
+if (match.TAG === "Teacher") {
   console.log("Hi teacher");
 } else {
   console.log("Hey student");
@@ -45,7 +50,9 @@ function greet(greeting, name) {
   return greeting + " " + name;
 }
 
-var greetJohn = "Hello John";
+let greetJohn = "Hello John";
+
+export { greet, greetJohn };
 ```
 
 </CodeTab>

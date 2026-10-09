@@ -10,7 +10,7 @@ Use `<MyComponent ... />` to render a component in JSX.
 
 ### Example
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 @react.component
@@ -20,17 +20,31 @@ let view = <make name="ReScript" />
 ```
 
 ```js
-import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
 
-function Playground(props) {
-  return React.createElement("h1", undefined, "Hello " + props.name);
+function Example(props) {
+  return JsxRuntime.jsx("h1", { children: "Hello " + props.name });
 }
 
-var make = Playground;
+let view = JsxRuntime.jsx("make", { name: "ReScript" });
 
-var view = React.createElement(Playground, {
-  name: "ReScript",
-});
+let make = Example;
+
+export { make, view };
+```
+
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example(props) {
+  return <h1>{"Hello " + props.name}</h1>;
+}
+
+let view = <make name={"ReScript"} />;
+
+let make = Example;
+
+export { make, view };
 ```
 
 </CodeTab>
