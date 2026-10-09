@@ -48,7 +48,7 @@ export { myColor, myLabel, myNumber };
 
 Although **optional**, you can still pre-declare a poly variant type:
 
-```res nocheck
+```res
 // Note the surrounding square brackets, and # for constructors
 type color = [#red | #green | #blue]
 ```
@@ -149,7 +149,7 @@ You can use poly variant types within other poly variant types to create a sum o
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res prelude
 type red = [#Ruby | #Redwood | #Rust]
 type blue = [#Sapphire | #Neon | #Navy]
 
@@ -172,7 +172,7 @@ There's also some special [pattern matching](./pattern-matching-destructuring.md
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 // Continuing the previous example above...
 
 switch myColor {
@@ -183,22 +183,18 @@ switch myColor {
 ```
 
 ```js
-var other = myColor;
+console.log("This red-ish");
 
-if (other === "Neon" || other === "Navy" || other === "Sapphire") {
-  console.log("This is blue-ish");
-} else if (other === "Rust" || other === "Ruby" || other === "Redwood") {
-  console.log("This is red-ish");
-} else {
-  console.log("Other color than red and blue: ", other);
-}
+let myColor = "Ruby";
+
+export { myColor };
 ```
 
 </CodeTab>
 
 This is a shorter version of:
 
-```res nocheck
+```res
 switch myColor {
 | #Sapphire | #Neon | #Navy => Console.log("This is blue-ish")
 | #Ruby | #Redwood | #Rust => Console.log("This is red-ish")
@@ -279,7 +275,9 @@ let intl = makeNumberFormat(#"de-DE")
 ```js
 let intl = Intl.NumberFormat("de-DE");
 
-export { intl };
+let myColor = "Ruby";
+
+export { myColor, intl };
 ```
 
 </CodeTab>
@@ -318,7 +316,9 @@ import * as DirectionJs from "./direction.js";
 
 let myDirection = DirectionJs.myDirection;
 
-export { myDirection };
+let myColor = "Ruby";
+
+export { myColor, myDirection };
 ```
 
 </CodeTab>
@@ -329,7 +329,7 @@ Again: since we were using poly variants, the JS Output is practically zero-cost
 
 The previous poly variant type annotations we've looked at are the regular "closed" kind. However, there's a way to express "I want at least these constructors" (lower bound) and "I want at most these constructors" (upper bound):
 
-```res nocheck
+```res
 // Only #Red allowed. Closed.
 let basic: [#Red] = #Red
 
@@ -348,7 +348,7 @@ let background: [< #Red | #Blue] = #Red
 
 This is the simplest poly variant definition, and also the most practical one. Like a common variant type, this one defines an exact set of constructors.
 
-```res nocheck
+```res
 type rgb = [ #Red | #Green | #Blue ]
 
 let color: rgb = #Green
@@ -408,9 +408,11 @@ let message = "Hello " ++ (theCompany :> string)
 ```js
 let message = "Hello " + "Apple";
 
+let myColor = "Ruby";
+
 let theCompany = "Apple";
 
-export { theCompany, message };
+export { myColor, theCompany, message };
 ```
 
 </CodeTab>

@@ -34,7 +34,7 @@ When ReScript can evaluate a known pure function call ahead of time, it can emit
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 let message = greet("world!") // "Hello world!"
 ```
 
@@ -56,7 +56,7 @@ If all the arguments are known up front, ReScript can precompute the result too:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 let add = (x, y, z) => x + y + z
 let sum = add(1, 2, 3) // 6
 ```
@@ -81,7 +81,7 @@ For longer functions, you'd surround the body with a block:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 let greetMore = (name) => {
   let part1 = "Hello"
   part1 ++ " " ++ name
@@ -106,24 +106,45 @@ If your function has no argument, just write `let greetMore = () => {...}`.
 
 ## Labeled Arguments
 
+<div className="hidden">
+
+```res prelude
+type color = string
+@val external setColor: color => unit = "setColor"
+@val external startAt: (int, int) => unit = "startAt"
+@val external color: color = "color"
+@val external payloadRadius: option<int> = "payloadRadius"
+@val external mySideEffect: unit => promise<unit> = "mySideEffect"
+@val external handleError: exn => promise<unit> = "handleError"
+@val external myFunc: unit => unit = "myFunc"
+```
+
+</div>
+
 Multi-arguments functions, especially those whose arguments are of the same type, can be confusing to call.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 let addCoordinates = (x, y) => {
-  // use x and y here
+  Console.log2(x, y)
 }
 // ...
 addCoordinates(5, 6) // which is x, which is y?
 ```
 
 ```js
-function addCoordinates(x, y) {
-  // use x and y here
+function greet(name) {
+  return "Hello " + name;
 }
 
-addCoordinates(5, 6);
+function addCoordinates(x, y) {
+  console.log(x, y);
+}
+
+console.log(5, 6);
+
+export { greet, addCoordinates };
 ```
 
 </CodeTab>
@@ -132,20 +153,26 @@ You can attach labels to an argument by prefixing the name with the `~` symbol:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res prelude
 let addCoordinates = (~x, ~y) => {
-  // use x and y here
+  Console.log2(x, y)
 }
 // ...
 addCoordinates(~x=5, ~y=6)
 ```
 
 ```js
-function addCoordinates(x, y) {
-  // use x and y here
+function greet(name) {
+  return "Hello " + name;
 }
 
-addCoordinates(5, 6);
+function addCoordinates(x, y) {
+  console.log(x, y);
+}
+
+console.log(5, 6);
+
+export { greet, addCoordinates };
 ```
 
 </CodeTab>
@@ -154,12 +181,24 @@ You can provide the arguments in **any order**:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 addCoordinates(~y=6, ~x=5)
 ```
 
 ```js
-addCoordinates(5, 6);
+function greet(name) {
+  return "Hello " + name;
+}
+
+function addCoordinates(x, y) {
+  console.log(x, y);
+}
+
+console.log(5, 6);
+
+console.log(5, 6);
+
+export { greet, addCoordinates };
 ```
 
 </CodeTab>
@@ -168,7 +207,7 @@ The `~x` part in the declaration means the function accepts an argument labeled 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 let drawCircle = (~radius as r, ~color as c) => {
   setColor(c)
   startAt(r, r)
@@ -179,12 +218,24 @@ drawCircle(~radius=10, ~color="red")
 ```
 
 ```js
+function greet(name) {
+  return "Hello " + name;
+}
+
+function addCoordinates(x, y) {
+  console.log(x, y);
+}
+
+console.log(5, 6);
+
 function drawCircle(r, c) {
   setColor(c);
-  return startAt(r, r);
+  startAt(r, r);
 }
 
 drawCircle(10, "red");
+
+export { greet, addCoordinates, drawCircle };
 ```
 
 </CodeTab>
@@ -195,16 +246,30 @@ Here's the syntax for typing the arguments:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 let drawCircle = (~radius as r: int, ~color as c: string) => {
-  // code here
+  setColor(c)
+  startAt(r, r)
 }
 ```
 
 ```js
-function drawCircle(r, c) {
-  // code here
+function greet(name) {
+  return "Hello " + name;
 }
+
+function addCoordinates(x, y) {
+  console.log(x, y);
+}
+
+console.log(5, 6);
+
+function drawCircle(r, c) {
+  setColor(c);
+  startAt(r, r);
+}
+
+export { greet, addCoordinates, drawCircle };
 ```
 
 </CodeTab>
@@ -215,7 +280,7 @@ Labeled function arguments can be made optional during declaration. You can then
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res prelude
 // radius can be omitted
 let drawCircle = (~color, ~radius=?) => {
   setColor(color)
@@ -227,16 +292,26 @@ let drawCircle = (~color, ~radius=?) => {
 ```
 
 ```js
-var Caml_option = require("./stdlib/caml_option.js");
+function greet(name) {
+  return "Hello " + name;
+}
+
+function addCoordinates(x, y) {
+  console.log(x, y);
+}
+
+console.log(5, 6);
 
 function drawCircle(color, radius) {
   setColor(color);
-  if (radius === undefined) {
-    return startAt(1, 1);
+  if (radius !== undefined) {
+    startAt(radius, radius);
+  } else {
+    startAt(1, 1);
   }
-  var r_ = Caml_option.valFromOption(radius);
-  return startAt(r_, r_);
 }
+
+export { greet, addCoordinates, drawCircle };
 ```
 
 </CodeTab>
@@ -253,7 +328,7 @@ If we get back to our previous example and both add a signature and type annotat
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 let drawCircle: (~color: color, ~radius: int=?) => unit =
   (~color: color, ~radius: option<int>=?) => {
     setColor(color)
@@ -265,14 +340,26 @@ let drawCircle: (~color: color, ~radius: int=?) => unit =
 ```
 
 ```js
+function greet(name) {
+  return "Hello " + name;
+}
+
+function addCoordinates(x, y) {
+  console.log(x, y);
+}
+
+console.log(5, 6);
+
 function drawCircle(color, radius) {
   setColor(color);
   if (radius !== undefined) {
-    return startAt(radius, radius);
+    startAt(radius, radius);
   } else {
-    return startAt(1, 1);
+    startAt(1, 1);
   }
 }
+
+export { greet, addCoordinates, drawCircle };
 ```
 
 </CodeTab>
@@ -289,7 +376,7 @@ Sometimes, you might want to forward a value to a function without knowing wheth
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 let result =
   switch payloadRadius {
   | None => drawCircle(~color)
@@ -298,12 +385,31 @@ let result =
 ```
 
 ```js
-var r = payloadRadius;
+function greet(name) {
+  return "Hello " + name;
+}
 
-var result =
-  r !== undefined
-    ? drawCircle(color, Caml_option.valFromOption(r))
-    : drawCircle(color);
+function addCoordinates(x, y) {
+  console.log(x, y);
+}
+
+console.log(5, 6);
+
+function drawCircle(color, radius) {
+  setColor(color);
+  if (radius !== undefined) {
+    startAt(radius, radius);
+  } else {
+    startAt(1, 1);
+  }
+}
+
+let r = payloadRadius;
+
+let result =
+  r !== undefined ? drawCircle(color, r) : drawCircle(color, undefined);
+
+export { greet, addCoordinates, drawCircle, result };
 ```
 
 </CodeTab>
@@ -312,12 +418,33 @@ This quickly gets tedious. We provide a shortcut:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 let result = drawCircle(~color, ~radius=?payloadRadius)
 ```
 
 ```js
-var result = drawCircle(1, undefined);
+function greet(name) {
+  return "Hello " + name;
+}
+
+function addCoordinates(x, y) {
+  console.log(x, y);
+}
+
+console.log(5, 6);
+
+function drawCircle(color, radius) {
+  setColor(color);
+  if (radius !== undefined) {
+    startAt(radius, radius);
+  } else {
+    startAt(1, 1);
+  }
+}
+
+let result = drawCircle(color, payloadRadius);
+
+export { greet, addCoordinates, drawCircle, result };
 ```
 
 </CodeTab>
@@ -330,7 +457,7 @@ Optional labeled arguments can also be provided a default value. In this case, t
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 let drawCircle = (~radius=1, ~color) => {
   setColor(color)
   startAt(radius, radius)
@@ -338,11 +465,23 @@ let drawCircle = (~radius=1, ~color) => {
 ```
 
 ```js
-function drawCircle(radiusOpt, color) {
-  var radius = radiusOpt !== undefined ? radiusOpt : 1;
-  setColor(color);
-  return startAt(radius, radius);
+function greet(name) {
+  return "Hello " + name;
 }
+
+function addCoordinates(x, y) {
+  console.log(x, y);
+}
+
+console.log(5, 6);
+
+function drawCircle(radiusOpt, color) {
+  let radius = radiusOpt !== undefined ? radiusOpt : 1;
+  setColor(color);
+  startAt(radius, radius);
+}
+
+export { greet, addCoordinates, drawCircle };
 ```
 
 </CodeTab>
@@ -353,7 +492,7 @@ ReScript chooses the sane default of preventing a function to be called recursiv
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 let rec neverTerminate = () => neverTerminate()
 ```
 
@@ -362,13 +501,28 @@ function greet(name) {
   return "Hello " + name;
 }
 
+function addCoordinates(x, y) {
+  console.log(x, y);
+}
+
+console.log(5, 6);
+
+function drawCircle(color, radius) {
+  setColor(color);
+  if (radius !== undefined) {
+    startAt(radius, radius);
+  } else {
+    startAt(1, 1);
+  }
+}
+
 function neverTerminate() {
   while (true) {
     continue;
   }
 }
 
-export { greet, neverTerminate };
+export { greet, addCoordinates, drawCircle, neverTerminate };
 ```
 
 </CodeTab>
@@ -377,7 +531,7 @@ A simple recursive function may look like this:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 // Recursively check every item on the list until one equals the `item`
 // argument. If a match is found, return `true`, otherwise return `false`
 let rec listHas = (list, item) =>
@@ -390,6 +544,21 @@ let rec listHas = (list, item) =>
 ```js
 function greet(name) {
   return "Hello " + name;
+}
+
+function addCoordinates(x, y) {
+  console.log(x, y);
+}
+
+console.log(5, 6);
+
+function drawCircle(color, radius) {
+  setColor(color);
+  if (radius !== undefined) {
+    startAt(radius, radius);
+  } else {
+    startAt(1, 1);
+  }
 }
 
 function listHas(_list, item) {
@@ -406,7 +575,7 @@ function listHas(_list, item) {
   }
 }
 
-export { greet, listHas };
+export { greet, addCoordinates, drawCircle, listHas };
 ```
 
 </CodeTab>
@@ -420,7 +589,7 @@ Mutually recursive functions start like a single recursive function using the
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 let rec callSecond = () => callFirst()
 and callFirst = () => callSecond()
 ```
@@ -428,6 +597,21 @@ and callFirst = () => callSecond()
 ```js
 function greet(name) {
   return "Hello " + name;
+}
+
+function addCoordinates(x, y) {
+  console.log(x, y);
+}
+
+console.log(5, 6);
+
+function drawCircle(color, radius) {
+  setColor(color);
+  if (radius !== undefined) {
+    startAt(radius, radius);
+  } else {
+    startAt(1, 1);
+  }
 }
 
 function callSecond() {
@@ -442,7 +626,7 @@ function callFirst() {
   }
 }
 
-export { greet, callSecond, callFirst };
+export { greet, addCoordinates, drawCircle, callSecond, callFirst };
 ```
 
 </CodeTab>
@@ -454,12 +638,31 @@ export { greet, callSecond, callFirst };
 To partially apply a function, use the explicit `...` syntax.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
-```res nocheck
+```res
 let add = (a, b) => a + b
 let addFive = add(5, ...)
 ```
 
 ```js
+function greet(name) {
+  return "Hello " + name;
+}
+
+function addCoordinates(x, y) {
+  console.log(x, y);
+}
+
+console.log(5, 6);
+
+function drawCircle(color, radius) {
+  setColor(color);
+  if (radius !== undefined) {
+    startAt(radius, radius);
+  } else {
+    startAt(1, 1);
+  }
+}
+
 function add(a, b) {
   return (a + b) | 0;
 }
@@ -467,6 +670,8 @@ function add(a, b) {
 function addFive(extra) {
   return (5 + extra) | 0;
 }
+
+export { greet, addCoordinates, drawCircle, add, addFive };
 ```
 
 </CodeTab>
@@ -478,7 +683,7 @@ The output looks like idiomatic JS:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 let getUserName = async (userId) => userId
 
 let greetUser = async (userId) => {
@@ -492,6 +697,21 @@ function greet(name) {
   return "Hello " + name;
 }
 
+function addCoordinates(x, y) {
+  console.log(x, y);
+}
+
+console.log(5, 6);
+
+function drawCircle(color, radius) {
+  setColor(color);
+  if (radius !== undefined) {
+    startAt(radius, radius);
+  } else {
+    startAt(1, 1);
+  }
+}
+
 async function getUserName(userId) {
   return userId;
 }
@@ -501,7 +721,7 @@ async function greetUser(userId) {
   return "Hello " + name + "!";
 }
 
-export { greet, getUserName, greetUser };
+export { greet, addCoordinates, drawCircle, getUserName, greetUser };
 ```
 
 </CodeTab>
@@ -517,7 +737,7 @@ Both JS exceptions and exceptions defined in ReScript can be caught. The compile
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 exception SomeReScriptException
 
 let somethingThatMightThrow = async () => throw(SomeReScriptException)
@@ -539,15 +759,27 @@ function greet(name) {
   return "Hello " + name;
 }
 
+function addCoordinates(x, y) {
+  console.log(x, y);
+}
+
+console.log(5, 6);
+
+function drawCircle(color, radius) {
+  setColor(color);
+  if (radius !== undefined) {
+    startAt(radius, radius);
+  } else {
+    startAt(1, 1);
+  }
+}
+
 let SomeReScriptException = /* @__PURE__ */ Primitive_exceptions.create(
-  "_tempFile.SomeReScriptException",
+  "Example.SomeReScriptException",
 );
 
 async function somethingThatMightThrow() {
-  throw {
-    RE_EXN_ID: SomeReScriptException,
-    Error: new Error(),
-  };
+  throw { RE_EXN_ID: SomeReScriptException, Error: new Error() };
 }
 
 async function someAsyncFn() {
@@ -567,7 +799,14 @@ async function someAsyncFn() {
   return Primitive_option.some(data);
 }
 
-export { greet, SomeReScriptException, somethingThatMightThrow, someAsyncFn };
+export {
+  greet,
+  addCoordinates,
+  drawCircle,
+  SomeReScriptException,
+  somethingThatMightThrow,
+  someAsyncFn,
+};
 ```
 
 </CodeTab>
@@ -578,27 +817,48 @@ Occasionally you may want to ignore the return value of a function. ReScript pro
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 mySideEffect()->Promise.catch(handleError)->ignore
 
 setTimeout(myFunc, 1000)->ignore
 ```
 
 ```js
-$$Promise.$$catch(mySideEffect(), function (prim) {
-  return handleError(prim);
-});
+import * as Stdlib_Promise from "@rescript/runtime/lib/es6/Stdlib_Promise.js";
 
-setTimeout(function (prim) {
+function greet(name) {
+  return "Hello " + name;
+}
+
+function addCoordinates(x, y) {
+  console.log(x, y);
+}
+
+console.log(5, 6);
+
+function drawCircle(color, radius) {
+  setColor(color);
+  if (radius !== undefined) {
+    startAt(radius, radius);
+  } else {
+    startAt(1, 1);
+  }
+}
+
+Stdlib_Promise.$$catch(mySideEffect(), (prim) => handleError(prim));
+
+setTimeout((prim) => {
   myFunc();
 }, 1000);
+
+export { greet, addCoordinates, drawCircle };
 ```
 
 </CodeTab>
 
 ## Tips & Tricks
 
-Cheat sheet for the function syntaxes:
+Cheat sheet for the function syntaxes. These are alternative declarations and partial expressions, rather than a single complete program:
 
 ### Declaration
 

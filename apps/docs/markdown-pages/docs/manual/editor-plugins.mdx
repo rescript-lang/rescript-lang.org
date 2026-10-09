@@ -92,6 +92,7 @@ It is possible to silence the analysis by adding a `@doesNotThrow` annotation:
 ```rescript
 exception Invalid_argument(string)
 
+@throws(Invalid_argument)
 let makeSpaces = length => {
   if length < 0 {
     throw(Invalid_argument("negative length"))

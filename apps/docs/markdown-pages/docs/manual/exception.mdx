@@ -558,14 +558,14 @@ exports.someJsFunctionThatThrows = () => {
 
 Then catch it from ReScript:
 
-```res nocheck
+```res
 // import the method in Example.js
 @module("./Example")
 external someJsFunctionThatThrows: () => unit = "someJsFunctionThatThrows"
 
 try {
   // call the external method
-  someJSFunctionThatThrows()
+  someJsFunctionThatThrows()
 } catch {
 | JsExn(exn) =>
   switch JsExn.message(exn) {

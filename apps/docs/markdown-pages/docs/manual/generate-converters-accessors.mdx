@@ -35,7 +35,7 @@ Use `@deriving(accessors)` on a variant type to create accessor functions for it
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res prelude
 @deriving(accessors)
 type action =
   | Click
@@ -57,7 +57,7 @@ export { click, submit, cancel };
 
 </CodeTab>
 
-Variants constructors with payloads generate functions, payload-less constructors generate plain integers (the internal representation of variants).
+Variants constructors with payloads generate functions, payload-less constructors generate plain values (the runtime representation of variants).
 
 **Note**:
 
@@ -66,7 +66,7 @@ Variants constructors with payloads generate functions, payload-less constructor
 
 ### Usage
 
-```res nocheck
+```res
 let s = submit("hello"); /* gives Submit("hello") */
 ```
 
@@ -96,6 +96,10 @@ pets
 ```
 
 ```js
+function submit(param_0) {
+  return { TAG: "Submit", _0: param_0 };
+}
+
 function name(param) {
   return param.name;
 }
@@ -104,7 +108,11 @@ let pets = [{ name: "bob" }, { name: "bob2" }];
 
 console.log(pets.map(name).join("&"));
 
-export { name, pets };
+let click = "Click";
+
+let cancel = "Cancel";
+
+export { click, submit, cancel, name, pets };
 ```
 
 </CodeTab>

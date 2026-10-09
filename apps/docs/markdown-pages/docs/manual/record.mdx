@@ -611,7 +611,7 @@ With records, you **cannot** say "I'd like this function to take any record type
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 type person = {age: int, name: string}
 type monster = {age: int, hasTentacles: bool}
 
@@ -619,9 +619,13 @@ let getAge = (entity) => entity.age
 ```
 
 ```js
+let ExamplePrelude = { me: { age: 5, name: "Big ReScript" } };
+
 function getAge(entity) {
   return entity.age;
 }
+
+export { ExamplePrelude, getAge };
 ```
 
 </CodeTab>
@@ -629,6 +633,11 @@ function getAge(entity) {
 Instead, `getAge` will infer that the parameter `entity` must be of type `monster`, the closest record type with the field `age`. The following code's last line fails:
 
 ```res nocheck
+// This example intentionally rejects the second call to getAge.
+type person = {age: int, name: string}
+type monster = {age: int, hasTentacles: bool}
+let getAge = entity => entity.age
+
 let kraken = {age: 9999, hasTentacles: true}
 let me = {age: 5, name: "Baby ReScript"}
 

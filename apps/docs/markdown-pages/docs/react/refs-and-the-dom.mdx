@@ -49,7 +49,7 @@ let make = () => {
   };
 
   <div onClick>
-    {Belt.Int.toString(clicks.current)->React.string}
+    {Int.toString(clicks.current)->React.string}
   </div>
 }
 ```
@@ -60,15 +60,20 @@ The example above defines a binding `clicks` of type `React.ref<int>`. Note how 
 
 When a ref is passed to an element during render, a reference to the node becomes accessible at the current attribute of the ref.
 
-```res nocheck
-let value = myRef.current
+```res
+@react.component
+let make = () => {
+  let myRef = React.useRef(Nullable.null)
+  let value = myRef.current
+  <input ref={ReactDOM.Ref.domRef(myRef)} />
+}
 ```
 
 The value of the ref differs depending on the type of the node:
 
 - When the ref attribute is used on an HTML element, the ref passed via `ReactDOM.Ref.domRef` receives the underlying DOM element as its current property (type of `React.ref<Nullable.t<Dom.element>>`)
 - In case of interop, when the ref attribute is used on a custom class component (based on JS classes), the ref object receives the mounted instance of the component as its current (not discussed in this document).
-- **You may not use the ref attribute on component functions** because they don’t have instances (we don't expose JS classes in ReScript).
+- In React 19, function components can receive `ref` as a prop and pass it to an HTML element.
 
 Here are some examples:
 
@@ -177,31 +182,32 @@ React will assign the `current` field with the DOM element when the component mo
 
 ### Refs and Component Functions
 
-In React, you **can't** pass a `ref` attribute to a component function:
+In React 19, a function component can accept a `ref` prop and pass it to a DOM element:
 
 <CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 module MyComp = {
   @react.component
-  let make = (~ref) => <input />
+  let make = (~ref) => <input ref />
 }
 
 @react.component
 let make = () => {
   let textInput = React.useRef(Nullable.null)
 
-  // This will **not** work
+  // MyComp passes this ref to its input
   <MyComp ref={ReactDOM.Ref.domRef(textInput)} />
 }
 ```
 
 ```js
 import * as React from "react";
+import * as Primitive_option from "@rescript/runtime/lib/es6/Primitive_option.js";
 import * as JsxRuntime from "react/jsx-runtime";
 
 function Example$MyComp(props) {
-  return JsxRuntime.jsx("input", {});
+  return JsxRuntime.jsx("input", { ref: Primitive_option.some(props.ref) });
 }
 
 let MyComp = { make: Example$MyComp };
@@ -218,10 +224,11 @@ export { MyComp, make };
 
 ```jsx
 import * as React from "react";
+import * as Primitive_option from "@rescript/runtime/lib/es6/Primitive_option.js";
 import * as JsxRuntime from "react/jsx-runtime";
 
 function Example$MyComp(props) {
-  return <input />;
+  return <input ref={Primitive_option.some(props.ref)} />;
 }
 
 let MyComp = { make: Example$MyComp };
@@ -238,9 +245,7 @@ export { MyComp, make };
 
 </CodeTab>
 
-The snippet above will not compile and output an error that looks like this: `"Ref cannot be passed as a normal prop. Please use forwardRef API instead."`.
-
-As the error message implies, If you want to allow people to take a ref to your component function, you can use [ref forwarding](./forwarding-refs.mdx) (possibly in conjunction with useImperativeHandle) instead.
+The component passes its `ref` prop directly to the input. For components that expose a custom imperative API, see [ref forwarding](./forwarding-refs.mdx) and `useImperativeHandle`.
 
 ## Exposing DOM Refs to Parent Components
 

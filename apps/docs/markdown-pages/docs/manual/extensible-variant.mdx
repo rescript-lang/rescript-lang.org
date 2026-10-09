@@ -14,7 +14,7 @@ Variant types are usually constrained to a fixed set of constructors. There may 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
+```res prelude
 type t = ..
 
 type t += Other
@@ -48,7 +48,7 @@ Extensible variants are open-ended, so the compiler will not be able to exhausti
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 let print = v =>
   switch v {
   | Point(x, y) => Console.log2("Point", (x, y))
@@ -59,6 +59,14 @@ let print = v =>
 ```
 
 ```js
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
+
+let Other = /* @__PURE__ */ Primitive_exceptions.create("Example.Other");
+
+let Point = /* @__PURE__ */ Primitive_exceptions.create("Example.Point");
+
+let Line = /* @__PURE__ */ Primitive_exceptions.create("Example.Line");
+
 function print(v) {
   if (v.RE_EXN_ID === Point) {
     console.log("Point", [v._1, v._2]);
@@ -68,6 +76,8 @@ function print(v) {
     console.log("Other");
   }
 }
+
+export { Other, Point, Line, print };
 ```
 
 </CodeTab>

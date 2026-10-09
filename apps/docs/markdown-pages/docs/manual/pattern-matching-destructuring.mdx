@@ -102,17 +102,24 @@ For a record, you can rename the field while destructuring:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
+type pupil = {name: string, age: int}
+let student1 = {name: "John", age: 10}
+
 let {name: n} = student1 // "John" assigned to `n`
 ```
 
 ```js
-var n = "John";
+let student1 = { name: "John", age: 10 };
+
+let n = "John";
+
+export { student1, n };
 ```
 
 </CodeTab>
 
-You _can_ in theory destructure array and list at the top level too:
+Array and list patterns can be non-exhaustive. These destructuring bindings are rejected at the module's top level:
 
 ```res nocheck
 let myArray = [1, 2, 3]
@@ -124,7 +131,7 @@ let list{head, ...tail} = myList
 // 1 assigned to `head`, `list{2, 3}` assigned to tail
 ```
 
-But the array example is **highly disrecommended** (use tuple instead) and the list example will error on you. They're only there for completeness' sake. As you'll see below, the proper way of using destructuring array and list is using `switch`.
+Both examples fail with `Such fragile pattern not allowed in the toplevel`: the array may have a different length, and the list may be empty. Use a tuple for a fixed number of elements, or use `switch` to destructure arrays and lists while handling the remaining cases.
 
 ## `switch` Based on Shape of Data
 
@@ -297,9 +304,9 @@ Here's another example of pattern matching, this time on an inline tuple.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 type animal = Dog | Cat | Bird
-let categoryId = switch (isBig, myAnimal) {
+let categoryId = (isBig, myAnimal) => switch (isBig, myAnimal) {
 | (true, Dog) => 1
 | (true, Cat) => 2
 | (true, Bird) => 3
@@ -309,7 +316,65 @@ let categoryId = switch (isBig, myAnimal) {
 ```
 
 ```js
-var categoryId = isBig ? (myAnimal + 1) | 0 : myAnimal >= 2 ? 5 : 4;
+let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+function categoryId(isBig, myAnimal) {
+  if (isBig) {
+    switch (myAnimal) {
+      case "Dog":
+        return 1;
+      case "Cat":
+        return 2;
+      case "Bird":
+        return 3;
+    }
+  } else {
+    switch (myAnimal) {
+      case "Dog":
+      case "Cat":
+        return 4;
+      case "Bird":
+        return 5;
+    }
+  }
+}
+
+export { person1, message, categoryId };
 ```
 
 </CodeTab>
@@ -918,7 +983,11 @@ The example above aliases the variant type spread to a variable so we can use it
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
+type pets = Cat | Dog
+type fish = Cod | Salmon
+type animals = | ...pets | ...fish
+
 let isPet = (animal: animals) => {
   switch animal {
   | ...pets => Console.log("A pet!")
@@ -929,6 +998,57 @@ let isPet = (animal: animals) => {
 ```
 
 ```js
+let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = { TAG: "Vacations", _0: 10 };
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
 function isPet(animal) {
   switch (animal) {
     case "Cat":
@@ -941,6 +1061,8 @@ function isPet(animal) {
       return;
   }
 }
+
+export { person1, message, myStatus, isPet };
 ```
 
 </CodeTab>
@@ -1118,29 +1240,100 @@ export { person1, message, myStatus, isPet };
 
 ### Match on Exceptions
 
-If the function throws an exception (covered later), you can also match on _that_, in addition to the function's normally returned values.
+If the function throws an exception (covered later), you can also match on _that_, in addition to the function's normally returned values. `List.find` returns an option in v12, so the helper below raises `Not_found` when no item matches:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
-switch List.find(i => i === theItem, myItems) {
+```res
+let theItem = 2
+let myItems = list{1, 2, 3}
+
+let findItem = () =>
+  switch List.find(myItems, i => i === theItem) {
+  | Some(item) => item
+  | None => throw(Not_found)
+  }
+
+switch findItem() {
 | item => Console.log(item)
 | exception Not_found => Console.log("No such item found!")
 }
 ```
 
 ```js
-var exit = 0;
+import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
 
-var item;
+let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
+} else {
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let myStatus = { TAG: "Vacations", _0: 10 };
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
+let myItems = { hd: 1, tl: { hd: 2, tl: { hd: 3, tl: /* [] */ 0 } } };
+
+function findItem() {
+  let item = Stdlib_List.find(myItems, (i) => i === 2);
+  if (item !== undefined) {
+    return item;
+  }
+  throw { RE_EXN_ID: "Not_found", Error: new Error() };
+}
+
+let exit$2 = 0;
+
+let item;
 
 try {
-  item = List.find(function (i) {
-    return i === theItem;
-  }, myItems);
-  exit = 1;
+  item = findItem();
+  exit$2 = 1;
 } catch (raw_exn) {
-  var exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
+  let exn = Primitive_exceptions.internalToException(raw_exn);
   if (exn.RE_EXN_ID === "Not_found") {
     console.log("No such item found!");
   } else {
@@ -1148,9 +1341,13 @@ try {
   }
 }
 
-if (exit === 1) {
+if (exit$2 === 1) {
   console.log(item);
 }
+
+let theItem = 2;
+
+export { person1, message, myStatus, theItem, myItems, findItem };
 ```
 
 </CodeTab>
@@ -1592,8 +1789,9 @@ Let's revisit one of the above examples:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
-let message = switch person1 {
+```res
+// Intentionally missing the fallback case for other teachers.
+let messageFor = person => switch person {
 | Teacher({name: "Mary" | "Joe"}) =>
   `Hey, still going to the party on Saturday?`
 | Student({name, reportCard: {passing: true, gpa}}) =>
@@ -1611,52 +1809,117 @@ let message = switch person1 {
 ```
 
 ```js
-if (person1.TAG) {
-  var match$1 = person1.status;
-  var name = person1.name;
-  var match$2 = person1.reportCard;
-  if (match$2.passing) {
-    "Congrats " +
-      name +
-      ", nice GPA of " +
-      match$2.gpa.toString() +
-      " you got there!";
-  } else if (typeof match$1 === "number") {
-    if (match$1 !== 0) {
-      "Good luck next semester " + name + "!";
-    } else {
-      ("How are you feeling?");
-    }
-  } else if (person1.reportCard.gpa !== 0.0) {
-    "Good luck next semester " + name + "!";
-  } else {
-    "Come back in " + match$1._0.toString() + " days!";
-  }
+let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
+
+let message;
+
+if (person1.TAG === "Teacher") {
+  message = `Hello ` + "Jane" + `.`;
 } else {
-  switch (person1.name) {
-    case "Joe":
-    case "Mary":
-      break;
-    default:
-      throw {
-        RE_EXN_ID: "Match_failure",
-        _1: ["playground.res", 13, 0],
-        Error: new Error(),
-      };
+  let match = "Jane";
+  let match$1 = match.status;
+  let name = match.name;
+  let match$2 = match.reportCard;
+  if (match$2.passing) {
+    message =
+      `Congrats ` +
+      name +
+      `, nice GPA of ` +
+      match$2.gpa.toString() +
+      ` you got there!`;
+  } else {
+    let exit = 0;
+    if (typeof match$1 !== "object") {
+      message =
+        match$1 === "Sick"
+          ? `How are you feeling?`
+          : `Good luck next semester ` + name + `!`;
+    } else {
+      exit = 1;
+    }
+    if (exit === 1) {
+      message =
+        match.reportCard.gpa !== 0.0
+          ? `Good luck next semester ` + name + `!`
+          : `Come back in ` + match$1._0.toString() + ` days!`;
+    }
   }
 }
+
+let myStatus = { TAG: "Vacations", _0: 10 };
+
+let exit$1 = 0;
+
+if (typeof myStatus !== "object") {
+  console.log("Hey! How are you?");
+} else {
+  exit$1 = 1;
+}
+
+if (exit$1 === 1) {
+  console.log(`Come back in ` + (10).toString() + ` days!`);
+}
+
+let d = { A: 5, B: 6 };
+
+function messageFor(person) {
+  if (person.TAG === "Teacher") {
+    switch (person.name) {
+      case "Joe":
+      case "Mary":
+        return `Hey, still going to the party on Saturday?`;
+      default:
+        throw {
+          RE_EXN_ID: "Match_failure",
+          _1: ["Example.res", 59, 27],
+          Error: new Error(),
+        };
+    }
+  } else {
+    let match = person._0;
+    let match$1 = match.status;
+    let name = match.name;
+    let match$2 = match.reportCard;
+    if (match$2.passing) {
+      return (
+        `Congrats ` +
+        name +
+        `, nice GPA of ` +
+        match$2.gpa.toString() +
+        ` you got there!`
+      );
+    }
+    if (typeof match$1 !== "object") {
+      if (match$1 === "Sick") {
+        return `How are you feeling?`;
+      } else {
+        return `Good luck next semester ` + name + `!`;
+      }
+    }
+    match$1.TAG === "Vacations";
+    if (match.reportCard.gpa !== 0.0) {
+      return `Good luck next semester ` + name + `!`;
+    } else {
+      return `Come back in ` + match$1._0.toString() + ` days!`;
+    }
+  }
+}
+
+let b = d.B;
+
+export { person1, message, myStatus, d, b, messageFor };
 ```
 
 </CodeTab>
 
-Did you see what we removed? This time, we've omitted the handling of the case where `person1` is `Teacher({name})` when `name` isn't Mary or Joe.
+Did you see what we removed? This time, we've omitted the handling of the case where `person` is `Teacher({name})` when `name` isn't Mary or Joe.
 
 Failing to handle every scenario of a value likely constitutes the majority of program bugs out there. This happens very often when you refactor a piece of code someone else wrote. Fortunately for ReScript, the compiler will tell you so:
 
 ```
-Warning 8: this pattern-matching is not exhaustive.
-Here is an example of a value that is not matched:
-Some({name: ""})
+Warning number 8
+You forgot to handle a possible case here, for example:
+| Teacher({name: "", _})
 ```
 
 **BAM**! You've just erased an entire category of important bugs before you even ran the code. In fact, this is how most of nullable values is handled:

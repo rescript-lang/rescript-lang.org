@@ -238,7 +238,9 @@ export { Greeting, name };
 
 ### Special Props `key` and `ref`
 
-You can't define any props called `key` or `ref`. React treats those props differently and the compiler will yield an error whenever you try to define a `~key` or `~ref` argument in your component function.
+`key` is reserved for React's element identity. The compiler rejects a `~key` argument in a component function.
+
+In React 19, function components can accept a `ref` prop. You can define a `~ref` argument and pass it to a DOM element, as shown in [Refs and the DOM](./refs-and-the-dom.mdx).
 
 Check out the corresponding [Arrays and Keys](./arrays-and-keys.mdx) and [Forwarding React Refs](./forwarding-refs.mdx) sections for more details.
 
@@ -355,7 +357,7 @@ module StringChildren = {
 
 **Component with an optional `React.element` as children:**
 
-```res nocheck
+```res
 module OptionalChildren = {
   @react.component
   let make = (~children: option<React.element>=?) => {
@@ -404,24 +406,25 @@ It's a decorator that tells the ReScript compiler to treat the function as a Rea
 In JavaScript, a React component is just a function that takes props (an object) and returns JSX. In ReScript, props are typically represented as a record type.
 The `@react.component` decorator automatically generates that record type and wraps the function for you—so you don't have to.
 
-```res nocheck
+```res
 // Counter.res
-
 @react.component
 let make = (~title, ~count) => {
   <h1> {React.string(title)} {React.int(count)} </h1>
 }
+```
 
-// This is equivalent to writing:
+The resulting component takes a props record, similar to this manually defined function:
 
+```res
 type props = {title: string, count: int}
 
-let \"Counter" = ({title, count}: props) => {
+let make = ({title, count}: props) => {
   <h1> {React.string(title)} {React.int(count)} </h1>
 }
 ```
 
-However, writing it manually like this means you lose the `make` function name, which prevents JSX from working as expected when using the component elsewhere.
+The decorator also gives the generated JavaScript component an uppercased name derived from its ReScript module.
 
 Having an uppercased function name also helps distinguish React components from regular functions in [React DevTools](https://react.dev/learn/react-developer-tools).
 
@@ -493,7 +496,7 @@ The ReScript type system is really good at inferring the prop types just by look
 
 For simple cases, well-scoped usage, or experimentation, it's still fine to omit type annotations:
 
-```res nocheck
+```res
 // Button.res
 
 @react.component
@@ -646,7 +649,7 @@ More details on the `@react.component` decorator and its generated interface can
 
 We can also represent React components as submodules, which makes it very convenient to build more complex UI without the need to create multiple files for each composite component (that's probably only used by the parent component anyways):
 
-```res nocheck
+```res
 // src/Button.res
 module Label = {
   @react.component
