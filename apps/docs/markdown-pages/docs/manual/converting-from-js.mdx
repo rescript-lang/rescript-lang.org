@@ -129,8 +129,6 @@ export { defaultId };
 
 Check the output. Diff it. Code still works. Moving on! Extract the function:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
-
 ```res nocheck
 %%raw(`
 const school = require('school');
@@ -147,21 +145,13 @@ let queryResult = (usePayload, payload) => {
 }
 ```
 
-```js
-
-```
-
-</CodeTab>
-
 Format the code: `./node_modules/.bin/rescript format src/Main.res`.
 
-We have a type error: "The record field student can't be found". That's fine! **Always ensure your code is syntactically valid first**. Fixing type errors comes later.
+The compiler reports that `student` is a record field without a record type in scope, so it does not produce new JavaScript output for this step. That's fine! **Always ensure your code is syntactically valid first**. Fixing type errors comes later.
 
 ## Step 4: Add externals, Fix Types
 
 The previous type error is caused by `payload`'s record declaration (which supposedly contains the field `student`) not being found. Since we're trying to convert as quickly as possible, let's use our [object](./object.mdx) feature to avoid needing type declaration ceremonies:
-
-<CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res nocheck
 %%raw(`
@@ -179,13 +169,7 @@ let queryResult = (usePayload, payload) => {
 }
 ```
 
-```js
-
-```
-
-</CodeTab>
-
-Now this triggers the next type error, that `school` isn't found. Let's use [`external`](./external.mdx) to bind to that module:
+Now this triggers the next type error, that `school` isn't found. There is still no new JavaScript output. Let's use [`external`](./external.mdx) to bind to that module:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 

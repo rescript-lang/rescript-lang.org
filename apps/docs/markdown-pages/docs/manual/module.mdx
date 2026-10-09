@@ -322,8 +322,6 @@ concrete type; it's saying "I don't care what the actual type is, but it's used
 as input to `getProfession`". This is useful to fit many modules under the same
 interface:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
-
 ```res nocheck
 module Company: EstablishmentType = {
   type profession = CEO | Designer | Engineer | ...
@@ -333,24 +331,6 @@ module Company: EstablishmentType = {
   let person2 = ...
 }
 ```
-
-```js
-function getProfession(person) {
-  ...
-}
-
-var person1 = ...
-
-var person2 = ...
-
-var Company = {
-  getProfession: getProfession,
-  person1: person1,
-  person2: person2
-};
-```
-
-</CodeTab>
 
 It's also useful to hide the underlying type as an implementation detail others
 can't rely on. If you ask what the type of `Company.profession` is, instead of
@@ -586,8 +566,6 @@ modules the functor accepts as arguments and return values. In the
 previous example, we're exposing the backing type of a set; by giving `MakeSet`
 a functor signature, we can hide the underlying data structure!
 
-<CodeTab labels={["ReScript", "JS Output"]}>
-
 ```res nocheck
 module type Comparable = ...
 
@@ -601,12 +579,6 @@ module MakeSet: MakeSetType = (Item: Comparable) => {
   ...
 }
 ```
-
-```js
-// Empty output
-```
-
-</CodeTab>
 
 ## Exotic Module Filenames
 
