@@ -40,27 +40,13 @@ import * as JsxRuntime from "react/jsx-runtime";
 
 function Example(props) {
   let todos = [
-    {
-      id: "todo1",
-      text: "Todo 1",
-    },
-    {
-      id: "todo2",
-      text: "Todo 2",
-    },
+    { id: "todo1", text: "Todo 1" },
+    { id: "todo2", text: "Todo 2" },
   ];
   let items = todos.map((todo) =>
-    JsxRuntime.jsx(
-      "li",
-      {
-        children: todo.text,
-      },
-      todo.id,
-    ),
+    JsxRuntime.jsx("li", { children: todo.text }, todo.id),
   );
-  return JsxRuntime.jsx("ul", {
-    children: items,
-  });
+  return JsxRuntime.jsx("ul", { children: items });
 }
 
 let make = Example;
@@ -73,14 +59,8 @@ import * as JsxRuntime from "react/jsx-runtime";
 
 function Example(props) {
   let todos = [
-    {
-      id: "todo1",
-      text: "Todo 1",
-    },
-    {
-      id: "todo2",
-      text: "Todo 2",
-    },
+    { id: "todo1", text: "Todo 1" },
+    { id: "todo2", text: "Todo 2" },
   ];
   let items = todos.map((todo) => <li key={todo.id}>{todo.text}</li>);
   return <ul>{items}</ul>;
@@ -113,13 +93,7 @@ import * as JsxRuntime from "react/jsx-runtime";
 let numbers = [1, 2, 3, 4, 5];
 
 let items = numbers.map((number) =>
-  JsxRuntime.jsx(
-    "li",
-    {
-      children: number,
-    },
-    number.toString(),
-  ),
+  JsxRuntime.jsx("li", { children: number }, number.toString()),
 );
 
 export { numbers, items };
@@ -139,7 +113,7 @@ export { numbers, items };
 
 The best way to pick a key is to use a string that uniquely identifies a list item among its siblings. Most often you would use IDs from your data as keys:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res prelude
 type todo = {id: string, text: string}
@@ -155,26 +129,31 @@ let items = Array.map(todos, todo => {
 ```
 
 ```js
-var todos = [
-  {
-    id: "todo1",
-    text: "Todo 1",
-  },
-  {
-    id: "todo2",
-    text: "Todo 2",
-  },
+import * as JsxRuntime from "react/jsx-runtime";
+
+let todos = [
+  { id: "todo1", text: "Todo 1" },
+  { id: "todo2", text: "Todo 2" },
 ];
 
-var items = todos.map(function (todo) {
-  return JsxRuntime.jsx(
-    "li",
-    {
-      children: todo.text,
-    },
-    todo.id,
-  );
-});
+let items = todos.map((todo) =>
+  JsxRuntime.jsx("li", { children: todo.text }, todo.id),
+);
+
+export { todos, items };
+```
+
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+let todos = [
+  { id: "todo1", text: "Todo 1" },
+  { id: "todo2", text: "Todo 2" },
+];
+
+let items = todos.map((todo) => <li key={todo.id}>{todo.text}</li>);
+
+export { todos, items };
 ```
 
 </CodeTab>
@@ -196,34 +175,14 @@ let items = Array.mapWithIndex(todos, (todo, i) => {
 import * as JsxRuntime from "react/jsx-runtime";
 
 let todos = [
-  {
-    id: "todo1",
-    text: "Todo 1",
-  },
-  {
-    id: "todo2",
-    text: "Todo 2",
-  },
+  { id: "todo1", text: "Todo 1" },
+  { id: "todo2", text: "Todo 2" },
 ];
 
-todos.map((todo) =>
-  JsxRuntime.jsx(
-    "li",
-    {
-      children: todo.text,
-    },
-    todo.id,
-  ),
-);
+todos.map((todo) => JsxRuntime.jsx("li", { children: todo.text }, todo.id));
 
 let items = todos.map((todo, i) =>
-  JsxRuntime.jsx(
-    "li",
-    {
-      children: todo.text,
-    },
-    i.toString(),
-  ),
+  JsxRuntime.jsx("li", { children: todo.text }, i.toString()),
 );
 
 export { todos, items };
@@ -233,14 +192,8 @@ export { todos, items };
 import * as JsxRuntime from "react/jsx-runtime";
 
 let todos = [
-  {
-    id: "todo1",
-    text: "Todo 1",
-  },
-  {
-    id: "todo2",
-    text: "Todo 2",
-  },
+  { id: "todo1", text: "Todo 1" },
+  { id: "todo2", text: "Todo 2" },
 ];
 
 todos.map((todo) => <li key={todo.id}>{todo.text}</li>);
@@ -306,37 +259,19 @@ let blog = <Blog posts />
 import * as JsxRuntime from "react/jsx-runtime";
 
 let todos = [
-  {
-    id: "todo1",
-    text: "Todo 1",
-  },
-  {
-    id: "todo2",
-    text: "Todo 2",
-  },
+  { id: "todo1", text: "Todo 1" },
+  { id: "todo2", text: "Todo 2" },
 ];
 
 let items = todos.map((todo) =>
-  JsxRuntime.jsx(
-    "li",
-    {
-      children: todo.text,
-    },
-    todo.id,
-  ),
+  JsxRuntime.jsx("li", { children: todo.text }, todo.id),
 );
 
 function Example$Blog(props) {
   let posts = props.posts;
   let sidebar = JsxRuntime.jsx("ul", {
     children: posts.map((post) =>
-      JsxRuntime.jsx(
-        "li",
-        {
-          children: post.title,
-        },
-        post.id,
-      ),
+      JsxRuntime.jsx("li", { children: post.title }, post.id),
     ),
   });
   let content = posts.map((post) =>
@@ -344,12 +279,8 @@ function Example$Blog(props) {
       "div",
       {
         children: [
-          JsxRuntime.jsx("h3", {
-            children: post.title,
-          }),
-          JsxRuntime.jsx("p", {
-            children: post.content,
-          }),
+          JsxRuntime.jsx("h3", { children: post.title }),
+          JsxRuntime.jsx("p", { children: post.content }),
         ],
       },
       post.id,
@@ -360,9 +291,7 @@ function Example$Blog(props) {
   });
 }
 
-let Blog = {
-  make: Example$Blog,
-};
+let Blog = { make: Example$Blog };
 
 let posts = [
   {
@@ -377,9 +306,7 @@ let posts = [
   },
 ];
 
-let blog = JsxRuntime.jsx(Example$Blog, {
-  posts: posts,
-});
+let blog = JsxRuntime.jsx(Example$Blog, { posts: posts });
 
 export { todos, items, Blog, posts, blog };
 ```
@@ -388,14 +315,8 @@ export { todos, items, Blog, posts, blog };
 import * as JsxRuntime from "react/jsx-runtime";
 
 let todos = [
-  {
-    id: "todo1",
-    text: "Todo 1",
-  },
-  {
-    id: "todo2",
-    text: "Todo 2",
-  },
+  { id: "todo1", text: "Todo 1" },
+  { id: "todo2", text: "Todo 2" },
 ];
 
 let items = todos.map((todo) => <li key={todo.id}>{todo.text}</li>);
@@ -424,9 +345,7 @@ function Example$Blog(props) {
   );
 }
 
-let Blog = {
-  make: Example$Blog,
-};
+let Blog = { make: Example$Blog };
 
 let posts = [
   {
@@ -479,51 +398,20 @@ import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
 import * as JsxRuntime from "react/jsx-runtime";
 
 let todos = [
-  {
-    id: "todo1",
-    text: "Todo 1",
-  },
-  {
-    id: "todo2",
-    text: "Todo 2",
-  },
+  { id: "todo1", text: "Todo 1" },
+  { id: "todo2", text: "Todo 2" },
 ];
 
 let items = todos.map((todo) =>
-  JsxRuntime.jsx(
-    "li",
-    {
-      children: todo.text,
-    },
-    todo.id,
-  ),
+  JsxRuntime.jsx("li", { children: todo.text }, todo.id),
 );
 
 function Example(props) {
   let items = Stdlib_List.toArray({
-    hd: {
-      id: "todo1",
-      text: "Todo 1",
-    },
-    tl: {
-      hd: {
-        id: "todo2",
-        text: "Todo 2",
-      },
-      tl: /* [] */ 0,
-    },
-  }).map((todo) =>
-    JsxRuntime.jsx(
-      "li",
-      {
-        children: todo.text,
-      },
-      todo.id,
-    ),
-  );
-  return JsxRuntime.jsx("div", {
-    children: items,
-  });
+    hd: { id: "todo1", text: "Todo 1" },
+    tl: { hd: { id: "todo2", text: "Todo 2" }, tl: /* [] */ 0 },
+  }).map((todo) => JsxRuntime.jsx("li", { children: todo.text }, todo.id));
+  return JsxRuntime.jsx("div", { children: items });
 }
 
 let make = Example;
@@ -536,31 +424,16 @@ import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
 import * as JsxRuntime from "react/jsx-runtime";
 
 let todos = [
-  {
-    id: "todo1",
-    text: "Todo 1",
-  },
-  {
-    id: "todo2",
-    text: "Todo 2",
-  },
+  { id: "todo1", text: "Todo 1" },
+  { id: "todo2", text: "Todo 2" },
 ];
 
 let items = todos.map((todo) => <li key={todo.id}>{todo.text}</li>);
 
 function Example(props) {
   let items = Stdlib_List.toArray({
-    hd: {
-      id: "todo1",
-      text: "Todo 1",
-    },
-    tl: {
-      hd: {
-        id: "todo2",
-        text: "Todo 2",
-      },
-      tl: /* [] */ 0,
-    },
+    hd: { id: "todo1", text: "Todo 1" },
+    tl: { hd: { id: "todo2", text: "Todo 2" }, tl: /* [] */ 0 },
   }).map((todo) => <li key={todo.id}>{todo.text}</li>);
   return <div>{items}</div>;
 }

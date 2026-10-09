@@ -35,12 +35,11 @@ let label = switch myRecord {
 ```
 
 ```js
-var myRecord = {
-  name: "Ada",
-  age: 36,
-};
+let label = "Ada (" + (36).toString() + ")";
 
-var label = "Ada (36)";
+let myRecord = { name: "Ada", age: 36 };
+
+export { myRecord, label };
 ```
 
 </CodeTab>

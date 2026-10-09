@@ -26,20 +26,17 @@ module Greeter = {
 ```
 
 ```js
-var greeting = "Hello";
+let greeting = "Hello";
 
-var Message = {
-  greeting: greeting,
-};
+let Message = { greeting: greeting };
 
 function greet(name) {
-  return "Hello " + name;
+  return greeting + " " + name;
 }
 
-var Greeter = {
-  greeting: greeting,
-  greet: greet,
-};
+let Greeter = { greeting: greeting, greet: greet };
+
+export { Message, Greeter };
 ```
 
 </CodeTab>
@@ -62,7 +59,7 @@ module type Greeter = {
 ```
 
 ```js
-// No output
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>
@@ -86,9 +83,9 @@ module type Greeter = {
 ```
 
 ```js
-var Message = {
-  greeting: "Hello",
-};
+let Message = { greeting: "Hello" };
+
+export { Message };
 ```
 
 </CodeTab>

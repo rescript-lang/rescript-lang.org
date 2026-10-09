@@ -16,12 +16,12 @@ The `@genType` decorator may be used to export ReScript values and types to Java
 
 ```res
 @genType
-export type color =
+type color =
   | Red
   | Blue
 
 @genType @react.component
-export make = (~name: string, ~color: color) => {
+let make = (~name: string, ~color: color) => {
   let colorStr = switch color {
   | Red => "red"
   | Blue => "blue"
@@ -42,7 +42,7 @@ const $$toRE818596289: { [key: string]: any } = { Red: 0, Blue: 1 };
 const MyComponentBS = require("./MyComponent.bs");
 
 // tslint:disable-next-line:interface-over-type-literal
-export type color = "Red" | "Blue";
+type color = "Red" | "Blue";
 
 // tslint:disable-next-line:interface-over-type-literal
 export type Props = { readonly color: color; readonly name: string };

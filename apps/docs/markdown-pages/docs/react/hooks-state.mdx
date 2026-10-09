@@ -16,6 +16,8 @@ order: 3
 
 ## Usage
 
+Use this call inside a function component or custom hook.
+
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res nocheck
@@ -23,13 +25,11 @@ let (state, setState) = React.useState(_ => initialState)
 ```
 
 ```js
-var match = React.useState(function () {
-  return initialState;
-});
+let match = React.useState(() => initialState);
 
-var state = match[0];
+let state = match[0];
 
-var setState = match[1];
+let setState = match[1];
 ```
 
 </CodeTab>
@@ -116,9 +116,7 @@ function Example$ControlPanel(props) {
   });
 }
 
-let ControlPanel = {
-  make: Example$ControlPanel,
-};
+let ControlPanel = { make: Example$ControlPanel };
 
 function Example(props) {
   let match = React.useState(() => false);
@@ -128,9 +126,7 @@ function Example(props) {
     children: [
       JsxRuntime.jsxs("section", {
         children: [
-          JsxRuntime.jsx("h1", {
-            children: "More Infos about ReScript",
-          }),
+          JsxRuntime.jsx("h1", { children: "More Infos about ReScript" }),
           props.content,
         ],
       }),
@@ -167,9 +163,7 @@ function Example$ControlPanel(props) {
   );
 }
 
-let ControlPanel = {
-  make: Example$ControlPanel,
-};
+let ControlPanel = { make: Example$ControlPanel };
 
 function Example(props) {
   let match = React.useState(() => false);

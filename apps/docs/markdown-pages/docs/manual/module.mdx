@@ -21,7 +21,7 @@ inside a module definition's `{}` block.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res prelude
 module School = {
   type profession = Teacher | Director
 
@@ -43,10 +43,7 @@ function getProfession(person) {
   }
 }
 
-let School = {
-  person1: "Teacher",
-  getProfession: getProfession,
-};
+let School = { person1: "Teacher", getProfession: getProfession };
 
 export { School };
 ```
@@ -58,14 +55,27 @@ using the `.` notation. This demonstrates modules' utility for namespacing.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 let anotherPerson: School.profession = School.Teacher
 Console.log(School.getProfession(anotherPerson)) /* "A teacher" */
 ```
 
 ```js
-var anotherPerson = /* Teacher */ 0;
-console.log("A teacher");
+function getProfession(person) {
+  if (person === "Teacher") {
+    return "A teacher";
+  } else {
+    return "A director";
+  }
+}
+
+let School = { person1: "Teacher", getProfession: getProfession };
+
+console.log(getProfession("Teacher"));
+
+let anotherPerson = "Teacher";
+
+export { School, anotherPerson };
 ```
 
 </CodeTab>
@@ -74,7 +84,7 @@ Nested modules work too.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 module MyModule = {
   module NestedModule = {
     let message = "hello"
@@ -85,17 +95,23 @@ let message = MyModule.NestedModule.message
 ```
 
 ```js
+function getProfession(person) {
+  if (person === "Teacher") {
+    return "A teacher";
+  } else {
+    return "A director";
+  }
+}
+
+let School = { person1: "Teacher", getProfession: getProfession };
+
 let message = "hello";
 
-let NestedModule = {
-  message: message,
-};
+let NestedModule = { message: message };
 
-let MyModule = {
-  NestedModule: NestedModule,
-};
+let MyModule = { NestedModule: NestedModule };
 
-export { MyModule, message };
+export { School, MyModule, message };
 ```
 
 </CodeTab>
@@ -107,12 +123,24 @@ module's name. Instead of writing:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 let p = School.getProfession(School.person1)
 ```
 
 ```js
-var p = School.getProfession(School.person1);
+function getProfession(person) {
+  if (person === "Teacher") {
+    return "A teacher";
+  } else {
+    return "A director";
+  }
+}
+
+let School = { person1: "Teacher", getProfession: getProfession };
+
+let p = getProfession("Teacher");
+
+export { School, p };
 ```
 
 </CodeTab>
@@ -121,13 +149,25 @@ We can write:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 open School
 let p = getProfession(person1)
 ```
 
 ```js
-var p = School.getProfession(School.person1);
+function getProfession(person) {
+  if (person === "Teacher") {
+    return "A teacher";
+  } else {
+    return "A director";
+  }
+}
+
+let School = { person1: "Teacher", getProfession: getProfession };
+
+let p = getProfession("Teacher");
+
+export { School, p };
 ```
 
 </CodeTab>
@@ -138,7 +178,7 @@ The content of `School` module are made visible (**not** copied into the file, b
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 let p = {
   open School
   getProfession(person1)
@@ -147,7 +187,19 @@ let p = {
 ```
 
 ```js
-var p = School.getProfession(School.person1);
+function getProfession(person) {
+  if (person === "Teacher") {
+    return "A teacher";
+  } else {
+    return "A director";
+  }
+}
+
+let School = { person1: "Teacher", getProfession: getProfession };
+
+let p = getProfession("Teacher");
+
+export { School, p };
 ```
 
 </CodeTab>
@@ -156,7 +208,7 @@ var p = School.getProfession(School.person1);
 
 There are situations where `open` will cause a warning due to existing identifiers (bindings, types) being redefined. Use `open!` to explicitly tell the compiler that this is desired behavior.
 
-```res nocheck
+```res
 let map = (arr, value) => {
   value
 }
@@ -177,7 +229,7 @@ As an alternative to `open`ing a module, you can also destructure a module's fun
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 module User = {
   let user1 = "Anna"
   let user2 = "Franz"
@@ -191,14 +243,27 @@ let {user1: anna, user2: franz} = module(User)
 ```
 
 ```js
-var user1 = "Anna";
+function getProfession(person) {
+  if (person === "Teacher") {
+    return "A teacher";
+  } else {
+    return "A director";
+  }
+}
 
-var user2 = "Franz";
+let School = { person1: "Teacher", getProfession: getProfession };
 
-var User = {
-  user1: user1,
-  user2: user2,
-};
+let user1 = "Anna";
+
+let user2 = "Franz";
+
+let User = { user1: user1, user2: user2 };
+
+let anna = user1;
+
+let franz = user2;
+
+export { School, User, user1, user2, anna, franz };
 ```
 
 </CodeTab>
@@ -213,7 +278,7 @@ Using `include` in a module statically "spreads" a module's content into a new o
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 module BaseComponent = {
   let defaultGreeting = "Hello"
   let getAudience = (~excited) => excited ? "world!" : "world"
@@ -229,6 +294,16 @@ module ActualComponent = {
 ```
 
 ```js
+function getProfession(person) {
+  if (person === "Teacher") {
+    return "A teacher";
+  } else {
+    return "A director";
+  }
+}
+
+let School = { person1: "Teacher", getProfession: getProfession };
+
 function getAudience(excited) {
   if (excited) {
     return "world!";
@@ -237,10 +312,7 @@ function getAudience(excited) {
   }
 }
 
-let BaseComponent = {
-  defaultGreeting: "Hello",
-  getAudience: getAudience,
-};
+let BaseComponent = { defaultGreeting: "Hello", getAudience: getAudience };
 
 let defaultGreeting = "Hey";
 
@@ -254,7 +326,7 @@ let ActualComponent = {
   render: render,
 };
 
-export { BaseComponent, ActualComponent };
+export { School, BaseComponent, ActualComponent };
 ```
 
 </CodeTab>
@@ -281,7 +353,7 @@ inside a signature definition's `{}` block.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 /* Using the types defined above */
 module type EstablishmentType = {
   type profession
@@ -290,7 +362,17 @@ module type EstablishmentType = {
 ```
 
 ```js
-/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
+function getProfession(person) {
+  if (person === "Teacher") {
+    return "A teacher";
+  } else {
+    return "A director";
+  }
+}
+
+let School = { person1: "Teacher", getProfession: getProfession };
+
+export { School };
 ```
 
 </CodeTab>
@@ -322,8 +404,6 @@ concrete type; it's saying "I don't care what the actual type is, but it's used
 as input to `getProfession`". This is useful to fit many modules under the same
 interface:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
-
 ```res nocheck
 module Company: EstablishmentType = {
   type profession = CEO | Designer | Engineer | ...
@@ -333,24 +413,6 @@ module Company: EstablishmentType = {
   let person2 = ...
 }
 ```
-
-```js
-function getProfession(person) {
-  ...
-}
-
-var person1 = ...
-
-var person2 = ...
-
-var Company = {
-  getProfession: getProfession,
-  person1: person1,
-  person2: person2
-};
-```
-
-</CodeTab>
 
 It's also useful to hide the underlying type as an implementation detail others
 can't rely on. If you ask what the type of `Company.profession` is, instead of
@@ -368,7 +430,7 @@ Like modules themselves, module signatures can also be extended by other module 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 module type BaseComponent = {
   let defaultGreeting: string
   let getAudience: (~excited: bool) => string
@@ -382,7 +444,17 @@ module type ActualComponent = {
 ```
 
 ```js
-/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
+function getProfession(person) {
+  if (person === "Teacher") {
+    return "A teacher";
+  } else {
+    return "A director";
+  }
+}
+
+let School = { person1: "Teacher", getProfession: getProfession };
+
+export { School };
 ```
 
 </CodeTab>
@@ -396,7 +468,7 @@ type.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 module type MyList = {
   include (module type of List)
   let myListFun: list<'a> => list<'a>
@@ -404,7 +476,17 @@ module type MyList = {
 ```
 
 ```js
-/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
+function getProfession(person) {
+  if (person === "Teacher") {
+    return "A teacher";
+  } else {
+    return "A director";
+  }
+}
+
+let School = { person1: "Teacher", getProfession: getProfession };
+
+export { School };
 ```
 
 </CodeTab>
@@ -419,18 +501,28 @@ in the ecosystem to also document the public API of their corresponding modules.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 /* file React.res (implementation. Compiles to module React) */
 type state = int
 let render = (str) => str
 ```
 
 ```js
+function getProfession(person) {
+  if (person === "Teacher") {
+    return "A teacher";
+  } else {
+    return "A director";
+  }
+}
+
+let School = { person1: "Teacher", getProfession: getProfession };
+
 function render(str) {
   return str;
 }
 
-export { render };
+export { School, render };
 ```
 
 </CodeTab>
@@ -485,28 +577,30 @@ module MakeSet = (Item: Comparable) => {
 ```
 
 ```js
-var List = require("./stdlib/list.js");
+import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
+
+function getProfession(person) {
+  if (person === "Teacher") {
+    return "A teacher";
+  } else {
+    return "A director";
+  }
+}
+
+let School = { person1: "Teacher", getProfession: getProfession };
 
 function MakeSet(Item) {
-  var add = function (currentSet, newItem) {
-    if (
-      List.exists(function (x) {
-        return Item.equal(x, newItem);
-      }, currentSet)
-    ) {
+  let add = (currentSet, newItem) => {
+    if (Stdlib_List.some(currentSet, (x) => Item.equal(x, newItem))) {
       return currentSet;
     } else {
-      return {
-        hd: newItem,
-        tl: currentSet,
-      };
+      return { hd: newItem, tl: currentSet };
     }
   };
-  return {
-    empty: /* [] */ 0,
-    add: add,
-  };
+  return { empty: /* [] */ 0, add: add };
 }
+
+export { School, MakeSet };
 ```
 
 </CodeTab>
@@ -516,7 +610,7 @@ creating a set, whose items are pairs of integers.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 module IntPair = {
   type t = (int, int)
   let equal = ((x1: int, y1: int), (x2, y2)) => x1 == x2 && y1 == y2
@@ -530,21 +624,25 @@ module SetOfIntPairs = MakeSet(IntPair)
 ```js
 import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
 
+function getProfession(person) {
+  if (person === "Teacher") {
+    return "A teacher";
+  } else {
+    return "A director";
+  }
+}
+
+let School = { person1: "Teacher", getProfession: getProfession };
+
 function MakeSet(Item) {
   let add = (currentSet, newItem) => {
     if (Stdlib_List.some(currentSet, (x) => Item.equal(x, newItem))) {
       return currentSet;
     } else {
-      return {
-        hd: newItem,
-        tl: currentSet,
-      };
+      return { hd: newItem, tl: currentSet };
     }
   };
-  return {
-    empty: /* [] */ 0,
-    add: add,
-  };
+  return { empty: /* [] */ 0, add: add };
 }
 
 function equal(param, param$1) {
@@ -559,28 +657,19 @@ function create(x, y) {
   return [x, y];
 }
 
-let IntPair = {
-  equal: equal,
-  create: create,
-};
+let IntPair = { equal: equal, create: create };
 
 function add(currentSet, newItem) {
   if (Stdlib_List.some(currentSet, (x) => equal(x, newItem))) {
     return currentSet;
   } else {
-    return {
-      hd: newItem,
-      tl: currentSet,
-    };
+    return { hd: newItem, tl: currentSet };
   }
 }
 
-let SetOfIntPairs = {
-  empty: /* [] */ 0,
-  add: add,
-};
+let SetOfIntPairs = { empty: /* [] */ 0, add: add };
 
-export { MakeSet, IntPair, SetOfIntPairs };
+export { School, MakeSet, IntPair, SetOfIntPairs };
 ```
 
 </CodeTab>
@@ -593,8 +682,6 @@ for function types, but with types capitalized to represent the signatures of
 modules the functor accepts as arguments and return values. In the
 previous example, we're exposing the backing type of a set; by giving `MakeSet`
 a functor signature, we can hide the underlying data structure!
-
-<CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res nocheck
 module type Comparable = ...
@@ -609,12 +696,6 @@ module MakeSet: MakeSetType = (Item: Comparable) => {
   ...
 }
 ```
-
-```js
-// Empty output
-```
-
-</CodeTab>
 
 ## Exotic Module Filenames
 

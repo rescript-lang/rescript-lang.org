@@ -24,7 +24,7 @@ const params = useParams<{ tag: string; item: string }>()
 
 In ReScript we can create a module function that will return a typed response for the `useParams` hook.
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 ```res
 module Next = {
   // define our module function
@@ -74,42 +74,56 @@ function MakeParams(Params) {
   return {};
 }
 
-let Next = {
-  MakeParams: MakeParams
-};
+let Next = { MakeParams: MakeParams };
 
-function _tempFile$Component(props) {
+function Example$Component(props) {
   let params = Navigation.useParams();
   return JsxRuntime.jsxs("div", {
     children: [
-      JsxRuntime.jsx("p", {
-        children: "Tag: " + params.tag
-      }),
-      JsxRuntime.jsx("p", {
-        children: "Item: " + params.item
-      })
-    ]
+      JsxRuntime.jsx("p", { children: "Tag: " + params.tag }),
+      JsxRuntime.jsx("p", { children: "Item: " + params.item }),
+    ],
   });
 }
 
-let Component = {
-  make: _tempFile$Component
-};
+let Component = { make: Example$Component };
 
-export {
-  Next,
-  Component,
-}
+export { Next, Component };
 ````
 
-</ CodeTab>
+```jsx
+import * as Navigation from "next/navigation";
+import * as JsxRuntime from "react/jsx-runtime";
+
+function MakeParams(Params) {
+  return {};
+}
+
+let Next = { MakeParams: MakeParams };
+
+function Example$Component(props) {
+  let params = Navigation.useParams();
+  return (
+    <div>
+      <p>{"Tag: " + params.tag}</p>
+      <p>{"Item: " + params.item}</p>
+    </div>
+  );
+}
+
+let Component = { make: Example$Component };
+
+export { Next, Component };
+```
+
+</CodeTab>
 
 ## Sharing a type with an external binding
 
 This becomes incredibly useful when you need to have types that are unique to a project but shared across multiple components.
 Let's say you want to create a library with a `getEnv` function to load in environment variables found in `import.meta.env`.
 
-```res
+```res prelude
 @val external env: 'a = "import.meta.env"
 
 let getEnv = () => {
@@ -119,7 +133,7 @@ let getEnv = () => {
 
 It's not possible to define types for this that will work for every project, so we just set it as 'a and the consumer of our library can define the return type.
 
-```res nocheck
+```res
 type t = {"LOG_LEVEL": string}
 
 let values: t = getEnv()
@@ -129,7 +143,7 @@ This isn't great and it doesn't take advantage of ReScript's type system and abi
 
 We can instead create a module function that can return a module that has contains a `getEnv` function that has a typed response.
 
-```res
+```res prelude
 module MakeEnv = (
   E: {
     type t
@@ -147,7 +161,7 @@ And now consumers of our library can define the types and create a custom versio
 Notice that in the JavaScript output that the `import.meta.env` is used directly and doesn't require any function calls or runtime overhead.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
-```res nocheck
+```res
 module Env = MakeEnv({
 	type t = {"LOG_LEVEL": string}
 })
@@ -156,21 +170,34 @@ let values = Env.getEnv()
 
 ````
 ```js
-var Env = {
-  getEnv: getEnv
-};
+function getEnv() {
+  return import.meta.env;
+}
 
-var values = import.meta.env;
+function MakeEnv(E) {
+  let getEnv = () => import.meta.env;
+  return { getEnv: getEnv };
+}
+
+function getEnv$1() {
+  return import.meta.env;
+}
+
+let Env = { getEnv: getEnv$1 };
+
+let values = import.meta.env;
+
+export { getEnv, MakeEnv, Env, values };
 ````
 
-</ CodeTab>
+</CodeTab>
 
 ## Shared functions
 
 You might want to share functions across modules, like a way to log a value or render it in React.
 Here's an example of module function that takes in a type and a transform to string function.
 
-```res
+```res prelude
 module MakeDataModule = (
   T: {
     type t
@@ -190,7 +217,7 @@ module MakeDataModule = (
 You can now take a module with a type of `t` and a `toString` function and create a new module that has the `log` function and the `Render` component.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
-```res nocheck
+```res prelude
 module Person = {
   type t = { firstName: string, lastName: string } 
   let toString = person => person.firstName ++ person.lastName
@@ -201,40 +228,51 @@ module PersonData = MakeDataModule(Person)
 ````
 
 ```js
-// Notice that none of the JS output references the MakeDataModule function
+function getEnv() {
+  return import.meta.env;
+}
+
+function MakeEnv(E) {
+  let getEnv = () => import.meta.env;
+  return { getEnv: getEnv };
+}
+
+function MakeDataModule(T) {
+  let log = (a) => {
+    console.log("The value is " + T.toString(a));
+  };
+  let Example$MakeDataModule$Render = (props) => T.toString(props.value);
+  let Render = { make: Example$MakeDataModule$Render };
+  return { log: log, Render: Render };
+}
 
 function toString(person) {
   return person.firstName + person.lastName;
 }
 
-var Person = {
-  toString: toString
-};
+let Person = { toString: toString };
 
 function log(a) {
   console.log("The value is " + toString(a));
 }
 
-function Person$MakeDataModule$Render(props) {
+function Example$MakeDataModule$Render(props) {
   return toString(props.value);
 }
 
-var Render = {
-  make: Person$MakeDataModule$Render
-};
+let Render = { make: Example$MakeDataModule$Render };
 
-var PersonData = {
-  log: log,
-  Render: Render
-};
+let PersonData = { log: log, Render: Render };
+
+export { getEnv, MakeEnv, MakeDataModule, Person, PersonData };
 ````
 
 </CodeTab>
 
 Now the `PersonData` module has the functions from the `MakeDataModule`.
 
-<CodeTab labels={["ReScript", "JS Output"]}>
-```res nocheck
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
+```res
 @react.component
 let make = (~person) => {
   let handleClick = _ => PersonData.log(person)
@@ -248,25 +286,120 @@ let make = (~person) => {
 }
 ```
 ```js
-function Person$1(props) {
-  var person = props.person;
-  var handleClick = function (param) {
-    log(person);
-  };
-  return JsxRuntime.jsxs("div", {
-              children: [
-                "Hello ",
-                JsxRuntime.jsx(Person$MakeDataModule$Render, {
-                      value: person
-                    }),
-                JsxRuntime.jsx("button", {
-                      children: "Log value to console",
-                      onClick: handleClick
-                    })
-              ]
-            });
+import * as JsxRuntime from "react/jsx-runtime";
+
+function getEnv() {
+return import.meta.env;
 }
+
+function MakeEnv(E) {
+let getEnv = () => import.meta.env;
+return { getEnv: getEnv };
+}
+
+function MakeDataModule(T) {
+let log = (a) => {
+console.log("The value is " + T.toString(a));
+};
+let Example$MakeDataModule$Render = (props) => T.toString(props.value);
+let Render = { make: Example$MakeDataModule$Render };
+return { log: log, Render: Render };
+}
+
+function toString(person) {
+return person.firstName + person.lastName;
+}
+
+let Person = { toString: toString };
+
+function log(a) {
+console.log("The value is " + toString(a));
+}
+
+function Example$MakeDataModule$Render(props) {
+return toString(props.value);
+}
+
+let Render = { make: Example$MakeDataModule$Render };
+
+let PersonData = { log: log, Render: Render };
+
+function Example(props) {
+let person = props.person;
+let handleClick = (param) => log(person);
+return JsxRuntime.jsxs("div", {
+children: [
+"Hello ",
+JsxRuntime.jsx(Example$MakeDataModule$Render, { value: person }),
+JsxRuntime.jsx("button", {
+children: "Log value to console",
+onClick: handleClick,
+}),
+],
+});
+}
+
+let make = Example;
+
+export { getEnv, MakeEnv, MakeDataModule, Person, PersonData, make };
 ```
+
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+function getEnv() {
+  return import.meta.env;
+}
+
+function MakeEnv(E) {
+  let getEnv = () => import.meta.env;
+  return { getEnv: getEnv };
+}
+
+function MakeDataModule(T) {
+  let log = (a) => {
+    console.log("The value is " + T.toString(a));
+  };
+  let Example$MakeDataModule$Render = (props) => T.toString(props.value);
+  let Render = { make: Example$MakeDataModule$Render };
+  return { log: log, Render: Render };
+}
+
+function toString(person) {
+  return person.firstName + person.lastName;
+}
+
+let Person = { toString: toString };
+
+function log(a) {
+  console.log("The value is " + toString(a));
+}
+
+function Example$MakeDataModule$Render(props) {
+  return toString(props.value);
+}
+
+let Render = { make: Example$MakeDataModule$Render };
+
+let PersonData = { log: log, Render: Render };
+
+function Example(props) {
+  let person = props.person;
+  let handleClick = (param) => log(person);
+  return (
+    <div>
+      {"Hello "}
+      <Render.make value={person} />
+      <button onClick={handleClick}>{"Log value to console"}</button>
+    </div>
+  );
+}
+
+let make = Example;
+
+export { getEnv, MakeEnv, MakeDataModule, Person, PersonData, make };
+```
+
 </CodeTab>
 
 ## Dependency injection
@@ -307,26 +440,68 @@ let updateDb = Db.client.write("new value")
 ```js
 import * as DatabaseJs from "database.js";
 
-function MakeDbConnection(Config) {
-  let client = DatabaseJs.makeClient(Config.host, Config.database, Config.username, Config.password);
-  return {
-    client: client
+function getEnv() {
+  return import.meta.env;
+}
+
+function MakeEnv(E) {
+  let getEnv = () => import.meta.env;
+  return { getEnv: getEnv };
+}
+
+function MakeDataModule(T) {
+  let log = (a) => {
+    console.log("The value is " + T.toString(a));
   };
+  let Example$MakeDataModule$Render = (props) => T.toString(props.value);
+  let Render = { make: Example$MakeDataModule$Render };
+  return { log: log, Render: Render };
+}
+
+function toString(person) {
+  return person.firstName + person.lastName;
+}
+
+let Person = { toString: toString };
+
+function log(a) {
+  console.log("The value is " + toString(a));
+}
+
+function Example$MakeDataModule$Render(props) {
+  return toString(props.value);
+}
+
+let Render = { make: Example$MakeDataModule$Render };
+
+let PersonData = { log: log, Render: Render };
+
+function MakeDbConnection(Config) {
+  let client = DatabaseJs.makeClient(
+    Config.host,
+    Config.database,
+    Config.username,
+    Config.password,
+  );
+  return { client: client };
 }
 
 let client = DatabaseJs.makeClient("localhost", "mydb", "root", "password");
 
-let Db = {
-  client: client
-};
+let Db = { client: client };
 
 let updateDb = client.write("new value");
 
 export {
+  getEnv,
+  MakeEnv,
+  MakeDataModule,
+  Person,
+  PersonData,
   MakeDbConnection,
   Db,
   updateDb,
-}
+};
 ````
 
 </CodeTab>

@@ -36,10 +36,12 @@ function customDouble(n) {
 }
 
 function customTriple(n) {
-  return Math.imul(n, 3);
+  return (n * 3) | 0;
 }
 
-var MyModule = {};
+let MyModule = {};
+
+export { customDouble, customTriple, MyModule };
 ```
 
 </CodeTab>
