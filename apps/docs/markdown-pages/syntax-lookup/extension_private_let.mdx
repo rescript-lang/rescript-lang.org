@@ -20,18 +20,17 @@ module Calc = {
 ```
 
 ```js
-function $$double(x) {
+function double(x) {
   return x << 1;
 }
 
 function triple(x) {
-  return Math.imul(x, 3);
+  return (x * 3) | 0;
 }
 
-var Calc = {
-  $$double: $$double,
-  triple: triple,
-};
+let Calc = { double: double, triple: triple };
+
+export { Calc };
 ```
 
 </CodeTab>

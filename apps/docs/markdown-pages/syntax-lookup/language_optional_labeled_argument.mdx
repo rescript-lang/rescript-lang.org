@@ -37,6 +37,8 @@ function print(text, logLevel) {
 print("An info", undefined);
 
 print("An error", "error");
+
+export { print };
 ```
 
 </CodeTab>
@@ -60,7 +62,7 @@ print("A warning", ~logLevel=#warn)
 
 ```js
 function print(text, logLevelOpt) {
-  var logLevel = logLevelOpt !== undefined ? logLevelOpt : "info";
+  let logLevel = logLevelOpt !== undefined ? logLevelOpt : "info";
   if (logLevel === "warn") {
     console.warn(text);
   } else if (logLevel === "error") {
@@ -73,6 +75,8 @@ function print(text, logLevelOpt) {
 print("An info", undefined);
 
 print("A warning", "warn");
+
+export { print };
 ```
 
 </CodeTab>

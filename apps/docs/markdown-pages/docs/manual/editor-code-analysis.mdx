@@ -46,6 +46,8 @@ Reactive dead code updates are a newer enhancement of Editor Code Analysis and r
 ### 1. **Unused Record Fields**
 
 ```rescript
+type item = {id: string, checked: bool}
+
 type useReturn = {
   items: array<item>,
   toggleItemChecked: string => unit, // ← Never used
@@ -85,10 +87,11 @@ Old validation logic might remain after refactors—clean it up.
 
 ### 4. **Unnecessary Interface Exposure**
 
-```rescript
+```resi
 // DrilldownTarget.resi
-MetricParam.parse // ← Never used
-MetricParam.serialize // ← Never used
+type t
+let parse: string => option<t> // ← Never used
+let serialize: t => string // ← Never used
 ```
 
 Keep interfaces minimal by removing unused exports.
@@ -96,8 +99,8 @@ Keep interfaces minimal by removing unused exports.
 ### 5. **Unused Functions**
 
 ```rescript
-let routerUrlToPath = ... // ← Never used
-let routeUrlStartsWith = ... // ← Never used
+let routerUrlToPath = url => url->String.split("?")->Array.get(0) // ← Never used
+let routeUrlStartsWith = (url, prefix) => url->String.startsWith(prefix) // ← Never used
 ```
 
 Removing these often uncovers further unused logic.
@@ -126,6 +129,8 @@ type user = {
 Permanently marks code as alive (no future warnings).
 
 ```rescript
+type user = {name: string}
+
 @live
 let getUserName = user => user.name
 ```

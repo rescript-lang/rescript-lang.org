@@ -22,12 +22,23 @@ columnNumberEnd->Console.log
 ```
 
 ```js
-var fileName = "testmodule.res";
+let fileName = "Example.res";
 
 console.log(fileName);
+
 console.log(1);
+
 console.log(65);
+
 console.log(72);
+
+let lineNumber = 1;
+
+let columnNumberStart = 65;
+
+let columnNumberEnd = 72;
+
+export { fileName, lineNumber, columnNumberStart, columnNumberEnd };
 ```
 
 </CodeTab>

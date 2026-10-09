@@ -16,6 +16,8 @@ The `useRef` hooks creates and manages mutable containers inside your React comp
 
 ## Usage
 
+Use this call inside a function component or custom hook.
+
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res nocheck
@@ -23,8 +25,7 @@ let refContainer = React.useRef(initialValue)
 ```
 
 ```js
-var button = React.useRef(null);
-React.useRef(0);
+let refContainer = React.useRef(initialValue);
 ```
 
 </CodeTab>

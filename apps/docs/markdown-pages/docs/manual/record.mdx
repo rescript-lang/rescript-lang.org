@@ -27,7 +27,7 @@ type person = {
 ```
 
 ```js
-// Empty output
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>
@@ -61,10 +61,7 @@ let person = {
 let person = {
   age: 90,
   name: "Test Person",
-  notificationSettings: {
-    sendEmails: true,
-    allowPasswordLogin: false,
-  },
+  notificationSettings: { sendEmails: true, allowPasswordLogin: false },
 };
 
 export { person };
@@ -110,10 +107,7 @@ let person = {
 let person = {
   age: 90,
   name: "Test Person",
-  notificationSettings: {
-    sendEmails: true,
-    allowPasswordLogin: false,
-  },
+  notificationSettings: { sendEmails: true, allowPasswordLogin: false },
 };
 
 export { person };
@@ -135,10 +129,9 @@ let me = {
 ```
 
 ```js
-var me = {
-  age: 5,
-  name: "Big ReScript",
-};
+let me = { age: 5, name: "Big ReScript" };
+
+export { me };
 ```
 
 </CodeTab>
@@ -155,10 +148,7 @@ type schoolPerson = {age: int, name: string}
 ```
 
 ```js
-let me = {
-  age: 5,
-  name: "Big ReScript",
-};
+let me = { age: 5, name: "Big ReScript" };
 
 export { me };
 ```
@@ -176,14 +166,11 @@ let me2 = {School.age: 20, name: "Big ReScript"}
 ```
 
 ```js
-var me = {
-  age: 20,
-  name: "Big ReScript",
-};
-var me2 = {
-  age: 20,
-  name: "Big ReScript",
-};
+let me = { age: 20, name: "Big ReScript" };
+
+let me2 = { age: 20, name: "Big ReScript" };
+
+export { me, me2 };
 ```
 
 </CodeTab>
@@ -201,10 +188,7 @@ let name = me.name
 ```
 
 ```js
-let me = {
-  age: 5,
-  name: "Big ReScript",
-};
+let me = { age: 5, name: "Big ReScript" };
 
 let name = "Big ReScript";
 
@@ -224,15 +208,9 @@ let meNextYear = {...me, age: me.age + 1}
 ```
 
 ```js
-let meNextYear = {
-  age: 6,
-  name: "Big ReScript",
-};
+let meNextYear = { age: 6, name: "Big ReScript" };
 
-let me = {
-  age: 5,
-  name: "Big ReScript",
-};
+let me = { age: 5, name: "Big ReScript" };
 
 export { me, meNextYear };
 ```
@@ -258,17 +236,11 @@ baby.age = baby.age + 1 // `baby.age` is now 6. Happy birthday!
 ```
 
 ```js
-let baby = {
-  name: "Baby ReScript",
-  age: 5,
-};
+let baby = { name: "Baby ReScript", age: 5 };
 
 baby.age = (baby.age + 1) | 0;
 
-let me = {
-  age: 5,
-  name: "Big ReScript",
-};
+let me = { age: 5, name: "Big ReScript" };
 
 export { me, baby };
 ```
@@ -295,10 +267,7 @@ type optionalPerson = {
 ```
 
 ```js
-let me = {
-  age: 5,
-  name: "Big ReScript",
-};
+let me = { age: 5, name: "Big ReScript" };
 
 export { me };
 ```
@@ -330,14 +299,9 @@ let friend: optionalPerson = {
 ```
 
 ```js
-let me = {
-  age: 5,
-  name: "Big ReScript",
-};
+let me = { age: 5, name: "Big ReScript" };
 
-let friend = {
-  age: 7,
-};
+let friend = { age: 7 };
 
 export { me, friend };
 ```
@@ -370,10 +334,7 @@ let withoutName = {
 ```
 
 ```js
-let me = {
-  age: 123,
-  name: "Hello",
-};
+let me = { age: 123, name: "Hello" };
 
 let newrecord = { ...me };
 
@@ -410,10 +371,7 @@ let withoutName = {
 ```
 
 ```js
-let me = {
-  age: 123,
-  name: "Hello",
-};
+let me = { age: 123, name: "Hello" };
 
 let maybeName = "My Name";
 
@@ -458,10 +416,7 @@ let isRescript = switch me.name {
 ```js
 let isRescript = "Hello" === "ReScript";
 
-let me = {
-  age: 123,
-  name: "Hello",
-};
+let me = { age: 123, name: "Hello" };
 
 export { me, isRescript };
 ```
@@ -493,10 +448,7 @@ let isRescript = switch me {
 ```js
 let isRescript = "Hello" === "ReScript";
 
-let me = {
-  age: 123,
-  name: "Hello",
-};
+let me = { age: 123, name: "Hello" };
 
 export { me, isRescript };
 ```
@@ -525,10 +477,7 @@ let nameWasSet = switch me {
 ```
 
 ```js
-let me = {
-  age: 123,
-  name: "Hello",
-};
+let me = { age: 123, name: "Hello" };
 
 let nameWasSet = true;
 
@@ -627,7 +576,7 @@ let name = nameFromB(a :> b)
 
 Notice how `a` now has more fields than `b`, but we can still coerce `a` to `b` because `b` has a subset of the fields of `a`.
 
-In combination with [optional record fields](./record.mdx#optional-record-fields), one may coerce a mandatory field of an `option` type to an optional field:
+Coercion requires matching field optionality. In ReScript 12, a mandatory `option<int>` field cannot be coerced directly to an optional `int` field. Construct the target record explicitly instead:
 
 ```rescript
 type a = {
@@ -650,7 +599,8 @@ let a: a = {
   age: Some(35),
 }
 
-let name = nameFromB(a :> b)
+let b: b = {name: a.name, age: ?a.age}
+let name = nameFromB(b)
 ```
 
 ## Tips & Tricks
@@ -661,7 +611,7 @@ With records, you **cannot** say "I'd like this function to take any record type
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 type person = {age: int, name: string}
 type monster = {age: int, hasTentacles: bool}
 
@@ -669,9 +619,13 @@ let getAge = (entity) => entity.age
 ```
 
 ```js
+let ExamplePrelude = { me: { age: 5, name: "Big ReScript" } };
+
 function getAge(entity) {
   return entity.age;
 }
+
+export { ExamplePrelude, getAge };
 ```
 
 </CodeTab>
@@ -679,6 +633,11 @@ function getAge(entity) {
 Instead, `getAge` will infer that the parameter `entity` must be of type `monster`, the closest record type with the field `age`. The following code's last line fails:
 
 ```res nocheck
+// This example intentionally rejects the second call to getAge.
+type person = {age: int, name: string}
+type monster = {age: int, hasTentacles: bool}
+let getAge = entity => entity.age
+
 let kraken = {age: 9999, hasTentacles: true}
 let me = {age: 5, name: "Baby ReScript"}
 

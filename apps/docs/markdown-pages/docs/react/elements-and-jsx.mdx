@@ -108,13 +108,9 @@ import * as JsxRuntime from "react/jsx-runtime";
 
 let name = "Andrea";
 
-let element = JsxRuntime.jsx("div", {
-  children: "Hello " + name,
-});
+let element = JsxRuntime.jsx("div", { children: "Hello " + name });
 
-JsxRuntime.jsx("div", {
-  children: element,
-});
+JsxRuntime.jsx("div", { children: element });
 
 export { name, element };
 ```
@@ -182,10 +178,7 @@ import * as React from "react";
 
 function render(article) {
   let children = ["Introduction", "Body"];
-  let props = {
-    title: "Article #1",
-    children: null,
-  };
+  let props = { title: "Article #1", children: null };
   return React.createElement(article, props, ...children);
 }
 
@@ -227,14 +220,9 @@ React.cloneElement(original, {"className": "world", "data-name": "some name"})
 import * as React from "react";
 import * as JsxRuntime from "react/jsx-runtime";
 
-let original = JsxRuntime.jsx("div", {
-  className: "hello",
-});
+let original = JsxRuntime.jsx("div", { className: "hello" });
 
-React.cloneElement(original, {
-  className: "world",
-  "data-name": "some name",
-});
+React.cloneElement(original, { className: "world", "data-name": "some name" });
 
 export { original };
 ```
@@ -245,10 +233,7 @@ import * as JsxRuntime from "react/jsx-runtime";
 
 let original = <div className={"hello"} />;
 
-React.cloneElement(original, {
-  className: "world",
-  "data-name": "some name",
-});
+React.cloneElement(original, { className: "world", "data-name": "some name" });
 
 export { original };
 ```

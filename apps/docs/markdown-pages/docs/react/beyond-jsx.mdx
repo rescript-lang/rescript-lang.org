@@ -56,7 +56,7 @@ module Container = {
 
 </div>
 
-<CodeTab labels={["Decorated", "Without Decorator", "JS Output"]}>
+<CodeTab labels={["Decorated", "Without Decorator", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 module Friend = {
@@ -113,6 +113,42 @@ let Friend$1 = { make: Example$Friend };
 export { ExamplePrelude, Friend$1 as Friend };
 ```
 
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$ExamplePrelude$Friend(props) {
+  return props.name + ", " + props.age.toString();
+}
+
+let Friend = { make: Example$ExamplePrelude$Friend };
+
+function Example$ExamplePrelude$Container(props) {
+  return (
+    <>
+      {props.width.toString()}
+      {props.children}
+    </>
+  );
+}
+
+let Container = { make: Example$ExamplePrelude$Container };
+
+let ExamplePrelude = { Friend: Friend, Container: Container };
+
+function Example$Friend(props) {
+  return (
+    <div>
+      {props.name}
+      {props.children}
+    </div>
+  );
+}
+
+let Friend$1 = { make: Example$Friend };
+
+export { ExamplePrelude, Friend$1 as Friend };
+```
+
 </CodeTab>
 
 The decorator produces the same basic interface:
@@ -132,7 +168,7 @@ So now that we know how the ReScript React component transformation works, let's
 
 JSX with a custom component ("capitalized JSX") uses `React.jsx` or `React.jsxs`, which call the corresponding functions from `react/jsx-runtime`. Here is an example of a React component without children:
 
-<CodeTab labels={["JSX", "Without JSX", "JS Output"]}>
+<CodeTab labels={["JSX", "Without JSX", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 let _ = <Friend name="Fred" age=20 />
@@ -164,11 +200,36 @@ JsxRuntime.jsx(Example$Friend, { name: "Fred", age: 20 });
 export { Friend, Container };
 ```
 
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Friend(props) {
+  return props.name + ", " + props.age.toString();
+}
+
+let Friend = { make: Example$Friend };
+
+function Example$Container(props) {
+  return (
+    <>
+      {props.width.toString()}
+      {props.children}
+    </>
+  );
+}
+
+let Container = { make: Example$Container };
+
+<Friend.make name={"Fred"} age={20} />;
+
+export { Friend, Container };
+```
+
 </CodeTab>
 
 The component function is `Friend.make`, and the props are passed as a record. With multiple children, JSX uses `React.jsxs` and includes them in the `children` prop:
 
-<CodeTab labels={["JSX", "Without JSX", "JS Output"]}>
+<CodeTab labels={["JSX", "Without JSX", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 <Container width=200>
@@ -209,6 +270,34 @@ JsxRuntime.jsxs(Example$Container, {
 export { Friend, Container };
 ```
 
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Friend(props) {
+  return props.name + ", " + props.age.toString();
+}
+
+let Friend = { make: Example$Friend };
+
+function Example$Container(props) {
+  return (
+    <>
+      {props.width.toString()}
+      {props.children}
+    </>
+  );
+}
+
+let Container = { make: Example$Container };
+
+<Container.make width={200}>
+  {"Hello"}
+  {"World"}
+</Container.make>;
+
+export { Friend, Container };
+```
+
 </CodeTab>
 
 `React.createElement` and `React.createElementVariadic` remain available for manually creating elements. ReScript v12's JSX transformation uses the automatic runtime functions shown above.
@@ -217,7 +306,7 @@ export { Friend, Container };
 
 "Uncapitalized JSX" expressions are treated as DOM elements and use `ReactDOM.jsx` or `ReactDOM.jsxs`:
 
-<CodeTab labels={["JSX", "Without JSX", "JS Output"]}>
+<CodeTab labels={["JSX", "Without JSX", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 <div title="test"/>
@@ -249,11 +338,36 @@ JsxRuntime.jsx("div", { title: "test" });
 export { Friend, Container };
 ```
 
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Friend(props) {
+  return props.name + ", " + props.age.toString();
+}
+
+let Friend = { make: Example$Friend };
+
+function Example$Container(props) {
+  return (
+    <>
+      {props.width.toString()}
+      {props.children}
+    </>
+  );
+}
+
+let Container = { make: Example$Container };
+
+<div title={"test"} />;
+
+export { Friend, Container };
+```
+
 </CodeTab>
 
 The same goes for uncapitalized JSX with children:
 
-<CodeTab labels={["JSX", "Without JSX", "JS Output"]}>
+<CodeTab labels={["JSX", "Without JSX", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 <div title="test">
@@ -283,6 +397,33 @@ function Example$Container(props) {
 let Container = { make: Example$Container };
 
 JsxRuntime.jsx("div", { children: JsxRuntime.jsx("span", {}), title: "test" });
+
+export { Friend, Container };
+```
+
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Friend(props) {
+  return props.name + ", " + props.age.toString();
+}
+
+let Friend = { make: Example$Friend };
+
+function Example$Container(props) {
+  return (
+    <>
+      {props.width.toString()}
+      {props.children}
+    </>
+  );
+}
+
+let Container = { make: Example$Container };
+
+<div title={"test"}>
+  <span />
+</div>;
 
 export { Friend, Container };
 ```

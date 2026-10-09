@@ -24,13 +24,15 @@ let expensiveFilesRead = Lazy.make(() => {
 ```
 
 ```js
-import * as Lazy from "./stdlib/Lazy.js";
 import * as Nodefs from "node:fs";
+import * as Stdlib_Lazy from "@rescript/runtime/lib/es6/Stdlib_Lazy.js";
 
-let expensiveFilesRead = Lazy.make(() => {
+let expensiveFilesRead = Stdlib_Lazy.make(() => {
   console.log("Reading dir");
   return Nodefs.readdirSync("./pages");
 });
+
+export { expensiveFilesRead };
 ```
 
 </CodeTab>

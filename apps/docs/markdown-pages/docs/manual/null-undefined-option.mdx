@@ -52,7 +52,9 @@ To represent the concept of "maybe null", you'd turn this into an `option` type 
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res prelude
+@val external personHasACar: bool = "personHasACar"
+
 let licenseNumber =
   if personHasACar {
     Some(5)
@@ -62,7 +64,9 @@ let licenseNumber =
 ```
 
 ```js
-var licenseNumber = personHasACar ? 5 : undefined;
+let licenseNumber = personHasACar ? 5 : undefined;
+
+export { licenseNumber };
 ```
 
 </CodeTab>
@@ -71,7 +75,7 @@ Later on, when another piece of code receives such value, it'd be forced to hand
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 switch licenseNumber {
 | None =>
   Console.log("The person doesn't have a car")
@@ -81,13 +85,15 @@ switch licenseNumber {
 ```
 
 ```js
-var number = licenseNumber;
+let licenseNumber = personHasACar ? 5 : undefined;
 
-if (number !== undefined) {
-  console.log("The person's license number is " + number.toString());
+if (licenseNumber !== undefined) {
+  console.log("The person's license number is " + licenseNumber.toString());
 } else {
   console.log("The person doesn't have a car");
 }
+
+export { licenseNumber };
 ```
 
 </CodeTab>
@@ -105,9 +111,11 @@ let x = Some(5)
 ```
 
 ```js
+let licenseNumber = personHasACar ? 5 : undefined;
+
 let x = 5;
 
-export { x };
+export { licenseNumber, x };
 ```
 
 </CodeTab>
@@ -121,9 +129,11 @@ let x = None
 ```
 
 ```js
+let licenseNumber = personHasACar ? 5 : undefined;
+
 let x;
 
-export { x };
+export { licenseNumber, x };
 ```
 
 </CodeTab>
@@ -151,7 +161,9 @@ If you're receiving, for example, a JS string that can be `null` and `undefined`
 ```
 
 ```js
-/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
+let licenseNumber = personHasACar ? 5 : undefined;
+
+export { licenseNumber };
 ```
 
 </CodeTab>
@@ -170,11 +182,13 @@ let result = validate(personId)
 ```js
 import * as MyIdValidator from "MyIdValidator";
 
+let licenseNumber = personHasACar ? 5 : undefined;
+
 let personId = "abc123";
 
 let result = MyIdValidator.validate(personId);
 
-export { personId, result };
+export { licenseNumber, personId, result };
 ```
 
 </CodeTab>

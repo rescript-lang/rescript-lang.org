@@ -17,7 +17,6 @@ that have no overlap in their runtime representation, or **record** objects that
 @unboxed
 type listItemValue = String(string) | Boolean(bool) | Number(float)
 let myArray = [String("Hello"), Boolean(true), Boolean(false), Number(13.37)]
-let studentName = Name("Joe")
 
 @unboxed
 type greeting = {message: string}
@@ -25,8 +24,11 @@ let hi = {message: "hello!"}
 ```
 
 ```js
-var myArray = ["hello", true, false, 13.37];
-var hi = "hello!";
+let myArray = ["Hello", true, false, 13.37];
+
+let hi = "hello!";
+
+export { myArray, hi };
 ```
 
 </CodeTab>

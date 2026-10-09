@@ -117,7 +117,7 @@ let make = () => {
 
   React.useEffectOnEveryRender(() => {
     open! Document
-    document->setTitle(`You clicked ${Belt.Int.toString(count)} times!`)
+    document->setTitle(`You clicked ${Int.toString(count)} times!`)
     None
   })
 
@@ -125,7 +125,7 @@ let make = () => {
     setCount(prev => prev + 1)
   }
 
-  let msg = "You clicked" ++ Belt.Int.toString(count) ++  "times"
+  let msg = "You clicked" ++ Int.toString(count) ++  "times"
 
   <div>
     <p>{React.string(msg)}</p>
@@ -145,19 +145,14 @@ function Example(props) {
   let setCount = match[1];
   let count = match[0];
   React.useEffect(() => {
-    document.title = `You clicked ` + String(count) + ` times!`;
+    document.title = `You clicked ` + count.toString() + ` times!`;
   });
   let onClick = (_evt) => setCount((prev) => (prev + 1) | 0);
-  let msg = "You clicked" + String(count) + "times";
+  let msg = "You clicked" + count.toString() + "times";
   return JsxRuntime.jsxs("div", {
     children: [
-      JsxRuntime.jsx("p", {
-        children: msg,
-      }),
-      JsxRuntime.jsx("button", {
-        children: "Click me",
-        onClick: onClick,
-      }),
+      JsxRuntime.jsx("p", { children: msg }),
+      JsxRuntime.jsx("button", { children: "Click me", onClick: onClick }),
     ],
   });
 }
@@ -178,10 +173,10 @@ function Example(props) {
   let setCount = match[1];
   let count = match[0];
   React.useEffect(() => {
-    document.title = `You clicked ` + String(count) + ` times!`;
+    document.title = `You clicked ` + count.toString() + ` times!`;
   });
   let onClick = (_evt) => setCount((prev) => (prev + 1) | 0);
-  let msg = "You clicked" + String(count) + "times";
+  let msg = "You clicked" + count.toString() + "times";
   return (
     <div>
       <p>{msg}</p>
@@ -199,12 +194,17 @@ export { Document, make };
 
 In case we want to make the effects dependent on `count`, we can just use following `useEffect` call instead:
 
-```res nocheck
- React.useEffect(() => {
+```res
+@react.component
+let make = () => {
+  let (count, _setCount) = React.useState(_ => 0)
+  React.useEffect(() => {
     open! Document
-    document->setTitle(`You clicked ${Belt.Int.toString(count)} times!`)
+    document->setTitle(`You clicked ${Int.toString(count)} times!`)
     None
   }, [count])
+  <div>{React.int(count)}</div>
+}
 ```
 
 Now instead of running an effect on every render, it will only run when `count` has a different value than in the render before.
@@ -227,8 +227,6 @@ type state = Offline | Loading | Online
 ```
 
 <CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
-
-{/* TODO: fix this example */}
 
 ```res
 // FriendStatus.res
@@ -304,9 +302,7 @@ function Example(props) {
       text = friendId + " is online";
       break;
   }
-  return JsxRuntime.jsx("div", {
-    children: text,
-  });
+  return JsxRuntime.jsx("div", { children: text });
 }
 
 let make = Example;
@@ -367,13 +363,18 @@ export { Document, ChatAPI, make };
 
 In some cases, cleaning up or applying the effect after every render might create a performance problem. Let's look at a concrete example to see what `useEffect` does:
 
-```res nocheck
-// from a previous example above
-React.useEffect(() => {
-  open! Document
-  document->setTitle(`You clicked ${Belt.Int.toString(count)} times!`)
-  None
-}, [count])
+```res
+@react.component
+let make = () => {
+  let (count, _setCount) = React.useState(_ => 0)
+  // from a previous example above
+  React.useEffect(() => {
+    open! Document
+    document->setTitle(`You clicked ${Int.toString(count)} times!`)
+    None
+  }, [count])
+  <div>{React.int(count)}</div>
+}
 ```
 
 Here, we pass `[count]` to `useEffect` as a dependency. What does this mean? If the `count` is 5, and then our component re-renders with count still equal to 5, React will compare `[5]` from the previous render and `[5]` from the next render. Because all items within the array are the same (5 === 5), React would skip the effect. That’s our optimization.
@@ -382,9 +383,7 @@ When we render with count updated to 6, React will compare the items in the `[5]
 
 This also works for effects that have a cleanup phase:
 
-{/* TODO fix this example */}
-
-```res nocheck
+```res
 @react.component
 let make = (~friendId: string) => {
   let (state, setState) = React.useState(_ => Offline)
@@ -405,6 +404,13 @@ let make = (~friendId: string) => {
 
     Some(cleanup)
   }, [friendId]) // Only re-subscribe if friendId changes
+
+  let text = switch state {
+  | Offline => friendId ++ " is offline"
+  | Loading => "loading..."
+  | Online => friendId ++ " is online"
+  }
+  <div>{React.string(text)}</div>
 }
 ```
 
