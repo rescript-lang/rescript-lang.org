@@ -1,5 +1,6 @@
 import vm from "node:vm";
 import { build } from "esbuild";
+import { serializeArg } from "../../../packages/shared/src/runtimeConsole.js";
 
 const sources = new Map();
 
@@ -58,15 +59,6 @@ export async function loadCompiler(
   compiler.setExperimentalFeatures([]);
   compiler.setJsxPreserveMode(false);
   return compiler;
-}
-
-// Match EvalIFrame's argument serialization and the checkpoint's space-joined log lines.
-function serializeArg(arg) {
-  if (arg === undefined) return "undefined";
-  if (typeof arg === "object")
-    return JSON.stringify(arg, Object.getOwnPropertyNames(arg));
-  if (typeof arg === "function") return arg.toString();
-  return arg;
 }
 
 export async function runProgram({ code, imports }) {
