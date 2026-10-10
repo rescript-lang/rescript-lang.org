@@ -3,56 +3,80 @@
 import * as ReactRouter from "react-router";
 import * as JsxRuntime from "react/jsx-runtime";
 import MainCssurl from "../styles/main.css?url";
+import FaviconX16AvifurlnoInline from "../../docs/public/favicon/favicon-16x16.avif?url&no-inline";
+import FaviconX32AvifurlnoInline from "../../docs/public/favicon/favicon-32x32.avif?url&no-inline";
+import AppleTouchIconAvifurlnoInline from "../../docs/public/favicon/apple-touch-icon.avif?url&no-inline";
 
 let mainCss = MainCssurl;
 
+let appleTouchIcon = AppleTouchIconAvifurlnoInline;
+
+let favicon32 = FaviconX32AvifurlnoInline;
+
+let favicon16 = FaviconX16AvifurlnoInline;
+
 function Root$default(props) {
-  return (
-    <html lang={"en"}>
-      <head>
-        <link href={mainCss} rel={"stylesheet"} />
-        <ReactRouter.Links />
-        <ReactRouter.Meta />
-        <meta charSet={"UTF-8"} />
-        <meta
-          content={"width=device-width, initial-scale=1"}
-          name={"viewport"}
-        />
-        <meta content={"ReScript Guide"} name={"application-name"} />
-        <meta
-          content={"An interactive guide to learning ReScript."}
-          name={"description"}
-        />
-        <meta content={"#f6f4ef"} name={"theme-color"} />
-        <link
-          href={"/apple-touch-icon.avif"}
-          rel={"apple-touch-icon"}
-          sizes={"180x180"}
-        />
-        <link
-          href={"/favicon-32x32.avif"}
-          rel={"icon"}
-          sizes={"32x32"}
-          type={"image/avif"}
-        />
-        <link
-          href={"/favicon-16x16.avif"}
-          rel={"icon"}
-          sizes={"16x16"}
-          type={"image/avif"}
-        />
-        <title>{"ReScript Guide"}</title>
-      </head>
-      <body>
-        <ReactRouter.Outlet />
-        <ReactRouter.ScrollRestoration />
-        <ReactRouter.Scripts />
-      </body>
-    </html>
-  );
+  return <html
+    lang={"en"}
+  >
+    <head>
+      <link
+        href={mainCss}
+        rel={"stylesheet"}
+      />
+      <ReactRouter.Links />
+      <ReactRouter.Meta />
+      <meta
+        charSet={"UTF-8"}
+      />
+      <meta
+        content={"width=device-width, initial-scale=1"}
+        name={"viewport"}
+      />
+      <meta
+        content={"ReScript Guide"}
+        name={"application-name"}
+      />
+      <meta
+        content={"An interactive guide to learning ReScript."}
+        name={"description"}
+      />
+      <meta
+        content={"#f6f4ef"}
+        name={"theme-color"}
+      />
+      <link
+        href={appleTouchIcon}
+        rel={"apple-touch-icon"}
+        sizes={"180x180"}
+      />
+      <link
+        href={favicon32}
+        rel={"icon"}
+        sizes={"32x32"}
+        type={"image/avif"}
+      />
+      <link
+        href={favicon16}
+        rel={"icon"}
+        sizes={"16x16"}
+        type={"image/avif"}
+      />
+      <title>
+        {"ReScript Guide"}
+      </title>
+    </head>
+    <body>
+      <ReactRouter.Outlet />
+      <ReactRouter.ScrollRestoration />
+      <ReactRouter.Scripts />
+    </body>
+  </html>;
 }
 
 let $$default = Root$default;
 
-export { $$default as default };
+export {
+  $$default as default,
+}
 /* mainCss Not a pure module */

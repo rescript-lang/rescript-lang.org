@@ -84,6 +84,10 @@ jobs:
 
           for _ in {1..15}; do
             if curl --max-time 2 --fail --silent http://127.0.0.1:8789/ > /dev/null; then
+              curl --max-time 2 --fail --silent http://127.0.0.1:8789/robots.txt | cmp public/robots.txt -
+              for guide_icon in build/client/assets/*.avif; do
+                curl --max-time 2 --fail --silent "http://127.0.0.1:8789/${guide_icon#build/client/}" | cmp "$guide_icon" -
+              done
               exit 0
             fi
             sleep 1
