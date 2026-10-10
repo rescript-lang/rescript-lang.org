@@ -1,25 +1,13 @@
-type logLevel = [
-  | #log
-  | #warn
-  | #error
-]
-type log = {level: logLevel, content: array<string>}
+type logLevel = RuntimeConsole.level
+type log = RuntimeConsole.log = {level: logLevel, content: array<string>}
 
 @react.component
 let make = (~logs, ~appendLog) => {
-  React.useEffect(() => {
-    let cb = e => {
-      let data = e["data"]
-      switch data["type"] {
-      | #...logLevel as logLevel =>
-        let args: array<string> = data["args"]
-        appendLog(logLevel, args)
-      | _ => ()
-      }
-    }
-    WebAPI.Window.addEventListener(window, Custom("message"), cb)
-    Some(() => WebAPI.Window.removeEventListener(window, Custom("message"), cb))
-  }, [appendLog])
+  let onLog = React.useCallback(
+    ({RuntimeConsole.level: level, content}) => appendLog(level, content),
+    [appendLog],
+  )
+  RuntimeConsole.useLogs(onLog)
 
   <div className="px-2 py-6 relative flex flex-col flex-1 overflow-y-hidden">
     <h2 className="font-bold text-gray-5/50 absolute right-2 top-2"> {React.string("Console")} </h2>
@@ -33,17 +21,16 @@ let make = (~logs, ~appendLog) => {
     | logs =>
       let content =
         logs
-        ->Array.mapWithIndex(({level: logLevel, content: log}, i) => {
-          let log = Array.join(log, " ")
+        ->Array.mapWithIndex((log, i) => {
           <pre
             key={Int.toString(i)}
-            className={switch logLevel {
+            className={switch log.level {
             | #log => ""
             | #warn => "text-orange"
             | #error => "text-fire"
             }}
           >
-            {React.string(log)}
+            {React.string(RuntimeConsole.text(log))}
           </pre>
         })
         ->React.array
