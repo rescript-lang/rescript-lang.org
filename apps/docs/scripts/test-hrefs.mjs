@@ -3,6 +3,10 @@ import { remark } from "remark";
 import { read } from "to-vfile";
 import { reporter } from "vfile-reporter";
 import * as fs from "fs/promises";
+import path from "node:path";
+import { apiDataDirectory } from "./api-data.mjs";
+
+const apiDirectory = apiDataDirectory();
 
 // API pages are generated from JSON rather than Markdown files. Match their
 // actual routes instead of suppressing every warning containing "api/".
@@ -13,7 +17,7 @@ const apiPaths = new Set([
     await Promise.all(
       ["stdlib", "belt", "dom"].map(async (library) => {
         const data = JSON.parse(
-          await fs.readFile(`markdown-pages/docs/api/${library}.json`, "utf8"),
+          await fs.readFile(path.join(apiDirectory, `${library}.json`), "utf8"),
         );
         return Object.keys(data).map((key) => `docs/manual/api/${key}`);
       }),

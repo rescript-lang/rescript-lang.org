@@ -1,35 +1,38 @@
 type loaderData = ApiDocs.props
 
-type rec apiItem = {
-  id: string,
-  kind: string,
-  name: string,
-  items?: array<apiItem>,
-  docStrings: array<string>,
+let stringField = (fields, key) => {
+  switch Dict.get(fields, key) {
+  | Some(JSON.String(value)) => value
+  | _ => JsError.throwWithMessage(`Invalid API item: missing ${key}`)
+  }
 }
 
-let rec rawApiItemToNode = (apiItem: apiItem): ApiDocs.node => {
+let rec rawApiItemToNode = (json: JSON.t): ApiDocs.node => {
+  let fields = switch json {
+  | Object(fields) => fields
+  | _ => JsError.throwWithMessage("Invalid API item: expected an object")
+  }
+  let items = switch Dict.get(fields, "items") {
+  | Some(Array(items)) => items
+  | _ => []
+  }
   {
-    name: apiItem.name,
-    path: apiItem.id
+    name: stringField(fields, "name"),
+    path: stringField(fields, "id")
     ->String.split(".")
     ->Array.filter(segment =>
       segment !== "Stdlib" && segment !== "Belt" && segment !== "Js" && segment !== "Dom"
     ),
-    children: apiItem.items
-    ->Option.map(items =>
-      Array.filter(items, item =>
-        item.id
-        ->String.split(".")
-        ->Array.length > 3
-      )->Array.map(rawApiItemToNode)
+    children: items
+    ->Array.filter(item =>
+      switch item {
+      | Object(fields) => stringField(fields, "id")->String.split(".")->Array.length > 3
+      | _ => false
+      }
     )
-    ->Option.getOr([]),
+    ->Array.map(rawApiItemToNode),
   }
 }
-
-@scope("JSON") @val
-external parseApi: string => Dict.t<apiItem> = "parse"
 
 let groupItems = apiDocs => {
   let parsedItems =
@@ -130,25 +133,13 @@ let loader: ReactRouter.Loader.t<loaderData> = async args => {
 
   let basePath = path[0]->Option.getUnsafe
 
-  let apiDocs = switch basePath {
-  | "belt" => parseApi(await Node.Fs.readFile("./markdown-pages/docs/api/belt.json", "utf-8"))
-  | "dom" => parseApi(await Node.Fs.readFile("./markdown-pages/docs/api/dom.json", "utf-8"))
-  | _ => parseApi(await Node.Fs.readFile("./markdown-pages/docs/api/stdlib.json", "utf-8"))
-  }
+  let apiDocs = ApiData.current()->ApiData.library(basePath)
 
   let toctree = groupItems(apiDocs)
 
-  let data = {
-    // TODO POST RR7: refactor this function to only return the module and not the toctree
-    // or move the toc logic to this function
-    try {
-      await ApiDocs.getStaticProps(path)
-    } catch {
-    | err => {"props": Error(JSON.stringifyAny(err)->Option.getOr("Error loading API data"))}
-    }
-  }
+  let data = ApiDocs.processStaticProps(~apiDocs, ~slug=path)
 
-  data["props"]->Result.map((item): ApiDocs.api => {
+  data->Result.map((item): ApiDocs.api => {
     {
       module_: item.module_,
       toctree: {

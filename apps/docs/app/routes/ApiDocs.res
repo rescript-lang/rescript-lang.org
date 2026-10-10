@@ -336,45 +336,11 @@ let make = (props: props) => {
   <SidebarPageLayout sidebar rightSidebar docSearchLvl0="API"> children </SidebarPageLayout>
 }
 
-module Data = {
-  type t = {
-    mainModule: Dict.t<JSON.t>,
-    tree: Dict.t<JSON.t>,
-  }
-
-  let dir = try {
-    Node.Path.resolve("data", "api")
-  } catch {
-  | _ => ""
-  }
-
-  let getVersion = (~moduleName: string) => {
-    open Node
-
-    let moduleContent =
-      Fs.readFileSync(`markdown-pages/docs/api/${moduleName}.json`)->JSON.parseOrThrow
-
-    let content = switch moduleContent {
-    | Object(dict) => dict->Some
-    | _ => None
-    }
-
-    switch content {
-    | Some(content) => Some({mainModule: content, tree: Dict.make()})
-    | _ => None
-    }
-  }
-}
-
-let processStaticProps = (~slug: array<string>) => {
-  let moduleName = slug->Belt.Array.getExn(0)
+let processStaticProps = (~apiDocs, ~slug: array<string>) => {
+  let moduleName = slug->Array.at(0)->Option.getOrThrow
   let modulePath = slug->Array.join("/")
 
-  let content =
-    // TODO post RR7: rename this to getByModuleName
-    Data.getVersion(~moduleName)
-    ->Option.map(data => data.mainModule)
-    ->Option.flatMap(Dict.get(_, modulePath))
+  let content = Dict.get(apiDocs, modulePath)
 
   switch content {
   | Some(json) =>
@@ -456,14 +422,8 @@ let processStaticProps = (~slug: array<string>) => {
       items: sortedItems,
     }
 
-    Ok({module_, toctree: Obj.magic({name: "root", path: [], children: []})})
+    Ok({module_, toctree: {name: "root", path: [], children: []}})
 
   | None => Error(`Failed to get API Data for module ${moduleName}`)
   }
-}
-
-let getStaticProps = async slug => {
-  let result = processStaticProps(~slug)
-
-  {"props": result}
 }
