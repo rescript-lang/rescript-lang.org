@@ -47,16 +47,19 @@ use the installed `rescript` package, not a separate compiler installation.
 
 ## Key Commands
 
-| Command          | Purpose                                                        |
-| ---------------- | -------------------------------------------------------------- |
-| `yarn dev`       | Run ReScript watcher + Vite dev server + Wrangler (parallel)   |
-| `yarn build`     | Full production build (ReScript → scripts → Vite/React Router) |
-| `yarn build:res` | ReScript compilation only                                      |
-| `yarn dev:res`   | ReScript watch mode only                                       |
-| `yarn format`    | Run Oxfmt + ReScript formatter                                 |
-| `yarn test`      | Run example, href, and redirect validation scripts             |
-| `yarn vitest`    | Run Vitest browser tests with Playwright                       |
-| `make`           | Build (install deps + ReScript compile + update index)         |
+| Command             | Purpose                                                      |
+| ------------------- | ------------------------------------------------------------ |
+| `yarn dev`          | Run ReScript watcher + Vite dev server + Wrangler (parallel) |
+| `yarn build`        | Build and pre-render the docs site                           |
+| `yarn build:guide`  | Build and pre-render the interactive guide                   |
+| `yarn build:res`    | Compile ReScript across all four workspaces                  |
+| `yarn dev:res`      | ReScript watch mode only                                     |
+| `yarn format`       | Run Oxfmt and format ReScript across all four workspaces     |
+| `yarn test`         | Run example, href, and redirect validation scripts           |
+| `yarn vitest`       | Run docs Vitest browser tests in watch mode                  |
+| `yarn vitest:guide` | Run guide Vitest browser tests in watch mode                 |
+| `yarn ci:test`      | Run docs and guide Vitest browser tests headlessly           |
+| `make`              | Build (install deps + ReScript compile + update index)       |
 
 ## Coding Best Practices
 
@@ -195,7 +198,7 @@ let default: unit => React.element
 
 - Components requiring React Router context must be wrapped in `<MemoryRouter>`.
 - Do not use `<BrowserRouter>` in tests.
-- Run `yarn build:res` before `yarn vitest --browser.headless --run` so the tests use current compiler output.
+- Run `yarn build:res` first so the tests use current compiler output. Run `yarn vitest --browser.headless --run` for docs tests or `yarn vitest:guide --browser.headless --run` for guide tests. Run `yarn ci:test` to check both suites.
 - Do not update snapshots without asking for confirmation. Approved docs visual baseline changes use the `Update Visual Regression Screenshots` GitHub Actions workflow against the feature branch; pull and review the generated commit. Local screenshot updates are blocked by the Vitest configuration.
 
 ## MDX Content
@@ -210,6 +213,7 @@ let default: unit => React.element
 
 - **Oxfmt** formats JavaScript, JSON, Markdown/MDX, CSS, and YAML, using `.oxfmtrc.json`.
 - **ReScript formatter** (`rescript format`) formats `.res` and `.resi` files.
+- `yarn format` runs both formatters from the repository root, covering all four workspaces. The docs workspace's `format` command delegates to the root command.
 - **Lefthook** runs Oxfmt and the ReScript formatter on matching staged files in parallel, then auto-stages formatting fixes. See `lefthook.yml` for the file patterns and commands.
 - Most generated `.jsx` output is ignored by Git. The two tracked guide entry modules are excluded from Oxfmt; regenerate them with the compiler.
 - `.vscode/extensions.json` recommends the Oxc formatter integration and the ReScript extension.

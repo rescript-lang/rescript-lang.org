@@ -66,10 +66,10 @@ repository root; use `yarn workspace <name> <command>` to target one workspace.
 See the [README](README.md#project-structure-overview) for the directory map.
 
 Use Node.js 26 or newer and the Yarn 4.13.0 release pinned by the repository via
-Corepack. `yarn format` runs Oxfmt and the ReScript formatter. The pre-commit hook
-formats matching staged files and stages its fixes. Edit ReScript sources rather
-than generated JavaScript; include regenerated guide entry modules when their
-sources change.
+Corepack. `yarn format` runs Oxfmt and formats ReScript across all four workspaces.
+The pre-commit hook formats matching staged files and stages its fixes. Edit
+ReScript sources rather than generated JavaScript; include regenerated guide
+entry modules when their sources change.
 
 ### Think about the target audience & UX
 

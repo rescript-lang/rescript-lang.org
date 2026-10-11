@@ -100,32 +100,42 @@ Run these commands from the repository root. To target a workspace, use
 `yarn workspace <name> <command>`; the workspace names are `@rescript-lang/docs`,
 `@rescript-lang/guide`, `@rescript-lang/playground`, and `@rescript-lang/shared`.
 
-| Command              | Purpose                                                           |
-| -------------------- | ----------------------------------------------------------------- |
-| `yarn dev`           | Prepare generated files and run the local development environment |
-| `yarn build`         | Run the full production build                                     |
-| `yarn preview`       | Build and serve the generated static client locally               |
-| `yarn build:res`     | Compile ReScript only                                             |
-| `yarn dev:res`       | Run the ReScript compiler in watch mode                           |
-| `yarn format`        | Run Oxfmt and the ReScript formatter                              |
-| `yarn test`          | Run markdown example, href, and redirect validation               |
-| `yarn ci:test`       | Run Vitest browser tests headlessly                               |
-| `yarn vitest`        | Run Vitest directly                                               |
-| `yarn vitest:update` | Update screenshot baselines headlessly                            |
+| Command              | Purpose                                                          |
+| -------------------- | ---------------------------------------------------------------- |
+| `yarn dev`           | Prepare generated files and run the docs development environment |
+| `yarn build`         | Build and pre-render the docs site                               |
+| `yarn build:guide`   | Build and pre-render the interactive guide                       |
+| `yarn preview`       | Build and serve the generated docs client locally                |
+| `yarn build:res`     | Compile ReScript across all four workspaces                      |
+| `yarn dev:res`       | Run the ReScript compiler in watch mode                          |
+| `yarn format`        | Run Oxfmt and format ReScript across all four workspaces         |
+| `yarn test`          | Run docs markdown example, href, and redirect validation         |
+| `yarn ci:test`       | Run docs and guide Vitest browser tests headlessly               |
+| `yarn vitest`        | Run docs Vitest browser tests in watch mode                      |
+| `yarn vitest:guide`  | Run guide Vitest browser tests in watch mode                     |
+| `yarn vitest:update` | Update screenshot baselines headlessly                           |
 
 ## Testing
 
 ### Vitest Browser Tests
 
-We use [Vitest](https://vitest.dev/) in browser mode with Playwright for component-level tests. Test files live in `__tests__/` and are written in ReScript.
+We use [Vitest](https://vitest.dev/) in browser mode with Playwright for component-level tests. ReScript test files live in `apps/docs/__tests__/` and `apps/guide/__tests__/`. Compile them before running Vitest:
 
 ```sh
-# Watch mode
+yarn build:res
+
+# Docs watch mode
 yarn vitest
 
-# Headless run (same mode used in CI)
+# Guide watch mode
+yarn vitest:guide
+
+# Headless docs and guide run (same mode used in CI)
 yarn ci:test
 ```
+
+For a headless run of a single suite, use `yarn vitest --browser.headless --run`
+for docs or `yarn vitest:guide --browser.headless --run` for the guide.
 
 To update screenshot baselines, run:
 
