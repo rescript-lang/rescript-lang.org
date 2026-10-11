@@ -39,8 +39,7 @@
     "cy:run": "yarn build:res && cypress run",
     "cy:e2e": "yarn build:res && cypress run --browser chrome",
     "vitest": "vitest",
-    "vitest:visual": "VISUAL_TESTS=1 vitest",
-    "vitest:update": "VISUAL_TESTS=1 VISUAL_BASELINE_UPDATE=1 vitest --run --browser.headless --update"
+    "vitest:visual": "VISUAL_TESTS=1 vitest"
   },
   "dependencies": {
     "@cloudflare/pages-plugin-vercel-og": "^0.1.2",

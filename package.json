@@ -41,8 +41,7 @@
     "cy:e2e": "yarn workspace @rescript-lang/docs cy:e2e",
     "vitest": "yarn workspace @rescript-lang/docs vitest",
     "vitest:visual": "yarn workspace @rescript-lang/docs vitest:visual",
-    "vitest:guide": "yarn workspace @rescript-lang/guide vitest",
-    "vitest:update": "yarn workspace @rescript-lang/docs vitest:update"
+    "vitest:guide": "yarn workspace @rescript-lang/guide vitest"
   },
   "devDependencies": {
     "lefthook": "^2.1.4",

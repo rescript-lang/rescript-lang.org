@@ -87,18 +87,20 @@ Tailwind is configured in [`styles/main.css`](styles/main.css). There is no `tai
 
 ## Common Commands
 
-| Command              | Purpose                                                           |
-| -------------------- | ----------------------------------------------------------------- |
-| `yarn dev`           | Prepare generated files and run the local development environment |
-| `yarn build`         | Run the full production build                                     |
-| `yarn preview`       | Build and serve the generated static client locally               |
-| `yarn build:res`     | Compile ReScript only                                             |
-| `yarn dev:res`       | Run the ReScript compiler in watch mode                           |
-| `yarn format`        | Run Prettier and the ReScript formatter                           |
-| `yarn test`          | Run markdown example and href validation                          |
-| `yarn ci:test`       | Run Vitest browser tests headlessly                               |
-| `yarn vitest`        | Run Vitest directly                                               |
-| `yarn vitest:update` | Update screenshot baselines headlessly                            |
+| Command          | Purpose                                                           |
+| ---------------- | ----------------------------------------------------------------- |
+| `yarn dev`       | Prepare generated files and run the local development environment |
+| `yarn build`     | Run the full production build                                     |
+| `yarn preview`   | Build and serve the generated static client locally               |
+| `yarn build:res` | Compile ReScript only                                             |
+| `yarn dev:res`   | Run the ReScript compiler in watch mode                           |
+| `yarn format`    | Run Prettier and the ReScript formatter                           |
+| `yarn test`      | Run markdown example and href validation                          |
+| `yarn ci:test`   | Run Vitest browser tests headlessly                               |
+| `yarn vitest`    | Run Vitest directly                                               |
+| `yarn cy:open`   | Open the full-site Cypress suite against the running dev server   |
+| `yarn cy:e2e`    | Run the full-site Cypress suite headlessly in Chrome              |
+| `yarn test:e2e`  | Build and run homepage Cypress tests with a temporary server      |
 
 ## Testing
 
@@ -107,6 +109,9 @@ Tailwind is configured in [`styles/main.css`](styles/main.css). There is no `tai
 We use [Vitest](https://vitest.dev/) in browser mode with Playwright for component-level tests. Test files live in `__tests__/` and are written in ReScript.
 
 ```sh
+# Compile the ReScript tests first
+yarn build:res
+
 # Watch mode
 yarn vitest
 
@@ -114,13 +119,39 @@ yarn vitest
 yarn ci:test
 ```
 
-To update screenshot baselines, run:
+Visual screenshot baselines are generated in CI's pinned Linux browser environment. Local snapshot updates are blocked. Push your feature branch, then open [Update Visual Regression Screenshots](https://github.com/rescript-lang/rescript-lang.org/actions/workflows/update-visual-screenshots.yml), select that branch, and choose **Run workflow**. The workflow refuses `master` and commits any changed PNGs back to the selected branch.
+
+You can also dispatch the workflow with the GitHub CLI, replacing `<feature-branch>` with your pushed branch:
 
 ```sh
-yarn vitest:update
+gh workflow run update-visual-screenshots.yml --repo rescript-lang/rescript-lang.org --ref <feature-branch>
 ```
 
-Only update screenshots that are intentionally affected by your change.
+After the workflow finishes, pull its commit and review the screenshot diff. Only accept screenshots intentionally affected by your change.
+
+### Cypress E2E Tests
+
+The full-site suite covers documentation, navigation, and the playground. Start the local development server in one terminal:
+
+```sh
+yarn dev
+```
+
+Wait for Vite to report its local URL. In another terminal, run one of these commands:
+
+```sh
+yarn cy:open # Interactive Cypress runner (Electron)
+yarn cy:run  # Headless run (Electron)
+yarn cy:e2e  # Headless run (Chrome must be installed)
+```
+
+These commands compile the ReScript specs and default to `http://127.0.0.1:5173`. If Vite reports another port, or you want to test a deployed site, pass its URL explicitly:
+
+```sh
+yarn cy:e2e --config baseUrl=http://127.0.0.1:5174
+```
+
+The homepage suite uses the production build and its own configuration. `yarn test:e2e` builds the site, starts a temporary server at `http://127.0.0.1:4173`, runs the homepage specs in Chrome, and stops the server when the tests finish. It does not require `yarn dev`.
 
 ### Markdown Example and Link Checks
 
