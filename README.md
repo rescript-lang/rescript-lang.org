@@ -145,10 +145,10 @@ yarn cy:run  # Headless run (Electron)
 yarn cy:e2e  # Headless run (Chrome must be installed)
 ```
 
-These commands compile the ReScript specs and default to `http://127.0.0.1:5173`. If Vite reports another port, or you want to test a deployed site, pass its URL explicitly:
+These commands compile the ReScript specs and default to `http://localhost:5173`. If Vite reports another port, or you want to test a deployed site, pass its URL explicitly:
 
 ```sh
-yarn cy:e2e --config baseUrl=http://127.0.0.1:5174
+yarn cy:e2e --config baseUrl=http://localhost:5174
 ```
 
 The homepage suite uses the production build and its own configuration. `yarn test:e2e` builds the site, starts a temporary server at `http://127.0.0.1:4173`, runs the homepage specs in Chrome, and stops the server when the tests finish. It does not require `yarn dev`.
