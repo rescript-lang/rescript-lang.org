@@ -18,8 +18,7 @@ let make = (
       <VersionSelect />
     </div>
 
-  let sidebar =
-    <Sidebar isOpen=false toggle={() => ()} preludeSection ?activeToc categories route />
+  let sidebar = <Sidebar preludeSection ?activeToc categories route />
 
   <SidebarPageLayout sidebar categories ?docSearchLvl0> children </SidebarPageLayout>
 }

@@ -18,8 +18,7 @@ let make = (~children, ~categories, ~entries) => {
       key={(pathname :> string)} route={(pathname :> string)} categories activeToc
     />
     <SidebarPageLayout
-      sidebar={<SidebarNav categories isOpen=false route=pathname toggle={() => ()} activeToc />}
-      docSearchLvl0="Community"
+      sidebar={<SidebarNav categories route=pathname activeToc />} docSearchLvl0="Community"
     >
       children
     </SidebarPageLayout>

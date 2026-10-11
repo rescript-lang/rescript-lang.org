@@ -102,7 +102,7 @@ module Category = {
     ~category: t,
     ~getActiveToc=?,
     ~isItemActive: option<NavItem.t => bool>=?,
-    ~onClick,
+    ~onClick=() => (),
   ) =>
     <div key=category.name className="my-10">
       <Title> {React.string(category.name)} </Title>
@@ -119,8 +119,6 @@ let make = (
   ~title as _: option<string>=?,
   ~preludeSection=React.null,
   ~activeToc: option<TableOfContents.t>=?,
-  ~isOpen: bool,
-  ~toggle: unit => unit,
 ) => {
   let currentRoute = (route :> string)->Url.normalizePath
   let isItemActive = (navItem: NavItem.t) => navItem.href->Url.normalizePath === currentRoute
@@ -136,24 +134,13 @@ let make = (
   <>
     <div
       id="sidebar"
-      className={(
-        isOpen ? "fixed w-full left-0 h-full z-20 min-w-320" : "hidden "
-      ) ++ " md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible bg-white md:mt-0 min-w-48"}
+      className="hidden md:block md:w-48 md:-ml-4 lg:w-1/5 h-auto md:relative overflow-y-visible bg-white md:mt-0 min-w-48"
     >
       <aside
         id="sidebar-content"
         dataTestId="sidebar-content"
         className="h-full relative top-0 px-4 w-full block md:top-40 md:sticky border-r border-gray-20 overflow-y-auto pb-24 max-h-[calc(100vh-10rem)] pt-8"
       >
-        <button
-          onClick={evt => {
-            ReactEvent.Mouse.preventDefault(evt)
-            toggle()
-          }}
-          className="md:hidden h-16 flex pt-2 right-4 absolute"
-        >
-          <Icon.Close />
-        </button>
         <div className="flex justify-between" dataTestId="sidebar-toplevel-nav">
           <div className="w-3/4 md:w-full"> toplevelNav </div>
         </div>
@@ -168,7 +155,7 @@ let make = (
           {categories
           ->Array.map(category => {
             <div key=category.name>
-              <Category getActiveToc isItemActive category onClick=toggle />
+              <Category getActiveToc isItemActive category />
             </div>
           })
           ->React.array}
