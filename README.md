@@ -102,6 +102,20 @@ Tailwind is configured in [`styles/main.css`](styles/main.css). There is no `tai
 
 ## Testing
 
+### Formatting and Generated Output
+
+`yarn ci:format` checks Oxfmt formatting and ReScript formatting across all four
+workspaces. Run `yarn format` to apply both formatters.
+
+`yarn ci:generated` cleans and rebuilds ReScript, then fails if any tracked `.jsx`
+or `.mjs` file differs from the committed version. Most compiler output is ignored
+by Git; the guide's `app/root.jsx` and `app/routes.jsx` are currently tracked.
+After changing their ReScript sources or updating the compiler, run
+`yarn build:res` and commit the regenerated output alongside the sources.
+
+Both checks run on pull requests. The generated-output check uses a clean build
+so a local compiler cache cannot hide stale output.
+
 ### Vitest Browser Tests
 
 We use [Vitest](https://vitest.dev/) in browser mode with Playwright for component-level tests. Test files live in `__tests__/` and are written in ReScript.
