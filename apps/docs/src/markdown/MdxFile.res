@@ -83,12 +83,6 @@ let rec scanDir = (baseDir, currentDir) => {
   })
 }
 
-let scanPaths = (~dir, ~alias) => {
-  scanDir(dir, dir)->Array.map(relativePath => {
-    alias ++ "/" ++ relativePath
-  })
-}
-
 // Convert frontmatter JSON dict to Mdx.attributes
 // This is the same unsafe approach as react-router-mdx — frontmatter YAML
 // becomes a JS object that we type as Mdx.attributes. Fields not present

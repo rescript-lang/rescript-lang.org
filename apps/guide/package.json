@@ -5,7 +5,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build:res": "rescript build --warn-error +3+8+11+12+26+27+31+32+33+34+35+39+44+45+110",
+    "build:res": "node ../docs/generate-route-types.mjs && rescript build --warn-error +3+8+11+12+26+27+31+32+33+34+35+39+44+45+110",
     "build:vite": "react-router build",
     "build": "yarn build:res && yarn build:vite",
     "ci:test": "yarn build:res && yarn vitest --run --browser.headless",

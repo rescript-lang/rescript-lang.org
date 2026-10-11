@@ -35,6 +35,10 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn
+      - name: Check generated route types
+        run: |
+          yarn check:routes
+          git diff --exit-code -- packages/shared/src/Path.res
       - name: Test examples and hrefs
         run: yarn test
   # Confirms that Wrangler can start the Docs Pages and Guide local dev servers.
