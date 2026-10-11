@@ -7,12 +7,14 @@ REPOSITORY_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 
 if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
   RAW_TARGET_BRANCH=$(gh api "/repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}" --jq '.base.ref')
+  TARGET_ENVIRONMENT=""
 else
   RAW_TARGET_BRANCH="$RAW_BRANCH"
+  TARGET_ENVIRONMENT="${DOCS_DEPLOYMENT_ENVIRONMENT:-}"
 fi
 
-ARTIFACT_NAME=$(node "$REPOSITORY_ROOT/apps/docs/scripts/lighthouse-report.mjs" artifact-name "$RAW_BRANCH")
-TARGET_ARTIFACT_NAME=$(node "$REPOSITORY_ROOT/apps/docs/scripts/lighthouse-report.mjs" artifact-name "$RAW_TARGET_BRANCH")
+ARTIFACT_NAME=$(node "$REPOSITORY_ROOT/apps/docs/scripts/lighthouse-report.mjs" artifact-name "$RAW_BRANCH" "${DOCS_DEPLOYMENT_ENVIRONMENT:-}")
+TARGET_ARTIFACT_NAME=$(node "$REPOSITORY_ROOT/apps/docs/scripts/lighthouse-report.mjs" artifact-name "$RAW_TARGET_BRANCH" "$TARGET_ENVIRONMENT")
 
 {
   echo "LIGHTHOUSE_ARTIFACT_NAME=$ARTIFACT_NAME"
