@@ -4,9 +4,9 @@
 
 This is the official documentation platform for the [ReScript](https://rescript-lang.org) programming language.
 
-The site is a fully pre-rendered static app built with ReScript, React 19, React Router, Vite, and Tailwind CSS, and deployed to Cloudflare Pages.
+The docs site uses ReScript v12, React 19, React Router v8, Vite 8, and Tailwind CSS v4. Most routes are pre-rendered at build time; `/try` is server-rendered at runtime through Cloudflare Pages Functions.
 
-Route modules live in `app/routes/`, shared ReScript UI code lives in `src/`, and MDX content lives in `markdown-pages/`.
+This is a monorepo: the docs site lives in `apps/docs/`, the interactive guide in `apps/guide/`, and shared playground and library code in `packages/`. The guide pre-renders its entry page and runs its interactive lessons in the browser, with assets served by a Cloudflare Worker.
 
 **Please report any technical issues with ReScript to the [compiler repository](https://github.com/rescript-lang/rescript).**
 
@@ -71,21 +71,34 @@ Production crawler start URLs, ranking, and crawler schedules live in the Algoli
 
 ## Project Structure Overview
 
-- `app/`: React Router app shell, layouts, route definitions, and route modules
-- `src/`: ReScript source code for bindings, shared logic, components, and layouts
-- `markdown-pages/`: MDX content for docs, blog, community pages, and syntax lookup
-- `data/`: Hand-curated data such as sidebar ordering and content metadata
-- `scripts/`: Build, code generation, and validation scripts
-- `functions/`: Cloudflare Pages Functions
-- `styles/`: Tailwind v4 theme and custom CSS
-- `public/`: Static assets such as images, fonts, and favicons
-- `plugins/`: HighlightJS, CodeMirror, and other content/build plugins
-- `compilers/`: Bundled ReScript compiler versions for playground and example validation
-- `__tests__/`: Vitest browser tests written in ReScript
+- `apps/docs/app/`: React Router app shell, layouts, route definitions, and route modules
+- `apps/docs/src/`: Website bindings, utilities, components, layouts, and MDX compilation
+- `apps/docs/markdown-pages/`: MDX content for docs, blog, community pages, and syntax lookup
+- `apps/docs/data/`: Sidebar ordering and content metadata
+- `apps/docs/scripts/`: Build, code generation, and validation scripts
+- `apps/docs/functions/`: Cloudflare Pages Functions for `/try`, `/try.data`, and OG images
+- `apps/docs/styles/`: Tailwind v4 theme and custom CSS
+- `apps/docs/public/`: Static assets such as images, fonts, and favicons
+- `apps/docs/__tests__/`: Vitest browser tests; visual tests live in its `visual/` directory
+- `apps/docs/e2e/`: Cypress browser tests
+- `apps/guide/`: Interactive guide, lesson content, tests, and Worker configuration; see its [README](apps/guide/README.md)
+- `packages/playground/`: Shared browser playground components and compiler integration
+- `packages/shared/`: Shared bindings, utilities, highlighting, and the CodeMirror grammar in `plugins/`
+- `data/api/`: Compiler-published API JSON snapshots
 
-Tailwind is configured in [`styles/main.css`](styles/main.css). There is no `tailwind.config.js`.
+The playground loads published browser compiler bundles; `yarn build:sync-bundles` downloads them into the ignored `apps/docs/public/playground-bundles/` directory for deployment. Markdown example validation uses the installed `rescript` package.
+
+MDX is compiled by [`MdxFile.res`](apps/docs/src/markdown/MdxFile.res) using `@mdx-js/mdx` and remark plugins. [`MdxContent.res`](apps/docs/src/components/MdxContent.res) renders compiled content and maps custom components such as `Info`, `Warn`, and `CodeTab`.
+
+Tailwind v4 uses the Vite plugin and [`apps/docs/styles/main.css`](apps/docs/styles/main.css). Design tokens and custom utilities live in [`apps/docs/styles/_theme.css`](apps/docs/styles/_theme.css).
+
+The [recommended VS Code extensions](.vscode/extensions.json) provide ReScript support and [Oxfmt editor integration](https://oxc.rs/docs/guide/usage/formatter/editors.html). Oxfmt configuration lives in [`.oxfmtrc.json`](.oxfmtrc.json).
 
 ## Common Commands
+
+Run these commands from the repository root. To target a workspace, use
+`yarn workspace <name> <command>`; the workspace names are `@rescript-lang/docs`,
+`@rescript-lang/guide`, `@rescript-lang/playground`, and `@rescript-lang/shared`.
 
 | Command              | Purpose                                                           |
 | -------------------- | ----------------------------------------------------------------- |
@@ -94,8 +107,8 @@ Tailwind is configured in [`styles/main.css`](styles/main.css). There is no `tai
 | `yarn preview`       | Build and serve the generated static client locally               |
 | `yarn build:res`     | Compile ReScript only                                             |
 | `yarn dev:res`       | Run the ReScript compiler in watch mode                           |
-| `yarn format`        | Run Prettier and the ReScript formatter                           |
-| `yarn test`          | Run markdown example and href validation                          |
+| `yarn format`        | Run Oxfmt and the ReScript formatter                              |
+| `yarn test`          | Run markdown example, href, and redirect validation               |
 | `yarn ci:test`       | Run Vitest browser tests headlessly                               |
 | `yarn vitest`        | Run Vitest directly                                               |
 | `yarn vitest:update` | Update screenshot baselines headlessly                            |
@@ -127,7 +140,7 @@ Only update screenshots that are intentionally affected by your change.
 `yarn test` runs the following:
 
 - `apps/docs/scripts/test-examples.mjs` to compile examples in the manual, React docs, guides and syntax lookup, and compare shown JS and JSX output with the installed compiler
-- `apps/docs/scripts/test-hrefs.mjs` to validate relative markdown links under `markdown-pages/`
+- `apps/docs/scripts/test-hrefs.mjs` to validate relative markdown links under `apps/docs/markdown-pages/`
 - `apps/docs/scripts/test-redirects.mjs` to validate redirect rules
 
 Supported ReScript markdown code fences:
@@ -154,19 +167,22 @@ Refresh generated JS output fences with the installed compiler and format the re
 yarn test --update
 ```
 
-You can also run the scripts directly:
+You can also run the scripts directly from the docs workspace:
 
 ```sh
-node apps/docs/scripts/test-examples.mjs
-node apps/docs/scripts/test-examples.mjs --update
-node apps/docs/scripts/test-examples.mjs "manual/module-functions.mdx"
-node apps/docs/scripts/test-examples.mjs --include-blog
-node apps/docs/scripts/test-hrefs.mjs
+cd apps/docs
+node scripts/test-examples.mjs
+node scripts/test-examples.mjs --update
+node scripts/test-examples.mjs "manual/module-functions.mdx"
+node scripts/test-examples.mjs --include-blog
+CI=1 node scripts/test-hrefs.mjs
 ```
 
 Example-checker patterns are relative to `apps/docs/markdown-pages/docs`. Historical blog posts describe earlier compiler versions, so the default run reports them as skipped. `--include-blog` audits them with the installed compiler; reported differences need review against the original version. Blog files are never rewritten, even with `--update`.
 
-Run `yarn test` before pushing content changes so CI does not fail on markdown regressions.
+The link checker scans the full MDX tree and does not accept a glob filter. It reports findings locally but only exits unsuccessfully for them when `CI` is set.
+
+From the repository root, run `CI=1 yarn test` before pushing content changes to match CI's link-check failure behavior as well as checking examples and redirects.
 
 ## Writing Blog Posts
 
