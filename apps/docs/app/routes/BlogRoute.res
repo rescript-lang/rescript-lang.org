@@ -1,6 +1,5 @@
 type loaderData = {posts: array<BlogApi.post>, category: Blog.category}
 
-@live
 let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
   let showArchived = request.url->String.includes("archived")
   let posts = async () =>
@@ -18,7 +17,7 @@ let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
   data
 }
 
-@react.component @live
+@react.component
 let default = () => {
   let {posts, category} = ReactRouter.useLoaderData()
   <>

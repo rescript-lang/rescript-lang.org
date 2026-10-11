@@ -6,7 +6,7 @@ external hljsCss: string = "default"
 
 open ReactRouter
 
-@react.component @live
+@react.component
 let default = () => {
   <html lang="en">
     <head>

@@ -3,7 +3,6 @@ external playgroundCss: string = "default"
 
 type stylesheet = {rel: string, href: string}
 
-@live
 let links = () => [{rel: "stylesheet", href: playgroundCss}]
 
 type props = {
@@ -11,7 +10,6 @@ type props = {
   versions: array<string>,
 }
 
-@live
 let loader = async () => {
   let (bundleBaseUrl, versionsBaseUrl) = switch (
     Node.Process.Env.playgroundBundleEndpoint,
@@ -60,7 +58,6 @@ module ClientOnly = {
   }
 }
 
-@live
 let default = () => {
   let data = ReactRouter.useLoaderData()
   <>

@@ -93,8 +93,10 @@ variant cases, and argument diagnostics remain advisory because JavaScript and
 FFI access can be invisible to the analyzer; inspect them with `yarn reanalyze`.
 
 React Router and Cloudflare call exports from JavaScript. Their entry points are
-marked `@live` individually. Keep these annotations limited to real entry points;
-check JavaScript imports and MDX mappings before removing a reported export.
+marked `@live` individually in the `.resi` interface, or in `.res` when there is
+no interface. Keep these annotations limited to real entry points and do not
+duplicate them between files; check JavaScript imports and MDX mappings before
+removing a reported export.
 
 ## Common Commands
 

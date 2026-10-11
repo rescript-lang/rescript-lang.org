@@ -16,7 +16,6 @@ let fontPreload = (~media=?, href) => {
   ?media,
 }
 
-@live
 let links = () => [
   fontPreload("/fonts/subset-Inter-Regular.woff2"),
   fontPreload("/fonts/subset-Inter-SemiBold.woff2"),
@@ -26,12 +25,11 @@ let links = () => [
 
 type loaderData = {playgroundData: LandingPagePlayground.playgroundData}
 
-@live
 let loader: ReactRouter.Loader.t<loaderData> = async _ => {
   playgroundData: LandingPagePlaygroundLoader.build(),
 }
 
-@react.component @live
+@react.component
 let default = () => {
   let {playgroundData}: loaderData = ReactRouter.useLoaderData()
   <LandingPage playgroundData />

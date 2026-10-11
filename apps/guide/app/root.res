@@ -11,7 +11,7 @@ external favicon32: string = "default"
 @module("../../docs/public/favicon/favicon-16x16.avif?url&no-inline")
 external favicon16: string = "default"
 
-@react.component @live
+@react.component
 let default = () => {
   <html lang="en">
     <head>
