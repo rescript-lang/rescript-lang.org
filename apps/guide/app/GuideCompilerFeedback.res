@@ -22,7 +22,7 @@ module Output = {
     runtimeLogs,
   }
 
-  let initial = make(~status="Output", ~runtimeLogs=[{level: #log, content: ["hello, world!"]}])
+  let initial = make(~status="Output")
 
   let withRuntimeLog = (output, runtimeLog) => {
     ...output,
