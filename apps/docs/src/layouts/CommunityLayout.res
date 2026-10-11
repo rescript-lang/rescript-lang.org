@@ -11,18 +11,12 @@ let make = (~children, ~categories, ~entries) => {
     ->String.replaceAll("-", " ")
     ->Util.String.capitalizeSentence
 
-  let (isSidebarOpen, setSidebarOpen) = React.useState(_ => false)
+  let activeToc: TableOfContents.t = {title: "Overview", entries}
   <>
     <Meta title={`${activePage} | ReScript Community`} />
+    <CommunityMobileSidebar categories activeToc />
     <SidebarPageLayout
-      sidebar={<SidebarNav
-        categories
-        isOpen={isSidebarOpen}
-        route=pathname
-        toggle={() => setSidebarOpen(prev => !prev)}
-        activeToc={title: "Overview", entries}
-      />}
-      sidebarState=(isSidebarOpen, setSidebarOpen)
+      sidebar={<SidebarNav categories isOpen=false route=pathname toggle={() => ()} activeToc />}
       docSearchLvl0="Community"
     >
       children
