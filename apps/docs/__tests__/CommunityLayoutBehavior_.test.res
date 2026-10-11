@@ -27,17 +27,25 @@ module CurrentPage = {
   }
 }
 
-let renderCommunity = () =>
-  render(
+module Redirect = {
+  @module("react-router") @react.component
+  external make: (~to: string) => React.element = "Navigate"
+}
+
+let community = (~redirect=false, ()) =>
+  <React.StrictMode>
     <ReactRouter.MemoryRouter initialEntries=["/community/overview"]>
+      {redirect ? <Redirect to="/community/code-of-conduct" /> : React.null}
       <CommunityLayout categories entries>
         <div>
           <CurrentPage />
           <h2 id="official-channels"> {React.string("Official channels content")} </h2>
         </div>
       </CommunityLayout>
-    </ReactRouter.MemoryRouter>,
-  )
+    </ReactRouter.MemoryRouter>
+  </React.StrictMode>
+
+let renderCommunity = () => render(community())
 
 test("mobile community navigation opens and closes", async () => {
   await viewport(390, 844)
@@ -47,7 +55,7 @@ test("mobile community navigation opens and closes", async () => {
 
   await element(trigger)->toBeVisible
   await element(trigger)->toHaveAttribute("aria-expanded", "false")
-  await element(dialog)->notToBeVisible
+  await element(dialog)->notToBeInTheDocument
   await trigger->click
 
   await element(trigger)->toHaveAttribute("aria-expanded", "true")
@@ -56,8 +64,9 @@ test("mobile community navigation opens and closes", async () => {
   await element(resources)->toBeVisible
   let close = await dialog->getByLabelText("Close community navigation")
   await close->click
-  await element(dialog)->notToBeVisible
+  await element(dialog)->notToBeInTheDocument
   await element(trigger)->toHaveAttribute("aria-expanded", "false")
+  await element(trigger)->toHaveFocus
 })
 
 test("Escape closes community navigation and returns focus to the opener", async () => {
@@ -69,7 +78,7 @@ test("Escape closes community navigation and returns focus to the opener", async
   await element(dialog)->toBeVisible
 
   await keyboard("{Escape}")
-  await element(dialog)->notToBeVisible
+  await element(dialog)->notToBeInTheDocument
   await element(trigger)->toHaveAttribute("aria-expanded", "false")
   await element(trigger)->toHaveFocus
 })
@@ -85,12 +94,12 @@ test("community page links close the drawer, including the current page link", a
 
   let currentPage = await screen->getByTestId("current-page")
   await element(currentPage)->toHaveTextContent("/community/code-of-conduct")
-  await element(dialog)->notToBeVisible
+  await element(dialog)->notToBeInTheDocument
 
   await trigger->click
   let currentPageLink = await dialog->getByText("Code of Conduct")
   await currentPageLink->click
-  await element(dialog)->notToBeVisible
+  await element(dialog)->notToBeInTheDocument
 })
 
 test("community table of contents links close the mobile drawer", async () => {
@@ -101,7 +110,7 @@ test("community table of contents links close the mobile drawer", async () => {
   await trigger->click
   let tocLink = await dialog->getByText("Official Channels")
   await tocLink->click
-  await element(dialog)->notToBeVisible
+  await element(dialog)->notToBeInTheDocument
 })
 
 test(
@@ -115,7 +124,7 @@ test(
     await element(dialog)->toBeVisible
 
     await viewport(900, 900)
-    await element(dialog)->notToBeVisible
+    await element(dialog)->notToBeInTheDocument
     await element(trigger)->notToBeVisible
     let resources = await screen->getByText("Resources")
     await element(resources)->toBeVisible
@@ -125,3 +134,36 @@ test(
     await element(trigger)->toHaveAttribute("aria-expanded", "false")
   },
 )
+
+test("rerendering community layout preserves the open dialog and keyboard focus", async () => {
+  await viewport(390, 844)
+  let screen = await renderCommunity()
+  let trigger = await screen->getByText("Community navigation")
+  let dialog = await screen->getByTestId("community-mobile-sidebar")
+  await trigger->click
+  await element(dialog)->toBeVisible
+  await keyboard("{Tab}")
+  let overview = await dialog->getByText("Overview")
+  await element(overview)->toHaveFocus
+
+  await screen->rerender(community())
+  await element(dialog)->toBeVisible
+  await element(overview)->toHaveFocus
+})
+
+test("route changes outside the drawer reset mobile navigation", async () => {
+  await viewport(390, 844)
+  let screen = await renderCommunity()
+  let trigger = await screen->getByText("Community navigation")
+  let dialog = await screen->getByTestId("community-mobile-sidebar")
+  await trigger->click
+  await element(dialog)->toBeVisible
+
+  await screen->rerender(community(~redirect=true, ()))
+  let currentPage = await screen->getByTestId("current-page")
+  await element(currentPage)->toHaveTextContent("/community/code-of-conduct")
+  await element(dialog)->notToBeInTheDocument
+  await element(trigger)->toHaveAttribute("aria-expanded", "false")
+  await trigger->click
+  await element(dialog)->toBeVisible
+})

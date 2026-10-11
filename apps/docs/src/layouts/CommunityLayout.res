@@ -14,7 +14,9 @@ let make = (~children, ~categories, ~entries) => {
   let activeToc: TableOfContents.t = {title: "Overview", entries}
   <>
     <Meta title={`${activePage} | ReScript Community`} />
-    <CommunityMobileSidebar categories activeToc />
+    <CommunityMobileSidebar
+      key={(pathname :> string)} route={(pathname :> string)} categories activeToc
+    />
     <SidebarPageLayout
       sidebar={<SidebarNav categories isOpen=false route=pathname toggle={() => ()} activeToc />}
       docSearchLvl0="Community"
