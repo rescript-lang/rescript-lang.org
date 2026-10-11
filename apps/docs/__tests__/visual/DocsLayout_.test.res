@@ -55,7 +55,7 @@ test("desktop docs layout shows categories and active-page table of contents", a
     let {TableOfContents.header: header, href} = mockToc.entries->Array.getUnsafe(i)
     let tocLink = await sidebar->getByText(header)
     await element(tocLink)->toBeVisible
-    await element(tocLink)->toHaveAttribute("href", href)
+    await element(tocLink)->toHaveAttribute("href", "/docs/manual/introduction" ++ href)
   }
 
   let mainContent = await screen->getByTestId("side-layout-children")
