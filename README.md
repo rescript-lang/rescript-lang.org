@@ -107,14 +107,15 @@ Tailwind is configured in [`styles/main.css`](styles/main.css). There is no `tai
 `yarn ci:format` checks Oxfmt formatting and ReScript formatting across all four
 workspaces. Run `yarn format` to apply both formatters.
 
-`yarn ci:generated` cleans and rebuilds ReScript, then fails if any tracked `.jsx`
-or `.mjs` file differs from the committed version. Most compiler output is ignored
-by Git; the guide's `app/root.jsx` and `app/routes.jsx` are currently tracked.
-After changing their ReScript sources or updating the compiler, run
-`yarn build:res` and commit the regenerated output alongside the sources.
+`yarn ci:generated` cleans ReScript artifacts, removes tracked compiler output,
+and rebuilds, then fails if any tracked `.jsx` or `.mjs` file differs from the
+committed version. Most compiler output is ignored by Git; the guide's
+`app/root.jsx` and `app/routes.jsx` are currently tracked. After changing their
+ReScript sources or updating the compiler, run `yarn build:res` and commit the
+regenerated output alongside the sources.
 
-Both checks run on pull requests. The generated-output check uses a clean build
-so a local compiler cache cannot hide stale output.
+Both checks run on pull requests. Removing tracked output before rebuilding also
+catches orphaned output whose source was deleted or excluded from the build.
 
 ### Vitest Browser Tests
 

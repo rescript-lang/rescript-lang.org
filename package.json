@@ -19,7 +19,7 @@
     "build:vite": "yarn workspace @rescript-lang/docs build:vite",
     "build": "yarn workspace @rescript-lang/docs build",
     "ci:format": "oxfmt --check && rescript format --check",
-    "ci:generated": "yarn clean:res && yarn build:res && git diff --exit-code -- '*.jsx' '*.mjs'",
+    "ci:generated": "yarn clean:res && bash .github/scripts/clean-tracked-rescript-output.sh && yarn build:res && git diff --exit-code -- '*.jsx' '*.mjs'",
     "ci:homepage-performance": "yarn workspace @rescript-lang/docs ci:homepage-performance",
     "ci:test": "yarn workspace @rescript-lang/docs ci:test && yarn workspace @rescript-lang/guide ci:test",
     "ci:test:e2e": "yarn workspace @rescript-lang/docs ci:test:e2e",
