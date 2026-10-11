@@ -1,6 +1,8 @@
 open ReactRouter
 open Vitest
 
+external codeChildren: string => MdxLegacy.Components.unknown = "%identity"
+
 test("renders headings h1 through h5", async () => {
   await viewport(1440, 900)
 
@@ -171,7 +173,7 @@ test("renders links", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="links-wrapper">
         <Markdown.P>
           <Markdown.A href="https://rescript-lang.org">
@@ -184,7 +186,7 @@ test("renders links", async () => {
           </Markdown.A>
         </Markdown.P>
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let externalLink = await screen->getByText("External link")
@@ -246,11 +248,7 @@ test("renders inline code", async () => {
     <div dataTestId="inline-code-wrapper">
       <Markdown.P>
         {React.string("Use ")}
-        <code
-          className="md-inline-code px-2 py-0.5 text-gray-60 font-mono rounded-sm bg-gray-10-tr border border-gray-90/5"
-        >
-          {React.string("Array.map")}
-        </code>
+        <Markdown.Code metastring=None> {codeChildren("Array.map")} </Markdown.Code>
         {React.string(" to transform elements.")}
       </Markdown.P>
     </div>,
@@ -258,6 +256,13 @@ test("renders inline code", async () => {
 
   let code = await screen->getByText("Array.map")
   await element(code)->toBeVisible
+  await element(code)->toHaveClass("md-inline-code")
+  await element(code)->toHaveClass("font-mono")
+
+  switch document->WebAPI.Document.querySelector("[data-testid='inline-code-wrapper'] p > code") {
+  | Value(_) => ()
+  | Null => failwith("expected Markdown.Code to render inline code inside the paragraph")
+  }
 
   let wrapper = await screen->getByTestId("inline-code-wrapper")
   await element(wrapper)->toMatchScreenshot("markdown-inline-code")
