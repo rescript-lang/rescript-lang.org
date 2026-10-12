@@ -58,7 +58,7 @@ test("desktop blog index shows featured post and cards", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries=["/blog"]>
       <div dataTestId="blog-wrapper">
         <Blog posts=mockPosts category=All />
       </div>
@@ -82,7 +82,7 @@ test("desktop blog shows category selector", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries=["/blog"]>
       <div dataTestId="blog-wrapper">
         <Blog posts=mockPosts category=All />
       </div>
@@ -103,7 +103,7 @@ test("mobile blog index", async () => {
   await viewport(600, 1200)
 
   let screen = await render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries=["/blog"]>
       <div dataTestId="blog-wrapper">
         <Blog posts=mockPosts category=All />
       </div>
@@ -121,7 +121,7 @@ test("blog shows empty state when no posts", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries=["/blog"]>
       <div dataTestId="blog-empty-wrapper">
         <Blog posts=[] category=All />
       </div>
@@ -170,7 +170,7 @@ test("desktop blog shows archived posts", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries=["/blog"]>
       <div dataTestId="blog-wrapper">
         <Blog posts=mockArchivedPosts category=Archived />
       </div>
@@ -208,7 +208,7 @@ test("desktop blog with single post", async () => {
   ]
 
   let screen = await render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries=["/blog"]>
       <div dataTestId="blog-wrapper">
         <Blog posts=singlePost category=All />
       </div>

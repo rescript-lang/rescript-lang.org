@@ -44,7 +44,7 @@ test("desktop syntax lookup renders categories and tags", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries=["/syntax-lookup"]>
       <div dataTestId="syntax-lookup-wrapper">
         <SyntaxLookup mdxSources=mockItems />
       </div>
@@ -71,7 +71,7 @@ test("desktop syntax lookup with active item shows detail box", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries=["/syntax-lookup"]>
       <div dataTestId="syntax-lookup-wrapper">
         <SyntaxLookup mdxSources=mockItems activeItem={mockItems->Array.getUnsafe(0)}>
           <div> {React.string("Detail content for @as decorator.")} </div>
@@ -91,7 +91,7 @@ test("mobile syntax lookup", async () => {
   await viewport(600, 1200)
 
   let screen = await render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries=["/syntax-lookup"]>
       <div dataTestId="syntax-lookup-wrapper">
         <SyntaxLookup mdxSources=mockItems />
       </div>
@@ -118,7 +118,7 @@ test("deprecated items show with line-through styling", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries=["/syntax-lookup"]>
       <div dataTestId="syntax-lookup-wrapper">
         <SyntaxLookup mdxSources=mockItems />
       </div>
@@ -136,7 +136,7 @@ test("syntax lookup detail box shows summary", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries=["/syntax-lookup"]>
       <div dataTestId="syntax-lookup-wrapper">
         <SyntaxLookup mdxSources=mockItems activeItem={mockItems->Array.getUnsafe(2)}>
           <div> {React.string("Detailed documentation about the pipe operator.")} </div>
@@ -156,7 +156,7 @@ test("mobile syntax lookup with active item", async () => {
   await viewport(600, 1200)
 
   let screen = await render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries=["/syntax-lookup"]>
       <div dataTestId="syntax-lookup-wrapper">
         <SyntaxLookup mdxSources=mockItems activeItem={mockItems->Array.getUnsafe(0)}>
           <div> {React.string("Detail content for @as decorator.")} </div>

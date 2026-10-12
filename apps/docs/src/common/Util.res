@@ -7,12 +7,6 @@ module String = {
       ~input as _,
     ) => group1->String.toUpperCase)
 
-  let kebabCase = string =>
-    string
-    ->String.replaceAllRegExp(/([a-z])([A-Z])/g, "$1-$2")
-    ->String.toLowerCase
-    ->String.replaceAll(" ", "-")
-
   let capitalize = str =>
     str->String.slice(~start=0, ~end=1)->String.toUpperCase ++ str->String.slice(~start=1)
 

@@ -163,7 +163,7 @@ module Toggle = {
               </Link.String>
             : React.null
 
-        let copyButton = <CodeCopyButton code={tab.code} />
+        let copyButton = <CodeCopyButton key=tab.code code={tab.code} />
 
         <div className="flex items-center justify-end h-full pr-4 space-x-2">
           playgroundLinkButton

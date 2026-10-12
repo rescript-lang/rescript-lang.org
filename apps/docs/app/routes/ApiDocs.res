@@ -367,7 +367,7 @@ module Data = {
 }
 
 let processStaticProps = (~slug: array<string>) => {
-  let moduleName = slug[0]->Option.getOrThrow
+  let moduleName = slug->Array.at(0)->Option.getOrThrow
   let modulePath = slug->Array.join("/")
 
   let content =

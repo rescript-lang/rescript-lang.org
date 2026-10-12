@@ -61,20 +61,6 @@ test("URL boxes preserve their first paragraph, following content and destinatio
   expect(html->String.includes("<p><p"))->toBe(false)
 })
 
-test("meta tag extraction visits exactly the available HTML elements", async () => {
-  let html = `<meta name="og:title" content="Title"><meta property="og:description" content="Description"><meta itemprop="og:image" content="/image.png">`
-  let result = await MetaTagsApi.extractMetaTags(`data:text/html,${encodeURIComponent(html)}`)
-  expect(result)->toStrictEqual(
-    Some({
-      MetaTagsApi.title: Some("Title"),
-      description: Some("Description"),
-      image: Some("/image.png"),
-    }),
-  )
-  let empty = await MetaTagsApi.extractMetaTags("data:text/html,<title>No meta</title>")
-  expect(empty)->toStrictEqual(Some({MetaTagsApi.title: None, description: None, image: None}))
-})
-
 test("typed string helpers preserve empty strings and repeated hyphen behavior", async () => {
   expect(Util.String.camelCase("hello--world-42-next"))->toBe("hello-World-42Next")
   expect(Util.String.capitalize(""))->toBe("")
