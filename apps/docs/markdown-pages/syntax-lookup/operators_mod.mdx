@@ -2,11 +2,11 @@
 id: "%"
 keywords: ["mod", "modulo", "operator", "%", "remainder"]
 name: "%"
-summary: "This is the `mod` operator (remainder semantics)."
+summary: "This is the `%` operator (remainder semantics)."
 category: "operators-arithmetic"
 ---
 
-The `%` operator has `mod` naming in ReScript, but its semantics are _remainder_ (like JavaScript `%`).
+The `%` operator computes the _remainder_, like JavaScript `%`.
 
 It supports `int`, `float`, and `bigint`.
 
@@ -15,8 +15,8 @@ It supports `int`, `float`, and `bigint`.
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-let intResult = mod(7, 4)
-let floatResult = mod(7.5, 4.0)
+let intResult = 7 % 4
+let floatResult = 7.5 % 4.0
 ```
 
 ```js
