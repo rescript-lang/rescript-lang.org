@@ -20,7 +20,6 @@
     "build": "yarn workspace @rescript-lang/docs build",
     "ci:format": "oxfmt --check",
     "check:dead-code": "yarn build:res && node scripts/check-dead-code.mjs",
-    "ci:homepage-performance": "yarn workspace @rescript-lang/docs ci:homepage-performance",
     "ci:test": "yarn workspace @rescript-lang/docs ci:test && yarn workspace @rescript-lang/guide ci:test",
     "ci:test:e2e": "yarn workspace @rescript-lang/docs ci:test:e2e",
     "ci:test:visual": "yarn workspace @rescript-lang/docs ci:test:visual",
