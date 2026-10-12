@@ -104,6 +104,31 @@ export { greet, greetMore };
 
 If your function has no argument, just write `let greetMore = () => {...}`.
 
+## Function Directives
+
+Use `@directive` directly before a function expression to emit a JavaScript directive at the start of that function. This works with synchronous and asynchronous functions, including functions with labeled arguments.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let greet = @directive("'use server'") async name => {
+  "Hello " + name
+}
+```
+
+```js
+async function greet(name) {
+  "use server";
+  return "Hello " + name;
+}
+
+export { greet };
+```
+
+</CodeTab>
+
+The attribute belongs to the function expression, after the `=` rather than before the `let` binding. File-level directives use the separate `@@directive` form. See the [`@directive` syntax reference](../../syntax-lookup/decorator_directive.mdx).
+
 ## Labeled Arguments
 
 <div className="hidden">

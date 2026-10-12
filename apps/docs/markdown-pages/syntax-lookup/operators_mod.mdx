@@ -15,13 +15,20 @@ It supports `int`, `float`, and `bigint`.
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-let result = mod(7, 4)
+let intResult = mod(7, 4)
+let floatResult = mod(7.5, 4.0)
 ```
 
 ```js
-let result = 3;
+let floatResult = 7.5 % 4.0;
 
-export { result };
+let intResult = 3;
+
+export { intResult, floatResult };
 ```
 
 </CodeTab>
+
+### References
+
+- [Primitive Types](../docs/manual/primitive-types.mdx#arithmetic-operators)

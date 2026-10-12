@@ -247,6 +247,27 @@ Any values exported from `MyComponent.res` can then be imported from TypeScript.
 import { make } from "./components/MyComponent.gen.js";
 ```
 
+## Built-in Type Mappings
+
+genType recognizes the ReScript 12 standard library directly, so common types don't require TypeScript shims. Important mappings include:
+
+| ReScript                                                        | TypeScript                              |
+| --------------------------------------------------------------- | --------------------------------------- |
+| `int`, `float`                                                  | `number`                                |
+| `string`, `bool`, `bigint`, `unit`                              | `string`, `boolean`, `bigint`, `void`   |
+| `array<'a>`, tuples                                             | arrays and tuples                       |
+| `option<'a>`, `Null.t<'a>`, `Undefined.t<'a>`, `Nullable.t<'a>` | unions with `undefined` and/or `null`   |
+| `dict<'a>`                                                      | `{[id: string]: a}`                     |
+| `JSON.t`                                                        | `unknown`                               |
+| `Promise.t<'a>`                                                 | `Promise<a>`                            |
+| `Date.t`, `RegExp.t`, `Symbol.t`                                | `Date`, `RegExp`, `symbol`              |
+| `Map.t`, `WeakMap.t`, `Set.t`, `WeakSet.t`                      | the corresponding TypeScript collection |
+| `ArrayBuffer.t`, `DataView.t`, and typed arrays                 | the corresponding JavaScript built-in   |
+| `JsError.t`                                                     | `Error`                                 |
+| `Intl.*.t`                                                      | the corresponding `Intl.*` type         |
+
+ReScript records, variants, `result`, `ref`, and other language-level types are translated to equivalent structural TypeScript types.
+
 ## Experimental features
 
 These features are for experimentation only. They could be changed/removed any time, and not be considered breaking changes.
