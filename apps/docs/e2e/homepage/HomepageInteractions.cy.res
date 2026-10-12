@@ -7,6 +7,10 @@ type clipboardDescriptor = {value: Nullable.t<Cypress.clipboard>, configurable: 
 external hideClipboardAPI: ('navigator, @as("clipboard") _, clipboardDescriptor) => unit =
   "defineProperty"
 
+@val @scope("cy")
+external stubCopyCommand: (Dom.document, @as("execCommand") _) => spy = "stub"
+@send external returns: (spy, bool) => spy = "returns"
+
 it("community gallery supports keyboard selection and wraps to the first photo", () => {
   visit("/")
   containsIn("h1", headline)->realClick->ignore
@@ -24,15 +28,24 @@ it("community gallery supports keyboard selection and wraps to the first photo",
   get(`img[alt="ReScript community photo 1"]`)->should("be.visible")->ignore
 })
 
-it("clipboard denial can recover and both install commands can be copied repeatedly", () => {
+it("clipboard failure can recover and both install commands can be copied repeatedly", () => {
   denyClipboardPermissions()
-  visit("/")
+  visitWithOptions(
+    "/",
+    {
+      onBeforeLoad: window => {
+        // Denying the native API still allows the legacy copy command, so fail it too.
+        window.document->stubCopyCommand->returns(false)->ignore
+      },
+    },
+  )
   let first = `button[aria-label="Copy npm install rescript command"]`
   get(`[role="status"]`)->shouldInt("have.length", 2)->ignore
   get(`button [role="status"]`)->should("not.exist")->ignore
   get(first)->realClick->ignore
   containsIn(`[role="status"]`, "Could not copy. Try again.")->should("be.visible")->ignore
   get(first)->should("be.enabled")->ignore
+  get("textarea")->should("not.exist")->ignore
   grantClipboardPermissions()
 
   ["npm install rescript", "npx create-rescript-app"]->Array.forEach(command => {
