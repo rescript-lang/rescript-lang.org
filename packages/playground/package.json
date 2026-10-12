@@ -1,0 +1,16 @@
+{
+  "name": "@rescript-lang/playground",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@babel/parser": "^7.29.2",
+    "@rescript-lang/shared": "workspace:*",
+    "@rescript/react": "^0.14.2",
+    "@rescript/webapi": "0.1.0-experimental-29db5f4",
+    "lz-string": "^1.5.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-router": "^8.3.1"
+  }
+}

@@ -1,0 +1,241 @@
+---
+title: "Overview"
+metaTitle: "Language Features Overview"
+description: "A quick overview of ReScript's syntax and language features"
+canonical: "/docs/manual/overview"
+section: "Language Features"
+order: 1
+---
+
+# Language Overview
+
+A concise reference of ReScript's syntax and core language features.
+
+If you already know JavaScript and want a quick syntax guide first, see [ReScript for JavaScript Developers](./rescript-for-javascript-developers.mdx).
+
+## Semicolons
+
+ReScript does not require semicolons. Line breaks are sufficient to separate statements.
+
+## Comments
+
+| Syntax                           | Purpose                |
+| -------------------------------- | ---------------------- |
+| `// Line comment`                | Single-line comment    |
+| `/* Block comment */`            | Multi-line comment     |
+| `/** Doc comment */`             | Documentation comment  |
+| `/*** Standalone doc comment */` | Standalone doc comment |
+
+## Variables
+
+| Syntax                                | Description             |
+| ------------------------------------- | ----------------------- |
+| `let x = 5`                           | Immutable binding       |
+| `let x = ref(5); x := x.contents + 1` | Mutable value via `ref` |
+
+## Strings
+
+| Syntax                    | Description          |
+| ------------------------- | -------------------- |
+| `"Hello world!"`          | String literal       |
+| `"hello " ++ "world"`     | String concatenation |
+| `` `hello ${message}` ``  | String interpolation |
+| `` sql`select ${col};` `` | Tagged template      |
+
+Strings must use double quotes (`"`).
+
+## Booleans
+
+| Syntax               | Description                    |
+| -------------------- | ------------------------------ |
+| `true`, `false`      | Boolean literals               |
+| `!`                  | Logical NOT                    |
+| `\|\|`, `&&`         | Logical OR, AND                |
+| `<=`, `>=`, `<`, `>` | Comparison operators           |
+| `===`, `!==`         | Referential (shallow) equality |
+| `==`, `!=`           | Structural (deep) equality     |
+
+There is no equality with implicit type casting.
+
+## Numbers
+
+| Syntax       | Description                        |
+| ------------ | ---------------------------------- |
+| `3`          | Integer literal                    |
+| `3.1415`     | Float literal                      |
+| `3 + 4`      | Addition (works for int and float) |
+| `2 / 3 * 4`  | Division and multiplication        |
+| `2.0 ** 3.0` | Exponentiation                     |
+| `5 % 3`      | Modulo                             |
+
+Arithmetic operators (`+`, `-`, `*`, `/`, `%`, `**`) work for both `int` and `float`.
+
+## Records
+
+Records are typed, immutable-by-default data structures with named fields.
+
+| Syntax                                  | Description          |
+| --------------------------------------- | -------------------- |
+| `type point = {x: int, mutable y: int}` | Type declaration     |
+| `{x: 30, y: 20}`                        | Record creation      |
+| `point.x`                               | Field access         |
+| `point.y = 30`                          | Mutable field update |
+| `{...point, x: 30}`                     | Immutable update     |
+
+## Arrays
+
+| Syntax            | Description            |
+| ----------------- | ---------------------- |
+| `[1, 2, 3]`       | Array literal          |
+| `myArray[1] = 10` | Mutable element update |
+
+Arrays are homogeneous. For mixed types, use tuples or [Untagged Variants](./variant.mdx#untagged-variants).
+
+## Tuples
+
+| Syntax              | Description         |
+| ------------------- | ------------------- |
+| `(1, "Bob", true)`  | Tuple literal       |
+| `let (a, b, c) = t` | Tuple destructuring |
+
+Tuples are fixed-length, heterogeneous, and immutable.
+
+## Null & Option
+
+ReScript has no `null` or `undefined`. The `option` type represents the possible absence of a value:
+
+| Syntax       | Description     |
+| ------------ | --------------- |
+| `None`       | No value        |
+| `Some("hi")` | A present value |
+
+## Functions
+
+| Syntax                        | Description          |
+| ----------------------------- | -------------------- |
+| `arg => retVal`               | Anonymous function   |
+| `let named = (arg) => retVal` | Named function       |
+| `add(4, add(5, 6))`           | Function application |
+
+## Async / Await
+
+| Syntax                             | Description                    |
+| ---------------------------------- | ------------------------------ |
+| `async (arg) => {...}`             | Async anonymous function       |
+| `let named = async (arg) => {...}` | Async named function           |
+| `await somePromise`                | Await a promise                |
+| `async (arg): string => {...}`     | Typed async (return type only) |
+
+## Blocks
+
+The last expression in a `{}` block is implicitly returned, including in function bodies.
+
+<table>
+  <thead>
+    <tr>
+      <th>Example</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+      ```
+      let myFun = (x, y) => {
+        let doubleX = x + x
+        let doubleY = y + y
+        doubleX + doubleY
+      }
+      ```
+      </td>
+      <td>Function body with implicit return</td>
+    </tr>
+    <tr>
+      <td>
+      ```
+      let result = {
+        let x = 23
+        let y = 34
+        x + y
+      }
+      ```
+      </td>
+      <td>Block expression bound to a variable</td>
+    </tr>
+  </tbody>
+</table>
+
+## If-Else
+
+| Syntax              | Description                                                              |
+| ------------------- | ------------------------------------------------------------------------ |
+| `if a {b} else {c}` | Conditional expression                                                   |
+| `a ? b : c`         | Ternary expression                                                       |
+| `switch`            | Pattern matching — [see full docs](./pattern-matching-destructuring.mdx) |
+
+Conditionals are expressions: `let result = if a {"hello"} else {"bye"}`
+
+## Destructuring
+
+| Syntax                      | Description               |
+| --------------------------- | ------------------------- |
+| `let {a, b} = data`         | Record destructuring      |
+| `let [a, b] = data`         | Array destructuring \*    |
+| `let {a: aa, b: bb} = data` | Destructuring with rename |
+
+\* The compiler warns if `data` might not be of length 2.
+
+## Loops
+
+| Syntax                       | Description     |
+| ---------------------------- | --------------- |
+| `for i in 0 to 10 {...}`     | Ascending loop  |
+| `for i in 10 downto 0 {...}` | Descending loop |
+| `while true {...}`           | While loop      |
+
+## JSX
+
+| Syntax                                    | Description            |
+| ----------------------------------------- | ---------------------- |
+| `<Comp message="hi" onClick={handler} />` | Props                  |
+| `<Comp message />`                        | Argument punning       |
+| `<input checked=true />`                  | Explicit boolean props |
+| `<Comp>...children</Comp>`                | Children spread        |
+
+## Exceptions
+
+| Syntax                                        | Description           |
+| --------------------------------------------- | --------------------- |
+| `throw(SomeException(...))`                   | Raise an exception    |
+| `try a catch { \| SomeException(err) => ...}` | Catch an exception \* |
+
+\* There is no `finally` clause.
+
+## Compilation Output Reference
+
+A reference showing how common ReScript features compile to JavaScript.
+
+| Feature                   | ReScript                             | JavaScript Output                          |
+| ------------------------- | ------------------------------------ | ------------------------------------------ |
+| String                    | `"Hello"`                            | `"Hello"`                                  |
+| String Interpolation      | `` `Hello ${message}` ``             | `"Hello " + message`                       |
+| Character (discouraged)   | `'x'`                                | `120` (char code)                          |
+| Integer                   | `23`, `-23`                          | `23`, `-23`                                |
+| Float                     | `23.0`, `-23.0`                      | `23.0`, `-23.0`                            |
+| Addition                  | `23 + 1`                             | `23 + 1`                                   |
+| Float Addition            | `23.0 + 1.0`                         | `23.0 + 1.0`                               |
+| Division/Multiply         | `2 / 23 * 1`                         | `2 / 23 * 1`                               |
+| Float Division/Multiply   | `2.0 / 23.0 * 1.0`                   | `2.0 / 23.0 * 1.0`                         |
+| Float Exponentiation      | `2.0 ** 3.0`                         | `2.0 ** 3.0`                               |
+| String Concatenation      | `"Hello " ++ "World"`                | `"Hello " + "World"`                       |
+| Comparison                | `>`, `<`, `>=`, `<=`                 | `>`, `<`, `>=`, `<=`                       |
+| Boolean operation         | `!`, `&&`, `\|\|`                    | `!`, `&&`, `\|\|`                          |
+| Shallow and deep Equality | `===`, `==`                          | `===`, `==`                                |
+| List (discouraged)        | `list{1, 2, 3}`                      | `{hd: 1, tl: {hd: 2, tl: {hd: 3, tl: 0}}}` |
+| List Prepend              | `list{a1, a2, ...oldList}`           | `{hd: a1, tl: {hd: a2, tl: theRest}}`      |
+| Array                     | `[1, 2, 3]`                          | `[1, 2, 3]`                                |
+| Record                    | `type t = {b: int}; let a = {b: 10}` | `var a = {b: 10}`                          |
+| Multiline Comment         | `/* Comment here */`                 | Not in output                              |
+| Single line Comment       | `// Comment here`                    | Not in output                              |
+
+_Note that this is a cleaned-up reference table; some examples' JavaScript output may differ slightly in practice._

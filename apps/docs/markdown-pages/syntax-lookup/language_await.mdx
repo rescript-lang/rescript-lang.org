@@ -1,0 +1,40 @@
+---
+id: "await"
+keywords: ["await"]
+name: "await"
+summary: "This is the `await` keyword."
+category: "languagecontrolflow"
+---
+
+**Since 10.1**
+
+Use the `await` within an `async` function to unwrap a promise value in a seamingly synchronous manner.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+@val external queryMessagesApi: string => promise<string> = "global.queryMessagesApi"
+
+let fetchMessages = async () => {
+  let message = await queryMessagesApi("message-id-1")
+
+  Console.log(message)
+}
+```
+
+```js
+async function fetchMessages() {
+  let message = await global.queryMessagesApi("message-id-1");
+  console.log(message);
+}
+
+export { fetchMessages };
+```
+
+</CodeTab>
+
+### References
+
+- [Async & Await](../docs/manual/async-await.mdx)

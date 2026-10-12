@@ -1,0 +1,14 @@
+.gradientShadow {
+  /*box-shadow: inset 30 -30 50px 50px #edf0f2, inset 15 0 -20px 50px #edf0f2;*/
+
+  /*background: red;*/
+  background: linear-gradient(
+    to right,
+    rgba(244, 100, 106, 0.4),
+    rgba(234, 151, 67, 0.4)
+  );
+  transform: translateY(20px) scale(0.95);
+  filter: blur(15px);
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}

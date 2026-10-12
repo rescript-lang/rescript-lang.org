@@ -1,0 +1,303 @@
+---
+title: Context
+description: "Details about Context in ReScript and React"
+canonical: "/docs/react/context"
+section: "Main Concepts"
+order: 7
+---
+
+# Context
+
+<Intro>
+
+Context provides a way to pass data through the component tree without having to pass props down manually at every level. See the [JSX](../manual/jsx.mdx) docs for more details.
+
+</Intro>
+
+## Why Context?
+
+In a typical React application, data is passed top-down (parent to child) via props, but this can be cumbersome for certain types of props (e.g. locale preference, UI theme) that are required by many components within an application. Context provides a way to share values like these between components without having to explicitly pass a prop through every level of the tree.
+
+**Note:** In ReScript, passing down props is way simpler than in TS / JS due to its [JSX prop punning](../manual/jsx.mdx#punning) feature and strong type inference, so it's often preferrable to keep it simple and just do props passing. Less magic means more transparency!
+
+## When to Use Context
+
+Context is designed to share data that can be considered “global” for a tree of React components, such as the current authenticated user, theme, or preferred language. For example, in the code below we manually thread through a “theme” prop in order to style the Button component:
+
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
+
+```res
+// src/App.res
+type theme = Light | Dark
+
+module Button = {
+  @react.component
+  let make = (~theme) => {
+    let className = switch theme {
+      | Light => "theme-light"
+      | Dark => "theme-black"
+    }
+    <button className> {React.string("Click me")} </button>
+  }
+}
+
+module ThemedButton = {
+  @react.component
+  let make = (~theme) => {
+    <Button theme />
+  }
+}
+
+module Toolbar = {
+  @react.component
+  let make = (~theme) => {
+    <div>
+      <ThemedButton theme/>
+    </div>
+  }
+}
+
+@react.component
+let make = () => {
+  // We define the theme in the
+  // toplevel App component and
+  // pass it down
+  <Toolbar theme=Dark/>
+}
+```
+
+```js
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Button(props) {
+  let className;
+  className = props.theme === "Light" ? "theme-light" : "theme-black";
+  return JsxRuntime.jsx("button", {
+    children: "Click me",
+    className: className,
+  });
+}
+
+let Button = { make: Example$Button };
+
+function Example$ThemedButton(props) {
+  return JsxRuntime.jsx(Example$Button, { theme: props.theme });
+}
+
+let ThemedButton = { make: Example$ThemedButton };
+
+function Example$Toolbar(props) {
+  return JsxRuntime.jsx("div", {
+    children: JsxRuntime.jsx(Example$ThemedButton, { theme: props.theme }),
+  });
+}
+
+let Toolbar = { make: Example$Toolbar };
+
+function Example(props) {
+  return JsxRuntime.jsx(Example$Toolbar, { theme: "Dark" });
+}
+
+let make = Example;
+
+export { Button, ThemedButton, Toolbar, make };
+```
+
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Button(props) {
+  let className;
+  className = props.theme === "Light" ? "theme-light" : "theme-black";
+  return <button className={className}>{"Click me"}</button>;
+}
+
+let Button = { make: Example$Button };
+
+function Example$ThemedButton(props) {
+  return <Button.make theme={props.theme} />;
+}
+
+let ThemedButton = { make: Example$ThemedButton };
+
+function Example$Toolbar(props) {
+  return (
+    <div>
+      <ThemedButton.make theme={props.theme} />
+    </div>
+  );
+}
+
+let Toolbar = { make: Example$Toolbar };
+
+function Example(props) {
+  return <Toolbar.make theme={"Dark"} />;
+}
+
+let make = Example;
+
+export { Button, ThemedButton, Toolbar, make };
+```
+
+</CodeTab>
+
+Using context, we can avoid passing props through intermediate elements:
+
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
+
+```res
+// src/App.res
+
+module ThemeContext = {
+  type theme = Light | Dark
+  let context = React.createContext(Light)
+
+  module Provider = {
+    let make = React.Context.provider(context)
+  }
+}
+
+module Button = {
+  @react.component
+  let make = (~theme) => {
+    let className = switch theme {
+    | ThemeContext.Light => "theme-light"
+    | Dark => "theme-black"
+    }
+    <button className> {React.string("Click me")} </button>
+  }
+}
+
+module ThemedButton = {
+  @react.component
+  let make = () => {
+    let theme = React.useContext(ThemeContext.context)
+
+    <Button theme />
+  }
+}
+
+module Toolbar = {
+  @react.component
+  let make = () => {
+    <div>
+      <ThemedButton />
+    </div>
+  }
+}
+
+@react.component
+let make = () => {
+  <ThemeContext.Provider value=ThemeContext.Dark>
+    <div>
+      <Toolbar />
+    </div>
+  </ThemeContext.Provider>
+}
+```
+
+```js
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let context = React.createContext("Light");
+
+let make = context.Provider;
+
+let Provider = { make: make };
+
+let ThemeContext = { context: context, Provider: Provider };
+
+function Example$Button(props) {
+  let className;
+  className = props.theme === "Light" ? "theme-light" : "theme-black";
+  return JsxRuntime.jsx("button", {
+    children: "Click me",
+    className: className,
+  });
+}
+
+let Button = { make: Example$Button };
+
+function Example$ThemedButton(props) {
+  let theme = React.useContext(context);
+  return JsxRuntime.jsx(Example$Button, { theme: theme });
+}
+
+let ThemedButton = { make: Example$ThemedButton };
+
+function Example$Toolbar(props) {
+  return JsxRuntime.jsx("div", {
+    children: JsxRuntime.jsx(Example$ThemedButton, {}),
+  });
+}
+
+let Toolbar = { make: Example$Toolbar };
+
+function Example(props) {
+  return JsxRuntime.jsx(make, {
+    value: "Dark",
+    children: JsxRuntime.jsx("div", {
+      children: JsxRuntime.jsx(Example$Toolbar, {}),
+    }),
+  });
+}
+
+let make$1 = Example;
+
+export { ThemeContext, Button, ThemedButton, Toolbar, make$1 as make };
+```
+
+```jsx
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let context = React.createContext("Light");
+
+let make = context.Provider;
+
+let Provider = { make: make };
+
+let ThemeContext = { context: context, Provider: Provider };
+
+function Example$Button(props) {
+  let className;
+  className = props.theme === "Light" ? "theme-light" : "theme-black";
+  return <button className={className}>{"Click me"}</button>;
+}
+
+let Button = { make: Example$Button };
+
+function Example$ThemedButton(props) {
+  let theme = React.useContext(context);
+  return <Button.make theme={theme} />;
+}
+
+let ThemedButton = { make: Example$ThemedButton };
+
+function Example$Toolbar(props) {
+  return (
+    <div>
+      <ThemedButton.make />
+    </div>
+  );
+}
+
+let Toolbar = { make: Example$Toolbar };
+
+function Example(props) {
+  return (
+    <Provider.make value={"Dark"}>
+      <div>
+        <Toolbar.make />
+      </div>
+    </Provider.make>
+  );
+}
+
+let make$1 = Example;
+
+export { ThemeContext, Button, ThemedButton, Toolbar, make$1 as make };
+```
+
+</CodeTab>

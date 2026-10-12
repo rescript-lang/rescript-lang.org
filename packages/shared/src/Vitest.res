@@ -1,0 +1,121 @@
+type page
+type expect
+type element
+type mock
+
+/**
+ * Vitest
+ */
+@module("vitest")
+external test: (string, unit => promise<unit>) => unit = "test"
+
+@module("vitest")
+external testWithTimeout: (string, unit => promise<unit>, int) => unit = "test"
+
+@module("vitest") @scope("vi")
+external fn: unit => 'a => 'b = "fn"
+
+@module("vitest")
+external expect: 'a => expect = "expect"
+
+/**
+ * Vitest browser
+ */
+@module("vitest/browser") @scope("page")
+external viewport: (int, int) => promise<unit> = "viewport"
+
+/**
+ * vitest-browser-react
+ */
+@module("vitest-browser-react")
+external render: Jsx.element => promise<element> = "render"
+
+@send
+external unmount: element => promise<unit> = "unmount"
+
+@send
+external rerender: (element, Jsx.element) => promise<unit> = "rerender"
+
+@module("vitest") @scope("expect")
+external element: 'a => element = "element"
+
+/*
+ * Locators
+ */
+@send
+external getByTestId: (element, string) => promise<element> = "getByTestId"
+
+@send
+external getByText: (element, string) => promise<element> = "getByText"
+
+@send
+external getByTextWithOptions: (element, string, {"exact": bool}) => promise<element> = "getByText"
+
+@send
+external getByLabelText: (element, string) => promise<element> = "getByLabelText"
+
+@send
+external getByAltText: (element, string) => promise<element> = "getByAltText"
+
+@send
+external getAllByLabelText: (element, string) => promise<array<element>> = "getAllByLabelText"
+
+@send
+external getByRole: (element, [#button]) => promise<element> = "getByRole"
+
+/**
+ * Actions
+ */
+@send
+external click: element => promise<unit> = "click"
+
+/**
+ * Vitest assertions
+ */
+@send
+external toBe: (expect, 'a) => unit = "toBe"
+
+@send
+external toEqual: (expect, 'a) => unit = "toEqual"
+
+@send
+external toHaveBeenCalled: expect => unit = "toHaveBeenCalled"
+
+/**
+ * Browser assertions
+ */
+@send
+external toBeVisible: element => promise<unit> = "toBeVisible"
+
+@send @scope("not")
+external notToBeVisible: element => promise<unit> = "toBeVisible"
+
+@send @scope("not")
+external notToBeInTheDocument: element => promise<unit> = "toBeInTheDocument"
+
+@send
+external toBeDisabled: element => promise<unit> = "toBeDisabled"
+
+@send @scope("not")
+external notToBeDisabled: element => promise<unit> = "toBeDisabled"
+
+@send
+external toHaveValue: (element, string) => promise<unit> = "toHaveValue"
+
+@send
+external toHaveTextContent: (element, string) => promise<unit> = "toHaveTextContent"
+
+@send
+external toHaveClass: (element, string) => promise<unit> = "toHaveClass"
+
+@send
+external toHaveAttribute: (element, string, string) => promise<unit> = "toHaveAttribute"
+
+@send
+external toMatchScreenshot: (element, string) => promise<unit> = "toMatchScreenshot"
+
+@get
+external container: element => Dom.element = "container"
+
+@get
+external textContent: Dom.element => Nullable.t<string> = "textContent"

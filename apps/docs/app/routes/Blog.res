@@ -1,0 +1,281 @@
+module Link = ReactRouter.Link
+
+let defaultPreviewImg = "/Art-3-rescript-launch.avif"
+
+// For encoding reasons, see https://shripadk.github.io/react/docs/jsx-gotchas.html
+let middleDotSpacer = " " ++ (String.fromCharCode(183) ++ " ")
+
+module Badge = {
+  @react.component
+  let make = (~badge: BlogFrontmatter.Badge.t) => {
+    let bgColor = switch badge {
+    | Preview | Roadmap | Release | Community => "bg-turtle"
+    | Testing => "bg-orange"
+    }
+
+    let text = badge->BlogFrontmatter.Badge.toString
+
+    <div
+      className={bgColor ++ " flex items-center h-6 font-medium tracking-tight text-gray-80-tr text-14 px-2 rounded-sm"}
+    >
+      <div>
+        <img className="h-3 block mr-1" src="/star.svg" />
+      </div>
+      <div> {React.string(text)} </div>
+    </div>
+  }
+}
+
+type category =
+  /** Actually only unarchived */
+  | All
+  | Archived
+
+module CategorySelector = {
+  @react.component
+  let make = (~selected: category) => {
+    let tabs = [All, Archived]
+
+    <div className="text-16 w-full flex items-center justify-between text-gray-60">
+      {tabs
+      ->Array.map(tab => {
+        // Deep comparison here!
+        let isActive = selected == tab
+        let text = (tab :> string)
+        let href = switch tab {
+        | All => "/blog"
+        | Archived => "/blog/archived"
+        }
+        let className =
+          switch isActive {
+          | true => "bg-gray-20 text-gray-80 rounded py-1"
+          | false => "hover:cursor-pointer bg-white hover:text-gray-80"
+          } ++ " px-4 inline-block"
+        <Link.String key=text to=href className> {React.string(text)} </Link.String>
+      })
+      ->React.array}
+    </div>
+  }
+}
+
+module BlogCard = {
+  @react.component
+  let make = (
+    ~previewImg: option<string>=?,
+    ~title: string="Unknown Title",
+    ~author as _: BlogFrontmatter.author,
+    ~category: option<string>=?,
+    ~badge: option<BlogFrontmatter.Badge.t>=?,
+    ~date: Date.t,
+    ~slug: string,
+  ) =>
+    <section className="h-full">
+      <div className="relative">
+        <ReactRouter.Link to=#"/syntax-lookup" />
+        {switch badge {
+        | None => React.null
+        | Some(badge) =>
+          <div className="absolute z-10 bottom-0 mb-4 -ml-2">
+            <Badge badge />
+          </div>
+        }}
+        <Link.String to={`/blog/${slug}`} className="relative hl-title block mb-4 pt-9/16">
+          {
+            let className = "absolute top-0 h-full w-full object-cover"
+            switch previewImg {
+            | Some(src) => <img className src loading={#lazy} />
+            | None => <img className src=defaultPreviewImg loading={#lazy} />
+            }
+          }
+        </Link.String>
+      </div>
+      <div className="px-2">
+        <Link.String to={`/blog/${slug}`}>
+          <h2 className="hl-4"> {React.string(title)} </h2>
+        </Link.String>
+        <div className="captions text-gray-40 pt-1">
+          {switch category {
+          | Some(category) =>
+            <>
+              {React.string(category)}
+              {React.string(` · `)}
+            </>
+          | None => React.null
+          }}
+          {React.string(date->Util.Date.toDayMonthYear)}
+        </div>
+      </div>
+    </section>
+}
+
+module FeatureCard = {
+  @react.component
+  let make = (
+    ~previewImg: option<string>=?,
+    ~title: string="Unknown Title",
+    ~author: BlogFrontmatter.author,
+    ~badge: option<BlogFrontmatter.Badge.t>=?,
+    ~date: Date.t,
+    ~category: option<string>=?,
+    ~firstParagraph: string="",
+    ~slug: string,
+  ) => {
+    let authorImg = switch author.imgUrl {
+    | "" => React.null
+    | imgUrl =>
+      <div className="inline-block w-4 h-4 mr-2">
+        <img className="h-full w-full rounded-full" src=imgUrl />
+      </div>
+    }
+    <section
+      className="flex sm:px-4 md:px-8 lg:px-0 flex-col justify-end lg:flex-row sm:items-center h-full"
+    >
+      <div className="w-full h-full sm:self-start md:self-auto max-h-101.75">
+        <Link.String to={`/blog/${slug}`} className="relative block pt-2/3">
+          {switch badge {
+          | Some(badge) =>
+            <div className="absolute z-10 top-0 mt-10 ml-4 lg:-ml-4">
+              <Badge badge />
+            </div>
+          | None => React.null
+          }}
+
+          {
+            let className = "absolute top-0 h-full w-full object-cover"
+            switch previewImg {
+            | Some(src) => <img className src />
+            | None => <img className src=defaultPreviewImg loading={#eager} />
+            }
+          }
+        </Link.String>
+      </div>
+      <div
+        className="relative px-4 lg:self-auto sm:pt-12 md:px-20 sm:self-start md:-mt-20 mt-4 bg-white lg:w-full lg:pt-0 lg:mt-0 lg:px-0 lg:ml-12"
+      >
+        <div className="max-w-400 ">
+          <h2 className="hl-1"> {React.string(title)} </h2>
+          <div className="mb-6">
+            <div className="flex items-center body-sm text-gray-40 mt-2 mb-5">
+              authorImg
+              <div>
+                <a
+                  className="hover:text-gray-60"
+                  href={switch author.social {
+                  | X(handle) => "https://x.com/" ++ handle
+                  | Bluesky(handle) => "https://bsky.app/profile/" ++ handle
+                  }}
+                  rel="noopener noreferrer"
+                >
+                  {React.string(author.fullname)}
+                </a>
+                {switch category {
+                | Some(category) =>
+                  <>
+                    {React.string(middleDotSpacer)}
+                    {React.string(category)}
+                    {React.string(middleDotSpacer)}
+                  </>
+                | None => React.string(middleDotSpacer)
+                }}
+                {date->Util.Date.toDayMonthYear->React.string}
+              </div>
+            </div>
+            <p className="body-md text-gray-70"> {React.string(firstParagraph)} </p>
+          </div>
+        </div>
+        <Link.String to={`/blog/${slug}`}>
+          <Button> {React.string("Read Article")} </Button>
+        </Link.String>
+      </div>
+    </section>
+  }
+}
+
+type params = {slug: string}
+
+@react.component
+let make = (~posts: array<BlogApi.post>, ~category: category): React.element => {
+  let content = if Array.length(posts) === 0 {
+    <div className="mt-8">
+      <Markdown.H1> {React.string("Blog not yet available")} </Markdown.H1>
+      <Markdown.Warn> {React.string("This blog is currently in the works.")} </Markdown.Warn>
+    </div>
+  } else {
+    let result = switch Array.length(posts) {
+    | 0 => <div> {React.string("No posts for this category available...")} </div>
+    | _ =>
+      let first = Array.getUnsafe(posts, 0)
+      let rest = Array.slice(posts, ~start=1)
+
+      let featureBox =
+        <div className="w-full mb-24 lg:px-8 xl:px-0">
+          <FeatureCard
+            previewImg=?{first.frontmatter.previewImg->Nullable.toOption}
+            title=first.frontmatter.title
+            badge=?{first.frontmatter.badge->Nullable.toOption}
+            author=first.frontmatter.author
+            firstParagraph=?{first.frontmatter.description->Nullable.toOption}
+            date={first.frontmatter.date->DateStr.toDate}
+            slug={BlogApi.blogPathToSlug(first.path)}
+          />
+        </div>
+
+      let postsBox = switch rest {
+      | [] => React.null
+      | rest =>
+        <div
+          className="px-4 md:px-8 xl:px-0 grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-20 gap-y-12 md:gap-y-24 w-full"
+        >
+          {Array.map(rest, post => {
+            let badge = post.frontmatter.badge->Nullable.toOption
+
+            <BlogCard
+              key={post.path}
+              previewImg=?{post.frontmatter.previewImg->Nullable.toOption}
+              title=post.frontmatter.title
+              author=post.frontmatter.author
+              ?badge
+              date={post.frontmatter.date->DateStr.toDate}
+              slug={BlogApi.blogPathToSlug(post.path)}
+            />
+          })->React.array}
+        </div>
+      }
+
+      <>
+        featureBox
+        postsBox
+      </>
+    }
+    <>
+      <div className="hidden sm:flex justify-center ">
+        <div className="my-16 w-full max-w-48">
+          <CategorySelector selected=category />
+        </div>
+      </div>
+      result
+    </>
+  }
+
+  <>
+    <div className="text-gray-80 text-18">
+      <div className="flex justify-center overflow-hidden">
+        <main className="min-w-320 lg:align-center w-full lg:px-0 max-w-1280 pb-48">
+          <div className="flex justify-center">
+            <div className="w-full max-w-266.5"> content </div>
+          </div>
+        </main>
+      </div>
+      <Footer />
+    </div>
+  </>
+}
+
+// let getStaticProps_Archived: Next.GetStaticProps.t<props, params> = async _ctx => {
+//   let props = {
+//     posts: BlogApi.getArchivedPosts(),
+//     category: Archived,
+//   }
+
+//   {"props": props}
+// }

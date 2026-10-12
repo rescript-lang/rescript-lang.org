@@ -1,0 +1,12 @@
+@reference "./_theme.css";
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+@import "./_shared-sources.css";
+
+/* Tests render every route together, so their final utility sheet needs the complete union. */
+@source "../app/**/*.{res,jsx}";
+@source "../src/**/*.{res,jsx,js,mjs}";
+@source "../markdown-pages/**/*.mdx";
+@source "../../../packages/shared/src/**/*.{res,jsx}";
+@source "../../../packages/playground/src/**/*.{res,jsx}";
+@source "../__tests__/**/*.{res,jsx}";
+@source "../test-utils/**/*.{res,jsx}";

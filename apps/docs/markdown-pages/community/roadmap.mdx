@@ -1,0 +1,54 @@
+---
+title: "Roadmap"
+description: "Goals & Future Releases"
+canonical: "/community/roadmap"
+section: "Resources"
+order: 3
+---
+
+# Roadmap
+
+ReScript was created by [Hongbo Zhang](https://github.com/bobzhang), whose foundational work shaped the language and compiler. Today, ReScript is developed in the open by individual contributors and members of the [ReScript Association](https://rescript-association.org).
+
+## ReScript 13
+
+The target for ReScript 13 is **Q4 2026**. This roadmap describes the intended outcomes of the release rather than tracking the day-to-day status of individual changes.
+
+The main areas of focus are:
+
+### Source Maps and Debugging
+
+Compiler-generated source maps, with linked, inline, and hidden modes, will make generated JavaScript easier to debug. Tools that consume source maps will be able to relate stack traces and runtime performance profiles back to their original ReScript source.
+
+### Faster, Observable Builds
+
+ReScript 13 completes the transition to the native Rewatch build system and removes the legacy Ninja-based builder.
+
+The build scheduler uses a work-stealing dependency-graph dispatcher ordered by critical-path priority. This avoids waiting for the slowest file in each compilation wave and makes better use of the available CPU cores. The build system also focuses on reliable monorepo builds, production-only builds, feature-gated source directories, and a better watch-mode experience.
+
+OpenTelemetry tracing through OTLP exposes initialization, dependency discovery, parsing, per-file compilation, and post-build work. This provides a modern path for investigating build performance after the removal of the legacy `bstracing` tool.
+
+### TypeScript Declarations
+
+Direct TypeScript declaration (`.d.ts`) generation in the compiler will make ReScript libraries easier to consume from TypeScript without requiring a separate type-information parsing pipeline. The focus is declaration output for ReScript-generated JavaScript, not compiling ReScript to TypeScript source.
+
+### JavaScript-Style Control Flow
+
+ReScript 13 adds `for...of` and `for await...of` loops for iterables and async iterables. Loops also support `break` and `continue`, making common JavaScript control-flow patterns available without dropping down to bindings or helper functions.
+
+### More JavaScript-Aligned Language Features
+
+The ReScript 13 language direction also includes:
+
+- dictionary spreads
+- record rest destructuring
+- inline record types in external definitions
+- first-class, type-safe tagged-template functions
+
+ReScript 13 also removes deprecated configuration, syntax, and standard-library APIs, defaults the module system to ES modules, and raises the minimum supported Node.js version to 22.
+
+## Follow Development
+
+For the latest details, follow the [ReScript 13 compiler changelog](https://github.com/rescript-lang/rescript/blob/master/CHANGELOG.md), the [development section of the ReScript forum](https://forum.rescript-lang.org/c/development), and the [ReScript blog](/blog).
+
+Release contents and timing may change.

@@ -1,0 +1,278 @@
+---
+title: "Pipe"
+description: "The Pipe operator (->)"
+canonical: "/docs/manual/pipe"
+section: "Language Features"
+order: 15
+---
+
+# Pipe
+
+ReScript provides a tiny but surprisingly useful operator `->`, called the "pipe", that allows you to "flip" your code inside-out. `a(b)` becomes `b->a`. It's a simple piece of syntax that doesn't have any runtime cost.
+
+<div className="hidden">
+
+{/* Shared bindings for the illustrative functions and values below. */}
+
+```res prelude
+type person = {age: int, name: string}
+@val external person: string = "person"
+@val external parseData: string => person = "parseData"
+@val external getAge: person => int = "getAge"
+@val external validateAge: int => unit = "validateAge"
+@val external a: (int, int, int) => unit = "a"
+@val external one: int = "one"
+@val external two: int = "two"
+@val external three: int = "three"
+@val external name: string = "name"
+@val external preprocess: string => string = "preprocess"
+@val external add3: (int, int, int) => int = "add3"
+@val external makePerson: (~age: int) => person = "makePerson"
+@val external namePerson: (person, string) => unit = "namePerson"
+@val external input: string = "input"
+@val external getName: string => string = "getName"
+@val external personDetails: person = "personDetails"
+```
+
+</div>
+
+Why would you use it? Imagine you have the following:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+validateAge(getAge(parseData(person)))
+```
+
+```js
+validateAge(getAge(parseData(person)));
+```
+
+</CodeTab>
+
+This is slightly hard to read, since you need to read the code from the innermost part, to the outer parts. Use pipe to streamline it:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+person
+  ->parseData
+  ->getAge
+  ->validateAge
+```
+
+```js
+validateAge(getAge(parseData(person)));
+```
+
+</CodeTab>
+
+Basically, `parseData(person)` is transformed into `person->parseData`, and `getAge(person->parseData)` is transformed into `person->parseData->getAge`, etc.
+
+**This works when the function takes more than one argument too**.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+a(one, two, three)
+```
+
+```js
+a(one, two, three);
+```
+
+</CodeTab>
+
+is the same as
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+one->a(two, three)
+```
+
+```js
+a(one, two, three);
+```
+
+</CodeTab>
+
+This also works with labeled arguments.
+
+Pipes are used to emulate object-oriented programming. For example, `myStudent.getName` in other languages like Java would be `myStudent->getName` in ReScript (equivalent to `getName(myStudent)`). This allows us to have the readability of OOP without the downside of dragging in a huge class system just to call a function on a piece of data.
+
+## Tips & Tricks
+
+Do **not** abuse pipes; they're a means to an end. Inexperienced engineers sometimes shape a library's API to take advantage of the pipe. This is backwards.
+
+## JS Method Chaining
+
+[bind to JS function](./bind-to-js-function.mdx) docs
+
+JavaScript's APIs are often attached to objects, and are often chainable, like so:
+
+```js
+const result = [1, 2, 3].map((a) => a + 1).filter((a) => a % 2 === 0);
+
+asyncRequest().setWaitDuration(4000).send();
+```
+
+Assuming we don't need the chaining behavior above, we'd bind to each case of this using [`@send`](../../syntax-lookup/decorator_send.mdx) from the aforementioned binding API page:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res prelude
+type request
+@val external asyncRequest: unit => request = "asyncRequest"
+@send external setWaitDuration: (request, int) => request = "setWaitDuration"
+@send external send: request => unit = "send"
+```
+
+```js
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
+```
+
+</CodeTab>
+
+You'd use them like this:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let result = Array.filter(
+  Array.map([1, 2, 3], a => a + 1),
+  a => mod(a, 2) == 0
+)
+
+send(setWaitDuration(asyncRequest(), 4000))
+```
+
+```js
+let result = [1, 2, 3].map((a) => (a + 1) | 0).filter((a) => a % 2 === 0);
+
+asyncRequest().setWaitDuration(4000).send();
+
+export { result };
+```
+
+</CodeTab>
+
+This looks much worse than the JS counterpart! Clean it up visually with pipe:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let result = [1, 2, 3]
+  ->Array.map(a => a + 1)
+  ->Array.filter(a => mod(a, 2) == 0)
+
+asyncRequest()->setWaitDuration(4000)->send
+```
+
+```js
+let result = [1, 2, 3].map((a) => (a + 1) | 0).filter((a) => a % 2 === 0);
+
+asyncRequest().setWaitDuration(4000).send();
+
+export { result };
+```
+
+</CodeTab>
+
+## Pipe Into Variants
+
+You can pipe into a variant's constructor as if it was a function:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let result = name->preprocess->Some
+```
+
+```js
+let result = preprocess(name);
+
+export { result };
+```
+
+</CodeTab>
+
+We turn this into:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let result = Some(preprocess(name))
+```
+
+```js
+let result = preprocess(name);
+
+export { result };
+```
+
+</CodeTab>
+
+**Note** that using a variant constructor as a function wouldn't work anywhere else beside here.
+
+## Pipe Placeholders
+
+A placeholder is written as an underscore and it tells ReScript that you want to fill in an argument of a function later. These two have equivalent meaning:
+
+```res
+let addTo7 = (x) => add3(3, x, 4)
+let addTo7 = add3(3, _, 4)
+```
+
+Sometimes you don't want to pipe the value you have into the first position. In these cases you can mark a placeholder value to show which argument you would like to pipe into.
+
+Let's say you have a function `namePerson`, which takes a `person` then a `name` argument. If you are transforming a person then pipe will work as-is:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+makePerson(~age=47)
+  ->namePerson("Jane")
+```
+
+```js
+namePerson(makePerson(47), "Jane");
+```
+
+</CodeTab>
+
+If you have a name that you want to apply to a person object, you can use a placeholder:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+getName(input)
+  ->namePerson(personDetails, _)
+```
+
+```js
+let __x = getName(input);
+
+namePerson(personDetails, __x);
+```
+
+</CodeTab>
+
+This allows you to pipe into any positional argument. It also works for named arguments:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+@val external namePerson: (~person: person, ~name: string) => unit = "namePerson"
+
+getName(input)
+  ->namePerson(~person=personDetails, ~name=_)
+```
+
+```js
+let __x = getName(input);
+
+namePerson(personDetails, __x);
+```
+
+</CodeTab>

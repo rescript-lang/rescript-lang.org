@@ -1,0 +1,54 @@
+---
+id: "jsx-component"
+keywords: ["jsx", "<MyComponent>", "component", "tag"]
+name: "<MyComponent>"
+summary: "This is the `JSX component` syntax."
+category: "languageconstructs"
+---
+
+Use `<MyComponent ... />` to render a component in JSX.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
+
+```res
+@react.component
+let make = (~name) => <h1> {React.string("Hello " ++ name)} </h1>
+
+let view = <make name="ReScript" />
+```
+
+```js
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example(props) {
+  return JsxRuntime.jsx("h1", { children: "Hello " + props.name });
+}
+
+let view = JsxRuntime.jsx("make", { name: "ReScript" });
+
+let make = Example;
+
+export { make, view };
+```
+
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example(props) {
+  return <h1>{"Hello " + props.name}</h1>;
+}
+
+let view = <make name={"ReScript"} />;
+
+let make = Example;
+
+export { make, view };
+```
+
+</CodeTab>
+
+### References
+
+- [Elements and JSX](../docs/react/elements-and-jsx.mdx)

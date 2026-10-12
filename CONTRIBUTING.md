@@ -84,6 +84,6 @@ Most of the stuff we want to build can be built as components with Tailwind clas
 
 - Clone the project and follow the [README](README.md) instructions
 - Always run the page locally and verify your changes (especially when working on code examples)
-- When writing markdown with code examples, always run `npm test` to prevent broken code
+- When writing markdown with code examples, always run `yarn test` to prevent broken code
 - Feel free to open `Draft PRs` when you are working on bigger features (good for visibility and asking for feedback)
 - Improve code based on last feedback until the code is ready to be merged

@@ -1,0 +1,84 @@
+---
+title: "Performance"
+metaTitle: "Build Performance"
+description: "ReScript build performance and measuring tools"
+canonical: "/docs/manual/build-performance"
+section: "Build System"
+order: 7
+---
+
+# Build Performance
+
+ReScript considers performance at install time, build time and run time as a serious feature; it's one of those things you don't notice until you realize it's missing.
+
+## Under the Hood
+
+Since ReScript v12, `rescript build` uses a native build system written in Rust. It reads `rescript.json`, tracks dependencies between modules and packages, and invokes the compiler directly. See [Reforging the ReScript Build System](../../blog/reforging-build-system.mdx) for more about its architecture.
+
+## The JS Wrapper
+
+The `rescript` command is a thin Node.js wrapper around the native `rescript.exe` binary. Both building and watching are handled by the native binary.
+
+The binary ships in a platform-specific package at `node_modules/@rescript/{your-platform}/bin/rescript.exe`, for example `node_modules/@rescript/darwin-arm64/bin/rescript.exe` on an Apple Silicon Mac. The wrapper selects the package for your platform and sets `RESCRIPT_RUNTIME` to the installed runtime package's path. Prefer `rescript build` and `rescript watch` so this setup is handled for you.
+
+## Legacy Build System
+
+The pre-v12 build system remains available through `rescript-legacy`. It uses [Ninja](https://ninja-build.org), a cross-platform, low-level build system. It reads `rescript.json`, generates Ninja build files in `lib/bs`, and runs Ninja to execute the compiler commands.
+
+### Profile Legacy Builds
+
+For builds made with `rescript-legacy`, `bstracing` turns Ninja's build log into a performance trace:
+
+```sh
+./node_modules/.bin/bstracing
+```
+
+Run the above command at your ReScript project's root; it'll spit out a JSON file you can drag and drop into `chrome://tracing`.
+
+<Image
+  withShadow={true}
+  src="/img/bstracing.avif"
+  className="w-auto mx-auto md:mx-auto"
+  caption="Screenshot of bstracing result"
+/>
+
+### Historical Measurements
+
+The following measurements were made with the pre-v12 Ninja-based build system. They are not benchmarks of the current build system.
+
+A native build of a small project took around `70ms`, compared with roughly twice that through the old JS wrapper. That wrapper also provided watch mode.
+
+A no-op build (when no file changed) took around `15ms`. An incremental rebuild of a single file took around `70ms` too.
+
+#### Extreme Test
+
+We stress-tested the old native build system on a big project of 10,000 files (2 directories, 5000 files each, first 5000 no dependencies, last 5000 10 dependencies on files from the former directory) using https://github.com/rescript-lang/build-benchmark, on a Retina Macbook Pro Early 2015 (3.1 GHz Intel Core i7).
+
+{/* TODO: better repro */}
+
+- No-op build of 10k files: `800ms` (the minimum amount of time required to check the mtimes of 10k files).
+- Clean build: \<3 minutes.
+- Incremental build: depends on the number of the dependents of the file. No dependent means `1s`.
+
+## Incrementality & Correctness
+
+ReScript doesn't take whole seconds to run every time. The bulk of the build performance comes from incremental build, aka re-building a previously built project when a few files changed.
+
+In short, thanks to our compiler and the build system's architecture, we're able to **only build what's needed**. If `MyFile.res` isn't changed, it isn't recompiled. Renaming or moving files is handled automatically, with no stale builds.
+
+## Speed Up Incremental Build
+
+ReScript uses the concept of interface files (`.resi`) (or, equivalently, [module signatures](./module.mdx#signatures)). Exposing only what you need naturally speeds up incremental builds. E.g. if you change a `.res` file whose corresponding `.resi` file doesn't expose the changed part, then you've reduced the amount of dependent files you have to rebuild.
+
+## Programmatic Usage
+
+Unfortunately, JS build systems are usually the bottleneck for building a JS project nowadays. Having parts of the build blazingly fast doesn't matter much if the rest of the build takes seconds or literally minutes. Here are a few suggestions:
+
+- Convert more files into ReScript =). Fewer files going through fewer parts of the JS pipeline helps a ton.
+- Careful with bringing in more dependencies: libraries, syntax transforms (e.g. the unofficially supported PPX), build step loaders, etc. The bulk of these dragging down the editing & building experience might out-weight the API benefits they provide.
+
+## Hot Reloading
+
+Hot reloading refers to maintaining a dev server and listening to file changes in a way that allows the server to pipe some delta changes right into the currently running browser page. This provides a relatively fast iteration workflow while working in specific frameworks.
+
+However, hot reloading is fragile by nature, and counts on the occasional inconsistencies (bad state, bad eval, etc.) and the heavy devserver setup/config being less of a hassle than the benefits it provides. We err on the side of caution and stability in general, and decided not to provide a built-in hot reloading _yet_. **Note**: you can still use the hot reloading facility provided by your JS build pipeline.

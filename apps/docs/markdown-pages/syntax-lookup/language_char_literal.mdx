@@ -1,0 +1,42 @@
+---
+id: "char-literal"
+keywords: ["char"]
+name: "' '"
+summary: "This is the `char` literal syntax."
+category: "languagepatternsvalues"
+---
+
+A `char` literal is composed of two **single** quotes. Double quotes are reserved for the `string` type. Note that `char` is essentially an integer in JS since version 10.0.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let one = '1';
+let upperCaseA = 'A';
+let lowerCaseA = 'a';
+let unicode ='😀';
+let escape = '\u1111'
+```
+
+```js
+let one = /* '1' */ 49;
+
+let upperCaseA = /* 'A' */ 65;
+
+let lowerCaseA = /* 'a' */ 97;
+
+let unicode = /* '😀' */ 128512;
+
+let escape = /* 'ᄑ' */ 4369;
+
+export { one, upperCaseA, lowerCaseA, unicode, escape };
+```
+
+</CodeTab>
+
+### References
+
+- [String & Char](../docs/manual/primitive-types.mdx)
+- [Strings](../docs/manual/primitive-types.mdx#string)

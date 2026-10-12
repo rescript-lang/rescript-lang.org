@@ -1,0 +1,38 @@
+---
+id: "unwrap-decorator"
+keywords: ["unwrap", "decorator"]
+name: "@unwrap"
+summary: "This is the `@unwrap` decorator."
+category: "decorators"
+---
+
+The `@unwrap` decorator may be used when binding to external functions
+that accept multiple types for an argument.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+@val external padLeft: (
+  @unwrap [#Int(int) | #Str(string)],
+  string
+) => string = "padLeft";
+
+let result1 = padLeft(#Int(7), "eleven");
+let result2 = padLeft(#Str("7"), "eleven");
+```
+
+```js
+let result1 = padLeft(7, "eleven");
+
+let result2 = padLeft("7", "eleven");
+
+export { result1, result2 };
+```
+
+</CodeTab>
+
+### References
+
+- [Bind to JS Function](../docs/manual/bind-to-js-function.mdx)

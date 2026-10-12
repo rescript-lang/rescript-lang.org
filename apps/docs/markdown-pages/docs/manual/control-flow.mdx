@@ -1,0 +1,240 @@
+---
+title: "If-Else & Loops"
+description: "If, else, ternary, for, and while"
+canonical: "/docs/manual/control-flow"
+section: "Language Features"
+order: 14
+---
+
+# If-Else & Loops
+
+<div className="hidden">
+
+```res prelude
+@val external isMorning: bool = "isMorning"
+@val external showMenu: bool = "showMenu"
+@val external displayMenu: unit => unit = "displayMenu"
+@val external startValueInclusive: int = "startValueInclusive"
+@val external endValueInclusive: int = "endValueInclusive"
+@val external testCondition: bool = "testCondition"
+```
+
+</div>
+
+ReScript supports `if`, `else`, ternary expression (`a ? b : c`), `for` and `while`.
+
+The `switch` pattern supports a default case. Read more about [pattern-matching & destructuring](./pattern-matching-destructuring.mdx).
+
+## If-Else & Ternary
+
+ReScript's `if` is an expression; it evaluates to its body's content:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let message = if isMorning {
+  "Good morning!"
+} else {
+  "Hello!"
+}
+```
+
+```js
+let message = isMorning ? "Good morning!" : "Hello!";
+
+export { message };
+```
+
+</CodeTab>
+
+**Note:** an `if-else` expression without the final `else` branch implicitly gives `()` (aka the `unit` type). So this:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+if showMenu {
+  displayMenu()
+}
+```
+
+```js
+if (showMenu) {
+  displayMenu();
+}
+```
+
+</CodeTab>
+
+is basically the same as:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+if showMenu {
+  displayMenu()
+} else {
+  ()
+}
+```
+
+```js
+if (showMenu) {
+  displayMenu();
+}
+```
+
+</CodeTab>
+
+Here's another way to look at it. This is clearly wrong:
+
+```res nocheck
+let result = if showMenu {
+  1 + 2
+}
+```
+
+It'll give a type error, saying basically that the implicit `else` branch has the type `unit` while the `if` branch has type `int`. Intuitively, this makes sense: what would `result`'s value be, if `showMenu` was `false`?
+
+We also have ternary sugar, but **we encourage you to prefer if-else when possible**.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let message = isMorning ? "Good morning!" : "Hello!"
+```
+
+```js
+let message = isMorning ? "Good morning!" : "Hello!";
+
+export { message };
+```
+
+</CodeTab>
+
+`if-else` and ternary are often replaced by [pattern matching](./pattern-matching-destructuring.mdx), which handles a wide range of conditional logic more expressively.
+
+## For Loops
+
+For loops iterate from a starting value up to (and including) the ending value.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+for i in startValueInclusive to endValueInclusive {
+  Console.log(i)
+}
+```
+
+```js
+for (let i = startValueInclusive; i <= endValueInclusive; ++i) {
+  console.log(i);
+}
+```
+
+</CodeTab>
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+// prints: 1 2 3, one per line
+for x in 1 to 3 {
+  Console.log(x)
+}
+```
+
+```js
+for (let x = 1; x <= 3; ++x) {
+  console.log(x);
+}
+```
+
+</CodeTab>
+
+You can make the `for` loop count in the opposite direction by using `downto`.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+for i in startValueInclusive downto endValueInclusive {
+  Console.log(i)
+}
+```
+
+```js
+for (let i = startValueInclusive; i >= endValueInclusive; --i) {
+  console.log(i);
+}
+```
+
+</CodeTab>
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+// prints: 3 2 1, one per line
+for x in 3 downto 1 {
+  Console.log(x)
+}
+```
+
+```js
+for (let x = 3; x >= 1; --x) {
+  console.log(x);
+}
+```
+
+</CodeTab>
+
+## While Loops
+
+While loops execute its body code block while its condition is true.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+while testCondition {
+  Console.log("Still running")
+}
+```
+
+```js
+while (testCondition) {
+  console.log("Still running");
+}
+```
+
+</CodeTab>
+
+### Tips & Tricks
+
+There's no loop-breaking `break` keyword (nor early `return` from functions, for that matter) in ReScript. However, we can break out of a while loop easily through using a [mutable binding](./mutation.mdx).
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let break = ref(false)
+
+while !break.contents {
+  if Math.random() > 0.3 {
+    break := true
+  } else {
+    Console.log("Still running")
+  }
+}
+```
+
+```js
+let $$break = { contents: false };
+
+while (!$$break.contents) {
+  if (Math.random() > 0.3) {
+    $$break.contents = true;
+  } else {
+    console.log("Still running");
+  }
+}
+
+export { $$break };
+```
+
+</CodeTab>

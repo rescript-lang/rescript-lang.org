@@ -1,0 +1,50 @@
+---
+title: "Shared Data Types"
+description: "Data types that share runtime presentation between JS and ReScript"
+canonical: "/docs/manual/shared-data-types"
+section: "JavaScript Interop"
+order: 2
+---
+
+# Shared Data Types
+
+ReScript's built-in values of type `string`, `float`, `array` and a few others have a rather interesting property: they compile to the exact same value in JavaScript!
+
+This means that if you're passing e.g. a ReScript string to the JavaScript side, the JavaScript side can directly use it as a native string. It also means that you can import a JavaScript string and use it as a native ReScript string.
+
+ReScript values compile to their JavaScript equivalents directly, so **no data converters are needed for most types**.
+
+**Shared, bidirectionally usable types**:
+
+- String. ReScript strings are JavaScript strings, vice-versa. Both double-quoted strings (`"hello 👋"`) and backtick strings support Unicode. Backtick strings also support interpolation, such as `` `hello 👋 ${personName}` ``.
+- Float. ReScript floats are JavaScript numbers, vice-versa.
+- Big integer. ReScript `bigint` values, such as `42n`, are JavaScript big integers. Use the [BigInt API](/docs/manual/api/stdlib/bigint) for operations on them.
+- Array. Use the [Array API](/docs/manual/api/stdlib/array) for array operations.
+- Tuple. Compiles to an array at runtime. You can treat a fixed-sized, heterogenous JavaScript array as a ReScript tuple too.
+- Boolean.
+- Record. Record compiles to a JavaScript object. Therefore you can also treat JavaScript objects as records. If they're too dynamic, consider modeling them on the ReScript side as a hashmap/dictionary [`Dict`](/docs/manual/api/stdlib/dict) or a ReScript object.
+- Object. ReScript objects are JavaScript objects, vice-versa.
+- Function. They compile to clean JavaScript functions.
+- Module. ReScript files are considered top-level modules, and are compiled to JavaScript files 1 to 1. Nested modules are compiled to JavaScript objects.
+- Polymorphic variants.
+- Unit. The `unit` type, which has a single value `()`, compiles to `undefined` too. Likewise, you can treat an incoming `undefined` as `()` if that's the only value it'll ever be.
+
+**Types that are slightly different, but that you can still use from JavaScript**:
+
+- Int. **Ints are 32-bits**! Be careful, you can potentially treat them as JavaScript numbers and vice-versa, but if the number's large, then you better treat JavaScript numbers as floats. For example, we bind to `Date` using `float`s.
+- Option. The `option` type's `None` value compiles into `undefined`. The `Some` value, e.g. `Some(5)`, compiles to `5`. Likewise, you can treat an incoming `undefined` as `None`. **`null` isn't handled here**. If your JavaScript value can be `null`, use [Nullable](/docs/manual/api/stdlib/nullable) helpers.
+- Exception.
+- Variant. Check the compiled JavaScript output of variant to see its shape. We don't recommend exporting a ReScript variant for pure JavaScript usage, since they're harder to read as plain JavaScript code, but you can do it.
+- List, which is just a regular variant.
+
+**Non-shared types (aka internal types)**:
+
+- Character.
+- Lazy values.
+- Everything else.
+
+Many of these are stable, which means that you can still serialize/deserialize them as-is without manual conversions. But we discourage actively peeking into their structure otherwise.
+
+These types require manual conversions if you want to export them for JavaScript consumption. For a seamless JavaScript/TypeScript integration experience, check out the [TypeScript Integration](./typescript-integration.mdx) page instead of doing conversions by hand.
+
+ReScript v12 no longer provides the legacy `int64` type or `Int64` module. Use `bigint` for large integers instead.

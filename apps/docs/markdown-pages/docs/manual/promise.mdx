@@ -1,0 +1,113 @@
+---
+title: "Promises"
+description: "JS Promise handling in ReScript"
+canonical: "/docs/manual/promise"
+section: "Language Features"
+order: 21
+---
+
+# Promise
+
+> **Note:** Starting from ReScript 10.1 and above, we recommend using [async / await](./async-await.mdx) when interacting with Promises.
+
+## `promise` type
+
+**Since 10.1**
+
+In ReScript, every JS promise is represented with the globally available `promise<'a>` type.
+
+Here's a usage example in a function signature:
+
+```resi
+// User.resi file
+
+type user = {name: string}
+
+let fetchUser: string => promise<user>
+```
+
+To work with promise values (instead of using `async` / `await`) you may want to use the built-in `Promise` module.
+
+## Promise
+
+A builtin module to create, chain and manipulate promises.
+
+### Creating a promise
+
+```res
+let p1 = Promise.make((resolve, reject) => {
+  resolve("hello world")
+})
+
+let p2 = Promise.resolve("some value")
+
+// You can only reject `exn` values for streamlined catch handling
+exception MyOwnError(string)
+let p3 = Promise.reject(MyOwnError("some rejection"))
+```
+
+### Access the contents and transform a promise
+
+```res
+let logAsyncMessage = () => {
+  open Promise
+  Promise.resolve("hello world")
+  ->then(msg => {
+    // then callbacks require the result to be resolved explicitly
+    resolve("Message: " ++ msg)
+  })
+  ->then(msg => {
+    Console.log(msg)
+
+    // Even if there is no result, we need to use resolve() to return a promise
+    resolve()
+  })
+  ->ignore // Requires ignoring due to unhandled return value
+}
+```
+
+For comparison, the `async` / `await` version of the same code would look like this:
+
+```res
+let logAsyncMessage = async () => {
+  let msg = await Promise.resolve("hello world")
+  Console.log(`Message: ${msg}`)
+}
+```
+
+Needless to say, the async / await version offers better ergonomics and less opportunities to run into type issues.
+
+### Handling Rejected Promises
+
+You can handle a rejected promise using the [`Promise.catch()`](/docs/manual/api/stdlib/promise#value-catch) method, which allows you to catch and manage errors effectively.
+
+### Run multiple promises in parallel
+
+In case you want to launch multiple promises in parallel, use `Promise.all`:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+@val
+external fetchMessage: string => promise<string> = "global.fetchMessage"
+
+let logAsyncMessage = async () => {
+  let messages = await Promise.all([fetchMessage("message1"), fetchMessage("message2")])
+
+  Console.log(messages->Array.joinWith(", "))
+}
+```
+
+```js
+async function logAsyncMessage() {
+  let messages = await Promise.all([
+    global.fetchMessage("message1"),
+    global.fetchMessage("message2"),
+  ]);
+  console.log(messages.join(", "));
+}
+
+export { logAsyncMessage };
+```
+
+</CodeTab>

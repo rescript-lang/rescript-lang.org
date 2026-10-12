@@ -1,0 +1,76 @@
+open RescriptCompilerApi
+
+module FinalResult: {
+  /* A final result is the last operation the compiler has done, right now this includes... */
+  type t =
+    | Conv(ConversionResult.t)
+    | Comp(CompilationResult.t)
+    | Nothing
+}
+
+type queryParams =
+  | @as("ext") Ext
+  | @as("version") Version
+  | @as("module") Module
+  | @as("jsxPreserve") JsxPreserve
+  | @as("experiments") Experiments
+  | @as("code") Code
+
+type selected = {
+  id: Semver.t, // The id used for loading the compiler bundle (ideally should be the same as compilerVersion)
+  apiVersion: Version.t, // The playground API version in use
+  compilerVersion: string,
+  ocamlVersion: option<string>,
+  libraries: array<string>,
+  config: Config.t,
+  instance: Compiler.t,
+}
+
+type ready = {
+  code: string,
+  versions: array<Semver.t>,
+  selected: selected,
+  targetLang: Lang.t,
+  errors: array<string>, // For major errors like bundle loading
+  result: FinalResult.t,
+  autoRun: bool,
+  validReactCode: bool,
+  logs: array<ConsolePanel.log>,
+}
+
+module CdnMeta: {
+  let getStdlibRuntimeUrl: (string, Semver.t, string) => string
+}
+
+type state =
+  | Init
+  | SetupFailed(string)
+  | SwitchingCompiler(ready, Semver.t) // (ready, targetId, libraries)
+  | Ready(ready)
+  | Compiling({state: ready, previousJsCode: option<string>})
+  | Executing({state: ready, jsCode: string})
+
+type action =
+  | SwitchToCompiler(Semver.t) // id
+  | SwitchLanguage({lang: Lang.t, code: string})
+  | Format(string)
+  | CompileCode(Lang.t, string)
+  | UpdateConfig(Config.t)
+  | AppendLog(ConsolePanel.log)
+  | ToggleAutoRun
+  | RunCode
+
+let useCompilerManager: (
+  ~bundleBaseUrl: string,
+  ~initialVersion: Semver.t=?,
+  ~initialModuleSystem: string=?,
+  ~initialWarnFlags: string=?,
+  ~initialJsxPreserveMode: bool=?,
+  ~initialExperimentalFeatures: array<string>=?,
+  ~initialLang: Lang.t=?,
+  ~onAction: action => unit=?,
+  ~syncUrl: bool=?,
+  ~versions: array<Semver.t>,
+) => (state, action => unit)
+
+let createUrl: (string, ready) => string

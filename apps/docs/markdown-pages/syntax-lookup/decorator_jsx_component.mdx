@@ -1,0 +1,55 @@
+---
+id: "jsx-component-decorator"
+keywords: ["jsx", "component", "decorator"]
+name: "@jsx.component"
+summary: "This is the `@jsx.component` decorator."
+category: "decorators"
+---
+
+**Since 11.1**
+
+The `@jsx.component` decorator is used to annotate functions that are [JSX](../docs/react/elements-and-jsx.mdx) components. This is a _generic_ version that's equivalent to the existing `@react.component` for React.
+
+You will need this decorator whenever you want to use JSX component in JSX expressions, with a [generic JSX transform](../docs/manual/jsx.mdx#generic-jsx-transform-jsx-beyond-react-experimental) configured.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
+
+```res
+// Using the default React JSX transform.
+@jsx.component
+let make = (~name) => {
+  <button> {React.string("Hello " ++ name ++ "!")} </button>
+}
+```
+
+```js
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example(props) {
+  return JsxRuntime.jsx("button", { children: "Hello " + props.name + "!" });
+}
+
+let make = Example;
+
+export { make };
+```
+
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example(props) {
+  return <button>{"Hello " + props.name + "!"}</button>;
+}
+
+let make = Example;
+
+export { make };
+```
+
+</CodeTab>
+
+### References
+
+- [Generic JSX transform](../docs/manual/jsx.mdx#generic-jsx-transform-jsx-beyond-react-experimental)

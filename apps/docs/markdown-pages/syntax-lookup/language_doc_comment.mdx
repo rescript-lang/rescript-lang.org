@@ -1,0 +1,36 @@
+---
+id: "doc-comment"
+keywords: ["doc comment", "documentation comment", "/**", "/***"]
+name: "/*** ... */"
+summary: "This is the `standalone doc comment` syntax."
+category: "languagecomments"
+---
+
+Use a standalone doc comment to write documentation text that is not attached to a specific value or type declaration.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+/*** This module contains utility helpers for date formatting. */
+module DateUtils = {
+  let formatIso = date => date
+}
+```
+
+```js
+function formatIso(date) {
+  return date;
+}
+
+let DateUtils = { formatIso: formatIso };
+
+export { DateUtils };
+```
+
+</CodeTab>
+
+### References
+
+- [Overview](../docs/manual/overview.mdx#comments)

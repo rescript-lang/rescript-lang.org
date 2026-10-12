@@ -1,0 +1,35 @@
+---
+id: "let-binding"
+keywords: ["let", "variable"]
+name: "let"
+summary: "This is the `let binding` keyword."
+category: "languageconstructs"
+---
+
+`let` is used to _bind_ values to names, which is similar to assigning values to variables in other languages.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let greeting = "hello!"
+let score = 10
+let newScore = 10 + score
+```
+
+```js
+let newScore = 20;
+
+let greeting = "hello!";
+
+let score = 10;
+
+export { greeting, score, newScore };
+```
+
+</CodeTab>
+
+### References
+
+- [Let Binding](../docs/manual/let-binding.mdx)

@@ -1,41 +1,19 @@
 {
-  "name": "rescript-lang.org",
-  "namespace": false,
+  "name": "rescript-lang.org-monorepo",
+  "dependencies": [
+    "@rescript-lang/shared",
+    "@rescript-lang/playground",
+    "@rescript-lang/guide",
+    "@rescript-lang/docs"
+  ],
+  "sources": [],
   "jsx": {
+    "preserve": true,
     "version": 4
   },
-  "bs-dependencies": [
-    "@rescript/react",
-    "@rescript/tools",
-    "@rescript/core"
-  ],
-  "uncurried": true,
-  "ppx-flags": [],
-  "bsc-flags": [
-    "-open RescriptCore"
-  ],
-  "sources": [
-    {
-      "dir": "src",
-      "subdirs": true
-    },
-    {
-      "dir": "scripts",
-      "subdirs": true,
-      "type": "dev"
-    }
-  ],
   "package-specs": {
     "module": "esmodule",
     "in-source": true
   },
-  "warnings": {
-    "error": "+8"
-  },
-  "suffix": ".mjs",
-  "gentypeconfig": {
-    "language": "untyped",
-    "shims": [],
-    "module": "es6"
-  }
+  "suffix": ".jsx"
 }
