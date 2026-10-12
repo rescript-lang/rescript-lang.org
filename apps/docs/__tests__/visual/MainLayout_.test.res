@@ -5,13 +5,13 @@ test("desktop main layout renders children and footer", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="main-layout-wrapper">
         <MainLayout>
           <div dataTestId="main-content"> {React.string("Main page content goes here.")} </div>
         </MainLayout>
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let content = await screen->getByTestId("main-content")
@@ -28,13 +28,13 @@ test("mobile main layout", async () => {
   await viewport(600, 1200)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="main-layout-wrapper">
         <MainLayout>
           <div dataTestId="main-content"> {React.string("Main page content goes here.")} </div>
         </MainLayout>
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let content = await screen->getByTestId("main-content")

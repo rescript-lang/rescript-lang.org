@@ -44,11 +44,11 @@ test("desktop syntax lookup renders categories and tags", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="syntax-lookup-wrapper">
         <SyntaxLookup mdxSources=mockItems />
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let decoratorsHeading = await screen->getByText("Decorators")
@@ -71,13 +71,13 @@ test("desktop syntax lookup with active item shows detail box", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="syntax-lookup-wrapper">
         <SyntaxLookup mdxSources=mockItems activeItem={mockItems->Array.getUnsafe(0)}>
           <div> {React.string("Detail content for @as decorator.")} </div>
         </SyntaxLookup>
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let detail = await screen->getByText("Detail content for @as decorator.")
@@ -91,11 +91,11 @@ test("mobile syntax lookup", async () => {
   await viewport(600, 1200)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="syntax-lookup-wrapper">
         <SyntaxLookup mdxSources=mockItems />
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let decoratorsHeading = await screen->getByText("Decorators")
@@ -118,11 +118,11 @@ test("deprecated items show with line-through styling", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="syntax-lookup-wrapper">
         <SyntaxLookup mdxSources=mockItems />
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let deprecatedTag = await screen->getByText("|>")
@@ -136,13 +136,13 @@ test("syntax lookup detail box shows summary", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="syntax-lookup-wrapper">
         <SyntaxLookup mdxSources=mockItems activeItem={mockItems->Array.getUnsafe(2)}>
           <div> {React.string("Detailed documentation about the pipe operator.")} </div>
         </SyntaxLookup>
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let detail = await screen->getByText("Detailed documentation about the pipe operator.")
@@ -156,13 +156,13 @@ test("mobile syntax lookup with active item", async () => {
   await viewport(600, 1200)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="syntax-lookup-wrapper">
         <SyntaxLookup mdxSources=mockItems activeItem={mockItems->Array.getUnsafe(0)}>
           <div> {React.string("Detail content for @as decorator.")} </div>
         </SyntaxLookup>
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let detail = await screen->getByText("Detail content for @as decorator.")

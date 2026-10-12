@@ -16,14 +16,10 @@ let extractMetaTags = async (url: string) => {
     let dom = Jsdom.make(html)
     let document = dom.window.document
 
-    let nodeList = document->WebAPI.Document.querySelectorAll("meta")
-
+    let collection = document->WebAPI.Document.getElementsByTagName("meta")
     let elements = []
-
-    for i in 0 to nodeList.length {
-      let node = WebAPI.NodeList.item(nodeList, i)
-      // cast Node elements to Element
-      elements->Array.push((Obj.magic(node): WebAPI.DOMAPI.element))
+    for i in 0 to collection.length - 1 {
+      elements->Array.push(collection->WebAPI.HTMLCollection.item(i))
     }
 
     let metaTags = elements->Array.reduce(Dict.fromArray([]), (tags, meta) => {

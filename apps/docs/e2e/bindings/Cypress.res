@@ -12,6 +12,7 @@ type rec window = {
   console: console,
   navigator: {clipboard: clipboard},
   scrollY: float,
+  localStorage: WebAPI.WebStorageAPI.storage,
 }
 and clipboard
 type response = {status: int, body: string, headers: Dict.t<string>}
@@ -214,3 +215,26 @@ external addEventListenerOnce: (Dom.document, string, unit => unit, listenerOpti
 @get external fontWeight: cssStyle => string = "fontWeight"
 @get external fontStyle: cssStyle => string = "fontStyle"
 @send external propertyValue: (cssStyle, string) => string = "getPropertyValue"
+
+@val external describe: (string, unit => unit) => unit = "describe"
+@val @scope("cy") external currentUrl: unit => chain<string> = "url"
+@val @scope("cy") external pause: int => unit = "wait"
+@val @scope("cy") external cyScrollTo: string => unit = "scrollTo"
+@send external find: (chain<elements>, string) => chain<elements> = "find"
+@send external containsChild: (chain<elements>, string) => chain<elements> = "contains"
+@send external containsChildIn: (chain<elements>, string, string) => chain<elements> = "contains"
+@send external select: (chain<elements>, string) => chain<elements> = "select"
+@send
+external typeWithOptions: (
+  chain<elements>,
+  string,
+  {"force": bool, "delay": int},
+) => chain<elements> = "type"
+@send
+external shouldContainText: (chain<elements>, @as("contain.text") _, string) => chain<elements> =
+  "should"
+@send external shouldInclude: (chain<string>, @as("include") _, string) => chain<string> = "should"
+@send
+external shouldClass: (chain<elements>, @as("have.class") _, string) => chain<elements> = "should"
+
+let getByTestId = testId => get(`[data-testid="${testId}"]`)

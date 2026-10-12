@@ -1,15 +1,15 @@
-open Cy
+open Cypress
 
 let waitForPage = () => {
-  getByTestId("navbar-primary")->shouldBeVisible->ignore
-  getByTestId("navbar-tertiary")->shouldBeVisible->ignore
-  cyWindow()->its("document.readyState")->shouldWithValue("eq", "complete")->ignore
+  getByTestId("navbar-primary")->should("be.visible")->ignore
+  getByTestId("navbar-tertiary")->should("be.visible")->ignore
+  cyWindow()->propertyString("document.readyState")->shouldEqual("complete")->ignore
 }
 
 let expectBreadcrumbsText = text => {
   getByTestId("breadcrumbs")
   ->should("be.visible")
-  ->shouldWithValue("have.text", text)
+  ->shouldText(text)
   ->ignore
 }
 

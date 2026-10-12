@@ -611,11 +611,9 @@ module WarningFlagsWidget = {
     // Used for the text input
     let inputRef = React.useRef(Nullable.null)
 
-    let focusInput = () =>
-      inputRef.current->Nullable.forEach(el => WebAPI.HTMLInputElement.focus(el))
+    let focusInput = () => inputRef.current->Nullable.forEach(el => WebAPI.HTMLElement.focus(el))
 
-    let blurInput = () =>
-      inputRef.current->Nullable.forEach(el => WebAPI.HTMLInputElement.focus(el))
+    let blurInput = () => inputRef.current->Nullable.forEach(el => WebAPI.HTMLElement.focus(el))
 
     let chips = Array.mapWithIndex(flags, (token, i) => {
       let {WarningFlagDescription.Parser.flag: flag, enabled} = token
@@ -784,7 +782,8 @@ module WarningFlagsWidget = {
 
               switch (parent, el) {
               | (Some(parent), Some(el)) =>
-                Some(() => scrollToElement(~parent, (Obj.magic(el): WebAPI.DOMAPI.htmlElement)))
+                scrollToElement(~parent, HtmlRef.fromDom(el))
+                None
               | _ => None
               }
             })->Some
@@ -833,7 +832,7 @@ module WarningFlagsWidget = {
     let suggestionBox =
       Option.map(suggestions, elements =>
         <div
-          ref={ReactDOM.Ref.domRef((Obj.magic(listboxRef): React.ref<Nullable.t<Dom.element>>))}
+          ref={HtmlRef.domRef(listboxRef)}
           className="playground-overlay p-2 absolute overflow-auto playground-scrollbar z-50 border-b rounded border-l border-r block w-full max-h-60"
         >
           elements
@@ -906,7 +905,7 @@ module WarningFlagsWidget = {
           chips
           <section className="mt-3">
             <input
-              ref={ReactDOM.Ref.domRef((Obj.magic(inputRef): React.ref<Nullable.t<Dom.element>>))}
+              ref={HtmlRef.domRef(inputRef)}
               className="playground-input inline-block p-1 max-w-20 outline-hidden"
               placeholder="Flags"
               type_="text"
@@ -1197,69 +1196,6 @@ module ControlPanel = {
       </button>
   }
 
-  module ShareButton = {
-    let copyToClipboard: string => bool = %raw(`
-    function(str) {
-      try {
-      const el = document.createElement('textarea');
-      el.value = str;
-      el.setAttribute('readonly', '');
-      el.style.position = 'absolute';
-      el.style.left = '-9999px';
-      document.body.appendChild(el);
-      const selected =
-        document.getSelection().rangeCount > 0 ? document.getSelection().getRangeAt(0) : false;
-      el.select();
-      document.execCommand('copy');
-      document.body.removeChild(el);
-      if (selected) {
-        document.getSelection().removeAllRanges();
-        document.getSelection().addRange(selected);
-      }
-      return true;
-      } catch(e) {
-        return false;
-      }
-    }
-    `)
-
-    type state =
-      | Init
-      | CopySuccess
-
-    @react.component
-    let make = (~actionIndicatorKey: string) => {
-      let (state, setState) = React.useState(() => Init)
-
-      React.useEffect(() => {
-        setState(_ => Init)
-        None
-      }, [actionIndicatorKey])
-
-      let onClick = evt => {
-        ReactEvent.Mouse.preventDefault(evt)
-        let ret = copyToClipboard(window.location.href)
-        if ret {
-          setState(_ => CopySuccess)
-        }
-      }
-
-      let (text, className) = switch state {
-      | Init => ("Copy Share Link", " bg-sky body-xs active:bg-sky-70 border-sky-70")
-      | CopySuccess => ("Copied to clipboard!", "bg-turtle-dark border-turtle-dark")
-      }
-
-      <>
-        <button
-          onClick
-          className={className ++ " w-40 transition-all duration-500 ease-in-out inline-block hover:cursor-pointer hover:text-white-80 text-white rounded border px-2 py-1 "}
-        >
-          {React.string(text)}
-        </button>
-      </>
-    }
-  }
-
   let commandWithKeyboardShortcut = (commandName, ~key) => {
     let userAgent = window.navigator.userAgent
     if userAgent->String.includes("iPhone") || userAgent->String.includes("Android") {
@@ -1352,7 +1288,7 @@ module ControlPanel = {
         <Button onClick=onFormatClick>
           {React.string(commandWithKeyboardShortcut("Format", ~key="S"))}
         </Button>
-        <ShareButton actionIndicatorKey />
+        <PlaygroundShareButton key=actionIndicatorKey />
       </div>
     | _ => React.null
     }
@@ -1524,7 +1460,7 @@ module InitialContent = {
     let times = switch count {
     | 1 => "once"
     | 2 => "twice"
-    | n => n->Belt.Int.toString ++ " times"
+    | n => n->Int.toString ++ " times"
     }
     let text = \`Click me $\{times\}\`
 
@@ -1539,7 +1475,7 @@ module InitialContent = {
     let times = switch count {
     | 1 => "once"
     | 2 => "twice"
-    | n => Belt.Int.toString(n) ++ " times"
+    | n => Int.toString(n) ++ " times"
     }
 
     let name = switch username {
@@ -1803,7 +1739,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
       | _ => "rescript"
       }
       let config: CodeMirror.editorConfig = {
-        parent,
+        parent: parent->WebAPI.HTMLElement.asElement,
         initialValue: initialContent,
         mode,
         readOnly: false,
@@ -2195,23 +2131,20 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     />
     <div
       className={`flex ${layout == Column ? "flex-col" : "flex-row"}`}
-      ref={ReactDOM.Ref.domRef((Obj.magic(panelRef): React.ref<Nullable.t<Dom.element>>))}
+      ref={HtmlRef.elementRef(panelRef)}
     >
       // Left Panel
       <div
-        ref={ReactDOM.Ref.domRef((Obj.magic(leftPanelRef): React.ref<Nullable.t<Dom.element>>))}
+        ref={HtmlRef.elementRef(leftPanelRef)}
         className={`overflow-scroll playground-scrollbar ${layout == Column
             ? "h-2/4"
             : "h-full!"} ${layout == Column ? "w-full" : "w-[50%]"}`}
       >
-        <div
-          className="playground-editor-shell h-full"
-          ref={ReactDOM.Ref.domRef((Obj.magic(containerRef): React.ref<Nullable.t<Dom.element>>))}
-        />
+        <div className="playground-editor-shell h-full" ref={HtmlRef.domRef(containerRef)} />
       </div>
       // Separator
       <div
-        ref={ReactDOM.Ref.domRef((Obj.magic(separatorRef): React.ref<Nullable.t<Dom.element>>))}
+        ref={HtmlRef.domRef(separatorRef)}
         // TODO: touch-none not applied
         className={"playground-divider flex items-center justify-center touch-none select-none rounded-lg " ++ (
           layout == Column ? "cursor-row-resize" : "cursor-col-resize"
@@ -2228,7 +2161,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
       </div>
       // Right Panel
       <div
-        ref={ReactDOM.Ref.domRef((Obj.magic(rightPanelRef): React.ref<Nullable.t<Dom.element>>))}
+        ref={HtmlRef.elementRef(rightPanelRef)}
         className={`${layout == Column ? "h-6/15" : "h-inherit!"} ${layout == Column
             ? "w-full"
             : "w-[50%]"}`}
@@ -2236,10 +2169,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
         <div className={"flex flex-wrap justify-between w-full " ++ (disabled ? "opacity-50" : "")}>
           {React.array(headers)}
         </div>
-        <div
-          ref={ReactDOM.Ref.domRef((Obj.magic(subPanelRef): React.ref<Nullable.t<Dom.element>>))}
-          className="overflow-auto playground-scrollbar"
-        >
+        <div ref={HtmlRef.elementRef(subPanelRef)} className="overflow-auto playground-scrollbar">
           <OutputPanel
             currentTab
             compilerDispatch

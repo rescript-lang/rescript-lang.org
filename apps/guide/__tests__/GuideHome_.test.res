@@ -5,7 +5,7 @@ let secondLesson = GuideTestFixtures.secondLesson
 let guideLessonsWithFinal = GuideTestFixtures.guideLessonsWithFinal
 let renderGuideHome = GuideTestFixtures.renderGuideHome
 let renderGuideHomeWithDocsIntroNavigation = GuideTestFixtures.renderGuideHomeWithDocsIntroNavigation
-let renderGuideHomeInBrowser = GuideTestFixtures.renderGuideHomeInBrowser
+let renderGuideHomeWithHistory = GuideTestFixtures.renderGuideHomeWithHistory
 
 test("loads saved guide editor code into the editor", async () => {
   await viewport(1440, 900)
@@ -117,11 +117,6 @@ test("navigates to the function argument page", async () => {
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
 })
 
-let guideTestUrl = hash => window.location.pathname ++ window.location.search ++ hash
-
-let resetGuideTestUrl = () =>
-  WebAPI.History.replaceState(window.history, ~data=JSON.Null, ~unused="", ~url=guideTestUrl(""))
-
 test("shows Back before lesson forward actions and returns to the previous lesson", async () => {
   await viewport(1440, 900)
   GuideLayout.clearCompletedExercises()
@@ -202,37 +197,23 @@ test("Done on a completed final lesson opens the ReScript docs intro", async () 
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
 })
 
-test("browser back returns to the previous guide lesson", async () => {
+test("history back returns to the previous guide lesson", async () => {
   await viewport(1440, 900)
   GuideLayout.clearCompletedExercises()
   GuideLayout.clearExerciseCode(firstLesson.exercise.id)
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
-  WebAPI.History.replaceState(
-    window.history,
-    ~data=JSON.Null,
-    ~unused="",
-    ~url=guideTestUrl("#guide-test-start"),
-  )
-  WebAPI.History.pushState(
-    window.history,
-    ~data=JSON.Null,
-    ~unused="",
-    ~url=guideTestUrl("#first-contact"),
-  )
-
-  let screen = await renderGuideHomeInBrowser()
+  let screen = await renderGuideHomeWithHistory()
 
   await (await screen->getByText("Learn ReScript Guide"))->element->toBeVisible
   await (await screen->getByText("Next"))->click
   await (await screen->getByText("Call A Function"))->element->toBeVisible
 
-  WebAPI.History.back(window.history)
+  await (await screen->getByText("History back"))->click
 
   await (await screen->getByText("Learn ReScript Guide"))->element->toBeVisible
 
   GuideLayout.clearExerciseCode(firstLesson.exercise.id)
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
-  resetGuideTestUrl()
 })
 
 test("stretches the output surface to the full output panel", async () => {

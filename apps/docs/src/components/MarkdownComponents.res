@@ -18,12 +18,9 @@ type t = {
   @as("Video")
   video?: React.componentLike<Video.props<string, string>, React.element>,
   @as("UrlBox")
-  urlBox?: React.componentLike<
-    UrlBox.props<string, string, MdxLegacy.MdxChildren.t>,
-    React.element,
-  >,
+  urlBox?: React.componentLike<UrlBox.props<string, string, React.element>, React.element>,
   @as("CodeTab")
-  codeTab?: CodeTab.props<MdxLegacy.MdxChildren.t, array<string>> => React.element,
+  codeTab?: CodeTab.props<React.element, array<string>> => React.element,
   /* Common markdown elements */
   p?: P.props<React.element> => React.element,
   li?: Li.props<React.element> => React.element,
@@ -41,10 +38,7 @@ type t = {
   blockquote?: Blockquote.props<React.element> => React.element,
   strong?: Strong.props<React.element> => React.element,
   hr?: Hr.props => React.element,
-  code?: React.componentLike<
-    Code.props<string, option<string>, MdxLegacy.Components.unknown>,
-    React.element,
-  >,
+  code?: React.componentLike<Code.props<string, option<string>, React.element>, React.element>,
   pre?: Pre.props<React.element> => React.element,
   a?: A.props<string, string, React.element> => React.element,
 }
