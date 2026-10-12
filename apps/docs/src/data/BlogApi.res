@@ -8,7 +8,7 @@ type post = {
 }
 
 let blogPathToSlug = path => {
-  path->String.replaceRegExp(/\.mdx$/, "")
+  path->String.replaceAll("\\", "/")->String.replaceRegExp(/\.mdx$/, "")
 }
 
 let mdxFiles = dir => {

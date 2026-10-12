@@ -64,6 +64,7 @@ test("blog slugs preserve route filenames and existing slugs", async () => {
   )
   expect(BlogApi.blogPathToSlug("archived/2020-01-01-post.mdx"))->toBe("archived/2020-01-01-post")
   expect(BlogApi.blogPathToSlug("archived/middle"))->toBe("archived/middle")
+  expect(BlogApi.blogPathToSlug("archived\\middle.mdx"))->toBe("archived/middle")
 })
 
 test("RSS dates use midnight UTC and XML serialization leaves dates unchanged", async () => {
