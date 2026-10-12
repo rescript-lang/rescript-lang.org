@@ -21,7 +21,6 @@
     "ci:test:scripts": "yarn build:scripts && vitest run --config vitest.scripts.config.mjs && node --test scripts/__tests__/generate-llms.test.mjs scripts/__tests__/test-examples.test.mjs scripts/__tests__/test-hrefs.test.mjs scripts/__tests__/test-runner.test.mjs",
     "ci:test:visual": "VISUAL_TESTS=1 vitest --run --browser.headless",
     "ci:test:visual:update": "VISUAL_TESTS=1 VISUAL_BASELINE_UPDATE=1 vitest --run --browser.headless --update",
-    "clean:res": "rescript clean",
     "convert-images": "auto-convert-images",
     "dev:res": "rescript watch",
     "dev:vite": "react-router dev --host",
