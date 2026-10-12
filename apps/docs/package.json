@@ -15,7 +15,6 @@
     "build:vite": "react-router build",
     "check:algolia-public-env": "node _scripts/LogAlgoliaEnvStatus.mjs",
     "build": "yarn build:res && yarn build:scripts && yarn check:algolia-public-env && yarn build:update-index && yarn build:vite && yarn build:generate-sitemap",
-    "ci:format": "cd ../.. && yarn ci:format",
     "ci:homepage-performance": "node --test scripts/__tests__/homepage-compiler.test.mjs && node scripts/homepage-performance.mjs",
     "ci:test": "vitest --run --browser.headless",
     "ci:test:e2e": "cypress run --config-file cypress.homepage.config.mjs --browser chrome",
