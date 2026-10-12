@@ -1,6 +1,12 @@
 open Cypress
 open HomepageHelpers
 
+type clipboardDescriptor = {value: Nullable.t<Cypress.clipboard>, configurable: bool}
+
+@val @scope("Object")
+external hideClipboardAPI: ('navigator, @as("clipboard") _, clipboardDescriptor) => unit =
+  "defineProperty"
+
 it("community gallery supports keyboard selection and wraps to the first photo", () => {
   visit("/")
   containsIn("h1", headline)->realClick->ignore
@@ -41,4 +47,24 @@ it("clipboard denial can recover and both install commands can be copied repeate
     contains("Copied!")->should("be.visible")->ignore
     get(button)->should("be.enabled")->ignore
   })
+})
+
+it("copying falls back when the Clipboard API is unavailable", () => {
+  grantClipboardPermissions()
+  let nativeClipboard = ref(None)
+  visitWithOptions(
+    "/",
+    {
+      onBeforeLoad: window => {
+        nativeClipboard := Some(window.navigator.clipboard)
+        hideClipboardAPI(window.navigator, {value: Nullable.undefined, configurable: true})
+      },
+    },
+  )
+  get(`button[aria-label="Copy npm install rescript command"]`)->realClick->ignore
+  containsIn(`[role="status"]`, "Copied!")->should("be.visible")->ignore
+  runPromise(() => nativeClipboard.contents->Option.getOrThrow->readText)
+  ->shouldEqual("npm install rescript")
+  ->ignore
+  get("textarea")->should("not.exist")->ignore
 })

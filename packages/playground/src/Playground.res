@@ -605,9 +605,6 @@ module WarningFlagsWidget = {
   ) => {
     let (state, setState) = React.useState(_ => HideSuggestion({input: ""}))
 
-    // Used for the suggestion box list
-    let listboxRef = React.useRef(Nullable.null)
-
     // Used for the text input
     let inputRef = React.useRef(Nullable.null)
 
@@ -777,15 +774,14 @@ module WarningFlagsWidget = {
 
           let ref = if selected === i {
             ReactDOM.Ref.callbackDomRef(dom => {
-              let el = Nullable.toOption(dom)
-              let parent = listboxRef.current->Nullable.toOption
-
-              switch (parent, el) {
-              | (Some(parent), Some(el)) =>
-                scrollToElement(~parent, HtmlRef.fromDom(el))
-                None
-              | _ => None
-              }
+              dom->Nullable.forEach(
+                dom => {
+                  let element = HtmlRef.fromDom(dom)
+                  // Ancestor refs may not be attached yet, but the DOM parent already exists.
+                  element.parentElement->Null.forEach(parent => scrollToElement(~parent, element))
+                },
+              )
+              None
             })->Some
           } else {
             None
@@ -832,7 +828,6 @@ module WarningFlagsWidget = {
     let suggestionBox =
       Option.map(suggestions, elements =>
         <div
-          ref={HtmlRef.domRef(listboxRef)}
           className="playground-overlay p-2 absolute overflow-auto playground-scrollbar z-50 border-b rounded border-l border-r block w-full max-h-60"
         >
           elements
