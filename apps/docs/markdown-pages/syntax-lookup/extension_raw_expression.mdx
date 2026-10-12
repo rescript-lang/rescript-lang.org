@@ -1,0 +1,36 @@
+---
+id: "raw-expression"
+keywords: ["javascript", "raw", "expression"]
+name: "%raw"
+summary: "This is the `raw expression` extension point."
+category: "extensionpoints"
+---
+
+`%raw` is used to embed "raw JavaScript expressions".
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let canUseCanvas: unit => bool = %raw(`
+  function canUseCanvas() {
+    return !!document.createElement('canvas').getContext;
+  }
+`)
+```
+
+```js
+let canUseCanvas = function canUseCanvas() {
+  return !!document.createElement("canvas").getContext;
+};
+
+export { canUseCanvas };
+```
+
+</CodeTab>
+
+See [`%%raw`](./extension_raw_top_level_expression.mdx) for embedding top level blocks of JavaScript code rather than expressions.
+
+### References
+
+- [Embed Raw JavaScript](../docs/manual/embed-raw-javascript.mdx)
+- [Extension Point Attributes](../docs/manual/attribute.mdx#extension-point)

@@ -1,28 +1,119 @@
 .DS_Store
 *.swp
 *.swo
+.worktrees/
 
-# Generated via update-index script
-public/blog/feed.xml
+# Generated via docs update-index script
+apps/docs/public/blog/feed.xml
 
 node_modules/
 .next/
+out/
+apps/docs/out/
 index_data/*.json
+apps/docs/index_data/*.json
 
-# Generated via test examples script
-_tempFile.cmi
-_tempFile.cmj
-_tempFile.cmt
-
-# these docs are checked in, but we consider them frozen.
-pages/docs/manual/v8.0.0/
-pages/docs/manual/v9.0.0/
+# Generated via docs test examples script
+temp
+temp-js-output
+temp-jsx-preserve
+apps/docs/temp
+apps/docs/temp-js-output
+apps/docs/temp-jsx-preserve
 
 .bsb.lock
 .merlin
 lib/
-.vscode/
+apps/docs/lib/
+apps/guide/lib/
+packages/*/lib/
 
 .vercel
 
-src/**/*.mjs
+apps/docs/src/**/*.mjs
+apps/docs/src/**/*.jsx
+apps/guide/src/**/*.mjs
+apps/guide/src/**/*.jsx
+packages/*/src/**/*.mjs
+packages/*/src/**/*.jsx
+apps/docs/scripts/gendocs.mjs
+apps/docs/scripts/generate_*.mjs
+apps/docs/scripts/gendocs.jsx
+apps/docs/scripts/generate_*.jsx
+apps/docs/scripts/LogAlgoliaEnvStatus.jsx
+apps/docs/scripts/__tests__/**/*.jsx
+
+# Generated via generate-llms script
+apps/docs/public/llms.txt
+apps/docs/public/llms/manual/**/llm*.txt
+apps/docs/public/llms/react/**/llm*.txt
+apps/docs/markdown-pages/docs/**/**/llms.mdx
+
+apps/docs/public/playground-bundles/
+!apps/docs/public/_redirects
+
+dist
+build
+apps/docs/dist
+apps/docs/build
+apps/guide/dist
+apps/guide/build
+.react-router
+apps/docs/.react-router
+apps/guide/.react-router
+mdx-manifest.json
+apps/docs/mdx-manifest.json
+
+apps/docs/app/**/*.mjs
+apps/docs/app/**/*.jsx
+apps/guide/app/**/*.mjs
+apps/guide/app/**/*.jsx
+!apps/guide/app/root.jsx
+!apps/guide/app/routes.jsx
+apps/docs/functions/**/*.mjs
+apps/docs/functions/**/*.jsx
+apps/docs/__tests__/**/*.mjs
+apps/docs/__tests__/**/*.jsx
+apps/docs/test-utils/**/*.mjs
+apps/docs/test-utils/**/*.jsx
+apps/guide/__tests__/**/*.mjs
+apps/guide/__tests__/**/*.jsx
+apps/docs/e2e/**/*.mjs
+apps/docs/e2e/**/*.jsx
+!_shims.mjs
+!_shims.jsx
+
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# wrangler
+.wrangler
+apps/docs/.wrangler
+
+# Scripts generated from tsdown to convert them from .jsx files to .mjs files
+_scripts
+apps/docs/_scripts
+
+# Local env files
+.env.local
+apps/docs/.env.local
+
+# Local git worktrees
+.worktrees
+
+# Vitest screenshots
+!apps/docs/__tests__/**/__screenshots__/**/*
+.vitest-attachments
+apps/docs/.vitest-attachments
+apps/guide/.vitest-attachments
+
+# Browser test artifacts
+apps/docs/test-results/
+
+# Lighthouse artifacts
+.lighthouseci/

@@ -1,0 +1,19 @@
+{
+  "name": "@rescript-lang/playground",
+  "namespace": false,
+  "dependencies": [
+    "@rescript-lang/shared",
+    "@rescript/react",
+    "@rescript/webapi"
+  ],
+  "compiler-flags": ["-open WebAPI.Global"],
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    }
+  ],
+  "warnings": {
+    "error": "+8"
+  }
+}

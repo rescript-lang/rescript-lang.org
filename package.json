@@ -1,53 +1,60 @@
 {
-  "name": "rescript-lang.org",
-  "private": true,
+  "name": "rescript-lang.org-monorepo",
   "version": "1.0.0",
-  "author": "Patrick Ecker <ryyppy@users.noreply.github.com>",
+  "private": true,
   "license": "MIT",
-  "engines": {
-    "node": "16.x"
-  },
-  "dependencies": {
-    "@headlessui/react": "^1.2.0",
-    "@mdx-js/loader": "^1.5.5",
-    "@next/mdx": "^8.1.0",
-    "@rescript/react": "^0.10.3",
-    "@ryyppy/rescript-promise": "2.1.0",
-    "codemirror": "^5.54.0",
-    "docson": "^2.1.0",
-    "fuse.js": "^6.4.3",
-    "gentype": "^3.44.0",
-    "glob": "^7.1.4",
-    "gray-matter": "^4.0.2",
-    "highlight.js": "^10.5.0",
-    "lz-string": "^1.4.4",
-    "next": "10.2.3",
-    "next-transpile-modules": "7.1.2",
-    "postcss": "^8.3.0",
-    "prettier": "^1.18.2",
-    "react": "17.0.1",
-    "react-dom": "17.0.1",
-    "remark-parse": "^7.0.1",
-    "remark-slug": "^5.1.2",
-    "remark-stringify": "^7.0.3",
-    "request": "^2.88.0",
-    "stringify-object": "^3.3.0",
-    "unified": "^8.4.0"
-  },
+  "author": "Patrick Ecker <ryyppy@users.noreply.github.com>",
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "next",
-    "build": "rescript clean -with-deps && rescript && npm run update-index && next build",
-    "test": "node scripts/test-examples.mjs && node scripts/test-hrefs.mjs",
-    "reanalyze": "reanalyze -all-cmt .",
-    "update-index": "node scripts/extract-indices.mjs && node scripts/extract-tocs.mjs && node scripts/extract-syntax.mjs && node scripts/generate_feed.mjs > public/blog/feed.xml"
+    "build:scripts": "yarn workspace @rescript-lang/docs build:scripts",
+    "build:generate-llms": "yarn workspace @rescript-lang/docs build:generate-llms",
+    "build:guide": "yarn workspace @rescript-lang/guide build",
+    "build:res": "rescript build --warn-error +3+8+11+12+26+27+31+32+33+34+35+39+44+45+110",
+    "build:sync-bundles": "yarn workspace @rescript-lang/docs build:sync-bundles",
+    "build:update-index": "yarn workspace @rescript-lang/docs build:update-index",
+    "build:vite": "yarn workspace @rescript-lang/docs build:vite",
+    "build": "yarn workspace @rescript-lang/docs build",
+    "ci:format": "oxfmt --check",
+    "ci:homepage-performance": "yarn workspace @rescript-lang/docs ci:homepage-performance",
+    "ci:test": "yarn workspace @rescript-lang/docs ci:test && yarn workspace @rescript-lang/guide ci:test",
+    "ci:test:e2e": "yarn workspace @rescript-lang/docs ci:test:e2e",
+    "ci:test:visual": "yarn workspace @rescript-lang/docs ci:test:visual",
+    "clean:res": "rescript clean",
+    "convert-images": "yarn workspace @rescript-lang/docs convert-images",
+    "dev:res": "rescript watch",
+    "dev:guide": "yarn workspace @rescript-lang/guide dev:vite",
+    "dev:vite": "yarn workspace @rescript-lang/docs dev:vite",
+    "dev:wrangler": "yarn workspace @rescript-lang/docs dev:wrangler",
+    "dev": "yarn workspace @rescript-lang/docs dev",
+    "format": "yarn workspace @rescript-lang/docs format",
+    "prepare": "yarn workspace @rescript-lang/docs prepare",
+    "preview": "yarn workspace @rescript-lang/docs preview",
+    "reanalyze": "yarn workspace @rescript-lang/docs reanalyze",
+    "test": "yarn workspace @rescript-lang/docs test",
+    "test:e2e": "yarn workspace @rescript-lang/docs test:e2e",
+    "cy:open": "yarn workspace @rescript-lang/docs cy:open",
+    "cy:run": "yarn workspace @rescript-lang/docs cy:run",
+    "cy:e2e": "yarn workspace @rescript-lang/docs cy:e2e",
+    "vitest": "yarn workspace @rescript-lang/docs vitest",
+    "vitest:visual": "yarn workspace @rescript-lang/docs vitest:visual",
+    "vitest:guide": "yarn workspace @rescript-lang/guide vitest",
+    "vitest:update": "yarn workspace @rescript-lang/docs vitest:update"
   },
   "devDependencies": {
-    "autoprefixer": "^10.2.6",
-    "cssnano": "^4.1.10",
-    "esbuild-loader": "^2.13.1",
-    "postcss-cli": "^8.3.0",
-    "reanalyze": "^2.16.0",
-    "rescript": "^10.1.2",
-    "tailwindcss": "^2.1.4"
-  }
+    "lefthook": "^2.1.4",
+    "oxfmt": "^0.46.0",
+    "rescript": "^12.2.0"
+  },
+  "resolutions": {
+    "marked": "4.0.10",
+    "sharp": "0.35.2"
+  },
+  "engines": {
+    "node": ">=26"
+  },
+  "packageManager": "yarn@4.13.0"
 }

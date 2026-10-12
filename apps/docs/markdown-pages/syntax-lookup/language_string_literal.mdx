@@ -1,0 +1,35 @@
+---
+id: "string-literal"
+keywords: ["string"]
+name: '""'
+summary: "This is the `string` literal syntax."
+category: "languagepatternsvalues"
+---
+
+A `string` literal is composed of two **double** quotes. Single quotes are reserved for the `char` type.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let myString = "Single line " ++ "string!"
+let myMultiLineString = "Multi
+ line
+ string!"
+```
+
+```js
+let myString = "Single line string!";
+
+let myMultiLineString = "Multi\n line\n string!";
+
+export { myString, myMultiLineString };
+```
+
+</CodeTab>
+
+### References
+
+- [Strings](../docs/manual/primitive-types.mdx#string)
+- [Characters](../docs/manual/primitive-types.mdx#char)

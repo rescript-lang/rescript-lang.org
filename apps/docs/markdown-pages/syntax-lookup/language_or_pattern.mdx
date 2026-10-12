@@ -1,0 +1,36 @@
+---
+id: "or-pattern"
+keywords: ["|", "or pattern", "pattern matching", "switch"]
+name: "| (or-pattern)"
+summary: "This is the `or-pattern` syntax in `switch`."
+category: "languagepatternsvalues"
+---
+
+Use `|` inside a pattern to match multiple cases with one branch.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let n = 1
+
+let label = switch n {
+| 0 | 1 => "small"
+| _ => "other"
+}
+```
+
+```js
+let label = "small";
+
+let n = 1;
+
+export { n, label };
+```
+
+</CodeTab>
+
+### References
+
+- [Pattern Matching](../docs/manual/pattern-matching-destructuring.mdx)

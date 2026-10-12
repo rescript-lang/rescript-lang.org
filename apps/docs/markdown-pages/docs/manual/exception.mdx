@@ -1,0 +1,846 @@
+---
+title: "Exception"
+description: "Exceptions and exception handling in ReScript"
+canonical: "/docs/manual/exception"
+section: "Language Features"
+order: 19
+---
+
+# Exception
+
+Exceptions are just a special kind of variant, thrown in **exceptional** cases (don't abuse them!). Consider using the [`option`](./null-undefined-option.mdx) or [`result`](/docs/manual/api/stdlib/result) type for recoverable errors.
+
+You can create your own exceptions like you'd make a variant (exceptions need to be capitalized too).
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+  
+```res
+exception InputClosed(string)
+// later on
+throw(InputClosed("The stream has closed!"))
+```
+
+```js
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
+
+let InputClosed = /* @__PURE__ */ Primitive_exceptions.create(
+  "Example.InputClosed",
+);
+
+throw {
+  RE_EXN_ID: InputClosed,
+  _1: "The stream has closed!",
+  Error: new Error(),
+};
+
+export { InputClosed };
+```
+
+</CodeTab>
+
+## Built-in Exceptions
+
+ReScript has some built-in exceptions:
+
+### `Not_found`
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res prelude
+let getItem = (item: int) =>
+  if (item === 3) {
+    // return the found item here
+    1
+  } else {
+    throw(Not_found)
+  }
+
+let result =
+  try {
+    getItem(2)
+  } catch {
+  | Not_found => 0 // Default value if getItem throws
+  }
+```
+
+```js
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
+
+function getItem(item) {
+  if (item === 3) {
+    return 1;
+  }
+  throw { RE_EXN_ID: "Not_found", Error: new Error() };
+}
+
+let result;
+
+try {
+  result = getItem(2);
+} catch (raw_exn) {
+  let exn = Primitive_exceptions.internalToException(raw_exn);
+  if (exn.RE_EXN_ID === "Not_found") {
+    result = 0;
+  } else {
+    throw exn;
+  }
+}
+
+export { getItem, result };
+```
+
+</CodeTab>
+
+Note that the above is just for demonstration purposes; in reality, you'd return an `option<int>` directly from `getItem` and avoid the `try` altogether.
+
+You can directly match on exceptions _while_ getting another return value from a function:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res prelude
+switch list{1, 2, 3}->List.getOrThrow(4) {
+| item => Console.log(item)
+| exception Not_found => Console.log("No such item found!")
+}
+```
+
+```js
+import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
+
+function getItem(item) {
+  if (item === 3) {
+    return 1;
+  }
+  throw { RE_EXN_ID: "Not_found", Error: new Error() };
+}
+
+let result;
+
+try {
+  result = getItem(2);
+} catch (raw_exn) {
+  let exn = Primitive_exceptions.internalToException(raw_exn);
+  if (exn.RE_EXN_ID === "Not_found") {
+    result = 0;
+  } else {
+    throw exn;
+  }
+}
+
+let exit = 0;
+
+let item;
+
+try {
+  item = Stdlib_List.getOrThrow(
+    { hd: 1, tl: { hd: 2, tl: { hd: 3, tl: /* [] */ 0 } } },
+    4,
+  );
+  exit = 1;
+} catch (raw_exn$1) {
+  let exn$1 = Primitive_exceptions.internalToException(raw_exn$1);
+  if (exn$1.RE_EXN_ID === "Not_found") {
+    console.log("No such item found!");
+  } else {
+    throw exn$1;
+  }
+}
+
+if (exit === 1) {
+  console.log(item);
+}
+
+export { getItem, result };
+```
+
+</CodeTab>
+
+### `Invalid_argument`
+
+Used to check if argument is valid. This exception takes a string.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+```res
+let divide = (a, b) =>
+  if b == 0 {
+    throw(Invalid_argument("Denominator is zero"))
+  } else {
+    a / b
+  }
+
+// catch error
+try divide(2, 0)->Console.log catch {
+| Invalid_argument(msg) => Console.log(msg) // Denominator is zero
+}
+
+````
+
+```js
+import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
+import * as Primitive_int from "@rescript/runtime/lib/es6/Primitive_int.js";
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
+
+function getItem(item) {
+  if (item === 3) {
+    return 1;
+  }
+  throw { RE_EXN_ID: "Not_found", Error: new Error() };
+}
+
+let result;
+
+try {
+  result = getItem(2);
+} catch (raw_exn) {
+  let exn = Primitive_exceptions.internalToException(raw_exn);
+  if (exn.RE_EXN_ID === "Not_found") {
+    result = 0;
+  } else {
+    throw exn;
+  }
+}
+
+let exit = 0;
+
+let item;
+
+try {
+  item = Stdlib_List.getOrThrow(
+    { hd: 1, tl: { hd: 2, tl: { hd: 3, tl: /* [] */ 0 } } },
+    4,
+  );
+  exit = 1;
+} catch (raw_exn$1) {
+  let exn$1 = Primitive_exceptions.internalToException(raw_exn$1);
+  if (exn$1.RE_EXN_ID === "Not_found") {
+    console.log("No such item found!");
+  } else {
+    throw exn$1;
+  }
+}
+
+if (exit === 1) {
+  console.log(item);
+}
+
+function divide(a, b) {
+  if (b === 0) {
+    throw {
+      RE_EXN_ID: "Invalid_argument",
+      _1: "Denominator is zero",
+      Error: new Error(),
+    };
+  }
+  return Primitive_int.div(a, b);
+}
+
+try {
+  console.log(divide(2, 0));
+} catch (raw_msg) {
+  let msg = Primitive_exceptions.internalToException(raw_msg);
+  if (msg.RE_EXN_ID === "Invalid_argument") {
+    console.log(msg._1);
+  } else {
+    throw msg;
+  }
+}
+
+export { getItem, result, divide };
+````
+
+</CodeTab>
+
+### `Assert_failure`
+
+Thrown when you use `assert(condition)` and `condition` is false. The arguments
+are the location of the `assert` in the source code (file name, line number, column number).
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let decodeUser = (json: JSON.t) =>
+  switch json {
+  | Object(userDict) =>
+    switch (userDict->Dict.get("name"), userDict->Dict.get("age")) {
+    | (Some(String(name)), Some(Number(age))) => (name, age->Float.toInt)
+    | _ => assert(false)
+    }
+  | _ => assert(false)
+  }
+
+
+try decodeUser(%raw("{}"))->Console.log catch {
+| Assert_failure(loc) => Console.log(loc) // ("filename", line, col)
+}
+```
+
+```js
+import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
+
+function getItem(item) {
+  if (item === 3) {
+    return 1;
+  }
+  throw { RE_EXN_ID: "Not_found", Error: new Error() };
+}
+
+let result;
+
+try {
+  result = getItem(2);
+} catch (raw_exn) {
+  let exn = Primitive_exceptions.internalToException(raw_exn);
+  if (exn.RE_EXN_ID === "Not_found") {
+    result = 0;
+  } else {
+    throw exn;
+  }
+}
+
+let exit = 0;
+
+let item;
+
+try {
+  item = Stdlib_List.getOrThrow(
+    { hd: 1, tl: { hd: 2, tl: { hd: 3, tl: /* [] */ 0 } } },
+    4,
+  );
+  exit = 1;
+} catch (raw_exn$1) {
+  let exn$1 = Primitive_exceptions.internalToException(raw_exn$1);
+  if (exn$1.RE_EXN_ID === "Not_found") {
+    console.log("No such item found!");
+  } else {
+    throw exn$1;
+  }
+}
+
+if (exit === 1) {
+  console.log(item);
+}
+
+function decodeUser(json) {
+  if (typeof json === "object" && json !== null && !Array.isArray(json)) {
+    let match = json["name"];
+    let match$1 = json["age"];
+    if (typeof match === "string" && typeof match$1 === "number") {
+      return [match, match$1 | 0];
+    }
+    throw {
+      RE_EXN_ID: "Assert_failure",
+      _1: ["Example.res", 26, 11],
+      Error: new Error(),
+    };
+  }
+  throw {
+    RE_EXN_ID: "Assert_failure",
+    _1: ["Example.res", 28, 9],
+    Error: new Error(),
+  };
+}
+
+try {
+  console.log(decodeUser({}));
+} catch (raw_loc) {
+  let loc = Primitive_exceptions.internalToException(raw_loc);
+  if (loc.RE_EXN_ID === "Assert_failure") {
+    console.log(loc._1);
+  } else {
+    throw loc;
+  }
+}
+
+export { getItem, result, decodeUser };
+```
+
+</CodeTab>
+
+### `Failure`
+
+Exception thrown to signal that the given arguments do not make sense. This
+exception takes a string as an argument.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+```res
+let isValidEmail = email => {
+  let hasAtSign = String.includes(email, "@")
+  let hasDot = String.includes(email, ".")
+  if !(hasAtSign && hasDot) {
+    throw(Failure("Invalid email address"))
+  } else {
+    true
+  }
+}
+
+let isValid = try isValidEmail("rescript.org") catch {
+| Failure(msg) => {
+Console.error(msg)
+false
+}
+}
+
+````
+
+```js
+import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
+
+function getItem(item) {
+  if (item === 3) {
+    return 1;
+  }
+  throw { RE_EXN_ID: "Not_found", Error: new Error() };
+}
+
+let result;
+
+try {
+  result = getItem(2);
+} catch (raw_exn) {
+  let exn = Primitive_exceptions.internalToException(raw_exn);
+  if (exn.RE_EXN_ID === "Not_found") {
+    result = 0;
+  } else {
+    throw exn;
+  }
+}
+
+let exit = 0;
+
+let item;
+
+try {
+  item = Stdlib_List.getOrThrow(
+    { hd: 1, tl: { hd: 2, tl: { hd: 3, tl: /* [] */ 0 } } },
+    4,
+  );
+  exit = 1;
+} catch (raw_exn$1) {
+  let exn$1 = Primitive_exceptions.internalToException(raw_exn$1);
+  if (exn$1.RE_EXN_ID === "Not_found") {
+    console.log("No such item found!");
+  } else {
+    throw exn$1;
+  }
+}
+
+if (exit === 1) {
+  console.log(item);
+}
+
+function isValidEmail(email) {
+  let hasAtSign = email.includes("@");
+  let hasDot = email.includes(".");
+  if (hasAtSign && hasDot) {
+    return true;
+  }
+  throw {
+    RE_EXN_ID: "Failure",
+    _1: "Invalid email address",
+    Error: new Error(),
+  };
+}
+
+let isValid;
+
+try {
+  isValid = isValidEmail("rescript.org");
+} catch (raw_msg) {
+  let msg = Primitive_exceptions.internalToException(raw_msg);
+  if (msg.RE_EXN_ID === "Failure") {
+    console.error(msg._1);
+    isValid = false;
+  } else {
+    throw msg;
+  }
+}
+
+export { getItem, result, isValidEmail, isValid };
+````
+
+</CodeTab>
+
+### `Division_by_zero`
+
+Exception thrown by integer division and remainder operations when their second argument is zero.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+```res
+// ReScript throws `Division_by_zero` if the denominator is zero
+let result = try Some(10 / 0) catch {
+| Division_by_zero => None
+}
+
+Console.log(result) // None
+
+````
+
+```js
+import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
+import * as Primitive_int from "@rescript/runtime/lib/es6/Primitive_int.js";
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
+
+function getItem(item) {
+  if (item === 3) {
+    return 1;
+  }
+  throw { RE_EXN_ID: "Not_found", Error: new Error() };
+}
+
+try {
+  getItem(2);
+} catch (raw_exn) {
+  let exn = Primitive_exceptions.internalToException(raw_exn);
+  if (exn.RE_EXN_ID !== "Not_found") {
+    throw exn;
+  }
+}
+
+let exit = 0;
+
+let item;
+
+try {
+  item = Stdlib_List.getOrThrow(
+    { hd: 1, tl: { hd: 2, tl: { hd: 3, tl: /* [] */ 0 } } },
+    4,
+  );
+  exit = 1;
+} catch (raw_exn$1) {
+  let exn$1 = Primitive_exceptions.internalToException(raw_exn$1);
+  if (exn$1.RE_EXN_ID === "Not_found") {
+    console.log("No such item found!");
+  } else {
+    throw exn$1;
+  }
+}
+
+if (exit === 1) {
+  console.log(item);
+}
+
+let result;
+
+try {
+  result = Primitive_int.div(10, 0);
+} catch (raw_exn$2) {
+  let exn$2 = Primitive_exceptions.internalToException(raw_exn$2);
+  if (exn$2.RE_EXN_ID === "Division_by_zero") {
+    result = undefined;
+  } else {
+    throw exn$2;
+  }
+}
+
+console.log(result);
+
+export { getItem, result };
+````
+
+</CodeTab>
+
+## Catching JS Exceptions
+
+To distinguish between JavaScript exceptions and ReScript exceptions, ReScript namespaces JS exceptions under the `JsExn(payload)` variant. To catch an exception thrown from the JS side:
+
+Throw an exception from JS:
+
+```js
+// Example.js
+
+exports.someJsFunctionThatThrows = () => {
+  throw new Error("A Glitch in the Matrix!");
+};
+```
+
+Then catch it from ReScript:
+
+```res
+// import the method in Example.js
+@module("./Example")
+external someJsFunctionThatThrows: () => unit = "someJsFunctionThatThrows"
+
+try {
+  // call the external method
+  someJsFunctionThatThrows()
+} catch {
+| JsExn(exn) =>
+  switch JsExn.message(exn) {
+  | Some(m) => Console.log("Caught a JS exception! Message: " ++ m)
+  | None => ()
+  }
+}
+```
+
+The payload `exn` here is of type `unknown` since in JS you can throw anything. To operate on `exn`, do like the code above by using the standard library's [`JsExn`](/docs/manual/api/stdlib/jsexn) module's helpers
+or use [`Type.Classify.classify`](/docs/manual/api/stdlib/type/classify#value-classify) to get more information about the runtime type of `exn`.
+
+## Throw a JS Exception
+
+### Throw a JS Error
+
+`throw(MyException)` throws a ReScript exception. To throw a JavaScript error (whatever your purpose is), use `JsError.throwWithMessage`:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let myTest = () => {
+  JsError.throwWithMessage("Hello!")
+}
+```
+
+```js
+import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
+import * as Stdlib_JsError from "@rescript/runtime/lib/es6/Stdlib_JsError.js";
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
+
+function getItem(item) {
+  if (item === 3) {
+    return 1;
+  }
+  throw { RE_EXN_ID: "Not_found", Error: new Error() };
+}
+
+let result;
+
+try {
+  result = getItem(2);
+} catch (raw_exn) {
+  let exn = Primitive_exceptions.internalToException(raw_exn);
+  if (exn.RE_EXN_ID === "Not_found") {
+    result = 0;
+  } else {
+    throw exn;
+  }
+}
+
+let exit = 0;
+
+let item;
+
+try {
+  item = Stdlib_List.getOrThrow(
+    { hd: 1, tl: { hd: 2, tl: { hd: 3, tl: /* [] */ 0 } } },
+    4,
+  );
+  exit = 1;
+} catch (raw_exn$1) {
+  let exn$1 = Primitive_exceptions.internalToException(raw_exn$1);
+  if (exn$1.RE_EXN_ID === "Not_found") {
+    console.log("No such item found!");
+  } else {
+    throw exn$1;
+  }
+}
+
+if (exit === 1) {
+  console.log(item);
+}
+
+function myTest() {
+  return Stdlib_JsError.throwWithMessage("Hello!");
+}
+
+export { getItem, result, myTest };
+```
+
+</CodeTab>
+
+Then you can catch it from the JS side:
+
+```js
+// after importing `myTest`...
+try {
+  myTest();
+} catch (e) {
+  console.log(e.message); // "Hello!"
+}
+```
+
+### Throw a value that is not an JS Error
+
+If you want to throw any value that is not a valid JS Error, use `JsExn.throw`:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let myTest = () => {
+  JsExn.throw("some non-error value!")
+}
+```
+
+```js
+import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
+
+function getItem(item) {
+  if (item === 3) {
+    return 1;
+  }
+  throw { RE_EXN_ID: "Not_found", Error: new Error() };
+}
+
+let result;
+
+try {
+  result = getItem(2);
+} catch (raw_exn) {
+  let exn = Primitive_exceptions.internalToException(raw_exn);
+  if (exn.RE_EXN_ID === "Not_found") {
+    result = 0;
+  } else {
+    throw exn;
+  }
+}
+
+let exit = 0;
+
+let item;
+
+try {
+  item = Stdlib_List.getOrThrow(
+    { hd: 1, tl: { hd: 2, tl: { hd: 3, tl: /* [] */ 0 } } },
+    4,
+  );
+  exit = 1;
+} catch (raw_exn$1) {
+  let exn$1 = Primitive_exceptions.internalToException(raw_exn$1);
+  if (exn$1.RE_EXN_ID === "Not_found") {
+    console.log("No such item found!");
+  } else {
+    throw exn$1;
+  }
+}
+
+if (exit === 1) {
+  console.log(item);
+}
+
+function myTest() {
+  throw "some non-error value!";
+}
+
+export { getItem, result, myTest };
+```
+
+</CodeTab>
+
+Then you can catch it from the JS side:
+
+```js
+// after importing `myTest`...
+try {
+  myTest();
+} catch (message) {
+  console.log(message); // "Hello!"
+}
+```
+
+## Catch ReScript Exceptions from JS
+
+To let JavaScript code work with exception-throwing ReScript code, you don't need to throw a JS exception. ReScript exceptions can be used directly from JavaScript.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+exception BadArgument({myMessage: string})
+
+let myTest = () => {
+  throw(BadArgument({myMessage: "Oops!"}))
+}
+```
+
+```js
+import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
+
+function getItem(item) {
+  if (item === 3) {
+    return 1;
+  }
+  throw { RE_EXN_ID: "Not_found", Error: new Error() };
+}
+
+let result;
+
+try {
+  result = getItem(2);
+} catch (raw_exn) {
+  let exn = Primitive_exceptions.internalToException(raw_exn);
+  if (exn.RE_EXN_ID === "Not_found") {
+    result = 0;
+  } else {
+    throw exn;
+  }
+}
+
+let exit = 0;
+
+let item;
+
+try {
+  item = Stdlib_List.getOrThrow(
+    { hd: 1, tl: { hd: 2, tl: { hd: 3, tl: /* [] */ 0 } } },
+    4,
+  );
+  exit = 1;
+} catch (raw_exn$1) {
+  let exn$1 = Primitive_exceptions.internalToException(raw_exn$1);
+  if (exn$1.RE_EXN_ID === "Not_found") {
+    console.log("No such item found!");
+  } else {
+    throw exn$1;
+  }
+}
+
+if (exit === 1) {
+  console.log(item);
+}
+
+let BadArgument = /* @__PURE__ */ Primitive_exceptions.create(
+  "Example.BadArgument",
+);
+
+function myTest() {
+  throw { RE_EXN_ID: BadArgument, myMessage: "Oops!", Error: new Error() };
+}
+
+export { getItem, result, BadArgument, myTest };
+```
+
+</CodeTab>
+
+Then, in your JS:
+
+```js
+// after importing `myTest`...
+try {
+  myTest();
+} catch (e) {
+  console.log(e.myMessage); // "Oops!"
+  console.log(e.Error.stack); // the stack trace
+}
+```
+
+The above `BadArgument` exception takes an inline record type. We special-case compile the exception as `{RE_EXN_ID, myMessage, Error}` for good ergonomics. If the exception instead took ordinary positional arguments, l like the standard library's `Invalid_argument("Oops!")`, which takes a single argument, the argument is compiled to JS as the field `_1` instead. A second positional argument would compile to `_2`, etc.
+
+## Tips & Tricks
+
+When you have ordinary variants, you often don't **need** exceptions. For example, instead of throwing when `item` can't be found in a collection, try to return an `option<item>` (`None` in this case) instead.
+
+### Catch Both ReScript and JS Exceptions in the Same `catch` Clause
+
+```res nocheck
+try {
+  someOtherJSFunctionThatThrows()
+} catch {
+| Not_found => ... // catch a ReScript exception
+| Invalid_argument(_) => ... // catch a second ReScript exception
+| JsExn(exn) => ... // catch the JS exception
+}
+```
+
+This technically works, but hopefully you don't ever have to work with such code...

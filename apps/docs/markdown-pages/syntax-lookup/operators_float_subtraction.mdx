@@ -1,0 +1,28 @@
+---
+id: "float-subtraction"
+keywords: ["subtract", "minus", "subtraction", "float"]
+name: "-."
+summary: "This is the `floating point subtraction` operator."
+category: "operators-arithmetic"
+status: "deprecated"
+---
+
+> Deprecated, you can just use `-` for both integers and floats since v12.
+
+This operator performs _floating point_ subtraction.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let result = 3.0 -. 2.5
+```
+
+```js
+let result = 3.0 - 2.5;
+
+export { result };
+```
+
+</CodeTab>
+
+For subtracting _integers_ see the `-` operator.

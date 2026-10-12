@@ -1,0 +1,121 @@
+name: Deploy Fork PR Preview
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number to deploy (including forks)"
+        required: true
+  pull_request_target:
+    types: [labeled]
+
+jobs:
+  deploy-fork:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.label.name == 'ok-to-deploy' }}
+    permissions:
+      contents: read
+      deployments: write
+      pull-requests: read
+    steps:
+      # The `ok-to-deploy` label permits the base-repository workflow to deploy
+      # the checked-out fork commit and publish its preview to GitHub.
+      - name: Fetch PR info
+        id: pr
+        uses: actions/github-script@v9.0.0
+        with:
+          script: |
+            const inputRaw = core.getInput("pr_number") || (context.payload.inputs && context.payload.inputs.pr_number) || "";
+            const prNumber =
+              context.eventName === "workflow_dispatch"
+                ? Number(inputRaw)
+                : context.payload.pull_request.number;
+            if (context.eventName === "workflow_dispatch" && (!prNumber || Number.isNaN(prNumber))) {
+              core.setFailed(`Missing required input: pr_number (got: "${inputRaw}")`);
+              return;
+            }
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+            });
+            const labels = pr.labels.map((l) => l.name);
+            if (!labels.includes("ok-to-deploy")) {
+              core.setFailed("Missing required label: ok-to-deploy");
+            }
+            core.setOutput("repo", pr.head.repo.full_name);
+            core.setOutput("ref", pr.head.ref);
+            core.setOutput("sha", pr.head.sha);
+            core.setOutput("number", pr.number);
+            core.setOutput("is_fork", pr.head.repo.fork ? "true" : "false");
+
+      - name: Checkout PR head
+        uses: actions/checkout@v6.0.2
+        with:
+          repository: ${{ steps.pr.outputs.repo }}
+          ref: ${{ steps.pr.outputs.sha }}
+          persist-credentials: false
+
+      - name: Install Corepack
+        run: npm install --global corepack
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6.3.0
+        with:
+          node-version-file: ".node-version"
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Sync playground bundles
+        run: yarn build:sync-bundles
+
+      - name: Build
+        run: yarn build
+
+      - name: Deploy
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: apps/docs
+          command: pages deploy out --project-name=rescript-lang-org
+          wranglerVersion: 4.130.0
+        continue-on-error: true
+        env:
+          FORCE_COLOR: 0
+      - name: Publish fork preview deployment to GitHub
+        if: ${{ steps.deploy.outcome == 'success' }}
+        uses: actions/github-script@v9.0.0
+        with:
+          script: |
+            const deployment = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: process.env.PR_HEAD_SHA,
+              auto_merge: false,
+              required_contexts: [],
+              environment: "fork-preview",
+              production_environment: false,
+              transient_environment: true,
+              description: "Cloudflare fork preview",
+            });
+
+            await github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: deployment.data.id,
+              state: "success",
+              environment: "fork-preview",
+              environment_url: process.env.DEPLOYMENT_URL,
+              log_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              description: "Cloudflare fork preview deployed",
+              auto_inactive: false,
+            });
+        env:
+          DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment-url }}
+          PR_HEAD_SHA: ${{ steps.pr.outputs.sha }}

@@ -1,0 +1,37 @@
+---
+id: "if-else"
+keywords: ["if", "else"]
+name: "if / else"
+summary: "This is the `if / else` control flow."
+category: "languagecontrolflow"
+---
+
+Use `if / else` expressions to express a value through a `true` / `false` condition.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let user = "Anna"
+
+let greeting = if user === "Anna" {
+  "Hi Anna!"
+} else {
+  "Hi unknown!"
+}
+```
+
+```js
+let user = "Anna";
+
+let greeting = user === "Anna" ? "Hi Anna!" : "Hi unknown!";
+
+export { user, greeting };
+```
+
+</CodeTab>
+
+### References
+
+- [If-Else & Ternary](../docs/manual/control-flow.mdx)

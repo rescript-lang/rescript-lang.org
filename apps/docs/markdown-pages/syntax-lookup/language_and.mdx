@@ -1,0 +1,60 @@
+---
+id: "and"
+keywords: ["and", "let rec and", "type rec and", "mutual recursion"]
+name: "and"
+summary: "This is the `and` keyword for mutually recursive definitions."
+category: "languageconstructs"
+---
+
+Use `and` to define multiple items in one mutually-recursive group.
+
+### Example 1: `let rec ... and ...`
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let rec isEven = n => n == 0 || isOdd(n - 1)
+and isOdd = n => n != 0 && isEven(n - 1)
+```
+
+```js
+function isEven(n) {
+  if (n === 0) {
+    return true;
+  } else {
+    return isOdd((n - 1) | 0);
+  }
+}
+
+function isOdd(n) {
+  if (n !== 0) {
+    return isEven((n - 1) | 0);
+  } else {
+    return false;
+  }
+}
+
+export { isEven, isOdd };
+```
+
+</CodeTab>
+
+### Example 2: `type rec ... and ...`
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+type rec expr = Add(expr, term) | Term(term)
+and term = Int(int)
+```
+
+```js
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
+```
+
+</CodeTab>
+
+### References
+
+- [Recursive Functions](../docs/manual/function.mdx#recursive-functions)
+- [Type](../docs/manual/type.mdx)

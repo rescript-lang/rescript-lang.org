@@ -1,0 +1,89 @@
+---
+title: "Extensible Variant"
+description: "Extensible Variants in ReScript"
+canonical: "/docs/manual/extensible-variant"
+section: "Advanced Features"
+order: 1
+---
+
+# Extensible Variant
+
+Variant types are usually constrained to a fixed set of constructors. There may be very rare cases where you still want to be able to add constructors to a variant type even after its initial type declaration. For this, we offer extensible variant types.
+
+## Definition and Usage
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res prelude
+type t = ..
+
+type t += Other
+
+type t +=
+  | Point(float, float)
+  | Line(float, float, float, float)
+```
+
+```js
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
+
+let Other = /* @__PURE__ */ Primitive_exceptions.create("Example.Other");
+
+let Point = /* @__PURE__ */ Primitive_exceptions.create("Example.Point");
+
+let Line = /* @__PURE__ */ Primitive_exceptions.create("Example.Line");
+
+export { Other, Point, Line };
+```
+
+</CodeTab>
+
+The `..` in the type declaration above defines an extensible variant `type t`. The `+=` operator is then used to add constructors to the given type.
+
+**Note:** Don't forget the leading `type` keyword when using the `+=` operator!
+
+## Pattern Matching Caveats
+
+Extensible variants are open-ended, so the compiler will not be able to exhaustively pattern match all available cases. You will always need to provide a default `_` case for every `switch` expression.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let print = v =>
+  switch v {
+  | Point(x, y) => Console.log2("Point", (x, y))
+  | Line(ax, ay, bx, by) => Console.log2("Line", (ax, ay, bx, by))
+  | Other
+  | _ => Console.log("Other")
+  }
+```
+
+```js
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
+
+let Other = /* @__PURE__ */ Primitive_exceptions.create("Example.Other");
+
+let Point = /* @__PURE__ */ Primitive_exceptions.create("Example.Point");
+
+let Line = /* @__PURE__ */ Primitive_exceptions.create("Example.Line");
+
+function print(v) {
+  if (v.RE_EXN_ID === Point) {
+    console.log("Point", [v._1, v._2]);
+  } else if (v.RE_EXN_ID === Line) {
+    console.log("Line", [v._1, v._2, v._3, v._4]);
+  } else {
+    console.log("Other");
+  }
+}
+
+export { Other, Point, Line, print };
+```
+
+</CodeTab>
+
+## Tips & Tricks
+
+**Fun fact:** Like [exception](./exception.mdx), extensible variant It's one of the very few use-case where extensible variants make sense.
+
+We usually recommend sticking with common [variants](./variant.mdx) as much as possible to reap the benefits of exhaustive pattern matching.

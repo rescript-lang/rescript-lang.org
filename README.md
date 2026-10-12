@@ -1,165 +1,186 @@
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
-
-<a href="https://simpleanalytics.com/rescript-lang.org?utm_source=rescript-lang.org&utm_content=badge" referrerpolicy="origin" target="_blank"><img src="https://simpleanalyticsbadge.com/rescript-lang.org?counter=true" loading="lazy" referrerpolicy="no-referrer" crossorigin="anonymous" /></a>
-
 # rescript-lang.org
+
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
 This is the official documentation platform for the [ReScript](https://rescript-lang.org) programming language.
 
-**Please report any technical issues with ReScript to the [compiler repository](https://github.com/rescript-lang/rescript-compiler).**
+The site is a fully pre-rendered static app built with ReScript, React 19, React Router, Vite, and Tailwind CSS, and deployed to Cloudflare Pages.
 
-**In case you are missing some specific documentation:**
-- Some language / compiler feature may not be documented yet
-- Create an issue to let us know what you are missing
-- In case you want to contribute missing docs, please refer to our [Contribution section](#contributing)
+Route modules live in `app/routes/`, shared ReScript UI code lives in `src/`, and MDX content lives in `markdown-pages/`.
+
+**Please report any technical issues with ReScript to the [compiler repository](https://github.com/rescript-lang/rescript).**
+
+**If you are missing specific documentation:**
+
+- Some language or compiler features may not be documented yet.
+- Open an issue to let us know what is missing.
+- If you want to contribute missing docs, see [Contributing](#contributing).
 
 ## System Requirements
 
-- `node@16.x` or higher (for ES6 module compat)
-- `npm@7` or higher (package-lock v2)
+- `node@26` or higher
+
+This repository uses `yarn@4.13.0` via Corepack.
 
 ## Setup
 
 ```sh
-# For first time clone / build (install dependencies)
-npm i
-
-# Initial build
-npx rescript
-
-# Only needed for initial clone (or content H2 changes)
-npm run update-index
-
-# Build the index data
-npm run update-index
-
-# In a new tab
-npm run dev
-
-open localhost:3000
+npm install --global corepack
+corepack enable
+yarn install
+yarn dev
 ```
 
-In case you want to run ReScript in watchmode:
+`yarn dev` prepares generated assets, starts the ReScript watcher, runs the React Router/Vite dev server, and serves the built client through Wrangler Pages.
+
+## Search and DocSearch
+
+Search is powered by Algolia DocSearch. The DocSearch crawler owns indexing and index settings; site builds and deployments do not upload records, replace indexes, or use an Algolia admin/write key.
+
+The frontend only needs public DocSearch runtime variables:
 
 ```sh
-npx rescript build -w
+VITE_ALGOLIA_APP_ID="..."
+VITE_ALGOLIA_INDEX_NAME="..."
+VITE_ALGOLIA_SEARCH_API_KEY="..."
 ```
 
-## Build Index Data
+The GitHub deploy workflow passes the public GitHub secrets named `VITE_ALGOLIA_APP_ID`, `VITE_ALGOLIA_INDEX_NAME`, and `VITE_ALGOLIA_SEARCH_API_KEY` to the `yarn build` step. `VITE_ALGOLIA_INDEX_NAME` is the full runtime index name; the workflow does not add `prod_` or `dev_` prefixes. Builds and deployments should not configure or export Algolia admin/write keys.
 
-We are parsing our content for specific index data (such as, all interesting
-search terms we need for searching inside the `Belt` docs). You can create your
-index by running following command:
+DocSearch crawl quality comes from the generated HTML. Searchable page bodies use `DocSearch-content`, each crawlable section provides a hidden `DocSearch-lvl0` marker such as `Manual`, `API`, `React`, `Syntax Lookup`, `Community`, or `Blog`, and headings own unique `id` attributes for section links.
 
-```sh
-npm run update-index
+The crawler configuration should use selectors shaped like this:
+
+```js
+recordProps: {
+  lvl0: {
+    selectors: ".DocSearch-lvl0",
+    defaultValue: "Documentation",
+  },
+  lvl1: [".DocSearch-content h1", "main h1", "h1", "head > title"],
+  lvl2: [".DocSearch-content h2", "main h2", "h2"],
+  lvl3: [".DocSearch-content h3", "main h3", "h3"],
+  lvl4: [".DocSearch-content h4", "main h4", "h4"],
+  lvl5: [".DocSearch-content h5", "main h5", "h5"],
+  lvl6: [".DocSearch-content h6", "main h6", "h6"],
+  content: [".DocSearch-content p, .DocSearch-content li"],
+}
 ```
 
-All the index data is stored in `index_data`, but will not be tracked by git.
-Make sure to build the index after a fresh clone, otherwise Next might not
-build specific pages (file `index_data/x.json` not found).
+Production crawler start URLs, ranking, and crawler schedules live in the Algolia dashboard. The build generates `sitemap.xml` from the prerendered HTML pages so the crawler can use the deployed sitemap.
 
 ## Project Structure Overview
 
-- `data`: Contains hand-curated data, such as sidebar ordering, blog data, etc
-- `index_data`: Contains generated data, usually generated by scripts like `scripts/extract-tocs.js`
-- `compilers`: Contains a subdirectory with independently installed ReScript compilers, to be able to compile / test examples with different ReScript versions
-- `misc_docs`: Contains `pages` independent resources that are embedded in miscellaneous pages (e.g. for the syntax lookup)
-- `pages`: All Next pages. Those are written in JS / MDX, some pages are re-exporting ReScript based pages from the `src/` directory.
-- `styles`: Contains all extra CSS that cannot be expressed with Tailwind
-- `src`: Contains all ReScript related code for the UI. Within `src`, you will also find all ReScript based Next pages that are re-exported in the `pages` directory
-  - `/bindings`: (Zero-cost) bindings to JS libraries / apis
-  - `/common`: ReScript modules that are neither `bindings`, nor `components`
-  - `/components`: ReScript / React components used by multiple pages
-  - `/ffi`: (to be deprecated) Plain JS that some ReScript code binds to (use `raw` statements for that)
-  - `/layouts`: All Next layouts used in our pages. Check out `src/common/App.res` for mapping layouts to routes
-- `plugins`: Contains plugins for all kinds of things: HighlightJS, MDX, webpack loader, etc.
-- `scripts`: Contains a mix of JS / ReScript based scripts that do all kind of code generation / code introspection logic
-- `tailwind.config.js`: Contains our Tailwind configuration for all the low level design tokens
+- `app/`: React Router app shell, layouts, route definitions, and route modules
+- `src/`: ReScript source code for bindings, shared logic, components, and layouts
+- `markdown-pages/`: MDX content for docs, blog, community pages, and syntax lookup
+- `data/`: Hand-curated data such as sidebar ordering and content metadata
+- `scripts/`: Build, code generation, and validation scripts
+- `functions/`: Cloudflare Pages Functions
+- `styles/`: Tailwind v4 theme and custom CSS
+- `public/`: Static assets such as images, fonts, and favicons
+- `plugins/`: HighlightJS, CodeMirror, and other content/build plugins
+- `compilers/`: Bundled ReScript compiler versions for playground and example validation
+- `__tests__/`: Vitest browser tests written in ReScript
 
-## Run Tests
+Tailwind is configured in [`styles/main.css`](styles/main.css). There is no `tailwind.config.js`.
 
-### Markdown Codeblock Tests
+## Common Commands
 
-We check the validity of our code examples marked with:
-- `` ```res example `` (ReScript code snippet)
-- `` ```res sig `` (signature)
-- `` ```res prelude `` (ReScript code snippet available for all subsequent code snippets)
+| Command              | Purpose                                                           |
+| -------------------- | ----------------------------------------------------------------- |
+| `yarn dev`           | Prepare generated files and run the local development environment |
+| `yarn build`         | Run the full production build                                     |
+| `yarn preview`       | Build and serve the generated static client locally               |
+| `yarn build:res`     | Compile ReScript only                                             |
+| `yarn dev:res`       | Run the ReScript compiler in watch mode                           |
+| `yarn format`        | Run Prettier and the ReScript formatter                           |
+| `yarn test`          | Run markdown example and href validation                          |
+| `yarn ci:test`       | Run Vitest browser tests headlessly                               |
+| `yarn vitest`        | Run Vitest directly                                               |
+| `yarn vitest:update` | Update screenshot baselines headlessly                            |
 
-Run the checks with:
+## Testing
 
-```sh
-node scripts/test-examples.mjs
-```
+### Vitest Browser Tests
 
-### Markdown Hyperlink Tests
-
-We are also verifying markdown href links to relative resources (via
-`[text](url)` syntax) with our `scripts/test-hrefs.js` script. Here is a short
-explanation on how the href testing works:
-
-Domain relative links, such as `/docs/manual/latest`, `./introduction`,
-`introduction`, `/docs/foo/introduction.md` will be verified. That means the
-tester will check if given path exists in the `pages` directory.
-
-If there are any anchor refs, such as `/docs/manual#test`, then the anchor will
-be ignored for the specific file path check. If there are any hrefs with `.md`,
-`.mdx` or `.html` file extension, then those will be stripped before the check
-happens (the markdown renderer drops file extensions on relative links as
-well).
-
-External hrefs, such as `https://www.hello.world`, `//www.hello.world` will NOT be
-checked since they are assumed to be external resources.
-
-Here is an example on how to run the tests:
+We use [Vitest](https://vitest.dev/) in browser mode with Playwright for component-level tests. Test files live in `__tests__/` and are written in ReScript.
 
 ```sh
-# Tests all files
-node scripts/test-hrefs.mjs
+# Watch mode
+yarn vitest
 
-# Or just a subset (glob pattern)
-node scripts/test-hrefs.mjs "pages/docs/manual/**/*.mdx"
+# Headless run (same mode used in CI)
+yarn ci:test
 ```
 
-### Continous Integration
-
-Always make sure to run `npm test` before pushing any content, otherwise our CI
-might trigger a failure warning. Failing branches are very unlikely to be merged.
-
-## Design / UX
-
-Design mockups can be found
-[here](https://xd.adobe.com/spec/1cd19c3a-a0bb-4f93-4e11-725589888696-6ae0/grid/).
-
-Be aware that some screen designs might still be work in progress, if you have
-any design / UX questions, either comment directly on the design tool as guest,
-or open an issue.
-
-## Useful commands
-
-Build CSS seperately via `npx postcss` (useful for debugging)
+To update screenshot baselines, run:
 
 ```sh
-# Devmode
-npx postcss styles/main.css -o test.css
-
-# Production
-NODE_ENV=production npx postcss styles/main.css -o test.css
+yarn vitest:update
 ```
+
+Only update screenshots that are intentionally affected by your change.
+
+### Markdown Example and Link Checks
+
+`yarn test` runs the following:
+
+- `apps/docs/scripts/test-examples.mjs` to compile examples in the manual, React docs, guides and syntax lookup, and compare shown JS and JSX output with the installed compiler
+- `apps/docs/scripts/test-hrefs.mjs` to validate relative markdown links under `markdown-pages/`
+- `apps/docs/scripts/test-redirects.mjs` to validate redirect rules
+
+Supported ReScript markdown code fences:
+
+- ` ```res `
+- ` ```rescript ` (alias for `res`)
+- ` ```res sig `
+- ` ```resi ` (alias for `res sig`)
+- ` ```res prelude `
+- ` ```res file=MathUtils.res ` (a separate source file for multi-file examples)
+- ` ```resi file=MathUtils.resi ` (its interface)
+
+Indented fences are supported. Prelude blocks provide context for later examples. Use `res nocheck` only for intentionally invalid or incomplete snippets. Malformed CodeTabs fail the check, including missing closing tags and mismatched labels and fences.
+
+Named source files are compiled together with the examples on their page. Filenames must be PascalCase, end in `.res` or `.resi`, and be unique on the page; `Example` is reserved for the checker's main module. Supporting files are removed before checking the next page.
+
+Output comparison ignores formatting and comments. `JS Output` and `JS Output (Module)` use ESM, `JS Output (CommonJS)` uses CommonJS, and `JSX Preserved Output` uses preserved JSX. TypeScript output is not generated or compared by this checker; its ReScript input is still compiled.
+
+Compiler diagnostics embedded in output, such as `%todo`, show the example's filename and source range with the temporary build directory removed.
+
+Refresh generated JS output fences with the installed compiler and format the result:
+
+```sh
+yarn test --update
+```
+
+You can also run the scripts directly:
+
+```sh
+node apps/docs/scripts/test-examples.mjs
+node apps/docs/scripts/test-examples.mjs --update
+node apps/docs/scripts/test-examples.mjs "manual/module-functions.mdx"
+node apps/docs/scripts/test-examples.mjs --include-blog
+node apps/docs/scripts/test-hrefs.mjs
+```
+
+Example-checker patterns are relative to `apps/docs/markdown-pages/docs`. Historical blog posts describe earlier compiler versions, so the default run reports them as skipped. `--include-blog` audits them with the installed compiler; reported differences need review against the original version. Blog files are never rewritten, even with `--update`.
+
+Run `yarn test` before pushing content changes so CI does not fail on markdown regressions.
 
 ## Writing Blog Posts
 
-In case you are a blog author, please refer to our [guide on writing blog posts](https://rescript-lang.org/blogpost-guide).
+If you are writing a blog post, refer to the [blog post guide](https://rescript-lang.org/blogpost-guide).
 
-## How to Add Your Company Logo to Our Front Page
+## Adding Your Company Logo
 
-In case your company is a user of ReScript and wants to be displayed on our front page ("Trusted by our users" section), do the following:
+If your company uses ReScript and should appear in the "Trusted by our users" section on the front page:
 
-- Get your logo as a black / white `.svg` version and use `#979AAD` as a fill color (check out the existing logos on our front page).
-- Put your logo into the [`public/static/lp`](./public/static/lp) folder; the file should be named after your company.
-- Open [src/common/OurUsers.res](./src/common/OurUsers.res) and add your info
+- Add a black and white `.svg` logo using `#979AAD` as the fill color.
+- Put the file in [`apps/docs/public/lp`](apps/docs/public/lp).
+- Update [`apps/docs/src/data/OurUsers.res`](apps/docs/src/data/OurUsers.res), including the logo's intrinsic `width` and `height`. For SVGs without explicit dimensions, use their `viewBox` dimensions; scale fractional dimensions together to integers without changing the aspect ratio.
 - Commit, push, and open a PR.
 
-### Contributing
+## Contributing
 
-Please make sure to first read and comply to our [Code of Conduct](CODE_OF_CONDUCT.md) and check out our [CONTRIBUTING.md](CONTRIBUTING.md) file to learn how to get started with our contribution process!
+Please read and comply with our [Code of Conduct](CODE_OF_CONDUCT.md) and review [CONTRIBUTING.md](CONTRIBUTING.md) before contributing.

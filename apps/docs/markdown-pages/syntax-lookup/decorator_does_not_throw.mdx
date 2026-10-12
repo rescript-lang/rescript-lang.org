@@ -1,0 +1,15 @@
+---
+id: "does-not-throw-decorator"
+keywords: ["doesNotThrow", "decorator"]
+name: "@doesNotThrow"
+summary: "This is the `@doesNotThrow` decorator."
+category: "decorators"
+---
+
+> **Note:** This feature is only available in ReScript >= v12. It requires turning on from the [editor extension settings](../docs/manual/editor-plugins.mdx#configuration).
+
+`@doesNotThrow` is used to override the reanalyze's exception analysis and state that an expression does not throw any exceptions, even though the analysis reports otherwise. This can happen for example in the case of array access where the analysis does not perform range checks but takes a conservative stance that any access could potentially throw.
+
+### References
+
+- [Editor Plugins](../docs/manual/editor-plugins.mdx)

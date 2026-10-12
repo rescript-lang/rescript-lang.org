@@ -1,0 +1,66 @@
+---
+id: "module-decorator"
+keywords: ["module", "decorator"]
+name: "@module"
+summary: "This is the `@module` decorator."
+category: "decorators"
+---
+
+The `@module` decorator is used to bind to a JavaScript module.
+
+### Example
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+@module("path")
+external dirname: string => string = "dirname"
+
+let root = dirname("/User/github")
+```
+
+```js
+import * as Path from "path";
+
+let root = Path.dirname("/User/github");
+
+export { root };
+```
+
+</CodeTab>
+
+### Import Attributes
+
+**Since 11.1**
+
+`@module` also supports [import attributes](https://github.com/tc39/proposal-import-attributes). It looks like this:
+
+<CodeTab labels={["ReScript", "JS Output (Module)"]}>
+```rescript
+@module({from: "./myJson.json", with: {type_: "json", \"some-exotic-identifier": "someValue"}})
+external myJson: JSON.t = "default"
+
+Console.log(myJson)
+
+````
+
+```javascript
+import MyJsonJson from "./myJson.json" with {
+  type: "json",
+  "some-exotic-identifier": "someValue",
+};
+
+let myJson = MyJsonJson;
+
+console.log(myJson);
+
+export { myJson };
+````
+
+</CodeTab>
+
+More information [in the dedicated documentation for import attributes](../docs/manual/import-from-export-to-js.mdx#use-import-attributes).
+
+### References
+
+- [Import from JavaScript](../docs/manual/import-from-export-to-js.mdx#import-from-javascript)

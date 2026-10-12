@@ -1,0 +1,61 @@
+---
+title: "Introduction"
+description: "Introduction to the ReScript programming language"
+canonical: "/docs/manual/introduction"
+section: "Overview"
+order: 1
+---
+
+# ReScript
+
+ReScript is a robustly typed language that compiles to efficient and human-readable JavaScript. It comes with a lightning fast compiler toolchain that scales to any codebase size.
+
+## JavaScript Interop
+
+ReScript compiles to clean, readable, and performant JavaScript, directly runnable in browsers and Node. Your existing package managers, bundlers, frameworks, and test runners all work with ReScript.
+
+Your existing knowledge of web development transfers to ReScript projects.
+
+If you are coming from JavaScript, start with [ReScript for JavaScript Developers](./rescript-for-javascript-developers.mdx) for a quick syntax guide.
+
+ReScript code can be [imported into JavaScript code](./import-from-export-to-js.mdx#export-to-javascript), can [generate types for TypeScript](./typescript-integration.mdx), and ReScript can [import code written in JavaScript or TypeScript](./import-from-export-to-js.mdx#import-from-javascript).
+
+## Type System
+
+- Is deliberately curated to be a simple subset most folks will have an easier time to use.
+- Sound type system. If a type isn't marked as nullable, the value will never be `undefined`. **ReScript code has no null/undefined errors**.
+- No configuration needed. The type system behaves the same way in every project.
+- Runs extremely fast precisely thanks to its simplicity and curation. It's one of the fastest compiler & build system toolchains for JavaScript development.
+- **Doesn't need type annotations**. Annotate as much or as little as you'd like. The types are inferred by the language (and, again, are guaranteed correct).
+
+## Compiler
+
+### Compiles to Optimized JavaScript
+
+ReScript's type system and compiler generate JavaScript that is performant by default, taking advantage of Just-In-Time optimizations (hidden classes, inline caching, avoiding deopts, etc).
+
+### Tiny JS Output
+
+A `Hello world` ReScript program generates **20 bytes** of JS code. Additionally, the standard library pieces you require in are only included when needed.
+
+### Fast Iteration Loop
+
+ReScript's build time is **one or two orders of magnitude** faster than alternatives. In its watcher mode, the build system usually finishes before you switch screen from the editor to the terminal tab (two digits of milliseconds). A fast iteration cycle reduces the need of keeping one's mental state around longer; this in turn allows one to stay in the flow longer and more often.
+
+### Readable Output
+
+ReScript's JS output is very readable. This is especially important while learning, where users might want to understand how the code's compiled, and to audit for bugs.
+
+This characteristic, combined with a fully-featured JS interop system, allows ReScript code to be inserted into an existing JavaScript codebase almost unnoticed.
+
+### Preservation of Code Structure
+
+ReScript maps one source file to one JavaScript output file. This eases the integration of existing tools such as bundlers and test runners. You can even start writing a single file without much change to your build setup. Each file's code structure is approximately preserved, too.
+
+### High Quality Dead Code Elimination
+
+The JavaScript ecosystem is very reliant on dependencies. Shipping the final product inevitably drags in a huge amount of code, lots of which the project doesn't actually use. These regions of dead code impact loading, parsing and interpretation speed. ReScript provides powerful dead code elimination at all levels:
+
+- Function- and module-level code elimination is facilitated by the well-engineered type system and purity analysis.
+- At the global level, ReScript generates code that is naturally friendly to dead code elimination done by bundling tools such as [Rollup](https://github.com/rollup/rollup) and [Closure Compiler](https://developers.google.com/closure/compiler/), after its own sophisticated elimination pass.
+- The same applies for ReScript's own tiny runtime (which is written in ReScript itself).

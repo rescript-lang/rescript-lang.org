@@ -1,0 +1,74 @@
+/* Markdown related stuff */
+/* Sometimes we cannot circumvent the cascade, especially for nested lists */
+.markdown-body {
+  ol {
+    li {
+      list-style-type: decimal;
+
+      &::before {
+        @apply font-bold;
+      }
+    }
+  }
+
+  ul {
+    @apply mb-0;
+
+    ol {
+      @apply mb-0;
+    }
+
+    li {
+      @apply relative my-6;
+
+      &::before {
+        content: "•";
+        @apply absolute;
+      }
+
+      ul {
+        @apply mb-14 ml-4;
+      }
+
+      p {
+        @apply text-gray-80 ml-5;
+      }
+    }
+  }
+
+  li {
+    ul {
+      p {
+        @apply ml-6;
+      }
+    }
+  }
+
+  p + p {
+    @apply mt-6;
+  }
+
+  /* INFOBOX (Markdown.res) Find a better solution for <p> text inside of Info-Box (Markdown)? */
+  .infobox {
+    p {
+      @apply text-14 mt-0;
+
+      a {
+        @apply underline text-current;
+
+        &:hover {
+          @apply no-underline text-current text-gray-70;
+        }
+      }
+    }
+  }
+
+  .install-list {
+    li {
+      @apply !mb-0;
+      ul {
+        @apply !mb-0 !ml-0;
+      }
+    }
+  }
+}

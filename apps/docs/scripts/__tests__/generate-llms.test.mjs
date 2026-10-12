@@ -1,0 +1,488 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import child_process from "node:child_process";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const docsRoot = path.resolve(__dirname, "../..");
+const generatorPath = path.join(docsRoot, "_scripts", "generate_llms.mjs");
+
+let writeFile = (root, filePath, content) => {
+  let fullPath = path.join(root, filePath);
+  fs.mkdirSync(path.dirname(fullPath), { recursive: true });
+  fs.writeFileSync(fullPath, content);
+};
+
+let makeWorkspace = () => {
+  let root = fs.mkdtempSync(path.join(os.tmpdir(), "generate llms-"));
+
+  writeFile(
+    root,
+    "markdown-pages/docs/manual/introduction.mdx",
+    `---
+title: "Introduction"
+section: "Overview"
+order: 1
+---
+
+# Manual Introduction
+
+\`\`\`res
+let answer = 42
+\`\`\`
+`,
+  );
+
+  writeFile(
+    root,
+    "markdown-pages/docs/manual/overview.mdx",
+    `---
+title: "Language Overview"
+section: "Language Features"
+order: 1
+---
+
+# Language Overview
+
+Language feature content.
+`,
+  );
+
+  writeFile(
+    root,
+    "markdown-pages/docs/manual/bind-to-js-function.mdx",
+    `---
+title: "Bind to JS Function"
+section: "JavaScript Interop"
+order: 1
+---
+
+# Bind to JS Function
+
+JavaScript interop content.
+`,
+  );
+
+  writeFile(
+    root,
+    "markdown-pages/docs/manual/build-overview.mdx",
+    `---
+title: "Build Overview"
+section: "Build System"
+order: 1
+---
+
+# Build Overview
+
+Build system content.
+`,
+  );
+
+  writeFile(
+    root,
+    "markdown-pages/docs/react/introduction.mdx",
+    `---
+title: "React Introduction"
+---
+
+# React Introduction
+`,
+  );
+
+  writeFile(
+    root,
+    "public/llms/manual/template.txt",
+    `# Manual LLMs
+
+## Files
+
+- [Complete documentation](https://rescript-lang.org/llms/manual/llm-full.txt)
+- [Abridged documentation](https://rescript-lang.org/llms/manual/llm-small.txt)
+- [Language overview](https://rescript-lang.org/llms/manual/language-overview/llm.txt)
+- [JavaScript interop](https://rescript-lang.org/llms/manual/javascript-interop/llm.txt)
+- [Build system](https://rescript-lang.org/llms/manual/build-system/llm.txt)
+- [Getting started](https://rescript-lang.org/llms/manual/getting-started/llm.txt)
+`,
+  );
+  writeFile(root, "public/llms/manual/llms.txt", "stale manual index");
+  writeFile(root, "public/llms/manual/v10/llms.txt", "stale v10 index");
+  writeFile(root, "public/llms/manual/v10/llm-full.txt", "stale v10 full");
+  writeFile(root, "public/llms/manual/v10/llm-small.txt", "stale v10 small");
+  writeFile(root, "public/llms/manual/v11/llms.txt", "stale v11 index");
+  writeFile(root, "public/llms/manual/v11/llm-full.txt", "stale v11 full");
+  writeFile(root, "public/llms/manual/v11/llm-small.txt", "stale v11 small");
+  writeFile(root, "public/llms/manual/v12/llms.txt", "stale v12 index");
+  writeFile(root, "public/llms/manual/v12/llm-full.txt", "stale v12 full");
+  writeFile(root, "public/llms/manual/v12/llm-small.txt", "stale v12 small");
+  writeFile(
+    root,
+    "public/llms/manual/v12/language-overview/llm.txt",
+    "stale v12 language overview",
+  );
+  writeFile(root, "public/llms/manual/v13/llms.txt", "stale v13 index");
+  writeFile(root, "public/llms/manual/v13/llm-full.txt", "stale v13 full");
+  writeFile(root, "public/llms/manual/v13/llm-small.txt", "stale v13 small");
+  writeFile(
+    root,
+    "public/llms/manual/v13/language-overview/llm.txt",
+    "stale v13 language overview",
+  );
+
+  writeFile(
+    root,
+    "public/llms/manual/template.mdx",
+    `---
+title: "LLMs"
+section: "Overview"
+order: 4
+---
+
+# Manual LLMs
+
+## Files
+
+- [/llms/manual/llm-full.txt](/llms/manual/llm-full.txt)
+- [/llms/manual/llm-small.txt](/llms/manual/llm-small.txt)
+- [/llms/manual/language-overview/llm.txt](/llms/manual/language-overview/llm.txt)
+- [/llms/manual/javascript-interop/llm.txt](/llms/manual/javascript-interop/llm.txt)
+- [/llms/manual/build-system/llm.txt](/llms/manual/build-system/llm.txt)
+- [/llms/manual/getting-started/llm.txt](/llms/manual/getting-started/llm.txt)
+`,
+  );
+
+  writeFile(
+    root,
+    "public/llms/react/template.txt",
+    `# React LLMs
+
+## Files
+
+- [Complete documentation](https://rescript-lang.org/llms/react/llm-full.txt)
+- [Abridged documentation](https://rescript-lang.org/llms/react/llm-small.txt)
+`,
+  );
+
+  writeFile(
+    root,
+    "public/llms/react/template.mdx",
+    `# React LLMs
+
+## Files
+
+- [/llms/react/llm-full.txt](/llms/react/llm-full.txt)
+- [/llms/react/llm-small.txt](/llms/react/llm-small.txt)
+`,
+  );
+  writeFile(
+    root,
+    "public/llms/react/v0.14.2/llms.txt",
+    "stale react versioned index",
+  );
+  writeFile(
+    root,
+    "public/llms/react/v0.14.2/llm-full.txt",
+    "stale react versioned full",
+  );
+  writeFile(
+    root,
+    "public/llms/react/v0.14.2/llm-small.txt",
+    "stale react versioned small",
+  );
+  writeFile(root, "public/llms/react/latest/llms.txt", "stale latest index");
+  writeFile(root, "public/llms/react/latest/llm-full.txt", "stale latest full");
+  writeFile(
+    root,
+    "public/llms/react/latest/llm-small.txt",
+    "stale latest small",
+  );
+
+  return root;
+};
+
+let readFile = (root, filePath) =>
+  fs.readFileSync(path.join(root, filePath), "utf8");
+
+test("generate_llms writes the default manual index at the site root", () => {
+  let root = makeWorkspace();
+
+  child_process.execFileSync(process.execPath, [generatorPath], {
+    cwd: root,
+    stdio: "pipe",
+  });
+
+  let currentLlms = readFile(root, "public/llms.txt");
+  let humanLlmsPage = readFile(root, "markdown-pages/docs/manual/llms.mdx");
+  let languageOverview = readFile(
+    root,
+    "public/llms/manual/language-overview/llm.txt",
+  );
+  let javascriptInterop = readFile(
+    root,
+    "public/llms/manual/javascript-interop/llm.txt",
+  );
+  let buildSystem = readFile(root, "public/llms/manual/build-system/llm.txt");
+  let gettingStarted = readFile(
+    root,
+    "public/llms/manual/getting-started/llm.txt",
+  );
+
+  assert.doesNotMatch(currentLlms, /<VERSION>/);
+  assert.doesNotMatch(currentLlms, /<MANUAL_VERSION_LABEL>/);
+  assert.doesNotMatch(currentLlms, /Current version/i);
+  assert.doesNotMatch(currentLlms, /Version label/i);
+  assert.doesNotMatch(currentLlms, /Default Current Files/i);
+  assert.doesNotMatch(currentLlms, /default entry point/i);
+  assert.doesNotMatch(humanLlmsPage, /This ReScript manual major version/i);
+  assert.doesNotMatch(humanLlmsPage, /Default Current Files/i);
+  assert.doesNotMatch(humanLlmsPage, /default entry point/i);
+  assert.doesNotMatch(humanLlmsPage, /## Versioned Files/);
+  assert.match(
+    currentLlms,
+    /https:\/\/rescript-lang\.org\/llms\/manual\/llm-full\.txt/,
+  );
+  assert.match(
+    currentLlms,
+    /https:\/\/rescript-lang\.org\/llms\/manual\/llm-small\.txt/,
+  );
+  assert.match(
+    currentLlms,
+    /https:\/\/rescript-lang\.org\/llms\/manual\/language-overview\/llm\.txt/,
+  );
+  assert.match(
+    currentLlms,
+    /https:\/\/rescript-lang\.org\/llms\/manual\/javascript-interop\/llm\.txt/,
+  );
+  assert.match(
+    currentLlms,
+    /https:\/\/rescript-lang\.org\/llms\/manual\/build-system\/llm\.txt/,
+  );
+  assert.match(
+    currentLlms,
+    /https:\/\/rescript-lang\.org\/llms\/manual\/getting-started\/llm\.txt/,
+  );
+  assert.doesNotMatch(currentLlms, /\/llms\/manual\/v12\//);
+  assert.doesNotMatch(currentLlms, /\/llms\/manual\/v13\//);
+  assert.doesNotMatch(currentLlms, /\/llms\/manual\/v10\//);
+  assert.doesNotMatch(currentLlms, /\/llms\/manual\/v11\//);
+  assert.doesNotMatch(humanLlmsPage, /\/llms\/manual\/v13\//);
+  assert.doesNotMatch(humanLlmsPage, /\/llms\/manual\/v12\//);
+  assert.match(languageOverview, /# ReScript Language Overview/);
+  assert.match(languageOverview, /Language feature content/);
+  assert.doesNotMatch(languageOverview, /JavaScript interop content/);
+  assert.doesNotMatch(languageOverview, /Manual Introduction/);
+  assert.match(javascriptInterop, /# ReScript JavaScript Interop/);
+  assert.match(javascriptInterop, /JavaScript interop content/);
+  assert.doesNotMatch(javascriptInterop, /Language feature content/);
+  assert.match(buildSystem, /# ReScript Build System/);
+  assert.match(buildSystem, /Build system content/);
+  assert.doesNotMatch(buildSystem, /Manual Introduction/);
+  assert.match(gettingStarted, /# ReScript Getting Started/);
+  assert.match(gettingStarted, /Manual Introduction/);
+  assert.doesNotMatch(gettingStarted, /Manual LLMs/);
+  assert.doesNotMatch(gettingStarted, /Build system content/);
+
+  assert.equal(
+    fs.existsSync(path.join(root, "public/llms/manual/llms.txt")),
+    false,
+  );
+  assert.equal(
+    fs.existsSync(path.join(root, "public/llms/manual/v10/llms.txt")),
+    false,
+  );
+  assert.equal(
+    fs.existsSync(path.join(root, "public/llms/manual/v10/llm-full.txt")),
+    false,
+  );
+  assert.equal(
+    fs.existsSync(path.join(root, "public/llms/manual/v10/llm-small.txt")),
+    false,
+  );
+  assert.equal(
+    fs.existsSync(path.join(root, "public/llms/manual/v11/llms.txt")),
+    false,
+  );
+  assert.equal(
+    fs.existsSync(path.join(root, "public/llms/manual/v11/llm-full.txt")),
+    false,
+  );
+  assert.equal(
+    fs.existsSync(path.join(root, "public/llms/manual/v11/llm-small.txt")),
+    false,
+  );
+  for (let version of ["v12", "v13"]) {
+    assert.equal(
+      fs.existsSync(path.join(root, `public/llms/manual/${version}/llms.txt`)),
+      false,
+    );
+    assert.equal(
+      fs.existsSync(
+        path.join(root, `public/llms/manual/${version}/llm-full.txt`),
+      ),
+      false,
+    );
+    assert.equal(
+      fs.existsSync(
+        path.join(root, `public/llms/manual/${version}/llm-small.txt`),
+      ),
+      false,
+    );
+    assert.equal(
+      fs.existsSync(
+        path.join(
+          root,
+          `public/llms/manual/${version}/language-overview/llm.txt`,
+        ),
+      ),
+      false,
+    );
+  }
+
+  assert.doesNotMatch(currentLlms, /v10\.|v11\.|v12\.|v13\./);
+});
+
+test("generate_llms writes ReScript React files", () => {
+  let root = makeWorkspace();
+
+  child_process.execFileSync(process.execPath, [generatorPath], {
+    cwd: root,
+    stdio: "pipe",
+  });
+
+  let currentLlms = readFile(root, "public/llms/react/llms.txt");
+  let humanLlmsPage = readFile(root, "markdown-pages/docs/react/llms.mdx");
+
+  assert.doesNotMatch(currentLlms, /<VERSION>/);
+  assert.doesNotMatch(currentLlms, /<RESCRIPT_REACT_VERSION>|<REACT_VERSION>/);
+  assert.doesNotMatch(currentLlms, /Current version/i);
+  assert.doesNotMatch(currentLlms, /ReScript React package version/i);
+  assert.doesNotMatch(currentLlms, /React version/i);
+  assert.doesNotMatch(currentLlms, /Default Current Files/i);
+  assert.doesNotMatch(currentLlms, /default entry point/i);
+  assert.doesNotMatch(
+    humanLlmsPage,
+    /Current ReScript React documentation version/i,
+  );
+  assert.doesNotMatch(humanLlmsPage, /Default Current Files/i);
+  assert.doesNotMatch(humanLlmsPage, /default entry point/i);
+  assert.doesNotMatch(humanLlmsPage, /## Versioned Files/);
+  assert.match(
+    currentLlms,
+    /https:\/\/rescript-lang\.org\/llms\/react\/llm-full\.txt/,
+  );
+  assert.match(
+    currentLlms,
+    /https:\/\/rescript-lang\.org\/llms\/react\/llm-small\.txt/,
+  );
+  assert.doesNotMatch(currentLlms, /\/llms\/react\/v0\.14\.2\//);
+  assert.doesNotMatch(humanLlmsPage, /\/llms\/react\/v0\.14\.2\//);
+
+  assert.equal(
+    fs.existsSync(path.join(root, "public/llms/react/latest/llms.txt")),
+    false,
+  );
+  assert.equal(
+    fs.existsSync(path.join(root, "public/llms/react/latest/llm-full.txt")),
+    false,
+  );
+  assert.equal(
+    fs.existsSync(path.join(root, "public/llms/react/latest/llm-small.txt")),
+    false,
+  );
+  assert.equal(
+    fs.existsSync(path.join(root, "public/llms/react/v0.14.2/llms.txt")),
+    false,
+  );
+  assert.equal(
+    fs.existsSync(path.join(root, "public/llms/react/v0.14.2/llm-full.txt")),
+    false,
+  );
+  assert.equal(
+    fs.existsSync(path.join(root, "public/llms/react/v0.14.2/llm-small.txt")),
+    false,
+  );
+});
+
+test("abridged output preserves sections after spaced or missing CodeTab closing tags", () => {
+  let root = makeWorkspace();
+  writeFile(
+    root,
+    "markdown-pages/docs/manual/module-functions.mdx",
+    `---
+title: "Module Functions"
+section: "Advanced Features"
+---
+
+# Module Functions
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+\`\`\`res
+let value = 1
+\`\`\`
+
+\`\`\`js
+let value = 1;
+\`\`\`
+
+</ CodeTab>
+
+## Sharing a type with an external binding
+
+Keep this explanation.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+\`\`\`res
+let other = 2
+\`\`\`
+
+</ CodeTab>
+
+## Shared functions
+
+Keep this explanation too.
+
+<CodeTab labels={["ReScript"]}>
+
+\`\`\`res
+let missingClose = 3
+\`\`\`
+
+## Section after an unclosed tab
+
+This text must not disappear with the next tab.
+
+<CodeTab labels={["ReScript"]}>
+
+\`\`\`res
+let followingTab = 4
+\`\`\`
+
+</CodeTab>
+
+## Final section
+`,
+  );
+  child_process.execFileSync(process.execPath, [generatorPath], {
+    cwd: root,
+    stdio: "pipe",
+  });
+  let small = readFile(root, "public/llms/manual/llm-small.txt");
+  for (let heading of [
+    "Sharing a type with an external binding",
+    "Shared functions",
+    "Section after an unclosed tab",
+    "Final section",
+  ])
+    assert.ok(small.includes(`## ${heading}`), heading);
+  assert.match(small, /Keep this explanation/);
+  assert.match(small, /This text must not disappear/);
+  assert.doesNotMatch(
+    small,
+    /let value = 1|let other = 2|let followingTab = 4/,
+  );
+});

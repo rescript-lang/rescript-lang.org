@@ -1,0 +1,27 @@
+type urlResource = {
+  name: string,
+  keywords: array<string>,
+  description: string,
+  urlHref: string,
+  official: bool,
+}
+
+type npmPackage = {
+  name: string,
+  version: string,
+  keywords: array<string>,
+  description: string,
+  repositoryHref: Null.t<string>,
+  npmHref: string,
+  searchScore: float,
+  maintenanceScore: float,
+}
+
+type props = {
+  packages: array<npmPackage>,
+  unmaintained: array<npmPackage>,
+}
+
+let make: props => React.element
+
+let getStaticProps: unit => promise<props>

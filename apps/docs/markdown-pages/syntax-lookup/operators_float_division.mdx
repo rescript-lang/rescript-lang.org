@@ -1,0 +1,28 @@
+---
+id: "float-division"
+keywords: ["divide", "division", "float"]
+name: "/."
+summary: "This is the `floating point division` operator."
+category: "operators-arithmetic"
+status: "deprecated"
+---
+
+> Deprecated, you can just use `/` for both integers and floats since v12.
+
+This operator performs _floating point_ division.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let result = 3.0 /. 2.5
+```
+
+```js
+let result = 3.0 / 2.5;
+
+export { result };
+```
+
+</CodeTab>
+
+For dividing _integers_ see the `/` operator.

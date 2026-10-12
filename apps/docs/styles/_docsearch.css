@@ -1,0 +1,391 @@
+/* purgecss start ignore */
+.DocSearch-Button {
+  @apply flex justify-center select-none cursor-pointer p-2 px-3;
+}
+
+.DocSearch-Button:hover .DocSearch-Search-Icon {
+  @apply text-fire-30;
+}
+
+.DocSearch-Search-Icon {
+  stroke-width: 2;
+}
+
+.DocSearch-Button .DocSearch-Search-Icon {
+  @apply text-gray-60;
+}
+
+.DocSearch-Button-Placeholder {
+  display: none !important;
+}
+
+.DocSearch-Button-Keys {
+  display: none !important;
+}
+
+.DocSearch-VisuallyHiddenForAccessibility {
+  display: none;
+}
+
+/* Modal */
+/* Body modifier */
+
+.DocSearch--active {
+  /*
+   * We need to mark it as important because some websites override the
+   * `style` attribute (e.g. Docusaurus).
+   */
+  overflow: hidden !important;
+}
+
+/* Container & Modal */
+
+.DocSearch-Container {
+  height: 100vh;
+  width: 100vw;
+  z-index: 200;
+  padding: 10vh;
+  background-color: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(0px);
+  cursor: inherit !important;
+  transition: all 0.05s ease;
+  @apply fixed top-0 left-0 flex flex-col;
+}
+
+.DocSearch--active {
+  .DocSearch-Container {
+    backdrop-filter: blur(3px);
+  }
+}
+
+.DocSearch-Container a {
+  text-decoration: none;
+}
+
+.DocSearch-Link {
+  font: inherit;
+  @apply appearance-none bg-none border-none cursor-pointer m-0 p-0
+    text-red-500;
+}
+
+.DocSearch-Modal {
+  @apply relative min-h-0 mx-auto bg-white w-full flex flex-col shadow-lg
+    rounded-lg;
+  max-width: var(--breakpoint-md, 768px);
+  transform: scale(0.95);
+  opacity: 0;
+  transition: all 0.2s ease;
+}
+
+.DocSearch--active {
+  .DocSearch-Modal {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Modal Searchbox */
+
+.DocSearch-SearchBar {
+  border-bottom: 1px solid;
+  @apply flex items-center pl-4 pr-4 border-gray-20;
+}
+
+.DocSearch-Form {
+  @apply relative w-full m-0 flex items-center h-14;
+}
+
+.DocSearch-Input {
+  @apply h-14 w-full appearance-none focus:outline-hidden bg-transparent
+    border-none flex-1 text-14 px-4;
+}
+
+.DocSearch-Input::placeholder {
+  @apply opacity-100 text-gray-40;
+}
+
+.DocSearch-Input::-webkit-search-cancel-button,
+.DocSearch-Input::-webkit-search-decoration,
+.DocSearch-Input::-webkit-search-results-button,
+.DocSearch-Input::-webkit-search-results-decoration {
+  display: none;
+}
+
+.DocSearch-LoadingIndicator,
+.DocSearch-MagnifierLabel,
+.DocSearch-Reset {
+  @apply m-0 p-0;
+}
+
+.DocSearch-MagnifierLabel,
+.DocSearch-Reset {
+  @apply flex items-center justify-between text-red-500;
+}
+
+.DocSearch-Container--Stalled .DocSearch-MagnifierLabel {
+  @apply hidden;
+}
+
+.DocSearch-LoadingIndicator {
+  @apply hidden;
+}
+
+.DocSearch-Container--Stalled .DocSearch-LoadingIndicator {
+  @apply flex items-center justify-between text-red-500;
+}
+
+.DocSearch-Reset {
+  @apply hidden;
+}
+
+.DocSearch-Clear {
+  @apply hidden;
+}
+
+.DocSearch-LoadingIndicator svg,
+.DocSearch-MagnifierLabel svg {
+  @apply w-4 h-4;
+}
+
+.DocSearch-Cancel {
+  display: none !important;
+}
+
+/* Modal Dropdown */
+
+.DocSearch-Dropdown {
+  @apply pl-4 pr-4 overflow-y-auto;
+}
+
+.DocSearch-Dropdown ul {
+  @apply list-none m-0 p-0;
+}
+
+.DocSearch-Title {
+  @apply text-gray-40 text-18 pb-2 self-center;
+}
+
+.DocSearch-Logo a {
+  @apply flex items-center;
+}
+.DocSearch-Logo .DocSearch-Label {
+  @apply text-gray-40 text-11;
+}
+
+.DocSearch-Logo svg {
+  color: #5468ff;
+  @apply ml-1;
+}
+
+/* Hit */
+
+.DocSearch-Hits:last-of-type {
+  @apply mb-2;
+}
+
+.DocSearch-Hits mark {
+  @apply text-red-500 bg-transparent;
+}
+
+.DocSearch-HitsFooter {
+  @apply hidden;
+}
+
+.DocSearch-Hit {
+  /* border-radius: 4px; */
+  @apply relative flex rounded-s border-b border-gray-20;
+}
+
+.DocSearch-Hit a {
+  border-radius: 4px;
+  @apply block w-full;
+}
+
+.DocSearch-Hit-source {
+  @apply top-0 sticky z-100 pt-3 pb-3 text-16 font-semibold bg-white
+    text-gray-80;
+}
+
+.DocSearch-Hit--deleting {
+  opacity: 0;
+  transition: all 250ms linear;
+}
+
+.DocSearch-Hit--favoriting {
+  @apply scale-0 origin-center;
+}
+
+.DocSearch-Hit-Tree {
+  @apply text-gray-40 opacity-50 stroke-2 w-5 h-7;
+}
+
+.DocSearch-Hit[aria-selected="true"] a {
+  @apply bg-gray-20;
+}
+
+.DocSearch-Hit[aria-selected="true"] mark {
+  text-decoration: none;
+}
+
+.DocSearch-Hit-Container {
+  @apply flex items-center flex-row px-4 pb-4 pt-1 text-gray-40;
+}
+
+.DocSearch-Hit-icon {
+  /* display: none; */
+  @apply w-5 h-5 stroke-1 text-gray-40;
+}
+
+.DocSearch-Hit-action {
+  @apply flex items-center stroke-1;
+}
+
+.DocSearch-Hit-action svg {
+  @apply block w-5 h-5;
+}
+
+.DocSearch-Hit-action + .DocSearch-Hit-action {
+  margin-left: 6px;
+}
+
+.DocSearch-Hit-action-button {
+  @apply appearance-none bg-transparent border-none cursor-pointer;
+}
+
+svg.DocSearch-Hit-Select-Icon {
+  display: none;
+}
+
+.DocSearch-Hit[aria-selected="true"] .DocSearch-Hit-Select-Icon {
+  display: block;
+}
+
+.DocSearch-Hit-action-button:hover path,
+.DocSearch-Hit-action-button:focus path {
+  @apply text-fire-50;
+}
+
+.DocSearch-Hit-content-wrapper {
+  @apply flex flex-auto flex-col justify-center relative font-medium pl-4 pr-4
+    overflow-visible max-w-11/12!;
+}
+
+.DocSearch-Hit-title {
+  @apply text-14 text-gray-60;
+}
+
+.DocSearch-Hit-subtitle {
+  @apply text-12 text-gray-40;
+}
+
+.DocSearch-Hit-path {
+  @apply text-14 text-gray-60;
+}
+
+.DocSearch-Hit-path code {
+  @apply bg-gray-10 text-black rounded-sm px-1 py-0.5 text-12 font-mono;
+}
+
+.DocSearch-Hit[aria-selected="true"] .DocSearch-Hit-title,
+.DocSearch-Hit[aria-selected="true"] mark,
+.DocSearch-Hit[aria-selected="true"] .DocSearch-Hit-text,
+.DocSearch-Hit[aria-selected="true"] .DocSearch-Hit-path,
+.DocSearch-Hit[aria-selected="true"] .DocSearch-Hit-icon,
+.DocSearch-Hit[aria-selected="true"] .DocSearch-Hit-action,
+.DocSearch-Hit[aria-selected="true"] .DocSearch-Hit-Tree {
+  color: none;
+}
+
+/* No Results - Start Screen - Error Screen */
+
+.DocSearch-NoResults,
+.DocSearch-StartScreen,
+.DocSearch-ErrorScreen {
+  @apply flex flex-col pt-5;
+}
+
+.DocSearch-Screen-Icon {
+  @apply pb-3 text-gray-40 self-center;
+}
+
+.DocSearch-Help {
+  @apply text-gray-40 pb-2 text-center;
+}
+
+.DocSearch-Prefill {
+  border-radius: 4px;
+  @apply appearance-none bg-transparent border-none cursor-pointer p-4
+    text-gray-40 text-14 font-medium w-full text-left;
+}
+
+.DocSearch-Prefill:hover,
+.DocSearch-Prefill:focus {
+  outline: none;
+  text-decoration: none;
+  @apply bg-gray-20;
+}
+
+/* Modal Footer */
+
+.DocSearch-Footer {
+  border-top: 1px solid;
+  @apply flex flex-shrink-0 items-center justify-between relative
+    select-none w-full z-100 px-4 py-3 border-gray-20;
+}
+
+.DocSearch-Commands {
+  @apply flex items-center gap-3 list-none m-0 p-0;
+}
+
+.DocSearch-Commands li {
+  @apply flex items-center gap-1.5 text-12 text-gray-40;
+}
+
+.DocSearch-Commands-Key {
+  @apply inline-flex items-center justify-center w-5 h-5 rounded
+    border border-gray-20 bg-gray-5 text-11 text-gray-60 font-medium;
+}
+
+/* Swap "to close" / "to clear" based on whether the input has a query.
+   :placeholder-shown is true when the input is empty, false when it has text. */
+.DocSearch-Commands li:last-child .DocSearch-Label {
+  font-size: 0;
+}
+
+.DocSearch-Commands li:last-child .DocSearch-Label::after {
+  content: "to close";
+  font-size: 0.75rem;
+}
+
+.DocSearch-Modal:has(.DocSearch-Input:not(:placeholder-shown))
+  .DocSearch-Commands
+  li:last-child
+  .DocSearch-Label::after {
+  content: "to clear";
+}
+
+/* Responsive */
+@media (max-width: 750px) {
+  .DocSearch-Dropdown {
+    height: 100%;
+  }
+
+  .DocSearch-Container {
+    padding: 2vh;
+  }
+
+  /* .DocSearch-Hit-content-wrapper { */
+  /*   display: flex; */
+  /*   position: relative; */
+  /*   width: 80%; */
+  /* } */
+
+  .DocSearch-Modal {
+    max-width: 95%;
+  }
+
+  .DocSearch-Hit-Tree {
+    display: none;
+  }
+}
+/* purgecss end ignore */

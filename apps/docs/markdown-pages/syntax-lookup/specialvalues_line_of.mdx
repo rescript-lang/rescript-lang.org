@@ -1,0 +1,38 @@
+---
+id: "line-of"
+keywords: ["line of"]
+name: "__LINE_OF__"
+summary: "This is the `__LINE_OF__` special value."
+category: "specialvalues"
+---
+
+`__LINE_OF__(expression)` returns a tuple consisting of `(line, expression)`, where line is the line number at which the expression you pass as a parameter here appears in the file.
+
+**Note**: `expression` refers to any expression, it does not need to be a function.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res example
+let f = () => None
+let (line, f') = __LINE_OF__(f)
+
+line->Console.log
+f'->Console.log
+
+```
+
+```js
+function f() {}
+
+console.log(2);
+
+console.log(f);
+
+let line = 2;
+
+let f$p = f;
+
+export { f, line, f$p };
+```
+
+</CodeTab>

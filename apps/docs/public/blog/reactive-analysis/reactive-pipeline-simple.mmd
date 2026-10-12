@@ -1,0 +1,24 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#eef6ff', 'primaryTextColor': '#102a43', 'primaryBorderColor': '#4a90d9', 'lineColor': '#486581', 'secondaryColor': '#fff1f1', 'tertiaryColor': '#fff5e6'}}}%%
+flowchart LR
+    sources["Sources"]
+    flatmap["FlatMap"]
+    edges["Edges"]
+    roots["Roots"]
+    fixpoint["Fixpoint"]
+    classify["Classify"]
+    issues["Issues"]
+
+    sources --> flatmap
+    flatmap -- "refs, decls" --> edges
+    flatmap -- "refs, decls, ann." --> roots
+    edges --> fixpoint
+    roots --> fixpoint
+    flatmap -. "decls" .-> classify
+    fixpoint -- "live" --> classify
+    classify -- "dead" --> issues
+
+    classDef coreBox fill:#eef6ff,stroke:#4a90d9,stroke-width:2px,color:#102a43
+    classDef solveBox fill:#fff1f1,stroke:#cc6666,stroke-width:2px,color:#102a43
+
+    class sources,flatmap,edges,roots coreBox
+    class fixpoint,classify,issues solveBox

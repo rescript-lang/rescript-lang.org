@@ -1,0 +1,319 @@
+---
+author: rescript-team
+date: "2023-04-17"
+title: Better interop with customizable variants
+badge: roadmap
+description: |
+  A tour of new capabilities coming in ReScript v11
+---
+
+ReScript v11 is around the corner, and it comes packed with new features that will improve interop with JavaScript/TypeScript. Recently we've made some changes to the runtime representation of variants that'll allow you to use variants for a large number of new interop scenarios, zero cost. This is important, because variants are _the_ feature of ReScript, enabling great data modeling, pattern matching and more.
+
+- **Customizable runtime representation.** We're making the runtime representation of variants customizable. This will allow you to cleanly map variants to external data and APIs in many more cases than before.
+- **Zero cost bindings to discriminated unions.** Variants with inline records will map cleanly to JavaScript/TypeScript [discriminated unions](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions).
+- **Unboxed (untagged) variants.** We also introduce untagged variants - variants where the underlying runtime representation can be a primitive, without a specific discriminator. This will let you cleanly map to things like heterogenous array items, nullable values, and more.
+
+Let's dive into the details.
+
+## Tagged variants
+
+Variants with payloads have always been represented as a tagged union at runtime. Here's an example:
+
+```rescript
+type entity = User({name: string}) | Group({workingName: string})
+
+let user = User({name: "Hello"})
+```
+
+This is represented as:
+
+```javascript
+var user = {
+  TAG: /* User */ 0,
+  name: "Hello",
+};
+```
+
+However, this has been problematic when binding to external data because there has been no way to customize the discriminator (the `TAG` property) or how its value is represented for each variant case (`0` representing `User` here). This means that unless your external data is modeled the exact same way as above, which is unlikely, you'd be forced to convert to the structure ReScript expects at runtime.
+
+To illustrate this, let's imagine we're binding to an external union that looks like this in TypeScript:
+
+```typescript
+type LoadingState =
+  | { state: "loading"; ready: boolean }
+  | { state: "error"; message: string }
+  | { state: "done"; data: Data };
+```
+
+Currently, there's no good way to use a ReScript variant to represent this type without resorting to manual and error-prone runtime conversion. However, with the new functionality, binding to the above with no additional runtime cost is easy:
+
+```rescript
+@tag("state")
+type loadingState = | @as("loading") Loading({ready: bool}) | @as("error") Error({message: string}) | @as("done") Done({data: data})
+
+let state = Error({message: "Something went wrong!"})
+```
+
+This will compile to:
+
+```javascript
+var state = {
+  state: "error",
+  message: "Something went wrong!",
+};
+```
+
+Let's break down what we've done to make this work:
+
+- The `@tag` attribute lets you customize the discriminator (default: `TAG`). We're setting that to `"state"` so we map to what the external data looks like.
+- Each variant case has an `@as` attribute. That controls what each variant case is discriminated on (default: the variant case name as string). We're setting all of the cases to their lowercase equivalent, because that's what the external data looks like.
+
+The end result is clean and zero cost bindings to the external data, in a way that previously would require manual runtime conversion.
+
+Now, let's look at a few more real-world examples.
+
+### Binding to TypeScript enums
+
+```typescript
+// direction.ts
+/** Direction of the action. */
+enum Direction {
+  /** The direction is up. */
+  Up = "UP",
+
+  /** The direction is down. */
+  Down = "DOWN",
+
+  /** The direction is left. */
+  Left = "LEFT",
+
+  /** The direction is right. */
+  Right = "RIGHT",
+}
+
+export const myDirection = Direction.Up;
+```
+
+Previously, you'd be forced to use a polymorphic variant for this if you wanted clean, zero-cost interop:
+
+```rescript
+type direction = [#UP | #DOWN | #LEFT | #RIGHT]
+@module("./direction.js") external myDirection: direction = "myDirection"
+```
+
+Notice a few things:
+
+- We're forced to use the names of the enum payload, meaning it won't fully map to what you'd use in TypeScript
+- There's no way to bring over the documentation strings, because polymorphic variants are structural, so there's no one source definition for them to look for docstrings on. This is true _even_ if you annotate with your explicitly written out polymorphic variant definition.
+
+With the new runtime representation, this is how you'd bind to the above enum instead:
+
+```rescript
+/** Direction of the action. */
+type direction =
+  | /** The direction is up. */
+  @as("UP")
+  Up
+
+  | /** The direction is down. */
+  @as("DOWN")
+  Down
+
+  | /** The direction is left. */
+  @as("LEFT")
+  Left
+
+  | /** The direction is right. */
+  @as("RIGHT")
+  Right
+
+@module("./direction.js") external myDirection: direction = "myDirection"
+```
+
+Now, this maps 100% to the TypeScript code, including letting us bring over the documentation strings so we get a nice editor experience.
+
+### String literals
+
+The same logic is easily applied to string literals from TypeScript, only here the benefit is even larger, because string literals have the same limitations in TypeScript that polymorphic variants have in ReScript.
+
+```typescript
+// direction.ts
+type direction = "UP" | "DOWN" | "LEFT" | "RIGHT";
+```
+
+There's no way to attach documentation strings to string literals in TypeScript, and you only get the actual value to interact with.
+
+With the new customizable variants, you could bind to the above string literal type easily, but add documentation, and change the name you interact with in ReScript. And there's no runtime cost.
+
+### Untagged variants
+
+We've also implemented support for _untagged variants_. This will let you use variants to represent values that are primitives and literals in a way that hasn't been possible before.
+
+We'll explain what this is and why it's useful by showing a number of real world examples. Let's start with a simple one on how we can now represent a heterogenous array.
+
+```rescript
+@unboxed type listItemValue = String(string) | Boolean(bool) | Number(float)
+
+let myArray = [String("Hello"), Boolean(true), Boolean(false), Number(13.37)]
+```
+
+Here, each value will be _unboxed_ at runtime. That means that the variant payload will be all that's left, the variant case name wrapping the payload itself will be stripped out and the payload will be all that remains.
+
+It, therefore, compiles to this JS:
+
+```javascript
+var myArray = ["hello", true, false, 13.37];
+```
+
+This was previously possible to do, leveraging a few tricks, when you didn't need to potentially read the values from the array again in ReScript. But, if you wanted to read back the values, you'd have to do a number of manual steps.
+
+In the above example, reaching back into the values is as simple as pattern matching on them.
+
+Let's look at a few more examples of what untagged variants enable.
+
+### Pattern matching on nullable values
+
+Previously, any value that might be `null` would need to be explicitly converted to an option by using for example `Null.toOption` before you could use pattern matching on it. Here's a typical example of how that could look:
+
+```rescript
+type userAge = {ageNum: Null.t<int>}
+
+type rec user = {
+  name: string,
+  age: Null.t<userAge>,
+  bestFriend: Null.t<user>,
+}
+
+let getBestFriendsAge = user =>
+  switch user.bestFriend->Null.toOption {
+  | Some({age}) =>
+    switch age->Null.toOption {
+    | None => None
+    | Some({ageNum}) => ageNum->Null.toOption
+    }
+  | None => None
+  }
+```
+
+As you can see, you need to convert each level of nullables explicitly, which makes it hard to fully utilize pattern matching. With the new unboxed variant representation, we'll instead be able to do this:
+
+```rescript
+// The type definition below is inlined here to examplify, but this definition will live in [Core](https://github.com/rescript-lang/rescript-core) and be easily accessible
+module Null = {
+  @unboxed type t<'a> = Present('a) | @as(null) Null
+}
+
+type userAge = {ageNum: Null.t<int>}
+
+type rec user = {
+  name: string,
+  age: Null.t<userAge>,
+  bestFriend: Null.t<user>,
+}
+
+let getBestFriendsAge = user =>
+  switch user.bestFriend {
+  | Present({age: Present({ageNum: Present(ageNum)})}) => Some(ageNum)
+  | _ => None
+  }
+```
+
+> Notice how `@as` now allows us to say that an unboxed variant case should map to a specific underlying _primitive_. `Present` has a type variable, so it can hold any type. And since it's an unboxed type, only the payloads `'a` or `null` will be kept at runtime. That's where the magic comes from.
+
+We can now utilize pattern matching fully without needing to do any conversion.
+
+This has a few implications:
+
+- Dealing with external data, that is often nullable and seldom guaranteed to map cleanly to `option` without needing conversion, becomes much easier and zero cost.
+- Special handling like [@return(nullable)](../syntax-lookup/decorator_return.mdx) becomes redundant. This is good also because the current functionality does not work in all cases. The new functionality will work anywhere.
+
+### Decoding and encoding JSON idiomatically
+
+With unboxed variants, we have everything we need to define a JSON type:
+
+```rescript
+@unboxed
+type rec json =
+  | @as(false) False
+  | @as(true) True
+  | @as(null) Null
+  | String(string)
+  | Number(float)
+  | Object(Js.Dict.t<json>)
+  | Array(array<json>)
+
+let myValidJsonValue = Array([String("Hi"), Number(123.)])
+```
+
+Here's an example of how you could write your own JSON decoders easily using the above, leveraging pattern matching:
+
+```rescript
+@unboxed
+type rec json =
+  | @as(false) False
+  | @as(true) True
+  | @as(null) Null
+  | String(string)
+  | Number(float)
+  | Object(Js.Dict.t<json>)
+  | Array(array<json>)
+
+type rec user = {
+  name: string,
+  age: int,
+  bestFriend: option<user>,
+}
+
+let rec decodeUser = json =>
+  switch json {
+  | Object(userDict) =>
+    switch (
+      userDict->Dict.get("name"),
+      userDict->Dict.get("age"),
+      userDict->Dict.get("bestFriend"),
+    ) {
+    | (Some(String(name)), Some(Number(age)), Some(maybeBestFriend)) =>
+      Some({
+        name,
+        age: age->Float.toInt,
+        bestFriend: maybeBestFriend->decodeUser,
+      })
+    | _ => None
+    }
+  | _ => None
+  }
+
+let decodeUsers = json =>
+  switch json {
+  | Array(array) => array->Array.map(decodeUser)->Array.keepSome
+  | _ => []
+  }
+```
+
+Encoding that same structure back into JSON is also easy:
+
+```rescript
+let rec userToJson = user => Object(
+  Dict.fromArray([
+    ("name", String(user.name)),
+    ("age", Number(user.age->Int.toFloat)),
+    (
+      "bestFriend",
+      switch user.bestFriend {
+      | None => Null
+      | Some(friend) => userToJson(friend)
+      },
+    ),
+  ]),
+)
+
+let usersToJson = users => Array(users->Array.map(userToJson))
+```
+
+This can be extrapolated to many more cases.
+
+## Wrapping up
+
+We hope you'll enjoy using these new capabilities. Some of them are a big leap forward for ReScript's interop with JavaScript and TypeScript, and we hope they will simplify many scenarios and open up a few new doors.
+
+And last but not least, you can try ReScript v11 today by installing `npm i rescript@next`.
