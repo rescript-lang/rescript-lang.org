@@ -16,7 +16,10 @@ let expectSelectedSuggestionInView = (~scrolled, elements) => {
 
 describe("Warning flag suggestions", () => {
   it("scrolls the selected suggestion into view in both keyboard directions", () => {
+    viewport(1280, 720)
     visit("/try")
+    get(".cm-editor")->should("be.visible")->ignore
+    get("pre.whitespace-pre-wrap")->shouldContainText("react/jsx-runtime")->ignore
     containsIn("button", "Settings")->click->ignore
     let input = "input[placeholder='Flags']"
     get(input)->typeText("+")->ignore
