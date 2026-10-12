@@ -1,27 +1,5 @@
-// Same design as in the official nextjs blog starter template
-// https://github.com/zeit/next.js/blob/canary/examples/blog-starter/lib/api.js
-
-/*
-    BlogApi gives access to the data within the markdown-pages/blog directory.
-
-    The markdown-pages/blog content is treated as a flat directory. There is a
-    set of whitelisted directories (for each category) to help declutter
-    huge file masses.
-
-    Every filename within markdown-pages/blog must be unique, even when nested in
-    different directories. The filename will be sluggified, that means that e.g.
-    for the filepath "markdown-pages/blog/compiler/2021-03-12-my-post.mdx", slug = "my-post"
-
-    The reason for the flat hierarchy is that we want to keep a flat URL
-    hierarchy with `https://rescript-lang.org/blog/[some-slug]`, without carrying
-    over the full subdirectory hierarchy. This allows us to restructure
-    internally more easily without breaking permalinks.
-
-    This module offers functionality to query all slug information, and even
-    gives access to fully parsed blog posts with frontmatter data etc.
-
-    See `pages/blog.re` for more context on why we need this API.
- */
+// Blog paths are relative to markdown-pages/blog. Article routes preserve the
+// filename and any archived/ prefix, removing only the .mdx extension.
 
 type post = {
   path: string,
@@ -30,7 +8,7 @@ type post = {
 }
 
 let blogPathToSlug = path => {
-  path->String.replaceRegExp(/^(archive\/)?\d\d\d\d-\d\d-\d\d-(.+)\.mdx$/, "$2")
+  path->String.replaceRegExp(/\.mdx$/, "")
 }
 
 let mdxFiles = dir => {
@@ -68,7 +46,8 @@ let getAllPosts = () => {
   })
 
   Array.concat(nonArchivedPosts, archivedPosts)->Array.toSorted((a, b) =>
-    String.compare(Node.Path.basename(b.path), Node.Path.basename(a.path))
+    b.frontmatter.date->DateStr.toUTCDate->Date.getTime -.
+      a.frontmatter.date->DateStr.toUTCDate->Date.getTime
   )
 }
 
@@ -116,17 +95,6 @@ let getArchivedPosts = () => {
 }
 
 module RssFeed = {
-  // Module inspired by
-  // https://gist.github.com/fredrikbergqvist/36704828353ebf5379a5c08c7583fe2d
-
-  // Example reference example for RSS 2.0:
-  // http://static.userland.com/gems/backend/rssTwoExample2.xml
-
-  // TODO:
-  // In case the pubDate formatting doesn't work with toUTCString,
-  // we can port something like this:
-  // https://github.com/tjconcept/js-rfc822-date
-
   type item = {
     title: string,
     href: string,
@@ -134,19 +102,11 @@ module RssFeed = {
     pubDate: Date.t,
   }
 
-  // TODO: This is yet again a dirty approach to prevent UTC to substract too many
-  //       hours of my local timezone so it does end up on another day, so we set the hours
-  //       to 15 o clock. We need to reconsider the way we parse blog article dates,
-  //       since the dates should always be parsed from a single timezone perspective
-  let dateToUTCString = date => {
-    date->Date.setHours(15)->ignore
-    date->Date.toUTCString
-  }
-
   // Retrieves the most recent [max] blog post feed items
   let getLatest = (~max=10, ~baseUrl="https://rescript-lang.org", ()): array<item> => {
     let items =
       getAllPosts()
+      ->Array.slice(~start=0, ~end=max)
       ->Array.map(post => {
         let fm = post.frontmatter
         let description = fm.description->Nullable.getOr("")
@@ -154,10 +114,9 @@ module RssFeed = {
           title: fm.title,
           href: baseUrl ++ "/blog/" ++ blogPathToSlug(post.path),
           description,
-          pubDate: DateStr.toDate(fm.date),
+          pubDate: DateStr.toUTCDate(fm.date),
         }
       })
-      ->Array.slice(~start=0, ~end=max)
     items
   }
 
@@ -165,7 +124,7 @@ module RssFeed = {
     let latestPubDateElement =
       items[0]
       ->Option.map(item => {
-        let latestPubDateStr = item.pubDate->dateToUTCString
+        let latestPubDateStr = item.pubDate->Date.toUTCString
         `<lastBuildDate>${latestPubDateStr}</lastBuildDate>`
       })
       ->Option.getOr("")
@@ -181,8 +140,7 @@ module RssFeed = {
           </description>`
         }
 
-        // TODO: convert pubdate to string
-        let dateStr = pubDate->dateToUTCString
+        let dateStr = pubDate->Date.toUTCString
         `
         <item>
           <title> <![CDATA[${title}]]></title>
@@ -204,7 +162,7 @@ module RssFeed = {
       ${latestPubDateElement}
 ${itemsStr}
     </channel>
-  </rss>` //rescript-lang.org</link>
+  </rss>`
 
     ret
   }
