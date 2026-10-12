@@ -66,9 +66,9 @@ use the installed `rescript` package, not a separate compiler installation.
 - Prefer small functions with a single purpose.
 - Use a functional approach but don't make it too hardcore or difficult to understand.
 - Keep files and modules small and focused.
-- `.res` files must always be capitalized (PascalCase), matching ReScript module conventions.
+- Use PascalCase for new `.res` modules. Follow the existing filenames for framework entrypoints such as `root.res` and `routes.res`, and for script entrypoints.
 - Use the pipe-first operator (`->`) for chaining, which is idiomatic ReScript.
-- Resolve all warnings and treat them as errors. The project has `"error": "+8"` in `rescript.json`.
+- Resolve all warnings before committing. `yarn build:res` applies the repository's strict warning checks.
 - Never directly edit generated `.jsx` files; edit the corresponding `.res` file and rebuild. Most compiler output is ignored by Git; the guide's `apps/guide/app/root.jsx` and `apps/guide/app/routes.jsx` are tracked and must be regenerated with their sources.
 
 ## ReScript Rules
@@ -83,7 +83,7 @@ use the installed `rescript` package, not a separate compiler installation.
 - Reference the abridged documentation for clarification on how ReScript's APIs work: https://rescript-lang.org/llms/manual/llm-small.txt
 - If you need more information you can access the full documentation, but do this only when needed as the docs are very large: https://rescript-lang.org/llms/manual/llm-full.txt
 - Never use `%raw` unless you are specifically asked to
-- Never use `Object.magic`
+- Never use `Obj.magic`
 - Don't add type annotations unless necessary for clarity or to resolve an error. ReScript's type inference is powerful, and often explicit annotations are not needed.
 
 ### ReScript Dependencies
@@ -96,13 +96,18 @@ use the installed `rescript` package, not a separate compiler installation.
 The project uses several patterns for JavaScript interop. Follow the existing conventions:
 
 - **`@module` externals** for binding to npm packages (see `apps/docs/src/bindings/` and `packages/shared/src/` for examples):
+
   ```
-  @module("react-router") external useNavigate: unit => string => unit = "useNavigate"
+  type navigateOptions = {replace?: bool}
+  type navigate = (string, ~options: navigateOptions=?) => unit
+
+  @module("react-router") external useNavigate: unit => navigate = "useNavigate"
   ```
+
 - **`@module` with `@react.component`** for binding to external React components:
   ```
   @module("react-router") @react.component
-  external make: (~children: React.element) => React.element = "Outlet"
+  external make: unit => React.element = "Outlet"
   ```
 - `%raw` and `%%raw` embed JavaScript; use them only when specifically requested.
 - **`@scope`** for binding to object properties like `process.env`.
@@ -115,12 +120,12 @@ The project uses several patterns for JavaScript interop. Follow the existing co
 - The site uses hybrid rendering: most routes are pre-rendered during the build, while `/try` is server-rendered by Cloudflare Pages Functions at runtime.
 - Loaders for pre-rendered routes can access the filesystem during the build. Runtime SSR loaders, including shared loader code reachable from `/try`, execute in Cloudflare and must not depend on Node-only filesystem APIs or other build-time-only operations.
 - Docs route modules live in `apps/docs/app/routes/`; the guide's route modules live in `apps/guide/app/`. Routes can export a `loader`, `links`, and a `default` component as needed.
-- Route modules **require** both a `.res` and a `.resi` (interface) file for Vite HMR to work.
-- Only a single React component can be exposed from a module's JS output.
+- Give route modules a `.resi` interface that exposes their route exports and keeps helper components private.
+- Export a route's page component as `default`. Reusable component modules may export multiple components, as `Markdown.resi` does.
 
 ### Route Module Pattern
 
-Every route follows this pattern:
+Example of a route with a loader. Routes without loader data can omit the loader and its type:
 
 ```rescript
 // SomeRoute.res
@@ -197,7 +202,7 @@ let default: unit => React.element
   ```
 
 - Components requiring React Router context must be wrapped in `<MemoryRouter>`.
-- Do not use `<BrowserRouter>` in tests.
+- Do not use `<BrowserRouter>` in component tests. End-to-end tests exercise the app's normal routing and browser history.
 - Run `yarn build:res` first so the tests use current compiler output. Run `yarn vitest --browser.headless --run` for docs tests or `yarn vitest:guide --browser.headless --run` for guide tests. Run `yarn ci:test` to check both suites.
 - Do not update snapshots without asking for confirmation. Approved docs visual baseline changes use the `Update Visual Regression Screenshots` GitHub Actions workflow against the feature branch; pull and review the generated commit. Local screenshot updates are blocked by the Vitest configuration.
 
@@ -229,4 +234,4 @@ let default: unit => React.element
 - Do **not** modify generated `.jsx` / `.mjs` files directly — they are ReScript compiler output.
 - Do **not** use `@genType` — the project does not use it.
 - The `apps/docs/src/ffi/` directory is legacy; prefer bindings in `apps/docs/src/bindings/` or `packages/shared/src/` for new JS interop.
-- When editing route files, always update both the `.res` and `.resi` files.
+- Keep route `.resi` files in sync when public exports or their types change. Implementation-only edits need only change the `.res` file.
