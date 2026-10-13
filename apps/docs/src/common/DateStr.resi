@@ -3,5 +3,4 @@ type t
 
 external fromString: string => t = "%identity"
 
-let fromDate: Date.t => t
 let toDate: t => Date.t

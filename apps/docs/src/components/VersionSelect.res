@@ -12,12 +12,6 @@ let olderVersions = [
   {label: "v6.0 - v8.1", link: "https://v11.rescript-lang.org/docs/manual/v8.0.0/introduction"},
 ]
 
-module SectionHeader = {
-  @react.component
-  let make = (~value) =>
-    <option disabled=true key=value className="py-4"> {React.string(value)} </option>
-}
-
 // This is the current version
 let version = "v12"
 

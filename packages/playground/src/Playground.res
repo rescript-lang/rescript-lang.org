@@ -1650,13 +1650,6 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   let (searchParams, _) = ReactRouter.useSearchParams()
   let containerRef = React.useRef(Nullable.null)
   let editorRef: React.ref<option<CodeMirror.editorInstance>> = React.useRef(None)
-  let (_, setScrollLock) = ScrollLockContext.useScrollLock()
-
-  React.useEffect(() => {
-    setScrollLock(_ => true)
-    None
-  }, [])
-
   let versions =
     versions
     ->Array.filterMap(v => v->Semver.parse)

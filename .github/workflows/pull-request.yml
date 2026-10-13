@@ -37,6 +37,10 @@ jobs:
         run: yarn
       - name: Test examples and hrefs
         run: yarn test
+      - name: Check unused ReScript values and exports
+        run: yarn check:dead-code
+      - name: Test dead-code diagnostics
+        run: node --test scripts/__tests__/check-dead-code.test.mjs
   # Confirms that Wrangler can start the Docs Pages and Guide local dev servers.
   # This startup check intentionally excludes route-level application and Pages Function behavior.
   Wrangler:

@@ -59,22 +59,6 @@ module Link = {
     @as("aria-label") ~ariaLabel: string=?,
   ) => React.element = "Link"
 
-  module Path = {
-    type to = {hash?: string, pathname?: Path.t, search?: string}
-
-    @module("react-router") @react.component
-    external make: (
-      ~onClick: ReactEvent.Mouse.t => unit=?,
-      ~children: React.element=?,
-      ~className: string=?,
-      ~target: string=?,
-      ~id: string=?,
-      ~to: to,
-      ~preventScrollReset: bool=?,
-      ~prefetch: prefetch=?,
-    ) => React.element = "Link"
-  }
-
   module String = {
     @module("react-router") @react.component
     external make: (

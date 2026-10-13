@@ -21,18 +21,6 @@ module Color = {
     | Magenta // fg=35 bg=45
     | Cyan // fg=36 bg=46
     | White // fg=37 bg=47
-
-  let toString = (c: t) =>
-    switch c {
-    | Black => "black"
-    | Red => "red"
-    | Green => "green"
-    | Yellow => "yellow"
-    | Blue => "blue"
-    | Magenta => "magenta"
-    | Cyan => "cyan"
-    | White => "white"
-    }
 }
 
 module Sgr = {
@@ -42,14 +30,6 @@ module Sgr = {
     | Fg(Color.t) // 30 - 37
     | Bg(Color.t) // 40 - 47
     | Unknown(string)
-
-  let paramToString = s =>
-    switch s {
-    | Bold => "bold"
-    | Fg(c) => "Fg(" ++ (Color.toString(c) ++ ")")
-    | Bg(c) => "Bg(" ++ (Color.toString(c) ++ ")")
-    | Unknown(s) => "Unknown: " ++ s
-    }
 }
 
 let esc = `\u001B`
@@ -79,32 +59,6 @@ module Location = {
     } else {
       String.get(p.input, p.pos)->Option.getUnsafe
     }
-
-  let untilNextEsc = p => {
-    let ret = ref(None)
-    while !isDone(p) && ret.contents == None {
-      let c = next(p)
-
-      if c === esc {
-        ret := Some()
-      }
-    }
-    ret.contents
-  }
-
-  // Look is useful to look ahead without reading the character
-  // from the stream
-  let look = (p, num) => {
-    let length = String.length(p.input)
-
-    let pos = if p.pos + num >= length {
-      length - 1
-    } else {
-      p.pos + num
-    }
-
-    String.get(p.input, pos)->Option.getUnsafe
-  }
 }
 
 module Lexer = {
@@ -237,16 +191,6 @@ let parse = (input: string) => {
   Lexer.lex(p)
 }
 
-let onlyText = (tokens: array<Lexer.token>) => {
-  open Lexer
-  Array.filter(tokens, x =>
-    switch x {
-    | Text(_) => true
-    | _ => false
-    }
-  )
-}
-
 module SgrString = {
   // A sgr encoded element
   open Lexer
@@ -317,37 +261,10 @@ module SgrString = {
 
     ret
   }
-
-  let toString = (e: t): string => {
-    let content = {
-      open String
-      replaceRegExp(e.content, /\n/g, "\\n")->replace(esc, "")
-    }
-    let params = Array.map(e.params, Sgr.paramToString)->Array.join(", ")
-
-    `SgrString params: ${params} | content: ${content}`
-  }
 }
 
 module Printer = {
   open Lexer
-
-  let tokenString = (t: token): string =>
-    switch t {
-    | Text({content, loc: {startPos, endPos}}) =>
-      let content = {
-        open String
-        replaceRegExp(content, /\n/g, "\\n")->replace(esc, "")
-      }
-      `Text "${content}" (${startPos->Int.toString} to ${endPos->Int.toString})`
-    | Sgr({params, raw, loc: {startPos, endPos}}) =>
-      let raw = String.replace(raw, esc, "")
-      let params = Array.map(params, Sgr.paramToString)->Array.join(", ")
-      `Sgr "${raw}" -> ${params} (${startPos->Int.toString} to ${endPos->Int.toString})`
-    | ClearSgr({loc: {startPos, endPos}, raw}) =>
-      let raw = String.replace(raw, esc, "")
-      `Clear Sgr "${raw}" (${startPos->Int.toString} to ${endPos->Int.toString})`
-    }
 
   let plainString = (tokens: array<token>): string =>
     Array.map(tokens, x =>
