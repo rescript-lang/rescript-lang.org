@@ -92,7 +92,9 @@ Tailwind is configured in [`styles/main.css`](styles/main.css). There is no `tai
 | `yarn dev`           | Prepare generated files and run the local development environment |
 | `yarn build`         | Run the full production build                                     |
 | `yarn preview`       | Build and serve the generated static client locally               |
-| `yarn build:res`     | Compile ReScript only                                             |
+| `yarn build:res`     | Generate route types and compile ReScript                         |
+| `yarn build:routes`  | Regenerate the shared ReScript route type                         |
+| `yarn check:routes`  | Check that the shared route type matches the current routes       |
 | `yarn dev:res`       | Run the ReScript compiler in watch mode                           |
 | `yarn format`        | Run Prettier and the ReScript formatter                           |
 | `yarn test`          | Run markdown example and href validation                          |
@@ -101,6 +103,13 @@ Tailwind is configured in [`styles/main.css`](styles/main.css). There is no `tai
 | `yarn vitest:update` | Update screenshot baselines headlessly                            |
 
 ## Testing
+
+The documentation route table lives in `apps/docs/route-config.mjs`. React Router
+and `apps/docs/generate-route-types.mjs` read the same configuration, including
+MDX pages and API modules. `packages/shared/src/Path.res` is generated before
+ReScript builds and when starting the ReScript watcher. After changing routes,
+adding or removing MDX pages, or updating API data during a watch session, run
+`yarn build:routes` again. CI rejects a stale generated file.
 
 ### Vitest Browser Tests
 

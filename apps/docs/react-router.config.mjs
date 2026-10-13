@@ -1,6 +1,7 @@
 import * as fs from "node:fs";
+import { loadRoutes } from "./route-config.mjs";
 
-const { stdlibPaths } = await import("./app/DocsRoutes.jsx");
+const { stdlibPaths } = loadRoutes();
 
 export default {
   ssr: true,

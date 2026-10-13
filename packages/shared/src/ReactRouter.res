@@ -11,7 +11,7 @@ external useSearchParams: unit => (WebAPI.URLAPI.urlSearchParams, {..} => unit) 
 @module("react-router")
 external useLoaderData: unit => 'a = "useLoaderData"
 
-/* The types for this are auto-generated from the react-router.config.mjs file */
+/* Path.t is generated from apps/docs/route-config.mjs by yarn build:routes. */
 type path = {pathname: Path.t, search?: string, hash?: string}
 
 module Loader = {
