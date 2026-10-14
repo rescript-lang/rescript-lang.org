@@ -1,72 +1,35 @@
-/*
-  Abstract type for representing mdx
-  components mostly passed as children to
-  the component context API
- */
-/**
- * TODO: POST RR7 The code below is from Next's markdown, and I am not sure it is needed anymore.
- */
-type mdxComponent
+type props = {
+  children?: React.element,
+  className?: string,
+  metastring?: string,
+  mdxType?: string,
+}
 
-external fromReactElement: React.element => mdxComponent = "%identity"
+@get external props: React.element => props = "props"
 
-external arrToReactElement: array<mdxComponent> => React.element = "%identity"
+let getChildren = element =>
+  React.isValidElement(element) ? props(element).children->Option.getOr(React.null) : element
 
-let getMdxClassName: mdxComponent => option<string> = %raw("element => {
-      if(element == null || element.props == null) {
-        return;
+let getClassName = element => React.isValidElement(element) ? props(element).className : None
+
+let getMetastring = element => React.isValidElement(element) ? props(element).metastring : None
+
+type component
+@get external elementType: React.element => component = "type"
+
+let getType = element => {
+  if React.isValidElement(element) {
+    switch props(element).mdxType {
+    | Some(tag) => tag
+    | None => {
+        let tag = elementType(element)
+        typeof(tag) == #string ? String.make(tag) : "unknown"
       }
-      return element.props.className;
-    }")
-
-let getMdxType: mdxComponent => string = %raw("element => {
-      if(element == null || element.props == null) {
-        return 'unknown';
-      }
-      return element.props.mdxType;
-    }")
-
-module MdxChildren = {
-  type unknown
-
-  type t
-
-  type case =
-    | String(string)
-    | Element(mdxComponent)
-    | Array(array<mdxComponent>)
-    | Unknown(unknown)
-
-  let classify = (v: t): case =>
-    if %raw(`function (a) { return  a instanceof Array}`)(v) {
-      Array((Obj.magic(v): array<mdxComponent>))
-    } else if typeof(v) == #string {
-      String((Obj.magic(v): string))
-    } else if typeof(v) == #object {
-      Element((Obj.magic(v): mdxComponent))
-    } else {
-      Unknown((Obj.magic(v): unknown))
     }
-
-  external toReactElement: t => React.element = "%identity"
-
-  // Sometimes an mdxComponent element can be a string
-  // which means it doesn't have any children.
-  // We will return the element as its own child then
-  let getMdxChildren: mdxComponent => t = %raw("element => {
-      if(typeof element === 'string') {
-        return element;
-      }
-      if(element == null || element.props == null || element.props.children == null) {
-        return;
-      }
-      return element.props.children;
-    }")
+  } else {
+    "unknown"
+  }
 }
 
-module Components = {
-  // Used for reflection based logic in
-  // components such as `code` or `ul`
-  // with runtime reflection
-  type unknown
-}
+@get external component: React.element => React.componentLike<'props, React.element> = "type"
+let isComponent = (element, make) => React.isValidElement(element) && component(element) === make

@@ -221,7 +221,7 @@ module MarkdownStylize = {
   let make = (~content, ~rehypePlugins) => {
     let components = {
       ...MarkdownComponents.default,
-      h2: MarkdownComponents.default.h3->Obj.magic,
+      h2: props => <Markdown.H3 id=props.id title=?props.title> props.children </Markdown.H3>,
     }
     <ReactMarkdown components={components} ?rehypePlugins> content </ReactMarkdown>
   }

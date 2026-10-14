@@ -71,9 +71,6 @@ export function loadRoutes({
           route("docs/manual/api/stdlib", "./routes/ApiRoute.jsx", {
             id: "api-stdlib",
           }),
-          route("docs/manual/api/introduction", "./routes/ApiRoute.jsx", {
-            id: "api-intro",
-          }),
           route("docs/manual/api/belt", "./routes/ApiRoute.jsx", {
             id: "api-belt",
           }),

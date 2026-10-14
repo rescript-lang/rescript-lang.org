@@ -1,6 +1,16 @@
 @module("../styles/main.css?url")
 external mainCss: string = "default"
 
+// Share the official icons while keeping the guide's own public directory.
+@module("../../docs/public/favicon/apple-touch-icon.avif?url&no-inline")
+external appleTouchIcon: string = "default"
+
+@module("../../docs/public/favicon/favicon-32x32.avif?url&no-inline")
+external favicon32: string = "default"
+
+@module("../../docs/public/favicon/favicon-16x16.avif?url&no-inline")
+external favicon16: string = "default"
+
 @react.component
 let default = () => {
   <html lang="en">
@@ -13,9 +23,9 @@ let default = () => {
       <meta name="application-name" content="ReScript Guide" />
       <meta name="description" content="An interactive guide to learning ReScript." />
       <meta name="theme-color" content="#f6f4ef" />
-      <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.avif" />
-      <link rel="icon" type_="image/avif" sizes="32x32" href="/favicon-32x32.avif" />
-      <link rel="icon" type_="image/avif" sizes="16x16" href="/favicon-16x16.avif" />
+      <link rel="apple-touch-icon" sizes="180x180" href=appleTouchIcon />
+      <link rel="icon" type_="image/avif" sizes="32x32" href=favicon32 />
+      <link rel="icon" type_="image/avif" sizes="16x16" href=favicon16 />
       <title> {React.string("ReScript Guide")} </title>
     </head>
     <body>

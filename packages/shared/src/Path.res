@@ -132,7 +132,6 @@ type t = [
   | #"/docs/manual/api/dom"
   | #"/docs/manual/api/dom/storage"
   | #"/docs/manual/api/dom/storage2"
-  | #"/docs/manual/api/introduction"
   | #"/docs/manual/api/stdlib"
   | #"/docs/manual/api/stdlib/array"
   | #"/docs/manual/api/stdlib/arraybuffer"

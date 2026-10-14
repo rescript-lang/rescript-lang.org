@@ -23,8 +23,7 @@ let make = (
     onClear()
   }
 
-  let focusInput = () =>
-    textInput.current->Nullable.forEach(el => el->WebAPI.HTMLInputElement.focus)
+  let focusInput = () => textInput.current->Nullable.forEach(el => el->WebAPI.HTMLElement.focus)
 
   let onAreaFocus = evt => {
     let el = ReactEvent.Focus.target(evt)
@@ -52,15 +51,11 @@ let make = (
     switch full {
     | "Escape" => onClear()
     | "Tab" =>
-      if Array.length(completionValues) === 1 {
-        let targetValue = Belt.Array.getExn(completionValues, 0)
-
-        if targetValue !== value {
-          ReactEvent.Keyboard.preventDefault(evt)
-          onValueChange(targetValue)
-        } else {
-          ()
-        }
+      switch completionValues {
+      | [targetValue] if targetValue !== value =>
+        ReactEvent.Keyboard.preventDefault(evt)
+        onValueChange(targetValue)
+      | _ => ()
       }
     | _ => ()
     }
@@ -84,7 +79,7 @@ let make = (
     />
     <input
       value
-      ref={ReactDOM.Ref.domRef((Obj.magic(textInput): React.ref<Nullable.t<Dom.element>>))}
+      ref={HtmlRef.domRef(textInput)}
       onFocus
       onKeyDown
       onChange={onChange}

@@ -10,7 +10,6 @@ node_modules/
 .next/
 out/
 apps/docs/out/
-apps/guide/out/
 index_data/*.json
 apps/docs/index_data/*.json
 
@@ -113,6 +112,7 @@ apps/guide/.vitest-attachments
 
 # Browser test artifacts
 apps/docs/test-results/
+apps/guide/test-results/
 
 # Lighthouse artifacts
 .lighthouseci/

@@ -419,6 +419,18 @@ export { myColor, theCompany, message };
 
 **Note**: for the coercion to work, the poly variant type needs to be closed; you'd need to annotate it, since otherwise, `theCompany` would be inferred as `[> #Apple]`.
 
+Since ReScript 12, a closed polymorphic variant can also be coerced to a regular variant when their possible constructors have matching runtime representations:
+
+```res
+type command = [#Start | #Stop]
+type event = Start | Stop | Pause
+
+let command: command = #Start
+let event: event = (command :> event)
+```
+
+Here, `#Start` and `Start` are both represented by the string `"Start"`, and every value in `command` can be represented by `event`. The coercion therefore has no runtime cost.
+
 ## Tips & Tricks
 
 ### Variant vs Polymorphic Variant
