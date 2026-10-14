@@ -1,23 +1,30 @@
 ---
 id: "integer-subtraction"
-keywords: ["subtract", "minus", "subtraction", "int", "integer"]
+keywords: ["subtract", "minus", "subtraction", "int", "integer", "float"]
 name: "-"
-summary: "This is the `integer subtraction` operator."
+summary: "This is the unified `subtraction` operator."
 category: "operators-arithmetic"
 ---
 
-This operator performs _integer_ subtraction.
+Since ReScript 12, `-` works with `int`, `float`, and `bigint`. The compiler specializes the operator from its operands.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-let result = 3 - 2
+let intResult = 3 - 2
+let floatResult = 3.5 - 2.0
 ```
 
 ```js
-let result = 1;
+let floatResult = 3.5 - 2.0;
 
-export { result };
+let intResult = 1;
+
+export { intResult, floatResult };
 ```
 
 </CodeTab>
+
+### References
+
+- [Primitive Types](../docs/manual/primitive-types.mdx#arithmetic-operators)

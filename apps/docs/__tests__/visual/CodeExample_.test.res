@@ -62,11 +62,11 @@ test("renders toggle with multiple tabs", async () => {
   ]
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="toggle-wrapper">
         <CodeExample.Toggle tabs />
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let resTab = await screen->getByText("ReScript")
@@ -98,11 +98,11 @@ test("toggle switches between tabs on click", async () => {
   ]
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="toggle-wrapper">
         <CodeExample.Toggle tabs />
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   // Click the JavaScript tab

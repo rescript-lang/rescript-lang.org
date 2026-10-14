@@ -91,26 +91,24 @@ Note that only sources marked with `"type":"dev"` will be able to resolve module
 
 ## js-post-build
 
-Hook that's invoked every time a file is recompiled. Good for JS build system interop, but please use it **sparingly**. Calling your custom command for every recompiled file slows down your build and worsens the building experience for even third-party users of your lib.
+Hook that's invoked for every JavaScript file emitted by a build. It can be useful for JavaScript build-system interop, but use it **sparingly**. Starting another process for every recompiled file can noticeably slow down builds for both applications and libraries.
 
 Example:
 
 ```json
 {
   "js-post-build": {
-    "cmd": "/path/to/node ../../postProcessTheFile.js"
+    "cmd": "node ./postProcess.mjs"
   }
 }
 ```
 
-Note that the path resolution for the command (`node` in this case) is done so:
+The build system appends the absolute path to the generated JavaScript file as the command's final argument. The path points:
 
-- `/myCommand` is resolved into `/myCommand`
-- `package/myCommand` is resolved into `node_modules/package/myCommand`
-- `./myCommand` is resolved into `myProjectRoot/myCommand`
-- `myCommand` is just called as `myCommand`, aka a globally available executable. But note that ReScript doesn't read into your shell's environment, so if you put e.g. `node`, it won't find it unless you specify an absolute path. Alternatively, add `#!/usr/local/bin/node` to the top of your script to directly call it without prepending `node`.
+- next to the source file when `"in-source": true`
+- into the corresponding `lib/<module>/` output directory when `"in-source": false`
 
-The command itself is called from inside `lib/bs`.
+Since ReScript 12.2, the command runs from the directory containing the `rescript.json` where the hook is defined, and output written to stdout or stderr is forwarded to the build output. This makes relative paths predictable in nested packages and monorepos.
 
 ## jsx
 

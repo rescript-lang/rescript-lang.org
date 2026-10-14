@@ -1,19 +1,3 @@
-/* Contains some generic hooks */
-let useOutsideClick: (ReactDOM.Ref.t, unit => unit) => unit = %raw(`(outerRef, trigger) => {
-  function handleClickOutside(event) {
-    if (outerRef.current && !outerRef.current.contains(event.target)) {
-      trigger();
-    }
-  }
-
-  React.useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  });
-}`)
-
 /** scrollDir is not memo-friendly.
   It must be used with pattern matching.
   Do not pass it directly to child components. */
