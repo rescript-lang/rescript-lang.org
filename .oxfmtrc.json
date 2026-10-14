@@ -12,6 +12,7 @@
     "*.swo",
     "*.swp",
     "apps/docs/app/**/*.mjs",
+    "apps/guide/app/**/*.jsx",
     "build",
     "data/api/**/*.json",
     "apps/docs/data/api/**/*.json",

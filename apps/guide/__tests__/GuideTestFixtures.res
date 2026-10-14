@@ -71,7 +71,7 @@ let renderGuideHomeWithDocsIntroNavigation = (goToDocsIntro, ~initialEntries=["/
     </ReactRouter.MemoryRouter>,
   )
 
-module HistoryBackButton = {
+module HistoryBack = {
   @module("react-router") external useNavigate: unit => int => unit = "useNavigate"
 
   @react.component
@@ -83,8 +83,8 @@ module HistoryBackButton = {
 
 let renderGuideHomeWithHistory = () =>
   render(
-    <ReactRouter.MemoryRouter initialEntries=["/#first-contact"]>
+    <ReactRouter.MemoryRouter initialEntries=["/#guide-test-start", "/#first-contact"]>
+      <HistoryBack />
       <GuideHome lessons=guideLessons />
-      <HistoryBackButton />
     </ReactRouter.MemoryRouter>,
   )

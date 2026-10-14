@@ -163,6 +163,42 @@ export { stripe, session };
 
 </CodeTab>
 
+## Function on a Default-Exported Object
+
+When an ES module exports an object as its default value, use `@scope("default")` to bind to a function on that object:
+
+```js
+// math.js
+const math = {
+  add: (x, y) => x + y,
+};
+
+export default math;
+```
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+@module("./math.js") @scope("default")
+external add: (int, int) => int = "add"
+
+let result = add(1, 1)
+```
+
+```js
+import * as MathJs from "./math.js";
+
+function add(prim0, prim1) {
+  return MathJs.default.add(prim0, prim1);
+}
+
+let result = MathJs.default.add(1, 1);
+
+export { add, result };
+```
+
+</CodeTab>
+
 ## Variadic Function Arguments
 
 You might have JS functions that take an arbitrary amount of arguments. ReScript supports modeling those, under the condition that the arbitrary arguments part is homogenous (aka of the same type). If so, add `variadic` to your `external`.

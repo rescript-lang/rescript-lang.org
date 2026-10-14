@@ -90,11 +90,6 @@ let default = [
         [
           route("docs/manual/api", "./routes/ApiOverviewRoute.jsx", ~options={id: "api-overview"}),
           route("docs/manual/api/stdlib", "./routes/ApiRoute.jsx", ~options={id: "api-stdlib"}),
-          route(
-            "docs/manual/api/introduction",
-            "./routes/ApiRoute.jsx",
-            ~options={id: "api-intro"},
-          ),
           route("docs/manual/api/belt", "./routes/ApiRoute.jsx", ~options={id: "api-belt"}),
           route("docs/manual/api/dom", "./routes/ApiRoute.jsx", ~options={id: "api-dom"}),
           ...stdlibRoutes,

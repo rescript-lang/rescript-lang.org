@@ -133,6 +133,8 @@ bun create rescript-app
 
   </CodeTab>
 
+  ReScript's native executables are distributed as optional, platform-specific packages such as `@rescript/darwin-arm64`, `@rescript/linux-x64`, and `@rescript/win32-x64`. Package managers install the matching package automatically. Make sure optional dependencies are enabled; if ReScript reports that its platform package is missing, reinstall dependencies without an option such as npm's `--omit=optional`.
+
   <Info>
     **pnpm users:** ReScript-compiled JS imports from `@rescript/runtime` directly, but pnpm's strict isolation does not expose transitive dependencies at the app root. Either install the runtime as a direct dependency (`pnpm add @rescript/runtime`), or hoist it by adding the following to `pnpm-workspace.yaml`:
 
