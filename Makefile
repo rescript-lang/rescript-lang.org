@@ -19,4 +19,4 @@ clean:
 
 .DEFAULT_GOAL := build
 
-.PHONY: clean test
+.PHONY: build dev clean test
