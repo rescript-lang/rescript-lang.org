@@ -48,10 +48,10 @@ let finalLesson: GuideLesson.t = {
 let guideLessons = [firstLesson, secondLesson]
 let guideLessonsWithFinal = [firstLesson, secondLesson, finalLesson]
 
-let renderGuideHome = (~initialEntries=["/"], ()) =>
+let renderGuideHome = (~initialEntries=["/"], ~compilerData=?, ()) =>
   render(
     <ReactRouter.MemoryRouter initialEntries>
-      <GuideHome lessons=guideLessons />
+      <GuideHome lessons=guideLessons ?compilerData />
     </ReactRouter.MemoryRouter>,
   )
 
@@ -62,9 +62,20 @@ let renderGuideHomeWithDocsIntroNavigation = (goToDocsIntro, ~initialEntries=["/
     </ReactRouter.MemoryRouter>,
   )
 
-let renderGuideHomeInBrowser = () =>
+module HistoryBack = {
+  @module("react-router") external useNavigate: unit => int => unit = "useNavigate"
+
+  @react.component
+  let make = () => {
+    let navigate = useNavigate()
+    <button onClick={_ => navigate(-1)}> {React.string("History back")} </button>
+  }
+}
+
+let renderGuideHomeWithHistory = () =>
   render(
-    <ReactRouter.BrowserRouter>
+    <ReactRouter.MemoryRouter initialEntries=["/#guide-test-start", "/#first-contact"]>
+      <HistoryBack />
       <GuideHome lessons=guideLessons />
-    </ReactRouter.BrowserRouter>,
+    </ReactRouter.MemoryRouter>,
   )

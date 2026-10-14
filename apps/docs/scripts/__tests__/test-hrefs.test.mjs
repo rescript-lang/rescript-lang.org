@@ -5,6 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { execFileSync, spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import docsVersion from "../../docs-version.json" with { type: "json" };
 
 const script = fileURLToPath(new URL("../test-hrefs.mjs", import.meta.url));
 
@@ -23,8 +24,9 @@ const check = (markdown) => {
       ],
       { cwd: fixture },
     );
-    const apiDir = path.join(fixture, "markdown-pages/docs/api");
-    const manualDir = path.join(fixture, "markdown-pages/docs/manual");
+    const docsDir = path.join(fixture, "apps/docs");
+    const apiDir = path.join(fixture, "data/api", `${docsVersion.current}.3.1`);
+    const manualDir = path.join(docsDir, "markdown-pages/docs/manual");
     fs.mkdirSync(apiDir, { recursive: true });
     fs.mkdirSync(manualDir, { recursive: true });
     for (const library of ["stdlib", "belt", "dom"]) {
@@ -35,7 +37,7 @@ const check = (markdown) => {
     }
     fs.writeFileSync(path.join(manualDir, "api.mdx"), markdown);
     return spawnSync(process.execPath, [script], {
-      cwd: fixture,
+      cwd: docsDir,
       env: { ...process.env, CI: "1" },
       encoding: "utf8",
     });

@@ -5,13 +5,14 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build:res": "rescript build --warn-error +3+8+11+12+26+27+31+32+33+34+35+39+44+45+110",
+    "build:res": "node ../docs/generate-route-types.mjs && rescript build --warn-error +3+8+11+12+26+27+31+32+33+34+35+39+44+45+110",
     "build:vite": "react-router build",
     "build": "yarn build:res && yarn build:vite",
     "ci:test": "yarn build:res && yarn test:lessons && yarn vitest --run --browser.headless",
     "dev:vite": "yarn build:res && vite --host",
     "vitest": "vitest",
-    "test:lessons": "vitest run --config vitest.lessons.config.mjs"
+    "test:lessons": "vitest run --config vitest.lessons.config.mjs",
+    "test:e2e": "yarn build && playwright test"
   },
   "dependencies": {
     "@babel/generator": "^7.29.1",
@@ -25,7 +26,6 @@
     "isbot": "^5",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "react-markdown": "^10.1.0",
     "react-router": "^8.3.1",
     "remark-comment": "^1.0.0",
     "remark-frontmatter": "^5.0.0",

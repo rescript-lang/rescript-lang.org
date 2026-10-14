@@ -1,19 +1,16 @@
 open Vitest
 
-@module("vitest") external afterEach: (unit => unit) => unit = "afterEach"
-@module("node:os") external tmpdir: unit => string = "tmpdir"
-@module("node:fs") external mkdtempSync: string => string = "mkdtempSync"
-@module("node:fs") external rmSync: (string, {"recursive": bool, "force": bool}) => unit = "rmSync"
-
 let temporaryDir = ref(None)
 
 afterEach(() => {
-  temporaryDir.contents->Option.forEach(dir => rmSync(dir, {"recursive": true, "force": true}))
+  temporaryDir.contents->Option.forEach(dir =>
+    Node.Fs.rmSync(dir, {"recursive": true, "force": true})
+  )
   temporaryDir.contents = None
 })
 
 let makeLessonsDir = () => {
-  let dir = Node.Path.join2(tmpdir(), "rescript-guide-lessons-")->mkdtempSync
+  let dir = Node.Path.join2(Node.Os.tmpdir(), "rescript-guide-lessons-")->Node.Fs.mkdtempSync
   temporaryDir.contents = Some(dir)
   dir
 }

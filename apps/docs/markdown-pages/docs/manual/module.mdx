@@ -422,7 +422,38 @@ This also means that the compiler can't make assumptions about the type.
 In certain cases, when working with abstract types and `option` for example, the compiler doesn't know whether
 the abstract type can be the JavaScript value `undefined` or not. This can lead to less optimal code being generated.
 For this reason, you can use the `@notUndefined` decorator to tell the compiler that the abstract type can never be `undefined`
-(use with caution and see the `@notUndefined` decorator documentation for more details and caveats).
+(use with caution and see the [`@notUndefined` decorator documentation](../../syntax-lookup/decorator_not_undefined.mdx) for more details and caveats).
+
+### Refining Module Types with Constraints
+
+A `with type` constraint can refine an abstract type in an existing module type:
+
+```res prelude
+module type Storage = {
+  type t
+  let make: string => t
+  let serialize: t => string
+}
+
+module type PrivateStringStorage = Storage with type t = private string
+```
+
+The `private` constraint exposes that `t` is represented as `string`, so a `t` can be coerced to `string`, while preventing callers from constructing a `t` from any string. Only functions exposed by the module, such as `make`, can create one.
+
+```res
+module StringStorage: PrivateStringStorage = {
+  type t = string
+  let make = value => value
+  let serialize = value => value
+}
+
+let unwrap = value => {
+  let _ = StringStorage.serialize(value)
+  (value :> string)
+}
+```
+
+The call to `serialize` is enough for the compiler to infer `value` as `StringStorage.t`; ReScript 12 allows that inferred type variable to be resolved while checking the coercion.
 
 ### Extending module signatures
 

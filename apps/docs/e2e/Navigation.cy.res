@@ -1,12 +1,12 @@
-open Cy
+open Cypress
 
 // Wait for the app to fully hydrate before interacting with links.
 // The production build is pre-rendered so React must attach event
 // handlers before client-side navigation works.
 let waitForHydration = () => {
-  getByTestId("navbar-primary")->shouldBeVisible->ignore
-  cyWindow()->its("document.readyState")->shouldWithValue("eq", "complete")->ignore
-  wait(2000)
+  getByTestId("navbar-primary")->should("be.visible")->ignore
+  cyWindow()->propertyString("document.readyState")->shouldEqual("complete")->ignore
+  pause(2000)
 }
 
 // Use short, re-queryable selectors to avoid detached DOM issues.
@@ -17,7 +17,7 @@ let waitForHydration = () => {
 let clickNavLink = (~testId, ~text) => {
   getByTestId(testId)
   ->should("be.visible")
-  ->containsSelectorChainable("a", text)
+  ->containsChildIn("a", text)
   ->scrollIntoView
   ->should("be.visible")
   ->click
@@ -27,7 +27,7 @@ let clickNavLink = (~testId, ~text) => {
 let clickMobileNavLink = text => {
   getByTestId("mobile-nav")
   ->should("be.visible")
-  ->containsSelectorChainable("a", text)
+  ->containsChildIn("a", text)
   ->scrollIntoView
   ->should("be.visible")
   ->click
@@ -53,8 +53,8 @@ describe("Desktop Navigation", () => {
       "should navigate to Docs via navbar link",
       () => {
         clickNavLink(~testId="navbar-primary-left-content", ~text="Docs")
-        url()->shouldInclude("/docs/manual/introduction")->ignore
-        get("h1")->shouldBeVisible->ignore
+        currentUrl()->shouldInclude("/docs/manual/introduction")->ignore
+        get("h1")->should("be.visible")->ignore
       },
     )
 
@@ -62,7 +62,7 @@ describe("Desktop Navigation", () => {
       "should navigate to Playground via navbar link",
       () => {
         clickNavLink(~testId="navbar-primary-left-content", ~text="Playground")
-        url()->shouldInclude("/try")->ignore
+        currentUrl()->shouldInclude("/try")->ignore
       },
     )
 
@@ -70,7 +70,7 @@ describe("Desktop Navigation", () => {
       "should navigate to Blog via navbar link",
       () => {
         clickNavLink(~testId="navbar-primary-left-content", ~text="Blog")
-        url()->shouldInclude("/blog")->ignore
+        currentUrl()->shouldInclude("/blog")->ignore
       },
     )
 
@@ -78,8 +78,8 @@ describe("Desktop Navigation", () => {
       "should navigate to Community via navbar link",
       () => {
         clickNavLink(~testId="navbar-primary-left-content", ~text="Community")
-        url()->shouldInclude("/community")->ignore
-        get("h1")->shouldBeVisible->ignore
+        currentUrl()->shouldInclude("/community")->ignore
+        get("h1")->should("be.visible")->ignore
       },
     )
 
@@ -87,10 +87,10 @@ describe("Desktop Navigation", () => {
       "should navigate home via logo after clicking away",
       () => {
         clickNavLink(~testId="navbar-primary-left-content", ~text="Blog")
-        url()->shouldInclude("/blog")->ignore
+        currentUrl()->shouldInclude("/blog")->ignore
 
         get("a[aria-label='homepage']")->should("be.visible")->first->click->ignore
-        cyLocation("pathname")->shouldWithValue("eq", "/")->ignore
+        cyLocation("pathname")->shouldEqual("/")->ignore
       },
     )
   })
@@ -101,28 +101,28 @@ describe("Desktop Navigation", () => {
       () => {
         // Click Docs in primary nav to reveal the secondary nav
         clickNavLink(~testId="navbar-primary-left-content", ~text="Docs")
-        url()->shouldInclude("/docs/manual/introduction")->ignore
+        currentUrl()->shouldInclude("/docs/manual/introduction")->ignore
 
         // Language Manual
         clickNavLink(~testId="navbar-secondary", ~text="Language Manual")
-        url()->shouldInclude("/docs/manual/introduction")->ignore
+        currentUrl()->shouldInclude("/docs/manual/introduction")->ignore
 
         // API
         clickNavLink(~testId="navbar-secondary", ~text="API")
-        url()->shouldInclude("/docs/manual/api")->ignore
+        currentUrl()->shouldInclude("/docs/manual/api")->ignore
 
         // Guides
         clickNavLink(~testId="navbar-secondary", ~text="Guides")
-        url()->shouldInclude("/docs/guides/overview")->ignore
+        currentUrl()->shouldInclude("/docs/guides/overview")->ignore
         get("h1")->shouldContainText("Guides")->ignore
 
         // Syntax Lookup
         clickNavLink(~testId="navbar-secondary", ~text="Syntax Lookup")
-        url()->shouldInclude("/syntax-lookup")->ignore
+        currentUrl()->shouldInclude("/syntax-lookup")->ignore
 
         // React
         clickNavLink(~testId="navbar-secondary", ~text="React")
-        url()->shouldInclude("/docs/react/introduction")->ignore
+        currentUrl()->shouldInclude("/docs/react/introduction")->ignore
       },
     )
   })
@@ -142,8 +142,8 @@ describe("Mobile Navigation", () => {
       "should navigate to Docs via navbar link",
       () => {
         clickNavLink(~testId="navbar-primary-left-content", ~text="Docs")
-        url()->shouldInclude("/docs/manual/introduction")->ignore
-        get("h1")->shouldBeVisible->ignore
+        currentUrl()->shouldInclude("/docs/manual/introduction")->ignore
+        get("h1")->should("be.visible")->ignore
       },
     )
 
@@ -151,10 +151,10 @@ describe("Mobile Navigation", () => {
       "should navigate home via logo after clicking away",
       () => {
         clickNavLink(~testId="navbar-primary-left-content", ~text="Docs")
-        url()->shouldInclude("/docs/manual/introduction")->ignore
+        currentUrl()->shouldInclude("/docs/manual/introduction")->ignore
 
         get("a[aria-label='homepage']")->should("be.visible")->first->click->ignore
-        cyLocation("pathname")->shouldWithValue("eq", "/")->ignore
+        cyLocation("pathname")->shouldEqual("/")->ignore
       },
     )
   })
@@ -165,7 +165,7 @@ describe("Mobile Navigation", () => {
       () => {
         openMobileMenu()
         clickMobileNavLink("Playground")
-        url()->shouldInclude("/try")->ignore
+        currentUrl()->shouldInclude("/try")->ignore
       },
     )
 
@@ -174,7 +174,7 @@ describe("Mobile Navigation", () => {
       () => {
         openMobileMenu()
         clickMobileNavLink("Blog")
-        url()->shouldInclude("/blog")->ignore
+        currentUrl()->shouldInclude("/blog")->ignore
       },
     )
 
@@ -183,8 +183,8 @@ describe("Mobile Navigation", () => {
       () => {
         openMobileMenu()
         clickMobileNavLink("Community")
-        url()->shouldInclude("/community")->ignore
-        get("h1")->shouldBeVisible->ignore
+        currentUrl()->shouldInclude("/community")->ignore
+        get("h1")->should("be.visible")->ignore
       },
     )
   })
@@ -195,35 +195,35 @@ describe("Mobile Navigation", () => {
       () => {
         // Click Docs in primary nav to reveal the secondary nav
         clickNavLink(~testId="navbar-primary-left-content", ~text="Docs")
-        url()->shouldInclude("/docs/manual/introduction")->ignore
+        currentUrl()->shouldInclude("/docs/manual/introduction")->ignore
 
         // Scroll to top so the secondary nav is visible
         cyScrollTo("top")
 
         // Language Manual
         clickNavLink(~testId="navbar-secondary", ~text="Language Manual")
-        url()->shouldInclude("/docs/manual/introduction")->ignore
+        currentUrl()->shouldInclude("/docs/manual/introduction")->ignore
 
         // API
         cyScrollTo("top")
         clickNavLink(~testId="navbar-secondary", ~text="API")
-        url()->shouldInclude("/docs/manual/api")->ignore
+        currentUrl()->shouldInclude("/docs/manual/api")->ignore
 
         // Guides
         cyScrollTo("top")
         clickNavLink(~testId="navbar-secondary", ~text="Guides")
-        url()->shouldInclude("/docs/guides/overview")->ignore
+        currentUrl()->shouldInclude("/docs/guides/overview")->ignore
         get("h1")->shouldContainText("Guides")->ignore
 
         // Syntax Lookup
         cyScrollTo("top")
         clickNavLink(~testId="navbar-secondary", ~text="Syntax Lookup")
-        url()->shouldInclude("/syntax-lookup")->ignore
+        currentUrl()->shouldInclude("/syntax-lookup")->ignore
 
         // React
         cyScrollTo("top")
         clickNavLink(~testId="navbar-secondary", ~text="React")
-        url()->shouldInclude("/docs/react/introduction")->ignore
+        currentUrl()->shouldInclude("/docs/react/introduction")->ignore
       },
     )
   })
