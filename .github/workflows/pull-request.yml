@@ -17,7 +17,7 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn
-      - name: Format check
+      - name: Check formatting (Oxfmt and ReScript)
         run: yarn ci:format
   Site_Checks:
     runs-on: ubuntu-latest
@@ -39,6 +39,8 @@ jobs:
         run: |
           yarn check:routes
           git diff --exit-code -- packages/shared/src/Path.res
+      - name: Check committed ReScript output
+        run: yarn ci:generated
       - name: Test examples and hrefs
         run: yarn test
   # Check the built Docs Pages routes and the Guide local dev server.
