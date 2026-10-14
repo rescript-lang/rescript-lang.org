@@ -171,7 +171,7 @@ test("renders links", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="links-wrapper">
         <Markdown.P>
           <Markdown.A href="https://rescript-lang.org">
@@ -184,7 +184,7 @@ test("renders links", async () => {
           </Markdown.A>
         </Markdown.P>
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let externalLink = await screen->getByText("External link")

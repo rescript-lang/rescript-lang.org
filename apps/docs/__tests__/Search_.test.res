@@ -27,6 +27,25 @@ let makeHit = (~type_: DocSearch.contentType, ~url: string): DocSearch.docSearch
   _snippetResult: {content: Nullable.null},
 }
 
+let makeCrawlerHit = (): DocSearch.docSearchHit => {
+  objectID: "crawler-hit",
+  content: Nullable.make("map(array, fn) returns a new array."),
+  url: "https://rescript-lang.org/docs/manual/api/stdlib/array/#value-map",
+  url_without_anchor: Nullable.undefined,
+  type_: Content,
+  anchor: Nullable.undefined,
+  deprecated: None,
+  hierarchy: {
+    lvl0: Nullable.make("Array"),
+    lvl1: Nullable.make("map"),
+    lvl2: Nullable.null,
+    lvl3: Nullable.null,
+    lvl4: Nullable.null,
+    lvl5: Nullable.null,
+    lvl6: Nullable.null,
+  },
+}
+
 let withHierarchy = (
   hit: DocSearch.docSearchHit,
   ~lvl0: string,
@@ -268,28 +287,7 @@ test("hitComponent routes relative hit URLs through React Router", async () => {
 test(
   "getContentHtml falls back to plain content when crawler hit has no snippet result",
   async () => {
-    let hit: DocSearch.docSearchHit = Obj.magic(
-      Dict.fromArray([
-        ("objectID", "crawler-hit"),
-        ("content", "map(array, fn) returns a new array."),
-        ("url", "https://rescript-lang.org/docs/manual/api/stdlib/array/#value-map"),
-        ("type", "content"),
-        (
-          "hierarchy",
-          Obj.magic(
-            Dict.fromArray([
-              ("lvl0", Obj.magic("Array")),
-              ("lvl1", Obj.magic("map")),
-              ("lvl2", Obj.magic(Nullable.null)),
-              ("lvl3", Obj.magic(Nullable.null)),
-              ("lvl4", Obj.magic(Nullable.null)),
-              ("lvl5", Obj.magic(Nullable.null)),
-              ("lvl6", Obj.magic(Nullable.null)),
-            ]),
-          ),
-        ),
-      ]),
-    )
+    let hit: DocSearch.docSearchHit = makeCrawlerHit()
 
     expect(SearchResults.getContentHtml(hit))->toEqual(Some("map(array, fn) returns a new array."))
   },
@@ -480,28 +478,7 @@ test("normalizeHitUrls rewrites absolute site URLs to relative paths", async () 
 })
 
 test("normalizeHitUrls tolerates crawler hits without url_without_anchor", async () => {
-  let hit: DocSearch.docSearchHit = Obj.magic(
-    Dict.fromArray([
-      ("objectID", "crawler-hit"),
-      ("content", "map(array, fn) returns a new array."),
-      ("url", "https://rescript-lang.org/docs/manual/api/stdlib/array/#value-map"),
-      ("type", "content"),
-      (
-        "hierarchy",
-        Obj.magic(
-          Dict.fromArray([
-            ("lvl0", Obj.magic("Array")),
-            ("lvl1", Obj.magic("map")),
-            ("lvl2", Obj.magic(Nullable.null)),
-            ("lvl3", Obj.magic(Nullable.null)),
-            ("lvl4", Obj.magic(Nullable.null)),
-            ("lvl5", Obj.magic(Nullable.null)),
-            ("lvl6", Obj.magic(Nullable.null)),
-          ]),
-        ),
-      ),
-    ]),
-  )
+  let hit: DocSearch.docSearchHit = makeCrawlerHit()
 
   let result = SearchResults.normalizeHitUrls([hit], ~siteUrl="https://rescript-lang.org/")
 

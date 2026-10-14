@@ -1,6 +1,6 @@
 @module("react-markdown") @react.component
 external make: (
   ~children: string,
-  ~components: MarkdownComponents.t=?,
-  ~rehypePlugins: array<Rehype.rehypePlugin>=?,
+  ~components: 'components=?,
+  ~rehypePlugins: array<'plugin>=?,
 ) => React.element = "default"

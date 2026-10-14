@@ -221,7 +221,7 @@ module MarkdownStylize = {
   let make = (~content, ~rehypePlugins) => {
     let components = {
       ...MarkdownComponents.default,
-      h2: MarkdownComponents.default.h3->Obj.magic,
+      h2: props => <Markdown.H3 id=props.id title=?props.title> props.children </Markdown.H3>,
     }
     <ReactMarkdown components={components} ?rehypePlugins> content </ReactMarkdown>
   }
@@ -367,7 +367,7 @@ module Data = {
 }
 
 let processStaticProps = (~slug: array<string>) => {
-  let moduleName = slug->Belt.Array.getExn(0)
+  let moduleName = slug->Array.at(0)->Option.getOrThrow
   let modulePath = slug->Array.join("/")
 
   let content =
@@ -456,7 +456,7 @@ let processStaticProps = (~slug: array<string>) => {
       items: sortedItems,
     }
 
-    Ok({module_, toctree: Obj.magic({name: "root", path: [], children: []})})
+    Ok({module_, toctree: {name: "root", path: [], children: []}})
 
   | None => Error(`Failed to get API Data for module ${moduleName}`)
   }
