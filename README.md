@@ -87,22 +87,31 @@ Tailwind is configured in [`styles/main.css`](styles/main.css). There is no `tai
 
 ## Common Commands
 
-| Command          | Purpose                                                           |
-| ---------------- | ----------------------------------------------------------------- |
-| `yarn dev`       | Prepare generated files and run the local development environment |
-| `yarn build`     | Run the full production build                                     |
-| `yarn preview`   | Build and serve the generated static client locally               |
-| `yarn build:res` | Compile ReScript only                                             |
-| `yarn dev:res`   | Run the ReScript compiler in watch mode                           |
-| `yarn format`    | Run Prettier and the ReScript formatter                           |
-| `yarn test`      | Run markdown example and href validation                          |
-| `yarn ci:test`   | Run Vitest browser tests headlessly                               |
-| `yarn vitest`    | Run Vitest directly                                               |
-| `yarn cy:open`   | Open the full-site Cypress suite against the running dev server   |
-| `yarn cy:e2e`    | Run the full-site Cypress suite headlessly in Chrome              |
-| `yarn test:e2e`  | Build and run homepage Cypress tests with a temporary server      |
+| Command             | Purpose                                                           |
+| ------------------- | ----------------------------------------------------------------- |
+| `yarn dev`          | Prepare generated files and run the local development environment |
+| `yarn build`        | Run the full production build                                     |
+| `yarn preview`      | Build and serve the generated static client locally               |
+| `yarn build:res`    | Generate route types and compile ReScript                         |
+| `yarn build:routes` | Regenerate the shared ReScript route type                         |
+| `yarn check:routes` | Check that the shared route type matches the current routes       |
+| `yarn dev:res`      | Run the ReScript compiler in watch mode                           |
+| `yarn format`       | Run Prettier and the ReScript formatter                           |
+| `yarn test`         | Run markdown example and href validation                          |
+| `yarn ci:test`      | Run Vitest browser tests headlessly                               |
+| `yarn vitest`       | Run Vitest directly                                               |
+| `yarn cy:open`      | Open the full-site Cypress suite against the running dev server   |
+| `yarn cy:e2e`       | Run the full-site Cypress suite headlessly in Chrome              |
+| `yarn test:e2e`     | Build and run homepage Cypress tests with a temporary server      |
 
 ## Testing
+
+The documentation route table lives in `apps/docs/route-config.mjs`. React Router
+and `apps/docs/generate-route-types.mjs` read the same configuration, including
+MDX pages and API modules. `packages/shared/src/Path.res` is generated before
+ReScript builds and when starting the ReScript watcher. After changing routes,
+adding or removing MDX pages, or updating API data during a watch session, run
+`yarn build:routes` again. CI rejects a stale generated file.
 
 ### Vitest Browser Tests
 
@@ -201,7 +210,9 @@ Run `yarn test` before pushing content changes so CI does not fail on markdown r
 
 ## Writing Blog Posts
 
-If you are writing a blog post, refer to the [blog post guide](https://rescript-lang.org/blogpost-guide).
+Create an MDX file in [`apps/docs/markdown-pages/blog`](apps/docs/markdown-pages/blog). Its filename becomes the URL under `/blog/`; use an existing post as a template for the YAML frontmatter (`author`, quoted `date`, `title`, and optional `description`, `co_authors`, `previewImg`, `articleImg`, and `badge`). Author aliases are defined in [`BlogFrontmatter.res`](apps/docs/src/markdown/BlogFrontmatter.res).
+
+Put local images in [`apps/docs/public/img`](apps/docs/public/img) and reference them with `/img/...` URLs. Run `yarn dev` and preview the post at `/blog/<filename>` before opening a PR. Posts under `blog/archived` appear only in the archived listing.
 
 ## Adding Your Company Logo
 
