@@ -1,15 +1,10 @@
-type options = {language: string}
-
-@deriving(abstract)
-type highlightResult = {value: string}
-
-@module("highlight.js/lib/core") @scope("default")
-external highlight: (~code: string, ~options: options) => highlightResult = "highlight"
-
 let renderHLJS = (~highlightedLines=[], ~darkmode=false, ~code: string, ~lang: string, ()) => {
   // If the language couldn't be parsed, we will fall back to text
-  let options = {language: lang}
-  let (lang, highlighted) = try (lang, highlight(~code, ~options)->valueGet) catch {
+  let options = {HighlightLanguages.language: lang}
+  let (lang, highlighted) = try (
+    lang,
+    (HighlightLanguages.defaultInstance->HighlightLanguages.highlight(code, options)).value,
+  ) catch {
   | JsExn(_) => ("text", code)
   }
 

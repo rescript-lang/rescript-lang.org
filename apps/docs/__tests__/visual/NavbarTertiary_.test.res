@@ -19,12 +19,12 @@ test("desktop shows breadcrumbs and edit link", async () => {
   await viewport(1440, 500)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <NavbarTertiary sidebar=sidebarContent>
         breadcrumbs
         editLink
       </NavbarTertiary>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let navbar = await screen->getByTestId("navbar-tertiary")
@@ -44,12 +44,12 @@ test("mobile shows breadcrumbs and drawer button", async () => {
   await viewport(600, 1200)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <NavbarTertiary sidebar=sidebarContent>
         breadcrumbs
         editLink
       </NavbarTertiary>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let navbar = await screen->getByTestId("navbar-tertiary")

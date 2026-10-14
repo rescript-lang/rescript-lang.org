@@ -11,6 +11,17 @@ order: 7
 
 ReScript considers performance at install time, build time and run time as a serious feature; it's one of those things you don't notice until you realize it's missing.
 
+## Measuring Build Times
+
+When investigating a slowdown, compare the same kinds of build under the same conditions:
+
+- a clean build
+- a no-op build, with no source changes
+- an incremental build after changing a leaf module
+- an incremental build after changing a widely used module
+
+Build times depend on the dependency graph, hardware, filesystem, and surrounding tools. Compare ReScript's build time with the duration of the entire development command: bundling, code generation, and tests can take more time than compilation itself.
+
 ## Under the Hood
 
 Since ReScript v12, `rescript build` uses a native build system written in Rust. It reads `rescript.json`, tracks dependencies between modules and packages, and invokes the compiler directly. See [Reforging the ReScript Build System](../../blog/reforging-build-system.mdx) for more about its architecture.
@@ -76,6 +87,10 @@ Unfortunately, JS build systems are usually the bottleneck for building a JS pro
 
 - Convert more files into ReScript =). Fewer files going through fewer parts of the JS pipeline helps a ton.
 - Careful with bringing in more dependencies: libraries, syntax transforms (e.g. the unofficially supported PPX), build step loaders, etc. The bulk of these dragging down the editing & building experience might out-weight the API benefits they provide.
+
+Keep compiler artifacts between builds unless you specifically need a clean build. Cleaning before every compilation prevents incremental builds from doing their job.
+
+Commands configured through [`js-post-build`](./build-configuration.mdx#js-post-build) run once per emitted JavaScript file. Starting another process for each file can slow down an otherwise fast incremental build.
 
 ## Hot Reloading
 

@@ -114,6 +114,7 @@ apps/guide/.vitest-attachments
 
 # Browser test artifacts
 apps/docs/test-results/
+apps/guide/test-results/
 
 # Lighthouse artifacts
 .lighthouseci/
