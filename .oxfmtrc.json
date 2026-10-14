@@ -11,7 +11,7 @@
     "apps/guide/app/**/*.jsx",
     "build",
     "data/api/**/*.json",
-    "apps/docs/data/api/**/*.json",
+    "dist",
     "apps/docs/index_data/*.json",
     "node_modules/",
     "apps/docs/out/",
@@ -26,7 +26,6 @@
     "apps/docs/public/llms/react/**/llm*.txt",
     "apps/docs/markdown-pages/docs/**/**/llms.mdx",
     "apps/docs/markdown-pages/docs/manual/installation.mdx",
-    ".yarn/releases/*.cjs",
-    "apps/docs/data/api/*"
+    ".yarn/releases/*.cjs"
   ]
 }

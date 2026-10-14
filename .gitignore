@@ -29,7 +29,6 @@ packages/*/lib/
 
 apps/docs/src/**/*.jsx
 packages/*/src/**/*.jsx
-apps/docs/scripts/gendocs.jsx
 apps/docs/scripts/generate_*.jsx
 apps/docs/scripts/LogAlgoliaEnvStatus.jsx
 apps/docs/scripts/__tests__/**/*.jsx
@@ -87,6 +86,7 @@ apps/guide/.vitest-attachments
 
 # Browser test artifacts
 apps/docs/test-results/
+apps/guide/test-results/
 
 # Lighthouse artifacts
 .lighthouseci/
