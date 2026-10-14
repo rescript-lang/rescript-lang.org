@@ -5,6 +5,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { checkRedirects } from "../test-redirects.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,6 +20,11 @@ let writeFile = (root, filePath, content) => {
 
 let makeWorkspace = () => {
   let root = fs.mkdtempSync(path.join(os.tmpdir(), "generate llms-"));
+  writeFile(
+    root,
+    "public/_redirects",
+    fs.readFileSync(path.join(docsRoot, "public/_redirects"), "utf8"),
+  );
 
   writeFile(
     root,
@@ -206,6 +212,12 @@ order: 4
 let readFile = (root, filePath) =>
   fs.readFileSync(path.join(root, filePath), "utf8");
 
+let checkWorkspaceRedirects = (root) =>
+  checkRedirects({
+    redirectsPath: path.join(root, "public", "_redirects"),
+    publicDirectory: path.join(root, "public"),
+  });
+
 test("generate_llms writes the default manual index at the site root", () => {
   let root = makeWorkspace();
 
@@ -213,6 +225,7 @@ test("generate_llms writes the default manual index at the site root", () => {
     cwd: root,
     stdio: "pipe",
   });
+  checkWorkspaceRedirects(root);
 
   let currentLlms = readFile(root, "public/llms.txt");
   let humanLlmsPage = readFile(root, "markdown-pages/docs/manual/llms.mdx");
@@ -342,6 +355,33 @@ test("generate_llms writes the default manual index at the site root", () => {
   }
 
   assert.doesNotMatch(currentLlms, /v10\.|v11\.|v12\.|v13\./);
+});
+
+test("redirect checks reject a target removed after LLM generation", (t) => {
+  const root = makeWorkspace();
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  child_process.execFileSync(process.execPath, [generatorPath], { cwd: root });
+  fs.unlinkSync(path.join(root, "public/llms/manual/llm-full.txt"));
+  assert.throws(
+    () => checkWorkspaceRedirects(root),
+    /Missing generated LLM text file.*\/llms\/manual\/llm-full\.txt/,
+  );
+});
+
+test("redirect checks reject a wildcard that shadows the manual index", (t) => {
+  const root = makeWorkspace();
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  child_process.execFileSync(process.execPath, [generatorPath], { cwd: root });
+  const redirects = readFile(root, "public/_redirects");
+  writeFile(
+    root,
+    "public/_redirects",
+    `/llms/manual/v12.0.0/* /llms/manual/:splat 307\n${redirects}`,
+  );
+  assert.throws(
+    () => checkWorkspaceRedirects(root),
+    /First matching redirect for \/llms\/manual\/v12\.0\.0\/llms\.txt/,
+  );
 });
 
 test("generate_llms writes ReScript React files", () => {

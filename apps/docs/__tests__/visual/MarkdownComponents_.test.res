@@ -1,8 +1,6 @@
 open ReactRouter
 open Vitest
 
-external codeChildren: string => MdxLegacy.Components.unknown = "%identity"
-
 test("renders headings h1 through h5", async () => {
   await viewport(1440, 900)
 
@@ -248,7 +246,7 @@ test("renders inline code", async () => {
     <div dataTestId="inline-code-wrapper">
       <Markdown.P>
         {React.string("Use ")}
-        <Markdown.Code metastring=None> {codeChildren("Array.map")} </Markdown.Code>
+        <Markdown.Code metastring=None> {React.string("Array.map")} </Markdown.Code>
         {React.string(" to transform elements.")}
       </Markdown.P>
     </div>,

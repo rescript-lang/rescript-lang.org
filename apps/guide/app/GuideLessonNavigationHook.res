@@ -10,22 +10,13 @@ type t = {
   goToNextLesson: ReactEvent.Mouse.t => unit,
 }
 
-let emptyOutput = () => GuideCompilerFeedback.Output.make(~status="Output")
-
-let outputForLessonIndex = index =>
-  if index === 0 {
-    GuideCompilerFeedback.Output.initial
-  } else {
-    emptyOutput()
-  }
-
 let docsIntroUrl = "https://rescript-lang.org/docs/manual/introduction"
 
 let navigateToLesson = (~goToHash, ~setLessonIndex, ~setOutput, ~lessons, index) => {
   let lesson = GuideLesson.lessonAt(~lessons, index)
   goToHash(lesson->GuideLesson.hashForLesson)
   setLessonIndex(_ => index)
-  setOutput(_ => index->outputForLessonIndex)
+  setOutput(_ => GuideCompilerFeedback.Output.initial)
 }
 
 let useLessonNavigation = (~lessons, ~goToDocsIntro): t => {
@@ -42,7 +33,7 @@ let useLessonNavigation = (~lessons, ~goToDocsIntro): t => {
     let nextLessonHash = nextLesson->GuideLesson.hashForLesson
 
     setLessonIndex(_ => nextLessonIndex)
-    setOutput(_ => nextLessonIndex->outputForLessonIndex)
+    setOutput(_ => GuideCompilerFeedback.Output.initial)
 
     // Keep the hash canonical so direct links, browser back, and MemoryRouter tests share one path.
     if currentHash !== nextLessonHash {

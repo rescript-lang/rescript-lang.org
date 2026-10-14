@@ -35,6 +35,8 @@ export { myArray, hi };
 
 _`@unboxed` for variants with multiple constructors is available since ReScript `11.0.0`._
 
+ReScript 12 adds runtime discrimination for `ArrayBuffer.t`, `DataView.t`, and typed array payloads. ReScript 12.1 also supports `Set.t`, `Map.t`, `WeakSet.t`, and `WeakMap.t`. Each distinct JavaScript built-in can occupy its own constructor without overlapping the others.
+
 ### References
 
 - [Untagged variants doc](../docs/manual/variant.mdx#untagged-variants)
