@@ -1,5 +1,5 @@
 type loaderData = {
-  compilerData: option<GuideCompilerData.t>,
+  compilerData: GuideCompilerData.t,
   lessons: array<GuideLesson.t>,
 }
 
