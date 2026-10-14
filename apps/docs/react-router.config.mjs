@@ -1,9 +1,10 @@
 import * as fs from "node:fs";
+import { loadRoutes } from "./route-config.mjs";
 import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 import { createRequestHandler } from "react-router";
 
-const { stdlibPaths } = await import("./app/DocsRoutes.jsx");
+const { stdlibPaths } = loadRoutes();
 
 export default {
   ssr: true,
