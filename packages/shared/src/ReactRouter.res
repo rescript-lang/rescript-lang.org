@@ -19,6 +19,12 @@ module Loader = {
   type t<'a> = loaderArgs => promise<'a>
 }
 
+type data<'a>
+type responseInit = {status: int}
+
+@module("react-router")
+external data: ('a, responseInit) => data<'a> = "data"
+
 module Outlet = {
   @module("react-router") @react.component
   external make: unit => React.element = "Outlet"

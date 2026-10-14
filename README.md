@@ -170,7 +170,9 @@ Run `yarn test` before pushing content changes so CI does not fail on markdown r
 
 ## Writing Blog Posts
 
-If you are writing a blog post, refer to the [blog post guide](https://rescript-lang.org/blogpost-guide).
+Create an MDX file in [`apps/docs/markdown-pages/blog`](apps/docs/markdown-pages/blog). Its filename becomes the URL under `/blog/`; use an existing post as a template for the YAML frontmatter (`author`, quoted `date`, `title`, and optional `description`, `co_authors`, `previewImg`, `articleImg`, and `badge`). Author aliases are defined in [`BlogFrontmatter.res`](apps/docs/src/markdown/BlogFrontmatter.res).
+
+Put local images in [`apps/docs/public/img`](apps/docs/public/img) and reference them with `/img/...` URLs. Run `yarn dev` and preview the post at `/blog/<filename>` before opening a PR. Posts under `blog/archived` appear only in the archived listing.
 
 ## Adding Your Company Logo
 

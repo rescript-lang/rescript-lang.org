@@ -1,7 +1,7 @@
 type company = Logo({name: string, url: string, path: string, width: int, height: int})
 
 // NOTE: More details on how this works can be found in our README:
-// https://github.com/rescript-lang/rescript-lang.org#how-to-add-your-company-logo-to-our-front-page
+// https://github.com/rescript-lang/rescript-lang.org#adding-your-company-logo
 // Fractional SVG dimensions are scaled to integer units to preserve their exact aspect ratio.
 
 let companies = [
