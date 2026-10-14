@@ -127,6 +127,25 @@ module Types = {
   external expressionStatement: Ast.expression => Ast.statement = "expressionStatement"
 }
 
+module RuntimeImports = {
+  let collect = ast => {
+    let imports = Dict.make()
+    ast.Ast.program.body->Array.forEach(statement => {
+      if statement->Ast.nodeType === "ImportDeclaration" {
+        let source = statement->Ast.source->Ast.stringLiteralValue
+        if source->String.startsWith("./stdlib/") {
+          switch statement->Ast.specifiers {
+          | [ImportNamespaceSpecifier({local: Identifier({name})})] =>
+            imports->Dict.set(name, source)
+          | _ => ()
+          }
+        }
+      }
+    })
+    imports
+  }
+}
+
 module PlaygroundValidator = {
   type validator = {
     entryPointExists: bool,
@@ -136,26 +155,13 @@ module PlaygroundValidator = {
 
   let validate = ast => {
     let entryPoint = ref(false)
-    let imports = Dict.make()
+    let imports = RuntimeImports.collect(ast)
 
     let remove = nodePath => Generator.remove(nodePath)
     Traverse.traverse(
       ast,
       {
-        "ImportDeclaration": (
-          {
-            node: ImportDeclaration({specifiers, source: StringLiteral({value: source})}),
-          } as nodePath: Ast.nodePath<Ast.ImportDeclaration.t>,
-        ) => {
-          if source->String.startsWith("./stdlib") {
-            switch specifiers {
-            | [ImportNamespaceSpecifier({local: Identifier({name})})] =>
-              imports->Dict.set(name, source)
-            | _ => ()
-            }
-          }
-          remove(nodePath)
-        },
+        "ImportDeclaration": remove,
         "ExportNamedDeclaration": remove,
         "VariableDeclaration": (
           {node: VariableDeclaration({declarations})}: Ast.nodePath<Ast.VariableDeclaration.t>,

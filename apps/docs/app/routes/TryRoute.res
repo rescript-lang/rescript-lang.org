@@ -5,50 +5,10 @@ type stylesheet = {rel: string, href: string}
 
 let links = () => [{rel: "stylesheet", href: playgroundCss}]
 
-type props = {
-  bundleBaseUrl: string,
-  versions: array<string>,
-}
+type props = CompilerData.t
 
-let loader = async () => {
-  let (bundleBaseUrl, versionsBaseUrl) = switch (
-    Node.Process.Env.playgroundBundleEndpoint,
-    Node.Process.Env.nodeEnv,
-  ) {
-  | (Some(baseUrl), _) => (baseUrl, baseUrl)
-  | (None, "development") => {
-      // Use remote bundles in dev
-      let baseUrl = "https://cdn.rescript-lang.org"
-      (baseUrl, baseUrl)
-    }
-  | (None, _) => (
-      // Use same-origin requests for the bundle
-      "/playground-bundles",
-      // There is no version endpoint in the build phase
-      "https://cdn.rescript-lang.org",
-    )
-  }
+let loader = () => CompilerData.load(~location=SameOriginInProduction)
 
-  try {
-    let versions = {
-      let response = await fetch(versionsBaseUrl + "/playground-bundles/versions.json")
-      let json = await WebAPI.Response.json(response)
-      json
-      ->JSON.Decode.array
-      ->Option.getOrThrow
-      ->Array.map(json => json->JSON.Decode.string->Option.getOrThrow)
-    }
-
-    Some({
-      bundleBaseUrl,
-      versions,
-    })
-  } catch {
-  | JsExn(e) =>
-    Console.error2("error while fetching compiler versions", e)
-    None
-  }
-}
 module ClientOnly = {
   @react.component
   let make = (~bundleBaseUrl, ~versions) => {
@@ -59,7 +19,7 @@ module ClientOnly = {
 }
 
 let default = () => {
-  let data = ReactRouter.useLoaderData()
+  let data: option<props> = ReactRouter.useLoaderData()
   <>
     <Meta
       title="ReScript Playground" description="Try ReScript in the browser" ogImage="/og/try.avif"

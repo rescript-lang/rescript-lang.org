@@ -53,7 +53,7 @@ let hasPreviousLesson = index => index > 0
 let hasNextLesson = (~lessons, index) => index < lessons->Array.length - 1
 
 let runtimeLogText = (runtimeLog: GuideCompilerFeedback.Output.runtimeLog) =>
-  runtimeLog.content->Array.join(" ")
+  RuntimeConsole.text(runtimeLog)
 
 let isExerciseComplete = (~exercise, ~output: GuideCompilerFeedback.Output.t) =>
   switch exercise.check {

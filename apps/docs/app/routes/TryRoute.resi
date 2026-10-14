@@ -2,10 +2,7 @@ type stylesheet = {rel: string, href: string}
 
 let links: unit => array<stylesheet>
 
-type props = {
-  bundleBaseUrl: string,
-  versions: array<string>,
-}
+type props = CompilerData.t
 
 let loader: unit => promise<option<props>>
 
