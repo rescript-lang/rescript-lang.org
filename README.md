@@ -106,7 +106,9 @@ Run these commands from the repository root. To target a workspace, use
 | `yarn build`         | Build and pre-render the docs site                               |
 | `yarn build:guide`   | Build and pre-render the interactive guide                       |
 | `yarn preview`       | Build and serve the generated docs client locally                |
-| `yarn build:res`     | Compile ReScript across all four workspaces                      |
+| `yarn build:res`     | Generate route types and compile all four workspaces             |
+| `yarn build:routes`  | Regenerate the shared ReScript route type                        |
+| `yarn check:routes`  | Check that the shared route type matches the current routes      |
 | `yarn dev:res`       | Run the ReScript compiler in watch mode                          |
 | `yarn format`        | Run Oxfmt and format ReScript across all four workspaces         |
 | `yarn test`          | Run docs markdown example, href, and redirect validation         |
@@ -116,6 +118,13 @@ Run these commands from the repository root. To target a workspace, use
 | `yarn vitest:update` | Update screenshot baselines headlessly                           |
 
 ## Testing
+
+The documentation route table lives in `apps/docs/route-config.mjs`. React Router
+and `apps/docs/generate-route-types.mjs` read the same configuration, including
+MDX pages and API modules. `packages/shared/src/Path.res` is generated before
+ReScript builds and when starting the ReScript watcher. After changing routes,
+adding or removing MDX pages, or updating API data during a watch session, run
+`yarn build:routes` again. CI rejects a stale generated file.
 
 ### Vitest Browser Tests
 

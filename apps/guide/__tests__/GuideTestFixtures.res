@@ -57,10 +57,10 @@ let finalLesson: GuideLesson.t = {
 let guideLessons = [firstLesson, secondLesson]
 let guideLessonsWithFinal = [firstLesson, secondLesson, finalLesson]
 
-let renderGuideHome = (~initialEntries=["/"], ()) =>
+let renderGuideHome = (~initialEntries=["/"], ~compilerData=?, ()) =>
   render(
     <ReactRouter.MemoryRouter initialEntries>
-      <GuideHome lessons=guideLessons />
+      <GuideHome lessons=guideLessons ?compilerData />
     </ReactRouter.MemoryRouter>,
   )
 
