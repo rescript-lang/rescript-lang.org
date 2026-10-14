@@ -7,7 +7,7 @@ test("browser Back and Forward restore the guide lesson and saved code", async (
   await page.addInitScript((code) => {
     localStorage.setItem(
       "rescript-guide:v1:progress",
-      JSON.stringify(["first-contact/greeting"]),
+      JSON.stringify({ completedExerciseIds: ["first-contact/greeting"] }),
     );
     localStorage.setItem(
       "rescript-guide:v1:exercise:first-contact/greeting",
@@ -20,6 +20,9 @@ test("browser Back and Forward restore the guide lesson and saved code", async (
     page.getByRole("heading", { name: "Learn ReScript Guide", exact: true }),
   ).toBeVisible();
   await expect(page.getByTestId("guide-code-editor")).toContainText(savedCode);
+  await expect(page.getByTestId("guide-check-status")).toContainText(
+    "Checkpoint complete",
+  );
 
   await page.getByRole("button", { name: "Next", exact: true }).click();
   await expect(page).toHaveURL(/#functions$/);
