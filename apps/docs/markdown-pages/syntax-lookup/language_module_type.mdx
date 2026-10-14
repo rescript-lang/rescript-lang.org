@@ -40,6 +40,19 @@ export { IntShow, rendered };
 
 </CodeTab>
 
+### Type Constraints
+
+Use `with type` to refine an abstract type from another module type. A `private` constraint exposes the underlying representation for safe coercion without allowing callers to construct values directly:
+
+```res
+module type Storage = {
+  type t
+  let make: string => t
+}
+
+module type PrivateStringStorage = Storage with type t = private string
+```
+
 ### References
 
-- [Module](../docs/manual/module.mdx)
+- [Module](../docs/manual/module.mdx#refining-module-types-with-constraints)

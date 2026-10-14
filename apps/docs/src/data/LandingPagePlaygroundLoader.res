@@ -41,16 +41,16 @@ export {
 
 let build = (): LandingPagePlayground.playgroundData => {
   // Keep prerendering independent of global language registration and other routes.
-  let highlighter = HighlightJsBindings.make()
-  highlighter->HighlightJsBindings.registerLanguage("rescript", HighlightJsBindings.rescript)
-  highlighter->HighlightJsBindings.registerLanguage("javascript", HighlightJsBindings.javascript)
+  let highlighter = HighlightLanguages.make(HighlightLanguages.defaultInstance)
+  highlighter->HighlightLanguages.registerLanguage("rescript", HighlightJsBindings.rescript)
+  highlighter->HighlightLanguages.registerLanguage("javascript", HighlightJsBindings.javascript)
 
   {
     rescriptHtml: (
-      highlighter->HighlightJsBindings.highlight(example.res, {language: "rescript"})
+      highlighter->HighlightLanguages.highlight(example.res, {language: "rescript"})
     ).value,
     javascriptHtml: (
-      highlighter->HighlightJsBindings.highlight(example.js, {language: "javascript"})
+      highlighter->HighlightLanguages.highlight(example.js, {language: "javascript"})
     ).value,
     playgroundHref: `/try?code=${LzString.lzString.compressToEncodedURIComponent(example.res)}`,
   }

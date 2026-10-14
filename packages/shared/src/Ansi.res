@@ -263,7 +263,7 @@ module SgrString = {
 
     let length = Array.length(tokens)
     for i in 0 to length - 1 {
-      let token = Belt.Array.getExn(tokens, i)
+      let token = tokens[i]->Option.getOrThrow
 
       let isLast = i === length - 1
 
@@ -298,12 +298,7 @@ module SgrString = {
           content := ""
         }
 
-        params :=
-          Belt.Array.concatMany([
-            Option.mapOr(fg, [], v => [v]),
-            Option.mapOr(bg, [], v => [v]),
-            rest,
-          ])
+        params := Array.flat([Option.mapOr(fg, [], v => [v]), Option.mapOr(bg, [], v => [v]), rest])
       | ClearSgr(_) =>
         if content.contents !== "" {
           let element = {content: content.contents, params: params.contents}

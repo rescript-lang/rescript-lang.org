@@ -34,12 +34,12 @@ export { greeting, multilineGreeting };
 
 </CodeTab>
 
-To concatenate strings, use `++`:
+Use `+` to concatenate strings. The older `++` operator is still supported:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-let greetings = "Hello " ++ "world!"
+let greetings = "Hello " + "world!"
 ```
 
 ```js
@@ -164,13 +164,30 @@ A ReScript boolean has the type `bool` and can be either `true` or `false`. Comm
 
 ReScript's `true/false` compiles into a JavaScript `true/false`.
 
+## Arithmetic Operators
+
+The unified arithmetic operators `+`, `-`, `*`, `/`, `%`, and `**` work with `int`, `float`, and `bigint`. `+` also works with `string`.
+
+The compiler specializes an operator from the types around it:
+
+```res
+let intSum = 1 + 2
+let floatSum = 1.5 + 2.5
+let stringSum = "Re" + "Script"
+
+let addFloats = (left: float, right) => left + right
+let addMoreFloats = (left, right: float) => left + right
+```
+
+Both operands must have the same type. If neither operand provides a primitive type, the expression defaults to `int`.
+
 ## Integers
 
 32-bits, truncated when necessary. We provide the usual operations on them: `+`, `-`, `*`, `/`, etc. See [Int](/docs/manual/api/stdlib/int) for helper functions.
 
 Integer operators include `+`, `-`, `*`, `/`, `**`, and `%`.
 
-`%` keeps the familiar `mod` naming, but its semantics are remainder (same behavior as JavaScript `%`).
+`%` computes the remainder, as in JavaScript. For example, `-7 % 4` is `-3`.
 
 Bitwise operators for `int`: `~~~`, `&&&`, `|||`, `^^^`, `<<`, `>>`, `>>>`.
 
@@ -180,7 +197,7 @@ To improve readability, you may place underscores in the middle of numeric liter
 
 ## Floats
 
-Arithmetic operators (`+`, `-`, `*`, `/`, `%`, `**`) work for both `int` and `float`. Like `0.5 + 0.6`. See [Float](/docs/manual/api/stdlib/float) for helper functions.
+Arithmetic operators (`+`, `-`, `*`, `/`, `%`, `**`) work for both `int` and `float`, as in `0.5 + 0.6`. See [Float](/docs/manual/api/stdlib/float) for helper functions.
 
 As with integers, you may use underscores within literals to improve readability.
 

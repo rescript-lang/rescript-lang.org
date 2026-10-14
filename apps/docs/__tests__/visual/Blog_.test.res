@@ -58,11 +58,11 @@ test("desktop blog index shows featured post and cards", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter initialEntries=["/blog"]>
       <div dataTestId="blog-wrapper">
         <Blog posts=mockPosts category=All />
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let featured = await screen->getByText("Announcing ReScript 12")
@@ -82,11 +82,11 @@ test("desktop blog shows category selector", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter initialEntries=["/blog"]>
       <div dataTestId="blog-wrapper">
         <Blog posts=mockPosts category=All />
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let allTab = await screen->getByText("All")
@@ -103,11 +103,11 @@ test("mobile blog index", async () => {
   await viewport(600, 1200)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter initialEntries=["/blog"]>
       <div dataTestId="blog-wrapper">
         <Blog posts=mockPosts category=All />
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let featured = await screen->getByText("Announcing ReScript 12")
@@ -121,11 +121,11 @@ test("blog shows empty state when no posts", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter initialEntries=["/blog"]>
       <div dataTestId="blog-empty-wrapper">
         <Blog posts=[] category=All />
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let emptyMsg = await screen->getByText("Blog not yet available")
@@ -170,11 +170,11 @@ test("desktop blog shows archived posts", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter initialEntries=["/blog"]>
       <div dataTestId="blog-wrapper">
         <Blog posts=mockArchivedPosts category=Archived />
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let post1 = await screen->getByText("An Old Archived Post")
@@ -208,11 +208,11 @@ test("desktop blog with single post", async () => {
   ]
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter initialEntries=["/blog"]>
       <div dataTestId="blog-wrapper">
         <Blog posts=singlePost category=All />
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let post = await screen->getByText("The Only Post")

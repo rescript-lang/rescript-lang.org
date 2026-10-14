@@ -40,48 +40,29 @@ module Warn = {
 }
 
 module UrlBox = {
-  open! MdxLegacy.MdxChildren
-
   let imgEl = <img src="/hyperlink.svg" className="mr-2 inline-block" />
 
   @react.component
-  let make = (~text: string, ~href: string, ~children: MdxLegacy.MdxChildren.t) => {
-    let content = switch classify(children) {
-    | String(str) =>
+  let make = (~text: string, ~href: string, ~children: React.element) => {
+    let elements = React.Children.toArray(children)
+    let content = if typeof(children) == #string || React.isValidElement(children) {
       <p>
         imgEl
-        {React.string(str)}
+        {MdxLegacy.getChildren(children)}
       </p>
-    | Element(el) =>
-      let subChildren = el->getMdxChildren
-      <p>
-        imgEl
-        {subChildren->toReactElement}
-      </p>
-    | Array(arr) =>
-      // Scenario: Take the first element, rewrap its children with the hyperlink img
-      let length = Array.length(arr)
-      if length >= 1 {
-        let head = Belt.Array.getExn(arr, 0)
-        let headChildren = head->getMdxChildren
-
+    } else {
+      switch elements[0] {
+      | None => React.null
+      | Some(head) =>
+        let rest = elements->Array.slice(~start=1)
         <>
           <P>
             imgEl
-            {headChildren->toReactElement}
+            {MdxLegacy.getChildren(head)}
           </P>
-          {if length > 1 {
-            arr->Array.slice(~start=1, ~end=length)->MdxLegacy.arrToReactElement
-          } else {
-            React.null
-          }}
+          {React.array(rest)}
         </>
-      } else {
-        React.null
       }
-    | Unknown(el) =>
-      Console.log2("Received unknown", el)
-      React.null
     }
 
     let link = if Util.Url.isAbsolute(href) {
@@ -232,10 +213,7 @@ module Code = {
   @module("../ffi/parse-numeric-range.js")
   external parseNumericRange: string => array<int> = "parsePart"
 
-  // TODO: Might be refactorable with the new @unboxed feature
-  type unknown = MdxLegacy.Components.unknown
-
-  external unknownAsString: unknown => string = "%identity"
+  type unknown = React.element
 
   let parseNumericRangeMeta = (metastring: string) =>
     String.split(metastring, " ")
@@ -279,7 +257,7 @@ module Code = {
       }
     }
 
-    let code = children->unknownAsString
+    let code = String.make(children)
     let isMultiline = code->String.includes("\n")
 
     switch lang {
@@ -290,35 +268,25 @@ module Code = {
 }
 
 module CodeTab = {
-  let getMdxMetastring: MdxLegacy.mdxComponent => option<string> = %raw("element => {
-      if(element == null || element.props == null) {
-        return;
-      }
-      return element.props.metastring;
-    }")
   @react.component
-  let make = (~children: MdxLegacy.MdxChildren.t, ~labels: array<string>=[]) => {
-    let mdxElements = switch MdxLegacy.MdxChildren.classify(children) {
-    | Array(mdxElements) => mdxElements
-    | Element(el) => [el]
-    | _ => []
-    }
+  let make = (~children: React.element, ~labels: array<string>=[]) => {
+    let mdxElements = React.Children.toArray(children)
 
     let tabs = Array.reduceWithIndex(mdxElements, [], (acc, mdxElement, i) => {
-      let child = mdxElement->MdxLegacy.MdxChildren.getMdxChildren->MdxLegacy.MdxChildren.classify
+      let children = mdxElement->MdxLegacy.getChildren->React.Children.toArray
 
-      switch child {
-      | Element(codeEl) =>
-        let className = MdxLegacy.getMdxClassName(codeEl)->Option.getOr("")
+      switch children {
+      | [codeEl] if React.isValidElement(codeEl) =>
+        let className = MdxLegacy.getClassName(codeEl)->Option.getOr("")
 
-        let metastring = getMdxMetastring(codeEl)->Option.getOr("")
+        let metastring = MdxLegacy.getMetastring(codeEl)->Option.getOr("")
 
         let lang = switch String.split(className, "-") {
         | ["language", lang] => Some(lang)
         | _ => None
         }
 
-        let code = String.make(MdxLegacy.MdxChildren.getMdxChildren(codeEl))
+        let code = String.make(MdxLegacy.getChildren(codeEl))
         let label = labels[i]
         let tab = {
           CodeExample.Toggle.lang,
@@ -408,73 +376,43 @@ module Ol = {
 }
 
 module Li = {
-  let typeOf: 'a => string = %raw("thing => { return typeof thing; }")
-  let isArray: 'a => bool = %raw("thing => { return thing instanceof Array; }")
-  external asArray: 'a => array<React.element> = "%identity"
+  let getType = element =>
+    if MdxLegacy.isComponent(element, P.make) {
+      "p"
+    } else if MdxLegacy.isComponent(element, Pre.make) {
+      "pre"
+    } else if MdxLegacy.isComponent(element, Ul.make) {
+      "ul"
+    } else if MdxLegacy.isComponent(element, Ol.make) {
+      "ol"
+    } else {
+      MdxLegacy.getType(element)
+    }
 
   @react.component
   let make = (~children) => {
-    /*
-     There are 3 value scenarios for `children`
-
-     1) string (if bullet point is standalone text)
-     2) array(<p>, <ul>|<ol>) (if nested list)
-     3) array(<p>,<inlineCode>,...,<p>) (if text with nested content)
-     4) array(<strong>, <inlineCode>, string,...) (if nested content without wrapping <p>)
-
-     We are iterating on these here with quite some bailout JS
- */
-
-    let elements: React.element = if isArray(children) {
-      let arr = children->asArray
-      let last: React.element = {
-        arr->Belt.Array.getExn(arr->Array.length - 1)
+    let elements = React.Children.toArray(children)
+    let content = switch elements {
+    | [] => React.null
+    | [child] =>
+      switch getType(child) {
+      | "pre" | "p" => child
+      | _ => <p> child </p>
       }
-
-      let head = Array.slice(arr, ~start=0, ~end=arr->Array.length - 1)
-
-      let first = Belt.Array.getExn(head, 0)
-
-      switch {
-        open MdxLegacy
-        last->fromReactElement->getMdxType
-      } {
-      | "ul"
-      | "li"
-      | "pre" =>
-        switch {
-          open MdxLegacy
-          first->fromReactElement->getMdxType
-        } {
-        | "p" =>
-          <>
-            {React.array(head)}
-            last
-          </>
-        | _ =>
-          <>
-            <p> {React.array(head)} </p>
-            last
-          </>
-        }
-      | _ => <p> children </p>
-      /* Scenario 3 */
-      }
-    } else if typeOf(children) === "string" {
-      <p> {children->Util.Unsafe.elementAsString->React.string} </p>
-    } else {
-      switch {
-        /* Unknown Scenario */
-        open MdxLegacy
-        children->fromReactElement->getMdxType
-      } {
-      | "pre" => children
-      | "p" => children
+    | _ =>
+      let first = elements[0]->Option.getOrThrow
+      let last = elements[elements->Array.length - 1]->Option.getOrThrow
+      let head = elements->Array.slice(~start=0, ~end=elements->Array.length - 1)
+      switch getType(last) {
+      | "ul" | "ol" | "li" | "pre" =>
+        <>
+          {getType(first) == "p" ? React.array(head) : <p> {React.array(head)} </p>}
+          last
+        </>
       | _ => <p> children </p>
       }
     }
-
-    <li className="md-li mt-3 leading-4 ml-2"> elements </li>
+    <li className="md-li mt-3 leading-4 ml-2"> content </li>
   }
 }
 
@@ -543,17 +481,3 @@ module Video = {
     </div>
   }
 }
-
-// Useful for debugging injected values in props
-//  let mdxTestComponent: React.component<{.}> = %raw(`
-//  function(children) {
-//    console.log(children);
-//    return React.createElement("div");
-//  }
-// `)
-
-// Used for the MdxJS Provider
-
-/* Sets our preferred branded styles
-   We most likely will never need a different ~components
-   option on our website. */
