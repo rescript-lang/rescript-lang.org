@@ -1,7 +1,5 @@
 open WebAPI
 
-%%raw("import React from 'react'")
-
 let loadGoogleFont = async (family: string) => {
   let url = `https://fonts.googleapis.com/css2?family=${family}`
   let css = await (await fetch(url))->Response.text

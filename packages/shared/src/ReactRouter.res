@@ -11,13 +11,19 @@ external useSearchParams: unit => (WebAPI.URLAPI.urlSearchParams, {..} => unit) 
 @module("react-router")
 external useLoaderData: unit => 'a = "useLoaderData"
 
-/* The types for this are auto-generated from the react-router.config.mjs file */
+/* Path.t is generated from apps/docs/route-config.mjs by yarn build:routes. */
 type path = {pathname: Path.t, search?: string, hash?: string}
 
 module Loader = {
   type loaderArgs = {request: WebAPI.FetchAPI.request}
   type t<'a> = loaderArgs => promise<'a>
 }
+
+type data<'a>
+type responseInit = {status: int}
+
+@module("react-router")
+external data: ('a, responseInit) => data<'a> = "data"
 
 module Outlet = {
   @module("react-router") @react.component
@@ -88,19 +94,6 @@ module Routes = {
 
   @module("@react-router/dev/routes")
   external index: string => t = "index"
-
-  type routeOptions = {id?: string}
-
-  @module("@react-router/dev/routes")
-  external route: (string, string, ~options: routeOptions=?) => t = "route"
-
-  @module("@react-router/dev/routes")
-  external layout: (string, array<t>) => t = "layout"
-}
-
-module BrowserRouter = {
-  @react.component @module("react-router")
-  external make: (~children: React.element) => React.element = "BrowserRouter"
 }
 
 module MemoryRouter = {

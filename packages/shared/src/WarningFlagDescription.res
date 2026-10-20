@@ -178,11 +178,11 @@ module Parser = {
     | _ => ()
     }
 
-    ret->Belt.SortArray.stableSortBy((v1, v2) => {
+    ret->Array.toSorted((v1, v2) => {
       let a = v1.flag->Int.fromString
       let b = v2.flag->Int.fromString
 
-      compare(a, b)
+      compare(a, b)->Int.toFloat
     })
   }
 
@@ -197,16 +197,16 @@ module Parser = {
 
     Array.forEach(other, token => dict->Dict.set(token.flag, token))
 
-    Dict.valuesToArray(dict)->Belt.SortArray.stableSortBy((t1, t2) => {
+    Dict.valuesToArray(dict)->Array.toSorted((t1, t2) => {
       open Float
       let f1 = t1.flag
       let f2 = t2.flag
       switch (f1->fromString->Option.isNone, f2->fromString->Option.isNone) {
       | (false, false)
       | (true, true) =>
-        String.localeCompare(f1, f2)->Float.toInt
-      | (true, false) => -1
-      | (false, true) => 1
+        String.localeCompare(f1, f2)
+      | (true, false) => -1.0
+      | (false, true) => 1.0
       }
     })
   }

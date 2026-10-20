@@ -370,6 +370,10 @@ Here's a list of all possible things you can unbox:
 - `Blob.t`: `Blob(Blob.t)`. A JavaScript blob.
 - `File.t`: `File(File.t)`. A JavaScript file.
 - `RegExp.t`: `RegExp(RegExp.t)`. A JavaScript regexp instance.
+- `ArrayBuffer.t` and `DataView.t`
+- Typed arrays: `Int8Array.t`, `Uint8Array.t`, `Uint8ClampedArray.t`, `Int16Array.t`, `Uint16Array.t`, `Int32Array.t`, `Uint32Array.t`, `Float32Array.t`, `Float64Array.t`, `BigInt64Array.t`, and `BigUint64Array.t`
+- `Set.t<'value>` and `Map.t<'key, 'value>` (since ReScript 12.1)
+- `WeakSet.t<'value>` and `WeakMap.t<'key, 'value>` (since ReScript 12.1)
 
 Again notice that the constructor names can be anything, what matters is what's in the payload.
 
@@ -615,6 +619,8 @@ let four: b = Four
 // This works because type `b` can always represent type `a` since all of type `a`'s constructors are spread into type `b`
 let oneAsTypeB = (one :> b)
 ```
+
+A closed [polymorphic variant](./polymorphic-variant.mdx) can also be coerced to a regular variant when every possible source constructor has the same runtime representation in the target.
 
 ### Coercing Variants to Primitives
 

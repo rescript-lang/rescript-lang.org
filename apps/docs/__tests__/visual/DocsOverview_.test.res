@@ -24,21 +24,6 @@ test("desktop docs overview shows all section cards", async () => {
   let tools = await screen->getByText("Tools")
   await element(tools)->toBeVisible
 
-  let wrapper = await screen->getByTestId("docs-overview-wrapper")
-  await element(wrapper)->toMatchScreenshot("desktop-docs-overview")
-})
-
-test("desktop docs overview shows ecosystem links", async () => {
-  await viewport(1440, 900)
-
-  let screen = await render(
-    <MemoryRouter initialEntries=["/docs"]>
-      <div dataTestId="docs-overview-wrapper">
-        <DocsOverview.default />
-      </div>
-    </MemoryRouter>,
-  )
-
   let packageIndex = await screen->getByText("Package Index")
   await element(packageIndex)->toBeVisible
 
@@ -46,7 +31,7 @@ test("desktop docs overview shows ecosystem links", async () => {
   await element(rescriptReact)->toBeVisible
 
   let wrapper = await screen->getByTestId("docs-overview-wrapper")
-  await element(wrapper)->toMatchScreenshot("desktop-docs-overview-ecosystem")
+  await element(wrapper)->toMatchScreenshot("desktop-docs-overview")
 })
 
 test("mobile docs overview", async () => {

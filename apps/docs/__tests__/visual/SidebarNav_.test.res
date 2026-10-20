@@ -14,11 +14,11 @@ test("sidebar category renders title and nav items", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="category-wrapper">
         <SidebarNav.Category category=mockCategory onClick={_ => ()} />
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let introduction = await screen->getByText("Introduction")
@@ -38,7 +38,7 @@ test("sidebar category highlights active item", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="category-wrapper">
         <SidebarNav.Category
           category=mockCategory
@@ -46,7 +46,7 @@ test("sidebar category highlights active item", async () => {
           onClick={_ => ()}
         />
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let introduction = await screen->getByText("Introduction")
@@ -117,11 +117,11 @@ test("sidebar category with many items", async () => {
   }
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="category-wrapper">
         <SidebarNav.Category category=largeCategory onClick={_ => ()} />
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let stringItem = await screen->getByText("String")

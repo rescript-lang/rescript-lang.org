@@ -94,6 +94,9 @@ external toBeDisabled: element => promise<unit> = "toBeDisabled"
 external notToBeDisabled: element => promise<unit> = "toBeDisabled"
 
 @send
+external toHaveTextContent: (element, string) => promise<unit> = "toHaveTextContent"
+
+@send
 external toHaveClass: (element, string) => promise<unit> = "toHaveClass"
 
 @send

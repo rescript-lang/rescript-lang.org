@@ -5,4 +5,7 @@ let parse = (dateStr: string): Date.t => dateStr->String.replaceRegExp(/-/g, "/"
 
 let toDate = dateStr => parse(dateStr)
 
+// ISO date-only strings represent midnight UTC, independent of the build timezone.
+let toUTCDate = dateStr => Date.fromString(dateStr)
+
 external fromString: string => t = "%identity"

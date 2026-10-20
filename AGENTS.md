@@ -2,60 +2,78 @@
 
 ## Project Overview
 
-This is the official documentation website for the [ReScript](https://rescript-lang.org) programming language. It is primarily pre-rendered at build time, with runtime server-side rendering for `/try` through Cloudflare Pages Functions. It is built with **ReScript v12 + React 19 + React Router v8 + Vite 8 + Tailwind CSS v4**, deployed to **Cloudflare Pages**.
+This monorepo contains the official documentation website for the [ReScript](https://rescript-lang.org) programming language and the interactive guide. Both use **ReScript v12 + React 19 + React Router v8 + Vite 8**. The docs site uses Tailwind CSS v4 and is primarily pre-rendered at build time, with runtime server-side rendering for `/try` through Cloudflare Pages Functions. The guide pre-renders its entry page and runs its interactive lessons in the browser, with assets served by a Cloudflare Worker.
 
 ## System Requirements
 
 - Node.js ≥ 26
-- Yarn 4.12.0 (via Corepack)
+- Yarn 4.13.0 (via Corepack, pinned in `package.json` and `.yarnrc.yml`)
 
 ## Project Structure
 
 ```
-app/              → React Router app shell (root layout, route definitions, route modules)
-  routes/         → Route components with loaders (e.g. BlogRoute.res, MdxRoute.res)
-src/              → Core ReScript source code
-  bindings/       → Zero-cost bindings to JS libraries (@module externals)
-  common/         → Shared utilities, hooks, helpers (non-component modules)
-  components/     → Reusable React components (e.g. SidebarNav, Breadcrumbs)
-  ffi/            → Plain JS interop files (prefer %raw over adding new files here)
-  layouts/        → Page layout components (DocsLayout, SidebarPageLayout, etc.)
-markdown-pages/   → MDX content (blog posts, docs, community pages, syntax-lookup)
-data/             → Hand-curated data (API docs JSON, sidebar ordering)
-styles/           → CSS files (Tailwind v4 config in main.css, custom utilities)
-scripts/          → Build/codegen scripts (ReScript + JS)
-functions/        → Cloudflare Pages Functions (e.g. OG image generation)
-plugins/          → HighlightJS & CodeMirror plugins
-public/           → Static assets (images, fonts, favicons)
-__tests__/        → Vitest browser-mode tests (Playwright)
+apps/docs/                 → Documentation website workspace (@rescript-lang/docs)
+  app/                     → React Router shell, layouts, and route modules
+    routes/                → Page components and loaders (e.g. BlogRoute.res)
+  src/                     → Website ReScript code
+    bindings/              → App-specific bindings to JS libraries
+    common/                → Shared website utilities and hooks
+    components/            → Reusable React components
+    ffi/                   → Legacy plain JS interop
+    layouts/               → Page layout components
+    markdown/              → MDX loading, compilation, and frontmatter parsing
+  markdown-pages/          → Blog, docs, community, and syntax-lookup MDX
+  data/                    → Sidebar ordering and content metadata
+  styles/                  → Tailwind v4 entry points, theme, and custom CSS
+  scripts/                 → Build, code generation, and validation scripts
+  functions/               → Pages Functions for /try, /try.data, and OG images
+  server/                  → React Router request handler for Pages Functions
+  public/                  → Static assets (images, fonts, favicons)
+  __tests__/               → Vitest browser and visual tests
+  e2e/                     → Cypress browser tests
+apps/guide/                → Interactive guide workspace (@rescript-lang/guide)
+packages/playground/       → Shared browser playground (@rescript-lang/playground)
+packages/shared/           → Shared bindings and utilities (@rescript-lang/shared)
+  src/                     → ReactRouter, Vitest, CodeMirror, highlighting, etc.
+  plugins/                 → CodeMirror 6 ReScript/Reason grammar
+data/api/                  → Compiler-published API JSON snapshots
+.github/                   → CI, deployment, and screenshot workflows
 ```
+
+Paths in these guidelines are relative to the repository root. Run the commands
+below from there; use `yarn workspace <name> <command>` for workspace commands.
+The playground loads published browser compiler bundles. Markdown example checks
+use the installed `rescript` package, not a separate compiler installation.
 
 ## Key Commands
 
-| Command          | Purpose                                                        |
-| ---------------- | -------------------------------------------------------------- |
-| `yarn dev`       | Run ReScript watcher + Vite dev server + Wrangler (parallel)   |
-| `yarn build`     | Full production build (ReScript → scripts → Vite/React Router) |
-| `yarn build:res` | ReScript compilation only                                      |
-| `yarn dev:res`   | ReScript watch mode only                                       |
-| `yarn format`    | Run Prettier + ReScript formatter                              |
-| `yarn test`      | Run example and href validation scripts                        |
-| `yarn vitest`    | Run Vitest browser tests with Playwright                       |
-| `make`           | Build (install deps + ReScript compile + update index)         |
+| Command             | Purpose                                                      |
+| ------------------- | ------------------------------------------------------------ |
+| `yarn dev`          | Run ReScript watcher + Vite dev server + Wrangler (parallel) |
+| `yarn build`        | Build and pre-render the docs site                           |
+| `yarn build:guide`  | Build and pre-render the interactive guide                   |
+| `yarn build:res`    | Compile ReScript across all four workspaces                  |
+| `yarn dev:res`      | ReScript watch mode only                                     |
+| `yarn format`       | Run Oxfmt and format ReScript across all four workspaces     |
+| `yarn test`         | Run example, href, and redirect validation scripts           |
+| `yarn vitest`       | Run docs Vitest browser tests in watch mode                  |
+| `yarn vitest:guide` | Run guide Vitest browser tests in watch mode                 |
+| `yarn ci:test`      | Run docs and guide Vitest browser tests headlessly           |
+| `make`              | Build (install deps + ReScript compile + update index)       |
 
 ## Coding Best Practices
 
 - Prefer small functions with a single purpose.
 - Use a functional approach but don't make it too hardcore or difficult to understand.
 - Keep files and modules small and focused.
-- `.res` files must always be capitalized (PascalCase), matching ReScript module conventions.
+- Use PascalCase for new `.res` modules. Follow the existing filenames for framework entrypoints such as `root.res` and `routes.res`, and for script entrypoints.
 - Use the pipe-first operator (`->`) for chaining, which is idiomatic ReScript.
-- Resolve all warnings and treat them as errors. The project has `"error": "+8"` in `rescript.json`.
-- Never directly edit an `.jsx` files, you must edit the corresponding `.res` file. The `.jsx` files are generated by the ReScript compiler and will be overwritten on the next compile.
+- Resolve all warnings before committing. `yarn build:res` applies the repository's strict warning checks.
+- Never directly edit generated `.jsx` files; edit the corresponding `.res` file and rebuild. Most compiler output is ignored by Git; the guide's `apps/guide/app/root.jsx` and `apps/guide/app/routes.jsx` are tracked and must be regenerated with their sources.
 
 ## ReScript Rules
 
-- You use **ReScript v12** (latest). Ensure all suggestions match this version.
+- This branch uses **ReScript v12**. Ensure all suggestions match this version.
 - Ensure any produced JSX matches ReScript JSX v4 syntax (configured with `"preserve": true`).
 - **Never use the `Belt` or `Js` modules** — these are legacy. Use the modern `Stdlib` / core modules instead.
 - Always use the `JSON.t` type for JSON values.
@@ -65,7 +83,7 @@ __tests__/        → Vitest browser-mode tests (Playwright)
 - Reference the abridged documentation for clarification on how ReScript's APIs work: https://rescript-lang.org/llms/manual/llm-small.txt
 - If you need more information you can access the full documentation, but do this only when needed as the docs are very large: https://rescript-lang.org/llms/manual/llm-full.txt
 - Never use `%raw` unless you are specifically asked to
-- Never use `Object.magic`
+- Never use `Obj.magic`
 - Don't add type annotations unless necessary for clarity or to resolve an error. ReScript's type inference is powerful, and often explicit annotations are not needed.
 
 ### ReScript Dependencies
@@ -77,36 +95,37 @@ __tests__/        → Vitest browser-mode tests (Playwright)
 
 The project uses several patterns for JavaScript interop. Follow the existing conventions:
 
-- **`@module` externals** for binding to npm packages (see `src/bindings/` for examples):
+- **`@module` externals** for binding to npm packages (see `apps/docs/src/bindings/` and `packages/shared/src/` for examples):
+
   ```
-  @module("react-router") external useNavigate: unit => string => unit = "useNavigate"
+  type navigateOptions = {replace?: bool}
+  type navigate = (string, ~options: navigateOptions=?) => unit
+
+  @module("react-router") external useNavigate: unit => navigate = "useNavigate"
   ```
+
 - **`@module` with `@react.component`** for binding to external React components:
   ```
   @module("react-router") @react.component
-  external make: (~children: React.element) => React.element = "Outlet"
+  external make: unit => React.element = "Outlet"
   ```
-- **`%raw()`** for inline JS when no clean binding is possible:
-  ```
-  let copyToClipboard: string => bool = %raw(`function(str) { ... }`)
-  ```
-- **`%%raw()`** (double percent) for top-level side-effectful JS imports.
+- `%raw` and `%%raw` embed JavaScript; use them only when specifically requested.
 - **`@scope`** for binding to object properties like `process.env`.
 - **`external ... = "%identity"`** for zero-cost type coercions.
-- Put new bindings in `src/bindings/` as a dedicated module (e.g. `Fuse.res`, `DocSearch.res`).
+- Put app-specific bindings in `apps/docs/src/bindings/` as a dedicated module (e.g. `Fuse.res`, `DocSearch.res`). Bindings shared with the guide or playground belong in `packages/shared/src/`.
 
 ## ReScript React
 
 - This project uses **React 19** and **React Router v8** (framework mode).
 - The site uses hybrid rendering: most routes are pre-rendered during the build, while `/try` is server-rendered by Cloudflare Pages Functions at runtime.
 - Loaders for pre-rendered routes can access the filesystem during the build. Runtime SSR loaders, including shared loader code reachable from `/try`, execute in Cloudflare and must not depend on Node-only filesystem APIs or other build-time-only operations.
-- Route modules live in `app/routes/` and export a `loader` and a `default` component.
-- Route modules **require** both a `.res` and a `.resi` (interface) file for Vite HMR to work.
-- Only a single React component can be exposed from a module's JS output.
+- Docs route modules live in `apps/docs/app/routes/`; the guide's route modules live in `apps/guide/app/`. Routes can export a `loader`, `links`, and a `default` component as needed.
+- Give route modules a `.resi` interface that exposes their route exports and keeps helper components private.
+- Export a route's page component as `default`. Reusable component modules may export multiple components, as `Markdown.resi` does.
 
 ### Route Module Pattern
 
-Every route follows this pattern:
+Example of a route with a loader. Routes without loader data can omit the loader and its type:
 
 ```rescript
 // SomeRoute.res
@@ -152,21 +171,21 @@ let default: unit => React.element
 
 ## Styling
 
-- **Tailwind CSS v4** configured via the Vite plugin (`@tailwindcss/vite`). There is no `tailwind.config.js`.
-- Tailwind design tokens and custom utilities live in `styles/_theme.css`. It is imported by `styles/main.css` and referenced by route-specific stylesheets.
+- The docs site uses **Tailwind CSS v4**, configured via the Vite plugin (`@tailwindcss/vite`). Design tokens and custom utilities live in `apps/docs/styles/_theme.css`, imported by `apps/docs/styles/main.css` and referenced by route-specific stylesheets.
+- The guide uses its own plain CSS in `apps/guide/styles/main.css`.
 - **LightningCSS** is used as the CSS transformer.
-- The project defines custom design tokens in `styles/_theme.css`:
+- The project defines custom design tokens in `apps/docs/styles/_theme.css`:
   - Custom colors: `gray-*`, `fire-*`, `sky-*`, `berry-*`, `water`, `turtle`, `orange-*`
   - Custom font sizes: `text-11` through `text-68`
   - Custom utility classes: `hl-title`, `hl-1`–`hl-5`, `body-lg`, `body-md`, `body-sm`, `captions`
   - Fonts: Inter (sans), Roboto Mono (mono)
-- Use existing custom utilities and design tokens. Check `styles/_theme.css` before creating new ones.
+- Use existing custom utilities and design tokens. Check `apps/docs/styles/_theme.css` before creating new ones.
 
 ## Testing
 
 - Tests use **Vitest 5** in browser mode with **Playwright** (Chromium).
-- Test files live in `__tests__/` and are named `ComponentName_.test.res` (compiled to `.test.jsx`).
-- Tests use custom ReScript bindings in `src/bindings/Vitest.res`.
+- Browser tests live in `apps/docs/__tests__/` and `apps/guide/__tests__/`. Docs visual tests live in `apps/docs/__tests__/visual/`. Test modules are named `ComponentName_.test.res` (compiled to `.test.jsx`).
+- Tests use custom ReScript bindings in `packages/shared/src/Vitest.res`.
 - Tests are visual/integration tests that render components and assert visibility, interactions, and screenshots.
 - Test pattern:
 
@@ -183,23 +202,26 @@ let default: unit => React.element
   ```
 
 - Components requiring React Router context must be wrapped in `<MemoryRouter>`.
-- Do not use `<BrowserRouter>` in tests.
-- Run tests with `yarn vitest --browser.headless --run`.
-- Do not update snapshots without asking for confirmation.
+- Do not use `<BrowserRouter>` in component tests. End-to-end tests exercise the app's normal routing and browser history.
+- Run `yarn build:res` first so the tests use current compiler output. Run `yarn vitest --browser.headless --run` for docs tests or `yarn vitest:guide --browser.headless --run` for guide tests. Run `yarn ci:test` to check both suites.
+- Do not update snapshots without asking for confirmation. Approved docs visual baseline changes use the `Update Visual Regression Screenshots` GitHub Actions workflow against the feature branch; pull and review the generated commit. Local screenshot updates are blocked by the Vitest configuration.
 
 ## MDX Content
 
-- Documentation content is in `markdown-pages/` organized by section (blog, docs, community, syntax-lookup).
-- MDX is processed by `react-router-mdx` with remark/rehype plugins.
-- Custom MDX components are mapped in `app/routes/MdxRoute.res` (e.g. `<Info>`, `<Warn>`, `<CodeTab>`, `<Video>`).
+- Documentation content is in `apps/docs/markdown-pages/`, organized by section (blog, docs, community, syntax-lookup).
+- `apps/docs/src/markdown/MdxFile.res` loads frontmatter and compiles MDX with `@mdx-js/mdx` and remark plugins. Route loaders pass the compiled content to `MdxContent`.
+- `apps/docs/src/components/MdxContent.res` evaluates compiled MDX with `runSync` and maps custom components (e.g. `<Info>`, `<Warn>`, `<CodeTab>`, `<Video>`).
 - Code examples in markdown use ` ```res ` (runnable), ` ```res sig ` (signature), and ` ```res prelude ` (shared context).
+- `yarn test` validates examples, relative links, and redirects. For matching CI's link-check failure behavior locally, run `CI=1 yarn test`; the link checker reports findings locally but only exits unsuccessfully for them when `CI` is set. It scans the full MDX tree and does not accept a glob filter.
 
 ## Formatting & Git Hooks
 
-- **Prettier** with the `@prettier/plugin-oxc` parser for JS formatting.
-- **ReScript formatter** (`rescript format`) for `.res` files.
-- **Lefthook** runs `yarn format` on pre-commit (auto-stages fixed files).
-- Generated `.mjs`/`.jsx` output files from ReScript are git-tracked but excluded from Prettier.
+- **Oxfmt** formats JavaScript, JSON, Markdown/MDX, CSS, and YAML, using `.oxfmtrc.json`.
+- **ReScript formatter** (`rescript format`) formats `.res` and `.resi` files.
+- `yarn format` runs both formatters from the repository root, covering all four workspaces. The docs workspace's `format` command delegates to the root command.
+- **Lefthook** runs Oxfmt and the ReScript formatter on matching staged files in parallel, then auto-stages formatting fixes. See `lefthook.yml` for the file patterns and commands.
+- Most generated `.jsx` output is ignored by Git. The two tracked guide entry modules are excluded from Oxfmt; regenerate them with the compiler.
+- `.vscode/extensions.json` recommends the Oxc formatter integration and the ReScript extension.
 
 ## Pull Requests and Commits
 
@@ -211,6 +233,5 @@ let default: unit => React.element
 
 - Do **not** modify generated `.jsx` / `.mjs` files directly — they are ReScript compiler output.
 - Do **not** use `@genType` — the project does not use it.
-- The `src/ffi/` directory is legacy; prefer `%raw` statements for new JS interop.
-- The README references some outdated structures (Next.js, `pages/` directory) — ignore those references. The project has migrated to React Router v8.
-- When editing route files, always update both the `.res` and `.resi` files.
+- The `apps/docs/src/ffi/` directory is legacy; prefer bindings in `apps/docs/src/bindings/` or `packages/shared/src/` for new JS interop.
+- Keep route `.resi` files in sync when public exports or their types change. Implementation-only edits need only change the `.res` file.

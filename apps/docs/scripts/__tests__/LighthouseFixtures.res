@@ -27,7 +27,7 @@ type commentInput = {
 }
 
 @module("../lighthouse-report.mjs")
-external artifactName: string => string = "lighthouseArtifactName"
+external artifactName: (string, ~environment: string=?) => string = "lighthouseArtifactName"
 @module("../lighthouse-report.mjs") external median: array<float> => float = "median"
 @module("../lighthouse-report.mjs")
 external createBaseline: baselineInput => baseline = "createBaseline"

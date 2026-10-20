@@ -4,3 +4,4 @@ type t
 external fromString: string => t = "%identity"
 
 let toDate: t => Date.t
+let toUTCDate: t => Date.t

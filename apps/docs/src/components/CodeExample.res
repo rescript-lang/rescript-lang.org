@@ -9,102 +9,6 @@ let langShortname = (lang: string) =>
   | rest => rest
   }
 
-module CopyButton = {
-  let copyToClipboard: string => bool = %raw(`
-  function(str) {
-    try {
-      const el = document.createElement('textarea');
-      el.value = str;
-      el.setAttribute('readonly', '');
-      el.style.position = 'absolute';
-      el.style.left = '-9999px';
-      document.body.appendChild(el);
-      const selected =
-        document.getSelection().rangeCount > 0 ? document.getSelection().getRangeAt(0) : false;
-        el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
-        if (selected) {
-          document.getSelection().removeAllRanges();
-          document.getSelection().addRange(selected);
-        }
-        return true;
-      } catch(e) {
-        return false;
-      }
-    }
-    `)
-
-  type state =
-    | Init
-    | Copied
-    | Failed
-
-  @react.component
-  let make = (~code) => {
-    let (state, setState) = React.useState(_ => Init)
-
-    let buttonRef = React.useRef(Nullable.null)
-
-    let onClick = evt => {
-      ReactEvent.Mouse.preventDefault(evt)
-      if copyToClipboard(code) {
-        setState(_ => Copied)
-      } else {
-        setState(_ => Failed)
-      }
-    }
-
-    React.useEffect(() => {
-      switch state {
-      | Copied =>
-        let buttonEl = Nullable.toOption(buttonRef.current)->Option.getOrThrow
-
-        // Note on this imperative DOM nonsense:
-        // For Tailwind transitions to behave correctly, we need to first paint the DOM element in the tree,
-        // and in the next tick, add the opacity-100 class, so the transition animation actually takes place.
-        // If we don't do that, the banner will essentially pop up without any animation
-        let bannerEl = WebAPI.Document.createElement(document, "div")
-        bannerEl.className = "opacity-0 absolute -top-6 right-0 -mt-5 -mr-4 px-4 py-2 w-40 rounded-lg captions text-white bg-gray-100 text-gray-80-tr transition-all duration-1000 ease-in-out "
-
-        let textNode = WebAPI.Document.createTextNode(document, "Copied to clipboard")
-
-        WebAPI.Element.appendChild(bannerEl, textNode)->ignore
-        WebAPI.Element.appendChild(buttonEl, bannerEl)->ignore
-
-        let nextFrameId = WebAPI.Window.requestAnimationFrame(window, _ => {
-          WebAPI.DOMTokenList.toggle(bannerEl.classList, ~token="opacity-0")->ignore
-          WebAPI.DOMTokenList.toggle(bannerEl.classList, ~token="opacity-100")->ignore
-        })
-
-        let timeoutId = setTimeout(~handler=() => {
-          buttonEl->WebAPI.Element.removeChild(bannerEl)->ignore
-          setState(_ => Init)
-        }, ~timeout=3000)
-
-        Some(
-          () => {
-            cancelAnimationFrame(nextFrameId)
-            clearTimeout(timeoutId)
-          },
-        )
-      | _ => None
-      }
-    }, [state])
-    //Copy-Button
-    <button
-      ref={ReactDOM.Ref.domRef((Obj.magic(buttonRef): React.ref<Nullable.t<Dom.element>>))}
-      disabled={state === Copied}
-      className="relative"
-      onClick
-    >
-      <Icon.Clipboard
-        className="text-gray-30 mt-px hover:cursor-pointer hover:text-gray-60 hover:bg-gray-30 w-6 h-6 p-1 rounded transition-all duration-300 ease-in-out"
-      />
-    </button>
-  }
-}
-
 @react.component
 let make = (
   ~highlightedLines=[],
@@ -139,7 +43,7 @@ let make = (
 
   let copyButton = if showCopyButton {
     <div className="absolute right-1 top-0 p-1">
-      <CopyButton code />
+      <CodeCopyButton key=code code />
     </div>
   } else {
     React.null
@@ -259,7 +163,7 @@ module Toggle = {
               </Link.String>
             : React.null
 
-        let copyButton = <CopyButton code={tab.code} />
+        let copyButton = <CodeCopyButton key=tab.code code={tab.code} />
 
         <div className="flex items-center justify-end h-full pr-4 space-x-2">
           playgroundLinkButton

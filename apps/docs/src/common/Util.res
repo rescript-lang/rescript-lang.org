@@ -1,15 +1,14 @@
-module Unsafe = {
-  external elementAsString: React.element => string = "%identity"
-}
-
 module String = {
-  let camelCase: string => string = %raw("str => {
-     return str.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
-    }")
+  let camelCase = str =>
+    str->String.replaceRegExpBy1Unsafe(/-([a-z])/g, (
+      ~match as _,
+      ~group1,
+      ~offset as _,
+      ~input as _,
+    ) => group1->String.toUpperCase)
 
-  let capitalize: string => string = %raw("str => {
-      return str && str.charAt(0).toUpperCase() + str.substring(1);
-    }")
+  let capitalize = str =>
+    str->String.slice(~start=0, ~end=1)->String.toUpperCase ++ str->String.slice(~start=1)
 
   let capitalizeSentence = str =>
     str

@@ -7,12 +7,6 @@ let normalizePathname: string => string
  */
 let resolveFilePath: (string, ~dir: string, ~alias: string) => string
 
-/** Scan a directory recursively for .mdx files and return URL paths.
- * e.g. scanPaths(~dir="markdown-pages/blog", ~alias="blog")
- * → ["blog/release-12-0-0", "blog/archived/some-post", ...]
- */
-let scanPaths: (~dir: string, ~alias: string) => array<string>
-
 /** Compile raw MDX content into a function-body string using @mdx-js/mdx. */
 let compileMdx: (
   string,
