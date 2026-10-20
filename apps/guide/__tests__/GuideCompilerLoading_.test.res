@@ -1,7 +1,8 @@
 open Vitest
 
-@module("./compilerLoadingFixture.js")
-external interceptCompilerScripts: bool => unit = "interceptCompilerScripts"
+@module("./compilerFixture.js")
+external waitForCompilerRequest: unit => promise<unit> = "waitForCompilerRequest"
+@module("./compilerFixture.js") external failCompilerLoading: unit => unit = "failCompilerLoading"
 
 @module("./compilerLoadingFixture.js")
 external expireCompilerLoading: unit => unit = "expireCompilerLoading"
@@ -18,8 +19,9 @@ let renderWithCompiler = () =>
 
 test("shows a compiler loading failure in the guide output", async () => {
   await viewport(1440, 900)
-  interceptCompilerScripts(true)
   let screen = await renderWithCompiler()
+  await waitForCompilerRequest()
+  failCompilerLoading()
   await (await screen->getByText("Compiler setup failed"))->element->toBeVisible
   await (
     await screen->getByText(
@@ -32,7 +34,6 @@ test("shows a compiler loading failure in the guide output", async () => {
 
 test("shows a useful message when the compiler CDN never responds", async () => {
   await viewport(1440, 900)
-  interceptCompilerScripts(false)
   expireCompilerLoading()
   let screen = await renderWithCompiler()
   await (await screen->getByText("Compiler setup failed"))->element->toBeVisible
