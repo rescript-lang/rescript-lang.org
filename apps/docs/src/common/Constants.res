@@ -1,6 +1,4 @@
-external latestVersion: string = "import.meta.env.VITE_VERSION_LATEST"
-
-let docSearchVersionTokens = [latestVersion->Semver.tryGetMajorString, "latest"]
+let docSearchVersionTokens = [DocsVersion.current, "next"]
 
 // Used for the DocsOverview
 let languageManual = [

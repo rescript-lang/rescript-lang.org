@@ -6,7 +6,7 @@ test("renders current version label", async () => {
   let el = await screen->getByTestId("version-select")
   await element(el)->toBeVisible
 
-  let label = await screen->getByText("v12 (latest)")
+  let label = await screen->getByText("v13 (preview)")
   await element(label)->toBeVisible
 })
 
@@ -21,7 +21,10 @@ test("clicking button shows older versions", async () => {
   let button = await screen->getByRole(#button)
   await button->click
 
-  // Older versions should now be visible
+  // Released documentation should now be visible
+  let latest = await screen->getByText("v12 (latest)")
+  await element(latest)->toBeVisible
+
   let v11After = await screen->getByText("v11")
   await element(v11After)->toBeVisible
 

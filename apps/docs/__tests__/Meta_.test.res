@@ -43,7 +43,7 @@ test("renders DocSearch crawler meta tags", async () => {
   )
 
   expect(getMetaContent("docsearch:language"))->toBe("en")
-  expect(getMetaContent("docsearch:version"))->toBe("v12,latest")
+  expect(getMetaContent("docsearch:version"))->toBe("v13,next")
 })
 
 test("generates Open Graph image URLs from the current page URL", async () => {
