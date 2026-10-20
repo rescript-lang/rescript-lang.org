@@ -1,5 +1,18 @@
 open Vitest
 
+test("advertises the blog RSS feed in page metadata", async () => {
+  let _screen = await render(
+    <ReactRouter.MemoryRouter initialEntries=["/blog"]>
+      <Meta />
+    </ReactRouter.MemoryRouter>,
+  )
+  let feed =
+    document->WebAPI.Document.querySelector("link[rel='alternate'][type='application/rss+xml']")
+  expect(feed->Null.toOption->Option.map(WebAPI.Element.getAttribute(_, "href")))->toBe(
+    Some(Null.make("/blog/feed.xml")),
+  )
+})
+
 let getMetaContent = name => {
   switch document->WebAPI.Document.querySelector(`meta[name='${name}']`) {
   | Value(element) =>

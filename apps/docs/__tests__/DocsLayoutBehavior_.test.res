@@ -64,3 +64,23 @@ test("docs layout marks the textual content for DocSearch crawling", async () =>
 
   expect(lvl0->textContent)->toBe("Manual")
 })
+
+test("following a desktop docs link keeps the in-page sidebar hidden on mobile", async () => {
+  await viewport(1440, 900)
+
+  let screen = await render(
+    <MemoryRouter initialEntries=["/docs/manual/introduction"]>
+      <DocsLayout categories=mockCategories>
+        <div> {React.string("Documentation content")} </div>
+      </DocsLayout>
+    </MemoryRouter>,
+  )
+
+  let sidebar = await screen->getByTestId("sidebar-content")
+  await element(sidebar)->toBeVisible
+  let installation = await sidebar->getByText("Installation")
+  await installation->click
+
+  await viewport(390, 844)
+  await element(sidebar)->notToBeVisible
+})

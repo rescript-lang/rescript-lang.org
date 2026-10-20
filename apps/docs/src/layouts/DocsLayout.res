@@ -13,18 +13,12 @@ let make = (
 ) => {
   let {pathname: route} = ReactRouter.useLocation()
 
-  let (isSidebarOpen, setSidebarOpen) = React.useState(_ => false)
-  let toggleSidebar = () => setSidebarOpen(prev => !prev)
-
   let preludeSection =
     <div className="flex flex-col justify-between text-fire font-medium items-baseline">
       <VersionSelect />
     </div>
 
-  let sidebar =
-    <Sidebar isOpen=isSidebarOpen toggle=toggleSidebar preludeSection ?activeToc categories route />
+  let sidebar = <Sidebar preludeSection ?activeToc categories route />
 
-  <SidebarPageLayout sidebarState=(isSidebarOpen, setSidebarOpen) sidebar categories ?docSearchLvl0>
-    children
-  </SidebarPageLayout>
+  <SidebarPageLayout sidebar categories ?docSearchLvl0> children </SidebarPageLayout>
 }
