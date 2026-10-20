@@ -1,9 +1,3 @@
-type highlightOptions = {language: string}
-type highlightResult = {value: string}
-
-@module("highlight.js/lib/core") @scope("default")
-external make: unit => HighlightLanguages.highlighter = "newInstance"
-
 @module("highlight.js/lib/languages/bash")
 external bash: HighlightLanguages.definition = "default"
 
@@ -36,14 +30,3 @@ external toml: HighlightLanguages.definition = "default"
 
 @module("highlightjs-rescript")
 external rescript: HighlightLanguages.definition = "default"
-
-@send
-external registerLanguage: (
-  HighlightLanguages.highlighter,
-  string,
-  HighlightLanguages.definition,
-) => unit = "registerLanguage"
-
-@send
-external highlight: (HighlightLanguages.highlighter, string, highlightOptions) => highlightResult =
-  "highlight"

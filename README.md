@@ -100,22 +100,48 @@ Run these commands from the repository root. To target a workspace, use
 `yarn workspace <name> <command>`; the workspace names are `@rescript-lang/docs`,
 `@rescript-lang/guide`, `@rescript-lang/playground`, and `@rescript-lang/shared`.
 
-| Command              | Purpose                                                          |
-| -------------------- | ---------------------------------------------------------------- |
-| `yarn dev`           | Prepare generated files and run the docs development environment |
-| `yarn build`         | Build and pre-render the docs site                               |
-| `yarn build:guide`   | Build and pre-render the interactive guide                       |
-| `yarn preview`       | Build and serve the generated docs client locally                |
-| `yarn build:res`     | Compile ReScript across all four workspaces                      |
-| `yarn dev:res`       | Run the ReScript compiler in watch mode                          |
-| `yarn format`        | Run Oxfmt and format ReScript across all four workspaces         |
-| `yarn test`          | Run docs markdown example, href, and redirect validation         |
-| `yarn ci:test`       | Run docs and guide Vitest browser tests headlessly               |
-| `yarn vitest`        | Run docs Vitest browser tests in watch mode                      |
-| `yarn vitest:guide`  | Run guide Vitest browser tests in watch mode                     |
-| `yarn vitest:update` | Update screenshot baselines headlessly                           |
+| Command             | Purpose                                                          |
+| ------------------- | ---------------------------------------------------------------- |
+| `yarn dev`          | Prepare generated files and run the docs development environment |
+| `yarn build`        | Build and pre-render the docs site                               |
+| `yarn build:guide`  | Build and pre-render the interactive guide                       |
+| `yarn preview`      | Build and serve the generated docs client locally                |
+| `yarn build:res`    | Generate route types and compile all four workspaces             |
+| `yarn build:routes` | Regenerate the shared ReScript route type                        |
+| `yarn check:routes` | Check that the shared route type matches the current routes      |
+| `yarn dev:res`      | Run the ReScript compiler in watch mode                          |
+| `yarn format`       | Run Oxfmt and format ReScript across all four workspaces         |
+| `yarn test`         | Run docs markdown example, href, and redirect validation         |
+| `yarn ci:test`      | Run docs and guide Vitest browser tests headlessly               |
+| `yarn vitest`       | Run docs Vitest browser tests in watch mode                      |
+| `yarn vitest:guide` | Run guide Vitest browser tests in watch mode                     |
+| `yarn cy:open`      | Open the full-site Cypress suite against the running dev server  |
+| `yarn cy:e2e`       | Run the full-site Cypress suite headlessly in Chrome             |
+| `yarn test:e2e`     | Build and run homepage Cypress tests with a temporary server     |
 
 ## Testing
+
+The documentation route table lives in `apps/docs/route-config.mjs`. React Router
+and `apps/docs/generate-route-types.mjs` read the same configuration, including
+MDX pages and API modules. `packages/shared/src/Path.res` is generated before
+ReScript builds and when starting the ReScript watcher. After changing routes,
+adding or removing MDX pages, or updating API data during a watch session, run
+`yarn build:routes` again. CI rejects a stale generated file.
+
+### Formatting and Generated Output
+
+`yarn ci:format` checks Oxfmt formatting and ReScript formatting across all four
+workspaces. Run `yarn format` to apply both formatters.
+
+`yarn ci:generated` cleans ReScript artifacts, removes tracked compiler output,
+and rebuilds, then fails if any tracked `.jsx` or `.mjs` file differs from the
+committed version. Most compiler output is ignored by Git; the guide's
+`app/root.jsx` and `app/routes.jsx` are currently tracked. After changing their
+ReScript sources or updating the compiler, run `yarn build:res` and commit the
+regenerated output alongside the sources.
+
+Both checks run on pull requests. Removing tracked output before rebuilding also
+catches orphaned output whose source was deleted or excluded from the build.
 
 ### Vitest Browser Tests
 
@@ -137,13 +163,39 @@ yarn ci:test
 For a headless run of a single suite, use `yarn vitest --browser.headless --run`
 for docs or `yarn vitest:guide --browser.headless --run` for the guide.
 
-To update screenshot baselines, run:
+Visual screenshot baselines are generated in CI's pinned Linux browser environment. Local snapshot updates are blocked. Push your feature branch, then open [Update Visual Regression Screenshots](https://github.com/rescript-lang/rescript-lang.org/actions/workflows/update-visual-screenshots.yml), select that branch, and choose **Run workflow**. The workflow refuses `master` and commits any changed PNGs back to the selected branch.
+
+You can also dispatch the workflow with the GitHub CLI, replacing `<feature-branch>` with your pushed branch:
 
 ```sh
-yarn vitest:update
+gh workflow run update-visual-screenshots.yml --repo rescript-lang/rescript-lang.org --ref <feature-branch>
 ```
 
-Only update screenshots that are intentionally affected by your change.
+After the workflow finishes, pull its commit and review the screenshot diff. Only accept screenshots intentionally affected by your change.
+
+### Cypress E2E Tests
+
+The full-site suite covers documentation, navigation, and the playground. Start the local development server in one terminal:
+
+```sh
+yarn dev
+```
+
+Wait for Vite to report its local URL. In another terminal, run one of these commands:
+
+```sh
+yarn cy:open # Interactive Cypress runner (Electron)
+yarn cy:run  # Headless run (Electron)
+yarn cy:e2e  # Headless run (Chrome must be installed)
+```
+
+These commands compile the ReScript specs and default to `http://localhost:5173`. If Vite reports another port, or you want to test a deployed site, pass its URL explicitly:
+
+```sh
+yarn cy:e2e --config baseUrl=http://localhost:5174
+```
+
+The homepage suite uses the production build and its own configuration. `yarn test:e2e` builds the site, starts a temporary server at `http://127.0.0.1:4173`, runs the homepage specs in Chrome, and stops the server when the tests finish. It does not require `yarn dev`.
 
 ### Markdown Example and Link Checks
 
@@ -196,7 +248,9 @@ From the repository root, run `CI=1 yarn test` before pushing content changes to
 
 ## Writing Blog Posts
 
-If you are writing a blog post, refer to the [blog post guide](https://rescript-lang.org/blogpost-guide).
+Create an MDX file in [`apps/docs/markdown-pages/blog`](apps/docs/markdown-pages/blog). Its filename becomes the URL under `/blog/`; use an existing post as a template for the YAML frontmatter (`author`, quoted `date`, `title`, and optional `description`, `co_authors`, `previewImg`, `articleImg`, and `badge`). Author aliases are defined in [`BlogFrontmatter.res`](apps/docs/src/markdown/BlogFrontmatter.res).
+
+Put local images in [`apps/docs/public/img`](apps/docs/public/img) and reference them with `/img/...` URLs. Run `yarn dev` and preview the post at `/blog/<filename>` before opening a PR. Posts under `blog/archived` appear only in the archived listing.
 
 ## Adding Your Company Logo
 
