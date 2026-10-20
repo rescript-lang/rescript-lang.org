@@ -10,6 +10,9 @@ type mock
 external test: (string, unit => promise<unit>) => unit = "test"
 
 @module("vitest")
+external afterEach: (unit => unit) => unit = "afterEach"
+
+@module("vitest")
 external testWithTimeout: (string, unit => promise<unit>, int) => unit = "test"
 
 @module("vitest") @scope("vi")
@@ -33,6 +36,9 @@ external render: Jsx.element => promise<element> = "render"
 @send
 external unmount: element => promise<unit> = "unmount"
 
+@send
+external rerender: (element, Jsx.element) => promise<unit> = "rerender"
+
 @module("vitest") @scope("expect")
 external element: 'a => element = "element"
 
@@ -46,13 +52,10 @@ external getByTestId: (element, string) => promise<element> = "getByTestId"
 external getByText: (element, string) => promise<element> = "getByText"
 
 @send
-external getByTextWithOptions: (element, string, {"exact": bool}) => promise<element> = "getByText"
-
-@send
 external getByLabelText: (element, string) => promise<element> = "getByLabelText"
 
 @send
-external getAllByLabelText: (element, string) => promise<array<element>> = "getAllByLabelText"
+external getByAltText: (element, string) => promise<element> = "getByAltText"
 
 @send
 external getByRole: (element, [#button]) => promise<element> = "getByRole"
@@ -84,6 +87,9 @@ external toBeVisible: element => promise<unit> = "toBeVisible"
 @send @scope("not")
 external notToBeVisible: element => promise<unit> = "toBeVisible"
 
+@send @scope("not")
+external notToBeInTheDocument: element => promise<unit> = "toBeInTheDocument"
+
 @send
 external toBeDisabled: element => promise<unit> = "toBeDisabled"
 
@@ -91,13 +97,13 @@ external toBeDisabled: element => promise<unit> = "toBeDisabled"
 external notToBeDisabled: element => promise<unit> = "toBeDisabled"
 
 @send
-external toHaveValue: (element, string) => promise<unit> = "toHaveValue"
-
-@send
 external toHaveTextContent: (element, string) => promise<unit> = "toHaveTextContent"
 
 @send
 external toHaveClass: (element, string) => promise<unit> = "toHaveClass"
+
+@send
+external toHaveAttribute: (element, string, string) => promise<unit> = "toHaveAttribute"
 
 @send
 external toMatchScreenshot: (element, string) => promise<unit> = "toMatchScreenshot"

@@ -17,7 +17,6 @@ that have no overlap in their runtime representation, or **record** objects that
 @unboxed
 type listItemValue = String(string) | Boolean(bool) | Number(float)
 let myArray = [String("Hello"), Boolean(true), Boolean(false), Number(13.37)]
-let studentName = Name("Joe")
 
 @unboxed
 type greeting = {message: string}
@@ -25,13 +24,18 @@ let hi = {message: "hello!"}
 ```
 
 ```js
-var myArray = ["hello", true, false, 13.37];
-var hi = "hello!";
+let myArray = ["Hello", true, false, 13.37];
+
+let hi = "hello!";
+
+export { myArray, hi };
 ```
 
 </CodeTab>
 
 _`@unboxed` for variants with multiple constructors is available since ReScript `11.0.0`._
+
+ReScript 12 adds runtime discrimination for `ArrayBuffer.t`, `DataView.t`, and typed array payloads. ReScript 12.1 also supports `Set.t`, `Map.t`, `WeakSet.t`, and `WeakMap.t`. Each distinct JavaScript built-in can occupy its own constructor without overlapping the others.
 
 ### References
 

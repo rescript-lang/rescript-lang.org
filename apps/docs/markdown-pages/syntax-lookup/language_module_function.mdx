@@ -31,23 +31,25 @@ let message = Welcome.welcome("Ada")
 
 ```js
 function MakeWelcome(G) {
-  function welcome(name) {
-    return G.greet(name) + "!";
-  }
-
-  return {
-    welcome: welcome,
-  };
+  let welcome = (name) => G.greet(name) + "!";
+  return { welcome: welcome };
 }
 
-var English = {
-  greet: function (name) {
-    return "Hello " + name;
-  },
-};
+function greet(name) {
+  return "Hello " + name;
+}
 
-var Welcome = MakeWelcome(English);
-var message = Welcome.welcome("Ada");
+let English = { greet: greet };
+
+function welcome(name) {
+  return "Hello " + name + "!";
+}
+
+let Welcome = { welcome: welcome };
+
+let message = "Hello Ada!";
+
+export { MakeWelcome, English, Welcome, message };
 ```
 
 </CodeTab>

@@ -27,6 +27,11 @@ _Since ReScript `11.0.0`_ coercion also works for converting
 - from variant to `string`/`int`/`float` when applicable
 - for invariant type arguments such as array payloads when the runtime representation is guaranteed to be exactly the same
 
+Since ReScript 12, coercion also supports:
+
+- a closed polymorphic variant to a regular variant when all possible source constructors have matching target constructors
+- resolving type variables from the surrounding expression while checking the coercion
+
 ### Example 1
 
 <CodeTab labels={["ReScript", "JS Output"]}>
@@ -38,7 +43,11 @@ let message = "The color is " ++ (color :> string)
 ```
 
 ```js
-var message = "The color is Red";
+let message = "The color is " + "Red";
+
+let color = "Red";
+
+export { color, message };
 ```
 
 </CodeTab>
@@ -54,8 +63,11 @@ let value = (bit :> int)
 ```
 
 ```js
-var bit = 1;
-var value = 1;
+let bit = 1;
+
+let value = 1;
+
+export { bit, value };
 ```
 
 </CodeTab>
@@ -72,12 +84,11 @@ let name = (person :> name)
 ```
 
 ```js
-var person = {
-  id: 10,
-  name: "Gideon",
-};
+let person = { id: 10, name: "Gideon" };
 
-var name = person;
+let name = person;
+
+export { person, name };
 ```
 
 </CodeTab>
@@ -109,24 +120,51 @@ let f = switch y {
 ```
 
 ```js
-var v = "Infinite";
+let v = "Infinite";
 
-var x = "NaN";
+let x = "NaN";
 
 console.log(v);
 
 console.log("One");
 
-var f;
+let f;
 
-f = (x === "One" || x === "Two") && x === "One" ? "One" : "Two";
+f = x === "One" ? "One" : "Two";
 
-var v2 = "One";
+let v2 = "One";
 
-var y = x;
+let y = x;
+
+export { v, v2, x, y, f };
 ```
 
 </CodeTab>
+
+### Polymorphic Variant to Regular Variant
+
+```res
+type command = [#Start | #Stop]
+type event = Start | Stop | Pause
+
+let command: command = #Start
+let event: event = (command :> event)
+```
+
+### Inferred Source Type
+
+```res
+type userId = private string
+
+let inspect = (_: userId) => ()
+
+let unwrap = value => {
+  inspect(value)
+  (value :> string)
+}
+```
+
+The call to `inspect` determines the otherwise-unannotated `value` parameter's type, and the coercion is checked with that inferred type.
 
 ### References
 

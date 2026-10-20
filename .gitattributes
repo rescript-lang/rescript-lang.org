@@ -1,4 +1,4 @@
 *.res linguist-language=ReScript
 *.resi linguist-language=ReScript
 
-/public/playground-bundles/**  binary linguist-vendored
+/apps/docs/public/playground-bundles/**  binary linguist-vendored

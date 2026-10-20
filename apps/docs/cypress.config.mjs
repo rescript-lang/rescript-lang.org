@@ -7,8 +7,9 @@ export default defineConfig({
     openMode: 0,
   },
   e2e: {
-    baseUrl: "http://localhost:8080",
+    baseUrl: "http://localhost:5173",
     specPattern: "e2e/**/*.cy.jsx",
+    excludeSpecPattern: "e2e/homepage/**",
     supportFile: "cypress/support/e2e.js",
     video: false,
     screenshotOnRunFailure: false,

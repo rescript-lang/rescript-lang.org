@@ -273,7 +273,7 @@
         "kind": "value",
         "name": "parseJsValue",
         "docstrings": [
-          "`parseJsValue(value)` attempts to interpret a JavaScript `value` as a grouping setting.\n\n## Examples\n\n```rescript\nIntl.NumberFormat.Grouping.parseJsValue(Js.Json.string(\"auto\")) == Some(#auto)\n```"
+          "`parseJsValue(value)` attempts to interpret a JavaScript `value` as a grouping setting.\n\n## Examples\n\n```rescript\nIntl.NumberFormat.Grouping.parseJsValue(\"auto\") == Some(#auto)\n```"
         ],
         "signature": "let parseJsValue: 'a => option<[> #always | #auto | #bool(bool) | #min2]>"
       },
@@ -2272,7 +2272,7 @@
         "kind": "value",
         "name": "make",
         "docstrings": [
-          "Creates a new `Intl.DateTimeFormat` instance for formatting date values.\n\nSee [`Intl.DateTimeFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat) on MDN.\n\n## Examples\n\n```rescript\nlet formatter = Intl.DateTimeFormat.make(~locales=[\"en-US\"], ~options={timeStyle: #short})\nlet sampleDate = Js.Date.makeWithYMD(~year=2024, ~month=0, ~date=1)\nformatter->Intl.DateTimeFormat.format(sampleDate)->String.length > 0\n```"
+          "Creates a new `Intl.DateTimeFormat` instance for formatting date values.\n\nSee [`Intl.DateTimeFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat) on MDN.\n\n## Examples\n\n```rescript\nlet formatter = Intl.DateTimeFormat.make(~locales=[\"en-US\"], ~options={timeStyle: #short})\nlet sampleDate = Date.makeWithYMD(~year=2024, ~month=0, ~day=1)\nformatter->Intl.DateTimeFormat.format(sampleDate)->String.length > 0\n```"
         ],
         "signature": "let make: (~locales: array<string>=?, ~options: options=?) => t"
       },
@@ -2299,7 +2299,7 @@
         "kind": "value",
         "name": "format",
         "docstrings": [
-          "`format(formatter, date)` returns the formatted string for `date`.\n\n## Examples\n\n```rescript\nlet formatter = Intl.DateTimeFormat.make(~locales=[\"en\"])\nlet date = Js.Date.makeWithYMD(~year=2024, ~month=0, ~date=1)\nformatter->Intl.DateTimeFormat.format(date)->String.length > 0\n```"
+          "`format(formatter, date)` returns the formatted string for `date`.\n\n## Examples\n\n```rescript\nlet formatter = Intl.DateTimeFormat.make(~locales=[\"en\"])\nlet date = Date.makeWithYMD(~year=2024, ~month=0, ~day=1)\nformatter->Intl.DateTimeFormat.format(date)->String.length > 0\n```"
         ],
         "signature": "let format: (t, Date.t) => string"
       },
@@ -2308,7 +2308,7 @@
         "kind": "value",
         "name": "formatToParts",
         "docstrings": [
-          "`formatToParts(formatter, date)` breaks the formatted output into an array of parts.\n\nSee [`Intl.DateTimeFormat.prototype.formatToParts`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/formatToParts) on MDN.\n\n## Examples\n\n```rescript\nlet formatter = Intl.DateTimeFormat.make(~locales=[\"en\"])\nlet date = Js.Date.makeWithYMD(~year=2024, ~month=0, ~date=1)\nformatter->Intl.DateTimeFormat.formatToParts(date)->Array.length > 0\n```"
+          "`formatToParts(formatter, date)` breaks the formatted output into an array of parts.\n\nSee [`Intl.DateTimeFormat.prototype.formatToParts`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/formatToParts) on MDN.\n\n## Examples\n\n```rescript\nlet formatter = Intl.DateTimeFormat.make(~locales=[\"en\"])\nlet date = Date.makeWithYMD(~year=2024, ~month=0, ~day=1)\nformatter->Intl.DateTimeFormat.formatToParts(date)->Array.length > 0\n```"
         ],
         "signature": "let formatToParts: (t, Date.t) => array<dateTimePart>"
       },
@@ -2317,7 +2317,7 @@
         "kind": "value",
         "name": "formatRange",
         "docstrings": [
-          "`formatRange(formatter, ~startDate, ~endDate)` formats the range between `startDate` and `endDate`.\n\nSee [`Intl.DateTimeFormat.prototype.formatRange`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/formatRange) on MDN.\n\n## Examples\n\n```rescript\nlet formatter = Intl.DateTimeFormat.make(~locales=[\"en-US\"], ~options={dateStyle: #short})\nlet startDate = Js.Date.makeWithYMD(~year=2024, ~month=0, ~date=1)\nlet endDate = Js.Date.makeWithYMD(~year=2024, ~month=1, ~date=1)\nformatter->Intl.DateTimeFormat.formatRange(~startDate=startDate, ~endDate=endDate)->String.length > 0\n```"
+          "`formatRange(formatter, ~startDate, ~endDate)` formats the range between `startDate` and `endDate`.\n\nSee [`Intl.DateTimeFormat.prototype.formatRange`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/formatRange) on MDN.\n\n## Examples\n\n```rescript\nlet formatter = Intl.DateTimeFormat.make(~locales=[\"en-US\"], ~options={dateStyle: #short})\nlet startDate = Date.makeWithYMD(~year=2024, ~month=0, ~day=1)\nlet endDate = Date.makeWithYMD(~year=2024, ~month=1, ~day=1)\nformatter->Intl.DateTimeFormat.formatRange(~startDate=startDate, ~endDate=endDate)->String.length > 0\n```"
         ],
         "signature": "let formatRange: (t, ~startDate: Date.t, ~endDate: Date.t) => string"
       },
@@ -2326,7 +2326,7 @@
         "kind": "value",
         "name": "formatRangeToParts",
         "docstrings": [
-          "`formatRangeToParts(formatter, ~startDate, ~endDate)` returns an array describing how the range would be rendered.\n\nSee [`Intl.DateTimeFormat.prototype.formatRangeToParts`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/formatRangeToParts) on MDN.\n\n## Examples\n\n```rescript\nlet formatter = Intl.DateTimeFormat.make(~locales=[\"en-US\"], ~options={dateStyle: #short})\nlet startDate = Js.Date.makeWithYMD(~year=2024, ~month=0, ~date=1)\nlet endDate = Js.Date.makeWithYMD(~year=2024, ~month=1, ~date=1)\nformatter->Intl.DateTimeFormat.formatRangeToParts(~startDate=startDate, ~endDate=endDate)->Array.length > 0\n```"
+          "`formatRangeToParts(formatter, ~startDate, ~endDate)` returns an array describing how the range would be rendered.\n\nSee [`Intl.DateTimeFormat.prototype.formatRangeToParts`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/formatRangeToParts) on MDN.\n\n## Examples\n\n```rescript\nlet formatter = Intl.DateTimeFormat.make(~locales=[\"en-US\"], ~options={dateStyle: #short})\nlet startDate = Date.makeWithYMD(~year=2024, ~month=0, ~day=1)\nlet endDate = Date.makeWithYMD(~year=2024, ~month=1, ~day=1)\nformatter->Intl.DateTimeFormat.formatRangeToParts(~startDate=startDate, ~endDate=endDate)->Array.length > 0\n```"
         ],
         "signature": "let formatRangeToParts: (\n  t,\n  ~startDate: Date.t,\n  ~endDate: Date.t,\n) => array<dateTimeRangePart>"
       },
@@ -2488,38 +2488,6 @@
         "name": "zeroTo20",
         "docstrings": [],
         "signature": "type zeroTo20 = [\n  | #0\n  | #1\n  | #10\n  | #11\n  | #12\n  | #13\n  | #14\n  | #15\n  | #16\n  | #17\n  | #18\n  | #19\n  | #2\n  | #20\n  | #3\n  | #4\n  | #5\n  | #6\n  | #7\n  | #8\n  | #9\n]"
-      }
-    ]
-  },
-  "stdlib/int/ref": {
-    "id": "Stdlib.Int.Ref",
-    "name": "Ref",
-    "docstrings": [],
-    "items": [
-      {
-        "id": "Stdlib.Int.Ref.t",
-        "kind": "type",
-        "name": "t",
-        "docstrings": [],
-        "signature": "type t = ref<int>"
-      },
-      {
-        "id": "Stdlib.Int.Ref.increment",
-        "kind": "value",
-        "name": "increment",
-        "docstrings": [
-          "`increment(intRef)` increments the value of the provided reference by 1.\n\n  ## Examples\n\n  ```rescript\n  let myRef = ref(4)\n  Int.Ref.increment(myRef)\n  myRef.contents == 5\n  ```"
-        ],
-        "signature": "let increment: ref<int> => unit"
-      },
-      {
-        "id": "Stdlib.Int.Ref.decrement",
-        "kind": "value",
-        "name": "decrement",
-        "docstrings": [
-          "`decrement(intRef)` decrements the value of the provided reference by 1.\n\n  ## Examples\n\n  ```rescript\n  let myRef = ref(4)\n  Int.Ref.decrement(myRef)\n  myRef.contents == 3\n  ```"
-        ],
-        "signature": "let decrement: ref<int> => unit"
       }
     ]
   },
@@ -4506,7 +4474,7 @@
         "kind": "value",
         "name": "make",
         "docstrings": [
-          "Creates a new, mutable JavaScript `Set`. A `Set` is a collection of unique values.\n\nSee [`Set`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set) on MDN.\n\n\n\n## Examples\n```rescript\n// You can annotate the type of your set if you want to\nlet mySet: Set.t<string> = Set.make()\n\n// Or you can let ReScript infer what's in your Set\nlet set = Set.make()\nset->Set.add(\"Fine name\") // Inferred as Set.t<string>\n```\n\n## Alternatives\nA JavaScript `Set` is mutable. If you're looking for an immutable alternative, check out `Belt.Set`."
+          "Creates a new, mutable JavaScript `Set`. A `Set` is a collection of unique values.\n\nSee [`Set`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set) on MDN.\n\n\n\n## Examples\n```rescript\n// You can annotate the type of your set if you want to\nlet mySet: Set.t<string> = Set.make()\n\n// Or you can let ReScript infer what's in your Set\nlet set = Set.make()\nset->Set.add(\"Fine name\") // Inferred as Set.t<string>\n```\n\n## Alternatives\nA JavaScript `Set` is mutable. For an immutable alternative, install the separate\n`@rescript/belt` package and check out `Belt.Set`."
         ],
         "signature": "let make: unit => t<'a>"
       },
@@ -4785,7 +4753,7 @@
         "kind": "value",
         "name": "make",
         "docstrings": [
-          "Creates a new, mutable JavaScript `Map`. A `Map` can have any values as both keys and values.\n\nSee [`Map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) on MDN.\n\n\n\n## Examples\n```rescript\n`make()`\n// You can annotate the type of your map if you want to\nlet myMap: Map.t<string, int> = Map.make()\n\n// Or you can let ReScript infer what's in your map\nlet map = Map.make()\nmap->Map.set(\"lang\", \"ReScript\") // Inferred as Map.t<string, string>\n```\n\n## Alternatives\nA JavaScript `Map` is mutable. If you're looking for an immutable alternative, check out`Belt.Map`."
+          "Creates a new, mutable JavaScript `Map`. A `Map` can have any values as both keys and values.\n\nSee [`Map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) on MDN.\n\n\n\n## Examples\n```rescript\n`make()`\n// You can annotate the type of your map if you want to\nlet myMap: Map.t<string, int> = Map.make()\n\n// Or you can let ReScript infer what's in your map\nlet map = Map.make()\nmap->Map.set(\"lang\", \"ReScript\") // Inferred as Map.t<string, string>\n```\n\n## Alternatives\nA JavaScript `Map` is mutable. For an immutable alternative, install the separate\n`@rescript/belt` package and check out `Belt.Map`."
         ],
         "signature": "let make: unit => t<'k, 'v>"
       },
@@ -6700,7 +6668,7 @@
         "kind": "value",
         "name": "map",
         "docstrings": [
-          "`map(res, f)`: When res is `Ok(n)`, returns `Ok(f(n))`. Otherwise returns res\nunchanged. Function `f` takes a value of the same type as `n` and returns an\nordinary value.\n\n## Examples\n\n```rescript\nlet f = x => sqrt(Int.toFloat(x))\n\nResult.map(Ok(64), f) == Ok(8.0)\n\nResult.map(Error(\"Invalid data\"), f) == Error(\"Invalid data\")\n```"
+          "`map(res, f)`: When res is `Ok(n)`, returns `Ok(f(n))`. Otherwise returns res\nunchanged. Function `f` takes a value of the same type as `n` and returns an\nordinary value.\n\n## Examples\n\n```rescript\nlet f = x => Math.sqrt(Int.toFloat(x))\n\nResult.map(Ok(64), f) == Ok(8.0)\n\nResult.map(Error(\"Invalid data\"), f) == Error(\"Invalid data\")\n```"
         ],
         "signature": "let map: (result<'a, 'c>, 'a => 'b) => result<'b, 'c>"
       },
@@ -9009,7 +8977,7 @@
         "kind": "value",
         "name": "equal",
         "docstrings": [
-          "`equal(list1, list2, f)` check equality of `list2` and `list2` using `f` for\nequality on elements, where `f` is a function that returns `true` if items `x` and\n`y` meet some criterion for equality, `false` otherwise. equal `false` if length\nof `list1` and `list2` are not the same.\n\n## Examples\n\n```rescript\nList.equal(list{1, 2, 3}, list{1, 2}, (a, b) => a == b) == false\n\nList.equal(list{1, 2}, list{1, 2}, (a, b) => a == b) == true\n\nList.equal(list{1, 2, 3}, list{-1, -2, -3}, (a, b) => abs(a) == abs(b)) == true\n```"
+          "`equal(list1, list2, f)` check equality of `list2` and `list2` using `f` for\nequality on elements, where `f` is a function that returns `true` if items `x` and\n`y` meet some criterion for equality, `false` otherwise. equal `false` if length\nof `list1` and `list2` are not the same.\n\n## Examples\n\n```rescript\nList.equal(list{1, 2, 3}, list{1, 2}, (a, b) => a == b) == false\n\nList.equal(list{1, 2}, list{1, 2}, (a, b) => a == b) == true\n\nList.equal(list{1, 2, 3}, list{-1, -2, -3}, (a, b) => Math.Int.abs(a) == Math.Int.abs(b)) == true\n```"
         ],
         "signature": "let equal: (list<'a>, list<'a>, ('a, 'a) => bool) => bool"
       },
@@ -9018,9 +8986,19 @@
         "kind": "value",
         "name": "has",
         "docstrings": [
-          "`has(list, element, f)` returns `true` if the list contains at least one\n`element` for which `f` returns \\`true'.\n\n## Examples\n\n```rescript\nlist{1, 2, 3}->List.has(2, (a, b) => a == b) == true\n\nlist{1, 2, 3}->List.has(4, (a, b) => a == b) == false\n\nlist{-1, -2, -3}->List.has(2, (a, b) => abs(a) == abs(b)) == true\n```"
+          "`has(list, element, f)` returns `true` if the list contains at least one\n`element` for which `f` returns \\`true'.\n\nUse [`some`](#some) with a predicate instead.\n\n## Examples\n\n```rescript\nlist{1, 2, 3}->List.has(2, (a, b) => a == b) == true\n\nlist{1, 2, 3}->List.has(4, (a, b) => a == b) == false\n\nlist{-1, -2, -3}->List.has(2, (a, b) => Math.Int.abs(a) == Math.Int.abs(b)) == true\n```"
         ],
-        "signature": "let has: (list<'a>, 'b, ('a, 'b) => bool) => bool"
+        "signature": "let has: (list<'a>, 'b, ('a, 'b) => bool) => bool",
+        "deprecated": "Use `some` instead"
+      },
+      {
+        "id": "Stdlib.List.includes",
+        "kind": "value",
+        "name": "includes",
+        "docstrings": [
+          "`includes(list, item)` checks whether `list` includes `item` using strict equality.\n\nObject values are only equal when they refer to the same object. `NaN` is not\nequal to itself.\n\n## Examples\n\n```rescript\nlist{1, 2}->List.includes(1) == true\nlist{1, 2}->List.includes(3) == false\nlist{Float.Constants.nan}->List.includes(Float.Constants.nan) == false\n\nlet item = {\"language\": \"ReScript\"}\nlist{item}->List.includes(item) == true\nlist{item}->List.includes({\"language\": \"ReScript\"}) == false\n```"
+        ],
+        "signature": "let includes: (list<'a>, 'a) => bool"
       },
       {
         "id": "Stdlib.List.find",
@@ -10131,6 +10109,22 @@
           "`ignore(float)` ignores the provided float and returns unit.\n\n  This helper is useful when you want to discard a value (for example, the result of an operation with side effects)\n  without having to store or process it further."
         ],
         "signature": "let ignore: float => unit"
+      }
+    ]
+  },
+  "stdlib/file": {
+    "id": "Stdlib.File",
+    "name": "File",
+    "docstrings": [],
+    "items": [
+      {
+        "id": "Stdlib.File.t",
+        "kind": "type",
+        "name": "t",
+        "docstrings": [
+          "JavaScript File API"
+        ],
+        "signature": "type t"
       }
     ]
   },
@@ -12217,6 +12211,22 @@
       }
     ]
   },
+  "stdlib/blob": {
+    "id": "Stdlib.Blob",
+    "name": "Blob",
+    "docstrings": [],
+    "items": [
+      {
+        "id": "Stdlib.Blob.t",
+        "kind": "type",
+        "name": "t",
+        "docstrings": [
+          "JavaScript Blob API"
+        ],
+        "signature": "type t"
+      }
+    ]
+  },
   "stdlib/bigint": {
     "id": "Stdlib.BigInt",
     "name": "BigInt",
@@ -12764,7 +12774,7 @@
         "kind": "value",
         "name": "sort",
         "docstrings": [
-          "`sort(array, comparator)` sorts `array` in-place using the `comparator` function.\n\nBeware this will *mutate* the array.\n\nSee [`Array.sort`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort) on MDN.\n\n## Examples\n\n```rescript\nlet array = [3, 2, 1]\narray->Array.sort((a, b) => float(a - b))\narray == [1, 2, 3]\n```"
+          "`sort(array, comparator)` sorts `array` in-place using the `comparator` function.\n\nBeware this will *mutate* the array.\n\nSee [`Array.sort`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort) on MDN.\n\n## Examples\n\n```rescript\nlet array = [3, 2, 1]\narray->Array.sort((a, b) => Int.toFloat(a - b))\narray == [1, 2, 3]\n```"
         ],
         "signature": "let sort: (array<'a>, ('a, 'a) => Ordering.t) => unit"
       },
@@ -12863,7 +12873,7 @@
         "kind": "value",
         "name": "includes",
         "docstrings": [
-          "`includes(array, item)` checks whether `array` includes `item`, by doing a [strict check for equality](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Strict_equality).\n\nSee [`Array.includes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes) on MDN.\n\n## Examples\n\n```rescript\n[1, 2]->Array.includes(1) == true\n[1, 2]->Array.includes(3) == false\n\n[{\"language\": \"ReScript\"}]->Array.includes({\"language\": \"ReScript\"}) == false // false, because of strict equality\n```"
+          "`includes(array, item)` checks whether `array` includes `item` using\n[SameValueZero equality](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Equality_comparisons_and_sameness#same-value-zero_equality).\n\nSee [`Array.includes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes) on MDN.\n\n## Examples\n\n```rescript\n[1, 2]->Array.includes(1) == true\n[1, 2]->Array.includes(3) == false\n[Float.Constants.nan]->Array.includes(Float.Constants.nan) == true\n\n[{\"language\": \"ReScript\"}]->Array.includes({\"language\": \"ReScript\"}) == false // false, because objects compare by reference\n```"
         ],
         "signature": "let includes: (array<'a>, 'a) => bool"
       },
@@ -13254,16 +13264,6 @@
         "signature": "let getUnsafe: (array<'a>, int) => 'a"
       },
       {
-        "id": "Stdlib.Array.unsafe_get",
-        "kind": "value",
-        "name": "unsafe_get",
-        "docstrings": [
-          "`unsafe_get(array, index)` returns the element at `index` of `array`.\n\nThis is _unsafe_, meaning it will return `undefined` value if `index` does not exist in `array`.\n\nUse `Array.unsafe_get` only when you are sure the `index` exists (i.e. when using for-loop).\n\n## Examples\n\n```rescript\nlet array = [1, 2, 3]\nfor index in 0 to array->Array.length - 1 {\n  let value = array->Array.unsafe_get(index)\n  Console.log(value)\n}\n```"
-        ],
-        "signature": "let unsafe_get: (array<'a>, int) => 'a",
-        "deprecated": "Use getUnsafe instead. This will be removed in v13"
-      },
-      {
         "id": "Stdlib.Array.setUnsafe",
         "kind": "value",
         "name": "setUnsafe",
@@ -13439,7 +13439,7 @@
         "kind": "value",
         "name": "entries",
         "docstrings": [
-          "`entries(array)` returns a new array iterator object that contains the key/value pairs for each index in the array.\n\nSee [Array.prototype.entries](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/entries) on MDN.\n\n## Examples\n\n```rescript\nlet array = [5, 6, 7]\nlet iterator: IteratorObject.t<(int, int), unit, unknown> = array->Array.entries\niterator->IteratorObject.toArray == [(0, 5), (1, 6), (2, 7)]\n```"
+          "`entries(array)` returns a new array iterator object that contains the key/value pairs for each index in the array.\n\nSee [Array.prototype.entries](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/entries) on MDN.\n\n## Examples\n\n```rescript\nlet array = [5, 6, 7]\nlet iterator: IteratorObject.t<(int, int), unit, unknown> = array->Array.entries\niterator->IteratorObject.asIterable->Array.fromIterable == [(0, 5), (1, 6), (2, 7)]\n```"
         ],
         "signature": "let entries: array<'a> => IteratorObject.t<(int, 'a), unit, unknown>"
       },
@@ -13448,7 +13448,7 @@
         "kind": "value",
         "name": "values",
         "docstrings": [
-          "`values(array)` returns a new array iterator object that contains the values for each index in the array.\n\nSee [Array.prototype.values](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/values) on MDN.\n\n## Examples\n\n```rescript\nlet array = [5, 6, 7]\nlet iterator: IteratorObject.t<int, unit, unknown> = array->Array.values\niterator->IteratorObject.toArray == [5, 6, 7]\n```"
+          "`values(array)` returns a new array iterator object that contains the values for each index in the array.\n\nSee [Array.prototype.values](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/values) on MDN.\n\n## Examples\n\n```rescript\nlet array = [5, 6, 7]\nlet iterator: IteratorObject.t<int, unit, unknown> = array->Array.values\niterator->IteratorObject.asIterable->Array.fromIterable == [5, 6, 7]\n```"
         ],
         "signature": "let values: array<'a> => IteratorObject.t<'a, unit, unknown>"
       }

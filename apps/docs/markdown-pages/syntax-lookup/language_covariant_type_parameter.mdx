@@ -20,8 +20,10 @@ let fromValue = (x: 'a): source<'a> => () => x
 
 ```js
 function fromValue(x) {
-  return (_) => x;
+  return () => x;
 }
+
+export { fromValue };
 ```
 
 </CodeTab>

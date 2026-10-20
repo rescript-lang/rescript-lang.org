@@ -5,7 +5,36 @@ let secondLesson = GuideTestFixtures.secondLesson
 let guideLessonsWithFinal = GuideTestFixtures.guideLessonsWithFinal
 let renderGuideHome = GuideTestFixtures.renderGuideHome
 let renderGuideHomeWithDocsIntroNavigation = GuideTestFixtures.renderGuideHomeWithDocsIntroNavigation
-let renderGuideHomeInBrowser = GuideTestFixtures.renderGuideHomeInBrowser
+let renderGuideHomeWithHistory = GuideTestFixtures.renderGuideHomeWithHistory
+
+@module("vitest") external beforeEach: (unit => unit) => unit = "beforeEach"
+@module("vitest") external afterEach: (unit => unit) => unit = "afterEach"
+
+@module("./compilerFixture.js")
+external waitForCompilerRequest: unit => promise<unit> = "waitForCompilerRequest"
+@module("./compilerFixture.js") external failCompilerLoading: unit => unit = "failCompilerLoading"
+@module("./compilerFixture.js")
+external finishCompilerLoading: string => unit = "finishCompilerLoading"
+@module("./compilerFixture.js")
+external finishCompilerLoadingWithError: unit => unit = "finishCompilerLoadingWithError"
+@module("./compilerFixture.js") external expectCompiled: string => unit = "expectCompiled"
+
+let clearGuideState = () => {
+  GuideLayout.clearCompletedExercises()
+  GuideTestFixtures.guideLessonsWithFinal->Array.forEach(lesson =>
+    GuideLayout.clearExerciseCode(lesson.exercise.id)
+  )
+  GuideLayout.removeLocalStorageItem(GuideLayout.themeStorageKey)
+  GuideLayout.clearPaneSizes()
+}
+
+beforeEach(clearGuideState)
+afterEach(clearGuideState)
+
+let compilerData: GuideCompilerData.t = {
+  bundleBaseUrl: "/test-compiler",
+  versions: ["12.2.0"],
+}
 
 test("loads saved guide editor code into the editor", async () => {
   await viewport(1440, 900)
@@ -14,10 +43,35 @@ test("loads saved guide editor code into the editor", async () => {
   GuideLayout.saveExerciseCode(~exerciseId, ~code="let sisko = \"emissary\"")
 
   let screen = await renderGuideHome()
-  let editor = await screen->getByTestId("guide-code-editor")
+  let savedCode = await screen->getByText("let sisko = \"emissary\"")
 
-  await editor->element->toHaveTextContent("let sisko = \"emissary\"")
+  await savedCode->element->toBeVisible
 
+  GuideLayout.clearExerciseCode(exerciseId)
+})
+
+test("resets the current exercise code without clearing its completion", async () => {
+  await viewport(1440, 900)
+  let exerciseId = secondLesson.exercise.id
+  GuideLayout.removeLocalStorageItem(GuideLayout.progressStorageKey)
+  GuideLayout.clearExerciseCode(exerciseId)
+  GuideLayout.saveExerciseCode(~exerciseId, ~code="let greeting = \"changed\"")
+  GuideLayout.saveCompletedExercise(exerciseId)
+
+  let screen = await renderGuideHome(~initialEntries=["/#functions"], ())
+  let resetButton = await screen->getByLabelText("Reset exercise code")
+
+  await resetButton->element->toBeVisible
+  await resetButton->click
+
+  let greetCode = await screen->getByText(`let greet = name => "Hello, " ++ name ++ "!"`)
+  await greetCode->element->toBeVisible
+  let greetingCode = await screen->getByText(`let greeting = greet("ReScript")`)
+  await greetingCode->element->toBeVisible
+  expect(GuideLayout.loadExerciseCode(exerciseId)->Option.isNone)->toBe(true)
+  expect(GuideLayout.isExerciseCompleted(exerciseId))->toBe(true)
+
+  GuideLayout.removeLocalStorageItem(GuideLayout.progressStorageKey)
   GuideLayout.clearExerciseCode(exerciseId)
 })
 
@@ -37,28 +91,125 @@ test("renders resize handles and toggles dark mode", async () => {
   await shell->element->toHaveClass("guide-theme-dark")
 })
 
-test("shows a minimum screen size message on narrow viewports", async () => {
-  await viewport(800, 900)
+test("requires a desktop browser on narrow viewports", async () => {
+  await viewport(1023, 900)
 
   let screen = await renderGuideHome()
-  let message = await screen->getByText("This guide needs a wider screen.")
+  let message = await screen->getByText("This interactive guide is available on desktop.")
+  let shell = await screen->getByTestId("guide-mvp")
 
   await message->element->toBeVisible
+  await shell->element->notToBeVisible
 })
 
-test("shows the first checkpoint as complete when output matches", async () => {
+test("shows the guide workspace at the desktop minimum width", async () => {
+  await viewport(1024, 900)
+
+  let screen = await renderGuideHome()
+  let message = await screen->getByText("This interactive guide is available on desktop.")
+  let shell = await screen->getByTestId("guide-mvp")
+
+  await message->element->notToBeVisible
+  await shell->element->toBeVisible
+})
+
+test("keeps the first checkpoint pending without a compiler", async () => {
   await viewport(1440, 900)
 
   let screen = await renderGuideHome()
-  let checkpoint = await screen->getByTestId("guide-check-status")
-
-  await checkpoint->element->toHaveTextContent("Checkpoint complete")
+  await (await screen->getByText("Waiting for matching output"))->element->toBeVisible
+  await (await screen->getByText("Next"))->element->toBeDisabled
+  await (await screen->getByTestId("guide-output"))->element->toHaveTextContent("")
+  expect(GuideLayout.isExerciseCompleted(firstLesson.exercise.id))->toBe(false)
 })
+
+test(
+  "keeps the first checkpoint pending while the compiler loads and after loading fails",
+  async () => {
+    await viewport(1440, 900)
+
+    let screen = await renderGuideHome(~compilerData, ())
+    await waitForCompilerRequest()
+    await (await screen->getByText("Waiting for matching output"))->element->toBeVisible
+    await (await screen->getByText("Next"))->element->toBeDisabled
+    expect(GuideLayout.isExerciseCompleted(firstLesson.exercise.id))->toBe(false)
+
+    failCompilerLoading()
+
+    await (await screen->getByText("Compiler setup failed"))->element->toBeVisible
+    await (await screen->getByText("Waiting for matching output"))->element->toBeVisible
+    await (await screen->getByText("Next"))->element->toBeDisabled
+    expect(GuideLayout.isExerciseCompleted(firstLesson.exercise.id))->toBe(false)
+  },
+)
+
+test(
+  "completes and saves the first checkpoint after compiled code produces matching runtime output",
+  async () => {
+    await viewport(1440, 900)
+
+    let screen = await renderGuideHome(~compilerData, ())
+    await waitForCompilerRequest()
+    await (await screen->getByText("Next"))->element->toBeDisabled
+
+    finishCompilerLoading(`let greeting = "hello, world!";`)
+
+    let checkpoint = await screen->getByText("Checkpoint complete")
+    await checkpoint->element->toBeVisible
+    let outputPanel = await screen->getByTestId("guide-output")
+    await (await outputPanel->getByText("hello, world!"))->element->toBeVisible
+    await (await screen->getByText("Next"))->element->notToBeDisabled
+    expectCompiled(firstLesson.exercise.initialCode)
+    expect(GuideLayout.isExerciseCompleted(firstLesson.exercise.id))->toBe(true)
+
+    await screen->unmount
+    let restoredScreen = await renderGuideHome()
+    await (await restoredScreen->getByText("Checkpoint complete"))->element->toBeVisible
+    await (await restoredScreen->getByText("Next"))->element->notToBeDisabled
+    await (await restoredScreen->getByTestId("guide-output"))->element->toHaveTextContent("")
+  },
+)
+
+test("keeps the first checkpoint pending when compilation fails", async () => {
+  await viewport(1440, 900)
+
+  let screen = await renderGuideHome(~compilerData, ())
+  await waitForCompilerRequest()
+  finishCompilerLoadingWithError()
+
+  await (await screen->getByText("Compiler error"))->element->toBeVisible
+  await (await screen->getByText("Compilation failed"))->element->toBeVisible
+  await (await screen->getByText("Waiting for matching output"))->element->toBeVisible
+  await (await screen->getByText("Next"))->element->toBeDisabled
+  expectCompiled(firstLesson.exercise.initialCode)
+  expect(GuideLayout.isExerciseCompleted(firstLesson.exercise.id))->toBe(false)
+})
+
+test(
+  "keeps the first checkpoint pending when executed code produces different output",
+  async () => {
+    await viewport(1440, 900)
+    let code = `let greeting = "goodbye"`
+    GuideLayout.saveExerciseCode(~exerciseId=firstLesson.exercise.id, ~code)
+
+    let screen = await renderGuideHome(~compilerData, ())
+    await waitForCompilerRequest()
+    finishCompilerLoading(`let greeting = "goodbye";`)
+
+    let outputPanel = await screen->getByTestId("guide-output")
+    await (await outputPanel->getByText("goodbye"))->element->toBeVisible
+    await (await screen->getByText("Waiting for matching output"))->element->toBeVisible
+    await (await screen->getByText("Next"))->element->toBeDisabled
+    expectCompiled(code)
+    expect(GuideLayout.isExerciseCompleted(firstLesson.exercise.id))->toBe(false)
+  },
+)
 
 test("navigates to the function argument page", async () => {
   await viewport(1440, 900)
-  GuideLayout.clearCompletedExercises()
+  GuideLayout.removeLocalStorageItem(GuideLayout.progressStorageKey)
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
+  GuideLayout.saveCompletedExercise(firstLesson.exercise.id)
 
   let screen = await renderGuideHome()
   let nextButton = await screen->getByText("Next")
@@ -69,25 +220,22 @@ test("navigates to the function argument page", async () => {
   await (await screen->getByText("Change the argument passed to greet from ReScript to Spock."))
   ->element
   ->toBeVisible
-  let editor = await screen->getByTestId("guide-code-editor")
-  await editor->element->toHaveTextContent(`let greet = name => "Hello, " ++ name ++ "!"`)
-  await editor->element->toHaveTextContent(`let greeting = greet("ReScript")`)
-  let checkpoint = await screen->getByTestId("guide-check-status")
-  await checkpoint->element->toHaveTextContent("Waiting for matching output")
+  let greetCode = await screen->getByText(`let greet = name => "Hello, " ++ name ++ "!"`)
+  await greetCode->element->toBeVisible
+  let greetingCode = await screen->getByText(`let greeting = greet("ReScript")`)
+  await greetingCode->element->toBeVisible
+  let checkpoint = await screen->getByText("Waiting for matching output")
+  await checkpoint->element->toBeVisible
 
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
 })
 
-let guideTestUrl = hash => window.location.pathname ++ window.location.search ++ hash
-
-let resetGuideTestUrl = () =>
-  WebAPI.History.replaceState(window.history, ~data=JSON.Null, ~unused="", ~url=guideTestUrl(""))
-
 test("shows Back before lesson forward actions and returns to the previous lesson", async () => {
   await viewport(1440, 900)
-  GuideLayout.clearCompletedExercises()
+  GuideLayout.removeLocalStorageItem(GuideLayout.progressStorageKey)
   GuideLayout.clearExerciseCode(firstLesson.exercise.id)
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
+  GuideLayout.saveCompletedExercise(firstLesson.exercise.id)
 
   let screen = await renderGuideHome(~initialEntries=["/#first-contact"], ())
   let firstLessonText = screen->container->textContent->Nullable.toOption->Option.getOrThrow
@@ -112,7 +260,7 @@ test("shows Back before lesson forward actions and returns to the previous lesso
 
 test("enables Done on a completed final lesson", async () => {
   await viewport(1440, 900)
-  GuideLayout.clearCompletedExercises()
+  GuideLayout.removeLocalStorageItem(GuideLayout.progressStorageKey)
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
   GuideLayout.saveCompletedExercise(secondLesson.exercise.id)
 
@@ -121,13 +269,13 @@ test("enables Done on a completed final lesson", async () => {
 
   await doneButton->element->notToBeDisabled
 
-  GuideLayout.clearCompletedExercises()
+  GuideLayout.removeLocalStorageItem(GuideLayout.progressStorageKey)
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
 })
 
 test("keeps Next disabled until the current checkpoint is complete", async () => {
   await viewport(1440, 900)
-  GuideLayout.clearCompletedExercises()
+  GuideLayout.removeLocalStorageItem(GuideLayout.progressStorageKey)
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
 
   let screen = await render(
@@ -139,13 +287,13 @@ test("keeps Next disabled until the current checkpoint is complete", async () =>
 
   await nextButton->element->toBeDisabled
 
-  GuideLayout.clearCompletedExercises()
+  GuideLayout.removeLocalStorageItem(GuideLayout.progressStorageKey)
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
 })
 
 test("Done on a completed final lesson opens the ReScript docs intro", async () => {
   await viewport(1440, 900)
-  GuideLayout.clearCompletedExercises()
+  GuideLayout.removeLocalStorageItem(GuideLayout.progressStorageKey)
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
   GuideLayout.saveCompletedExercise(secondLesson.exercise.id)
   let openedUrl = ref("")
@@ -159,41 +307,29 @@ test("Done on a completed final lesson opens the ReScript docs intro", async () 
 
   expect(openedUrl.contents)->toBe(GuideLessonNavigationHook.docsIntroUrl)
 
-  GuideLayout.clearCompletedExercises()
+  GuideLayout.removeLocalStorageItem(GuideLayout.progressStorageKey)
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
 })
 
-test("browser back returns to the previous guide lesson", async () => {
+test("history back returns to the previous guide lesson", async () => {
   await viewport(1440, 900)
-  GuideLayout.clearCompletedExercises()
+  GuideLayout.removeLocalStorageItem(GuideLayout.progressStorageKey)
   GuideLayout.clearExerciseCode(firstLesson.exercise.id)
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
-  WebAPI.History.replaceState(
-    window.history,
-    ~data=JSON.Null,
-    ~unused="",
-    ~url=guideTestUrl("#guide-test-start"),
-  )
-  WebAPI.History.pushState(
-    window.history,
-    ~data=JSON.Null,
-    ~unused="",
-    ~url=guideTestUrl("#first-contact"),
-  )
+  GuideLayout.saveCompletedExercise(firstLesson.exercise.id)
 
-  let screen = await renderGuideHomeInBrowser()
+  let screen = await renderGuideHomeWithHistory()
 
   await (await screen->getByText("Learn ReScript Guide"))->element->toBeVisible
   await (await screen->getByText("Next"))->click
   await (await screen->getByText("Call A Function"))->element->toBeVisible
 
-  WebAPI.History.back(window.history)
+  await (await screen->getByText("History back"))->click
 
   await (await screen->getByText("Learn ReScript Guide"))->element->toBeVisible
 
   GuideLayout.clearExerciseCode(firstLesson.exercise.id)
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
-  resetGuideTestUrl()
 })
 
 test("stretches the output surface to the full output panel", async () => {
@@ -205,7 +341,7 @@ test("stretches the output surface to the full output panel", async () => {
   await output->element->toHaveClass("guide-output-frame")
 })
 
-test("renders the first guide MVP exercise and output", async () => {
+test("renders the first guide MVP exercise with empty output", async () => {
   await viewport(1440, 900)
 
   let screen = await renderGuideHome()
@@ -219,11 +355,8 @@ test("renders the first guide MVP exercise and output", async () => {
   ->element
   ->toBeVisible
   await (await screen->getByText("Next"))->element->toBeVisible
-  let editor = await screen->getByTestId("guide-code-editor")
-  await editor->element->toBeVisible
-  await editor->element->toHaveTextContent("let greeting = \"hello, world!\"")
-  let output = await screen->getByTestId("guide-output")
-  await output->element->toBeVisible
-
-  await output->element->toHaveTextContent("hello, world!")
+  let editorCode = await screen->getByText("let greeting = \"hello, world!\"")
+  await editorCode->element->toBeVisible
+  let outputPanel = await screen->getByTestId("guide-output")
+  await outputPanel->element->toHaveTextContent("")
 })

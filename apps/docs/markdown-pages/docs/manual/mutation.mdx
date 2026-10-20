@@ -21,9 +21,9 @@ let myValue = ref(5)
 ```
 
 ```js
-var myValue = {
-  contents: 5,
-};
+let myValue = { contents: 5 };
+
+export { myValue };
 ```
 
 </CodeTab>
@@ -39,9 +39,7 @@ let five = myValue.contents // 5
 ```
 
 ```js
-let myValue = {
-  contents: 5,
-};
+let myValue = { contents: 5 };
 
 let five = myValue.contents;
 
@@ -59,9 +57,7 @@ myValue.contents = 6
 ```
 
 ```js
-let myValue = {
-  contents: 5,
-};
+let myValue = { contents: 5 };
 
 myValue.contents = 6;
 
@@ -79,9 +75,7 @@ myValue := 6
 ```
 
 ```js
-let myValue = {
-  contents: 5,
-};
+let myValue = { contents: 5 };
 
 myValue.contents = 6;
 
@@ -97,3 +91,22 @@ Note that the previous binding `five` stays `5`, since it got the underlying ite
 ## Tip & Tricks
 
 Before reaching for `ref`, know that you can achieve lightweight, local "mutations" through [overriding let bindings](./let-binding.mdx#binding-shadowing).
+
+### Self-Referencing Callbacks
+
+Sometimes a callback needs a value returned by the function that registers it. For example, suppose `subscribe` registers a message callback and returns a function that unsubscribes it. To unsubscribe after the first message, create a `ref` with a no-op function, then assign the returned function to it:
+
+```res
+@val external subscribe: (string => unit) => unit => unit = "subscribe"
+
+let unsubscribe = ref(() => ())
+
+unsubscribe := subscribe(message => {
+  Console.log(message)
+  unsubscribe.contents()
+})
+```
+
+The callback reads `unsubscribe.contents` when a message arrives, so it sees the function assigned after `subscribe` returns.
+
+This assumes `subscribe` delivers messages after it returns. A callback invoked during subscription would still call the initial no-op function.

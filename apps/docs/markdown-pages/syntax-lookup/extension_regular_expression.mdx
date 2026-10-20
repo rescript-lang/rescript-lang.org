@@ -15,12 +15,15 @@ status: "deprecated"
 
 ```res
 let regex = %re("/^hello/")
-let result = regex->Re.test("hello world")
+let result = regex->RegExp.test("hello world")
 ```
 
 ```js
-var regex = /^hello/;
-var result = regex.test("hello world");
+let regex = /^hello/;
+
+let result = regex.test("hello world");
+
+export { regex, result };
 ```
 
 </CodeTab>

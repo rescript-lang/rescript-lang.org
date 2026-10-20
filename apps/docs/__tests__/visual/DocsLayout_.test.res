@@ -28,7 +28,7 @@ let mockToc: TableOfContents.t = {
   ],
 }
 
-test("desktop docs layout shows sidebar with categories", async () => {
+test("desktop docs layout shows categories and active-page table of contents", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
@@ -50,38 +50,19 @@ test("desktop docs layout shows sidebar with categories", async () => {
   let introItem = await screen->getByText("Introduction")
   await element(introItem)->toBeVisible
 
+  let sidebar = await screen->getByTestId("sidebar-content")
+  for i in 0 to Array.length(mockToc.entries) - 1 {
+    let {TableOfContents.header: header, href} = mockToc.entries->Array.getUnsafe(i)
+    let tocLink = await sidebar->getByText(header)
+    await element(tocLink)->toBeVisible
+    await element(tocLink)->toHaveAttribute("href", "/docs/manual/introduction" ++ href)
+  }
+
   let mainContent = await screen->getByTestId("side-layout-children")
   await element(mainContent)->toBeVisible
 
   let wrapper = await screen->getByTestId("docs-layout-wrapper")
   await element(wrapper)->toMatchScreenshot("desktop-docs-layout")
-})
-
-test("desktop docs layout shows table of contents entries", async () => {
-  await viewport(1440, 900)
-
-  let screen = await render(
-    <MemoryRouter initialEntries=["/docs/manual/introduction"]>
-      <div dataTestId="docs-layout-wrapper">
-        <DocsLayout categories=mockCategories activeToc=mockToc>
-          <div> {React.string("This is the documentation content.")} </div>
-        </DocsLayout>
-      </div>
-    </MemoryRouter>,
-  )
-
-  // The TOC entries render inside the sidebar under the active nav item.
-  // Since the test isn't at a matching route, the TOC appears for the first
-  // category item that matches the current location. Verify the layout
-  // renders with the activeToc data by checking sidebar and content are present.
-  let overviewHeading = await screen->getByText("Overview")
-  await element(overviewHeading)->toBeVisible
-
-  let mainContent = await screen->getByTestId("side-layout-children")
-  await element(mainContent)->toBeVisible
-
-  let wrapper = await screen->getByTestId("docs-layout-wrapper")
-  await element(wrapper)->toMatchScreenshot("desktop-docs-layout-with-toc")
 })
 
 test("mobile docs layout hides sidebar by default", async () => {

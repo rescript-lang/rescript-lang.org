@@ -348,8 +348,9 @@ First, configure `rescript.json`:
 
 Now you can build Preact components:
 
-```rescript
+```rescript file=Name.res
 // Name.res
+@@jsxConfig({module_: "Preact"})
 @jsx.component // or @react.component if you want
 let make = (~name) => Preact.string(`Hello ${name}!`)
 ```
@@ -376,9 +377,9 @@ Below is a full list of everything you need in a generic JSX transform module, i
 
 > You can easily copy-paste-and-adapt this to your needs if you're creating bindings to a JSX framework. Most often, all you'll need to change is what the `@module("") external` points to, so the runtime calls point to the correct JS module.
 
-<CodeTab labels={["ReScript"]}>
+<CodeTab labels={["ReScript", "JS Output"]}>
 
-```rescript
+```rescript file=Preact.res
 // Preact.res
 /* Below is a number of aliases to the common `Jsx` module */
 type element = Jsx.element
@@ -440,6 +441,12 @@ module Elements = {
 
   external someElement: element => option<element> = "%identity"
 }
+```
+
+```js
+let Elements = {};
+
+export { Elements };
 ```
 
 </CodeTab>

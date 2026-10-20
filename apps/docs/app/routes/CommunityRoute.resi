@@ -7,6 +7,8 @@ type loaderData = {
   categories: array<SidebarNav.Category.t>,
 }
 
+@live
 let loader: ReactRouter.Loader.t<loaderData>
 
+@live
 let default: unit => React.element

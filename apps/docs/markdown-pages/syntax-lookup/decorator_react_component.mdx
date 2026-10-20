@@ -11,11 +11,11 @@ The `@react.component` decorator is used to annotate functions that are [React](
 You will need this decorator whenever you want to use a ReScript / React component in ReScript JSX expressions.
 
 > **Note**
-> The `@react.component` decorator requires the [react-jsx or jsx config](../docs/react/installation.mdx) to be set in your `rescript.json` to enable the required React transformations.
+> The `@react.component` decorator requires the [`jsx` config](../docs/react/installation.mdx) to be set in your `rescript.json` to enable the required React transformations.
 
 ### Example
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 @react.component
@@ -27,13 +27,25 @@ let make = (~name) => {
 ```js
 import * as JsxRuntime from "react/jsx-runtime";
 
-function Playground(props) {
-  return JsxRuntime.jsx("button", {
-    children: "Hello " + props.name + "!",
-  });
+function Example(props) {
+  return JsxRuntime.jsx("button", { children: "Hello " + props.name + "!" });
 }
 
-var make = Playground;
+let make = Example;
+
+export { make };
+```
+
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example(props) {
+  return <button>{"Hello " + props.name + "!"}</button>;
+}
+
+let make = Example;
+
+export { make };
 ```
 
 </CodeTab>

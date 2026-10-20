@@ -43,5 +43,3 @@ let supportedVersions = versions =>
 
 let latestStableParsedVersion = (versions: array<Semver.t>) =>
   versions->Array.find(version => version.preRelease->Option.isNone)
-
-let latestStableVersion = versions => versions->supportedVersions->latestStableParsedVersion

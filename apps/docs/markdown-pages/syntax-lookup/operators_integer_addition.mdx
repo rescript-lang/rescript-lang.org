@@ -1,23 +1,36 @@
 ---
 id: "integer-addition"
-keywords: ["plus", "add", "addition", "sum", "int", "integer"]
+keywords:
+  ["plus", "add", "addition", "sum", "int", "integer", "float", "string"]
 name: "+"
-summary: "This is the `integer addition` operator."
+summary: "This is the unified `addition` and `string concatenation` operator."
 category: "operators-arithmetic"
 ---
 
-This operator performs _integers_ addition.
+Since ReScript 12, `+` works with `int`, `float`, and `bigint`, and concatenates `string` values. The compiler specializes the operator from its operands.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-let result = 1 + 2
+let intResult = 1 + 2
+let floatResult = 1.5 + 2.5
+let stringResult = "Re" + "Script"
 ```
 
 ```js
-val result = 3;
+let floatResult = 1.5 + 2.5;
+
+let stringResult = "ReScript";
+
+let intResult = 3;
+
+export { intResult, floatResult, stringResult };
 ```
 
 </CodeTab>
 
-For contatenating _strings_ see the [`++`](./operators_string_concatenation.mdx) operator.
+The older [`++`](./operators_string_concatenation.mdx) string concatenation operator is still supported.
+
+### References
+
+- [Primitive Types](../docs/manual/primitive-types.mdx#arithmetic-operators)

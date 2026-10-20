@@ -3,14 +3,6 @@ module NavItem: {
     name: string,
     href: string,
   }
-  @react.component
-  let make: (
-    ~getActiveToc: t => option<TableOfContents.t>=?,
-    ~isHidden: bool=?,
-    ~isItemActive: t => bool=?,
-    ~items: array<t>,
-    ~onClick: unit => unit,
-  ) => React.element
 }
 
 module Category: {
@@ -24,7 +16,7 @@ module Category: {
     ~category: t,
     ~getActiveToc: NavItem.t => option<TableOfContents.t>=?,
     ~isItemActive: NavItem.t => bool=?,
-    ~onClick: unit => unit,
+    ~onClick: unit => unit=?,
   ) => React.element
 }
 
@@ -36,6 +28,4 @@ let make: (
   ~title: string=?,
   ~preludeSection: React.element=?,
   ~activeToc: TableOfContents.t=?,
-  ~isOpen: bool,
-  ~toggle: unit => unit,
 ) => React.element

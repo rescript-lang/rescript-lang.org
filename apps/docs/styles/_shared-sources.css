@@ -1,0 +1,5 @@
+/* Repeat shell utilities in each route so responsive variants follow every base utility. */
+@source "../app/DocsRoot.{res,jsx}";
+@source "../app/routes/NotFoundRoute.{res,jsx}";
+@source "../src/components/{NavbarPrimary,NavbarMobileOverlay,NavbarUtils,Search,SearchNotice}.{res,jsx}";
+@source "../../../packages/shared/src/Icon.{res,jsx}";

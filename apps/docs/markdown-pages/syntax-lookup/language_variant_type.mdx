@@ -35,13 +35,14 @@ let message = switch response {
 ```
 
 ```js
-var response = {
-  TAG: "MyVariant",
-  _0: 42,
-};
+let response = { TAG: "MyVariant", _0: 42 };
 
-var message =
-  response.TAG === "MyVariant" ? "Success: 42" : "Error: " + response._0;
+let message;
+
+message =
+  response.TAG === "MyVariant" ? "Success: " + (42).toString() : "Error: " + 42;
+
+export { response, message };
 ```
 
 </CodeTab>

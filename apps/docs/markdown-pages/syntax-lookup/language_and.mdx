@@ -19,12 +19,22 @@ and isOdd = n => n != 0 && isEven(n - 1)
 
 ```js
 function isEven(n) {
-  return n === 0 || isOdd((n - 1) | 0);
+  if (n === 0) {
+    return true;
+  } else {
+    return isOdd((n - 1) | 0);
+  }
 }
 
 function isOdd(n) {
-  return n !== 0 && isEven((n - 1) | 0);
+  if (n !== 0) {
+    return isEven((n - 1) | 0);
+  } else {
+    return false;
+  }
 }
+
+export { isEven, isOdd };
 ```
 
 </CodeTab>
@@ -39,7 +49,7 @@ and term = Int(int)
 ```
 
 ```js
-// Type declarations are erased from JavaScript output.
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>

@@ -30,13 +30,7 @@ let doStringsMatch = (s1: string, s2: string) => s1 === s2
 ```js
 let t2 = "foo" === "foo";
 
-let t3 =
-  {
-    foo: "bar",
-  } ===
-  {
-    foo: "bar",
-  };
+let t3 = { foo: "bar" } === { foo: "bar" };
 
 function doStringsMatch(s1, s2) {
   return s1 === s2;
@@ -71,14 +65,7 @@ import * as Primitive_object from "@rescript/runtime/lib/es6/Primitive_object.js
 
 let t2 = true;
 
-let t3 = Primitive_object.equal(
-  {
-    foo: "bar",
-  },
-  {
-    foo: "bar",
-  },
-);
+let t3 = Primitive_object.equal({ foo: "bar" }, { foo: "bar" });
 
 function doStringsMatch(s1, s2) {
   return s1 === s2;

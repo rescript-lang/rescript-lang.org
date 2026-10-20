@@ -133,16 +133,7 @@ let myList = list{1, 2, 3}
 ```
 
 ```js
-let myList = {
-  hd: 1,
-  tl: {
-    hd: 2,
-    tl: {
-      hd: 3,
-      tl: /* [] */ 0,
-    },
-  },
-};
+let myList = { hd: 1, tl: { hd: 2, tl: { hd: 3, tl: /* [] */ 0 } } };
 
 export { myList };
 ```
@@ -171,21 +162,11 @@ let anotherList = list{0, ...myList}
 ```
 
 ```js
-var myList = {
-  hd: 1,
-  tl: {
-    hd: 2,
-    tl: {
-      hd: 3,
-      tl: 0,
-    },
-  },
-};
+let myList = { hd: 1, tl: { hd: 2, tl: { hd: 3, tl: /* [] */ 0 } } };
 
-var anotherList = {
-  hd: 0,
-  tl: myList,
-};
+let anotherList = { hd: 0, tl: myList };
+
+export { myList, anotherList };
 ```
 
 </CodeTab>
@@ -210,21 +191,9 @@ let message =
 ```
 
 ```js
-let myList = {
-  hd: 1,
-  tl: {
-    hd: 2,
-    tl: {
-      hd: 3,
-      tl: /* [] */ 0,
-    },
-  },
-};
+let myList = { hd: 1, tl: { hd: 2, tl: { hd: 3, tl: /* [] */ 0 } } };
 
-let anotherList = {
-  hd: 0,
-  tl: myList,
-};
+let anotherList = { hd: 0, tl: myList };
 
 let message =
   myList !== 0

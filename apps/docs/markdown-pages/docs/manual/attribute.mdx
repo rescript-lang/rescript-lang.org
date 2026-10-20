@@ -90,11 +90,13 @@ There's a second category of attributes, called "extension points" (a remnant te
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-%raw("var a = 1")
+let result = %raw("1 + 2")
 ```
 
 ```js
-((var a = 1));
+let result = 1 + 2;
+
+export { result };
 ```
 
 </CodeTab>

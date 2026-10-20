@@ -44,8 +44,11 @@ let my3dCoordinates: coord3d = (20.0, 30.5, 100.0)
 ```
 
 ```js
-var ageAndName = [24, "Lil' ReScript"];
-var my3dCoordinates = [20.0, 30.5, 100.0];
+let ageAndName = [24, "Lil' ReScript"];
+
+let my3dCoordinates = [20.0, 30.5, 100.0];
+
+export { ageAndName, my3dCoordinates };
 ```
 
 </CodeTab>
@@ -117,11 +120,13 @@ let getCenterCoordinates = () => {
 ```
 
 ```js
-function getCenterCoordinates(param) {
-  var x = doSomeOperationsHere(undefined);
-  var y = doSomeMoreOperationsHere(undefined);
+function getCenterCoordinates() {
+  let x = doSomeOperationsHere();
+  let y = doSomeMoreOperationsHere();
   return [x, y];
 }
+
+export { getCenterCoordinates };
 ```
 
 </CodeTab>

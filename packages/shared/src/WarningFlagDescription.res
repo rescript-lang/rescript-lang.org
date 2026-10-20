@@ -72,40 +72,6 @@ let numeric = [
   (110, "Todo found"),
 ]
 
-let letterAll = numeric->Array.map(Pair.first)
-
-// we keep the original variable name `letter` like in warnings.ml
-let _letter = l =>
-  switch l {
-  | "a" => letterAll
-  /* | "b" => [||] */
-  | "c" => [1, 2]
-  | "d" => [3]
-  | "e" => [4]
-  | "f" => [5]
-  /* | "g" => [||] */
-  /* | "h" => [||] */
-  /* | "i" => [||] */
-  /* | "j" => [||] */
-  | "k" => [32, 33, 34, 35, 36, 37, 38, 39]
-  | "l" => [6]
-  | "m" => [7]
-  /* | "n" => [||] */
-  /* | "o" => [||] */
-  | "p" => [8]
-  /* | "q" => [||] */
-  | "r" => [9]
-  | "s" => [10]
-  /* | "t" => [||] */
-  | "u" => [11, 12]
-  | "v" => [13]
-  /* | "w" => [||] */
-  | "x" => [14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 30]
-  | "y" => [26]
-  | "z" => [27]
-  | _ => []
-  }
-
 let letterDescriptions = [("a", "All flags")]
 
 let getDescription = (num: int): option<string> =>
@@ -212,11 +178,11 @@ module Parser = {
     | _ => ()
     }
 
-    ret->Belt.SortArray.stableSortBy((v1, v2) => {
+    ret->Array.toSorted((v1, v2) => {
       let a = v1.flag->Int.fromString
       let b = v2.flag->Int.fromString
 
-      compare(a, b)
+      compare(a, b)->Int.toFloat
     })
   }
 
@@ -231,16 +197,16 @@ module Parser = {
 
     Array.forEach(other, token => dict->Dict.set(token.flag, token))
 
-    Dict.valuesToArray(dict)->Belt.SortArray.stableSortBy((t1, t2) => {
+    Dict.valuesToArray(dict)->Array.toSorted((t1, t2) => {
       open Float
       let f1 = t1.flag
       let f2 = t2.flag
       switch (f1->fromString->Option.isNone, f2->fromString->Option.isNone) {
       | (false, false)
       | (true, true) =>
-        String.localeCompare(f1, f2)->Float.toInt
-      | (true, false) => -1
-      | (false, true) => 1
+        String.localeCompare(f1, f2)
+      | (true, false) => -1.0
+      | (false, true) => 1.0
       }
     })
   }

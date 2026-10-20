@@ -1,7 +1,5 @@
 open WebAPI
 
-%%raw("import React from 'react'")
-
 let loadGoogleFont = async (family: string) => {
   let url = `https://fonts.googleapis.com/css2?family=${family}`
   let css = await (await fetch(url))->Response.text
@@ -254,6 +252,7 @@ let renderImage = async (~assets, ~requestUrl: URLAPI.url, ~targetUrl: URLAPI.ur
   }
 }
 
+@live
 let onRequest = async ({request, params, env}: context) => {
   let requestUrl = URL.make(~url=request.url)
 

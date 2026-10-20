@@ -26,9 +26,11 @@ function factorial(n) {
   if (n <= 1) {
     return 1;
   } else {
-    return Math.imul(n, factorial((n - 1) | 0));
+    return (n * factorial((n - 1) | 0)) | 0;
   }
 }
+
+export { factorial };
 ```
 
 </CodeTab>
