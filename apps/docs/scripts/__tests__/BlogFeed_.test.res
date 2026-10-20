@@ -15,6 +15,11 @@ let blogDirectory = async () => {
   let directory = await temporaryDirectory("blog-feed-")
   let blog = join([directory, "markdown-pages", "blog"])
   await mkdir(join([blog, "archived"]), {recursive: true})
+  let _ = await Promise.all(
+    ["community", "docs/manual", "docs/guides", "docs/react", "syntax-lookup"]->Array.map(prefix =>
+      mkdir(join([directory, "markdown-pages", prefix]), {recursive: true})
+    ),
+  )
   await write(join([blog, "z-old.mdx"]), fixture("Old post", "2019-11-28"))
   await write(join([blog, "a-new.mdx"]), fixture("New post", "2026-04-28"))
   await write(join([blog, "archived", "middle.mdx"]), fixture("Archived post", "2020-01-01"))
@@ -50,9 +55,13 @@ test("RSS links match article routes, including archived posts", async () => {
     "https://rescript-lang.org/blog/archived/middle",
     "https://rescript-lang.org/blog/z-old",
   ])
-  let routes = MdxFile.scanPaths(~dir=join([directory, "markdown-pages", "blog"]), ~alias="blog")
+  let routes = DocsRouteConfig.loadRoutes(
+    ~options={
+      contentDirectory: join([directory, "markdown-pages"]),
+    },
+  ).routes->DocsRouteConfig.concretePaths
   items->Array.forEach(item => {
-    let route = item.href->String.replace("https://rescript-lang.org/", "")
+    let route = item.href->String.replace("https://rescript-lang.org", "")
     expect(routes->Array.includes(route))->toBe(true)
   })
 })
@@ -80,11 +89,11 @@ test("RSS dates use midnight UTC and XML serialization leaves dates unchanged", 
 
 test("the current blog feed contains ten recent posts with existing routes", async () => {
   let items = BlogApi.RssFeed.getLatest()
-  let routes = MdxFile.scanPaths(~dir="markdown-pages/blog", ~alias="blog")
+  let routes = DocsRouteConfig.loadRoutes().routes->DocsRouteConfig.concretePaths
   expect(items->Array.length)->toBe(10)
   items->Array.forEach(item => {
     expect(
-      routes->Array.includes(item.href->String.replace("https://rescript-lang.org/", "")),
+      routes->Array.includes(item.href->String.replace("https://rescript-lang.org", "")),
     )->toBe(true)
   })
 })
