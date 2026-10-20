@@ -10,7 +10,7 @@ test("renders current version label", async () => {
   await element(label)->toBeVisible
 })
 
-test("clicking button shows older versions", async () => {
+test("clicking button shows the v13 preview and older versions", async () => {
   let screen = await render(<VersionSelect />)
 
   // Menu should be hidden initially
@@ -20,6 +20,13 @@ test("clicking button shows older versions", async () => {
   // Click the trigger button
   let button = await screen->getByRole(#button)
   await button->click
+
+  let preview = await screen->getByText("v13 (preview)")
+  await element(preview)->toBeVisible
+  await element(preview)->toHaveAttribute(
+    "href",
+    "https://v13.rescript-lang.org/docs/manual/introduction",
+  )
 
   // Older versions should now be visible
   let v11After = await screen->getByText("v11")
