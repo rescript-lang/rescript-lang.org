@@ -2,6 +2,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { index, layout, route } from "@react-router/dev/routes";
+import { apiDataDirectory } from "./scripts/api-data.mjs";
 
 function mdxPaths(directory) {
   return readdirSync(directory, { withFileTypes: true })
@@ -24,7 +25,9 @@ export function loadRoutes({
   contentDirectory = fileURLToPath(
     new URL("./markdown-pages/", import.meta.url),
   ),
-  apiDirectory = join(contentDirectory, "docs/api"),
+  apiDirectory = apiDataDirectory({
+    directory: fileURLToPath(new URL("../../data/api/", import.meta.url)),
+  }),
 } = {}) {
   const apiPaths = (library) =>
     Object.keys(
@@ -67,9 +70,6 @@ export function loadRoutes({
           }),
           route("docs/manual/api/stdlib", "./routes/ApiRoute.jsx", {
             id: "api-stdlib",
-          }),
-          route("docs/manual/api/introduction", "./routes/ApiRoute.jsx", {
-            id: "api-intro",
           }),
           route("docs/manual/api/belt", "./routes/ApiRoute.jsx", {
             id: "api-belt",

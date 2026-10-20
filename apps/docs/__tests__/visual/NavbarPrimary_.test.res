@@ -5,9 +5,9 @@ test("desktop has everything visible", async () => {
   await viewport(1440, 500)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <NavbarPrimary />
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let leftContent = await screen->getByTestId("navbar-primary-left-content")
@@ -33,9 +33,9 @@ test("tablet has everything visible", async () => {
   await viewport(900, 500)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <NavbarPrimary />
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let leftContent = await screen->getByTestId("navbar-primary-left-content")
@@ -61,9 +61,9 @@ test("phone has some things hidden and a mobile nav that can be toggled", async 
   await viewport(600, 1200)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <NavbarPrimary />
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let leftContent = await screen->getByTestId("navbar-primary-left-content")

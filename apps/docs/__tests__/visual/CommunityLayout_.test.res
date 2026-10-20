@@ -21,13 +21,13 @@ test("desktop community layout shows sidebar and content", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="community-layout-wrapper">
         <CommunityLayout categories=mockCategories entries=mockEntries>
           <div> {React.string("Community content goes here.")} </div>
         </CommunityLayout>
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let resources = await screen->getByText("Resources")
@@ -47,13 +47,13 @@ test("mobile community layout hides sidebar", async () => {
   await viewport(600, 1200)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="community-layout-wrapper">
         <CommunityLayout categories=mockCategories entries=mockEntries>
           <div> {React.string("Community content goes here.")} </div>
         </CommunityLayout>
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let resources = await screen->getByText("Resources")
@@ -87,13 +87,13 @@ test("desktop community layout with multiple categories", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="community-layout-wrapper">
         <CommunityLayout categories=mockMultipleCategories entries=mockEntries>
           <div> {React.string("Community content with multiple categories.")} </div>
         </CommunityLayout>
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let resources = await screen->getByText("Resources")
@@ -113,13 +113,13 @@ test("tablet community layout", async () => {
   await viewport(900, 900)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="community-layout-wrapper">
         <CommunityLayout categories=mockCategories entries=mockEntries>
           <div> {React.string("Community content goes here.")} </div>
         </CommunityLayout>
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let resources = await screen->getByText("Resources")

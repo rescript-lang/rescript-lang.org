@@ -44,6 +44,22 @@ export { myRecord, label };
 
 </CodeTab>
 
+### Nested Record Types
+
+Since ReScript 12, record types can be declared inline inside another record type:
+
+```res
+type profile = {
+  name: string,
+  settings: {
+    notifications: bool,
+    theme: string,
+  },
+}
+```
+
+Nested record types are useful when the inner shape belongs only to its parent. If it needs to be referenced independently, give it a separate named type.
+
 ### References
 
 - [Record](../docs/manual/record.mdx)

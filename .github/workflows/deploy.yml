@@ -13,7 +13,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: Deploy
     if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false }}
     concurrency:
@@ -53,7 +53,7 @@ jobs:
       - name: Deploy
         if: ${{ github.actor != 'dependabot[bot]' }}
         id: deploy
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -65,7 +65,7 @@ jobs:
           FORCE_COLOR: 0
       - name: Comment with docs preview link
         if: ${{ github.event_name == 'pull_request' && steps.deploy.outcome == 'success' }}
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@v3
         with:
           recreate: true
           header: docs-deployment
@@ -73,7 +73,7 @@ jobs:
             [Docs preview](${{ steps.deploy.outputs.deployment-url }})
 
   lighthouse:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: Lighthouse
     needs: deploy
     if: ${{ github.actor != 'dependabot[bot]' }}
@@ -117,7 +117,7 @@ jobs:
           LIGHTHOUSE_URL: ${{ env.DOCS_DEPLOYMENT_URL }}
       - name: Upload Lighthouse reports
         id: lighthouse-artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ env.LIGHTHOUSE_ARTIFACT_NAME }}
           path: .lighthouseci/
@@ -133,7 +133,7 @@ jobs:
           LIGHTHOUSE_ARTIFACT_URL: ${{ steps.lighthouse-artifact.outputs.artifact-url }}
       - name: Comment PR with Lighthouse baseline
         if: ${{ github.event_name == 'pull_request' }}
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@v3
         with:
           header: lighthouse-baseline
           path: .lighthouseci/comment.md
@@ -144,7 +144,7 @@ jobs:
         shell: bash
         run: bash .github/scripts/lighthouse-cleanup.sh
   deploy-guide:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: Deploy Guide Worker
     if: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false) && github.actor != 'dependabot[bot]' }}
     permissions:
@@ -167,8 +167,10 @@ jobs:
         run: yarn build:guide
       - name: Set guide deployment command
         shell: bash
+        env:
+          RAW_BRANCH_INPUT: ${{ github.head_ref || github.ref_name }}
         run: |
-          RAW_BRANCH="${{ github.head_ref || github.ref_name }}"
+          RAW_BRANCH="$RAW_BRANCH_INPUT"
           SAFE_BRANCH=$(echo "$RAW_BRANCH" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9-]+/-/g; s/^-+//; s/-+$//; s/-+/-/g')
           SAFE_BRANCH="${SAFE_BRANCH:0:28}"
 
@@ -183,7 +185,7 @@ jobs:
           fi
       - name: Deploy guide
         id: deploy-guide
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -228,7 +230,7 @@ jobs:
           GUIDE_PRODUCTION_ENVIRONMENT: ${{ env.GUIDE_PRODUCTION_ENVIRONMENT }}
 
   e2e:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: E2E Tests
     needs: deploy
     if: ${{ github.actor != 'dependabot[bot]' }}

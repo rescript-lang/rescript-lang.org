@@ -8,6 +8,8 @@ order: 2
 
 # Forwarding Refs
 
+> **React 19:** Function components can receive `ref` as a prop, so new components can pass it directly to a DOM element without `React.forwardRef`. See [Refs and the DOM](./refs-and-the-dom.mdx#refs-and-component-functions). This guide covers the `React.forwardRef` API, which remains supported for existing components and interop.
+
 <Intro>
 
 Ref forwarding is a technique for automatically passing a [React.ref](./refs-and-the-dom.mdx) through a component to one of its children. This is typically not necessary for most components in the application. However, it can be useful for some kinds of components, especially in reusable component libraries. The most common scenarios are described below.
