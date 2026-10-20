@@ -8,10 +8,11 @@
     "build:res": "node ../docs/generate-route-types.mjs && rescript build --warn-error +3+8+11+12+26+27+31+32+33+34+35+39+44+45+110",
     "build:vite": "react-router build",
     "build": "yarn build:res && yarn build:vite",
-    "ci:test": "yarn build:res && yarn test:compiler && yarn vitest --run --browser.headless",
+    "ci:test": "yarn build:res && yarn test:lessons && yarn test:compiler && yarn vitest --run --browser.headless",
     "dev:vite": "yarn build:res && vite --host",
     "vitest": "vitest",
     "test:compiler": "vitest run --config vitest.compiler.config.mjs",
+    "test:lessons": "vitest run --config vitest.lessons.config.mjs",
     "test:e2e": "yarn build && playwright test"
   },
   "dependencies": {
