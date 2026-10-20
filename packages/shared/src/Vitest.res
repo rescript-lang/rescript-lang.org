@@ -10,6 +10,9 @@ type mock
 external test: (string, unit => promise<unit>) => unit = "test"
 
 @module("vitest")
+external afterEach: (unit => unit) => unit = "afterEach"
+
+@module("vitest")
 external testWithTimeout: (string, unit => promise<unit>, int) => unit = "test"
 
 @module("vitest") @scope("vi")

@@ -1,5 +1,5 @@
 let lessonFromFile = sourcePath => {
-  let raw = Node.Fs.readFileSync(sourcePath)
+  let raw = Node.Fs.readFileSync2(sourcePath, "utf8")
   GuideLessonFrontmatter.parse(~raw, ~sourcePath)
 }
 
@@ -14,7 +14,7 @@ let collect = results =>
 
 let validateAndSort = lessons =>
   switch GuideLessonFrontmatter.validate(lessons) {
-  | Ok() => Ok(lessons->GuideLesson.sort)
+  | Ok() => Ok(lessons->Array.map(parsed => parsed.GuideLessonFrontmatter.lesson)->GuideLesson.sort)
   | Error(error) => Error(GuideLessonFrontmatter.validationErrorMessage(error))
   }
 

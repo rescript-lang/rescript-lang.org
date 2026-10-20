@@ -27,17 +27,19 @@ its integer `position`. The build requires these frontmatter fields:
 
 | Field                                | Required | Meaning                                                  |
 | ------------------------------------ | -------- | -------------------------------------------------------- |
-| `position`                           | Yes      | Integer lesson order                                     |
+| `position`                           | Yes      | Signed 32-bit integer lesson order                       |
 | `id`                                 | Yes      | Stable URL-safe hash and lesson identifier               |
 | `missionLabel`                       | Yes      | Short lesson label                                       |
 | `title`                              | Yes      | Lesson heading                                           |
-| `description`                        | Yes      | Lesson summary used by the lesson model                  |
 | `exercise.id`                        | Yes      | Stable identifier for saved code and completion          |
-| `exercise.title`                     | Yes      | Exercise label                                           |
 | `exercise.initialCode`               | Yes      | Initial editor contents                                  |
 | `exercise.expectedOutput`            | Yes      | Matching runtime log line that unlocks the next lesson   |
 | `exercise.solutionCode`              | No       | Build-only reference solution; defaults to `initialCode` |
 | `exercise.expectedInitialDiagnostic` | No       | Build-only expected syntax/type error in the starter     |
+
+The build rejects malformed fields and duplicate positions, lesson IDs, or
+exercise IDs. Errors identify the source lesson file and field. Source paths
+are used for build diagnostics and are excluded from the published loader data.
 
 Lesson IDs determine durable hash-based deep links. Renaming a published lesson
 ID requires a redirect or an explicit decision to let existing deep links fall
@@ -47,13 +49,18 @@ Exercise IDs are durable client-side storage keys for saved code and completion.
 Do not rename a published exercise ID without a migration or an explicit
 decision to discard existing learner progress.
 
-Lesson IDs must be URL-safe slugs made from lowercase ASCII letters, digits,
-and hyphens. Exercise IDs may use the established slash-delimited form.
+Lesson IDs must be URL-safe slugs made from lowercase ASCII letters and digits,
+with single hyphens between words. Exercise IDs may contain one or more such
+slugs separated by single slashes, such as `first-contact/greeting`.
 
 Every published exercise needs a deterministic `expectedOutput` string. The
 build checks `initialCode` and compiles `solutionCode`, runs the reference solution,
 and requires a matching runtime log line. Matching preserves whitespace and
 uses the same argument serialization as the browser checkpoint.
+
+Numeric or boolean output must be quoted in YAML, for example
+`expectedOutput: "42"`. Matching is exact: empty strings and whitespace are
+preserved. Manual checks are not supported.
 
 When the learner must edit the starter to reach the checkpoint, supply
 `exercise.solutionCode`. Otherwise it defaults to `initialCode`. Reference
@@ -69,7 +76,6 @@ of the compiler's diagnostic message and provide a separate `solutionCode`:
 ```yaml
 exercise:
   id: types/fix-a-mismatch
-  title: Fix a type mismatch
   initialCode: |
     let answer: int = false
   expectedInitialDiagnostic: "But it's expected to have type: int"
@@ -122,7 +128,11 @@ The guide pins ReScript **v12.3.1** in `app/GuideCompilerSettings.res`. Both
 validation and browser execution use that version and its runtime files; new
 CDN releases cannot silently change lessons. To upgrade, change the pin and run
 `yarn workspace @rescript-lang/guide test:compiler` and `yarn build:guide`.
-The guide CI command runs the compiler checks before the browser tests.
+The CI test command validates frontmatter, the complete lesson collection, and
+compiler output in Node before running the browser tests. After compiling
+ReScript, run `yarn workspace @rescript-lang/guide test:lessons` for just the
+lesson authoring checks, or `yarn workspace @rescript-lang/guide test:compiler`
+for the compiler checks.
 
 In the browser, the output panel reports a failed compiler download or a
 15-second loading timeout with instructions to reload.
@@ -147,7 +157,7 @@ Track outstanding guide launch work in this checklist:
 
 - [ ] Author, review, and run every lesson using its real expected output.
 - [x] Compile starters and check reference solution output against a pinned compiler.
-- [ ] Add a content-validation test for the complete lesson set, including
+- [x] Add a content-validation test for the complete lesson set, including
       unique `position`, lesson IDs, and exercise IDs.
 - [ ] Decide and implement the completion model for exercises that cannot use
       exact runtime output.

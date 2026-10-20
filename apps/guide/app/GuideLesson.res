@@ -1,21 +1,14 @@
-type exerciseCheck =
-  | ExpectedOutput(string)
-  | Manual
-
 type exercise = {
   id: string,
-  title: string,
   initialCode: string,
-  check: exerciseCheck,
+  expectedOutput: string,
 }
 
 type t = {
   id: string,
   position: int,
-  sourcePath: string,
   missionLabel: string,
   title: string,
-  description: string,
   content: string,
   exercise: exercise,
 }
@@ -56,8 +49,6 @@ let runtimeLogText = (runtimeLog: GuideCompilerFeedback.Output.runtimeLog) =>
   runtimeLog.content->Array.join(" ")
 
 let isExerciseComplete = (~exercise, ~output: GuideCompilerFeedback.Output.t) =>
-  switch exercise.check {
-  | ExpectedOutput(expected) =>
-    output.runtimeLogs->Array.some(runtimeLog => runtimeLog->runtimeLogText === expected)
-  | Manual => false
-  }
+  output.runtimeLogs->Array.some(runtimeLog =>
+    runtimeLog->runtimeLogText === exercise.expectedOutput
+  )
