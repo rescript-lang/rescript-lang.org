@@ -51,49 +51,6 @@ let getAllPosts = () => {
   )
 }
 
-let getLivePosts = () => {
-  let postsDirectory = Node.Path.join2(Node.Process.cwd(), "markdown-pages/blog")
-
-  let livePosts = mdxFiles(postsDirectory)->Array.map(path => {
-    let {frontmatter} =
-      Node.Path.join2(postsDirectory, path)->Node.Fs.readFileSync->MarkdownParser.parseSync
-    switch BlogFrontmatter.decode(frontmatter) {
-    | Error(msg) => JsError.throwWithMessage(msg)
-    | Ok(d) => {
-        path,
-        frontmatter: d,
-        archived: false,
-      }
-    }
-  })
-
-  livePosts->Array.toSorted((a, b) =>
-    String.compare(Node.Path.basename(b.path), Node.Path.basename(a.path))
-  )
-}
-
-let getArchivedPosts = () => {
-  let postsDirectory = Node.Path.join2(Node.Process.cwd(), "markdown-pages/blog")
-  let archivedPostsDirectory = Node.Path.join2(postsDirectory, "archived")
-
-  let archivedPosts = mdxFiles(archivedPostsDirectory)->Array.map(path => {
-    let {frontmatter} =
-      Node.Path.join2(archivedPostsDirectory, path)->Node.Fs.readFileSync->MarkdownParser.parseSync
-    switch BlogFrontmatter.decode(frontmatter) {
-    | Error(msg) => JsError.throwWithMessage(msg)
-    | Ok(d) => {
-        path: Node.Path.join2("archived", path),
-        frontmatter: d,
-        archived: true,
-      }
-    }
-  })
-
-  archivedPosts->Array.toSorted((a, b) =>
-    String.compare(Node.Path.basename(b.path), Node.Path.basename(a.path))
-  )
-}
-
 module RssFeed = {
   type item = {
     title: string,

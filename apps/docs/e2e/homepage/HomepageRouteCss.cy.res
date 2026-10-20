@@ -129,6 +129,13 @@ it("desktop navigation keeps its responsive logo across route stylesheets", () =
 
 it("documentation styles are prefetched only after navigation intent", () => {
   visit("/")
+  // The prerendered link is visible before its focus handler is attached. Wait
+  // for the client router and a React state update before focusing it.
+  cyWindow()->shouldPropertyExist("__reactRouterDataRouter")->ignore
+  get(`button[aria-label="Show community photo 2"]`)
+  ->click
+  ->shouldAttribute("aria-pressed", "true")
+  ->ignore
   let prefetch = `link[rel="prefetch"][as="style"][href*="/content-"]`
   get(prefetch)->should("not.exist")->ignore
   containsInRegex("a", /^Get started$/)->focusElement->ignore

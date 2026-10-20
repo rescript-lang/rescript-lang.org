@@ -1,2 +1,2 @@
-@react.component
+@react.component @live
 let default: unit => React.element

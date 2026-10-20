@@ -9,8 +9,6 @@ apps/docs/public/blog/feed.xml
 node_modules/
 out/
 apps/docs/out/
-index_data/*.json
-apps/docs/index_data/*.json
 
 # Generated via docs test examples script
 temp

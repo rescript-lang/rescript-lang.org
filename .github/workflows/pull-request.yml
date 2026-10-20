@@ -43,6 +43,10 @@ jobs:
         run: yarn ci:generated
       - name: Test examples and hrefs
         run: yarn test
+      - name: Check unused ReScript values and exports
+        run: yarn check:dead-code
+      - name: Test dead-code diagnostics
+        run: node --test scripts/__tests__/check-dead-code.test.mjs
   # Check the built Docs Pages routes and the Guide local dev server.
   Wrangler:
     runs-on: ubuntu-24.04

@@ -258,7 +258,8 @@ module DocstringsStylize = {
   }
 }
 
-@react.componentWithProps
+// reanalyze does not see the JSX props spread call in ApiRoute.
+@live @react.componentWithProps
 let make = (props: props) => {
   let children = {
     open Markdown

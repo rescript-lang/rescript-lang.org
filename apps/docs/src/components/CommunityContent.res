@@ -59,5 +59,3 @@ let make = () => {
     <LinkCards />
   </div>
 }
-
-let default = make
