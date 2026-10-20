@@ -1,6 +1,16 @@
 open Vitest
 open RescriptCompilerApi
 
+test("recognizes compiler API v9 and enables existing settings", async () => {
+  let version = Version.fromString("9")
+
+  expect(version->Version.toString)->toBe("9.0")
+  expect(version->Version.availableLanguages)->toEqual([Lang.Res])
+  expect(version->Version.isMinimumVersion(V4))->toBe(true)
+  expect(version->Version.isMinimumVersion(V6))->toBe(true)
+  expect(version->Version.isMinimumVersion(V9))->toBe(true)
+})
+
 test("recognizes the compiler API used by v13 alpha 6", async () => {
   let version = Version.fromString("8")
 
