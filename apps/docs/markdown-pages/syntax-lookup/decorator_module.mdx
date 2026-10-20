@@ -20,9 +20,11 @@ let root = dirname("/User/github")
 ```
 
 ```js
-var Path = require("path");
+import * as Path from "path";
 
-var root = Path.dirname("/User/github");
+let root = Path.dirname("/User/github");
+
+export { root };
 ```
 
 </CodeTab>
@@ -43,11 +45,16 @@ Console.log(myJson)
 ````
 
 ```javascript
-import MyJsonJson from "./myJson.json" with {"type": "json", "some-exotic-identifier": "someValue"};
+import MyJsonJson from "./myJson.json" with {
+  type: "json",
+  "some-exotic-identifier": "someValue",
+};
 
-var myJson = MyJsonJson;
+let myJson = MyJsonJson;
 
 console.log(myJson);
+
+export { myJson };
 ````
 
 </CodeTab>

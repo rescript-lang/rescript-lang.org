@@ -90,14 +90,24 @@ let twoExceptions = (x, y) => {
 It is possible to silence the analysis by adding a `@doesNotThrow` annotation:
 
 ```rescript
+exception Invalid_argument(string)
+
 @throws(Invalid_argument)
-let stringMake1 = String.make(12, ' ')
+let makeSpaces = length => {
+  if length < 0 {
+    throw(Invalid_argument("negative length"))
+  }
+  " "->String.repeat(length)
+}
+
+@throws(Invalid_argument)
+let stringMake1 = makeSpaces(12)
 
 // Silence only the make function
-let stringMake2 = (@doesNotThrow String.make)(12, ' ')
+let stringMake2 = (@doesNotThrow makeSpaces)(12)
 
 // Silence the entire call (including arguments to make)
-let stringMake3 = @doesNotThrow String.make(12, ' ')
+let stringMake3 = @doesNotThrow makeSpaces(12)
 
 ```
 
@@ -107,7 +117,11 @@ let stringMake3 = @doesNotThrow String.make(12, ' ')
 - Generic exceptions are not understood by the analysis. For example `exn` is not recognized below (only concrete exceptions are):
 
 ```rescript
-try (foo()) { | exn => throw(exn) }
+let foo = () => throw(Not_found)
+
+try foo() catch {
+| exn => throw(exn)
+}
 ```
 
 - Uses of e.g. `List.head` are interpreted as belonging to the standard library. If you re-define `List` in the local scope, the analysis it will think it's dealing with `List` from the standard library.

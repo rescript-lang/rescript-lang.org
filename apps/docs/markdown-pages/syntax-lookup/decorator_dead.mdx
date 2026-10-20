@@ -1,15 +1,25 @@
 ---
 id: "dead-decorator"
-keywords: ["dead", "decorator"]
-name: "@dead"
-summary: "This is the `@dead` decorator."
+keywords: ["dead", "decorator", "reanalyze", "dead code"]
+name: "@dead / @@dead"
+summary: "These decorators suppress dead-code reports."
 category: "decorators"
 ---
 
-> This decorator requires [`reanalyze`](https://github.com/rescript-lang/reanalyze), a code analysis tool for ReScript, to be installed. [Click here to read about how you get started with reanalyze.](https://github.com/rescript-lang/reanalyze).
-
 `@dead` is picked up by reanalyze's dead code analysis, and suppresses reporting on the value/type, but can also be used to force the analysis to consider a value as dead. Typically used to acknowledge cases of dead code you are not planning to address right now, but can be searched easily later.
+
+Since ReScript 12.2, standalone `@@dead` suppresses reports for all following items in the current file or module until another scoped annotation overrides it:
+
+```res
+module DeferredCleanup = {
+  @@dead
+  let oldParser = input => input
+  let oldSerializer = value => value
+}
+```
+
+Unlike `@@live`, suppressed items aren't liveness roots and don't keep their dependencies alive.
 
 ### References
 
-- [Reanalyze: Controlling reports with Annotations](https://github.com/rescript-lang/reanalyze#dce-controlling-reports-with-annotations)
+- [Dead Code Analysis](../docs/manual/editor-code-analysis.mdx#keeping-some-dead-code)

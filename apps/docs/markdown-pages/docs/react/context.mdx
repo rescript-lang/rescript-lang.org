@@ -78,36 +78,24 @@ function Example$Button(props) {
   });
 }
 
-let Button = {
-  make: Example$Button,
-};
+let Button = { make: Example$Button };
 
 function Example$ThemedButton(props) {
-  return JsxRuntime.jsx(Example$Button, {
-    theme: props.theme,
-  });
+  return JsxRuntime.jsx(Example$Button, { theme: props.theme });
 }
 
-let ThemedButton = {
-  make: Example$ThemedButton,
-};
+let ThemedButton = { make: Example$ThemedButton };
 
 function Example$Toolbar(props) {
   return JsxRuntime.jsx("div", {
-    children: JsxRuntime.jsx(Example$ThemedButton, {
-      theme: props.theme,
-    }),
+    children: JsxRuntime.jsx(Example$ThemedButton, { theme: props.theme }),
   });
 }
 
-let Toolbar = {
-  make: Example$Toolbar,
-};
+let Toolbar = { make: Example$Toolbar };
 
 function Example(props) {
-  return JsxRuntime.jsx(Example$Toolbar, {
-    theme: "Dark",
-  });
+  return JsxRuntime.jsx(Example$Toolbar, { theme: "Dark" });
 }
 
 let make = Example;
@@ -124,17 +112,13 @@ function Example$Button(props) {
   return <button className={className}>{"Click me"}</button>;
 }
 
-let Button = {
-  make: Example$Button,
-};
+let Button = { make: Example$Button };
 
 function Example$ThemedButton(props) {
   return <Button.make theme={props.theme} />;
 }
 
-let ThemedButton = {
-  make: Example$ThemedButton,
-};
+let ThemedButton = { make: Example$ThemedButton };
 
 function Example$Toolbar(props) {
   return (
@@ -144,9 +128,7 @@ function Example$Toolbar(props) {
   );
 }
 
-let Toolbar = {
-  make: Example$Toolbar,
-};
+let Toolbar = { make: Example$Toolbar };
 
 function Example(props) {
   return <Toolbar.make theme={"Dark"} />;
@@ -222,14 +204,9 @@ let context = React.createContext("Light");
 
 let make = context.Provider;
 
-let Provider = {
-  make: make,
-};
+let Provider = { make: make };
 
-let ThemeContext = {
-  context: context,
-  Provider: Provider,
-};
+let ThemeContext = { context: context, Provider: Provider };
 
 function Example$Button(props) {
   let className;
@@ -240,20 +217,14 @@ function Example$Button(props) {
   });
 }
 
-let Button = {
-  make: Example$Button,
-};
+let Button = { make: Example$Button };
 
 function Example$ThemedButton(props) {
   let theme = React.useContext(context);
-  return JsxRuntime.jsx(Example$Button, {
-    theme: theme,
-  });
+  return JsxRuntime.jsx(Example$Button, { theme: theme });
 }
 
-let ThemedButton = {
-  make: Example$ThemedButton,
-};
+let ThemedButton = { make: Example$ThemedButton };
 
 function Example$Toolbar(props) {
   return JsxRuntime.jsx("div", {
@@ -261,9 +232,7 @@ function Example$Toolbar(props) {
   });
 }
 
-let Toolbar = {
-  make: Example$Toolbar,
-};
+let Toolbar = { make: Example$Toolbar };
 
 function Example(props) {
   return JsxRuntime.jsx(make, {
@@ -287,14 +256,9 @@ let context = React.createContext("Light");
 
 let make = context.Provider;
 
-let Provider = {
-  make: make,
-};
+let Provider = { make: make };
 
-let ThemeContext = {
-  context: context,
-  Provider: Provider,
-};
+let ThemeContext = { context: context, Provider: Provider };
 
 function Example$Button(props) {
   let className;
@@ -302,18 +266,14 @@ function Example$Button(props) {
   return <button className={className}>{"Click me"}</button>;
 }
 
-let Button = {
-  make: Example$Button,
-};
+let Button = { make: Example$Button };
 
 function Example$ThemedButton(props) {
   let theme = React.useContext(context);
   return <Button.make theme={theme} />;
 }
 
-let ThemedButton = {
-  make: Example$ThemedButton,
-};
+let ThemedButton = { make: Example$ThemedButton };
 
 function Example$Toolbar(props) {
   return (
@@ -323,9 +283,7 @@ function Example$Toolbar(props) {
   );
 }
 
-let Toolbar = {
-  make: Example$Toolbar,
-};
+let Toolbar = { make: Example$Toolbar };
 
 function Example(props) {
   return (

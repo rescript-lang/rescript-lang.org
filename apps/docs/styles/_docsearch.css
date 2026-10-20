@@ -70,7 +70,8 @@
 
 .DocSearch-Modal {
   @apply relative min-h-0 mx-auto bg-white w-full flex flex-col shadow-lg
-    max-w-(--breakpoint-md) rounded-lg;
+    rounded-lg;
+  max-width: var(--breakpoint-md, 768px);
   transform: scale(0.95);
   opacity: 0;
   transition: all 0.2s ease;

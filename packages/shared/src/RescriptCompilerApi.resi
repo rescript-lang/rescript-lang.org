@@ -27,6 +27,7 @@ module Version: {
     | @as(5) V5
     | @as(6) V6
     | @as(7) V7
+    | @as(8) V8
 
   type t =
     | ...numbered

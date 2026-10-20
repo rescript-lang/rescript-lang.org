@@ -24,13 +24,13 @@ test("desktop blog article renders header, author, date, and body", async () => 
   await viewport(1440, 900)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="blog-article-wrapper">
         <BlogArticle frontmatter=mockFrontmatter isArchived=false path="/blog/test-article">
           <div> {React.string("This is the blog post body content for testing.")} </div>
         </BlogArticle>
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let title = await screen->getByText("Test Blog Post Title")
@@ -50,13 +50,13 @@ test("desktop archived blog article shows warning banner", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="blog-article-wrapper">
         <BlogArticle frontmatter=mockFrontmatter isArchived=true path="/blog/test-article">
           <div> {React.string("This is the blog post body content for testing.")} </div>
         </BlogArticle>
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let important = await screen->getByText("Important:")
@@ -70,13 +70,13 @@ test("mobile blog article", async () => {
   await viewport(600, 1200)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="blog-article-wrapper">
         <BlogArticle frontmatter=mockFrontmatter isArchived=false path="/blog/test-article">
           <div> {React.string("This is the blog post body content for testing.")} </div>
         </BlogArticle>
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let title = await screen->getByText("Test Blog Post Title")
@@ -115,7 +115,7 @@ test("desktop blog article with co-authors shows all authors", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="blog-article-wrapper">
         <BlogArticle
           frontmatter=mockFrontmatterWithCoAuthors isArchived=false path="/blog/collab-post"
@@ -123,7 +123,7 @@ test("desktop blog article with co-authors shows all authors", async () => {
           <div> {React.string("Collaborative content.")} </div>
         </BlogArticle>
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let mainAuthor = await screen->getByText("Test Author")
@@ -151,7 +151,7 @@ test("desktop blog article with article image shows image", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="blog-article-wrapper">
         <BlogArticle
           frontmatter=mockFrontmatterWithArticleImg isArchived=false path="/blog/image-post"
@@ -159,7 +159,7 @@ test("desktop blog article with article image shows image", async () => {
           <div> {React.string("Content below the article image.")} </div>
         </BlogArticle>
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let title = await screen->getByText("Blog Post With Article Image")
@@ -185,13 +185,13 @@ test("desktop blog article without description", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="blog-article-wrapper">
         <BlogArticle frontmatter=mockFrontmatterNoDescription isArchived=false path="/blog/no-desc">
           <div> {React.string("Content without a description above.")} </div>
         </BlogArticle>
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let title = await screen->getByText("Blog Post Without Description")

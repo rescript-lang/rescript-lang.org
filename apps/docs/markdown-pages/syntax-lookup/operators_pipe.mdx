@@ -25,15 +25,19 @@ let message = dieRoll(6)->dieRollMessage("Marshall")
 ```
 
 ```js
+import * as Stdlib_Math from "@rescript/runtime/lib/es6/Stdlib_Math.js";
+
 function dieRoll(size) {
-  return Core__Math.Int.random(1, size);
+  return Stdlib_Math.Int.random(1, size);
 }
 
 function dieRollMessage(value, name) {
   return "Hi " + name + ", you rolled a " + value.toString();
 }
 
-var message = dieRollMessage(dieRoll(6), "Marshall");
+let message = dieRollMessage(Stdlib_Math.Int.random(1, 6), "Marshall");
+
+export { dieRoll, dieRollMessage, message };
 ```
 
 </CodeTab>
@@ -59,16 +63,16 @@ String.toUpperCase("example message")->logMsg(user, datestr, _)
 
 ```js
 function logMsg(user, datestr, msg) {
-  console.log(user + "|" + datestr + "|" + msg);
+  console.log(user + `|` + datestr + `|` + msg);
 }
 
-var datestr = "01-01-2021";
+let datestr = "01-01-2021";
 
-var user = "admin";
+let user = "admin";
 
-(function (__x) {
-  logMsg(user, datestr, __x);
-})("example message".toUpperCase());
+logMsg(user, datestr, "example message".toUpperCase());
+
+export { logMsg, datestr, user };
 ```
 
 </CodeTab>

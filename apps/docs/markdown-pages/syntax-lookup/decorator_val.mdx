@@ -22,9 +22,11 @@ let timeoutID = setTimeout(() => Console.log("Hello"), 1000)
 ```
 
 ```js
-var timeoutID = setTimeout(function (param) {
+let timeoutID = setTimeout(() => {
   console.log("Hello");
 }, 1000);
+
+export { timeoutID };
 ```
 
 </CodeTab>

@@ -16,8 +16,9 @@ ReScript values compile to their JavaScript equivalents directly, so **no data c
 
 **Shared, bidirectionally usable types**:
 
-- String. ReScript strings are JavaScript strings, vice-versa. (Caveat: only our backtick string `` `hello 👋 ${personName}` `` supports unicode and interpolation).
+- String. ReScript strings are JavaScript strings, vice-versa. Both double-quoted strings (`"hello 👋"`) and backtick strings support Unicode. Backtick strings also support interpolation, such as `` `hello 👋 ${personName}` ``.
 - Float. ReScript floats are JavaScript numbers, vice-versa.
+- Big integer. ReScript `bigint` values, such as `42n`, are JavaScript big integers. Use the [BigInt API](/docs/manual/api/stdlib/bigint) for operations on them.
 - Array. Use the [Array API](/docs/manual/api/stdlib/array) for array operations.
 - Tuple. Compiles to an array at runtime. You can treat a fixed-sized, heterogenous JavaScript array as a ReScript tuple too.
 - Boolean.
@@ -39,10 +40,11 @@ ReScript values compile to their JavaScript equivalents directly, so **no data c
 **Non-shared types (aka internal types)**:
 
 - Character.
-- Int64.
 - Lazy values.
 - Everything else.
 
 Many of these are stable, which means that you can still serialize/deserialize them as-is without manual conversions. But we discourage actively peeking into their structure otherwise.
 
 These types require manual conversions if you want to export them for JavaScript consumption. For a seamless JavaScript/TypeScript integration experience, check out the [TypeScript Integration](./typescript-integration.mdx) page instead of doing conversions by hand.
+
+ReScript v12 no longer provides the legacy `int64` type or `Int64` module. Use `bigint` for large integers instead.

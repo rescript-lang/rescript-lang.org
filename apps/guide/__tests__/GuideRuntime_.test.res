@@ -124,6 +124,32 @@ test("normalizes old compiler runtime import filenames", async () => {
   )->toBe("core__array")
 })
 
+test("resolves v13 exception imports to the published runtime file", async () => {
+  let compilerVersion = Semver.parse("v13.0.0-alpha.6")->Option.getOrThrow
+  let url = GuideRuntimeImport.url(
+    ~bundleBaseUrl="https://cdn.rescript-lang.org",
+    ~compilerVersion,
+    "./stdlib/Primitive_exceptions.mjs",
+  )
+
+  expect(url)->toBe(
+    "https://cdn.rescript-lang.org/v13.0.0-alpha.6/compiler-builtins/stdlib/Primitive_exceptions.js",
+  )
+})
+
+test("preserves runtime imports that already use the published extension", async () => {
+  let compilerVersion = Semver.parse("v12.3.1")->Option.getOrThrow
+  let url = GuideRuntimeImport.url(
+    ~bundleBaseUrl="https://cdn.rescript-lang.org",
+    ~compilerVersion,
+    "./stdlib/Stdlib_Array.js",
+  )
+
+  expect(url)->toBe(
+    "https://cdn.rescript-lang.org/v12.3.1/compiler-builtins/stdlib/Stdlib_Array.js",
+  )
+})
+
 test("normalizes old compiler versions for runtime imports", async () => {
   let alpha7 = Semver.parse("v12.0.0-alpha.7")->Option.getOrThrow
   let alpha9 = Semver.parse("v12.0.0-alpha.9")->Option.getOrThrow

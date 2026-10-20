@@ -34,19 +34,21 @@ setDecrement(counter, @this (me, amount) => me->setValue(me->getValue - amount))
 ```
 
 ```js
-var counter = new Object();
+let counter = new Object();
 
 counter.value = 0;
 
 counter.increment = function (amount) {
-  var me = this;
+  let me = this;
   me.value = (me.value + amount) | 0;
 };
 
 counter.decrement = function (amount) {
-  var me = this;
+  let me = this;
   me.value = (me.value - amount) | 0;
 };
+
+export { counter };
 ```
 
 </CodeTab>

@@ -21,13 +21,17 @@ let escape = '\u1111'
 ```
 
 ```js
-var one = /* '1' */ 49;
+let one = /* '1' */ 49;
 
-var upperCaseA = /* 'A' */ 65;
+let upperCaseA = /* 'A' */ 65;
 
-var lowerCaseA = /* 'a' */ 97;
-var unicode = 128512;
-var escape = 4369;
+let lowerCaseA = /* 'a' */ 97;
+
+let unicode = /* '😀' */ 128512;
+
+let escape = /* 'ᄑ' */ 4369;
+
+export { one, upperCaseA, lowerCaseA, unicode, escape };
 ```
 
 </CodeTab>

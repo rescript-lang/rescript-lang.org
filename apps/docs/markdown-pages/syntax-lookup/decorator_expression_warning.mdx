@@ -24,6 +24,8 @@ let deepClone = (obj: 'a): 'a => %raw(`
 function deepClone(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
+
+export { deepClone };
 ```
 
 </CodeTab>

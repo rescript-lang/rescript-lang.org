@@ -15,13 +15,22 @@ Binding a JS function is like binding any other value:
 ```res
 // Import nodejs' path.dirname
 @module("path") external dirname: string => string = "dirname"
-let root = dirname("/User/github") // returns "User"
+let root = dirname("/User/github")
+assert(root === "/User")
 ```
 
 ```js
 import * as Path from "path";
 
 let root = Path.dirname("/User/github");
+
+if (root !== "/User") {
+  throw {
+    RE_EXN_ID: "Assert_failure",
+    _1: ["Example.res", 4, 0],
+    Error: new Error(),
+  };
+}
 
 export { root };
 ```
@@ -149,11 +158,44 @@ let stripe = new Stripe("sk\_...");
 
 let session = stripe.checkout.sessions.create({});
 
-export {
-  stripe,
-  session,
-}
+export { stripe, session };
 ````
+
+</CodeTab>
+
+## Function on a Default-Exported Object
+
+When an ES module exports an object as its default value, use `@scope("default")` to bind to a function on that object:
+
+```js
+// math.js
+const math = {
+  add: (x, y) => x + y,
+};
+
+export default math;
+```
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+@module("./math.js") @scope("default")
+external add: (int, int) => int = "add"
+
+let result = add(1, 1)
+```
+
+```js
+import * as MathJs from "./math.js";
+
+function add(prim0, prim1) {
+  return MathJs.default.add(prim0, prim1);
+}
+
+let result = MathJs.default.add(1, 1);
+
+export { add, result };
+```
 
 </CodeTab>
 

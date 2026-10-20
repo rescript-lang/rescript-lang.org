@@ -92,7 +92,9 @@ Tailwind is configured in [`styles/main.css`](styles/main.css). There is no `tai
 | `yarn dev`           | Prepare generated files and run the local development environment |
 | `yarn build`         | Run the full production build                                     |
 | `yarn preview`       | Build and serve the generated static client locally               |
-| `yarn build:res`     | Compile ReScript only                                             |
+| `yarn build:res`     | Generate route types and compile ReScript                         |
+| `yarn build:routes`  | Regenerate the shared ReScript route type                         |
+| `yarn check:routes`  | Check that the shared route type matches the current routes       |
 | `yarn dev:res`       | Run the ReScript compiler in watch mode                           |
 | `yarn format`        | Run Prettier and the ReScript formatter                           |
 | `yarn test`          | Run markdown example and href validation                          |
@@ -101,6 +103,13 @@ Tailwind is configured in [`styles/main.css`](styles/main.css). There is no `tai
 | `yarn vitest:update` | Update screenshot baselines headlessly                            |
 
 ## Testing
+
+The documentation route table lives in `apps/docs/route-config.mjs`. React Router
+and `apps/docs/generate-route-types.mjs` read the same configuration, including
+MDX pages and API modules. `packages/shared/src/Path.res` is generated before
+ReScript builds and when starting the ReScript watcher. After changing routes,
+adding or removing MDX pages, or updating API data during a watch session, run
+`yarn build:routes` again. CI rejects a stale generated file.
 
 ### Vitest Browser Tests
 
@@ -124,18 +133,31 @@ Only update screenshots that are intentionally affected by your change.
 
 ### Markdown Example and Link Checks
 
-`yarn test` runs both of the following:
+`yarn test` runs the following:
 
-- `scripts/test-examples.mjs` to validate ReScript code examples in markdown
-- `scripts/test-hrefs.mjs` to validate relative markdown links under `markdown-pages/`
+- `apps/docs/scripts/test-examples.mjs` to compile examples in the manual, React docs, guides and syntax lookup, and compare shown JS and JSX output with the installed compiler
+- `apps/docs/scripts/test-hrefs.mjs` to validate relative markdown links under `markdown-pages/`
+- `apps/docs/scripts/test-redirects.mjs` to validate redirect rules
 
 Supported ReScript markdown code fences:
 
 - ` ```res `
+- ` ```rescript ` (alias for `res`)
 - ` ```res sig `
+- ` ```resi ` (alias for `res sig`)
 - ` ```res prelude `
+- ` ```res file=MathUtils.res ` (a separate source file for multi-file examples)
+- ` ```resi file=MathUtils.resi ` (its interface)
 
-Refresh generated JS output fences with:
+Indented fences are supported. Prelude blocks provide context for later examples. Use `res nocheck` only for intentionally invalid or incomplete snippets. Malformed CodeTabs fail the check, including missing closing tags and mismatched labels and fences.
+
+Named source files are compiled together with the examples on their page. Filenames must be PascalCase, end in `.res` or `.resi`, and be unique on the page; `Example` is reserved for the checker's main module. Supporting files are removed before checking the next page.
+
+Output comparison ignores formatting and comments. `JS Output` and `JS Output (Module)` use ESM, `JS Output (CommonJS)` uses CommonJS, and `JSX Preserved Output` uses preserved JSX. TypeScript output is not generated or compared by this checker; its ReScript input is still compiled.
+
+Compiler diagnostics embedded in output, such as `%todo`, show the example's filename and source range with the temporary build directory removed.
+
+Refresh generated JS output fences with the installed compiler and format the result:
 
 ```sh
 yarn test --update
@@ -144,25 +166,30 @@ yarn test --update
 You can also run the scripts directly:
 
 ```sh
-node scripts/test-examples.mjs
-node scripts/test-examples.mjs --update
-node scripts/test-hrefs.mjs
-node scripts/test-hrefs.mjs "markdown-pages/docs/manual/**/*.mdx"
+node apps/docs/scripts/test-examples.mjs
+node apps/docs/scripts/test-examples.mjs --update
+node apps/docs/scripts/test-examples.mjs "manual/module-functions.mdx"
+node apps/docs/scripts/test-examples.mjs --include-blog
+node apps/docs/scripts/test-hrefs.mjs
 ```
+
+Example-checker patterns are relative to `apps/docs/markdown-pages/docs`. Historical blog posts describe earlier compiler versions, so the default run reports them as skipped. `--include-blog` audits them with the installed compiler; reported differences need review against the original version. Blog files are never rewritten, even with `--update`.
 
 Run `yarn test` before pushing content changes so CI does not fail on markdown regressions.
 
 ## Writing Blog Posts
 
-If you are writing a blog post, refer to the [blog post guide](https://rescript-lang.org/blogpost-guide).
+Create an MDX file in [`apps/docs/markdown-pages/blog`](apps/docs/markdown-pages/blog). Its filename becomes the URL under `/blog/`; use an existing post as a template for the YAML frontmatter (`author`, quoted `date`, `title`, and optional `description`, `co_authors`, `previewImg`, `articleImg`, and `badge`). Author aliases are defined in [`BlogFrontmatter.res`](apps/docs/src/markdown/BlogFrontmatter.res).
+
+Put local images in [`apps/docs/public/img`](apps/docs/public/img) and reference them with `/img/...` URLs. Run `yarn dev` and preview the post at `/blog/<filename>` before opening a PR. Posts under `blog/archived` appear only in the archived listing.
 
 ## Adding Your Company Logo
 
 If your company uses ReScript and should appear in the "Trusted by our users" section on the front page:
 
 - Add a black and white `.svg` logo using `#979AAD` as the fill color.
-- Put the file in [`public/lp`](public/lp).
-- Update [`src/common/OurUsers.res`](src/common/OurUsers.res).
+- Put the file in [`apps/docs/public/lp`](apps/docs/public/lp).
+- Update [`apps/docs/src/data/OurUsers.res`](apps/docs/src/data/OurUsers.res), including the logo's intrinsic `width` and `height`. For SVGs without explicit dimensions, use their `viewBox` dimensions; scale fractional dimensions together to integers without changing the aspect ratio.
 - Commit, push, and open a PR.
 
 ## Contributing

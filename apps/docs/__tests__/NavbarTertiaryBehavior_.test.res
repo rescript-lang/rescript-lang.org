@@ -19,12 +19,12 @@ test("mobile drawer can be toggled open", async () => {
   await viewport(600, 1200)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <NavbarTertiary sidebar=sidebarContent>
         breadcrumbs
         editLink
       </NavbarTertiary>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let sidebar = await screen->getByTestId("sidebar-categories")

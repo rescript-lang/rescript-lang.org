@@ -1,3 +1,10 @@
+@module("../../styles/playground.css?url")
+external playgroundCss: string = "default"
+
+type stylesheet = {rel: string, href: string}
+
+let links = () => [{rel: "stylesheet", href: playgroundCss}]
+
 type props = {
   bundleBaseUrl: string,
   versions: array<string>,

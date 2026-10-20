@@ -18,7 +18,7 @@ module type Showable = {
   let show: t => string
 }
 
-module IntShow: Showable = {
+module IntShow: Showable with type t = int = {
   type t = int
   let show = x => Int.toString(x)
 }
@@ -28,18 +28,31 @@ let rendered = IntShow.show(42)
 
 ```js
 function show(x) {
-  return String(x);
+  return x.toString();
 }
 
-var IntShow = {
-  show: show,
-};
+let IntShow = { show: show };
 
-var rendered = show(42);
+let rendered = (42).toString();
+
+export { IntShow, rendered };
 ```
 
 </CodeTab>
 
+### Type Constraints
+
+Use `with type` to refine an abstract type from another module type. A `private` constraint exposes the underlying representation for safe coercion without allowing callers to construct values directly:
+
+```res
+module type Storage = {
+  type t
+  let make: string => t
+}
+
+module type PrivateStringStorage = Storage with type t = private string
+```
+
 ### References
 
-- [Module](../docs/manual/module.mdx)
+- [Module](../docs/manual/module.mdx#refining-module-types-with-constraints)

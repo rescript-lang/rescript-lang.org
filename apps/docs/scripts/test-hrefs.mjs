@@ -3,6 +3,27 @@ import { remark } from "remark";
 import { read } from "to-vfile";
 import { reporter } from "vfile-reporter";
 import * as fs from "fs/promises";
+import path from "node:path";
+import { apiDataDirectory } from "./api-data.mjs";
+
+const apiDirectory = apiDataDirectory();
+
+// API pages are generated from JSON rather than Markdown files. Match their
+// actual routes instead of suppressing every warning containing "api/".
+const apiPaths = new Set([
+  "docs/manual/api",
+  "docs/manual/api/introduction",
+  ...(
+    await Promise.all(
+      ["stdlib", "belt", "dom"].map(async (library) => {
+        const data = JSON.parse(
+          await fs.readFile(path.join(apiDirectory, `${library}.json`), "utf8"),
+        );
+        return Object.keys(data).map((key) => `docs/manual/api/${key}`);
+      }),
+    )
+  ).flat(),
+]);
 
 const files = new Set(
   ...[await fs.readdir("markdown-pages", { recursive: true })],
@@ -21,6 +42,13 @@ for (const file of files) {
     let result = await remark()
       .use(remarkValidateLinks)
       .process(await read("markdown-pages/" + file));
+
+    result.messages = result.messages.filter((message) => {
+      const target = message.reason.match(
+        /^Cannot find (?:file `|heading for `#[^`]+` in `)(?:\.\.\/)*(docs\/manual\/api(?:\/[^`]*)?)`/,
+      )?.[1];
+      return !target || !apiPaths.has(target.replace(/\/$/, ""));
+    });
 
     const log = reporter(result, { quiet: true });
 
@@ -47,7 +75,6 @@ for (const file of files) {
     if (
       log &&
       !allMissingExistInPublic &&
-      !warningMessage.includes("api/") &&
       // When running on CI it fails to ignore the link directly to the blog root
       // https://github.com/rescript-lang/rescript-lang.org/actions/runs/19520461368/job/55882556586?pr=1115#step:6:338
       !warningMessage.includes("`../../blog`") &&

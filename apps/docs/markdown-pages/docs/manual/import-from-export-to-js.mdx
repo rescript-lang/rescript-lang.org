@@ -48,8 +48,9 @@ export { root };
 ```
 
 ```js
-var Path = require("path");
-var root = Path.dirname("/User/github");
+let Path = require("path");
+
+let root = Path.dirname("/User/github");
 
 exports.root = root;
 ```
@@ -88,8 +89,16 @@ export { leftPad, paddedResult };
 ```
 
 ```js
-var LeftPad = require("./leftPad");
-var paddedResult = LeftPad("hi", 5);
+let LeftPad = require("./leftPad");
+
+function leftPad(prim0, prim1) {
+  return LeftPad(prim0, prim1);
+}
+
+let paddedResult = LeftPad("hi", 5);
+
+exports.leftPad = leftPad;
+exports.paddedResult = paddedResult;
 ```
 
 </CodeTab>
@@ -135,11 +144,16 @@ Console.log(myJson)
 ````
 
 ```javascript
-import MyJsonJson from "./myJson.json" with {"type": "json", "some-exotic-identifier": "someValue"};
+import MyJsonJson from "./myJson.json" with {
+  type: "json",
+  "some-exotic-identifier": "someValue",
+};
 
-var myJson = MyJsonJson;
+let myJson = MyJsonJson;
 
 console.log(myJson);
+
+export { myJson };
 ````
 
 </CodeTab>
@@ -165,7 +179,7 @@ Use the `import` function to dynamically import a specific part of a module. Put
 
 Let's look at an example. Imagine the following file `MathUtils.res`:
 
-```rescript
+```rescript file=MathUtils.res
 let add = (a, b) => a + b
 let sub = (a, b) => a - b
 ```
@@ -185,13 +199,12 @@ Console.log(onePlusOne)
 ````
 ```javascript
 async function main() {
-  var add = await import("./MathUtils.mjs").then(function(m) {
-    return m.add;
-  });
-
-  var onePlusOne = add(1, 1);
+  let add = await import("./MathUtils.js").then((m) => m.add);
+  let onePlusOne = add(1, 1);
   console.log(onePlusOne);
 }
+
+export { main };
 ````
 
 </CodeTab>
@@ -213,11 +226,12 @@ Console.log(twoPlusTwo)
 ````
 ```javascript
 async function main() {
-  var Utils = await import("./MathUtils.mjs");
-
-  var twoPlusTwo = Utils.add(2, 2);
+  let Utils = await import("./MathUtils.js");
+  let twoPlusTwo = Utils.add(2, 2);
   console.log(twoPlusTwo);
 }
+
+export { main };
 ````
 
 </CodeTab>
@@ -258,9 +272,10 @@ export { $$default as default };
 ```
 
 ```js
-var $$default = "Bob";
+let $$default = "Bob";
 
-export { $$default, $$default as default };
+exports.default = $$default;
+exports.__esModule = true;
 ```
 
 </CodeTab>

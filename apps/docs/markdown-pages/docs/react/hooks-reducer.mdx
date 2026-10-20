@@ -16,6 +16,8 @@ order: 4
 
 ## Usage
 
+Use this call inside a function component or custom hook.
+
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res nocheck
@@ -23,7 +25,11 @@ let (state, dispatch) = React.useReducer(reducer, initialState)
 ```
 
 ```js
-var match = React.useReducer(reducer, initialState);
+let match = React.useReducer(reducer, initialState);
+
+let state = match[0];
+
+let dispatch = match[1];
 ```
 
 </CodeTab>
@@ -71,20 +77,14 @@ import * as JsxRuntime from "react/jsx-runtime";
 
 function reducer(state, action) {
   if (action === "Inc") {
-    return {
-      count: (state.count + 1) | 0,
-    };
+    return { count: (state.count + 1) | 0 };
   } else {
-    return {
-      count: (state.count - 1) | 0,
-    };
+    return { count: (state.count - 1) | 0 };
   }
 }
 
 function Example(props) {
-  let match = React.useReducer(reducer, {
-    count: 0,
-  });
+  let match = React.useReducer(reducer, { count: 0 });
   let dispatch = match[1];
   return JsxRuntime.jsxs(JsxRuntime.Fragment, {
     children: [
@@ -112,20 +112,14 @@ import * as JsxRuntime from "react/jsx-runtime";
 
 function reducer(state, action) {
   if (action === "Inc") {
-    return {
-      count: (state.count + 1) | 0,
-    };
+    return { count: (state.count + 1) | 0 };
   } else {
-    return {
-      count: (state.count - 1) | 0,
-    };
+    return { count: (state.count - 1) | 0 };
   }
 }
 
 function Example(props) {
-  let match = React.useReducer(reducer, {
-    count: 0,
-  });
+  let match = React.useReducer(reducer, { count: 0 });
   let dispatch = match[1];
   return (
     <>
@@ -231,23 +225,13 @@ function reducer(state, action) {
   switch (action.TAG) {
     case "AddTodo":
       let todos = state.todos.concat([
-        {
-          id: state.nextId,
-          content: action._0,
-          completed: false,
-        },
+        { id: state.nextId, content: action._0, completed: false },
       ]);
-      return {
-        todos: todos,
-        nextId: (state.nextId + 1) | 0,
-      };
+      return { todos: todos, nextId: (state.nextId + 1) | 0 };
     case "RemoveTodo":
       let id = action._0;
       let todos$1 = state.todos.filter((todo) => todo.id !== id);
-      return {
-        todos: todos$1,
-        nextId: state.nextId,
-      };
+      return { todos: todos$1, nextId: state.nextId };
     case "ToggleTodo":
       let id$1 = action._0;
       let todos$2 = Belt_Array.map(state.todos, (todo) => {
@@ -261,26 +245,16 @@ function reducer(state, action) {
           return todo;
         }
       });
-      return {
-        todos: todos$2,
-        nextId: state.nextId,
-      };
+      return { todos: todos$2, nextId: state.nextId };
   }
 }
 
 let initialTodos = [
-  {
-    id: 1,
-    content: "Try ReScript & React",
-    completed: false,
-  },
+  { id: 1, content: "Try ReScript & React", completed: false },
 ];
 
 function Example(props) {
-  let match = React.useReducer(reducer, {
-    todos: initialTodos,
-    nextId: 2,
-  });
+  let match = React.useReducer(reducer, { todos: initialTodos, nextId: 2 });
   let dispatch = match[1];
   let todos = Belt_Array.map(match[0].todos, (todo) =>
     JsxRuntime.jsxs("li", {
@@ -288,32 +262,20 @@ function Example(props) {
         todo.content,
         JsxRuntime.jsx("button", {
           children: "Remove",
-          onClick: (param) =>
-            dispatch({
-              TAG: "RemoveTodo",
-              _0: todo.id,
-            }),
+          onClick: (param) => dispatch({ TAG: "RemoveTodo", _0: todo.id }),
         }),
         JsxRuntime.jsx("input", {
           checked: todo.completed,
           type: "checkbox",
-          onChange: (param) =>
-            dispatch({
-              TAG: "ToggleTodo",
-              _0: todo.id,
-            }),
+          onChange: (param) => dispatch({ TAG: "ToggleTodo", _0: todo.id }),
         }),
       ],
     }),
   );
   return JsxRuntime.jsxs(JsxRuntime.Fragment, {
     children: [
-      JsxRuntime.jsx("h1", {
-        children: "Todo List:",
-      }),
-      JsxRuntime.jsx("ul", {
-        children: todos,
-      }),
+      JsxRuntime.jsx("h1", { children: "Todo List:" }),
+      JsxRuntime.jsx("ul", { children: todos }),
     ],
   });
 }
@@ -332,23 +294,13 @@ function reducer(state, action) {
   switch (action.TAG) {
     case "AddTodo":
       let todos = state.todos.concat([
-        {
-          id: state.nextId,
-          content: action._0,
-          completed: false,
-        },
+        { id: state.nextId, content: action._0, completed: false },
       ]);
-      return {
-        todos: todos,
-        nextId: (state.nextId + 1) | 0,
-      };
+      return { todos: todos, nextId: (state.nextId + 1) | 0 };
     case "RemoveTodo":
       let id = action._0;
       let todos$1 = state.todos.filter((todo) => todo.id !== id);
-      return {
-        todos: todos$1,
-        nextId: state.nextId,
-      };
+      return { todos: todos$1, nextId: state.nextId };
     case "ToggleTodo":
       let id$1 = action._0;
       let todos$2 = Belt_Array.map(state.todos, (todo) => {
@@ -362,49 +314,27 @@ function reducer(state, action) {
           return todo;
         }
       });
-      return {
-        todos: todos$2,
-        nextId: state.nextId,
-      };
+      return { todos: todos$2, nextId: state.nextId };
   }
 }
 
 let initialTodos = [
-  {
-    id: 1,
-    content: "Try ReScript & React",
-    completed: false,
-  },
+  { id: 1, content: "Try ReScript & React", completed: false },
 ];
 
 function Example(props) {
-  let match = React.useReducer(reducer, {
-    todos: initialTodos,
-    nextId: 2,
-  });
+  let match = React.useReducer(reducer, { todos: initialTodos, nextId: 2 });
   let dispatch = match[1];
   let todos = Belt_Array.map(match[0].todos, (todo) => (
     <li>
       {todo.content}
-      <button
-        onClick={(param) =>
-          dispatch({
-            TAG: "RemoveTodo",
-            _0: todo.id,
-          })
-        }
-      >
+      <button onClick={(param) => dispatch({ TAG: "RemoveTodo", _0: todo.id })}>
         {"Remove"}
       </button>
       <input
         checked={todo.completed}
         type={"checkbox"}
-        onChange={(param) =>
-          dispatch({
-            TAG: "ToggleTodo",
-            _0: todo.id,
-          })
-        }
+        onChange={(param) => dispatch({ TAG: "ToggleTodo", _0: todo.id })}
       />
     </li>
   ));
@@ -429,11 +359,15 @@ export { reducer, initialTodos, make };
 
 ```res nocheck
 let (state, dispatch) =
-  React.useReducerWithMapState(reducer, initialState, initial)
+  React.useReducerWithMapState(reducer, initialState, init)
 ```
 
 ```js
-var match = React.useReducer(reducer, initialState, init);
+let match = React.useReducer(reducer, initialState, init);
+
+let state = match[0];
+
+let dispatch = match[1];
 ```
 
 </CodeTab>
@@ -483,26 +417,18 @@ import * as React from "react";
 import * as JsxRuntime from "react/jsx-runtime";
 
 function init(initialCount) {
-  return {
-    count: initialCount,
-  };
+  return { count: initialCount };
 }
 
 function reducer(state, action) {
   if (typeof action !== "object") {
     if (action === "Inc") {
-      return {
-        count: (state.count + 1) | 0,
-      };
+      return { count: (state.count + 1) | 0 };
     } else {
-      return {
-        count: (state.count - 1) | 0,
-      };
+      return { count: (state.count - 1) | 0 };
     }
   } else {
-    return {
-      count: action._0,
-    };
+    return { count: action._0 };
   }
 }
 
@@ -534,26 +460,18 @@ import * as React from "react";
 import * as JsxRuntime from "react/jsx-runtime";
 
 function init(initialCount) {
-  return {
-    count: initialCount,
-  };
+  return { count: initialCount };
 }
 
 function reducer(state, action) {
   if (typeof action !== "object") {
     if (action === "Inc") {
-      return {
-        count: (state.count + 1) | 0,
-      };
+      return { count: (state.count + 1) | 0 };
     } else {
-      return {
-        count: (state.count - 1) | 0,
-      };
+      return { count: (state.count - 1) | 0 };
     }
   } else {
-    return {
-      count: action._0,
-    };
+    return { count: action._0 };
   }
 }
 

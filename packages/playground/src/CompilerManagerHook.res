@@ -41,8 +41,15 @@ module CdnMeta = {
   let getLibraryCmijUrl = (baseUrl, version, libraryName: string): string =>
     `${baseUrl}/${Semver.toString(version)}/${libraryName}/cmij.js`
 
-  let getStdlibRuntimeUrl = (baseUrl, version, filename) =>
+  let getStdlibRuntimeUrl = (baseUrl, version, filename) => {
+    // The compiler emits .mjs imports, while the published runtime bundles use .js.
+    let filename = if filename->String.endsWith(".mjs") {
+      filename->String.slice(~start=0, ~end=-4) ++ ".js"
+    } else {
+      filename
+    }
     `${baseUrl}/${Semver.toString(version)}/compiler-builtins/stdlib/${filename}`
+  }
 }
 
 module FinalResult = {
@@ -84,7 +91,7 @@ let getLibrariesForVersion = (~version: Semver.t): array<string> => {
 let getOpenModules = (~apiVersion: Version.t, ~libraries: array<string>): option<array<string>> =>
   switch apiVersion {
   | V1 | V2 | V3 | UnknownVersion(_) => None
-  | V4 | V5 | V6 | V7 =>
+  | V4 | V5 | V6 | V7 | V8 =>
     libraries->Array.some(el => el === "@rescript/core") ? Some(["RescriptCore"]) : None
   }
 
@@ -565,7 +572,7 @@ let useCompilerManager = (
             )
           | Lang.Res => instance->Compiler.resCompile(code)
           }
-        | V5 | V6 | V7 =>
+        | V5 | V6 | V7 | V8 =>
           switch lang {
           | Lang.Res => instance->Compiler.resCompile(code)
           | _ => CompilationResult.UnexpectedError(`Can't handle with lang: ${lang->Lang.toString}`)

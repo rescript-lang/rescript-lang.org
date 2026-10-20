@@ -20,19 +20,21 @@ Custom hooks let you extract existing component logic into reusable, separate fu
 
 Let's go back to a previous example from our [React.useEffect section](./hooks-effect.mdx) where we built a component for a chat application that displays a message, indicating whether a friend is online or offline:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+The examples use an imaginary `ChatAPI` with the following bindings:
 
-{/* TODO: fix this example */}
-
-```res nocheck {16-31}
-// FriendStatus.res
-
+```res prelude
 module ChatAPI = {
   // Imaginary globally available ChatAPI for demo purposes
   type status = { isOnline: bool }
   @val external subscribeToFriendStatus: (string, status => unit) => unit = "subscribeToFriendStatus"
   @val external unsubscribeFromFriendStatus: (string, status => unit) => unit = "unsubscribeFromFriendStatus"
 }
+```
+
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
+
+```res {16-31}
+// FriendStatus.res
 
 type state = Offline | Loading | Online
 
@@ -71,57 +73,104 @@ let make = (~friendId: string) => {
 ```
 
 ```js
-function FriendStatus(Props) {
-  var friendId = Props.friendId;
-  var match = React.useState(function () {
-    return /* Offline */ 0;
-  });
-  var setState = match[1];
-  React.useEffect(function () {
-    var handleStatusChange = function (status) {
-      return Curry._1(setState, function (param) {
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let ChatAPI = {};
+
+function Example(props) {
+  let friendId = props.friendId;
+  let match = React.useState(() => "Offline");
+  let setState = match[1];
+  React.useEffect(() => {
+    let handleStatusChange = (status) =>
+      setState((param) => {
         if (status.isOnline) {
-          return /* Online */ 2;
+          return "Online";
         } else {
-          return /* Offline */ 0;
+          return "Offline";
         }
       });
-    };
     subscribeToFriendStatus(friendId, handleStatusChange);
-    Curry._1(setState, function (param) {
-      return /* Loading */ 1;
-    });
-    return function (param) {
+    setState((param) => "Loading");
+    return () => {
       unsubscribeFromFriendStatus(friendId, handleStatusChange);
     };
-  });
-  var text;
+  }, [friendId]);
+  let text;
   switch (match[0]) {
-    case /* Offline */ 0:
+    case "Offline":
       text = friendId + " is offline";
       break;
-    case /* Loading */ 1:
+    case "Loading":
       text = "loading...";
       break;
-    case /* Online */ 2:
+    case "Online":
       text = friendId + " is online";
       break;
   }
-  return React.createElement("div", undefined, text);
+  return JsxRuntime.jsx("div", { children: text });
 }
+
+let make = Example;
+
+export { ChatAPI, make };
+```
+
+```jsx
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let ChatAPI = {};
+
+function Example(props) {
+  let friendId = props.friendId;
+  let match = React.useState(() => "Offline");
+  let setState = match[1];
+  React.useEffect(() => {
+    let handleStatusChange = (status) =>
+      setState((param) => {
+        if (status.isOnline) {
+          return "Online";
+        } else {
+          return "Offline";
+        }
+      });
+    subscribeToFriendStatus(friendId, handleStatusChange);
+    setState((param) => "Loading");
+    return () => {
+      unsubscribeFromFriendStatus(friendId, handleStatusChange);
+    };
+  }, [friendId]);
+  let text;
+  switch (match[0]) {
+    case "Offline":
+      text = friendId + " is offline";
+      break;
+    case "Loading":
+      text = "loading...";
+      break;
+    case "Online":
+      text = friendId + " is online";
+      break;
+  }
+  return <div>{text}</div>;
+}
+
+let make = Example;
+
+export { ChatAPI, make };
 ```
 
 </CodeTab>
 
 Now let’s say that our chat application also has a contact list, and we want to render names of online users with a green color. We could copy and paste similar logic above into our `FriendListItem` component but it wouldn’t be ideal:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
-```res nocheck {15-30}
+```res {15-30}
 // FriendListItem.res
 type state = Offline | Loading | Online
-
-// module ChatAPI = {...}
 
 type friend = {
   id: string,
@@ -147,7 +196,7 @@ let make = (~friend: friend) => {
     }
 
     Some(cleanup)
-  })
+  }, [friend.id])
 
   let color = switch(state) {
     | Offline => "red"
@@ -155,59 +204,103 @@ let make = (~friend: friend) => {
     | Loading => "grey"
   }
 
-  <li style={{ color }}>
+  <li style={{color: color}}>
       {React.string(friend.name)}
   </li>
 }
 ```
 
 ```js
-function FriendListItem(Props) {
-  var friend = Props.friend;
-  var match = React.useState(function () {
-    return /* Offline */ 0;
-  });
-  var setState = match[1];
-  React.useEffect(function () {
-    var handleStatusChange = function (status) {
-      return Curry._1(setState, function (param) {
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let ChatAPI = {};
+
+function Example(props) {
+  let friend = props.friend;
+  let match = React.useState(() => "Offline");
+  let setState = match[1];
+  React.useEffect(() => {
+    let handleStatusChange = (status) =>
+      setState((param) => {
         if (status.isOnline) {
-          return /* Online */ 2;
+          return "Online";
         } else {
-          return /* Offline */ 0;
+          return "Offline";
         }
       });
-    };
     subscribeToFriendStatus(friend.id, handleStatusChange);
-    Curry._1(setState, function (param) {
-      return /* Loading */ 1;
-    });
-    return function (param) {
+    setState((param) => "Loading");
+    return () => {
       unsubscribeFromFriendStatus(friend.id, handleStatusChange);
     };
-  });
-  var color;
+  }, [friend.id]);
+  let color;
   switch (match[0]) {
-    case /* Offline */ 0:
+    case "Offline":
       color = "red";
       break;
-    case /* Loading */ 1:
+    case "Loading":
       color = "grey";
       break;
-    case /* Online */ 2:
+    case "Online":
       color = "green";
       break;
   }
-  return React.createElement(
-    "li",
-    {
-      style: {
-        color: color,
-      },
-    },
-    friend.name,
-  );
+  return JsxRuntime.jsx("li", {
+    children: friend.name,
+    style: { color: color },
+  });
 }
+
+let make = Example;
+
+export { ChatAPI, make };
+```
+
+```jsx
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+
+let ChatAPI = {};
+
+function Example(props) {
+  let friend = props.friend;
+  let match = React.useState(() => "Offline");
+  let setState = match[1];
+  React.useEffect(() => {
+    let handleStatusChange = (status) =>
+      setState((param) => {
+        if (status.isOnline) {
+          return "Online";
+        } else {
+          return "Offline";
+        }
+      });
+    subscribeToFriendStatus(friend.id, handleStatusChange);
+    setState((param) => "Loading");
+    return () => {
+      unsubscribeFromFriendStatus(friend.id, handleStatusChange);
+    };
+  }, [friend.id]);
+  let color;
+  switch (match[0]) {
+    case "Offline":
+      color = "red";
+      break;
+    case "Loading":
+      color = "grey";
+      break;
+    case "Online":
+      color = "green";
+      break;
+  }
+  return <li style={{ color: color }}>{friend.name}</li>;
+}
+
+let make = Example;
+
+export { ChatAPI, make };
 ```
 
 </CodeTab>
@@ -224,10 +317,8 @@ Usually when we want to share logic between two functions, we extract it to a th
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 // FriendStatusHook.res
-
-// module ChatAPI {...}
 
 type state = Offline | Loading | Online
 
@@ -249,38 +340,39 @@ let useFriendStatus = (friendId: string): state => {
     }
 
     Some(cleanup)
-  })
+  }, [friendId])
 
   state
 }
 ```
 
 ```js
+import * as React from "react";
+
+let ChatAPI = {};
+
 function useFriendStatus(friendId) {
-  var match = React.useState(function () {
-    return /* Offline */ 0;
-  });
-  var setState = match[1];
-  React.useEffect(function () {
-    var handleStatusChange = function (status) {
-      return Curry._1(setState, function (param) {
+  let match = React.useState(() => "Offline");
+  let setState = match[1];
+  React.useEffect(() => {
+    let handleStatusChange = (status) =>
+      setState((param) => {
         if (status.isOnline) {
-          return /* Online */ 2;
+          return "Online";
         } else {
-          return /* Offline */ 0;
+          return "Offline";
         }
       });
-    };
     subscribeToFriendStatus(friendId, handleStatusChange);
-    Curry._1(setState, function (param) {
-      return /* Loading */ 1;
-    });
-    return function (param) {
+    setState((param) => "Loading");
+    return () => {
       unsubscribeFromFriendStatus(friendId, handleStatusChange);
     };
-  });
+  }, [friendId]);
   return match[0];
 }
+
+export { ChatAPI, useFriendStatus };
 ```
 
 </CodeTab>
@@ -291,8 +383,10 @@ Unlike a React component, a custom Hook doesn’t need to have a specific signat
 
 The purpose of our `useFriendStatus` Hook is to subscribe us to a friend’s status. This is why it takes `friendId` as an argument, and returns the online state like `Online`, `Offline` or `Loading`:
 
-```res nocheck
-let useFriendStatus = (friendId: string): status {
+```res
+type state = Offline | Loading | Online
+
+let useFriendStatus = (_friendId: string): state => {
   let (state, setState) = React.useState(_ => Offline)
 
   // ...
@@ -301,7 +395,15 @@ let useFriendStatus = (friendId: string): status {
 }
 ```
 
-Now let’s use our custom Hook.
+Now let’s use our custom Hook. The following examples import its public API from `FriendStatusHook.res`:
+
+```res prelude
+module FriendStatusHook = {
+  type state = Offline | Loading | Online
+  @module("./FriendStatusHook.res.js")
+  external useFriendStatus: string => state = "useFriendStatus"
+}
+```
 
 ## Using a Custom Hook
 
@@ -311,7 +413,7 @@ Now that we’ve extracted this logic to a useFriendStatus hook, we can just use
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck {6}
+```res {6}
 // FriendStatus.res
 type friend = { id: string }
 
@@ -330,39 +432,41 @@ let make = (~friend: friend) => {
 ```
 
 ```js
-function FriendStatus(Props) {
-  var friend = Props.friend;
-  var onlineState = useFriendStatus(friend.id);
-  var color;
-  switch (onlineState) {
-    case /* Offline */ 0:
-      color = "red";
-      break;
-    case /* Loading */ 1:
-      color = "grey";
-      break;
-    case /* Online */ 2:
-      color = "green";
-      break;
-  }
-  return React.createElement(
-    "li",
-    {
-      style: {
-        color: color,
-      },
-    },
-    friend.name,
-  );
+import * as FriendStatusHookResJs from "./FriendStatusHook.res.js";
+
+let ChatAPI = {};
+
+function useFriendStatus(prim) {
+  return FriendStatusHookResJs.useFriendStatus(prim);
 }
+
+let FriendStatusHook = { useFriendStatus: useFriendStatus };
+
+function Example(props) {
+  let onlineState = FriendStatusHookResJs.useFriendStatus(props.friend.id);
+  switch (onlineState) {
+    case "Offline":
+      return "Offline";
+    case "Loading":
+      return "Loading";
+    case "Online":
+      return "Online";
+  }
+}
+
+let make = Example;
+
+export { ChatAPI, FriendStatusHook, make };
 ```
 
 </CodeTab>
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
-```res nocheck {4}
+```res {4}
 // FriendListItem.res
+type friend = {id: string, name: string}
+
 @react.component
 let make = (~friend: friend) => {
   let onlineState = FriendStatusHook.useFriendStatus(friend.id)
@@ -373,38 +477,83 @@ let make = (~friend: friend) => {
     | Loading => "grey"
   }
 
-  <li style={{ color }}>
+  <li style={{color: color}}>
       {React.string(friend.name)}
   </li>
 }
 ```
 
 ```js
-function FriendListItem(Props) {
-  var friend = Props.friend;
-  var onlineState = useFriendStatus(friend.id);
-  var color;
+import * as JsxRuntime from "react/jsx-runtime";
+import * as FriendStatusHookResJs from "./FriendStatusHook.res.js";
+
+let ChatAPI = {};
+
+function useFriendStatus(prim) {
+  return FriendStatusHookResJs.useFriendStatus(prim);
+}
+
+let FriendStatusHook = { useFriendStatus: useFriendStatus };
+
+function Example(props) {
+  let friend = props.friend;
+  let onlineState = FriendStatusHookResJs.useFriendStatus(friend.id);
+  let color;
   switch (onlineState) {
-    case /* Offline */ 0:
+    case "Offline":
       color = "red";
       break;
-    case /* Loading */ 1:
+    case "Loading":
       color = "grey";
       break;
-    case /* Online */ 2:
+    case "Online":
       color = "green";
       break;
   }
-  return React.createElement(
-    "li",
-    {
-      style: {
-        color: color,
-      },
-    },
-    friend.name,
-  );
+  return JsxRuntime.jsx("li", {
+    children: friend.name,
+    style: { color: color },
+  });
 }
+
+let make = Example;
+
+export { ChatAPI, FriendStatusHook, make };
+```
+
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+import * as FriendStatusHookResJs from "./FriendStatusHook.res.js";
+
+let ChatAPI = {};
+
+function useFriendStatus(prim) {
+  return FriendStatusHookResJs.useFriendStatus(prim);
+}
+
+let FriendStatusHook = { useFriendStatus: useFriendStatus };
+
+function Example(props) {
+  let friend = props.friend;
+  let onlineState = FriendStatusHookResJs.useFriendStatus(friend.id);
+  let color;
+  switch (onlineState) {
+    case "Offline":
+      color = "red";
+      break;
+    case "Loading":
+      color = "grey";
+      break;
+    case "Online":
+      color = "green";
+      break;
+  }
+  return <li style={{ color: color }}>{friend.name}</li>;
+}
+
+let make = Example;
+
+export { ChatAPI, FriendStatusHook, make };
 ```
 
 </CodeTab>
@@ -421,11 +570,31 @@ function FriendListItem(Props) {
 
 Since Hooks are functions, we can pass information between them.
 
-To illustrate this, we’ll use another component from our hypothetical chat example. This is a chat message recipient picker that displays whether the currently selected friend is online:
+To illustrate this, we’ll use a chat message recipient picker that displays whether the currently selected friend is online. First, define a small status indicator:
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+```res prelude
+module Circle = {
+  type color = Red | Green | Grey
 
-```res nocheck {11,12,14-18,22}
+  @react.component
+  let make = (~color) => {
+    let color = switch color {
+    | Red => "red"
+    | Green => "green"
+    | Grey => "grey"
+    }
+    <span style={{color: color}}>
+      {React.string("●")}
+    </span>
+  }
+}
+```
+
+The picker passes the selected friend ID to the custom Hook:
+
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
+
+```res {11,12,14-18,22}
 type friend = {id: string, name: string}
 
 let friendList = [
@@ -447,10 +616,10 @@ let make = () => {
 
   let onChange = evt => {
     let value = ReactEvent.Form.target(evt)["value"]
-    setRecipientId(value)
+    setRecipientId(_ => value)
   }
 
-  let friends = Belt.Array.map(friendList, friend => {
+  let friends = friendList->Array.map(friend => {
     <option key={friend.id} value={friend.id}>
       {React.string(friend.name)}
     </option>
@@ -466,69 +635,163 @@ let make = () => {
 ```
 
 ```js
-var friendList = [
-  {
-    id: "1",
-    name: "Phoebe",
-  },
-  {
-    id: "2",
-    name: "Rachel",
-  },
-  {
-    id: "3",
-    name: "Ross",
-  },
-];
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+import * as FriendStatusHookResJs from "./FriendStatusHook.res.js";
 
-function Playground(Props) {
-  var match = React.useState(function () {
-    return "1";
-  });
-  var setRecipientId = match[1];
-  var recipientId = match[0];
-  var recipientOnlineState = useFriendStatus(recipientId);
-  var color;
-  switch (recipientOnlineState) {
-    case /* Offline */ 0:
-      color = /* Red */ 0;
+let ChatAPI = {};
+
+function useFriendStatus(prim) {
+  return FriendStatusHookResJs.useFriendStatus(prim);
+}
+
+let FriendStatusHook = { useFriendStatus: useFriendStatus };
+
+function Example$Circle(props) {
+  let color;
+  switch (props.color) {
+    case "Red":
+      color = "red";
       break;
-    case /* Loading */ 1:
-      color = /* Grey */ 2;
+    case "Green":
+      color = "green";
       break;
-    case /* Online */ 2:
-      color = /* Green */ 1;
+    case "Grey":
+      color = "grey";
       break;
   }
-  var onChange = function (evt) {
-    return Curry._1(setRecipientId, evt.target.value);
+  return JsxRuntime.jsx("span", { children: "●", style: { color: color } });
+}
+
+let Circle = { make: Example$Circle };
+
+let friendList = [
+  { id: "1", name: "Phoebe" },
+  { id: "2", name: "Rachel" },
+  { id: "3", name: "Ross" },
+];
+
+function Example(props) {
+  let match = React.useState(() => "1");
+  let setRecipientId = match[1];
+  let recipientId = match[0];
+  let recipientOnlineState = FriendStatusHookResJs.useFriendStatus(recipientId);
+  let color;
+  switch (recipientOnlineState) {
+    case "Offline":
+      color = "Red";
+      break;
+    case "Loading":
+      color = "Grey";
+      break;
+    case "Online":
+      color = "Green";
+      break;
+  }
+  let onChange = (evt) => {
+    let value = evt.target.value;
+    setRecipientId((param) => value);
   };
-  var friends = Belt_Array.map(friendList, function (friend) {
-    return React.createElement(
+  let friends = friendList.map((friend) =>
+    JsxRuntime.jsx(
       "option",
-      {
-        key: friend.id,
-        value: friend.id,
-      },
-      friend.name,
-    );
-  });
-  return React.createElement(
-    React.Fragment,
-    undefined,
-    React.createElement(Playground$Circle, {
-      color: color,
-    }),
-    React.createElement(
-      "select",
-      {
-        value: recipientId,
-        onChange: onChange,
-      },
-      friends,
+      { children: friend.name, value: friend.id },
+      friend.id,
     ),
   );
+  return JsxRuntime.jsxs(JsxRuntime.Fragment, {
+    children: [
+      JsxRuntime.jsx(Example$Circle, { color: color }),
+      JsxRuntime.jsx("select", {
+        children: friends,
+        value: recipientId,
+        onChange: onChange,
+      }),
+    ],
+  });
 }
+
+let make = Example;
+
+export { ChatAPI, FriendStatusHook, Circle, friendList, make };
+```
+
+```jsx
+import * as React from "react";
+import * as JsxRuntime from "react/jsx-runtime";
+import * as FriendStatusHookResJs from "./FriendStatusHook.res.js";
+
+let ChatAPI = {};
+
+function useFriendStatus(prim) {
+  return FriendStatusHookResJs.useFriendStatus(prim);
+}
+
+let FriendStatusHook = { useFriendStatus: useFriendStatus };
+
+function Example$Circle(props) {
+  let color;
+  switch (props.color) {
+    case "Red":
+      color = "red";
+      break;
+    case "Green":
+      color = "green";
+      break;
+    case "Grey":
+      color = "grey";
+      break;
+  }
+  return <span style={{ color: color }}>{"●"}</span>;
+}
+
+let Circle = { make: Example$Circle };
+
+let friendList = [
+  { id: "1", name: "Phoebe" },
+  { id: "2", name: "Rachel" },
+  { id: "3", name: "Ross" },
+];
+
+function Example(props) {
+  let match = React.useState(() => "1");
+  let setRecipientId = match[1];
+  let recipientId = match[0];
+  let recipientOnlineState = FriendStatusHookResJs.useFriendStatus(recipientId);
+  let color;
+  switch (recipientOnlineState) {
+    case "Offline":
+      color = "Red";
+      break;
+    case "Loading":
+      color = "Grey";
+      break;
+    case "Online":
+      color = "Green";
+      break;
+  }
+  let onChange = (evt) => {
+    let value = evt.target.value;
+    setRecipientId((param) => value);
+  };
+  let friends = friendList.map((friend) => (
+    <option key={friend.id} value={friend.id}>
+      {friend.name}
+    </option>
+  ));
+  return (
+    <>
+      <Circle.make color={color} />
+      <select value={recipientId} onChange={onChange}>
+        {friends}
+      </select>
+    </>
+  );
+}
+
+let make = Example;
+
+export { ChatAPI, FriendStatusHook, Circle, friendList, make };
 ```
 
 </CodeTab>
@@ -538,11 +801,12 @@ We keep the currently chosen friend ID in the `recipientId` state variable, and 
 Because the useState Hook call gives us the latest value of the `recipientId` state variable, we can pass it to our custom `FriendStatusHook.useFriendStatus` Hook as an argument:
 
 ```res nocheck
+// Excerpt from the picker component above.
 let (recipientId, setRecipientId) = React.useState(_ => "1")
 let recipientOnlineState = FriendStatusHook.useFriendStatus(recipientId)
 ```
 
-This lets us know whether the currently selected friend is online. If we pick a different friend and update the `recipientId` state variable, our `FriendStatus.useFriendStatus` Hook will unsubscribe from the previously selected friend, and subscribe to the status of the newly selected one.
+This lets us know whether the currently selected friend is online. If we pick a different friend and update the `recipientId` state variable, our `FriendStatusHook.useFriendStatus` Hook will unsubscribe from the previously selected friend, and subscribe to the status of the newly selected one.
 
 ## Use Your Imagination
 

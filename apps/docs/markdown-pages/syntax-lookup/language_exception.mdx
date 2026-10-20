@@ -23,7 +23,24 @@ let message = try {
 ```
 
 ```js
-var message = "Missing value";
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
+
+let NotFound = /* @__PURE__ */ Primitive_exceptions.create("Example.NotFound");
+
+let message;
+
+try {
+  throw { RE_EXN_ID: NotFound, _1: "Missing value", Error: new Error() };
+} catch (raw_text) {
+  let text = Primitive_exceptions.internalToException(raw_text);
+  if (text.RE_EXN_ID === NotFound) {
+    message = text._1;
+  } else {
+    throw text;
+  }
+}
+
+export { NotFound, message };
 ```
 
 </CodeTab>

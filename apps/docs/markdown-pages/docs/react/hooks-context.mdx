@@ -78,14 +78,9 @@ let context = React.createContext("light");
 
 let make = context.Provider;
 
-let Provider = {
-  make: make,
-};
+let Provider = { make: make };
 
-let ThemeContext = {
-  context: context,
-  Provider: Provider,
-};
+let ThemeContext = { context: context, Provider: Provider };
 
 function Example$ThemedButton(props) {
   let theme = React.useContext(context);
@@ -99,16 +94,11 @@ function Example$ThemedButton(props) {
   }
   return JsxRuntime.jsx("button", {
     children: "I am a styled button!",
-    style: {
-      backgroundColor: match[1],
-      color: match[0],
-    },
+    style: { backgroundColor: match[1], color: match[0] },
   });
 }
 
-let ThemedButton = {
-  make: Example$ThemedButton,
-};
+let ThemedButton = { make: Example$ThemedButton };
 
 function Example$Toolbar(props) {
   return JsxRuntime.jsx("div", {
@@ -116,9 +106,7 @@ function Example$Toolbar(props) {
   });
 }
 
-let Toolbar = {
-  make: Example$Toolbar,
-};
+let Toolbar = { make: Example$Toolbar };
 
 function Example(props) {
   return JsxRuntime.jsx(make, {
@@ -142,14 +130,9 @@ let context = React.createContext("light");
 
 let make = context.Provider;
 
-let Provider = {
-  make: make,
-};
+let Provider = { make: make };
 
-let ThemeContext = {
-  context: context,
-  Provider: Provider,
-};
+let ThemeContext = { context: context, Provider: Provider };
 
 function Example$ThemedButton(props) {
   let theme = React.useContext(context);
@@ -162,20 +145,13 @@ function Example$ThemedButton(props) {
       match = ["#000000", "#eeeeee"];
   }
   return (
-    <button
-      style={{
-        backgroundColor: match[1],
-        color: match[0],
-      }}
-    >
+    <button style={{ backgroundColor: match[1], color: match[0] }}>
       {"I am a styled button!"}
     </button>
   );
 }
 
-let ThemedButton = {
-  make: Example$ThemedButton,
-};
+let ThemedButton = { make: Example$ThemedButton };
 
 function Example$Toolbar(props) {
   return (
@@ -185,9 +161,7 @@ function Example$Toolbar(props) {
   );
 }
 
-let Toolbar = {
-  make: Example$Toolbar,
-};
+let Toolbar = { make: Example$Toolbar };
 
 function Example(props) {
   return (

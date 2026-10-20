@@ -4,47 +4,16 @@ external mainCss: string = "default"
 @module("../styles/_hljs.css?url")
 external hljsCss: string = "default"
 
-@module("../styles/utils.css?url")
-external utilsCss: string = "default"
-
-%%raw(`
-  import hljs from 'highlight.js/lib/core';
-  import bash from 'highlight.js/lib/languages/bash';
-  import css from 'highlight.js/lib/languages/css';
-  import diff from 'highlight.js/lib/languages/diff';
-  import javascript from 'highlight.js/lib/languages/javascript';
-  import typescript from 'highlight.js/lib/languages/typescript';
-  import json from 'highlight.js/lib/languages/json';
-  import text from 'highlight.js/lib/languages/plaintext';
-  import html from 'highlight.js/lib/languages/xml';
-  import toml from 'highlight.js/lib/languages/ini';
-  import rescript from 'highlightjs-rescript';
-
-  hljs.registerLanguage('rescript', rescript)
-  hljs.registerLanguage('javascript', javascript)
-  hljs.registerLanguage('css', css)
-  hljs.registerLanguage('ts', typescript)
-  hljs.registerLanguage('sh', bash)
-  hljs.registerLanguage('bash', bash)
-  hljs.registerLanguage('toml', toml)
-  hljs.registerLanguage('json', json)
-  hljs.registerLanguage('text', text)
-  hljs.registerLanguage('html', html)
-  hljs.registerLanguage('diff', diff)
-  hljs.registerLanguage('typescript', typescript)
-`)
-
 open ReactRouter
 
 @react.component
 let default = () => {
   <html lang="en">
     <head>
-      <style> {React.string("html {opacity:0;}")} </style>
+      {CypressBootstrap.element()}
       <link rel="preload" href={mainCss} as_="style" />
       <link rel="stylesheet" href={mainCss} />
       <link rel="stylesheet" href={hljsCss} />
-      <link rel="stylesheet" href={utilsCss} />
       <link rel="icon" href="/favicon.ico" />
       <Links />
       <ReactRouter.Meta />

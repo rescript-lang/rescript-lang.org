@@ -1,21 +1,30 @@
 ---
 id: "integer-multiplication"
-keywords: ["multiply", "multiplication", "int", "integer"]
+keywords: ["multiply", "multiplication", "int", "integer", "float"]
 name: "*"
-summary: "This is the `integer multiplication` operator."
+summary: "This is the unified `multiplication` operator."
 category: "operators-arithmetic"
 ---
 
-This operator performs _integer_ multiplication.
+Since ReScript 12, `*` works with `int`, `float`, and `bigint`. The compiler specializes the operator from its operands.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-let result = 2 * 3
+let intResult = 2 * 3
+let floatResult = 2.5 * 3.0
 ```
 
 ```js
-var result = 6;
+let floatResult = 2.5 * 3.0;
+
+let intResult = 6;
+
+export { intResult, floatResult };
 ```
 
 </CodeTab>
+
+### References
+
+- [Primitive Types](../docs/manual/primitive-types.mdx#arithmetic-operators)

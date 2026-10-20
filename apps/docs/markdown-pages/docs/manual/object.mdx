@@ -33,7 +33,7 @@ type person = {
 ```
 
 ```js
-// Empty output
+/* This output is empty. Its source's type definitions, externals and/or unused code got optimized away. */
 ```
 
 </CodeTab>
@@ -56,10 +56,7 @@ let me = {
 ```
 
 ```js
-let me = {
-  age: 5,
-  name: "Big ReScript",
-};
+let me = { age: 5, name: "Big ReScript" };
 
 export { me };
 ```
@@ -70,7 +67,7 @@ export { me };
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 type person = {
   "age": int
 };
@@ -81,9 +78,11 @@ let me = {
 ```
 
 ```js
-var me = {
-  age: "hello!",
-};
+let ExamplePrelude = {};
+
+let me = { age: "hello!" };
+
+export { ExamplePrelude, me };
 ```
 
 </CodeTab>
@@ -91,6 +90,9 @@ var me = {
 Since the type checker doesn't try to match `me` with the type `person`. If you ever want to force an object value to be of a predeclared object type, just annotate the value:
 
 ```res nocheck
+// This annotation intentionally rejects a string age.
+type person = {"age": int}
+
 let me: person = {
   "age": "hello!"
 }
@@ -102,12 +104,17 @@ Now the type system will error properly.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
+let me = {"age": 5, "name": "Big ReScript"}
 let age = me["age"]
 ```
 
 ```js
-var age = me["age"];
+let me = { age: 5, name: "Big ReScript" };
+
+let age = me.age;
+
+export { me, age };
 ```
 
 </CodeTab>
@@ -160,11 +167,7 @@ let myPoint: point3d = {
 ```
 
 ```js
-let myPoint = {
-  x: 1.0,
-  y: 2.0,
-  z: 3.0,
-};
+let myPoint = { x: 1.0, y: 2.0, z: 3.0 };
 
 export { myPoint };
 ```

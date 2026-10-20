@@ -154,14 +154,14 @@ let default: unit => React.element
 ## Styling
 
 - **Tailwind CSS v4** configured via the Vite plugin (`@tailwindcss/vite`). There is no `tailwind.config.js`.
-- All Tailwind configuration is in `styles/main.css` using CSS-native `@theme` blocks.
+- Tailwind design tokens and custom utilities live in `styles/_theme.css`. It is imported by `styles/main.css` and referenced by route-specific stylesheets.
 - **LightningCSS** is used as the CSS transformer.
-- The project defines custom design tokens in `styles/main.css`:
+- The project defines custom design tokens in `styles/_theme.css`:
   - Custom colors: `gray-*`, `fire-*`, `sky-*`, `berry-*`, `water`, `turtle`, `orange-*`
   - Custom font sizes: `text-11` through `text-68`
   - Custom utility classes: `hl-title`, `hl-1`–`hl-5`, `body-lg`, `body-md`, `body-sm`, `captions`
   - Fonts: Inter (sans), Roboto Mono (mono)
-- Use existing custom utilities and design tokens. Check `styles/main.css` before creating new ones.
+- Use existing custom utilities and design tokens. Check `styles/_theme.css` before creating new ones.
 
 ## Testing
 

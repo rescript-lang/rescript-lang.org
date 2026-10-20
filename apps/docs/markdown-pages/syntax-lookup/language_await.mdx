@@ -25,10 +25,12 @@ let fetchMessages = async () => {
 ```
 
 ```js
-async function fetchMessages(param) {
-  var message = await global.queryMessagesApi("message-id-1");
+async function fetchMessages() {
+  let message = await global.queryMessagesApi("message-id-1");
   console.log(message);
 }
+
+export { fetchMessages };
 ```
 
 </CodeTab>

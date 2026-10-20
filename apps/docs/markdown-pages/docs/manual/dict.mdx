@@ -25,15 +25,14 @@ let d2 = Dict.fromArray([("A", 5), ("B", 6)])
 ```
 
 ```js
-let d = {
-  A: 5,
-  B: 6,
-};
+let d = { A: 5, B: 6 };
 
 let d2 = Object.fromEntries([
   ["A", 5],
   ["B", 6],
 ]);
+
+export { d, d2 };
 ```
 
 </CodeTab>
@@ -66,11 +65,12 @@ let dict{"C": ?c} = d
 ```
 
 ```js
-let d = {
-  A: 5,
-  B: 6,
-  C: 7,
-};
+let d2 = Object.fromEntries([
+  ["A", 5],
+  ["B", 6],
+]);
+
+let d = { A: 5, B: 6, C: 7 };
 
 let a = d["A"];
 
@@ -79,6 +79,8 @@ let b = d.B;
 let b$1 = b !== undefined ? b : undefined;
 
 let c = d.C;
+
+export { d2, d, a, b$1 as b, c };
 ```
 
 </CodeTab>
@@ -102,12 +104,26 @@ d->Dict.set("C", 7)
 ```
 
 ```js
-let d = {
-  A: 5,
-  B: 6,
-};
+let d2 = Object.fromEntries([
+  ["A", 5],
+  ["B", 6],
+]);
 
-d["C"] = 7;
+let d = { A: 5, B: 6, C: 7 };
+
+let a = d["A"];
+
+let b = d.B;
+
+let b$1 = b !== undefined ? b : undefined;
+
+let d$1 = { A: 5, B: 6 };
+
+d$1["C"] = 7;
+
+let c = d.C;
+
+export { d2, a, b$1 as b, c, d$1 as d };
 ```
 
 </CodeTab>
@@ -136,6 +152,23 @@ let decodeUser = (json: JSON.t) => {
 ```
 
 ```js
+let d2 = Object.fromEntries([
+  ["A", 5],
+  ["B", 6],
+]);
+
+let d = { A: 5, B: 6, C: 7 };
+
+let a = d["A"];
+
+let b = d.B;
+
+let b$1 = b !== undefined ? b : undefined;
+
+let d$1 = { A: 5, B: 6 };
+
+d$1["C"] = 7;
+
 function decodeUser(json) {
   if (typeof json !== "object" || json === null || Array.isArray(json)) {
     return;
@@ -146,12 +179,13 @@ function decodeUser(json) {
   }
   let email = json.email;
   if (typeof email === "string") {
-    return {
-      name: name,
-      email: email,
-    };
+    return { name: name, email: email };
   }
 }
+
+let c = d.C;
+
+export { d2, a, b$1 as b, c, d$1 as d, decodeUser };
 ```
 
 </CodeTab>
