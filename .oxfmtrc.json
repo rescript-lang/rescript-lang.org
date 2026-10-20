@@ -12,7 +12,6 @@
     "build",
     "data/api/**/*.json",
     "dist",
-    "apps/docs/index_data/*.json",
     "node_modules/",
     "apps/docs/out/",
     "apps/docs/public/playground-bundles/",

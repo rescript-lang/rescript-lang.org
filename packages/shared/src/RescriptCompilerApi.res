@@ -430,7 +430,6 @@ module Compiler = {
   /*
       Res compiler actions
  */
-  @get @scope("rescript") external resVersion: t => string = "version"
 
   @send @scope("rescript")
   external resCompile: (t, string) => JSON.t = "compile"
@@ -479,8 +478,6 @@ module Compiler = {
   }
 
   @send external getConfig: t => Config.t = "getConfig"
-
-  @send external setFilename: (t, string) => bool = "setFilename"
 
   @send external setModuleSystemRaw: (t, string) => bool = "setModuleSystem"
 

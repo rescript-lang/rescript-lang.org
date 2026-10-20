@@ -39,32 +39,6 @@ module Ast = {
     type t = ImportDeclaration({specifiers: array<Specifier.t>, source: StringLiteral.t})
   }
 
-  module ExpressionStatement = {
-    @tag("type")
-    type t = ExpressionStatement({expression: expression})
-  }
-
-  module FunctionDeclaration = {
-    @tag("type")
-    type t = FunctionDeclaration({id: lval})
-  }
-
-  module Identifier = {
-    @tag("type")
-    type t = Identifier({mutable name: string})
-  }
-
-  @tag("type")
-  type node =
-    | ...StringLiteral.t
-    | ...Specifier.t
-    | ...VariableDeclarator.t
-    | ...VariableDeclaration.t
-    | ...ImportDeclaration.t
-    | ...ExpressionStatement.t
-    | ...FunctionDeclaration.t
-    | ...Identifier.t
-
   type nodePath<'nodeType> = {node: 'nodeType}
 
   @get external nodeType: statement => string = "type"
@@ -82,13 +56,6 @@ module Ast = {
   let stringLiteralValue = (stringLiteral: StringLiteral.t) =>
     switch stringLiteral {
     | StringLiteral({value}) => value
-    }
-
-  let specifierLocal = (specifier: Specifier.t) =>
-    switch specifier {
-    | ImportSpecifier({local})
-    | ImportDefaultSpecifier({local})
-    | ImportNamespaceSpecifier({local}) => local
     }
 
   let variableDeclaratorId = (variableDeclarator: VariableDeclarator.t) =>
