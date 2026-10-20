@@ -1,3 +1,6 @@
+// Source paths are needed for build diagnostics, not for the serialized lesson model.
+type t = {sourcePath: string, lesson: GuideLesson.t}
+
 type duplicate = {
   value: string,
   sourcePaths: array<string>,
@@ -19,23 +22,38 @@ let fail = message => throw(InvalidFrontmatter(message))
 
 let fieldLabel = (~sourcePath, ~key) => `Guide lesson ${sourcePath} frontmatter "${key}"`
 
-let readString = (~dict, ~sourcePath, ~key) =>
+let readString = (~dict, ~sourcePath, ~key, ~prefix="", ~allowEmpty=false) =>
   switch dict->Dict.get(key) {
-  | Some(JSON.String(value)) if value->String.trim !== "" => value
-  | _ => fail(`${fieldLabel(~sourcePath, ~key)} must be a non-empty string.`)
+  | Some(JSON.String(value)) if allowEmpty || value->String.trim !== "" => value
+  | _ =>
+    let requirement = allowEmpty ? "a string" : "a non-empty string"
+    fail(`${fieldLabel(~sourcePath, ~key=prefix ++ key)} must be ${requirement}.`)
   }
 
-let readOptionalString = (~dict, ~sourcePath, ~key) =>
-  switch dict->Dict.get(key) {
-  | Some(JSON.String(value)) => Some(value)
-  | Some(_) => fail(`${fieldLabel(~sourcePath, ~key)} must be a string when present.`)
-  | None => None
+let isSlug = value => value->String.trim === value && /^[a-z0-9]+(-[a-z0-9]+)*$/->RegExp.test(value)
+
+let readId = (~dict, ~sourcePath, ~prefix="", ~allowSlashes=false) => {
+  let id = readString(~dict, ~sourcePath, ~key="id", ~prefix)
+  let segments = allowSlashes ? id->String.split("/") : [id]
+  if segments->Array.every(isSlug) {
+    id
+  } else {
+    let requirement = allowSlashes
+      ? "one or more URL-safe slugs separated by slashes"
+      : "a URL-safe slug"
+    fail(
+      `${fieldLabel(
+          ~sourcePath,
+          ~key=prefix ++ "id",
+        )} must be ${requirement} (lowercase ASCII letters and digits, with hyphens between words).`,
+    )
   }
+}
 
 let readInt = (~dict, ~sourcePath, ~key) =>
   switch dict->Dict.get(key) {
-  | Some(JSON.Number(value)) => value->Float.toInt
-  | _ => fail(`${fieldLabel(~sourcePath, ~key)} must be a number.`)
+  | Some(JSON.Number(value)) if value->Float.toInt->Int.toFloat === value => value->Float.toInt
+  | _ => fail(`${fieldLabel(~sourcePath, ~key)} must be a 32-bit integer.`)
   }
 
 let readObject = (~dict, ~sourcePath, ~key) =>
@@ -51,16 +69,21 @@ let frontmatterObject = (~frontmatter, ~sourcePath) =>
   }
 
 let exerciseFromFrontmatter = (~dict, ~sourcePath): GuideLesson.exercise => {
-  let check = switch readOptionalString(~dict, ~sourcePath, ~key="expectedOutput") {
-  | Some(expectedOutput) => GuideLesson.ExpectedOutput(expectedOutput)
-  | None => GuideLesson.Manual
-  }
-
   {
-    id: readString(~dict, ~sourcePath, ~key="id"),
-    title: readString(~dict, ~sourcePath, ~key="title"),
-    initialCode: readString(~dict, ~sourcePath, ~key="initialCode")->String.trimEnd,
-    check,
+    id: readId(~dict, ~sourcePath, ~prefix="exercise.", ~allowSlashes=true),
+    initialCode: readString(
+      ~dict,
+      ~sourcePath,
+      ~key="initialCode",
+      ~prefix="exercise.",
+    )->String.trimEnd,
+    expectedOutput: readString(
+      ~dict,
+      ~sourcePath,
+      ~key="expectedOutput",
+      ~prefix="exercise.",
+      ~allowEmpty=true,
+    ),
   }
 }
 
@@ -70,14 +93,15 @@ let fromRaw = (~raw, ~sourcePath) => {
   let exerciseDict = readObject(~dict, ~sourcePath, ~key="exercise")
 
   {
-    GuideLesson.id: readString(~dict, ~sourcePath, ~key="id"),
-    position: readInt(~dict, ~sourcePath, ~key="position"),
     sourcePath,
-    missionLabel: readString(~dict, ~sourcePath, ~key="missionLabel"),
-    title: readString(~dict, ~sourcePath, ~key="title"),
-    description: readString(~dict, ~sourcePath, ~key="description"),
-    content: content->String.trim,
-    exercise: exerciseFromFrontmatter(~dict=exerciseDict, ~sourcePath),
+    lesson: {
+      GuideLesson.id: readId(~dict, ~sourcePath),
+      position: readInt(~dict, ~sourcePath, ~key="position"),
+      missionLabel: readString(~dict, ~sourcePath, ~key="missionLabel"),
+      title: readString(~dict, ~sourcePath, ~key="title"),
+      content: content->String.trim,
+      exercise: exerciseFromFrontmatter(~dict=exerciseDict, ~sourcePath),
+    },
   }
 }
 
@@ -104,16 +128,16 @@ let findDuplicate = values =>
     })
   )
 
-let lessonIds = (lessons: array<GuideLesson.t>) =>
-  lessons->Array.map(lesson => {value: lesson.id, sourcePath: lesson.sourcePath})
+let lessonIds = (lessons: array<t>) =>
+  lessons->Array.map(({lesson, sourcePath}) => {value: lesson.id, sourcePath})
 
-let exerciseIds = (lessons: array<GuideLesson.t>) =>
-  lessons->Array.map(lesson => {value: lesson.exercise.id, sourcePath: lesson.sourcePath})
+let exerciseIds = (lessons: array<t>) =>
+  lessons->Array.map(({lesson, sourcePath}) => {value: lesson.exercise.id, sourcePath})
 
-let positions = (lessons: array<GuideLesson.t>) =>
-  lessons->Array.map(lesson => {
+let positions = (lessons: array<t>) =>
+  lessons->Array.map(({lesson, sourcePath}) => {
     value: lesson.position->Int.toString,
-    sourcePath: lesson.sourcePath,
+    sourcePath,
   })
 
 let validate = lessons =>

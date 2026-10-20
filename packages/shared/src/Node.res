@@ -23,6 +23,10 @@ module Process = {
   }
 }
 
+module Os = {
+  @module("node:os") external tmpdir: unit => string = "tmpdir"
+}
+
 module Fs = {
   @module("fs") external readFileSync: string => string = "readFileSync"
   @module("fs") external readFileSync2: (string, string) => string = "readFileSync"
@@ -32,6 +36,9 @@ module Fs = {
   @module("fs") external appendFileSync: (string, string, string) => unit = "appendFileSync"
   @module("fs") external existsSync: string => bool = "existsSync"
   @module("fs") external mkdirSync: string => unit = "mkdirSync"
+  @module("node:fs") external mkdtempSync: string => string = "mkdtempSync"
+  @module("node:fs")
+  external rmSync: (string, {"recursive": bool, "force": bool}) => unit = "rmSync"
   @module("fs") external unlinkSync: string => unit = "unlinkSync"
   @module("fs") external statSync: string => {.."isDirectory": unit => bool} = "statSync"
   @module("node:fs/promises") external readFile: (string, string) => promise<string> = "readFile"
