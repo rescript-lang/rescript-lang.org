@@ -28,23 +28,74 @@ test("production uses its own baseline without a PR lookup", async () => {
   expect(exists(join([state.directory, "calls.jsonl"])))->toBe(false)
 })
 
-for_([
-  ("master", "VITE_DEPLOYMENT_URL=\n", "DOCS_DEPLOYMENT_URL=https://rescript-lang.org\n"),
-  (
-    "Perf/Homepage",
-    "VITE_DEPLOYMENT_URL=https://perf-homepage-19ab1c0e.rescript-lang.pages.dev\n",
-    "DOCS_DEPLOYMENT_URL=https://perf-homepage-19ab1c0e.rescript-lang.pages.dev\n",
-  ),
-])("deployment environment for %s does not depend on GitHub artifact access", async ((
-  branch,
-  expectedViteUrl,
-  expectedDocsUrl,
-)) => {
-  let state = await Workflow.fixture(~overrides=[("RAW_BRANCH", branch), ("GH_FAIL", "1")], ())
-  expectSuccess(Workflow.run("deployment-environment.sh", state))
+test("preview PR audits compare against the target branch's default environment", async () => {
+  let state = await Workflow.fixture(
+    ~overrides=[("GH_RESPONSE", "master\n"), ("DOCS_DEPLOYMENT_ENVIRONMENT", "preview")],
+    (),
+  )
+  expectSuccess(Workflow.run("lighthouse-environment.sh", state))
   let environment = await Workflow.environmentContents(state)
-  expect(environment)->toContain(expectedViteUrl)
-  expect(environment)->toContain(expectedDocsUrl)
+  expect(environment)->toContain(
+    `LIGHTHOUSE_TARGET_ARTIFACT_NAME=${LighthouseFixtures.artifactName("master")}\n`,
+  )
+  expect(environment)->toContain("LIGHTHOUSE_TARGET_BRANCH=master\n")
+})
+
+let productionEnvironment = "SAFE_BRANCH=master\nDOCS_DEPLOYMENT_ENVIRONMENT=production\nVITE_DEPLOYMENT_URL=\nDOCS_DEPLOYMENT_URL=https://rescript-lang.org\n"
+let homepagePreviewEnvironment = "SAFE_BRANCH=perf-homepage-19ab1c0e\nDOCS_DEPLOYMENT_ENVIRONMENT=preview\nVITE_DEPLOYMENT_URL=https://perf-homepage-19ab1c0e.rescript-lang.pages.dev\nDOCS_DEPLOYMENT_URL=https://perf-homepage-19ab1c0e.rescript-lang.pages.dev\n"
+let masterPreviewEnvironment = "SAFE_BRANCH=master-fc613b4d\nDOCS_DEPLOYMENT_ENVIRONMENT=preview\nVITE_DEPLOYMENT_URL=https://master-fc613b4d.rescript-lang.pages.dev\nDOCS_DEPLOYMENT_URL=https://master-fc613b4d.rescript-lang.pages.dev\n"
+
+for_([
+  ("master", "preview"),
+  ("Perf/Homepage", "production"),
+])("manual Lighthouse baselines for %s in %s stay separate from the default environment", async ((
+  branch,
+  deploymentEnvironment,
+)) => {
+  let state = await Workflow.fixture(
+    ~overrides=[
+      ("GITHUB_EVENT_NAME", "workflow_dispatch"),
+      ("RAW_BRANCH", branch),
+      ("DOCS_DEPLOYMENT_ENVIRONMENT", deploymentEnvironment),
+      ("GH_FAIL", "1"),
+    ],
+    (),
+  )
+  expectSuccess(Workflow.run("lighthouse-environment.sh", state))
+  let environment = await Workflow.environmentContents(state)
+  let artifact = LighthouseFixtures.artifactName(branch, ~environment=deploymentEnvironment)
+  expect(artifact != LighthouseFixtures.artifactName(branch))->toBe(true)
+  expect(environment)->toContain(`LIGHTHOUSE_ARTIFACT_NAME=${artifact}\n`)
+  expect(environment)->toContain(`LIGHTHOUSE_TARGET_ARTIFACT_NAME=${artifact}\n`)
+  expect(environment)->toContain(`LIGHTHOUSE_BRANCH=${branch}\n`)
+  expect(exists(join([state.directory, "calls.jsonl"])))->toBe(false)
+})
+
+for_([
+  ("push", "master", "", productionEnvironment),
+  ("pull_request", "Perf/Homepage", "", homepagePreviewEnvironment),
+  ("pull_request", "master", "", masterPreviewEnvironment),
+  ("workflow_dispatch", "master", "preview", masterPreviewEnvironment),
+  ("workflow_dispatch", "Perf/Homepage", "preview", homepagePreviewEnvironment),
+  ("workflow_dispatch", "master", "production", productionEnvironment),
+  ("workflow_dispatch", "Perf/Homepage", "production", productionEnvironment),
+])("deployment environment for %s on %s with selection '%s'", async ((
+  event,
+  branch,
+  selection,
+  expectedEnvironment,
+)) => {
+  let state = await Workflow.fixture(
+    ~overrides=[
+      ("GITHUB_EVENT_NAME", event),
+      ("RAW_BRANCH", branch),
+      ("DEPLOY_ENVIRONMENT", selection),
+      ("GH_FAIL", "1"),
+    ],
+    (),
+  )
+  expectSuccess(Workflow.run("deployment-environment.sh", state))
+  expect(await Workflow.environmentContents(state))->toBe(expectedEnvironment)
   expect(exists(join([state.directory, "calls.jsonl"])))->toBe(false)
 })
 
