@@ -52,7 +52,7 @@ test("loads saved guide editor code into the editor", async () => {
 test("resets the current exercise code without clearing its completion", async () => {
   await viewport(1440, 900)
   let exerciseId = secondLesson.exercise.id
-  GuideLayout.clearCompletedExercises()
+  GuideLayout.removeLocalStorageItem(GuideLayout.progressStorageKey)
   GuideLayout.clearExerciseCode(exerciseId)
   GuideLayout.saveExerciseCode(~exerciseId, ~code="let greeting = \"changed\"")
   GuideLayout.saveCompletedExercise(exerciseId)
@@ -70,7 +70,7 @@ test("resets the current exercise code without clearing its completion", async (
   expect(GuideLayout.loadExerciseCode(exerciseId)->Option.isNone)->toBe(true)
   expect(GuideLayout.isExerciseCompleted(exerciseId))->toBe(true)
 
-  GuideLayout.clearCompletedExercises()
+  GuideLayout.removeLocalStorageItem(GuideLayout.progressStorageKey)
   GuideLayout.clearExerciseCode(exerciseId)
 })
 
@@ -206,7 +206,7 @@ test(
 
 test("navigates to the function argument page", async () => {
   await viewport(1440, 900)
-  GuideLayout.clearCompletedExercises()
+  GuideLayout.removeLocalStorageItem(GuideLayout.progressStorageKey)
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
   GuideLayout.saveCompletedExercise(firstLesson.exercise.id)
 
@@ -231,7 +231,7 @@ test("navigates to the function argument page", async () => {
 
 test("shows Back before lesson forward actions and returns to the previous lesson", async () => {
   await viewport(1440, 900)
-  GuideLayout.clearCompletedExercises()
+  GuideLayout.removeLocalStorageItem(GuideLayout.progressStorageKey)
   GuideLayout.clearExerciseCode(firstLesson.exercise.id)
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
   GuideLayout.saveCompletedExercise(firstLesson.exercise.id)
@@ -259,7 +259,7 @@ test("shows Back before lesson forward actions and returns to the previous lesso
 
 test("enables Done on a completed final lesson", async () => {
   await viewport(1440, 900)
-  GuideLayout.clearCompletedExercises()
+  GuideLayout.removeLocalStorageItem(GuideLayout.progressStorageKey)
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
   GuideLayout.saveCompletedExercise(secondLesson.exercise.id)
 
@@ -268,13 +268,13 @@ test("enables Done on a completed final lesson", async () => {
 
   await doneButton->element->notToBeDisabled
 
-  GuideLayout.clearCompletedExercises()
+  GuideLayout.removeLocalStorageItem(GuideLayout.progressStorageKey)
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
 })
 
 test("keeps Next disabled until the current checkpoint is complete", async () => {
   await viewport(1440, 900)
-  GuideLayout.clearCompletedExercises()
+  GuideLayout.removeLocalStorageItem(GuideLayout.progressStorageKey)
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
 
   let screen = await render(
@@ -286,13 +286,13 @@ test("keeps Next disabled until the current checkpoint is complete", async () =>
 
   await nextButton->element->toBeDisabled
 
-  GuideLayout.clearCompletedExercises()
+  GuideLayout.removeLocalStorageItem(GuideLayout.progressStorageKey)
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
 })
 
 test("Done on a completed final lesson opens the ReScript docs intro", async () => {
   await viewport(1440, 900)
-  GuideLayout.clearCompletedExercises()
+  GuideLayout.removeLocalStorageItem(GuideLayout.progressStorageKey)
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
   GuideLayout.saveCompletedExercise(secondLesson.exercise.id)
   let openedUrl = ref("")
@@ -306,13 +306,13 @@ test("Done on a completed final lesson opens the ReScript docs intro", async () 
 
   expect(openedUrl.contents)->toBe(GuideLessonNavigationHook.docsIntroUrl)
 
-  GuideLayout.clearCompletedExercises()
+  GuideLayout.removeLocalStorageItem(GuideLayout.progressStorageKey)
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
 })
 
 test("history back returns to the previous guide lesson", async () => {
   await viewport(1440, 900)
-  GuideLayout.clearCompletedExercises()
+  GuideLayout.removeLocalStorageItem(GuideLayout.progressStorageKey)
   GuideLayout.clearExerciseCode(firstLesson.exercise.id)
   GuideLayout.clearExerciseCode(secondLesson.exercise.id)
   GuideLayout.saveCompletedExercise(firstLesson.exercise.id)

@@ -1,3 +1,8 @@
+let clearPaneSizes = () => {
+  GuideLayout.removeLocalStorageItem(GuideLayout.instructionsWidthStorageKey)
+  GuideLayout.removeLocalStorageItem(GuideLayout.outputHeightStorageKey)
+}
+
 open Vitest
 
 test("clamps resized pane dimensions", async () => {
@@ -26,7 +31,7 @@ test("uses a browser chrome color for each theme", async () => {
 })
 
 test("stores resized pane dimensions in local storage", async () => {
-  GuideLayout.clearPaneSizes()
+  clearPaneSizes()
 
   GuideLayout.savePaneSizes({
     instructionsWidth: Some(420.0),
@@ -40,7 +45,7 @@ test("stores resized pane dimensions in local storage", async () => {
   expect(savedInstructionsWidth)->toBe("420")
   expect(savedPaneSizes.outputHeight)->toBe(250.0)
 
-  GuideLayout.clearPaneSizes()
+  clearPaneSizes()
 })
 
 test("stores guide exercise code in local storage", async () => {
@@ -56,7 +61,7 @@ test("stores guide exercise code in local storage", async () => {
 
 test("stores completed guide exercises in local storage", async () => {
   let exerciseId = GuideTestFixtures.firstLesson.exercise.id
-  GuideLayout.clearCompletedExercises()
+  GuideLayout.removeLocalStorageItem(GuideLayout.progressStorageKey)
 
   GuideLayout.saveCompletedExercise(exerciseId)
   GuideLayout.saveCompletedExercise(exerciseId)
@@ -66,5 +71,5 @@ test("stores completed guide exercises in local storage", async () => {
   expect(completedExerciseIds->Array.includes(exerciseId))->toBe(true)
   expect(completedExerciseIds->Array.length)->toBe(1)
 
-  GuideLayout.clearCompletedExercises()
+  GuideLayout.removeLocalStorageItem(GuideLayout.progressStorageKey)
 })

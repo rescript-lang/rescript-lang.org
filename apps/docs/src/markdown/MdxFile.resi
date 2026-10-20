@@ -1,8 +1,3 @@
-type fileData = {
-  content: string,
-  frontmatter: JSON.t,
-}
-
 /** Removes React Router's `.data` request suffix from a route pathname. */
 let normalizePathname: string => string
 
@@ -11,9 +6,6 @@ let normalizePathname: string => string
  * → `markdown-pages/blog/release-12-0-0.mdx`
  */
 let resolveFilePath: (string, ~dir: string, ~alias: string) => string
-
-/** Read a file from disk and parse its frontmatter using MarkdownParser. */
-let loadFile: string => promise<fileData>
 
 /** Compile raw MDX content into a function-body string using @mdx-js/mdx. */
 let compileMdx: (

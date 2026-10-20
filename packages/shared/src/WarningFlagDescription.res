@@ -72,40 +72,6 @@ let numeric = [
   (110, "Todo found"),
 ]
 
-let letterAll = numeric->Array.map(Pair.first)
-
-// we keep the original variable name `letter` like in warnings.ml
-let _letter = l =>
-  switch l {
-  | "a" => letterAll
-  /* | "b" => [||] */
-  | "c" => [1, 2]
-  | "d" => [3]
-  | "e" => [4]
-  | "f" => [5]
-  /* | "g" => [||] */
-  /* | "h" => [||] */
-  /* | "i" => [||] */
-  /* | "j" => [||] */
-  | "k" => [32, 33, 34, 35, 36, 37, 38, 39]
-  | "l" => [6]
-  | "m" => [7]
-  /* | "n" => [||] */
-  /* | "o" => [||] */
-  | "p" => [8]
-  /* | "q" => [||] */
-  | "r" => [9]
-  | "s" => [10]
-  /* | "t" => [||] */
-  | "u" => [11, 12]
-  | "v" => [13]
-  /* | "w" => [||] */
-  | "x" => [14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 30]
-  | "y" => [26]
-  | "z" => [27]
-  | _ => []
-  }
-
 let letterDescriptions = [("a", "All flags")]
 
 let getDescription = (num: int): option<string> =>

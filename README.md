@@ -94,6 +94,20 @@ Tailwind v4 uses the Vite plugin and [`apps/docs/styles/main.css`](apps/docs/sty
 
 The [recommended VS Code extensions](.vscode/extensions.json) provide ReScript support and [Oxfmt editor integration](https://oxc.rs/docs/guide/usage/formatter/editors.html). Oxfmt configuration lives in [`.oxfmtrc.json`](.oxfmtrc.json).
 
+## Dead-code checks
+
+`yarn check:dead-code` compiles every workspace and runs reanalyze across the
+monorepo, including FFI exports. CI fails on unused values and exports. Bindings
+whose names start with `_` are treated as intentional discards. Record fields,
+variant cases, and argument diagnostics remain advisory because JavaScript and
+FFI access can be invisible to the analyzer; inspect them with `yarn reanalyze`.
+
+React Router and Cloudflare call exports from JavaScript. Their entry points are
+marked `@live` individually in the `.resi` interface, or in `.res` when there is
+no interface. Keep these annotations limited to real entry points and do not
+duplicate them between files; check JavaScript imports and MDX mappings before
+removing a reported export.
+
 ## Common Commands
 
 Run these commands from the repository root. To target a workspace, use
