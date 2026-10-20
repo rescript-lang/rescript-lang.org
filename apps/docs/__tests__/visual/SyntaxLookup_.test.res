@@ -40,7 +40,7 @@ let mockItems: array<SyntaxLookup.item> = [
   },
 ]
 
-test("desktop syntax lookup renders categories and tags", async () => {
+test("desktop syntax lookup renders categories and styles deprecated tags", async () => {
   await viewport(1440, 900)
 
   let screen = await render(
@@ -62,6 +62,22 @@ test("desktop syntax lookup renders categories and tags", async () => {
 
   let operatorsHeading = await screen->getByText("Operators")
   await element(operatorsHeading)->toBeVisible
+
+  let deprecatedTag = await screen->getByText("|>")
+  await element(deprecatedTag)->toBeVisible
+  await element(deprecatedTag)->toHaveClass("line-through")
+
+  let deprecatedLink = switch document->WebAPI.Document.querySelector(
+    "a[href='/syntax-lookup/operators_deprecated_pipe']",
+  ) {
+  | Value(link) => link
+  | Null => failwith("expected a link for the deprecated pipe operator")
+  }
+  expect(
+    getComputedStyle(~elt=deprecatedLink)->WebAPI.CSSStyleDeclaration.getPropertyValue(
+      "text-decoration-line",
+    ),
+  )->toBe("line-through")
 
   let wrapper = await screen->getByTestId("syntax-lookup-wrapper")
   await element(wrapper)->toMatchScreenshot("desktop-syntax-lookup")
@@ -112,24 +128,6 @@ test("mobile syntax lookup", async () => {
 
   let wrapper = await screen->getByTestId("syntax-lookup-wrapper")
   await element(wrapper)->toMatchScreenshot("mobile-syntax-lookup")
-})
-
-test("deprecated items show with line-through styling", async () => {
-  await viewport(1440, 900)
-
-  let screen = await render(
-    <MemoryRouter initialEntries=["/syntax-lookup"]>
-      <div dataTestId="syntax-lookup-wrapper">
-        <SyntaxLookup mdxSources=mockItems />
-      </div>
-    </MemoryRouter>,
-  )
-
-  let deprecatedTag = await screen->getByText("|>")
-  await element(deprecatedTag)->toBeVisible
-
-  let wrapper = await screen->getByTestId("syntax-lookup-wrapper")
-  await element(wrapper)->toMatchScreenshot("desktop-syntax-lookup-deprecated")
 })
 
 test("syntax lookup detail box shows summary", async () => {
