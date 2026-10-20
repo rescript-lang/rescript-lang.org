@@ -5,11 +5,11 @@ test("desktop footer shows all sections and links", async () => {
   await viewport(1440, 500)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="footer-wrapper">
         <Footer />
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let community = await screen->getByText("Community")
@@ -35,11 +35,11 @@ test("mobile footer stacks sections vertically", async () => {
   await viewport(600, 800)
 
   let screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <div dataTestId="footer-wrapper">
         <Footer />
       </div>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   let community = await screen->getByText("Community")

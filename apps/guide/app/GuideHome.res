@@ -39,7 +39,7 @@ let make = (
             </button>
           </div>
           <h1> {React.string(lesson.title)} </h1>
-          <GuideMarkdown> lesson.content </GuideMarkdown>
+          <ReactMarkdown> lesson.content </ReactMarkdown>
           <div
             className={"guide-check-status " ++ if navigation.checkpointComplete {
               "guide-check-status-complete"

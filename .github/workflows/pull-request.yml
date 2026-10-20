@@ -2,7 +2,7 @@ name: Pull Request
 on: [pull_request]
 jobs:
   Format:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
@@ -17,10 +17,10 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn
-      - name: Format check
+      - name: Check formatting (Oxfmt and ReScript)
         run: yarn ci:format
   Site_Checks:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
@@ -35,12 +35,17 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn
+      - name: Check generated route types
+        run: |
+          yarn check:routes
+          git diff --exit-code -- packages/shared/src/Path.res
+      - name: Check committed ReScript output
+        run: yarn ci:generated
       - name: Test examples and hrefs
         run: yarn test
-  # Confirms that Wrangler can start the Docs Pages and Guide local dev servers.
-  # This startup check intentionally excludes route-level application and Pages Function behavior.
+  # Check the built Docs Pages routes and the Guide local dev server.
   Wrangler:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
@@ -60,12 +65,13 @@ jobs:
       - name: Validate Docs Wrangler dev server
         working-directory: apps/docs
         run: |
-          yarn wrangler pages dev public --port 8788 > wrangler.log 2>&1 &
+          yarn wrangler pages dev build/client --port 8788 > wrangler.log 2>&1 &
           server_pid=$!
           trap 'kill "$server_pid"' EXIT
 
           for _ in {1..15}; do
             if curl --max-time 2 --fail --silent http://127.0.0.1:8788/favicon.ico > /dev/null; then
+              node scripts/test-pages.mjs http://127.0.0.1:8788
               exit 0
             fi
             sleep 1
@@ -84,6 +90,10 @@ jobs:
 
           for _ in {1..15}; do
             if curl --max-time 2 --fail --silent http://127.0.0.1:8789/ > /dev/null; then
+              curl --max-time 2 --fail --silent http://127.0.0.1:8789/robots.txt | cmp public/robots.txt -
+              for guide_icon in build/client/assets/*.avif; do
+                curl --max-time 2 --fail --silent "http://127.0.0.1:8789/${guide_icon#build/client/}" | cmp "$guide_icon" -
+              done
               exit 0
             fi
             sleep 1
@@ -92,7 +102,7 @@ jobs:
           cat wrangler.log
           exit 1
   Vitest:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     container:
       # Keep this image tag aligned with package.json's playwright version.
       image: mcr.microsoft.com/playwright:v1.63.0-noble
@@ -121,8 +131,19 @@ jobs:
         run: yarn workspace @rescript-lang/docs ci:test:scripts
       - name: Guide Vitest
         run: yarn workspace @rescript-lang/guide ci:test
+      - name: Guide browser history E2E
+        env:
+          # Keep the prerender server and requests on the same localhost address in Docker.
+          NODE_OPTIONS: --dns-result-order=ipv4first
+        run: yarn workspace @rescript-lang/guide test:e2e
+      - name: Upload guide browser test artifacts
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: guide-browser-test-artifacts
+          path: apps/guide/test-results
   Homepage_E2E:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       VITE_ALGOLIA_APP_ID: test-app-id
       VITE_ALGOLIA_INDEX_NAME: test-index
@@ -156,12 +177,12 @@ jobs:
           wait-on: http://127.0.0.1:4173
       - name: Upload Cypress artifacts
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: homepage-cypress-artifacts
           path: apps/docs/test-results/cypress
   Visual_Regression:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     container:
       # Keep this image tag aligned with package.json's playwright version.
       image: mcr.microsoft.com/playwright:v1.63.0-noble
@@ -185,7 +206,7 @@ jobs:
         run: yarn ci:test:visual
       - name: Upload visual regression artifacts
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: visual-regression-artifacts
           path: |

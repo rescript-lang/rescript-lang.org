@@ -7,10 +7,8 @@
 apps/docs/public/blog/feed.xml
 
 node_modules/
-.next/
 out/
 apps/docs/out/
-apps/guide/out/
 index_data/*.json
 apps/docs/index_data/*.json
 
@@ -29,17 +27,8 @@ apps/docs/lib/
 apps/guide/lib/
 packages/*/lib/
 
-.vercel
-
-apps/docs/src/**/*.mjs
 apps/docs/src/**/*.jsx
-apps/guide/src/**/*.mjs
-apps/guide/src/**/*.jsx
-packages/*/src/**/*.mjs
 packages/*/src/**/*.jsx
-apps/docs/scripts/gendocs.mjs
-apps/docs/scripts/generate_*.mjs
-apps/docs/scripts/gendocs.jsx
 apps/docs/scripts/generate_*.jsx
 apps/docs/scripts/LogAlgoliaEnvStatus.jsx
 apps/docs/scripts/__tests__/**/*.jsx
@@ -51,38 +40,23 @@ apps/docs/public/llms/react/**/llm*.txt
 apps/docs/markdown-pages/docs/**/**/llms.mdx
 
 apps/docs/public/playground-bundles/
-!apps/docs/public/_redirects
 
-dist
 build
-apps/docs/dist
 apps/docs/build
-apps/guide/dist
 apps/guide/build
 .react-router
 apps/docs/.react-router
 apps/guide/.react-router
-mdx-manifest.json
-apps/docs/mdx-manifest.json
 
-apps/docs/app/**/*.mjs
 apps/docs/app/**/*.jsx
-apps/guide/app/**/*.mjs
 apps/guide/app/**/*.jsx
 !apps/guide/app/root.jsx
 !apps/guide/app/routes.jsx
-apps/docs/functions/**/*.mjs
 apps/docs/functions/**/*.jsx
-apps/docs/__tests__/**/*.mjs
 apps/docs/__tests__/**/*.jsx
-apps/docs/test-utils/**/*.mjs
 apps/docs/test-utils/**/*.jsx
-apps/guide/__tests__/**/*.mjs
 apps/guide/__tests__/**/*.jsx
-apps/docs/e2e/**/*.mjs
 apps/docs/e2e/**/*.jsx
-!_shims.mjs
-!_shims.jsx
 
 # Yarn
 .yarn/*
@@ -104,9 +78,6 @@ apps/docs/_scripts
 .env.local
 apps/docs/.env.local
 
-# Local git worktrees
-.worktrees
-
 # Vitest screenshots
 !apps/docs/__tests__/**/__screenshots__/**/*
 .vitest-attachments
@@ -115,6 +86,7 @@ apps/guide/.vitest-attachments
 
 # Browser test artifacts
 apps/docs/test-results/
+apps/guide/test-results/
 
 # Lighthouse artifacts
 .lighthouseci/

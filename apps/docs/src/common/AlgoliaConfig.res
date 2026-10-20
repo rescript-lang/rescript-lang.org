@@ -4,24 +4,12 @@ type publicConfig = {
   searchApiKey: string,
 }
 
-let isPresent = value =>
-  switch value {
-  | Some(v) => v !== ""
-  | None => false
-  }
-
-let missingPublicVars = (~appId, ~indexName, ~searchApiKey): array<string> => {
-  let missing = []
-  if !isPresent(appId) {
-    missing->Array.push("VITE_ALGOLIA_APP_ID")
-  }
-  if !isPresent(indexName) {
-    missing->Array.push("VITE_ALGOLIA_INDEX_NAME")
-  }
-  if !isPresent(searchApiKey) {
-    missing->Array.push("VITE_ALGOLIA_SEARCH_API_KEY")
-  }
-  missing
+let missingPublicVars = (~appId, ~indexName, ~searchApiKey) => {
+  let env = Dict.make()
+  appId->Option.forEach(value => env->Dict.set("VITE_ALGOLIA_APP_ID", value))
+  indexName->Option.forEach(value => env->Dict.set("VITE_ALGOLIA_INDEX_NAME", value))
+  searchApiKey->Option.forEach(value => env->Dict.set("VITE_ALGOLIA_SEARCH_API_KEY", value))
+  AlgoliaEnvStatus.getMissingPublicAlgoliaVars(~env)
 }
 
 let publicConfigFrom = (~appId, ~indexName, ~searchApiKey): option<publicConfig> =>

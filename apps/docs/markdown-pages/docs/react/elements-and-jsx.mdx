@@ -14,7 +14,7 @@ Elements are the smallest building blocks of React apps. This page will explain 
 
 </Intro>
 
-> **Note:** The output shown for the examples on this page assumes your `rescript.json` to be set to `"jsx": { "version": 4, "mode": "classic" }`. We will update it for automatic mode soon.
+> **Note:** These examples use `"jsx": { "version": 4 }` in `rescript.json`. ReScript v12 generates calls to React's automatic JSX runtime. Add `"preserve": true` to the JSX configuration to produce the JSX preserved output shown in the tabs.
 
 ## Element Basics
 
@@ -84,7 +84,7 @@ let element = React.array([
 ])
 ```
 
-**Note:** We don't offer a `React.list` function because a `list` value would impose runtime overhead. ReScript cares about clean, idiomatic JS output. If you want to transform a `list` of elements to a single React element, combine the output of `Belt.List.toArray` with `React.array` instead.
+**Note:** We don't offer a `React.list` function because a `list` value would impose runtime overhead. ReScript cares about clean, idiomatic JS output. If you want to transform a `list` of elements to a single React element, combine the output of `List.toArray` with `React.array` instead.
 
 ### Creating Null Elements
 
@@ -189,7 +189,7 @@ export { render };
 
 **Note:** Here we are passing a prop `"children": React.null` to satisfy the type checker. React will ignore the children prop in favor of the children array.
 
-This function is mostly used by our JSX transformations, so usually you want to use `React.createElement` and pass a children prop instead.
+ReScript v12's JSX transformation uses `React.jsx` and `React.jsxs`. When calling `React.createElement` manually, you can usually pass children through the props record instead of using the variadic API.
 
 ### Creating DOM Elements
 

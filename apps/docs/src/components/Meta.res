@@ -61,8 +61,8 @@ let make = (
     | None => React.null
     }}
     <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.avif" />
-    <link rel="icon" type_="image/png" sizes="32x32" href="/favicon/favicon-32x32.avif" />
-    <link rel="icon" type_="image/png" sizes="16x16" href="/favicon/favicon-16x16.avif" />
+    <link rel="icon" type_="image/avif" sizes="32x32" href="/favicon/favicon-32x32.avif" />
+    <link rel="icon" type_="image/avif" sizes="16x16" href="/favicon/favicon-16x16.avif" />
     <link rel="manifest" href="/favicon/site.webmanifest" />
 
     /* OG link preview meta data */
@@ -76,7 +76,7 @@ let make = (
     <meta key="twitter:title" name="twitter:title" content=ogTitle />
     <meta key="twitter:description" name="twitter:description" content=ogDescription />
     <meta key="twitter:site" name="twitter:site" content="@rescriptlang" />
-    <meta key="twitter:image" property="og:image" content=ogImage />
+    <meta key="twitter:image" name="twitter:image" content=ogImage />
     <meta key="twitter:creator" name="twitter:creator" content="@ReScriptAssoc" />
     <meta key="twitter:card" name="twitter:card" content="summary_large_image" />
     <link rel="alternate" type_="application/rss+xml" title="ReScript Blog" href="/blog/feed.xml" />

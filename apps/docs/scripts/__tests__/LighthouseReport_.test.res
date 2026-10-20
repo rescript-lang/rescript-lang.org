@@ -25,6 +25,25 @@ test("artifact-name CLI prints the same key used by the report helper", async ()
   expect(result.stdout)->toBe(`${artifactName("perf/fonts")}\n`)
 })
 
+for_([
+  ("master", "preview"),
+  ("perf/homepage", "production"),
+])("artifact-name CLI separates %s baselines in %s", async ((branch, deploymentEnvironment)) => {
+  let state = await workspace()
+  let result = run(state, ["artifact-name", branch, deploymentEnvironment], ())
+  expectSuccess(result)
+  let artifact = artifactName(branch, ~environment=deploymentEnvironment)
+  expect(result.stdout)->toBe(`${artifact}\n`)
+  expect(artifact != artifactName(branch))->toBe(true)
+})
+
+test("artifact-name CLI rejects an invalid environment", async () => {
+  let state = await workspace()
+  let result = run(state, ["artifact-name", "master", "staging"], ())
+  expectStatus(result, 1)
+  expect(result.stderr)->toContain("Invalid Lighthouse deployment environment: staging")
+})
+
 for_([[], [""]])("artifact-name CLI rejects missing or empty branch %j", async arguments => {
   let state = await workspace()
   let result = run(state, ["artifact-name", ...arguments], ())

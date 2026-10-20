@@ -12,6 +12,8 @@ let loader: ReactRouter.Loader.t<loaderData> = async _ => {
   | Error(message) => throw(LessonLoadError(message))
   }
 
+  await GuideLessonValidation.validate(~bundleBaseUrl=compilerData.bundleBaseUrl)
+
   {compilerData, lessons}
 }
 

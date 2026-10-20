@@ -17,7 +17,7 @@ Dead code refers to code that's present in your codebase but is never executed. 
 - Confusion during development
 - Misleading assumptions about functionality
 
-ReScript’s language design allows for accurate and efficient dead code analysis using the **ReScript Code Analyzer**, available via the official VSCode extension.
+ReScript’s language design allows for accurate and efficient dead code analysis using the **ReScript Code Analyzer**. It is available through the official VS Code extension and the `rescript-tools` executable bundled with ReScript.
 
 ### Prerequisites
 
@@ -37,9 +37,23 @@ ReScript’s language design allows for accurate and efficient dead code analysi
 
 - The “Problems” pane populates with dead code warnings and suggestions.
 
-### Reactive Updates (New)
+### Command-Line Analysis
 
-Reactive dead code updates are a newer enhancement of Editor Code Analysis and require ReScript VSCode extension v1.73.9 or higher (pre-release).
+To run the analyses configured in `rescript.json` from the command line:
+
+```sh
+rescript-tools reanalyze -config
+```
+
+ReScript 12.1 added a reactive mode that caches unchanged analysis data:
+
+```sh
+rescript-tools reanalyze -config -reactive
+```
+
+The diagnostic flags `-runs <n>` and `-churn <n>` can benchmark cache effectiveness and incremental correctness. `-mermaid` prints a Mermaid diagram of the reactive pipeline.
+
+`reanalyze-server` keeps the analysis process alive between requests. JSON analysis requests delegate to it transparently, so integrations can use `rescript-tools reanalyze -json` without managing the server themselves.
 
 ## Real-World Use Cases
 
@@ -135,6 +149,28 @@ type user = {name: string}
 let getUserName = user => user.name
 ```
 
+### Scoped `@@live` and `@@dead`
+
+ReScript 12.2 added standalone forms that set the default for the remainder of the current file or module:
+
+```res
+module PublicApi = {
+  @@live
+
+  let load = () => "loaded"
+  let save = _value => ()
+}
+
+module DeferredCleanup = {
+  @@dead
+
+  let oldParser = input => input
+  let oldSerializer = value => value
+}
+```
+
+Items under `@@live` are treated as live roots and can keep their dependencies alive. Items under `@@dead` are suppressed but don't keep their dependencies alive. A later `@@live` or `@@dead` changes the default again, and nested modules inherit the active setting.
+
 ## Configuration
 
 Add to your `rescript.json`:
@@ -142,8 +178,8 @@ Add to your `rescript.json`:
 ```json
 "reanalyze": {
   "analysis": ["dce"],
-  "suppress": ["src/bindings", "src/stories", "src/routes"],
-  "unsuppress": [],
+  "suppress": ["src/generated/**", "src/stories/**"],
+  "unsuppress": ["src/generated/handwritten/**"],
   "transitive": false
 }
 ```
@@ -151,9 +187,11 @@ Add to your `rescript.json`:
 ### Options:
 
 - **analysis**: Enables dead code analysis (`"dce"`)
-- **suppress**: Silences reporting for paths (still analyzes)
-- **unsuppress**: Re-enables reports within suppressed paths
+- **suppress**: Silences reporting for matching paths (they are still analyzed)
+- **unsuppress**: Re-enables reports for matching paths within a suppressed area
 - **transitive**: Controls reporting of indirectly dead code
+
+Since ReScript 12.3, `suppress` and `unsuppress` accept glob patterns such as `src/generated/**`. Plain path prefixes continue to work.
 
 **Recommendation:** Set `transitive: false` for incremental cleanup.
 
