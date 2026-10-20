@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Export the canonical production URL or the branch-specific Pages preview URL
-# for later GitHub Actions steps.
-if [[ "$RAW_BRANCH" == "master" ]]; then
+# Pages selects production by branch. Manual previews of master must use a
+# preview alias, while a manual production deploy must explicitly target master.
+if [[ "${GITHUB_EVENT_NAME:-}" == "push" && "$RAW_BRANCH" == "master" ]] ||
+   [[ "${GITHUB_EVENT_NAME:-}" == "workflow_dispatch" && "${DEPLOY_ENVIRONMENT:-}" == "production" ]]; then
   {
+    echo "SAFE_BRANCH=master"
+    echo "DOCS_DEPLOYMENT_ENVIRONMENT=production"
     echo "VITE_DEPLOYMENT_URL="
     echo "DOCS_DEPLOYMENT_URL=https://rescript-lang.org"
   } >> "$GITHUB_ENV"
@@ -19,6 +22,7 @@ else
   SAFE_BRANCH="${BRANCH_PREFIX}-${BRANCH_DIGEST}"
   {
     echo "SAFE_BRANCH=$SAFE_BRANCH"
+    echo "DOCS_DEPLOYMENT_ENVIRONMENT=preview"
     echo "VITE_DEPLOYMENT_URL=https://${SAFE_BRANCH}.rescript-lang.pages.dev"
     echo "DOCS_DEPLOYMENT_URL=https://${SAFE_BRANCH}.rescript-lang.pages.dev"
   } >> "$GITHUB_ENV"

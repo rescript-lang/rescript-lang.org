@@ -74,21 +74,6 @@ test("desktop blog index shows featured post and cards", async () => {
   let card2 = await screen->getByText("Improving Interop")
   await element(card2)->toBeVisible
 
-  let wrapper = await screen->getByTestId("blog-wrapper")
-  await element(wrapper)->toMatchScreenshot("desktop-blog-index")
-})
-
-test("desktop blog shows category selector", async () => {
-  await viewport(1440, 900)
-
-  let screen = await render(
-    <MemoryRouter initialEntries=["/blog"]>
-      <div dataTestId="blog-wrapper">
-        <Blog posts=mockPosts category=All />
-      </div>
-    </MemoryRouter>,
-  )
-
   let allTab = await screen->getByText("All")
   await element(allTab)->toBeVisible
 
@@ -96,7 +81,7 @@ test("desktop blog shows category selector", async () => {
   await element(archivedTab)->toBeVisible
 
   let wrapper = await screen->getByTestId("blog-wrapper")
-  await element(wrapper)->toMatchScreenshot("desktop-blog-category-selector")
+  await element(wrapper)->toMatchScreenshot("desktop-blog-index")
 })
 
 test("mobile blog index", async () => {
