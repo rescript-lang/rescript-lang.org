@@ -37,6 +37,6 @@
     "apps/docs/public/llms/react/**/llm*.txt",
     "apps/docs/markdown-pages/docs/**/**/llms.mdx",
     "apps/docs/markdown-pages/docs/manual/installation.mdx",
-    ".yarn/releases/yarn-4.12.0.cjs"
+    ".yarn/releases/*.cjs"
   ]
 }

@@ -26,7 +26,7 @@
     "dev:vite": "react-router dev --host",
     "dev:wrangler": "yarn build:vite && yarn wrangler pages dev build/client",
     "dev": "yarn prepare && yarn dev:res & yarn dev:vite & yarn dev:wrangler",
-    "format": "cd ../.. && oxfmt && cd apps/docs && rescript format",
+    "format": "cd ../.. && yarn format",
     "prepare": "yarn build:res && yarn build:scripts && yarn check:algolia-public-env && yarn build:update-index",
     "preview": "yarn build && static-server build/client",
     "serve:build": "static-server --host 127.0.0.1 --port 4173 build/client",

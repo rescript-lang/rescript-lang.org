@@ -27,7 +27,7 @@
     "dev:res": "yarn build:routes && rescript watch",
     "dev:guide": "yarn workspace @rescript-lang/guide dev:vite",
     "dev": "yarn workspace @rescript-lang/docs dev",
-    "format": "yarn workspace @rescript-lang/docs format",
+    "format": "oxfmt && rescript format",
     "preview": "yarn workspace @rescript-lang/docs preview",
     "reanalyze": "yarn workspace @rescript-lang/docs reanalyze",
     "test": "yarn workspace @rescript-lang/docs test",
