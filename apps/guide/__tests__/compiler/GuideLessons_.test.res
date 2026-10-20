@@ -36,12 +36,14 @@ let exercise = (
   ~initialCode=`let greeting = "hello"`,
   ~solutionCode=`let greeting = "hello"`,
   ~expectedOutput="hello",
+  ~expectedInitialDiagnostic=?,
   (),
 ): GuideLessonValidation.exercise => {
   sourcePath: "test-lesson.mdx",
   initialCode,
   solutionCode,
   expectedOutput,
+  expectedInitialDiagnostic,
 }
 
 let validateExercise = exercise =>
@@ -73,6 +75,105 @@ test("invalid starter code fails even when its reference solution is valid", asy
   await expect(validateExercise(exercise(~initialCode="let x =", ())))->rejectsWith(
     "test-lesson.mdx exercise.initialCode does not compile",
   )
+})
+
+test("an expected starter type error still validates the reference output", async () => {
+  await expect(
+    validateExercise(
+      exercise(
+        ~initialCode="let answer: int = false",
+        ~expectedInitialDiagnostic="This has type: bool",
+        (),
+      ),
+    ),
+  )->resolvesToUnit
+})
+
+test("an expected starter syntax error still validates the reference output", async () => {
+  await expect(
+    validateExercise(
+      exercise(
+        ~initialCode="let answer =",
+        ~expectedInitialDiagnostic="This let-binding misses an expression",
+        (),
+      ),
+    ),
+  )->resolvesToUnit
+})
+
+test("expected starter diagnostics fail if the starter now compiles", async () => {
+  await expect(
+    validateExercise(exercise(~expectedInitialDiagnostic="This has type:", ())),
+  )->rejectsWith(`test-lesson.mdx exercise.initialCode expected a syntax or type diagnostic containing "This has type:", but compiled successfully.`)
+})
+
+let diagnostic = (~shortMsg, ~fullMsg="") => {
+  RescriptCompilerApi.LocMsg.fullMsg,
+  shortMsg,
+  row: 1,
+  column: 0,
+  endRow: 1,
+  endColumn: 1,
+}
+
+for_([
+  [],
+  [diagnostic(~shortMsg="An unrelated error", ~fullMsg="The source includes expected error")],
+  [diagnostic(~shortMsg="expected error"), diagnostic(~shortMsg="An unrelated error")],
+])("only matching diagnostic messages can satisfy the expectation: %s", async messages => {
+  expect(() =>
+    GuideLessonValidation.validateInitialDiagnostic(
+      ~sourcePath="broken.mdx",
+      ~expected="expected error",
+      RescriptCompilerApi.CompilationResult.Fail(TypecheckErr(messages)),
+    )
+  )->toThrow(`containing "expected error", but received:`)
+})
+
+test("an unrelated starter error cannot satisfy the expected diagnostic", async () => {
+  await expect(
+    validateExercise(
+      exercise(
+        ~initialCode="let answer: int = false",
+        ~expectedInitialDiagnostic="Unbound value",
+        (),
+      ),
+    ),
+  )->rejectsWith(`containing "Unbound value", but received:`)
+})
+
+for_([
+  ("let answer: int = false", "exercise.solutionCode does not compile"),
+  (`JsError.throwWithMessage("boom")`, "exercise.solutionCode failed at runtime: boom"),
+  (`let greeting = "wrong"`, "exercise.expectedOutput"),
+])("expected starter errors do not bypass reference validation: %s", async ((
+  solutionCode,
+  message,
+)) => {
+  await expect(
+    validateExercise(
+      exercise(
+        ~initialCode="let answer: int = false",
+        ~expectedInitialDiagnostic="This has type:",
+        ~solutionCode,
+        (),
+      ),
+    ),
+  )->rejectsWith(message)
+})
+
+for_([
+  RescriptCompilerApi.CompilationResult.UnexpectedError("compiler crashed"),
+  Unknown("unknown compiler response", JSON.Null),
+  Fail(WarningFlagErr({msg: "invalid warning flags", warn_flags: "", warn_error_flags: ""})),
+])("compiler failures cannot count as expected starter diagnostics: %s", async result => {
+  expect(() =>
+    GuideLessonValidation.validateInitialDiagnostic(
+      ~sourcePath="broken.mdx",
+      ~expected="compiler",
+      result,
+    )
+  )->toThrow("broken.mdx exercise.initialCode expected a syntax or type diagnostic containing")
 })
 
 test("invalid reference solutions identify the file and field", async () => {
@@ -176,7 +277,79 @@ test("reference code defaults to the starter and preserves an empty expected out
   )
   expect(parsed.solutionCode)->toBe(parsed.initialCode)
   expect(parsed.expectedOutput)->toBe("")
+  expect(parsed.expectedInitialDiagnostic)->toBe(None)
 })
+
+for_([
+  JSON.String(""),
+  JSON.String("   "),
+  JSON.Number(42.0),
+  JSON.Boolean(false),
+  JSON.Null,
+])("expected starter diagnostics must be non-empty strings: %s", async value => {
+  let raw = `---
+exercise:
+  initialCode: let answer = 1
+  solutionCode: let answer = 42
+  expectedOutput: "42"
+  expectedInitialDiagnostic: ${value->JSON.stringify}
+---
+`
+  expect(() => GuideLessonValidation.fromRaw(~raw, ~sourcePath="broken.mdx"))->toThrow(
+    "broken.mdx exercise.expectedInitialDiagnostic must be a non-empty string",
+  )
+})
+
+test("an expected starter error requires a separate reference solution", async () => {
+  expect(() =>
+    GuideLessonValidation.fromRaw(
+      ~raw=`---
+exercise:
+  initialCode: let answer = unknown
+  expectedOutput: "42"
+  expectedInitialDiagnostic: "can't be found"
+---
+`,
+      ~sourcePath="broken.mdx",
+    )
+  )->toThrow(
+    "broken.mdx exercise.solutionCode is required when exercise.expectedInitialDiagnostic is set",
+  )
+})
+
+test(
+  "expected-error metadata is parsed for validation and omitted from published lessons",
+  async () => {
+    let raw = `---
+position: 1
+id: fix-a-type
+missionLabel: Mission 01
+title: Fix a type
+description: Repair a deliberately invalid starter.
+exercise:
+  id: types/fix-a-mismatch
+  title: Fix a type
+  initialCode: |
+    let answer: int = false
+  expectedInitialDiagnostic: "This has type:"
+  solutionCode: |
+    let answer: int = 42
+  expectedOutput: "42"
+---
+Fix the type error.
+`
+    let exercise = GuideLessonValidation.fromRaw(~raw, ~sourcePath="types.mdx")
+    expect(exercise.expectedInitialDiagnostic)->toBe(Some("This has type:"))
+    await expect(validateExercise(exercise))->resolvesToUnit
+    let published =
+      GuideLessonFrontmatter.fromRaw(~raw, ~sourcePath="types.mdx")
+      ->JSON.stringifyAny
+      ->Option.getOrThrow
+    expect(published)->notToContain("expectedInitialDiagnostic")
+    expect(published)->notToContain("solutionCode")
+    expect(published)->notToContain("let answer: int = 42")
+  },
+)
 
 test("empty reference code is an authoring error", async () => {
   expect(() =>

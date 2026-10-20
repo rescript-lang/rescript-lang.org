@@ -25,18 +25,19 @@ contract only. Lesson copy belongs to the guide author.
 Every `.mdx` file under `app/lessons/` is discovered recursively and ordered by
 its integer `position`. The build requires these frontmatter fields:
 
-| Field                     | Required | Meaning                                                  |
-| ------------------------- | -------- | -------------------------------------------------------- |
-| `position`                | Yes      | Integer lesson order                                     |
-| `id`                      | Yes      | Stable URL-safe hash and lesson identifier               |
-| `missionLabel`            | Yes      | Short lesson label                                       |
-| `title`                   | Yes      | Lesson heading                                           |
-| `description`             | Yes      | Lesson summary used by the lesson model                  |
-| `exercise.id`             | Yes      | Stable identifier for saved code and completion          |
-| `exercise.title`          | Yes      | Exercise label                                           |
-| `exercise.initialCode`    | Yes      | Initial editor contents                                  |
-| `exercise.expectedOutput` | Yes      | Matching runtime log line that unlocks the next lesson   |
-| `exercise.solutionCode`   | No       | Build-only reference solution; defaults to `initialCode` |
+| Field                                | Required | Meaning                                                  |
+| ------------------------------------ | -------- | -------------------------------------------------------- |
+| `position`                           | Yes      | Integer lesson order                                     |
+| `id`                                 | Yes      | Stable URL-safe hash and lesson identifier               |
+| `missionLabel`                       | Yes      | Short lesson label                                       |
+| `title`                              | Yes      | Lesson heading                                           |
+| `description`                        | Yes      | Lesson summary used by the lesson model                  |
+| `exercise.id`                        | Yes      | Stable identifier for saved code and completion          |
+| `exercise.title`                     | Yes      | Exercise label                                           |
+| `exercise.initialCode`               | Yes      | Initial editor contents                                  |
+| `exercise.expectedOutput`            | Yes      | Matching runtime log line that unlocks the next lesson   |
+| `exercise.solutionCode`              | No       | Build-only reference solution; defaults to `initialCode` |
+| `exercise.expectedInitialDiagnostic` | No       | Build-only expected syntax/type error in the starter     |
 
 Lesson IDs determine durable hash-based deep links. Renaming a published lesson
 ID requires a redirect or an explicit decision to let existing deep links fall
@@ -50,7 +51,7 @@ Lesson IDs must be URL-safe slugs made from lowercase ASCII letters, digits,
 and hyphens. Exercise IDs may use the established slash-delimited form.
 
 Every published exercise needs a deterministic `expectedOutput` string. The
-build compiles `initialCode` and `solutionCode`, runs the reference solution,
+build checks `initialCode` and compiles `solutionCode`, runs the reference solution,
 and requires a matching runtime log line. Matching preserves whitespace and
 uses the same argument serialization as the browser checkpoint.
 
@@ -60,6 +61,31 @@ solutions are only read during validation and are excluded from published
 lesson data. Solutions must produce synchronous output and finish within one
 second; browser-only APIs and asynchronous exercises need a separate validation
 strategy before they can be authored.
+
+For an exercise that deliberately starts with a compiler error, set
+`exercise.expectedInitialDiagnostic` to a non-empty, case-sensitive substring
+of the compiler's diagnostic message and provide a separate `solutionCode`:
+
+```yaml
+exercise:
+  id: types/fix-a-mismatch
+  title: Fix a type mismatch
+  initialCode: |
+    let answer: int = false
+  expectedInitialDiagnostic: "But it's expected to have type: int"
+  solutionCode: |
+    let answer: int = 42
+  expectedOutput: "42"
+```
+
+The starter must fail with syntax or type errors, and every reported error's
+message must contain the configured text. Matching ignores ANSI formatting and
+does not search source excerpts or line numbers. If the starter compiles, reports
+a different error, or encounters a compiler/configuration failure, the build
+fails. The reference solution must still compile, run successfully, and produce
+the exact checkpoint output. Both validation fields are omitted from published
+lesson data; learners still complete the exercise by fixing the code and
+producing `expectedOutput`.
 
 ## Local Development
 
