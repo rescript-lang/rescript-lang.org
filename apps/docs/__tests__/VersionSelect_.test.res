@@ -1,7 +1,11 @@
 open Vitest
 
 test("renders current version label", async () => {
-  let screen = await render(<VersionSelect />)
+  let screen = await render(
+    <ReactRouter.MemoryRouter initialEntries=["/docs/manual/introduction"]>
+      <VersionSelect />
+    </ReactRouter.MemoryRouter>,
+  )
 
   let el = await screen->getByTestId("version-select")
   await element(el)->toBeVisible
@@ -11,7 +15,11 @@ test("renders current version label", async () => {
 })
 
 test("clicking button shows the v13 preview and older versions", async () => {
-  let screen = await render(<VersionSelect />)
+  let screen = await render(
+    <ReactRouter.MemoryRouter initialEntries=["/docs/manual/introduction"]>
+      <VersionSelect />
+    </ReactRouter.MemoryRouter>,
+  )
 
   // Menu should be hidden initially
   let v11 = await screen->getByText("v11")
@@ -43,7 +51,11 @@ test("clicking button shows the v13 preview and older versions", async () => {
 })
 
 test("clicking button again closes older versions", async () => {
-  let screen = await render(<VersionSelect />)
+  let screen = await render(
+    <ReactRouter.MemoryRouter initialEntries=["/docs/manual/introduction"]>
+      <VersionSelect />
+    </ReactRouter.MemoryRouter>,
+  )
 
   let button = await screen->getByRole(#button)
 
@@ -60,14 +72,16 @@ test("clicking button again closes older versions", async () => {
 
 test("multiple instances have unique popover IDs", async () => {
   let screen = await render(
-    <div>
-      <div dataTestId="first">
-        <VersionSelect />
+    <ReactRouter.MemoryRouter initialEntries=["/docs/manual/introduction"]>
+      <div>
+        <div dataTestId="first">
+          <VersionSelect />
+        </div>
+        <div dataTestId="second">
+          <VersionSelect />
+        </div>
       </div>
-      <div dataTestId="second">
-        <VersionSelect />
-      </div>
-    </div>,
+    </ReactRouter.MemoryRouter>,
   )
 
   let first = await screen->getByTestId("first")
@@ -84,4 +98,30 @@ test("multiple instances have unique popover IDs", async () => {
   // Second instance menu should remain hidden
   let secondV11 = await second->getByText("v11")
   await element(secondV11)->notToBeVisible
+})
+
+test("switching to v13 preserves the manual page, query, and anchor", async () => {
+  let path = "/docs/manual/array-and-list?view=full#immutable-lists"
+  let screen = await render(
+    <ReactRouter.MemoryRouter initialEntries=[path]>
+      <VersionSelect />
+    </ReactRouter.MemoryRouter>,
+  )
+  let button = await screen->getByRole(#button)
+  await button->click
+  let preview = await screen->getByText("v13 (preview)")
+  await element(preview)->toHaveAttribute("href", "https://v13.rescript-lang.org" ++ path)
+})
+
+test("switching to v13 preserves the API module", async () => {
+  let path = "/docs/manual/api/stdlib/array#value-map"
+  let screen = await render(
+    <ReactRouter.MemoryRouter initialEntries=[path]>
+      <VersionSelect />
+    </ReactRouter.MemoryRouter>,
+  )
+  let button = await screen->getByRole(#button)
+  await button->click
+  let preview = await screen->getByText("v13 (preview)")
+  await element(preview)->toHaveAttribute("href", "https://v13.rescript-lang.org" ++ path)
 })

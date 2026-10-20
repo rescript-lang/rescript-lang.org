@@ -5,13 +5,7 @@ type version = {
 
 let currentVersion = {label: DocsVersion.current ++ " (latest)", link: "#"}
 
-let previewVersions =
-  DocsVersion.current === "v13"
-    ? []
-    : [{label: "v13 (preview)", link: "https://v13.rescript-lang.org/docs/manual/introduction"}]
-
-let otherVersions = [
-  ...previewVersions,
+let olderVersions = [
   {label: "v11", link: "https://v11.rescript-lang.org/docs/manual/v11.0.0/introduction"},
   {label: "v9.1 - v10.1", link: "https://v11.rescript-lang.org/docs/manual/v10.0.0/introduction"},
   {label: "v8.2 - v9.0", link: "https://v11.rescript-lang.org/docs/manual/v9.0.0/introduction"},
@@ -23,10 +17,17 @@ let version = DocsVersion.current
 
 @react.component
 let make = () => {
+  let location = ReactRouter.useLocation()
+  let search = location.search->Option.getOr("")
+  let hash = location.hash->Option.getOr("")
+  let previewHref =
+    "https://v13.rescript-lang.org" ++ (location.pathname :> string) ++ search ++ hash
+  let previewVersions =
+    DocsVersion.current === "v13" ? [] : [{label: "v13 (preview)", link: previewHref}]
   let id = React.useId()
   let popoverId = "older-versions-" ++ id
 
-  let children = Array.map(otherVersions, ver => {
+  let children = [...previewVersions, ...olderVersions]->Array.map(ver => {
     <a className="py-0.5 block hover:underline" key=ver.label href=ver.link>
       {React.string(ver.label)}
     </a>
