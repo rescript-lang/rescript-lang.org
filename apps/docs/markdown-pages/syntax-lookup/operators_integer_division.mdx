@@ -1,23 +1,33 @@
 ---
 id: "integer-division"
-keywords: ["divide", "division", "int", "integer"]
+keywords: ["divide", "division", "int", "integer", "float"]
 name: "/"
-summary: "This is the `integer division` operator."
+summary: "This is the unified `division` operator."
 category: "operators-arithmetic"
 ---
 
-This operator performs _integer_ division, with the result truncated to an integer value.
+Since ReScript 12, `/` works with `int`, `float`, and `bigint`. The compiler specializes the operator from its operands.
 
-If the second argument is _zero_ then a `Division_by_zero` exception is thrown. Read about [exception](../docs/manual/exception.mdx)
+Integer division truncates the result to an integer. Dividing an integer by zero throws a `Division_by_zero` exception.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-let result = 3 / 2
+let intResult = 3 / 2
+let floatResult = 3.0 / 2.0
 ```
 
 ```js
-var result = 1;
+let floatResult = 3.0 / 2.0;
+
+let intResult = 1;
+
+export { intResult, floatResult };
 ```
 
 </CodeTab>
+
+### References
+
+- [Primitive Types](../docs/manual/primitive-types.mdx#arithmetic-operators)
+- [Exception](../docs/manual/exception.mdx)

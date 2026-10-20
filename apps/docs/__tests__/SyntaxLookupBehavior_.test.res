@@ -46,11 +46,11 @@ test("syntax lookup detail marks active content for DocSearch crawling", async (
   await viewport(1440, 900)
 
   let _screen = await render(
-    <BrowserRouter>
+    <MemoryRouter>
       <SyntaxLookup mdxSources=mockItems activeItem={mockItems->Array.getUnsafe(0)}>
         <p> {React.string("Detail content for @as decorator.")} </p>
       </SyntaxLookup>
-    </BrowserRouter>,
+    </MemoryRouter>,
   )
 
   switch document->WebAPI.Document.querySelector(".DocSearch-content h1") {

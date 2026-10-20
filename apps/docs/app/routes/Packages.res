@@ -112,7 +112,7 @@ module Resource = {
     let filteredNpm = applyNpmSearch(allNpms, pattern)->Array.map(m => Npm(m["item"]))
     let filteredOutdated = applyNpmSearch(allOutDated, pattern)->Array.map(m => Outdated(m["item"]))
 
-    Belt.Array.concatMany([filteredNpm, filteredOutdated])
+    Array.concat(filteredNpm, filteredOutdated)
   }
 }
 
@@ -326,7 +326,7 @@ let make = (props: props) => {
   let allResources = {
     let npms = props.packages->Array.map(pkg => Resource.Npm(pkg))
     let outdated = props.unmaintained->Array.map(pkg => Resource.Outdated(pkg))
-    Belt.Array.concatMany([npms, outdated])
+    Array.concat(npms, outdated)
   }
 
   let resources = switch state {

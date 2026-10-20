@@ -36,7 +36,7 @@ if !Node.Fs.existsSync(sourceDir) {
 }
 
 let baseUrl = Node.Process.env->Dict.get("VITE_DEPLOYMENT_URL")->Option.getOr("")
-let sitemap = sourceDir->collectPagePaths("")->Sitemap.render(~baseUrl)
+let sitemap = sourceDir->collectPagePaths("")->Sitemap.renderWithRuntimePaths(~baseUrl)
 
 outputDirs->Array.forEach(outputDir => {
   if Node.Fs.existsSync(outputDir) {

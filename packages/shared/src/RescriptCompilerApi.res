@@ -36,6 +36,7 @@ module Version = {
     | @as(5) V5
     | @as(6) V6
     | @as(7) V7
+    | @as(8) V8
 
   type t =
     | ...numbered
@@ -64,6 +65,7 @@ module Version = {
     | list{"5"} => V5
     | list{"6"} => V6
     | list{"7"} => V7
+    | list{"8"} => V8
     | _ => UnknownVersion(apiVersion)
     }
 
@@ -76,6 +78,7 @@ module Version = {
     | V5 => "5.0"
     | V6 => "6.0"
     | V7 => "7.0"
+    | V8 => "8.0"
     | UnknownVersion(version) => version
     }
 
@@ -84,7 +87,7 @@ module Version = {
   let availableLanguages = t =>
     switch t {
     | V1 => [Lang.Reason, Res]
-    | V2 | V3 | V4 | V5 | V6 | V7 => [Lang.Res]
+    | V2 | V3 | V4 | V5 | V6 | V7 | V8 => [Lang.Res]
     | UnknownVersion(_) => [Res]
     }
 
@@ -427,7 +430,6 @@ module Compiler = {
   /*
       Res compiler actions
  */
-  @get @scope("rescript") external resVersion: t => string = "version"
 
   @send @scope("rescript")
   external resCompile: (t, string) => JSON.t = "compile"
@@ -476,8 +478,6 @@ module Compiler = {
   }
 
   @send external getConfig: t => Config.t = "getConfig"
-
-  @send external setFilename: (t, string) => bool = "setFilename"
 
   @send external setModuleSystemRaw: (t, string) => bool = "setModuleSystem"
 

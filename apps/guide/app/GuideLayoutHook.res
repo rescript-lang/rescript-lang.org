@@ -11,6 +11,17 @@ type t = {
   startRowResize: ReactEvent.Mouse.t => unit,
 }
 
+let syncThemeColor = theme =>
+  switch document->WebAPI.Document.querySelector(`meta[name="theme-color"]`) {
+  | Value(element) =>
+    WebAPI.Element.setAttribute(
+      element,
+      ~qualifiedName="content",
+      ~value=theme->GuideLayout.themeColor,
+    )
+  | Null => ()
+  }
+
 let useLayout = (): t => {
   let shellRef: React.ref<Nullable.t<Dom.element>> = React.useRef(Nullable.null)
   let (paneSizes, setPaneSizes) = React.useState(() => GuideLayout.defaultPaneSizes)
@@ -38,6 +49,11 @@ let useLayout = (): t => {
     }
     None
   }, (theme, themeLoaded))
+
+  React.useEffect(() => {
+    theme->syncThemeColor
+    None
+  }, [theme])
 
   React.useEffect(() => {
     if paneSizesLoaded {

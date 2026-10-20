@@ -14,26 +14,38 @@ You will need this decorator whenever you want to use JSX component in JSX expre
 
 ### Example
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
-// Assuming `Preact` is set up and configured as a generic JSX transform.
+// Using the default React JSX transform.
 @jsx.component
 let make = (~name) => {
-  <button> {Preact.string("Hello " ++ name ++ "!")} </button>
+  <button> {React.string("Hello " ++ name ++ "!")} </button>
 }
 ```
 
 ```js
-import * as Preact from "preact";
+import * as JsxRuntime from "react/jsx-runtime";
 
-function Playground(props) {
-  return Preact.jsx("button", {
-    children: "Hello " + props.name + "!",
-  });
+function Example(props) {
+  return JsxRuntime.jsx("button", { children: "Hello " + props.name + "!" });
 }
 
-var make = Playground;
+let make = Example;
+
+export { make };
+```
+
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example(props) {
+  return <button>{"Hello " + props.name + "!"}</button>;
+}
+
+let make = Example;
+
+export { make };
 ```
 
 </CodeTab>

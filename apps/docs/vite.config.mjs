@@ -1,10 +1,12 @@
 import { reactRouter } from "@react-router/dev/vite";
+import { responsiveImage } from "@responsive-image/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import devtoolsJson from "vite-plugin-devtools-json";
 import env from "vite-plugin-env-compatible";
 import pageReload from "vite-plugin-page-reload";
+import { homepageReactCompiler } from "./vite-react-compiler.mjs";
 
 const excludedFiles = ["lib/**", "**/*.res", "**/*.resi"];
 
@@ -16,12 +18,14 @@ export default defineConfig({
     global: "globalThis",
   },
   plugins: [
+    responsiveImage(),
     tailwindcss(),
     reactRouter(),
     react({
       include: ["**/*.mjs"],
       exclude: excludedFiles,
     }),
+    homepageReactCompiler(),
     // this is to make it so babel doesn't break when trying to acess process.env in the client
     env({ prefix: "PUBLIC_" }),
     // adds dev scripts for browser devtools

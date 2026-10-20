@@ -72,5 +72,3 @@ let useCompilerManager: (
   ~syncUrl: bool=?,
   ~versions: array<Semver.t>,
 ) => (state, action => unit)
-
-let createUrl: (string, ready) => string

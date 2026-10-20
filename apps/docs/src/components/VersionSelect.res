@@ -3,7 +3,7 @@ type version = {
   link: string,
 }
 
-let currentVersion = {label: "v12 (latest)", link: "#"}
+let currentVersion = {label: DocsVersion.current ++ " (latest)", link: "#"}
 
 let olderVersions = [
   {label: "v11", link: "https://v11.rescript-lang.org/docs/manual/v11.0.0/introduction"},
@@ -12,14 +12,8 @@ let olderVersions = [
   {label: "v6.0 - v8.1", link: "https://v11.rescript-lang.org/docs/manual/v8.0.0/introduction"},
 ]
 
-module SectionHeader = {
-  @react.component
-  let make = (~value) =>
-    <option disabled=true key=value className="py-4"> {React.string(value)} </option>
-}
-
 // This is the current version
-let version = "v12"
+let version = DocsVersion.current
 
 @react.component
 let make = () => {

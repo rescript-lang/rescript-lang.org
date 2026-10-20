@@ -26,11 +26,11 @@ function make(x, y, z) {
   return [x, y, z];
 }
 
-var Point3D = {
-  make: make,
-};
+let Point3D = { make: make };
 
-var origin = [0.0, 0.0, 0.0];
+let origin = [0.0, 0.0, 0.0];
+
+export { Point3D, origin };
 ```
 
 </CodeTab>

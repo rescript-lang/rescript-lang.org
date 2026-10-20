@@ -27,15 +27,11 @@ module LoudMessage: MessageShape = {
 ```
 
 ```js
-var Message = {
-  greeting: "Hello",
-  prefix: "[msg]",
-};
+let Message = { greeting: "Hello", prefix: "[msg]" };
 
-var LoudMessage = {
-  greeting: "HELLO",
-  prefix: "[LOUD]",
-};
+let LoudMessage = { greeting: "HELLO", prefix: "[LOUD]" };
+
+export { Message, LoudMessage };
 ```
 
 </CodeTab>

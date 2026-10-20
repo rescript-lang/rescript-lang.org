@@ -8,6 +8,19 @@ order: 14
 
 # If-Else & Loops
 
+<div className="hidden">
+
+```res prelude
+@val external isMorning: bool = "isMorning"
+@val external showMenu: bool = "showMenu"
+@val external displayMenu: unit => unit = "displayMenu"
+@val external startValueInclusive: int = "startValueInclusive"
+@val external endValueInclusive: int = "endValueInclusive"
+@val external testCondition: bool = "testCondition"
+```
+
+</div>
+
 ReScript supports `if`, `else`, ternary expression (`a ? b : c`), `for` and `while`.
 
 The `switch` pattern supports a default case. Read more about [pattern-matching & destructuring](./pattern-matching-destructuring.mdx).
@@ -18,7 +31,7 @@ ReScript's `if` is an expression; it evaluates to its body's content:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 let message = if isMorning {
   "Good morning!"
 } else {
@@ -27,7 +40,9 @@ let message = if isMorning {
 ```
 
 ```js
-var message = isMorning ? "Good morning!" : "Hello!";
+let message = isMorning ? "Good morning!" : "Hello!";
+
+export { message };
 ```
 
 </CodeTab>
@@ -36,7 +51,7 @@ var message = isMorning ? "Good morning!" : "Hello!";
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 if showMenu {
   displayMenu()
 }
@@ -54,7 +69,7 @@ is basically the same as:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 if showMenu {
   displayMenu()
 } else {
@@ -84,12 +99,14 @@ We also have ternary sugar, but **we encourage you to prefer if-else when possib
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 let message = isMorning ? "Good morning!" : "Hello!"
 ```
 
 ```js
-var message = isMorning ? "Good morning!" : "Hello!";
+let message = isMorning ? "Good morning!" : "Hello!";
+
+export { message };
 ```
 
 </CodeTab>
@@ -102,14 +119,14 @@ For loops iterate from a starting value up to (and including) the ending value.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 for i in startValueInclusive to endValueInclusive {
   Console.log(i)
 }
 ```
 
 ```js
-for (var i = startValueInclusive; i <= endValueInclusive; ++i) {
+for (let i = startValueInclusive; i <= endValueInclusive; ++i) {
   console.log(i);
 }
 ```
@@ -118,7 +135,7 @@ for (var i = startValueInclusive; i <= endValueInclusive; ++i) {
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 // prints: 1 2 3, one per line
 for x in 1 to 3 {
   Console.log(x)
@@ -137,14 +154,14 @@ You can make the `for` loop count in the opposite direction by using `downto`.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 for i in startValueInclusive downto endValueInclusive {
   Console.log(i)
 }
 ```
 
 ```js
-for (var i = startValueInclusive; i >= endValueInclusive; --i) {
+for (let i = startValueInclusive; i >= endValueInclusive; --i) {
   console.log(i);
 }
 ```
@@ -153,7 +170,7 @@ for (var i = startValueInclusive; i >= endValueInclusive; --i) {
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 // prints: 3 2 1, one per line
 for x in 3 downto 1 {
   Console.log(x)
@@ -174,15 +191,15 @@ While loops execute its body code block while its condition is true.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 while testCondition {
-  // body here
+  Console.log("Still running")
 }
 ```
 
 ```js
 while (testCondition) {
-  // body here
+  console.log("Still running");
 }
 ```
 
@@ -194,7 +211,7 @@ There's no loop-breaking `break` keyword (nor early `return` from functions, for
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res nocheck
+```res
 let break = ref(false)
 
 while !break.contents {
@@ -207,9 +224,7 @@ while !break.contents {
 ```
 
 ```js
-let $$break = {
-  contents: false,
-};
+let $$break = { contents: false };
 
 while (!$$break.contents) {
   if (Math.random() > 0.3) {

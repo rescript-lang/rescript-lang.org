@@ -29,17 +29,15 @@ let dict{"C": ?c} = d
 ```
 
 ```js
-let d = {
-  A: 5,
-  B: 6,
-  C: 7,
-};
+let d = { A: 5, B: 6, C: 7 };
 
 let b = d.B;
 
 let b$1 = b !== undefined ? b : undefined;
 
 let c = d.C;
+
+export { d, b$1 as b, c };
 ```
 
 </CodeTab>

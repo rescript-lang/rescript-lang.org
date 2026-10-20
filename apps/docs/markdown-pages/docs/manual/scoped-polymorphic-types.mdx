@@ -73,17 +73,13 @@ In this example, we create an instance of the logger by calling `getLogger()`, a
 
 Let's consider the same logging example in ReScript, but this time using normal polymorphic types:
 
-```res
-type logger<'a> = { log: 'a => unit}
+```res nocheck
+// This example intentionally fails at the second call.
+type logger<'a> = {log: 'a => unit}
 
 @module("jsAPI") external getLogger: unit => logger<'a> = "getLogger"
-```
 
-In this case, the `logger` type is a simple polymorphic function type `'a => unit`. However, when we attempt to use this type in the same way as before, we encounter an issue:
-
-```res
 let myLogger = getLogger()
-
 myLogger.log("Hello, ReScript!")
 myLogger.log(42) // Type error!
 ```
@@ -96,11 +92,15 @@ In contrast, scoped polymorphic types, such as `'a. 'a => unit`, overcome this l
 
 Scoped polymorphic types work only when they are directly applied to let-bindings or record fields (as demonstrated in the logger example above). They can neither be applied to function bodies, nor to separate type definitions:
 
-```res nocheck
+```res
 exception Abort
 
 let testExn: 'a. unit => 'a = () => throw(Abort) // Works!
+```
 
+The following inline annotations intentionally produce syntax errors:
+
+```res nocheck
 let testExn2 = (): 'a. 'a = throw(Abort) // Syntax error!
 type fn = 'a. 'a => unit // Syntax error!
 ```

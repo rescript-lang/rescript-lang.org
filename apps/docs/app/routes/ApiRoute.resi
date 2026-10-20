@@ -1,13 +1,8 @@
 type loaderData = ApiDocs.props
 
-type rec apiItem = {
-  id: string,
-  kind: string,
-  name: string,
-  items?: array<apiItem>,
-  docStrings: array<string>,
-}
-
+/** Loads page content and navigation from the same published compiler dataset. */
+@live
 let loader: ReactRouter.Loader.t<loaderData>
 
+@live
 let default: unit => React.element

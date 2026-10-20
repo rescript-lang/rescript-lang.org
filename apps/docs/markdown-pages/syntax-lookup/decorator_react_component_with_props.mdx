@@ -10,11 +10,11 @@ The `@react.componentWithProps` decorator is used to annotate functions that are
 This decorator will ensure your component gets an uppercased name.
 
 > **Note**
-> The `@react.componentWithProps` decorator requires the [react-jsx or jsx config](../docs/react/installation.mdx) to be set in your `rescript.json` to enable the required React transformations.
+> The `@react.componentWithProps` decorator requires the [`jsx` config](../docs/react/installation.mdx) to be set in your `rescript.json` to enable the required React transformations.
 
 ### Example
 
-<CodeTab labels={["ReScript", "JS Output"]}>
+<CodeTab labels={["ReScript", "JS Output", "JSX Preserved Output"]}>
 
 ```res
 module Hey = {
@@ -32,15 +32,25 @@ module Hey = {
 ```js
 import * as JsxRuntime from "react/jsx-runtime";
 
-function Playground$Hey(props) {
-  return JsxRuntime.jsx("button", {
-    children: "Hello " + props.name + "!",
-  });
+function Example$Hey(props) {
+  return JsxRuntime.jsx("button", { children: "Hello " + props.name + "!" });
 }
 
-let Hey = {
-  make: Playground$Hey,
-};
+let Hey = { make: Example$Hey };
+
+export { Hey };
+```
+
+```jsx
+import * as JsxRuntime from "react/jsx-runtime";
+
+function Example$Hey(props) {
+  return <button>{"Hello " + props.name + "!"}</button>;
+}
+
+let Hey = { make: Example$Hey };
+
+export { Hey };
 ```
 
 </CodeTab>

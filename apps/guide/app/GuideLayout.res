@@ -61,6 +61,12 @@ let themeClass = theme =>
   | Dark => "guide-theme-dark"
   }
 
+let themeColor = theme =>
+  switch theme {
+  | Light => "#f6f4ef"
+  | Dark => "#0f172a"
+  }
+
 let toggleTheme = theme =>
   switch theme {
   | Light => Dark

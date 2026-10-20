@@ -48,6 +48,8 @@ Read more about [record type spreads here](../docs/manual/record.mdx#record-type
 Spreads can be used for immutable updates of records:
 
 ```res
+type person = {name: string, age: int}
+let me = {name: "Joe", age: 20}
 let meNextYear = {...me, age: me.age + 1}
 ```
 
@@ -71,7 +73,7 @@ Read more about [variant type spreads](../docs/manual/variant.mdx#variant-type-s
 
 > Available in v12+
 
-You can refine the type of a variant by spreading compatible a variant when pattern matching:
+You can refine the type of a variant by spreading a compatible variant when pattern matching:
 
 ```res
 type pets = Cat | Dog
@@ -80,8 +82,8 @@ type animals = | ...pets | ...fish
 
 let isPet = (animal: animals) => {
   switch animal {
-  | ...dog => Console.log("A dog!")
-  | _ => Console.log("Not a dog...")
+  | ...pets => true
+  | _ => false
   }
 }
 
@@ -117,6 +119,8 @@ See [Pattern Matching / Destructuring](../docs/manual/pattern-matching-destructu
 Spreads can be used for immutable updates of lists:
 
 ```res
+let someOtherList = list{2, 3}
+let anotherList = list{4, 5}
 let prepended = list{1, ...someOtherList}
 
 // You can spread several lists, but it's O(n) so avoid it if possible

@@ -98,7 +98,8 @@ let z = lor(a, b)   // bitwise OR
 
 v12:
 
-```res nocheck
+```res
+let a = 5 and b = 2
 let w = ~~~a     // bitwise NOT
 let x = a ^^^ b  // bitwise XOR
 let y = a &&& b  // bitwise AND
@@ -117,7 +118,8 @@ let z = asr(a, b)  // unsigned right shift
 
 v12:
 
-```res nocheck
+```res
+let a = 5 and b = 2
 let x = a << b  // logical left shift
 let y = a >> b  // logical right shift
 let z = a >>> b  // unsigned right shift
@@ -133,7 +135,8 @@ v11:
 
 v12:
 
-```res nocheck
+```res
+let children = React.string("Hello")
 <div> children </div>
 ```
 
@@ -165,13 +168,13 @@ v12:
 
 v11:
 
-```res nocheck
+```res
 assert 1 == 2
 ```
 
 v12:
 
-```res nocheck
+```res
 assert(1 == 2)  // Now a regular function call
 ```
 
@@ -278,7 +281,7 @@ Below is a consolidated excerpt of all the breaking changes from the compiler ch
 
 ### Build system & CLI
 
-- The new Rust-based `rewatch` build system now powers the `rescript` command. The old Ninja-based builder system moved behind `rescript legacy`, and `--compiler-args` became the `compiler-args` subcommand. https://github.com/rescript-lang/rescript/pull/7551 https://github.com/rescript-lang/rescript/pull/7593 https://github.com/rescript-lang/rescript/pull/7928
+- The new Rust-based `rewatch` build system now powers the `rescript` command. The old Ninja-based builder is available through the separate `rescript-legacy` executable, and `--compiler-args` became the `compiler-args` subcommand. https://github.com/rescript-lang/rescript/pull/7551 https://github.com/rescript-lang/rescript/pull/7593 https://github.com/rescript-lang/rescript/pull/7928
 - `rescript format` was reimplemented in Rust, its options now use the `--check` / `--stdin` long-form spelling, and the `--all` flag was removed because every tracked file (non-dev by default) is formatted automatically. https://github.com/rescript-lang/rescript/pull/7603 https://github.com/rescript-lang/rescript/pull/7752
 - The `rescript dump` command was removed; call `bsc` directly if you need to inspect `.cmi` files. https://github.com/rescript-lang/rescript/pull/7710
 

@@ -1,0 +1,242 @@
+type chain<'a>
+type elements
+type assertion
+type spy
+type consoleArgument
+type consoleCall = {args: array<consoleArgument>}
+@send external getCalls: spy => array<consoleCall> = "getCalls"
+@val external consoleArgumentString: option<consoleArgument> => string = "String"
+type console
+type history
+type rec window = {
+  document: Dom.document,
+  console: console,
+  navigator: {clipboard: clipboard},
+  scrollY: float,
+  localStorage: WebAPI.WebStorageAPI.storage,
+}
+and clipboard
+@get external windowHistory: window => history = "history"
+@send external replaceState: (history, JSON.t, string, string) => unit = "replaceState"
+type response = {status: int, body: string, headers: Dict.t<string>}
+type replyResponse = {statusCode: int, headers: Dict.t<string>, body: string}
+type networkError = {forceNetworkError: bool}
+type fetchResponse
+type automation = {command: string, params?: {permissions: array<string>, origin: string}}
+type request = {url: string, resourceType: string}
+type routeMatcher = {resourceType?: string, pathname?: string}
+type searchRouteMatcher = {hostname: RegExp.t, pathname: RegExp.t}
+type staticResponse = {statusCode: int, body: JSON.t}
+type wrapOptions = {log: bool}
+type requestOptions = {url: string, encoding: string}
+type visitOptions = {onBeforeLoad: window => unit}
+type listenerOptions = {once: bool}
+type bounds = {width: float, height: float, top: float}
+type url
+type elementList
+type fontFaceSet
+type fontFace
+type styleSheetList
+type styleSheet
+type cssRuleList
+type cssRule
+type cssStyle
+
+@val external it: (string, unit => unit) => unit = "it"
+@val external beforeEach: (unit => unit) => unit = "beforeEach"
+@val external afterEach: (unit => unit) => unit = "afterEach"
+@val @scope("cy") external visit: string => unit = "visit"
+@val @scope("cy") external visitWithOptions: (string, visitOptions) => unit = "visit"
+@val @scope("cy") external viewport: (int, int) => unit = "viewport"
+@val @scope("cy") external get: string => chain<elements> = "get"
+@val @scope("cy") external alias: string => chain<'a> = "get"
+@val @scope("cy") external contains: string => chain<elements> = "contains"
+@val @scope("cy") external containsIn: (string, string) => chain<elements> = "contains"
+@val @scope("cy") external containsInRegex: (string, RegExp.t) => chain<elements> = "contains"
+@val @scope("cy") external cyLocation: string => chain<string> = "location"
+@val @scope("cy") external cyWindow: unit => chain<window> = "window"
+@val @scope("cy") external cyDocument: unit => chain<Dom.document> = "document"
+@val @scope("cy") external request: string => chain<response> = "request"
+@val @scope("cy") external requestWithOptions: requestOptions => chain<response> = "request"
+@val @scope("cy") external intercept: (routeMatcher, request => unit) => chain<unit> = "intercept"
+@val @scope("cy") external interceptAll: (string, request => unit) => chain<unit> = "intercept"
+@val @scope("cy") external interceptRoute: routeMatcher => chain<unit> = "intercept"
+@val @scope("cy")
+external interceptStatic: (searchRouteMatcher, staticResponse) => chain<unit> = "intercept"
+@val @scope("cy")
+external interceptPattern: (RegExp.t, request => unit) => chain<unit> = "intercept"
+@val @scope("cy")
+external interceptFailurePattern: (RegExp.t, networkError) => chain<unit> = "intercept"
+@val @scope("cy")
+external interceptFailureString: (string, networkError) => chain<unit> = "intercept"
+@val @scope("cy")
+external interceptDeferred: (RegExp.t, unit => promise<unit>) => chain<unit> = "intercept"
+@val @scope("cy")
+external interceptDeferredRequest: (routeMatcher, request => promise<unit>) => chain<unit> =
+  "intercept"
+@val @scope("cy") external wait: string => chain<response> = "wait"
+@val @scope("cy") external wrap: 'a => chain<'a> = "wrap"
+@val @scope("cy") external wrapWithOptions: ('a, wrapOptions) => chain<'a> = "wrap"
+@val @scope("cy") external run: (unit => promise<unit>) => chain<unit> = "then"
+@val @scope("cy") external runPromise: (unit => promise<'a>) => chain<'a> = "then"
+@val @scope("cy") external do_: (unit => unit) => chain<unit> = "then"
+@val @scope("cy") external realPressKey: string => chain<unit> = "realPress"
+@val @scope("cy") external realPressKeys: array<string> => chain<unit> = "realPress"
+@val @scope("cy") external reload: unit => unit = "reload"
+@val @scope("cy")
+external onBeforeLoad: (@as("window:before:load") _, window => unit) => unit = "on"
+@val @scope("cy") external spy: (console, @as("error") _) => spy = "spy"
+@val @scope("Cypress")
+external automate: (@as("remote:debugger:protocol") _, automation) => promise<unit> = "automation"
+@val @scope("Cypress") external baseUrl: @as("baseUrl") _ => string = "config"
+@val @scope("Cypress") external isInteractive: @as("isInteractive") _ => bool = "config"
+@val @scope("mocha") external forbidOnly: bool => unit = "forbidOnly"
+@module("cypress-real-events/support.js") external realEvents: unit = "default"
+
+@send external then: (chain<'a>, 'a => unit) => chain<unit> = "then"
+@send external thenMap: (chain<'a>, 'a => 'b) => chain<'b> = "then"
+@send external thenPromise: (chain<'a>, 'a => promise<'b>) => chain<'b> = "then"
+@send external should: (chain<'a>, string) => chain<'a> = "should"
+@send
+external shouldCss: (chain<elements>, @as("have.css") _, string, string) => chain<elements> =
+  "should"
+@send
+external shouldCssProperty: (chain<elements>, @as("have.css") _, string) => chain<string> = "should"
+@send external shouldInt: (chain<'a>, string, int) => chain<'a> = "should"
+@send
+external shouldValue: (chain<elements>, @as("have.value") _, string) => chain<elements> = "should"
+@send
+external shouldText: (chain<elements>, @as("have.text") _, string) => chain<elements> = "should"
+@send external shouldEqual: (chain<'a>, @as("equal") _, 'a) => chain<'a> = "should"
+@send external shouldDeepEqual: (chain<'a>, @as("deep.equal") _, 'a) => chain<'a> = "should"
+@send external shouldMatch: (chain<'a>, @as("match") _, RegExp.t) => chain<'a> = "should"
+@send external andMatch: (chain<string>, @as("match") _, RegExp.t) => chain<string> = "and"
+@send external shouldWithin: (chain<int>, @as("be.within") _, int, int) => chain<int> = "should"
+@send
+external shouldAttribute: (chain<elements>, @as("have.attr") _, string, string) => chain<elements> =
+  "should"
+@send
+external shouldProperty: (chain<elements>, @as("have.prop") _, string, string) => chain<elements> =
+  "should"
+@send external attribute: (chain<elements>, @as("attr") _, string) => chain<string> = "invoke"
+@send external propertyInt: (chain<'a>, string) => chain<int> = "its"
+@send external propertyString: (chain<'a>, string) => chain<string> = "its"
+@send
+external shouldPropertyExist: (chain<'a>, @as("have.property") _, string) => chain<'a> = "should"
+@send external shouldSatisfy: (chain<'a>, 'a => unit) => chain<'a> = "should"
+@send external click: chain<elements> => chain<elements> = "click"
+@send external first: chain<elements> => chain<elements> = "first"
+@send external typeText: (chain<elements>, string) => chain<elements> = "type"
+@send
+external containsChildRegex: (chain<elements>, string, RegExp.t) => chain<elements> = "contains"
+@send external focusElement: chain<elements> => chain<elements> = "focus"
+@send external realClick: chain<elements> => chain<elements> = "realClick"
+@send external realPress: (chain<elements>, string) => chain<elements> = "realPress"
+@send external scrollIntoView: chain<elements> => chain<elements> = "scrollIntoView"
+@send external each: (chain<elements>, elements => unit) => chain<elements> = "each"
+@send external as_: (chain<'a>, string) => chain<'a> = "as"
+@send external item: (elements, int) => option<Dom.element> = "get"
+@get external complete: Dom.element => bool = "complete"
+@get external naturalWidth: Dom.element => int = "naturalWidth"
+@send external readText: clipboard => promise<string> = "readText"
+@send external destroy: request => unit = "destroy"
+@set external setRequestAlias: (request, string) => unit = "alias"
+@send external reply: (request, replyResponse) => unit = "reply"
+
+@val external expect: ('a, ~message: string=?) => assertion = "expect"
+@send @scope("to") external equal: (assertion, 'a) => unit = "equal"
+@send @scope("to") external include_: (assertion, string) => unit = "include"
+@send @scope(("to", "not")) external notInclude: (assertion, string) => unit = "include"
+@send @scope(("to", "deep")) external deepEqual: (assertion, 'a) => unit = "equal"
+@send @scope(("to", "include")) external includeMembers: (assertion, array<'a>) => unit = "members"
+@send @scope(("to", "be")) external greaterThan: (assertion, int) => unit = "greaterThan"
+@send @scope(("to", "be")) external greaterThanFloat: (assertion, float) => unit = "greaterThan"
+@send @scope(("to", "be", "at")) external atLeast: (assertion, float) => unit = "least"
+@send @scope(("to", "be")) external closeTo: (assertion, float, float) => unit = "closeTo"
+@send @scope("to") external match_: (assertion, RegExp.t) => unit = "match"
+
+type parser
+@new external parser: unit => parser = "DOMParser"
+@send external parseHtml: (parser, string, @as("text/html") _) => Dom.document = "parseFromString"
+@send external querySelector: (Dom.document, string) => Null.t<Dom.element> = "querySelector"
+@send external querySelectorAll: (Dom.document, string) => elementList = "querySelectorAll"
+@send
+external querySelectorFromElement: (Dom.element, string) => Null.t<Dom.element> = "querySelector"
+@send
+external querySelectorAllFromElement: (Dom.element, string) => elementList = "querySelectorAll"
+@send
+external addEventListenerOnce: (Dom.document, string, unit => unit, listenerOptions) => unit =
+  "addEventListener"
+@get external body: Dom.document => Dom.element = "body"
+@get external documentElement: Dom.document => Dom.element = "documentElement"
+@get external currentScript: Dom.document => Null.t<Dom.element> = "currentScript"
+@get external textContent: Dom.element => Null.t<string> = "textContent"
+@get external innerHTML: Dom.element => string = "innerHTML"
+@get external outerHTML: Dom.element => string = "outerHTML"
+@send external getAttribute: (Dom.element, string) => Null.t<string> = "getAttribute"
+@send external boundingRect: Dom.element => bounds = "getBoundingClientRect"
+@get external alt: Dom.element => string = "alt"
+@get external baseURI: Dom.element => string = "baseURI"
+@get external currentSrc: Dom.element => string = "currentSrc"
+@get external parentElement: Dom.element => Nullable.t<Dom.element> = "parentElement"
+@get external elementHref: Dom.element => string = "href"
+@send external decode: Dom.element => promise<unit> = "decode"
+
+@val @scope("Array") external elementsFrom: elementList => array<Dom.element> = "from"
+@new external url: string => url = "URL"
+@new external urlWithBase: (string, string) => url = "URL"
+@get external pathname: url => string = "pathname"
+@get external hostname: url => string = "hostname"
+@get external urlOrigin: url => string = "origin"
+@get external href: url => string = "href"
+
+@get external fonts: Dom.document => fontFaceSet = "fonts"
+@get external fontsReady: fontFaceSet => promise<fontFaceSet> = "ready"
+@send external loadFont: (fontFaceSet, string) => promise<array<fontFace>> = "load"
+@send external checkFont: (fontFaceSet, string) => bool = "check"
+@val @scope("Array") external fontFacesFrom: fontFaceSet => array<fontFace> = "from"
+@get external fontStatus: fontFace => string = "status"
+@get external fontLoaded: fontFace => promise<fontFace> = "loaded"
+
+@send external windowRequestAnimationFrame: (window, float => unit) => int = "requestAnimationFrame"
+@send external windowFetch: (window, string) => promise<fetchResponse> = "fetch"
+@get external fetchStatus: fetchResponse => int = "status"
+@send external responseText: fetchResponse => promise<string> = "text"
+
+@get external styleSheets: Dom.document => styleSheetList = "styleSheets"
+@val @scope("Array") external styleSheetsFrom: styleSheetList => array<styleSheet> = "from"
+@get external sheetRules: styleSheet => cssRuleList = "cssRules"
+@val @scope("Array") external rulesFrom: cssRuleList => array<cssRule> = "from"
+@get external ruleType: cssRule => int = "type"
+@get external nestedRules: cssRule => Nullable.t<cssRuleList> = "cssRules"
+@get external cssText: cssRule => string = "cssText"
+@get external selectorText: cssRule => string = "selectorText"
+@get external ruleStyle: cssRule => cssStyle = "style"
+@get external boxSizing: cssStyle => string = "boxSizing"
+@get external fontFamily: cssStyle => string = "fontFamily"
+@get external fontWeight: cssStyle => string = "fontWeight"
+@get external fontStyle: cssStyle => string = "fontStyle"
+@send external propertyValue: (cssStyle, string) => string = "getPropertyValue"
+
+@val external describe: (string, unit => unit) => unit = "describe"
+@val @scope("cy") external currentUrl: unit => chain<string> = "url"
+@val @scope("cy") external pause: int => unit = "wait"
+@val @scope("cy") external cyScrollTo: string => unit = "scrollTo"
+@send external find: (chain<elements>, string) => chain<elements> = "find"
+@send external containsChild: (chain<elements>, string) => chain<elements> = "contains"
+@send external containsChildIn: (chain<elements>, string, string) => chain<elements> = "contains"
+@send external select: (chain<elements>, string) => chain<elements> = "select"
+@send
+external typeWithOptions: (
+  chain<elements>,
+  string,
+  {"force": bool, "delay": int},
+) => chain<elements> = "type"
+@send
+external shouldContainText: (chain<elements>, @as("contain.text") _, string) => chain<elements> =
+  "should"
+@send external shouldInclude: (chain<string>, @as("include") _, string) => chain<string> = "should"
+@send
+external shouldClass: (chain<elements>, @as("have.class") _, string) => chain<elements> = "should"
+
+let getByTestId = testId => get(`[data-testid="${testId}"]`)

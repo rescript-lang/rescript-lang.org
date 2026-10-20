@@ -11,18 +11,16 @@ module Output = {
   type t = {
     status: string,
     diagnostics: array<string>,
-    typeHints: array<string>,
     runtimeLogs: array<runtimeLog>,
   }
 
-  let make = (~status, ~diagnostics=[], ~typeHints=[], ~runtimeLogs=[]) => {
+  let make = (~status, ~diagnostics=[], ~runtimeLogs=[]) => {
     status,
     diagnostics,
-    typeHints,
     runtimeLogs,
   }
 
-  let initial = make(~status="Output", ~runtimeLogs=[{level: #log, content: ["hello, world!"]}])
+  let initial = make(~status="Output")
 
   let withRuntimeLog = (output, runtimeLog) => {
     ...output,

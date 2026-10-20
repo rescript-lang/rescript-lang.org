@@ -22,7 +22,7 @@ GADTs usually are overkill, but when you need them, you need them! Understanding
 
 Suppose a simple variant type that represents the current timezone of a date value. This handles both daylight savings and standard time:
 
-```res nocheck
+```res prelude
 type timezone =
  | EST // standard time
  | EDT // daylight time
@@ -33,9 +33,7 @@ type timezone =
 
 Using this variant type, we will end up having functions like this:
 
-{/* TODO: fix this example, it has an error because it doesn't have access to the previous snippet */}
-
-```res nocheck
+```res
 let convertToDaylight = tz => {
   switch tz {
   | EST => EDT
@@ -49,9 +47,7 @@ This function is only valid for a subset of our variant type's constructors but 
 
 Let's see if we can find a way for the compiler to help us with normal variants. We could define another variant type to distinguish the two kinds of timezone.
 
-{/* TODO: fix this example, it has an error because it doesn't have access to the previous snippet */}
-
-```res nocheck
+```res prelude
 type daylightOrStandard =
   | Daylight(timezone)
   | Standard(timezone)
@@ -59,9 +55,7 @@ type daylightOrStandard =
 
 This has a lot of problems. For one, it's cumbersome and redundant. We would now have to pattern-match twice whenever we deal with a timezone that's wrapped up here. The compiler will force us to check whether we are dealing with daylight or standard time, but notice that there's nothing stopping us from providing invalid timezones to these constructors:
 
-{/* TODO: fix this example, it has an error because it doesn't have access to the previous snippet */}
-
-```res nocheck
+```res
 let invalidTz1 = Daylight(EST)
 let invalidTz2 = Standard(EDT)
 ```
@@ -70,7 +64,7 @@ Consequently, we still have to write our redundant catchall cases. We could defi
 That could be a passable solution, but what we would really like to do is implement some kind of subtyping relationship.
 We have two _kinds_ of timezone. This is where GADTs are handy:
 
-```res nocheck
+```res
 type standard
 type daylight
 
@@ -84,9 +78,16 @@ type rec timezone<_> =
 We define our type with a type parameter. We manually annotate each constructor, providing it with the correct type parameter indicating whether it is standard or daylight. Each constructor is a `timezone`,
 but we've added another level of specificity using a type parameter. Constructors are now understood to be `standard` or `daylight` at the _type_ level. Now we can fix our function like this:
 
-{/* TODO: fix this example, it has an error because it doesn't have access to the previous snippet */}
+```res
+type standard
+type daylight
 
-```res nocheck
+type rec timezone<_> =
+  | EST: timezone<standard>
+  | EDT: timezone<daylight>
+  | CST: timezone<standard>
+  | CDT: timezone<daylight>
+
 let convertToDaylight = tz => {
   switch tz {
   | EST => EDT
@@ -100,9 +101,17 @@ The compiler can infer correctly that this function should only take `timezone<s
 we try to return a standard timezone from this function. Actually, this seems like it could be a problem,
 we still want to be able to match on all cases of the variant sometimes, and a naive attempt at this will not pass the type checker. A naive example will fail:
 
-{/* TODO: fix this example, it has an error because it doesn't have access to the previous snippet */}
-
 ```res nocheck
+// This example intentionally mixes standard and daylight types.
+type standard
+type daylight
+
+type rec timezone<_> =
+  | EST: timezone<standard>
+  | EDT: timezone<daylight>
+  | CST: timezone<standard>
+  | CDT: timezone<daylight>
+
 let convertToDaylight = tz =>
   switch tz {
   | EST => EDT
@@ -114,22 +123,33 @@ let convertToDaylight = tz =>
 
 This will complain that `daylight` and `standard` are incompatible. To fix this, we need to explicitly annotate to tell the compiler to accept both:
 
-{/* TODO: fix this example, it has an error because it doesn't have access to the previous snippet */}
+```res
+type standard
+type daylight
 
-```res nocheck
-let convertToDaylight : type a. timezone<a> => timezone<daylight> =  // ...
+type rec timezone<_> =
+  | EST: timezone<standard>
+  | EDT: timezone<daylight>
+  | CST: timezone<standard>
+  | CDT: timezone<daylight>
+
+let convertToDaylight = (type a, tz: timezone<a>): timezone<daylight> =>
+  switch tz {
+  | EST => EDT
+  | CST => CDT
+  | CDT => CDT
+  | EDT => EDT
+  }
 ```
 
-The syntax `type a.` here defines a _locally abstract type_ which basically tells the compiler that the type parameter a is some specific type, but we don't care what it is. The cost of the extra specificity and safety that
+The `(type a, ...)` syntax here defines a _locally abstract type_ which basically tells the compiler that the type parameter a is some specific type, but we don't care what it is. The cost of the extra specificity and safety that
 GADTs give us is that the compiler less able to help us with type inference.
 
 ## Varying return type
 
 Sometimes, a function should have a different return type based on what you give it, and GADTs are how we can do this in a type-safe way. We can implement a generic `add` function that works on both `int` or `float`:
 
-{/* this example purposefully has an error so it is not marked as an example */}
-
-```res nocheck
+```res prelude
 type rec number<_> = Int(int): number<int> | Float(float): number<float>
 
 let add = (type a, x: number<a>, y: number<a>): a =>
@@ -139,7 +159,11 @@ let add = (type a, x: number<a>, y: number<a>): a =>
   }
 
 let foo = add(Int(1), Int(2))
+```
 
+Mixing witnesses deliberately produces a type error:
+
+```res nocheck
 let bar = add(Int(1), Float(2.0)) // the compiler will complain here
 ```
 
@@ -149,7 +173,7 @@ We can also use this to avoid returning `option` unnecessarily. We create an arr
 
 [^2]: This example is adapted from [here](https://dev.realworldocaml.org/gadts.html).
 
-```res nocheck
+```res
 module IfNotFound = {
   type rec t<_, _> =
     | Raise: t<'a, 'a>
@@ -189,7 +213,7 @@ interchangeably, hiding the implementation type rather than exposing it. This is
 `numTy` serves as a type-witness, making it
 possible to recover type information that was hidden dynamically. Matching on `numTy` will "reveal" the type of the other value in the pair. We can use this to write a generic sum function over arrays of numbers:
 
-```res nocheck
+```res
 type rec numTy<'a> =
   | Int: numTy<int>
   | Float: numTy<float>
@@ -216,17 +240,13 @@ This API has a method for binding event handlers, `on`. This takes an event and 
 depending on which event we are binding to. A naive implementation might look similar to this, defining a
 separate method for each stream event to wrap the unsafe version of `on`.
 
-{/* TODO: fix this example, it has an error */}
-
-```res nocheck
+```res
 module Stream = {
     type t
 
-    @new @module("node:http") external make: unit => t = "stream"
-
-    @send external on : (stream, string, 'a) => unit
+    @send external on: (t, string, 'a) => unit = "on"
     let onEnd = (stream, callback: unit=> unit) => stream->on("end", callback)
-    let onData = (stream, callback: ('a => 'b)) => stream->on("", callback)
+    let onData = (stream, callback: ('a => 'b)) => stream->on("data", callback)
     // etc. ...
 }
 ```
@@ -247,10 +267,7 @@ The real magic happens in the signature of `on`. Read it carefully, and then loo
 follow how the type variables are getting filled in, write it out on paper what each type variable is equal
 to if you need and it will soon become clear.
 
-{/* TODO: fix this example, it has an error */}
-
-```res nocheck
-
+```res
 module Stream = {
   type t<'a>
 
@@ -262,24 +279,31 @@ module Stream = {
   @unboxed
   type chunk =
     | Str(string)
-    // Node uses actually its own buffer type, but for the tutorial we are using the stdlib's buffer type.
+    // Node buffers expose an ArrayBuffer through their buffer property.
     | Buf(buffer)
 
   type rec event<_, _> =
     // "as" here is setting the runtime representation of our constructor
     | @as("pipe") Pipe: event<writable, t<readable> => unit>
-    | @as("end") End: event<'inputStream, option<chunk> => unit>
+    | @as("end") End: event<readable, unit => unit>
     | @as("data") Data: event<readable, chunk => unit>
 
-  @new @module("node:http") external make: unit => t<'a> = "Stream"
+  module Writable = {
+    type options = {write: (chunk, string, unit => unit) => unit}
+    @new @module("node:stream") external make: options => t<writable> = "Writable"
+  }
+  module Readable = {
+    @module("node:stream") @scope("Readable")
+    external from: array<string> => t<readable> = "from"
+  }
 
   @send
   external on: (t<'inputStream>, event<'inputStream, 'callback>, 'callback) => unit = "on"
 
 }
 
-let writer = Stream.Writable.make()
-let reader = Stream.Readable.make()
+let writer = Stream.Writable.make({write: (_chunk, _encoding, done) => done()})
+let reader = Stream.Readable.from(["Hello"])
 // Types will be correctly inferred for each callback, based on the event parameter provided
 writer->Stream.on(Pipe, r => {
   Console.log("Piping has started")
@@ -292,7 +316,11 @@ writer->Stream.on(Pipe, r => {
   )
 })
 
-writer->Stream.on(End, _ => Console.log("End reached"))
+reader->Stream.on(End, () => Console.log("End reached"))
+
+@send
+external pipe: (Stream.t<Stream.readable>, Stream.t<Stream.writable>) => unit = "pipe"
+reader->pipe(writer)
 
 ```
 

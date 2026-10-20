@@ -2,11 +2,13 @@ type t = {
   code: string,
   containerRef: React.ref<Nullable.t<Dom.element>>,
   editorRef: React.ref<option<CodeMirror.editorInstance>>,
+  reset: ReactEvent.Mouse.t => unit,
 }
 
 let useEditor = (~exercise: GuideLesson.exercise, ~theme): t => {
   let containerRef: React.ref<Nullable.t<Dom.element>> = React.useRef(Nullable.null)
   let editorRef: React.ref<option<CodeMirror.editorInstance>> = React.useRef(None)
+  let isRestoringInitialCode = React.useRef(false)
   let (code, setCode) = React.useState(() => exercise.initialCode)
 
   React.useEffect(() => {
@@ -34,7 +36,9 @@ let useEditor = (~exercise: GuideLesson.exercise, ~theme): t => {
         theme: theme->GuideLayout.themeToCodeMirror,
         keyMap: CodeMirror.KeyMap.Default,
         onChange: value => {
-          GuideLayout.saveExerciseCode(~exerciseId=exercise.id, ~code=value)
+          if !isRestoringInitialCode.current {
+            GuideLayout.saveExerciseCode(~exerciseId=exercise.id, ~code=value)
+          }
           setCode(_ => value)
         },
         errors: [],
@@ -53,5 +57,15 @@ let useEditor = (~exercise: GuideLesson.exercise, ~theme): t => {
     }
   }, (exercise.id, exercise.initialCode))
 
-  {code, containerRef, editorRef}
+  let reset = _event => {
+    GuideLayout.clearExerciseCode(exercise.id)
+    isRestoringInitialCode.current = true
+    editorRef.current->Option.forEach(editor =>
+      CodeMirror.editorSetValue(editor, exercise.initialCode)
+    )
+    isRestoringInitialCode.current = false
+    setCode(_ => exercise.initialCode)
+  }
+
+  {code, containerRef, editorRef, reset}
 }
