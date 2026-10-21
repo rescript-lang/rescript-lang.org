@@ -13,8 +13,8 @@ else
   TARGET_ENVIRONMENT="${DOCS_DEPLOYMENT_ENVIRONMENT:-}"
 fi
 
-ARTIFACT_NAME=$(node "$REPOSITORY_ROOT/apps/docs/scripts/lighthouse-report.mjs" artifact-name "$RAW_BRANCH" "${DOCS_DEPLOYMENT_ENVIRONMENT:-}")
-TARGET_ARTIFACT_NAME=$(node "$REPOSITORY_ROOT/apps/docs/scripts/lighthouse-report.mjs" artifact-name "$RAW_TARGET_BRANCH" "$TARGET_ENVIRONMENT")
+ARTIFACT_NAME=$(node "$REPOSITORY_ROOT/apps/docs/scripts/lighthouse-report.mjs" artifact-name "$RAW_BRANCH" "${DOCS_DEPLOYMENT_ENVIRONMENT:-}" "$PRODUCTION_BRANCH")
+TARGET_ARTIFACT_NAME=$(node "$REPOSITORY_ROOT/apps/docs/scripts/lighthouse-report.mjs" artifact-name "$RAW_TARGET_BRANCH" "$TARGET_ENVIRONMENT" "$PRODUCTION_BRANCH")
 
 {
   echo "LIGHTHOUSE_ARTIFACT_NAME=$ARTIFACT_NAME"

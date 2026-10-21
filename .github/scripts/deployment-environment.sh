@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Pages selects production by branch. Manual previews of master must use a
-# preview alias, while a manual production deploy must explicitly target master.
-if [[ "${GITHUB_EVENT_NAME:-}" == "push" && "$RAW_BRANCH" == "master" ]] ||
+# Keep the Pages production branch aligned with the repository's default branch.
+# Manual previews of that branch still use an isolated preview alias.
+if [[ "${GITHUB_EVENT_NAME:-}" == "push" && "$RAW_BRANCH" == "$PRODUCTION_BRANCH" ]] ||
    [[ "${GITHUB_EVENT_NAME:-}" == "workflow_dispatch" && "${DEPLOY_ENVIRONMENT:-}" == "production" ]]; then
   {
-    echo "SAFE_BRANCH=master"
+    echo "SAFE_BRANCH=$PRODUCTION_BRANCH"
     echo "DOCS_DEPLOYMENT_ENVIRONMENT=production"
     echo "VITE_DEPLOYMENT_URL="
     echo "DOCS_DEPLOYMENT_URL=https://rescript-lang.org"

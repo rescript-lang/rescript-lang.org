@@ -44,6 +44,18 @@ test("artifact-name CLI rejects an invalid environment", async () => {
   expect(result.stderr)->toContain("Invalid Lighthouse deployment environment: staging")
 })
 
+test("artifact-name CLI follows the renamed production branch", async () => {
+  let state = await workspace()
+  let result = run(state, ["artifact-name", "v12", "production", "v12"], ())
+  expectSuccess(result)
+  let production = artifactName("v12", ~environment="production", ~productionBranch="v12")
+  expect(result.stdout)->toBe(`${production}\n`)
+  expect(production)->toBe(artifactName("v12", ~productionBranch="v12"))
+  expect(production != artifactName("v12", ~environment="preview", ~productionBranch="v12"))->toBe(
+    true,
+  )
+})
+
 for_([[], [""]])("artifact-name CLI rejects missing or empty branch %j", async arguments => {
   let state = await workspace()
   let result = run(state, ["artifact-name", ...arguments], ())

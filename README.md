@@ -177,7 +177,7 @@ yarn ci:test
 For a headless run of a single suite, use `yarn vitest --browser.headless --run`
 for docs or `yarn vitest:guide --browser.headless --run` for the guide.
 
-Visual screenshot baselines are generated in CI's pinned Linux browser environment. Local snapshot updates are blocked. Push your feature branch, then open [Update Visual Regression Screenshots](https://github.com/rescript-lang/rescript-lang.org/actions/workflows/update-visual-screenshots.yml), select that branch, and choose **Run workflow**. The workflow refuses `master` and commits any changed PNGs back to the selected branch.
+Visual screenshot baselines are generated in CI's pinned Linux browser environment. Local snapshot updates are blocked. Push your feature branch, then open [Update Visual Regression Screenshots](https://github.com/rescript-lang/rescript-lang.org/actions/workflows/update-visual-screenshots.yml), select that branch, and choose **Run workflow**. The workflow refuses the default branch and commits any changed PNGs back to the selected branch.
 
 You can also dispatch the workflow with the GitHub CLI, replacing `<feature-branch>` with your pushed branch:
 
