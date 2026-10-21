@@ -216,3 +216,114 @@ export { myBook };
 ```
 
 </CodeTab>
+
+### Represent Class Inheritance
+
+ReScript does not define classes, but bindings can describe the inheritance relationships between existing JavaScript classes. Give each class its own type, then use a **private type abbreviation** to relate a subclass to its parent.
+
+For example, suppose a JavaScript module exports these classes:
+
+```js
+// animals.js
+export class Animal {
+  constructor(name) {
+    this.name = name;
+  }
+
+  getName() {
+    return this.name;
+  }
+}
+
+export class Mammal extends Animal {}
+
+export class Dog extends Mammal {
+  bark() {
+    return "Woof!";
+  }
+}
+```
+
+The hierarchy is `Animal → Mammal → Dog`. Start with an abstract type for `Animal` and bind its methods with [`@send`](./bind-to-js-function.mdx#object-method):
+
+```res file=Animal.res
+type t
+
+@send external getName: t => string = "getName"
+```
+
+In `Mammal.res`, declare that a mammal can be used as an animal:
+
+```res file=Mammal.res
+type t = private Animal.t
+```
+
+Repeat the pattern for `Dog`, and bind its constructor and methods:
+
+```res file=Dog.res
+type t = private Mammal.t
+
+@new @module("./animals.js") external make: string => t = "Dog"
+@send external bark: t => string = "bark"
+```
+
+The constructor still returns `Dog.t`. The private abbreviations let you explicitly **coerce** that value to its parent types with `:>`:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let dog = Dog.make("Rex")
+let mammal = (dog :> Mammal.t)
+let animal = (dog :> Animal.t)
+
+let name = animal->Animal.getName
+let sound = dog->Dog.bark
+```
+
+```js
+import * as Dog from "./Dog.js";
+
+let dog = Dog.make("Rex");
+
+let name = dog.getName();
+
+let sound = dog.bark();
+
+let mammal = dog;
+
+let animal = dog;
+
+export { dog, mammal, animal, name, sound };
+```
+
+</CodeTab>
+
+Coercion works through the hierarchy, so `Dog.t` can be coerced directly to `Animal.t` without first being assigned to a `Mammal.t` variable. To call an inherited method without keeping another variable, write:
+
+```res
+let name = (Dog.make("Rex") :> Animal.t)->Animal.getName
+```
+
+The coercion changes only the type used by the compiler. It does not wrap or copy the instance, call a constructor, or change JavaScript's method dispatch. The generated `mammal` and `animal` variables refer to the same JavaScript object as `dog`.
+
+#### Why Use `private`?
+
+A regular [type alias](./type.mdx#type-alias), such as `type t = Animal.t`, would make the types interchangeable. `type t = private Animal.t` keeps the subclass distinct while permitting coercion to the parent.
+
+The compiler requires `:>` when passing a subclass instance to a binding that expects the parent type. A type annotation with `:` does not perform that coercion.
+
+The reverse conversion is rejected: an arbitrary `Animal.t` cannot be coerced to `Dog.t`, because not every animal is a dog. After a value has been viewed as `Animal.t`, dog-specific methods also require the original `Dog.t` value. Keep that value if you need both APIs.
+
+These declarations describe an existing JavaScript relationship; they do not create inheritance or check instances at runtime. Only declare a private abbreviation when the JavaScript API guarantees that the subclass can be used as its parent.
+
+#### Keep the Relationship Visible in Interfaces
+
+If your binding has a [`.resi` interface](./module.mdx#signatures), expose the private abbreviation there too. For example, `Mammal.resi` should contain:
+
+```res file=Mammal.resi
+type t = private Animal.t
+```
+
+Exposing only `type t` would hide the relationship from callers, preventing them from coercing `Mammal.t` to `Animal.t`.
+
+The same approach works for larger libraries. In [OpenLayers](https://openlayers.org/en/latest/apidoc/module-ol_source_Tile-TileSource.html), for example, `TileSource.t` can be declared as `private Source.t`. Bindings for descendants such as [WMTS](https://openlayers.org/en/latest/apidoc/module-ol_source_WMTS-WMTS.html) can expose the relationship to `TileSource.t` without binding every intermediate class.
