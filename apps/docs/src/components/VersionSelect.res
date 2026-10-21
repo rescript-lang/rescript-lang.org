@@ -17,10 +17,17 @@ let version = DocsVersion.current
 
 @react.component
 let make = () => {
+  let location = ReactRouter.useLocation()
+  let search = location.search->Option.getOr("")
+  let hash = location.hash->Option.getOr("")
+  let previewHref =
+    "https://v13.rescript-lang.org" ++ (location.pathname :> string) ++ search ++ hash
+  let previewVersions =
+    DocsVersion.current === "v13" ? [] : [{label: "v13 (preview)", link: previewHref}]
   let id = React.useId()
   let popoverId = "older-versions-" ++ id
 
-  let children = Array.map(olderVersions, ver => {
+  let children = [...previewVersions, ...olderVersions]->Array.map(ver => {
     <a className="py-0.5 block hover:underline" key=ver.label href=ver.link>
       {React.string(ver.label)}
     </a>
