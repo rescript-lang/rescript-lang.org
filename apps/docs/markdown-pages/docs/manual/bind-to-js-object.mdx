@@ -216,3 +216,78 @@ export { myBook };
 ```
 
 </CodeTab>
+
+### Represent Class Inheritance
+
+ReScript has no class declarations, but bindings can model existing JavaScript inheritance using **private type abbreviations**. Suppose `animals.js` exports the hierarchy `Animal → Mammal → Dog`:
+
+```js
+// animals.js
+export class Animal {
+  constructor(name) {
+    this.name = name;
+  }
+
+  getName() {
+    return this.name;
+  }
+}
+
+export class Mammal extends Animal {}
+
+export class Dog extends Mammal {
+  bark() {
+    return "Woof!";
+  }
+}
+```
+
+Declare the base type and its methods in `Animal.res`:
+
+```res file=Animal.res
+type t
+
+@send external getName: t => string = "getName"
+```
+
+In `Mammal.res`, relate the subclass to its parent:
+
+```res file=Mammal.res
+type t = private Animal.t
+```
+
+Repeat for `Dog.res`, adding its constructor and methods:
+
+```res file=Dog.res
+type t = private Mammal.t
+
+@new @module("./animals.js") external make: string => t = "Dog"
+@send external bark: t => string = "bark"
+```
+
+Use `:>` to **coerce** a subclass instance to a parent type:
+
+```res
+let dog = Dog.make("Rex")
+let mammal = (dog :> Mammal.t)
+let animal = (dog :> Animal.t)
+
+let name = animal->Animal.getName
+let sound = dog->Dog.bark
+```
+
+Coercion works through the hierarchy: `Dog.t` can be coerced directly to `Animal.t`. It changes only the type; all three variables refer to the same JavaScript object.
+
+Unlike a regular [type alias](./type.mdx#type-alias), `private` keeps the types distinct. Coercion requires `:>`; a `:` annotation alone is not enough. The reverse conversion from `Animal.t` to `Dog.t` is rejected, so keep the original `Dog.t` value if you need dog-specific methods.
+
+Private abbreviations describe an existing inheritance relationship; they do not create inheritance or check instances at runtime.
+
+#### Interfaces
+
+If you add a [`.resi` interface](./module.mdx#signatures), expose the same relationship. For example, `Mammal.resi` should contain:
+
+```res file=Mammal.resi
+type t = private Animal.t
+```
+
+Exposing only `type t` would hide the relationship and prevent callers from coercing `Mammal.t` to `Animal.t`.
