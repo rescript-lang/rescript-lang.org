@@ -97,7 +97,7 @@ interactive compiler and runtime then run in the learner's browser.
   editor drafts, pane sizes, and theme in browser local storage.
 - Browser history support, light and dark themes, resizable instruction/output
   panes, Cloudflare preview deployments, and production deployment from
-  `master`.
+  the repository's default branch.
 
 The current interface is intentionally desktop-only: widths below `1024px`
 show a stop screen rather than a usable guide.
@@ -134,6 +134,6 @@ Track outstanding guide launch work in this checklist:
 ## Deployment
 
 The `deploy-guide` job in `.github/workflows/deploy.yml` builds the guide and
-deploys its `build/client/` assets with Wrangler. Pushes to `master` deploy the
+deploys its `build/client/` assets with Wrangler. Pushes to the default branch deploy the
 production Worker; non-Dependabot pull requests from this repository receive a preview Worker
 version and a link in the pull request.

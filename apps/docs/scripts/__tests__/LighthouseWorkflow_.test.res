@@ -41,6 +41,22 @@ test("preview PR audits compare against the target branch's default environment"
   expect(environment)->toContain("LIGHTHOUSE_TARGET_BRANCH=master\n")
 })
 
+test("PR audits use the renamed default branch's production baseline", async () => {
+  let state = await Workflow.fixture(
+    ~overrides=[
+      ("PRODUCTION_BRANCH", "v12"),
+      ("GH_RESPONSE", "v12\n"),
+      ("DOCS_DEPLOYMENT_ENVIRONMENT", "preview"),
+    ],
+    (),
+  )
+  expectSuccess(Workflow.run("lighthouse-environment.sh", state))
+  let environment = await Workflow.environmentContents(state)
+  let artifact = LighthouseFixtures.artifactName("v12", ~productionBranch="v12")
+  expect(environment)->toContain(`LIGHTHOUSE_TARGET_ARTIFACT_NAME=${artifact}\n`)
+  expect(environment)->toContain("LIGHTHOUSE_TARGET_BRANCH=v12\n")
+})
+
 let productionEnvironment = "SAFE_BRANCH=master\nDOCS_DEPLOYMENT_ENVIRONMENT=production\nVITE_DEPLOYMENT_URL=\nDOCS_DEPLOYMENT_URL=https://rescript-lang.org\n"
 let homepagePreviewEnvironment = "SAFE_BRANCH=perf-homepage-19ab1c0e\nDOCS_DEPLOYMENT_ENVIRONMENT=preview\nVITE_DEPLOYMENT_URL=https://perf-homepage-19ab1c0e.rescript-lang.pages.dev\nDOCS_DEPLOYMENT_URL=https://perf-homepage-19ab1c0e.rescript-lang.pages.dev\n"
 let masterPreviewEnvironment = "SAFE_BRANCH=master-fc613b4d\nDOCS_DEPLOYMENT_ENVIRONMENT=preview\nVITE_DEPLOYMENT_URL=https://master-fc613b4d.rescript-lang.pages.dev\nDOCS_DEPLOYMENT_URL=https://master-fc613b4d.rescript-lang.pages.dev\n"
@@ -87,6 +103,37 @@ for_([
 )) => {
   let state = await Workflow.fixture(
     ~overrides=[
+      ("GITHUB_EVENT_NAME", event),
+      ("RAW_BRANCH", branch),
+      ("DEPLOY_ENVIRONMENT", selection),
+      ("GH_FAIL", "1"),
+    ],
+    (),
+  )
+  expectSuccess(Workflow.run("deployment-environment.sh", state))
+  expect(await Workflow.environmentContents(state))->toBe(expectedEnvironment)
+  expect(exists(join([state.directory, "calls.jsonl"])))->toBe(false)
+})
+
+let v12ProductionEnvironment = "SAFE_BRANCH=v12\nDOCS_DEPLOYMENT_ENVIRONMENT=production\nVITE_DEPLOYMENT_URL=\nDOCS_DEPLOYMENT_URL=https://rescript-lang.org\n"
+let v12PreviewEnvironment = "SAFE_BRANCH=v12-2ab8c63a\nDOCS_DEPLOYMENT_ENVIRONMENT=preview\nVITE_DEPLOYMENT_URL=https://v12-2ab8c63a.rescript-lang.pages.dev\nDOCS_DEPLOYMENT_URL=https://v12-2ab8c63a.rescript-lang.pages.dev\n"
+
+for_([
+  ("push", "v12", "", v12ProductionEnvironment),
+  ("push", "master", "", masterPreviewEnvironment),
+  ("pull_request", "v12", "", v12PreviewEnvironment),
+  ("workflow_dispatch", "v12", "preview", v12PreviewEnvironment),
+  ("workflow_dispatch", "v12", "production", v12ProductionEnvironment),
+  ("workflow_dispatch", "Perf/Homepage", "production", v12ProductionEnvironment),
+])("deployment after the rename for %s on %s with selection '%s'", async ((
+  event,
+  branch,
+  selection,
+  expectedEnvironment,
+)) => {
+  let state = await Workflow.fixture(
+    ~overrides=[
+      ("PRODUCTION_BRANCH", "v12"),
       ("GITHUB_EVENT_NAME", event),
       ("RAW_BRANCH", branch),
       ("DEPLOY_ENVIRONMENT", selection),

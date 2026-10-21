@@ -62,6 +62,7 @@ let fixture = async (~overrides=[], ()) => {
         ("CALLS", join([directory, "calls.jsonl"])),
         ("GITHUB_ENV", join([directory, "environment"])),
         ("GITHUB_EVENT_NAME", "pull_request"),
+        ("PRODUCTION_BRANCH", "master"),
         ("DEPLOY_ENVIRONMENT", ""),
         ("DOCS_DEPLOYMENT_ENVIRONMENT", ""),
         ("GITHUB_REPOSITORY", "owner/site"),

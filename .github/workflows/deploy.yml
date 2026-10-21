@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - v12
   workflow_dispatch:
     inputs:
       environment:
@@ -14,6 +15,9 @@ on:
         required: true
         default: "preview"
   pull_request:
+
+env:
+  PRODUCTION_BRANCH: ${{ github.event.repository.default_branch }}
 
 jobs:
   deploy:
@@ -180,7 +184,7 @@ jobs:
           SAFE_BRANCH=$(echo "$RAW_BRANCH" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9-]+/-/g; s/^-+//; s/-+$//; s/-+/-/g')
           SAFE_BRANCH="${SAFE_BRANCH:0:28}"
 
-          if [[ "${{ github.event_name }}" == "push" && "$RAW_BRANCH" == "master" ]] || [[ "${{ inputs.environment }}" == "production" ]]; then
+          if [[ "${{ github.event_name }}" == "push" && "$RAW_BRANCH" == "$PRODUCTION_BRANCH" ]] || [[ "${{ inputs.environment }}" == "production" ]]; then
             echo "GUIDE_DEPLOY_COMMAND=deploy" >> "$GITHUB_ENV"
             echo "GUIDE_DEPLOYMENT_ENVIRONMENT=guide-production" >> "$GITHUB_ENV"
             echo "GUIDE_PRODUCTION_ENVIRONMENT=true" >> "$GITHUB_ENV"

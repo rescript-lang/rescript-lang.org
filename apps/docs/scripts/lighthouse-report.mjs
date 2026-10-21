@@ -17,15 +17,20 @@ const reportCategoryKeys = {
   seo: "seo",
 };
 
-export function lighthouseArtifactName(branch, environment) {
-  const defaultEnvironment = branch === "master" ? "production" : "preview";
+export function lighthouseArtifactName(
+  branch,
+  environment,
+  productionBranch = "master",
+) {
+  const defaultEnvironment =
+    branch === productionBranch ? "production" : "preview";
   const effectiveEnvironment = environment || defaultEnvironment;
   if (!["production", "preview"].includes(effectiveEnvironment)) {
     throw new Error(
       `Invalid Lighthouse deployment environment: ${effectiveEnvironment}`,
     );
   }
-  // Preserve existing production-master and branch-preview keys. Alternative
+  // Preserve existing production and branch-preview keys. Alternative
   // environments use a separate identity so they cannot overwrite those keys.
   const isDefaultEnvironment = effectiveEnvironment === defaultEnvironment;
   const identity = isDefaultEnvironment
@@ -240,13 +245,13 @@ async function writeComment() {
   );
 }
 
-async function main(command, branch, environment) {
+async function main(command, branch, environment, productionBranch) {
   if (command === "artifact-name") {
     if (!branch) {
       throw new Error("A branch name is required for artifact-name");
     }
 
-    console.log(lighthouseArtifactName(branch, environment));
+    console.log(lighthouseArtifactName(branch, environment, productionBranch));
     return;
   }
 
@@ -268,5 +273,10 @@ const entryPath = process.argv[1]
   : "";
 
 if (import.meta.url === entryPath) {
-  await main(process.argv[2], process.argv[3], process.argv[4]);
+  await main(
+    process.argv[2],
+    process.argv[3],
+    process.argv[4],
+    process.argv[5],
+  );
 }
