@@ -219,7 +219,7 @@ export { myBook };
 
 ### Represent Class Inheritance
 
-ReScript has no class declarations, but bindings can model existing JavaScript inheritance using **private type abbreviations**. Suppose `animals.js` exports the hierarchy `Animal → Mammal → Dog`:
+ReScript has no class declarations, but bindings can model existing JavaScript inheritance using **phantom type parameters** and [polymorphic variants](./polymorphic-variant.mdx#lower-bound-). Suppose `animals.js` exports the hierarchy `Animal → Mammal → Dog`:
 
 ```js
 // animals.js
@@ -245,49 +245,47 @@ export class Dog extends Mammal {
 Declare the base type and its methods in `Animal.res`:
 
 ```res file=Animal.res
-type t
+type t<'a>
 
-@send external getName: t => string = "getName"
+@send external getName: t<'a> => string = "getName"
 ```
 
-In `Mammal.res`, relate the subclass to its parent:
+The **phantom type parameter** `'a` tracks the class in the type system without adding data to the JavaScript object.
+
+In `Mammal.res`, require the `#Mammal` tag while allowing subclasses to add their own tags:
 
 ```res file=Mammal.res
-type t = private Animal.t
+type t<'a> = Animal.t<[> #Mammal] as 'a>
 ```
 
-Repeat for `Dog.res`, adding its constructor and methods:
+The constraint `[> #Mammal] as 'a` means `'a` must include at least `#Mammal`.
+
+In `Dog.res`, close the set of tags and add its constructor and methods:
 
 ```res file=Dog.res
-type t = private Mammal.t
+type t = Mammal.t<[#Dog | #Mammal]>
 
 @new @module("./animals.js") external make: string => t = "Dog"
 @send external bark: t => string = "bark"
 ```
 
-Use `:>` to **coerce** a subclass instance to a parent type:
+Parent methods accept subclass instances directly:
 
 ```res
 let dog = Dog.make("Rex")
-let mammal = (dog :> Mammal.t)
-let animal = (dog :> Animal.t)
 
-let name = animal->Animal.getName
+let name = dog->Animal.getName
 let sound = dog->Dog.bark
 ```
 
-Coercion works through the hierarchy: `Dog.t` can be coerced directly to `Animal.t`. It changes only the type; all three variables refer to the same JavaScript object.
+`Animal.getName` accepts any `Animal.t<'a>`, including `Dog.t`. `Dog.bark` accepts only `Dog.t`, so it cannot be called on other animals.
 
-Unlike a regular [type alias](./type.mdx#type-alias), `private` keeps the types distinct. Coercion requires `:>`; a `:` annotation alone is not enough. The reverse conversion from `Animal.t` to `Dog.t` is rejected, so keep the original `Dog.t` value if you need dog-specific methods.
-
-Private abbreviations describe an existing inheritance relationship; they do not create inheritance or check instances at runtime.
+The tags are used only during type checking. The generated JavaScript uses the original class instances.
 
 #### Interfaces
 
-If you add a [`.resi` interface](./module.mdx#signatures), expose the same relationship. For example, `Mammal.resi` should contain:
+If you add a [`.resi` interface](./module.mdx#signatures), expose the same type parameter and alias so callers can use parent methods. For example, `Mammal.resi` should contain:
 
 ```res file=Mammal.resi
-type t = private Animal.t
+type t<'a> = Animal.t<[> #Mammal] as 'a>
 ```
-
-Exposing only `type t` would hide the relationship and prevent callers from coercing `Mammal.t` to `Animal.t`.
