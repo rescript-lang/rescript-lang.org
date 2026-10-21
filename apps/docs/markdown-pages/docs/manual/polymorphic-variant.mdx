@@ -378,6 +378,8 @@ Here, the compiler will enforce the user to define `#Blue | #DeepBlue | #LightBl
 
 **Note:** Since we want to define an extensible poly variant, we need to provide a type placeholder `<'a>`, and also add `as 'a` after the poly variant declaration, which essentially means: "Given type `'a` is constraint to the minimum set of constructors (`#Blue | #DeepBlue | #LightBlue`) defined in `basicBlueTone`".
 
+For a practical use of lower bounds with phantom type parameters, see [representing JavaScript class inheritance](./bind-to-js-object.mdx#represent-class-inheritance).
+
 ### Upper Bound `[<`
 
 The upper bound works in the opposite way than a lower bound: the extending type may only use constructors that are stated in the upper bound constraint.
