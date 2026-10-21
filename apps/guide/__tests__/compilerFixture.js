@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, expect, vi } from "vitest";
+import { version as guideCompilerVersion } from "../app/GuideCompilerSettings.jsx";
 
 const { loadScript, compile } = vi.hoisted(() => ({
   loadScript: vi.fn(),
@@ -55,7 +56,7 @@ function finishLoading(result) {
   vi.stubGlobal("rescript_compiler", {
     api_version: "8",
     make: () => ({
-      version: "12.2.0",
+      version: guideCompilerVersion.slice(1),
       getConfig: () => ({ module_system: "esmodule", warn_flags: "" }),
       setModuleSystem: () => true,
       setWarnFlags: () => true,

@@ -10,21 +10,6 @@ let isModuleBoundary = statement => {
   }
 }
 
-let collectRuntimeImport = (~imports, statement) => {
-  switch statement->Babel.Ast.nodeType {
-  | "ImportDeclaration" =>
-    let sourceValue = statement->Babel.Ast.source->Babel.Ast.stringLiteralValue
-    if sourceValue->String.startsWith("./stdlib") {
-      switch statement->Babel.Ast.specifiers {
-      | [specifier] =>
-        imports->Dict.set(specifier->Babel.Ast.specifierLocal->Babel.Ast.lvalName, sourceValue)
-      | _ => ()
-      }
-    }
-  | _ => ()
-  }
-}
-
 let consoleLogStatement = expression => {
   let consoleLog = Babel.Types.memberExpression(
     Babel.Types.identifier("console"),
@@ -95,8 +80,7 @@ let appendLastBindingLog = body =>
 let transform = (~resultBindingName=?, jsCode) =>
   try {
     let ast = Babel.Parser.parse(jsCode, {sourceType: "module"})
-    let imports = Dict.make()
-    ast.program.body->Array.forEach(statement => statement->collectRuntimeImport(~imports))
+    let imports = Babel.RuntimeImports.collect(ast)
 
     let executableBody = ast.program.body->Array.filter(statement => !isModuleBoundary(statement))
 
