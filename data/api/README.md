@@ -14,8 +14,14 @@ module must have nonempty `id` and `name` strings, a `docstrings` array of strin
 and an `items` array before the snapshot can be cached or used to generate routes.
 
 Route generation, sidebar navigation, and page content use the same snapshot.
-`master` selects v12; when porting this loader to the v13 website branch, update
-`apps/docs/docs-version.json` to `v13` alongside the displayed documentation version.
+`master` selects v12; this website branch selects v13 through
+`apps/docs/docs-version.json`. The displayed documentation version and generated
+manual indexes use the same setting.
+
+Pushes to `v13`, including compiler API-data publications, trigger
+`.github/workflows/deploy.yml` and deploy the website at
+`https://v13.rescript-lang.org`. Compiler publication must target this branch
+only after this loader is deployed (compiler issue #8753).
 
 Keep the compiler artifact intact, including the generated `js.json` and
 `toc_tree.json` files. The website currently builds its sidebar from the module

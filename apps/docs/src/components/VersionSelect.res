@@ -3,9 +3,10 @@ type version = {
   link: string,
 }
 
-let currentVersion = {label: DocsVersion.current ++ " (latest)", link: "#"}
+let currentVersion = {label: DocsVersion.current ++ " (preview)", link: "#"}
 
 let olderVersions = [
+  {label: "v12 (latest)", link: "https://rescript-lang.org/docs/manual/introduction"},
   {label: "v11", link: "https://v11.rescript-lang.org/docs/manual/v11.0.0/introduction"},
   {label: "v9.1 - v10.1", link: "https://v11.rescript-lang.org/docs/manual/v10.0.0/introduction"},
   {label: "v8.2 - v9.0", link: "https://v11.rescript-lang.org/docs/manual/v9.0.0/introduction"},

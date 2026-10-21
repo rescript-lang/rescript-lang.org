@@ -312,7 +312,7 @@ let generateFile = (
   createSectionLlmFiles(~llmsDirectory, ~sectionFiles, ~documents)
 }
 
-let currentManualVersion = "v12"
+let currentManualVersion = DocsVersion.current
 
 let currentReactVersion = "v0.14.2"
 let currentReactRuntimeVersion = "v19.2.4"

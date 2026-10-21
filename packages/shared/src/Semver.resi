@@ -14,5 +14,3 @@ type t = {
 let parse: string => option<t>
 
 let toString: t => string
-
-let tryGetMajorString: string => string
