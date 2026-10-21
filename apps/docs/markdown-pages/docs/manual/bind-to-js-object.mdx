@@ -219,7 +219,28 @@ export { myBook };
 
 ### Represent Class Inheritance
 
-ReScript has no class declarations, but bindings can model existing JavaScript inheritance using **private type abbreviations**. Suppose `animals.js` exports the hierarchy `Animal → Mammal → Dog`.
+ReScript has no class declarations, but bindings can model existing JavaScript inheritance using **private type abbreviations**. Suppose `animals.js` exports the hierarchy `Animal → Mammal → Dog`:
+
+```js
+// animals.js
+export class Animal {
+  constructor(name) {
+    this.name = name;
+  }
+
+  getName() {
+    return this.name;
+  }
+}
+
+export class Mammal extends Animal {}
+
+export class Dog extends Mammal {
+  bark() {
+    return "Woof!";
+  }
+}
+```
 
 Declare the base type and its methods in `Animal.res`:
 
