@@ -126,6 +126,34 @@ let fetchData = async (userId: string): string => {
 }
 ```
 
+## For Await Of
+
+Inside an `async` function, use `for await of` to consume an `asyncIterable<'a>`. Each iteration waits for the next value before running the loop body:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let printMessages = async (messages: asyncIterable<string>) => {
+  for await message of messages {
+    Console.log(message)
+  }
+}
+```
+
+```js
+async function printMessages(messages) {
+  for await (let message of messages) {
+    console.log(message);
+  }
+}
+
+export { printMessages };
+```
+
+</CodeTab>
+
+Use [`for of`](./control-flow.mdx#forof-loops) for ordinary arrays and synchronous iterables; `for await of` expects an async iterable. You can use [`break` and `continue`](./control-flow.mdx#break--continue) to exit the loop early or skip to the next iteration.
+
 ## Error handling
 
 You may use `try / catch` or `switch` to handle exceptions during async execution.
