@@ -25,7 +25,7 @@ let expensiveFilesRead = Lazy.make(() => {
 
 ```js
 import * as Nodefs from "node:fs";
-import * as Stdlib_Lazy from "@rescript/runtime/lib/es6/Stdlib_Lazy.js";
+import * as Stdlib_Lazy from "@rescript/runtime/lib/es6/Stdlib_Lazy.mjs";
 
 let expensiveFilesRead = Stdlib_Lazy.make(() => {
   console.log("Reading dir");
@@ -55,7 +55,7 @@ Console.log(Lazy.get(expensiveFilesRead)) // logs the directory content
 
 ```js
 import * as Nodefs from "node:fs";
-import * as Stdlib_Lazy from "@rescript/runtime/lib/es6/Stdlib_Lazy.js";
+import * as Stdlib_Lazy from "@rescript/runtime/lib/es6/Stdlib_Lazy.mjs";
 
 let expensiveFilesRead = Stdlib_Lazy.make(() => {
   console.log("Reading dir");
@@ -91,8 +91,8 @@ let result = try {
 
 ```js
 import * as Nodefs from "node:fs";
-import * as Stdlib_Lazy from "@rescript/runtime/lib/es6/Stdlib_Lazy.js";
-import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
+import * as Stdlib_Lazy from "@rescript/runtime/lib/es6/Stdlib_Lazy.mjs";
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.mjs";
 
 let expensiveFilesRead = Stdlib_Lazy.make(() => {
   console.log("Reading dir");

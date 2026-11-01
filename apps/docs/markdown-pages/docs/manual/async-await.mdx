@@ -48,8 +48,8 @@ let logUserDetails = async (userId: string) => {
 ```js
 async function logUserDetails(userId) {
   let email = await GlobalAPI.fetchUserMail(userId);
-  await GlobalAPI.sendAnalytics(`User details have been logged for ` + userId);
-  console.log(`Email address for user ` + userId + `: ` + email);
+  await GlobalAPI.sendAnalytics(`User details have been logged for ${userId}`);
+  console.log(`Email address for user ${userId}: ${email}`);
 }
 
 export { logUserDetails };
@@ -191,7 +191,7 @@ let fetchData = async () => {
 ```js
 async function fetchData() {
   let mail = (await GlobalAPI.fetchUserMail("1234")).toUpperCase();
-  console.log(`All upper-cased mail: ` + mail);
+  console.log(`All upper-cased mail: ${mail}`);
 }
 
 export { fetchData };
@@ -223,7 +223,7 @@ let fetchData = async () => {
 ```
 
 ```js
-import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.mjs";
 
 async function fetchData() {
   let val;

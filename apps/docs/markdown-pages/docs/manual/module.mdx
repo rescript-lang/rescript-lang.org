@@ -317,7 +317,7 @@ let BaseComponent = { defaultGreeting: "Hello", getAudience: getAudience };
 let defaultGreeting = "Hey";
 
 function render() {
-  return defaultGreeting + " world!";
+  return "Hey world!";
 }
 
 let ActualComponent = {
@@ -608,7 +608,7 @@ module MakeSet = (Item: Comparable) => {
 ```
 
 ```js
-import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
+import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.mjs";
 
 function getProfession(person) {
   if (person === "Teacher") {
@@ -653,7 +653,7 @@ module SetOfIntPairs = MakeSet(IntPair)
 ```
 
 ```js
-import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
+import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.mjs";
 
 function getProfession(person) {
   if (person === "Teacher") {

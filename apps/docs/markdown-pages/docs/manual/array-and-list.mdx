@@ -102,15 +102,15 @@ let x3 = [...y]
 ```
 
 ```javascript
-import * as Belt_Array from "@rescript/runtime/lib/es6/Belt_Array.js";
+import * as Primitive_array from "@rescript/runtime/lib/es6/Primitive_array.mjs";
 
 let y = [1, 2];
 
-let x = Belt_Array.concatMany([[4, 5], y]);
+let x = Primitive_array.spread([[4, 5], y]);
 
-let x2 = Belt_Array.concatMany([[4, 5], y, [7], y]);
+let x2 = Primitive_array.spread([[4, 5], y, [7], y]);
 
-let x3 = Belt_Array.concatMany([y]);
+let x3 = Primitive_array.spread([y]);
 
 export { y, x, x2, x3 };
 ```

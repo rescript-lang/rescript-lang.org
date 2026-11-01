@@ -38,7 +38,7 @@ let convertToDaylight = tz => {
   switch tz {
   | EST => EDT
   | CST => CDT
-  | EDT | CDT /* or, _ */ => failwith("Invalid timezone provided!")
+  | EDT | CDT /* or, _ */ => panic("Invalid timezone provided!")
   }
 }
 ```
@@ -191,7 +191,7 @@ let flexible_find = (
   switch Array.find(arr, f) {
   | None =>
     switch ifNotFound {
-    | Raise => failwith("No matching item found")
+    | Raise => panic("No matching item found")
     | ReturnNone => None
     | DefaultTo(x) => x
     }

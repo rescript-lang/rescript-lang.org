@@ -207,16 +207,16 @@ while (testCondition) {
 
 ### Tips & Tricks
 
-There's no loop-breaking `break` keyword (nor early `return` from functions, for that matter) in ReScript. However, we can break out of a while loop easily through using a [mutable binding](./mutation.mdx).
+A [mutable binding](./mutation.mdx) can control whether a while loop continues:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-let break = ref(false)
+let shouldStop = ref(false)
 
-while !break.contents {
+while !shouldStop.contents {
   if Math.random() > 0.3 {
-    break := true
+    shouldStop := true
   } else {
     Console.log("Still running")
   }
@@ -224,17 +224,17 @@ while !break.contents {
 ```
 
 ```js
-let $$break = { contents: false };
+let shouldStop = { contents: false };
 
-while (!$$break.contents) {
+while (!shouldStop.contents) {
   if (Math.random() > 0.3) {
-    $$break.contents = true;
+    shouldStop.contents = true;
   } else {
     console.log("Still running");
   }
 }
 
-export { $$break };
+export { shouldStop };
 ```
 
 </CodeTab>

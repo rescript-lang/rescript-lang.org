@@ -25,7 +25,7 @@ let message = dieRoll(6)->dieRollMessage("Marshall")
 ```
 
 ```js
-import * as Stdlib_Math from "@rescript/runtime/lib/es6/Stdlib_Math.js";
+import * as Stdlib_Math from "@rescript/runtime/lib/es6/Stdlib_Math.mjs";
 
 function dieRoll(size) {
   return Stdlib_Math.Int.random(1, size);
@@ -63,7 +63,7 @@ String.toUpperCase("example message")->logMsg(user, datestr, _)
 
 ```js
 function logMsg(user, datestr, msg) {
-  console.log(user + `|` + datestr + `|` + msg);
+  console.log(`${user}|${datestr}|${msg}`);
 }
 
 let datestr = "01-01-2021";

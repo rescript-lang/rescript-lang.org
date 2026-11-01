@@ -12,17 +12,17 @@ order: 12
 
 - `@deriving(jsConverter)` for records
 - `@deriving({jsConverter: newType})` for records
-- `@deriving(abstract)` for records
 - `@deriving(jsConverter)` for plain and polymorphic variants
 
 These particular ones are no longer needed. Select a doc version lower than `9.0` in the sidebar to see their old docs.
+
+The `@deriving(abstract)` decorator for records was removed in v13. Use record literals to construct JavaScript objects and direct field access to read or update them. Optional fields, mutable fields, and `@as` field renaming are supported directly on records.
 
 {/* TODO: genType */}
 
 When using ReScript, you will sometimes come into situations where you want to
 
 - Automatically generate functions that convert between ReScript's internal and JS runtime values (e.g. variants).
-- Convert a record type into an abstract type with generated creation, accessor and method functions.
 - Generate some other helper functions, such as functions from record attribute names.
 
 You can use the `@deriving` decorator for different code generation scenarios. All different options and configurations will be discussed on this page.
@@ -91,7 +91,7 @@ let pets = [{name: "bob"}, {name: "bob2"}]
 
 pets
  ->Array.map(name)
- ->Array.joinWith("&")
+ ->Array.join("&")
  ->Console.log
 ```
 
