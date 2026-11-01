@@ -1,4 +1,4 @@
-external elementToDialog: Dom.element => WebAPI.DOMAPI.htmlDialogElement = "%identity"
+external elementToDialog: Dom.element => WebAPI.HTMLDialogElement.t = "%identity"
 
 @react.component
 let make = (~categories: array<SidebarNav.Category.t>, ~activeToc, ~route) => {
@@ -10,7 +10,7 @@ let make = (~categories: array<SidebarNav.Category.t>, ~activeToc, ~route) => {
     switch node {
     | Nullable.Value(element) =>
       let dialog = element->elementToDialog
-      let breakpoint = window->WebAPI.Window.matchMedia("(min-width: 768px)")
+      let breakpoint = WebAPI.DOM.window->WebAPI.Window.matchMedia("(min-width: 768px)")
       let handleClose = _ => {
         // StrictMode can reopen the dialog before a cleanup's close event arrives.
         if !dialog.open_ {

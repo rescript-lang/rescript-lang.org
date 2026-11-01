@@ -47,7 +47,7 @@ let dropdownLabelReleased = "--- Released ---"
 
 let getLocalStorageItem = key => {
   try {
-    WebAPI.Storage.getItem(window.localStorage, key)->Null.toOption
+    WebAPI.Storage.getItem(WebAPI.DOM.window->WebAPI.Window.localStorage, key)->Null.toOption
   } catch {
   | JsExn(_) => None
   }
@@ -55,7 +55,7 @@ let getLocalStorageItem = key => {
 
 let setLocalStorageItem = (~key, ~value) => {
   try {
-    WebAPI.Storage.setItem(window.localStorage, ~key, ~value)
+    WebAPI.Storage.setItem(WebAPI.DOM.window->WebAPI.Window.localStorage, ~key, ~value)
   } catch {
   | JsExn(_) => ()
   }
@@ -63,7 +63,7 @@ let setLocalStorageItem = (~key, ~value) => {
 
 let getSessionStorageItem = key => {
   try {
-    WebAPI.Storage.getItem(window.sessionStorage, key)->Null.toOption
+    WebAPI.Storage.getItem(WebAPI.DOM.window->WebAPI.Window.sessionStorage, key)->Null.toOption
   } catch {
   | JsExn(_) => None
   }
@@ -71,7 +71,7 @@ let getSessionStorageItem = key => {
 
 let setSessionStorageItem = (~key, ~value) => {
   try {
-    WebAPI.Storage.setItem(window.sessionStorage, ~key, ~value)
+    WebAPI.Storage.setItem(WebAPI.DOM.window->WebAPI.Window.sessionStorage, ~key, ~value)
   } catch {
   | JsExn(_) => ()
   }
@@ -107,7 +107,7 @@ module DropdownSelect = {
       disabled
       onChange
     >
-      children
+      {children}
     </select>
   }
 }
@@ -174,9 +174,11 @@ module ResultPane = {
   module PreWrap = {
     @react.component
     let make = (~className="", ~children) =>
-      <pre className={"whitespace-pre-wrap " ++ className}> children </pre>
+      <pre className={"whitespace-pre-wrap " ++ className}> {children} </pre>
   }
+
   type prefix = [#W | #E]
+
   let compactErrorLine = (~highlight=false, ~prefix: prefix, locMsg: Api.LocMsg.t) => {
     let {Api.LocMsg.row: row, column, shortMsg} = locMsg
     let prefixColor = switch prefix {
@@ -201,7 +203,7 @@ module ResultPane = {
         <span className="font-medium text-gray-40">
           {React.string(` Line ${row->Int.toString}, column ${column->Int.toString}:`)}
         </span>
-        <AnsiPre className="whitespace-pre-wrap "> shortMsg </AnsiPre>
+        <AnsiPre className="whitespace-pre-wrap "> {shortMsg} </AnsiPre>
       </div>
     </div>
   }
@@ -348,7 +350,7 @@ module ResultPane = {
       }
       <div>
         <PreWrap className="text-16 mb-4"> {React.string(msg)} </PreWrap>
-        errs
+        {errs}
       </div>
     | Comp(UnexpectedError(msg))
     | Conv(UnexpectedError(msg)) =>
@@ -446,20 +448,19 @@ module ResultPane = {
 }
 
 module WarningFlagsWidget = {
+  @set external setScrollTop: (WebAPI.HTMLElement.t, float) => unit = "scrollTop"
+
   // Inspired by MUI (who got inspired by WAI best practise examples)
   // https://github.com/mui-org/material-ui/blob/next/packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js#L327
-  let scrollToElement = (
-    ~parent: WebAPI.DOMAPI.htmlElement,
-    element: WebAPI.DOMAPI.htmlElement,
-  ): unit =>
+  let scrollToElement = (~parent: WebAPI.HTMLElement.t, element: WebAPI.HTMLElement.t): unit =>
     if parent.scrollHeight > parent.clientHeight {
       let scrollBottom = parent.clientHeight + Float.toInt(parent.scrollTop)
       let elementBottom = element.offsetTop + element.offsetHeight
 
       if elementBottom > scrollBottom {
-        parent.scrollTop = Float.fromInt(elementBottom - parent.clientHeight)
+        parent->setScrollTop(Float.fromInt(elementBottom - parent.clientHeight))
       } else if element.offsetTop - element.offsetHeight < Float.toInt(parent.scrollTop) {
-        parent.scrollTop = Float.fromInt(element.offsetTop - element.offsetHeight)
+        parent->setScrollTop(Float.fromInt(element.offsetTop - element.offsetHeight))
       }
     }
 
@@ -830,7 +831,7 @@ module WarningFlagsWidget = {
         <div
           className="playground-overlay p-2 absolute overflow-auto playground-scrollbar z-50 border-b rounded border-l border-r block w-full max-h-60"
         >
-          elements
+          {elements}
         </div>
       )->Option.getOr(React.null)
 
@@ -897,7 +898,7 @@ module WarningFlagsWidget = {
     <div tabIndex={-1} className="relative" onFocus=areaOnFocus onKeyDown>
       <div className={"flex justify-between border p-2 " ++ activeClass}>
         <div>
-          chips
+          {chips}
           <section className="mt-3">
             <input
               ref={HtmlRef.domRef(inputRef)}
@@ -915,9 +916,9 @@ module WarningFlagsWidget = {
             </p>
           </section>
         </div>
-        deleteButton
+        {deleteButton}
       </div>
-      suggestionBox
+      {suggestionBox}
     </div>
   }
 }
@@ -1187,12 +1188,12 @@ module ControlPanel = {
         ?onClick
         className="inline-block text-sky hover:cursor-pointer hover:bg-sky hover:text-white-80-tr rounded border active:bg-sky-70 border-sky-70 px-2 py-1 "
       >
-        children
+        {children}
       </button>
   }
 
   let commandWithKeyboardShortcut = (commandName, ~key) => {
-    let userAgent = window.navigator.userAgent
+    let userAgent = WebAPI.DOM.window->WebAPI.Window.navigator->WebAPI.Navigator.userAgent
     if userAgent->String.includes("iPhone") || userAgent->String.includes("Android") {
       commandName
     } else if userAgent->String.includes("Mac") {
@@ -1235,8 +1236,8 @@ module ControlPanel = {
           }
         }
 
-        WebAPI.Window.addEventListener(window, Keydown, onKeyDown)
-        Some(() => WebAPI.Window.removeEventListener(window, Keydown, onKeyDown))
+        WebAPI.Window.addEventListener(WebAPI.DOM.window, Keydown, onKeyDown)
+        Some(() => WebAPI.Window.removeEventListener(WebAPI.DOM.window, Keydown, onKeyDown))
       | _ => None
       }
     }, (state, dispatch, setCurrentTab))
@@ -1289,7 +1290,7 @@ module ControlPanel = {
     }
 
     <div className="playground-control-panel flex justify-start items-center py-3 px-11">
-      children
+      {children}
     </div>
   }
 }
@@ -1434,7 +1435,7 @@ module OutputPanel = {
     let body = Array.mapWithIndex(tabs, ((tab, content), i) => {
       let className = currentTab == tab ? "block h-inherit" : "hidden"
 
-      <div key={Int.toString(i)} className> content </div>
+      <div key={Int.toString(i)} className> {content} </div>
     })
 
     <> {body->React.array} </>
@@ -1612,48 +1613,43 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
 
   let initialVersion = switch versions {
   | [v] => Some(v) // only single version available. maybe local dev.
-  | versions => {
-      let lastStableVersion = versions->Array.find(version => version.preRelease->Option.isNone)
-      switch Nullable.make(
-        searchParams->WebAPI.URLSearchParams.get((CompilerManagerHook.Version :> string)),
-      ) {
-      | Nullable.Value(version) => version->Semver.parse
-      | _ =>
-        switch getLocalStorageItem(playgroundVersionStorageKey) {
-        | Some(v) => v->Semver.parse
-        | None => lastStableVersion
-        }
+  | versions =>
+    let lastStableVersion = versions->Array.find(version => version.preRelease->Option.isNone)
+    switch searchParams
+    ->WebAPI.URLSearchParams.get(CompilerManagerHook.Version :> string)
+    ->Null.toOption {
+    | Some(version) => version->Semver.parse
+    | _ =>
+      switch getLocalStorageItem(playgroundVersionStorageKey) {
+      | Some(v) => v->Semver.parse
+      | None => lastStableVersion
       }
     }
   }
 
-  let initialLang = switch Nullable.make(
-    searchParams->WebAPI.URLSearchParams.get((CompilerManagerHook.Ext :> string)),
-  ) {
-  | Nullable.Value("re") => Api.Lang.Reason
+  let initialLang = switch searchParams
+  ->WebAPI.URLSearchParams.get(CompilerManagerHook.Ext :> string)
+  ->Null.toOption {
+  | Some("re") => Api.Lang.Reason
   | _ => Api.Lang.Res
   }
 
   let initialModuleSystem =
-    Nullable.make(searchParams->WebAPI.URLSearchParams.get((Module :> string)))->Nullable.toOption
+    searchParams->WebAPI.URLSearchParams.get(Module :> string)->Null.toOption
 
-  let initialJsxPreserveMode = !(
-    Nullable.make(
-      searchParams->WebAPI.URLSearchParams.get((JsxPreserve :> string)),
-    )->Nullable.isNullable
-  )
+  let initialJsxPreserveMode =
+    searchParams->WebAPI.URLSearchParams.get(JsxPreserve :> string)->Null.toOption->Option.isSome
 
   let initialExperimentalFeatures =
-    Nullable.make(
-      searchParams->WebAPI.URLSearchParams.get((Experiments :> string)),
-    )->Nullable.mapOr([], str => str->String.split(",")->Array.map(String.trim))
+    searchParams
+    ->WebAPI.URLSearchParams.get(Experiments :> string)
+    ->Null.mapOr([], str => str->String.split(",")->Array.map(String.trim))
 
   let initialContent = switch (
-    Nullable.make(searchParams->WebAPI.URLSearchParams.get((Code :> string))),
+    searchParams->WebAPI.URLSearchParams.get(Code :> string)->Null.toOption,
     initialLang,
   ) {
-  | (Nullable.Value(compressedCode), _) =>
-    LzString.lzString.decompressFromEncodedURIComponent(compressedCode)
+  | (Some(compressedCode), _) => LzString.lzString.decompressFromEncodedURIComponent(compressedCode)
   | (_, Reason) => initialReContent
   | (_, Res) =>
     switch initialVersion {
@@ -1713,8 +1709,8 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
         setSessionStorageItem(~key=newLightModeToastSeenStorageKey, ~value="true")
       }
 
-      let timer = setTimeout(~handler=hideToast, ~timeout=10000)
-      Some(() => clearTimeout(timer))
+      let timer = WebAPI.Window.setTimeout(WebAPI.DOM.window, ~handler=hideToast, ~timeout=10000)
+      Some(() => WebAPI.Window.clearTimeout(WebAPI.DOM.window, timer))
     }
   }, [])
 
@@ -1741,12 +1737,16 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
           value => {
             switch typingTimer.current {
             | None => ()
-            | Some(timer) => clearTimeout(timer)
+            | Some(timer) => WebAPI.Window.clearTimeout(WebAPI.DOM.window, timer)
             }
-            let timer = setTimeout(~handler=() => {
-              timeoutCompile.current(value)
-              typingTimer.current = None
-            }, ~timeout=100)
+            let timer = WebAPI.Window.setTimeout(
+              WebAPI.DOM.window,
+              ~handler=() => {
+                timeoutCompile.current(value)
+                typingTimer.current = None
+              },
+              ~timeout=100,
+            )
             typingTimer.current = Some(timer)
           }
         },
@@ -1869,7 +1869,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   let (layout, setLayout) = React.useState(() => Row)
 
   React.useEffect(() => {
-    setLayout(_ => window.innerWidth < breakingPoint ? Column : Row)
+    setLayout(_ => WebAPI.DOM.window->WebAPI.Window.innerWidth < breakingPoint ? Column : Row)
     None
   }, [])
 
@@ -1883,7 +1883,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   let subPanelRef = React.useRef(Nullable.null)
 
   let onResize = () => {
-    let newLayout = window.innerWidth < breakingPoint ? Column : Row
+    let newLayout = WebAPI.DOM.window->WebAPI.Window.innerWidth < breakingPoint ? Column : Row
     setLayout(_ => newLayout)
     switch panelRef.current->Nullable.toOption {
     | Some(element) =>
@@ -1909,8 +1909,8 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   }
 
   React.useEffect(() => {
-    WebAPI.Window.addEventListener(window, Resize, onResize)
-    Some(() => WebAPI.Window.removeEventListener(window, Resize, onResize))
+    WebAPI.Window.addEventListener(WebAPI.DOM.window, Resize, onResize)
+    Some(() => WebAPI.Window.removeEventListener(WebAPI.DOM.window, Resize, onResize))
   }, [])
 
   // To force CodeMirror render scrollbar on first render
@@ -1995,15 +1995,15 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
       onMove(position)
     }
 
-    WebAPI.Window.addEventListener(window, Mousemove, onMouseMove)
-    WebAPI.Window.addEventListener(window, Touchmove, onTouchMove)
-    WebAPI.Window.addEventListener(window, Mouseup, onMouseUp)
+    WebAPI.Window.addEventListener(WebAPI.DOM.window, Mousemove, onMouseMove)
+    WebAPI.Window.addEventListener(WebAPI.DOM.window, Touchmove, onTouchMove)
+    WebAPI.Window.addEventListener(WebAPI.DOM.window, Mouseup, onMouseUp)
 
     Some(
       () => {
-        WebAPI.Window.removeEventListener(window, Mousemove, onMouseMove)
-        WebAPI.Window.removeEventListener(window, Touchmove, onTouchMove)
-        WebAPI.Window.removeEventListener(window, Mouseup, onMouseUp)
+        WebAPI.Window.removeEventListener(WebAPI.DOM.window, Mousemove, onMouseMove)
+        WebAPI.Window.removeEventListener(WebAPI.DOM.window, Touchmove, onTouchMove)
+        WebAPI.Window.removeEventListener(WebAPI.DOM.window, Mouseup, onMouseUp)
       },
     )
   }, [layout])
@@ -2013,7 +2013,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
   let hideNewLightModeToast = () => {
     setShowNewLightModeToast(_ => false)
     WebAPI.Storage.setItem(
-      window.sessionStorage,
+      WebAPI.DOM.window->WebAPI.Window.sessionStorage,
       ~key=newLightModeToastSeenStorageKey,
       ~value="true",
     )
@@ -2040,58 +2040,57 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
 
     | JavaScript => "JavaScript"->React.string
 
-    | Problems => {
-        let problemCounts: {"warnings": int, "errors": int} = switch compilerState {
-        | Compiling({state: ready})
-        | Ready(ready)
-        | Executing({state: ready})
-        | SwitchingCompiler(ready, _) => {
-            "warnings": switch ready.result {
-            | Comp(Success({warnings})) => warnings->Array.length
-            | _ => 0
-            },
-            "errors": switch ready.result {
-            | FinalResult.Comp(Fail(result)) =>
-              switch result {
-              | SyntaxErr(errors) | TypecheckErr(errors) | OtherErr(errors) => errors->Array.length
-              | WarningErr(errors) => errors->Array.length
-              | WarningFlagErr(_) => 1
-              }
-            | Conv(Fail({details})) => details->Array.length
-            | Comp(Success(_)) => 0
-            | Conv(Success(_)) => 0
-            | Comp(UnexpectedError(_))
-            | Conv(UnexpectedError(_))
-            | Comp(Unknown(_))
-            | Conv(Unknown(_)) => 1
-            | Nothing => 0
-            },
-          }
-
-        | SetupFailed(_) | Init => {
-            "warnings": 0,
-            "errors": 0,
-          }
+    | Problems =>
+      let problemCounts: {"warnings": int, "errors": int} = switch compilerState {
+      | Compiling({state: ready})
+      | Ready(ready)
+      | Executing({state: ready})
+      | SwitchingCompiler(ready, _) => {
+          "warnings": switch ready.result {
+          | Comp(Success({warnings})) => warnings->Array.length
+          | _ => 0
+          },
+          "errors": switch ready.result {
+          | FinalResult.Comp(Fail(result)) =>
+            switch result {
+            | SyntaxErr(errors) | TypecheckErr(errors) | OtherErr(errors) => errors->Array.length
+            | WarningErr(errors) => errors->Array.length
+            | WarningFlagErr(_) => 1
+            }
+          | Conv(Fail({details})) => details->Array.length
+          | Comp(Success(_)) => 0
+          | Conv(Success(_)) => 0
+          | Comp(UnexpectedError(_))
+          | Conv(UnexpectedError(_))
+          | Comp(Unknown(_))
+          | Conv(Unknown(_)) => 1
+          | Nothing => 0
+          },
         }
 
-        <div className="inline-flex items-center gap-2">
-          {"Problems"->React.string}
-          {if problemCounts["errors"] > 0 {
-            <span className="inline-block min-w-4 text-fire bg-fire-100 px-0.5">
-              {problemCounts["errors"]->React.int}
-            </span>
-          } else {
-            React.null
-          }}
-          {if problemCounts["warnings"] > 0 {
-            <span className="inline-block min-w-4 text-orange bg-orange-15 px-0.5">
-              {problemCounts["warnings"]->React.int}
-            </span>
-          } else {
-            React.null
-          }}
-        </div>
+      | SetupFailed(_) | Init => {
+          "warnings": 0,
+          "errors": 0,
+        }
       }
+
+      <div className="inline-flex items-center gap-2">
+        {"Problems"->React.string}
+        {if problemCounts["errors"] > 0 {
+          <span className="inline-block min-w-4 text-fire bg-fire-100 px-0.5">
+            {problemCounts["errors"]->React.int}
+          </span>
+        } else {
+          React.null
+        }}
+        {if problemCounts["warnings"] > 0 {
+          <span className="inline-block min-w-4 text-orange bg-orange-15 px-0.5">
+            {problemCounts["warnings"]->React.int}
+          </span>
+        } else {
+          React.null
+        }}
+      </div>
 
     | Settings => "Settings"->React.string
     }
@@ -2121,7 +2120,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
       className={`flex ${layout == Column ? "flex-col" : "flex-row"}`}
       ref={HtmlRef.elementRef(panelRef)}
     >
-      // Left Panel
+      /* Left Panel */
       <div
         ref={HtmlRef.elementRef(leftPanelRef)}
         className={`overflow-scroll playground-scrollbar ${layout == Column
@@ -2130,7 +2129,8 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
       >
         <div className="playground-editor-shell h-full" ref={HtmlRef.domRef(containerRef)} />
       </div>
-      // Separator
+
+      /* Separator */
       <div
         ref={HtmlRef.domRef(separatorRef)}
         // TODO: touch-none not applied
@@ -2147,7 +2147,8 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
           {React.string("⣿")}
         </span>
       </div>
-      // Right Panel
+
+      /* Right Panel */
       <div
         ref={HtmlRef.elementRef(rightPanelRef)}
         className={`${layout == Column ? "h-6/15" : "h-inherit!"} ${layout == Column

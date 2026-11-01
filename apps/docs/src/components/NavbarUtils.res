@@ -16,35 +16,36 @@ let isActiveLink = (~includes: string, ~excludes: option<string>=?, ~route: Path
 let linkOrActiveLink = (~target: Path.t, ~route: Path.t) => target === route ? activeLink : link
 
 let linkOrActiveLinkSubroute = (~target: Path.t, ~route: Path.t) =>
-  String.startsWith((route :> string), (target :> string)) ? activeLink : link
+  String.startsWith(route :> string, target :> string) ? activeLink : link
 
-external elementToDialog: WebAPI.DOMAPI.element => WebAPI.DOMAPI.htmlDialogElement = "%identity"
+external elementToDialog: WebAPI.Element.t => WebAPI.HTMLDialogElement.t = "%identity"
 
 let getMobileOverlayDialog = () => {
-  Nullable.make(document->WebAPI.Document.getElementById("mobile-overlay")->elementToDialog)
+  WebAPI.DOM.window
+  ->WebAPI.Window.document
+  ->WebAPI.Document.getElementById("mobile-overlay")
+  ->Null.toOption
+  ->Option.map(elementToDialog)
 }
 
-@get external _open: WebAPI.DOMAPI.htmlDialogElement => bool = "open"
+@get external _open: WebAPI.HTMLDialogElement.t => bool = "open"
 
 let openMobileOverlay = _ =>
   switch getMobileOverlayDialog() {
-  | Nullable.Value(dialog) => dialog->WebAPI.HTMLDialogElement.showModal
-  | Null => ()
-  | Undefined => ()
+  | Some(dialog) => dialog->WebAPI.HTMLDialogElement.showModal
+  | None => ()
   }
 
 let closeMobileOverlay = _ =>
   switch getMobileOverlayDialog() {
-  | Nullable.Value(dialog) => dialog->WebAPI.HTMLDialogElement.close
-  | Null => ()
-  | Undefined => ()
+  | Some(dialog) => dialog->WebAPI.HTMLDialogElement.close
+  | None => ()
   }
 
 let toggleMobileOverlay = _ => {
   let isOpen = switch getMobileOverlayDialog() {
-  | Nullable.Value(dialog) => dialog->_open
-  | Null => false
-  | Undefined => false
+  | Some(dialog) => dialog->_open
+  | None => false
   }
 
   if isOpen {
@@ -55,28 +56,29 @@ let toggleMobileOverlay = _ => {
 }
 
 let getMobileTertiaryDialog = () => {
-  Nullable.make(document->WebAPI.Document.getElementById("mobile-tertiary-drawer")->elementToDialog)
+  WebAPI.DOM.window
+  ->WebAPI.Window.document
+  ->WebAPI.Document.getElementById("mobile-tertiary-drawer")
+  ->Null.toOption
+  ->Option.map(elementToDialog)
 }
 
 let openMobileTertiaryDrawer = _ =>
   switch getMobileTertiaryDialog() {
-  | Nullable.Value(dialog) => dialog->WebAPI.HTMLDialogElement.showModal
-  | Null => ()
-  | Undefined => ()
+  | Some(dialog) => dialog->WebAPI.HTMLDialogElement.showModal
+  | None => ()
   }
 
 let closeMobileTertiaryDrawer = _ =>
   switch getMobileTertiaryDialog() {
-  | Nullable.Value(dialog) => dialog->WebAPI.HTMLDialogElement.close
-  | Null => ()
-  | Undefined => ()
+  | Some(dialog) => dialog->WebAPI.HTMLDialogElement.close
+  | None => ()
   }
 
 let toggleMobileTertiaryDrawer = _ => {
   let isOpen = switch getMobileTertiaryDialog() {
-  | Nullable.Value(dialog) => dialog->_open
-  | Null => false
-  | Undefined => false
+  | Some(dialog) => dialog->_open
+  | None => false
   }
 
   if isOpen {

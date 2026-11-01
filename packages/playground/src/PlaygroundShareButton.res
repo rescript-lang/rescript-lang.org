@@ -10,7 +10,7 @@ let make = (~writeClipboard=Clipboard.writeText) => {
 
   let copy = async () => {
     setState(_ => Pending)
-    let result = await writeClipboard(window.location.href)
+    let result = await writeClipboard((WebAPI.DOM.window->WebAPI.Window.location).href)
     setState(_ =>
       switch result {
       | Ok() => CopySuccess

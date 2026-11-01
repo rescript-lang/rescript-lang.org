@@ -30,11 +30,15 @@ let useCompilerBridge = (
   React.useEffect(() => {
     switch compilerState {
     | Ready({targetLang}) if code !== lastCompiledCode.current =>
-      let timer = setTimeout(~handler=() => {
-        lastCompiledCode.current = code
-        compilerDispatch(CompileCode(targetLang, code))
-      }, ~timeout=150)
-      Some(() => clearTimeout(timer))
+      let timer = WebAPI.Window.setTimeout(
+        WebAPI.DOM.window,
+        ~handler=() => {
+          lastCompiledCode.current = code
+          compilerDispatch(CompileCode(targetLang, code))
+        },
+        ~timeout=150,
+      )
+      Some(() => WebAPI.Window.clearTimeout(WebAPI.DOM.window, timer))
     | _ => None
     }
   }, (code, compilerState, compilerDispatch))
@@ -59,8 +63,8 @@ let useCompilerBridge = (
       | _ => ()
       }
     }
-    WebAPI.Window.addEventListener(window, Custom("message"), cb)
-    Some(() => WebAPI.Window.removeEventListener(window, Custom("message"), cb))
+    WebAPI.Window.addEventListener(WebAPI.DOM.window, Custom("message"), cb)
+    Some(() => WebAPI.Window.removeEventListener(WebAPI.DOM.window, Custom("message"), cb))
   }, [setOutput])
 
   React.useEffect(() => {
@@ -102,14 +106,15 @@ let useCompilerBridge = (
           imports->Dict.mapValues(path =>
             path->GuideRuntimeImport.url(~bundleBaseUrl, ~compilerVersion=selected.id)
           )
-        let timer = setTimeout(
+        let timer = WebAPI.Window.setTimeout(
+          WebAPI.DOM.window,
           ~handler=() => EvalIFrame.sendOutput(runtimeCode, imports),
           ~timeout=50,
         )
         Some(
           () => {
             isWaitingForRuntimeOutput.current = false
-            clearTimeout(timer)
+            WebAPI.Window.clearTimeout(WebAPI.DOM.window, timer)
           },
         )
       | None => None

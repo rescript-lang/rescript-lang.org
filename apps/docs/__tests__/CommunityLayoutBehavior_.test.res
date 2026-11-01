@@ -23,7 +23,7 @@ module CurrentPage = {
   @react.component
   let make = () => {
     let {pathname} = ReactRouter.useLocation()
-    <div dataTestId="current-page"> {React.string((pathname :> string))} </div>
+    <div dataTestId="current-page"> {React.string(pathname :> string)} </div>
   }
 }
 

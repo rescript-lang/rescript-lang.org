@@ -5,12 +5,13 @@ type t = {
 
 module Env = {
   @scope(("process", "env")) external nodeEnv: string = "NODE_ENV"
+
   @scope(("process", "env"))
   external playgroundBundleEndpoint: option<string> = "PLAYGROUND_BUNDLE_ENDPOINT"
 }
 
 let fetchVersions = async versionsBaseUrl => {
-  let response = await fetch(versionsBaseUrl ++ "/playground-bundles/versions.json")
+  let response = await WebAPI.Fetch.fetch(versionsBaseUrl ++ "/playground-bundles/versions.json")
   let json = await WebAPI.Response.json(response)
   json
   ->JSON.Decode.array

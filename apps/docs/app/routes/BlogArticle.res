@@ -22,7 +22,7 @@ module AuthorBox = {
     let authorImg = <img className="h-full w-full rounded-full" src=author.imgUrl />
 
     <div className="flex items-center">
-      <div className="w-10 h-10 bg-berry-40 block rounded-full mr-3"> authorImg </div>
+      <div className="w-10 h-10 bg-berry-40 block rounded-full mr-3"> {authorImg} </div>
       <div className="body-sm">
         <a
           href={switch author.social {
@@ -100,6 +100,7 @@ module BlogHeader = {
   }
 }
 
+@react.componentWithProps
 let make = (props: props) => {
   let {children, isArchived, frontmatter} = props
 
@@ -140,10 +141,10 @@ let make = (props: props) => {
       </div>
       <div className="flex justify-center">
         <div className="max-w-740 w-full">
-          archivedNote
+          {archivedNote}
           <article className="DocSearch-content markdown-body">
             <span className="DocSearch-lvl0 sr-only" ariaHidden=true> {React.string("Blog")} </span>
-            children
+            {children}
           </article>
           <div className="mt-12">
             <Line />

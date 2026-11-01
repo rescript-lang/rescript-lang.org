@@ -1,7 +1,8 @@
 open Vitest
 
 let attribute = (selector, name) =>
-  document
+  WebAPI.DOM.window
+  ->WebAPI.Window.document
   ->WebAPI.Document.querySelector(selector)
   ->Null.toOption
   ->Option.flatMap(element => element->WebAPI.Element.getAttribute(name)->Null.toOption)

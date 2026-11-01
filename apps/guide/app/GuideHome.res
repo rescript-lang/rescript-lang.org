@@ -1,4 +1,5 @@
-let navigateToDocsIntro = url => window.location->WebAPI.Location.assign(url)
+let navigateToDocsIntro = url =>
+  WebAPI.DOM.window->WebAPI.Window.location->WebAPI.Location.assign(url)
 
 @react.component
 let make = (
@@ -39,7 +40,7 @@ let make = (
             </button>
           </div>
           <h1> {React.string(lesson.title)} </h1>
-          <ReactMarkdown> lesson.content </ReactMarkdown>
+          <ReactMarkdown> {lesson.content} </ReactMarkdown>
           <div
             className={"guide-check-status " ++ if navigation.checkpointComplete {
               "guide-check-status-complete"

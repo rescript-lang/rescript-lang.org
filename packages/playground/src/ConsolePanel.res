@@ -3,6 +3,7 @@ type logLevel = [
   | #warn
   | #error
 ]
+
 type log = {level: logLevel, content: array<string>}
 
 @react.component
@@ -17,8 +18,8 @@ let make = (~logs, ~appendLog) => {
       | _ => ()
       }
     }
-    WebAPI.Window.addEventListener(window, Custom("message"), cb)
-    Some(() => WebAPI.Window.removeEventListener(window, Custom("message"), cb))
+    WebAPI.Window.addEventListener(WebAPI.DOM.window, Custom("message"), cb)
+    Some(() => WebAPI.Window.removeEventListener(WebAPI.DOM.window, Custom("message"), cb))
   }, [appendLog])
 
   <div className="px-2 py-6 relative flex flex-col flex-1 overflow-y-hidden">
@@ -48,7 +49,7 @@ let make = (~logs, ~appendLog) => {
         })
         ->React.array
 
-      <div className="whitespace-pre-wrap p-4 overflow-auto"> content </div>
+      <div className="whitespace-pre-wrap p-4 overflow-auto"> {content} </div>
     }}
   </div>
 }

@@ -21,7 +21,7 @@ test(
       ~url=data.playgroundHref,
       ~base="https://rescript-lang.org",
     )
-    let code = searchParams->WebAPI.URLSearchParams.get("code")
+    let code = searchParams->WebAPI.URLSearchParams.get("code")->Null.getOrThrow
 
     expect(pathname)->toBe("/try")
     expect(LzString.lzString.decompressFromEncodedURIComponent(code))->toBe(

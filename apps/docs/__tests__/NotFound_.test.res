@@ -4,7 +4,7 @@ module Location = {
   @react.component
   let make = () => {
     let {pathname} = ReactRouter.useLocation()
-    <span dataTestId="current-path"> {React.string((pathname :> string))} </span>
+    <span dataTestId="current-path"> {React.string(pathname :> string)} </span>
   }
 }
 

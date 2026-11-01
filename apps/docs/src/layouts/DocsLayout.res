@@ -7,7 +7,6 @@ module Sidebar = SidebarNav
 let make = (
   ~activeToc: option<TableOfContents.t>=?,
   ~categories: array<Sidebar.Category.t>,
-  ~components=MarkdownComponents.default,
   ~docSearchLvl0=?,
   ~children,
 ) => {
@@ -20,5 +19,5 @@ let make = (
 
   let sidebar = <Sidebar preludeSection ?activeToc categories route />
 
-  <SidebarPageLayout sidebar categories ?docSearchLvl0> children </SidebarPageLayout>
+  <SidebarPageLayout sidebar categories ?docSearchLvl0> {children} </SidebarPageLayout>
 }

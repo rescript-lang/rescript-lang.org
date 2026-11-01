@@ -1,7 +1,6 @@
 @react.component
 let make =
-  @directive("'use memo'")
-  (~playgroundData) => {
+  @directive("'use memo'") (~playgroundData) => {
     <>
       <Meta
         title="The ReScript Programming Language"

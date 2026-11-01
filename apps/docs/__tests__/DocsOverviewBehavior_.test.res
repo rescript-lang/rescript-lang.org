@@ -12,24 +12,26 @@ test("docs overview uses unversioned docs links", async () => {
     </MemoryRouter>,
   )
 
-  let overviewLink = switch document->WebAPI.Document.querySelector(
-    "a[href='/docs/manual/introduction']",
-  ) {
+  let overviewLink = switch WebAPI.DOM.window
+  ->WebAPI.Window.document
+  ->WebAPI.Document.querySelector("a[href='/docs/manual/introduction']") {
   | Value(link) => link
-  | Null => failwith("expected docs overview to link to the unversioned manual introduction")
+  | Null => panic("expected docs overview to link to the unversioned manual introduction")
   }
   await element(overviewLink)->toBeVisible
 
-  let genTypeLink = switch document->WebAPI.Document.querySelector(
-    "a[href='/docs/manual/typescript-integration']",
-  ) {
+  let genTypeLink = switch WebAPI.DOM.window
+  ->WebAPI.Window.document
+  ->WebAPI.Document.querySelector("a[href='/docs/manual/typescript-integration']") {
   | Value(link) => link
-  | Null => failwith("expected docs overview to link to the unversioned GenType docs page")
+  | Null => panic("expected docs overview to link to the unversioned GenType docs page")
   }
   await element(genTypeLink)->toBeVisible
 
-  switch document->WebAPI.Document.querySelector("a[href*='/docs/manual/v']") {
-  | Value(_) => failwith("expected docs overview to avoid versioned manual links")
+  switch WebAPI.DOM.window
+  ->WebAPI.Window.document
+  ->WebAPI.Document.querySelector("a[href*='/docs/manual/v']") {
+  | Value(_) => panic("expected docs overview to avoid versioned manual links")
   | Null => ()
   }
 })

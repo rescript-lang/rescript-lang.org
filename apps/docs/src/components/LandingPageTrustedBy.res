@@ -1,7 +1,6 @@
 @react.component
 let make =
-  @directive("'use memo'")
-  () => {
+  @directive("'use memo'") () => {
     let ourUsersSourcePath = "apps/docs/src/data/OurUsers.res"
 
     <section dataTestId="landing-trusted-by" className="mt-20 flex flex-col items-center">

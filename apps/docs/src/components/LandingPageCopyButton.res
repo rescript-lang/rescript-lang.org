@@ -5,14 +5,17 @@ type state =
   | Failed
 
 let useFeedbackRef = setState => React.useCallback(_ => {
-    let timer = setTimeout(~handler=() => setState(_ => Idle), ~timeout=2000)
-    Some(() => clearTimeout(timer))
+    let timer = WebAPI.Window.setTimeout(
+      WebAPI.DOM.window,
+      ~handler=() => setState(_ => Idle),
+      ~timeout=2000,
+    )
+    Some(() => WebAPI.Window.clearTimeout(WebAPI.DOM.window, timer))
   }, [])
 
 @react.component
 let make =
-  @directive("'use memo'")
-  (~code, ~writeClipboard=Clipboard.writeText) => {
+  @directive("'use memo'") (~code, ~writeClipboard=Clipboard.writeText) => {
     let (state, setState) = React.useState(_ => Idle)
     let feedbackRef = useFeedbackRef(setState)
 
@@ -54,6 +57,6 @@ let make =
       >
         <Icon.Copy className="w-6 h-6 mt-px text-gray-40 hover:cursor-pointer hover:text-gray-80" />
       </button>
-      <span role="status" className="absolute top-3 right-3 pointer-events-none"> feedback </span>
+      <span role="status" className="absolute top-3 right-3 pointer-events-none"> {feedback} </span>
     </>
   }

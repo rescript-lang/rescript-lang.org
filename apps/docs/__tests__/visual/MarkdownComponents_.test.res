@@ -257,9 +257,11 @@ test("renders inline code", async () => {
   await element(code)->toHaveClass("md-inline-code")
   await element(code)->toHaveClass("font-mono")
 
-  switch document->WebAPI.Document.querySelector("[data-testid='inline-code-wrapper'] p > code") {
+  switch WebAPI.DOM.window
+  ->WebAPI.Window.document
+  ->WebAPI.Document.querySelector("[data-testid='inline-code-wrapper'] p > code") {
   | Value(_) => ()
-  | Null => failwith("expected Markdown.Code to render inline code inside the paragraph")
+  | Null => panic("expected Markdown.Code to render inline code inside the paragraph")
   }
 
   let wrapper = await screen->getByTestId("inline-code-wrapper")

@@ -9,7 +9,7 @@ type loaderData = {
 let loader: ReactRouter.Loader.t<loaderData> = async ({request}) => {
   let {pathname} = WebAPI.URL.make(~url=request.url)
   let filePath = MdxFile.resolveFilePath(
-    (pathname :> string),
+    pathname :> string,
     ~dir="markdown-pages/syntax-lookup",
     ~alias="syntax-lookup",
   )

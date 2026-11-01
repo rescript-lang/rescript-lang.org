@@ -633,8 +633,13 @@ let useCompilerManager = (
         setState(_ => Ready({...state, logs: [], validReactCode: entryPointExists}))
       | SetupFailed(_) => ()
       | Ready(ready) if syncUrl =>
-        let url = createUrl((pathname :> string), ready)
-        WebAPI.History.replaceState(history, ~data=JSON.Null, ~unused="", ~url)
+        let url = createUrl(pathname :> string, ready)
+        WebAPI.History.replaceState(
+          WebAPI.DOM.window->WebAPI.Window.history,
+          ~data=JSON.Null,
+          ~unused="",
+          ~url,
+        )
       | Ready(_) => ()
       }
     }

@@ -2,6 +2,7 @@ open ScriptTest
 
 type asset = {path: string, rawBytes: int, gzipBytes: int}
 type assetGroup = {requests: int, rawBytes: int, gzipBytes: int, assets: array<asset>}
+
 type media = {
   images: int,
   imagesMissingWidth: int,
@@ -11,13 +12,17 @@ type media = {
   videosMissingHeight: int,
   localAssets: int,
 }
+
 type report = {javascript: assetGroup, css: assetGroup, bodyElements: int, media: media}
-type input = {html: string, readAsset: WebAPI.URLAPI.url => promise<buffer>}
+type assetUrl = {pathname: string}
+type input = {html: string, readAsset: assetUrl => promise<buffer>}
+
 @module("../homepage-performance.mjs")
 external createReport: input => promise<report> = "createReport"
 
 let javascript = buffer("console.log('home')")
 let css = buffer("body { color: black; }")
+
 let html = `<!doctype html><html><head>
 <link rel="modulepreload prefetch" href="/assets/home.js">
 <link rel="stylesheet" href="/assets/home.css">
@@ -26,7 +31,7 @@ let html = `<!doctype html><html><head>
 </head><body><main><img src="/images/home.png"></main>
 <video poster="/images/poster.png"></video></body></html>`
 
-let readAsset = async (url: WebAPI.URLAPI.url) => {
+let readAsset = async url => {
   switch url.pathname {
   | "/assets/home.js" => javascript
   | "/assets/home.css" => css

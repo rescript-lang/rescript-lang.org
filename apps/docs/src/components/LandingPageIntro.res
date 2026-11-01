@@ -1,7 +1,6 @@
 @react.component
 let make =
-  @directive("'use memo'")
-  () => {
+  @directive("'use memo'") () => {
     <section dataTestId="landing-intro" className="flex justify-center">
       <div className="max-w-1060 flex flex-col items-center px-5 sm:px-8 lg:box-content">
         <h1 className="hl-title text-center max-w-212">

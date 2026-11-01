@@ -55,6 +55,24 @@ test("run compiles a real example block from an injected workspace", async () =>
   );
 });
 
+test("run refreshes stale React bindings in an existing temporary project", async () => {
+  let { docsRoot, tempRoot } = makeWorkspace();
+  let { logger } = makeLogger();
+  let packageRoot = path.join(tempRoot, "node_modules", "@rescript", "react");
+  let staleSource = path.join(packageRoot, "src", "Stale.res");
+  fs.mkdirSync(path.dirname(staleSource), { recursive: true });
+  fs.writeFileSync(staleSource, "let broken =");
+  fs.writeFileSync(
+    path.join(packageRoot, "rescript.json"),
+    JSON.stringify({ name: "@rescript/react", sources: ["src"] }),
+  );
+
+  let result = await run({ docsRoot, tempRoot, logger });
+
+  assert.equal(result.success, true);
+  assert.equal(fs.existsSync(staleSource), false);
+});
+
 test("run compiles examples without requiring npm on PATH", async () => {
   let { docsRoot, tempRoot } = makeWorkspace();
   let { logger } = makeLogger();

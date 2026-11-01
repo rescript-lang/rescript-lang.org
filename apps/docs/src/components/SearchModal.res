@@ -17,7 +17,7 @@ let make = (~apiKey, ~appId, ~indexName, ~onClose: unit => unit) => {
     hitComponent
     onClose
     insights=true
-    initialScrollY={window.scrollY->Float.toInt}
+    initialScrollY={WebAPI.DOM.window->WebAPI.Window.scrollY->Float.toInt}
     searchParameters={
       distinct: 3,
       hitsPerPage: 20,

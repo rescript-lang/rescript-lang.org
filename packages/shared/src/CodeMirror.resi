@@ -41,7 +41,7 @@ module HoverHint: {
 type editorInstance
 
 type editorConfig = {
-  parent: WebAPI.DOMAPI.element,
+  parent: WebAPI.Element.t,
   initialValue: string,
   mode: string,
   readOnly: bool,

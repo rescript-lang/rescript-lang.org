@@ -1,7 +1,7 @@
 open ReactRouter
 open Vitest
 
-@get external textContent: WebAPI.DOMAPI.element => string = "textContent"
+@get external textContent: WebAPI.Element.t => string = "textContent"
 
 let mockItems: array<SyntaxLookup.item> = [
   {
@@ -53,14 +53,18 @@ test("syntax lookup detail marks active content for DocSearch crawling", async (
     </MemoryRouter>,
   )
 
-  switch document->WebAPI.Document.querySelector(".DocSearch-content h1") {
+  switch WebAPI.DOM.window
+  ->WebAPI.Window.document
+  ->WebAPI.Document.querySelector(".DocSearch-content h1") {
   | Value(heading) => expect(heading->textContent)->toBe("@as")
-  | Null => failwith("expected active syntax detail to provide a DocSearch heading")
+  | Null => panic("expected active syntax detail to provide a DocSearch heading")
   }
 
-  let lvl0 = switch document->WebAPI.Document.querySelector(".DocSearch-content .DocSearch-lvl0") {
+  let lvl0 = switch WebAPI.DOM.window
+  ->WebAPI.Window.document
+  ->WebAPI.Document.querySelector(".DocSearch-content .DocSearch-lvl0") {
   | Value(element) => element
-  | Null => failwith("expected syntax detail to render a DocSearch lvl0 marker")
+  | Null => panic("expected syntax detail to render a DocSearch lvl0 marker")
   }
 
   expect(lvl0->textContent)->toBe("Syntax Lookup")

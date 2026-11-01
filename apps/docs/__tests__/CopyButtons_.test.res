@@ -40,7 +40,7 @@ test(
     let button = await screen->getByText("Copy Share Link")
     await button->click
     await element(button)->toBeDisabled
-    expect(copied.contents)->toEqual(Some(window.location.href))
+    expect(copied.contents)->toEqual(Some((WebAPI.DOM.window->WebAPI.Window.location).href))
     complete.contents(Error(Clipboard.WriteFailed))
     let retry = await screen->getByText("Copy failed, try again")
     await element(retry)->notToBeDisabled

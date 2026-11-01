@@ -10,8 +10,7 @@ let isActive = (~url, ~pathname: Path.t) => {
 module LeftContent = {
   @react.component
   let make =
-    @directive("'use memo'")
-    () => {
+    @directive("'use memo'") () => {
       let {pathname} = useLocation()
       <div
         dataTestId="navbar-primary-left-content"
@@ -55,8 +54,7 @@ module LeftContent = {
 module RightContent = {
   @react.component
   let make =
-    @directive("'use memo'")
-    () => {
+    @directive("'use memo'") () => {
       let iconClasses = "w-6 h-6 opacity-50 hover:opacity-100"
       let linkClasses = "hidden md:block"
       <div
@@ -110,8 +108,7 @@ module RightContent = {
 
 @react.component
 let make =
-  @directive("'use memo'")
-  () => {
+  @directive("'use memo'") () => {
     let scrollDirection = Hooks.useScrollDirection(~topMargin=64, ~threshold=32)
 
     let navbarClasses = switch scrollDirection {

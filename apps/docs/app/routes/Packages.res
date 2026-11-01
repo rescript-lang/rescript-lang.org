@@ -81,15 +81,14 @@ module Resource = {
   let applyNpmSearch = (packages: array<npmPackage>, pattern: string): array<
     Fuse.match<npmPackage>,
   > => {
-    let fuseOpts = Fuse.Options.t(
-      ~shouldSort=true,
-      ~includeScore=true,
-      ~threshold=0.2,
-      ~ignoreLocation=true,
-      ~minMatchCharLength=1,
-      ~keys=["meta.uid", "name", "keywords"],
-      (),
-    )
+    let fuseOpts: Fuse.Options.t = {
+      shouldSort: true,
+      includeScore: true,
+      threshold: 0.2,
+      ignoreLocation: true,
+      minMatchCharLength: 1,
+      keys: ["meta.uid", "name", "keywords"],
+    }
 
     let fuser = Fuse.make(packages, fuseOpts)
 
@@ -204,7 +203,7 @@ module Category = {
       <h3 className="font-sans font-medium text-gray-100 tracking-wide text-14 uppercase mb-2">
         {React.string(title)}
       </h3>
-      <div> children </div>
+      <div> {children} </div>
     </div>
   }
 }
@@ -230,7 +229,7 @@ module InfoSidebar = {
         toggle()
       }
 
-      <button onMouseDown className> children </button>
+      <button onMouseDown className> {children} </button>
     }
   }
 
@@ -263,15 +262,17 @@ module InfoSidebar = {
           >
             {React.string("Community")}
           </Toggle>
-          // <Toggle
-          //   enabled={filter.includeNpm}
-          //   toggle={() => {
-          //     setFilter(prev => {
-          //       {...prev, Filter.includeNpm: !filter.includeNpm}
-          //     })
-          //   }}>
-          //   {React.string("NPM package")}
-          // </Toggle>
+
+          /* <Toggle */
+          /* enabled={filter.includeNpm} */
+          /* toggle={() => { */
+          /* setFilter(prev => { */
+          /* {...prev, Filter.includeNpm: !filter.includeNpm} */
+          /* }) */
+          /* }}> */
+          /* {React.string("NPM package")} */
+          /* </Toggle> */
+
           <Toggle
             enabled={filter.includeOutdated}
             toggle={() => {
@@ -290,6 +291,7 @@ module InfoSidebar = {
           <ReactRouter.Link to=#"/docs/guides/publishing-packages" className=link>
             {React.string("Publishing ReScript npm packages")}
           </ReactRouter.Link>
+
           /* <li> */
           /* <Next.Link href="/docs/guides/writing-bindings"  className=link> */
           /* {React.string("Writing Bindings & Libraries")} */
@@ -310,6 +312,7 @@ type state =
   | All
   | Filtered(string) // search term
 
+@react.componentWithProps
 let make = (props: props) => {
   open Markdown
 
@@ -369,7 +372,7 @@ let make = (props: props) => {
   })
 
   let onKeywordSelect = keyword => {
-    WebAPI.Window.scrollTo(window, ~options={left: 0.0, top: 0.0, behavior: Smooth})
+    WebAPI.Window.scrollTo(WebAPI.DOM.window, ~options={left: 0.0, top: 0.0, behavior: Smooth})
     setState(_ => {
       Filtered(keyword)
     })
@@ -443,8 +446,8 @@ let make = (props: props) => {
                 value={searchValue}
               />
               <div className="mt-12 space-y-8">
-                officialCategory
-                communityCategory
+                {officialCategory}
+                {communityCategory}
               </div>
             </div>
           </main>
@@ -519,9 +522,9 @@ let getStaticProps = async (): props => {
   let baseUrl = "https://registry.npmjs.org/-/v1/search?text=keywords:rescript&size=250&maintenance=1.0&popularity=0.5&quality=0.9"
 
   let (one, two, three) = await Promise.all3((
-    fetch(baseUrl),
-    fetch(baseUrl ++ "&from=250"),
-    fetch(baseUrl ++ "&from=500"),
+    WebAPI.Fetch.fetch(baseUrl),
+    WebAPI.Fetch.fetch(baseUrl ++ "&from=250"),
+    WebAPI.Fetch.fetch(baseUrl ++ "&from=500"),
   ))
 
   let responseToOption = async response => {

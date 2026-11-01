@@ -15,7 +15,7 @@ let make = (~children, ~categories, ~entries) => {
   <>
     <Meta title={`${activePage} | ReScript Community`} />
     <CommunityMobileSidebar
-      key={(pathname :> string)} route={(pathname :> string)} categories activeToc
+      key={pathname :> string} route={pathname :> string} categories activeToc
     />
     <SidebarPageLayout
       sidebar={<SidebarNav categories route=pathname activeToc />} docSearchLvl0="Community"

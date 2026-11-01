@@ -1815,8 +1815,8 @@ __metadata:
     "@react-router/node": "npm:^8.3.1"
     "@rescript-lang/playground": "workspace:*"
     "@rescript-lang/shared": "workspace:*"
-    "@rescript/react": "npm:^0.14.2"
-    "@rescript/webapi": "npm:0.1.0-experimental-29db5f4"
+    "@rescript/react": "npm:^0.16.0-beta.1"
+    "@rescript/webapi": "npm:alpha"
     "@responsive-image/core": "npm:2.1.0"
     "@responsive-image/vite-plugin": "npm:3.0.1"
     "@rolldown/plugin-babel": "npm:^0.2.4"
@@ -1851,7 +1851,7 @@ __metadata:
     remark-frontmatter: "npm:^5.0.0"
     remark-gfm: "npm:^4.0.1"
     remark-validate-links: "npm:^13.1.0"
-    rescript: "npm:^12.2.0"
+    rescript: "npm:^13.0.0-alpha.6"
     rolldown: "npm:1.2.8"
     search-insights: "npm:^2.17.3"
     tailwindcss: "npm:^4"
@@ -1881,8 +1881,8 @@ __metadata:
     "@react-router/node": "npm:^8.3.1"
     "@rescript-lang/playground": "workspace:*"
     "@rescript-lang/shared": "workspace:*"
-    "@rescript/react": "npm:^0.14.2"
-    "@rescript/webapi": "npm:0.1.0-experimental-29db5f4"
+    "@rescript/react": "npm:^0.16.0-beta.1"
+    "@rescript/webapi": "npm:alpha"
     "@types/react": "npm:^19.2.14"
     "@vitejs/plugin-react": "npm:^6.0.1"
     "@vitest/browser-playwright": "npm:^5.0.0"
@@ -1897,7 +1897,7 @@ __metadata:
     remark-gfm: "npm:^4.0.1"
     remark-parse: "npm:^11.0.0"
     remark-stringify: "npm:^11.0.0"
-    rescript: "npm:^12.2.0"
+    rescript: "npm:^13.0.0-alpha.6"
     unified: "npm:^11.0.5"
     vfile-matter: "npm:^5.0.1"
     vite: "npm:^8.3.0"
@@ -1914,8 +1914,8 @@ __metadata:
   dependencies:
     "@babel/parser": "npm:^7.29.2"
     "@rescript-lang/shared": "workspace:*"
-    "@rescript/react": "npm:^0.14.2"
-    "@rescript/webapi": "npm:0.1.0-experimental-29db5f4"
+    "@rescript/react": "npm:^0.16.0-beta.1"
+    "@rescript/webapi": "npm:alpha"
     lz-string: "npm:^1.5.0"
     react: "npm:^19.3.0"
     react-dom: "npm:^19.3.0"
@@ -1940,8 +1940,8 @@ __metadata:
     "@codemirror/view": "npm:^6.41.0"
     "@lezer/highlight": "npm:^1.2.3"
     "@replit/codemirror-vim": "npm:^6.3.0"
-    "@rescript/react": "npm:^0.14.2"
-    "@rescript/webapi": "npm:0.1.0-experimental-29db5f4"
+    "@rescript/react": "npm:^0.16.0-beta.1"
+    "@rescript/webapi": "npm:alpha"
     "@tsnobip/rescript-lezer": "npm:^0.9.0"
     highlight.js: "npm:^11.11.1"
     react: "npm:^19.3.0"
@@ -1957,63 +1957,64 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@rescript/darwin-arm64@npm:12.2.0":
-  version: 12.2.0
-  resolution: "@rescript/darwin-arm64@npm:12.2.0"
+"@rescript/darwin-arm64@npm:13.0.0-alpha.6":
+  version: 13.0.0-alpha.6
+  resolution: "@rescript/darwin-arm64@npm:13.0.0-alpha.6"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@rescript/darwin-x64@npm:12.2.0":
-  version: 12.2.0
-  resolution: "@rescript/darwin-x64@npm:12.2.0"
+"@rescript/darwin-x64@npm:13.0.0-alpha.6":
+  version: 13.0.0-alpha.6
+  resolution: "@rescript/darwin-x64@npm:13.0.0-alpha.6"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@rescript/linux-arm64@npm:12.2.0":
-  version: 12.2.0
-  resolution: "@rescript/linux-arm64@npm:12.2.0"
+"@rescript/linux-arm64@npm:13.0.0-alpha.6":
+  version: 13.0.0-alpha.6
+  resolution: "@rescript/linux-arm64@npm:13.0.0-alpha.6"
   conditions: os=linux & cpu=arm64
   languageName: node
   linkType: hard
 
-"@rescript/linux-x64@npm:12.2.0":
-  version: 12.2.0
-  resolution: "@rescript/linux-x64@npm:12.2.0"
+"@rescript/linux-x64@npm:13.0.0-alpha.6":
+  version: 13.0.0-alpha.6
+  resolution: "@rescript/linux-x64@npm:13.0.0-alpha.6"
   conditions: os=linux & cpu=x64
   languageName: node
   linkType: hard
 
-"@rescript/react@npm:^0.14.2":
-  version: 0.14.2
-  resolution: "@rescript/react@npm:0.14.2"
+"@rescript/react@npm:^0.16.0-beta.1":
+  version: 0.16.0-beta.1
+  resolution: "@rescript/react@npm:0.16.0-beta.1"
   peerDependencies:
-    react: ">=19.1.0"
-    react-dom: ">=19.1.0"
-  checksum: 10c0/6fbc0614ac4e4e5ad37abe474dcc137dc8cb7c3351dbc9afa4de92f080614e78809278a034c52da1676e89c299ab07154760d8b80f68f0a5cfd284e22035f713
+    "@rescript/runtime": ">=13.0.0-alpha.5"
+    react: ">=19.2.0"
+    react-dom: ">=19.2.0"
+  checksum: 10c0/bcf008bfb91d07a15dbec273de633104c56147c56e84c8deebb14a2f6cc95eea8a0ff90c19be6ce272f0e768e0f1f6122386e8ac348beb04bffff84ee49d4ec4
   languageName: node
   linkType: hard
 
-"@rescript/runtime@npm:12.2.0":
-  version: 12.2.0
-  resolution: "@rescript/runtime@npm:12.2.0"
-  checksum: 10c0/59c0194ae52fbbaadc736bbf1cfac1ed6ffde92b2346e36b9f1a29bb136e38b7ef203c780647203912fa657d293eab5c4e208f04dd65ed4bf47d53843980f7e1
+"@rescript/runtime@npm:13.0.0-alpha.6":
+  version: 13.0.0-alpha.6
+  resolution: "@rescript/runtime@npm:13.0.0-alpha.6"
+  checksum: 10c0/8d351bc3ff8e47c7ff9af871da90982aab056955d9990e38618285aa2eb0ecf6ec5094e07e63f1457957d6f273f1167ecfe67439547d5bcfeb547c2b0489129f
   languageName: node
   linkType: hard
 
-"@rescript/webapi@npm:0.1.0-experimental-29db5f4":
-  version: 0.1.0-experimental-29db5f4
-  resolution: "@rescript/webapi@npm:0.1.0-experimental-29db5f4"
-  dependencies:
-    rescript: "npm:^12.0.0-beta.3"
-  checksum: 10c0/0ef8538fe59b2c058217dd17a5e653ac4902a87caad3b78bde2efc8099538c33e8c1fc7cef41595fd385a78de2ca172c60bdd36a100839f8983da7a40ebd9560
+"@rescript/webapi@npm:alpha":
+  version: 0.1.0-alpha-b1d58f9
+  resolution: "@rescript/webapi@npm:0.1.0-alpha-b1d58f9"
+  peerDependencies:
+    rescript: ">=13"
+  checksum: 10c0/4d242fd3deabf511552f936fe2a5dfa141da7932a644e96528e65c7d32f3bfa29ae4e0e548c5912995d0467312aa1c89b00267fc05b1c80ad373d13d3cd7945c
   languageName: node
   linkType: hard
 
-"@rescript/win32-x64@npm:12.2.0":
-  version: 12.2.0
-  resolution: "@rescript/win32-x64@npm:12.2.0"
+"@rescript/win32-x64@npm:13.0.0-alpha.6":
+  version: 13.0.0-alpha.6
+  resolution: "@rescript/win32-x64@npm:13.0.0-alpha.6"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -9121,20 +9122,20 @@ __metadata:
   dependencies:
     lefthook: "npm:^2.1.4"
     oxfmt: "npm:^0.46.0"
-    rescript: "npm:^12.2.0"
+    rescript: "npm:^13.0.0-alpha.6"
   languageName: unknown
   linkType: soft
 
-"rescript@npm:^12.0.0-beta.3, rescript@npm:^12.2.0":
-  version: 12.2.0
-  resolution: "rescript@npm:12.2.0"
+"rescript@npm:^13.0.0-alpha.6":
+  version: 13.0.0-alpha.6
+  resolution: "rescript@npm:13.0.0-alpha.6"
   dependencies:
-    "@rescript/darwin-arm64": "npm:12.2.0"
-    "@rescript/darwin-x64": "npm:12.2.0"
-    "@rescript/linux-arm64": "npm:12.2.0"
-    "@rescript/linux-x64": "npm:12.2.0"
-    "@rescript/runtime": "npm:12.2.0"
-    "@rescript/win32-x64": "npm:12.2.0"
+    "@rescript/darwin-arm64": "npm:13.0.0-alpha.6"
+    "@rescript/darwin-x64": "npm:13.0.0-alpha.6"
+    "@rescript/linux-arm64": "npm:13.0.0-alpha.6"
+    "@rescript/linux-x64": "npm:13.0.0-alpha.6"
+    "@rescript/runtime": "npm:13.0.0-alpha.6"
+    "@rescript/win32-x64": "npm:13.0.0-alpha.6"
   dependenciesMeta:
     "@rescript/darwin-arm64":
       optional: true
@@ -9148,11 +9149,9 @@ __metadata:
       optional: true
   bin:
     bsc: cli/bsc.js
-    bstracing: cli/bstracing.js
     rescript: cli/rescript.js
-    rescript-legacy: cli/rescript-legacy.js
     rescript-tools: cli/rescript-tools.js
-  checksum: 10c0/7650a77a66e2f2ba2523eac54fd930f0b70bad922e9b498678e701e842a56c7b6facd0daf1ef9c7b71d344d9483a0293d17db72a67515a22d07856bdfc34fb46
+  checksum: 10c0/8b4a7430444a4db28e2e480b6750f700ceca0d899d3262248c682314e372cb33fb9030962e0628c93bd6dfc6ea07f03143423aa48f2d478c22152496ee211adf
   languageName: node
   linkType: hard
 

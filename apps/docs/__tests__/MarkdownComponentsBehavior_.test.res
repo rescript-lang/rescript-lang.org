@@ -9,9 +9,11 @@ test("h1 keeps the generated markdown id for DocSearch", async () => {
     </div>,
   )
 
-  switch document->WebAPI.Document.querySelector("h1#heading-level-1") {
+  switch WebAPI.DOM.window
+  ->WebAPI.Window.document
+  ->WebAPI.Document.querySelector("h1#heading-level-1") {
   | Value(_) => ()
-  | Null => failwith("expected markdown h1 to keep the generated id")
+  | Null => panic("expected markdown h1 to keep the generated id")
   }
 })
 
@@ -28,25 +30,35 @@ test("markdown headings expose explicit DocSearch hierarchy markers", async () =
     </div>,
   )
 
-  switch document->WebAPI.Document.querySelector("h1.DocSearch-lvl1#heading-level-1") {
+  switch WebAPI.DOM.window
+  ->WebAPI.Window.document
+  ->WebAPI.Document.querySelector("h1.DocSearch-lvl1#heading-level-1") {
   | Value(_) => ()
-  | Null => failwith("expected h1 to expose DocSearch lvl1")
+  | Null => panic("expected h1 to expose DocSearch lvl1")
   }
-  switch document->WebAPI.Document.querySelector("h2.DocSearch-lvl2#heading-level-2") {
+  switch WebAPI.DOM.window
+  ->WebAPI.Window.document
+  ->WebAPI.Document.querySelector("h2.DocSearch-lvl2#heading-level-2") {
   | Value(_) => ()
-  | Null => failwith("expected h2 to expose DocSearch lvl2")
+  | Null => panic("expected h2 to expose DocSearch lvl2")
   }
-  switch document->WebAPI.Document.querySelector("h3.DocSearch-lvl3#heading-level-3") {
+  switch WebAPI.DOM.window
+  ->WebAPI.Window.document
+  ->WebAPI.Document.querySelector("h3.DocSearch-lvl3#heading-level-3") {
   | Value(_) => ()
-  | Null => failwith("expected h3 to expose DocSearch lvl3")
+  | Null => panic("expected h3 to expose DocSearch lvl3")
   }
-  switch document->WebAPI.Document.querySelector("h4.DocSearch-lvl4#heading-level-4") {
+  switch WebAPI.DOM.window
+  ->WebAPI.Window.document
+  ->WebAPI.Document.querySelector("h4.DocSearch-lvl4#heading-level-4") {
   | Value(_) => ()
-  | Null => failwith("expected h4 to expose DocSearch lvl4")
+  | Null => panic("expected h4 to expose DocSearch lvl4")
   }
-  switch document->WebAPI.Document.querySelector("h5.DocSearch-lvl5#heading-level-5") {
+  switch WebAPI.DOM.window
+  ->WebAPI.Window.document
+  ->WebAPI.Document.querySelector("h5.DocSearch-lvl5#heading-level-5") {
   | Value(_) => ()
-  | Null => failwith("expected h5 to expose DocSearch lvl5")
+  | Null => panic("expected h5 to expose DocSearch lvl5")
   }
 })
 
@@ -59,7 +71,10 @@ test("heading anchor links do not duplicate heading ids", async () => {
     </div>,
   )
 
-  let matches = document->WebAPI.Document.querySelectorAll("[id='duplicate-check']")
+  let matches =
+    WebAPI.DOM.window
+    ->WebAPI.Window.document
+    ->WebAPI.Document.querySelectorAll("[id='duplicate-check']")
   expect(matches.length)->toBe(1)
 })
 
@@ -77,22 +92,24 @@ test("heading anchor scroll offset clears the sticky docs nav", async () => {
     </div>,
   )
 
-  let target = switch document->WebAPI.Document.querySelector("#anchor-offset-target") {
+  let target = switch WebAPI.DOM.window
+  ->WebAPI.Window.document
+  ->WebAPI.Document.querySelector("#anchor-offset-target") {
   | Value(target) => target
-  | Null => failwith("expected heading anchor target")
+  | Null => panic("expected heading anchor target")
   }
 
-  let tertiaryNav = switch document->WebAPI.Document.querySelector(
-    "[data-testid='anchor-tertiary']",
-  ) {
+  let tertiaryNav = switch WebAPI.DOM.window
+  ->WebAPI.Window.document
+  ->WebAPI.Document.querySelector("[data-testid='anchor-tertiary']") {
   | Value(nav) => nav
-  | Null => failwith("expected tertiary nav")
+  | Null => panic("expected tertiary nav")
   }
 
-  target->WebAPI.Element.scrollIntoView_alignToTop
+  target->WebAPI.Element.scrollIntoViewAlignToTop
 
-  let targetRect: WebAPI.DOMAPI.domRect = target->WebAPI.Element.getBoundingClientRect
-  let tertiaryNavRect: WebAPI.DOMAPI.domRect = tertiaryNav->WebAPI.Element.getBoundingClientRect
+  let targetRect: WebAPI.DOM.domRect = target->WebAPI.Element.getBoundingClientRect
+  let tertiaryNavRect: WebAPI.DOM.domRect = tertiaryNav->WebAPI.Element.getBoundingClientRect
 
   expect(targetRect.top >= tertiaryNavRect.bottom)->toBe(true)
   await screen->unmount

@@ -15,7 +15,7 @@ module Card = {
 }
 
 @react.component
-let default = (~showVersionSelect=true) => {
+let default = () => {
   let languageManual = Constants.languageManual
 
   let ecosystem = [
@@ -27,7 +27,7 @@ let default = (~showVersionSelect=true) => {
 
   <MainLayout>
     <div className="max-w-740 w-full m-auto">
-      // <div className="mb-6" />
+      /* <div className="mb-6" /> */
       <Markdown.H1> {React.string("Docs")} </Markdown.H1>
 
       <div className="grid grid-cols-1 xs:grid-cols-2 gap-8">
