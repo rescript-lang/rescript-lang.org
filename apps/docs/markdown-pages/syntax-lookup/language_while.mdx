@@ -14,31 +14,23 @@ A mutable binding can control whether a while loop continues.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
-```res
-let shouldStop = ref(false)
-
-while !shouldStop.contents {
+```res nocheck
+while true {
   if Math.random() > 0.3 {
-    shouldStop := true
+    break
   } else {
     Console.log("Still running")
   }
 }
-
 ```
 
 ```js
-let shouldStop = { contents: false };
-
-while (!shouldStop.contents) {
+while (true) {
   if (Math.random() > 0.3) {
-    shouldStop.contents = true;
-  } else {
-    console.log("Still running");
+    break;
   }
+  console.log("Still running");
 }
-
-export { shouldStop };
 ```
 
 </CodeTab>
