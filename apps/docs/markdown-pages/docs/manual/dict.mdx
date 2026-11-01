@@ -42,6 +42,93 @@ A few things to note here:
 - Using the first class `dict{}` syntax compiles cleanly to a JavaScript object directly
 - Using `Dict.fromArray` is useful when you need to create a dictionary programatically
 
+## Copying and merging with spreads
+
+Use `...` inside `dict{}` to copy entries from an existing dictionary into a new one:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let original = dict{"apples": 2, "oranges": 3}
+let copy = dict{...original, "bananas": 4}
+
+// Updating the copy does not change the original dictionary
+copy->Dict.set("apples", 5)
+Console.log(original->Dict.get("apples")) // Some(2)
+Console.log(copy->Dict.get("apples")) // Some(5)
+```
+
+```js
+let d = { A: 5, B: 6 };
+
+let d2 = Object.fromEntries([
+  ["A", 5],
+  ["B", 6],
+]);
+
+let original = { apples: 2, oranges: 3 };
+
+let copy = Object.assign({}, original, { bananas: 4 });
+
+copy["apples"] = 5;
+
+console.log(original["apples"]);
+
+console.log(copy["apples"]);
+
+export { d, d2, original, copy };
+```
+
+</CodeTab>
+
+You can mix multiple spreads and explicit entries. Entries are applied from left to right: when a key appears more than once, the later value wins. This applies to both explicit entries and entries from a spread:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let defaults = dict{"retries": 3, "timeout": 1000}
+let overrides = dict{"timeout": 5000, "retries": 5}
+
+let settings = dict{
+  ...defaults,
+  "timeout": 2000,
+  ...overrides,
+  "retries": 1,
+}
+
+// The later spread overrides the earlier explicit timeout
+Console.log(settings->Dict.get("timeout")) // Some(5000)
+// The final explicit entry overrides both spreads
+Console.log(settings->Dict.get("retries")) // Some(1)
+```
+
+```js
+let d = { A: 5, B: 6 };
+
+let d2 = Object.fromEntries([
+  ["A", 5],
+  ["B", 6],
+]);
+
+let defaults = { retries: 3, timeout: 1000 };
+
+let overrides = { timeout: 5000, retries: 5 };
+
+let settings = Object.assign({}, defaults, { timeout: 2000 }, overrides, {
+  retries: 1,
+});
+
+console.log(settings["timeout"]);
+
+console.log(settings["retries"]);
+
+export { d, d2, defaults, overrides, settings };
+```
+
+</CodeTab>
+
+Spreads do not mutate their source dictionaries. They make a shallow copy: if a value is a mutable object, the new dictionary still refers to that same object. All values in the resulting dictionary must have the same type.
+
 ## Access
 
 You can access values from a Dictionary either via the the standard library `Dict` module functions, or using pattern matching.
