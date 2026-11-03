@@ -256,34 +256,29 @@ let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 let message;
 
 if (person1.TAG === "Teacher") {
-  message = `Hello ` + "Jane" + `.`;
+  message = `Hello Jane.`;
 } else {
   let match = "Jane";
   let match$1 = match.status;
   let name = match.name;
   let match$2 = match.reportCard;
   if (match$2.passing) {
-    message =
-      `Congrats ` +
-      name +
-      `, nice GPA of ` +
-      match$2.gpa.toString() +
-      ` you got there!`;
+    message = `Congrats ${name}, nice GPA of ${match$2.gpa.toString()} you got there!`;
   } else {
     let exit = 0;
     if (typeof match$1 !== "object") {
       message =
         match$1 === "Sick"
           ? `How are you feeling?`
-          : `Good luck next semester ` + name + `!`;
+          : `Good luck next semester ${name}!`;
     } else {
       exit = 1;
     }
     if (exit === 1) {
       message =
         match.reportCard.gpa !== 0.0
-          ? `Good luck next semester ` + name + `!`
-          : `Come back in ` + match$1._0.toString() + ` days!`;
+          ? `Good luck next semester ${name}!`
+          : `Come back in ${match$1._0.toString()} days!`;
     }
   }
 }
@@ -321,34 +316,29 @@ let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 let message;
 
 if (person1.TAG === "Teacher") {
-  message = `Hello ` + "Jane" + `.`;
+  message = `Hello Jane.`;
 } else {
   let match = "Jane";
   let match$1 = match.status;
   let name = match.name;
   let match$2 = match.reportCard;
   if (match$2.passing) {
-    message =
-      `Congrats ` +
-      name +
-      `, nice GPA of ` +
-      match$2.gpa.toString() +
-      ` you got there!`;
+    message = `Congrats ${name}, nice GPA of ${match$2.gpa.toString()} you got there!`;
   } else {
     let exit = 0;
     if (typeof match$1 !== "object") {
       message =
         match$1 === "Sick"
           ? `How are you feeling?`
-          : `Good luck next semester ` + name + `!`;
+          : `Good luck next semester ${name}!`;
     } else {
       exit = 1;
     }
     if (exit === 1) {
       message =
         match.reportCard.gpa !== 0.0
-          ? `Good luck next semester ` + name + `!`
-          : `Come back in ` + match$1._0.toString() + ` days!`;
+          ? `Good luck next semester ${name}!`
+          : `Come back in ${match$1._0.toString()} days!`;
     }
   }
 }
@@ -409,50 +399,41 @@ let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 let message;
 
 if (person1.TAG === "Teacher") {
-  message = `Hello ` + "Jane" + `.`;
+  message = `Hello Jane.`;
 } else {
   let match = "Jane";
   let match$1 = match.status;
   let name = match.name;
   let match$2 = match.reportCard;
   if (match$2.passing) {
-    message =
-      `Congrats ` +
-      name +
-      `, nice GPA of ` +
-      match$2.gpa.toString() +
-      ` you got there!`;
+    message = `Congrats ${name}, nice GPA of ${match$2.gpa.toString()} you got there!`;
   } else {
     let exit = 0;
     if (typeof match$1 !== "object") {
       message =
         match$1 === "Sick"
           ? `How are you feeling?`
-          : `Good luck next semester ` + name + `!`;
+          : `Good luck next semester ${name}!`;
     } else {
       exit = 1;
     }
     if (exit === 1) {
       message =
         match.reportCard.gpa !== 0.0
-          ? `Good luck next semester ` + name + `!`
-          : `Come back in ` + match$1._0.toString() + ` days!`;
+          ? `Good luck next semester ${name}!`
+          : `Come back in ${match$1._0.toString()} days!`;
     }
   }
 }
 
 let myStatus = { TAG: "Vacations", _0: 10 };
 
-let exit$1 = 0;
-
 if (typeof myStatus !== "object") {
   console.log("Hey! How are you?");
+} else if (myStatus.TAG === "Vacations") {
+  console.log(`Come back in ${(10).toString()} days!`);
 } else {
-  exit$1 = 1;
-}
-
-if (exit$1 === 1) {
-  console.log(`Come back in ` + (10).toString() + ` days!`);
+  console.log(`Come back in ${(10).toString()} days!`);
 }
 
 export { person1, message, myStatus };
@@ -481,50 +462,41 @@ let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 let message;
 
 if (person1.TAG === "Teacher") {
-  message = `Hello ` + "Jane" + `.`;
+  message = `Hello Jane.`;
 } else {
   let match = "Jane";
   let match$1 = match.status;
   let name = match.name;
   let match$2 = match.reportCard;
   if (match$2.passing) {
-    message =
-      `Congrats ` +
-      name +
-      `, nice GPA of ` +
-      match$2.gpa.toString() +
-      ` you got there!`;
+    message = `Congrats ${name}, nice GPA of ${match$2.gpa.toString()} you got there!`;
   } else {
     let exit = 0;
     if (typeof match$1 !== "object") {
       message =
         match$1 === "Sick"
           ? `How are you feeling?`
-          : `Good luck next semester ` + name + `!`;
+          : `Good luck next semester ${name}!`;
     } else {
       exit = 1;
     }
     if (exit === 1) {
       message =
         match.reportCard.gpa !== 0.0
-          ? `Good luck next semester ` + name + `!`
-          : `Come back in ` + match$1._0.toString() + ` days!`;
+          ? `Good luck next semester ${name}!`
+          : `Come back in ${match$1._0.toString()} days!`;
     }
   }
 }
 
 let myStatus = { TAG: "Vacations", _0: 10 };
 
-let exit$1 = 0;
-
 if (typeof myStatus !== "object") {
   console.log("Hey! How are you?");
+} else if (myStatus.TAG === "Vacations") {
+  console.log(`Come back in ${(10).toString()} days!`);
 } else {
-  exit$1 = 1;
-}
-
-if (exit$1 === 1) {
-  console.log(`Come back in ` + (10).toString() + ` days!`);
+  console.log(`Come back in ${(10).toString()} days!`);
 }
 
 if (person1.TAG === "Teacher") {
@@ -555,50 +527,41 @@ let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 let message;
 
 if (person1.TAG === "Teacher") {
-  message = `Hello ` + "Jane" + `.`;
+  message = `Hello Jane.`;
 } else {
   let match = "Jane";
   let match$1 = match.status;
   let name = match.name;
   let match$2 = match.reportCard;
   if (match$2.passing) {
-    message =
-      `Congrats ` +
-      name +
-      `, nice GPA of ` +
-      match$2.gpa.toString() +
-      ` you got there!`;
+    message = `Congrats ${name}, nice GPA of ${match$2.gpa.toString()} you got there!`;
   } else {
     let exit = 0;
     if (typeof match$1 !== "object") {
       message =
         match$1 === "Sick"
           ? `How are you feeling?`
-          : `Good luck next semester ` + name + `!`;
+          : `Good luck next semester ${name}!`;
     } else {
       exit = 1;
     }
     if (exit === 1) {
       message =
         match.reportCard.gpa !== 0.0
-          ? `Good luck next semester ` + name + `!`
-          : `Come back in ` + match$1._0.toString() + ` days!`;
+          ? `Good luck next semester ${name}!`
+          : `Come back in ${match$1._0.toString()} days!`;
     }
   }
 }
 
 let myStatus = { TAG: "Vacations", _0: 10 };
 
-let exit$1 = 0;
-
 if (typeof myStatus !== "object") {
   console.log("Hey! How are you?");
+} else if (myStatus.TAG === "Vacations") {
+  console.log(`Come back in ${(10).toString()} days!`);
 } else {
-  exit$1 = 1;
-}
-
-if (exit$1 === 1) {
-  console.log(`Come back in ` + (10).toString() + ` days!`);
+  console.log(`Come back in ${(10).toString()} days!`);
 }
 
 if (typeof myStatus !== "object" || myStatus.TAG !== "Vacations") {
@@ -629,50 +592,41 @@ let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 let message;
 
 if (person1.TAG === "Teacher") {
-  message = `Hello ` + "Jane" + `.`;
+  message = `Hello Jane.`;
 } else {
   let match = "Jane";
   let match$1 = match.status;
   let name = match.name;
   let match$2 = match.reportCard;
   if (match$2.passing) {
-    message =
-      `Congrats ` +
-      name +
-      `, nice GPA of ` +
-      match$2.gpa.toString() +
-      ` you got there!`;
+    message = `Congrats ${name}, nice GPA of ${match$2.gpa.toString()} you got there!`;
   } else {
     let exit = 0;
     if (typeof match$1 !== "object") {
       message =
         match$1 === "Sick"
           ? `How are you feeling?`
-          : `Good luck next semester ` + name + `!`;
+          : `Good luck next semester ${name}!`;
     } else {
       exit = 1;
     }
     if (exit === 1) {
       message =
         match.reportCard.gpa !== 0.0
-          ? `Good luck next semester ` + name + `!`
-          : `Come back in ` + match$1._0.toString() + ` days!`;
+          ? `Good luck next semester ${name}!`
+          : `Come back in ${match$1._0.toString()} days!`;
     }
   }
 }
 
 let myStatus = { TAG: "Vacations", _0: 10 };
 
-let exit$1 = 0;
-
 if (typeof myStatus !== "object") {
   console.log("Hey! How are you?");
+} else if (myStatus.TAG === "Vacations") {
+  console.log(`Come back in ${(10).toString()} days!`);
 } else {
-  exit$1 = 1;
-}
-
-if (exit$1 === 1) {
-  console.log(`Come back in ` + (10).toString() + ` days!`);
+  console.log(`Come back in ${(10).toString()} days!`);
 }
 
 if (typeof myStatus !== "object" || myStatus.TAG !== "Vacations") {
@@ -712,50 +666,41 @@ let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 let message;
 
 if (person1.TAG === "Teacher") {
-  message = `Hello ` + "Jane" + `.`;
+  message = `Hello Jane.`;
 } else {
   let match = "Jane";
   let match$1 = match.status;
   let name = match.name;
   let match$2 = match.reportCard;
   if (match$2.passing) {
-    message =
-      `Congrats ` +
-      name +
-      `, nice GPA of ` +
-      match$2.gpa.toString() +
-      ` you got there!`;
+    message = `Congrats ${name}, nice GPA of ${match$2.gpa.toString()} you got there!`;
   } else {
     let exit = 0;
     if (typeof match$1 !== "object") {
       message =
         match$1 === "Sick"
           ? `How are you feeling?`
-          : `Good luck next semester ` + name + `!`;
+          : `Good luck next semester ${name}!`;
     } else {
       exit = 1;
     }
     if (exit === 1) {
       message =
         match.reportCard.gpa !== 0.0
-          ? `Good luck next semester ` + name + `!`
-          : `Come back in ` + match$1._0.toString() + ` days!`;
+          ? `Good luck next semester ${name}!`
+          : `Come back in ${match$1._0.toString()} days!`;
     }
   }
 }
 
 let myStatus = { TAG: "Vacations", _0: 10 };
 
-let exit$1 = 0;
-
 if (typeof myStatus !== "object") {
   console.log("Hey! How are you?");
+} else if (myStatus.TAG === "Vacations") {
+  console.log(`Come back in ${(10).toString()} days!`);
 } else {
-  exit$1 = 1;
-}
-
-if (exit$1 === 1) {
-  console.log(`Come back in ` + (10).toString() + ` days!`);
+  console.log(`Come back in ${(10).toString()} days!`);
 }
 
 if (person1.TAG !== "Teacher") {
@@ -792,50 +737,41 @@ let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 let message;
 
 if (person1.TAG === "Teacher") {
-  message = `Hello ` + "Jane" + `.`;
+  message = `Hello Jane.`;
 } else {
   let match = "Jane";
   let match$1 = match.status;
   let name = match.name;
   let match$2 = match.reportCard;
   if (match$2.passing) {
-    message =
-      `Congrats ` +
-      name +
-      `, nice GPA of ` +
-      match$2.gpa.toString() +
-      ` you got there!`;
+    message = `Congrats ${name}, nice GPA of ${match$2.gpa.toString()} you got there!`;
   } else {
     let exit = 0;
     if (typeof match$1 !== "object") {
       message =
         match$1 === "Sick"
           ? `How are you feeling?`
-          : `Good luck next semester ` + name + `!`;
+          : `Good luck next semester ${name}!`;
     } else {
       exit = 1;
     }
     if (exit === 1) {
       message =
         match.reportCard.gpa !== 0.0
-          ? `Good luck next semester ` + name + `!`
-          : `Come back in ` + match$1._0.toString() + ` days!`;
+          ? `Good luck next semester ${name}!`
+          : `Come back in ${match$1._0.toString()} days!`;
     }
   }
 }
 
 let myStatus = { TAG: "Vacations", _0: 10 };
 
-let exit$1 = 0;
-
 if (typeof myStatus !== "object") {
   console.log("Hey! How are you?");
+} else if (myStatus.TAG === "Vacations") {
+  console.log(`Come back in ${(10).toString()} days!`);
 } else {
-  exit$1 = 1;
-}
-
-if (exit$1 === 1) {
-  console.log(`Come back in ` + (10).toString() + ` days!`);
+  console.log(`Come back in ${(10).toString()} days!`);
 }
 
 if (person1.TAG !== "Teacher") {
@@ -892,50 +828,41 @@ let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 let message;
 
 if (person1.TAG === "Teacher") {
-  message = `Hello ` + "Jane" + `.`;
+  message = `Hello Jane.`;
 } else {
   let match = "Jane";
   let match$1 = match.status;
   let name = match.name;
   let match$2 = match.reportCard;
   if (match$2.passing) {
-    message =
-      `Congrats ` +
-      name +
-      `, nice GPA of ` +
-      match$2.gpa.toString() +
-      ` you got there!`;
+    message = `Congrats ${name}, nice GPA of ${match$2.gpa.toString()} you got there!`;
   } else {
     let exit = 0;
     if (typeof match$1 !== "object") {
       message =
         match$1 === "Sick"
           ? `How are you feeling?`
-          : `Good luck next semester ` + name + `!`;
+          : `Good luck next semester ${name}!`;
     } else {
       exit = 1;
     }
     if (exit === 1) {
       message =
         match.reportCard.gpa !== 0.0
-          ? `Good luck next semester ` + name + `!`
-          : `Come back in ` + match$1._0.toString() + ` days!`;
+          ? `Good luck next semester ${name}!`
+          : `Come back in ${match$1._0.toString()} days!`;
     }
   }
 }
 
 let myStatus = { TAG: "Vacations", _0: 10 };
 
-let exit$1 = 0;
-
 if (typeof myStatus !== "object") {
   console.log("Hey! How are you?");
+} else if (myStatus.TAG === "Vacations") {
+  console.log(`Come back in ${(10).toString()} days!`);
 } else {
-  exit$1 = 1;
-}
-
-if (exit$1 === 1) {
-  console.log(`Come back in ` + (10).toString() + ` days!`);
+  console.log(`Come back in ${(10).toString()} days!`);
 }
 
 function greetPet(pet) {
@@ -1003,50 +930,41 @@ let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 let message;
 
 if (person1.TAG === "Teacher") {
-  message = `Hello ` + "Jane" + `.`;
+  message = `Hello Jane.`;
 } else {
   let match = "Jane";
   let match$1 = match.status;
   let name = match.name;
   let match$2 = match.reportCard;
   if (match$2.passing) {
-    message =
-      `Congrats ` +
-      name +
-      `, nice GPA of ` +
-      match$2.gpa.toString() +
-      ` you got there!`;
+    message = `Congrats ${name}, nice GPA of ${match$2.gpa.toString()} you got there!`;
   } else {
     let exit = 0;
     if (typeof match$1 !== "object") {
       message =
         match$1 === "Sick"
           ? `How are you feeling?`
-          : `Good luck next semester ` + name + `!`;
+          : `Good luck next semester ${name}!`;
     } else {
       exit = 1;
     }
     if (exit === 1) {
       message =
         match.reportCard.gpa !== 0.0
-          ? `Good luck next semester ` + name + `!`
-          : `Come back in ` + match$1._0.toString() + ` days!`;
+          ? `Good luck next semester ${name}!`
+          : `Come back in ${match$1._0.toString()} days!`;
     }
   }
 }
 
 let myStatus = { TAG: "Vacations", _0: 10 };
 
-let exit$1 = 0;
-
 if (typeof myStatus !== "object") {
   console.log("Hey! How are you?");
+} else if (myStatus.TAG === "Vacations") {
+  console.log(`Come back in ${(10).toString()} days!`);
 } else {
-  exit$1 = 1;
-}
-
-if (exit$1 === 1) {
-  console.log(`Come back in ` + (10).toString() + ` days!`);
+  console.log(`Come back in ${(10).toString()} days!`);
 }
 
 function isPet(animal) {
@@ -1092,50 +1010,41 @@ let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 let message;
 
 if (person1.TAG === "Teacher") {
-  message = `Hello ` + "Jane" + `.`;
+  message = `Hello Jane.`;
 } else {
   let match = "Jane";
   let match$1 = match.status;
   let name = match.name;
   let match$2 = match.reportCard;
   if (match$2.passing) {
-    message =
-      `Congrats ` +
-      name +
-      `, nice GPA of ` +
-      match$2.gpa.toString() +
-      ` you got there!`;
+    message = `Congrats ${name}, nice GPA of ${match$2.gpa.toString()} you got there!`;
   } else {
     let exit = 0;
     if (typeof match$1 !== "object") {
       message =
         match$1 === "Sick"
           ? `How are you feeling?`
-          : `Good luck next semester ` + name + `!`;
+          : `Good luck next semester ${name}!`;
     } else {
       exit = 1;
     }
     if (exit === 1) {
       message =
         match.reportCard.gpa !== 0.0
-          ? `Good luck next semester ` + name + `!`
-          : `Come back in ` + match$1._0.toString() + ` days!`;
+          ? `Good luck next semester ${name}!`
+          : `Come back in ${match$1._0.toString()} days!`;
     }
   }
 }
 
 let myStatus = { TAG: "Vacations", _0: 10 };
 
-let exit$1 = 0;
-
 if (typeof myStatus !== "object") {
   console.log("Hey! How are you?");
+} else if (myStatus.TAG === "Vacations") {
+  console.log(`Come back in ${(10).toString()} days!`);
 } else {
-  exit$1 = 1;
-}
-
-if (exit$1 === 1) {
-  console.log(`Come back in ` + (10).toString() + ` days!`);
+  console.log(`Come back in ${(10).toString()} days!`);
 }
 
 function isPet(animal) {
@@ -1179,50 +1088,41 @@ let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 let message;
 
 if (person1.TAG === "Teacher") {
-  message = `Hello ` + "Jane" + `.`;
+  message = `Hello Jane.`;
 } else {
   let match = "Jane";
   let match$1 = match.status;
   let name = match.name;
   let match$2 = match.reportCard;
   if (match$2.passing) {
-    message =
-      `Congrats ` +
-      name +
-      `, nice GPA of ` +
-      match$2.gpa.toString() +
-      ` you got there!`;
+    message = `Congrats ${name}, nice GPA of ${match$2.gpa.toString()} you got there!`;
   } else {
     let exit = 0;
     if (typeof match$1 !== "object") {
       message =
         match$1 === "Sick"
           ? `How are you feeling?`
-          : `Good luck next semester ` + name + `!`;
+          : `Good luck next semester ${name}!`;
     } else {
       exit = 1;
     }
     if (exit === 1) {
       message =
         match.reportCard.gpa !== 0.0
-          ? `Good luck next semester ` + name + `!`
-          : `Come back in ` + match$1._0.toString() + ` days!`;
+          ? `Good luck next semester ${name}!`
+          : `Come back in ${match$1._0.toString()} days!`;
     }
   }
 }
 
 let myStatus = { TAG: "Vacations", _0: 10 };
 
-let exit$1 = 0;
-
 if (typeof myStatus !== "object") {
   console.log("Hey! How are you?");
+} else if (myStatus.TAG === "Vacations") {
+  console.log(`Come back in ${(10).toString()} days!`);
 } else {
-  exit$1 = 1;
-}
-
-if (exit$1 === 1) {
-  console.log(`Come back in ` + (10).toString() + ` days!`);
+  console.log(`Come back in ${(10).toString()} days!`);
 }
 
 function isPet(animal) {
@@ -1261,58 +1161,49 @@ switch findItem() {
 ```
 
 ```js
-import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.js";
-import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
+import * as Stdlib_List from "@rescript/runtime/lib/es6/Stdlib_List.mjs";
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.mjs";
 
 let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 
 let message;
 
 if (person1.TAG === "Teacher") {
-  message = `Hello ` + "Jane" + `.`;
+  message = `Hello Jane.`;
 } else {
   let match = "Jane";
   let match$1 = match.status;
   let name = match.name;
   let match$2 = match.reportCard;
   if (match$2.passing) {
-    message =
-      `Congrats ` +
-      name +
-      `, nice GPA of ` +
-      match$2.gpa.toString() +
-      ` you got there!`;
+    message = `Congrats ${name}, nice GPA of ${match$2.gpa.toString()} you got there!`;
   } else {
     let exit = 0;
     if (typeof match$1 !== "object") {
       message =
         match$1 === "Sick"
           ? `How are you feeling?`
-          : `Good luck next semester ` + name + `!`;
+          : `Good luck next semester ${name}!`;
     } else {
       exit = 1;
     }
     if (exit === 1) {
       message =
         match.reportCard.gpa !== 0.0
-          ? `Good luck next semester ` + name + `!`
-          : `Come back in ` + match$1._0.toString() + ` days!`;
+          ? `Good luck next semester ${name}!`
+          : `Come back in ${match$1._0.toString()} days!`;
     }
   }
 }
 
 let myStatus = { TAG: "Vacations", _0: 10 };
 
-let exit$1 = 0;
-
 if (typeof myStatus !== "object") {
   console.log("Hey! How are you?");
+} else if (myStatus.TAG === "Vacations") {
+  console.log(`Come back in ${(10).toString()} days!`);
 } else {
-  exit$1 = 1;
-}
-
-if (exit$1 === 1) {
-  console.log(`Come back in ` + (10).toString() + ` days!`);
+  console.log(`Come back in ${(10).toString()} days!`);
 }
 
 let myItems = { hd: 1, tl: { hd: 2, tl: { hd: 3, tl: /* [] */ 0 } } };
@@ -1325,13 +1216,13 @@ function findItem() {
   throw { RE_EXN_ID: "Not_found", Error: new Error() };
 }
 
-let exit$2 = 0;
+let exit$1 = 0;
 
 let item;
 
 try {
   item = findItem();
-  exit$2 = 1;
+  exit$1 = 1;
 } catch (raw_exn) {
   let exn = Primitive_exceptions.internalToException(raw_exn);
   if (exn.RE_EXN_ID === "Not_found") {
@@ -1341,7 +1232,7 @@ try {
   }
 }
 
-if (exit$2 === 1) {
+if (exit$1 === 1) {
   console.log(item);
 }
 
@@ -1374,50 +1265,41 @@ let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 let message;
 
 if (person1.TAG === "Teacher") {
-  message = `Hello ` + "Jane" + `.`;
+  message = `Hello Jane.`;
 } else {
   let match = "Jane";
   let match$1 = match.status;
   let name = match.name;
   let match$2 = match.reportCard;
   if (match$2.passing) {
-    message =
-      `Congrats ` +
-      name +
-      `, nice GPA of ` +
-      match$2.gpa.toString() +
-      ` you got there!`;
+    message = `Congrats ${name}, nice GPA of ${match$2.gpa.toString()} you got there!`;
   } else {
     let exit = 0;
     if (typeof match$1 !== "object") {
       message =
         match$1 === "Sick"
           ? `How are you feeling?`
-          : `Good luck next semester ` + name + `!`;
+          : `Good luck next semester ${name}!`;
     } else {
       exit = 1;
     }
     if (exit === 1) {
       message =
         match.reportCard.gpa !== 0.0
-          ? `Good luck next semester ` + name + `!`
-          : `Come back in ` + match$1._0.toString() + ` days!`;
+          ? `Good luck next semester ${name}!`
+          : `Come back in ${match$1._0.toString()} days!`;
     }
   }
 }
 
 let myStatus = { TAG: "Vacations", _0: 10 };
 
-let exit$1 = 0;
-
 if (typeof myStatus !== "object") {
   console.log("Hey! How are you?");
+} else if (myStatus.TAG === "Vacations") {
+  console.log(`Come back in ${(10).toString()} days!`);
 } else {
-  exit$1 = 1;
-}
-
-if (exit$1 === 1) {
-  console.log(`Come back in ` + (10).toString() + ` days!`);
+  console.log(`Come back in ${(10).toString()} days!`);
 }
 
 let students = ["Jane", "Harvey", "Patrick"];
@@ -1465,50 +1347,41 @@ let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 let message;
 
 if (person1.TAG === "Teacher") {
-  message = `Hello ` + "Jane" + `.`;
+  message = `Hello Jane.`;
 } else {
   let match = "Jane";
   let match$1 = match.status;
   let name = match.name;
   let match$2 = match.reportCard;
   if (match$2.passing) {
-    message =
-      `Congrats ` +
-      name +
-      `, nice GPA of ` +
-      match$2.gpa.toString() +
-      ` you got there!`;
+    message = `Congrats ${name}, nice GPA of ${match$2.gpa.toString()} you got there!`;
   } else {
     let exit = 0;
     if (typeof match$1 !== "object") {
       message =
         match$1 === "Sick"
           ? `How are you feeling?`
-          : `Good luck next semester ` + name + `!`;
+          : `Good luck next semester ${name}!`;
     } else {
       exit = 1;
     }
     if (exit === 1) {
       message =
         match.reportCard.gpa !== 0.0
-          ? `Good luck next semester ` + name + `!`
-          : `Come back in ` + match$1._0.toString() + ` days!`;
+          ? `Good luck next semester ${name}!`
+          : `Come back in ${match$1._0.toString()} days!`;
     }
   }
 }
 
 let myStatus = { TAG: "Vacations", _0: 10 };
 
-let exit$1 = 0;
-
 if (typeof myStatus !== "object") {
   console.log("Hey! How are you?");
+} else if (myStatus.TAG === "Vacations") {
+  console.log(`Come back in ${(10).toString()} days!`);
 } else {
-  exit$1 = 1;
-}
-
-if (exit$1 === 1) {
-  console.log(`Come back in ` + (10).toString() + ` days!`);
+  console.log(`Come back in ${(10).toString()} days!`);
 }
 
 function printStudents(_students) {
@@ -1563,50 +1436,41 @@ let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 let message;
 
 if (person1.TAG === "Teacher") {
-  message = `Hello ` + "Jane" + `.`;
+  message = `Hello Jane.`;
 } else {
   let match = "Jane";
   let match$1 = match.status;
   let name = match.name;
   let match$2 = match.reportCard;
   if (match$2.passing) {
-    message =
-      `Congrats ` +
-      name +
-      `, nice GPA of ` +
-      match$2.gpa.toString() +
-      ` you got there!`;
+    message = `Congrats ${name}, nice GPA of ${match$2.gpa.toString()} you got there!`;
   } else {
     let exit = 0;
     if (typeof match$1 !== "object") {
       message =
         match$1 === "Sick"
           ? `How are you feeling?`
-          : `Good luck next semester ` + name + `!`;
+          : `Good luck next semester ${name}!`;
     } else {
       exit = 1;
     }
     if (exit === 1) {
       message =
         match.reportCard.gpa !== 0.0
-          ? `Good luck next semester ` + name + `!`
-          : `Come back in ` + match$1._0.toString() + ` days!`;
+          ? `Good luck next semester ${name}!`
+          : `Come back in ${match$1._0.toString()} days!`;
     }
   }
 }
 
 let myStatus = { TAG: "Vacations", _0: 10 };
 
-let exit$1 = 0;
-
 if (typeof myStatus !== "object") {
   console.log("Hey! How are you?");
+} else if (myStatus.TAG === "Vacations") {
+  console.log(`Come back in ${(10).toString()} days!`);
 } else {
-  exit$1 = 1;
-}
-
-if (exit$1 === 1) {
-  console.log(`Come back in ` + (10).toString() + ` days!`);
+  console.log(`Come back in ${(10).toString()} days!`);
 }
 
 let d = { A: 5, B: 6 };
@@ -1639,50 +1503,41 @@ let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 let message;
 
 if (person1.TAG === "Teacher") {
-  message = `Hello ` + "Jane" + `.`;
+  message = `Hello Jane.`;
 } else {
   let match = "Jane";
   let match$1 = match.status;
   let name = match.name;
   let match$2 = match.reportCard;
   if (match$2.passing) {
-    message =
-      `Congrats ` +
-      name +
-      `, nice GPA of ` +
-      match$2.gpa.toString() +
-      ` you got there!`;
+    message = `Congrats ${name}, nice GPA of ${match$2.gpa.toString()} you got there!`;
   } else {
     let exit = 0;
     if (typeof match$1 !== "object") {
       message =
         match$1 === "Sick"
           ? `How are you feeling?`
-          : `Good luck next semester ` + name + `!`;
+          : `Good luck next semester ${name}!`;
     } else {
       exit = 1;
     }
     if (exit === 1) {
       message =
         match.reportCard.gpa !== 0.0
-          ? `Good luck next semester ` + name + `!`
-          : `Come back in ` + match$1._0.toString() + ` days!`;
+          ? `Good luck next semester ${name}!`
+          : `Come back in ${match$1._0.toString()} days!`;
     }
   }
 }
 
 let myStatus = { TAG: "Vacations", _0: 10 };
 
-let exit$1 = 0;
-
 if (typeof myStatus !== "object") {
   console.log("Hey! How are you?");
+} else if (myStatus.TAG === "Vacations") {
+  console.log(`Come back in ${(10).toString()} days!`);
 } else {
-  exit$1 = 1;
-}
-
-if (exit$1 === 1) {
-  console.log(`Come back in ` + (10).toString() + ` days!`);
+  console.log(`Come back in ${(10).toString()} days!`);
 }
 
 let d = { A: 5, B: 6 };
@@ -1718,57 +1573,48 @@ let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 let message;
 
 if (person1.TAG === "Teacher") {
-  message = `Hello ` + "Jane" + `.`;
+  message = `Hello Jane.`;
 } else {
   let match = "Jane";
   let match$1 = match.status;
   let name = match.name;
   let match$2 = match.reportCard;
   if (match$2.passing) {
-    message =
-      `Congrats ` +
-      name +
-      `, nice GPA of ` +
-      match$2.gpa.toString() +
-      ` you got there!`;
+    message = `Congrats ${name}, nice GPA of ${match$2.gpa.toString()} you got there!`;
   } else {
     let exit = 0;
     if (typeof match$1 !== "object") {
       message =
         match$1 === "Sick"
           ? `How are you feeling?`
-          : `Good luck next semester ` + name + `!`;
+          : `Good luck next semester ${name}!`;
     } else {
       exit = 1;
     }
     if (exit === 1) {
       message =
         match.reportCard.gpa !== 0.0
-          ? `Good luck next semester ` + name + `!`
-          : `Come back in ` + match$1._0.toString() + ` days!`;
+          ? `Good luck next semester ${name}!`
+          : `Come back in ${match$1._0.toString()} days!`;
     }
   }
 }
 
 let myStatus = { TAG: "Vacations", _0: 10 };
 
-let exit$1 = 0;
-
 if (typeof myStatus !== "object") {
   console.log("Hey! How are you?");
+} else if (myStatus.TAG === "Vacations") {
+  console.log(`Come back in ${(10).toString()} days!`);
 } else {
-  exit$1 = 1;
-}
-
-if (exit$1 === 1) {
-  console.log(`Come back in ` + (10).toString() + ` days!`);
+  console.log(`Come back in ${(10).toString()} days!`);
 }
 
 let d = { A: 5, B: 6 };
 
-console.log(10);
-
 let b = d.B;
+
+console.log(10);
 
 let coordinates = [10, 20, 30];
 
@@ -1814,53 +1660,46 @@ let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 let message;
 
 if (person1.TAG === "Teacher") {
-  message = `Hello ` + "Jane" + `.`;
+  message = `Hello Jane.`;
 } else {
   let match = "Jane";
   let match$1 = match.status;
   let name = match.name;
   let match$2 = match.reportCard;
   if (match$2.passing) {
-    message =
-      `Congrats ` +
-      name +
-      `, nice GPA of ` +
-      match$2.gpa.toString() +
-      ` you got there!`;
+    message = `Congrats ${name}, nice GPA of ${match$2.gpa.toString()} you got there!`;
   } else {
     let exit = 0;
     if (typeof match$1 !== "object") {
       message =
         match$1 === "Sick"
           ? `How are you feeling?`
-          : `Good luck next semester ` + name + `!`;
+          : `Good luck next semester ${name}!`;
     } else {
       exit = 1;
     }
     if (exit === 1) {
       message =
         match.reportCard.gpa !== 0.0
-          ? `Good luck next semester ` + name + `!`
-          : `Come back in ` + match$1._0.toString() + ` days!`;
+          ? `Good luck next semester ${name}!`
+          : `Come back in ${match$1._0.toString()} days!`;
     }
   }
 }
 
 let myStatus = { TAG: "Vacations", _0: 10 };
 
-let exit$1 = 0;
-
 if (typeof myStatus !== "object") {
   console.log("Hey! How are you?");
+} else if (myStatus.TAG === "Vacations") {
+  console.log(`Come back in ${(10).toString()} days!`);
 } else {
-  exit$1 = 1;
-}
-
-if (exit$1 === 1) {
-  console.log(`Come back in ` + (10).toString() + ` days!`);
+  console.log(`Come back in ${(10).toString()} days!`);
 }
 
 let d = { A: 5, B: 6 };
+
+let b = d.B;
 
 function messageFor(person) {
   if (person.TAG === "Teacher") {
@@ -1881,31 +1720,23 @@ function messageFor(person) {
     let name = match.name;
     let match$2 = match.reportCard;
     if (match$2.passing) {
-      return (
-        `Congrats ` +
-        name +
-        `, nice GPA of ` +
-        match$2.gpa.toString() +
-        ` you got there!`
-      );
+      return `Congrats ${name}, nice GPA of ${match$2.gpa.toString()} you got there!`;
     }
     if (typeof match$1 !== "object") {
       if (match$1 === "Sick") {
         return `How are you feeling?`;
       } else {
-        return `Good luck next semester ` + name + `!`;
+        return `Good luck next semester ${name}!`;
       }
     }
     match$1.TAG === "Vacations";
     if (match.reportCard.gpa !== 0.0) {
-      return `Good luck next semester ` + name + `!`;
+      return `Good luck next semester ${name}!`;
     } else {
-      return `Come back in ` + match$1._0.toString() + ` days!`;
+      return `Come back in ${match$1._0.toString()} days!`;
     }
   }
 }
-
-let b = d.B;
 
 export { person1, message, myStatus, d, b, messageFor };
 ```
@@ -1941,57 +1772,48 @@ let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 let message;
 
 if (person1.TAG === "Teacher") {
-  message = `Hello ` + "Jane" + `.`;
+  message = `Hello Jane.`;
 } else {
   let match = "Jane";
   let match$1 = match.status;
   let name = match.name;
   let match$2 = match.reportCard;
   if (match$2.passing) {
-    message =
-      `Congrats ` +
-      name +
-      `, nice GPA of ` +
-      match$2.gpa.toString() +
-      ` you got there!`;
+    message = `Congrats ${name}, nice GPA of ${match$2.gpa.toString()} you got there!`;
   } else {
     let exit = 0;
     if (typeof match$1 !== "object") {
       message =
         match$1 === "Sick"
           ? `How are you feeling?`
-          : `Good luck next semester ` + name + `!`;
+          : `Good luck next semester ${name}!`;
     } else {
       exit = 1;
     }
     if (exit === 1) {
       message =
         match.reportCard.gpa !== 0.0
-          ? `Good luck next semester ` + name + `!`
-          : `Come back in ` + match$1._0.toString() + ` days!`;
+          ? `Good luck next semester ${name}!`
+          : `Come back in ${match$1._0.toString()} days!`;
     }
   }
 }
 
 let myStatus = { TAG: "Vacations", _0: 10 };
 
-let exit$1 = 0;
-
 if (typeof myStatus !== "object") {
   console.log("Hey! How are you?");
+} else if (myStatus.TAG === "Vacations") {
+  console.log(`Come back in ${(10).toString()} days!`);
 } else {
-  exit$1 = 1;
-}
-
-if (exit$1 === 1) {
-  console.log(`Come back in ` + (10).toString() + ` days!`);
+  console.log(`Come back in ${(10).toString()} days!`);
 }
 
 let d = { A: 5, B: 6 };
 
-console.log("value is present");
-
 let b = d.B;
+
+console.log("value is present");
 
 let myNullableValue = 5;
 
@@ -2034,53 +1856,46 @@ let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 let message;
 
 if (person1.TAG === "Teacher") {
-  message = `Hello ` + "Jane" + `.`;
+  message = `Hello Jane.`;
 } else {
   let match = "Jane";
   let match$1 = match.status;
   let name = match.name;
   let match$2 = match.reportCard;
   if (match$2.passing) {
-    message =
-      `Congrats ` +
-      name +
-      `, nice GPA of ` +
-      match$2.gpa.toString() +
-      ` you got there!`;
+    message = `Congrats ${name}, nice GPA of ${match$2.gpa.toString()} you got there!`;
   } else {
     let exit = 0;
     if (typeof match$1 !== "object") {
       message =
         match$1 === "Sick"
           ? `How are you feeling?`
-          : `Good luck next semester ` + name + `!`;
+          : `Good luck next semester ${name}!`;
     } else {
       exit = 1;
     }
     if (exit === 1) {
       message =
         match.reportCard.gpa !== 0.0
-          ? `Good luck next semester ` + name + `!`
-          : `Come back in ` + match$1._0.toString() + ` days!`;
+          ? `Good luck next semester ${name}!`
+          : `Come back in ${match$1._0.toString()} days!`;
     }
   }
 }
 
 let myStatus = { TAG: "Vacations", _0: 10 };
 
-let exit$1 = 0;
-
 if (typeof myStatus !== "object") {
   console.log("Hey! How are you?");
+} else if (myStatus.TAG === "Vacations") {
+  console.log(`Come back in ${(10).toString()} days!`);
 } else {
-  exit$1 = 1;
-}
-
-if (exit$1 === 1) {
-  console.log(`Come back in ` + (10).toString() + ` days!`);
+  console.log(`Come back in ${(10).toString()} days!`);
 }
 
 let d = { A: 5, B: 6 };
+
+let b = d.B;
 
 function optionBoolToBool(opt) {
   if (opt === undefined) {
@@ -2089,8 +1904,6 @@ function optionBoolToBool(opt) {
     return opt === true;
   }
 }
-
-let b = d.B;
 
 export { person1, message, myStatus, d, b, optionBoolToBool };
 ```
@@ -2116,53 +1929,46 @@ let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 let message;
 
 if (person1.TAG === "Teacher") {
-  message = `Hello ` + "Jane" + `.`;
+  message = `Hello Jane.`;
 } else {
   let match = "Jane";
   let match$1 = match.status;
   let name = match.name;
   let match$2 = match.reportCard;
   if (match$2.passing) {
-    message =
-      `Congrats ` +
-      name +
-      `, nice GPA of ` +
-      match$2.gpa.toString() +
-      ` you got there!`;
+    message = `Congrats ${name}, nice GPA of ${match$2.gpa.toString()} you got there!`;
   } else {
     let exit = 0;
     if (typeof match$1 !== "object") {
       message =
         match$1 === "Sick"
           ? `How are you feeling?`
-          : `Good luck next semester ` + name + `!`;
+          : `Good luck next semester ${name}!`;
     } else {
       exit = 1;
     }
     if (exit === 1) {
       message =
         match.reportCard.gpa !== 0.0
-          ? `Good luck next semester ` + name + `!`
-          : `Come back in ` + match$1._0.toString() + ` days!`;
+          ? `Good luck next semester ${name}!`
+          : `Come back in ${match$1._0.toString()} days!`;
     }
   }
 }
 
 let myStatus = { TAG: "Vacations", _0: 10 };
 
-let exit$1 = 0;
-
 if (typeof myStatus !== "object") {
   console.log("Hey! How are you?");
+} else if (myStatus.TAG === "Vacations") {
+  console.log(`Come back in ${(10).toString()} days!`);
 } else {
-  exit$1 = 1;
-}
-
-if (exit$1 === 1) {
-  console.log(`Come back in ` + (10).toString() + ` days!`);
+  console.log(`Come back in ${(10).toString()} days!`);
 }
 
 let d = { A: 5, B: 6 };
+
+let b = d.B;
 
 function optionBoolToBool(opt) {
   if (opt !== undefined) {
@@ -2171,8 +1977,6 @@ function optionBoolToBool(opt) {
     return false;
   }
 }
-
-let b = d.B;
 
 export { person1, message, myStatus, d, b, optionBoolToBool };
 ```
@@ -2199,53 +2003,46 @@ let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 let message;
 
 if (person1.TAG === "Teacher") {
-  message = `Hello ` + "Jane" + `.`;
+  message = `Hello Jane.`;
 } else {
   let match = "Jane";
   let match$1 = match.status;
   let name = match.name;
   let match$2 = match.reportCard;
   if (match$2.passing) {
-    message =
-      `Congrats ` +
-      name +
-      `, nice GPA of ` +
-      match$2.gpa.toString() +
-      ` you got there!`;
+    message = `Congrats ${name}, nice GPA of ${match$2.gpa.toString()} you got there!`;
   } else {
     let exit = 0;
     if (typeof match$1 !== "object") {
       message =
         match$1 === "Sick"
           ? `How are you feeling?`
-          : `Good luck next semester ` + name + `!`;
+          : `Good luck next semester ${name}!`;
     } else {
       exit = 1;
     }
     if (exit === 1) {
       message =
         match.reportCard.gpa !== 0.0
-          ? `Good luck next semester ` + name + `!`
-          : `Come back in ` + match$1._0.toString() + ` days!`;
+          ? `Good luck next semester ${name}!`
+          : `Come back in ${match$1._0.toString()} days!`;
     }
   }
 }
 
 let myStatus = { TAG: "Vacations", _0: 10 };
 
-let exit$1 = 0;
-
 if (typeof myStatus !== "object") {
   console.log("Hey! How are you?");
+} else if (myStatus.TAG === "Vacations") {
+  console.log(`Come back in ${(10).toString()} days!`);
 } else {
-  exit$1 = 1;
-}
-
-if (exit$1 === 1) {
-  console.log(`Come back in ` + (10).toString() + ` days!`);
+  console.log(`Come back in ${(10).toString()} days!`);
 }
 
 let d = { A: 5, B: 6 };
+
+let b = d.B;
 
 function optionBoolToBool(opt) {
   if (opt !== undefined) {
@@ -2254,8 +2051,6 @@ function optionBoolToBool(opt) {
     return false;
   }
 }
-
-let b = d.B;
 
 export { person1, message, myStatus, d, b, optionBoolToBool };
 ```
@@ -2281,53 +2076,46 @@ let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 let message;
 
 if (person1.TAG === "Teacher") {
-  message = `Hello ` + "Jane" + `.`;
+  message = `Hello Jane.`;
 } else {
   let match = "Jane";
   let match$1 = match.status;
   let name = match.name;
   let match$2 = match.reportCard;
   if (match$2.passing) {
-    message =
-      `Congrats ` +
-      name +
-      `, nice GPA of ` +
-      match$2.gpa.toString() +
-      ` you got there!`;
+    message = `Congrats ${name}, nice GPA of ${match$2.gpa.toString()} you got there!`;
   } else {
     let exit = 0;
     if (typeof match$1 !== "object") {
       message =
         match$1 === "Sick"
           ? `How are you feeling?`
-          : `Good luck next semester ` + name + `!`;
+          : `Good luck next semester ${name}!`;
     } else {
       exit = 1;
     }
     if (exit === 1) {
       message =
         match.reportCard.gpa !== 0.0
-          ? `Good luck next semester ` + name + `!`
-          : `Come back in ` + match$1._0.toString() + ` days!`;
+          ? `Good luck next semester ${name}!`
+          : `Come back in ${match$1._0.toString()} days!`;
     }
   }
 }
 
 let myStatus = { TAG: "Vacations", _0: 10 };
 
-let exit$1 = 0;
-
 if (typeof myStatus !== "object") {
   console.log("Hey! How are you?");
+} else if (myStatus.TAG === "Vacations") {
+  console.log(`Come back in ${(10).toString()} days!`);
 } else {
-  exit$1 = 1;
-}
-
-if (exit$1 === 1) {
-  console.log(`Come back in ` + (10).toString() + ` days!`);
+  console.log(`Come back in ${(10).toString()} days!`);
 }
 
 let d = { A: 5, B: 6 };
+
+let b = d.B;
 
 function optionBoolToBool(opt) {
   if (opt !== undefined) {
@@ -2336,8 +2124,6 @@ function optionBoolToBool(opt) {
     return false;
   }
 }
-
-let b = d.B;
 
 export { person1, message, myStatus, d, b, optionBoolToBool };
 ```
@@ -2363,53 +2149,46 @@ let person1 = { TAG: "Teacher", name: "Jane", age: 35 };
 let message;
 
 if (person1.TAG === "Teacher") {
-  message = `Hello ` + "Jane" + `.`;
+  message = `Hello Jane.`;
 } else {
   let match = "Jane";
   let match$1 = match.status;
   let name = match.name;
   let match$2 = match.reportCard;
   if (match$2.passing) {
-    message =
-      `Congrats ` +
-      name +
-      `, nice GPA of ` +
-      match$2.gpa.toString() +
-      ` you got there!`;
+    message = `Congrats ${name}, nice GPA of ${match$2.gpa.toString()} you got there!`;
   } else {
     let exit = 0;
     if (typeof match$1 !== "object") {
       message =
         match$1 === "Sick"
           ? `How are you feeling?`
-          : `Good luck next semester ` + name + `!`;
+          : `Good luck next semester ${name}!`;
     } else {
       exit = 1;
     }
     if (exit === 1) {
       message =
         match.reportCard.gpa !== 0.0
-          ? `Good luck next semester ` + name + `!`
-          : `Come back in ` + match$1._0.toString() + ` days!`;
+          ? `Good luck next semester ${name}!`
+          : `Come back in ${match$1._0.toString()} days!`;
     }
   }
 }
 
 let myStatus = { TAG: "Vacations", _0: 10 };
 
-let exit$1 = 0;
-
 if (typeof myStatus !== "object") {
   console.log("Hey! How are you?");
+} else if (myStatus.TAG === "Vacations") {
+  console.log(`Come back in ${(10).toString()} days!`);
 } else {
-  exit$1 = 1;
-}
-
-if (exit$1 === 1) {
-  console.log(`Come back in ` + (10).toString() + ` days!`);
+  console.log(`Come back in ${(10).toString()} days!`);
 }
 
 let d = { A: 5, B: 6 };
+
+let b = d.B;
 
 function optionBoolToBool(opt) {
   if (opt !== undefined) {
@@ -2418,8 +2197,6 @@ function optionBoolToBool(opt) {
     return false;
   }
 }
-
-let b = d.B;
 
 export { person1, message, myStatus, d, b, optionBoolToBool };
 ```

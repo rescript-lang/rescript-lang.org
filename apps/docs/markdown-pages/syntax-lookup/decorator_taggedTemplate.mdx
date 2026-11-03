@@ -2,13 +2,14 @@
 id: "taggedTemplate-decorator"
 keywords: ["taggedTemplate", "tagged", "template", "decorator"]
 name: "@taggedTemplate"
-summary: "This is the `@taggedTemplate` decorator."
+summary: "The removed decorator for binding JavaScript tag functions; use `taggedTemplate` instead."
 category: "decorators"
+status: "deprecated"
 ---
 
 **Since 11.1**
 
-The `@taggedTemplate` decorator is used to bind to JavaScript tag functions.
+The `@taggedTemplate` decorator was removed in v13. Bind JavaScript tag functions with the built-in `taggedTemplate<'param, 'output>` type instead.
 
 ### Example
 
@@ -17,8 +18,8 @@ The `@taggedTemplate` decorator is used to bind to JavaScript tag functions.
 ```res example
 // see https://bun.sh/docs/runtime/shell
 type result = {exitCode: int}
-@module("bun") @taggedTemplate
-external sh: (array<string>, array<string>) => promise<result> = "$"
+@module("bun")
+external sh: taggedTemplate<string, promise<result>> = "$"
 
 let filename = "index.res"
 let result = await sh`ls ${filename}`

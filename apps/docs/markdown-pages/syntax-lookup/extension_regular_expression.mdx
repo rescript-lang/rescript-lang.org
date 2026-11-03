@@ -7,14 +7,14 @@ category: "extensionpoints"
 status: "deprecated"
 ---
 
-> Deprecated in favor of native regular expression syntax in v12+
+> `%re` was removed in v13. Use a regular expression literal instead.
 
-`%re` is used to create JavaScript regular expressions.
+Regular expression literals create JavaScript regular expressions directly:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-let regex = %re("/^hello/")
+let regex = /^hello/
 let result = regex->RegExp.test("hello world")
 ```
 

@@ -48,8 +48,8 @@ let logUserDetails = async (userId: string) => {
 ```js
 async function logUserDetails(userId) {
   let email = await GlobalAPI.fetchUserMail(userId);
-  await GlobalAPI.sendAnalytics(`User details have been logged for ` + userId);
-  console.log(`Email address for user ` + userId + `: ` + email);
+  await GlobalAPI.sendAnalytics(`User details have been logged for ${userId}`);
+  console.log(`Email address for user ${userId}: ${email}`);
 }
 
 export { logUserDetails };
@@ -126,6 +126,34 @@ let fetchData = async (userId: string): string => {
 }
 ```
 
+## For Await Of
+
+Inside an `async` function, use `for await of` to consume an `asyncIterable<'a>`. Each iteration waits for the next value before running the loop body:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let printMessages = async (messages: asyncIterable<string>) => {
+  for await message of messages {
+    Console.log(message)
+  }
+}
+```
+
+```js
+async function printMessages(messages) {
+  for await (let message of messages) {
+    console.log(message);
+  }
+}
+
+export { printMessages };
+```
+
+</CodeTab>
+
+Use [`for of`](./control-flow.mdx#forof-loops) for ordinary arrays and synchronous iterables; `for await of` expects an async iterable. You can use [`break` and `continue`](./control-flow.mdx#break--continue) to exit the loop early or skip to the next iteration.
+
 ## Error handling
 
 You may use `try / catch` or `switch` to handle exceptions during async execution.
@@ -191,7 +219,7 @@ let fetchData = async () => {
 ```js
 async function fetchData() {
   let mail = (await GlobalAPI.fetchUserMail("1234")).toUpperCase();
-  console.log(`All upper-cased mail: ` + mail);
+  console.log(`All upper-cased mail: ${mail}`);
 }
 
 export { fetchData };
@@ -223,7 +251,7 @@ let fetchData = async () => {
 ```
 
 ```js
-import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.js";
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.mjs";
 
 async function fetchData() {
   let val;

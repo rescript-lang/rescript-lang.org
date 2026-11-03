@@ -145,7 +145,7 @@ function Example(props) {
   let setCount = match[1];
   let count = match[0];
   React.useEffect(() => {
-    document.title = `You clicked ` + count.toString() + ` times!`;
+    document.title = `You clicked ${count.toString()} times!`;
   });
   let onClick = (_evt) => setCount((prev) => (prev + 1) | 0);
   let msg = "You clicked" + count.toString() + "times";
@@ -173,7 +173,7 @@ function Example(props) {
   let setCount = match[1];
   let count = match[0];
   React.useEffect(() => {
-    document.title = `You clicked ` + count.toString() + ` times!`;
+    document.title = `You clicked ${count.toString()} times!`;
   });
   let onClick = (_evt) => setCount((prev) => (prev + 1) | 0);
   let msg = "You clicked" + count.toString() + "times";

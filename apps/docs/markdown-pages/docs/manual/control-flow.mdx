@@ -1,6 +1,6 @@
 ---
 title: "If-Else & Loops"
-description: "If, else, ternary, for, and while"
+description: "If, else, ternary, for, for...of, while, break, and continue"
 canonical: "/docs/manual/control-flow"
 section: "Language Features"
 order: 14
@@ -21,7 +21,7 @@ order: 14
 
 </div>
 
-ReScript supports `if`, `else`, ternary expression (`a ? b : c`), `for` and `while`.
+ReScript supports `if`, `else`, ternary expressions (`a ? b : c`), numeric `for` loops, `for of`, and `while`. Use `break` to exit a loop early and `continue` to skip to its next iteration.
 
 The `switch` pattern supports a default case. Read more about [pattern-matching & destructuring](./pattern-matching-destructuring.mdx).
 
@@ -115,7 +115,7 @@ export { message };
 
 ## For Loops
 
-For loops iterate from a starting value up to (and including) the ending value.
+Numeric `for` loops iterate over integers from a starting value up to (and including) the ending value. The loop variable is local to the loop body.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -185,9 +185,98 @@ for (let x = 3; x >= 1; --x) {
 
 </CodeTab>
 
+## For Of Loops
+
+Use `for of` to visit each value in an array or an `iterable<'a>`, without managing an index:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let names = ["Ada", "Grace", "Margaret"]
+
+for name of names {
+  Console.log(name)
+}
+```
+
+```js
+let names = ["Ada", "Grace", "Margaret"];
+
+for (let name of names) {
+  console.log(name);
+}
+
+export { names };
+```
+
+</CodeTab>
+
+The loop binding must be a variable name or `_`. To destructure a value, do so inside the loop body:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+for entry of [("Ada", 36), ("Grace", 85)] {
+  let (name, age) = entry
+  Console.log(`${name}: ${age->Int.toString}`)
+}
+```
+
+```js
+for (let entry of [
+  ["Ada", 36],
+  ["Grace", 85],
+]) {
+  console.log(`${entry[0]}: ${entry[1].toString()}`);
+}
+```
+
+</CodeTab>
+
+For asynchronous iteration, see [For Await Of](./async-await.mdx#for-awaitof).
+
+## Break & Continue
+
+`break` exits the nearest enclosing loop immediately. `continue` skips the rest of the current iteration and starts the next one. Both work in numeric `for`, `for of`, `for await of`, and `while` loops.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+// Prints 1 and 3
+for number in 1 to 5 {
+  if number == 2 {
+    continue
+  }
+  if number == 4 {
+    break
+  }
+  Console.log(number)
+}
+```
+
+```js
+for (let number = 1; number <= 5; ++number) {
+  if (number === 2) {
+    continue;
+  }
+  if (number === 4) {
+    break;
+  }
+  console.log(number);
+}
+```
+
+</CodeTab>
+
+In a numeric `for` loop, `continue` still advances the loop variable. In a `while` loop, it rechecks the condition, so make sure any necessary updates happen before `continue`.
+
+You can also use `break` and `continue` inside a `switch` within a loop: they target the loop, not the `switch`. They cannot be used outside a loop or from a nested function to control an outer loop.
+
+`break` and `continue` are reserved keywords, so they cannot be used as ordinary variable names.
+
 ## While Loops
 
-While loops execute its body code block while its condition is true.
+While loops execute their body while the condition is true. The condition is checked before each iteration, so the body may never run.
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -205,36 +294,28 @@ while (testCondition) {
 
 </CodeTab>
 
-### Tips & Tricks
+### Exiting Early
 
-There's no loop-breaking `break` keyword (nor early `return` from functions, for that matter) in ReScript. However, we can break out of a while loop easily through using a [mutable binding](./mutation.mdx).
+Use `break` when the stopping condition is discovered inside the loop. There is no need for a separate mutable stop flag:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-let break = ref(false)
-
-while !break.contents {
+while true {
   if Math.random() > 0.3 {
-    break := true
-  } else {
-    Console.log("Still running")
+    break
   }
+  Console.log("Still running")
 }
 ```
 
 ```js
-let $$break = { contents: false };
-
-while (!$$break.contents) {
+while (true) {
   if (Math.random() > 0.3) {
-    $$break.contents = true;
-  } else {
-    console.log("Still running");
+    break;
   }
+  console.log("Still running");
 }
-
-export { $$break };
 ```
 
 </CodeTab>

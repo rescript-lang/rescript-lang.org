@@ -80,7 +80,7 @@ In ReactJS, props are usually described as a single `props` record. In ReScript,
 // src/Article.res
 @react.component
 let make = (~title: string, ~visitorCount: int, ~children: React.element) => {
-  let visitorCountMsg = "You are visitor number: " ++ Belt.Int.toString(visitorCount);
+  let visitorCountMsg = "You are visitor number: " ++ Int.toString(visitorCount);
   <div>
     <div> {React.string(title)} </div>
     <div> {React.string(visitorCountMsg)} </div>
@@ -93,7 +93,8 @@ let make = (~title: string, ~visitorCount: int, ~children: React.element) => {
 import * as JsxRuntime from "react/jsx-runtime";
 
 function Example(props) {
-  let visitorCountMsg = "You are visitor number: " + String(props.visitorCount);
+  let visitorCountMsg =
+    "You are visitor number: " + props.visitorCount.toString();
   return JsxRuntime.jsxs("div", {
     children: [
       JsxRuntime.jsx("div", { children: props.title }),
@@ -112,7 +113,8 @@ export { make };
 import * as JsxRuntime from "react/jsx-runtime";
 
 function Example(props) {
-  let visitorCountMsg = "You are visitor number: " + String(props.visitorCount);
+  let visitorCountMsg =
+    "You are visitor number: " + props.visitorCount.toString();
   return (
     <div>
       <div>{props.title}</div>
@@ -201,7 +203,7 @@ let name = Some("Andrea")
 ```
 
 ```js
-import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.mjs";
 import * as JsxRuntime from "react/jsx-runtime";
 
 function Example$Greeting(props) {
@@ -218,7 +220,7 @@ export { Greeting, name };
 ```
 
 ```jsx
-import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.mjs";
 import * as JsxRuntime from "react/jsx-runtime";
 
 function Example$Greeting(props) {
@@ -282,7 +284,7 @@ module MyList = {
 ```
 
 ```js
-import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.mjs";
 import * as JsxRuntime from "react/jsx-runtime";
 
 function Example$Greeting(props) {
@@ -308,7 +310,7 @@ export { Greeting, MyList };
 ```
 
 ```jsx
-import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.mjs";
 import * as JsxRuntime from "react/jsx-runtime";
 
 function Example$Greeting(props) {
@@ -446,7 +448,7 @@ let make = (props: props) => {
 ```
 
 ```js
-import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.mjs";
 import * as JsxRuntime from "react/jsx-runtime";
 
 function Example$Greeting(props) {
@@ -465,7 +467,7 @@ export { Greeting, make };
 ```
 
 ```jsx
-import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.mjs";
 import * as JsxRuntime from "react/jsx-runtime";
 
 function Example$Greeting(props) {
@@ -530,7 +532,7 @@ let make = () => {
 ```
 
 ```js
-import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.mjs";
 import * as JsxRuntime from "react/jsx-runtime";
 
 function Example$Greeting(props) {
@@ -551,7 +553,7 @@ export { Greeting, make };
 ```
 
 ```jsx
-import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.mjs";
 import * as JsxRuntime from "react/jsx-runtime";
 
 function Example$Greeting(props) {
@@ -577,9 +579,9 @@ export { Greeting, make };
 
 **Note:** React components are capitalized; primitive DOM elements like `div` or `button` are uncapitalized. More infos on the JSX specifics and code transformations can be found in our [JSX language manual section](../manual/jsx.mdx#capitalized-tag).
 
-### Handwritten Components
+### Components with a Props Record
 
-You don't need to use the `@react.component` decorator to write components that can be used in JSX. Instead you can write the `make` function with type `props` and these will always work as React components. But then you will have the issue with the component name being "make" in the React dev tools.
+Use `@react.componentWithProps` when a component takes a single props record instead of labeled arguments.
 
 For example:
 
@@ -589,6 +591,7 @@ For example:
 module Link = {
   type props = {href: string, children: React.element};
 
+  @react.componentWithProps
   let make = (props: props) => {
     <a href={props.href}>
      {props.children}
@@ -600,7 +603,7 @@ module Link = {
 ```
 
 ```js
-import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.mjs";
 import * as JsxRuntime from "react/jsx-runtime";
 
 function Example$Greeting(props) {
@@ -609,19 +612,19 @@ function Example$Greeting(props) {
 
 let Greeting = { make: Example$Greeting };
 
-function make(props) {
+function Example$Link(props) {
   return JsxRuntime.jsx("a", { children: props.children, href: props.href });
 }
 
-let Link = { make: make };
+let Link = { make: Example$Link };
 
-JsxRuntime.jsx(make, { href: "/docs", children: "Docs" });
+JsxRuntime.jsx(Example$Link, { href: "/docs", children: "Docs" });
 
 export { Greeting, Link };
 ```
 
 ```jsx
-import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.js";
+import * as Stdlib_Option from "@rescript/runtime/lib/es6/Stdlib_Option.mjs";
 import * as JsxRuntime from "react/jsx-runtime";
 
 function Example$Greeting(props) {
@@ -630,11 +633,11 @@ function Example$Greeting(props) {
 
 let Greeting = { make: Example$Greeting };
 
-function make(props) {
+function Example$Link(props) {
   return <a href={props.href}>{props.children}</a>;
 }
 
-let Link = { make: make };
+let Link = { make: Example$Link };
 
 <Link.make href={"/docs"}>{"Docs"}</Link.make>;
 

@@ -6,46 +6,55 @@ summary: "This is the `@deriving` decorator."
 category: "decorators"
 ---
 
-When the `@deriving` decorator is applied to a **record** type,
-it expands the type into a factory function plus a set of
-getter/setter functions for its fields.
+Use `@deriving(accessors)` on a record type to generate functions that read its fields.
 
-> Note that this is an outdated decorator and you may no longer need to use it.
-> See [Convert Record Type to Abstract Record](../docs/manual/generate-converters-accessors.mdx#convert-record-type-to-abstract-record) for more details.
+The old `@deriving(abstract)` form was removed in v13. Use ordinary records and record literals for JavaScript objects, including optional fields and mutable fields when needed.
 
 ### Example
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
-@deriving(abstract)
+@deriving(accessors)
 type person = {
   name: string,
   age: int,
   job: string,
 }
 
-let joe = person(~name="Joe", ~age=20, ~job="teacher")
+let joe = {name: "Joe", age: 20, job: "teacher"}
 
-let joeName = nameGet(joe)
-let joeAge = ageGet(joe)
-let joeJob = jobGet(joe)
+let joeName = name(joe)
+let joeAge = age(joe)
+let joeJob = job(joe)
 ```
 
 ```js
+function name(param) {
+  return param.name;
+}
+
+function age(param) {
+  return param.age;
+}
+
+function job(param) {
+  return param.job;
+}
+
 let joe = { name: "Joe", age: 20, job: "teacher" };
 
-let joeName = joe.name;
+let joeName = "Joe";
 
-let joeAge = joe.age;
+let joeAge = 20;
 
-let joeJob = joe.job;
+let joeJob = "teacher";
 
-export { joe, joeName, joeAge, joeJob };
+export { name, age, job, joe, joeName, joeAge, joeJob };
 ```
 
 </CodeTab>
 
 ### References
 
-- [Convert Record Type to Abstract Record](../docs/manual/generate-converters-accessors.mdx#convert-record-type-to-abstract-record)
+- [Generate Field Accessors for Records](../docs/manual/generate-converters-accessors.mdx#generate-field-accessors-for-records)

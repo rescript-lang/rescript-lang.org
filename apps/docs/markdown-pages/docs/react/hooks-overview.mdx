@@ -38,7 +38,7 @@ let make = () => {
     setCount(prev => prev + 1)
   }
 
-  let msg = "You clicked" ++ Belt.Int.toString(count) ++  "times"
+  let msg = "You clicked" ++ Int.toString(count) ++  "times"
 
   <div>
     <p>{React.string(msg)}</p>
@@ -55,7 +55,7 @@ function Example(props) {
   let match = React.useState(() => 0);
   let setCount = match[1];
   let onClick = (_evt) => setCount((prev) => (prev + 1) | 0);
-  let msg = "You clicked" + String(match[0]) + "times";
+  let msg = "You clicked" + match[0].toString() + "times";
   return JsxRuntime.jsxs("div", {
     children: [
       JsxRuntime.jsx("p", { children: msg }),
@@ -77,7 +77,7 @@ function Example(props) {
   let match = React.useState(() => 0);
   let setCount = match[1];
   let onClick = (_evt) => setCount((prev) => (prev + 1) | 0);
-  let msg = "You clicked" + String(match[0]) + "times";
+  let msg = "You clicked" + match[0].toString() + "times";
   return (
     <div>
       <p>{msg}</p>

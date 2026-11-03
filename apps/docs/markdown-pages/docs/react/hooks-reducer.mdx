@@ -64,7 +64,7 @@ let make = () => {
   let (state, dispatch) = React.useReducer(reducer, {count: 0})
 
   <>
-    {React.string("Count:" ++ Belt.Int.toString(state.count))}
+    {React.string("Count:" ++ Int.toString(state.count))}
     <button onClick={(_) => dispatch(Dec)}> {React.string("-")} </button>
     <button onClick={(_) => dispatch(Inc)}> {React.string("+")} </button>
   </>
@@ -88,7 +88,7 @@ function Example(props) {
   let dispatch = match[1];
   return JsxRuntime.jsxs(JsxRuntime.Fragment, {
     children: [
-      "Count:" + String(match[0].count),
+      "Count:" + match[0].count.toString(),
       JsxRuntime.jsx("button", {
         children: "-",
         onClick: (param) => dispatch("Dec"),
@@ -123,7 +123,7 @@ function Example(props) {
   let dispatch = match[1];
   return (
     <>
-      {"Count:" + String(match[0].count)}
+      {"Count:" + match[0].count.toString()}
       <button onClick={(param) => dispatch("Dec")}>{"-"}</button>
       <button onClick={(param) => dispatch("Inc")}>{"+"}</button>
     </>
@@ -176,7 +176,7 @@ let reducer = (state, action) =>
     let todos = Array.filter(state.todos, todo => todo.id !== id)
     {...state, todos: todos}
   | ToggleTodo(id) =>
-    let todos = Belt.Array.map(state.todos, todo =>
+    let todos = Array.map(state.todos, todo =>
       if todo.id === id {
         {
           ...todo,
@@ -198,7 +198,7 @@ let make = () => {
     {todos: initialTodos, nextId: 2},
   )
 
-  let todos = Belt.Array.map(state.todos, todo =>
+  let todos = Array.map(state.todos, todo =>
     <li>
       {React.string(todo.content)}
       <button onClick={_ => dispatch(RemoveTodo(todo.id))}>
@@ -218,7 +218,6 @@ let make = () => {
 
 ```js
 import * as React from "react";
-import * as Belt_Array from "@rescript/runtime/lib/es6/Belt_Array.js";
 import * as JsxRuntime from "react/jsx-runtime";
 
 function reducer(state, action) {
@@ -234,7 +233,7 @@ function reducer(state, action) {
       return { todos: todos$1, nextId: state.nextId };
     case "ToggleTodo":
       let id$1 = action._0;
-      let todos$2 = Belt_Array.map(state.todos, (todo) => {
+      let todos$2 = state.todos.map((todo) => {
         if (todo.id === id$1) {
           return {
             id: todo.id,
@@ -256,7 +255,7 @@ let initialTodos = [
 function Example(props) {
   let match = React.useReducer(reducer, { todos: initialTodos, nextId: 2 });
   let dispatch = match[1];
-  let todos = Belt_Array.map(match[0].todos, (todo) =>
+  let todos = match[0].todos.map((todo) =>
     JsxRuntime.jsxs("li", {
       children: [
         todo.content,
@@ -287,7 +286,6 @@ export { reducer, initialTodos, make };
 
 ```jsx
 import * as React from "react";
-import * as Belt_Array from "@rescript/runtime/lib/es6/Belt_Array.js";
 import * as JsxRuntime from "react/jsx-runtime";
 
 function reducer(state, action) {
@@ -303,7 +301,7 @@ function reducer(state, action) {
       return { todos: todos$1, nextId: state.nextId };
     case "ToggleTodo":
       let id$1 = action._0;
-      let todos$2 = Belt_Array.map(state.todos, (todo) => {
+      let todos$2 = state.todos.map((todo) => {
         if (todo.id === id$1) {
           return {
             id: todo.id,
@@ -325,7 +323,7 @@ let initialTodos = [
 function Example(props) {
   let match = React.useReducer(reducer, { todos: initialTodos, nextId: 2 });
   let dispatch = match[1];
-  let todos = Belt_Array.map(match[0].todos, (todo) => (
+  let todos = match[0].todos.map((todo) => (
     <li>
       {todo.content}
       <button onClick={(param) => dispatch({ TAG: "RemoveTodo", _0: todo.id })}>
@@ -405,7 +403,7 @@ let make = (~initialCount: int) => {
   )
 
   <>
-    {React.string("Count:" ++ Belt.Int.toString(state.count))}
+    {React.string("Count:" ++ Int.toString(state.count))}
     <button onClick={_ => dispatch(Dec)}> {React.string("-")} </button>
     <button onClick={_ => dispatch(Inc)}> {React.string("+")} </button>
   </>
@@ -437,7 +435,7 @@ function Example(props) {
   let dispatch = match[1];
   return JsxRuntime.jsxs(JsxRuntime.Fragment, {
     children: [
-      "Count:" + String(match[0].count),
+      "Count:" + match[0].count.toString(),
       JsxRuntime.jsx("button", {
         children: "-",
         onClick: (param) => dispatch("Dec"),
@@ -480,7 +478,7 @@ function Example(props) {
   let dispatch = match[1];
   return (
     <>
-      {"Count:" + String(match[0].count)}
+      {"Count:" + match[0].count.toString()}
       <button onClick={(param) => dispatch("Dec")}>{"-"}</button>
       <button onClick={(param) => dispatch("Inc")}>{"+"}</button>
     </>

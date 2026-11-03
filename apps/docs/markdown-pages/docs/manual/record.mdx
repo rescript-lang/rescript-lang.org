@@ -197,6 +197,96 @@ export { me, name };
 
 </CodeTab>
 
+## Destructuring Record Rest
+
+You can destructure individual fields and capture the remaining fields as another record. Declare a type for the remaining fields, then use `...typeName as bindingName` in the pattern:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+type contact = {name: string, email: string, active: bool}
+type contactDetails = {email: string, active: bool}
+
+let contact = {name: "Ada", email: "ada@example.com", active: true}
+let {name, ...contactDetails as details} = contact
+
+Console.log(name) // "Ada"
+Console.log(details.email) // "ada@example.com"
+```
+
+```js
+let contact = { name: "Ada", email: "ada@example.com", active: true };
+
+let name = "Ada";
+
+let { name: __unused0, ...details } = contact;
+
+console.log(name);
+
+console.log(details.email);
+
+let me = { age: 5, name: "Big ReScript" };
+
+export { me, contact, details, name };
+```
+
+</CodeTab>
+
+Here, `contactDetails` is a type, while `details` is the new value containing `email` and `active`, but not `name`. Unlike JavaScript's `{name, ...details}`, ReScript requires the rest record type to be declared; it does not infer a new record type from the leftover fields.
+
+The rest type must describe the remaining fields with compatible types and optionality. You can use a type from another module, such as `...ContactDetails.t as details`. A pattern can contain only one rest element.
+
+Record rest patterns cannot be used on source records with `mutable` fields or with unboxed record types.
+
+### Pattern Matching and Function Parameters
+
+Record rest also works in `switch` cases and function parameter patterns:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+type contact = {name: string, email: string, active: bool}
+type contactDetails = {email: string, active: bool}
+
+let describeContact = (contact: contact) => {
+  switch contact {
+  | {name: "Ada", ...contactDetails as details} =>
+    `Contact Ada at ${details.email}`
+  | {name, ...contactDetails as details} =>
+    `Contact ${name} at ${details.email}`
+  }
+}
+
+let getDetails = ({name: _, ...contactDetails as details}: contact) => details
+```
+
+```js
+function describeContact(contact) {
+  let name = contact.name;
+  if (name === "Ada") {
+    let { name: __unused0, ...details } = contact;
+    return `Contact Ada at ${details.email}`;
+  }
+  let { name: __unused0$1, ...details$1 } = contact;
+  return `Contact ${name} at ${details$1.email}`;
+}
+
+function getDetails(param) {
+  let { name: __unused0, ...rest } = param;
+  return rest;
+}
+
+let me = { age: 5, name: "Big ReScript" };
+
+export { me, describeContact, getDetails };
+```
+
+</CodeTab>
+
+In the first case, `name: "Ada"` matches a particular value. In the second, `name` binds any other name. Both cases capture the remaining fields in `details`. In `getDetails`, `name: _` excludes `name` without binding it.
+
+Record rest creates a new record without mutating the original. The copy is shallow: nested objects are still shared. This differs from [record type coercion](#record-type-coercion), which changes only the type and keeps the original value, and from [immutable update](#immutable-update), which creates a new value of the same record type.
+
 ## Immutable Update
 
 New records can be created from old records with the `...` spread operator. The original record isn't mutated.

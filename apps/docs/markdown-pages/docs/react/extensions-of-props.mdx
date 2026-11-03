@@ -42,9 +42,7 @@ let Comp = { make: make };
 
 let props = { b: "b" };
 
-let newrecord = { ...props };
-
-JsxRuntime.jsx(make, ((newrecord.a = "a"), newrecord));
+JsxRuntime.jsx(make, { ...props, a: "a" });
 
 export { Comp, props };
 ```
@@ -59,9 +57,7 @@ let Comp = { make: make };
 
 let props = { b: "b" };
 
-let newrecord = { ...props };
-
-<Comp.make {...newrecord} a={"a"} />;
+<Comp.make {...props} a={"a"} />;
 
 export { Comp, props };
 ```
