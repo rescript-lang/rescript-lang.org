@@ -3,10 +3,7 @@ type stylesheet = {rel: string, href: string}
 @live
 let links: unit => array<stylesheet>
 
-type props = {
-  bundleBaseUrl: string,
-  versions: array<string>,
-}
+type props = CompilerData.t
 
 @live
 let loader: unit => promise<option<props>>

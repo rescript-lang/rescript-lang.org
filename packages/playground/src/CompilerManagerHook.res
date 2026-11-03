@@ -41,15 +41,7 @@ module CdnMeta = {
   let getLibraryCmijUrl = (baseUrl, version, libraryName: string): string =>
     `${baseUrl}/${Semver.toString(version)}/${libraryName}/cmij.js`
 
-  let getStdlibRuntimeUrl = (baseUrl, version, filename) => {
-    // The compiler emits .mjs imports, while the published runtime bundles use .js.
-    let filename = if filename->String.endsWith(".mjs") {
-      filename->String.slice(~start=0, ~end=-4) ++ ".js"
-    } else {
-      filename
-    }
-    `${baseUrl}/${Semver.toString(version)}/compiler-builtins/stdlib/${filename}`
-  }
+  let getStdlibRuntimeUrl = CompilerRuntimeImport.stdlibUrl
 }
 
 module FinalResult = {
@@ -149,11 +141,6 @@ let wrapReactApp = code =>
   ${code}
   window.reactRoot.render(React.createElement(App.make, {}));
 })();`
-
-let capitalizeFirstLetter = string => {
-  let firstLetter = string->String.charAt(0)->String.toUpperCase
-  `${firstLetter}${string->String.slice(~start=1)}`
-}
 
 type error =
   | SetupError(string)
@@ -595,37 +582,10 @@ let useCompilerManager = (
 
         let ast = Parser.parse(jsCode, {sourceType: "module"})
         let {entryPointExists, code, imports} = PlaygroundValidator.validate(ast)
-        let imports = imports->Dict.mapValues(path => {
-          let filename = path->String.slice(~start=9) // the part after "./stdlib/"
-          let filename = switch state.selected.id {
-          | {major: 12, minor: 0, patch: 0, preRelease: Some(Alpha(alpha))} if alpha < 8 =>
-            let filename = if filename->String.startsWith("core__") {
-              filename->String.slice(~start=6)
-            } else {
-              filename
-            }
-            capitalizeFirstLetter(filename)
-          | {major} if major < 12 && filename->String.startsWith("core__") =>
-            capitalizeFirstLetter(filename)
-          | _ => filename
-          }
-          let compilerVersion = switch state.selected.id {
-          | {major: 12, minor: 0, patch: 0, preRelease: Some(Alpha(alpha))} if alpha < 9 => {
-              Semver.major: 12,
-              minor: 0,
-              patch: 0,
-              preRelease: Some(Alpha(9)),
-            }
-          | {major, minor} if (major === 11 && minor < 2) || major < 11 => {
-              major: 11,
-              minor: 2,
-              patch: 0,
-              preRelease: Some(Beta(2)),
-            }
-          | version => version
-          }
-          CdnMeta.getStdlibRuntimeUrl(bundleBaseUrl, compilerVersion, filename)
-        })
+        let imports =
+          imports->Dict.mapValues(path =>
+            CompilerRuntimeImport.url(~bundleBaseUrl, ~compilerVersion=state.selected.id, path)
+          )
 
         entryPointExists
           ? code->wrapReactApp->EvalIFrame.sendOutput(imports)

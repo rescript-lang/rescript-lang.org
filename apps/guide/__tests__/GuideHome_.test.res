@@ -33,7 +33,6 @@ afterEach(clearGuideState)
 
 let compilerData: GuideCompilerData.t = {
   bundleBaseUrl: "/test-compiler",
-  versions: ["12.2.0"],
 }
 
 test("loads saved guide editor code into the editor", async () => {

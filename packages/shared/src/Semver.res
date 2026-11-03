@@ -73,3 +73,39 @@ let tryGetMajorString = (versionStr: string) =>
   | None => versionStr // fallback to given version if it cannot be parsed
   | Some({major}) => "v" ++ major->Int.toString
   }
+
+let preReleaseParts = preRelease =>
+  switch preRelease {
+  | Alpha(number) => ("alpha", number)
+  | Beta(number) => ("beta", number)
+  | Dev(number) => ("dev", number)
+  | Rc(number) => ("rc", number)
+  }
+
+let comparePreRelease = (a, b) =>
+  switch (a, b) {
+  | (None, None) => 0.0
+  | (None, Some(_)) => 1.0
+  | (Some(_), None) => -1.0
+  | (Some(a), Some(b)) =>
+    let (aName, aNumber) = preReleaseParts(a)
+    let (bName, bNumber) = preReleaseParts(b)
+    switch String.compare(aName, bName) {
+    | 0.0 => Int.compare(aNumber, bNumber)
+    | result => result
+    }
+  }
+
+let compare = (a, b) =>
+  switch Int.compare(a.major, b.major) {
+  | 0.0 =>
+    switch Int.compare(a.minor, b.minor) {
+    | 0.0 =>
+      switch Int.compare(a.patch, b.patch) {
+      | 0.0 => comparePreRelease(a.preRelease, b.preRelease)
+      | result => result
+      }
+    | result => result
+    }
+  | result => result
+  }

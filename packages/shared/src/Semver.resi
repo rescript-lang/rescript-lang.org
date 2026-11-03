@@ -16,3 +16,5 @@ let parse: string => option<t>
 let toString: t => string
 
 let tryGetMajorString: string => string
+
+let compare: (t, t) => float

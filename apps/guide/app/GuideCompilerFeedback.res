@@ -1,12 +1,8 @@
 module Api = RescriptCompilerApi
 
 module Output = {
-  type level = [
-    | #log
-    | #warn
-    | #error
-  ]
-  type runtimeLog = {level: level, content: array<string>}
+  type level = RuntimeConsole.level
+  type runtimeLog = RuntimeConsole.log = {level: level, content: array<string>}
 
   type t = {
     status: string,
