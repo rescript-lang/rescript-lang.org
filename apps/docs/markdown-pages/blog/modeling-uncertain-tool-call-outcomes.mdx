@@ -1,0 +1,116 @@
+---
+author: tejesh-vaish
+date: "2026-10-26"
+title: Modeling uncertain tool-call outcomes with variants
+badge: community
+description: |
+  Keep a missing tool reply separate from rejection with a small,
+  runnable ReScript example.
+---
+
+I'm new to ReScript and use it personally. In this hypothetical workflow inspired by [Lumian's agent workflows](https://lumian.ai/agents/), a seller approves a product-title update. The request leaves, but the UI times out before the tool's final reply arrives. The title might already have changed, so showing "Failed" with a Retry button could mislead the seller. I'd give the missing reply its own state.
+
+## Track what the UI knows
+
+I use a [variant](../docs/manual/variant.mdx) to keep output or a rejection reason attached to its state. `Pending` means we're waiting. `Unresolved` means the local waiting deadline passed without a final reply. `Completed` carries output, including an empty string. `Rejected` records a final reply from the tool refusing the update. A network or parse error, or approval being withheld, doesn't count as that reply.
+
+The events here have already been validated. Every event carries an `attemptId`, including deadlines. Give each new attempt a fresh ID and never reuse it. The ID check correlates events; ID allocation and sender authentication happen outside this example.
+
+Open the example with the external-link icon on the ReScript tab and select [ReScript 12.3.1](https://github.com/rescript-lang/rescript/releases/tag/v12.3.1) before running it. The Output tab contains the recorded console output.
+
+<CodeTab labels={["ReScript", "Output"]}>
+
+```res example
+type status =
+  | Pending
+  | Unresolved
+  | Completed(string)
+  | Rejected(string)
+
+type call = {attemptId: string, status: status}
+type signal = Deadline | CompletedReply(string) | RejectedReply(string)
+type event = {attemptId: string, signal: signal}
+
+let begin = attemptId => {attemptId, status: Pending}
+
+let applySignal = (call, signal) =>
+  switch signal {
+  | Deadline =>
+    if call.status === Pending {
+      {...call, status: Unresolved}
+    } else {
+      call
+    }
+  | CompletedReply(output) => {...call, status: Completed(output)}
+  | RejectedReply(reason) => {...call, status: Rejected(reason)}
+  }
+
+let receive = (call: call, event) => {
+  if call.attemptId !== event.attemptId {
+    call
+  } else {
+    switch call.status {
+    | Completed(_) | Rejected(_) => call
+    | Pending | Unresolved => applySignal(call, event.signal)
+    }
+  }
+}
+
+let show = call =>
+  switch call.status {
+  | Pending => "Pending"
+  | Unresolved => "Unresolved"
+  | Completed(output) => "Completed: " ++ output
+  | Rejected(reason) => "Rejected: " ++ reason
+  }
+
+let pending = begin("title-1")
+pending->show->Console.log
+
+let waiting = pending->receive({attemptId: "title-1", signal: Deadline})
+waiting->show->Console.log
+
+let stillWaiting = waiting->receive({
+  attemptId: "title-0",
+  signal: CompletedReply("Old title"),
+})
+stillWaiting->show->Console.log
+
+let saved = stillWaiting->receive({
+  attemptId: "title-1",
+  signal: CompletedReply("Title saved"),
+})
+saved->show->Console.log
+
+saved
+->receive({attemptId: "title-1", signal: RejectedReply("Too late")})
+->receive({attemptId: "title-1", signal: Deadline})
+->show->Console.log
+
+begin("title-2")
+->receive({attemptId: "title-2", signal: RejectedReply("Title too long")})
+->show->Console.log
+```
+
+```text
+Pending
+Unresolved
+Unresolved
+Completed: Title saved
+Completed: Title saved
+Rejected: Title too long
+```
+
+</CodeTab>
+
+## Read the result
+
+The deadline changes `Pending` to `Unresolved`. A matching late reply can still complete or reject the attempt. Repeating the deadline leaves it unresolved. `receive` builds a new record when the status changes, so the earlier `pending` value stays pending.
+
+The third line stays `Unresolved` when the old `title-0` completion arrives. The ID check ignores it, so the matching `title-1` completion can still save the result on the next line. Stale rejections and deadlines are ignored too.
+
+The fifth line tests a different rule: a contradictory rejection and a deadline leave the completed result intact. Once a matching final reply is accepted, every later event preserves it. Keeping the first final is a client policy. Conflicting tool replies still need reconciliation.
+
+[Pattern matching](../docs/manual/pattern-matching-destructuring.mdx) makes `show` handle all four states and their payloads. Remove an arm and the compiler reports the missing case. That check covers these typed values. We still need message validation and the transition guards in `receive`.
+
+For `Unresolved`, I'd show "No final reply yet." The deadline alone doesn't prove failure, cancellation, or rollback, and it doesn't tell us whether retry is safe. Before offering a retry, a real integration still needs to validate and authenticate incoming replies, supply fresh attempt IDs, and decide how to reconcile remote effects.
