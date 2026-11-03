@@ -11,7 +11,7 @@ order: 1
 
 ReScript comes with a fast, native build system through the [`rescript`](https://www.npmjs.com/package/rescript) package.
 
-Every ReScript project needs a build description file, `rescript.json`.
+Configure each ReScript package in a `rescript.json` file. See [Build Configuration](./build-configuration.mdx) for the available settings and compatibility with older configuration files.
 
 The current build system was introduced in ReScript 12. It tracks dependencies across packages and schedules only the work affected by a change. See [Reforging the Build System](../../blog/reforging-build-system.mdx) for a deeper look at its architecture.
 
@@ -54,9 +54,30 @@ rescript watch
 
 Any new file change will be picked up and the build will re-run.
 
+Watch output distinguishes rebuilds, successful compilations, warnings, and failures. To clear the terminal before each rebuild, use:
+
+```sh
+rescript watch --clear-screen
+```
+
+Screen clearing only applies to interactive terminal output. You can also run a separate `rescript build` while a watcher is active.
+
 Third-party libraries in `node_modules` aren't watched.
 
 For monorepo setup in ReScript 12+, see [Setting up a monorepo](./build-monorepo-setup.mdx).
+
+### Production Builds
+
+Use `--prod` to exclude `dev-dependencies` and source directories marked with `"type": "dev"`:
+
+```sh
+rescript build --prod
+rescript watch --prod
+```
+
+This filtering applies across the packages being built, including local monorepo packages. Without `--prod`, local packages also compile their dev sources and dev dependencies.
+
+To select optional parts of a package's source tree, see [Features](./build-configuration.mdx#features).
 
 ### Incremental Builds
 
@@ -69,6 +90,8 @@ If you ever get into a stale build for edge-case reasons, use:
 ```sh
 rescript clean
 ```
+
+`rescript clean --prod` applies the same dev-source and dev-dependency exclusions as production builds. Cleaning covers all feature-gated source directories; `clean` does not accept `--features`.
 
 ## Format Source Files
 
