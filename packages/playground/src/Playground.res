@@ -179,16 +179,23 @@ module ResultPane = {
 
   type prefix = [#W | #E]
 
-  let compactErrorLine = (~highlight=false, ~prefix: prefix, locMsg: Api.LocMsg.t) => {
+  let compactErrorLine = (
+    ~highlight=false,
+    ~prefix: prefix,
+    ~warnNumber=?,
+    locMsg: Api.LocMsg.t,
+  ) => {
     let {Api.LocMsg.row: row, column, shortMsg} = locMsg
     let prefixColor = switch prefix {
     | #W => "text-orange"
     | #E => "text-fire"
     }
 
-    let prefixText = switch prefix {
-    | #W => "[W]"
-    | #E => "[E]"
+    let prefixText = switch (prefix, warnNumber) {
+    | (#W, Some(number)) => `[W${number->Int.toString}]`
+    | (#E, Some(number)) => `[E${number->Int.toString}]`
+    | (#W, None) => "[W]"
+    | (#E, None) => "[E]"
     }
 
     let highlightClass = switch (highlight, prefix) {
@@ -285,12 +292,17 @@ module ResultPane = {
       | WarningErr(warnings) =>
         filterHighlightedLocWarnings(~focusedRowCol, warnings)
         ->Array.mapWithIndex((warning, i) => {
-          let (prefix, details) = switch warning {
-          | Api.Warning.Warn({details}) => (#W, details)
-          | WarnErr({details}) => (#E, details)
+          let (prefix, warnNumber, details) = switch warning {
+          | Api.Warning.Warn({warnNumber, details}) => (#W, warnNumber, details)
+          | WarnErr({warnNumber, details}) => (#E, warnNumber, details)
           }
           <div key={Int.toString(i)}>
-            {compactErrorLine(~highlight=isHighlighted(~focusedRowCol?, details), ~prefix, details)}
+            {compactErrorLine(
+              ~highlight=isHighlighted(~focusedRowCol?, details),
+              ~prefix,
+              ~warnNumber,
+              details,
+            )}
           </div>
         })
         ->React.array
@@ -306,12 +318,17 @@ module ResultPane = {
       } else {
         filterHighlightedLocWarnings(~focusedRowCol, warnings)
         ->Array.mapWithIndex((warning, i) => {
-          let (prefix, details) = switch warning {
-          | Api.Warning.Warn({details}) => (#W, details)
-          | WarnErr({details}) => (#E, details)
+          let (prefix, warnNumber, details) = switch warning {
+          | Api.Warning.Warn({warnNumber, details}) => (#W, warnNumber, details)
+          | WarnErr({warnNumber, details}) => (#E, warnNumber, details)
           }
           <div key={Int.toString(i)}>
-            {compactErrorLine(~highlight=isHighlighted(~focusedRowCol?, details), ~prefix, details)}
+            {compactErrorLine(
+              ~highlight=isHighlighted(~focusedRowCol?, details),
+              ~prefix,
+              ~warnNumber,
+              details,
+            )}
           </div>
         })
         ->React.array
