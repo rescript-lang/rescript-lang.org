@@ -4,416 +4,113 @@ date: "2026-10-26"
 title: Modeling uncertain tool-call outcomes with variants
 badge: community
 description: |
-  Keep late replies, explicit rejections, and unresolved tool calls distinct
-  with a small ReScript model and a controllable mock.
+  Keep a missing tool reply separate from rejection with a small,
+  runnable ReScript example.
 ---
 
-You start a documentation lookup, then start another run before the first reply arrives. The second run finds the Promise page first. How should the UI handle an older answer arriving afterward?
+I'm new to ReScript and use it personally. In this hypothetical workflow inspired by [Lumian's agent workflows](https://lumian.ai/agents/), a seller approves a product-title update. The request leaves, but the UI times out before the tool's final reply arrives. The title might already have changed, so showing "Failed" with a Retry button could mislead the seller. I'd give the missing reply its own state.
 
-Assigning every arriving answer to the result field would put the older answer under the newer request. A local deadline needs different handling too: with no final reply, the UI can't say that the tool rejected the call.
+## Track what the UI knows
 
-We'll describe what the UI knows with ReScript v12 variants and connect the model to ordinary browser controls. You'll choose when to release replies and local deadline observations from a manually held queue. You don't need a model account or remote tool.
+I use a [variant](../docs/manual/variant.mdx) to keep output or a rejection reason attached to its state. `Pending` means we're waiting. `Unresolved` means the local waiting deadline passed without a final reply. `Completed` carries output, including an empty string. `Rejected` records a final reply from the tool refusing the update. A network or parse error, or approval being withheld, doesn't count as that reply.
 
-## Model a call with variants
+The events here have already been validated. Every event carries an `attemptId`, including deadlines. Give each new attempt a fresh ID and never reuse it. The ID check correlates events; ID allocation and sender authentication happen outside this example.
 
-A call can be:
+Open the example with the external-link icon on the ReScript tab and select [ReScript 12.3.1](https://github.com/rescript-lang/rescript/releases/tag/v12.3.1) before running it. The Output tab contains the recorded console output.
 
-- `Pending`: waiting for a final reply.
-- `Completed(output)`: received an explicit completion with a string result.
-- `Rejected(reason)`: received an explicit rejection with a string reason.
-- `Unresolved`: observed a local deadline without receiving a final reply.
+<CodeTab labels={["ReScript", "Output"]}>
 
-`Unresolved` can still become `Completed` or `Rejected`. Passing a deadline tells the client that it's still missing a final reply. It doesn't tell us whether the tool stopped, failed, or continued working.
-
-A [variant](../docs/manual/variant.mdx) keeps the payload with the state that gives it meaning. A completed empty string is still a completion. We won't use the presence of result text to decide which state we're in.
-
-For one matching call identity, use these transitions:
-
-| Current state         | Incoming event                    | Next state        |
-| --------------------- | --------------------------------- | ----------------- |
-| Pending               | Completion                        | Completed(output) |
-| Pending               | Explicit rejection                | Rejected(reason)  |
-| Pending               | Local deadline                    | Unresolved        |
-| Unresolved            | Completion                        | Completed(output) |
-| Unresolved            | Explicit rejection                | Rejected(reason)  |
-| Unresolved            | Local deadline                    | Unresolved        |
-| Completed or Rejected | Any later final reply or deadline | Unchanged         |
-
-The first accepted final reply wins. This policy makes duplicate delivery predictable, including a contradictory later reply. The client reports that it ignored the later final; it doesn't establish which reply reflects the tool's authoritative outcome.
-
-## Match both identifiers
-
-Use a pair: `runId` identifies the run, and `callId` identifies a call within it. Every run in this lab uses the same `callId`, `lookup`, so checking that field alone would accept an older run's reply. Both fields must match exactly.
-
-Deadlines need the same guard. A deadline captured for run-1 must not turn run-2 into `Unresolved`. Starting a new run creates a new pending call, while older messages stay in the queue so we can exercise that boundary.
-
-These identifiers correlate messages. They don't authenticate a sender. In a real application, the transport must establish who can send replies.
-
-## Add the model
-
-Create `src/ToolCall.res`. JavaScript will keep its `call` value opaque and use `begin`, `receive`, `expire`, and `view`.
-
-```res file=ToolCall.res
-type key = {runId: string, callId: string}
-
+```res example
 type status =
   | Pending
+  | Unresolved
   | Completed(string)
   | Rejected(string)
-  | Unresolved
 
-type call = {key: key, status: status}
-type reply = {key: key, outcome: result<string, string>}
-type update = {call: call, notice: string}
+type call = {attemptId: string, status: status}
+type signal = Deadline | CompletedReply(string) | RejectedReply(string)
+type event = {attemptId: string, signal: signal}
 
-type view = {
-  runId: string,
-  callId: string,
-  status: string,
-  detail: string,
-}
+let begin = attemptId => {attemptId, status: Pending}
 
-let begin = (runId, callId): call => {key: {runId, callId}, status: Pending}
-
-let sameKey = (a: key, b: key) => a.runId === b.runId && a.callId === b.callId
-
-let decode = (json: JSON.t): result<reply, string> => {
-  open JSON
-  switch json {
-  | Object(dict{
-      "runId": String(runId),
-      "callId": String(callId),
-      "kind": String("completed"),
-      "output": String(output),
-    }) =>
-    Ok({key: {runId, callId}, outcome: Ok(output)})
-  | Object(dict{
-      "runId": String(runId),
-      "callId": String(callId),
-      "kind": String("rejected"),
-      "reason": String(reason),
-    }) =>
-    Ok({key: {runId, callId}, outcome: Error(reason)})
-  | _ =>
-    Error("Invalid reply: expected string identifiers and a completed output or rejected reason.")
+let applySignal = (call, signal) =>
+  switch signal {
+  | Deadline =>
+    if call.status === Pending {
+      {...call, status: Unresolved}
+    } else {
+      call
+    }
+  | CompletedReply(output) => {...call, status: Completed(output)}
+  | RejectedReply(reason) => {...call, status: Rejected(reason)}
   }
-}
 
-let parse = raw => {
-  let parsed = try {
-    Ok(JSON.parseOrThrow(raw))
-  } catch {
-  | _ => Error("Invalid JSON: could not parse message.")
-  }
-  switch parsed {
-  | Ok(json) => decode(json)
-  | Error(message) => Error(message)
-  }
-}
-
-let accept = (call: call, reply: reply): update => {
-  if !sameKey(call.key, reply.key) {
-    {call, notice: "Ignored reply: different call identity."}
+let receive = (call: call, event) => {
+  if call.attemptId !== event.attemptId {
+    call
   } else {
     switch call.status {
-    | Completed(_) | Rejected(_) => {call, notice: "Ignored reply: final outcome already recorded."}
-    | Pending | Unresolved =>
-      switch reply.outcome {
-      | Ok(output) => {
-          call: {...call, status: Completed(output)},
-          notice: "Accepted completion.",
-        }
-      | Error(reason) => {
-          call: {...call, status: Rejected(reason)},
-          notice: "Accepted rejection.",
-        }
-      }
+    | Completed(_) | Rejected(_) => call
+    | Pending | Unresolved => applySignal(call, event.signal)
     }
   }
 }
 
-let receive = (call, raw): update =>
-  switch parse(raw) {
-  | Ok(reply) => accept(call, reply)
-  | Error(notice) => {call, notice}
+let show = call =>
+  switch call.status {
+  | Pending => "Pending"
+  | Unresolved => "Unresolved"
+  | Completed(output) => "Completed: " ++ output
+  | Rejected(reason) => "Rejected: " ++ reason
   }
 
-let expire = (call: call, runId, callId): update => {
-  if !sameKey(call.key, {runId, callId}) {
-    {call, notice: "Ignored deadline: different call identity."}
-  } else {
-    switch call.status {
-    | Pending => {
-        call: {...call, status: Unresolved},
-        notice: "Unresolved: deadline observed without a final reply.",
-      }
-    | Unresolved => {call, notice: "Still unresolved: no final reply."}
-    | Completed(_) | Rejected(_) => {
-        call,
-        notice: "Ignored deadline: final outcome already recorded.",
-      }
-    }
-  }
-}
+let pending = begin("title-1")
+pending->show->Console.log
 
-let view = (call: call): view => {
-  let (status, detail) = switch call.status {
-  | Pending => ("Pending", "")
-  | Completed(output) => ("Completed", output)
-  | Rejected(reason) => ("Rejected", reason)
-  | Unresolved => (
-      "Unresolved",
-      "No final reply observed. A matching late reply can still resolve this call.",
-    )
-  }
-  {runId: call.key.runId, callId: call.key.callId, status, detail}
-}
+let waiting = pending->receive({attemptId: "title-1", signal: Deadline})
+waiting->show->Console.log
+
+let stillWaiting = waiting->receive({
+  attemptId: "title-0",
+  signal: CompletedReply("Old title"),
+})
+stillWaiting->show->Console.log
+
+let saved = stillWaiting->receive({
+  attemptId: "title-1",
+  signal: CompletedReply("Title saved"),
+})
+saved->show->Console.log
+
+saved
+->receive({attemptId: "title-1", signal: RejectedReply("Too late")})
+->receive({attemptId: "title-1", signal: Deadline})
+->show->Console.log
+
+begin("title-2")
+->receive({attemptId: "title-2", signal: RejectedReply("Title too long")})
+->show->Console.log
 ```
 
-Follow a reply through `receive`. [`JSON.parseOrThrow`](/docs/manual/api/stdlib/json/) first parses the string into `JSON.t`; the catch covers parsing only. `decode` checks the object fields and the string payload selected by `kind`. As the [JSON manual](../docs/manual/json.mdx) explains, giving parsed JSON a desired type doesn't validate its shape.
-
-Invalid JSON and valid JSON with the wrong shape produce different diagnostics. Neither becomes a tool rejection. Missing fields, non-string identifiers or payloads, arrays, primitives, and unknown kinds leave the current call unchanged.
-
-Extra object fields are allowed and ignored. Empty strings are valid strings, including identifiers; there is no trimming or coercion. An application that prohibits empty identifiers should add that rule at this boundary.
-
-Once the reply is decoded, `accept` checks both identifiers and applies the transition table. A later final reply reaches the terminal-state branch and leaves the first result intact. `expire` preserves that result too. When a state changes, the update constructs a new record and leaves the caller's previous value intact.
-
-`view` handles all four constructors explicitly. The browser doesn't need to inspect generated variant tags or repeat the presentation switch in JavaScript. The earlier [Improving interop](./improving-interop.mdx) article explores variants at JavaScript boundaries; its v11 examples are historical context. This example uses v12's `JSON.t` and dictionary patterns.
-
-## Connect the model to the browser
-
-Use Node.js 26 or newer and Yarn 4.13.0. The package pins ReScript 12.2.0 and Vite 8.3.0. Put these files in a separate directory, with the model above under `src/`.
-
-### package.json
-
-```json
-{
-  "name": "rescript-tool-call-states",
-  "version": "1.0.0",
-  "private": true,
-  "type": "module",
-  "packageManager": "yarn@4.13.0",
-  "engines": {
-    "node": ">=26"
-  },
-  "scripts": {
-    "build:res": "rescript build --warn-error +3+8+11+12+26+27+31+32+33+34+35+39+44+45+110",
-    "test": "yarn build:res && node --test test/model.test.mjs",
-    "build": "yarn build:res && vite build --base=./",
-    "dev": "yarn build:res && vite --host 127.0.0.1 --strictPort"
-  },
-  "devDependencies": {
-    "rescript": "12.2.0",
-    "vite": "8.3.0"
-  }
-}
+```text
+Pending
+Unresolved
+Unresolved
+Completed: Title saved
+Completed: Title saved
+Rejected: Title too long
 ```
 
-### rescript.json
+</CodeTab>
 
-```json
-{
-  "name": "rescript-tool-call-states",
-  "sources": ["src"],
-  "namespace": false,
-  "package-specs": { "module": "esmodule", "in-source": true },
-  "suffix": ".res.js"
-}
-```
+## Read the result
 
-### index.html
+The deadline changes `Pending` to `Unresolved`. A matching late reply can still complete or reject the attempt. Repeating the deadline leaves it unresolved. `receive` builds a new record when the status changes, so the earlier `pending` value stays pending.
 
-```html
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="data:," />
-    <title>Tool-call outcomes lab</title>
-    <style>
-      body {
-        font:
-          1rem/1.5 system-ui,
-          sans-serif;
-        max-width: 46rem;
-        margin: 2rem auto;
-        padding: 0 1rem;
-      }
-      button,
-      textarea {
-        font: inherit;
-      }
-      button {
-        margin: 0.25rem 0.5rem 0.25rem 0;
-        padding: 0.4rem 0.7rem;
-      }
-      textarea {
-        box-sizing: border-box;
-        width: 100%;
-        min-height: 8rem;
-      }
-      p,
-      li,
-      output {
-        overflow-wrap: anywhere;
-      }
-      #detail {
-        display: block;
-        white-space: pre-wrap;
-        min-height: 1.5rem;
-      }
-      :focus-visible {
-        outline: 3px solid #245caa;
-        outline-offset: 3px;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Tool-call outcomes lab</h1>
-    <p>
-      Hold messages, start another run, then release them in any order.
-      Deadlines are injected local observations; this lab has no timer or
-      network tool.
-    </p>
-    <button id="start" type="button">Start new run</button>
-    <section aria-label="Current call" aria-live="polite" aria-atomic="true">
-      <p>Run: <span id="run-id"></span> / Call: <span id="call-id"></span></p>
-      <h2 id="status"></h2>
-      <output id="detail" aria-label="Result or uncertainty"></output>
-      <p id="notice"></p>
-    </section>
-    <label for="reply">Reply JSON</label>
-    <textarea id="reply" spellcheck="false"></textarea>
-    <button id="queue-reply" type="button">Queue reply</button>
-    <button id="queue-deadline" type="button">Queue deadline</button>
-    <h2>Held messages</h2>
-    <p>Deliver buttons remain available so you can replay the same message.</p>
-    <ol id="queue"></ol>
-    <h2>Delivery receipts</h2>
-    <ol id="receipts"></ol>
-    <script type="module" src="/src/main.js"></script>
-  </body>
-</html>
-```
+The third line stays `Unresolved` when the old `title-0` completion arrives. The ID check ignores it, so the matching `title-1` completion can still save the result on the next line. Stale rejections and deadlines are ignored too.
 
-### src/main.js
+The fifth line tests a different rule: a contradictory rejection and a deadline leave the completed result intact. Once a matching final reply is accepted, every later event preserves it. Keeping the first final is a client policy. Conflicting tool replies still need reconciliation.
 
-```js
-import * as ToolCall from "./ToolCall.res.js";
+[Pattern matching](../docs/manual/pattern-matching-destructuring.mdx) makes `show` handle all four states and their payloads. Remove an arm and the compiler reports the missing case. That check covers these typed values. We still need message validation and the transition guards in `receive`.
 
-const byId = (id) => document.getElementById(id);
-let runNumber = 1;
-let messageNumber = 0;
-let current = ToolCall.begin("run-1", "lookup");
-
-function render(notice) {
-  const shown = ToolCall.view(current);
-  byId("run-id").textContent = shown.runId;
-  byId("call-id").textContent = shown.callId;
-  byId("status").textContent = shown.status;
-  byId("detail").textContent = shown.detail;
-  byId("notice").textContent = notice;
-}
-
-function fillReply() {
-  const shown = ToolCall.view(current);
-  byId("reply").value = JSON.stringify({
-    runId: shown.runId,
-    callId: shown.callId,
-    kind: "completed",
-    output: `Answer for ${shown.runId}`,
-  });
-}
-
-function queueMessage(label, apply) {
-  const number = ++messageNumber;
-  const row = document.createElement("li");
-  const description = document.createElement("p");
-  description.textContent = `Message ${number}: ${label}`;
-  const button = document.createElement("button");
-  button.type = "button";
-  button.textContent = `Deliver message ${number}`;
-  button.dataset.messageId = String(number);
-  button.addEventListener("click", () => {
-    queueMicrotask(() => {
-      const update = apply(current);
-      current = update.call;
-      render(update.notice);
-      const receipt = document.createElement("li");
-      receipt.textContent = `Delivered message ${number}: ${update.notice}`;
-      byId("receipts").append(receipt);
-    });
-  });
-  row.append(description, button);
-  byId("queue").append(row);
-}
-
-byId("start").addEventListener("click", () => {
-  current = ToolCall.begin(`run-${++runNumber}`, "lookup");
-  fillReply();
-  render("Started a new run. Older messages remain queued.");
-});
-
-byId("queue-reply").addEventListener("click", () => {
-  const raw = byId("reply").value;
-  queueMessage(raw, (call) => ToolCall.receive(call, raw));
-});
-
-byId("queue-deadline").addEventListener("click", () => {
-  const { runId, callId } = ToolCall.view(current);
-  queueMessage(`Deadline for ${runId}/${callId}`, (call) =>
-    ToolCall.expire(call, runId, callId),
-  );
-});
-
-fillReply();
-render("Ready. Queue a reply or a local deadline observation.");
-```
-
-The browser keeps one current call and renders it through `view`. The host queues deliveries and writes output with `textContent`, so even text that looks like HTML stays literal. An ignored stale reply appears in the receipts while the current result stays on screen; the result and transition notice have separate fields.
-
-Queueing a reply captures the textarea's current string. Editing the textarea afterward cannot change that message. A queued deadline captures both identifiers. Each delivery callback applies its captured event to the call that is current at delivery time.
-
-The queue is in process, with no Web Worker, network request, or timer. Holding a message supplies the controllable delay. [`queueMicrotask`](https://developer.mozilla.org/en-US/docs/Web/API/Window/queueMicrotask) delivers it asynchronously after the click handler finishes; a microtask isn't a timed delay. Deliver buttons stay enabled so the same entry can arrive more than once.
-
-Install and build from that directory:
-
-```sh
-yarn install
-yarn build:res
-yarn build
-yarn dev --port 49101
-```
-
-Open the local URL Vite prints. `build` produces a static `dist/` directory; `dev` binds to loopback and uses a strict port. If you edit the model, rerun the compiler before refreshing. These commands reconstruct the browser example from the five files above. The manifest's separate `test` script expects `test/model.test.mjs`; it isn't part of these browser setup commands.
-
-## Try delayed and reordered replies
-
-Use the page controls in this order. The run counter starts again at run-1 when you reload the lab.
-
-1. Leave run-1's identity in the textarea, change `output` to `Old answer`, and choose **Queue reply**. Leave that message held. The status stays `Pending`.
-2. Choose **Start new run**. The page shows run-2/lookup and a fresh `Pending` state. Change its output to `New answer`, queue it, and deliver message 2. The state becomes `Completed` with `New answer`.
-3. Deliver message 1. A receipt reports a different call identity. The page still shows run-2, `Completed`, and `New answer`.
-4. Deliver message 2 again. Then queue another run-2 completion with different output and deliver it. Both notices report that a final outcome is already recorded. Try an opposite-kind reply by changing `kind` to `rejected` and replacing `output` with a string `reason`. That also preserves `New answer`.
-5. Start a new run. Queue its deadline, then queue its default completion. Deliver the deadline first. Read the `Unresolved` status and uncertainty text, then deliver the completion. It becomes `Completed`.
-6. Start another run and repeat the deadline exercise with `kind: "rejected"` and `reason: "The query is empty"`. Only delivery of that explicit reply changes `Unresolved` to `Rejected`.
-7. In a fresh run, deliver a completion before its queued deadline. The deadline cannot erase the result. Next, queue a deadline, start another run, and deliver the old deadline. The new call stays `Pending`.
-8. While pending, queue a completion with the current `runId` but another `callId`. Deliver it and check that nothing changes. Try `{` as the whole reply, then valid JSON with a numeric `output`. Each produces a diagnostic while preserving the call.
-9. In a fresh run, complete with an empty output string. The status still says `Completed`. In another run, use markup-looking output such as `<strong>Found it</strong>`. The result shows the angle brackets and tags as text.
-
-You can use the JSON input and native buttons from the keyboard too. The receipt list records arrival order. It doesn't show that a remote operation ran. Repeating a deadline while unresolved leaves the state unresolved.
-
-## What the compiler checks
-
-[Pattern matching](../docs/manual/pattern-matching-destructuring.mdx) lets the compiler check that `view` handles this closed set of statuses. Remove the `Rejected` arm and a strict build rejects the missing case. Add a constructor such as `Cancelled` and each match that needs to handle it must change too. Keep the warning-as-error flags in the build command so missing cases stop the build.
-
-Exhaustiveness says something about the typed values reaching those matches. It doesn't validate an arbitrary JSON string, prove that identifiers belong together, or enforce the first-final policy by itself. The decoder and transition guards do that work at runtime. Similarly, JavaScript consumers must respect the module boundary; keeping `call` opaque here is a host convention, not a runtime access restriction.
-
-A [promise](../docs/manual/promise.mdx) settles once. This lab deliberately accepts multiple delivered messages, so a promise's settlement alone can't express its protocol. An [async function](../docs/manual/async-await.mdx) could receive messages from a real transport, but it would still need validation and correlation. Racing a reply against a deadline and discarding the losing reply would also discard the late resolution we chose to preserve.
-
-## Use the model with a real transport
-
-The model follows one currently displayed call. A real integration still needs tool execution, authenticated transport, accurate deadline scheduling, cancellation, retries and persistence; this lab implements none of those. Accepting a reply once in the UI also doesn't guarantee exactly-once tool execution.
-
-Pass the transport's reply strings to `receive`, pass each deadline's captured identifiers to `expire`, and render the current call through `view`. The UI accepts the first valid final reply whose two identifiers match. Until then, a deadline leaves the call unresolved so a matching late reply can still resolve it.
+For `Unresolved`, I'd show "No final reply yet." The deadline alone doesn't prove failure, cancellation, or rollback, and it doesn't tell us whether retry is safe. Before offering a retry, a real integration still needs to validate and authenticate incoming replies, supply fresh attempt IDs, and decide how to reconcile remote effects.
