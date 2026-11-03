@@ -117,6 +117,8 @@ export { message };
 
 Numeric `for` loops iterate over integers from a starting value up to (and including) the ending value. The loop variable is local to the loop body.
 
+The loop body must evaluate to `unit` (`()`). If its last expression returns another type, discard the result with `->ignore`, for example `someFunction(i)->ignore`.
+
 <CodeTab labels={["ReScript", "JS Output"]}>
 
 ```res
