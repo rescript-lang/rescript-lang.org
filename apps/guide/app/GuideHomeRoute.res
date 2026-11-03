@@ -1,16 +1,18 @@
 type loaderData = {
-  compilerData: option<GuideCompilerData.t>,
+  compilerData: GuideCompilerData.t,
   lessons: array<GuideLesson.t>,
 }
 
 exception LessonLoadError(string)
 
 let loader: ReactRouter.Loader.t<loaderData> = async _ => {
-  let compilerData = await GuideCompilerData.load()
+  let compilerData = GuideCompilerData.load()
   let lessons = switch GuideLessonContent.load() {
   | Ok(lessons) => lessons
   | Error(message) => throw(LessonLoadError(message))
   }
+
+  await GuideLessonValidation.validate(~bundleBaseUrl=compilerData.bundleBaseUrl)
 
   {compilerData, lessons}
 }
@@ -18,5 +20,5 @@ let loader: ReactRouter.Loader.t<loaderData> = async _ => {
 @react.component
 let default = () => {
   let {compilerData, lessons}: loaderData = ReactRouter.useLoaderData()
-  <GuideHome ?compilerData lessons />
+  <GuideHome compilerData lessons />
 }
