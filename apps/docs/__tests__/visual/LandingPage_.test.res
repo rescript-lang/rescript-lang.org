@@ -10,11 +10,11 @@ let snapshotSection = async (~width, ~height, ~sectionTestId, ~screenshotName) =
     </MemoryRouter>,
   )
 
-  let sourceSection = switch document->WebAPI.Document.querySelector(
-    `[data-testid="${sectionTestId}"]`,
-  ) {
+  let sourceSection = switch WebAPI.DOM.window
+  ->WebAPI.Window.document
+  ->WebAPI.Document.querySelector(`[data-testid="${sectionTestId}"]`) {
   | Value(section) => section
-  | Null => failwith(`expected to find section ${sectionTestId}`)
+  | Null => panic(`expected to find section ${sectionTestId}`)
   }
 
   if sectionTestId == "landing-other-selling-points" {

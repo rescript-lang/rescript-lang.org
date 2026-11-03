@@ -11,9 +11,9 @@ module Toc = {
             onClick={evt => {
               evt->ReactEvent.Mouse.preventDefault
               WebAPI.Document.getElementById(
-                document,
+                WebAPI.DOM.window->WebAPI.Window.document,
                 href->String.replace("#", ""),
-              )->WebAPI.Element.scrollIntoView_alignToTop
+              )->Null.forEach(WebAPI.Element.scrollIntoViewAlignToTop)
               onClick()
             }}
             to={"#" ++ href->Url.normalizeAnchor}
@@ -36,7 +36,7 @@ module Title = {
   let make = (~children) => {
     let className = "hl-overline text-gray-80 mt-5" //overline
 
-    <div className> children </div>
+    <div className> {children} </div>
   }
 }
 
@@ -142,10 +142,10 @@ let make = (
         className="h-full relative top-0 px-4 w-full block md:top-40 md:sticky border-r border-gray-20 overflow-y-auto pb-24 max-h-[calc(100vh-10rem)] pt-8"
       >
         <div className="flex justify-between" dataTestId="sidebar-toplevel-nav">
-          <div className="w-3/4 md:w-full"> toplevelNav </div>
+          <div className="w-3/4 md:w-full"> {toplevelNav} </div>
         </div>
 
-        preludeSection
+        {preludeSection}
 
         /* Firefox ignores padding in scroll containers, so we need margin
              to make a bottom gap for the sidebar.

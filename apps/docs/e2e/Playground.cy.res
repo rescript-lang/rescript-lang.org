@@ -166,7 +166,10 @@ Console.log(isRetriable(HttpError({status: 500})))`
     ->shouldCss("background-color", "rgb(255, 255, 255)")
     ->ignore
     cyWindow()
-    ->thenMap(window => window.localStorage->WebAPI.Storage.getItem("playgroundTheme"))
+    ->thenMap(
+      window =>
+        window->asWebWindow->WebAPI.Window.localStorage->WebAPI.Storage.getItem("playgroundTheme"),
+    )
     ->shouldEqual(Null.make("light"))
     ->ignore
 
@@ -183,7 +186,10 @@ Console.log(isRetriable(HttpError({status: 500})))`
     get("main")->shouldCss("background-color", "rgb(11, 13, 34)")->ignore
     get(".cm-editor")->shouldCss("background-color", "rgb(11, 13, 34)")->ignore
     cyWindow()
-    ->thenMap(window => window.localStorage->WebAPI.Storage.getItem("playgroundTheme"))
+    ->thenMap(
+      window =>
+        window->asWebWindow->WebAPI.Window.localStorage->WebAPI.Storage.getItem("playgroundTheme"),
+    )
     ->shouldEqual(Null.make("dark"))
     ->ignore
   })

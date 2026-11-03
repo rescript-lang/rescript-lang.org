@@ -67,16 +67,17 @@ test("desktop syntax lookup renders categories and styles deprecated tags", asyn
   await element(deprecatedTag)->toBeVisible
   await element(deprecatedTag)->toHaveClass("line-through")
 
-  let deprecatedLink = switch document->WebAPI.Document.querySelector(
-    "a[href='/syntax-lookup/operators_deprecated_pipe']",
-  ) {
+  let deprecatedLink = switch WebAPI.DOM.window
+  ->WebAPI.Window.document
+  ->WebAPI.Document.querySelector("a[href='/syntax-lookup/operators_deprecated_pipe']") {
   | Value(link) => link
-  | Null => failwith("expected a link for the deprecated pipe operator")
+  | Null => panic("expected a link for the deprecated pipe operator")
   }
   expect(
-    getComputedStyle(~elt=deprecatedLink)->WebAPI.CSSStyleDeclaration.getPropertyValue(
-      "text-decoration-line",
-    ),
+    WebAPI.Window.getComputedStyle(
+      WebAPI.DOM.window,
+      ~elt=deprecatedLink,
+    )->WebAPI.CSSStyleDeclaration.getPropertyValue("text-decoration-line"),
   )->toBe("line-through")
 
   let wrapper = await screen->getByTestId("syntax-lookup-wrapper")

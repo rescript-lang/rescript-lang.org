@@ -69,23 +69,24 @@ let srcDoc = `
     </html>
   `
 
-external asIFrame: WebAPI.DOMAPI.element => WebAPI.DOMAPI.htmliFrameElement = "%identity"
+external asIFrame: WebAPI.Element.t => WebAPI.HTMLIFrameElement.t = "%identity"
 
 let sendOutput = (code, imports) => {
-  let frame = document->WebAPI.Document.querySelector("#iframe-eval")
+  let frame =
+    WebAPI.DOM.window->WebAPI.Window.document->WebAPI.Document.querySelector("#iframe-eval")
 
   switch frame {
   | Value(element) if element.tagName == "IFRAME" =>
     let element = element->asIFrame
     switch element.contentWindow {
-    | Value({window}) =>
+    | Value(frameWindow) =>
       let message = JSON.Object(
         dict{
           "code": JSON.String(code),
           "imports": JSON.Object(imports->Dict.mapValues(v => JSON.String(v))),
         },
       )
-      window->WebAPI.Window.postMessage(~message, ~targetOrigin="*")
+      frameWindow->WebAPI.Window.postMessage(~message, ~targetOrigin="*")
     | Null => Console.error("contentWindow not found")
     }
   | Value(_) | Null => Console.error("iframe not found")

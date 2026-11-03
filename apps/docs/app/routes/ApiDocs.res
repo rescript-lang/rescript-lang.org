@@ -154,7 +154,7 @@ module SidebarTree = {
               {node.name->React.string}
             </Link.String>
           </summary>
-          tocModule
+          {tocModule}
           {if hasChildren {
             <ul className={"ml-5"}>
               {node.children
@@ -172,7 +172,7 @@ module SidebarTree = {
           <summary className={summaryClassName ++ classNameActive}>
             <Link.String className={"block"} to=fullPath> {node.name->React.string} </Link.String>
           </summary>
-          tocModule
+          {tocModule}
         </li>
       }
     }
@@ -221,9 +221,11 @@ module MarkdownStylize = {
   let make = (~content, ~rehypePlugins) => {
     let components = {
       ...MarkdownComponents.default,
-      h2: props => <Markdown.H3 id=props.id title=?props.title> props.children </Markdown.H3>,
+      h2: React.component((props: Markdown.H2.props<string, React.element, string>) =>
+        <Markdown.H3 id=props.id title=?props.title> {props.children} </Markdown.H3>
+      ),
     }
-    <ReactMarkdown components={components} ?rehypePlugins> content </ReactMarkdown>
+    <ReactMarkdown components={components} ?rehypePlugins> {content} </ReactMarkdown>
   }
 }
 
@@ -328,13 +330,12 @@ let make = (props: props) => {
         <SidebarTree node={toctree} items />
       </div>
     </div>
-  | Error(_) => {
-      Console.error("Error loading API data")
-      React.null
-    }
+  | Error(_) =>
+    Console.error("Error loading API data")
+    React.null
   }
 
-  <SidebarPageLayout sidebar rightSidebar docSearchLvl0="API"> children </SidebarPageLayout>
+  <SidebarPageLayout sidebar rightSidebar docSearchLvl0="API"> {children} </SidebarPageLayout>
 }
 
 let processStaticProps = (~apiDocs, ~slug: array<string>) => {

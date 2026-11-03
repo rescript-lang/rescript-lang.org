@@ -12,12 +12,12 @@ let reduce = (state, action) =>
 let unavailableText = "Search unavailable"
 let unavailableLabel = "Search unavailable for this build"
 
-@get external isContentEditable: WebAPI.DOMAPI.element => option<bool> = "isContentEditable"
-@get external focusMethod: WebAPI.DOMAPI.element => option<unit => unit> = "focus"
-@get external inputValue: WebAPI.DOMAPI.element => option<string> = "value"
-@send external focusElement: WebAPI.DOMAPI.element => unit = "focus"
+@get external isContentEditable: WebAPI.Element.t => option<bool> = "isContentEditable"
+@get external focusMethod: WebAPI.Element.t => option<unit => unit> = "focus"
+@get external inputValue: WebAPI.Element.t => option<string> = "value"
+@send external focusElement: WebAPI.Element.t => unit = "focus"
 
-let isEditable = (element: WebAPI.DOMAPI.element) =>
+let isEditable = (element: WebAPI.Element.t) =>
   switch element.tagName {
   | "TEXTAREA" | "SELECT" | "INPUT" => true
   | _ => element->isContentEditable->Option.getOr(false)
@@ -30,16 +30,17 @@ let restoreFocus = element =>
   }
 
 let hasSearchQuery = () =>
-  switch document.activeElement {
+  switch WebAPI.DOM.window->WebAPI.Window.document->WebDocument.activeElement {
   | Value(element) =>
     WebAPI.DOMTokenList.contains(element.classList, "DocSearch-Input") &&
     element->inputValue->Option.map(value => value !== "")->Option.getOr(false)
   | Null => false
   }
 
-let activateSearch = (~dispatch, ~returnFocus: React.ref<option<WebAPI.DOMAPI.element>>) => {
+let activateSearch = (~dispatch, ~returnFocus: React.ref<option<WebAPI.Element.t>>) => {
   if returnFocus.current->Option.isNone {
-    returnFocus.current = document.activeElement->Null.toOption
+    returnFocus.current =
+      WebAPI.DOM.window->WebAPI.Window.document->WebDocument.activeElement->Null.toOption
   }
   dispatch(Open(React.lazy_(() => import(SearchModal.make))))
 }
@@ -51,7 +52,7 @@ let make = () => {
   let algoliaConfig = Env.algoliaPublicConfig
 
   let onClose = React.useCallback(() => {
-    switch WebAPI.Document.querySelector(document, "body") {
+    switch WebAPI.Document.querySelector(WebAPI.DOM.window->WebAPI.Window.document, "body") {
     | Value(body) => WebAPI.DOMTokenList.remove(body.classList, "DocSearch--active")
     | Null => ()
     }
@@ -65,24 +66,30 @@ let make = () => {
     switch algoliaConfig {
     | None => None
     | Some(_) =>
-      let handleGlobalKeyDown = (event: WebAPI.UIEventsAPI.keyboardEvent) => {
+      let handleGlobalKeyDown = event => {
+        let preventDefault = () => event->WebAPI.KeyboardEvent.preventDefault
         if event.key === "Escape" && !hasSearchQuery() {
           onClose()
         } else if event.key === "/" || (event.key === "k" && (event.ctrlKey || event.metaKey)) {
-          switch document.activeElement {
+          switch WebAPI.DOM.window->WebAPI.Window.document->WebDocument.activeElement {
           | Value(element) if isEditable(element) => ()
           | _ =>
             activateSearch(~dispatch, ~returnFocus)
-            WebAPI.KeyboardEvent.preventDefault(event)
+            preventDefault()
           }
         }
       }
       // Read Escape's query before autocomplete clears it at the input.
-      WebAPI.Window.addEventListener(window, Keydown, handleGlobalKeyDown, ~options={capture: true})
+      WebAPI.Window.addEventListener(
+        WebAPI.DOM.window,
+        Keydown,
+        handleGlobalKeyDown,
+        ~options={capture: true},
+      )
       Some(
         () =>
           WebAPI.Window.removeEventListener(
-            window,
+            WebAPI.DOM.window,
             Keydown,
             handleGlobalKeyDown,
             ~options={capture: true},

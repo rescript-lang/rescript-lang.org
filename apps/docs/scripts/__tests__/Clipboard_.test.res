@@ -1,27 +1,26 @@
 open ScriptTest
 
-type dom = {window: WebAPI.DOMAPI.window}
+type dom = {window: WebAPI.Window.t}
 type clipboard = {writeText: string => promise<unit>}
 type navigator = {clipboard?: clipboard}
+type mockWindow = {document: WebAPI.DOM.document, navigator: navigator}
 @module("jsdom") @new external makeDom: string => dom = "JSDOM"
 @module("vitest") @scope("vi") external stubGlobal: (string, 'a) => unit = "stubGlobal"
 @module("vitest") @scope("vi") external unstubGlobals: unit => unit = "unstubAllGlobals"
-@send external close: WebAPI.DOMAPI.window => unit = "close"
-@set external setCopyCommand: (WebAPI.DOMAPI.document, string => bool) => unit = "execCommand"
-@get external textareaValue: WebAPI.DOMAPI.element => string = "value"
+@send external close: WebAPI.Window.t => unit = "close"
+@set external setCopyCommand: (WebAPI.DOM.document, string => bool) => unit = "execCommand"
+@get external textareaValue: WebAPI.Element.t => string = "value"
 
 let setup = (~writeNative=?) => {
   let dom = makeDom("<p>Selected text</p><button>Original focus</button>")
-  stubGlobal("document", dom.window.document)
-  stubGlobal(
-    "navigator",
-    {clipboard: ?(writeNative->Option.map(writeText => {writeText: writeText}))},
-  )
+  let document = dom.window->WebAPI.Window.document
+  let navigator = {clipboard: ?(writeNative->Option.map(writeText => {writeText: writeText}))}
+  stubGlobal("window", {document, navigator})
   onTestFinished(async () => {
     unstubGlobals()
     close(dom.window)
   })
-  dom.window.document
+  document
 }
 
 let textareaCount = document => (document->WebAPI.Document.querySelectorAll("textarea")).length
@@ -42,7 +41,7 @@ test("missing Clipboard API falls back and restores focus and selected text", as
   let button = document->WebAPI.Document.querySelector("button")->Null.getOrThrow
   Clipboard.focusElement(button)
   let paragraph = document->WebAPI.Document.querySelector("p")->Null.getOrThrow
-  let selection = document->WebAPI.Document.getSelection
+  let selection = document->WebAPI.Document.getSelection->Null.getOrThrow
   let range = document->WebAPI.Document.createRange
   range->WebAPI.Range.selectNodeContents(paragraph->WebAPI.Element.asNode)
   selection->WebAPI.Selection.removeAllRanges
@@ -59,7 +58,7 @@ test("missing Clipboard API falls back and restores focus and selected text", as
 
   expect(await Clipboard.writeText("let answer = 42"))->toStrictEqual(Ok())
   expect(copied.contents)->toBe("let answer = 42")
-  expect(document.activeElement)->toBe(Null.make(button))
+  expect(document->WebDocument.activeElement)->toBe(Null.make(button))
   expect(String.make(selection))->toBe("Selected text")
   expect(textareaCount(document))->toBe(0)
 })

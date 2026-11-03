@@ -2,9 +2,11 @@ open Vitest
 
 test("install instructions update their class prop and keep copying available", async () => {
   let screen = await render(<LandingPageInstallInstructions className="initial-layout" />)
-  let root = switch document->WebAPI.Document.querySelector(".initial-layout") {
+  let root = switch WebAPI.DOM.window
+  ->WebAPI.Window.document
+  ->WebAPI.Document.querySelector(".initial-layout") {
   | Value(root) => root
-  | Null => failwith("expected the install instructions root")
+  | Null => panic("expected the install instructions root")
   }
   await element(root)->toHaveAttribute("class", "w-full max-w-400 initial-layout")
 

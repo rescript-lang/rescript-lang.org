@@ -1,21 +1,20 @@
 type error = WriteFailed
 
 @send
-external createTextArea: (
-  WebAPI.DOMAPI.document,
-  @as("textarea") _,
-) => WebAPI.DOMAPI.htmlTextAreaElement = "createElement"
+external createTextArea: (WebAPI.DOM.document, @as("textarea") _) => WebAPI.HTMLTextAreaElement.t =
+  "createElement"
 
-@send external copySelection: (WebAPI.DOMAPI.document, @as("copy") _) => bool = "execCommand"
-@send external focusElement: WebAPI.DOMAPI.element => unit = "focus"
+@send external copySelection: (WebAPI.DOM.document, @as("copy") _) => bool = "execCommand"
+@send external focusElement: WebAPI.Element.t => unit = "focus"
+
 @send
-external getSelection: WebAPI.DOMAPI.document => Null.t<WebAPI.DOMAPI.selection> = "getSelection"
+external getSelection: WebAPI.DOM.document => Null.t<WebAPI.Selection.t> = "getSelection"
 
 let writeWithSelection = text => {
   try {
-    let textarea = createTextArea(document)
-    let activeElement = document.activeElement
-    let selection = getSelection(document)->Null.toOption
+    let textarea = createTextArea(WebAPI.DOM.window->WebAPI.Window.document)
+    let activeElement = WebAPI.DOM.window->WebAPI.Window.document->WebDocument.activeElement
+    let selection = getSelection(WebAPI.DOM.window->WebAPI.Window.document)->Null.toOption
     let ranges =
       selection->Option.mapOr([], selection =>
         Array.fromInitializer(~length=selection.rangeCount, index =>
@@ -30,11 +29,13 @@ let writeWithSelection = text => {
         ~qualifiedName="style",
         ~value="position: fixed; left: -9999px; top: 0",
       )
-      document.body
+      WebAPI.DOM.window
+      ->WebAPI.Window.document
+      ->WebDocument.body
       ->WebAPI.HTMLElement.appendChild(textarea->WebAPI.HTMLTextAreaElement.asNode)
       ->ignore
       textarea->WebAPI.HTMLTextAreaElement.select
-      copySelection(document)
+      copySelection(WebAPI.DOM.window->WebAPI.Window.document)
     } catch {
     | _ => false
     }
@@ -54,7 +55,10 @@ let writeWithSelection = text => {
 
 let writeText = async text => {
   try {
-    await navigator.clipboard->WebAPI.Clipboard.writeText(text)
+    await WebAPI.DOM.window
+    ->WebAPI.Window.navigator
+    ->WebAPI.Navigator.clipboard
+    ->WebAPI.Clipboard.writeText(text)
     Ok()
   } catch {
   | _ => writeWithSelection(text)

@@ -34,28 +34,35 @@ let make = (~code, ~writeClipboard=Clipboard.writeText) => {
       // For Tailwind transitions to behave correctly, we need to first paint the DOM element in the tree,
       // and in the next tick, add the opacity-100 class, so the transition animation actually takes place.
       // If we don't do that, the banner will essentially pop up without any animation
-      let bannerEl = WebAPI.Document.createElement(document, "div")
+      let bannerEl = WebAPI.Document.createElement(WebAPI.DOM.window->WebAPI.Window.document, "div")
       bannerEl.className = "opacity-0 absolute -top-6 right-0 -mt-5 -mr-4 px-4 py-2 w-40 rounded-lg captions text-white bg-gray-100 text-gray-80-tr transition-all duration-1000 ease-in-out "
 
-      let textNode = WebAPI.Document.createTextNode(document, "Copied to clipboard")
+      let textNode = WebAPI.Document.createTextNode(
+        WebAPI.DOM.window->WebAPI.Window.document,
+        "Copied to clipboard",
+      )
 
       WebAPI.Element.appendChild(bannerEl, textNode)->ignore
       WebAPI.Element.appendChild(buttonEl, bannerEl)->ignore
 
-      let nextFrameId = WebAPI.Window.requestAnimationFrame(window, _ => {
+      let nextFrameId = WebAPI.Window.requestAnimationFrame(WebAPI.DOM.window, _ => {
         WebAPI.DOMTokenList.toggle(bannerEl.classList, ~token="opacity-0")->ignore
         WebAPI.DOMTokenList.toggle(bannerEl.classList, ~token="opacity-100")->ignore
       })
 
-      let timeoutId = setTimeout(~handler=() => {
-        buttonEl->WebAPI.Element.removeChild(bannerEl)->ignore
-        setState(_ => Init)
-      }, ~timeout=3000)
+      let timeoutId = WebAPI.Window.setTimeout(
+        WebAPI.DOM.window,
+        ~handler=() => {
+          buttonEl->WebAPI.Element.removeChild(bannerEl)->ignore
+          setState(_ => Init)
+        },
+        ~timeout=3000,
+      )
 
       Some(
         () => {
-          cancelAnimationFrame(nextFrameId)
-          clearTimeout(timeoutId)
+          WebAPI.Window.cancelAnimationFrame(WebAPI.DOM.window, nextFrameId)
+          WebAPI.Window.clearTimeout(WebAPI.DOM.window, timeoutId)
           bannerEl->WebAPI.Element.remove
         },
       )

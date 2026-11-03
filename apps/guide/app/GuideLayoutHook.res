@@ -12,7 +12,9 @@ type t = {
 }
 
 let syncThemeColor = theme =>
-  switch document->WebAPI.Document.querySelector(`meta[name="theme-color"]`) {
+  switch WebAPI.DOM.window
+  ->WebAPI.Window.document
+  ->WebAPI.Document.querySelector(`meta[name="theme-color"]`) {
   | Value(element) =>
     WebAPI.Element.setAttribute(
       element,
@@ -34,8 +36,8 @@ let useLayout = (): t => {
     setTheme(_ => GuideLayout.loadTheme())
     setPaneSizes(_ =>
       GuideLayout.loadPaneSizes()->GuideLayout.clampPaneSizes(
-        ~viewportWidth=window.innerWidth->Int.toFloat,
-        ~viewportHeight=window.innerHeight->Int.toFloat,
+        ~viewportWidth=WebAPI.DOM.window->WebAPI.Window.innerWidth->Int.toFloat,
+        ~viewportHeight=WebAPI.DOM.window->WebAPI.Window.innerHeight->Int.toFloat,
       )
     )
     setThemeLoaded(_ => true)
@@ -83,24 +85,24 @@ let useLayout = (): t => {
       switch dragTarget.current {
       | ResizingColumns =>
         let pointerX = event->ReactEvent.Mouse.clientX->Int.toFloat
-        let viewportWidth = window.innerWidth->Int.toFloat
+        let viewportWidth = WebAPI.DOM.window->WebAPI.Window.innerWidth->Int.toFloat
         let instructionsWidth = GuideLayout.clampInstructionsWidth(~viewportWidth, ~pointerX)
         setPaneSizes(previous => {...previous, instructionsWidth: Some(instructionsWidth)})
       | ResizingRows =>
         let pointerY = event->ReactEvent.Mouse.clientY->Int.toFloat
-        let viewportHeight = window.innerHeight->Int.toFloat
+        let viewportHeight = WebAPI.DOM.window->WebAPI.Window.innerHeight->Int.toFloat
         let outputHeight = GuideLayout.clampOutputHeight(~viewportHeight, ~pointerY)
         setPaneSizes(previous => {...previous, outputHeight})
       | NotDragging => ()
       }
 
-    WebAPI.Window.addEventListener(window, Mousemove, onMouseMove)
-    WebAPI.Window.addEventListener(window, Mouseup, stopDragging)
+    WebAPI.Window.addEventListener(WebAPI.DOM.window, Mousemove, onMouseMove)
+    WebAPI.Window.addEventListener(WebAPI.DOM.window, Mouseup, stopDragging)
 
     Some(
       () => {
-        WebAPI.Window.removeEventListener(window, Mousemove, onMouseMove)
-        WebAPI.Window.removeEventListener(window, Mouseup, stopDragging)
+        WebAPI.Window.removeEventListener(WebAPI.DOM.window, Mousemove, onMouseMove)
+        WebAPI.Window.removeEventListener(WebAPI.DOM.window, Mouseup, stopDragging)
       },
     )
   }, [])

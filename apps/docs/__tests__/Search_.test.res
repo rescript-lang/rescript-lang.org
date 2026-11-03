@@ -57,14 +57,14 @@ let withHierarchy = (
 
 module ThrowsOnRender = {
   @react.component
-  let make = (): React.element => failwith("search render exploded")
+  let make = (): React.element => panic("search render exploded")
 }
 
 module CurrentPath = {
   @react.component
   let make = () => {
     let location = ReactRouter.useLocation()
-    <span> {React.string((location.pathname :> string))} </span>
+    <span> {React.string(location.pathname :> string)} </span>
   }
 }
 
@@ -550,7 +550,7 @@ test("active DocSearch enables Algolia Insights", async () => {
   )
 
   let hasInsightsScript = switch WebAPI.Document.querySelector(
-    document,
+    WebAPI.DOM.window->WebAPI.Window.document,
     "script[src*='search-insights']",
   ) {
   | Value(_) => true

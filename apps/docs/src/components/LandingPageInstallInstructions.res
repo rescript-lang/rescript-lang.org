@@ -9,8 +9,7 @@ let copyBox = text => {
 
 @react.component
 let make =
-  @directive("'use memo'")
-  (~className="") => {
+  @directive("'use memo'") (~className="") => {
     <div className={`w-full max-w-400 ${className}`}>
       <h2 className="hl-3 lg:mt-12"> {React.string("Quick Install")} </h2>
       <div className="captions text-gray-40 mb-2 mt-1">

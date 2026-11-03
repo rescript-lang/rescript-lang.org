@@ -1,5 +1,5 @@
 /** For refs attached to HTML tags; bridge React's DOM type to WebAPI's HTML type. */
-external fromDom: Dom.element => WebAPI.DOMAPI.htmlElement = "%identity"
+external fromDom: Dom.element => WebAPI.HTMLElement.t = "%identity"
 
 let domRef = ref =>
   ReactDOM.Ref.callbackDomRef(element => {

@@ -8,14 +8,16 @@ type consoleCall = {args: array<consoleArgument>}
 @val external consoleArgumentString: option<consoleArgument> => string = "String"
 type console
 type history
+
 type rec window = {
   document: Dom.document,
   console: console,
   navigator: {clipboard: clipboard},
   scrollY: float,
-  localStorage: WebAPI.WebStorageAPI.storage,
 }
 and clipboard
+
+external asWebWindow: window => WebAPI.Window.t = "%identity"
 @get external windowHistory: window => history = "history"
 @send external replaceState: (history, JSON.t, string, string) => unit = "replaceState"
 type response = {status: int, body: string, headers: Dict.t<string>}
@@ -61,19 +63,26 @@ type cssStyle
 @val @scope("cy") external intercept: (routeMatcher, request => unit) => chain<unit> = "intercept"
 @val @scope("cy") external interceptAll: (string, request => unit) => chain<unit> = "intercept"
 @val @scope("cy") external interceptRoute: routeMatcher => chain<unit> = "intercept"
+
 @val @scope("cy")
 external interceptStatic: (searchRouteMatcher, staticResponse) => chain<unit> = "intercept"
+
 @val @scope("cy")
 external interceptPattern: (RegExp.t, request => unit) => chain<unit> = "intercept"
+
 @val @scope("cy")
 external interceptFailurePattern: (RegExp.t, networkError) => chain<unit> = "intercept"
+
 @val @scope("cy")
 external interceptFailureString: (string, networkError) => chain<unit> = "intercept"
+
 @val @scope("cy")
 external interceptDeferred: (RegExp.t, unit => promise<unit>) => chain<unit> = "intercept"
+
 @val @scope("cy")
 external interceptDeferredRequest: (routeMatcher, request => promise<unit>) => chain<unit> =
   "intercept"
+
 @val @scope("cy") external wait: string => chain<response> = "wait"
 @val @scope("cy") external wrap: 'a => chain<'a> = "wrap"
 @val @scope("cy") external wrapWithOptions: ('a, wrapOptions) => chain<'a> = "wrap"
@@ -83,11 +92,15 @@ external interceptDeferredRequest: (routeMatcher, request => promise<unit>) => c
 @val @scope("cy") external realPressKey: string => chain<unit> = "realPress"
 @val @scope("cy") external realPressKeys: array<string> => chain<unit> = "realPress"
 @val @scope("cy") external reload: unit => unit = "reload"
+
 @val @scope("cy")
 external onBeforeLoad: (@as("window:before:load") _, window => unit) => unit = "on"
+
 @val @scope("cy") external spy: (console, @as("error") _) => spy = "spy"
+
 @val @scope("Cypress")
 external automate: (@as("remote:debugger:protocol") _, automation) => promise<unit> = "automation"
+
 @val @scope("Cypress") external baseUrl: @as("baseUrl") _ => string = "config"
 @val @scope("Cypress") external isInteractive: @as("isInteractive") _ => bool = "config"
 @val @scope("mocha") external forbidOnly: bool => unit = "forbidOnly"
@@ -97,38 +110,51 @@ external automate: (@as("remote:debugger:protocol") _, automation) => promise<un
 @send external thenMap: (chain<'a>, 'a => 'b) => chain<'b> = "then"
 @send external thenPromise: (chain<'a>, 'a => promise<'b>) => chain<'b> = "then"
 @send external should: (chain<'a>, string) => chain<'a> = "should"
+
 @send
 external shouldCss: (chain<elements>, @as("have.css") _, string, string) => chain<elements> =
   "should"
+
 @send
 external shouldCssProperty: (chain<elements>, @as("have.css") _, string) => chain<string> = "should"
+
 @send external shouldInt: (chain<'a>, string, int) => chain<'a> = "should"
+
 @send
 external shouldValue: (chain<elements>, @as("have.value") _, string) => chain<elements> = "should"
+
 @send
 external shouldText: (chain<elements>, @as("have.text") _, string) => chain<elements> = "should"
+
 @send external shouldEqual: (chain<'a>, @as("equal") _, 'a) => chain<'a> = "should"
 @send external shouldDeepEqual: (chain<'a>, @as("deep.equal") _, 'a) => chain<'a> = "should"
 @send external shouldMatch: (chain<'a>, @as("match") _, RegExp.t) => chain<'a> = "should"
 @send external andMatch: (chain<string>, @as("match") _, RegExp.t) => chain<string> = "and"
 @send external shouldWithin: (chain<int>, @as("be.within") _, int, int) => chain<int> = "should"
+
 @send
 external shouldAttribute: (chain<elements>, @as("have.attr") _, string, string) => chain<elements> =
   "should"
+
 @send
 external shouldProperty: (chain<elements>, @as("have.prop") _, string, string) => chain<elements> =
   "should"
+
 @send external attribute: (chain<elements>, @as("attr") _, string) => chain<string> = "invoke"
 @send external propertyInt: (chain<'a>, string) => chain<int> = "its"
 @send external propertyString: (chain<'a>, string) => chain<string> = "its"
+
 @send
 external shouldPropertyExist: (chain<'a>, @as("have.property") _, string) => chain<'a> = "should"
+
 @send external shouldSatisfy: (chain<'a>, 'a => unit) => chain<'a> = "should"
 @send external click: chain<elements> => chain<elements> = "click"
 @send external first: chain<elements> => chain<elements> = "first"
 @send external typeText: (chain<elements>, string) => chain<elements> = "type"
+
 @send
 external containsChildRegex: (chain<elements>, string, RegExp.t) => chain<elements> = "contains"
+
 @send external focusElement: chain<elements> => chain<elements> = "focus"
 @send external realClick: chain<elements> => chain<elements> = "realClick"
 @send external realPress: (chain<elements>, string) => chain<elements> = "realPress"
@@ -160,13 +186,17 @@ type parser
 @send external parseHtml: (parser, string, @as("text/html") _) => Dom.document = "parseFromString"
 @send external querySelector: (Dom.document, string) => Null.t<Dom.element> = "querySelector"
 @send external querySelectorAll: (Dom.document, string) => elementList = "querySelectorAll"
+
 @send
 external querySelectorFromElement: (Dom.element, string) => Null.t<Dom.element> = "querySelector"
+
 @send
 external querySelectorAllFromElement: (Dom.element, string) => elementList = "querySelectorAll"
+
 @send
 external addEventListenerOnce: (Dom.document, string, unit => unit, listenerOptions) => unit =
   "addEventListener"
+
 @get external body: Dom.document => Dom.element = "body"
 @get external documentElement: Dom.document => Dom.element = "documentElement"
 @get external currentScript: Dom.document => Null.t<Dom.element> = "currentScript"
@@ -226,16 +256,20 @@ external addEventListenerOnce: (Dom.document, string, unit => unit, listenerOpti
 @send external containsChild: (chain<elements>, string) => chain<elements> = "contains"
 @send external containsChildIn: (chain<elements>, string, string) => chain<elements> = "contains"
 @send external select: (chain<elements>, string) => chain<elements> = "select"
+
 @send
 external typeWithOptions: (
   chain<elements>,
   string,
   {"force": bool, "delay": int},
 ) => chain<elements> = "type"
+
 @send
 external shouldContainText: (chain<elements>, @as("contain.text") _, string) => chain<elements> =
   "should"
+
 @send external shouldInclude: (chain<string>, @as("include") _, string) => chain<string> = "should"
+
 @send
 external shouldClass: (chain<elements>, @as("have.class") _, string) => chain<elements> = "should"
 

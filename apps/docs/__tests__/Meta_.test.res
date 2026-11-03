@@ -7,31 +7,37 @@ test("advertises the blog RSS feed in page metadata", async () => {
     </ReactRouter.MemoryRouter>,
   )
   let feed =
-    document->WebAPI.Document.querySelector("link[rel='alternate'][type='application/rss+xml']")
+    WebAPI.DOM.window
+    ->WebAPI.Window.document
+    ->WebAPI.Document.querySelector("link[rel='alternate'][type='application/rss+xml']")
   expect(feed->Null.toOption->Option.map(WebAPI.Element.getAttribute(_, "href")))->toBe(
     Some(Null.make("/blog/feed.xml")),
   )
 })
 
 let getMetaContent = name => {
-  switch document->WebAPI.Document.querySelector(`meta[name='${name}']`) {
+  switch WebAPI.DOM.window
+  ->WebAPI.Window.document
+  ->WebAPI.Document.querySelector(`meta[name='${name}']`) {
   | Value(element) =>
     switch element->WebAPI.Element.getAttribute("content") {
     | Value(content) => content
-    | Null => failwith(`expected ${name} meta tag to have content`)
+    | Null => panic(`expected ${name} meta tag to have content`)
     }
-  | Null => failwith(`expected ${name} meta tag`)
+  | Null => panic(`expected ${name} meta tag`)
   }
 }
 
 let getMetaPropertyContent = property => {
-  switch document->WebAPI.Document.querySelector(`meta[property='${property}']`) {
+  switch WebAPI.DOM.window
+  ->WebAPI.Window.document
+  ->WebAPI.Document.querySelector(`meta[property='${property}']`) {
   | Value(element) =>
     switch element->WebAPI.Element.getAttribute("content") {
     | Value(content) => content
-    | Null => failwith(`expected ${property} meta tag to have content`)
+    | Null => panic(`expected ${property} meta tag to have content`)
     }
-  | Null => failwith(`expected ${property} meta tag`)
+  | Null => panic(`expected ${property} meta tag`)
   }
 }
 
@@ -64,6 +70,9 @@ test("generates Open Graph image URLs from the current page URL", async () => {
     `${rootUrl}ogimage/index.png?url=${encodeURIComponent(pageUrl)}`,
   )
   expect(getMetaContent("twitter:image"))->toBe(getMetaPropertyContent("og:image"))
-  let images = document->WebAPI.Document.querySelectorAll("meta[property='og:image']")
+  let images =
+    WebAPI.DOM.window
+    ->WebAPI.Window.document
+    ->WebAPI.Document.querySelectorAll("meta[property='og:image']")
   expect(images.length)->toBe(1)
 })

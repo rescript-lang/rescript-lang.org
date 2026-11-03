@@ -6,7 +6,6 @@
     "@rescript/react",
     "@rescript/webapi"
   ],
-  "compiler-flags": ["-open WebAPI.Global"],
   "sources": [
     {
       "dir": "src",

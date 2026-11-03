@@ -137,15 +137,15 @@ module DetailBox = {
         React.string(third),
       ]
       ->Array.mapWithIndex((el, i) => {
-        <span key={Int.toString(i)}> el </span>
+        <span key={Int.toString(i)}> {el} </span>
       })
       ->React.array
     | more => Array.map(more, s => React.string(s))->React.array
     }
 
     <div>
-      <div className="text-24 border-b border-gray-40 pb-4 mb-4 font-semibold"> summaryEl </div>
-      <div className="markdown-body"> children </div>
+      <div className="text-24 border-b border-gray-40 pb-4 mb-4 font-semibold"> {summaryEl} </div>
+      <div className="markdown-body"> {children} </div>
     </div>
   }
 }
@@ -166,11 +166,7 @@ type item = {
 }
 
 @react.component
-let make = (
-  ~mdxSources: array<item>,
-  ~children: option<React.element>=React.null,
-  ~activeItem: option<item>=?,
-) => {
+let make = (~mdxSources: array<item>, ~children=React.null, ~activeItem: option<item>=?) => {
   let allItems = mdxSources->Array.map(mdxSource => {
     let {id, keywords, category, summary, name, status, href} = mdxSource
     {
@@ -184,22 +180,21 @@ let make = (
     }
   })
 
-  let fuseOpts = Fuse.Options.t(
-    ~shouldSort=false,
-    ~includeScore=true,
-    ~threshold=0.2,
-    ~location=0,
-    ~distance=30,
-    ~minMatchCharLength=1,
-    ~keys=["keywords", "name"],
-    (),
-  )
+  let fuseOpts: Fuse.Options.t = {
+    shouldSort: false,
+    includeScore: true,
+    threshold: 0.2,
+    location: 0,
+    distance: 30,
+    minMatchCharLength: 1,
+    keys: ["keywords", "name"],
+  }
 
   let fuse: Fuse.t<Item.t> = Fuse.make(allItems, fuseOpts)
 
   let (state, setState) = React.useState(_ => {
     switch activeItem {
-    | Some(item) => ShowDetails((item :> Item.t))
+    | Some(item) => ShowDetails(item :> Item.t)
     | None => ShowAll
     }
   })
@@ -237,17 +232,15 @@ let make = (
       navigate("/syntax-lookup")
     | value =>
       switch findItemByExactName(value) {
-      | None => {
-          let filtered = searchItems(value)
-          setState(_ => ShowFiltered(value, filtered))
-        }
-      | Some(item) => {
-          let target = "/syntax-lookup/" ++ item.href
+      | None =>
+        let filtered = searchItems(value)
+        setState(_ => ShowFiltered(value, filtered))
+      | Some(item) =>
+        let target = "/syntax-lookup/" ++ item.href
 
-          // This makes sure we don't double navigate
-          if (pathname :> string) != target {
-            navigate(target)
-          }
+        // This makes sure we don't double navigate
+        if (pathname :> string) != target {
+          navigate(target)
         }
       }
     }
@@ -262,7 +255,7 @@ let make = (
         {React.string("Syntax Lookup")}
       </span>
       <h1 className="sr-only"> {React.string(item.name)} </h1>
-      <DetailBox summary={item.summary}> children </DetailBox>
+      <DetailBox summary={item.summary}> {children} </DetailBox>
     </div>
   }
 
@@ -433,7 +426,7 @@ let make = (
         <div className="flex xs:justify-center overflow-hidden pb-48">
           <main className="mt-8 min-w-320 lg:align-center w-full px-4 md:px-8 max-w-1280">
             <div className="flex justify-center">
-              <div className="max-w-740 w-full"> content </div>
+              <div className="max-w-740 w-full"> {content} </div>
             </div>
           </main>
         </div>

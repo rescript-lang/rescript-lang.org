@@ -16,11 +16,10 @@ let loader = async () => {
     Node.Process.Env.nodeEnv,
   ) {
   | (Some(baseUrl), _) => (baseUrl, baseUrl)
-  | (None, "development") => {
-      // Use remote bundles in dev
-      let baseUrl = "https://cdn.rescript-lang.org"
-      (baseUrl, baseUrl)
-    }
+  | (None, "development") =>
+    // Use remote bundles in dev
+    let baseUrl = "https://cdn.rescript-lang.org"
+    (baseUrl, baseUrl)
   | (None, _) => (
       // Use same-origin requests for the bundle
       "/playground-bundles",
@@ -31,7 +30,7 @@ let loader = async () => {
 
   try {
     let versions = {
-      let response = await fetch(versionsBaseUrl + "/playground-bundles/versions.json")
+      let response = await WebAPI.Fetch.fetch(versionsBaseUrl + "/playground-bundles/versions.json")
       let json = await WebAPI.Response.json(response)
       json
       ->JSON.Decode.array
@@ -49,6 +48,7 @@ let loader = async () => {
     None
   }
 }
+
 module ClientOnly = {
   @react.component
   let make = (~bundleBaseUrl, ~versions) => {

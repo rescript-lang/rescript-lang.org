@@ -2,8 +2,6 @@ module Link = ReactRouter.Link
 
 @react.component
 let make = (
-  ~sidebarState: (bool, (bool => bool) => unit)=(false, _ => ()),
-  // (Sidebar, toggleSidebar) ... for toggling sidebar in mobile view
   ~sidebar: React.element,
   ~rightSidebar: option<React.element>=?,
   ~categories: option<array<SidebarNav.Category.t>>=?,
@@ -45,8 +43,8 @@ let make = (
       | None => React.null
       }
       <div className={"flex justify-between mt-9"}>
-        previous
-        next
+        {previous}
+        {next}
       </div>
     }
   | None => React.null
@@ -56,7 +54,7 @@ let make = (
     <div className="w-full">
       <div className="flex lg:justify-center">
         <div className="flex w-full max-w-1280 md:mx-10 ">
-          sidebar
+          {sidebar}
           <main
             dataTestId="side-layout-children"
             className="DocSearch-content px-4 w-full pt-4 md:ml-12 lg:mr-8 mb-32 md:max-w-576 lg:max-w-740 md:pt-8"
@@ -68,8 +66,8 @@ let make = (
               </span>
             | None => React.null
             }}
-            children
-            pagination
+            {children}
+            {pagination}
           </main>
           {switch rightSidebar {
           | Some(ele) => ele

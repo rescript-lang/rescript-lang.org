@@ -21,15 +21,14 @@ let getType = element => {
   if React.isValidElement(element) {
     switch props(element).mdxType {
     | Some(tag) => tag
-    | None => {
-        let tag = elementType(element)
-        typeof(tag) == #string ? String.make(tag) : "unknown"
-      }
+    | None =>
+      let tag = elementType(element)
+      typeof(tag) == #string ? String.make(tag) : "unknown"
     }
   } else {
     "unknown"
   }
 }
 
-@get external component: React.element => React.componentLike<'props, React.element> = "type"
+@get external component: React.element => React.component<'props> = "type"
 let isComponent = (element, make) => React.isValidElement(element) && component(element) === make

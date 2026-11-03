@@ -68,7 +68,7 @@ let sortSection = mdxPages =>
   )
 
 let groupBySection = mdxPages =>
-  Array.reduce(mdxPages, (Dict.make() :> Dict.t<array<attributes>>), (acc, item) => {
+  Array.reduce(mdxPages, Dict.make() :> Dict.t<array<attributes>>, (acc, item) => {
     let section = item.section->Option.flatMap(Dict.get(acc, _))
     switch section {
     // If the section already exists, add this item to it

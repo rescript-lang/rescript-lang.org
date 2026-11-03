@@ -1,7 +1,7 @@
 open ReactRouter
 open Vitest
 
-@get external textContent: WebAPI.DOMAPI.element => string = "textContent"
+@get external textContent: WebAPI.Element.t => string = "textContent"
 
 let mockCategories: array<SidebarNav.Category.t> = [
   {
@@ -43,11 +43,11 @@ test("docs layout marks the textual content for DocSearch crawling", async () =>
 
   let _mainContent = await screen->getByTestId("side-layout-children")
 
-  let mainContent = switch document->WebAPI.Document.querySelector(
-    "[data-testid='side-layout-children']",
-  ) {
+  let mainContent = switch WebAPI.DOM.window
+  ->WebAPI.Window.document
+  ->WebAPI.Document.querySelector("[data-testid='side-layout-children']") {
   | Value(element) => element
-  | Null => failwith("expected docs layout main content")
+  | Null => panic("expected docs layout main content")
   }
 
   let className = switch mainContent->WebAPI.Element.getAttribute("class") {
@@ -57,9 +57,11 @@ test("docs layout marks the textual content for DocSearch crawling", async () =>
 
   expect(className->String.includes("DocSearch-content"))->toBe(true)
 
-  let lvl0 = switch document->WebAPI.Document.querySelector(".DocSearch-lvl0") {
+  let lvl0 = switch WebAPI.DOM.window
+  ->WebAPI.Window.document
+  ->WebAPI.Document.querySelector(".DocSearch-lvl0") {
   | Value(element) => element
-  | Null => failwith("expected docs layout to render a DocSearch lvl0 marker")
+  | Null => panic("expected docs layout to render a DocSearch lvl0 marker")
   }
 
   expect(lvl0->textContent)->toBe("Manual")

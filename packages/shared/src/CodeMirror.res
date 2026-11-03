@@ -12,6 +12,7 @@
 
 module KeyMap = {
   type t = Default | Vim
+
   let toString = (keyMap: t) =>
     switch keyMap {
     | Default => "default"
@@ -43,6 +44,7 @@ module Theme = {
 
 module Side = {
   @@warning("-37")
+
   type t =
     | @as(-1) BeforePointer
     | @as(1) AfterPointer
@@ -67,6 +69,7 @@ module HoverHint = {
       line: int,
       col: int,
     }
+
     let compareLineCol = (pos1, pos2) => {
       if pos1.line < pos2.line {
         Ordering.less
@@ -81,6 +84,7 @@ module HoverHint = {
         Ordering.equal
       }
     }
+
     // let \"<" = (pos1, pos2) => compareLineCol(pos1, pos2) === Ordering.less
     let \"<=" = (pos1, pos2) => compareLineCol(pos1, pos2) !== Ordering.greater
     // let \">" = (pos1, pos2) => compareLineCol(pos1, pos2) === Ordering.greater
@@ -130,8 +134,10 @@ module CM6 = {
   module EditorSelection = {
     type t
     type range
+
     @module("@codemirror/state") @scope("EditorSelection") @val
     external single: (int, int) => t = "single"
+
     @get external main: t => range = "main"
     @get external anchor: range => int = "anchor"
     @get external head: range => int = "head"
@@ -142,18 +148,21 @@ module CM6 = {
 
     @module("@codemirror/state") @scope("EditorState")
     external create: createConfig => editorState = "create"
+
     @get external selection: editorState => EditorSelection.t = "selection"
 
     module ReadOnly = {
       @module("@codemirror/state") @scope(("EditorState", "readOnly")) @val
       external of_: bool => extension = "of"
     }
+
     @get external doc: editorState => Text.t = "doc"
   }
 
   module Compartment = {
     @module("@codemirror/state") @new
     external create: unit => compartment = "Compartment"
+
     @send external make: (compartment, extension) => extension = "of"
     @send external reconfigure: (compartment, extension) => effect = "reconfigure"
   }
@@ -161,8 +170,9 @@ module CM6 = {
   module EditorView = {
     module Tooltip = {
       module View = {
-        type t = {dom: WebAPI.DOMAPI.element, offset?: {x: int, y: int}}
+        type t = {dom: WebAPI.Element.t, offset?: {x: int, y: int}}
       }
+
       type t = {
         pos: int,
         end?: int,
@@ -174,26 +184,30 @@ module CM6 = {
       }
     }
 
-    type createConfig = {state: editorState, parent: WebAPI.DOMAPI.element}
+    type createConfig = {state: editorState, parent: WebAPI.Element.t}
+
     @module("@codemirror/view") @new
     external create: createConfig => editorView = "EditorView"
 
     @send external destroy: editorView => unit = "destroy"
     @get external state: editorView => editorState = "state"
-    @get external dom: editorView => WebAPI.DOMAPI.htmlElement = "dom"
+    @get external dom: editorView => WebAPI.HTMLElement.t = "dom"
 
     type change = {from: int, to: int, insert: string}
     type dispatchArg = {changes: change, selection?: EditorSelection.t}
+
     @send
     external dispatch: (editorView, dispatchArg) => unit = "dispatch"
 
     type dispatchEffectsArg = {effects: effect}
+
     @send
     external dispatchEffects: (editorView, dispatchEffectsArg) => unit = "dispatch"
 
     module ThemeOptions = {
       type t = {dark?: bool}
     }
+
     @module("@codemirror/view") @scope("EditorView") @val
     external theme: (dict<dict<string>>, ~options: ThemeOptions.t=?) => extension = "theme"
 
@@ -218,6 +232,7 @@ module CM6 = {
     module HoverTooltipOptions = {
       type t = {hoverTime?: int, hideOnChange?: bool}
     }
+
     @module("@codemirror/view")
     external hoverTooltip: (
       (editorView, int, Side.t) => null<Tooltip.t>,
@@ -256,177 +271,263 @@ module CM6 = {
   module Language = {
     module HighlightStyle = {
       type tag
+
       module Tags = {
         @@warning("-32") // Suppress "unused external" warnings
+
         @module("@lezer/highlight") @scope("tags")
         external comment: tag = "comment"
+
         @module("@lezer/highlight") @scope("tags")
         external lineComment: tag = "lineComment"
+
         @module("@lezer/highlight") @scope("tags")
         external blockComment: tag = "blockComment"
+
         @module("@lezer/highlight") @scope("tags")
         external docComment: tag = "docComment"
+
         @module("@lezer/highlight") @scope("tags")
         external name: tag = "name"
+
         @module("@lezer/highlight") @scope("tags")
         external variableName: tag = "variableName"
+
         @module("@lezer/highlight") @scope("tags")
         external typeName: tag = "typeName"
+
         @module("@lezer/highlight") @scope("tags")
         external tagName: tag = "tagName"
+
         @module("@lezer/highlight") @scope("tags")
         external propertyName: tag = "propertyName"
+
         @module("@lezer/highlight") @scope("tags")
         external attributeName: tag = "attributeName"
+
         @module("@lezer/highlight") @scope("tags")
         external className: tag = "className"
+
         @module("@lezer/highlight") @scope("tags")
         external labelName: tag = "labelName"
+
         @module("@lezer/highlight") @scope("tags")
         external namespace: tag = "namespace"
+
         @module("@lezer/highlight") @scope("tags")
         external macroName: tag = "macroName"
+
         @module("@lezer/highlight") @scope("tags")
         external literal: tag = "literal"
+
         @module("@lezer/highlight") @scope("tags")
         external string: tag = "string"
+
         @module("@lezer/highlight") @scope("tags")
         external docString: tag = "docString"
+
         @module("@lezer/highlight") @scope("tags")
         external character: tag = "character"
+
         @module("@lezer/highlight") @scope("tags")
         external attributeValue: tag = "attributeValue"
+
         @module("@lezer/highlight") @scope("tags")
         external number: tag = "number"
+
         @module("@lezer/highlight") @scope("tags")
         external integer: tag = "integer"
+
         @module("@lezer/highlight") @scope("tags")
         external float: tag = "float"
+
         @module("@lezer/highlight") @scope("tags")
         external bool: tag = "bool"
+
         @module("@lezer/highlight") @scope("tags")
         external regexp: tag = "regexp"
+
         @module("@lezer/highlight") @scope("tags")
         external escape: tag = "escape"
+
         @module("@lezer/highlight") @scope("tags")
         external color: tag = "color"
+
         @module("@lezer/highlight") @scope("tags")
         external url: tag = "url"
+
         @module("@lezer/highlight") @scope("tags")
         external keyword: tag = "keyword"
+
         @module("@lezer/highlight") @scope("tags")
         external self: tag = "self"
+
         @module("@lezer/highlight") @scope("tags")
         external null: tag = "null"
+
         @module("@lezer/highlight") @scope("tags")
         external atom: tag = "atom"
+
         @module("@lezer/highlight") @scope("tags")
         external unit: tag = "unit"
+
         @module("@lezer/highlight") @scope("tags")
         external modifier: tag = "modifier"
+
         @module("@lezer/highlight") @scope("tags")
         external operatorKeyword: tag = "operatorKeyword"
+
         @module("@lezer/highlight") @scope("tags")
         external controlKeyword: tag = "controlKeyword"
+
         @module("@lezer/highlight") @scope("tags")
         external definitionKeyword: tag = "definitionKeyword"
+
         @module("@lezer/highlight") @scope("tags")
         external moduleKeyword: tag = "moduleKeyword"
+
         @module("@lezer/highlight") @scope("tags")
         external operator: tag = "operator"
+
         @module("@lezer/highlight") @scope("tags")
         external derefOperator: tag = "derefOperator"
+
         @module("@lezer/highlight") @scope("tags")
         external arithmeticOperator: tag = "arithmeticOperator"
+
         @module("@lezer/highlight") @scope("tags")
         external logicOperator: tag = "logicOperator"
+
         @module("@lezer/highlight") @scope("tags")
         external bitwiseOperator: tag = "bitwiseOperator"
+
         @module("@lezer/highlight") @scope("tags")
         external compareOperator: tag = "compareOperator"
+
         @module("@lezer/highlight") @scope("tags")
         external updateOperator: tag = "updateOperator"
+
         @module("@lezer/highlight") @scope("tags")
         external definitionOperator: tag = "definitionOperator"
+
         @module("@lezer/highlight") @scope("tags")
         external typeOperator: tag = "typeOperator"
+
         @module("@lezer/highlight") @scope("tags")
         external controlOperator: tag = "controlOperator"
+
         @module("@lezer/highlight") @scope("tags")
         external punctuation: tag = "punctuation"
+
         @module("@lezer/highlight") @scope("tags")
         external separator: tag = "separator"
+
         @module("@lezer/highlight") @scope("tags")
         external bracket: tag = "bracket"
+
         @module("@lezer/highlight") @scope("tags")
         external angleBracket: tag = "angleBracket"
+
         @module("@lezer/highlight") @scope("tags")
         external squareBracket: tag = "squareBracket"
+
         @module("@lezer/highlight") @scope("tags")
         external paren: tag = "paren"
+
         @module("@lezer/highlight") @scope("tags")
         external brace: tag = "brace"
+
         @module("@lezer/highlight") @scope("tags")
         external content: tag = "content"
+
         @module("@lezer/highlight") @scope("tags")
         external heading: tag = "heading"
+
         @module("@lezer/highlight") @scope("tags")
         external heading1: tag = "heading1"
+
         @module("@lezer/highlight") @scope("tags")
         external heading2: tag = "heading2"
+
         @module("@lezer/highlight") @scope("tags")
         external heading3: tag = "heading3"
+
         @module("@lezer/highlight") @scope("tags")
         external heading4: tag = "heading4"
+
         @module("@lezer/highlight") @scope("tags")
         external heading5: tag = "heading5"
+
         @module("@lezer/highlight") @scope("tags")
         external heading6: tag = "heading6"
+
         @module("@lezer/highlight") @scope("tags")
         external contentSeparator: tag = "contentSeparator"
+
         @module("@lezer/highlight") @scope("tags")
         external list: tag = "list"
+
         @module("@lezer/highlight") @scope("tags")
         external quote: tag = "quote"
+
         @module("@lezer/highlight") @scope("tags")
         external emphasis: tag = "emphasis"
+
         @module("@lezer/highlight") @scope("tags")
         external strong: tag = "strong"
+
         @module("@lezer/highlight") @scope("tags")
         external link: tag = "link"
+
         @module("@lezer/highlight") @scope("tags")
         external monospace: tag = "monospace"
+
         @module("@lezer/highlight") @scope("tags")
         external strikethrough: tag = "strikethrough"
+
         @module("@lezer/highlight") @scope("tags")
         external inserted: tag = "inserted"
+
         @module("@lezer/highlight") @scope("tags")
         external deleted: tag = "deleted"
+
         @module("@lezer/highlight") @scope("tags")
         external changed: tag = "changed"
+
         @module("@lezer/highlight") @scope("tags")
         external invalid: tag = "invalid"
+
         @module("@lezer/highlight") @scope("tags")
         external meta: tag = "meta"
+
         @module("@lezer/highlight") @scope("tags")
         external documentMeta: tag = "documentMeta"
+
         @module("@lezer/highlight") @scope("tags")
         external annotation: tag = "annotation"
+
         @module("@lezer/highlight") @scope("tags")
         external processingInstruction: tag = "processingInstruction"
+
         @module("@lezer/highlight") @scope("tags")
         external definition: tag => tag = "definition"
+
         @module("@lezer/highlight") @scope("tags")
         external constant: tag => tag = "constant"
+
         @module("@lezer/highlight") @scope("tags")
         external function: tag => tag = "function"
+
         @module("@lezer/highlight") @scope("tags")
         external standard: tag => tag = "standard"
+
         @module("@lezer/highlight") @scope("tags")
         external local: tag => tag = "local"
+
         @module("@lezer/highlight") @scope("tags")
         external special: tag => tag = "special"
       }
+
       module TagStyle = {
         type t = {
           tag: array<tag>,
@@ -437,7 +538,9 @@ module CM6 = {
           textDecoration?: string,
         }
       }
+
       type t
+
       @scope("HighlightStyle") @module("@codemirror/language")
       external define: array<TagStyle.t> => t = "define"
 
@@ -493,6 +596,7 @@ module CM6 = {
     }
 
     type t
+
     @module("@codemirror/language")
     external bracketMatching: unit => extension = "bracketMatching"
 
@@ -517,6 +621,7 @@ module CM6 = {
         parser: LRParser.t,
         languageData?: 'a. {..} as 'a,
       }
+
       @scope("LRLanguage") @module("@codemirror/language")
       external define: spec => t = "define"
     }
@@ -577,7 +682,7 @@ type editorInstance = {
 }
 
 type editorConfig = {
-  parent: WebAPI.DOMAPI.element,
+  parent: WebAPI.Element.t,
   initialValue: string,
   mode: string,
   readOnly: bool,
@@ -661,7 +766,7 @@ let createHoverHintExtension = (hoverHints: array<HoverHint.t>) => {
     | Some({hint, start, end}) =>
       let pos = CM6.Text.line(doc, start.line).from + start.col
       let end = CM6.Text.line(doc, end.line).from + end.col
-      let dom = WebAPI.Global.document->WebAPI.Document.createElement("div")
+      let dom = WebAPI.DOM.window->WebAPI.Window.document->WebAPI.Document.createElement("div")
       dom.textContent = Value(hint)
       dom.className = "p-1 border"
       Value({

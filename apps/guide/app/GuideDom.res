@@ -1,3 +1,3 @@
-external domElementToWebElement: Dom.element => WebAPI.DOMAPI.element = "%identity"
+external domElementToWebElement: Dom.element => WebAPI.Element.t = "%identity"
 
 let toWebElement = domElementToWebElement

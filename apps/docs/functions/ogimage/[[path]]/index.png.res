@@ -2,20 +2,20 @@ open WebAPI
 
 let loadGoogleFont = async (family: string) => {
   let url = `https://fonts.googleapis.com/css2?family=${family}`
-  let css = await (await fetch(url))->Response.text
+  let css = await (await WebAPI.Fetch.fetch(url))->Response.text
 
   // this function should fail if we can't load the font
   let resource =
     css->String.match(/src: url\((.+)\) format\('(opentype|truetype)'\)/)->Option.getOrThrow
-  let response = await fetch(resource[1]->Option.getOrThrow->Option.getOrThrow)
+  let response = await WebAPI.Fetch.fetch(resource[1]->Option.getOrThrow->Option.getOrThrow)
   await response->Response.arrayBuffer
 }
 
 type assets
 type env = {@as("ASSETS") assets: assets}
-type context = {request: FetchAPI.request, params: {path: array<string>}, env: env}
+type context = {request: Request.t, params: {path: array<string>}, env: env}
 
-@send external fetchAsset: (assets, string) => promise<FetchAPI.response> = "fetch"
+@send external fetchAsset: (assets, string) => promise<Response.t> = "fetch"
 
 let textResponse = (~status, message) => Response.fromString(message, ~init={status: status})
 
@@ -111,14 +111,14 @@ let splitPreviewText = (~title, ~description) => {
   (titleSegments[0]->Option.getOr("")->normalizeText, subTitle, description->normalizeText)
 }
 
-let requestedUrl = (~requestUrl: URLAPI.url, ~params) => {
-  switch requestUrl.searchParams->URLSearchParams.get("url")->Nullable.make->Nullable.toOption {
+let requestedUrl = (~searchParams, ~path) => {
+  switch searchParams->URLSearchParams.get("url")->Null.toOption {
   | Some(url) => Some(url)
-  | None => params.path[0]->Option.map(decodeURIComponent)
+  | None => path[0]->Option.map(decodeURIComponent)
   }
 }
 
-let isHtmlResponse = (response: FetchAPI.response) =>
+let isHtmlResponse = (response: Response.t) =>
   response.headers
   ->Headers.get("content-type")
   ->Null.toOption
@@ -126,14 +126,14 @@ let isHtmlResponse = (response: FetchAPI.response) =>
     contentType->String.toLowerCase->String.includes("text/html")
   )
 
-let renderImage = async (~assets, ~requestUrl: URLAPI.url, ~targetUrl: URLAPI.url) => {
-  if targetUrl.origin != requestUrl.origin {
+let renderImage = async (~assets, ~origin, ~targetOrigin, ~targetPathname, ~targetHref) => {
+  if targetOrigin != origin {
     textResponse(~status=400, "Open Graph image URL must be same-origin")
-  } else if targetUrl.pathname->String.startsWith("/ogimage/") {
+  } else if targetPathname->String.startsWith("/ogimage/") {
     textResponse(~status=400, "Open Graph image URL cannot point at the image endpoint")
   } else {
     let pageResponse = try {
-      Some(await assets->fetchAsset(targetUrl.href))
+      Some(await assets->fetchAsset(targetHref))
     } catch {
     | _ => None
     }
@@ -144,7 +144,7 @@ let renderImage = async (~assets, ~requestUrl: URLAPI.url, ~targetUrl: URLAPI.ur
       textResponse(~status=pageResponse.status, "Could not fetch Open Graph image URL")
     | Some(pageResponse) =>
       switch pageResponse.url->parseUrl {
-      | Some(responseUrl) if responseUrl.origin != requestUrl.origin =>
+      | Some(responseUrl) if responseUrl.origin != origin =>
         textResponse(~status=400, "Fetched Open Graph image URL must be same-origin")
       | Some(_) | None =>
         if !(pageResponse->isHtmlResponse) {
@@ -256,8 +256,17 @@ let renderImage = async (~assets, ~requestUrl: URLAPI.url, ~targetUrl: URLAPI.ur
 let onRequest = async ({request, params, env}: context) => {
   let requestUrl = URL.make(~url=request.url)
 
-  switch requestedUrl(~requestUrl, ~params)->Option.flatMap(parseUrl) {
+  switch requestedUrl(~searchParams=requestUrl.searchParams, ~path=params.path)->Option.flatMap(
+    parseUrl,
+  ) {
   | None => textResponse(~status=400, "Missing or invalid url")
-  | Some(targetUrl) => await renderImage(~assets=env.assets, ~requestUrl, ~targetUrl)
+  | Some(targetUrl) =>
+    await renderImage(
+      ~assets=env.assets,
+      ~origin=requestUrl.origin,
+      ~targetOrigin=targetUrl.origin,
+      ~targetPathname=targetUrl.pathname,
+      ~targetHref=targetUrl.href,
+    )
   }
 }

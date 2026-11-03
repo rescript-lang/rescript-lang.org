@@ -20,13 +20,15 @@ let original: ImageAsset.t = {
 
 // Source elements have no accessible role; inspect their native media-selection attributes.
 let sourceAttribute = name =>
-  document
+  WebAPI.DOM.window
+  ->WebAPI.Window.document
   ->WebAPI.Document.querySelector("picture source")
   ->Null.toOption
   ->Option.flatMap(source => source->WebAPI.Element.getAttribute(name)->Null.toOption)
 
 let imageAttribute = name =>
-  document
+  WebAPI.DOM.window
+  ->WebAPI.Window.document
   ->WebAPI.Document.querySelector("img")
   ->Null.toOption
   ->Option.flatMap(image => image->WebAPI.Element.getAttribute(name)->Null.toOption)
@@ -41,7 +43,12 @@ test("original images retain a plain image with dimensions and loading attribute
   await element(image)->toHaveAttribute("height", "667")
   await element(image)->toHaveAttribute("loading", "lazy")
   await element(image)->toHaveAttribute("decoding", "async")
-  expect(document->WebAPI.Document.querySelector("picture")->Null.toOption)->toEqual(None)
+  expect(
+    WebAPI.DOM.window
+    ->WebAPI.Window.document
+    ->WebAPI.Document.querySelector("picture")
+    ->Null.toOption,
+  )->toEqual(None)
   expect(imageAttribute("srcset"))->toEqual(None)
 })
 
@@ -73,7 +80,12 @@ test("responsive images render one AVIF source and a sized WebP image fallback",
       "/lp/community-3.avif?width=360&format=avif 360w, /lp/community-3.avif?width=640&format=avif 640w, /lp/community-3.avif?width=1000&format=avif 1000w",
     ),
   )
-  expect(document->WebAPI.Document.querySelector("source ~ source")->Null.toOption)->toEqual(None)
+  expect(
+    WebAPI.DOM.window
+    ->WebAPI.Window.document
+    ->WebAPI.Document.querySelector("source ~ source")
+    ->Null.toOption,
+  )->toEqual(None)
 })
 
 test(
@@ -89,7 +101,12 @@ test(
     await element(image)->toHaveAttribute("src", "/lp/community-3.avif")
     expect(imageAttribute("srcset"))->toEqual(None)
     expect(sourceAttribute("srcset"))->toEqual(None)
-    expect(document->WebAPI.Document.querySelector("picture")->Null.toOption)->toEqual(None)
+    expect(
+      WebAPI.DOM.window
+      ->WebAPI.Window.document
+      ->WebAPI.Document.querySelector("picture")
+      ->Null.toOption,
+    )->toEqual(None)
   },
 )
 

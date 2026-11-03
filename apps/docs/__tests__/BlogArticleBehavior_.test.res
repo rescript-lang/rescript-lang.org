@@ -1,7 +1,7 @@
 open ReactRouter
 open Vitest
 
-@get external textContent: WebAPI.DOMAPI.element => string = "textContent"
+@get external textContent: WebAPI.Element.t => string = "textContent"
 
 let mockAuthor: BlogFrontmatter.author = {
   username: "test-author",
@@ -33,14 +33,18 @@ test("blog article marks body content for DocSearch crawling", async () => {
     </MemoryRouter>,
   )
 
-  switch document->WebAPI.Document.querySelector("article.DocSearch-content") {
+  switch WebAPI.DOM.window
+  ->WebAPI.Window.document
+  ->WebAPI.Document.querySelector("article.DocSearch-content") {
   | Value(_) => ()
-  | Null => failwith("expected blog article body to be marked as DocSearch content")
+  | Null => panic("expected blog article body to be marked as DocSearch content")
   }
 
-  let lvl0 = switch document->WebAPI.Document.querySelector("article .DocSearch-lvl0") {
+  let lvl0 = switch WebAPI.DOM.window
+  ->WebAPI.Window.document
+  ->WebAPI.Document.querySelector("article .DocSearch-lvl0") {
   | Value(element) => element
-  | Null => failwith("expected blog article to render a DocSearch lvl0 marker")
+  | Null => panic("expected blog article to render a DocSearch lvl0 marker")
   }
 
   expect(lvl0->textContent)->toBe("Blog")

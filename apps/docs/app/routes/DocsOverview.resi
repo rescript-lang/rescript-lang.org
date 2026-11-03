@@ -1,2 +1,2 @@
 @react.component
-let default: (~showVersionSelect: bool=?) => React.element
+let default: unit => React.element
