@@ -1,0 +1,83 @@
+---
+author: tejesh-vaish
+date: "2026-11-21"
+title: Handle deadlines and late replies with ReScript
+badge: community
+description: |
+  Match an attempt's current state with typed events to handle deadlines,
+  stale replies, and late results.
+---
+
+Suppose you've approved a product-title update. The client's deadline passes before the tool replies, but the update may already be done. A valid late reply should still settle this attempt. A reply for an older attempt should leave it alone.
+
+The [status variant](../docs/manual/variant.mdx) has four cases: `Pending` while waiting, `Unresolved` after the deadline, `Completed(string)` with the tool's output, and `Rejected(string)` with a final refusal's reason. Each payload stays with its case.
+
+## Match the current state and event
+
+The `call` record pairs a status with an attempt ID. `signal` describes a deadline, completion, or refusal, and `event` associates that signal with an attempt.
+
+Assume replies have already been validated and authenticated, and every new attempt has a fresh ID that is never reused. The example supplies the events directly.
+
+Open the example with the external-link icon on the ReScript tab and select stable [ReScript 12.3.1](https://github.com/rescript-lang/rescript/releases/tag/v12.3.1). Run it in the playground to compare with the Output tab.
+
+<CodeTab labels={["ReScript", "Output"]}>
+
+```res example
+type status =
+  | Pending
+  | Unresolved
+  | Completed(string)
+  | Rejected(string)
+
+type call = {attemptId: string, status: status}
+type signal = Deadline | CompletedReply(string) | RejectedReply(string)
+type event = {attemptId: string, signal: signal}
+
+let receive = (call: call, event) => {
+  if call.attemptId !== event.attemptId {
+    call
+  } else {
+    switch (call.status, event.signal) {
+    | (Pending, Deadline) => {...call, status: Unresolved}
+    | (Pending, CompletedReply(output))
+    | (Unresolved, CompletedReply(output)) => {...call, status: Completed(output)}
+    | (Pending, RejectedReply(reason))
+    | (Unresolved, RejectedReply(reason)) => {...call, status: Rejected(reason)}
+    | (Unresolved, Deadline)
+    | (Completed(_), _)
+    | (Rejected(_), _) => call
+    }
+  }
+}
+
+let pending = {attemptId: "title-1", status: Pending}
+let waiting = pending->receive({attemptId: "title-1", signal: Deadline})
+Console.log(`Deadline: ${waiting->JSON.stringifyAny->Option.getOrThrow}`)
+let stale = waiting->receive({attemptId: "title-0", signal: CompletedReply("Old title")})
+Console.log(`Old reply: ${stale->JSON.stringifyAny->Option.getOrThrow}`)
+let saved = stale->receive({attemptId: "title-1", signal: CompletedReply("Title saved")})
+Console.log(`Late reply: ${saved->JSON.stringifyAny->Option.getOrThrow}`)
+let conflict = saved->receive({attemptId: "title-1", signal: RejectedReply("Too late")})
+Console.log(`Conflicting reply: ${conflict->JSON.stringifyAny->Option.getOrThrow}`)
+Console.log(`Original: ${pending->JSON.stringifyAny->Option.getOrThrow}`)
+```
+
+```text
+Deadline: {"attemptId":"title-1","status":"Unresolved"}
+Old reply: {"attemptId":"title-1","status":"Unresolved"}
+Late reply: {"attemptId":"title-1","status":{"TAG":"Completed","_0":"Title saved"}}
+Conflicting reply: {"attemptId":"title-1","status":{"TAG":"Completed","_0":"Title saved"}}
+Original: {"attemptId":"title-1","status":"Pending"}
+```
+
+</CodeTab>
+
+`receive` checks the ID first, then [matches](../docs/manual/pattern-matching-destructuring.mdx) the pair `(call.status, event.signal)`. The match writes out every allowed transition, so the compiler can check case coverage.
+
+A deadline moves only `Pending` to `Unresolved`. A matching completion or refusal can settle either state. That's why the old reply changes nothing, but the matching late reply completes this attempt.
+
+The [record update](../docs/manual/record.mdx) `{...call, status: Unresolved}` creates a new record with the same ID, so the original `pending` value stays `Pending`.
+
+`Completed` and `Rejected` stay final here. Keeping the first accepted final reply is the client's local policy; conflicting tool reports still need reconciliation.
+
+A timeout doesn't tell you whether the update happened, so check before retrying.
