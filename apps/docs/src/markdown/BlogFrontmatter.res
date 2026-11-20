@@ -72,6 +72,13 @@ let authors = [
     imgUrl: "https://cdn.bsky.app/img/avatar/plain/did:plc:erifxn5qcos2zrxvogse5y5s/bafkreif6v7lrtz24vi5ekumkiwg7n7js55coekszduwhjegfmdopd7tqmi@webp",
     social: Bluesky("vlkpack.com"),
   },
+  {
+    username: "tejesh-vaish",
+    fullname: "Tejesh Vaish",
+    role: "Community Member",
+    imgUrl: "https://avatars.githubusercontent.com/u/188414140?v=4",
+    social: X("its_tejesh_here"),
+  },
 ]
 
 module Badge = {

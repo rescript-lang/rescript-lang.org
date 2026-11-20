@@ -62,6 +62,7 @@ type t = [
   | #"/blog/first-class-dynamic-import-support"
   | #"/blog/improving-interop"
   | #"/blog/introducing-unified-operators"
+  | #"/blog/modeling-uncertain-tool-call-outcomes"
   | #"/blog/new-rescript-logo"
   | #"/blog/reactive-analysis"
   | #"/blog/reforging-build-system"
