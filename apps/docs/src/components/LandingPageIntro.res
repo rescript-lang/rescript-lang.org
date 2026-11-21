@@ -21,7 +21,7 @@ let make =
         <ReactRouter.Link
           to=#"/docs/manual/installation" prefetch=#intent className="mt-4 mb-2 block"
         >
-          <Button> {React.string("Get started")} </Button>
+          <Button>{React.string("Get started")}</Button>
         </ReactRouter.Link>
       </div>
     </section>

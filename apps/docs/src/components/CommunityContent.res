@@ -7,6 +7,7 @@ let simplifyUrl = url =>
 
 module LinkCard = {
   open CommunityResources
+
   @react.component
   let make = (~link, ~index) => {
     let loading = switch index {
@@ -17,8 +18,8 @@ module LinkCard = {
       <a href=link.url className="flex flex-col h-full">
         <img className="object-cover w-full lg:h-40 max-h-[345px]" src=link.image alt="" loading />
         <div className="p-3 md:p-5 grow">
-          <h3 className="font-semibold text-16 grow-0 mb-2"> {React.string(link.title)} </h3>
-          <p className="mb-2 text-14 grow text-gray-80"> {React.string(link.description)} </p>
+          <h3 className="font-semibold text-16 grow-0 mb-2">{React.string(link.title)}</h3>
+          <p className="mb-2 text-14 grow text-gray-80">{React.string(link.description)}</p>
         </div>
         <p className="text-14 p-3 md:p-5 grow-0 text-gray-70">
           {React.string(link.url->simplifyUrl->Option.getOr(""))}
@@ -48,7 +49,7 @@ module LinkCards = {
 @react.component
 let make = () => {
   <div>
-    <h1 className="hl-1 mb-6"> {"Community Content"->React.string} </h1>
+    <h1 className="hl-1 mb-6">{"Community Content"->React.string}</h1>
     <p className="md-p md:leading-5 tracking-[-0.015em] text-gray-80 md:text-16 mb-16">
       {React.string(
         "These articles, videos, and resources are created by the amazing ReScript community.",

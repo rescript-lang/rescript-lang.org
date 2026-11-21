@@ -41,7 +41,7 @@ let renderSgrString = (~key: string, sgrStr: SgrString.t): React.element => {
     )
     ->Array.join(" ")
 
-  <span key className> {React.string(content)} </span>
+  <span key className>{React.string(content)}</span>
 }
 
 @react.component
@@ -55,5 +55,5 @@ let make = (~className=?, ~children: string) => {
     })
 
   // Note: pre is essential here, otherwise whitespace and newlines are not respected
-  <pre ?className> {React.array(spans)} </pre>
+  <pre ?className>{React.array(spans)}</pre>
 }

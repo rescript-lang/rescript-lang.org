@@ -19,5 +19,5 @@ let make = (
 
   let sidebar = <Sidebar preludeSection ?activeToc categories route />
 
-  <SidebarPageLayout sidebar categories ?docSearchLvl0> {children} </SidebarPageLayout>
+  <SidebarPageLayout sidebar categories ?docSearchLvl0>{children}</SidebarPageLayout>
 }

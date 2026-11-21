@@ -28,7 +28,7 @@ test("blog article marks body content for DocSearch crawling", async () => {
   let _screen = await render(
     <MemoryRouter>
       <BlogArticle frontmatter=mockFrontmatter isArchived=false path="/blog/test-article">
-        <p> {React.string("This is the blog post body content for testing.")} </p>
+        <p>{React.string("This is the blog post body content for testing.")}</p>
       </BlogArticle>
     </MemoryRouter>,
   )

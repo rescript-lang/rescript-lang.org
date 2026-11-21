@@ -6,6 +6,7 @@ module Output = {
     | #warn
     | #error
   ]
+
   type runtimeLog = {level: level, content: array<string>}
 
   type t = {

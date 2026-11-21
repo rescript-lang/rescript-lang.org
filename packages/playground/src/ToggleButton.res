@@ -11,6 +11,6 @@ let make = (~checked, ~onChange, ~children) => {
       after:content-[''] after:absolute after:top-[2px] after:start-[4px] 
       after:border after:rounded-full after:h-3 after:w-3 after:transition-all`}
     />
-    <span className="playground-toggle-label ms-2 text-sm"> {children} </span>
+    <span className="playground-toggle-label ms-2 text-sm">{children}</span>
   </label>
 }

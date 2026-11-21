@@ -67,7 +67,7 @@ let make = (~categories: array<SidebarNav.Category.t>, ~activeToc, ~route) => {
           className="fixed inset-x-0 top-16 bottom-0 m-0 w-full max-w-none max-h-none h-[calc(100dvh-4rem)] bg-white px-4 py-4 overflow-y-auto backdrop:bg-gray-90/40"
         >
           <div className="flex items-center justify-between">
-            <span className="text-16 font-medium"> {React.string("Community")} </span>
+            <span className="text-16 font-medium">{React.string("Community")}</span>
             <button
               type_="button"
               ariaLabel="Close community navigation"

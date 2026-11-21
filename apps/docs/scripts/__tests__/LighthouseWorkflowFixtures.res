@@ -97,6 +97,7 @@ let calls = async state => {
   let contents = await read(join([state.directory, "calls.jsonl"]))
   contents->String.trim->String.split("\n")->Array.map(line => JSON.parseOrThrow(line))
 }
+
 let environmentContents = state => read(join([state.directory, "environment"]))
 let steps = (steps: array<step>) => [("GH_STEPS", LighthouseFixtures.json(steps))]
 

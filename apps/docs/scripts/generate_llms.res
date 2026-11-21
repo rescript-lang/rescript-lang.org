@@ -10,10 +10,9 @@ let rec collectFiles = (dirPath: string): array<string> => {
     let stats = Node.Fs.statSync(fullPath)
     switch stats["isDirectory"]() {
     | true => acc->Array.concat(collectFiles(fullPath))
-    | false => {
-        acc->Array.push(fullPath)
-        acc
-      }
+    | false =>
+      acc->Array.push(fullPath)
+      acc
     }
   })
 }
@@ -365,6 +364,7 @@ generateFile(
   manualDocsDirectory,
   manualLlmsDirectory,
 )
+
 generateFile(
   ~currentVersion=currentReactVersion,
   ~rescriptReactVersion=currentReactVersion,

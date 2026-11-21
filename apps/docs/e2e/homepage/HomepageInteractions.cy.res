@@ -9,6 +9,7 @@ external hideClipboardAPI: ('navigator, @as("clipboard") _, clipboardDescriptor)
 
 @val @scope("cy")
 external stubCopyCommand: (Dom.document, @as("execCommand") _) => spy = "stub"
+
 @send external returns: (spy, bool) => spy = "returns"
 
 it("community gallery supports keyboard selection and wraps to the first photo", () => {
@@ -35,7 +36,10 @@ it("clipboard failure can recover and both install commands can be copied repeat
     {
       onBeforeLoad: window => {
         // Denying the native API still allows the legacy copy command, so fail it too.
-        window.document->stubCopyCommand->returns(false)->ignore
+        window.document
+        ->stubCopyCommand
+        ->returns(false)
+        ->ignore
       },
     },
   )

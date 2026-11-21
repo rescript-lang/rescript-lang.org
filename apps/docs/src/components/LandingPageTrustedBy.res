@@ -31,7 +31,7 @@ let make =
       <a
         href={`https://github.com/rescript-lang/rescript-lang.org/blob/master/${ourUsersSourcePath}`}
       >
-        <Button> {React.string("Add Your Logo")} </Button>
+        <Button>{React.string("Add Your Logo")}</Button>
       </a>
       <img
         className="self-start mt-10 max-w-320 opacity-50 max-h-24 w-full"

@@ -34,8 +34,10 @@ let make = (
     <div
       className={`absolute ${rightPosition} ${topPosition} p-1 font-sans text-12 font-bold text-gray-30 pointer-events-none`}
     >
-      {/* RES or JS Label */
-      String.toUpperCase(label)->React.string}
+      {
+        /* RES or JS Label */
+        String.toUpperCase(label)->React.string
+      }
     </div>
   } else {
     React.null
@@ -55,7 +57,7 @@ let make = (
   >
     {label}
     {copyButton}
-    <div className="px-5 text-14 pt-4 pb-4 overflow-x-auto whitespace-pre"> {children} </div>
+    <div className="px-5 text-14 pt-4 pb-4 overflow-x-auto whitespace-pre">{children}</div>
   </div>
 }
 
@@ -159,7 +161,7 @@ module Toggle = {
                 to={`/try?code=${LzString.lzString.compressToEncodedURIComponent(tab.code)}`}
                 target="_blank"
               >
-                /* ICON Link to PLAYGROUND */
+                {/* ICON Link to PLAYGROUND */}
                 <Icon.ExternalLink
                   className="text-gray-30 mt-px hover:cursor-pointer hover:text-gray-60 hover:bg-gray-30 w-6 h-6 p-1 rounded transition-all duration-300 ease-in-out"
                 />
@@ -176,11 +178,11 @@ module Toggle = {
       }
 
       <div className="relative pt-6 w-full rounded-none text-gray-80">
-        /* text within code-box */
+        {/* text within code-box */}
         <div
           className="absolute flex w-full font-sans bg-transparent text-14 text-gray-40 mt-[-26px] overflow-x-auto"
         >
-          <div className="flex xs:ml-0"> {React.array(tabElements)} </div>
+          <div className="flex xs:ml-0">{React.array(tabElements)}</div>
           <div className="flex-1 w-full bg-gray-20 border-b rounded-tr border-gray-20 items-center">
             {buttonDiv}
           </div>
@@ -188,7 +190,7 @@ module Toggle = {
         <div
           className="px-4 lg:px-5 text-14 pb-4 pt-4 overflow-x-auto bg-gray-10 border-gray-20 rounded-b border"
         >
-          <pre> {children} </pre>
+          <pre>{children}</pre>
         </div>
       </div>
     }

@@ -64,7 +64,7 @@ module CurrentPath = {
   @react.component
   let make = () => {
     let location = ReactRouter.useLocation()
-    <span> {React.string(location.pathname :> string)} </span>
+    <span>{React.string(location.pathname :> string)}</span>
   }
 }
 
@@ -299,7 +299,7 @@ test("search error boundary catches render errors without replacing surrounding 
 
   let screen = await render(
     <div>
-      <span> {React.string("Docs page stays rendered")} </span>
+      <span>{React.string("Docs page stays rendered")}</span>
       <SearchErrorBoundary onClose={() => closed := true}>
         <ThrowsOnRender />
       </SearchErrorBoundary>

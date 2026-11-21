@@ -108,7 +108,7 @@ let make = () => {
       title="Search is disabled for this build"
     >
       <Icon.MagnifierGlass className="fill-current" />
-      <span> {React.string(unavailableText)} </span>
+      <span>{React.string(unavailableText)}</span>
     </button>
   | Some({appId, indexName, searchApiKey}) =>
     <>

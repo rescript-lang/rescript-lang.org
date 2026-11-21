@@ -6,6 +6,7 @@ let firstImage: ImageAsset.t = {
   height: 667,
   source: Original,
 }
+
 let images: array<ImageAsset.t> = [
   firstImage,
   {src: "/lp/community-2.avif", width: 1355, height: 904, source: Original},

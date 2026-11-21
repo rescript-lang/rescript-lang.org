@@ -5,7 +5,7 @@ test("renders PrimaryRed button", async () => {
 
   let screen = await render(
     <div dataTestId="button-wrapper">
-      <Button kind=PrimaryRed> {React.string("Click Me")} </Button>
+      <Button kind=PrimaryRed>{React.string("Click Me")}</Button>
     </div>,
   )
 
@@ -21,7 +21,7 @@ test("renders PrimaryBlue button", async () => {
 
   let screen = await render(
     <div dataTestId="button-wrapper">
-      <Button kind=PrimaryBlue> {React.string("Blue Action")} </Button>
+      <Button kind=PrimaryBlue>{React.string("Blue Action")}</Button>
     </div>,
   )
 
@@ -37,7 +37,7 @@ test("renders SecondaryRed button", async () => {
 
   let screen = await render(
     <div dataTestId="button-wrapper">
-      <Button kind=SecondaryRed> {React.string("Secondary")} </Button>
+      <Button kind=SecondaryRed>{React.string("Secondary")}</Button>
     </div>,
   )
 
@@ -53,7 +53,7 @@ test("renders Small button", async () => {
 
   let screen = await render(
     <div dataTestId="button-wrapper">
-      <Button size=Small> {React.string("Small Button")} </Button>
+      <Button size=Small>{React.string("Small Button")}</Button>
     </div>,
   )
 

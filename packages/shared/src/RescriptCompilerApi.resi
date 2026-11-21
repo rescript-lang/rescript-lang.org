@@ -81,6 +81,7 @@ module TypeHint: {
     line: int,
     col: int,
   }
+
   type data = {
     start: position,
     end: position,

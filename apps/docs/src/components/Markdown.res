@@ -4,14 +4,14 @@
 module P = {
   @react.component
   let make = (~children) =>
-    <p className="md-p md:leading-5 tracking-[-0.015em] text-gray-80 md:text-16"> {children} </p>
+    <p className="md-p md:leading-5 tracking-[-0.015em] text-gray-80 md:text-16">{children}</p>
 }
 
 // Used for hero like introduction text in
 // e.g Doc sections
 module Intro = {
   @react.component
-  let make = (~children) => <div className="text-24 mt-8 mb-4"> {children} </div>
+  let make = (~children) => <div className="text-24 mt-8 mb-4">{children}</div>
 }
 
 module Cite = {
@@ -20,9 +20,9 @@ module Cite = {
     // For semantics, check out
     // https://css-tricks.com/quoting-in-html-quotations-citations-and-blockquotes/
     <div className="my-10 border-l-2 border-fire font-normal pl-10 py-1 text-fire max-w-sm">
-      <blockquote className="text-32 italic mb-2"> {children} </blockquote>
+      <blockquote className="text-32 italic mb-2">{children}</blockquote>
       {Option.mapOr(author, React.null, author =>
-        <figcaption className="font-semibold text-14"> {React.string(author)} </figcaption>
+        <figcaption className="font-semibold text-14">{React.string(author)}</figcaption>
       )}
     </div>
 }
@@ -30,13 +30,13 @@ module Cite = {
 module Info = {
   @react.component
   let make = (~children) =>
-    <div className="infobox my-5 py-6 pl-8 pr-10 rounded-lg bg-sky-5"> {children} </div>
+    <div className="infobox my-5 py-6 pl-8 pr-10 rounded-lg bg-sky-5">{children}</div>
 }
 
 module Warn = {
   @react.component
   let make = (~children) =>
-    <div className="my-6 py-6 pl-8 pr-10 rounded-lg bg-orange-10"> {children} </div>
+    <div className="my-6 py-6 pl-8 pr-10 rounded-lg bg-orange-10">{children}</div>
 }
 
 module UrlBox = {
@@ -83,7 +83,7 @@ module UrlBox = {
     }
     <div className="md-url-box text-16 border-l-2 border-gray-60 my-6 py-6 pl-8 pr-10 bg-gray-5">
       {content}
-      <div className="mt-4 text-sky hover:text-sky-30"> {link} </div>
+      <div className="mt-4 text-sky hover:text-sky-30">{link}</div>
     </div>
   }
 }
@@ -109,7 +109,7 @@ module Anchor = {
 module H1 = {
   @react.component
   let make = (~id=?, ~title=?, ~children) =>
-    <h1 ?id ?title className="DocSearch-lvl1 hl-1 mb-6 scroll-mt-44"> {children} </h1>
+    <h1 ?id ?title className="DocSearch-lvl1 hl-1 mb-6 scroll-mt-44">{children}</h1>
 }
 
 module H2 = {
@@ -169,7 +169,7 @@ module H5 = {
 
 module Pre = {
   @react.component
-  let make = (~children) => <pre className="mt-2 mb-4 xs:mx-0 block"> {children} </pre>
+  let make = (~children) => <pre className="mt-2 mb-4 xs:mx-0 block">{children}</pre>
 }
 
 module InlineCode = {
@@ -186,13 +186,13 @@ module Table = {
   @react.component
   let make = (~children) =>
     <div className="overflow-x-auto mt-10 mb-16">
-      <table> {children} </table>
+      <table>{children}</table>
     </div>
 }
 
 module Thead = {
   @react.component
-  let make = (~children) => <thead> {children} </thead>
+  let make = (~children) => <thead>{children}</thead>
 }
 
 module Th = {
@@ -207,7 +207,7 @@ module Th = {
 
 module Td = {
   @react.component
-  let make = (~children) => <td className="border-b border-gray-20 py-3 pr-8"> {children} </td>
+  let make = (~children) => <td className="border-b border-gray-20 py-3 pr-8">{children}</td>
 }
 
 module Code = {
@@ -243,7 +243,7 @@ module Code = {
       }
     }
 
-    <div className=baseClass> {codeElement} </div>
+    <div className=baseClass>{codeElement}</div>
   }
 
   @react.component
@@ -262,8 +262,8 @@ module Code = {
     let isMultiline = code->String.includes("\n")
 
     switch lang {
-    | "text" if !isMultiline => <InlineCode> {code->React.string} </InlineCode>
-    | lang => <Pre> {makeCodeElement(~code, ~metastring, ~lang)} </Pre>
+    | "text" if !isMultiline => <InlineCode>{code->React.string}</InlineCode>
+    | lang => <Pre>{makeCodeElement(~code, ~metastring, ~lang)}</Pre>
     }
   }
 }
@@ -312,7 +312,7 @@ module Blockquote = {
   @react.component
   let make = (~children) =>
     <blockquote className="md-blockquote">
-      <Info> {children} </Info>
+      <Info>{children}</Info>
     </blockquote>
 }
 
@@ -368,12 +368,12 @@ module A = {
 
 module Ul = {
   @react.component
-  let make = (~children) => <ul className="md-ul mb-16"> {children} </ul>
+  let make = (~children) => <ul className="md-ul mb-16">{children}</ul>
 }
 
 module Ol = {
   @react.component
-  let make = (~children) => <ol className="md-ol ml-2"> {children} </ol>
+  let make = (~children) => <ol className="md-ol ml-2">{children}</ol>
 }
 
 module Li = {
@@ -398,7 +398,7 @@ module Li = {
     | [child] =>
       switch getType(child) {
       | "pre" | "p" => child
-      | _ => <p> {child} </p>
+      | _ => <p>{child}</p>
       }
     | _ =>
       let first = elements[0]->Option.getOrThrow
@@ -407,19 +407,19 @@ module Li = {
       switch getType(last) {
       | "ul" | "ol" | "li" | "pre" =>
         <>
-          {getType(first) == "p" ? React.array(head) : <p> {React.array(head)} </p>}
+          {getType(first) == "p" ? React.array(head) : <p>{React.array(head)}</p>}
           {last}
         </>
-      | _ => <p> {children} </p>
+      | _ => <p>{children}</p>
       }
     }
-    <li className="md-li mt-3 leading-4 ml-2"> {content} </li>
+    <li className="md-li mt-3 leading-4 ml-2">{content}</li>
   }
 }
 
 module Strong = {
   @react.component
-  let make = (~children) => <strong className="font-semibold"> {children} </strong>
+  let make = (~children) => <strong className="font-semibold">{children}</strong>
 }
 
 module Image = {
@@ -477,7 +477,7 @@ module Video = {
       {switch caption {
       | None => React.null
       | Some(caption) =>
-        <div className="mt-4 text-14 text-gray-60 md:ml-16"> {React.string(caption)} </div>
+        <div className="mt-4 text-14 text-gray-60 md:ml-16">{React.string(caption)}</div>
       }}
     </div>
   }

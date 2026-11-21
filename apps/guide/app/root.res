@@ -26,7 +26,7 @@ let default = () => {
       <link rel="apple-touch-icon" sizes="180x180" href=appleTouchIcon />
       <link rel="icon" type_="image/avif" sizes="32x32" href=favicon32 />
       <link rel="icon" type_="image/avif" sizes="16x16" href=favicon16 />
-      <title> {React.string("ReScript Guide")} </title>
+      <title>{React.string("ReScript Guide")}</title>
     </head>
     <body>
       <ReactRouter.Outlet />

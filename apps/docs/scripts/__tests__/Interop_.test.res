@@ -5,15 +5,15 @@ open ScriptTest
 test("MDX list items preserve paragraph and nested list structure", async () => {
   let html = renderHtml(
     <Markdown.Li>
-      <Markdown.P> {React.string("Parent")} </Markdown.P>
+      <Markdown.P>{React.string("Parent")}</Markdown.P>
       <Markdown.Ol>
-        <Markdown.Li> {React.string("Child")} </Markdown.Li>
+        <Markdown.Li>{React.string("Child")}</Markdown.Li>
       </Markdown.Ol>
     </Markdown.Li>,
   )
   expect(html)->toContain("Parent</p><ol")
   expect(html->String.includes("<p><p"))->toBe(false)
-  expect(renderHtml(<Markdown.Li> {React.null} </Markdown.Li>))->toContain("</li>")
+  expect(renderHtml(<Markdown.Li>{React.null}</Markdown.Li>))->toContain("</li>")
 })
 
 test(
@@ -49,8 +49,8 @@ test("URL boxes preserve their first paragraph, following content and destinatio
   let html = renderHtml(
     <ReactRouter.MemoryRouter>
       <Markdown.UrlBox text="Read more" href="/docs/manual/introduction">
-        <p> {React.string("First paragraph")} </p>
-        <p> {React.string("Second paragraph")} </p>
+        <p>{React.string("First paragraph")}</p>
+        <p>{React.string("Second paragraph")}</p>
       </Markdown.UrlBox>
     </ReactRouter.MemoryRouter>,
   )

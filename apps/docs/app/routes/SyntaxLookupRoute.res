@@ -25,7 +25,7 @@ let loader: Loader.t<loaderData> = async _ => {
 let default = () => {
   let {mdxSources} = useLoaderData()
   <>
-    <title> {React.string("Syntax Lookup | ReScript API")} </title>
+    <title>{React.string("Syntax Lookup | ReScript API")}</title>
     <SyntaxLookup mdxSources />
   </>
 }

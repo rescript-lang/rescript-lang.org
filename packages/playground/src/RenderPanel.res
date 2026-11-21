@@ -1,7 +1,7 @@
 @react.component
 let make = (~validReact) => {
   <div className={`px-2 relative ${validReact ? "flex-1 py-2 overflow-y-auto" : "h-auto py-6"}`}>
-    <h2 className="font-bold text-gray-5/50 absolute right-2 top-2"> {React.string("React")} </h2>
+    <h2 className="font-bold text-gray-5/50 absolute right-2 top-2">{React.string("React")}</h2>
     {validReact
       ? React.null
       : <p className="p-4 max-w-prose">

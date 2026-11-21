@@ -29,15 +29,15 @@ module Item = {
         className="relative max-w-1060 z-3 flex flex-wrap justify-center lg:justify-between pb-16 pt-20 md:pb-20 md:pt-32 lg:pb-40 md:space-x-4 w-full"
       >
         <div className="max-w-96 flex flex-col justify-center mb-6 lg:mb-2">
-          <div className="hl-overline text-gray-20 mb-4"> {React.string(caption)} </div>
-          <h3 className="text-gray-10 mb-4 hl-2 font-semibold"> title </h3>
-          <div className="text-gray-30 body-md pr-8"> paragraph </div>
+          <div className="hl-overline text-gray-20 mb-4">{React.string(caption)}</div>
+          <h3 className="text-gray-10 mb-4 hl-2 font-semibold">{title}</h3>
+          <div className="text-gray-30 body-md pr-8">{paragraph}</div>
         </div>
         <div className="relative mt-10 lg:mt-0">
           <div
             className="relative w-full z-2 bg-gray-90 flex md:mt-0 items-center justify-center rounded-lg max-w-140 shadow-[0px_4px_55px_0px_rgba(230,72,79,0.10)]"
           >
-            media
+            {media}
           </div>
           <img
             className="absolute z-1 bottom-0 right-0 -mb-12 -mr-12 max-w-[20rem]"
@@ -109,7 +109,7 @@ let make = () => {
     <Item
       caption="Seamless Integration"
       title={<>
-        <span className="text-orange-dark"> {React.string("The familiar JS ecosystem")} </span>
+        <span className="text-orange-dark">{React.string("The familiar JS ecosystem")}</span>
         {React.string(" at your fingertips")}
       </>}
       media={<LandingPageVideo

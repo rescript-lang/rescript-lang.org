@@ -27,7 +27,7 @@ test("desktop blog article renders header, author, date, and body", async () => 
     <MemoryRouter>
       <div dataTestId="blog-article-wrapper">
         <BlogArticle frontmatter=mockFrontmatter isArchived=false path="/blog/test-article">
-          <div> {React.string("This is the blog post body content for testing.")} </div>
+          <div>{React.string("This is the blog post body content for testing.")}</div>
         </BlogArticle>
       </div>
     </MemoryRouter>,
@@ -53,7 +53,7 @@ test("desktop archived blog article shows warning banner", async () => {
     <MemoryRouter>
       <div dataTestId="blog-article-wrapper">
         <BlogArticle frontmatter=mockFrontmatter isArchived=true path="/blog/test-article">
-          <div> {React.string("This is the blog post body content for testing.")} </div>
+          <div>{React.string("This is the blog post body content for testing.")}</div>
         </BlogArticle>
       </div>
     </MemoryRouter>,
@@ -73,7 +73,7 @@ test("mobile blog article", async () => {
     <MemoryRouter>
       <div dataTestId="blog-article-wrapper">
         <BlogArticle frontmatter=mockFrontmatter isArchived=false path="/blog/test-article">
-          <div> {React.string("This is the blog post body content for testing.")} </div>
+          <div>{React.string("This is the blog post body content for testing.")}</div>
         </BlogArticle>
       </div>
     </MemoryRouter>,
@@ -120,7 +120,7 @@ test("desktop blog article with co-authors shows all authors", async () => {
         <BlogArticle
           frontmatter=mockFrontmatterWithCoAuthors isArchived=false path="/blog/collab-post"
         >
-          <div> {React.string("Collaborative content.")} </div>
+          <div>{React.string("Collaborative content.")}</div>
         </BlogArticle>
       </div>
     </MemoryRouter>,
@@ -156,7 +156,7 @@ test("desktop blog article with article image shows image", async () => {
         <BlogArticle
           frontmatter=mockFrontmatterWithArticleImg isArchived=false path="/blog/image-post"
         >
-          <div> {React.string("Content below the article image.")} </div>
+          <div>{React.string("Content below the article image.")}</div>
         </BlogArticle>
       </div>
     </MemoryRouter>,
@@ -188,7 +188,7 @@ test("desktop blog article without description", async () => {
     <MemoryRouter>
       <div dataTestId="blog-article-wrapper">
         <BlogArticle frontmatter=mockFrontmatterNoDescription isArchived=false path="/blog/no-desc">
-          <div> {React.string("Content without a description above.")} </div>
+          <div>{React.string("Content without a description above.")}</div>
         </BlogArticle>
       </div>
     </MemoryRouter>,

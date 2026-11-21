@@ -16,8 +16,10 @@ module Process = {
   @scope("process") external env: Dict.t<string> = "env"
   @scope("process") @val external argv: array<string> = "argv"
   @scope("process") external exit: int => unit = "exit"
+
   module Env = {
     @scope(("process", "env")) external nodeEnv: string = "NODE_ENV"
+
     @scope(("process", "env"))
     external playgroundBundleEndpoint: option<string> = "PLAYGROUND_BUNDLE_ENDPOINT"
   }
@@ -31,14 +33,18 @@ module Fs = {
   @module("fs") external readFileSync: string => string = "readFileSync"
   @module("fs") external readFileSync2: (string, string) => string = "readFileSync"
   @module("fs") external readdirSync: string => array<string> = "readdirSync"
+
   @module("fs")
   external writeFileSync: (string, string, ~encoding: string=?) => unit = "writeFileSync"
+
   @module("fs") external appendFileSync: (string, string, string) => unit = "appendFileSync"
   @module("fs") external existsSync: string => bool = "existsSync"
   @module("fs") external mkdirSync: string => unit = "mkdirSync"
   @module("node:fs") external mkdtempSync: string => string = "mkdtempSync"
+
   @module("node:fs")
   external rmSync: (string, {"recursive": bool, "force": bool}) => unit = "rmSync"
+
   @module("fs") external unlinkSync: string => unit = "unlinkSync"
   @module("fs") external statSync: string => {.."isDirectory": unit => bool} = "statSync"
   @module("node:fs/promises") external readFile: (string, string) => promise<string> = "readFile"

@@ -12,7 +12,7 @@ let make = (~hit: DocSearch.docSearchHit) => {
       <div className="DocSearch-Hit-content-wrapper">
         <span className="DocSearch-Hit-title" dangerouslySetInnerHTML={{"__html": titleHtml}} />
         {switch subtitle {
-        | Some(s) => <span className="DocSearch-Hit-subtitle"> {React.string(s)} </span>
+        | Some(s) => <span className="DocSearch-Hit-subtitle">{React.string(s)}</span>
         | None => React.null
         }}
         {switch contentHtml {

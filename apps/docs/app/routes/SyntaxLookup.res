@@ -133,19 +133,19 @@ module DetailBox = {
     | [first, second, third] =>
       [
         React.string(first),
-        <span className="text-fire"> {React.string(second)} </span>,
+        <span className="text-fire">{React.string(second)}</span>,
         React.string(third),
       ]
       ->Array.mapWithIndex((el, i) => {
-        <span key={Int.toString(i)}> {el} </span>
+        <span key={Int.toString(i)}>{el}</span>
       })
       ->React.array
     | more => Array.map(more, s => React.string(s))->React.array
     }
 
     <div>
-      <div className="text-24 border-b border-gray-40 pb-4 mb-4 font-semibold"> {summaryEl} </div>
-      <div className="markdown-body"> {children} </div>
+      <div className="text-24 border-b border-gray-40 pb-4 mb-4 font-semibold">{summaryEl}</div>
+      <div className="markdown-body">{children}</div>
     </div>
   }
 }
@@ -254,8 +254,8 @@ let make = (~mdxSources: array<item>, ~children=React.null, ~activeItem: option<
       <span className="DocSearch-lvl0 sr-only" ariaHidden=true>
         {React.string("Syntax Lookup")}
       </span>
-      <h1 className="sr-only"> {React.string(item.name)} </h1>
-      <DetailBox summary={item.summary}> {children} </DetailBox>
+      <h1 className="sr-only">{React.string(item.name)}</h1>
+      <DetailBox summary={item.summary}>{children}</DetailBox>
     </div>
   }
 
@@ -325,7 +325,7 @@ let make = (~mdxSources: array<item>, ~children=React.null, ~activeItem: option<
           } else {
             React.null
           }}
-          <div className="flex flex-wrap"> {renderTags(items)} </div>
+          <div className="flex flex-wrap">{renderTags(items)}</div>
         </div>->Some
       }
 
@@ -341,7 +341,7 @@ let make = (~mdxSources: array<item>, ~children=React.null, ~activeItem: option<
           <h3 className="font-sans font-medium text-gray-100 tracking-wide text-14 uppercase mb-2">
             {React.string(title)}
           </h3>
-          <div> {React.array(subsections)} </div>
+          <div>{React.array(subsections)}</div>
         </div>->Some
       }
     }
@@ -394,7 +394,7 @@ let make = (~mdxSources: array<item>, ~children=React.null, ~activeItem: option<
     <div>
       <div className="flex flex-col items-center">
         <div className="text-center max-w-84">
-          <Markdown.H1> {React.string("Syntax Lookup")} </Markdown.H1>
+          <Markdown.H1>{React.string("Syntax Lookup")}</Markdown.H1>
           <div className="mb-8 text-gray-60-tr text-14">
             {React.string("Enter some language construct you want to know more about.")}
           </div>
@@ -426,7 +426,7 @@ let make = (~mdxSources: array<item>, ~children=React.null, ~activeItem: option<
         <div className="flex xs:justify-center overflow-hidden pb-48">
           <main className="mt-8 min-w-320 lg:align-center w-full px-4 md:px-8 max-w-1280">
             <div className="flex justify-center">
-              <div className="max-w-740 w-full"> {content} </div>
+              <div className="max-w-740 w-full">{content}</div>
             </div>
           </main>
         </div>

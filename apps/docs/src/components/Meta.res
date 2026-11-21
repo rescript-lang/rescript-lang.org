@@ -48,7 +48,7 @@ let make = (
   }
 
   <>
-    <title key="title"> {React.string(title)} </title>
+    <title key="title">{React.string(title)}</title>
     <meta charSet="utf-8" />
     <meta
       name="viewport"
@@ -65,14 +65,14 @@ let make = (
     <link rel="icon" type_="image/avif" sizes="16x16" href="/favicon/favicon-16x16.avif" />
     <link rel="manifest" href="/favicon/site.webmanifest" />
 
-    /* OG link preview meta data */
+    {/* OG link preview meta data */}
     <meta key="og:site_name" property="og:site_name" content=ogSiteName />
     <meta key="og:locale" property="og:locale" content=ogLocale />
     <meta key="og:title" property="og:title" content=ogTitle />
     <meta key="og:description" property="og:description" content=ogDescription />
     <meta key="og:image" property="og:image" content=ogImage />
 
-    /* Twitter Meta */
+    {/* Twitter Meta */}
     <meta key="twitter:title" name="twitter:title" content=ogTitle />
     <meta key="twitter:description" name="twitter:description" content=ogDescription />
     <meta key="twitter:site" name="twitter:site" content="@rescriptlang" />
@@ -82,7 +82,7 @@ let make = (
     <link rel="alternate" type_="application/rss+xml" title="ReScript Blog" href="/blog/feed.xml" />
     <meta name="docsearch:language" content="en" />
     <meta name="docsearch:version" content={Constants.docSearchVersionTokens->Array.join(",")} />
-    // Robots meta tag
+    {/* Robots meta tag */}
     <meta name="robots" content="index, follow" />
   </>
 }

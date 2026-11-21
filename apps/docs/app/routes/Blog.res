@@ -21,7 +21,7 @@ module Badge = {
       <div>
         <img className="h-3 block mr-1" src="/star.svg" />
       </div>
-      <div> {React.string(text)} </div>
+      <div>{React.string(text)}</div>
     </div>
   }
 }
@@ -51,7 +51,7 @@ module CategorySelector = {
           | true => "bg-gray-20 text-gray-80 rounded py-1"
           | false => "hover:cursor-pointer bg-white hover:text-gray-80"
           } ++ " px-4 inline-block"
-        <Link.String key=text to=href className> {React.string(text)} </Link.String>
+        <Link.String key=text to=href className>{React.string(text)}</Link.String>
       })
       ->React.array}
     </div>
@@ -91,7 +91,7 @@ module BlogCard = {
       </div>
       <div className="px-2">
         <Link.String to={`/blog/${slug}`}>
-          <h2 className="hl-4"> {React.string(title)} </h2>
+          <h2 className="hl-4">{React.string(title)}</h2>
         </Link.String>
         <div className="captions text-gray-40 pt-1">
           {switch category {
@@ -153,10 +153,10 @@ module FeatureCard = {
         className="relative px-4 lg:self-auto sm:pt-12 md:px-20 sm:self-start md:-mt-20 mt-4 bg-white lg:w-full lg:pt-0 lg:mt-0 lg:px-0 lg:ml-12"
       >
         <div className="max-w-400 ">
-          <h2 className="hl-1"> {React.string(title)} </h2>
+          <h2 className="hl-1">{React.string(title)}</h2>
           <div className="mb-6">
             <div className="flex items-center body-sm text-gray-40 mt-2 mb-5">
-              authorImg
+              {authorImg}
               <div>
                 <a
                   className="hover:text-gray-60"
@@ -180,11 +180,11 @@ module FeatureCard = {
                 {date->Util.Date.toDayMonthYear->React.string}
               </div>
             </div>
-            <p className="body-md text-gray-70"> {React.string(firstParagraph)} </p>
+            <p className="body-md text-gray-70">{React.string(firstParagraph)}</p>
           </div>
         </div>
         <Link.String to={`/blog/${slug}`}>
-          <Button> {React.string("Read Article")} </Button>
+          <Button>{React.string("Read Article")}</Button>
         </Link.String>
       </div>
     </section>
@@ -197,12 +197,12 @@ type params = {slug: string}
 let make = (~posts: array<BlogApi.post>, ~category: category): React.element => {
   let content = if Array.length(posts) === 0 {
     <div className="mt-8">
-      <Markdown.H1> {React.string("Blog not yet available")} </Markdown.H1>
-      <Markdown.Warn> {React.string("This blog is currently in the works.")} </Markdown.Warn>
+      <Markdown.H1>{React.string("Blog not yet available")}</Markdown.H1>
+      <Markdown.Warn>{React.string("This blog is currently in the works.")}</Markdown.Warn>
     </div>
   } else {
     let result = switch Array.length(posts) {
-    | 0 => <div> {React.string("No posts for this category available...")} </div>
+    | 0 => <div>{React.string("No posts for this category available...")}</div>
     | _ =>
       let first = Array.getUnsafe(posts, 0)
       let rest = Array.slice(posts, ~start=1)
@@ -243,8 +243,8 @@ let make = (~posts: array<BlogApi.post>, ~category: category): React.element => 
       }
 
       <>
-        featureBox
-        postsBox
+        {featureBox}
+        {postsBox}
       </>
     }
     <>
@@ -253,7 +253,7 @@ let make = (~posts: array<BlogApi.post>, ~category: category): React.element => 
           <CategorySelector selected=category />
         </div>
       </div>
-      result
+      {result}
     </>
   }
 
@@ -262,7 +262,7 @@ let make = (~posts: array<BlogApi.post>, ~category: category): React.element => 
       <div className="flex justify-center overflow-hidden">
         <main className="min-w-320 lg:align-center w-full lg:px-0 max-w-1280 pb-48">
           <div className="flex justify-center">
-            <div className="w-full max-w-266.5"> content </div>
+            <div className="w-full max-w-266.5">{content}</div>
           </div>
         </main>
       </div>

@@ -5,7 +5,7 @@ module Section = {
       <span className="block text-gray-60 tracking-wide text-14 uppercase mb-4">
         {React.string(title)}
       </span>
-      children
+      {children}
     </div>
   }
 }
@@ -31,7 +31,7 @@ let make = () => {
           height="4717"
         />
         <div className="text-16">
-          <p> {React.string(`© ${copyrightYear} The ReScript Project`)} </p>
+          <p>{React.string(`© ${copyrightYear} The ReScript Project`)}</p>
         </div>
       </div>
       <div
@@ -45,7 +45,7 @@ let make = () => {
               </Link>
             </li>
             <li>
-              <Link to=#"/brand" className={linkClass}> {React.string("Brand Assets")} </Link>
+              <Link to=#"/brand" className={linkClass}>{React.string("Brand Assets")}</Link>
             </li>
 
             <li>

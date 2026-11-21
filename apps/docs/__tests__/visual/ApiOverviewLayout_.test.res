@@ -25,7 +25,7 @@ test("desktop API overview shows sidebar categories and content", async () => {
     <MemoryRouter initialEntries=["/docs/manual/api"]>
       <div dataTestId="api-overview-wrapper">
         <DocsLayout categories>
-          <div> {React.string("API documentation content.")} </div>
+          <div>{React.string("API documentation content.")}</div>
         </DocsLayout>
       </div>
     </MemoryRouter>,
@@ -65,7 +65,7 @@ test("mobile API overview hides sidebar", async () => {
     <MemoryRouter initialEntries=["/docs/manual/api"]>
       <div dataTestId="api-overview-wrapper">
         <DocsLayout categories>
-          <div> {React.string("API documentation content.")} </div>
+          <div>{React.string("API documentation content.")}</div>
         </DocsLayout>
       </div>
     </MemoryRouter>,
@@ -94,8 +94,8 @@ test("desktop API overview shows all category items", async () => {
       <div dataTestId="api-overview-wrapper">
         <DocsLayout categories>
           <div>
-            <Markdown.H1> {React.string("API Reference")} </Markdown.H1>
-            <Markdown.P> {React.string("Welcome to the ReScript API documentation.")} </Markdown.P>
+            <Markdown.H1>{React.string("API Reference")}</Markdown.H1>
+            <Markdown.P>{React.string("Welcome to the ReScript API documentation.")}</Markdown.P>
           </div>
         </DocsLayout>
       </div>
@@ -119,7 +119,7 @@ test("tablet API overview", async () => {
     <MemoryRouter initialEntries=["/docs/manual/api"]>
       <div dataTestId="api-overview-wrapper">
         <DocsLayout categories>
-          <div> {React.string("API documentation content.")} </div>
+          <div>{React.string("API documentation content.")}</div>
         </DocsLayout>
       </div>
     </MemoryRouter>,

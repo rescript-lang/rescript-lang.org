@@ -12,11 +12,15 @@ let renderGuideHomeWithHistory = GuideTestFixtures.renderGuideHomeWithHistory
 
 @module("./compilerFixture.js")
 external waitForCompilerRequest: unit => promise<unit> = "waitForCompilerRequest"
+
 @module("./compilerFixture.js") external failCompilerLoading: unit => unit = "failCompilerLoading"
+
 @module("./compilerFixture.js")
 external finishCompilerLoading: string => unit = "finishCompilerLoading"
+
 @module("./compilerFixture.js")
 external finishCompilerLoadingWithError: unit => unit = "finishCompilerLoadingWithError"
+
 @module("./compilerFixture.js") external expectCompiled: string => unit = "expectCompiled"
 
 let clearGuideState = () => {

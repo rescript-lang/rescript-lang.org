@@ -24,7 +24,7 @@ let make = (~image: ImageAsset.t, ~sizes, ~alt, ~className="", ~loading=?) => {
   | Some(srcSet) =>
     <picture>
       <source type_="image/avif" srcSet sizes />
-      img
+      {img}
     </picture>
   }
 }

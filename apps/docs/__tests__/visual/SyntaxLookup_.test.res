@@ -91,7 +91,7 @@ test("desktop syntax lookup with active item shows detail box", async () => {
     <MemoryRouter initialEntries=["/syntax-lookup"]>
       <div dataTestId="syntax-lookup-wrapper">
         <SyntaxLookup mdxSources=mockItems activeItem={mockItems->Array.getUnsafe(0)}>
-          <div> {React.string("Detail content for @as decorator.")} </div>
+          <div>{React.string("Detail content for @as decorator.")}</div>
         </SyntaxLookup>
       </div>
     </MemoryRouter>,
@@ -138,7 +138,7 @@ test("syntax lookup detail box shows summary", async () => {
     <MemoryRouter initialEntries=["/syntax-lookup"]>
       <div dataTestId="syntax-lookup-wrapper">
         <SyntaxLookup mdxSources=mockItems activeItem={mockItems->Array.getUnsafe(2)}>
-          <div> {React.string("Detailed documentation about the pipe operator.")} </div>
+          <div>{React.string("Detailed documentation about the pipe operator.")}</div>
         </SyntaxLookup>
       </div>
     </MemoryRouter>,
@@ -158,7 +158,7 @@ test("mobile syntax lookup with active item", async () => {
     <MemoryRouter initialEntries=["/syntax-lookup"]>
       <div dataTestId="syntax-lookup-wrapper">
         <SyntaxLookup mdxSources=mockItems activeItem={mockItems->Array.getUnsafe(0)}>
-          <div> {React.string("Detail content for @as decorator.")} </div>
+          <div>{React.string("Detail content for @as decorator.")}</div>
         </SyntaxLookup>
       </div>
     </MemoryRouter>,

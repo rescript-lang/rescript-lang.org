@@ -5,7 +5,7 @@ test("h1 keeps the generated markdown id for DocSearch", async () => {
 
   let _screen = await render(
     <div>
-      <Markdown.H1 id="heading-level-1"> {React.string("Heading Level 1")} </Markdown.H1>
+      <Markdown.H1 id="heading-level-1">{React.string("Heading Level 1")}</Markdown.H1>
     </div>,
   )
 
@@ -22,11 +22,11 @@ test("markdown headings expose explicit DocSearch hierarchy markers", async () =
 
   let _screen = await render(
     <div>
-      <Markdown.H1 id="heading-level-1"> {React.string("Heading Level 1")} </Markdown.H1>
-      <Markdown.H2 id="heading-level-2"> {React.string("Heading Level 2")} </Markdown.H2>
-      <Markdown.H3 id="heading-level-3"> {React.string("Heading Level 3")} </Markdown.H3>
-      <Markdown.H4 id="heading-level-4"> {React.string("Heading Level 4")} </Markdown.H4>
-      <Markdown.H5 id="heading-level-5"> {React.string("Heading Level 5")} </Markdown.H5>
+      <Markdown.H1 id="heading-level-1">{React.string("Heading Level 1")}</Markdown.H1>
+      <Markdown.H2 id="heading-level-2">{React.string("Heading Level 2")}</Markdown.H2>
+      <Markdown.H3 id="heading-level-3">{React.string("Heading Level 3")}</Markdown.H3>
+      <Markdown.H4 id="heading-level-4">{React.string("Heading Level 4")}</Markdown.H4>
+      <Markdown.H5 id="heading-level-5">{React.string("Heading Level 5")}</Markdown.H5>
     </div>,
   )
 
@@ -67,7 +67,7 @@ test("heading anchor links do not duplicate heading ids", async () => {
 
   let _screen = await render(
     <div>
-      <Markdown.H2 id="duplicate-check"> {React.string("Duplicate Check")} </Markdown.H2>
+      <Markdown.H2 id="duplicate-check">{React.string("Duplicate Check")}</Markdown.H2>
     </div>,
   )
 
@@ -87,7 +87,7 @@ test("heading anchor scroll offset clears the sticky docs nav", async () => {
       <nav dataTestId="anchor-secondary" className="sticky top-16 h-12 bg-white" />
       <nav dataTestId="anchor-tertiary" className="sticky top-28 h-12 bg-white" />
       <div style={{height: "500px"}} />
-      <Markdown.H2 id="anchor-offset-target"> {React.string("Anchor Target")} </Markdown.H2>
+      <Markdown.H2 id="anchor-offset-target">{React.string("Anchor Target")}</Markdown.H2>
       <div style={{height: "1000px"}} />
     </div>,
   )
