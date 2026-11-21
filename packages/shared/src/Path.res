@@ -278,6 +278,7 @@ type t = [
   | #"/docs/manual/llms"
   | #"/docs/manual/migrate-to-v11"
   | #"/docs/manual/migrate-to-v12"
+  | #"/docs/manual/migrate-to-v13"
   | #"/docs/manual/module"
   | #"/docs/manual/module-functions"
   | #"/docs/manual/mutation"

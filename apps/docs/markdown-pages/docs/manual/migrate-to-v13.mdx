@@ -1,0 +1,77 @@
+---
+title: "Migrate to v13"
+description: "Instructions on upgrading to ReScript 13"
+canonical: "/docs/manual/migrate-to-v13"
+section: "Overview"
+order: 5
+---
+
+# Migrate to ReScript 13
+
+If you encounter any missing information or issues during migration, please [open an issue](https://github.com/rescript-lang/rescript-lang.org/issues/new?template=documentation_issue.md) or, even better, [send a pull request](https://github.com/rescript-lang/rescript-lang.org/) to help improve this guide.
+
+## Build Configuration
+
+### Configuration File
+
+Use `rescript.json`. If a package has no `rescript.json`, the build system still reads `bsconfig.json`, but prints a deprecation warning. Rename the file to silence it.
+
+### Renamed Keys
+
+The legacy keys are still accepted as aliases, with deprecation warnings. Rename them:
+
+| Legacy key            | Current key        |
+| --------------------- | ------------------ |
+| `bs-dependencies`     | `dependencies`     |
+| `bs-dev-dependencies` | `dev-dependencies` |
+| `bsc-flags`           | `compiler-flags`   |
+
+```diff
+ {
+   "name": "my-project",
+-  "bs-dependencies": ["@rescript/react"],
+-  "bsc-flags": ["-open MyPrelude"]
++  "dependencies": ["@rescript/react"],
++  "compiler-flags": ["-open MyPrelude"]
+ }
+```
+
+### Removed Options
+
+- `external-stdlib` is no longer supported. The standard library ships with the compiler; remove the option.
+
+### Module Formats
+
+`esmodule` is now the default when `package-specs` doesn't specify a `module`. If your project relied on the previous CommonJS default, set it explicitly:
+
+```json
+{
+  "package-specs": {
+    "module": "commonjs",
+    "in-source": true
+  }
+}
+```
+
+Use the current module names in `package-specs`:
+
+| Legacy value | Current value | Status                              |
+| ------------ | ------------- | ----------------------------------- |
+| `es6`        | `esmodule`    | Accepted with a deprecation warning |
+| `cjs`        | `commonjs`    | Accepted with a deprecation warning |
+| `es6-global` | `esmodule`    | Rejected with an error              |
+
+### Distinct Suffixes for Multiple Formats
+
+If `package-specs` emits more than one format to the same location, each spec now needs its own suffix. Specs that resolve to the same suffix are rejected, since their outputs would overwrite each other:
+
+```json
+{
+  "package-specs": [
+    { "module": "esmodule", "suffix": ".mjs" },
+    { "module": "commonjs", "suffix": ".cjs" }
+  ]
+}
+```
+
+See [Build Configuration](./build-configuration.mdx#package-specs) for details.
