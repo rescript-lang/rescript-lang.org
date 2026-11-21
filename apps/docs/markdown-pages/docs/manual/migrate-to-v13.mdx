@@ -75,3 +75,25 @@ If `package-specs` emits more than one format to the same location, each spec no
 ```
 
 See [Build Configuration](./build-configuration.mdx#package-specs) for details.
+
+## Language Changes
+
+### `%debugger` Replaced by `debugger()`
+
+The `%debugger` extension has been removed and now fails with a syntax error:
+
+```
+The %debugger extension has been removed. Use debugger() instead.
+```
+
+Call the `debugger()` function instead. It compiles to the same JavaScript `debugger` statement:
+
+```diff
+ let f = (x, y) => {
+-  %debugger
++  debugger()
+   x + y
+ }
+```
+
+`debugger()` is available since ReScript 13.0.0-alpha.7 ([rescript#9163](https://github.com/rescript-lang/rescript/pull/9163)).
