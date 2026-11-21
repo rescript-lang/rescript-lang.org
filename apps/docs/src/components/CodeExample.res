@@ -158,7 +158,9 @@ module Toggle = {
         let playgroundLinkButton =
           tab->isReScript
             ? <Link.String
-                to={`/try?code=${LzString.lzString.compressToEncodedURIComponent(tab.code)}`}
+                to={`/try?code=${LzString.lzString.compressToEncodedURIComponent(
+                    tab.code,
+                  )}&version=v${CompilerVersion.current}`}
                 target="_blank"
               >
                 {/* ICON Link to PLAYGROUND */}
