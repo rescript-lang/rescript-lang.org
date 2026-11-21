@@ -48,7 +48,6 @@ This is a glossary with examples. All the features are described by later pages.
 
 ### Extension Points
 
-- [`%debugger`](./embed-raw-javascript.mdx#debugger)
 - [`%raw`](./embed-raw-javascript.mdx#paste-raw-js-code)
 - [`%todo`](../../syntax-lookup/extension_todo.mdx)
 
@@ -67,6 +66,30 @@ let add = (a, b) => a + b;
 const a = 1;
 
 export { add };
+```
+
+</CodeTab>
+
+## Debugger
+
+Call [`debugger()`](./embed-raw-javascript.mdx#debugger) to emit a JavaScript `debugger` statement.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let f = (x, y) => {
+  debugger()
+  x + y
+}
+```
+
+```js
+function f(x, y) {
+  debugger;
+  return (x + y) | 0;
+}
+
+export { f };
 ```
 
 </CodeTab>
