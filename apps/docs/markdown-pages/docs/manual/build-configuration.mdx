@@ -87,6 +87,8 @@ List of ReScript dependencies. Just like `package.json`'s dependencies, they'll 
 
 Note that only sources marked with `"type":"dev"` will be able to resolve modules from `dev-dependencies`.
 
+The legacy names `bs-dependencies` and `bs-dev-dependencies` are still accepted with deprecation warnings.
+
 Use package names as strings to build all of a dependency's features. To select only some of its features, use the object form described below.
 
 ## features
@@ -248,7 +250,7 @@ The warning numbers are shown in the build output when they're triggered. See [W
 
 ## compiler-flags
 
-Extra flags to pass to the compiler. For advanced usages.
+Extra flags to pass to the compiler. For advanced usages. The legacy name `bsc-flags` is still accepted with a deprecation warning.
 
 - `-open ABC` opens the module `ABC` for each file in the project. `ABC` can either be a dependency, namespaced project or local module of the current project.
 
@@ -281,22 +283,6 @@ To enable genType, set `"gentypeconfig"` at top level in the project's `rescript
 - `"bundler"`: Use TS input's extension. This provides compatibility with projects using `"moduleResolution": "bundler"` and ES Modules. This also requires TS v5.0+ and `compilerOptions.allowImportingTsExtensions` to `true`
 
 `debug`: Enable debug logs.
-
-## Migrating Older Configurations
-
-Use `rescript.json` for new projects. For compatibility, the build system also reads `bsconfig.json` when `rescript.json` is absent, with a deprecation warning.
-
-Prefer these current configuration keys:
-
-| Legacy key            | Current key        |
-| --------------------- | ------------------ |
-| `bs-dependencies`     | `dependencies`     |
-| `bs-dev-dependencies` | `dev-dependencies` |
-| `bsc-flags`           | `compiler-flags`   |
-
-The legacy keys are still accepted with deprecation warnings. Remove `external-stdlib`; it is no longer supported.
-
-Use `esmodule` instead of `es6` or `es6-global`, and `commonjs` instead of `cjs`. The `es6` and `cjs` aliases are still accepted with deprecation warnings; `es6-global` is unsupported.
 
 ## Environment Variables
 
