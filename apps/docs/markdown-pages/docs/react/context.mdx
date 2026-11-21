@@ -73,8 +73,8 @@ function Example$Button(props) {
   let className;
   className = props.theme === "Light" ? "theme-light" : "theme-black";
   return JsxRuntime.jsx("button", {
-    children: "Click me",
     className: className,
+    children: "Click me",
   });
 }
 
@@ -100,7 +100,21 @@ function Example(props) {
 
 let make = Example;
 
-export { Button, ThemedButton, Toolbar, make };
+let Button$make = Example$Button;
+
+let ThemedButton$make = Example$ThemedButton;
+
+let Toolbar$make = Example$Toolbar;
+
+export {
+  Button,
+  ThemedButton,
+  Toolbar,
+  make,
+  Button$make,
+  ThemedButton$make,
+  Toolbar$make,
+};
 ```
 
 ```jsx
@@ -136,7 +150,21 @@ function Example(props) {
 
 let make = Example;
 
-export { Button, ThemedButton, Toolbar, make };
+let Button$make = Example$Button;
+
+let ThemedButton$make = Example$ThemedButton;
+
+let Toolbar$make = Example$Toolbar;
+
+export {
+  Button,
+  ThemedButton,
+  Toolbar,
+  make,
+  Button$make,
+  ThemedButton$make,
+  Toolbar$make,
+};
 ```
 
 </CodeTab>
@@ -212,8 +240,8 @@ function Example$Button(props) {
   let className;
   className = props.theme === "Light" ? "theme-light" : "theme-black";
   return JsxRuntime.jsx("button", {
-    children: "Click me",
     className: className,
+    children: "Click me",
   });
 }
 
@@ -245,7 +273,25 @@ function Example(props) {
 
 let make$1 = Example;
 
-export { ThemeContext, Button, ThemedButton, Toolbar, make$1 as make };
+let ThemeContext$Provider$make = make;
+
+let Button$make = Example$Button;
+
+let ThemedButton$make = Example$ThemedButton;
+
+let Toolbar$make = Example$Toolbar;
+
+export {
+  ThemeContext,
+  Button,
+  ThemedButton,
+  Toolbar,
+  make$1 as make,
+  ThemeContext$Provider$make,
+  Button$make,
+  ThemedButton$make,
+  Toolbar$make,
+};
 ```
 
 ```jsx
@@ -287,17 +333,35 @@ let Toolbar = { make: Example$Toolbar };
 
 function Example(props) {
   return (
-    <Provider.make value={"Dark"}>
+    <ThemeContext.Provider.make value={"Dark"}>
       <div>
         <Toolbar.make />
       </div>
-    </Provider.make>
+    </ThemeContext.Provider.make>
   );
 }
 
 let make$1 = Example;
 
-export { ThemeContext, Button, ThemedButton, Toolbar, make$1 as make };
+let ThemeContext$Provider$make = make;
+
+let Button$make = Example$Button;
+
+let ThemedButton$make = Example$ThemedButton;
+
+let Toolbar$make = Example$Toolbar;
+
+export {
+  ThemeContext,
+  Button,
+  ThemedButton,
+  Toolbar,
+  make$1 as make,
+  ThemeContext$Provider$make,
+  Button$make,
+  ThemedButton$make,
+  Toolbar$make,
+};
 ```
 
 </CodeTab>

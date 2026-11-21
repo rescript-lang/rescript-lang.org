@@ -93,8 +93,8 @@ function Example$ThemedButton(props) {
       match = ["#000000", "#eeeeee"];
   }
   return JsxRuntime.jsx("button", {
-    children: "I am a styled button!",
     style: { backgroundColor: match[1], color: match[0] },
+    children: "I am a styled button!",
   });
 }
 
@@ -119,7 +119,21 @@ function Example(props) {
 
 let make$1 = Example;
 
-export { ThemeContext, ThemedButton, Toolbar, make$1 as make };
+let ThemeContext$Provider$make = make;
+
+let ThemedButton$make = Example$ThemedButton;
+
+let Toolbar$make = Example$Toolbar;
+
+export {
+  ThemeContext,
+  ThemedButton,
+  Toolbar,
+  make$1 as make,
+  ThemeContext$Provider$make,
+  ThemedButton$make,
+  Toolbar$make,
+};
 ```
 
 ```jsx
@@ -165,17 +179,31 @@ let Toolbar = { make: Example$Toolbar };
 
 function Example(props) {
   return (
-    <Provider.make value={"dark"}>
+    <ThemeContext.Provider.make value={"dark"}>
       <div>
         <Toolbar.make />
       </div>
-    </Provider.make>
+    </ThemeContext.Provider.make>
   );
 }
 
 let make$1 = Example;
 
-export { ThemeContext, ThemedButton, Toolbar, make$1 as make };
+let ThemeContext$Provider$make = make;
+
+let ThemedButton$make = Example$ThemedButton;
+
+let Toolbar$make = Example$Toolbar;
+
+export {
+  ThemeContext,
+  ThemedButton,
+  Toolbar,
+  make$1 as make,
+  ThemeContext$Provider$make,
+  ThemedButton$make,
+  Toolbar$make,
+};
 ```
 
 </CodeTab>

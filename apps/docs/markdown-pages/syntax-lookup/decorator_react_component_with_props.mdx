@@ -38,7 +38,9 @@ function Example$Hey(props) {
 
 let Hey = { make: Example$Hey };
 
-export { Hey };
+let Hey$make = Example$Hey;
+
+export { Hey, Hey$make };
 ```
 
 ```jsx
@@ -50,7 +52,9 @@ function Example$Hey(props) {
 
 let Hey = { make: Example$Hey };
 
-export { Hey };
+let Hey$make = Example$Hey;
+
+export { Hey, Hey$make };
 ```
 
 </CodeTab>

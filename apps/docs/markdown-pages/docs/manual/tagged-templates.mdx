@@ -144,7 +144,9 @@ function Example$Greetings(props) {
 
 let Greetings = { make: Example$Greetings };
 
-export { s, Greetings };
+let Greetings$make = Example$Greetings;
+
+export { s, Greetings, Greetings$make };
 ```
 
 ```jsx
@@ -185,7 +187,9 @@ function Example$Greetings(props) {
 
 let Greetings = { make: Example$Greetings };
 
-export { s, Greetings };
+let Greetings$make = Example$Greetings;
+
+export { s, Greetings, Greetings$make };
 ```
 
 </CodeTab>

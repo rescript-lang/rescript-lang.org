@@ -219,7 +219,9 @@ function Example(props) {
 
 let make = Example;
 
-export { MyComp, make };
+let MyComp$make = Example$MyComp;
+
+export { MyComp, make, MyComp$make };
 ```
 
 ```jsx
@@ -240,7 +242,9 @@ function Example(props) {
 
 let make = Example;
 
-export { MyComp, make };
+let MyComp$make = Example$MyComp;
+
+export { MyComp, make, MyComp$make };
 ```
 
 </CodeTab>
@@ -418,7 +422,9 @@ function Example(props) {
 
 let make = Example;
 
-export { CustomTextInput, make };
+let CustomTextInput$make = Example$CustomTextInput;
+
+export { CustomTextInput, make, CustomTextInput$make };
 ```
 
 ```jsx
@@ -446,7 +452,9 @@ function Example(props) {
 
 let make = Example;
 
-export { CustomTextInput, make };
+let CustomTextInput$make = Example$CustomTextInput;
+
+export { CustomTextInput, make, CustomTextInput$make };
 ```
 
 </CodeTab>

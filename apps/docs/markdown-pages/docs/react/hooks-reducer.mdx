@@ -90,12 +90,12 @@ function Example(props) {
     children: [
       "Count:" + match[0].count.toString(),
       JsxRuntime.jsx("button", {
-        children: "-",
         onClick: (param) => dispatch("Dec"),
+        children: "-",
       }),
       JsxRuntime.jsx("button", {
-        children: "+",
         onClick: (param) => dispatch("Inc"),
+        children: "+",
       }),
     ],
   });
@@ -260,8 +260,8 @@ function Example(props) {
       children: [
         todo.content,
         JsxRuntime.jsx("button", {
-          children: "Remove",
           onClick: (param) => dispatch({ TAG: "RemoveTodo", _0: todo.id }),
+          children: "Remove",
         }),
         JsxRuntime.jsx("input", {
           checked: todo.completed,
@@ -437,12 +437,12 @@ function Example(props) {
     children: [
       "Count:" + match[0].count.toString(),
       JsxRuntime.jsx("button", {
-        children: "-",
         onClick: (param) => dispatch("Dec"),
+        children: "-",
       }),
       JsxRuntime.jsx("button", {
-        children: "+",
         onClick: (param) => dispatch("Inc"),
+        children: "+",
       }),
     ],
   });

@@ -248,8 +248,8 @@ function Example(props) {
       break;
   }
   return JsxRuntime.jsx("li", {
-    children: friend.name,
     style: { color: color },
+    children: friend.name,
   });
 }
 
@@ -511,8 +511,8 @@ function Example(props) {
       break;
   }
   return JsxRuntime.jsx("li", {
-    children: friend.name,
     style: { color: color },
+    children: friend.name,
   });
 }
 
@@ -660,7 +660,7 @@ function Example$Circle(props) {
       color = "grey";
       break;
   }
-  return JsxRuntime.jsx("span", { children: "●", style: { color: color } });
+  return JsxRuntime.jsx("span", { style: { color: color }, children: "●" });
 }
 
 let Circle = { make: Example$Circle };
@@ -695,7 +695,7 @@ function Example(props) {
   let friends = friendList.map((friend) =>
     JsxRuntime.jsx(
       "option",
-      { children: friend.name, value: friend.id },
+      { value: friend.id, children: friend.name },
       friend.id,
     ),
   );
@@ -703,9 +703,9 @@ function Example(props) {
     children: [
       JsxRuntime.jsx(Example$Circle, { color: color }),
       JsxRuntime.jsx("select", {
-        children: friends,
         value: recipientId,
         onChange: onChange,
+        children: friends,
       }),
     ],
   });
@@ -713,7 +713,9 @@ function Example(props) {
 
 let make = Example;
 
-export { ChatAPI, FriendStatusHook, Circle, friendList, make };
+let Circle$make = Example$Circle;
+
+export { ChatAPI, FriendStatusHook, Circle, friendList, make, Circle$make };
 ```
 
 ```jsx
@@ -791,7 +793,9 @@ function Example(props) {
 
 let make = Example;
 
-export { ChatAPI, FriendStatusHook, Circle, friendList, make };
+let Circle$make = Example$Circle;
+
+export { ChatAPI, FriendStatusHook, Circle, friendList, make, Circle$make };
 ```
 
 </CodeTab>

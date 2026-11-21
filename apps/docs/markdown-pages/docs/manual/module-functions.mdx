@@ -88,7 +88,9 @@ function Example$Component(props) {
 
 let Component = { make: Example$Component };
 
-export { Next, Component };
+let Component$make = Example$Component;
+
+export { Next, Component, Component$make };
 ````
 
 ```jsx
@@ -113,7 +115,9 @@ function Example$Component(props) {
 
 let Component = { make: Example$Component };
 
-export { Next, Component };
+let Component$make = Example$Component;
+
+export { Next, Component, Component$make };
 ```
 
 </CodeTab>
@@ -264,7 +268,16 @@ let Render = { make: Example$MakeDataModule$Render };
 
 let PersonData = { log: log, Render: Render };
 
-export { getEnv, MakeEnv, MakeDataModule, Person, PersonData };
+let PersonData$Render$make = Example$MakeDataModule$Render;
+
+export {
+  getEnv,
+  MakeEnv,
+  MakeDataModule,
+  Person,
+  PersonData,
+  PersonData$Render$make,
+};
 ````
 
 </CodeTab>
@@ -332,8 +345,8 @@ children: [
 "Hello ",
 JsxRuntime.jsx(Example$MakeDataModule$Render, { value: person }),
 JsxRuntime.jsx("button", {
-children: "Log value to console",
 onClick: handleClick,
+children: "Log value to console",
 }),
 ],
 });
@@ -341,7 +354,17 @@ onClick: handleClick,
 
 let make = Example;
 
-export { getEnv, MakeEnv, MakeDataModule, Person, PersonData, make };
+let PersonData$Render$make = Example$MakeDataModule$Render;
+
+export {
+  getEnv,
+  MakeEnv,
+  MakeDataModule,
+  Person,
+  PersonData,
+  make,
+  PersonData$Render$make,
+};
 ```
 
 ```jsx
@@ -389,7 +412,7 @@ function Example(props) {
   return (
     <div>
       {"Hello "}
-      <Render.make value={person} />
+      <PersonData.Render.make value={person} />
       <button onClick={handleClick}>{"Log value to console"}</button>
     </div>
   );
@@ -397,7 +420,17 @@ function Example(props) {
 
 let make = Example;
 
-export { getEnv, MakeEnv, MakeDataModule, Person, PersonData, make };
+let PersonData$Render$make = Example$MakeDataModule$Render;
+
+export {
+  getEnv,
+  MakeEnv,
+  MakeDataModule,
+  Person,
+  PersonData,
+  make,
+  PersonData$Render$make,
+};
 ```
 
 </CodeTab>
@@ -492,6 +525,8 @@ let Db = { client: client };
 
 let updateDb = client.write("new value");
 
+let PersonData$Render$make = Example$MakeDataModule$Render;
+
 export {
   getEnv,
   MakeEnv,
@@ -501,6 +536,7 @@ export {
   MakeDbConnection,
   Db,
   updateDb,
+  PersonData$Render$make,
 };
 ````
 
