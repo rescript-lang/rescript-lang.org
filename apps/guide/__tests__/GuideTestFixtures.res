@@ -68,7 +68,7 @@ module HistoryBack = {
   @react.component
   let make = () => {
     let navigate = useNavigate()
-    <button onClick={_ => navigate(-1)}> {React.string("History back")} </button>
+    <button onClick={_ => navigate(-1)}>{React.string("History back")}</button>
   }
 }
 

@@ -5,7 +5,7 @@ test("renders banner with content", async () => {
 
   let screen = await render(
     <div dataTestId="banner-wrapper">
-      <Banner> {React.string("ReScript v12 is now available!")} </Banner>
+      <Banner>{React.string("ReScript v12 is now available!")}</Banner>
     </div>,
   )
 
@@ -21,7 +21,7 @@ test("mobile banner", async () => {
 
   let screen = await render(
     <div dataTestId="banner-wrapper">
-      <Banner> {React.string("ReScript v12 is now available!")} </Banner>
+      <Banner>{React.string("ReScript v12 is now available!")}</Banner>
     </div>,
   )
 

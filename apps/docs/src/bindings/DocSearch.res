@@ -53,6 +53,7 @@ type docSearchHit = {
   _highlightResult?: highlightResult,
   _snippetResult?: snippetResult,
 }
+
 type transformItems = array<docSearchHit>
 
 type hitComponent = {

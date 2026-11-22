@@ -134,13 +134,13 @@ module Card = {
           "Repository"
         }
         <>
-          <span> {React.string("|")} </span>
-          <a href rel="noopener noreferrer" className="hover:text-fire"> {React.string(name)} </a>
+          <span>{React.string("|")}</span>
+          <a href rel="noopener noreferrer" className="hover:text-fire">{React.string(name)}</a>
         </>
       | None => React.null
       }
       <div className="text-14 space-x-2 mt-1">
-        <a className="hover:text-fire" href={pkg.npmHref}> {React.string("NPM")} </a>
+        <a className="hover:text-fire" href={pkg.npmHref}>{React.string("NPM")}</a>
         {repoEl}
       </div>
     }
@@ -158,13 +158,13 @@ module Card = {
       <div className="flex justify-between">
         <div>
           <a className="font-bold hover:text-fire text-18" href=titleHref>
-            <span> {React.string(title)} </span>
+            <span>{React.string(title)}</span>
           </a>
           {linkBox}
         </div>
-        <div> {icon} </div>
+        <div>{icon}</div>
       </div>
-      <div className="mt-4 text-16"> {React.string(description)} </div>
+      <div className="mt-4 text-16">{React.string(description)}</div>
       <div className="space-x-2 mt-4">
         {Array.map(keywords, keyword => {
           let onMouseDown = Option.map(onKeywordSelect, cb => {
@@ -203,7 +203,7 @@ module Category = {
       <h3 className="font-sans font-medium text-gray-100 tracking-wide text-14 uppercase mb-2">
         {React.string(title)}
       </h3>
-      <div> {children} </div>
+      <div>{children}</div>
     </div>
   }
 }
@@ -229,7 +229,7 @@ module InfoSidebar = {
         toggle()
       }
 
-      <button onMouseDown className> {children} </button>
+      <button onMouseDown className>{children}</button>
     }
   }
 
@@ -240,7 +240,7 @@ module InfoSidebar = {
 
     <aside className=" border-l-2 p-4 py-12 border-fire-30 space-y-16">
       <div>
-        <h2 className=h2> {React.string("Include")} </h2>
+        <h2 className=h2>{React.string("Include")}</h2>
         <div className="space-y-2">
           <Toggle
             enabled={filter.includeOfficial}
@@ -263,15 +263,17 @@ module InfoSidebar = {
             {React.string("Community")}
           </Toggle>
 
-          /* <Toggle */
-          /* enabled={filter.includeNpm} */
-          /* toggle={() => { */
-          /* setFilter(prev => { */
-          /* {...prev, Filter.includeNpm: !filter.includeNpm} */
-          /* }) */
-          /* }}> */
-          /* {React.string("NPM package")} */
-          /* </Toggle> */
+          {
+            /* <Toggle */
+            /* enabled={filter.includeNpm} */
+            /* toggle={() => { */
+            /* setFilter(prev => { */
+            /* {...prev, Filter.includeNpm: !filter.includeNpm} */
+            /* }) */
+            /* }}> */
+            /* {React.string("NPM package")} */
+            /* </Toggle> */
+          }
 
           <Toggle
             enabled={filter.includeOutdated}
@@ -286,17 +288,19 @@ module InfoSidebar = {
         </div>
       </div>
       <div>
-        <h2 className=h2> {React.string("Guidelines")} </h2>
+        <h2 className=h2>{React.string("Guidelines")}</h2>
         <ul className="space-y-4">
           <ReactRouter.Link to=#"/docs/guides/publishing-packages" className=link>
             {React.string("Publishing ReScript npm packages")}
           </ReactRouter.Link>
 
-          /* <li> */
-          /* <Next.Link href="/docs/guides/writing-bindings"  className=link> */
-          /* {React.string("Writing Bindings & Libraries")} */
-          /* </Next.Link> */
-          /* </li> */
+          {
+            /* <li> */
+            /* <Next.Link href="/docs/guides/writing-bindings"  className=link> */
+            /* {React.string("Writing Bindings & Libraries")} */
+            /* </Next.Link> */
+            /* </li> */
+          }
         </ul>
       </div>
     </aside>
@@ -438,7 +442,7 @@ let make = (props: props) => {
         >
           <main className="max-w-1280 w-full flex justify-center">
             <div className="w-full max-w-176.25">
-              <H1> {React.string("Libraries & Bindings")} </H1>
+              <H1>{React.string("Libraries & Bindings")}</H1>
               <SearchBox
                 placeholder="Enter a search term, name, keyword, etc"
                 onValueChange

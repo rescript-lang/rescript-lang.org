@@ -23,7 +23,7 @@ module CurrentPage = {
   @react.component
   let make = () => {
     let {pathname} = ReactRouter.useLocation()
-    <div dataTestId="current-page"> {React.string(pathname :> string)} </div>
+    <div dataTestId="current-page">{React.string(pathname :> string)}</div>
   }
 }
 
@@ -39,7 +39,7 @@ let community = (~redirect=false, ()) =>
       <CommunityLayout categories entries>
         <div>
           <CurrentPage />
-          <h2 id="official-channels"> {React.string("Official channels content")} </h2>
+          <h2 id="official-channels">{React.string("Official channels content")}</h2>
         </div>
       </CommunityLayout>
     </ReactRouter.MemoryRouter>

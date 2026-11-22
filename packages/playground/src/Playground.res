@@ -167,14 +167,14 @@ module ToggleSelection = {
 module SelectSectionHeader = {
   @react.component
   let make = (~value) =>
-    <option disabled=true key=value className="py-4"> {React.string(value)} </option>
+    <option disabled=true key=value className="py-4">{React.string(value)}</option>
 }
 
 module ResultPane = {
   module PreWrap = {
     @react.component
     let make = (~className="", ~children) =>
-      <pre className={"whitespace-pre-wrap " ++ className}> {children} </pre>
+      <pre className={"whitespace-pre-wrap " ++ className}>{children}</pre>
   }
 
   type prefix = [#W | #E]
@@ -206,11 +206,11 @@ module ResultPane = {
 
     <div className="font-mono mb-4 pb-6 last:mb-0 last:pb-0 last:border-0 border-b border-gray-80 ">
       <div className={"p-2 " ++ highlightClass}>
-        <span className=prefixColor> {React.string(prefixText)} </span>
+        <span className=prefixColor>{React.string(prefixText)}</span>
         <span className="font-medium text-gray-40">
           {React.string(` Line ${row->Int.toString}, column ${column->Int.toString}:`)}
         </span>
-        <AnsiPre className="whitespace-pre-wrap "> {shortMsg} </AnsiPre>
+        <AnsiPre className="whitespace-pre-wrap ">{shortMsg}</AnsiPre>
       </div>
     </div>
   }
@@ -314,7 +314,7 @@ module ResultPane = {
       }
     | Comp(Success({warnings})) =>
       if Array.length(warnings) === 0 {
-        <PreWrap> {React.string("0 Errors, 0 Warnings")} </PreWrap>
+        <PreWrap>{React.string("0 Errors, 0 Warnings")}</PreWrap>
       } else {
         filterHighlightedLocWarnings(~focusedRowCol, warnings)
         ->Array.mapWithIndex((warning, i) => {
@@ -340,7 +340,7 @@ module ResultPane = {
         let toStr = Api.Lang.toString(toLang)
         `Switched to ${toStr} with 0 errors`
       }
-      <PreWrap> {React.string(msg)} </PreWrap>
+      <PreWrap>{React.string(msg)}</PreWrap>
     | Conv(Fail({fromLang, toLang, details})) =>
       let errs =
         filterHighlightedLocMsgs(~focusedRowCol, details)
@@ -366,7 +366,7 @@ module ResultPane = {
         `Could not convert from "${fromStr}" to "${toStr}" due to malformed syntax:`
       }
       <div>
-        <PreWrap className="text-16 mb-4"> {React.string(msg)} </PreWrap>
+        <PreWrap className="text-16 mb-4">{React.string(msg)}</PreWrap>
         {errs}
       </div>
     | Comp(UnexpectedError(msg))
@@ -391,14 +391,14 @@ module ResultPane = {
         </PreWrap>
         <div className="mt-4">
           <PreWrap>
-            <div className=subheader> {React.string("Message: ")} </div>
+            <div className=subheader>{React.string("Message: ")}</div>
             {React.string(msg)}
           </PreWrap>
         </div>
         <div className="mt-4">
           <PreWrap>
-            <span className=subheader> {React.string("Received JSON payload:")} </span>
-            <div> {JSON.stringify(json, ~space=2)->React.string} </div>
+            <span className=subheader>{React.string("Received JSON payload:")}</span>
+            <div>{JSON.stringify(json, ~space=2)->React.string}</div>
           </PreWrap>
         </div>
       </div>
@@ -441,7 +441,7 @@ module ResultPane = {
     | Nothing => (okClass, "Ready")
     }
 
-    <span className> {React.string(text)} </span>
+    <span className>{React.string(text)}</span>
   }
 
   @react.component
@@ -453,7 +453,7 @@ module ResultPane = {
   ) => {
     <div className="pt-4 bg-0 overflow-y-auto playground-scrollbar">
       <div className="flex items-center text-16 font-medium px-4">
-        <div className="pr-4"> {renderTitle(result)} </div>
+        <div className="pr-4">{renderTitle(result)}</div>
       </div>
       <div className="">
         <div className="playground-text-primary px-4 py-4">
@@ -776,7 +776,7 @@ module WarningFlagsWidget = {
         }
 
         <div key=num>
-          <span className=color> {React.string(modifier)} </span>
+          <span className=color>{React.string(modifier)}</span>
           {React.string(description)}
         </div>
       })
@@ -1010,7 +1010,7 @@ module Settings = {
     let titleClass = "playground-text-primary hl-5 mb-2"
     <div className="playground-text-primary p-4 pt-8">
       <div>
-        <div className=titleClass> {React.string("ReScript Version")} </div>
+        <div className=titleClass>{React.string("ReScript Version")}</div>
         <DropdownSelect
           name="compilerVersions"
           value={Semver.toString(readyState.selected.id)}
@@ -1097,7 +1097,7 @@ module Settings = {
       </div>
       {if availableTargetLangs->Array.length > 1 {
         <div className="mt-6">
-          <div className=titleClass> {React.string("Syntax")} </div>
+          <div className=titleClass>{React.string("Syntax")}</div>
           <ToggleSelection
             values=availableTargetLangs
             toLabel={lang => lang->Api.Lang.toExt->String.toUpperCase}
@@ -1109,7 +1109,7 @@ module Settings = {
         React.null
       }}
       <div className="mt-6">
-        <div className=titleClass> {React.string("Use Vim Keymap")} </div>
+        <div className=titleClass>{React.string("Use Vim Keymap")}</div>
         <ToggleSelection
           values=[CodeMirror.KeyMap.Default, CodeMirror.KeyMap.Vim]
           toLabel={enabled =>
@@ -1122,7 +1122,7 @@ module Settings = {
         />
       </div>
       <div className="mt-6">
-        <div className=titleClass> {React.string("Module-System")} </div>
+        <div className=titleClass>{React.string("Module-System")}</div>
         <ToggleSelection
           values=["commonjs", "esmodule"]
           toLabel={value => value}
@@ -1131,7 +1131,7 @@ module Settings = {
         />
       </div>
       <div className="mt-6">
-        <div className=titleClass> {React.string("Playground Theme")} </div>
+        <div className=titleClass>{React.string("Playground Theme")}</div>
         <ToggleSelection
           values=[CodeMirror.Theme.Dark, CodeMirror.Theme.Light]
           toLabel=themeLabel
@@ -1142,7 +1142,7 @@ module Settings = {
       {readyState.selected.apiVersion->RescriptCompilerApi.Version.isMinimumVersion(V6)
         ? <>
             <div className="mt-6">
-              <div className=titleClass> {React.string("JSX")} </div>
+              <div className=titleClass>{React.string("JSX")}</div>
               <ToggleSelection
                 values=[JsxCompilation.Plain, PreserveJsx]
                 toLabel=JsxCompilation.getLabel
@@ -1151,7 +1151,7 @@ module Settings = {
               />
             </div>
             <div className="mt-6">
-              <div className=titleClass> {React.string("Experimental Features")} </div>
+              <div className=titleClass>{React.string("Experimental Features")}</div>
               {ExperimentalFeatures.list
               ->Array.map(feature => {
                 let key = (feature :> string)
@@ -1172,10 +1172,10 @@ module Settings = {
         : React.null}
 
       <div className="mt-6">
-        <div className=titleClass> {React.string("Loaded Libraries")} </div>
+        <div className=titleClass>{React.string("Loaded Libraries")}</div>
         <ul>
           {Array.map(readyState.selected.libraries, lib => {
-            <li className="ml-2" key=lib> {React.string(lib)} </li>
+            <li className="ml-2" key=lib>{React.string(lib)}</li>
           })->React.array}
         </ul>
       </div>
@@ -1321,7 +1321,7 @@ module NewLightModeToast = {
     >
       <div className="flex items-start gap-2">
         <div className="flex-1">
-          <div className="text-14 font-semibold"> {React.string("New: Light Mode")} </div>
+          <div className="text-14 font-semibold">{React.string("New: Light Mode")}</div>
           <div className="text-12 mt-1">
             {React.string("You can now switch the Playground theme in Settings.")}
           </div>
@@ -1398,8 +1398,8 @@ module OutputPanel = {
         compilerVersion=ready.selected.compilerVersion
         result=ready.result
       />
-    | SetupFailed(msg) => <div> {React.string("Setup failed: " ++ msg)} </div>
-    | Init => <div> {React.string("Initalizing Playground...")} </div>
+    | SetupFailed(msg) => <div>{React.string("Setup failed: " ++ msg)}</div>
+    | Init => <div>{React.string("Initalizing Playground...")}</div>
     }
 
     let settingsPane = switch compilerState {
@@ -1419,8 +1419,8 @@ module OutputPanel = {
         keyMapState
         themeState
       />
-    | SetupFailed(msg) => <div> {React.string("Setup failed: " ++ msg)} </div>
-    | Init => <div> {React.string("Initalizing Playground...")} </div>
+    | SetupFailed(msg) => <div>{React.string("Setup failed: " ++ msg)}</div>
+    | Init => <div>{React.string("Initalizing Playground...")}</div>
     }
 
     let prevSelected = React.useRef(0)
@@ -1452,10 +1452,10 @@ module OutputPanel = {
     let body = Array.mapWithIndex(tabs, ((tab, content), i) => {
       let className = currentTab == tab ? "block h-inherit" : "hidden"
 
-      <div key={Int.toString(i)} className> {content} </div>
+      <div key={Int.toString(i)} className>{content}</div>
     })
 
-    <> {body->React.array} </>
+    <>{body->React.array}</>
   }
 }
 
@@ -2119,7 +2119,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
     }
     let active = currentTab === tab
     let className = makeTabClass(active)
-    <button key={Int.toString(i)} onClick className disabled> {title} </button>
+    <button key={Int.toString(i)} onClick className disabled>{title}</button>
   })
 
   <main
@@ -2137,7 +2137,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
       className={`flex ${layout == Column ? "flex-col" : "flex-row"}`}
       ref={HtmlRef.elementRef(panelRef)}
     >
-      /* Left Panel */
+      {/* Left Panel */}
       <div
         ref={HtmlRef.elementRef(leftPanelRef)}
         className={`overflow-scroll playground-scrollbar ${layout == Column
@@ -2147,7 +2147,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
         <div className="playground-editor-shell h-full" ref={HtmlRef.domRef(containerRef)} />
       </div>
 
-      /* Separator */
+      {/* Separator */}
       <div
         ref={HtmlRef.domRef(separatorRef)}
         // TODO: touch-none not applied
@@ -2165,7 +2165,7 @@ let make = (~bundleBaseUrl: string, ~versions: array<string>) => {
         </span>
       </div>
 
-      /* Right Panel */
+      {/* Right Panel */}
       <div
         ref={HtmlRef.elementRef(rightPanelRef)}
         className={`${layout == Column ? "h-6/15" : "h-inherit!"} ${layout == Column

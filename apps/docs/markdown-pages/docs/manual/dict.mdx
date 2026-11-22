@@ -68,7 +68,7 @@ let d2 = Object.fromEntries([
 
 let original = { apples: 2, oranges: 3 };
 
-let copy = Object.assign({}, original, { bananas: 4 });
+let copy = { ...original, bananas: 4 };
 
 copy["apples"] = 5;
 
@@ -114,9 +114,7 @@ let defaults = { retries: 3, timeout: 1000 };
 
 let overrides = { timeout: 5000, retries: 5 };
 
-let settings = Object.assign({}, defaults, { timeout: 2000 }, overrides, {
-  retries: 1,
-});
+let settings = { ...defaults, timeout: 2000, ...overrides, retries: 1 };
 
 console.log(settings["timeout"]);
 

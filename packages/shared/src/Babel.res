@@ -16,6 +16,7 @@ module Ast = {
     @tag("type")
     type t = VariableDeclarator({id: lval, init?: Null.t<expression>})
   }
+
   module Specifier = {
     @tag("type")
     type t =

@@ -59,7 +59,7 @@ function Example(props) {
   return JsxRuntime.jsxs("div", {
     children: [
       JsxRuntime.jsx("p", { children: msg }),
-      JsxRuntime.jsx("button", { children: "Click me", onClick: onClick }),
+      JsxRuntime.jsx("button", { onClick: onClick, children: "Click me" }),
     ],
   });
 }

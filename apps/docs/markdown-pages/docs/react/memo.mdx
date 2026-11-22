@@ -94,9 +94,9 @@ import * as JsxRuntime from "react/jsx-runtime";
 function Example(props) {
   let onClick = props.onClick;
   return JsxRuntime.jsx("button", {
-    children: "My button",
     disabled: props.disabled,
     onClick: (ev) => onClick((ev.preventDefault(), undefined)),
+    children: "My button",
   });
 }
 
@@ -156,9 +156,9 @@ let make = React.memo(
   (param) => {
     let onClick = param.onClick;
     return JsxRuntime.jsx("button", {
-      children: "My button",
       disabled: param.disabled,
       onClick: (ev) => onClick(ev),
+      children: "My button",
     });
   },
   (p1, p2) => p1.disabled === p2.disabled,

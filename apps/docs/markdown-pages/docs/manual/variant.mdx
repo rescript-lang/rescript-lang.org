@@ -577,9 +577,6 @@ switch animal {
 ````
 ```javascript
 function greetAnimal(animal) {
-  if (animal !== "Dog" && animal !== "Bird" && animal !== "Cat") {
-    return `I don't know how to greet animal ${animal}`;
-  }
   switch (animal) {
     case "Dog":
       return "Wof";
@@ -587,6 +584,8 @@ function greetAnimal(animal) {
       return "Meow";
     case "Bird":
       return "Kashiiin";
+    default:
+      return `I don't know how to greet animal ${animal}`;
   }
 }
 

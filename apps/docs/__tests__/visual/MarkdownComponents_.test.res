@@ -6,11 +6,11 @@ test("renders headings h1 through h5", async () => {
 
   let screen = await render(
     <div dataTestId="headings-wrapper">
-      <Markdown.H1> {React.string("Heading Level 1")} </Markdown.H1>
-      <Markdown.H2 id="heading-2"> {React.string("Heading Level 2")} </Markdown.H2>
-      <Markdown.H3 id="heading-3"> {React.string("Heading Level 3")} </Markdown.H3>
-      <Markdown.H4 id="heading-4"> {React.string("Heading Level 4")} </Markdown.H4>
-      <Markdown.H5 id="heading-5"> {React.string("Heading Level 5")} </Markdown.H5>
+      <Markdown.H1>{React.string("Heading Level 1")}</Markdown.H1>
+      <Markdown.H2 id="heading-2">{React.string("Heading Level 2")}</Markdown.H2>
+      <Markdown.H3 id="heading-3">{React.string("Heading Level 3")}</Markdown.H3>
+      <Markdown.H4 id="heading-4">{React.string("Heading Level 4")}</Markdown.H4>
+      <Markdown.H5 id="heading-5">{React.string("Heading Level 5")}</Markdown.H5>
     </div>,
   )
 
@@ -26,10 +26,10 @@ test("renders paragraph, strong, and intro", async () => {
 
   let screen = await render(
     <div dataTestId="text-wrapper">
-      <Markdown.Intro> {React.string("This is an introduction paragraph.")} </Markdown.Intro>
+      <Markdown.Intro>{React.string("This is an introduction paragraph.")}</Markdown.Intro>
       <Markdown.P>
         {React.string("This is a regular paragraph with ")}
-        <Markdown.Strong> {React.string("bold text")} </Markdown.Strong>
+        <Markdown.Strong>{React.string("bold text")}</Markdown.Strong>
         {React.string(" inside it.")}
       </Markdown.P>
     </div>,
@@ -48,10 +48,10 @@ test("renders Info and Warn admonitions", async () => {
   let screen = await render(
     <div dataTestId="admonitions-wrapper">
       <Markdown.Info>
-        <Markdown.P> {React.string("This is an informational message.")} </Markdown.P>
+        <Markdown.P>{React.string("This is an informational message.")}</Markdown.P>
       </Markdown.Info>
       <Markdown.Warn>
-        <Markdown.P> {React.string("This is a warning message.")} </Markdown.P>
+        <Markdown.P>{React.string("This is a warning message.")}</Markdown.P>
       </Markdown.Warn>
     </div>,
   )
@@ -93,7 +93,7 @@ test("renders blockquote", async () => {
   let screen = await render(
     <div dataTestId="blockquote-wrapper">
       <Markdown.Blockquote>
-        <Markdown.P> {React.string("This is a blockquote with some important text.")} </Markdown.P>
+        <Markdown.P>{React.string("This is a blockquote with some important text.")}</Markdown.P>
       </Markdown.Blockquote>
     </div>,
   )
@@ -111,12 +111,12 @@ test("renders lists", async () => {
   let screen = await render(
     <div dataTestId="lists-wrapper">
       <Markdown.Ul>
-        <Markdown.Li> {React.string("Apple")} </Markdown.Li>
-        <Markdown.Li> {React.string("Banana")} </Markdown.Li>
+        <Markdown.Li>{React.string("Apple")}</Markdown.Li>
+        <Markdown.Li>{React.string("Banana")}</Markdown.Li>
       </Markdown.Ul>
       <Markdown.Ol>
-        <Markdown.Li> {React.string("First step")} </Markdown.Li>
-        <Markdown.Li> {React.string("Second step")} </Markdown.Li>
+        <Markdown.Li>{React.string("First step")}</Markdown.Li>
+        <Markdown.Li>{React.string("Second step")}</Markdown.Li>
       </Markdown.Ol>
     </div>,
   )
@@ -139,18 +139,18 @@ test("renders table", async () => {
       <Markdown.Table>
         <Markdown.Thead>
           <tr>
-            <Markdown.Th> {React.string("Name")} </Markdown.Th>
-            <Markdown.Th> {React.string("Type")} </Markdown.Th>
+            <Markdown.Th>{React.string("Name")}</Markdown.Th>
+            <Markdown.Th>{React.string("Type")}</Markdown.Th>
           </tr>
         </Markdown.Thead>
         <tbody>
           <tr>
-            <Markdown.Td> {React.string("foo")} </Markdown.Td>
-            <Markdown.Td> {React.string("string")} </Markdown.Td>
+            <Markdown.Td>{React.string("foo")}</Markdown.Td>
+            <Markdown.Td>{React.string("string")}</Markdown.Td>
           </tr>
           <tr>
-            <Markdown.Td> {React.string("bar")} </Markdown.Td>
-            <Markdown.Td> {React.string("int")} </Markdown.Td>
+            <Markdown.Td>{React.string("bar")}</Markdown.Td>
+            <Markdown.Td>{React.string("int")}</Markdown.Td>
           </tr>
         </tbody>
       </Markdown.Table>
@@ -174,14 +174,10 @@ test("renders links", async () => {
     <MemoryRouter>
       <div dataTestId="links-wrapper">
         <Markdown.P>
-          <Markdown.A href="https://rescript-lang.org">
-            {React.string("External link")}
-          </Markdown.A>
+          <Markdown.A href="https://rescript-lang.org">{React.string("External link")}</Markdown.A>
         </Markdown.P>
         <Markdown.P>
-          <Markdown.A href="/docs/manual/introduction">
-            {React.string("Internal link")}
-          </Markdown.A>
+          <Markdown.A href="/docs/manual/introduction">{React.string("Internal link")}</Markdown.A>
         </Markdown.P>
       </div>
     </MemoryRouter>,
@@ -223,9 +219,9 @@ test("renders horizontal rule", async () => {
 
   let screen = await render(
     <div dataTestId="hr-wrapper">
-      <Markdown.P> {React.string("Content above the rule.")} </Markdown.P>
+      <Markdown.P>{React.string("Content above the rule.")}</Markdown.P>
       <Markdown.Hr />
-      <Markdown.P> {React.string("Content below the rule.")} </Markdown.P>
+      <Markdown.P>{React.string("Content below the rule.")}</Markdown.P>
     </div>,
   )
 
@@ -246,7 +242,7 @@ test("renders inline code", async () => {
     <div dataTestId="inline-code-wrapper">
       <Markdown.P>
         {React.string("Use ")}
-        <Markdown.Code metastring=None> {React.string("Array.map")} </Markdown.Code>
+        <Markdown.Code metastring=None>{React.string("Array.map")}</Markdown.Code>
         {React.string(" to transform elements.")}
       </Markdown.P>
     </div>,
@@ -273,7 +269,7 @@ test("renders Anchor with link icon", async () => {
 
   let screen = await render(
     <div dataTestId="anchor-wrapper">
-      <Markdown.H2 id="test-section"> {React.string("Test Section")} </Markdown.H2>
+      <Markdown.H2 id="test-section">{React.string("Test Section")}</Markdown.H2>
     </div>,
   )
 
@@ -325,10 +321,10 @@ test("renders nested list (ul inside li)", async () => {
   let screen = await render(
     <div dataTestId="nested-list-wrapper">
       <Markdown.Ul>
-        <Markdown.Li> {React.string("Parent item")} </Markdown.Li>
+        <Markdown.Li>{React.string("Parent item")}</Markdown.Li>
       </Markdown.Ul>
       <Markdown.Ol>
-        <Markdown.Li> {React.string("Numbered item")} </Markdown.Li>
+        <Markdown.Li>{React.string("Numbered item")}</Markdown.Li>
       </Markdown.Ol>
     </div>,
   )
@@ -349,7 +345,7 @@ test("renders Strong text", async () => {
   let screen = await render(
     <div dataTestId="strong-wrapper">
       <Markdown.P>
-        <Markdown.Strong> {React.string("Bold text")} </Markdown.Strong>
+        <Markdown.Strong>{React.string("Bold text")}</Markdown.Strong>
         {React.string(" and normal text")}
       </Markdown.P>
     </div>,

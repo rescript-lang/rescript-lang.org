@@ -1,8 +1,10 @@
 type compileInput = {value: string, path: string}
+
 type compileOptions = {
   outputFormat: string,
   remarkPlugins: array<Mdx.remarkPlugin>,
 }
+
 @module("@mdx-js/mdx")
 external compile: (compileInput, compileOptions) => promise<CompiledMdx.compileResult> = "compile"
 

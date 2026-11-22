@@ -44,7 +44,9 @@ let props = { b: "b" };
 
 JsxRuntime.jsx(make, { ...props, a: "a" });
 
-export { Comp, props };
+let Comp$make = make;
+
+export { Comp, props, Comp$make };
 ```
 
 ```jsx
@@ -59,7 +61,9 @@ let props = { b: "b" };
 
 <Comp.make {...props} a={"a"} />;
 
-export { Comp, props };
+let Comp$make = make;
+
+export { Comp, props, Comp$make };
 ```
 
 </CodeTab>

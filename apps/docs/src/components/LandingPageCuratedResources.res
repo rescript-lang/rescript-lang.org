@@ -74,17 +74,17 @@ let renderTemplateTitle = kind => {
   switch kind {
   | NextJs =>
     <>
-      <span className="block"> {React.string("ReScript & ")} </span>
-      <span className="block text-gray-40"> {React.string("NextJS")} </span>
+      <span className="block">{React.string("ReScript & ")}</span>
+      <span className="block text-gray-40">{React.string("NextJS")}</span>
     </>
   | ViteJs =>
     <>
-      <span className="block"> {React.string("ReScript & ")} </span>
-      <span className="block text-[#6571FB]"> {React.string("ViteJS")} </span>
+      <span className="block">{React.string("ReScript & ")}</span>
+      <span className="block text-[#6571FB]">{React.string("ViteJS")}</span>
     </>
   | NodeJs =>
     <>
-      <span className="block"> {React.string("ReScript & ")} </span>
+      <span className="block">{React.string("ReScript & ")}</span>
       <span className="block text-gray-40" style={{color: "#699D65"}}>
         {React.string("NodeJS")}
       </span>
@@ -101,7 +101,7 @@ let make = () => {
       <div className="body-sm md:body-lg text-gray-40 w-40 mb-4 xs:w-auto text-center">
         {React.string("Get up and running with ReScript")}
       </div>
-      <h2 className="hl-1 text-gray-20 text-center"> {React.string("Curated resources")} </h2>
+      <h2 className="hl-1 text-gray-20 text-center">{React.string("Curated resources")}</h2>
     </div>
     <div className="px-5 md:px-8 max-w-1280 mx-auto my-20">
       <div className="body-lg text-center z-2 relative text-gray-40 max-w-48 mx-auto bg-gray-100">
@@ -128,8 +128,8 @@ let make = () => {
               height="70"
               loading=#lazy
             />
-            <h5 className="text-gray-10 hl-4 mt-32 h-12"> {React.string(card.title)} </h5>
-            <div className="text-gray-40 mt-2 mb-8 body-sm"> {React.string(card.descr)} </div>
+            <h5 className="text-gray-10 hl-4 mt-32 h-12">{React.string(card.title)}</h5>
+            <div className="text-gray-40 mt-2 mb-8 body-sm">{React.string(card.descr)}</div>
           </ReactRouter.Link.String>
         )
         ->React.array}
@@ -158,8 +158,8 @@ let make = () => {
               height={template.height->Int.toString}
               loading=#lazy
             />
-            <h5 className="text-gray-10 hl-4 mt-32 h-12"> {renderTemplateTitle(template.kind)} </h5>
-            <div className="text-gray-40 mt-4 body-sm"> {React.string(template.descr)} </div>
+            <h5 className="text-gray-10 hl-4 mt-32 h-12">{renderTemplateTitle(template.kind)}</h5>
+            <div className="text-gray-40 mt-4 body-sm">{React.string(template.descr)}</div>
           </a>
         )
         ->React.array}

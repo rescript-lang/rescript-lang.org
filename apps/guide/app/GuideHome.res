@@ -15,7 +15,7 @@ let make = (
 
   <>
     <section className="guide-screen-size-message" ariaLabel="Desktop browser required">
-      <h1> {React.string("This interactive guide is available on desktop.")} </h1>
+      <h1>{React.string("This interactive guide is available on desktop.")}</h1>
       <p>
         {React.string("Open it in a desktop browser or widen this window to at least 1024 pixels.")}
       </p>
@@ -28,7 +28,7 @@ let make = (
       <section className="guide-instructions" ariaLabel="Guide instructions">
         <div className="guide-copy">
           <div className="guide-topbar">
-            <p className="guide-kicker"> {React.string(lesson.missionLabel)} </p>
+            <p className="guide-kicker">{React.string(lesson.missionLabel)}</p>
             <button
               ariaLabel={layout.theme->GuideLayout.themeToggleLabel}
               className="guide-theme-toggle"
@@ -39,8 +39,8 @@ let make = (
               {React.string(layout.theme->GuideLayout.themeToggleText)}
             </button>
           </div>
-          <h1> {React.string(lesson.title)} </h1>
-          <ReactMarkdown> {lesson.content} </ReactMarkdown>
+          <h1>{React.string(lesson.title)}</h1>
+          <ReactMarkdown>{lesson.content}</ReactMarkdown>
           <div
             className={"guide-check-status " ++ if navigation.checkpointComplete {
               "guide-check-status-complete"
@@ -49,7 +49,7 @@ let make = (
             }}
             dataTestId="guide-check-status"
           >
-            <span className="guide-check-label"> {React.string("Checkpoint")} </span>
+            <span className="guide-check-label">{React.string("Checkpoint")}</span>
             <span>
               {React.string(
                 if navigation.checkpointComplete {
@@ -96,7 +96,7 @@ let make = (
       <section className="guide-workspace" ariaLabel="Guide workspace">
         <div className="guide-editor-panel">
           <div className="guide-editor-header">
-            <div className="guide-label"> {React.string("Editor")} </div>
+            <div className="guide-label">{React.string("Editor")}</div>
             <button
               ariaLabel="Reset exercise code"
               className="guide-reset-button"
@@ -122,7 +122,7 @@ let make = (
           role="separator"
         />
         <div className="guide-output-panel">
-          <div className="guide-label"> {React.string("Output")} </div>
+          <div className="guide-label">{React.string("Output")}</div>
           <div className="guide-output-frame" dataTestId="guide-output">
             <GuideOutputPanel output={navigation.output} />
           </div>

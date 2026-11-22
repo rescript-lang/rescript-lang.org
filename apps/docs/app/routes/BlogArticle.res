@@ -22,7 +22,7 @@ module AuthorBox = {
     let authorImg = <img className="h-full w-full rounded-full" src=author.imgUrl />
 
     <div className="flex items-center">
-      <div className="w-10 h-10 bg-berry-40 block rounded-full mr-3"> {authorImg} </div>
+      <div className="w-10 h-10 bg-berry-40 block rounded-full mr-3">{authorImg}</div>
       <div className="body-sm">
         <a
           href={switch author.social {
@@ -34,7 +34,7 @@ module AuthorBox = {
         >
           {React.string(author.fullname)}
         </a>
-        <div className="text-gray-60"> {React.string(author.role)} </div>
+        <div className="text-gray-60">{React.string(author.role)}</div>
       </div>
     </div>
   }
@@ -68,13 +68,13 @@ module BlogHeader = {
           }}
           {React.string(Util.Date.toDayMonthYear(date))}
         </div>
-        <h1 className="hl-title"> {React.string(title)} </h1>
+        <h1 className="hl-title">{React.string(title)}</h1>
         {description->Option.mapOr(React.null, desc =>
           switch desc {
           | "" => <div className="mb-8" />
           | desc =>
             <div className="text-gray-80 mt-1 mb-8">
-              <p className="body-lg"> {React.string(desc)} </p>
+              <p className="body-lg">{React.string(desc)}</p>
             </div>
           }
         )}
@@ -110,7 +110,7 @@ let make = (props: props) => {
         <div className="mb-10">
           <Warn>
             <P>
-              <span className="font-bold"> {React.string("Important: ")} </span>
+              <span className="font-bold">{React.string("Important: ")}</span>
               {React.string(
                 "This is an archived blog post, kept for historical reasons. Please note that this information might be outdated.",
               )}
@@ -143,7 +143,7 @@ let make = (props: props) => {
         <div className="max-w-740 w-full">
           {archivedNote}
           <article className="DocSearch-content markdown-body">
-            <span className="DocSearch-lvl0 sr-only" ariaHidden=true> {React.string("Blog")} </span>
+            <span className="DocSearch-lvl0 sr-only" ariaHidden=true>{React.string("Blog")}</span>
             {children}
           </article>
           <div className="mt-12">

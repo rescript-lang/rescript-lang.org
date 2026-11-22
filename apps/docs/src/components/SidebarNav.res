@@ -36,7 +36,7 @@ module Title = {
   let make = (~children) => {
     let className = "hl-overline text-gray-80 mt-5" //overline
 
-    <div className> {children} </div>
+    <div className>{children}</div>
   }
 }
 
@@ -105,7 +105,7 @@ module Category = {
     ~onClick=() => (),
   ) =>
     <div key=category.name className="my-10">
-      <Title> {React.string(category.name)} </Title>
+      <Title>{React.string(category.name)}</Title>
       <NavItem ?isItemActive ?getActiveToc items=category.items onClick />
     </div>
 }
@@ -142,15 +142,17 @@ let make = (
         className="h-full relative top-0 px-4 w-full block md:top-40 md:sticky border-r border-gray-20 overflow-y-auto pb-24 max-h-[calc(100vh-10rem)] pt-8"
       >
         <div className="flex justify-between" dataTestId="sidebar-toplevel-nav">
-          <div className="w-3/4 md:w-full"> {toplevelNav} </div>
+          <div className="w-3/4 md:w-full">{toplevelNav}</div>
         </div>
 
         {preludeSection}
 
-        /* Firefox ignores padding in scroll containers, so we need margin
+        {
+          /* Firefox ignores padding in scroll containers, so we need margin
              to make a bottom gap for the sidebar.
              See https://stackoverflow.com/questions/29986977/firefox-ignores-padding-when-using-overflowscroll
  */
+        }
         <div className="mb-56">
           {categories
           ->Array.map(category => {

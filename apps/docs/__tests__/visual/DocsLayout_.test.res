@@ -35,7 +35,7 @@ test("desktop docs layout shows categories and active-page table of contents", a
     <MemoryRouter initialEntries=["/docs/manual/introduction"]>
       <div dataTestId="docs-layout-wrapper">
         <DocsLayout categories=mockCategories activeToc=mockToc>
-          <div> {React.string("This is the documentation content.")} </div>
+          <div>{React.string("This is the documentation content.")}</div>
         </DocsLayout>
       </div>
     </MemoryRouter>,
@@ -72,7 +72,7 @@ test("mobile docs layout hides sidebar by default", async () => {
     <MemoryRouter initialEntries=["/docs/manual/introduction"]>
       <div dataTestId="docs-layout-wrapper">
         <DocsLayout categories=mockCategories activeToc=mockToc>
-          <div> {React.string("This is the documentation content.")} </div>
+          <div>{React.string("This is the documentation content.")}</div>
         </DocsLayout>
       </div>
     </MemoryRouter>,
@@ -95,7 +95,7 @@ test("desktop docs layout highlights active nav item", async () => {
     <MemoryRouter initialEntries=["/docs/manual/installation"]>
       <div dataTestId="docs-layout-wrapper">
         <DocsLayout categories=mockCategories activeToc=mockToc>
-          <div> {React.string("This is the documentation content.")} </div>
+          <div>{React.string("This is the documentation content.")}</div>
         </DocsLayout>
       </div>
     </MemoryRouter>,
@@ -120,7 +120,7 @@ test("desktop docs layout shows pagination (prev/next)", async () => {
     <MemoryRouter initialEntries=["/docs/manual/installation"]>
       <div dataTestId="docs-layout-wrapper">
         <DocsLayout categories=mockCategories activeToc=mockToc>
-          <div> {React.string("Installation documentation content.")} </div>
+          <div>{React.string("Installation documentation content.")}</div>
         </DocsLayout>
       </div>
     </MemoryRouter>,

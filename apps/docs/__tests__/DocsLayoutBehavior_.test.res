@@ -36,7 +36,7 @@ test("docs layout marks the textual content for DocSearch crawling", async () =>
   let screen = await render(
     <MemoryRouter initialEntries=["/docs/manual/introduction"]>
       <DocsLayout categories=mockCategories activeToc=mockToc docSearchLvl0="Manual">
-        <div> {React.string("This is the documentation content.")} </div>
+        <div>{React.string("This is the documentation content.")}</div>
       </DocsLayout>
     </MemoryRouter>,
   )
@@ -73,7 +73,7 @@ test("following a desktop docs link keeps the in-page sidebar hidden on mobile",
   let screen = await render(
     <MemoryRouter initialEntries=["/docs/manual/introduction"]>
       <DocsLayout categories=mockCategories>
-        <div> {React.string("Documentation content")} </div>
+        <div>{React.string("Documentation content")}</div>
       </DocsLayout>
     </MemoryRouter>,
   )

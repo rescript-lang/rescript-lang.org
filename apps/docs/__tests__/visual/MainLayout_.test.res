@@ -8,7 +8,7 @@ test("desktop main layout renders children and footer", async () => {
     <MemoryRouter>
       <div dataTestId="main-layout-wrapper">
         <MainLayout>
-          <div dataTestId="main-content"> {React.string("Main page content goes here.")} </div>
+          <div dataTestId="main-content">{React.string("Main page content goes here.")}</div>
         </MainLayout>
       </div>
     </MemoryRouter>,
@@ -31,7 +31,7 @@ test("mobile main layout", async () => {
     <MemoryRouter>
       <div dataTestId="main-layout-wrapper">
         <MainLayout>
-          <div dataTestId="main-content"> {React.string("Main page content goes here.")} </div>
+          <div dataTestId="main-content">{React.string("Main page content goes here.")}</div>
         </MainLayout>
       </div>
     </MemoryRouter>,

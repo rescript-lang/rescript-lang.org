@@ -24,7 +24,7 @@ test("desktop community layout shows sidebar and content", async () => {
     <MemoryRouter>
       <div dataTestId="community-layout-wrapper">
         <CommunityLayout categories=mockCategories entries=mockEntries>
-          <div> {React.string("Community content goes here.")} </div>
+          <div>{React.string("Community content goes here.")}</div>
         </CommunityLayout>
       </div>
     </MemoryRouter>,
@@ -50,7 +50,7 @@ test("mobile community layout hides sidebar", async () => {
     <MemoryRouter>
       <div dataTestId="community-layout-wrapper">
         <CommunityLayout categories=mockCategories entries=mockEntries>
-          <div> {React.string("Community content goes here.")} </div>
+          <div>{React.string("Community content goes here.")}</div>
         </CommunityLayout>
       </div>
     </MemoryRouter>,
@@ -90,7 +90,7 @@ test("desktop community layout with multiple categories", async () => {
     <MemoryRouter>
       <div dataTestId="community-layout-wrapper">
         <CommunityLayout categories=mockMultipleCategories entries=mockEntries>
-          <div> {React.string("Community content with multiple categories.")} </div>
+          <div>{React.string("Community content with multiple categories.")}</div>
         </CommunityLayout>
       </div>
     </MemoryRouter>,
@@ -116,7 +116,7 @@ test("tablet community layout", async () => {
     <MemoryRouter>
       <div dataTestId="community-layout-wrapper">
         <CommunityLayout categories=mockCategories entries=mockEntries>
-          <div> {React.string("Community content goes here.")} </div>
+          <div>{React.string("Community content goes here.")}</div>
         </CommunityLayout>
       </div>
     </MemoryRouter>,

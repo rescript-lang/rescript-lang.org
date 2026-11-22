@@ -57,6 +57,6 @@ let make =
       >
         <Icon.Copy className="w-6 h-6 mt-px text-gray-40 hover:cursor-pointer hover:text-gray-80" />
       </button>
-      <span role="status" className="absolute top-3 right-3 pointer-events-none"> {feedback} </span>
+      <span role="status" className="absolute top-3 right-3 pointer-events-none">{feedback}</span>
     </>
   }

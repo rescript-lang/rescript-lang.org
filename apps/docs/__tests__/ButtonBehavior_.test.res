@@ -7,7 +7,7 @@ test("calls onClick when clicked", async () => {
 
   let screen = await render(
     <div dataTestId="button-wrapper">
-      <Button onClick=handleClick> {React.string("Clickable")} </Button>
+      <Button onClick=handleClick>{React.string("Clickable")}</Button>
     </div>,
   )
 

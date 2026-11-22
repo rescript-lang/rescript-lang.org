@@ -158,18 +158,20 @@ function Example(props) {
   return JsxRuntime.jsx("div", {
     children: JsxRuntime.jsx(make, {
       className: "fancy",
-      children: JsxRuntime.jsx("button", {
-        children: "Click to focus",
-        onClick: onClick,
-      }),
       ref: input,
+      children: JsxRuntime.jsx("button", {
+        onClick: onClick,
+        children: "Click to focus",
+      }),
     }),
   });
 }
 
 let make$1 = Example;
 
-export { FancyInput, make$1 as make };
+let FancyInput$make = make;
+
+export { FancyInput, make$1 as make, FancyInput$make };
 ```
 
 ```jsx
@@ -213,7 +215,9 @@ function Example(props) {
 
 let make$1 = Example;
 
-export { FancyInput, make$1 as make };
+let FancyInput$make = make;
+
+export { FancyInput, make$1 as make, FancyInput$make };
 ```
 
 </CodeTab>

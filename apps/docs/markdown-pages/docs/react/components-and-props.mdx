@@ -216,7 +216,9 @@ let name = "Andrea";
 
 JsxRuntime.jsx(Example$Greeting, { name: name });
 
-export { Greeting, name };
+let Greeting$make = Example$Greeting;
+
+export { Greeting, name, Greeting$make };
 ```
 
 ```jsx
@@ -233,7 +235,9 @@ let name = "Andrea";
 
 <Greeting.make name={name} />;
 
-export { Greeting, name };
+let Greeting$make = Example$Greeting;
+
+export { Greeting, name, Greeting$make };
 ```
 
 </CodeTab>
@@ -306,7 +310,11 @@ JsxRuntime.jsxs(Example$MyList, {
   ],
 });
 
-export { Greeting, MyList };
+let Greeting$make = Example$Greeting;
+
+let MyList$make = Example$MyList;
+
+export { Greeting, MyList, Greeting$make, MyList$make };
 ```
 
 ```jsx
@@ -330,7 +338,11 @@ let MyList = { make: Example$MyList };
   <li>{"Item 2"}</li>
 </MyList.make>;
 
-export { Greeting, MyList };
+let Greeting$make = Example$Greeting;
+
+let MyList$make = Example$MyList;
+
+export { Greeting, MyList, Greeting$make, MyList$make };
 ```
 
 </CodeTab>
@@ -463,7 +475,9 @@ function Example(props) {
 
 let make = Example;
 
-export { Greeting, make };
+let Greeting$make = Example$Greeting;
+
+export { Greeting, make, Greeting$make };
 ```
 
 ```jsx
@@ -487,7 +501,9 @@ function Example(props) {
 
 let make = Example;
 
-export { Greeting, make };
+let Greeting$make = Example$Greeting;
+
+export { Greeting, make, Greeting$make };
 ```
 
 </CodeTab>
@@ -549,7 +565,9 @@ function Example(props) {
 
 let make = Example;
 
-export { Greeting, make };
+let Greeting$make = Example$Greeting;
+
+export { Greeting, make, Greeting$make };
 ```
 
 ```jsx
@@ -572,7 +590,9 @@ function Example(props) {
 
 let make = Example;
 
-export { Greeting, make };
+let Greeting$make = Example$Greeting;
+
+export { Greeting, make, Greeting$make };
 ```
 
 </CodeTab>
@@ -613,14 +633,18 @@ function Example$Greeting(props) {
 let Greeting = { make: Example$Greeting };
 
 function Example$Link(props) {
-  return JsxRuntime.jsx("a", { children: props.children, href: props.href });
+  return JsxRuntime.jsx("a", { href: props.href, children: props.children });
 }
 
 let Link = { make: Example$Link };
 
 JsxRuntime.jsx(Example$Link, { href: "/docs", children: "Docs" });
 
-export { Greeting, Link };
+let Greeting$make = Example$Greeting;
+
+let Link$make = Example$Link;
+
+export { Greeting, Link, Greeting$make, Link$make };
 ```
 
 ```jsx
@@ -641,7 +665,11 @@ let Link = { make: Example$Link };
 
 <Link.make href={"/docs"}>{"Docs"}</Link.make>;
 
-export { Greeting, Link };
+let Greeting$make = Example$Greeting;
+
+let Link$make = Example$Link;
+
+export { Greeting, Link, Greeting$make, Link$make };
 ```
 
 </CodeTab>

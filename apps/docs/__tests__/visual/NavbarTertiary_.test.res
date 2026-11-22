@@ -3,17 +3,17 @@ open Vitest
 
 let sidebarContent =
   <aside>
-    <div dataTestId="sidebar-version-select"> {React.string("v12 (latest)")} </div>
+    <div dataTestId="sidebar-version-select">{React.string("v12 (latest)")}</div>
     <div dataTestId="sidebar-categories">
-      <div> {React.string("OVERVIEW")} </div>
-      <div> {React.string("Introduction")} </div>
+      <div>{React.string("OVERVIEW")}</div>
+      <div>{React.string("Introduction")}</div>
     </div>
   </aside>
 
 let breadcrumbs =
-  <span dataTestId="breadcrumbs"> {React.string("Docs / Language Manual / Installation")} </span>
+  <span dataTestId="breadcrumbs">{React.string("Docs / Language Manual / Installation")}</span>
 
-let editLink = <a dataTestId="edit-link" href="#"> {React.string("Edit")} </a>
+let editLink = <a dataTestId="edit-link" href="#">{React.string("Edit")}</a>
 
 test("desktop shows breadcrumbs and edit link", async () => {
   await viewport(1440, 500)
@@ -21,8 +21,8 @@ test("desktop shows breadcrumbs and edit link", async () => {
   let screen = await render(
     <MemoryRouter>
       <NavbarTertiary sidebar=sidebarContent>
-        breadcrumbs
-        editLink
+        {breadcrumbs}
+        {editLink}
       </NavbarTertiary>
     </MemoryRouter>,
   )
@@ -46,8 +46,8 @@ test("mobile shows breadcrumbs and drawer button", async () => {
   let screen = await render(
     <MemoryRouter>
       <NavbarTertiary sidebar=sidebarContent>
-        breadcrumbs
-        editLink
+        {breadcrumbs}
+        {editLink}
       </NavbarTertiary>
     </MemoryRouter>,
   )

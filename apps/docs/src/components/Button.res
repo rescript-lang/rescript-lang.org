@@ -1,5 +1,6 @@
 type kind = PrimaryRed | PrimaryBlue | SecondaryRed
 type size = Small | Large
+
 /* type theme = Light | Dark */
 
 @react.component
@@ -25,6 +26,6 @@ let make = (
     role="button"
     className={`select-none hover:cursor-pointer transition-colors duration-200 body-button focus:outline-hidden ${bgColor} ${padding}`}
   >
-    children
+    {children}
   </button>
 }

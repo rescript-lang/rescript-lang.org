@@ -60,7 +60,7 @@ module RightSidebar = {
           <div
             className={`bg-orange-100 min-w-[20px] min-h-[20px] w-5 h-5 mr-3 flex justify-center items-center rounded-xl ml-auto`}
           >
-            <span className={"text-[10px] text-orange-400"}> {"D"->React.string} </span>
+            <span className={"text-[10px] text-orange-400"}>{"D"->React.string}</span>
           </div>->Some
         | None => None
         }
@@ -76,11 +76,9 @@ module RightSidebar = {
             <div
               className={`${bgColor} min-w-[20px] min-h-[20px] w-5 h-5 mr-3 flex justify-center items-center rounded-xl`}
             >
-              <span className={"text-[10px] font-normal " ++ textColor}>
-                {icon->React.string}
-              </span>
+              <span className={"text-[10px] font-normal " ++ textColor}>{icon->React.string}</span>
             </div>
-            <span className={"truncate"}> {React.string(name)} </span>
+            <span className={"truncate"}>{React.string(name)}</span>
             {switch deprecatedIcon {
             | Some(icon) => icon
             | None => React.null
@@ -170,7 +168,7 @@ module SidebarTree = {
           className="list-none mt-1 leading-4" key=node.name dataTestId={`no-children-${node.name}`}
         >
           <summary className={summaryClassName ++ classNameActive}>
-            <Link.String className={"block"} to=fullPath> {node.name->React.string} </Link.String>
+            <Link.String className={"block"} to=fullPath>{node.name->React.string}</Link.String>
           </summary>
           {tocModule}
         </li>
@@ -190,7 +188,7 @@ module SidebarTree = {
         </Link.String>
         {isCurrentlyAtRoot ? subMenu : React.null}
       </div>
-      <div className="hl-overline text-gray-80 mt-5 mb-2"> {"submodules"->React.string} </div>
+      <div className="hl-overline text-gray-80 mt-5 mb-2">{"submodules"->React.string}</div>
       {node.children
       ->Array.toSorted((v1, v2) => String.compare(v1.name, v2.name))
       ->Array.filter(child => child.name !== node.name)
@@ -222,10 +220,10 @@ module MarkdownStylize = {
     let components = {
       ...MarkdownComponents.default,
       h2: React.component((props: Markdown.H2.props<string, React.element, string>) =>
-        <Markdown.H3 id=props.id title=?props.title> {props.children} </Markdown.H3>
+        <Markdown.H3 id=props.id title=?props.title>{props.children}</Markdown.H3>
       ),
     }
-    <ReactMarkdown components={components} ?rehypePlugins> {content} </ReactMarkdown>
+    <ReactMarkdown components={components} ?rehypePlugins>{content}</ReactMarkdown>
   }
 }
 
@@ -235,7 +233,7 @@ module DeprecatedMessage = {
     switch deprecated->Null.toOption {
     | Some(content) =>
       <Markdown.Warn>
-        <h4 className={"hl-4 mb-2"}> {"Deprecated"->React.string} </h4>
+        <h4 className={"hl-4 mb-2"}>{"Deprecated"->React.string}</h4>
         <MarkdownStylize content rehypePlugins=None />
       </Markdown.Warn>
     | None => React.null
@@ -273,7 +271,7 @@ let make = (props: props) => {
           let code = String.replaceRegExp(signature, /\\n/g, "\n")
           let slugPrefix = "value-" ++ name
           <React.Fragment key={slugPrefix}>
-            <H2 id=slugPrefix> {name->React.string} </H2>
+            <H2 id=slugPrefix>{name->React.string}</H2>
             <DeprecatedMessage deprecated />
             <CodeExample code lang="rescript" />
             <DocstringsStylize docstrings slugPrefix />
@@ -282,7 +280,7 @@ let make = (props: props) => {
           let code = String.replaceRegExp(signature, /\\n/g, "\n")
           let slugPrefix = "type-" ++ name
           <React.Fragment key={slugPrefix}>
-            <H2 id=slugPrefix> {name->React.string} </H2>
+            <H2 id=slugPrefix>{name->React.string}</H2>
             <DeprecatedMessage deprecated />
             <CodeExample code lang="rescript" />
             <DocstringsStylize docstrings slugPrefix />
@@ -291,7 +289,7 @@ let make = (props: props) => {
       })
 
       <>
-        <H1 id={id->Url.normalizeAnchor}> {name->React.string} </H1>
+        <H1 id={id->Url.normalizeAnchor}>{name->React.string}</H1>
         <DocstringsStylize docstrings slugPrefix=id />
         {valuesAndType->React.array}
       </>
@@ -335,7 +333,7 @@ let make = (props: props) => {
     React.null
   }
 
-  <SidebarPageLayout sidebar rightSidebar docSearchLvl0="API"> {children} </SidebarPageLayout>
+  <SidebarPageLayout sidebar rightSidebar docSearchLvl0="API">{children}</SidebarPageLayout>
 }
 
 let processStaticProps = (~apiDocs, ~slug: array<string>) => {

@@ -110,8 +110,8 @@ function Example$ControlPanel(props) {
     "Switch to " + ((props.darkmode ? "light" : "dark") + " theme");
   return JsxRuntime.jsx("div", {
     children: JsxRuntime.jsx("button", {
-      children: toggleText,
       onClick: onClick,
+      children: toggleText,
     }),
   });
 }
@@ -123,6 +123,7 @@ function Example(props) {
   let darkmode = match[0];
   let className = darkmode ? "theme-dark" : "theme-light";
   return JsxRuntime.jsxs("div", {
+    className: className,
     children: [
       JsxRuntime.jsxs("section", {
         children: [
@@ -135,13 +136,14 @@ function Example(props) {
         darkmode: darkmode,
       }),
     ],
-    className: className,
   });
 }
 
 let make = Example;
 
-export { ControlPanel, make };
+let ControlPanel$make = Example$ControlPanel;
+
+export { ControlPanel, make, ControlPanel$make };
 ```
 
 ```jsx
@@ -182,7 +184,9 @@ function Example(props) {
 
 let make = Example;
 
-export { ControlPanel, make };
+let ControlPanel$make = Example$ControlPanel;
+
+export { ControlPanel, make, ControlPanel$make };
 ```
 
 </CodeTab>

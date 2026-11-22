@@ -452,6 +452,7 @@ module Compiler = {
 
   @send @scope("reason")
   external reasonCompile: (t, string) => JSON.t = "compile"
+
   let reasonCompile = (t, code): CompilationResult.t => {
     let startTime = now()
     let json = reasonCompile(t, code)

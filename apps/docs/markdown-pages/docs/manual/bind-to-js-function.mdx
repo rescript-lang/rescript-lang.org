@@ -186,13 +186,13 @@ let result = add(1, 1)
 ```
 
 ```js
-import * as MathJs from "./math.js";
+import MathJs from "./math.js";
 
 function add(prim0, prim1) {
-  return MathJs.default.add(prim0, prim1);
+  return MathJs.add(prim0, prim1);
 }
 
-let result = MathJs.default.add(1, 1);
+let result = MathJs.add(1, 1);
 
 export { add, result };
 ```

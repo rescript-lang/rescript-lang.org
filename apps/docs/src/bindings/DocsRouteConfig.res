@@ -12,5 +12,6 @@ external concretePaths: array<route> => array<string> = "concretePaths"
 external renderPathType: array<route> => string = "renderPathType"
 
 type generationOptions = {routes: array<route>, destination: string, check?: bool}
+
 @module("../../generate-route-types.mjs")
 external generate: (~options: generationOptions) => bool = "generateRouteTypes"

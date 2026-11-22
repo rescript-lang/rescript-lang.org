@@ -48,7 +48,7 @@ test("syntax lookup detail marks active content for DocSearch crawling", async (
   let _screen = await render(
     <MemoryRouter>
       <SyntaxLookup mdxSources=mockItems activeItem={mockItems->Array.getUnsafe(0)}>
-        <p> {React.string("Detail content for @as decorator.")} </p>
+        <p>{React.string("Detail content for @as decorator.")}</p>
       </SyntaxLookup>
     </MemoryRouter>,
   )

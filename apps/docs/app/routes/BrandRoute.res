@@ -11,8 +11,8 @@ let assetCard = (~title, ~description, ~image, ~imageClassName="", ~dark=false, 
     : "bg-gray-5 border border-gray-10 rounded-lg p-8 flex min-h-48 items-center justify-center"
 
   <section className="border border-gray-10 rounded-lg bg-white p-6">
-    <h2 className="font-bold text-24 mb-2"> {React.string(title)} </h2>
-    <p className="body-md text-gray-70 mb-6"> {React.string(description)} </p>
+    <h2 className="font-bold text-24 mb-2">{React.string(title)}</h2>
+    <p className="body-md text-gray-70 mb-6">{React.string(description)}</p>
     <div className=previewClassName>
       <img src=image className=imageClassName alt={title ++ " preview"} />
     </div>
@@ -30,7 +30,7 @@ let default = () => {
       canonical="/brand"
     />
     <div className="max-w-740 w-full m-auto">
-      <Markdown.H1> {React.string("Brand Assets")} </Markdown.H1>
+      <Markdown.H1>{React.string("Brand Assets")}</Markdown.H1>
       <p className="body-lg text-gray-70 mb-10">
         {React.string(
           "Official ReScript logo and brandmark assets for use in articles, talks, websites, and community projects.",

@@ -61,9 +61,7 @@ let make = (
           >
             {switch docSearchLvl0 {
             | Some(value) =>
-              <span className="DocSearch-lvl0 sr-only" ariaHidden=true>
-                {React.string(value)}
-              </span>
+              <span className="DocSearch-lvl0 sr-only" ariaHidden=true>{React.string(value)}</span>
             | None => React.null
             }}
             {children}

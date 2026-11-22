@@ -43,7 +43,7 @@ let make = (~crumbs: list<Url.breadcrumb>) => {
   <div dataTestId="breadcrumbs" className="w-full captions overflow-x-auto text-gray-60">
     {List.mapWithIndex(crumbs, (crumb, i) => {
       let item = if i === List.length(crumbs) - 1 {
-        <span key={Int.toString(i)}> {React.string(crumb.name)} </span>
+        <span key={Int.toString(i)}>{React.string(crumb.name)}</span>
       } else {
         <Link.String key={Int.toString(i)} to=crumb.href prefetch={#intent}>
           {React.string(crumb.name)}
@@ -52,7 +52,7 @@ let make = (~crumbs: list<Url.breadcrumb>) => {
       if i > 0 {
         <span key={Int.toString(i)}>
           {React.string(" / ")}
-          item
+          {item}
         </span>
       } else {
         item

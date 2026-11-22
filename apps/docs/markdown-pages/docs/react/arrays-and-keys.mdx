@@ -308,7 +308,9 @@ let posts = [
 
 let blog = JsxRuntime.jsx(Example$Blog, { posts: posts });
 
-export { todos, items, Blog, posts, blog };
+let Blog$make = Example$Blog;
+
+export { todos, items, Blog, posts, blog, Blog$make };
 ```
 
 ```jsx
@@ -362,7 +364,9 @@ let posts = [
 
 let blog = <Blog.make posts={posts} />;
 
-export { todos, items, Blog, posts, blog };
+let Blog$make = Example$Blog;
+
+export { todos, items, Blog, posts, blog, Blog$make };
 ```
 
 </CodeTab>

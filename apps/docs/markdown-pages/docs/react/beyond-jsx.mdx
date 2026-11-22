@@ -110,7 +110,19 @@ function Example$Friend(props) {
 
 let Friend$1 = { make: Example$Friend };
 
-export { ExamplePrelude, Friend$1 as Friend };
+let ExamplePrelude$Friend$make = Example$ExamplePrelude$Friend;
+
+let ExamplePrelude$Container$make = Example$ExamplePrelude$Container;
+
+let Friend$make = Example$Friend;
+
+export {
+  ExamplePrelude,
+  Friend$1 as Friend,
+  ExamplePrelude$Friend$make,
+  ExamplePrelude$Container$make,
+  Friend$make,
+};
 ```
 
 ```jsx
@@ -146,7 +158,19 @@ function Example$Friend(props) {
 
 let Friend$1 = { make: Example$Friend };
 
-export { ExamplePrelude, Friend$1 as Friend };
+let ExamplePrelude$Friend$make = Example$ExamplePrelude$Friend;
+
+let ExamplePrelude$Container$make = Example$ExamplePrelude$Container;
+
+let Friend$make = Example$Friend;
+
+export {
+  ExamplePrelude,
+  Friend$1 as Friend,
+  ExamplePrelude$Friend$make,
+  ExamplePrelude$Container$make,
+  Friend$make,
+};
 ```
 
 </CodeTab>
@@ -197,7 +221,11 @@ let Container = { make: Example$Container };
 
 JsxRuntime.jsx(Example$Friend, { name: "Fred", age: 20 });
 
-export { Friend, Container };
+let Friend$make = Example$Friend;
+
+let Container$make = Example$Container;
+
+export { Friend, Container, Friend$make, Container$make };
 ```
 
 ```jsx
@@ -222,7 +250,11 @@ let Container = { make: Example$Container };
 
 <Friend.make name={"Fred"} age={20} />;
 
-export { Friend, Container };
+let Friend$make = Example$Friend;
+
+let Container$make = Example$Container;
+
+export { Friend, Container, Friend$make, Container$make };
 ```
 
 </CodeTab>
@@ -267,7 +299,11 @@ JsxRuntime.jsxs(Example$Container, {
   children: ["Hello", "World"],
 });
 
-export { Friend, Container };
+let Friend$make = Example$Friend;
+
+let Container$make = Example$Container;
+
+export { Friend, Container, Friend$make, Container$make };
 ```
 
 ```jsx
@@ -295,7 +331,11 @@ let Container = { make: Example$Container };
   {"World"}
 </Container.make>;
 
-export { Friend, Container };
+let Friend$make = Example$Friend;
+
+let Container$make = Example$Container;
+
+export { Friend, Container, Friend$make, Container$make };
 ```
 
 </CodeTab>
@@ -335,7 +375,11 @@ let Container = { make: Example$Container };
 
 JsxRuntime.jsx("div", { title: "test" });
 
-export { Friend, Container };
+let Friend$make = Example$Friend;
+
+let Container$make = Example$Container;
+
+export { Friend, Container, Friend$make, Container$make };
 ```
 
 ```jsx
@@ -360,7 +404,11 @@ let Container = { make: Example$Container };
 
 <div title={"test"} />;
 
-export { Friend, Container };
+let Friend$make = Example$Friend;
+
+let Container$make = Example$Container;
+
+export { Friend, Container, Friend$make, Container$make };
 ```
 
 </CodeTab>
@@ -396,9 +444,13 @@ function Example$Container(props) {
 
 let Container = { make: Example$Container };
 
-JsxRuntime.jsx("div", { children: JsxRuntime.jsx("span", {}), title: "test" });
+JsxRuntime.jsx("div", { title: "test", children: JsxRuntime.jsx("span", {}) });
 
-export { Friend, Container };
+let Friend$make = Example$Friend;
+
+let Container$make = Example$Container;
+
+export { Friend, Container, Friend$make, Container$make };
 ```
 
 ```jsx
@@ -425,7 +477,11 @@ let Container = { make: Example$Container };
   <span />
 </div>;
 
-export { Friend, Container };
+let Friend$make = Example$Friend;
+
+let Container$make = Example$Container;
+
+export { Friend, Container, Friend$make, Container$make };
 ```
 
 </CodeTab>

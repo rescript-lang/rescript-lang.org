@@ -20,7 +20,7 @@ let make = (~children, ~categories, ~entries) => {
     <SidebarPageLayout
       sidebar={<SidebarNav categories route=pathname activeToc />} docSearchLvl0="Community"
     >
-      children
+      {children}
     </SidebarPageLayout>
   </>
 }
