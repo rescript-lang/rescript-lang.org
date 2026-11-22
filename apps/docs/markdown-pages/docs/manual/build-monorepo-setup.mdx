@@ -15,8 +15,6 @@ order: 5
 
 ReScript 12.0 introduces improved support for native monorepos through the new ["Rewatch"](../../blog/reforging-build-system.mdx) build system. This guide walks you through the setup process.
 
-**Note:** This feature requires the new build system and is **not compatible** with `rescript-legacy`.
-
 ## Project Structure
 
 A ReScript monorepo requires a `rescript.json` file at the repository root, plus a `rescript.json` file in each sub-project directory.
@@ -68,17 +66,19 @@ Therefore, it is recommended to place these settings in the root `rescript.json`
 
 **Settings from different config files:** When Rewatch builds a package within a monorepo setup, it uses these settings from the root rescript.json:
 
-- `"jsx"` (jsx_args, jsx_module_args, jsx_mode_args, jsx_preserve_args)
-- `"experimental"` (experimental_features_args)
-- `"package-specs"` (used for implementation_args)
-- `"suffix"` (used for package output)
+- `"jsx"`
+- `"experimental-features"`
+- `"package-specs"`
+- `"suffix"`
 
 These settings come from the package's own rescript.json:
 
 - `"sources"` (determines which files to compile)
 - `"dependencies"` (package dependencies)
-- `"warnings"` (warning_args)
-- `"compiler-flags"` (bsc_flags)
+- `"dev-dependencies"`
+- `"features"`
+- `"warnings"`
+- `"compiler-flags"`
 
 When the root package is built, Rewatch will look for the dependencies inside the `my-monorepo/node_modules` folder.
 It is expected that `package-1` and `package-2` are available there via a symlink system provided by your node_modules package manager.
@@ -136,6 +136,10 @@ rescript clean
 # Format all packages
 rescript format
 ```
+
+Use `rescript build --prod` to exclude dev dependencies and dev-only source directories across the monorepo. The same flag is available on `watch` and `clean`.
+
+To select features of a workspace package when building the root, use a dependency entry such as `{"name": "package-1", "features": ["browser"]}` in the root configuration. `--features` selects the package being built, rather than every package in the monorepo. See [Features](./build-configuration.mdx#features) for the selection rules.
 
 ### Building individual packages
 
