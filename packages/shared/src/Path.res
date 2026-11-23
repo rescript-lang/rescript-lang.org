@@ -333,6 +333,7 @@ type t = [
   | #"/packages"
   | #"/syntax-lookup"
   | #"/syntax-lookup/builtinfunctions_debugger"
+  | #"/syntax-lookup/builtinfunctions_throw"
   | #"/syntax-lookup/decorator_as"
   | #"/syntax-lookup/decorator_dead"
   | #"/syntax-lookup/decorator_deriving"
