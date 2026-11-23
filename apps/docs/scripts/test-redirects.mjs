@@ -62,7 +62,7 @@ export function checkRedirects({
   );
   assertRedirect(
     "/syntax-lookup/extension_debugger",
-    "/syntax-lookup/specialvalues_debugger",
+    "/syntax-lookup/builtinfunctions_debugger",
     "308",
   );
 
