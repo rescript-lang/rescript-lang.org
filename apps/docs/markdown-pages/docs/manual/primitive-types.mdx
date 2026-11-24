@@ -52,6 +52,29 @@ export { greetings };
 
 Since both sides of the concatenation are known, the JS output becomes a single string literal.
 
+### Unicode Escapes
+
+Strings support JavaScript's Unicode escapes. A character outside the Basic Multilingual Plane, such as an emoji, can be written as a code point escape or as a UTF-16 surrogate pair. Both produce the same string:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let smiley = "\u{1F600}"
+let sameSmiley = "\uD83D\uDE00"
+```
+
+```js
+let smiley = "😀";
+
+let sameSmiley = "😀";
+
+export { smiley, sameSmiley };
+```
+
+</CodeTab>
+
+Escapes are resolved before pattern matching, so `"\u0041"` and `"A"` match the same value. If both appear as cases in one `switch`, the compiler reports the second one as unused.
+
 ### String Interpolation
 
 There's a special syntax for string that allows
@@ -191,6 +214,18 @@ Bitwise operators for `int`: `~~~`, `&&&`, `|||`, `^^^`, `<<`, `>>`, `>>>`.
 **Be careful when you bind to JavaScript numbers!** Since ReScript integers have a much smaller range than JavaScript numbers, data might get lost when dealing with large numbers. In those cases it’s much safer to bind the numbers as **float**. Be extra mindful of this when binding to JavaScript Dates and their epoch time.
 
 To improve readability, you may place underscores in the middle of numeric literals such as `1_000_000`. Note that underscores can be placed anywhere within a number, not just every three digits.
+
+### Parsing Strings
+
+`Int.fromString` and `Float.fromString` return an `option`, which is `None` when the whole string isn't a number. They accept decimal, hexadecimal (`0x`), binary (`0b`) and exponential notation, and ignore surrounding whitespace:
+
+```res
+let decimal = Int.fromString("42") // Some(42)
+let hex = Int.fromString("0x1F") // Some(31)
+let binary = Int.fromString("0b101") // Some(5)
+let exponential = Int.fromString("1e3") // Some(1000)
+let invalid = Int.fromString("12abc") // None
+```
 
 ## Floats
 

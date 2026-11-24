@@ -339,6 +339,23 @@ export { me, baby };
 
 Fields not marked with `mutable` in the type declaration cannot be mutated.
 
+A `private` record type can be read, but not created, outside the module that defines it. This is useful for bindings to JavaScript classes. Assigning to a `mutable` field of a private record is allowed, but produces warning 111. Disable it with `@@warning("-111")` where the mutation is intended:
+
+```res
+module Counter: {
+  type t = private {mutable count: int}
+  let make: unit => t
+} = {
+  type t = {mutable count: int}
+  let make = () => {count: 0}
+}
+
+@warning("-111")
+let reset = (counter: Counter.t) => counter.count = 0
+```
+
+This warning only concerns record fields. Assigning to a field of a JavaScript [object](./object.mdx#update) requires `@set` in the object type instead.
+
 ## JavaScript Output
 
 ReScript records compile to straightforward JavaScript objects; see the various JS output tabs above.

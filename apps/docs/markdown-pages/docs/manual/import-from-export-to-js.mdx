@@ -236,6 +236,35 @@ export { main };
 
 </CodeTab>
 
+### Dynamically Importing an External Binding
+
+An `external` binding to a JavaScript package can be imported dynamically too. With `@scope`, the import follows the complete property path:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+@module("mathlib") @scope("Math")
+external floor: float => float = "floor"
+
+let main = async () => {
+  let floor = await import(floor)
+  Console.log(floor(1.5))
+}
+```
+
+```js
+async function main() {
+  let floor = await import("mathlib").then((m) => m.Math.floor);
+  console.log(floor(1.5));
+}
+
+export { main };
+```
+
+</CodeTab>
+
+The imported function keeps the argument and result conversions of the binding, such as `@variadic`, `@unwrap` or polymorphic variant encodings, just like a direct call.
+
 ## Export To JavaScript
 
 ### Export a Named Value
