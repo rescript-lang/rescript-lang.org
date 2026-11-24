@@ -8,17 +8,13 @@ order: 5
 
 # Migrate to ReScript 13
 
-If you encounter any missing information or issues during migration, please [open an issue](https://github.com/rescript-lang/rescript-lang.org/issues/new?template=documentation_issue.md) or, even better, [send a pull request](https://github.com/rescript-lang/rescript-lang.org/) to help improve this guide.
+This guide lists the changes that need action when upgrading from ReScript 12. It's still being completed during the v13 prereleases. If something is missing, please [open an issue](https://github.com/rescript-lang/rescript-lang.org/issues/new?template=documentation_issue.md) or [send a pull request](https://github.com/rescript-lang/rescript-lang.org/).
 
 ## Build Configuration
 
-### Configuration File
+### Configuration File and Keys
 
-Use `rescript.json`. If a package has no `rescript.json`, the build system still reads `bsconfig.json`, but prints a deprecation warning. Rename the file to silence it.
-
-### Renamed Keys
-
-The legacy keys are still accepted as aliases, with deprecation warnings. Rename them:
+Rename `bsconfig.json` to `rescript.json`, and rename these keys:
 
 | Legacy key            | Current key        |
 | --------------------- | ------------------ |
@@ -26,23 +22,13 @@ The legacy keys are still accepted as aliases, with deprecation warnings. Rename
 | `bs-dev-dependencies` | `dev-dependencies` |
 | `bsc-flags`           | `compiler-flags`   |
 
-```diff
- {
-   "name": "my-project",
--  "bs-dependencies": ["@rescript/react"],
--  "bsc-flags": ["-open MyPrelude"]
-+  "dependencies": ["@rescript/react"],
-+  "compiler-flags": ["-open MyPrelude"]
- }
-```
+The old file name and keys still work, but print deprecation warnings.
 
-### Removed Options
+Remove `external-stdlib`. It's no longer supported.
 
-- `external-stdlib` is no longer supported. The standard library ships with the compiler; remove the option.
+### Module Format
 
-### Module Formats
-
-`esmodule` is now the default when `package-specs` doesn't specify a `module`. If your project relied on the previous CommonJS default, set it explicitly:
+`esmodule` is now the default when `package-specs` is omitted. To keep CommonJS output, set it explicitly:
 
 ```json
 {
@@ -53,17 +39,14 @@ The legacy keys are still accepted as aliases, with deprecation warnings. Rename
 }
 ```
 
-Use the current module names in `package-specs`:
+Replace legacy module names:
 
-| Legacy value | Current value | Status                              |
-| ------------ | ------------- | ----------------------------------- |
-| `es6`        | `esmodule`    | Accepted with a deprecation warning |
-| `cjs`        | `commonjs`    | Accepted with a deprecation warning |
-| `es6-global` | `esmodule`    | Rejected with an error              |
+- `es6` → `esmodule` and `cjs` → `commonjs`. The old names still work, but print deprecation warnings.
+- `es6-global` → `esmodule`. The old name is now an error.
 
-### Distinct Suffixes for Multiple Formats
+### Multiple Output Formats
 
-If `package-specs` emits more than one format to the same location, each spec now needs its own suffix. Specs that resolve to the same suffix are rejected, since their outputs would overwrite each other:
+When you emit several formats to the same location, give each its own suffix. Specs with the same suffix are now rejected:
 
 ```json
 {
@@ -74,19 +57,13 @@ If `package-specs` emits more than one format to the same location, each spec no
 }
 ```
 
-See [Build Configuration](./build-configuration.mdx#package-specs) for details.
+See [Build Configuration](./build-configuration.mdx#package-specs) for all options.
 
 ## Language Changes
 
-### `%debugger` Replaced by `debugger()`
+### `%debugger`
 
-The `%debugger` extension has been removed and now fails with a syntax error:
-
-```
-The %debugger extension has been removed. Use debugger() instead.
-```
-
-Call the `debugger()` function instead. It compiles to the same JavaScript `debugger` statement:
+The `%debugger` extension was removed. Use the [`debugger()`](./embed-raw-javascript.mdx#debugger) function, which compiles to the same JavaScript `debugger` statement:
 
 ```diff
  let f = (x, y) => {
@@ -95,5 +72,3 @@ Call the `debugger()` function instead. It compiles to the same JavaScript `debu
    x + y
  }
 ```
-
-`debugger()` is available since ReScript 13.0.0-alpha.7 ([rescript#9163](https://github.com/rescript-lang/rescript/pull/9163)).
