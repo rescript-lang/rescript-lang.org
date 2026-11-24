@@ -72,7 +72,7 @@ test("the committed type matches the actual React Router configuration", () => {
     "/packages",
     "/syntax-lookup",
     "/docs/manual/api",
-    "/docs/manual/migrate-to-v12",
+    "/docs/manual/migrate-to-v13",
     "/docs/manual/rescript-for-javascript-developers",
     "/docs/manual/api/dom/storage",
     "/blog/retreat-recap-2026",

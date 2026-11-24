@@ -60,6 +60,13 @@ export function checkRedirects({
     "/docs/guides/publishing-packages",
     "308",
   );
+  for (const version of ["v11", "v12"]) {
+    assertRedirect(
+      `/docs/manual/migrate-to-${version}`,
+      `https://v12.rescript-lang.org/docs/manual/migrate-to-${version}`,
+      "308",
+    );
+  }
   assertRedirect(
     "/syntax-lookup/extension_debugger",
     "/syntax-lookup/builtinfunctions_debugger",

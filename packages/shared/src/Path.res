@@ -276,8 +276,6 @@ type t = [
   | #"/docs/manual/let-binding"
   | #"/docs/manual/libraries"
   | #"/docs/manual/llms"
-  | #"/docs/manual/migrate-to-v11"
-  | #"/docs/manual/migrate-to-v12"
   | #"/docs/manual/migrate-to-v13"
   | #"/docs/manual/module"
   | #"/docs/manual/module-functions"
