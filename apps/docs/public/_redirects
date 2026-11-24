@@ -5,9 +5,9 @@
 /docs/manual/api/introduction/  /docs/manual/api  308
 /syntax-lookup/extension_debugger  /syntax-lookup/builtinfunctions_debugger  308
 
-# Migration guides for older versions live with the v12 docs.
+# Migration guides for older versions live on their version's docs site.
 /docs/manual/migrate-to-v12  https://v12.rescript-lang.org/docs/manual/migrate-to-v12  308
-/docs/manual/migrate-to-v11  https://v12.rescript-lang.org/docs/manual/migrate-to-v11  308
+/docs/manual/migrate-to-v11  https://v11.rescript-lang.org/docs/manual/v11.0.0/migrate-to-v11  308
 
 # Legacy aliases serve the current deployment's generated manual text files.
 /llms/manual/llms.txt  /llms.txt  307
