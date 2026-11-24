@@ -121,7 +121,7 @@ export { me, age };
 
 ## Update
 
-Disallowed unless the object is a binding that comes from the JavaScript side. In that case, use `=`
+Objects created in ReScript can't be updated. An object that comes from the JavaScript side can be updated with `=`, but only fields marked `@set` in its type can be assigned:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -142,6 +142,10 @@ MyJSFile.student1.name = "Mary";
 ```
 
 </CodeTab>
+
+Assigning to a field without `@set` is a type error. For a property that may be `null` or `undefined`, write that in the field's type, such as `"nickname": Nullable.t<string>`.
+
+`@set` on an object field is unrelated to the `@get` and `@set` [external bindings](./bind-to-js-object.mdx#bind-using-special-getter-and-setter-attributes), which bind to a JavaScript property through functions.
 
 ## Combine Types
 

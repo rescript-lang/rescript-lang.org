@@ -24,52 +24,13 @@ Build times depend on the dependency graph, hardware, filesystem, and surroundin
 
 ## Under the Hood
 
-Since ReScript v12, `rescript build` uses a native build system written in Rust. It reads `rescript.json`, tracks dependencies between modules and packages, and invokes the compiler directly. See [Reforging the ReScript Build System](../../blog/reforging-build-system.mdx) for more about its architecture.
+`rescript build` runs a native build system written in OCaml. It reads `rescript.json`, tracks dependencies between modules and packages, and compiles modules in-process on several CPU cores. Each build prints how long it took; pass `--no-timing` to turn that off.
 
 ## The JS Wrapper
 
 The `rescript` command is a thin Node.js wrapper around the native `rescript.exe` binary. Both building and watching are handled by the native binary.
 
 The binary ships in a platform-specific package at `node_modules/@rescript/{your-platform}/bin/rescript.exe`, for example `node_modules/@rescript/darwin-arm64/bin/rescript.exe` on an Apple Silicon Mac. The wrapper selects the package for your platform and sets `RESCRIPT_RUNTIME` to the installed runtime package's path. Prefer `rescript build` and `rescript watch` so this setup is handled for you.
-
-## Legacy Build System
-
-The pre-v12 build system remains available through `rescript-legacy`. It uses [Ninja](https://ninja-build.org), a cross-platform, low-level build system. It reads `rescript.json`, generates Ninja build files in `lib/bs`, and runs Ninja to execute the compiler commands.
-
-### Profile Legacy Builds
-
-For builds made with `rescript-legacy`, `bstracing` turns Ninja's build log into a performance trace:
-
-```sh
-./node_modules/.bin/bstracing
-```
-
-Run the above command at your ReScript project's root; it'll spit out a JSON file you can drag and drop into `chrome://tracing`.
-
-<Image
-  withShadow={true}
-  src="/img/bstracing.avif"
-  className="w-auto mx-auto md:mx-auto"
-  caption="Screenshot of bstracing result"
-/>
-
-### Historical Measurements
-
-The following measurements were made with the pre-v12 Ninja-based build system. They are not benchmarks of the current build system.
-
-A native build of a small project took around `70ms`, compared with roughly twice that through the old JS wrapper. That wrapper also provided watch mode.
-
-A no-op build (when no file changed) took around `15ms`. An incremental rebuild of a single file took around `70ms` too.
-
-#### Extreme Test
-
-We stress-tested the old native build system on a big project of 10,000 files (2 directories, 5000 files each, first 5000 no dependencies, last 5000 10 dependencies on files from the former directory) using https://github.com/rescript-lang/build-benchmark, on a Retina Macbook Pro Early 2015 (3.1 GHz Intel Core i7).
-
-{/* TODO: better repro */}
-
-- No-op build of 10k files: `800ms` (the minimum amount of time required to check the mtimes of 10k files).
-- Clean build: \<3 minutes.
-- Incremental build: depends on the number of the dependents of the file. No dependent means `1s`.
 
 ## Incrementality & Correctness
 
