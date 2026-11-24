@@ -99,6 +99,29 @@ MyGame.draw(10, 20);
 
 </CodeTab>
 
+### Inline Record Types
+
+When a function takes a configuration object, its type can be written inline in the `external`, as a record type. Optional fields are left out of the object when they're not given:
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+@module("node:fs")
+external readFileSync: (string, {encoding?: string, flag?: string}) => string = "readFileSync"
+
+let content = readFileSync("README.md", {encoding: "utf8"})
+```
+
+```js
+import * as Nodefs from "node:fs";
+
+let content = Nodefs.readFileSync("README.md", { encoding: "utf8" });
+
+export { content };
+```
+
+</CodeTab>
+
 ## Object Method
 
 Functions attached to JS objects (other than JS modules) require a special way of binding to them, using `send`:

@@ -45,13 +45,9 @@ To run the analyses configured in `rescript.json` from the command line:
 rescript-tools reanalyze -config
 ```
 
-ReScript 12.1 added a reactive mode that caches unchanged analysis data:
+The analysis is incremental: within one process, such as `reanalyze-server` below, it only reprocesses files that changed. Findings are reported in source order, so the output is the same on every machine.
 
-```sh
-rescript-tools reanalyze -config -reactive
-```
-
-The diagnostic flags `-runs <n>` and `-churn <n>` can benchmark cache effectiveness and incremental correctness. `-mermaid` prints a Mermaid diagram of the reactive pipeline.
+The diagnostic flags `-runs <n>` and `-churn <n>` can benchmark cache effectiveness and incremental correctness. `-mermaid` prints a Mermaid diagram of the analysis pipeline.
 
 `reanalyze-server` keeps the analysis process alive between requests. JSON analysis requests delegate to it transparently, so integrations can use `rescript-tools reanalyze -json` without managing the server themselves.
 

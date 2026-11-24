@@ -994,3 +994,25 @@ let add: (int, int) => int
 The type annotation syntax is the same as described in [With Type Annotation](#with-type-annotation) above.
 
 **Don't** confuse `let add: myType` with `type add = myType`. When used in `.resi` interface files, the former exports the binding `add` while annotating it as type `myType`. The latter exports the type `add`, whose value is the type `myType`.
+
+#### Arity Must Match
+
+The number of parameters is part of a function's type. A function that returns another function, such as `a => b => a + b`, has the type `int => int => int`. It doesn't match `(int, int) => int`, neither in an interface nor through a coercion with `:>`:
+
+```res nocheck
+module Math: {
+  let add: (int, int) => int
+} = {
+  let add = a => b => a + b
+}
+```
+
+The compiler reports that the implementation contains a function taking 1 argument where the interface expects one taking 2 arguments. Take both parameters at once instead:
+
+```res
+module Math: {
+  let add: (int, int) => int
+} = {
+  let add = (a, b) => a + b
+}
+```
