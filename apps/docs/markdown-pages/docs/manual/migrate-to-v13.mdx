@@ -1,0 +1,142 @@
+---
+title: "Migrate to v13"
+description: "Instructions on upgrading to ReScript 13"
+canonical: "/docs/manual/migrate-to-v13"
+section: "Overview"
+order: 5
+---
+
+# Migrate to ReScript 13
+
+This guide lists the changes that need action when upgrading from ReScript 12, up to 13.0.0-alpha.7. Upgrading from ReScript 11? Follow the [v12 migration guide](https://v12.rescript-lang.org/docs/manual/migrate-to-v12) first. If something is missing, please [open an issue](https://github.com/rescript-lang/rescript-lang.org/issues/new?template=documentation_issue.md) or [send a pull request](https://github.com/rescript-lang/rescript-lang.org/).
+
+## Before You Upgrade
+
+- **Node.js 22** or newer is required.
+- **macOS on Intel** is no longer supported. Stay on ReScript 12 there.
+- **APIs deprecated in ReScript 12 are removed**, for example `List.has`, `Error`, `Exn` and the `Char` module. On the latest 12.x release, run `npx rescript-tools migrate-all .` to apply the automatic migrations, then fix any remaining deprecation warnings.
+
+## Dependencies
+
+### Belt
+
+Belt is now a separate package. Install `@rescript/belt` in the same version as `rescript`. During the v13 prereleases, that's the `next-13` tag:
+
+```sh
+npm install @rescript/belt@next-13
+```
+
+Then add it to `rescript.json`:
+
+```json
+{
+  "dependencies": ["@rescript/belt"]
+}
+```
+
+Belt functions that returned `undefined<'a>`, such as `Belt.Array.getUndefined`, are removed. Use the versions that return `option<'a>`, such as `Belt.Array.get`.
+
+### Js
+
+The `Js` namespace is removed. Use the standard library modules instead, such as `Array`, `String`, `Dict` and `JSON`.
+
+## Build System and CLI
+
+`rescript` runs a new build system. Check your scripts for these changes:
+
+- `rescript-legacy` is removed.
+- The `--dev` and `--create-sourcedirs` flags and `rescript build -w` are removed. Use `rescript watch` to watch.
+- A `rescript.json` with duplicate keys, or with `namespace-entry` but no `namespace`, is an error.
+- A failing `--after-build` command fails the build.
+- `--filter` only accepts common regular expression syntax.
+- `RESCRIPT_BSC_EXE` is no longer read.
+- The `-uncurried` and `-pp` compiler flags are removed. Delete them from `compiler-flags`.
+
+## Build Configuration
+
+### Configuration File and Keys
+
+Rename `bsconfig.json` to `rescript.json`, and rename these keys:
+
+| Legacy key            | Current key        |
+| --------------------- | ------------------ |
+| `bs-dependencies`     | `dependencies`     |
+| `bs-dev-dependencies` | `dev-dependencies` |
+| `bsc-flags`           | `compiler-flags`   |
+
+The old file name and keys still work, but print deprecation warnings.
+
+Remove `external-stdlib`. It's no longer supported.
+
+### Module Format
+
+`esmodule` is now the default when `package-specs` is omitted. To keep CommonJS output, set it explicitly:
+
+```json
+{
+  "package-specs": {
+    "module": "commonjs",
+    "in-source": true
+  }
+}
+```
+
+Replace legacy module names:
+
+- `es6` → `esmodule` and `cjs` → `commonjs`. The old names still work, but print deprecation warnings.
+- `es6-global` → `esmodule`. The old name is now an error.
+
+### Multiple Output Formats
+
+When you emit several formats to the same location, give each its own suffix. Specs with the same suffix are now rejected:
+
+```json
+{
+  "package-specs": [
+    { "module": "esmodule", "suffix": ".mjs" },
+    { "module": "commonjs", "suffix": ".cjs" }
+  ]
+}
+```
+
+See [Build Configuration](./build-configuration.mdx#package-specs) for all options.
+
+## Language Changes
+
+### Removed Syntax
+
+| Removed                                         | Use instead                                                                     |
+| ----------------------------------------------- | ------------------------------------------------------------------------------- |
+| `(. a, b) => ...` uncurried functions           | `(a, b) => ...`                                                                 |
+| `%re("/b/g")`                                   | [Regular expression literals](./primitive-types.mdx#regular-expression): `/b/g` |
+| `%debugger`                                     | [`debugger()`](./embed-raw-javascript.mdx#debugger)                             |
+| `%external(name)`                               | `%raw`, or a binding such as `@val external`                                    |
+| `@taggedTemplate`                               | The [`taggedTemplate<'param, 'output>`](./tagged-templates.mdx) type            |
+| `@deriving(abstract)`, `@deriving(jsConverter)` | Records and polymorphic variants                                                |
+| `@ocaml.warning` and the other `@ocaml.*` forms | `@warning` and the other unprefixed forms                                       |
+| `@ocaml.doc`, `@ns.doc`                         | `/** */` doc comments                                                           |
+| Record syntax for a dict, `{foo: 1}`            | [`dict{"foo": 1}`](./dict.mdx)                                                  |
+
+### Other Changes
+
+- `break` and `continue` are keywords. Rename identifiers with these names, or escape them, as in `\"break"`.
+- `@unboxed` goes on the variant type, not on a constructor. For a constructor whose payload is an inline record with one field, this unboxes the value to that field. Give the record a named type to keep the object.
+- Object fields can only be assigned when they are marked `@set`, as in `{@set "name": string}`. The other `@get` and `@set` forms on object types are removed.
+- `@this this => async arg => ...` now defines a method that returns an async function. For an async method, write `@this async (this, arg) => ...`.
+- `Jsx.component` is an abstract type. To use a plain function as a component, define it with `@react.component` or wrap it in `React.component(...)`.
+- Nested functions other than `make` are no longer exported to JavaScript as top-level `A$B$f` values.
+- Coercing another type into a private record or variant is an error.
+- Records with `@as("0")`, `@as("1")`, … fields compile to JavaScript arrays. Rest patterns, coercions and untagged variants that would treat them as objects are errors.
+- Tagged template literals can't be used in patterns.
+- Invalid escapes in string and template literals, and malformed UTF-8 in doc comments, are errors.
+- `\"_"` is no longer a valid identifier.
+
+## Standard Library
+
+- The new `Temporal` module shadows project modules named `Temporal`. Rename yours. Nested modules named `Temporal` are exported to JavaScript as `$$Temporal`.
+- Typed array types such as `Int8Array.t` are no longer interchangeable. Upcast with `:> TypedArray.t<_>` to use the generic `TypedArray` functions. `TypedArray.map` and `TypedArray.mapWithIndex` keep the element type.
+- `Int.fromString` and `Float.fromString` no longer take a radix. They parse hexadecimal, binary and exponential notation, such as `0x1F`, directly, and are stricter.
+- `Intl.Collator.compare` returns `Ordering.t` instead of `int`.
+- Iterators are typed as `Iterator.t<'yield, 'return, 'next>`. `fromIterator` on `Array`, `Dict`, `Map` and `Set` is now `fromIterable`; coerce iterators to it, as in `Array.fromIterable((map->Map.keys :> Iterable.t<_>))`. `toArray`, `toArrayWithMapper` and `forEach` moved from `Iterator` to `IteratorObject`, the type that `Map.keys`, `Array.values` and similar functions return.
+- `Int.Ref` is removed. Use `ref` values directly.
+- Custom externals that use removed primitives, such as `%incr` or `%obj_field`, are rejected.

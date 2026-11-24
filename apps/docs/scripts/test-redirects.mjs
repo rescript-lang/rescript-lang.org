@@ -61,6 +61,16 @@ export function checkRedirects({
     "308",
   );
   assertRedirect(
+    "/docs/manual/migrate-to-v12",
+    "https://v12.rescript-lang.org/docs/manual/migrate-to-v12",
+    "308",
+  );
+  assertRedirect(
+    "/docs/manual/migrate-to-v11",
+    "https://v11.rescript-lang.org/docs/manual/v11.0.0/migrate-to-v11",
+    "308",
+  );
+  assertRedirect(
     "/syntax-lookup/extension_debugger",
     "/syntax-lookup/builtinfunctions_debugger",
     "308",
