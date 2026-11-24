@@ -1,0 +1,35 @@
+---
+id: "debugger"
+keywords: ["javascript", "debugger", "breakpoint", "debug"]
+name: "debugger()"
+summary: "This is the `debugger()` function."
+category: "builtinfunctions"
+---
+
+`debugger()` inserts a JavaScript `debugger` statement. When developer tools are open, execution pauses there.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+let f = (x, y) => {
+  debugger()
+  x + y
+}
+```
+
+```js
+function f(x, y) {
+  debugger;
+  return (x + y) | 0;
+}
+
+export { f };
+```
+
+</CodeTab>
+
+**Since ReScript 13:** `debugger()` replaces the removed `%debugger` extension.
+
+### References
+
+- [Embed Raw JavaScript](../docs/manual/embed-raw-javascript.mdx#debugger)

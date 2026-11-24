@@ -3,6 +3,7 @@
 /docs/guidelines/publishing-packages  /docs/guides/publishing-packages  308
 /docs/manual/api/introduction  /docs/manual/api  308
 /docs/manual/api/introduction/  /docs/manual/api  308
+/syntax-lookup/extension_debugger  /syntax-lookup/builtinfunctions_debugger  308
 
 # Legacy aliases serve the current deployment's generated manual text files.
 /llms/manual/llms.txt  /llms.txt  307

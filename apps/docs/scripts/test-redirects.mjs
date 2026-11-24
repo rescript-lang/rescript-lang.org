@@ -60,6 +60,11 @@ export function checkRedirects({
     "/docs/guides/publishing-packages",
     "308",
   );
+  assertRedirect(
+    "/syntax-lookup/extension_debugger",
+    "/syntax-lookup/builtinfunctions_debugger",
+    "308",
+  );
 
   const textFiles = [
     ["llms.txt", "/llms.txt"],

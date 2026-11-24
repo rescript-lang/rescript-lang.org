@@ -1,0 +1,54 @@
+---
+id: "throw"
+keywords: ["throw", "raise", "exception", "exn", "try", "catch"]
+name: "throw()"
+summary: "This is the `throw()` function."
+category: "builtinfunctions"
+---
+
+`throw()` raises the given exception. Execution stops unless a surrounding `try`/`catch` block catches it.
+
+<CodeTab labels={["ReScript", "JS Output"]}>
+
+```res
+exception MyException(string)
+
+let result = try {
+  throw(MyException("Out of milk"))
+} catch {
+| MyException(message) => "Caught exception: " ++ message
+}
+```
+
+```js
+import * as Primitive_exceptions from "@rescript/runtime/lib/es6/Primitive_exceptions.mjs";
+
+let MyException = /* @__PURE__ */ Primitive_exceptions.create(
+  "Example.MyException",
+);
+
+let result;
+
+try {
+  throw { RE_EXN_ID: MyException, _1: "Out of milk", Error: new Error() };
+} catch (raw_message) {
+  let message = Primitive_exceptions.internalToException(raw_message);
+  if (message.RE_EXN_ID === MyException) {
+    result = "Caught exception: " + message._1;
+  } else {
+    throw message;
+  }
+}
+
+export { MyException, result };
+```
+
+</CodeTab>
+
+To throw a JavaScript `Error` instead of a ReScript exception, use `JsError.throwWithMessage` or the other functions in `JsError`.
+
+### References
+
+- [Exception](../docs/manual/exception.mdx)
+- [Throw a JS Exception](../docs/manual/exception.mdx#throw-a-js-exception)
+- [`exception`](./language_exception.mdx)

@@ -76,7 +76,7 @@ Existing JavaScript code can live inside ReScript files during migration.
 
 ## Debugger
 
-You can also drop a `%debugger` expression in a body:
+To pause in the browser's or Node's developer tools, call `debugger()`. It compiles to a JavaScript `debugger` statement in place:
 
 <CodeTab labels={["ReScript", "JS Output"]}>
 
@@ -98,14 +98,9 @@ export { f };
 
 </CodeTab>
 
-Output:
+Don't use `%raw("debugger")` for this. `debugger` is a JavaScript statement, and `%raw` emits it as an expression such as `return debugger;`.
 
-```js
-function f(x, y) {
-  debugger; // JavaScript developer tools will set an breakpoint and stop here
-  x + y;
-}
-```
+**Since ReScript 13:** `debugger()` replaces the removed `%debugger` extension.
 
 ## Tips & Tricks
 
